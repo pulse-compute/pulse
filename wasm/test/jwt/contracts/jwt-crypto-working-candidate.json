@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "pulse.jwt-crypto-working-candidate.v1",
+  "candidateVersion": "1.0.0-beta.1",
+  "status": "unpublished",
+  "scope": "jwt-crypto-verification-proof",
+  "packages": [
+    {
+      "name": "@pulse-compute/crypto",
+      "dir": "packages/crypto",
+      "manifestVersion": "1.0.0-beta.1",
+      "role": "verification-contract",
+      "pulseDependencies": []
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "dir": "packages/jwt",
+      "manifestVersion": "1.0.0-beta.1",
+      "role": "verification-composition",
+      "pulseDependencies": [
+        {
+          "name": "@pulse-compute/crypto",
+          "section": "dependencies",
+          "range": "workspace:*",
+          "relationship": "candidate"
+        },
+        {
+          "name": "@pulse-compute/runtime",
+          "section": "dependencies",
+          "range": "workspace:*",
+          "relationship": "frozen-release-input"
+        }
+      ]
+    }
+  ],
+  "integrationInputs": [
+    {
+      "name": "@pulse-compute/runtime",
+      "dir": "packages/runtime",
+      "manifestVersion": "1.0.0-beta.1",
+      "relationship": "frozen-release-input"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "dir": "packages/provider-node",
+      "manifestVersion": "1.0.0-beta.1",
+      "relationship": "worktree-integration-consumer"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "dir": "packages/provider-fastly",
+      "manifestVersion": "1.0.0-beta.1",
+      "relationship": "worktree-integration-consumer"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "dir": "wasm/packages/wasm-guest-link",
+      "manifestVersion": "1.0.0-beta.1",
+      "relationship": "sealed-proof-input-not-hs256-runtime"
+    }
+  ],
+  "frozenRelease": {
+    "manifest": "release/pulse-release-manifest.json",
+    "releaseVersion": "1.0.0-beta.1",
+    "sha256": "7bd79922f50581e6c786332f086d0ee7594cb95b2a267943372734fb6ae9b6a3",
+    "containsCandidatePackages": false,
+    "mutatedByCandidate": false
+  },
+  "evidence": {
+    "guestMemoryDecision": "wasm/.test-results/guest-link-a4/guest-link-poc-decision.md",
+    "guestPipelineSeal": "wasm/.test-results/guest-link-b4/phase-b-seal.json",
+    "cryptoSeal": "wasm/.test-results/crypto-c4/phase-c-seal.json",
+    "jwtCompositionSeal": "wasm/.test-results/jwt-d4/jwt-phase-d-seal.json",
+    "crossTargetSeal": "wasm/.test-results/jwt-e4/jwt-phase-e-seal.json"
+  },
+  "boundaries": {
+    "candidatePackagesSynchronized": true,
+    "providerVersionsPromoted": false,
+    "releaseCatalogPromoted": false,
+    "npmPublication": false,
+    "documentationPromotion": false,
+    "remoteDeployment": false,
+    "providerActivation": false,
+    "guestLinkRequiredForHs256": false,
+    "asymmetricImplementation": false,
+    "automaticFallback": false
+  },
+  "nextAuthorizedCheckpoint": "F1"
+}

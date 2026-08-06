@@ -1,0 +1,59 @@
+{
+  "name": "@pulse-compute/workspace",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0",
+    "pnpm": ">=10 <11"
+  },
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "wasm",
+    "wasm/packages/*"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.workspace.json",
+    "test": "vitest run",
+    "test:packages": "vitest run",
+    "test:all": "pnpm run release:seal",
+    "clean": "rm -rf packages/*/dist packages/*/*.tsbuildinfo wasm/packages/*/dist wasm/packages/*/*.tsbuildinfo test/.vitest wasm/node_modules wasm/packages/*/node_modules wasm/.test-results",
+    "wasm:build": "pnpm --dir wasm run -s build",
+    "wasm:test": "pnpm --dir wasm run -s test",
+    "wasm:test:unit": "pnpm --dir wasm run -s test:unit",
+    "wasm:test:native": "pnpm --dir wasm run -s test:native",
+    "wasm:test:javascript": "pnpm --dir wasm run -s test:javascript",
+    "wasm:test:conformance": "pnpm --dir wasm run -s test:conformance",
+    "wasm:test:providers": "pnpm --dir wasm run -s test:providers",
+    "wasm:test:cli": "pnpm --dir wasm run -s test:cli",
+    "wasm:test:release": "pnpm --dir wasm run -s test:release",
+    "test:wasm": "pnpm run -s wasm:test",
+    "pulse": "node wasm/scripts/pulse.cjs",
+    "maintainer:sync": "node scripts/maintenance-policy.cjs --write",
+    "maintainer:check": "node scripts/validate-maintainer-control-plane.cjs",
+    "publication:check": "node scripts/validate-publication-workflows.cjs",
+    "maintainer:scope": "node scripts/maintainer-scope.cjs",
+    "docs:sync": "node wasm/scripts/sync-doc-snippets.cjs --write",
+    "docs:check": "node wasm/scripts/sync-doc-snippets.cjs --check && node scripts/build-docs-site.cjs --check",
+    "docs:site": "node scripts/build-docs-site.cjs --out .pulse-docs-site",
+    "docs:preview": "node scripts/preview-docs-site.cjs",
+    "docs:deployment:prepare": "node scripts/documentation-deployment.cjs seal --site-dir .pulse-docs-site --out .pulse-documentation-deployment",
+    "docs:deployment:verify": "node scripts/documentation-deployment.cjs verify-candidate --candidate-dir .pulse-documentation-deployment",
+    "release:pack": "node scripts/pack-release.cjs",
+    "release:preflight": "node scripts/release-preflight.cjs --check",
+    "release:audit-npm": "node scripts/release-preflight.cjs --audit-npm --json-out .pulse-release-preflight/npm-catalog-audit.json",
+    "release:seal": "node scripts/validate-release.cjs",
+    "release:candidates": "node scripts/offline-release-candidates.cjs --replace",
+    "release:evidence": "node scripts/release-evidence-bundle.cjs",
+    "release:candidate": "node scripts/release-candidate.cjs prepare --pack-dir .pulse-release --out .pulse-publication",
+    "release:verify-bundle": "node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication",
+    "release:prepare": "node scripts/release-prepare.cjs",
+    "docs:site:check": "node scripts/build-docs-site.cjs --check"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.15",
+    "@wooorm/starry-night": "3.10.0",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.4"
+  }
+}

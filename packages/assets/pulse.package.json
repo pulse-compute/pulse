@@ -1,0 +1,69 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.assets",
+  "npmPackage": "@pulse-compute/assets",
+  "description": "Pulse-aware static and host-backed asset response package.",
+  "authoring": {
+    "namespace": "assets",
+    "import": "@pulse-compute/assets",
+    "symbols": [
+      "lookup",
+      "respond"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "assets",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "assets",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_PACKAGE_COMPOSITION_HELPER_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "supported",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/assets",
+      "providerRequirements": [
+        "assets",
+        "body",
+        "clock",
+        "headers",
+        "result"
+      ]
+    },
+    "javascript": {
+      "status": "supported",
+      "realization": "javascript-package-runtime",
+      "entry": "./dist/index.js",
+      "providerRequirements": [
+        "assets"
+      ]
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "target-overlap",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "assets.lookup",
+      "assets.respond"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

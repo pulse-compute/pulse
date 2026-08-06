@@ -1,0 +1,10 @@
+{
+  "version": "pulse.events-ev0-http-control.v1",
+  "fixture": "examples/01-hello-json",
+  "bytes": 2212,
+  "sha256": "c7e2b2951001b23afe3fabbc8ead11cbab452d5e648055e228f6aa231bec45b0",
+  "sourceSha256": "ca114fb4f5a41797267c7630da9beaa61e9e2aa9fbed600c743e602648831069",
+  "planHash": "b8a054ea18e67919cfe3ace78570237d31d914878e3f0088c850f808dee84859",
+  "eventImports": [],
+  "eventExports": []
+}

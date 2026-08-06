@@ -1,0 +1,297 @@
+name: npm publication
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag to build, audit, or publish
+        required: true
+        default: v1.0.0-beta.1
+        type: string
+      operation:
+        description: Audit package names or publish the sealed release
+        required: true
+        default: audit
+        type: choice
+        options:
+          - audit
+          - publish
+      run_smoke:
+        description: Run the published CLI clean-install smoke after publication
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: npm-publication-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    name: candidate
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.identity.outputs.candidate_artifact }}
+    timeout-minutes: 60
+    steps:
+      - name: Check out the selected release tag
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Verify the release tag and source identity
+        id: identity
+        shell: bash
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          fail() {
+            echo "::error title=Release source identity::$*" >&2
+            exit 1
+          }
+          expected="v$(node -p "require('./release/pulse-release-manifest.json').releaseVersion")"
+          expected_ref="refs/tags/$expected"
+          [ "$REQUESTED_TAG" = "$expected" ] || fail "Requested tag $REQUESTED_TAG does not match release manifest tag $expected."
+          [ "$GITHUB_REF" = "$expected_ref" ] || fail "Run this workflow from the $expected tag; GitHub dispatched $GITHUB_REF."
+          [ "$GITHUB_REF_TYPE" = "tag" ] || fail "The workflow dispatch ref must be a tag, found $GITHUB_REF_TYPE."
+          commit="$(git rev-parse HEAD)"
+          tag_commit="$(git rev-parse "${expected_ref}^{commit}")"
+          [ "$tag_commit" = "$commit" ] || fail "$expected resolves to $tag_commit, but the checkout is $commit."
+          [ "$GITHUB_SHA" = "$commit" ] || fail "GitHub source $GITHUB_SHA does not match the checked-out release commit $commit."
+          [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || fail "Release commit is not a full lowercase SHA: $commit."
+          artifact_prefix="$(node -p "require('./release/pulse-release-manifest.json').publication.candidateArtifact")"
+          echo "release_tag=$expected" >> "$GITHUB_OUTPUT"
+          echo "source_commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "source_ref=refs/tags/$expected" >> "$GITHUB_OUTPUT"
+          echo "candidate_artifact=$artifact_prefix-$expected" >> "$GITHUB_OUTPUT"
+      - name: Install the release-owned toolchain
+        shell: bash
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          npm install --global npm@11.15.0
+          test "$(npm --version)" = "11.15.0"
+          corepack enable
+          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
+          corepack prepare "pnpm@$pnpm_version" --activate
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build and validate the release source
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm run release:seal --skip-install --no-report
+      - name: Pack the exact release candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm run release:pack
+      - name: Seal the exact npm publication candidate
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ steps.identity.outputs.source_commit }}
+          SOURCE_REF: ${{ steps.identity.outputs.source_ref }}
+        run: |
+          set -euo pipefail
+          node scripts/release-candidate.cjs prepare \
+            --pack-dir .pulse-release \
+            --out .pulse-publication \
+            --source-commit "$SOURCE_COMMIT" \
+            --source-ref "$SOURCE_REF" \
+            --require-release-ref \
+            --json-out npm-candidate-verification.json
+      - name: Upload the sealed npm candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.identity.outputs.candidate_artifact }}
+          path: .pulse-publication
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload candidate failure evidence
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-npm-candidate-failure-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            wasm/.test-results
+            .pulse-release
+            .pulse-publication
+            npm-candidate-verification.json
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
+
+  audit:
+    name: audit
+    if: inputs.operation == 'audit'
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out the sealed release tag publication tooling
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Install the release-owned npm CLI
+        run: npm install --global npm@11.15.0
+      - name: Download the sealed npm candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ needs.candidate.outputs.artifact_name }}
+          path: .pulse-publication
+      - name: Verify and audit package-name bootstrap status
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication --require-release-ref
+          node scripts/publish-release.cjs audit \
+            --bundle-dir .pulse-publication \
+            --require-release-ref \
+            --allow-missing \
+            --json-out npm-package-name-audit.json
+          node scripts/publish-release.cjs plan \
+            --bundle-dir .pulse-publication \
+            --require-release-ref \
+            --report-only \
+            --json-out npm-publication-plan.json
+      - name: Upload audit reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-npm-audit-${{ inputs.release_tag }}
+          path: |
+            npm-package-name-audit.json
+            npm-publication-plan.json
+          if-no-files-found: warn
+          retention-days: 14
+
+  publish:
+    name: publish
+    if: inputs.operation == 'publish'
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: npm-publish
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the sealed release tag publication tooling
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Install the release-owned npm CLI
+        run: |
+          npm install --global npm@11.15.0
+          test "$(npm --version)" = "11.15.0"
+      - name: Download the sealed npm candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ needs.candidate.outputs.artifact_name }}
+          path: .pulse-publication
+      - name: Bind publication authority to the sealed release tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication --require-release-ref
+          node <<'NODE'
+          const fs = require('node:fs');
+          const release = require('./release/pulse-release-manifest.json');
+          const manifest = JSON.parse(fs.readFileSync('.pulse-publication/pulse-publication-manifest.json', 'utf8'));
+          const expectedRef = `refs/tags/v${release.releaseVersion}`;
+          if (manifest.source.ref !== expectedRef) throw new Error(`sealed candidate source ref must be ${expectedRef}; found ${manifest.source.ref}`);
+          if (!/^[0-9a-f]{40}$/.test(manifest.source.commit)) throw new Error('sealed candidate source commit is invalid');
+          if (process.env.GITHUB_REF !== expectedRef) throw new Error(`publication job must run from ${expectedRef}; found ${process.env.GITHUB_REF}`);
+          if (manifest.source.commit !== process.env.GITHUB_SHA) throw new Error(`sealed candidate commit ${manifest.source.commit} differs from GitHub source ${process.env.GITHUB_SHA}`);
+          fs.appendFileSync(process.env.GITHUB_ENV, `PULSE_RELEASE_REF=${manifest.source.ref}\nPULSE_RELEASE_SHA=${manifest.source.commit}\n`);
+          NODE
+      - name: Publish or resume the dependency-ordered release
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/publish-release.cjs plan \
+            --bundle-dir .pulse-publication \
+            --require-release-ref \
+            --json-out npm-publication-plan.json
+          node scripts/publish-release.cjs publish \
+            --bundle-dir .pulse-publication \
+            --require-release-ref \
+            --json-out npm-publication-report.json
+      - name: Upload publication report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-npm-publish-${{ inputs.release_tag }}
+          path: |
+            npm-publication-plan.json
+            npm-publication-report.json
+          if-no-files-found: warn
+          retention-days: 90
+
+  verify:
+    name: verify
+    if: inputs.operation == 'publish'
+    needs: [candidate, publish]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out the sealed release tag verification tooling
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Install the release-owned npm CLI
+        run: npm install --global npm@11.15.0
+      - name: Download the sealed npm candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ needs.candidate.outputs.artifact_name }}
+          path: .pulse-publication
+      - name: Verify registry integrity, dist-tags, and the published CLI
+        shell: bash
+        env:
+          RUN_SMOKE: ${{ inputs.run_smoke }}
+        run: |
+          set -euo pipefail
+          args=(--bundle-dir .pulse-publication --require-release-ref --json-out npm-publication-verification.json)
+          if [ "$RUN_SMOKE" = "true" ]; then
+            args+=(--smoke --smoke-json-out npm-publication-smoke.json)
+          fi
+          node scripts/verify-npm-release.cjs "${args[@]}"
+      - name: Upload publication verification
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-npm-verification-${{ inputs.release_tag }}
+          path: |
+            npm-publication-verification.json
+            npm-publication-smoke.json
+          if-no-files-found: warn
+          retention-days: 90

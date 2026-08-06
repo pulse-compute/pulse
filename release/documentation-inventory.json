@@ -1,0 +1,173 @@
+{
+  "schemaVersion": "pulse.documentation-inventory.v2",
+  "reviewedAt": "2026-07-25",
+  "precedence": "first-match-wins",
+  "classifications": [
+    "current-public",
+    "current-contributor",
+    "generated"
+  ],
+  "scope": {
+    "rootFiles": [
+      "README.md",
+      "API.md",
+      "CHANGELOG.md",
+      "CONTRIBUTING.md",
+      "SECURITY.md",
+      "SUPPORT.md"
+    ],
+    "markdownRoots": [
+      "docs",
+      "examples",
+      "packages",
+      "wasm"
+    ],
+    "jsonRoots": [
+      "docs",
+      "wasm/packages/cli/docs"
+    ],
+    "additionalJsonFiles": [
+      "wasm/packages/cli/cli-spec.json",
+      "wasm/packages/cli/documentation-site.json",
+      "wasm/packages/cli/documentation-versions.json",
+      "wasm/packages/cli/project-config.schema.json",
+      "wasm/packages/cli/release-manifest.json"
+    ],
+    "excludedBasenames": [
+      "AGENTS.md"
+    ],
+    "excludedDirectories": [
+      ".git",
+      "node_modules",
+      "dist",
+      ".pulse-docs-site",
+      ".pulse-docs-preview",
+      ".pulse-release",
+      ".pulse-publication",
+      ".pulse-documentation-deployment"
+    ],
+    "excludedPrefixes": []
+  },
+  "rules": [
+    {
+      "id": "generated-installed-cli",
+      "classification": "generated",
+      "owner": "wasm/scripts/sync-reference-docs.cjs",
+      "prefixes": [
+        "wasm/packages/cli/docs/",
+        "wasm/packages/cli/examples/",
+        "packages/runtime/docs/"
+      ],
+      "paths": [
+        "wasm/packages/cli/API.md",
+        "wasm/packages/cli/CHANGELOG.md",
+        "wasm/packages/cli/cli-spec.json",
+        "wasm/packages/cli/documentation-site.json",
+        "wasm/packages/cli/documentation-versions.json",
+        "wasm/packages/cli/project-config.schema.json",
+        "wasm/packages/cli/release-manifest.json"
+      ],
+      "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+    },
+    {
+      "id": "generated-canonical-reference",
+      "classification": "generated",
+      "owner": "wasm/scripts/sync-reference-docs.cjs",
+      "paths": [
+        "docs/maintainers/plugin-readiness.json",
+        "docs/maintainers/plugin-readiness.md",
+        "docs/packages/README.md",
+        "docs/packages/implementation-packages.md",
+        "docs/reference/cli-spec.json",
+        "docs/reference/cli.md",
+        "docs/reference/diagnostics.md",
+        "docs/reference/documentation-versions.json",
+        "docs/reference/environment.md",
+        "docs/maintainers/maintenance-policy.json",
+        "docs/maintainers/maintenance-policy.md",
+        "docs/reference/project-config.md",
+        "docs/reference/project-config.schema.json",
+        "docs/reference/release-manifest.json",
+        "docs/maintainers/release-manifest.md",
+        "docs/reference/shell-completion.md"
+      ],
+      "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+    },
+    {
+      "id": "current-contributor-governance",
+      "classification": "current-contributor",
+      "owner": "maintainer-council",
+      "paths": [
+        "CONTRIBUTING.md"
+      ],
+      "prefixes": [
+        "docs/contributing/",
+        "docs/maintainers/"
+      ],
+      "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+    },
+    {
+      "id": "current-public-package-readmes",
+      "classification": "current-public",
+      "owner": "release/pulse-release-manifest.json",
+      "paths": [
+        "packages/assets/README.md",
+        "packages/grip/README.md",
+        "packages/provider-fastly/README.md",
+        "packages/pulse/README.md",
+        "packages/runtime/README.md",
+        "wasm/packages/cli/README.md"
+      ],
+      "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+    },
+    {
+      "id": "current-public-root",
+      "classification": "current-public",
+      "owner": "docs-platform",
+      "paths": [
+        "README.md",
+        "API.md",
+        "CHANGELOG.md",
+        "SECURITY.md",
+        "SUPPORT.md"
+      ],
+      "disposition": "Keep as canonical public project, API, release, security, and support material."
+    },
+    {
+      "id": "current-public-documentation",
+      "classification": "current-public",
+      "owner": "docs-platform",
+      "prefixes": [
+        "docs/"
+      ],
+      "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+    },
+    {
+      "id": "current-public-examples",
+      "classification": "current-public",
+      "owner": "docs-platform",
+      "prefixes": [
+        "examples/"
+      ],
+      "disposition": "Keep as canonical public executable examples."
+    },
+    {
+      "id": "current-contributor-packages",
+      "classification": "current-contributor",
+      "owner": "release-engineering",
+      "prefixes": [
+        "packages/"
+      ],
+      "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+    },
+    {
+      "id": "current-contributor-wasm",
+      "classification": "current-contributor",
+      "owner": "release-engineering",
+      "prefixes": [
+        "wasm/"
+      ],
+      "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+    }
+  ]
+}

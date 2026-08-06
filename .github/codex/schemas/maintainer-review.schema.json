@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pulsecompute.io/schemas/maintainer-review.v1.json",
+  "title": "Pulse Codex maintainer review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "summary",
+    "classification",
+    "scope",
+    "risk",
+    "scopeStatus",
+    "protectedBoundaries",
+    "requiredChecks",
+    "humanDecisionRequired",
+    "implementationRecommendation",
+    "findings",
+    "evidence",
+    "confidence"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "pulse.maintainer-review.v1"
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200
+    },
+    "classification": {
+      "enum": [
+        "defect",
+        "hardening",
+        "documentation",
+        "evidence",
+        "scope-expansion",
+        "architecture",
+        "release"
+      ]
+    },
+    "scope": {
+      "enum": [
+        "inside-developer-preview",
+        "evidence-only",
+        "scope-expansion",
+        "architecture-change",
+        "release-change"
+      ]
+    },
+    "risk": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "scopeStatus": {
+      "enum": [
+        "inside-developer-preview",
+        "requires-human-decision",
+        "out-of-scope",
+        "blocked"
+      ]
+    },
+    "protectedBoundaries": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 11,
+      "items": {
+        "enum": [
+          "public-authoring-api",
+          "effect-capability-model",
+          "continuation-runtime",
+          "lowerer-trust",
+          "provider-registry",
+          "configuration-contract",
+          "runtime-target-fluidity",
+          "package-publication",
+          "maintenance-control-plane",
+          "documentation-deployment",
+          "release-authority"
+        ]
+      }
+    },
+    "requiredChecks": {
+      "type": "array",
+      "uniqueItems": true,
+      "maxItems": 12,
+      "items": {
+        "enum": [
+          "maintenance-policy",
+          "publication-control-plane",
+          "release-preflight",
+          "documentation",
+          "unit",
+          "native",
+          "javascript",
+          "conformance",
+          "cli",
+          "providers",
+          "build",
+          "release"
+        ]
+      }
+    },
+    "humanDecisionRequired": {
+      "type": "boolean"
+    },
+    "implementationRecommendation": {
+      "enum": [
+        "proceed",
+        "proceed-with-human-review",
+        "analysis-only",
+        "reject"
+      ]
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "severity",
+          "title",
+          "detail",
+          "evidence"
+        ],
+        "properties": {
+          "severity": {
+            "enum": [
+              "P0",
+              "P1",
+              "P2",
+              "P3"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 240
+          },
+          "detail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2400
+          },
+          "evidence": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1200
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1200
+      }
+    },
+    "confidence": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    }
+  }
+}

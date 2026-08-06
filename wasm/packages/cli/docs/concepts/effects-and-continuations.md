@@ -1,0 +1,243 @@
+# Effects and continuations
+
+A Pulse handler is written as async-shaped TypeScript. Host operations such as fetch, KV, secrets, and GRIP are awaited in source, but Native targets do not link a JavaScript Promise runtime. The compiler erases the managed async wrapper and trusted Pulse awaits into **effects** and the code that follows into **continuations**. JavaScript targets execute the same source through the live runtime and provider-owned effect adapter.
+
+Application authors do not create or resume continuation objects. They write canonical TypeScript; the compiler and provider runtime own the lifecycle.
+
+## Effect
+
+An effect is an explicit request for host authority. Each effect has an identity, capability, operation, resource, source position, and result shape. Common examples include:
+
+- dispatching an outbound fetch;
+- reading config or a secret;
+- getting or putting a KV value;
+- accepting one outbound event through `ctx.emit`;
+- declaring a GRIP channel;
+- holding or publishing through GRIP.
+
+Pure value construction, branching, property reads, and arithmetic are not effects.
+
+## Continuation
+
+A continuation identifies the compiled work that can proceed after one effect—or one effect group—settles. It carries no application-accessible provider object. The runtime resumes it with a normalized result or failure.
+
+```text
+compiled values
+    │
+    ├── effect request ──► provider/runtime
+    │                         │
+    └── continuation ◄────────┘ normalized result or failure
+```
+
+A continuation is single-use and time-bounded. Expired or duplicate resume attempts fail with stable diagnostics such as [`PULSE_CONTINUATION_EXPIRED`](../reference/diagnostics.md#pulse-continuation-expired) and [`PULSE_CONTINUATION_DOUBLE_RESUME`](../reference/diagnostics.md#pulse-continuation-double-resume).
+
+## Independent effects form a group
+
+The multi-fetch example declares three independent fetch values before consuming any of them:
+
+<!-- pulse-doc-source: examples/03-fetch-composition/src/index.ts -->
+```ts
+import { Pulse } from '@pulse-compute/pulse'
+
+interface User {
+  id: number
+  name: string
+}
+
+interface Stats {
+  score: number
+}
+
+interface Flags {
+  enabled: boolean
+}
+
+const app = new Pulse({ auto: true })
+
+// One structured origin.
+app.get('/user', async (ctx) => {
+  const user = await ctx
+    .fetch('https://users.example.test/users/123')
+    .json<User>()
+  return ctx.json({ found: true, user })
+})
+
+// Multiple origins with explicit sequential awaits.
+app.get('/user-summary', async (ctx) => {
+  const user = await ctx
+    .fetch('https://users.example.test/users/123')
+    .json<User>()
+  const stats = await ctx
+    .fetch('https://stats.example.test/users/123')
+    .json<Stats>()
+  const flags = await ctx
+    .fetch('https://flags.example.test/users/123')
+    .json<Flags>()
+  return ctx.json({
+    id: user.id,
+    name: user.name,
+    score: stats.score,
+    enabled: flags.enabled,
+  })
+})
+
+// Multiple origins with explicit portable concurrency.
+app.get('/user-summary-parallel', async (ctx) => {
+  const { user, stats, flags } = await ctx.parallel({
+    user: ctx.fetch('https://users.example.test/users/123').json<User>(),
+    stats: ctx.fetch('https://stats.example.test/users/123').json<Stats>(),
+    flags: ctx.fetch('https://flags.example.test/users/123').json<Flags>(),
+  })
+  return ctx.json({
+    id: user.id,
+    name: user.name,
+    score: stats.score,
+    enabled: flags.enabled,
+  })
+})
+
+export default app
+```
+<!-- /pulse-doc-source -->
+
+```bash
+pulse inspect examples/03-fetch-composition --json
+```
+
+The compiler can issue those fetches as one effect group because none depends on another result. The continuation becomes eligible only after the group settles.
+
+Grouping provides concurrency without linking a general Promise runtime into Native artifacts. Source declaration order remains deterministic for identities and result binding, but providers may perform independent operations concurrently.
+
+
+## Explicit portable groups with `ctx.parallel`
+
+Native Pulse may discover independent adjacent effects and place them in one group
+for performance. Direct JavaScript execution does not rewrite ordinary `await`
+semantics, so separate awaits remain sequential there. Use `ctx.parallel({ ... })`
+when concurrency is required application behavior across targets:
+
+```ts
+const { profile, flags } = await ctx.parallel({
+  profile: ctx.fetch(profileUrl).json<Profile>(),
+  flags: ctx.fetch(flagsUrl).json<Flags>(),
+})
+```
+
+The first contract accepts a nonempty inline object literal with fixed,
+non-index string keys and Pulse effect expressions as values. Property order owns
+dispatch identity, trace order, deterministic primary-failure selection, and keyed
+result reconstruction. Providers may complete members in any order, but every
+member settles before the continuation resumes.
+
+On JavaScript, all members execute through one execution-owned shared effect adapter.
+On Native, lowering erases `ctx.parallel`, emits the member operations into one
+canonical effect group, and reconstructs the ordinary keyed result object after
+one continuation. Arrays, spreads, computed keys, dynamic records, arbitrary
+promises, reused roots, and nested groups are outside the initial portable shape.
+
+## One-way outbound events
+
+HTTP and event handlers share the direct JavaScript `ctx.emit` effect:
+
+```ts
+await ctx.emit('device.led.set', {
+  schema: 'events.DeviceLedSet',
+  payload: { enabled: true },
+})
+
+await ctx.emit('system.tick', { schema: null })
+```
+
+The event type and schema are static compiler inputs. A non-null schema requires
+`payload`; `schema: null` forbids it. The runtime schema-validates and detaches
+the canonical frame before dispatch, and the effect resolves only when the
+configured host adapter accepts that frame. It returns `undefined`: there is no
+delivery receipt, correlation ID, handler result, retry guarantee, or local
+loopback.
+
+`ctx.emit` may be awaited directly or used as a fresh member of an awaited
+`ctx.parallel` group. It consumes the same execution effect budget, cancellation,
+redaction, and disposal boundary as fetch, config, secret, and KV effects. The
+JavaScript dispatch uses the execution-owned effect adapter. Native lowering
+emits the same canonical `event.emit` descriptor, suspends on the ordinary
+continuation protocol, and resumes after host acceptance; it adds no JavaScript,
+Promise, or Asyncify runtime. The Node provider has a bounded, invocation-scoped
+FIFO reference adapter for direct JavaScript/Native ingress and exact accepted
+frame evidence. Its outbound ledger never loops back into ingress, and its
+success still promises no delivery, persistence, retry, receipt, or public
+event-bus behavior. No other provider realization or automatic fallback is
+claimed.
+
+One-way acceptance is also the recursion boundary. Pulse exposes no
+`ctx.call`, generic request/reply effect, automatic local dispatch, or reserved
+call opcode. A future reflexive mechanism cannot be inferred from `ctx.emit`;
+it requires a separately specified host and lifecycle. See [Static events and
+outbound emission](../guides/events.md).
+
+## Dependencies split continuation stages
+
+When later control flow or a later host operation depends on an earlier result, the compiler creates another continuation stage. For example, inspecting a first response and choosing a second URL is dependent work; it cannot be moved into the first independent group.
+
+The rule is semantic rather than stylistic:
+
+- independent operations may share one group;
+- operations that need prior values start in a later continuation;
+- pure computation between effects stays in the continuation that owns it;
+- returning a final response completes the request lifecycle.
+
+Use `pulse inspect --json` to see the actual grouping rather than inferring it from line spacing.
+
+## Failure behavior
+
+An effect failure is normalized into a stable public error. Examples include:
+
+- [`PULSE_FETCH_TIMEOUT`](../reference/diagnostics.md#pulse-fetch-timeout);
+- [`PULSE_FETCH_NETWORK`](../reference/diagnostics.md#pulse-fetch-network);
+- [`PULSE_PROVIDER_CAPABILITY_UNSUPPORTED`](../reference/diagnostics.md#pulse-provider-capability-unsupported);
+- [`PULSE_FASTLY_BACKEND_REQUIRED`](../reference/diagnostics.md#pulse-fastly-backend-required).
+
+For an independent group, the runtime settles the group and reports the normalized failures through the owning continuation boundary. Userland does not receive partially live provider handles or background tasks that can outlive the request.
+
+## Timeouts have two scopes
+
+A fetch can have an operation timeout through `PulseFetchInit.timeoutMs`. The request runtime also owns a continuation lifetime configured by the execution environment or test case. These are different controls:
+
+- the operation timeout bounds one host operation;
+- the continuation TTL bounds how long compiled execution may remain suspended before resumption is rejected.
+
+Project tests can set `continuationTtlMs` in a case inside the dedicated `tests/pulse.harness.ts` module for deterministic failure coverage.
+
+## Managed async, not arbitrary async
+
+Write managed handlers with `async` and await trusted Pulse effects. On Native targets, the compiler erases that notation into effects and continuations. On JavaScript targets, the live runtime executes the same async-shaped handler normally.
+
+Arbitrary Promise construction, ambient asynchronous APIs, and unrecognized library awaits remain outside Native eligibility. They must not be mistaken for Pulse effects or silently trigger target fallback.
+
+This design keeps:
+
+- effects visible to the compiler;
+- provider capability checks complete before execution;
+- failures and timeouts normalized;
+- request completion bounded;
+- Node and Fastly behavior comparable.
+
+## Inspect and test the lifecycle
+
+A useful workflow is:
+
+```bash
+pulse inspect ./my-app --json
+pulse test ./my-app --json
+```
+
+`inspect` proves compilation, effects, grouping, continuations, and provider lowering without executing application test cases. `test` executes configured cases through the selected provider’s local conformance runtime.
+
+## Related documentation
+
+- [Managed handler TypeScript and JavaScript](../reference/handler-authoring.md)
+- [Provider and target compatibility](../reference/compatibility-matrix.md)
+- [Compilation and lowering](./compilation-and-lowering.md)
+- [Structured and opaque bodies](./bodies.md)
+- [Fetching and composing data](../guides/fetching-and-composition.md)
+- [Project configuration](../reference/project-config.md)
+- [Troubleshooting](../guides/troubleshooting.md)

@@ -1,0 +1,75 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.jwt",
+  "npmPackage": "@pulse-compute/jwt",
+  "description": "Bounded, provider-neutral JWT verification.",
+  "authoring": {
+    "namespace": "jwt",
+    "import": "@pulse-compute/jwt",
+    "symbols": [
+      "bearer",
+      "verify"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "jwt",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "jwt",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_PACKAGE_COMPOSITION_HELPER_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/jwt",
+      "providerRequirements": [
+        "jwt.verify",
+        "jwt.verify.hs256",
+        "jwt.verify.es256",
+        "secret.get",
+        "time.wall-clock"
+      ],
+      "reasonCode": "PULSE_JWT_TARGET_CAPABILITY_REQUIRED"
+    },
+    "javascript": {
+      "status": "provider-dependent",
+      "realization": "javascript-package-runtime",
+      "entry": "./dist/index.js",
+      "providerRequirements": [
+        "jwt.verify",
+        "jwt.verify.hs256",
+        "jwt.verify.es256",
+        "secret.get",
+        "time.wall-clock"
+      ],
+      "reasonCode": "PULSE_JWT_PROVIDER_CAPABILITY_REQUIRED"
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "target-overlap",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "jwt.bearer",
+      "jwt.verify"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

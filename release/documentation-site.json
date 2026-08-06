@@ -1,0 +1,661 @@
+{
+  "schemaVersion": "pulse.public-site.v1",
+  "releaseVersion": "1.0.0-beta.1",
+  "product": {
+    "name": "Pulse",
+    "eyebrow": "TypeScript in / inspectable Wasm out",
+    "headline": "Portable without pretending every host is the same.",
+    "summary": "Write routing, middleware, schemas, state, config, and capabilities through one explicit context. Pulse shows exactly what lowers to provider-neutral Native Wasm and refuses hidden fallback.",
+    "description": "Start with readable async-shaped TypeScript, inspect the exact execution plan, and choose Native or JavaScript deliberately."
+  },
+  "documents": {
+    "documentation": {
+      "source": "docs/README.md",
+      "label": "Documentation"
+    },
+    "getting-started": {
+      "source": "docs/getting-started.md",
+      "label": "Get started"
+    },
+    "project-lifecycle": {
+      "source": "docs/guides/project-lifecycle.md",
+      "label": "Project lifecycle"
+    },
+    "express-migration": {
+      "source": "docs/guides/migrating-from-express.md",
+      "label": "Migrate from Express"
+    },
+    "json-schemas": {
+      "source": "docs/guides/json-schemas.md",
+      "label": "Explicit JSON schemas"
+    },
+    "body-ownership": {
+      "source": "docs/concepts/bodies.md",
+      "label": "Structured and opaque bodies"
+    },
+    "handler-authoring": {
+      "source": "docs/reference/handler-authoring.md",
+      "label": "Managed handler language"
+    },
+    "compatibility-matrix": {
+      "source": "docs/reference/compatibility-matrix.md",
+      "label": "Compatibility matrix"
+    },
+    "node-deployment": {
+      "source": "docs/guides/deploying-node.md",
+      "label": "Node build and execution"
+    },
+    "fastly-deployment": {
+      "source": "docs/guides/deploying-fastly.md",
+      "label": "Fastly deployment candidates"
+    },
+    "examples": {
+      "source": "docs/examples.md",
+      "label": "Examples"
+    },
+    "compilation-and-lowering": {
+      "source": "docs/concepts/compilation-and-lowering.md",
+      "label": "Compilation and lowering"
+    },
+    "effects-and-continuations": {
+      "source": "docs/concepts/effects-and-continuations.md",
+      "label": "Effects and continuations"
+    },
+    "contracts-and-providers": {
+      "source": "docs/concepts/contracts-and-providers.md",
+      "label": "Contracts and providers"
+    },
+    "targets-and-hosts": {
+      "source": "docs/concepts/targets-and-hosts.md",
+      "label": "Targets and host work"
+    },
+    "entities-and-adapters": {
+      "source": "docs/concepts/entities-and-adapters.md",
+      "label": "Entities and adapters"
+    },
+    "cli-reference": {
+      "source": "docs/reference/cli.md",
+      "label": "CLI reference"
+    },
+    "api-reference": {
+      "source": "API.md",
+      "label": "API reference"
+    },
+    "packages": {
+      "source": "docs/packages/README.md",
+      "label": "Packages"
+    },
+    "crypto-package": {
+      "source": "docs/packages/crypto.md",
+      "label": "Crypto"
+    },
+    "jwt-package": {
+      "source": "docs/packages/jwt.md",
+      "label": "JWT"
+    },
+    "entities-package": {
+      "source": "docs/packages/entities.md",
+      "label": "Entities"
+    },
+    "architecture": {
+      "source": "docs/architecture/overview.md",
+      "label": "Architecture"
+    },
+    "contributing": {
+      "source": "docs/contributing/README.md",
+      "label": "Contributing"
+    },
+    "pulse-aware-packages": {
+      "source": "docs/contributing/pulse-aware-packages.md",
+      "label": "Pulse-aware packages"
+    },
+    "package-lowerer-contract": {
+      "source": "docs/contributing/package-lowerer-contract.md",
+      "label": "Package lowerer contract"
+    },
+    "entities-lowering": {
+      "source": "docs/contributing/entities-lowering.md",
+      "label": "Entities lowering"
+    },
+    "reference": {
+      "source": "docs/reference/README.md",
+      "label": "Reference"
+    },
+    "maintainers": {
+      "source": "docs/maintainers/README.md",
+      "label": "Maintainers"
+    },
+    "npm-publishing": {
+      "source": "docs/maintainers/npm-publishing.md",
+      "label": "npm publishing"
+    },
+    "documentation-deployment": {
+      "source": "docs/maintainers/documentation-deployment.md",
+      "label": "Documentation deployment"
+    },
+    "routing": {
+      "source": "docs/guides/routing.md",
+      "label": "Routing"
+    },
+    "preview-scope": {
+      "source": "docs/preview-scope.md",
+      "label": "Beta scope"
+    }
+  },
+  "sourceAliases": {
+    "examples/README.md": "docs/examples.md"
+  },
+  "routeAliases": {
+    "alpha-scope": "preview-scope"
+  },
+  "header": {
+    "navigation": [
+      {
+        "label": "Docs",
+        "document": "documentation"
+      },
+      {
+        "label": "Examples",
+        "document": "examples"
+      },
+      {
+        "label": "Concepts",
+        "document": "compilation-and-lowering"
+      },
+      {
+        "label": "GitHub",
+        "repository": "web"
+      }
+    ]
+  },
+  "navigation": {
+    "sections": [
+      {
+        "id": "start",
+        "label": "Start",
+        "order": 10,
+        "searchPriority": 6,
+        "defaultOpen": true,
+        "sources": [
+          "docs/README.md",
+          "docs/getting-started.md",
+          "docs/preview-scope.md",
+          "README.md",
+          "CHANGELOG.md"
+        ]
+      },
+      {
+        "id": "examples",
+        "label": "Examples",
+        "order": 20,
+        "searchPriority": 6,
+        "defaultOpen": true,
+        "sources": [
+          "docs/examples.md"
+        ],
+        "prefixes": [
+          "examples/"
+        ]
+      },
+      {
+        "id": "guides",
+        "label": "Guides",
+        "order": 30,
+        "searchPriority": 6,
+        "prefixes": [
+          "docs/guides/"
+        ]
+      },
+      {
+        "id": "concepts",
+        "label": "Concepts",
+        "order": 40,
+        "searchPriority": 4,
+        "sources": [
+          "docs/architecture/overview.md",
+          "docs/architecture/current-contracts.md",
+          "docs/architecture/vision.md"
+        ],
+        "prefixes": [
+          "docs/concepts/"
+        ]
+      },
+      {
+        "id": "packages",
+        "label": "Packages",
+        "order": 50,
+        "searchPriority": 4,
+        "prefixes": [
+          "docs/packages/"
+        ]
+      },
+      {
+        "id": "reference",
+        "label": "Reference",
+        "order": 60,
+        "searchPriority": 4,
+        "sources": [
+          "API.md"
+        ],
+        "prefixes": [
+          "docs/reference/"
+        ]
+      },
+      {
+        "id": "authors",
+        "label": "Authors and contributors",
+        "order": 70,
+        "searchPriority": 1,
+        "prefixes": [
+          "docs/contributing/"
+        ]
+      },
+      {
+        "id": "maintainers",
+        "label": "Maintainers",
+        "order": 80,
+        "searchPriority": 0,
+        "hiddenInNavigation": true,
+        "hiddenInSearch": true,
+        "prefixes": [
+          "docs/maintainers/"
+        ]
+      }
+    ],
+    "overrides": {
+      "docs/README.md": {
+        "title": "Overview",
+        "order": 0
+      },
+      "docs/getting-started.md": {
+        "order": 10
+      },
+      "docs/examples.md": {
+        "order": 20
+      },
+      "docs/preview-scope.md": {
+        "order": 30
+      },
+      "docs/guides/project-lifecycle.md": {
+        "order": 0
+      },
+      "docs/guides/migrating-from-express.md": {
+        "order": 5
+      },
+      "docs/guides/fetching-and-composition.md": {
+        "order": 10
+      },
+      "docs/guides/json-schemas.md": {
+        "order": 20
+      },
+    "docs/guides/routing.md": {
+      "order": 30
+    },
+    "docs/guides/events.md": {
+      "order": 35
+    },
+      "docs/guides/deploying-node.md": {
+        "order": 40
+      },
+      "docs/guides/deploying-fastly.md": {
+        "order": 50
+      },
+      "docs/guides/fastly-capabilities.md": {
+        "order": 60
+      },
+      "docs/guides/grip.md": {
+        "order": 70
+      },
+      "docs/guides/compatibility-imports.md": {
+        "order": 80
+      },
+      "docs/guides/troubleshooting.md": {
+        "order": 90
+      },
+      "docs/architecture/overview.md": {
+        "order": 0
+      },
+      "docs/architecture/current-contracts.md": {
+        "order": 5
+      },
+      "docs/architecture/vision.md": {
+        "order": 8
+      },
+      "docs/concepts/compilation-and-lowering.md": {
+        "order": 10
+      },
+      "docs/concepts/effects-and-continuations.md": {
+        "order": 20
+      },
+      "docs/concepts/bodies.md": {
+        "order": 30
+      },
+      "docs/concepts/contracts-and-providers.md": {
+        "order": 40
+      },
+      "docs/concepts/targets-and-hosts.md": {
+        "order": 45
+      },
+      "docs/concepts/package-owned-lowering.md": {
+        "order": 50
+      },
+      "docs/concepts/entities-and-adapters.md": {
+        "order": 60
+      },
+      "docs/packages/README.md": {
+        "title": "Package overview",
+        "order": 0
+      },
+      "docs/packages/pulse.md": {
+        "order": 10
+      },
+      "docs/packages/runtime.md": {
+        "order": 20
+      },
+      "docs/packages/cli.md": {
+        "order": 30
+      },
+      "docs/packages/provider-fastly.md": {
+        "order": 40
+      },
+      "docs/packages/grip.md": {
+        "order": 50
+      },
+      "docs/packages/assets.md": {
+        "order": 60
+      },
+      "docs/packages/crypto.md": {
+        "order": 62
+      },
+      "docs/packages/jwt.md": {
+        "order": 64
+      },
+      "docs/packages/entities.md": {
+        "order": 66
+      },
+      "docs/packages/implementation-packages.md": {
+        "order": 70
+      },
+      "docs/reference/README.md": {
+        "title": "Reference overview",
+        "order": 0
+      },
+      "API.md": {
+        "order": 10
+      },
+      "docs/reference/handler-authoring.md": {
+        "order": 30
+      },
+      "docs/reference/compatibility-matrix.md": {
+        "order": 20
+      },
+      "docs/reference/cli.md": {
+        "order": 40
+      },
+      "docs/reference/project-config.md": {
+        "order": 50
+      },
+      "docs/reference/diagnostics.md": {
+        "order": 60
+      },
+      "docs/reference/environment.md": {
+        "order": 70
+      },
+      "docs/reference/shell-completion.md": {
+        "order": 80
+      },
+      "examples/01-hello-json/README.md": {
+        "order": 10
+      },
+      "examples/02-request-schema/README.md": {
+        "order": 20
+      },
+      "examples/03-fetch-composition/README.md": {
+        "order": 30
+      },
+      "examples/05-fastly-capabilities/README.md": {
+        "order": 50
+      },
+      "examples/07-opaque-proxy/README.md": {
+        "order": 70
+      },
+      "README.md": {
+        "title": "Repository overview",
+        "order": 0
+      },
+      "docs/contributing/README.md": {
+        "title": "Contributor overview",
+        "order": 10
+      },
+      "docs/contributing/pulse-aware-packages.md": {
+        "order": 11
+      },
+      "docs/contributing/adding-first-party-lowerer.md": {
+        "order": 12
+      },
+      "docs/contributing/package-lowerer-contract.md": {
+        "order": 13
+      },
+      "docs/contributing/entities-lowering.md": {
+        "order": 14
+      },
+      "docs/contributing/adding-core-provider.md": {
+        "order": 15
+      },
+      "examples/09-router-lowering/README.md": {
+        "order": 90
+      },
+    "examples/10-entities-tools/README.md": {
+      "order": 100
+    },
+      "examples/11-events/README.md": {
+        "order": 110
+      },
+      "examples/12-mcp-proxy/README.md": {
+        "order": 120
+      },
+      "examples/13-jwt-es256/README.md": {
+        "order": 130
+      },
+      "CHANGELOG.md": {
+        "title": "Changelog",
+        "order": 5
+      }
+    }
+  },
+  "homepage": {
+    "hero": {
+      "primaryAction": {
+        "label": "Explore the ctx API",
+        "document": "api-reference"
+      },
+      "secondaryAction": {
+        "label": "Get started",
+        "document": "getting-started"
+      },
+      "scopeAction": {
+        "label": "What the Beta supports",
+        "document": "preview-scope"
+      },
+      "terminal": [
+        "npm install --global @pulse-compute/cli@{{releaseVersion}}",
+        "pulse init ./my-app",
+        "cd ./my-app",
+        "npm install",
+        "pulse dev"
+      ]
+    },
+    "sections": [
+      {
+        "id": "router",
+        "type": "example",
+        "eyebrow": "Start with the application",
+        "title": "One Router. One explicit ctx surface. No host SDKs in your handlers.",
+        "body": "Request metadata, headers, route parameters, state, responses, and bounded effects all live on ctx. Native builds turn trusted awaits into explicit effects and continuations without adding a Promise runtime.",
+        "codeLabel": "app.ts",
+        "language": "ts",
+        "code": [
+          "import { Router } from '@pulse-compute/runtime'",
+          "",
+          "const app = new Router()",
+          "",
+          "app.use(async (ctx, next) => {",
+          "  if (!ctx.req.header('authorization')) {",
+          "    return ctx.json({ error: 'unauthorized' }, { status: 401 })",
+          "  }",
+          "",
+          "  return next()",
+          "})",
+          "",
+          "app.get('/users/:id', async (ctx) => {",
+          "  const id = ctx.param('id')",
+          "  const user = await ctx.fetch('https://users.example.test/users/' + id).json()",
+          "",
+          "  return ctx.json({ id, user })",
+          "})",
+          "",
+          "export default app"
+        ],
+        "points": [
+          {
+            "title": "Context is the boundary",
+            "body": "Read headers and route parameters, carry invocation state, and construct responses through one documented API."
+          },
+          {
+            "title": "Consequential work stays visible",
+            "body": "Network, storage, config, secrets, and outbound events are explicit effects that inspect can report."
+          },
+          {
+            "title": "Targets never change silently",
+            "body": "Unsupported Native source fails at the exact boundary; Pulse does not switch the application to JavaScript."
+          }
+        ],
+        "action": {
+          "label": "Explore the context API",
+          "document": "api-reference"
+        }
+      },
+      {
+        "id": "path",
+        "type": "journey",
+        "eyebrow": "A gradual path",
+        "title": "Start with readable TypeScript. Tighten only what you choose.",
+        "body": "Pulse gives routing, schemas, host capabilities, and target selection separate homes. You can adopt the contract first, inspect the boundary, and move eligible paths to Native without rewriting the service shape.",
+        "stages": [
+          {
+            "label": "Structure the application",
+            "detail": "Router, terminal middleware, config, assets, and capabilities follow one set of patterns."
+          },
+          {
+            "label": "See the boundary",
+            "detail": "Inspect effects, schemas, and unsupported source before deployment."
+          },
+          {
+            "label": "Choose deliberately",
+            "detail": "Build the target you configured; Pulse never changes it behind your back."
+          },
+          {
+            "label": "Refine over time",
+            "detail": "Replace opaque dependencies with trusted effects and regain native eligibility."
+          }
+        ],
+        "action": {
+          "label": "Understand the architecture",
+          "document": "architecture"
+        }
+      },
+      {
+        "id": "contract",
+        "type": "contract",
+        "eyebrow": "Less friction later",
+        "title": "Keep deployment decisions out of application code.",
+        "body": "Profiles and capability packages contain environment-specific mechanics. Route and event code consume the stable contract, so changing a host realization does not require branching through the application.",
+        "constraints": [
+          {
+            "title": "One application shape",
+            "body": "Routing, middleware, responses, assets, and capabilities use consistent patterns."
+          },
+          {
+            "title": "Explicit host work",
+            "body": "Config, secrets, storage, and network access are visible instead of ambient."
+          },
+          {
+            "title": "Contained environment logic",
+            "body": "Profiles select realizations; application code consumes capabilities rather than branching on deployment."
+          },
+          {
+            "title": "Honest failure",
+            "body": "When a target cannot lower something, Pulse points to the exact boundary instead of quietly changing execution."
+          }
+        ],
+        "action": {
+          "label": "Read the contract model",
+          "document": "contracts-and-providers"
+        }
+      },
+      {
+        "id": "inspect",
+        "type": "inspect",
+        "eyebrow": "Under the hood",
+        "title": "See the exact program Pulse will build.",
+        "body": "pulse inspect reports routes, schemas, capabilities, effects, continuations, target eligibility, and the selected plan before deployment. The evidence is optional during ordinary work and precise when a boundary matters.",
+        "fixture": "docs/fixtures/inspect-fetch-composition.selected.json",
+        "command": "pulse inspect --json",
+        "action": {
+          "label": "Open the CLI reference",
+          "document": "cli-reference"
+        }
+      },
+      {
+        "id": "scope",
+        "type": "scope",
+        "eyebrow": "Beta",
+        "title": "Four proven execution modes. One conformance contract.",
+        "body": "Node and Fastly each execute explicit Native and JavaScript targets through one four-mode conformance corpus. ESP32 and browser event conformity remain clearly labeled forward host work.",
+        "supported": [
+          "Router, terminal middleware, schemas, and core capabilities",
+          "Compact provider-neutral Native Wasm and deployable Fastly Wasm",
+          "Explicit Node and Fastly JavaScript execution and packaging",
+          "Synchronous thresholded logging with host-owned output",
+          "Local development, offline candidates, and verified native-host execution",
+          "Stable diagnostics, versioned documentation, and release tooling"
+        ],
+        "excluded": [
+          "Automatic fallback or hidden target changes",
+          "General Promise semantics in native builds",
+          "Arbitrary host SDK access inside application code",
+          "Third-party lowerers or hosts without an explicit contract"
+        ],
+        "action": {
+          "label": "See current and forward targets",
+          "document": "targets-and-hosts"
+        }
+      }
+    ],
+    "footer": {
+      "line": "Write the service. Inspect the boundary.",
+      "links": [
+        {
+          "label": "Documentation",
+          "document": "documentation"
+        },
+        {
+          "label": "API",
+          "document": "api-reference"
+        },
+        {
+          "label": "Packages",
+          "document": "packages"
+        },
+        {
+          "label": "Contributing",
+          "document": "contributing"
+        },
+        {
+          "label": "Reference",
+          "document": "reference"
+        }
+      ]
+    }
+  }
+}

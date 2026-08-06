@@ -1,0 +1,78 @@
+name: Supported-behavior defect
+description: Report behavior that contradicts the documented or tested alpha contract.
+title: "[defect] "
+labels:
+  - type:defect
+  - status:needs-reproduction
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping harden Pulse. Do not include secrets or security-sensitive exploit details here; use the private security link in the issue chooser.
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Affected surface
+      options:
+        - Compiler or lowering
+        - CLI or project configuration
+        - Node execution
+        - Fastly provider or build
+        - Package-owned assets or GRIP lowering
+        - Packaging or installation
+        - Documentation example
+        - Other supported behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Exact Pulse version
+      placeholder: 1.0.0-beta.1
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, architecture, Node version, package manager, and provider target.
+      placeholder: macOS arm64, Node 24.x, npm 11.x, provider fastly
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and diagnostic
+      description: Include the exact command, exit code, stable PULSE_* diagnostic, and relevant output. Redact secrets.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Link a minimal public project or paste the smallest handler/configuration that reproduces the failure.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected contract
+      description: Link the documentation, example, test, or previous behavior that defines what should happen.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: Observed behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, private URLs, customer data, and proprietary source.
+          required: true
+        - label: I checked that this behavior is inside the documented alpha scope.
+          required: true

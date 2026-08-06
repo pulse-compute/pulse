@@ -1,0 +1,262 @@
+name: Codex maintainer review
+
+on:
+  workflow_dispatch:
+    inputs:
+      pull_request:
+        description: Pull-request number to review
+        required: true
+        type: string
+      focus:
+        description: Optional trusted-maintainer focus for this review
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: codex-maintainer-review-${{ inputs.pull_request }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    name: read-only policy review
+    if: github.ref_name == github.event.repository.default_branch
+    environment: codex-maintainer
+    permissions:
+      contents: read
+      pull-requests: read
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      report: ${{ steps.codex.outputs.final-message }}
+    steps:
+      - name: Validate pull-request number
+        shell: bash
+        env:
+          PULL_REQUEST: ${{ inputs.pull_request }}
+        run: |
+          [[ "$PULL_REQUEST" =~ ^[1-9][0-9]*$ ]] || {
+            echo "pull_request must be a positive integer" >&2
+            exit 2
+          }
+      - name: Check out pull-request merge commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: refs/pull/${{ inputs.pull_request }}/merge
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24'
+      - name: Materialize trusted base checkout and untrusted review data
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PULL_REQUEST: ${{ inputs.pull_request }}
+          REVIEW_FOCUS: ${{ inputs.focus }}
+        run: |
+          set -euo pipefail
+          rm -rf -- .pulse-maintainer-bootstrap .pulse-maintainer-trusted
+          mkdir -p .pulse-maintainer-bootstrap
+
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST}" > .pulse-maintainer-bootstrap/pull-request.json
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { execFileSync } = require('node:child_process');
+          const pr = JSON.parse(fs.readFileSync('.pulse-maintainer-bootstrap/pull-request.json', 'utf8'));
+          const base = execFileSync('git', ['rev-parse', 'HEAD^1'], { encoding: 'utf8' }).trim();
+          const head = execFileSync('git', ['rev-parse', 'HEAD^2'], { encoding: 'utf8' }).trim();
+          const merge = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          if (pr.base?.repo?.full_name !== process.env.GITHUB_REPOSITORY) {
+            throw new Error(`pull request targets ${pr.base?.repo?.full_name || 'an unknown repository'}`);
+          }
+          if (base !== pr.base.sha || head !== pr.head.sha) {
+            throw new Error(`merge-ref parents do not match pull request: ${base}/${head}`);
+          }
+          const event = {
+            action: 'workflow_dispatch',
+            pull_request: {
+              number: Number(pr.number),
+              body: String(pr.body || ''),
+              base: { sha: base },
+              head: { sha: head }
+            }
+          };
+          const metadata = {
+            schemaVersion: 'pulse.codex-review-input.v1',
+            number: Number(pr.number),
+            title: String(pr.title || ''),
+            author: String(pr.user?.login || ''),
+            base,
+            head,
+            merge,
+            baseRef: String(pr.base?.ref || ''),
+            headRef: String(pr.head?.ref || ''),
+            draft: Boolean(pr.draft),
+            focus: process.env.REVIEW_FOCUS || null
+          };
+          fs.writeFileSync('.pulse-maintainer-bootstrap/event.json', `${JSON.stringify(event, null, 2)}\n`);
+          fs.writeFileSync('.pulse-maintainer-bootstrap/pr-body.md', `${pr.body || ''}\n`);
+          fs.writeFileSync('.pulse-maintainer-bootstrap/pr-metadata.json', `${JSON.stringify(metadata, null, 2)}\n`);
+          fs.writeFileSync('.pulse-maintainer-bootstrap/range.env', `BASE=${base}\nHEAD=${head}\nMERGE=${merge}\n`);
+          NODE
+
+          source .pulse-maintainer-bootstrap/range.env
+          git diff --name-only --diff-filter=ACMRDTUXB -z "$BASE...$HEAD" > .pulse-maintainer-bootstrap/changed-files.z
+
+          git clone --quiet --no-checkout --no-hardlinks . .pulse-maintainer-trusted
+          git -C .pulse-maintainer-trusted checkout --quiet --detach "$BASE"
+          git -C .pulse-maintainer-trusted update-ref refs/pulse-review/base "$BASE"
+          git -C .pulse-maintainer-trusted update-ref refs/pulse-review/head "$HEAD"
+          git -C .pulse-maintainer-trusted update-ref refs/pulse-review/merge "$MERGE"
+          git -C .pulse-maintainer-trusted remote remove origin
+
+          mkdir -p .pulse-maintainer-trusted/.pulse-maintainer-review
+          cp .pulse-maintainer-bootstrap/event.json .pulse-maintainer-trusted/.pulse-maintainer-review/event.json
+          cp .pulse-maintainer-bootstrap/pr-body.md .pulse-maintainer-trusted/.pulse-maintainer-review/pr-body.md
+          cp .pulse-maintainer-bootstrap/pr-metadata.json .pulse-maintainer-trusted/.pulse-maintainer-review/pr-metadata.json
+          cp .pulse-maintainer-bootstrap/changed-files.z .pulse-maintainer-trusted/.pulse-maintainer-review/changed-files.z
+
+          # Leave only the trusted checkout in the outer Actions workspace. The
+          # proposed tree remains available as Git objects under local review refs.
+          find . -mindepth 1 -maxdepth 1 ! -name '.pulse-maintainer-trusted' -exec rm -rf -- {} +
+      - name: Build deterministic scope report from trusted base policy
+        shell: bash
+        working-directory: .pulse-maintainer-trusted
+        run: |
+          set -euo pipefail
+          node scripts/maintainer-scope.cjs \
+            --event .pulse-maintainer-review/event.json \
+            --changed-files0-file .pulse-maintainer-review/changed-files.z \
+            --check \
+            --no-github \
+            --json-out .pulse-maintainer-review/scope-report.json \
+            --markdown-out .pulse-maintainer-review/scope-report.md
+      - name: Run Codex resident-maintainer review
+        id: codex
+        uses: openai/codex-action@52fe01ec70a42f454c9d2ebd47598f9fd6893d56 # v1.11
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          working-directory: .pulse-maintainer-trusted
+          prompt-file: .pulse-maintainer-trusted/.github/codex/prompts/pull-request-review.md
+          output-schema-file: .pulse-maintainer-trusted/.github/codex/schemas/maintainer-review.schema.json
+          permission-profile: ':read-only'
+          safety-strategy: drop-sudo
+
+  post:
+    name: post structured review
+    if: needs.review.result == 'success' && needs.review.outputs.report != ''
+    needs: review
+    permissions:
+      issues: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Update maintainer review comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PULL_REQUEST: ${{ inputs.pull_request }}
+          CODEX_REPORT: ${{ needs.review.outputs.report }}
+        with:
+          script: |
+            const marker = '<!-- pulse-codex-maintainer-review -->';
+            let report;
+            try {
+              report = JSON.parse(process.env.CODEX_REPORT || '{}');
+            } catch (error) {
+              core.setFailed(`Codex output was not JSON: ${error.message}`);
+              return;
+            }
+            if (report.schemaVersion !== 'pulse.maintainer-review.v1') {
+              core.setFailed('Codex output did not use pulse.maintainer-review.v1');
+              return;
+            }
+            const plain = (value) => String(value ?? '')
+              .replace(/[\u0000-\u001f\u007f]/g, ' ')
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/@/g, '@\u200b')
+              .replace(/([\\`*_[\]{}()#+.!|>])/g, '\\$1')
+              .replace(/\s+/g, ' ')
+              .trim();
+            const inline = (value) => `\`${String(value ?? '')
+              .replace(/[\u0000-\u001f\u007f]/g, ' ')
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/@/g, '@\u200b')
+              .replace(/`/g, '\\`')
+              .replace(/\|/g, '\\|')
+              .trim()}\``;
+            const findings = Array.isArray(report.findings) ? report.findings : [];
+            const evidence = Array.isArray(report.evidence) ? report.evidence : [];
+            const boundaries = Array.isArray(report.protectedBoundaries) ? report.protectedBoundaries : [];
+            const checks = Array.isArray(report.requiredChecks) ? report.requiredChecks : [];
+            const lines = [
+              marker,
+              '## Codex resident-maintainer review',
+              '',
+              plain(report.summary),
+              '',
+              '| Signal | Result |',
+              '|---|---|',
+              `| Classification | ${inline(report.classification)} |`,
+              `| Scope | ${inline(report.scope)} |`,
+              `| Scope status | ${inline(report.scopeStatus)} |`,
+              `| Risk | ${inline(report.risk)} |`,
+              `| Human decision | ${report.humanDecisionRequired ? 'Required' : 'Not required'} |`,
+              `| Recommendation | ${inline(report.implementationRecommendation)} |`,
+              `| Confidence | ${inline(report.confidence)} |`,
+              `| Protected boundaries | ${boundaries.length ? boundaries.map(inline).join(', ') : 'None'} |`,
+              `| Required checks | ${checks.length ? checks.map(inline).join(', ') : 'None'} |`,
+              ''
+            ];
+            if (findings.length) {
+              lines.push('### Findings', '');
+              for (const finding of findings) {
+                lines.push(`- **${inline(finding.severity)} ${plain(finding.title)}** — ${plain(finding.detail)}`);
+                lines.push(`  - Evidence: ${plain(finding.evidence)}`);
+              }
+              lines.push('');
+            } else {
+              lines.push('### Findings', '', 'No concrete P0–P3 findings were reported.', '');
+            }
+            if (evidence.length) {
+              lines.push('### Evidence reviewed', '');
+              for (const item of evidence) lines.push(`- ${plain(item)}`);
+              lines.push('');
+            }
+            lines.push('_Advisory review only. Deterministic checks, CODEOWNER approval, human merge authority, and release gates remain authoritative._', '');
+            const body = lines.join('\n');
+            const number = Number(process.env.PULL_REQUEST);
+            if (!Number.isInteger(number) || number < 1) {
+              core.setFailed('Invalid pull-request number');
+              return;
+            }
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: number,
+              per_page: 100
+            });
+            const existing = comments.find((comment) => comment.body && comment.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: number,
+                body
+              });
+            }

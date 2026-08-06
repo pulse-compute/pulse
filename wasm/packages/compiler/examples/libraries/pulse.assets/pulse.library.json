@@ -1,0 +1,17 @@
+{
+  "version": "pulsewasm.library-contract.v1",
+  "package": "pulse.assets",
+  "modes": {
+    "typescript": { "entry": "./dist/index.js" },
+    "jsEngine": { "entry": "./dist/index.js" },
+    "wasm": {
+      "mode": "wasm-sidecar",
+      "sidecar": "./as/index.as.ts",
+      "lowerings": [
+        { "tsSymbol": "assets.lookup", "asSymbol": "pulse_assets_lookup", "callShape": "literal-store-path", "hostCapabilities": ["assets", "headers", "result"] },
+        { "tsSymbol": "assets.respond", "asSymbol": "pulse_assets_respond", "callShape": "asset-handle", "hostCapabilities": ["assets", "headers", "result", "body"] }
+      ],
+      "hostCapabilities": ["assets", "headers", "result", "body", "clock"]
+    }
+  }
+}

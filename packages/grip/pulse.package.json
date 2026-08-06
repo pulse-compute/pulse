@@ -1,0 +1,73 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.grip",
+  "npmPackage": "@pulse-compute/grip",
+  "description": "Stateless GRIP/Fanout HTTP framing and request-bound broadcast package.",
+  "authoring": {
+    "namespace": "grip",
+    "import": "@pulse-compute/grip",
+    "symbols": [
+      "broadcast",
+      "handoff",
+      "isWebSocket",
+      "subscribe"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "grip",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "grip",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_PACKAGE_COMPOSITION_HELPER_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/grip",
+      "providerRequirements": [
+        "broadcaster",
+        "channel",
+        "clock",
+        "headers"
+      ],
+      "reasonCode": "PULSE_GRIP_PROVIDER_CONFIGURATION_REQUIRED"
+    },
+    "javascript": {
+      "status": "supported",
+      "realization": "javascript-package-runtime",
+      "entry": "./dist/index.js",
+      "providerRequirements": [
+        "grip.broadcast"
+      ]
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "target-overlap",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "grip.broadcast",
+      "grip.handoff",
+      "grip.isWebSocket",
+      "grip.subscribe"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

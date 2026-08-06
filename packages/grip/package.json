@@ -1,0 +1,68 @@
+{
+  "name": "@pulse-compute/grip",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Package-owned GRIP/Fanout lowering facade and compiler integration for Pulse.",
+  "type": "module",
+  "exports": {
+    "./pulsewasm": {
+      "types": "./dist/pulsewasm.d.ts",
+      "import": "./dist/pulsewasm.js"
+    },
+    "./pulsewasm/manifest": {
+      "require": "./pulsewasm.manifest.cjs",
+      "default": "./pulsewasm.manifest.cjs"
+    },
+    "./pulsewasm/compiler": {
+      "require": "./pulsewasm.compiler.cjs",
+      "default": "./pulsewasm.compiler.cjs"
+    },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "test": "vitest run --root ../.. --config ../../vitest.config.ts packages/grip/test/**/*.test.ts"
+  },
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "pulse.package.json",
+    "grip.framing-contract.json",
+    "pulsewasm.manifest.cjs",
+    "pulsewasm.compiler.cjs",
+    "as",
+    "conformance"
+  ],
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/grip"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/grip/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "dependencies": {
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*"
+  },
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts"
+}

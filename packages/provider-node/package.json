@@ -1,0 +1,68 @@
+{
+  "name": "@pulse-compute/provider-node",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Node-specific Pulse provider adapter, local runtime, and package-owned builders.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./compiler": "./src/compiler/index.js",
+    "./compiler/node-adapter": "./src/compiler/node-adapter.js",
+    "./compiler/assets-provider-proof": "./src/compiler/assets-provider-proof.js",
+    "./compiler/node-compiled-wasm-assets-lifecycle-proof": "./src/compiler/node-compiled-wasm-assets-lifecycle-proof.js",
+    "./compiler/route-handler-effect-proof": "./src/compiler/route-handler-effect-proof.js",
+    "./compiler/route-handler-live-origin-proof": "./src/compiler/route-handler-live-origin-proof.js",
+    "./compiler/route-handler-compiled-wasm-bridge": "./src/compiler/route-handler-compiled-wasm-bridge.js",
+    "./compiler/request-json-body-proof": "./src/compiler/request-json-body-proof.js",
+    "./runtime": "./src/runtime/index.js",
+    "./runtime/compiled-wasm-node-adapter-kv": "./src/runtime/compiled-wasm-node-adapter-kv.js",
+    "./runtime/assets-provider": "./src/runtime/assets-provider.js",
+    "./runtime/route-handler-effects": "./src/runtime/route-handler-effects.js",
+    "./compiler/schema-decode-result-proof": "./src/compiler/schema-decode-result-proof.js",
+    "./compiler/schema-response-codec-proof": "./src/compiler/schema-response-codec-proof.js",
+    "./compiler/backend-json-request-body-proof": "./src/compiler/backend-json-request-body-proof.js",
+    "./runtime/canonical-api-runtime": "./src/runtime/canonical-api-runtime.js",
+    "./native/target": "./src/native/target.js",
+    "./toolchain": "./src/toolchain.js",
+    "./javascript/target": "./src/javascript/target.js",
+    "./javascript/runtime-host": "./src/javascript/runtime-host.js",
+    "./javascript/bindings-adapter": "./src/javascript/bindings-adapter.js",
+    "./javascript/node-adapter": "./src/javascript/node-adapter.js",
+    "./javascript/lifecycle": "./src/javascript/lifecycle.js",
+    "./javascript/test-runtime": "./src/javascript/test-runtime.js",
+    "./javascript/support": "./src/javascript/support.js",
+    "./javascript/target-support-policy": "./src/javascript/target-support-policy.js",
+    "./javascript/package-effects": "./src/javascript/package-effects.js",
+    "./javascript/jwt-verifier": "./src/javascript/jwt-verifier.js",
+    "./javascript/grip-broadcast": "./src/javascript/grip-broadcast.js",
+    "./javascript/source-package": "./src/javascript/source-package.js"
+  },
+  "dependencies": {
+    "@pulse-compute/crypto": "workspace:*",
+    "@pulse-compute/jwt": "workspace:*",
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/wasm-host-runtime": "workspace:*",
+    "@pulse-compute/runtime": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/provider-node"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

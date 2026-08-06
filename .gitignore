@@ -1,0 +1,51 @@
+node_modules
+.pnpm-store
+packages/*/dist
+packages/*/*.tsbuildinfo
+test/.vitest
+wasm/node_modules
+wasm/*.tsbuildinfo
+wasm/packages/*/dist
+wasm/packages/*/*.tsbuildinfo
+wasm/packages/*/node_modules
+npm-candidate-verification.json
+
+# Ephemeral PulseWasm test reports
+wasm/.test-results/
+**/.pulse/guests/
+
+# Compiler smoke tests must remain disposable
+wasm/artifacts-test-*/
+wasm/artifacts/
+# Repository-root artifacts are not a supported output location
+/artifacts/
+
+# Portable dependency/cache tooling is distributed separately
+.cache/
+.validation-tools/
+.pulse-dependency-bundle.json
+.pulse-deps-stage.*/
+.pulse-deps-restore.*/
+.pulse-pnpm-tool.*/
+.pulse-pnpm-fetch.*/
+pulse-deps-*.tar.zst
+pulse-deps-*.tar.zst.sha256
+
+# Project-local Fastly smoke output
+.pulse-fastly-smoke/
+.pulse-release/
+**/.pulse-release/
+
+# Generated hosted documentation artifacts
+.pulse-docs-site/
+.pulse-docs-preview/
+
+# Sealed publication and production-deployment candidates
+.pulse-publication/
+.pulse-documentation-deployment/
+.pulse-documentation-preview/
+.pulse-release-preflight/
+.pulse-release-preparation/
+
+# Documentation example build output
+.pulse-docs-build/

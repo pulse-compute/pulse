@@ -1,0 +1,18 @@
+[build]
+target = "wasm32v1-none"
+
+[target.wasm32v1-none]
+rustflags = [
+  "-C",
+  "link-arg=--import-memory",
+  "-C",
+  "link-arg=--initial-memory=2097152",
+  "-C",
+  "link-arg=--max-memory=2097152",
+  "-C",
+  "link-arg=--stack-first",
+  "-C",
+  "link-arg=-zstack-size=65536",
+  "-C",
+  "link-arg=--global-base=131072",
+]

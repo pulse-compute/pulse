@@ -1,0 +1,971 @@
+{
+  "version": "pulse.guest-link-contract-design.v1",
+  "status": "accepted-for-b1",
+  "decisionBinding": {
+    "version": "pulse.guest-link-poc.phase-a-decision.v1",
+    "file": "wasm/.test-results/guest-link-a4/guest-link-poc-decision.md",
+    "sha256": "2339a9843ed7531a6b62f1773b554963beacc7979cb63a57ee72d803706675aa",
+    "decision": "PASS",
+    "nextAuthorizedUnit": "B0"
+  },
+  "boundaries": {
+    "visibility": "internal-synchronized-first-party",
+    "origin": "package-prebuilt",
+    "finalArtifactCount": 1,
+    "fallback": false,
+    "providerOwnsComposition": false,
+    "manifestMetadataIsAuthoritative": false,
+    "sourceBuildContractSealed": false,
+    "thirdPartyRegistration": false,
+    "packageSemanticDetailsInCompiler": false
+  },
+  "contractVersions": {
+    "guestUnit": "pulse.guest-unit.v1",
+    "guestUnitPlan": "pulse.guest-unit-plan.v1",
+    "guestLinkReport": "pulse.guest-link-report.v1",
+    "finalWasmAudit": "pulse.final-wasm-audit.v1"
+  },
+  "acceptedMemoryAbi": {
+    "identity": "pulse.guest-memory.borrowed-span.v1",
+    "phaseADecisionSha256": "2339a9843ed7531a6b62f1773b554963beacc7979cb63a57ee72d803706675aa",
+    "pointerWidthBits": 32,
+    "memory": {
+      "owner": "link-stage",
+      "minimumPages": 32,
+      "maximumPages": 32,
+      "bytes": 2097152,
+      "growable": false,
+      "finalDefinedMemories": 1,
+      "finalImportedMemories": 0
+    },
+    "borrowedInput": {
+      "parameters": [
+        "u32-pointer",
+        "u32-length"
+      ],
+      "maximumBytes": 4096,
+      "access": "read-only",
+      "lifetime": "synchronous-call",
+      "retention": "forbidden",
+      "allocation": "forbidden",
+      "callback": "forbidden",
+      "reentrancy": "forbidden"
+    },
+    "invalidRange": {
+      "statusType": "u32",
+      "status": "0x80000000",
+      "definedInvalidClassesTrap": false
+    },
+    "layout": {
+      "rustStack": {
+        "start": 0,
+        "endExclusive": 65536,
+        "growth": "downward"
+      },
+      "rustStaticReserved": {
+        "start": 131072,
+        "endExclusive": 262144
+      },
+      "primaryStaticReserved": {
+        "start": 262144,
+        "endExclusive": 524288
+      },
+      "borrowedInputReserved": {
+        "start": 524288,
+        "endExclusive": 2097152
+      },
+      "allOccupiedAndReservedRangesMustBePairwiseDisjoint": true
+    },
+    "forbidden": [
+      "guest-allocator",
+      "primary-allocator-path",
+      "retained-pointer",
+      "host-import",
+      "wasi-import",
+      "start-section",
+      "memory-grow",
+      "bulk-memory-copy",
+      "bulk-memory-fill",
+      "runtime-memory-init",
+      "binary-patch",
+      "multi-memory-lowering"
+    ],
+    "featureBaseline": "mvp",
+    "requiredPostLinkOrder": [
+      "compose",
+      "whole-module-optimize",
+      "complete-final-audit"
+    ]
+  },
+  "contracts": {
+    "guestUnit": {
+      "version": "pulse.guest-unit.v1",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "id",
+        "module",
+        "owner",
+        "packageVersion",
+        "abi",
+        "origin",
+        "artifact",
+        "toolchain",
+        "imports",
+        "exports",
+        "memory",
+        "start",
+        "features",
+        "provenance"
+      ],
+      "optional": [
+        "source"
+      ],
+      "independentlyVerified": [
+        "artifact.sha256",
+        "artifact.bytes",
+        "imports",
+        "exports",
+        "memory",
+        "start",
+        "features"
+      ],
+      "example": {
+        "version": "pulse.guest-unit.v1",
+        "id": "pulse.guest-link.proof.borrowed-span",
+        "module": "pulse_guest_memory",
+        "owner": "@pulse-compute/wasm-guest-link",
+        "packageVersion": "1.0.0-beta.1",
+        "abi": "pulse.guest-link.proof.borrowed-span.v1",
+        "origin": "package-prebuilt",
+        "artifact": {
+          "file": "native/guest-link-proof/unit.wasm",
+          "bytes": 344,
+          "sha256": "d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c"
+        },
+        "source": {
+          "included": true,
+          "directory": "native/guest-link-proof/source",
+          "treeSha256": "c0f0b009d31d3d0d58a98ddc09f4445a5c859ed9019e149dd3afc7a53b33fa4d"
+        },
+        "toolchain": {
+          "kind": "rust-cargo",
+          "target": "wasm32v1-none",
+          "locked": true,
+          "versions": {
+            "rustc": "1.97.1",
+            "cargo": "1.97.1"
+          }
+        },
+        "imports": [
+          {
+            "module": "env",
+            "name": "memory",
+            "kind": "memory",
+            "type": {
+              "minimumPages": 32,
+              "maximumPages": 32,
+              "shared": false
+            }
+          }
+        ],
+        "exports": [
+          {
+            "name": "pulse_guest_layout_marker_pointer",
+            "kind": "function",
+            "parameters": [],
+            "results": [
+              "i32"
+            ],
+            "role": "evidence-only"
+          },
+          {
+            "name": "pulse_guest_span_checksum",
+            "kind": "function",
+            "parameters": [
+              "i32",
+              "i32"
+            ],
+            "results": [
+              "i32"
+            ],
+            "role": "abi"
+          }
+        ],
+        "memory": {
+          "identity": "pulse.guest-memory.borrowed-span.v1",
+          "import": "env.memory",
+          "owner": "link-stage"
+        },
+        "start": {
+          "policy": "forbidden"
+        },
+        "features": {
+          "baseline": "mvp",
+          "allowed": [],
+          "required": []
+        },
+        "provenance": {
+          "packageManifest": "package.json",
+          "lockfile": "native/guest-link-proof/source/Cargo.lock",
+          "reproducibleSourceIncluded": true
+        }
+      }
+    },
+    "guestUnitPlan": {
+      "version": "pulse.guest-unit-plan.v1",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "profile",
+        "target",
+        "unit",
+        "targetPolicy",
+        "materialization",
+        "trust",
+        "composition",
+        "fallback"
+      ],
+      "example": {
+        "version": "pulse.guest-unit-plan.v1",
+        "profile": "native",
+        "target": "fastly-compute-native",
+        "unit": {
+          "id": "pulse.guest-link.proof.borrowed-span",
+          "module": "pulse_guest_memory",
+          "owner": "@pulse-compute/wasm-guest-link",
+          "packageVersion": "1.0.0-beta.1",
+          "abi": "pulse.guest-link.proof.borrowed-span.v1",
+          "origin": "package-prebuilt",
+          "manifestSha256": "1111111111111111111111111111111111111111111111111111111111111111",
+          "artifactSha256": "d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c",
+          "source": {
+            "included": true,
+            "treeSha256": "c0f0b009d31d3d0d58a98ddc09f4445a5c859ed9019e149dd3afc7a53b33fa4d"
+          }
+        },
+        "targetPolicy": {
+          "descriptorOwner": "@pulse-compute/provider-fastly",
+          "toolchainVersion": "pulse.provider-toolchain.v1",
+          "descriptorIdentity": "fastly-compute-native",
+          "descriptorSha256": "2222222222222222222222222222222222222222222222222222222222222222",
+          "allowedImports": [],
+          "requiredExports": [],
+          "featureBaseline": "mvp",
+          "allowedFeatures": [],
+          "memory": {
+            "minimum": 1,
+            "maximum": 1,
+            "imported": 0,
+            "growable": false
+          },
+          "start": "forbidden"
+        },
+        "materialization": {
+          "workspace": ".pulse/guests",
+          "directory": ".pulse/guests/pulse.guest-link.proof.borrowed-span/d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c",
+          "artifact": "unit.wasm",
+          "manifest": "unit.json",
+          "contentAddress": "artifact-sha256",
+          "generated": true,
+          "authoritative": false
+        },
+        "trust": {
+          "lowerer": "trusted-first-party",
+          "releaseManifest": "synchronized",
+          "ownerMatchesContributionPackage": true,
+          "installedVersionMatches": true,
+          "status": "passed"
+        },
+        "composition": {
+          "kind": "core-wasm-static-link",
+          "semanticContract": "connect-validated-core-units-into-one-final-audited-native-artifact",
+          "primaryModule": "pulse_primary",
+          "memoryOwnerModule": "env"
+        },
+        "fallback": {
+          "enabled": false,
+          "onFailure": "stop-before-provider-packaging"
+        }
+      }
+    },
+    "guestLinkReport": {
+      "version": "pulse.guest-link-report.v1",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "status",
+        "profile",
+        "target",
+        "units",
+        "inputs",
+        "materialization",
+        "inspection",
+        "composition",
+        "optimization",
+        "finalArtifact",
+        "fallback",
+        "evidenceClassification",
+        "redaction"
+      ],
+      "example": {
+        "version": "pulse.guest-link-report.v1",
+        "status": "passed",
+        "profile": "native",
+        "target": "fastly-compute-native",
+        "units": [
+          {
+            "id": "pulse.guest-link.proof.borrowed-span",
+            "module": "pulse_guest_memory",
+            "owner": "@pulse-compute/wasm-guest-link",
+            "packageVersion": "1.0.0-beta.1",
+            "origin": "package-prebuilt",
+            "abi": "pulse.guest-link.proof.borrowed-span.v1",
+            "artifactSha256": "d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c",
+            "sourceIncluded": true,
+            "sourceSha256": "c0f0b009d31d3d0d58a98ddc09f4445a5c859ed9019e149dd3afc7a53b33fa4d"
+          }
+        ],
+        "inputs": {
+          "primary": {
+            "bytes": 1282,
+            "sha256": "3b3421a32f5877a2026807cdab6964b992eea24601da6a5ae6a23b2a73d20878"
+          },
+          "memoryOwner": {
+            "bytes": 26,
+            "sha256": "26af409614f556104522d4d6859237908703bf044fb3e230dc53426d6736ccc0"
+          }
+        },
+        "materialization": {
+          "directory": ".pulse/guests/pulse.guest-link.proof.borrowed-span/d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c",
+          "cache": "content-addressed",
+          "hashVerifiedBeforeUse": true
+        },
+        "inspection": {
+          "before": {
+            "primary": {
+              "imports": [
+                {
+                  "module": "pulse_guest_memory",
+                  "name": "pulse_guest_span_checksum",
+                  "kind": "function"
+                },
+                {
+                  "module": "env",
+                  "name": "memory",
+                  "kind": "memory"
+                }
+              ],
+              "exports": [
+                {
+                  "name": "pulseRunMemoryCase",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseGuestInvalidStatus",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseRunEveryByteProbe",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseEveryBytePointer",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseEveryByteLength",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseMemoryBytes",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseMaxGuestLength",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulseInvalidRangeStatus",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulsePrimaryLayoutMarkerPointer",
+                  "kind": "function"
+                }
+              ],
+              "memories": 1,
+              "features": []
+            },
+            "guest": {
+              "imports": [
+                {
+                  "module": "env",
+                  "name": "memory",
+                  "kind": "memory"
+                }
+              ],
+              "exports": [
+                {
+                  "name": "pulse_guest_layout_marker_pointer",
+                  "kind": "function"
+                },
+                {
+                  "name": "pulse_guest_span_checksum",
+                  "kind": "function"
+                }
+              ],
+              "memories": 1,
+              "features": []
+            }
+          },
+          "after": {
+            "imports": [],
+            "exports": [
+              {
+                "name": "memory",
+                "kind": "memory"
+              },
+              {
+                "name": "pulseRunMemoryCase",
+                "kind": "function"
+              },
+              {
+                "name": "pulseGuestInvalidStatus",
+                "kind": "function"
+              },
+              {
+                "name": "pulseRunEveryByteProbe",
+                "kind": "function"
+              },
+              {
+                "name": "pulseEveryBytePointer",
+                "kind": "function"
+              },
+              {
+                "name": "pulseEveryByteLength",
+                "kind": "function"
+              },
+              {
+                "name": "pulseMemoryBytes",
+                "kind": "function"
+              },
+              {
+                "name": "pulseMaxGuestLength",
+                "kind": "function"
+              },
+              {
+                "name": "pulseInvalidRangeStatus",
+                "kind": "function"
+              },
+              {
+                "name": "pulsePrimaryLayoutMarkerPointer",
+                "kind": "function"
+              },
+              {
+                "name": "pulse_guest_layout_marker_pointer",
+                "kind": "function"
+              },
+              {
+                "name": "pulse_guest_span_checksum",
+                "kind": "function"
+              }
+            ],
+            "memories": 1,
+            "features": [],
+            "hasStart": false
+          }
+        },
+        "composition": {
+          "kind": "core-wasm-static-link",
+          "implementation": {
+            "name": "binaryen",
+            "version": "129"
+          },
+          "deterministic": true,
+          "outputSha256": "74836a4a64aa5d1e04190d47048b83143d9c6f208430b99a5dd68ea32d77b063"
+        },
+        "optimization": {
+          "postLink": true,
+          "implementation": {
+            "name": "binaryen",
+            "version": "129"
+          },
+          "posture": "native-size",
+          "deterministic": true,
+          "inputSha256": "74836a4a64aa5d1e04190d47048b83143d9c6f208430b99a5dd68ea32d77b063",
+          "outputSha256": "c9f3fbcdb0cd2ffe3a6d9cc7446802ab2a99cd3b65120c4fcf8482f15544dc1d"
+        },
+        "finalArtifact": {
+          "bytes": 1461,
+          "sha256": "c9f3fbcdb0cd2ffe3a6d9cc7446802ab2a99cd3b65120c4fcf8482f15544dc1d"
+        },
+        "fallback": {
+          "enabled": false,
+          "used": false
+        },
+        "evidenceClassification": {
+          "observedFacts": [
+            "validated-inputs-composed"
+          ],
+          "toolDocumentedBehavior": [],
+          "inferences": [],
+          "unresolvedAssumptions": []
+        },
+        "redaction": {
+          "environmentSecrets": "omitted",
+          "credentials": "omitted",
+          "privateMaterial": "omitted",
+          "rawBuffers": "omitted"
+        }
+      }
+    },
+    "finalWasmAudit": {
+      "version": "pulse.final-wasm-audit.v1",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "status",
+        "artifact",
+        "targetPolicy",
+        "structure",
+        "instructions",
+        "layout",
+        "checks",
+        "providerPackaging",
+        "evidenceClassification",
+        "redaction"
+      ],
+      "example": {
+        "version": "pulse.final-wasm-audit.v1",
+        "status": "passed",
+        "artifact": {
+          "bytes": 1461,
+          "sha256": "c9f3fbcdb0cd2ffe3a6d9cc7446802ab2a99cd3b65120c4fcf8482f15544dc1d",
+          "valid": true
+        },
+        "targetPolicy": {
+          "descriptorIdentity": "fastly-compute-native",
+          "descriptorSha256": "2222222222222222222222222222222222222222222222222222222222222222"
+        },
+        "structure": {
+          "imports": [],
+          "exports": [
+            {
+              "name": "memory",
+              "kind": "memory"
+            },
+            {
+              "name": "pulseRunMemoryCase",
+              "kind": "function"
+            },
+            {
+              "name": "pulseGuestInvalidStatus",
+              "kind": "function"
+            },
+            {
+              "name": "pulseRunEveryByteProbe",
+              "kind": "function"
+            },
+            {
+              "name": "pulseEveryBytePointer",
+              "kind": "function"
+            },
+            {
+              "name": "pulseEveryByteLength",
+              "kind": "function"
+            },
+            {
+              "name": "pulseMemoryBytes",
+              "kind": "function"
+            },
+            {
+              "name": "pulseMaxGuestLength",
+              "kind": "function"
+            },
+            {
+              "name": "pulseInvalidRangeStatus",
+              "kind": "function"
+            },
+            {
+              "name": "pulsePrimaryLayoutMarkerPointer",
+              "kind": "function"
+            },
+            {
+              "name": "pulse_guest_layout_marker_pointer",
+              "kind": "function"
+            },
+            {
+              "name": "pulse_guest_span_checksum",
+              "kind": "function"
+            }
+          ],
+          "definedMemories": 1,
+          "importedMemories": 0,
+          "memoryTypes": [
+            {
+              "minimumPages": 32,
+              "maximumPages": 32,
+              "shared": false
+            }
+          ],
+          "hasStart": false,
+          "features": [],
+          "dataSegments": [
+            {
+              "offset": 262144,
+              "endExclusive": 262160,
+              "sha256": "19bc8a20f7230183477a77e3f7bef820b6d4adf4ec1b2606a02060365f50eaf7"
+            },
+            {
+              "offset": 131072,
+              "endExclusive": 131088,
+              "sha256": "891b966ef8393adac2cd06fa8e2a91949d0077011b44974b828809ca17959be0"
+            }
+          ],
+          "mutableGlobals": [],
+          "tables": 0
+        },
+        "instructions": {
+          "memoryGrow": 0,
+          "memoryCopy": 0,
+          "memoryFill": 0,
+          "memoryInit": 0,
+          "callIndirect": 0
+        },
+        "layout": {
+          "memoryContract": "pulse.guest-memory.borrowed-span.v1",
+          "occupiedAndReservedRangesPairwiseDisjoint": true,
+          "staticSegmentsPreserved": true
+        },
+        "checks": [
+          {
+            "id": "artifact-hash",
+            "status": "passed"
+          },
+          {
+            "id": "target-policy",
+            "status": "passed"
+          },
+          {
+            "id": "guest-contract",
+            "status": "passed"
+          }
+        ],
+        "providerPackaging": {
+          "authorized": true,
+          "auditArtifactSha256MatchesInput": true
+        },
+        "evidenceClassification": {
+          "observedFacts": [
+            "final-bytes-independently-inspected"
+          ],
+          "toolDocumentedBehavior": [],
+          "inferences": [],
+          "unresolvedAssumptions": []
+        },
+        "redaction": {
+          "environmentSecrets": "omitted",
+          "credentials": "omitted",
+          "privateMaterial": "omitted",
+          "rawBuffers": "omitted"
+        }
+      }
+    }
+  },
+  "trustChecks": [
+    {
+      "id": "trusted-contribution",
+      "owner": "compiler",
+      "check": "The unit comes only from a reachable selected lowerer that already passed the synchronized first-party lowerer trust gate.",
+      "failure": "PULSE_GUEST_UNIT_OWNER_MISMATCH"
+    },
+    {
+      "id": "owner-identity",
+      "owner": "wasm-guest-link",
+      "check": "The contribution package, manifest owner, resolved package name, and installed package version are exact matches.",
+      "failure": "PULSE_GUEST_UNIT_OWNER_MISMATCH"
+    },
+    {
+      "id": "release-membership",
+      "owner": "wasm-guest-link",
+      "check": "The owner is present at the exact version in the synchronized release manifest; workspace links do not weaken the check.",
+      "failure": "PULSE_GUEST_UNIT_OWNER_MISMATCH"
+    },
+    {
+      "id": "stable-unique-id",
+      "owner": "compiler",
+      "check": "The stable unit ID is path-safe and unique across all selected contributions.",
+      "failure": "PULSE_GUEST_UNIT_INVALID"
+    },
+    {
+      "id": "path-containment",
+      "owner": "wasm-guest-link",
+      "check": "Manifest, artifact, and optional source paths are package-relative, reject traversal, and remain inside their real package root without symlink escape.",
+      "failure": "PULSE_GUEST_UNIT_INVALID"
+    },
+    {
+      "id": "artifact-identity",
+      "owner": "wasm-guest-link",
+      "check": "Raw packaged bytes match declared size and SHA-256 before inspection, materialization, or composition.",
+      "failure": "PULSE_GUEST_UNIT_HASH_MISMATCH"
+    },
+    {
+      "id": "source-identity",
+      "owner": "wasm-guest-link",
+      "check": "When source is included, a canonical package-relative tree digest matches; ordinary builds never execute the source.",
+      "failure": "PULSE_GUEST_UNIT_INVALID"
+    },
+    {
+      "id": "binary-surface",
+      "owner": "wasm-guest-link",
+      "check": "Independent byte inspection exactly matches declared imports, exports, function signatures, memory, start policy, and features.",
+      "failure": "PULSE_GUEST_UNIT_BINARY_MISMATCH"
+    },
+    {
+      "id": "memory-abi",
+      "owner": "wasm-guest-link",
+      "check": "The unit and primary inputs satisfy pulse.guest-memory.borrowed-span.v1 and the final bytes preserve its one-memory, fixed-layout, non-retention constraints.",
+      "failure": "PULSE_GUEST_UNIT_MEMORY_MISMATCH"
+    },
+    {
+      "id": "content-addressed-materialization",
+      "owner": "wasm-guest-link",
+      "check": "The destination is project-contained under .pulse/guests/<unit-id>/<artifact-sha256>, contains only verified normalized files, and is reproducible after deletion.",
+      "failure": "PULSE_GUEST_UNIT_MATERIALIZATION_FAILED"
+    },
+    {
+      "id": "fail-closed",
+      "owner": "compiler",
+      "check": "Any selected-unit failure stops before provider packaging and cannot select another realization, execution mode, or fallback.",
+      "failure": "PULSE_GUEST_LINK_FAILED"
+    }
+  ],
+  "pipeline": {
+    "insertion": "after-primary-assemblyscript-compilation-before-final-whole-module-optimization-and-audit",
+    "stages": [
+      {
+        "order": 10,
+        "id": "package-lowering",
+        "owner": "package-lowerer",
+        "output": "distinct-guest-unit-contribution"
+      },
+      {
+        "order": 20,
+        "id": "guest-unit-planning",
+        "owner": "compiler",
+        "output": "guest-unit-plan.json"
+      },
+      {
+        "order": 30,
+        "id": "package-prebuilt-materialization",
+        "owner": "wasm-guest-link",
+        "output": ".pulse/guests/<unit-id>/<artifact-sha256>/"
+      },
+      {
+        "order": 40,
+        "id": "primary-assemblyscript-compilation",
+        "owner": "compiler",
+        "output": "primary-input.wasm"
+      },
+      {
+        "order": 50,
+        "id": "independent-input-audit",
+        "owner": "wasm-guest-link",
+        "output": "validated-primary-and-unit-inputs"
+      },
+      {
+        "order": 60,
+        "id": "core-wasm-composition",
+        "owner": "wasm-guest-link",
+        "output": "unoptimized-composed.wasm"
+      },
+      {
+        "order": 70,
+        "id": "whole-module-optimization",
+        "owner": "wasm-guest-link",
+        "output": "optimized-final.wasm"
+      },
+      {
+        "order": 80,
+        "id": "complete-final-audit",
+        "owner": "wasm-guest-link",
+        "output": [
+          "guest-link-report.json",
+          "final-wasm-audit.json"
+        ]
+      },
+      {
+        "order": 90,
+        "id": "provider-packaging",
+        "owner": "provider",
+        "input": "exact-audited-final-bytes"
+      }
+    ],
+    "invariants": [
+      "A primary-only compiler optimization cannot substitute for mandatory post-link whole-module optimization.",
+      "The provider receives the exact final bytes bound by a passed final audit.",
+      "A selected guest failure cannot retry, fall back, or change execution mode.",
+      "Executable guest units are not package realization data and are not AssemblyScript sidecars."
+    ]
+  },
+  "touchpoints": [
+    {
+      "seam": "package-metadata",
+      "path": "wasm/packages/contracts/src/library/manifest.js",
+      "current": "lowerable-library v2 requires an AssemblyScript sidecar",
+      "implementationUnit": "B2",
+      "change": "Keep this contract unchanged; guest units use a distinct contribution."
+    },
+    {
+      "seam": "package-contract",
+      "path": "wasm/packages/contracts/src/package/package-contract.js",
+      "current": "static product metadata and trusted lowerer ownership are separated",
+      "implementationUnit": "B2",
+      "change": "Add only the normalized distinct guest-unit contribution envelope."
+    },
+    {
+      "seam": "lowerer-contributions",
+      "path": "wasm/packages/compiler/src/spine/package-operation-seam.js",
+      "current": "collects canonical operations, lowerer bundles, and private realization data",
+      "implementationUnit": "B2",
+      "change": "Collect guestUnits separately; never encode executable code as realization data."
+    },
+    {
+      "seam": "compiler-order",
+      "path": "wasm/packages/contracts/src/spine.js",
+      "current": "package lowering precedes provider realization and artifact verification",
+      "implementationUnit": "B2",
+      "change": "Represent guest realization as an internal Native subpipeline before provider realization."
+    },
+    {
+      "seam": "native-realization",
+      "path": "wasm/packages/compiler/src/canonical-native-compiler.js",
+      "current": "compiles and performs a basic audit of canonical-native.wasm",
+      "implementationUnit": "B2",
+      "change": "Insert validated composition after primary compilation, then whole-module optimization and final audit."
+    },
+    {
+      "seam": "build-artifacts",
+      "path": "wasm/packages/compiler/src/build-manifest.js",
+      "current": "owns deterministic artifact ordering, hashes, and build summaries",
+      "implementationUnit": "B2-B3",
+      "change": "Register guest-unit-plan.json, guest-link-report.json, and final-wasm-audit.json."
+    },
+    {
+      "seam": "artifact-materialization",
+      "path": "wasm/packages/build-support/src/artifacts-dir.js",
+      "current": "resolves ordinary compiler artifact output",
+      "implementationUnit": "B1-B2",
+      "change": "Do not overload it; wasm-guest-link owns contained .pulse/guests materialization."
+    },
+    {
+      "seam": "fastly-target-descriptor",
+      "path": "packages/provider-fastly/src/toolchain/index.js",
+      "current": "declares target availability, identity, fallback, reporting, and supported operations",
+      "implementationUnit": "B2",
+      "change": "Add a normalized final-Wasm policy projection; keep generic composition outside the provider."
+    },
+    {
+      "seam": "node-target-descriptor",
+      "path": "packages/provider-node/src/native/target.js",
+      "current": "declares Native capabilities and realization support",
+      "implementationUnit": "B2",
+      "change": "Add the same target-policy shape with Node-specific accepted final-Wasm constraints."
+    },
+    {
+      "seam": "diagnostic-catalog",
+      "path": "wasm/packages/contracts/src/diagnostics/codes.js",
+      "current": "owns stable diagnostic identities re-exported by the compiler",
+      "implementationUnit": "B1-B3",
+      "change": "wasm-guest-link owns normalized guest failures; the shared catalog registers stable identities and compiler composes context."
+    },
+    {
+      "seam": "release-manifest",
+      "path": "release/pulse-release-manifest.json",
+      "current": "owns synchronized publishable package membership and exact versions",
+      "implementationUnit": "B1-B4",
+      "change": "Register @pulse-compute/wasm-guest-link and use membership as an input to first-party trust."
+    },
+    {
+      "seam": "generated-workspace-ignore",
+      "path": ".gitignore",
+      "current": "does not yet ignore project-local .pulse/guests workspaces",
+      "implementationUnit": "B2",
+      "change": "Add the generated guest workspace without ignoring authoritative .pulse configuration."
+    }
+  ],
+  "diagnostics": {
+    "canonicalOwner": "wasm-guest-link",
+    "compilerRole": "attach-package-profile-target-context-and-stop",
+    "sharedCatalogRole": "stable-identity-registration",
+    "codes": [
+      "PULSE_GUEST_UNIT_INVALID",
+      "PULSE_GUEST_UNIT_HASH_MISMATCH",
+      "PULSE_GUEST_UNIT_OWNER_MISMATCH",
+      "PULSE_GUEST_UNIT_ABI_MISMATCH",
+      "PULSE_GUEST_UNIT_IMPORT_MISMATCH",
+      "PULSE_GUEST_UNIT_EXPORT_MISMATCH",
+      "PULSE_GUEST_UNIT_MEMORY_MISMATCH",
+      "PULSE_GUEST_UNIT_START_MISMATCH",
+      "PULSE_GUEST_UNIT_FEATURE_MISMATCH",
+      "PULSE_GUEST_UNIT_MATERIALIZATION_FAILED",
+      "PULSE_GUEST_LINK_FAILED",
+      "PULSE_GUEST_OPTIMIZATION_FAILED",
+      "PULSE_GUEST_FINAL_AUDIT_FAILED"
+    ],
+    "redaction": [
+      "environment-secrets",
+      "credentials",
+      "private-material",
+      "raw-sensitive-buffers"
+    ]
+  },
+  "componentModelReplacementSeam": {
+    "stableInputs": [
+      "validated-guest-unit-manifest",
+      "guest-unit-plan",
+      "target-policy",
+      "primary-core-wasm"
+    ],
+    "currentMechanism": "core-wasm-static-link",
+    "implementationDetailsExcludedFromPackageContracts": [
+      "tool-executable-names",
+      "tool-arguments",
+      "internal-pass-order"
+    ],
+    "futureMechanism": "component-model",
+    "replacementOwner": "wasm-guest-link",
+    "mustPreserve": [
+      "unit-id",
+      "owner-and-trust",
+      "abi-identity",
+      "memory-contract-or-versioned-successor",
+      "fail-closed-selection",
+      "guest-link-report",
+      "final-wasm-audit",
+      "provider-receives-audited-final-bytes"
+    ],
+    "requiresNewContractVersionWhen": [
+      "semantic-abi-changes",
+      "memory-ownership-changes",
+      "trust-boundary-changes",
+      "report-meaning-changes"
+    ],
+    "doesNotAuthorize": [
+      "component-negotiation",
+      "dynamic-loading",
+      "third-party-components"
+    ]
+  },
+  "deferred": [
+    "production-package-implementation",
+    "direct-pinned-binaryen-dependency",
+    "compiler-stage-mutation",
+    "provider-descriptor-mutation",
+    "release-manifest-mutation",
+    "source-build-contracts",
+    "application-local-overrides",
+    "third-party-guest-api"
+  ]
+}

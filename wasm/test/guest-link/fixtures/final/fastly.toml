@@ -1,0 +1,5 @@
+manifest_version = 3
+name = "pulse-guest-link-a3"
+description = "Pulse guest-link A3 local Fastly reality proof"
+authors = []
+language = "other"

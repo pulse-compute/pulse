@@ -1,0 +1,18 @@
+{
+  "version": "pulsewasm.library-contract.v1",
+  "package": "pulse.grip",
+  "modes": {
+    "typescript": { "entry": "./dist/index.js" },
+    "jsEngine": { "entry": "./dist/index.js" },
+    "wasm": {
+      "mode": "wasm-sidecar",
+      "sidecar": "./as/index.as.ts",
+      "lowerings": [
+        { "tsSymbol": "grip.hold", "asSymbol": "pulse_grip_hold", "callShape": "literal-mode", "hostCapabilities": ["headers"] },
+        { "tsSymbol": "grip.channel", "asSymbol": "pulse_grip_channel", "callShape": "literal-channel", "hostCapabilities": ["headers", "channel", "broadcaster"] },
+        { "tsSymbol": "grip.publish", "asSymbol": "pulse_grip_publish", "callShape": "declared-channel-message", "hostCapabilities": ["broadcaster", "clock"] }
+      ],
+      "hostCapabilities": ["headers", "channel", "broadcaster", "clock"]
+    }
+  }
+}

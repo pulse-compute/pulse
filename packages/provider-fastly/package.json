@@ -1,0 +1,98 @@
+{
+  "name": "@pulse-compute/provider-fastly",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Fastly provider configuration, contract-driven lowering, local conformance runtime, and PulseWasm target builders.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./compiler": "./src/compiler/index.js",
+    "./compiler/fastly-readiness": "./src/compiler/fastly-readiness.js",
+    "./compiler/fastly-hostcall-binding": "./src/compiler/fastly-hostcall-binding.js",
+    "./compiler/fastly-adapter": "./src/compiler/fastly-adapter.js",
+    "./compiler/fastly-command-entry": "./src/compiler/fastly-command-entry.js",
+    "./compiler/fastly-config-secret-serve": "./src/compiler/fastly-config-secret-serve.js",
+    "./compiler/config-provider-resolution": "./src/compiler/config-provider-resolution.js",
+    "./compiler/runtime-provider-kv": "./src/compiler/runtime-provider-kv.js",
+    "./compiler/assets-provider-proof": "./src/compiler/assets-provider-proof.js",
+    "./runtime": "./src/runtime/index.js",
+    "./runtime/assets-provider": "./src/runtime/assets-provider.js",
+    "./compiler/route-handler-effect-proof": "./src/compiler/route-handler-effect-proof.js",
+    "./runtime/route-handler-effects": "./src/runtime/route-handler-effects.js",
+    "./compiler/lifecycle-parity-proof": "./src/compiler/lifecycle-parity-proof.js",
+    "./compiler/assets-package-out-parity-proof": "./src/compiler/assets-package-out-parity-proof.js",
+    "./runtime/provider-primitives": "./src/runtime/provider-primitives.js",
+    "./config": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./src/config-api.js",
+      "default": "./src/config-api.js"
+    },
+    "./contract": "./src/provider-contract.js",
+    "./build/canonical-target": "./src/build/canonical-target.js",
+    "./javascript/target": "./src/javascript/target.js",
+    "./javascript/support": "./src/javascript/support.js",
+    "./javascript/target-support-policy": "./src/javascript/target-support-policy.js",
+    "./javascript/runtime-host": "./src/javascript/runtime-host.js",
+    "./javascript/jwt-verifier": "./src/javascript/jwt-verifier.js",
+    "./javascript/lifecycle": "./src/javascript/lifecycle.js",
+    "./javascript/test-runtime": "./src/javascript/test-runtime.js",
+    "./javascript/local-loader": "./src/javascript/local-loader.js",
+    "./javascript/source-package": "./src/javascript/source-package.js",
+    "./runtime/canonical-api-runtime": "./src/runtime/canonical-api-runtime.js",
+    "./testing/fastly-cli": "./src/testing/fastly-cli.js",
+    "./toolchain": "./src/toolchain/index.js",
+    "./toolchain/config": "./src/toolchain/config.js",
+    "./config-schema": {
+      "types": "./src/config-schema.d.ts",
+      "require": "./src/config-schema.js",
+      "default": "./src/config-schema.js"
+    }
+  },
+  "dependencies": {
+    "@pulse-compute/crypto": "workspace:*",
+    "@pulse-compute/jwt": "workspace:*",
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/wasm-guest-link": "workspace:*",
+    "@pulse-compute/wasm-host-runtime": "workspace:*",
+    "@pulse-compute/wasm-runtime-core-as": "workspace:*",
+    "esbuild": "0.28.1"
+  },
+  "devDependencies": {
+    "@fastly/js-compute": "3.43.1"
+  },
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "node ../../wasm/test/provider/assert-fastly-package.cjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/provider-fastly"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/provider-fastly/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

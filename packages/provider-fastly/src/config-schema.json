@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "pulse.provider-fastly-config-schema.v1",
+  "fields": {
+    "fastly.configStore": {
+      "kind": "string",
+      "default": "pulse_config"
+    },
+    "fastly.secretStore": {
+      "kind": "string",
+      "default": "pulse_secrets"
+    },
+    "fastly.kv": {
+      "kind": "string-map",
+      "default": {}
+    },
+    "fastly.backends": {
+      "kind": "string-map",
+      "default": {}
+    },
+    "fastly.dynamicBackends": {
+      "kind": "boolean",
+      "default": false
+    },
+    "fastly.grip": {
+      "kind": "object"
+    },
+    "fastly.grip.fanoutBackend": {
+      "kind": "optional-string"
+    },
+    "fastly.grip.publishEndpoint": {
+      "kind": "optional-string"
+    },
+    "fastly.grip.publishUrl": {
+      "kind": "optional-string"
+    },
+    "fastly.grip.publishBackend": {
+      "kind": "optional-string"
+    },
+    "fastly.grip.authentication": {
+      "kind": "object"
+    },
+    "fastly.grip.authentication.scheme": {
+      "kind": "optional-string"
+    },
+    "fastly.grip.authentication.secretRef": {
+      "kind": "optional-string"
+    },
+    "fastly.grip.directHold": {
+      "kind": "boolean",
+      "default": true
+    },
+    "fastly.name": {
+      "kind": "string",
+      "default": "pulse-app"
+    },
+    "fastly.description": {
+      "kind": "string",
+      "default": "Pulse application"
+    },
+    "fastly.authors": {
+      "kind": "string-array",
+      "default": []
+    },
+    "fastly.local": {
+      "kind": "object",
+      "default": {}
+    },
+    "fastly.local.networkFetch": {
+      "kind": "boolean",
+      "default": false
+    }
+  }
+}

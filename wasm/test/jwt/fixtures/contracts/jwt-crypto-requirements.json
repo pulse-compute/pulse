@@ -1,0 +1,249 @@
+{
+  "version": "pulse.jwt-crypto-requirements.v1",
+  "status": "frozen-for-d1",
+  "scope": {
+    "operation": "JWT compact-JWS HS256 verification",
+    "signing": false,
+    "jwe": false,
+    "remoteKeyDiscovery": false,
+    "asymmetricCryptography": false,
+    "automaticFallback": false
+  },
+  "authoringContract": {
+    "profile": {
+      "crypto": [
+        "HS256"
+      ]
+    },
+    "verify": {
+      "algorithms": [
+        "HS256"
+      ],
+      "key": {
+        "type": "secret",
+        "binding": "<named-secret>"
+      }
+    }
+  },
+  "algorithmContract": {
+    "supported": [
+      "HS256"
+    ],
+    "unavailable": [
+      "RS256",
+      "ES256",
+      "EdDSA"
+    ],
+    "forbidden": [
+      "none"
+    ],
+    "relationship": "token protected alg in JWT allowlist; JWT allowlist subset of effective profile crypto algorithms; profile algorithms subset of selected target crypto capabilities"
+  },
+  "requirements": {
+    "crypto": [
+      {
+        "algorithm": "HS256",
+        "requestedBy": "@pulse-compute/jwt",
+        "semanticOwner": "@pulse-compute/crypto",
+        "reachableOnly": true
+      }
+    ],
+    "provider": [
+      {
+        "id": "secret.get",
+        "owner": "selected provider",
+        "condition": "HS256 named-secret key"
+      },
+      {
+        "id": "time.wall-clock",
+        "owner": "selected provider",
+        "condition": "JWT registered claims"
+      },
+      {
+        "id": "schema.decode",
+        "owner": "schema-json and selected provider runtime",
+        "condition": "claimsSchema is configured"
+      }
+    ]
+  },
+  "operationOrder": [
+    "enforce compact-token and segment limits",
+    "strictly decode and parse the protected header",
+    "enforce JWT protected-header policy",
+    "enforce token algorithm in the static JWT allowlist",
+    "confirm JWT allowlist is contained by the effective crypto profile",
+    "resolve and detach the named secret inside request-owned provider authority",
+    "construct exact ASCII protected-segment dot payload-segment signing input",
+    "strictly decode the original signature segment",
+    "invoke @pulse-compute/crypto MAC verification",
+    "require crypto status valid",
+    "parse claims",
+    "capture one provider-owned trusted Unix wall-clock instant",
+    "validate registered claims",
+    "validate claims through the configured schema",
+    "return a detached deeply immutable result"
+  ],
+  "resourceLimits": {
+    "compactTokenBytesMaximum": 16384,
+    "protectedHeaderBytesMaximum": 4096,
+    "claimsBytesMaximum": 16384,
+    "jsonDepthMaximum": 32,
+    "jwtAlgorithmsPerOperationMaximum": 1,
+    "requiredClaimNamesMaximum": 32,
+    "clockToleranceSecondsMaximum": 300,
+    "maxTokenAgeSecondsMaximum": 31536000,
+    "hmacKeyBytesMinimum": 32,
+    "hmacKeyBytesMaximum": 4096,
+    "hs256SignatureBytes": 32,
+    "cryptoMacDataBytesMaximum": 1048576,
+    "effectiveJwtSigningInputBytesMaximum": 16340
+  },
+  "cryptoCallBoundary": {
+    "entry": "@pulse-compute/crypto#crypto.mac.verify",
+    "request": {
+      "algorithm": "HS256",
+      "key": {
+        "type": "hmac-key-bytes",
+        "bytes": "detached provider-resolved secret bytes"
+      },
+      "data": "ASCII bytes of the original encoded protected segment, one period, and original encoded payload segment",
+      "tag": "strictly decoded bytes of the original signature segment"
+    },
+    "forbidden": [
+      "JWT claims",
+      "wall-clock instant",
+      "schema identifiers",
+      "target identifier",
+      "provider identifier",
+      "backend object",
+      "fallback selector"
+    ],
+    "keyLifecycle": {
+      "providerMayReturn": [
+        "string",
+        "Uint8Array"
+      ],
+      "stringEncoding": "UTF-8 exactly once inside the JWT request-owned boundary",
+      "detachment": "required before crypto invocation",
+      "redactionRegistration": "required before invocation",
+      "jwtOwnedCopyWiped": "required in finally",
+      "cryptoOwnsInternalCopyAndWipe": true
+    }
+  },
+  "resultMapping": [
+    {
+      "cryptoStatus": "valid",
+      "jwtOutcome": "continue-to-claims",
+      "jwtError": null,
+      "category": null
+    },
+    {
+      "cryptoStatus": "invalid-authenticator",
+      "jwtOutcome": "reject",
+      "jwtError": "PULSE_JWT_SIGNATURE_INVALID",
+      "category": "signature"
+    },
+    {
+      "cryptoStatus": "invalid-key",
+      "jwtOutcome": "reject",
+      "jwtError": "PULSE_JWT_KEY_INVALID",
+      "category": "verification-key"
+    },
+    {
+      "cryptoStatus": "invalid-input",
+      "jwtOutcome": "reject",
+      "jwtError": "PULSE_JWT_OPERATION_FAILED",
+      "category": "crypto-input-contract"
+    },
+    {
+      "cryptoStatus": "realization-failure",
+      "jwtOutcome": "reject",
+      "jwtError": "PULSE_JWT_OPERATION_FAILED",
+      "category": "crypto-realization"
+    }
+  ],
+  "jwtPreCryptoErrors": [
+    {
+      "condition": "missing token",
+      "jwtError": "PULSE_JWT_TOKEN_REQUIRED"
+    },
+    {
+      "condition": "malformed compact JWS, protected header, Base64url, UTF-8, or signature length",
+      "jwtError": "PULSE_JWT_MALFORMED"
+    },
+    {
+      "condition": "bounded JWT resource limit exceeded",
+      "jwtError": "PULSE_JWT_LIMIT_EXCEEDED"
+    },
+    {
+      "condition": "none, unknown alg, or token alg absent from JWT allowlist",
+      "jwtError": "PULSE_JWT_ALGORITHM_NOT_ALLOWED"
+    },
+    {
+      "condition": "missing, ambiguous, incompatible, unresolved, undersized, or oversized secret key",
+      "jwtError": "PULSE_JWT_KEY_INVALID"
+    }
+  ],
+  "buildTimeFailures": [
+    "reachable JWT HS256 without an effective crypto declaration",
+    "effective profile explicitly declares no crypto",
+    "JWT allowlist includes an algorithm absent from the effective crypto profile",
+    "selected target lacks the declared algorithm",
+    "exact realization pin is unknown or unavailable",
+    "selected realization cannot be built or audited"
+  ],
+  "targetContract": {
+    "javascript": {
+      "algorithm": "HS256",
+      "realization": "runtime-builtin"
+    },
+    "native": {
+      "algorithm": "HS256",
+      "realization": "guest-source:pulse-hmac-as"
+    },
+    "guestLinkedRequired": false,
+    "targetDetectionInJwt": false,
+    "backendDetectionInJwt": false,
+    "automaticFallback": false
+  },
+  "claimsContainment": {
+    "claimsTextMayBeBoundedAndUtf8DecodedBeforeAuthenticity": true,
+    "claimsJsonParsingBeforeAuthenticity": false,
+    "claimsRedactionRegistrationBeforeAuthenticity": false,
+    "registeredClaimsBeforeAuthenticity": false,
+    "schemaValidationBeforeAuthenticity": false,
+    "applicationObservationBeforeAuthenticity": false
+  },
+  "redaction": {
+    "forbiddenInPlansReportsDiagnostics": [
+      "complete token",
+      "signature bytes",
+      "complete claims",
+      "secret binding value",
+      "secret key",
+      "raw signing input",
+      "raw sensitive buffers",
+      "backend error text"
+    ],
+    "allowedProvenance": [
+      "algorithm",
+      "requesting package",
+      "selected profile",
+      "target",
+      "realization",
+      "backend identity and version",
+      "fallback disabled",
+      "artifact hashes"
+    ]
+  },
+  "versionDecision": {
+    "workingCandidate": "1.0.0-beta.1",
+    "alignCryptoSourceAtD1": true,
+    "jwtDependency": "@pulse-compute/crypto",
+    "dependencyRange": "workspace:*",
+    "frozenReleaseCatalog": "1.0.0-beta.1",
+    "mutateFrozenReleaseCatalog": false,
+    "publicationAuthorized": false
+  },
+  "nextAuthorizedUnit": "D1"
+}

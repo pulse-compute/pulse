@@ -1,0 +1,21 @@
+{
+  "name": "@pulse-examples/10-entities-tools",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "doctor": "pulse doctor",
+    "inspect": "pulse inspect",
+    "test": "pulse test",
+    "dev": "pulse dev",
+    "build": "pulse build"
+  },
+  "dependencies": {
+    "@pulse-compute/entities": "1.0.0-beta.1",
+    "@pulse-compute/pulse": "1.0.0-beta.1"
+  },
+  "devDependencies": {
+    "@pulse-compute/cli": "1.0.0-beta.1",
+    "typescript": "5.9.3"
+  }
+}

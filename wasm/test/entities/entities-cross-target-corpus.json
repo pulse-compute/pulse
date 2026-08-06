@@ -1,0 +1,122 @@
+{
+  "version": "pulse.entities-cross-target-corpus.i9.v1",
+  "runtimeCases": [
+    {
+      "id": "lookup-string-id-output-filtering-effects",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"params\":{\"id\":\"7\",\"tags\":[\"alpha\",\"beta\"],\"nested\":{\"enabled\":true,\"ignored\":\"drop-nested\"},\"ignored\":\"drop-input\"},\"id\":\"req\\u002d7\"}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "result": { "id": "7", "name": "Ada", "mode": "conformance", "tags": ["alpha", "beta"], "nested": { "enabled": true } }, "id": "req-7" } }
+    },
+    {
+      "id": "lookup-number-id",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"params\":{\"id\":\"8\",\"tags\":[],\"nested\":{\"enabled\":false}},\"id\":8}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "result": { "id": "8", "name": "Ada", "mode": "conformance", "tags": [], "nested": { "enabled": false } }, "id": 8 } }
+    },
+    {
+      "id": "lookup-null-id",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"params\":{\"id\":\"9\",\"tags\":[\"one\"],\"nested\":{\"enabled\":true}},\"id\":null}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "result": { "id": "9", "name": "Ada", "mode": "conformance", "tags": ["one"], "nested": { "enabled": true } }, "id": null } }
+    },
+    {
+      "id": "unicode-discriminator-nested-array-filtering",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"echo.\\u96ea\",\"params\":{\"name\":\"雪\",\"tags\":[\"α\",\"β\"],\"nested\":{\"enabled\":true,\"ignored\":1},\"ignored\":true},\"id\":\"unicode\"}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "result": { "name": "雪", "tags": ["α", "β"], "nested": { "enabled": true } }, "id": "unicode" } }
+    },
+    {
+      "id": "no-input-request",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\",\"id\":1}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "result": null, "id": 1 } }
+    },
+    {
+      "id": "no-input-empty-object-request",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\",\"params\":{},\"id\":2}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "result": null, "id": 2 } }
+    },
+    {
+      "id": "effectful-notification",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"params\":{\"id\":\"10\",\"tags\":[],\"nested\":{\"enabled\":true}}}",
+      "expected": { "status": 204, "empty": true }
+    },
+    {
+      "id": "secret-notification",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\"}",
+      "expected": { "status": 204, "empty": true }
+    },
+    {
+      "id": "malformed-json",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32700, "message": "Parse error" }, "id": null } }
+    },
+    {
+      "id": "primitive-envelope",
+      "body": "null",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    },
+    {
+      "id": "batch-envelope-rejected",
+      "body": "[]",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    },
+    {
+      "id": "wrong-jsonrpc-version",
+      "body": "{\"jsonrpc\":\"1.0\",\"method\":\"system.notify\",\"id\":3}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    },
+    {
+      "id": "unknown-method",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"unknown.method\",\"params\":{},\"id\":4}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32601, "message": "Method not found" }, "id": 4 } }
+    },
+    {
+      "id": "positional-params-rejected",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"params\":[],\"id\":5}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32602, "message": "Invalid params" }, "id": 5 } }
+    },
+    {
+      "id": "missing-required-params",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"id\":6}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32602, "message": "Invalid params" }, "id": 6 } }
+    },
+    {
+      "id": "schema-invalid-input",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"customer.lookup\",\"params\":{\"id\":\"7\",\"tags\":[],\"nested\":{}},\"id\":7}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32602, "message": "Invalid params" }, "id": 7 } }
+    },
+    {
+      "id": "nonempty-params-for-no-input",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\",\"params\":{\"unexpected\":true},\"id\":8}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32602, "message": "Invalid params" }, "id": 8 } }
+    },
+    {
+      "id": "schema-invalid-output",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"invalid.output\",\"params\":{\"id\":\"bad\"},\"id\":9}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32603, "message": "Internal error" }, "id": 9 } }
+    },
+    {
+      "id": "unsafe-number-id",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\",\"id\":9007199254740992}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    },
+    {
+      "id": "boolean-id",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\",\"id\":true}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    },
+    {
+      "id": "duplicate-reserved-key",
+      "body": "{\"jsonrpc\":\"2.0\",\"method\":\"system.notify\",\"method\":\"customer.lookup\",\"id\":10}",
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    },
+    {
+      "id": "oversized-method",
+      "materialize": { "kind": "oversized-method", "bytes": 300 },
+      "expected": { "status": 200, "json": { "jsonrpc": "2.0", "error": { "code": -32600, "message": "Invalid Request" }, "id": null } }
+    }
+  ],
+  "planningCases": [
+    {
+      "id": "target-ineligible-timer",
+      "capability": "timer",
+      "expectedStatus": "ineligible"
+    }
+  ]
+}

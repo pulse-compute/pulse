@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pulsecompute.io/contracts/pulse.reachable-graph-manifest.v1.schema.json",
+  "title": "Pulse reachable graph manifest",
+  "type": "object",
+  "required": [
+    "version",
+    "handlerReferenceVersion",
+    "entry",
+    "modules",
+    "edges",
+    "handlers",
+    "cycles",
+    "firstUnsupportedBoundary",
+    "graphHash"
+  ],
+  "properties": {
+    "version": { "const": "pulse.reachable-graph-manifest.v1" },
+    "handlerReferenceVersion": { "const": "pulse.handler-reference.v1" },
+    "entry": { "type": "string", "minLength": 1 },
+    "modules": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/module" }
+    },
+    "edges": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "handlers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/handler" }
+    },
+    "cycles": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "type": "string", "minLength": 1 },
+        "uniqueItems": true
+      }
+    },
+    "firstUnsupportedBoundary": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/unsupportedBoundary" }
+      ]
+    },
+    "graphHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["file", "line", "column"],
+      "properties": {
+        "file": { "type": "string", "minLength": 1 },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "module": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "owner",
+        "resolved",
+        "packageName",
+        "packageContract",
+        "contentHash",
+        "exports",
+        "reExports",
+        "source"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": ["project", "package", "generated", "external"]
+        },
+        "owner": {
+          "enum": [
+            "application",
+            "pulse-runtime",
+            "pulse-package",
+            "third-party",
+            "generated",
+            "external"
+          ]
+        },
+        "resolved": { "type": "string", "minLength": 1 },
+        "packageName": {
+          "type": ["string", "null"]
+        },
+        "packageContract": {
+          "type": ["string", "null"]
+        },
+        "contentHash": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+          ]
+        },
+        "exports": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "reExports": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "source": {
+          "oneOf": [
+            { "type": "null" },
+            { "$ref": "#/$defs/source" }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "id",
+        "kind",
+        "from",
+        "to",
+        "specifier",
+        "importedNames",
+        "exportedNames",
+        "packageContract",
+        "source"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "enum": [
+            "runtime-import",
+            "type-import",
+            "re-export",
+            "package-contract",
+            "lifecycle"
+          ]
+        },
+        "from": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "specifier": { "type": "string", "minLength": 1 },
+        "importedNames": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "exportedNames": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "packageContract": {
+          "type": ["string", "null"]
+        },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": false
+    },
+    "handler": {
+      "type": "object",
+      "required": [
+        "version",
+        "id",
+        "moduleId",
+        "exportName",
+        "localName",
+        "role",
+        "wrappers",
+        "source"
+      ],
+      "properties": {
+        "version": { "const": "pulse.handler-reference.v1" },
+        "id": { "type": "string", "minLength": 1 },
+        "moduleId": { "type": "string", "minLength": 1 },
+        "exportName": { "type": ["string", "null"] },
+        "localName": { "type": ["string", "null"] },
+        "role": {
+          "enum": ["handler", "route", "middleware", "event", "error-middleware", "router"]
+        },
+        "wrappers": {
+          "type": "array",
+          "items": {
+            "enum": ["parentheses", "as-cast", "type-assertion", "satisfies", "non-null"]
+          },
+          "uniqueItems": true
+        },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": false
+    },
+    "unsupportedBoundary": {
+      "type": "object",
+      "required": ["kind", "specifier", "from", "source"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "dynamic-import",
+            "commonjs-require",
+            "computed-specifier",
+            "loader-hook",
+            "unknown-runtime-side-effect"
+          ]
+        },
+        "specifier": { "type": "string", "minLength": 1 },
+        "from": { "type": ["string", "null"] },
+        "source": { "$ref": "#/$defs/source" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

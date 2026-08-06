@@ -1,0 +1,106 @@
+#compdef pulse
+# Generated from @pulse-compute/cli/src/command-spec.js.
+local -a commands
+commands=(
+    'init:Create a conventional .pulse workspace with an async Pulse application and dedicated test harness.'
+    'doctor:Audit project shape, compilation, schemas, provider bindings, output safety, and required tools.'
+    'inspect:Report canonical compiler, schema, effect, continuation, capability, provider, and build-mode details.'
+    'test:Run configured cases through the selected provider local-conformance runtime.'
+    'dev:Start the foreground local server with the selected provider conformance runtime.'
+    'compile:Compile the canonical project into provider-neutral Pulse-owned WebAssembly.'
+    'build:Compile the canonical project and realize the deployment provider selected by the active project profile.'
+    'completion:Print a generated shell completion script'
+    'help:Print public help'
+    'version:Print the installed CLI version'
+    '--help:Print public help'
+    '-h:Print public help'
+    '--version:Print the installed CLI version'
+    '-v:Print the installed CLI version'
+)
+
+if (( CURRENT == 2 )); then
+  _describe 'pulse command' commands
+  return
+fi
+
+case $words[2] in
+  completion)
+    _values 'shell' bash zsh fish
+    ;;
+    init)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--force[Allow generated files to replace entries in a non-empty target directory.]' \
+      '--name[Set the generated npm package name.]:value:'
+      ;;
+    doctor)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--strict[Treat doctor warnings as failed checks.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:'
+      ;;
+    inspect)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
+      '--artifact[Inspect an existing JSON build or compiler artifact instead of a project.]:file:_files'
+      ;;
+    test)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
+      '--case[Run one named project test case.]:value:'
+      ;;
+    dev)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--once[Close the development server after the first completed request.]' \
+      '--watch[Enable or disable entry and schema dependency watching. Watching is enabled by default.]' \
+      '--no-watch[Enable or disable entry and schema dependency watching. Watching is enabled by default.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
+      '--host[Override the development listen host.]:value:' \
+      '--port[Override the development listen port. Use 0 to request an ephemeral port.]:value:'
+      ;;
+    compile)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
+      '--no-clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
+      '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
+      '--out[Override the project-relative artifact output directory.]:directory:_directories'
+      ;;
+    build)
+      _arguments -s       '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
+      '--no-clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
+      '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
+      '--out[Override the project-relative artifact output directory.]:directory:_directories'
+      ;;
+  *)
+    _describe 'pulse command' commands
+    ;;
+esac

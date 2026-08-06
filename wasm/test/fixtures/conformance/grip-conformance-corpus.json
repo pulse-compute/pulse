@@ -1,0 +1,367 @@
+{
+  "version": "pulse.grip-cross-target-conformance-corpus.v1",
+  "authority": {
+    "contract": "pulse.grip-framing-contract.v1",
+    "applicationImport": "@pulse-compute/grip",
+    "connectionOwner": "external-grip-gateway",
+    "comparison": "normalized-http-and-broadcast-semantics",
+    "automaticFallback": false
+  },
+  "cases": [
+    {
+      "id": "classify-upgrade-case-tokenized",
+      "group": "classification",
+      "request": {
+        "headers": [["Connection", "keep-alive, Upgrade"], ["uPgRaDe", "WebSocket"]]
+      },
+      "expected": { "websocket": true }
+    },
+    {
+      "id": "classify-content-type-intent",
+      "group": "classification",
+      "request": {
+        "headers": [["CONTENT-TYPE", "application/websocket-events; charset=utf-8"]]
+      },
+      "expected": { "websocket": true }
+    },
+    {
+      "id": "classify-accept-intent",
+      "group": "classification",
+      "request": {
+        "headers": [["Accept", "text/plain, application/websocket-events"]]
+      },
+      "expected": { "websocket": true }
+    },
+    {
+      "id": "classify-no-intent",
+      "group": "classification",
+      "request": {
+        "headers": [["Accept", "application/json"]]
+      },
+      "expected": { "websocket": false }
+    },
+    {
+      "id": "classify-upgrade-without-connection-token",
+      "group": "classification",
+      "request": {
+        "headers": [["Upgrade", "websocket"], ["Connection", "keep-alive"]]
+      },
+      "expected": { "websocket": false }
+    },
+    {
+      "id": "classify-connection-substring-not-token",
+      "group": "classification",
+      "request": {
+        "headers": [["Upgrade", "websocket"], ["Connection", "x-upgrade-mode"]]
+      },
+      "expected": { "websocket": false }
+    },
+    {
+      "id": "subscribe-single-default-stream",
+      "group": "subscribe",
+      "fixture": "single",
+      "expected": {
+        "status": 206,
+        "body": "source-body",
+        "hold": "stream",
+        "channels": ["single"],
+        "timeout": "0",
+        "sourceHeader": "yes",
+        "repeated": ["one", "two"]
+      }
+    },
+    {
+      "id": "subscribe-repeated-response-mode",
+      "group": "subscribe",
+      "fixture": "repeated",
+      "expected": {
+        "status": 202,
+        "hold": "response",
+        "channels": ["updates", "audit"],
+        "timeout": "5000",
+        "sourceHeader": "yes",
+        "repeated": ["one", "two"]
+      }
+    },
+    {
+      "id": "subscribe-stream-body-ownership",
+      "group": "subscribe-stream",
+      "expected": {
+        "status": 207,
+        "body": "chunk-onechunk-two",
+        "channels": ["stream"]
+      }
+    },
+    {
+      "id": "subscribe-replaces-prior-grip-framing",
+      "group": "subscribe-replace",
+      "expected": {
+        "hold": "response",
+        "channels": ["new-one", "new-two"],
+        "timeout": null
+      }
+    },
+    {
+      "id": "subscribe-empty-channel-list",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channels": []
+      },
+      "expectedFailure": "PULSEWASM_GRIP_CHANNEL_INVALID"
+    },
+    {
+      "id": "subscribe-whitespace-channel",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "   "
+      },
+      "expectedFailure": "PULSEWASM_GRIP_CHANNEL_INVALID"
+    },
+    {
+      "id": "subscribe-comma-channel",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "bad,channel"
+      },
+      "expectedFailure": "PULSEWASM_GRIP_CHANNEL_INVALID"
+    },
+    {
+      "id": "subscribe-crlf-channel",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "bad\r\nchannel"
+      },
+      "expectedFailure": "PULSEWASM_GRIP_CHANNEL_INVALID"
+    },
+    {
+      "id": "subscribe-unsupported-mode",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "events",
+        "mode": "socket"
+      },
+      "expectedFailure": "PULSEWASM_GRIP_MODE_UNSUPPORTED"
+    },
+    {
+      "id": "subscribe-negative-timeout",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "events",
+        "timeoutMs": -1
+      },
+      "expectedFailure": "PULSEWASM_GRIP_TIMEOUT_INVALID"
+    },
+    {
+      "id": "subscribe-fractional-timeout",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "events",
+        "timeoutMs": 1.5
+      },
+      "expectedFailure": "PULSEWASM_GRIP_TIMEOUT_INVALID"
+    },
+    {
+      "id": "subscribe-unsafe-timeout",
+      "group": "invalid-framing",
+      "operation": "subscribe",
+      "options": {
+        "channel": "events",
+        "timeoutMs": 9007199254740992
+      },
+      "expectedFailure": "PULSEWASM_GRIP_TIMEOUT_INVALID"
+    },
+    {
+      "id": "handoff-default-content-type",
+      "group": "handoff",
+      "fixture": "default",
+      "expected": {
+        "status": 200,
+        "contentType": "application/websocket-events",
+        "hold": "stream",
+        "channels": ["socket:default"],
+        "body": "DEFAULT"
+      }
+    },
+    {
+      "id": "handoff-explicit-status-headers-body",
+      "group": "handoff",
+      "fixture": "explicit",
+      "expected": {
+        "status": 201,
+        "contentType": "application/websocket-events",
+        "hold": "stream",
+        "channels": ["socket:primary", "socket:audit"],
+        "timeout": "0",
+        "body": "OPEN",
+        "repeated": ["one", "two"]
+      }
+    },
+    {
+      "id": "handoff-explicit-content-type",
+      "group": "handoff-javascript",
+      "options": {
+        "channel": "socket:custom",
+        "status": 203,
+        "headers": [["Content-Type", "application/custom-events"]],
+        "body": "CUSTOM"
+      },
+      "expected": {
+        "status": 203,
+        "contentType": "application/custom-events",
+        "body": "CUSTOM"
+      }
+    },
+    {
+      "id": "handoff-caller-owned-exact-body",
+      "group": "handoff-javascript",
+      "classification": "caller-owned-exact-text",
+      "options": {
+        "channel": "socket:exact",
+        "body": "{\"b\":2, \"a\":1}\n"
+      },
+      "expected": {
+        "body": "{\"b\":2, \"a\":1}\n"
+      }
+    },
+    {
+      "id": "broadcast-direct-await",
+      "group": "broadcast-native",
+      "fixture": "direct",
+      "expected": {
+        "accepted": true,
+        "status": 202,
+        "messageId": "direct-id"
+      }
+    },
+    {
+      "id": "broadcast-keyed-parallel",
+      "group": "broadcast-native",
+      "fixture": "parallel",
+      "expected": {
+        "accepted": true,
+        "status": 202,
+        "messageId": "updates-id",
+        "mode": "test"
+      }
+    },
+    {
+      "id": "broadcast-configured-capability",
+      "group": "broadcast-provider",
+      "scenario": "success",
+      "expected": {
+        "accepted": true,
+        "status": 202,
+        "messageId": "provider-id"
+      }
+    },
+    {
+      "id": "broadcast-missing-publish-capability",
+      "group": "broadcast-provider",
+      "scenario": "missing-capability",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_CAPABILITY_REQUIRED"
+    },
+    {
+      "id": "broadcast-authentication-redaction-success",
+      "group": "broadcast-provider",
+      "scenario": "authentication-success",
+      "expected": {
+        "accepted": true,
+        "authorizationPresent": true,
+        "secretRecorded": false
+      }
+    },
+    {
+      "id": "broadcast-authentication-secret-missing",
+      "group": "broadcast-provider",
+      "scenario": "authentication-missing",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_SECRET_REQUIRED"
+    },
+    {
+      "id": "broadcast-acknowledgement-normalization",
+      "group": "broadcast-provider",
+      "scenario": "acknowledgement-normalization",
+      "expected": {
+        "accepted": false,
+        "status": 207,
+        "messageId": "ack-id"
+      }
+    },
+    {
+      "id": "broadcast-request-cancellation",
+      "group": "broadcast-provider",
+      "scenario": "cancelled",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_ABORTED"
+    },
+    {
+      "id": "broadcast-request-body-bounded",
+      "group": "broadcast-provider",
+      "scenario": "request-too-large",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_REQUEST_TOO_LARGE"
+    },
+    {
+      "id": "broadcast-response-body-bounded",
+      "group": "broadcast-provider",
+      "scenario": "response-too-large",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_RESPONSE_TOO_LARGE"
+    },
+    {
+      "id": "broadcast-provider-rejection",
+      "group": "broadcast-provider",
+      "scenario": "rejected",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_REJECTED"
+    },
+    {
+      "id": "broadcast-grouped-failure-order",
+      "group": "broadcast-group-failure",
+      "expected": {
+        "failureIds": ["config-get-1", "grip-broadcast-1"],
+        "deterministic": true
+      }
+    },
+    {
+      "id": "broadcast-endpoint-not-ambient",
+      "group": "broadcast-provider",
+      "scenario": "invalid-endpoint",
+      "expectedFailure": "PULSE_GRIP_BROADCAST_ENDPOINT_INVALID"
+    }
+  ],
+  "negativeControls": [
+    {
+      "id": "drift-classification",
+      "caseId": "classify-upgrade-case-tokenized",
+      "path": "/websocket",
+      "replacement": false
+    },
+    {
+      "id": "drift-channel-order",
+      "caseId": "subscribe-repeated-response-mode",
+      "path": "/channels",
+      "replacement": ["audit", "updates"]
+    },
+    {
+      "id": "drift-status",
+      "caseId": "handoff-explicit-status-headers-body",
+      "path": "/status",
+      "replacement": 200
+    },
+    {
+      "id": "drift-broadcast-ack",
+      "caseId": "broadcast-direct-await",
+      "path": "/accepted",
+      "replacement": false
+    },
+    {
+      "id": "drift-caller-owned-body",
+      "caseId": "handoff-caller-owned-exact-body",
+      "path": "/body",
+      "replacement": "{\"a\":1,\"b\":2}"
+    }
+  ]
+}

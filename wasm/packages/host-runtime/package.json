@@ -1,0 +1,51 @@
+{
+  "name": "@pulse-compute/wasm-host-runtime",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Platform-neutral PulseWasm host runtime package-owned builders and runtime helpers.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./compiler": "./src/compiler/index.js",
+    "./compiler/host-runtime-kernel": "./src/compiler/host-runtime-kernel.js",
+    "./compiler/wasm-host-abi": "./src/compiler/wasm-host-abi.js",
+    "./compiler/wasm-host-bridge": "./src/compiler/wasm-host-bridge.js",
+    "./compiler/request-result-headers": "./src/compiler/request-result-headers.js",
+    "./compiler/channel-broadcaster": "./src/compiler/channel-broadcaster.js",
+    "./compiler/streaming-passthrough": "./src/compiler/streaming-passthrough.js",
+    "./compiler/json-body": "./src/compiler/json-body.js",
+    "./compiler/backend-capabilities": "./src/compiler/backend-capabilities.js",
+    "./compiler/compiled-wasm-runtime": "./src/compiler/compiled-wasm-runtime.js",
+    "./runtime": "./src/runtime/index.js",
+    "./runtime/compiled-wasm-host-runtime-kv": "./src/runtime/compiled-wasm-host-runtime-kv.js",
+    "./runtime/kv-provider": "./src/runtime/kv-provider.js",
+    "./runtime/continuation-registry": "./src/runtime/continuation-registry.js",
+    "./runtime/canonical-api-runtime": "./src/runtime/canonical-api-runtime.js",
+    "./runtime/canonical-native-host": "./src/runtime/canonical-native-host.js"
+  },
+  "dependencies": {
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/wasm-schema-json": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "wasm/packages/host-runtime"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

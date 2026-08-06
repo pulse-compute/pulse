@@ -1,0 +1,70 @@
+{
+  "version": "pulse.entities-envelope-corpus.v1",
+  "valid": [
+    {
+      "name": "object params and raw string id",
+      "text": "{\"jsonrpc\":\"2.0\",\"method\":\"user.create\",\"params\":{\"name\":\"Ada\",\"nested\":{\"n\":1}},\"id\":\"req\\u002d1\"}",
+      "method": "user.create",
+      "paramsRaw": "{\"name\":\"Ada\",\"nested\":{\"n\":1}}",
+      "idKind": "string",
+      "idRaw": "\"req\\u002d1\""
+    },
+    {
+      "name": "array params and numeric id",
+      "text": " { \"jsonrpc\" : \"2.0\", \"method\" : \"array.capture\", \"params\" : [1,{\"ok\":true},null], \"id\" : 7 } ",
+      "method": "array.capture",
+      "paramsRaw": "[1,{\"ok\":true},null]",
+      "idKind": "number",
+      "idRaw": "7"
+    },
+    {
+      "name": "primitive params and null id",
+      "text": "{\"jsonrpc\":\"2.0\",\"method\":\"primitive.capture\",\"params\":true,\"id\":null}",
+      "method": "primitive.capture",
+      "paramsRaw": "true",
+      "idKind": "null",
+      "idRaw": "null"
+    },
+    {
+      "name": "null params and absent id",
+      "text": "{\"jsonrpc\":\"2.0\",\"method\":\"notify\",\"params\":null}",
+      "method": "notify",
+      "paramsRaw": "null",
+      "idKind": "absent"
+    },
+    {
+      "name": "absent params and unicode",
+      "text": "{\"ignored\":{\"emoji\":\"🚀\"},\"method\":\"méthode.東京\",\"jsonrpc\":\"2.0\",\"id\":\"雪\"}",
+      "method": "méthode.東京",
+      "idKind": "string",
+      "idRaw": "\"雪\""
+    },
+    {
+      "name": "negative safe integer id",
+      "text": "{\"jsonrpc\":\"2.0\",\"method\":\"negative\",\"params\":-12.5e+2,\"id\":-9007199254740991}",
+      "method": "negative",
+      "paramsRaw": "-12.5e+2",
+      "idKind": "number",
+      "idRaw": "-9007199254740991"
+    }
+  ],
+  "invalid": [
+    { "name": "top-level array", "text": "[]", "code": "PULSE_ENTITIES_TOP_LEVEL_OBJECT_REQUIRED" },
+    { "name": "top-level primitive", "text": "true", "code": "PULSE_ENTITIES_TOP_LEVEL_OBJECT_REQUIRED" },
+    { "name": "malformed nested object", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"params\":{\"a\":[1,2}}", "code": "PULSE_ENTITIES_JSON_MALFORMED" },
+    { "name": "trailing content", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\"} null", "code": "PULSE_ENTITIES_JSON_MALFORMED" },
+    { "name": "duplicate jsonrpc", "text": "{\"jsonrpc\":\"2.0\",\"jsonrpc\":\"2.0\",\"method\":\"x\"}", "code": "PULSE_ENTITIES_DUPLICATE_RESERVED_KEY" },
+    { "name": "duplicate method", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"method\":\"y\"}", "code": "PULSE_ENTITIES_DUPLICATE_RESERVED_KEY" },
+    { "name": "duplicate params", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"params\":{},\"params\":null}", "code": "PULSE_ENTITIES_DUPLICATE_RESERVED_KEY" },
+    { "name": "duplicate id", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"id\":1,\"id\":2}", "code": "PULSE_ENTITIES_DUPLICATE_RESERVED_KEY" },
+    { "name": "wrong protocol version", "text": "{\"jsonrpc\":\"1.0\",\"method\":\"x\"}", "code": "PULSE_ENTITIES_JSONRPC_VERSION_INVALID" },
+    { "name": "empty method", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"\"}", "code": "PULSE_ENTITIES_METHOD_INVALID" },
+    { "name": "fractional id", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"id\":1.5}", "code": "PULSE_ENTITIES_ID_INVALID" },
+    { "name": "unsafe id", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"id\":9007199254740992}", "code": "PULSE_ENTITIES_ID_INVALID" },
+    { "name": "boolean id", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"x\",\"id\":false}", "code": "PULSE_ENTITIES_ID_INVALID" },
+    { "name": "envelope byte limit", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"limit\"}", "limits": { "maxEnvelopeBytes": 16 }, "code": "PULSE_ENTITIES_ENVELOPE_TOO_LARGE" },
+    { "name": "payload byte limit", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"limit\",\"params\":{\"value\":\"long\"}}", "limits": { "maxPayloadBytes": 8 }, "code": "PULSE_ENTITIES_PAYLOAD_TOO_LARGE" },
+    { "name": "method byte limit", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"éé\"}", "limits": { "maxMethodBytes": 3 }, "code": "PULSE_ENTITIES_METHOD_INVALID" },
+    { "name": "nesting limit", "text": "{\"jsonrpc\":\"2.0\",\"method\":\"deep\",\"params\":[[[[0]]]]}", "limits": { "maxDepth": 3 }, "code": "PULSE_ENTITIES_JSON_TOO_DEEP" }
+  ]
+}

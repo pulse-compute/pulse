@@ -1,0 +1,592 @@
+{
+  "version": "pulse.jwt-crypto-migration-map.v1",
+  "status": "accepted-for-d1",
+  "scope": {
+    "phase": "D0",
+    "operation": "HS256 JWT verification over @pulse-compute/crypto",
+    "changeClass": "evidence",
+    "implementationChanges": false,
+    "publication": false,
+    "deployment": false
+  },
+  "evidenceClassification": {
+    "observedFacts": [
+      "The sealed Phase C contract and shared fourteen-case HS256 corpus are present.",
+      "The ordered JWT build followed by the focused JWT and crypto tests passes.",
+      "JWT has no direct @pulse-compute/crypto dependency or source import.",
+      "Node JavaScript delegates authenticity and registered-claim validation to jose jwtVerify.",
+      "Node Native delegates RS256 authenticity to a provider-owned Web Crypto verifier.",
+      "Fastly JavaScript and Fastly Native do not currently execute JWT verification.",
+      "Node and Fastly target descriptors already advertise the Phase C HS256 crypto realizations independently of JWT."
+    ],
+    "acceptedContracts": [
+      "JWT owns compact JOSE parsing, protected-header policy, key selection, claims semantics, schema ordering, errors, redaction, and detached results.",
+      "Crypto owns authentication of the exact JWS signing-input bytes and decoded authenticator bytes.",
+      "The initial composed JWT surface supports HS256 verification only.",
+      "JavaScript selects runtime-builtin and Native selects guest-source:pulse-hmac-as before execution.",
+      "Selected realization failure never retries jose, a provider verifier, another target, or another realization."
+    ],
+    "inferences": [
+      "The existing JWT semantic tests are reusable after their RS256 fixtures and backend call-count assertions are migrated to the HS256 crypto seam.",
+      "The provider-owned secret and wall-clock authorities can remain while authenticity ownership moves to crypto."
+    ],
+    "unresolvedAssumptions": [
+      "Production publication, deployment, and provider activation remain outside Phase D0.",
+      "Browser and ESP32 target claims remain outside the initial cross-target proof."
+    ]
+  },
+  "phaseCGate": {
+    "file": "wasm/.test-results/crypto-c4/phase-c-seal.json",
+    "sha256": "6f59e2158e54878b8ce632c89c9ba67bcb88903e67c96d5ef1647a58d8a623fd",
+    "version": "pulse.crypto.phase-c-seal.v1",
+    "status": "passed",
+    "nextAuthorizedPhase": "D",
+    "corpus": {
+      "file": "packages/crypto/conformance/hs256.json",
+      "version": "pulse.crypto.hs256-conformance.v2",
+      "sha256": "85a34f52dc37830fae6ac4541ddcaf490c18f72c1534ca8b8bcbf496156097ff",
+      "verificationCases": 14,
+      "configurationCases": 14
+    },
+    "realizations": {
+      "javascript": "runtime-builtin",
+      "native": "guest-source:pulse-hmac-as",
+      "guestLinkedRequired": false,
+      "automaticFallback": false
+    }
+  },
+  "ownership": {
+    "jwt": [
+      "Bearer extraction",
+      "bounded compact-JWS parsing",
+      "strict Base64url and UTF-8 processing",
+      "protected-header alg, kid, typ, crit, and b64 policy",
+      "static JWT algorithm allowlist",
+      "exact signing-input construction",
+      "named-secret request",
+      "JWK and JWKS interpretation when a crypto-owned asymmetric algorithm exists",
+      "registered-claim validation",
+      "claims-schema validation ordering",
+      "detached immutable result",
+      "JWT error mapping and redaction"
+    ],
+    "crypto": [
+      "canonical crypto algorithm identity",
+      "typed verification-key bytes",
+      "authentication of exact caller-supplied bytes",
+      "closed verification result taxonomy",
+      "realization requirements and target compatibility",
+      "backend result normalization",
+      "no-fallback posture"
+    ],
+    "provider": [
+      "request-owned named-secret resolution",
+      "one captured trusted Unix wall-clock instant",
+      "claims-schema codec execution",
+      "request lifecycle and sensitive-value registration"
+    ],
+    "compiler": [
+      "reachable package requirement collection",
+      "effective profile replacement semantics",
+      "selected-target realization planning",
+      "failure before artifact generation",
+      "whole-project reporting without secret material"
+    ]
+  },
+  "verificationPaths": [
+    {
+      "id": "package-root-effect-dispatch",
+      "entry": "packages/jwt/src/index.ts#verify",
+      "authenticityOwner": "provider-selected package effect",
+      "algorithms": [
+        "HS256",
+        "RS256",
+        "ES256",
+        "EdDSA"
+      ],
+      "activeAuthenticity": false,
+      "disposition": "retain-dispatch-add-crypto-requirement",
+      "notes": "The public facade preflights and normalizes, then emits jwt.verify. It must remain provider-neutral."
+    },
+    {
+      "id": "node-javascript-jose",
+      "entry": "packages/provider-node/src/javascript/jwt-verifier.js#createNodeJavascriptJwtVerify",
+      "authenticityOwner": "packages/jwt/src/javascript-verifier.ts#verifyJwtWithJose via jose.jwtVerify",
+      "algorithms": [
+        "HS256",
+        "RS256",
+        "ES256",
+        "EdDSA"
+      ],
+      "activeAuthenticity": true,
+      "disposition": "replace-hs256-with-crypto-mark-asymmetric-unavailable",
+      "notes": "The current path captures wall-clock before jose performs authenticity and claims validation. The composed path must authenticate through crypto before clock capture and claims parsing."
+    },
+    {
+      "id": "provider-direct-jose",
+      "entry": "packages/jwt/src/provider.ts#verifyJwtWithJose",
+      "authenticityOwner": "jose.jwtVerify",
+      "algorithms": [
+        "HS256",
+        "RS256",
+        "ES256",
+        "EdDSA"
+      ],
+      "activeAuthenticity": true,
+      "disposition": "remove-as-authenticity-entrypoint",
+      "notes": "jose may remain only for bounded JOSE helpers that do not authenticate HS256 or advertise an unsupported asymmetric path."
+    },
+    {
+      "id": "provider-direct-host-crypto",
+      "entry": "packages/jwt/src/provider.ts#verifyJwtWithHostCrypto",
+      "authenticityOwner": "caller-supplied verifySignature callback",
+      "algorithms": [
+        "HS256",
+        "RS256",
+        "ES256",
+        "EdDSA"
+      ],
+      "activeAuthenticity": true,
+      "disposition": "replace-with-typed-jwt-to-crypto-seam",
+      "notes": "The generic callback is backend authority inside JWT and cannot remain the HS256 composition boundary."
+    },
+    {
+      "id": "node-native-host-verify-rs256",
+      "entry": "packages/provider-node/src/runtime/jwt-host-verify.js#createNodeNativeJwtVerify",
+      "authenticityOwner": "provider-node Web Crypto RSASSA-PKCS1-v1_5 verifier",
+      "algorithms": [
+        "RS256"
+      ],
+      "activeAuthenticity": true,
+      "disposition": "remove-from-supported-proof",
+      "notes": "No active Node Native HS256 host verifier exists. HS256 is currently rejected by the JWT lowerer even though the target separately advertises guest-source:pulse-hmac-as through crypto."
+    },
+    {
+      "id": "fastly-javascript-unavailable",
+      "entry": "packages/provider-fastly/src/javascript/package-effects.js#unavailableJwt",
+      "authenticityOwner": "none",
+      "algorithms": [],
+      "activeAuthenticity": false,
+      "disposition": "replace-with-crypto-composed-hs256",
+      "notes": "The target already advertises runtime-builtin HS256 through crypto; JWT and wall-clock integration remain pending."
+    },
+    {
+      "id": "fastly-native-unavailable",
+      "entry": "packages/provider-fastly/src/toolchain/index.js#targets.native",
+      "authenticityOwner": "none",
+      "algorithms": [],
+      "activeAuthenticity": false,
+      "disposition": "replace-with-crypto-composed-hs256",
+      "notes": "The target already advertises guest-source:pulse-hmac-as through crypto but exposes no JWT capability, key form, or wall-clock contract to the current JWT lowerer."
+    }
+  ],
+  "dependencyAndBackendUses": {
+    "jose": [
+      {
+        "file": "packages/jwt/src/javascript-verifier.ts",
+        "symbols": [
+          "importJWK",
+          "jwtVerify"
+        ],
+        "disposition": "jwtVerify-authenticity-replaced; importJWK-deferred-with-asymmetric-surface"
+      },
+      {
+        "file": "packages/jwt/test/javascript-verifier.test.ts",
+        "symbols": [
+          "CompactSign",
+          "SignJWT",
+          "exportJWK",
+          "generateKeyPair"
+        ],
+        "disposition": "retain-only-as-test-fixture-authoring-where-useful"
+      },
+      {
+        "file": "packages/jwt/test/provider-runtime.test.ts",
+        "symbols": [
+          "SignJWT",
+          "exportJWK",
+          "generateKeyPair"
+        ],
+        "disposition": "retain-only-as-test-fixture-authoring-where-useful"
+      }
+    ],
+    "webCrypto": [
+      {
+        "file": "packages/provider-node/src/runtime/jwt-host-verify.js",
+        "use": "RS256 importKey and verify with runtime probing",
+        "disposition": "remove-from-supported-jwt-proof"
+      },
+      {
+        "file": "packages/jwt/test/javascript-verifier.test.ts",
+        "use": "RS256 signing and host-verifier fixture",
+        "disposition": "replace backend assertions with crypto seam assertions"
+      },
+      {
+        "file": "wasm/test/jwt/assert-jwt-native-webcrypto.cjs",
+        "use": "RS256 Native host-verifier proof",
+        "disposition": "preserve semantic corpus but replace backend ownership evidence"
+      }
+    ],
+    "secretResolution": [
+      {
+        "file": "packages/provider-node/src/javascript/runtime-host.js",
+        "use": "bind request-owned secret capability into JWT provider execution",
+        "disposition": "retain-provider-authority"
+      },
+      {
+        "file": "packages/provider-node/src/javascript/jwt-verifier.js",
+        "use": "forward named-secret lookup to JWT",
+        "disposition": "retain-provider-authority"
+      },
+      {
+        "file": "packages/jwt/src/javascript-verifier.ts",
+        "use": "resolve and UTF-8 encode HS256 secret before jose",
+        "disposition": "retain-resolution-and-detachment-replace-authenticator"
+      },
+      {
+        "file": "packages/jwt/src/host-verifier.ts",
+        "use": "resolve and detach HS256 secret before caller verifier",
+        "disposition": "consolidate-into-one-jwt-crypto-composition-path"
+      }
+    ],
+    "wallClock": [
+      {
+        "file": "packages/provider-node/src/javascript/jwt-verifier.js",
+        "use": "provider-owned current Unix time capture",
+        "disposition": "retain-provider-authority"
+      },
+      {
+        "file": "packages/jwt/src/javascript-verifier.ts",
+        "use": "capture before combined jose authenticity and claims validation",
+        "disposition": "move-after-crypto-valid"
+      },
+      {
+        "file": "packages/jwt/src/host-verifier.ts",
+        "use": "capture after authenticity and before registered claims",
+        "disposition": "retain-order"
+      },
+      {
+        "file": "packages/provider-node/src/runtime/jwt-host-verify.js",
+        "use": "provider-owned Native clock capture",
+        "disposition": "retain-authority-remove-rs256-backend-coupling"
+      }
+    ],
+    "claimsSchemas": [
+      {
+        "file": "packages/jwt/src/javascript-verifier.ts",
+        "use": "validate verified in-memory claims through provider codecs",
+        "disposition": "retain-after-registered-claims"
+      },
+      {
+        "file": "packages/jwt/src/host-verifier.ts",
+        "use": "validate after authenticity and registered claims",
+        "disposition": "retain-and-consolidate"
+      },
+      {
+        "file": "packages/jwt/pulsewasm.compiler.cjs",
+        "use": "require static schema ID with a realized cross-target codec",
+        "disposition": "retain"
+      }
+    ],
+    "nativeLowering": [
+      {
+        "file": "packages/jwt/pulsewasm.compiler.cjs",
+        "use": "static JWT policy, JWK artifacts, jwt.verify.* target capabilities, and host-verify selection",
+        "disposition": "retain-static-jwt-semantics-replace-backend-and-requirement-model"
+      },
+      {
+        "file": "packages/jwt/pulsewasm.manifest.cjs",
+        "use": "RS256 host-verify realization declaration",
+        "disposition": "replace-with-crypto-requirement-and-selected-realization-provenance"
+      },
+      {
+        "file": "packages/jwt/as/index.as.ts",
+        "use": "host-dispatch sentinel only; no cryptography",
+        "disposition": "retain-only-if-needed-for-package-effect-control-flow"
+      }
+    ]
+  },
+  "algorithmAndTargetTopology": {
+    "jwtDeclarations": {
+      "runtimeOptions": [
+        "HS256",
+        "RS256",
+        "ES256",
+        "EdDSA"
+      ],
+      "compilerContracts": [
+        "HS256",
+        "RS256",
+        "ES256",
+        "EdDSA"
+      ],
+      "proofDisposition": {
+        "HS256": "supported-after-composition",
+        "RS256": "unavailable-until-crypto-owned",
+        "ES256": "unavailable-until-crypto-owned",
+        "EdDSA": "unavailable-until-crypto-owned",
+        "none": "never-accepted"
+      }
+    },
+    "cryptoDeclarations": {
+      "algorithms": [
+        "HS256"
+      ],
+      "javascript": "runtime-builtin",
+      "native": "guest-source:pulse-hmac-as"
+    },
+    "targets": {
+      "node-javascript": {
+        "jwt": "jose-webcrypto-all-four",
+        "cryptoHs256": "runtime-builtin",
+        "d1Disposition": "crypto-hs256-only"
+      },
+      "fastly-javascript": {
+        "jwt": "pending",
+        "cryptoHs256": "runtime-builtin",
+        "d1Disposition": "crypto-hs256-only"
+      },
+      "node-native": {
+        "jwt": "host-verify-rs256",
+        "cryptoHs256": "guest-source:pulse-hmac-as",
+        "d1Disposition": "crypto-hs256-only"
+      },
+      "fastly-native": {
+        "jwt": "not-realized",
+        "cryptoHs256": "guest-source:pulse-hmac-as",
+        "d1Disposition": "crypto-hs256-only"
+      }
+    }
+  },
+  "behaviorDispositions": [
+    {
+      "behavior": "Bearer extraction",
+      "current": "packages/jwt/src/bearer.ts",
+      "disposition": "retain-under-jwt"
+    },
+    {
+      "behavior": "Compact JWS limits and strict parsing",
+      "current": "packages/jwt/src/token.ts",
+      "disposition": "retain-and-harden-under-jwt"
+    },
+    {
+      "behavior": "Protected-header allowlist",
+      "current": "packages/jwt/src/token.ts and packages/jwt/src/options.ts",
+      "disposition": "retain-under-jwt"
+    },
+    {
+      "behavior": "Exact signing-input construction",
+      "current": "packages/jwt/src/token.ts#compactJwtSignatureInput",
+      "disposition": "make-the-only-crypto-data-input"
+    },
+    {
+      "behavior": "Secret binding resolution",
+      "current": "provider binding authority plus JWT resolver helpers",
+      "disposition": "retain-behind-provider-request-authority"
+    },
+    {
+      "behavior": "HS256 authenticity in jose",
+      "current": "packages/jwt/src/javascript-verifier.ts#verifyJwtWithJose",
+      "disposition": "replace-with-crypto-mac-verify"
+    },
+    {
+      "behavior": "JWT-side Web Crypto detection",
+      "current": "provider-node Native host verifier and generic JWT host callback seam",
+      "disposition": "remove-from-jwt-composition"
+    },
+    {
+      "behavior": "Native host signature verifier for HS256",
+      "current": "not implemented; current host verifier is RS256-only",
+      "disposition": "use-selected-crypto-guest-source"
+    },
+    {
+      "behavior": "Registered claims",
+      "current": "jose combined validation and packages/jwt/src/host-verifier.ts",
+      "disposition": "retain-after-authenticity-in-one-jwt-owned-path"
+    },
+    {
+      "behavior": "Claims schema",
+      "current": "packages/jwt/src/javascript-verifier.ts#validateClaimsSchema",
+      "disposition": "retain-after-registered-claims"
+    },
+    {
+      "behavior": "Detached immutable result",
+      "current": "packages/jwt/src/result.ts",
+      "disposition": "retain"
+    },
+    {
+      "behavior": "RS256/ES256/EdDSA advertised support",
+      "current": "options, contracts, provider policies, manifests, descriptors, tests, and corpus",
+      "disposition": "mark-unavailable-until-crypto-owns-each-algorithm"
+    }
+  ],
+  "testDispositions": [
+    {
+      "file": "packages/jwt/test/bearer.test.ts",
+      "classification": "reusable-semantics",
+      "retain": [
+        "missing header",
+        "case-insensitive scheme",
+        "malformed and redacted credentials",
+        "hostile accessor rejection"
+      ],
+      "replace": []
+    },
+    {
+      "file": "packages/jwt/test/options.test.ts",
+      "classification": "mixed",
+      "retain": [
+        "bounded policy collections",
+        "hostile accessor rejection",
+        "detached immutable values",
+        "prototype-safe result copying"
+      ],
+      "replace": [
+        "public JWK and asymmetric key compatibility as supported HS256 behavior"
+      ]
+    },
+    {
+      "file": "packages/jwt/test/javascript-verifier.test.ts",
+      "classification": "mixed",
+      "retain": [
+        "one clock instant",
+        "authenticity before claims schema",
+        "registered-claim boundaries",
+        "named-secret authority",
+        "redaction",
+        "classified schema errors",
+        "strict compact input",
+        "critical-header policy",
+        "non-finite JSON rejection",
+        "hostile schema result rejection"
+      ],
+      "replace": [
+        "jose jwtVerify authenticity",
+        "RS256 host callback authenticity",
+        "clock capture before authenticity",
+        "asymmetric backend parity"
+      ]
+    },
+    {
+      "file": "packages/jwt/test/package-runtime.test.ts",
+      "classification": "reusable-semantics",
+      "retain": [
+        "request-owned effect dispatch",
+        "operation redaction",
+        "detached result normalization"
+      ],
+      "replace": [
+        "RS256 fixture with HS256"
+      ]
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "classification": "mixed",
+      "retain": [
+        "real provider package effect",
+        "named-secret authority",
+        "public JwtError identity",
+        "schema ordering",
+        "clock authority",
+        "redaction and fail-closed support classification"
+      ],
+      "replace": [
+        "RS256 migrated-handler backend",
+        "ES256 and EdDSA advertised support",
+        "jwt.verify.<algorithm> backend requirements",
+        "Fastly JWT pending assertion"
+      ]
+    },
+    {
+      "file": "wasm/test/jwt/assert-jwt-package-owned-lowering.cjs",
+      "classification": "mixed",
+      "retain": [
+        "package-owned facade recognition",
+        "static options",
+        "Bearer intrinsic",
+        "schema references",
+        "result access",
+        "redaction",
+        "target fail-closed behavior"
+      ],
+      "replace": [
+        "JWK artifact transport as the initial proof",
+        "jwt.verify.rs256 requirements",
+        "portable-wasm and host-verify JWT realization selection"
+      ]
+    },
+    {
+      "file": "wasm/test/jwt/assert-jwt-native-webcrypto.cjs",
+      "classification": "obsolete-backend-with-reusable-corpus",
+      "retain": [
+        "direct and ctx.parallel parity",
+        "claim and time boundaries",
+        "schema ordering",
+        "limits",
+        "redaction",
+        "target rejection"
+      ],
+      "replace": [
+        "Node Native RS256 Web Crypto host verifier",
+        "public-key artifacts",
+        "RS256 call counters",
+        "Fastly Native JWT-unavailable claim"
+      ]
+    },
+    {
+      "file": "wasm/test/jwt/jwt-cross-target-corpus.json",
+      "classification": "reusable-semantics-rekey-required",
+      "retain": [
+        "success",
+        "audience",
+        "issuer",
+        "clock tolerance",
+        "expiration",
+        "not-before",
+        "invalid authenticity",
+        "schema after authenticity",
+        "untrusted clock",
+        "token limit"
+      ],
+      "replace": [
+        "RS256 algorithm authority",
+        "JWK and JWKS key authority"
+      ]
+    }
+  ],
+  "orderingFindings": [
+    {
+      "id": "javascript-clock-before-authenticity",
+      "status": "must-change",
+      "evidence": "verifyJwtWithJose captures currentDate before jose.jwtVerify",
+      "requiredOrder": "crypto valid then claims parse then one wall-clock capture then registered claims"
+    },
+    {
+      "id": "host-path-authenticity-order",
+      "status": "reusable",
+      "evidence": "verifyJwtWithHostCrypto parses claims, captures time, and invokes schema only after verifySignature returns true"
+    },
+    {
+      "id": "payload-preflight-containment",
+      "status": "reusable-with-explicit-guard",
+      "evidence": "preflight decodes bounded payload text but does not parse, register, validate, or expose claims before authenticity"
+    },
+    {
+      "id": "combined-jose-boundary",
+      "status": "must-change",
+      "evidence": "jose.jwtVerify combines authenticity and registered-claim validation, so JWT cannot demonstrate the required crypto seam"
+    }
+  ],
+  "versionDecision": {
+    "frozenReleaseCatalog": "1.0.0-beta.1",
+    "frozenReleaseCatalogMutation": false,
+    "jwtSourceVersion": "1.0.0-beta.1",
+    "cryptoSourceVersion": "1.0.0-beta.1",
+    "d0Blocker": false,
+    "decision": "align-crypto-source-to-1.0.0-beta.1-at-d1-before-recording-the-direct-dependency",
+    "dependencyRange": "workspace:*",
+    "publication": false,
+    "reason": "The crypto package is already documented as the unreleased 0.2 candidate and its package version appears in Native realization provenance; aligning the working source candidate avoids mixed-version evidence without changing the immutable 0.1 release catalog."
+  },
+  "nextAuthorizedUnit": "D1"
+}

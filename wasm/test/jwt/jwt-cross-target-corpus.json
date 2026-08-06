@@ -1,0 +1,118 @@
+{
+  "version": "pulse.jwt-cross-target-conformance-corpus.d3.v1",
+  "authority": {
+    "targets": [
+      {
+        "id": "node-javascript",
+        "status": "executable",
+        "realization": "runtime-builtin",
+        "implementation": "webcrypto.subtle.hmac-sha-256.v1"
+      },
+      {
+        "id": "fastly-javascript",
+        "status": "executable",
+        "realization": "runtime-builtin",
+        "implementation": "webcrypto.subtle.hmac-sha-256.v1"
+      },
+      {
+        "id": "node-native",
+        "status": "executable",
+        "realization": "guest-source:pulse-hmac-as",
+        "implementation": "pulse-hmac-as.v1"
+      },
+      {
+        "id": "fastly-native",
+        "status": "planning-blocked",
+        "reasonId": "fastly-native-jwt-package-effect-unavailable"
+      }
+    ],
+    "sharedAlgorithms": [
+      "HS256"
+    ],
+    "sharedKeyTypes": [
+      "secret"
+    ],
+    "automaticFallback": false
+  },
+  "cases": [
+    {
+      "id": "valid-string-audience",
+      "token": "valid",
+      "outcome": "success",
+      "body": "native-user:HS256"
+    },
+    {
+      "id": "valid-array-audience",
+      "token": "array-audience",
+      "outcome": "success",
+      "body": "array-audience-user:HS256"
+    },
+    {
+      "id": "valid-alternate-issuer",
+      "token": "alternate-issuer",
+      "outcome": "success",
+      "body": "alternate-issuer-user:HS256"
+    },
+    {
+      "id": "expiration-inside-tolerance",
+      "token": "expiration-inside-tolerance",
+      "outcome": "success",
+      "body": "expiration-inside-user:HS256"
+    },
+    {
+      "id": "expiration-at-tolerance-boundary",
+      "token": "expiration-at-tolerance-boundary",
+      "outcome": "error",
+      "code": "PULSE_JWT_CLAIMS_INVALID"
+    },
+    {
+      "id": "not-before-at-tolerance-boundary",
+      "token": "not-before-at-tolerance-boundary",
+      "outcome": "success",
+      "body": "not-before-boundary-user:HS256"
+    },
+    {
+      "id": "not-before-beyond-tolerance",
+      "token": "not-before-beyond-tolerance",
+      "outcome": "error",
+      "code": "PULSE_JWT_CLAIMS_INVALID"
+    },
+    {
+      "id": "invalid-signature",
+      "token": "invalid-signature",
+      "outcome": "error",
+      "code": "PULSE_JWT_SIGNATURE_INVALID"
+    },
+    {
+      "id": "expired",
+      "token": "expired",
+      "outcome": "error",
+      "code": "PULSE_JWT_CLAIMS_INVALID"
+    },
+    {
+      "id": "schema-invalid-after-valid-signature",
+      "token": "schema-invalid",
+      "outcome": "error",
+      "code": "PULSE_JWT_CLAIMS_SCHEMA_INVALID"
+    },
+    {
+      "id": "signature-precedes-schema",
+      "token": "invalid-signature-and-schema",
+      "outcome": "error",
+      "code": "PULSE_JWT_SIGNATURE_INVALID"
+    },
+    {
+      "id": "untrusted-provider-clock",
+      "token": "valid",
+      "clock": "untrusted",
+      "outcome": "error",
+      "code": "PULSE_JWT_CLOCK_UNAVAILABLE"
+    },
+    {
+      "id": "oversized-token",
+      "token": "oversized",
+      "outcome": "error",
+      "code": "PULSE_JWT_LIMIT_EXCEEDED"
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+# Explicit JSON schemas
+
+Schemas are static project declarations, not runtime reflection. The compiler does not execute the registry module. Pulse extracts the default export,
+compiles deterministic JavaScript and Native codecs, and binds literal schema
+IDs at every structured JSON boundary.
+
+## Declare the registry
+
+<!-- pulse-doc-source: examples/02-request-schema/src/schemas.ts -->
+```ts
+import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
+
+export interface CreateUserInput {
+  name: string
+  active: boolean
+}
+
+export interface CreateUserOutput {
+  id: number
+  name: string
+  active: boolean
+  sameReference: boolean
+}
+
+export default defineSchemaRegistry({
+  schemas: {
+    'app.CreateUserInput': schema<CreateUserInput>(),
+    'app.CreateUserOutput': schema<CreateUserOutput>(),
+  },
+})
+```
+<!-- /pulse-doc-source -->
+
+The string keys are the contract. TypeScript type names help authoring, but they
+are not discovered automatically and do not become runtime schema IDs.
+
+The schema subset is intentionally portable:
+
+- an object root with required property signatures;
+- `string`, `boolean`, and finite JSON `number`;
+- `Int32` and `Uint32` marker types imported with `import type`;
+- nested object types and arrays;
+- string-literal enums such as `'admin' | 'member'`;
+- one supported type unioned with `null`.
+
+Optional fields, `undefined`, recursive or generic types, interface inheritance,
+arbitrary unions, computed registry keys, runtime registry code, and public
+`json-as` decorators or imports are not supported. Relative type-only imports
+and re-exports can organize the type graph inside the project.
+
+## Add semantic response cases
+
+A response case gives one stable ID both a status and an already registered
+schema:
+
+```ts
+import {
+  defineSchemaRegistry,
+  response,
+  schema,
+} from '@pulse-compute/pulse/schema'
+import type { ApiError, CreateUserInput, User } from './models.js'
+
+export default defineSchemaRegistry({
+  schemas: {
+    'app.CreateUserInput': schema<CreateUserInput>(),
+    'app.User': schema<User>(),
+    'app.ApiError': schema<ApiError>(),
+  },
+  responses: {
+    'user.created': response(201, 'app.User'),
+    'user.failure': response(400, 'app.ApiError'),
+  },
+})
+```
+
+The response status and schema ID must be static literals. A response case
+cannot refer to an undeclared schema.
+
+## Point project configuration at the registry
+
+<!-- pulse-doc-source: examples/02-request-schema/.pulse/config.ts -->
+```ts
+import { defineConfig } from '@pulse-compute/pulse'
+
+export default defineConfig((_scope) => ({
+  pulse: {
+    entry: 'src/index.ts',
+    schema: 'src/schemas.ts',
+    tests: 'tests/pulse.harness.ts',
+    defaultProfile: 'local',
+    strict: true,
+  },
+  local: {
+    host: 'node',
+    target: 'native',
+    outDir: 'dist',
+    schemas: { contentTypePolicy: 'require-json', maxBytes: 1024 },
+  },
+}))
+```
+<!-- /pulse-doc-source -->
+
+`pulse.schema` owns the registry module. Do not also declare schema identity
+under a provider profile. Provider profiles own decode policy through
+`schemas.contentTypePolicy` and `schemas.maxBytes`:
+
+- `schemas.contentTypePolicy: 'accept-json-or-missing'` accepts JSON content
+  types and absent content types; it is the default;
+- `schemas.contentTypePolicy: 'require-json'` requires a JSON content type for
+  request and fetched-body schema decode;
+- `schemas.maxBytes` bounds structured schema decode and defaults to `65_536`
+  bytes;
+- `dev.maxBodyBytes` separately bounds incoming requests in the local
+  development server and also defaults to `65_536` bytes.
+
+Raise either byte limit deliberately. They are memory and request-amplification
+boundaries, not convenience settings.
+
+## Bind every JSON boundary
+
+<!-- pulse-doc-source: examples/02-request-schema/src/index.ts -->
+```ts
+import { Pulse } from '@pulse-compute/pulse'
+import type { CreateUserInput, CreateUserOutput } from './schemas.js'
+
+const app = new Pulse({ auto: true })
+
+app.post('/users', async (ctx) => {
+  const first = await ctx.req.json<CreateUserInput>('app.CreateUserInput')
+  const second = await ctx.req.json<CreateUserInput>('app.CreateUserInput')
+  const output: CreateUserOutput = {
+    id: 7,
+    name: first.name,
+    active: first.active,
+    sameReference: first === second,
+  }
+  return ctx.json(output, { status: 201, schema: 'app.CreateUserOutput' })
+})
+
+export default app
+```
+<!-- /pulse-doc-source -->
+
+The four schema-boundary forms are:
+
+| Boundary | Authoring form | Operation |
+|---|---|---|
+| Incoming request | `await ctx.req.json<T>('app.Input')` | Decode |
+| Fetched response | `await ctx.fetch(url).json<T>('app.Output')` | Decode |
+| Outbound fetch body | `ctx.fetch(url, { json: value, schema: 'app.Input' })` | Encode |
+| Application response | `ctx.json(value, { schema: 'app.Output' })` | Encode |
+
+A registered response case is shorthand for response status plus schema:
+
+```ts
+return ctx.json(user, 'user.created')
+```
+
+IDs must be string literals. An outbound `schema` property is valid only with
+the semantic `json` property; a raw string `body` and `json` are mutually
+exclusive.
+
+## Understand strict mode
+
+`pulse.strict` defaults to `true`. When the project declares schemas, strict
+mode requires a schema ID for request JSON, fetched-response JSON, outbound
+fetch JSON, and application JSON responses. A response may use either a literal
+`schema` descriptor or a registered response-case ID.
+
+Setting `pulse.strict: false` allows schema-less generic JSON at reachable
+request and fetch-response reads and at JSON encode boundaries. It does not
+make an unknown ID valid: supplying an ID always requests that exact compiled
+codec. Pulse does not try schemas in sequence, infer a codec from the value, or
+fall back to generic JSON when an ID is missing from the registry.
+
+Generic JSON remains bounded and appears as an explicit host-generic JSON
+capability in Native inspection. It is a deliberate compatibility choice, not
+automatic JavaScript fallback.
+
+## Know the value semantics
+
+Schema decoding and encoding are semantic boundaries, not thin calls to a
+provider JSON object:
+
+- input values are validated, normalized, deeply immutable, and owned by the
+  request after decode;
+- repeated request reads of the same schema reuse the request-local decoded
+  value;
+- unknown input fields are removed recursively;
+- every declared field is required;
+- response and fetch encoding emits declared fields only, in declaration order;
+- numeric values must be finite JSON numbers;
+- JavaScript and Native use the same registry contract and semantic trace.
+
+The provider never exposes an SDK request or response object to the handler.
+Opaque bodies are not eligible for schema decode; see
+[Structured and opaque bodies](../concepts/bodies.md).
+
+## Inspect and diagnose the contract
+
+The CLI compiles the registry and direct codecs with the handler. `doctor`,
+`inspect`, `test`, `dev`, and `build` consume the same project output.
+
+```bash
+pulse inspect examples/02-request-schema --json
+```
+
+Check `schemas.authority`, `schemas.ids`, `schemas.responseCases`, and
+`schemas.codecRealization`, then review the compiler’s schema references and
+provider requirements. The packaged Native build carries the generated schema
+registry and codecs; it does not execute TypeScript or a JavaScript schema
+library at request time.
+
+Dynamic IDs, missing declarations, duplicate IDs, unsupported field shapes,
+invalid values, content-type violations, and oversized bodies fail explicitly.
+Common diagnostics include:
+
+- [`PULSE_SCHEMA_DECODE`](../reference/diagnostics.md#pulse-schema-decode);
+- [`PULSE_SCHEMA_ENCODE`](../reference/diagnostics.md#pulse-schema-encode);
+- [`PULSE_RESPONSE_ENCODE`](../reference/diagnostics.md#pulse-response-encode);
+- [`PULSE_BODY_TOO_LARGE`](../reference/diagnostics.md#pulse-body-too-large);
+- `PULSE_SCHEMA_REQUIRED`;
+- `PULSE_CANONICAL_SCHEMA_MISSING`;
+- `PULSE_RESPONSE_CASE_MISSING`.
+
+## Related documentation
+
+- [Structured and opaque bodies](../concepts/bodies.md)
+- [Project configuration](../reference/project-config.md)
+- [Managed handler TypeScript and JavaScript](../reference/handler-authoring.md)
+- [Provider and target compatibility](../reference/compatibility-matrix.md)
+- [Canonical API](../../API.md)

@@ -1,0 +1,111 @@
+{
+  "schemaVersion": "pulse.documentation-deployment.v1",
+  "releaseVersion": "1.0.0-beta.1",
+  "provider": "fastly-object-storage",
+  "workflowFile": "documentation-deploy.yml",
+  "environment": "documentation-production",
+  "sourceDirectory": ".pulse-docs-site",
+  "candidateArtifact": "pulse-documentation-deployment-candidate",
+  "objectPrefix": "pulse",
+  "publicRoute": {
+    "originSource": "release/pulse-release-manifest.json#documentation.origin",
+    "basePathSource": "release/pulse-release-manifest.json#documentation.basePath",
+    "requireExactManifestMatch": true,
+    "requireFastlyVerification": true,
+    "originVariable": "PULSE_DOCUMENTATION_ORIGIN",
+    "basePathVariable": "PULSE_DOCUMENTATION_BASE_PATH",
+    "disallowGithubPagesOrigin": true
+  },
+  "storage": {
+    "bucketVariable": "FASTLY_OBJECT_STORAGE_BUCKET",
+    "regionVariable": "FASTLY_OBJECT_STORAGE_REGION",
+    "endpointVariable": "FASTLY_OBJECT_STORAGE_ENDPOINT",
+    "accessKeySecret": "FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID",
+    "secretKeySecret": "FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY",
+    "requestChecksumCalculation": "when_required",
+    "responseChecksumValidation": "when_required",
+    "awsCliMajor": 2
+  },
+  "deployment": {
+    "immutableVersionPattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:/|$)",
+    "currentVersionDirectory": "v1.0.0-beta.1",
+    "mutableRoots": [
+      ".nojekyll",
+      "404.html",
+      "index.html",
+      "latest",
+      "public-site-manifest.json",
+      "site-manifest.json",
+      "versions.json"
+    ],
+    "neverDelete": true,
+    "metadataHashKey": "pulse-sha256",
+    "immutableRoots": [
+      "deployments/v1.0.0-beta.1.json"
+    ],
+    "requiresNpmVerificationBeforePromotion": true,
+    "receiptPath": "deployments/v1.0.0-beta.1.json",
+    "promotionCommitObjects": [
+      "latest/index.html",
+      "index.html"
+    ]
+  },
+  "cacheClasses": {
+    "immutable": "public, max-age=31536000, immutable",
+    "mutable": "public, max-age=60, stale-while-revalidate=300",
+    "notFound": "public, max-age=60"
+  },
+  "publicChecks": [
+    {
+      "path": "/",
+      "status": 200,
+      "contentType": "text/html",
+      "bodyIncludes": "Pulse"
+    },
+    {
+      "path": "/latest/",
+      "status": 200,
+      "contentType": "text/html",
+      "bodyIncludes": "Pulse 1.0.0-beta.1"
+    },
+    {
+      "path": "/latest/getting-started/",
+      "status": 200,
+      "contentType": "text/html",
+      "bodyIncludes": "Pulse 1.0.0-beta.1"
+    },
+    {
+      "path": "/v1.0.0-beta.1/",
+      "status": 200,
+      "contentType": "text/html"
+    },
+    {
+      "path": "/v1.0.0-beta.1/assets/site.css",
+      "status": 200,
+      "contentType": "text/css"
+    },
+    {
+      "path": "/v1.0.0-beta.1/reference/cli/",
+      "method": "HEAD",
+      "status": 200,
+      "contentType": "text/html"
+    },
+    {
+      "path": "/site-manifest.json",
+      "status": 200,
+      "contentType": "application/json",
+      "bodyIncludes": "\"releaseVersion\": \"1.0.0-beta.1\""
+    },
+    {
+      "path": "/__pulse_missing_release_document__",
+      "status": 404,
+      "contentType": "text/html",
+      "bodyIncludes": "Not found"
+    }
+  ],
+  "publicVerification": {
+    "attempts": 8,
+    "delayMs": 10000,
+    "requestTimeoutMs": 20000
+  }
+}

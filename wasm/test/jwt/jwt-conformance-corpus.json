@@ -1,0 +1,656 @@
+{
+  "version": "pulse.jwt-conformance-corpus.e0.v1",
+  "status": "frozen",
+  "algorithm": "HS256",
+  "semanticOwner": "@pulse-compute/crypto",
+  "hashAlgorithm": "sha256-canonical-json-without-corpusHash",
+  "corpusHash": "926ca40e9b976ca105308c7ddca2da14d84f159d0432c58f1377d38b0ac9abff",
+  "targetMatrix": {
+    "required": [
+      {
+        "id": "node-javascript",
+        "provider": "node",
+        "mode": "javascript",
+        "required": true,
+        "expectedStatus": "executable",
+        "realization": "runtime-builtin",
+        "implementation": "webcrypto.subtle.hmac-sha-256.v1",
+        "providerRequirements": [
+          "jwt.verify",
+          "time.wall-clock",
+          "jwt.verify.hs256",
+          "secret.get",
+          "schema.decode"
+        ],
+        "casePolicy": "all-cases-required",
+        "automaticFallback": false,
+        "currentReadiness": {
+          "checkpoint": "D4",
+          "status": "passed"
+        }
+      },
+      {
+        "id": "fastly-javascript",
+        "provider": "fastly",
+        "mode": "javascript",
+        "required": true,
+        "expectedStatus": "executable",
+        "realization": "runtime-builtin",
+        "implementation": "webcrypto.subtle.hmac-sha-256.v1",
+        "providerRequirements": [
+          "jwt.verify",
+          "time.wall-clock",
+          "jwt.verify.hs256",
+          "secret.get",
+          "schema.decode"
+        ],
+        "casePolicy": "all-cases-required",
+        "automaticFallback": false,
+        "currentReadiness": {
+          "checkpoint": "D4",
+          "status": "passed"
+        }
+      },
+      {
+        "id": "node-native",
+        "provider": "node",
+        "mode": "native",
+        "required": true,
+        "expectedStatus": "executable",
+        "realization": "guest-source:pulse-hmac-as",
+        "implementation": "pulse-hmac-as.v1",
+        "providerRequirements": [
+          "jwt.verify",
+          "time.wall-clock",
+          "jwt.verify.hs256",
+          "secret.get",
+          "schema.decode"
+        ],
+        "casePolicy": "all-cases-required",
+        "automaticFallback": false,
+        "currentReadiness": {
+          "checkpoint": "D4",
+          "status": "passed",
+          "guestUnits": 0,
+          "guestLink": false
+        }
+      },
+      {
+        "id": "fastly-native",
+        "provider": "fastly",
+        "mode": "native",
+        "required": true,
+        "expectedStatus": "executable",
+        "realization": "guest-source:pulse-hmac-as",
+        "implementation": "pulse-hmac-as.v1",
+        "providerRequirements": [
+          "jwt.verify",
+          "time.wall-clock",
+          "jwt.verify.hs256",
+          "secret.get",
+          "schema.decode"
+        ],
+        "casePolicy": "all-cases-required",
+        "automaticFallback": false,
+        "currentReadiness": {
+          "checkpoint": "D4",
+          "status": "planning-blocked",
+          "reasonId": "fastly-native-jwt-package-effect-unavailable",
+          "mustBecomeExecutableBy": "E4"
+        }
+      }
+    ],
+    "additional": []
+  },
+  "harnessContract": {
+    "version": "pulse.jwt-conformance-harness.e0.v1",
+    "canonicalHandler": "jwt-e0-hs256-handler",
+    "caseSelection": "exact-corpus-order",
+    "allCasesRequired": true,
+    "allowSkip": false,
+    "allowModeFallback": false,
+    "allowRealizationFallback": false,
+    "allowHarnessResultSubstitution": false,
+    "harnessSetupIsTargetBehavior": false,
+    "reportRequiredFields": [
+      "targetId",
+      "corpusVersion",
+      "corpusHash",
+      "realization",
+      "implementation",
+      "caseIds",
+      "automaticFallback"
+    ]
+  },
+  "resourceLimits": {
+    "compactSegments": 3,
+    "tokenBytesMaximum": 16384,
+    "protectedHeaderBytesMaximum": 4096,
+    "claimsBytesMaximum": 16384,
+    "jsonDepthMaximum": 32,
+    "requiredClaimNamesMaximum": 32,
+    "algorithmAllowlistEntriesMaximum": 4,
+    "clockToleranceSecondsMaximum": 300,
+    "maximumTokenAgeSecondsMaximum": 31536000,
+    "secretBytesMinimum": 32,
+    "secretBytesMaximum": 4096,
+    "cryptoDataBytesMaximum": 1048576,
+    "hs256AuthenticatorBytes": 32
+  },
+  "fixture": {
+    "clockInstantUnixSeconds": 2000000000,
+    "secretBinding": "AUTH_JWT_E0",
+    "secretRecipe": {
+      "kind": "ascii-prefix-fill",
+      "prefix": "pulse-e0-secret-",
+      "fill": "x",
+      "totalBytes": 48
+    },
+    "protectedHeader": {
+      "alg": "HS256",
+      "typ": "JWT",
+      "kid": "e0-key"
+    },
+    "claims": {
+      "iss": "https://issuer.primary.example",
+      "aud": [
+        "unrelated-audience",
+        "pulse-api"
+      ],
+      "sub": "e0-sensitive-subject",
+      "iat": 1999999700,
+      "nbf": 1999999990,
+      "exp": 2000000300,
+      "roles": [
+        "member"
+      ]
+    },
+    "policy": {
+      "algorithms": [
+        "HS256"
+      ],
+      "key": {
+        "type": "secret",
+        "binding": "AUTH_JWT_E0"
+      },
+      "issuer": [
+        "https://issuer.primary.example",
+        "https://issuer.alternate.example"
+      ],
+      "audience": [
+        "pulse-api",
+        "pulse-admin"
+      ],
+      "subject": "e0-sensitive-subject",
+      "typ": "JWT",
+      "clockToleranceSeconds": 30,
+      "maxTokenAgeSeconds": 600,
+      "requiredClaims": [
+        "sub",
+        "iat",
+        "exp"
+      ],
+      "claimsSchema": "auth.AccessClaims"
+    },
+    "schema": {
+      "id": "auth.AccessClaims",
+      "normalizedClaims": {
+        "sub": "e0-sensitive-subject",
+        "roles": [
+          "member"
+        ]
+      }
+    },
+    "normalizedResult": {
+      "claims": {
+        "sub": "e0-sensitive-subject",
+        "roles": [
+          "member"
+        ]
+      },
+      "protectedHeader": {
+        "alg": "HS256",
+        "kid": "e0-key",
+        "typ": "JWT"
+      },
+      "immutablePaths": [
+        "$",
+        "$.claims",
+        "$.claims.roles",
+        "$.protectedHeader"
+      ]
+    },
+    "forbiddenSensitiveSubstrings": [
+      {
+        "id": "complete-token",
+        "derive": "base-fixture.compactToken"
+      },
+      {
+        "id": "authenticator",
+        "derive": "base-fixture.authenticatorBase64url"
+      },
+      {
+        "id": "complete-claims",
+        "derive": "base-fixture.claimsJson"
+      },
+      {
+        "id": "secret-value",
+        "derive": "base-fixture.secretUtf8"
+      },
+      {
+        "id": "key-material",
+        "derive": "base-fixture.secretHex"
+      },
+      {
+        "id": "subject",
+        "derive": "fixture.claims.sub"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "valid-hs256",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "base-fixture",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "required-claims",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "all-required-claims-present",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "issuer",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "accepted-issuer",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "audience-string",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "accepted-string-audience",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "audience-array",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "accepted-member-of-token-audience-array",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "subject",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "matching-subject",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "protected-typ",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "configured-protected-typ",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "expiration-inside-tolerance",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "expiration-one-second-after-tolerance-boundary",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "not-before-at-tolerance-boundary",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "not-before-exactly-at-tolerance-boundary",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "issued-at-within-tolerance",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "issued-at-not-in-future",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "maximum-token-age",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "issued-at-within-maximum-age",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult"
+      }
+    },
+    {
+      "id": "claims-schema",
+      "kind": "runtime",
+      "polarity": "positive",
+      "setup": "valid-auth-access-claims",
+      "expected": {
+        "status": "success",
+        "result": "fixture.normalizedResult",
+        "schemaCalls": 1
+      }
+    },
+    {
+      "id": "detached-immutable-result",
+      "kind": "observation",
+      "polarity": "positive",
+      "setup": "base-fixture",
+      "expected": {
+        "status": "success",
+        "detached": true,
+        "immutablePaths": "fixture.normalizedResult.immutablePaths"
+      }
+    },
+    {
+      "id": "invalid-signature",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "mutate-authenticator-byte-0",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_SIGNATURE_INVALID",
+        "clockCalls": 0,
+        "schemaCalls": 0,
+        "claimsObserved": false
+      }
+    },
+    {
+      "id": "altered-protected-header",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "mutate-protected-header-without-resigning",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_SIGNATURE_INVALID",
+        "clockCalls": 0,
+        "schemaCalls": 0,
+        "claimsObserved": false
+      }
+    },
+    {
+      "id": "altered-payload",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "mutate-payload-without-resigning",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_SIGNATURE_INVALID",
+        "clockCalls": 0,
+        "schemaCalls": 0,
+        "claimsObserved": false
+      }
+    },
+    {
+      "id": "wrong-key",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "different-valid-length-secret",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_SIGNATURE_INVALID",
+        "clockCalls": 0,
+        "schemaCalls": 0
+      }
+    },
+    {
+      "id": "undersized-secret",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "secret-length-31",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_KEY_INVALID",
+        "cryptoCalls": 0,
+        "clockCalls": 0,
+        "schemaCalls": 0
+      }
+    },
+    {
+      "id": "malformed-secret-descriptor",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "secret-descriptor-extra-member",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_KEY_INVALID",
+        "cryptoCalls": 0
+      }
+    },
+    {
+      "id": "malformed-compact-token",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "two-compact-segments",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_MALFORMED",
+        "cryptoCalls": 0
+      }
+    },
+    {
+      "id": "malformed-protected-header",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "non-object-protected-header",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_MALFORMED",
+        "cryptoCalls": 0
+      }
+    },
+    {
+      "id": "malformed-payload",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "non-object-claims-json",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_MALFORMED",
+        "clockCalls": 0,
+        "schemaCalls": 0,
+        "claimsObserved": false
+      }
+    },
+    {
+      "id": "malformed-authenticator",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "non-canonical-base64url-authenticator",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_MALFORMED",
+        "cryptoCalls": 0
+      }
+    },
+    {
+      "id": "wrong-length-authenticator",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "authenticator-length-31",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_MALFORMED",
+        "clockCalls": 0,
+        "schemaCalls": 0
+      }
+    },
+    {
+      "id": "none-algorithm",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "protected-alg-none",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_ALGORITHM_NOT_ALLOWED",
+        "secretCalls": 0,
+        "cryptoCalls": 0
+      }
+    },
+    {
+      "id": "token-algorithm-outside-jwt-allowlist",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "protected-alg-rs256-with-hs256-allowlist",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_ALGORITHM_NOT_ALLOWED",
+        "secretCalls": 0,
+        "cryptoCalls": 0
+      }
+    },
+    {
+      "id": "jwt-algorithm-outside-profile-crypto",
+      "kind": "planning",
+      "polarity": "negative",
+      "setup": "reachable-hs256-without-effective-crypto",
+      "expected": {
+        "status": "error-before-artifact",
+        "code": "PULSE_CRYPTO_CONFIG_REQUIRED"
+      }
+    },
+    {
+      "id": "missing-target-realization",
+      "kind": "planning",
+      "polarity": "negative",
+      "setup": "target-without-hs256-realization",
+      "expected": {
+        "status": "error-before-artifact",
+        "code": "PULSE_CRYPTO_REALIZATION_UNAVAILABLE"
+      }
+    },
+    {
+      "id": "invalid-exact-realization-pin",
+      "kind": "planning",
+      "polarity": "negative",
+      "setup": "runtime-builtin-pin-for-native",
+      "expected": {
+        "status": "error-before-artifact",
+        "code": "PULSE_CRYPTO_REALIZATION_PIN_INVALID"
+      }
+    },
+    {
+      "id": "runtime-realization-failure",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "selected-realization-returns-failure",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_OPERATION_FAILED",
+        "category": "crypto-realization",
+        "realizationAttempts": 1,
+        "clockCalls": 0,
+        "schemaCalls": 0
+      }
+    },
+    {
+      "id": "no-fallback",
+      "kind": "observation",
+      "polarity": "negative",
+      "setup": "selected-realization-fails",
+      "expected": {
+        "status": "error",
+        "automaticFallback": false,
+        "realizationAttempts": 1,
+        "alternateTargetAttempts": 0,
+        "alternateRealizationAttempts": 0
+      }
+    },
+    {
+      "id": "claims-unavailable-before-authenticity",
+      "kind": "observation",
+      "polarity": "negative",
+      "setup": "valid-json-with-invalid-signature",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_SIGNATURE_INVALID",
+        "claimsParsed": false,
+        "claimsObserved": false,
+        "clockCalls": 0,
+        "schemaCalls": 0
+      }
+    },
+    {
+      "id": "registered-claim-failure-after-authenticity",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "valid-signature-expired-at-clock",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_CLAIMS_INVALID",
+        "cryptoCalls": 1,
+        "clockCalls": 1,
+        "schemaCalls": 0
+      }
+    },
+    {
+      "id": "claims-schema-failure-after-registered-claims",
+      "kind": "runtime",
+      "polarity": "negative",
+      "setup": "valid-signature-valid-registered-invalid-schema",
+      "expected": {
+        "status": "error",
+        "code": "PULSE_JWT_CLAIMS_SCHEMA_INVALID",
+        "cryptoCalls": 1,
+        "clockCalls": 1,
+        "registeredClaimsStatus": "passed",
+        "schemaCalls": 1
+      }
+    },
+    {
+      "id": "sensitive-values-redacted",
+      "kind": "observation",
+      "polarity": "negative",
+      "setup": "scan-reports-diagnostics-and-traces",
+      "expected": {
+        "status": "success",
+        "forbiddenValuesPresent": 0,
+        "categories": [
+          "token",
+          "signature",
+          "claims",
+          "key",
+          "secret"
+        ]
+      }
+    }
+  ]
+}

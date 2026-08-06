@@ -1,0 +1,34 @@
+{
+  "version": "pulse.provider-package-conformance-imports.v1",
+  "owner": "provider-package-conformance",
+  "imports": [
+    {
+      "file": "packages/assets/test/javascript-runtime.test.ts",
+      "specifier": "../../provider-node/src/javascript/node-adapter.js"
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "specifier": "../../provider-fastly/src/javascript/jwt-verifier.js"
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "specifier": "../../provider-fastly/src/javascript/runtime-host.js"
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "specifier": "../../provider-fastly/src/javascript/target-support-policy.js"
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "specifier": "../../provider-node/src/javascript/jwt-verifier.js"
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "specifier": "../../provider-node/src/javascript/runtime-host.js"
+    },
+    {
+      "file": "packages/jwt/test/provider-runtime.test.ts",
+      "specifier": "../../provider-node/src/javascript/target-support-policy.js"
+    }
+  ]
+}

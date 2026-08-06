@@ -1,0 +1,377 @@
+{
+  "version": "pulse.jwt-asymmetric-primary-source-evidence.f3.v1",
+  "checkpoint": "F3",
+  "observedAt": "2026-07-30",
+  "scope": {
+    "question": "Which algorithm should be the first guest-linked asymmetric verification experiment?",
+    "originalCandidates": [
+      "ES256",
+      "RS256"
+    ],
+    "amendedCandidates": [
+      "ES256",
+      "RS256",
+      "Ed25519"
+    ],
+    "ed25519Terminology": "Use the fully specified JOSE alg value Ed25519. EdDSA is retained only when describing Pulse's existing unpublished vocabulary or legacy RFC 8037 material.",
+    "implementationAuthorized": false
+  },
+  "sources": [
+    {
+      "id": "iana-jose-algorithms",
+      "kind": "standards-registry",
+      "url": "https://www.iana.org/assignments/jose/jose.xhtml",
+      "facts": [
+        "RS256 is registered as Recommended.",
+        "ES256 is registered as Recommended+.",
+        "Ed25519 is registered as Optional.",
+        "EdDSA is registered as Deprecated."
+      ]
+    },
+    {
+      "id": "rfc-7518",
+      "kind": "standard",
+      "url": "https://www.rfc-editor.org/rfc/rfc7518.html",
+      "facts": [
+        "RS256 is RSASSA-PKCS1-v1_5 with SHA-256 and requires RSA keys of at least 2048 bits.",
+        "ES256 is ECDSA over P-256 with SHA-256.",
+        "An ES256 JWS signature is the fixed 64-byte concatenation of the 32-byte big-endian R and S values."
+      ]
+    },
+    {
+      "id": "rfc-9864",
+      "kind": "standard",
+      "url": "https://www.rfc-editor.org/rfc/rfc9864.html",
+      "facts": [
+        "Ed25519 is the fully specified JOSE algorithm identifier for Ed25519 signatures.",
+        "The polymorphic EdDSA algorithm identifier is deprecated.",
+        "Existing Ed25519 key representations remain unchanged."
+      ]
+    },
+    {
+      "id": "rfc-8032",
+      "kind": "standard",
+      "url": "https://www.rfc-editor.org/rfc/rfc8032.html",
+      "facts": [
+        "An Ed25519 public key is 32 bytes.",
+        "An Ed25519 signature is 64 bytes.",
+        "Ed25519 signing is deterministic and uses SHA-512 internally.",
+        "The RFC supplies deterministic test vectors and verification validation rules."
+      ]
+    },
+    {
+      "id": "rfc-8037",
+      "kind": "standard",
+      "url": "https://www.rfc-editor.org/rfc/rfc8037.html",
+      "facts": [
+        "OKP JWK represents Ed25519 public keys with crv Ed25519 and a base64url-encoded x member.",
+        "The RFC includes JOSE signing and verification examples using the legacy EdDSA identifier."
+      ]
+    },
+    {
+      "id": "rfc-6979",
+      "kind": "standard",
+      "url": "https://www.rfc-editor.org/rfc/rfc6979.html",
+      "facts": [
+        "Deterministic generation of the ECDSA per-message secret can avoid dependence on fresh randomness during signing.",
+        "The RFC supplies deterministic ECDSA test vectors."
+      ]
+    },
+    {
+      "id": "openid-connect-core",
+      "kind": "ecosystem-standard",
+      "url": "https://openid.net/specs/openid-connect-core-1_0-18.html",
+      "facts": [
+        "OpenID Providers are generally required to support RS256 for ID Token signing.",
+        "RS256 therefore remains a high-value external identity-provider compatibility algorithm."
+      ]
+    },
+    {
+      "id": "aws-cognito-jwt",
+      "kind": "issuer-documentation",
+      "url": "https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-using-tokens-verifying-a-jwt.html",
+      "facts": [
+        "Amazon Cognito signs user-pool JWTs with RS256.",
+        "Cognito documents 2048-bit RSA signing keys."
+      ]
+    },
+    {
+      "id": "node-webcrypto-v24",
+      "kind": "runtime-documentation",
+      "url": "https://nodejs.org/download/release/v24.18.0/docs/api/webcrypto.html",
+      "facts": [
+        "Node Web Crypto documents ECDSA, RSASSA-PKCS1-v1_5, and Ed25519 key import and verification.",
+        "Node marks Ed25519 stable in current releases and records its earlier introduction."
+      ]
+    },
+    {
+      "id": "fastly-subtle-verify",
+      "kind": "runtime-documentation",
+      "url": "https://js-compute-reference-docs.edgecompute.app/docs/globals/SubtleCrypto/prototype/verify",
+      "facts": [
+        "Fastly JavaScript documents verify support for RSASSA-PKCS1-v1_5 and HMAC.",
+        "The current verify documentation does not list ECDSA or Ed25519."
+      ]
+    },
+    {
+      "id": "fastly-subtle-import-key",
+      "kind": "runtime-documentation",
+      "url": "https://js-compute-reference-docs.edgecompute.app/docs/globals/SubtleCrypto/prototype/importKey",
+      "facts": [
+        "Fastly JavaScript documents RSA, HMAC, and ECDSA key import.",
+        "The current importKey documentation does not list Ed25519."
+      ]
+    },
+    {
+      "id": "chrome-137-ed25519",
+      "kind": "browser-vendor-documentation",
+      "url": "https://developer.chrome.com/blog/chrome-137-beta",
+      "facts": [
+        "Chrome 137 added Ed25519 to Web Crypto."
+      ]
+    },
+    {
+      "id": "firefox-129-ed25519",
+      "kind": "browser-vendor-documentation",
+      "url": "https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/129",
+      "facts": [
+        "Firefox 129 added Web Crypto Ed25519 signing, verification, generation, import, and export."
+      ]
+    },
+    {
+      "id": "safari-17-ed25519",
+      "kind": "browser-vendor-documentation",
+      "url": "https://webkit.org/blog/14445/webkit-features-in-safari-17-0/",
+      "facts": [
+        "Safari 17 added Ed25519 support to Web Crypto."
+      ]
+    },
+    {
+      "id": "webcrypto-secure-curves",
+      "kind": "proposal",
+      "url": "https://wicg.github.io/webcrypto-secure-curves/",
+      "facts": [
+        "The secure-curves Web Crypto proposal defines Ed25519 operations.",
+        "The proposal is not a W3C standard and describes the algorithms as optional."
+      ]
+    },
+    {
+      "id": "w3c-webcrypto",
+      "kind": "web-standard",
+      "url": "https://www.w3.org/TR/WebCryptoAPI/",
+      "facts": [
+        "Web Cryptography defines ECDSA and RSASSA-PKCS1-v1_5 operations, including key import and verification.",
+        "P-256 is a named curve recognized by the Web Cryptography specification."
+      ]
+    },
+    {
+      "id": "rustcrypto-p256",
+      "kind": "implementation-source",
+      "url": "https://github.com/RustCrypto/elliptic-curves/tree/master/p256",
+      "facts": [
+        "The p256 crate supports no_std builds and P-256 ECDSA with SHA-256.",
+        "The project is dual licensed Apache-2.0 OR MIT.",
+        "The project documents independent-audit and constant-time review limitations."
+      ]
+    },
+    {
+      "id": "rustcrypto-rsa",
+      "kind": "implementation-source",
+      "url": "https://github.com/RustCrypto/RSA",
+      "facts": [
+        "The rsa crate is a portable pure-Rust implementation with PKCS#1 v1.5 verification.",
+        "The project is dual licensed Apache-2.0 OR MIT.",
+        "The implementation relies on large-integer machinery and carries explicit security review caveats."
+      ]
+    },
+    {
+      "id": "ed25519-dalek",
+      "kind": "implementation-source",
+      "url": "https://github.com/dalek-cryptography/curve25519-dalek/tree/main/ed25519-dalek",
+      "facts": [
+        "ed25519-dalek can be built without the standard library when default features are disabled.",
+        "The project is dual licensed Apache-2.0 OR MIT.",
+        "The project provides strict verification APIs and documents verification validation subtleties."
+      ]
+    },
+    {
+      "id": "esp-idf-crypto-guidance",
+      "kind": "target-maintainer-guidance",
+      "url": "https://github.com/espressif/esp-idf/issues/15336",
+      "facts": [
+        "Espressif guidance in February 2025 stated that the default ESP-IDF Mbed TLS configuration did not support EdDSA.",
+        "The guidance recommended ECDSA-256 or RSA-3072 for the reported ESP32-C6 use case.",
+        "Acceleration availability depends on the ESP32 family and configuration."
+      ]
+    },
+    {
+      "id": "esp-idf-releases",
+      "kind": "target-release-documentation",
+      "url": "https://github.com/espressif/esp-idf/releases",
+      "facts": [
+        "ESP-IDF 6.0 moved to Mbed TLS 4.x and a PSA-first integration.",
+        "An ESP-IDF major-version upgrade alone does not prove an Ed25519 realization for an unpinned ESP32 family and build."
+      ]
+    }
+  ],
+  "targetEvidence": {
+    "node-javascript": {
+      "label": "Node JavaScript",
+      "currentPulseProof": "HS256 runtime-builtin only",
+      "candidates": {
+        "ES256": {
+          "status": "DOCUMENTED_RUNTIME_SUPPORT",
+          "sources": [
+            "node-webcrypto-v24"
+          ]
+        },
+        "RS256": {
+          "status": "DOCUMENTED_RUNTIME_SUPPORT",
+          "sources": [
+            "node-webcrypto-v24"
+          ]
+        },
+        "Ed25519": {
+          "status": "DOCUMENTED_RUNTIME_SUPPORT_BASELINE_MUST_BE_PINNED",
+          "sources": [
+            "node-webcrypto-v24",
+            "rfc-9864"
+          ]
+        }
+      }
+    },
+    "fastly-javascript": {
+      "label": "Fastly JavaScript",
+      "currentPulseProof": "HS256 runtime-builtin only",
+      "candidates": {
+        "ES256": {
+          "status": "KEY_IMPORT_DOCUMENTED_VERIFY_NOT_DOCUMENTED",
+          "sources": [
+            "fastly-subtle-import-key",
+            "fastly-subtle-verify"
+          ]
+        },
+        "RS256": {
+          "status": "DOCUMENTED_RUNTIME_SUPPORT",
+          "sources": [
+            "fastly-subtle-import-key",
+            "fastly-subtle-verify"
+          ]
+        },
+        "Ed25519": {
+          "status": "NOT_DOCUMENTED",
+          "sources": [
+            "fastly-subtle-import-key",
+            "fastly-subtle-verify"
+          ]
+        }
+      }
+    },
+    "browser-javascript": {
+      "label": "Browser JavaScript",
+      "currentPulseProof": "Forward target; no Pulse execution cell is sealed",
+      "candidates": {
+        "ES256": {
+          "status": "ESTABLISHED_WEBCRYPTO_PATH_BASELINE_NOT_PINNED",
+          "sources": [
+            "w3c-webcrypto"
+          ]
+        },
+        "RS256": {
+          "status": "ESTABLISHED_WEBCRYPTO_PATH_BASELINE_NOT_PINNED",
+          "sources": [
+            "w3c-webcrypto"
+          ]
+        },
+        "Ed25519": {
+          "status": "MODERN_BROWSER_SUPPORT_BASELINE_MUST_BE_PINNED",
+          "sources": [
+            "chrome-137-ed25519",
+            "firefox-129-ed25519",
+            "safari-17-ed25519",
+            "webcrypto-secure-curves"
+          ]
+        }
+      }
+    },
+    "native-wasm": {
+      "label": "Native Wasm",
+      "currentPulseProof": "HS256 guest-source in Node Native and Fastly Native/Viceroy cells; asymmetric guest linking is not implemented",
+      "candidates": {
+        "ES256": {
+          "status": "HOST_NEUTRAL_CANDIDATE_UNMEASURED",
+          "sources": [
+            "rustcrypto-p256",
+            "rfc-7518"
+          ]
+        },
+        "RS256": {
+          "status": "HOST_NEUTRAL_CANDIDATE_UNMEASURED",
+          "sources": [
+            "rustcrypto-rsa",
+            "rfc-7518"
+          ]
+        },
+        "Ed25519": {
+          "status": "HOST_NEUTRAL_CANDIDATE_UNMEASURED",
+          "sources": [
+            "ed25519-dalek",
+            "rfc-8032",
+            "rfc-9864"
+          ]
+        }
+      }
+    },
+    "esp32": {
+      "label": "ESP32",
+      "currentPulseProof": "Forward target; chip family, ESP-IDF version, and Pulse execution cell are not pinned",
+      "candidates": {
+        "ES256": {
+          "status": "DOCUMENTED_PLATFORM_PATH_TARGET_VARIANT",
+          "sources": [
+            "esp-idf-crypto-guidance"
+          ]
+        },
+        "RS256": {
+          "status": "DOCUMENTED_PLATFORM_PATH_TARGET_VARIANT",
+          "sources": [
+            "esp-idf-crypto-guidance"
+          ]
+        },
+        "Ed25519": {
+          "status": "UNPROVEN_REQUIRES_PINNED_REALIZATION",
+          "sources": [
+            "esp-idf-crypto-guidance",
+            "esp-idf-releases"
+          ]
+        }
+      }
+    }
+  },
+  "implementationCandidates": {
+    "ES256": {
+      "candidate": "RustCrypto p256 with a deliberately minimal feature set",
+      "license": "Apache-2.0 OR MIT",
+      "sources": [
+        "rustcrypto-p256"
+      ],
+      "measuredInPulse": false
+    },
+    "RS256": {
+      "candidate": "RustCrypto rsa with PKCS#1 v1.5 verification and a pinned large-integer backend",
+      "license": "Apache-2.0 OR MIT",
+      "sources": [
+        "rustcrypto-rsa"
+      ],
+      "measuredInPulse": false
+    },
+    "Ed25519": {
+      "candidate": "ed25519-dalek with default features disabled and a pinned curve backend",
+      "license": "Apache-2.0 OR MIT",
+      "sources": [
+        "ed25519-dalek"
+      ],
+      "measuredInPulse": false
+    }
+  }
+}

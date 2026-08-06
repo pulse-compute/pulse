@@ -1,0 +1,22 @@
+{
+  "name": "@pulse-compute/wasm-workspace",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build": "node ./scripts/build.cjs",
+    "test": "node ./scripts/run-wasm-tests.cjs --profile release",
+    "test:unit": "node ./scripts/run-wasm-tests.cjs --profile unit",
+    "test:native": "node ./scripts/run-wasm-tests.cjs --profile native",
+    "test:javascript": "node ./scripts/run-wasm-tests.cjs --profile javascript",
+    "test:conformance": "node ./scripts/run-wasm-tests.cjs --profile conformance",
+    "test:providers": "node ./scripts/run-wasm-tests.cjs --profile providers",
+    "test:cli": "node ./scripts/run-wasm-tests.cjs --profile cli",
+    "test:release": "node ./scripts/run-wasm-tests.cjs --profile release",
+    "pulse": "node ./scripts/pulse.cjs",
+    "docs:sync": "node ./scripts/sync-doc-snippets.cjs --write",
+    "docs:check": "node ./scripts/sync-doc-snippets.cjs --check"
+  },
+  "devDependencies": {
+    "assemblyscript": "0.28.18"
+  }
+}

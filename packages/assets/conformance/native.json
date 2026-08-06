@@ -1,0 +1,7 @@
+{
+  "version": "pulse.package-conformance-fixture.v1",
+  "contractId": "pulse.assets",
+  "target": "native",
+  "status": "contract-only",
+  "cases": ["assets.lookup", "assets.respond"]
+}

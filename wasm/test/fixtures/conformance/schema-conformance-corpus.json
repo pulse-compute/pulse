@@ -1,0 +1,1087 @@
+{
+  "version": "pulse.node-cross-target-conformance-corpus.v1",
+  "authority": {
+    "registry": "pulse.schema",
+    "parity": "semantic-not-byte",
+    "automaticFallback": false
+  },
+  "fixtures": {
+    "createInput": {
+      "name": "Ada",
+      "attempts": 2,
+      "quota": 3,
+      "role": "admin",
+      "address": {
+        "city": "Denver",
+        "postalCode": "80202"
+      },
+      "tags": [
+        "alpha",
+        "beta"
+      ],
+      "referralCode": null
+    },
+    "user": {
+      "id": "user-1",
+      "name": "Ada",
+      "score": 42.5,
+      "active": true
+    },
+    "error": {
+      "code": "denied",
+      "message": "Access denied"
+    },
+    "union": {
+      "id": "user-2",
+      "name": "Both",
+      "score": 12.5,
+      "active": true,
+      "code": "both",
+      "message": "compatible snapshot",
+      "ignored": "drop"
+    }
+  },
+  "cases": [
+    {
+      "id": "request-valid-recursive-unknown-removal",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/ignoredRoot": "drop",
+          "/address/ignoredNested": "drop"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput"
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-malformed-json",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "rawBody": "{",
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_JSON_MALFORMED",
+        "path": null,
+        "expected": "valid-json",
+        "actualKind": "malformed-json",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-missing-required-nested-field",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "remove": [
+          "/address/postalCode"
+        ]
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/address/postalCode",
+        "expected": "required",
+        "actualKind": "missing",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-invalid-string-enum",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/role": "owner"
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/role",
+        "expected": "enum(\"admin\"|\"member\")",
+        "actualKind": "string",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-nullable-null",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput"
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-nullable-unicode-and-escapes",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/name": "雪😀 \"quote\" \\\\ slash\nline",
+          "/address/city": "München",
+          "/referralCode": "紹介-\\-\""
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/name": "雪😀 \"quote\" \\\\ slash\nline",
+            "/address/city": "München",
+            "/referralCode": "紹介-\\-\""
+          }
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-i32-minimum",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/attempts": -2147483648
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/attempts": -2147483648
+          }
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-i32-maximum",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/attempts": 2147483647
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/attempts": 2147483647
+          }
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-i32-underflow",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/attempts": -2147483649
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/attempts",
+        "expected": "i32",
+        "actualKind": "number",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-i32-overflow",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/attempts": 2147483648
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/attempts",
+        "expected": "i32",
+        "actualKind": "number",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-u32-minimum",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/quota": 0
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/quota": 0
+          }
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-u32-maximum",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/quota": 4294967295
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/quota": 4294967295
+          }
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-u32-negative",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/quota": -1
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/quota",
+        "expected": "u32",
+        "actualKind": "number",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-u32-overflow",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/quota": 4294967296
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/quota",
+        "expected": "u32",
+        "actualKind": "number",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-array-unicode-and-escapes",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/tags": [
+            "雪",
+            "line\nfeed",
+            "quote\"slash\\end"
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/tags": [
+              "雪",
+              "line\nfeed",
+              "quote\"slash\\end"
+            ]
+          }
+        },
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-array-invalid-element",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/tags": [
+            "ok",
+            7
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/tags/1",
+        "expected": "string",
+        "actualKind": "number",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "request-repeated-same-schema",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput",
+        "app.createInput"
+      ],
+      "input": {
+        "fixture": "createInput"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput"
+        },
+        "sameIdentity": true,
+        "bodyCopies": 1,
+        "textTransforms": 1,
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-repeated-different-schemas",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.user",
+        "app.error"
+      ],
+      "input": {
+        "fixture": "union"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "value": [
+            {
+              "id": "user-2",
+              "name": "Both",
+              "score": 12.5,
+              "active": true
+            },
+            {
+              "code": "both",
+              "message": "compatible snapshot"
+            }
+          ]
+        },
+        "differentIdentity": true,
+        "bodyCopies": 1,
+        "textTransforms": 1,
+        "traceKinds": [
+          "json.decode.request",
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "fetch-response-valid-unknown-removal",
+      "classification": "portable-semantic",
+      "boundary": "fetch-response",
+      "operation": "fetch-response-decode",
+      "schemaIds": [
+        "app.user"
+      ],
+      "status": 200,
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/ignored": "drop"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "traceKinds": [
+          "json.decode.fetch"
+        ]
+      }
+    },
+    {
+      "id": "fetch-response-malformed-json",
+      "classification": "portable-semantic",
+      "boundary": "fetch-response",
+      "operation": "fetch-response-decode",
+      "schemaIds": [
+        "app.user"
+      ],
+      "status": 200,
+      "rawBody": "[",
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_JSON_MALFORMED",
+        "path": null,
+        "expected": "valid-json",
+        "actualKind": "malformed-json",
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "fetch-response-repeated-same-schema",
+      "classification": "portable-semantic",
+      "boundary": "fetch-response",
+      "operation": "fetch-response-decode",
+      "schemaIds": [
+        "app.user",
+        "app.user"
+      ],
+      "status": 200,
+      "input": {
+        "fixture": "user"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "sameIdentity": true,
+        "bodyCopies": 1,
+        "textTransforms": 1,
+        "traceKinds": [
+          "json.decode.fetch"
+        ]
+      }
+    },
+    {
+      "id": "fetch-response-repeated-different-schemas",
+      "classification": "portable-semantic",
+      "boundary": "fetch-response",
+      "operation": "fetch-response-decode",
+      "schemaIds": [
+        "app.user",
+        "app.error"
+      ],
+      "status": 200,
+      "input": {
+        "fixture": "union"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "value": [
+            {
+              "id": "user-2",
+              "name": "Both",
+              "score": 12.5,
+              "active": true
+            },
+            {
+              "code": "both",
+              "message": "compatible snapshot"
+            }
+          ]
+        },
+        "differentIdentity": true,
+        "bodyCopies": 1,
+        "textTransforms": 1,
+        "traceKinds": [
+          "json.decode.fetch",
+          "json.decode.fetch"
+        ]
+      }
+    },
+    {
+      "id": "application-response-declared-order-and-unknown-removal",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user",
+        "status": 202,
+        "headers": [
+          [
+            "x-pulse-case",
+            "application-response"
+          ]
+        ]
+      },
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/ignored": "drop"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "status": 202,
+        "headers": [
+          [
+            "x-pulse-case",
+            "application-response"
+          ],
+          [
+            "content-type",
+            "application/json; charset=utf-8"
+          ]
+        ],
+        "bodyless": false,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "application-response-f64-nan",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user"
+      },
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/score": {
+            "$pulseNumber": "NaN"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_ENCODE",
+        "path": "/score",
+        "expected": "finite-f64",
+        "actualKind": "non-finite-number",
+        "traceKinds": [
+          "json.encode.error"
+        ]
+      }
+    },
+    {
+      "id": "application-response-f64-positive-infinity",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user"
+      },
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/score": {
+            "$pulseNumber": "Infinity"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_ENCODE",
+        "path": "/score",
+        "expected": "finite-f64",
+        "actualKind": "non-finite-number",
+        "traceKinds": [
+          "json.encode.error"
+        ]
+      }
+    },
+    {
+      "id": "application-response-f64-negative-infinity",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user"
+      },
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/score": {
+            "$pulseNumber": "-Infinity"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_ENCODE",
+        "path": "/score",
+        "expected": "finite-f64",
+        "actualKind": "non-finite-number",
+        "traceKinds": [
+          "json.encode.error"
+        ]
+      }
+    },
+    {
+      "id": "response-case-created",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": "user.created",
+      "input": {
+        "fixture": "user"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "status": 201,
+        "responseCaseId": "user.created",
+        "bodyless": false,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "response-case-success-shared-status",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": "user.success",
+      "input": {
+        "fixture": "user"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "status": 200,
+        "responseCaseId": "user.success",
+        "bodyless": false,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "response-case-failure-shared-status",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.error",
+      "descriptor": "user.failure",
+      "input": {
+        "fixture": "error"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "error"
+        },
+        "status": 200,
+        "responseCaseId": "user.failure",
+        "bodyless": false,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "outbound-fetch-valid-semantic-encode",
+      "classification": "portable-semantic",
+      "boundary": "fetch-request",
+      "operation": "fetch-request-encode",
+      "schemaId": "app.user",
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/ignored": "drop"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "traceKinds": [
+          "json.encode.fetch"
+        ]
+      }
+    },
+    {
+      "id": "outbound-fetch-f64-nonfinite",
+      "classification": "portable-semantic",
+      "boundary": "fetch-request",
+      "operation": "fetch-request-encode",
+      "schemaId": "app.user",
+      "input": {
+        "fixture": "user",
+        "set": {
+          "/score": {
+            "$pulseNumber": "Infinity"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_ENCODE",
+        "path": "/score",
+        "expected": "finite-f64",
+        "actualKind": "non-finite-number",
+        "traceKinds": [
+          "json.encode.error"
+        ]
+      }
+    },
+    {
+      "id": "head-application-response-bodyless",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "requestMethod": "HEAD",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user",
+        "status": 200
+      },
+      "input": {
+        "fixture": "user"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "status": 200,
+        "bodyless": true,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "status-204-application-response-bodyless",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user",
+        "status": 204
+      },
+      "input": {
+        "fixture": "user"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "status": 204,
+        "bodyless": true,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "status-304-application-response-bodyless",
+      "classification": "portable-semantic",
+      "boundary": "application-response",
+      "operation": "response-encode",
+      "schemaId": "app.user",
+      "descriptor": {
+        "schema": "app.user",
+        "status": 304
+      },
+      "input": {
+        "fixture": "user"
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "user"
+        },
+        "status": 304,
+        "bodyless": true,
+        "traceKinds": [
+          "json.encode.response"
+        ]
+      }
+    },
+    {
+      "id": "request-redacted-value-and-authorization",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "sensitiveValues": [
+        "5c-secret-do-not-leak"
+      ],
+      "headers": [
+        [
+          "authorization",
+          "Bearer 5c-secret-do-not-leak"
+        ],
+        [
+          "content-type",
+          "application/json"
+        ]
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/name": "5c-secret-do-not-leak"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "semantic": {
+          "fixture": "createInput",
+          "set": {
+            "/name": "5c-secret-do-not-leak"
+          }
+        },
+        "secretAbsentFromObservation": true,
+        "authorizationRedacted": true,
+        "traceKinds": [
+          "json.decode.request"
+        ]
+      }
+    },
+    {
+      "id": "request-redacted-invalid-enum-error",
+      "classification": "portable-semantic",
+      "boundary": "request",
+      "operation": "request-decode",
+      "schemaIds": [
+        "app.createInput"
+      ],
+      "sensitiveValues": [
+        "5c-secret-do-not-leak"
+      ],
+      "headers": [
+        [
+          "authorization",
+          "Bearer 5c-secret-do-not-leak"
+        ],
+        [
+          "content-type",
+          "application/json"
+        ]
+      ],
+      "input": {
+        "fixture": "createInput",
+        "set": {
+          "/role": "5c-secret-do-not-leak"
+        }
+      },
+      "expected": {
+        "outcome": "error",
+        "code": "PULSE_SCHEMA_DECODE",
+        "path": "/role",
+        "expected": "enum(\"admin\"|\"member\")",
+        "actualKind": "string",
+        "secretAbsentFromObservation": true,
+        "authorizationRedacted": true,
+        "traceKinds": [
+          "json.decode.error"
+        ]
+      }
+    },
+    {
+      "id": "caller-owned-exact-json-text",
+      "classification": "caller-owned-exact-text",
+      "boundary": "fetch-request",
+      "operation": "exact-body",
+      "rawBody": "{ \"z\": 1, \"a\": [true, null], \"escaped\": \"\\\\u2603\" }",
+      "expected": {
+        "outcome": "value",
+        "exactBody": "{ \"z\": 1, \"a\": [true, null], \"escaped\": \"\\\\u2603\" }",
+        "traceKinds": []
+      }
+    }
+  ],
+  "negativeControls": [
+    {
+      "id": "semantic-digest-drift",
+      "caseId": "request-valid-recursive-unknown-removal",
+      "pointer": "/semanticDigest",
+      "replacement": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "mismatch": "semantic-value"
+    },
+    {
+      "id": "error-path-drift",
+      "caseId": "request-invalid-string-enum",
+      "pointer": "/error/path",
+      "replacement": "/different",
+      "mismatch": "error-path"
+    },
+    {
+      "id": "status-drift",
+      "caseId": "response-case-created",
+      "pointer": "/status",
+      "replacement": 200,
+      "mismatch": "status"
+    },
+    {
+      "id": "trace-digest-drift",
+      "caseId": "outbound-fetch-valid-semantic-encode",
+      "pointer": "/trace/0/valueDigest",
+      "replacement": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "mismatch": "trace"
+    },
+    {
+      "id": "body-ownership-drift",
+      "caseId": "caller-owned-exact-json-text",
+      "pointer": "/exactBodySha256",
+      "replacement": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "mismatch": "caller-owned-exact-text"
+    }
+  ]
+}

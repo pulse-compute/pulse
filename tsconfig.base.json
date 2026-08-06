@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {
+      "@pulse-compute/crypto": [
+        "packages/crypto/src/index.ts"
+      ],
+      "@pulse-compute/grip": [
+        "packages/grip/src/index.ts"
+      ],
+      "@pulse-compute/assets/pulsewasm": [
+        "packages/assets/src/pulsewasm.ts"
+      ],
+      "@pulse-compute/assets": [
+        "packages/assets/src/index.ts"
+      ],
+      "@pulse-compute/grip/pulsewasm": [
+        "packages/grip/src/pulsewasm.ts"
+      ],
+      "@pulse-compute/jwt": [
+        "packages/jwt/src/index.ts"
+      ],
+      "@pulse-compute/jwt/provider": [
+        "packages/jwt/src/provider.ts"
+      ],
+      "@pulse-compute/entities": [
+        "packages/entities/src/index.ts"
+      ],
+      "@pulse-compute/provider-fastly": [
+        "packages/provider-fastly/src/index.ts"
+      ]
+    }
+  }
+}

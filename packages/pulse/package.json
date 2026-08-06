@@ -1,0 +1,44 @@
+{
+  "name": "@pulse-compute/pulse",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Project configuration, schema declarations, and the conventional Pulse application root.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./schema": {
+      "types": "./src/schema.d.ts",
+      "require": "./src/schema.js",
+      "default": "./src/schema.js"
+    }
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "dependencies": {
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/runtime": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/pulse"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/pulse/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

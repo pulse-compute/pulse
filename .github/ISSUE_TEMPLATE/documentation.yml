@@ -1,0 +1,46 @@
+name: Documentation problem
+description: Report inaccurate, missing, inconsistent, or unusable documentation.
+title: "[docs] "
+labels:
+  - type:documentation
+  - area:documentation
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page or installed package path
+      placeholder: docs/reference/cli.md or @pulse-compute/cli/docs/...
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Problem type
+      options:
+        - Incorrect contract or command
+        - Broken link or missing anchor
+        - Missing task or concept
+        - Generated-reference drift
+        - Navigation, search, or accessibility
+        - Installed-package documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or unclear?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Expected source of truth
+      description: Point to source code, command output, a package manifest, a diagnostic, or another canonical document when possible.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, private URLs, customer data, and proprietary source.
+          required: true

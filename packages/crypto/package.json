@@ -1,0 +1,44 @@
+{
+  "name": "@pulse-compute/crypto",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Provider-neutral cryptographic verification contracts for Pulse.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./pulsewasm-native": "./pulsewasm.native.cjs"
+  },
+  "files": [
+    "as",
+    "dist",
+    "pulsewasm.native.cjs",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "corepack pnpm --dir ../.. exec vitest run packages/crypto/test",
+    "test:types": "tsc -p tsconfig.types.json --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/crypto"
+  },
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/crypto/",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts"
+}

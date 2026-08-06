@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pulsecompute.io/contracts/pulse.package-contract.v1.schema.json",
+  "title": "Pulse package contract v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "kind",
+    "contractId",
+    "npmPackage",
+    "authoring",
+    "ownership",
+    "composition",
+    "targets",
+    "lowering",
+    "conformance",
+    "docs"
+  ],
+  "properties": {
+    "version": {
+      "const": "pulse.package-contract.v1"
+    },
+    "kind": {
+      "const": "pulse.package-contract"
+    },
+    "contractId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[.-][a-z0-9]+)+$"
+    },
+    "npmPackage": {
+      "type": "string",
+      "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*$"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "authoring": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "import",
+        "symbols"
+      ],
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "import": {
+          "$ref": "#/$defs/packageSpecifier"
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profileFragment",
+        "helperImports",
+        "reExportImports"
+      ],
+      "properties": {
+        "profileFragment": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "helperImports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/packageSpecifier"
+          },
+          "uniqueItems": true
+        },
+        "reExportImports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/packageSpecifier"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "composition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "profileToken"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "supported",
+            "reserved",
+            "not-realized",
+            "unsupported"
+          ]
+        },
+        "helperSymbol": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "profileToken": {
+          "const": "opaque-direct-use"
+        },
+        "reasonCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "const": "pulse.package-composition.v1"
+        }
+      }
+    },
+    "targets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "native",
+        "javascript"
+      ],
+      "properties": {
+        "native": {
+          "$ref": "#/$defs/target"
+        },
+        "javascript": {
+          "$ref": "#/$defs/target"
+        }
+      }
+    },
+    "lowering": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest",
+        "trust",
+        "canonicalOperationVersion",
+        "bundleVersion",
+        "providerRequirementVersion"
+      ],
+      "properties": {
+        "manifest": {
+          "$ref": "#/$defs/packageRelativePath"
+        },
+        "trust": {
+          "const": "first-party"
+        },
+        "canonicalOperationVersion": {
+          "const": "pulse.canonical-package-operation.v1"
+        },
+        "bundleVersion": {
+          "const": "pulse.package-lowering-bundle.v1"
+        },
+        "providerRequirementVersion": {
+          "const": "pulse.provider-requirement-record.v1"
+        }
+      }
+    },
+    "conformance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "fixtureRoots",
+        "semanticCases"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "native-contract-only",
+            "target-overlap",
+            "not-realized"
+          ]
+        },
+        "fixtureRoots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/packageRelativePath"
+          },
+          "uniqueItems": true
+        },
+        "semanticCases": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "version": {
+          "const": "pulse.package-conformance.v1"
+        }
+      }
+    },
+    "docs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readme",
+        "contract"
+      ],
+      "properties": {
+        "readme": {
+          "$ref": "#/$defs/packageRelativePath"
+        },
+        "contract": {
+          "$ref": "#/$defs/packageRelativePath"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "packageSpecifier": {
+      "type": "string",
+      "pattern": "^(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*(?:/[A-Za-z0-9._-]+)*$"
+    },
+    "packageRelativePath": {
+      "type": "string",
+      "pattern": "^\\./(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "realization",
+        "providerRequirements"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "supported",
+            "provider-dependent",
+            "not-realized",
+            "unsupported"
+          ]
+        },
+        "realization": {
+          "enum": [
+            "canonical-package-lowering",
+            "javascript-package-runtime",
+            "provider-runtime",
+            "none"
+          ]
+        },
+        "entry": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "lowerableSubpath": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/packageSpecifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "providerRequirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "uniqueItems": true
+        },
+        "reasonCode": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "const": "pulse.package-target-support.v1"
+        }
+      }
+    }
+  }
+}

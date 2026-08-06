@@ -1,0 +1,46 @@
+{
+  "name": "@pulse-compute/runtime",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Portable Pulse authoring and execution contract for handlers, contexts, and static routers.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./host": {
+      "types": "./src/host.d.ts",
+      "require": "./src/host.js",
+      "default": "./src/host.js"
+    },
+    "./package": {
+      "types": "./src/package.d.ts",
+      "require": "./src/package.js",
+      "default": "./src/package.js"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "docs"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/runtime"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/runtime/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "version": "pulse.grip-readiness.v1",
+  "kind": "pulse.grip-readiness",
+  "contractId": "pulse.grip",
+  "status": "bounded-http-framing-realized",
+  "owner": "@pulse-compute/grip",
+  "applicationEntry": "@pulse-compute/grip",
+  "connectionModel": {
+    "pulseOwnsConnections": false,
+    "pulseOwnsWebSocketObjects": false,
+    "externalGatewayOwnsLifecycle": true,
+    "stateModel": "stateless-request-response"
+  },
+  "surface": {
+    "isWebSocket": {
+      "kind": "pure-request-classification",
+      "javascript": "realized",
+      "native": "realized"
+    },
+    "subscribe": {
+      "kind": "pure-response-decoration",
+      "javascript": "realized",
+      "native": "realized"
+    },
+    "handoff": {
+      "kind": "pure-http-response-construction",
+      "javascript": "realized",
+      "native": "realized"
+    },
+    "broadcast": {
+      "kind": "request-bound-provider-effect",
+      "awaitable": true,
+      "parallelEligible": true,
+      "javascript": "realized-node-provider",
+      "native": "realized-node-and-fastly-providers"
+    }
+  },
+  "configuration": {
+    "publishEndpoint": "provider-owned",
+    "authentication": "secret-reference-only",
+    "verification": "optional-trusted-proxy-policy",
+    "redactionRequired": true
+  },
+  "excluded": [
+    "application-visible-websocket-object",
+    "message-callback-lifecycle",
+    "connection-registry",
+    "connection-backpressure",
+    "connection-reconnect-state",
+    "long-lived-pulse-continuation"
+  ],
+  "compatibility": {
+    "lowerableSubpath": "@pulse-compute/grip/pulsewasm",
+    "canonicalLowerableRoot": "@pulse-compute/grip",
+    "status": "canonical-root-realized-compatibility-retained",
+    "recommendedForNewApplications": false
+  },
+  "policy": {
+    "generalTargetAvailabilityAffected": true,
+    "automaticFallback": false,
+    "boundedRealizationRequiredBeforeParityClaim": true,
+    "boundedRealizationEvidence": "wasm/test/contracts/assert-grip-cross-target-conformance.cjs",
+    "supportGate": "target-support",
+    "supportGateOwner": "@pulse-compute/provider-node",
+    "generalAvailable": true
+  }
+}

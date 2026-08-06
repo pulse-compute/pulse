@@ -1,0 +1,53 @@
+{
+  "version": "pulse.jwt-native-contract-conformance.v1",
+  "status": "crypto-composed-hs256",
+  "operation": "jwt.verify",
+  "cases": [
+    "bearer-request-header",
+    "literal-verification-policy",
+    "runtime-secret-binding",
+    "claims-schema-reference",
+    "target-capability-selection",
+    "guest-source-pulse-hmac-as",
+    "exact-signing-and-tag-bytes",
+    "signature-before-claims",
+    "critical-header-rejection",
+    "non-finite-json-rejection",
+    "exact-time-boundary-parity",
+    "hostile-accessor-rejection",
+    "prototype-safe-result-detachment",
+    "no-key-material-artifact",
+    "no-guest-unit-for-hs256",
+    "dynamic-bearer-invocation",
+    "migrated-handler-javascript-native-parity",
+    "direct-and-parallel-parity",
+    "audience-and-time-boundary-parity",
+    "schema-and-resource-limit-parity",
+    "fastly-native-planning-rejection",
+    "redacted-rejection"
+  ],
+  "realizations": {
+    "crypto-composed": {
+      "status": "implemented",
+      "provider": "node",
+      "realization": "guest-source:pulse-hmac-as",
+      "implementation": "pulse-hmac-as.v1",
+      "algorithms": [
+        "HS256"
+      ],
+      "keyTypes": [
+        "secret"
+      ],
+      "guestUnitRequired": false,
+      "automaticFallback": false
+    }
+  },
+  "policy": {
+    "automaticFallback": false,
+    "nativeCryptoImplemented": true,
+    "secretMaterialExcludedFromCanonicalPlan": true,
+    "tokenExcludedFromStaticPlan": true,
+    "targetBindingRequired": true,
+    "cryptoSemanticOwner": "@pulse-compute/crypto"
+  }
+}

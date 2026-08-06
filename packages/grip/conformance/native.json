@@ -1,0 +1,22 @@
+{
+  "version": "pulse.package-conformance-fixture.v1",
+  "contractId": "pulse.grip",
+  "target": "native",
+  "status": "target-overlap",
+  "canonicalRoot": "@pulse-compute/grip",
+  "compatibilityRoot": "@pulse-compute/grip/pulsewasm",
+  "cases": [
+    "grip.isWebSocket",
+    "grip.subscribe",
+    "grip.handoff",
+    "grip.broadcast"
+  ],
+  "nativeRestrictions": {
+    "options": "static",
+    "messages": "static",
+    "dynamicInputs": "fail-at-exact-expression",
+    "trialLowering": false,
+    "automaticFallback": false
+  },
+  "evidence": "wasm/test/contracts/assert-grip-cross-target-conformance.cjs"
+}

@@ -1,0 +1,82 @@
+{
+  "version": "pulse.guest-unit.v2",
+  "id": "pulse.crypto.es256.rustcrypto-p256.v1",
+  "module": "pulse_crypto_es256",
+  "owner": "@pulse-compute/crypto",
+  "packageVersion": "1.0.0-beta.1",
+  "abi": "pulse.crypto.es256.verify.v1",
+  "origin": "package-prebuilt",
+  "artifact": {
+    "file": "prebuilt/es256-verifier.wasm",
+    "bytes": 21009,
+    "sha256": "ee5ab1639cbe1be5a9510c01ab15a3569c0394818a9db98f3e0114ae829fff50"
+  },
+  "source": {
+    "included": true,
+    "directory": "source",
+    "treeSha256": "76c8cf985b2ed384d069f7ba0d7ff1c8513679ea7aec513e1a07a3eeaa3b7208"
+  },
+  "toolchain": {
+    "kind": "rust-cargo",
+    "target": "wasm32v1-none",
+    "locked": true,
+    "versions": {
+      "rustc": "1.97.1 (8bab26f4f 2026-07-14)",
+      "cargo": "1.97.1 (c980f4866 2026-06-30)",
+      "binaryen": "129.0.0-nightly.20260428"
+    }
+  },
+  "imports": [
+    {
+      "module": "env",
+      "name": "memory",
+      "kind": "memory",
+      "type": {
+        "minimumPages": 32,
+        "maximumPages": 32,
+        "shared": false
+      }
+    }
+  ],
+  "exports": [
+    {
+      "name": "pulse_crypto_es256_verify",
+      "kind": "function",
+      "parameters": [
+        "i32",
+        "i32"
+      ],
+      "results": [
+        "i32"
+      ],
+      "role": "abi"
+    }
+  ],
+  "memory": {
+    "identity": "pulse.guest-memory.invocation-frame.v2",
+    "import": "env.memory",
+    "owner": "link-stage"
+  },
+  "start": {
+    "policy": "forbidden"
+  },
+  "features": {
+    "baseline": "mvp",
+    "allowed": [],
+    "required": []
+  },
+  "provenance": {
+    "packageManifest": "../../package.json",
+    "lockfile": "source/Cargo.lock",
+    "reproducibleSourceIncluded": true,
+    "cargoLockSha256": "7aa8c6d72751653717a371147e71a546d8f21dfcd1cf698919563e79e2946cb4",
+    "sourceTreeSha256": "76c8cf985b2ed384d069f7ba0d7ff1c8513679ea7aec513e1a07a3eeaa3b7208",
+    "reconstructionCommandIdentity": "pulse.crypto.es256.rustcrypto-build.v1",
+    "buildScript": "build.cjs",
+    "buildScriptSha256": "dadcc8ef1f252b59192408af42da4820c4858b2bc5594dd85792fd02e9b87ae2",
+    "optimizationPosture": "native-size",
+    "binaryenWasmOptSha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56",
+    "g0SourceDecision": "../../../../wasm/.test-results/jwt-g0/es256-source-decision.json",
+    "g0SourceDecisionSha256": "58db9e3587ace112a8864c7916f603d8773dce653deafb7d743c0dc1f4d62d63"
+  }
+}

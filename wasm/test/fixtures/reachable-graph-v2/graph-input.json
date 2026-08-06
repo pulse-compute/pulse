@@ -1,0 +1,162 @@
+{
+  "resolver": {
+    "baseUrl": ".",
+    "configFile": "tsconfig.json",
+    "configContentHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "pathAliases": [
+      {
+        "pattern": "@pkg/exact",
+        "targets": ["src/exact.ts"]
+      },
+      {
+        "pattern": "@app/*",
+        "targets": ["src/*"]
+      }
+    ]
+  },
+  "entry": "entry",
+  "modules": [
+    {
+      "key": "types",
+      "kind": "project",
+      "owner": "application",
+      "format": "declaration",
+      "runtime": false,
+      "path": "src/types.d.ts",
+      "contentHash": "3333333333333333333333333333333333333333333333333333333333333333",
+      "exports": ["Input"],
+      "reExports": [],
+      "source": { "file": "src/types.d.ts", "line": 1, "column": 1 }
+    },
+    {
+      "key": "assets",
+      "kind": "package",
+      "owner": "pulse-package",
+      "format": "javascript",
+      "runtime": true,
+      "packageName": "@pulse-compute/assets",
+      "packageVersion": "1.0.0-beta.1",
+      "packageSubpath": ".",
+      "packageManifestHash": "4444444444444444444444444444444444444444444444444444444444444444",
+      "packageContract": "pulse.assets.v1",
+      "contentHash": "5555555555555555555555555555555555555555555555555555555555555555",
+      "exports": ["assets"],
+      "reExports": [],
+      "source": { "file": "packages/assets/src/index.js", "line": 1, "column": 1 }
+    },
+    {
+      "key": "helper",
+      "kind": "project",
+      "owner": "application",
+      "format": "typescript",
+      "runtime": true,
+      "path": "src/helper.ts",
+      "contentHash": "2222222222222222222222222222222222222222222222222222222222222222",
+      "exports": ["helper"],
+      "reExports": [],
+      "source": { "file": "src/helper.ts", "line": 1, "column": 1 }
+    },
+    {
+      "key": "entry",
+      "kind": "project",
+      "owner": "application",
+      "format": "typescript",
+      "runtime": true,
+      "path": "src/index.ts",
+      "contentHash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "exports": ["default"],
+      "reExports": [],
+      "source": { "file": "src/index.ts", "line": 1, "column": 1 }
+    },
+    {
+      "key": "barrel",
+      "kind": "project",
+      "owner": "application",
+      "format": "typescript",
+      "runtime": true,
+      "path": "src/barrel.ts",
+      "contentHash": "6666666666666666666666666666666666666666666666666666666666666666",
+      "exports": ["helper"],
+      "reExports": ["helper"],
+      "source": { "file": "src/barrel.ts", "line": 1, "column": 1 }
+    }
+  ],
+  "edges": [
+    {
+      "kind": "package-contract",
+      "from": "entry",
+      "to": "assets",
+      "specifier": "@pulse-compute/assets",
+      "resolutionKind": "package-root",
+      "importedNames": ["assets"],
+      "exportedNames": [],
+      "packageContract": "pulse.assets.v1",
+      "source": { "file": "src/index.ts", "line": 4, "column": 1 }
+    },
+    {
+      "kind": "runtime-import",
+      "from": "helper",
+      "to": "barrel",
+      "specifier": "./barrel",
+      "resolutionKind": "project-relative",
+      "importedNames": ["helper"],
+      "exportedNames": [],
+      "source": { "file": "src/helper.ts", "line": 1, "column": 1 }
+    },
+    {
+      "kind": "type-import",
+      "from": "entry",
+      "to": "types",
+      "specifier": "./types",
+      "resolutionKind": "project-relative",
+      "importedNames": ["Input"],
+      "exportedNames": [],
+      "source": { "file": "src/index.ts", "line": 2, "column": 1 }
+    },
+    {
+      "kind": "runtime-import",
+      "from": "entry",
+      "to": "barrel",
+      "specifier": "@app/barrel",
+      "resolutionKind": "tsconfig-path",
+      "importedNames": ["helper"],
+      "exportedNames": [],
+      "source": { "file": "src/index.ts", "line": 1, "column": 1 }
+    },
+    {
+      "kind": "re-export",
+      "from": "barrel",
+      "to": "helper",
+      "specifier": "./helper",
+      "resolutionKind": "project-relative",
+      "runtime": true,
+      "importedNames": ["helper"],
+      "exportedNames": ["helper"],
+      "source": { "file": "src/barrel.ts", "line": 1, "column": 1 }
+    }
+  ],
+  "handlers": [
+    {
+      "module": "entry",
+      "exportName": "default",
+      "localName": "app",
+      "role": "router",
+      "wrappers": ["satisfies"],
+      "source": { "file": "src/index.ts", "line": 7, "column": 1 }
+    }
+  ],
+  "unsupportedBoundaries": [
+    {
+      "kind": "computed-specifier",
+      "from": "entry",
+      "specifier": "<computed>",
+      "source": { "file": "src/index.ts", "line": 22, "column": 3 }
+    },
+    {
+      "kind": "dynamic-import",
+      "from": "entry",
+      "specifier": "./later",
+      "source": { "file": "src/index.ts", "line": 20, "column": 3 }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "name": "@pulse-compute/wasm-schema-json",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "PulseWasm schema JSON sidecar, compile, registry, and body-policy helpers.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./compiler": "./src/compiler/index.js",
+    "./compiler/schema-json-compile": "./src/compiler/schema-json-compile.js",
+    "./compiler/schema-json-generic-parser": "./src/compiler/schema-json-generic-parser.js",
+    "./compiler/schema-json-sidecar": "./src/compiler/schema-json-sidecar.js",
+    "./compiler/schema-json-sidecar-v2": "./src/compiler/schema-json-sidecar-v2.js",
+    "./compiler/canonical-schema-codecs": "./src/compiler/canonical-schema-codecs.js",
+    "./compiler/schema-registry": "./src/compiler/schema-registry.js"
+  },
+  "dependencies": {
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "typescript": "5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "wasm/packages/schema-json"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

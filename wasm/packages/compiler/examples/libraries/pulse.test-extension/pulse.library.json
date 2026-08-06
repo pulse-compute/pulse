@@ -1,0 +1,43 @@
+{
+  "version": "pulsewasm.library-contract.v1",
+  "package": "pulse.test-extension",
+  "description": "Phase 12C fixture contract proving ctx extension sidecar consumption.",
+  "modes": {
+    "typescript": { "entry": "./dist/index.js" },
+    "jsEngine": { "entry": "./dist/index.js" },
+    "wasm": {
+      "mode": "wasm-sidecar",
+      "sidecar": "./as/index.as.ts",
+      "hostCapabilities": ["headers", "result"],
+      "lowerings": [
+        {
+          "tsSymbol": "ctx.test.mark",
+          "asSymbol": "pulse_test_mark",
+          "callShape": "ctx-extension-literal-string",
+          "hostCapabilities": ["headers", "result"]
+        }
+      ],
+      "ctxExtensions": [
+        {
+          "namespace": "test",
+          "installedBy": { "kind": "middleware", "tsSymbol": "testExtension" },
+          "methods": [
+            {
+              "tsPath": "ctx.test.mark",
+              "asSymbol": "pulse_test_mark",
+              "callShape": "literal-string",
+              "hostCapabilities": ["headers", "result"]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "policy": {
+    "fixtureOnly": true,
+    "inferredCompatibility": false,
+    "arbitraryTsCompilation": false,
+    "sidecarRequiredForWasm": true,
+    "scopeCheckedCtxExtension": true
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "name": "@pulse-compute/jwt",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Provider-neutral JWT verification for Pulse handlers.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./provider": {
+      "types": "./dist/provider.d.ts",
+      "import": "./dist/provider.js",
+      "default": "./dist/provider.js"
+    },
+    "./pulsewasm/manifest": {
+      "require": "./pulsewasm.manifest.cjs",
+      "default": "./pulsewasm.manifest.cjs"
+    },
+    "./pulsewasm/compiler": {
+      "require": "./pulsewasm.compiler.cjs",
+      "default": "./pulsewasm.compiler.cjs"
+    },
+    "./pulsewasm-native": "./pulsewasm.native.cjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "pulse.package.json",
+    "pulsewasm.manifest.cjs",
+    "pulsewasm.compiler.cjs",
+    "pulsewasm.native.cjs",
+    "as",
+    "conformance"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "corepack pnpm --dir ../.. exec vitest run packages/jwt/test",
+    "test:types": "tsc -p tsconfig.types.json --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/jwt"
+  },
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/jwt/",
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "dependencies": {
+    "@pulse-compute/crypto": "workspace:*",
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "name": "@pulse-compute/wasm-compiler",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "description": "PulseWasm compiler package inside the Pulse monorepo.",
+  "type": "commonjs",
+  "bin": {
+    "pulsewasm-extract": "./bin/pulsewasm-extract.js",
+    "pulsewasm": "./bin/pulsewasm-extract.js"
+  },
+  "scripts": {
+    "build": "node ./bin/pulsewasm-extract.js build --config ./examples/pulse.config.js --profile edge --env ASSET_ENDPOINT=https://assets.example.test --env ASSET_BUCKET=pulse-assets --env USERS_API_BASE_URL=https://users.example.test --out ../../artifacts --emit-ast",
+    "extract": "node ./bin/pulsewasm-extract.js build ./examples/example.js --root app --out ../../artifacts --emit-ast",
+    "test": "node ../../scripts/run-wasm-tests.cjs --profile native --no-report"
+  },
+  "dependencies": {
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/wasm-guest-link": "workspace:*",
+    "assemblyscript": "0.28.18",
+    "json-as": "1.5.0",
+    "typescript": "5.9.3",
+    "@pulse-compute/wasm-library-kit": "workspace:*",
+    "@pulse-compute/wasm-host-runtime": "workspace:*",
+    "@pulse-compute/wasm-schema-json": "workspace:*",
+    "@pulse-compute/wasm-runtime-core-as": "workspace:*",
+    "@pulse-compute/provider-node": "workspace:*",
+    "@pulse-compute/provider-fastly": "workspace:*"
+  },
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./cli": "./src/cli.js",
+    "./extractor": "./src/extractor.js",
+    "./config-resolver": "./src/config-resolver.js",
+    "./diagnostics": "./src/diagnostics.js",
+    "./build-manifest": "./src/build-manifest.js",
+    "./canonical-api-compiler": "./src/canonical-api-compiler.js",
+    "./canonical-native-plan": "./src/canonical-native-plan.js",
+    "./canonical-native-compiler": "./src/canonical-native-compiler.js",
+    "./canonical-project-compiler": "./src/canonical-project-compiler.js",
+    "./project-config-compiler": "./src/project-config-compiler.js",
+    "./crypto-requirement-planner": "./src/crypto-requirement-planner.js",
+    "./javascript-application-plan": "./src/javascript-application-plan.js",
+    "./provider-toolchain": "./src/provider-toolchain.js",
+    "./project-target-support": "./src/project-target-support.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "wasm/packages/compiler"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

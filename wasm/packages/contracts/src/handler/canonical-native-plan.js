@@ -1,0 +1,143 @@
+'use strict';
+
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v2';
+const CANONICAL_NATIVE_PLAN_HASH_ALGORITHM = 'sha256';
+const CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION = 'pulse.canonical-native-ownership.v1';
+
+const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
+  'local',
+  'effect',
+  'effect-group',
+  'if',
+  'return',
+  'expression'
+]);
+
+const CANONICAL_NATIVE_EXPRESSION_KINDS = Object.freeze([
+  'literal',
+  'undefined',
+  'local',
+  'context-read',
+  'array',
+  'object',
+  'template',
+  'binary',
+  'unary',
+  'conditional',
+  'property',
+  'element',
+  'intrinsic',
+  'method-call',
+  'assignment',
+  'update',
+  'spread'
+]);
+
+const CANONICAL_NATIVE_CONTEXT_READS = Object.freeze([
+  'req.method',
+  'req.url',
+  'req.path',
+  'req.headers',
+  'event.payload'
+]);
+
+const CANONICAL_NATIVE_INTRINSICS = Object.freeze([
+  'request.header',
+  'request.text',
+  'request.json',
+  'response.json',
+  'response.text',
+  'response.custom',
+  'kv.namespace',
+  'state.get',
+  'state.set',
+  'logging.emit',
+  'event.runtime-id',
+  'router.match',
+  'router.param',
+  'grip.is-websocket',
+  'grip.subscribe',
+  'grip.handoff'
+]);
+
+const CANONICAL_NATIVE_DECODER_KINDS = Object.freeze([
+  'json',
+  'text'
+]);
+
+const CANONICAL_NATIVE_RESULT_MODES = Object.freeze([
+  'bind',
+  'bind-group',
+  'discard',
+  'return'
+]);
+
+const CANONICAL_NATIVE_VALUE_KINDS = Object.freeze([
+  'unknown',
+  'undefined',
+  'null',
+  'boolean',
+  'number',
+  'string',
+  'string-or-undefined',
+  'headers',
+  'array',
+  'object',
+  'json',
+  'json-or-undefined',
+  'fetch-response',
+  'kv-namespace',
+  'pulse-result',
+  'opaque-response',
+  'structured-response',
+  'ack'
+]);
+
+const CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES = Object.freeze({
+  COMPILED_PROGRAM_REQUIRED: 'PULSE_CANONICAL_NATIVE_COMPILED_PROGRAM_REQUIRED',
+  GENERATED_HANDLER_MISSING: 'PULSE_CANONICAL_NATIVE_HANDLER_MISSING',
+  GENERATED_HANDLER_DUPLICATE: 'PULSE_CANONICAL_NATIVE_HANDLER_DUPLICATE',
+  STATEMENT_UNSUPPORTED: 'PULSE_CANONICAL_NATIVE_STATEMENT_UNSUPPORTED',
+  EXPRESSION_UNSUPPORTED: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+  BINDING_UNSUPPORTED: 'PULSE_CANONICAL_NATIVE_BINDING_UNSUPPORTED',
+  LOCAL_UNRESOLVED: 'PULSE_CANONICAL_NATIVE_LOCAL_UNRESOLVED',
+  EFFECT_INVALID: 'PULSE_CANONICAL_NATIVE_EFFECT_INVALID',
+  EFFECT_MISMATCH: 'PULSE_CANONICAL_NATIVE_EFFECT_MISMATCH',
+  CONTINUATION_MISMATCH: 'PULSE_CANONICAL_NATIVE_CONTINUATION_MISMATCH',
+  EVENT_HANDLER_INELIGIBLE: 'PULSE_CANONICAL_NATIVE_EVENT_HANDLER_INELIGIBLE',
+  LOG_INVALID: 'PULSE_CANONICAL_NATIVE_LOG_INVALID',
+  PLAN_INVALID: 'PULSE_CANONICAL_NATIVE_PLAN_INVALID'
+});
+
+const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
+  version: CANONICAL_NATIVE_PLAN_VERSION,
+  ownershipVersion: CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION,
+  providerNeutral: true,
+  providerSelected: false,
+  providerSdkUserland: false,
+  javascriptRuntime: false,
+  promiseSemantics: false,
+  asyncify: false,
+  controlFlow: 'structured straight-line statements plus if/else branches',
+  suspension: 'explicit effect and effect-group statements with stable continuation IDs',
+  values: 'versioned JSON expression tree with stable local identities',
+  logging: 'compile-time threshold pruning plus synchronous provider-adapter emission',
+  schemas: 'canonical compiled schema registry and explicit schema references',
+  crypto: 'explicit preselected realization plan; guest source remains package-owned and fallback-free',
+  packages: 'trusted package-owned canonical effects and pure intrinsic records only'
+});
+
+module.exports = Object.freeze({
+  CANONICAL_NATIVE_PLAN_VERSION,
+  CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
+  CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION,
+  CANONICAL_NATIVE_STATEMENT_KINDS,
+  CANONICAL_NATIVE_EXPRESSION_KINDS,
+  CANONICAL_NATIVE_CONTEXT_READS,
+  CANONICAL_NATIVE_INTRINSICS,
+  CANONICAL_NATIVE_DECODER_KINDS,
+  CANONICAL_NATIVE_RESULT_MODES,
+  CANONICAL_NATIVE_VALUE_KINDS,
+  CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES,
+  CANONICAL_NATIVE_PLAN_POLICY
+});

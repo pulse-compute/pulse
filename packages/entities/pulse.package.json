@@ -1,0 +1,74 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.entities",
+  "npmPackage": "@pulse-compute/entities",
+  "description": "Bounded, statically declared entity dispatch with one first-party JSON-RPC adapter.",
+  "authoring": {
+    "namespace": "entities",
+    "import": "@pulse-compute/entities",
+    "symbols": [
+      "EntityRouter",
+      "jsonRpc"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "entities",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "entities",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_ENTITIES_COMPOSITION_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/entities",
+      "providerRequirements": [
+        "effect-execution",
+        "logging",
+        "request",
+        "response-transport"
+      ],
+      "reasonCode": "PULSE_ENTITIES_NATIVE_PROVIDER_INTEGRATION_REQUIRED"
+    },
+    "javascript": {
+      "status": "supported",
+      "realization": "javascript-package-runtime",
+      "entry": "./dist/index.js",
+      "providerRequirements": [
+        "effect-execution",
+        "logging",
+        "request",
+        "response-transport"
+      ]
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "target-overlap",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "customer.lookup",
+      "echo.雪",
+      "invalid.output",
+      "system.notify"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

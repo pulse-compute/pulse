@@ -1,0 +1,73 @@
+{
+  "name": "@pulse-compute/cli",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "description": "Pulse project CLI, configuration loader, and end-to-end workflow driver.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./workflow": "./src/workflow.js",
+    "./project-config": "./src/project-config.js",
+    "./project-execution": "./src/project-execution.js",
+    "./diagnostics": "./src/diagnostics.js",
+    "./project-config-schema": {
+      "types": "./src/project-config-schema.d.ts",
+      "require": "./src/project-config-schema.js",
+      "default": "./src/project-config-schema.js"
+    },
+    "./project-config.schema.json": "./project-config.schema.json",
+    "./cli-spec.json": "./cli-spec.json",
+    "./release-manifest.json": "./release-manifest.json",
+    "./documentation-versions.json": "./documentation-versions.json",
+    "./documentation-site.json": "./documentation-site.json"
+  },
+  "dependencies": {
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-compiler": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/wasm-host-runtime": "workspace:*",
+    "@pulse-compute/wasm-schema-json": "workspace:*",
+    "typescript": "5.9.3"
+  },
+  "bin": {
+    "pulsewasm-extract": "./bin/pulsewasm-extract.js",
+    "pulsewasm": "./bin/pulsewasm-extract.js",
+    "pulse": "./bin/pulse.js"
+  },
+  "types": "./src/index.d.ts",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "docs",
+    "examples",
+    "API.md",
+    "completions",
+    "cli-spec.json",
+    "project-config.schema.json",
+    "release-manifest.json",
+    "documentation-versions.json",
+    "documentation-site.json",
+    "CHANGELOG.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "wasm/packages/cli"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/cli/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

@@ -1,0 +1,75 @@
+name: Maintainer labels
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Report changes without modifying labels
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  synchronize:
+    name: synchronize
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - name: Create or update policy labels
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        with:
+          script: |
+            const fs = require('node:fs');
+            const policy = JSON.parse(fs.readFileSync('release/maintenance-policy.json', 'utf8'));
+            const dryRun = process.env.DRY_RUN === 'true';
+            const existing = new Map();
+            for (const label of await github.paginate(github.rest.issues.listLabelsForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            })) existing.set(label.name, label);
+
+            const summary = [];
+            for (const desired of policy.labels) {
+              const current = existing.get(desired.name);
+              const action = current ? 'update' : 'create';
+              const changed = !current || current.color.toLowerCase() !== desired.color.toLowerCase() || current.description !== desired.description;
+              if (!changed) {
+                summary.push(`unchanged ${desired.name}`);
+                continue;
+              }
+              summary.push(`${dryRun ? 'would ' : ''}${action} ${desired.name}`);
+              if (dryRun) continue;
+              if (current) {
+                await github.rest.issues.updateLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: current.name,
+                  new_name: desired.name,
+                  color: desired.color,
+                  description: desired.description
+                });
+              } else {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: desired.name,
+                  color: desired.color,
+                  description: desired.description
+                });
+              }
+            }
+            await core.summary
+              .addHeading('Pulse maintainer labels')
+              .addRaw(summary.map((entry) => `- ${entry}`).join('\n'))
+              .write();

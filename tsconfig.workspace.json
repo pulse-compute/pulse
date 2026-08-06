@@ -1,0 +1,23 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "./packages/crypto"
+    },
+    {
+      "path": "./packages/grip"
+    },
+    {
+      "path": "./packages/assets"
+    },
+    {
+      "path": "./packages/jwt"
+    },
+    {
+      "path": "./packages/entities"
+    },
+    {
+      "path": "./packages/provider-fastly"
+    }
+  ]
+}

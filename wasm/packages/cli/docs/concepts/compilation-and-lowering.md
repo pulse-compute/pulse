@@ -1,0 +1,496 @@
+# Compilation and lowering
+
+Pulse handlers are async-shaped TypeScript, but native targets do not execute them with a JavaScript Promise runtime. The `pulse` CLI compiles the whole project into a provider-neutral program, records every trusted host operation the program requires, and then asks the selected provider to realize those operations.
+
+This page explains that process. Start with [Getting started](../getting-started.md) when you only need to run an application.
+
+## The compilation path
+
+```text
+async Pulse or Router application + .pulse/config.ts profile
+            │
+            ▼
+project normalization and schema loading
+            │
+            ▼
+canonical authoring lowering
+  routes • values • branches • effects • continuations
+            │
+            ▼
+provider-neutral native execution plan
+            │
+            ├── pulse compile → compact Pulse-owned Wasm
+            │
+            ▼
+capability requirements and provider operations
+            │
+            ▼
+provider lowering plan
+            │
+            ├── Node execution/build output
+            └── Fastly Compute source + bin/main.wasm
+```
+
+**Lowering** means translating a higher-level source operation into a smaller, explicit representation that later stages can validate and execute. It is not minification and it is not merely TypeScript-to-JavaScript transpilation.
+
+The compiler must be able to answer four questions before provider execution begins:
+
+1. Which values and branches are part of the portable program?
+2. Which operations need host authority, such as fetch, secrets, KV, or GRIP?
+3. Where does execution continue after each host operation completes?
+4. Can the chosen provider satisfy every required capability and binding?
+
+
+## Router topology and middleware use the same downstream plan
+
+Static Router authoring is normalized before canonical handler analysis:
+
+```text
+Router registrations, middleware, error handlers, and mounts
+→ retained topology extraction and path normalization
+→ flat ordered execution-entry graph
+→ terminal normal/error cursor transfers
+→ canonical route and middleware branches
+→ the same effects, continuations, native plan, and providers
+```
+
+`return next()` does not call another JavaScript function and later unwind. It ends the current state and advances the normal Router cursor. `return next(error)` does the same for the error cursor. Middleware effects before that transfer use the same suspend/resume states as effects inside ordinary handlers; only the Router cursor determines where execution continues afterward.
+
+Router dispatch is not a separate runtime or compiler. `pulse inspect` reports `compiler.routing.entries`, `compiler.routing.routes`, and terminal semantics. Host operations carry the stable identity of the route or middleware entry that owns them. See the [Router lowering example](../../examples/09-router-lowering/) and [routing guide](../guides/routing.md).
+
+## From source to an effect
+
+The single-fetch example uses the portable async authoring shape:
+
+<!-- pulse-doc-source: examples/03-fetch-composition/src/index.ts -->
+```ts
+import { Pulse } from '@pulse-compute/pulse'
+
+interface User {
+  id: number
+  name: string
+}
+
+interface Stats {
+  score: number
+}
+
+interface Flags {
+  enabled: boolean
+}
+
+const app = new Pulse({ auto: true })
+
+// One structured origin.
+app.get('/user', async (ctx) => {
+  const user = await ctx
+    .fetch('https://users.example.test/users/123')
+    .json<User>()
+  return ctx.json({ found: true, user })
+})
+
+// Multiple origins with explicit sequential awaits.
+app.get('/user-summary', async (ctx) => {
+  const user = await ctx
+    .fetch('https://users.example.test/users/123')
+    .json<User>()
+  const stats = await ctx
+    .fetch('https://stats.example.test/users/123')
+    .json<Stats>()
+  const flags = await ctx
+    .fetch('https://flags.example.test/users/123')
+    .json<Flags>()
+  return ctx.json({
+    id: user.id,
+    name: user.name,
+    score: stats.score,
+    enabled: flags.enabled,
+  })
+})
+
+// Multiple origins with explicit portable concurrency.
+app.get('/user-summary-parallel', async (ctx) => {
+  const { user, stats, flags } = await ctx.parallel({
+    user: ctx.fetch('https://users.example.test/users/123').json<User>(),
+    stats: ctx.fetch('https://stats.example.test/users/123').json<Stats>(),
+    flags: ctx.fetch('https://flags.example.test/users/123').json<Flags>(),
+  })
+  return ctx.json({
+    id: user.id,
+    name: user.name,
+    score: stats.score,
+    enabled: flags.enabled,
+  })
+})
+
+export default app
+```
+<!-- /pulse-doc-source -->
+
+Run the compiler inspection without building a target:
+
+<!-- pulse-doc-run {"args":["inspect","examples/03-fetch-composition","--json"],"display":"pulse inspect examples/03-fetch-composition --json"} -->
+```bash
+pulse inspect examples/03-fetch-composition --json
+```
+```json
+{
+  "status": "ok",
+  "provider": {
+    "id": "node"
+  },
+  "compiler": {
+    "effectCount": 7,
+    "continuationCount": 3,
+    "groupedContinuationCount": 2,
+    "opaqueReturnCount": 0
+  }
+}
+```
+
+The selected fields below are copied from that inspection result. Paths, hashes, source offsets, and unrelated schema detail are intentionally omitted so the example remains stable and readable.
+
+<!-- pulse-doc-source: docs/fixtures/inspect-fetch-composition.selected.json -->
+```json
+{
+  "status": "ok",
+  "project": {
+    "provider": "node",
+    "entry": "src/index.ts"
+  },
+  "compiler": {
+    "version": "pulse.canonical-api-compiler.v7",
+    "capabilities": [
+      "fetch",
+      "response.json",
+      "response.text"
+    ],
+    "effects": [
+      {
+        "id": "fetch-1",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://users.example.test/users/123",
+          "origin": "https://users.example.test"
+        },
+        "grouped": false
+      },
+      {
+        "id": "fetch-2",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://users.example.test/users/123",
+          "origin": "https://users.example.test"
+        },
+        "grouped": true
+      },
+      {
+        "id": "fetch-3",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://stats.example.test/users/123",
+          "origin": "https://stats.example.test"
+        },
+        "grouped": true
+      },
+      {
+        "id": "fetch-4",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://flags.example.test/users/123",
+          "origin": "https://flags.example.test"
+        },
+        "grouped": true
+      },
+      {
+        "id": "fetch-5",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://users.example.test/users/123",
+          "origin": "https://users.example.test"
+        },
+        "grouped": true,
+        "groupKey": "user"
+      },
+      {
+        "id": "fetch-6",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://stats.example.test/users/123",
+          "origin": "https://stats.example.test"
+        },
+        "grouped": true,
+        "groupKey": "stats"
+      },
+      {
+        "id": "fetch-7",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://flags.example.test/users/123",
+          "origin": "https://flags.example.test"
+        },
+        "grouped": true,
+        "groupKey": "flags"
+      }
+    ],
+    "continuations": [
+      {
+        "id": "continuation-1",
+        "kind": "single-fetch",
+        "effectIds": [
+          "fetch-1"
+        ]
+      },
+      {
+        "id": "continuation-2",
+        "kind": "fetch-group",
+        "effectIds": [
+          "fetch-2",
+          "fetch-3",
+          "fetch-4"
+        ]
+      },
+      {
+        "id": "continuation-3",
+        "kind": "parallel-group",
+        "effectIds": [
+          "fetch-5",
+          "fetch-6",
+          "fetch-7"
+        ]
+      }
+    ],
+    "providerLowering": {
+      "version": "pulse.canonical-provider-plan.v1",
+      "contractVersion": "pulse.canonical-provider-contract.v1",
+      "provider": "node",
+      "requirements": [
+        "fetch",
+        "response.json",
+        "response.text"
+      ],
+      "operations": [
+        {
+          "id": "fetch-1",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://users.example.test"
+        },
+        {
+          "id": "fetch-2",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://users.example.test"
+        },
+        {
+          "id": "fetch-3",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://stats.example.test"
+        },
+        {
+          "id": "fetch-4",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://flags.example.test"
+        },
+        {
+          "id": "fetch-5",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://users.example.test"
+        },
+        {
+          "id": "fetch-6",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://stats.example.test"
+        },
+        {
+          "id": "fetch-7",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://flags.example.test"
+        }
+      ],
+      "providerSpecificUserland": false,
+      "providerSdkUserland": false,
+      "capabilityDiscoveryFromUserland": false
+    }
+  }
+}
+```
+<!-- /pulse-doc-source -->
+
+The source call becomes a canonical `fetch-1` effect. The code after the call becomes `continuation-1`. The provider plan then maps that effect to `node.fetch.dispatch`. Application source does not import Node APIs, a Fastly SDK, or provider objects.
+
+
+## Keyed parallel lowering
+
+`ctx.parallel({ ... })` is the explicit portable concurrency form. The compiler
+requires one nonempty static object literal with fixed non-index string keys and
+recognized Pulse effects as values. It rejects dynamic records, spreads, computed
+keys, methods, accessors, arbitrary promises, reused effect roots, and nested
+parallel groups with stable diagnostics.
+
+Native lowering erases the call, emits its members into one canonical effect group,
+records the source key on each effect site, suspends once, and reconstructs an
+ordinary keyed object on resume. Property order remains authoritative even when
+provider completion order differs. The JavaScript target executes the same source
+through the request-owned shared effect adapter and implements the same all-settle,
+keyed result and failure contract.
+
+This does not remove Native implicit grouping. Adjacent independently lowerable
+effects may still be grouped as a performance optimization, while separate awaits
+executed directly as JavaScript retain ordinary sequential semantics. Authors use
+`ctx.parallel` when concurrency itself must be portable.
+
+## Synchronous logging lowering
+
+`ctx.log.error`, `warn`, `info`, and `debug` share one numeric level contract
+across all four provider/target modes. Logging is synchronous and is not added to
+the effect or continuation graph.
+
+For Native targets, the resolved flat profile `reporting` threshold participates
+in the build identity. Disabled statements are erased during lowering and enabled
+statements call the compact `pulse_log(level, ptr, len)` ABI. JavaScript targets
+retain ordinary expression evaluation and filter through the same threshold at
+runtime. Provider formatting and destination may differ; level identity,
+enabled/disabled decisions, redaction, and request-contained sink failure are the
+portable conformance surface.
+
+## What the compiler owns
+
+The whole-project compiler owns:
+
+- discovering the authoritative workspace, loading `.pulse/config.ts`, and selecting one flat profile;
+- parsing the canonical handler and its explicitly declared JSON schema sources;
+- rejecting unsupported ambient authority, asynchronous syntax, and dynamic forms that cannot be represented safely;
+- assigning stable effect and continuation identities;
+- deriving capability requirements from the program;
+- invoking trusted package-owned lowerers for supported facades;
+- asking the provider contract to validate and map required operations;
+- emitting canonical metadata used by `inspect`, `test`, `dev`, `compile`, and `build`;
+- lowering the canonical program into the versioned provider-neutral native plan used by `pulse compile`.
+
+The compiler does **not** make network requests, read deployment secrets, or invent provider bindings while analyzing source.
+
+## Canonical lowering and package-owned lowering
+
+Pulse has two related lowering paths.
+
+### Canonical handler lowering
+
+Calls on `PulseContext`, such as `ctx.fetch`, `ctx.config.get`, `ctx.secret.get`, `ctx.kv.get`, and response constructors, are part of the canonical API contract. The central compiler recognizes them and emits canonical operations.
+
+### Package-owned lowering
+
+A supported package can own a normal application root, manifest, contract
+mapping, and compiler builder. Assets is the converged example:
+`@pulse-compute/assets` executes as the real JavaScript package and the same
+supported `assets.lookup(ctx, ...)` shape lowers into `pulse.assets` operations
+on Native targets. The package keeps its domain-specific validation rules; the
+generic loader handles reachable-graph discovery and trusted invocation. Older
+`/pulsewasm` imports are isolated in the
+[compatibility migration guide](../guides/compatibility-imports.md).
+
+In Pulse `1.0.0-beta.1`, package-owned builders must declare `compiler.trust: 'first-party'` and ship in the synchronized release set. This is an internal contributor mechanism, not a general third-party plugin API. See [Add a first-party package-owned lowerer](../contributing/adding-first-party-lowerer.md).
+
+## Provider lowering is a second contract
+
+Canonical effects describe **what** the program needs. A provider lowering plan describes **how** a selected provider realizes those needs.
+
+For example:
+
+```text
+canonical capability: fetch
+Node lowering:         node.fetch.dispatch
+Fastly lowering:       fastly.fetch.dispatch
+```
+
+Provider validation is fail-closed. A build or execution command stops with a stable diagnostic when a required capability or binding is missing rather than silently substituting provider-specific behavior. See [Contracts and providers](./contracts-and-providers.md).
+
+## Why source restrictions exist
+
+The compiler accepts a deliberately bounded TypeScript subset because every accepted construct needs deterministic lowering and equivalent provider behavior. In particular:
+
+- managed handlers are async-shaped; only trusted Pulse awaits lower natively, while arbitrary Promise construction and arbitrary library awaits remain outside native eligibility;
+- ambient `process.env`, global `fetch`, timers, and randomness do not become hidden authority;
+- package facade calls use statically recognizable imports and supported argument shapes;
+- opaque bodies can cross the boundary but cannot be inspected or transformed in userland;
+- provider SDK objects never enter handler scope.
+
+These restrictions are compatibility guarantees, not temporary parser
+accidents. The complete boundary is in the
+[Beta scope](../preview-scope.md).
+
+## Reading `pulse inspect`
+
+Use `pulse inspect` before target compilation when you need to answer:
+
+- Is the selected target's core execution lane ready, and is the target generally available under its declared support policy?
+- Is this project eligible for the selected target's implemented commands? If not, which stable capability or package reasons and owners apply?
+- Which target descriptor, command matrix, application graph, loader observation, and parity evidence produced that decision?
+- Which capabilities did this source require?
+- Which source calls became effects?
+- Which effects are grouped?
+- Which continuations resume after them?
+- What native plan hash and portable Wasm import/export surface will `pulse compile` produce?
+- Which provider lowering and deployment binding was selected?
+- Did package-owned lowering run?
+- Is any provider-specific userland entering the program?
+
+For a Node or Fastly JavaScript profile, `provider.targetSupport` is separate from
+the provider-neutral compiler plan. General availability is defined as full
+target support: both current declarations report `coreExecutionReady: true`,
+`fullTargetSupportReady: true`, and `generalAvailable: true` because every
+declared gate is satisfied. The project-level status (`eligible`, `pending`, or
+`blocked`) is still derived from the JavaScript application plan, reachable
+capability, provider-requirement, and package evidence. Loader state is a
+separate observation: it changes the `observationHash`, not the static
+`evidenceHash` or project eligibility. Native eligibility independently controls
+whether the provider-neutral `compile` command can lower the project.
+`automaticFallback` remains false; a Native compiler observation in the same
+inspection does not change the selected JavaScript target.
+
+A JavaScript-configured `pulse compile` still emits provider-neutral Pulse-owned
+Wasm. Its manifest records the configured target and plan-only eligibility
+evidence. `pulse build` is separate: Node JavaScript emits a deterministic
+executable CommonJS package, while Fastly JavaScript emits a deterministic ESM
+source/deployment closure with exact `esbuild` and `@fastly/js-compute` pins. The
+offline release gate compiles that Fastly closure to a runtime Wasm and binds the
+artifact by SHA-256; it does not deploy or publish it. Neither JavaScript build
+emits a Pulse Native artifact or falls back to Native.
+
+A healthy canonical plan reports all three provider isolation flags as `false`:
+
+```json
+{
+  "providerSpecificUserland": false,
+  "providerSdkUserland": false,
+  "capabilityDiscoveryFromUserland": false
+}
+```
+
+## Related documentation
+
+- [Effects and continuations](./effects-and-continuations.md)
+- [Structured and opaque bodies](./bodies.md)
+- [Contracts and providers](./contracts-and-providers.md)
+- [CLI reference](../reference/cli.md#pulse-inspect)
+- [Diagnostics](../reference/diagnostics.md)
+- [Architecture overview](../architecture/overview.md)

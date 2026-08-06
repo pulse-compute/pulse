@@ -1,0 +1,260 @@
+{
+  "version": "pulse.event-conformance-corpus.v1",
+  "contractVersion": "pulse.events-contract.v1",
+  "targets": [
+    "node-javascript",
+    "node-native"
+  ],
+  "limits": {
+    "maxTypeBytes": 128,
+    "maxPayloadBytes": 65536,
+    "maxQueueDepth": 1,
+    "maxEffects": 1
+  },
+  "cases": [
+    {
+      "id": "schema-payload-success",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "schema.input",
+        "schemaId": "events.Payload",
+        "payload": {
+          "label": "accepted",
+          "sequence": 7
+        }
+      },
+      "expect": {
+        "status": "completed",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "no-payload-success",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "no-payload.input",
+        "schemaId": null
+      },
+      "expect": {
+        "status": "completed",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "unknown-type",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "unknown.input",
+        "schemaId": null
+      },
+      "expect": {
+        "status": "failed",
+        "category": "handler-not-found",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "schema-mismatch",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "schema.input",
+        "schemaId": null
+      },
+      "expect": {
+        "status": "failed",
+        "category": "schema-mismatch",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "oversize-type",
+      "scenario": "oversize-type",
+      "expect": {
+        "status": "failed",
+        "category": "invalid-frame",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "oversize-payload",
+      "scenario": "oversize-payload",
+      "expect": {
+        "status": "failed",
+        "category": "invalid-frame",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "immutable-detachment",
+      "scenario": "immutable-detachment",
+      "expect": {
+        "status": "completed",
+        "emittedTypes": [
+          "output.detached"
+        ]
+      }
+    },
+    {
+      "id": "emit-acceptance",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "emit.accept",
+        "schemaId": null
+      },
+      "expect": {
+        "status": "completed",
+        "emittedTypes": [
+          "output.one"
+        ]
+      }
+    },
+    {
+      "id": "emit-rejection",
+      "scenario": "emit-rejection",
+      "expect": {
+        "status": "failed",
+        "category": "handler-failed",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "parallel-emit",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "parallel.emit",
+        "schemaId": null
+      },
+      "expect": {
+        "status": "completed",
+        "emittedTypes": [
+          "output.one",
+          "output.two"
+        ]
+      }
+    },
+    {
+      "id": "effect-limit",
+      "scenario": "effect-limit",
+      "expect": {
+        "status": "failed",
+        "category": "handler-failed",
+        "emittedTypes": [
+          "output.one"
+        ]
+      }
+    },
+    {
+      "id": "fifo-ingress",
+      "scenario": "fifo-ingress",
+      "expect": {
+        "status": "completed",
+        "ingressTypes": [
+          "fifo.one",
+          "fifo.two"
+        ],
+        "emittedTypes": [
+          "fifo.output.one",
+          "fifo.output.two"
+        ],
+        "maximumActiveInvocations": 1
+      }
+    },
+    {
+      "id": "queue-overflow",
+      "scenario": "queue-overflow",
+      "expect": {
+        "code": "PULSE_NODE_EVENT_QUEUE_FULL",
+        "acceptedIngress": 1
+      }
+    },
+    {
+      "id": "cancellation",
+      "scenario": "cancellation",
+      "expect": {
+        "status": "failed",
+        "category": "cancelled",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "redaction",
+      "scenario": "redaction",
+      "expect": {
+        "status": "failed",
+        "category": "handler-failed",
+        "secretAbsent": true,
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "unexpected-failure",
+      "scenario": "unexpected-failure",
+      "expect": {
+        "status": "failed",
+        "category": "handler-failed",
+        "emittedTypes": []
+      }
+    },
+    {
+      "id": "state-isolation",
+      "scenario": "state-isolation",
+      "expect": {
+        "status": "completed",
+        "emittedTypes": [
+          "state.result",
+          "state.result"
+        ],
+        "previousValues": [
+          "empty",
+          "empty"
+        ]
+      }
+    },
+    {
+      "id": "completion",
+      "scenario": "execute",
+      "frame": {
+        "version": "pulse.event-frame.v1",
+        "type": "completion.input",
+        "schemaId": null
+      },
+      "expect": {
+        "status": "completed",
+        "emittedTypes": [],
+        "responseValue": false
+      }
+    },
+    {
+      "id": "no-loopback-reentrancy",
+      "scenario": "no-loopback",
+      "expect": {
+        "status": "completed",
+        "emittedTypes": [
+          "loop.output"
+        ],
+        "automaticLoopback": false,
+        "sameStackReentry": false
+      }
+    }
+  ],
+  "boundaryCases": [
+    {
+      "id": "duplicate-registration",
+      "expectedCode": "PULSEWASM_EVENTS_TYPE_DUPLICATE"
+    },
+    {
+      "id": "no-call-exec-invoke-surface",
+      "forbiddenNames": [
+        "call",
+        "exec",
+        "invoke"
+      ]
+    }
+  ]
+}

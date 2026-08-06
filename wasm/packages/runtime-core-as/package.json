@@ -1,0 +1,51 @@
+{
+  "name": "@pulse-compute/wasm-runtime-core-as",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "AssemblyScript runtime-core generation and compile/smoke helpers for PulseWasm.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./compiler": "./src/compiler/index.js",
+    "./compiler/assemblyscript-core": "./src/compiler/assemblyscript-core.js",
+    "./compiler/assemblyscript-shape": "./src/compiler/assemblyscript-shape.js",
+    "./compiler/assemblyscript-wasm-smoke": "./src/compiler/assemblyscript-wasm-smoke.js",
+    "./compiler/compiled-handlers": "./src/compiler/compiled-handlers.js",
+    "./compiler/integrated-compiled-app": "./src/compiler/integrated-compiled-app.js",
+    "./compiler/route-handler-effects": "./src/compiler/route-handler-effects.js",
+    "./compiler/route-handler-context": "./src/compiler/route-handler-context.js",
+    "./compiler/route-handler-context-lowering": "./src/compiler/route-handler-context.js",
+    "./compiler/handler-io-lifecycle": "./src/compiler/handler-io-lifecycle.js",
+    "./compiler/request-json-body": "./src/compiler/request-json-body.js",
+    "./compiler/schema-decode-result": "./src/compiler/schema-decode-result.js",
+    "./compiler/schema-response-codec": "./src/compiler/schema-response-codec.js",
+    "./compiler/backend-json-request-body": "./src/compiler/backend-json-request-body.js",
+    "./compiler/canonical-native": "./src/compiler/canonical-native.js"
+  },
+  "dependencies": {
+    "@pulse-compute/crypto": "workspace:*",
+    "@pulse-compute/wasm-build-support": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "typescript": "5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "wasm/packages/runtime-core-as"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  }
+}

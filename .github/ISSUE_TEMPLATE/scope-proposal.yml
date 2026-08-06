@@ -1,0 +1,66 @@
+name: Scope or architecture proposal
+description: Record a new capability, provider, authoring feature, compatibility promise, or protected-boundary change as evidence for human decision.
+title: "[proposal] "
+labels:
+  - type:scope-proposal
+  - decision:human-required
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A proposal is valuable evidence, not standing implementation approval. Explain the user problem before prescribing a new public surface.
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Primary boundary
+      options:
+        - Public authoring API
+        - Effects or capabilities
+        - Continuations or execution lifecycle
+        - Lowerer trust or package discovery
+        - Provider registry or host binding
+        - Configuration contract
+        - Compatibility surface
+        - Package publication
+        - Maintenance control plane
+        - Release authority
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: Who is blocked, what are they trying to accomplish, and why do existing supported mechanisms not work?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Include concrete workloads, repeated requests, compatibility data, threat assumptions, or a minimal experiment.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Smallest coherent option
+      description: Describe a possible direction, including what remains deliberately unsupported.
+  - type: textarea
+    id: authority
+    attributes:
+      label: Authority and containment impact
+      description: Explain new host authority, guest capability, trust, state, package, or release implications.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: acknowledgement
+    attributes:
+      label: Proposal status
+      options:
+        - label: I understand this issue records evidence and requires a separate human architecture or scope decision before implementation.
+          required: true

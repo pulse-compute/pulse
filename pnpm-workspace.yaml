@@ -1,0 +1,4 @@
+packages:
+  - "packages/*"
+  - "wasm"
+  - "wasm/packages/*"

@@ -1,0 +1,181 @@
+{
+  "status": "ok",
+  "project": {
+    "provider": "node",
+    "entry": "src/index.ts"
+  },
+  "compiler": {
+    "version": "pulse.canonical-api-compiler.v7",
+    "capabilities": [
+      "fetch",
+      "response.json",
+      "response.text"
+    ],
+    "effects": [
+      {
+        "id": "fetch-1",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://users.example.test/users/123",
+          "origin": "https://users.example.test"
+        },
+        "grouped": false
+      },
+      {
+        "id": "fetch-2",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://users.example.test/users/123",
+          "origin": "https://users.example.test"
+        },
+        "grouped": true
+      },
+      {
+        "id": "fetch-3",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://stats.example.test/users/123",
+          "origin": "https://stats.example.test"
+        },
+        "grouped": true
+      },
+      {
+        "id": "fetch-4",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://flags.example.test/users/123",
+          "origin": "https://flags.example.test"
+        },
+        "grouped": true
+      },
+      {
+        "id": "fetch-5",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://users.example.test/users/123",
+          "origin": "https://users.example.test"
+        },
+        "grouped": true,
+        "groupKey": "user"
+      },
+      {
+        "id": "fetch-6",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://stats.example.test/users/123",
+          "origin": "https://stats.example.test"
+        },
+        "grouped": true,
+        "groupKey": "stats"
+      },
+      {
+        "id": "fetch-7",
+        "kind": "fetch",
+        "operation": "dispatch",
+        "capability": "fetch",
+        "resource": {
+          "kind": "literal",
+          "value": "https://flags.example.test/users/123",
+          "origin": "https://flags.example.test"
+        },
+        "grouped": true,
+        "groupKey": "flags"
+      }
+    ],
+    "continuations": [
+      {
+        "id": "continuation-1",
+        "kind": "single-fetch",
+        "effectIds": [
+          "fetch-1"
+        ]
+      },
+      {
+        "id": "continuation-2",
+        "kind": "fetch-group",
+        "effectIds": [
+          "fetch-2",
+          "fetch-3",
+          "fetch-4"
+        ]
+      },
+      {
+        "id": "continuation-3",
+        "kind": "parallel-group",
+        "effectIds": [
+          "fetch-5",
+          "fetch-6",
+          "fetch-7"
+        ]
+      }
+    ],
+    "providerLowering": {
+      "version": "pulse.canonical-provider-plan.v1",
+      "contractVersion": "pulse.canonical-provider-contract.v1",
+      "provider": "node",
+      "requirements": [
+        "fetch",
+        "response.json",
+        "response.text"
+      ],
+      "operations": [
+        {
+          "id": "fetch-1",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://users.example.test"
+        },
+        {
+          "id": "fetch-2",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://users.example.test"
+        },
+        {
+          "id": "fetch-3",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://stats.example.test"
+        },
+        {
+          "id": "fetch-4",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://flags.example.test"
+        },
+        {
+          "id": "fetch-5",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://users.example.test"
+        },
+        {
+          "id": "fetch-6",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://stats.example.test"
+        },
+        {
+          "id": "fetch-7",
+          "lowering": "node.fetch.dispatch",
+          "binding": "https://flags.example.test"
+        }
+      ],
+      "providerSpecificUserland": false,
+      "providerSdkUserland": false,
+      "capabilityDiscoveryFromUserland": false
+    }
+  }
+}

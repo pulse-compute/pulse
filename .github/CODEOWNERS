@@ -1,0 +1,15 @@
+# Generated from release/maintenance-policy.json by scripts/maintenance-policy.cjs.
+# Create the listed visible organization team(s), grant write access, and require
+# CODEOWNER review in the default-branch ruleset before treating this as enforced.
+
+* @pulse-compute/pulse-maintainers
+
+# Protect the control plane that defines and interprets ownership.
+/.github/ @pulse-compute/pulse-maintainers
+/release/maintenance-policy.json @pulse-compute/pulse-maintainers
+/AGENTS.md @pulse-compute/pulse-maintainers
+AGENTS.md @pulse-compute/pulse-maintainers
+/scripts/maintenance-policy.cjs @pulse-compute/pulse-maintainers
+/scripts/maintainer-scope.cjs @pulse-compute/pulse-maintainers
+/scripts/validate-maintainer-control-plane.cjs @pulse-compute/pulse-maintainers
+/docs/maintainers/ @pulse-compute/pulse-maintainers

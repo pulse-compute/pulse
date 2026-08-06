@@ -1,0 +1,70 @@
+{
+  "name": "@pulse-compute/assets",
+  "version": "1.0.0-beta.1",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Package-owned asset lowering facade and compiler integration for Pulse.",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./pulsewasm": {
+      "types": "./dist/pulsewasm.d.ts",
+      "import": "./dist/pulsewasm.js"
+    },
+    "./pulsewasm/manifest": {
+      "require": "./pulsewasm.manifest.cjs",
+      "default": "./pulsewasm.manifest.cjs"
+    },
+    "./pulsewasm/compiler": {
+      "require": "./pulsewasm.compiler.cjs",
+      "default": "./pulsewasm.compiler.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "pulse.package.json",
+    "pulsewasm.manifest.cjs",
+    "pulsewasm.compiler.cjs",
+    "as",
+    "conformance"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test": "corepack pnpm --dir ../.. exec vitest run packages/assets/test"
+  },
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/assets"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/assets/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "devDependencies": {
+    "@pulse-compute/pulse": "workspace:*"
+  },
+  "dependencies": {
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*"
+  }
+}

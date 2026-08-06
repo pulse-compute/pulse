@@ -1,0 +1,627 @@
+{
+  "schemaVersion": "pulse.release-preflight.v1",
+  "checkpoint": "sprint-7a-release-preflight",
+  "baselineCheckpoint": "2d8468f",
+  "reviewedAt": "2026-07-25",
+  "statusVocabulary": [
+    "proven",
+    "pending",
+    "blocked"
+  ],
+  "releaseCandidate": {
+    "version": "1.0.0-beta.1",
+    "label": "Beta",
+    "publicationTag": "beta",
+    "latestTagAllowed": false,
+    "currentSnapshotChannel": "beta",
+    "applicationStage": "documentation-release",
+    "snapshotStatus": "applied",
+    "snapshotAppliedAt": "2026-08-01"
+  },
+  "releaseVocabulary": {
+    "schemaVersion": "pulse.release-vocabulary.v1",
+    "productName": "Pulse",
+    "displayLabel": "Beta",
+    "displayName": "Pulse 1.0.0-beta.1 — Beta",
+    "npmDistTag": "beta",
+    "disallowedCurrentLabels": [
+      "alpha",
+      "preview"
+    ],
+    "historicalLabelPolicy": "preserve-when-contextualized",
+    "compatibilityPromise": [
+      "Documented behavior is intentional and evidence-backed.",
+      "Unsupported behavior fails explicitly.",
+      "No execution target silently falls back.",
+      "Public surfaces may still change deliberately during beta before the stable 1.0.0 release.",
+      "Implementation and historical subpaths do not gain accidental compatibility guarantees.",
+      "Package names, release artifacts, and published versions remain immutable once released."
+    ],
+    "activationStage": "documentation-release"
+  },
+  "sourceAuthority": {
+    "kind": "repository",
+    "expectedRepository": "pulse-compute/pulse",
+    "expectedWeb": "https://github.com/pulse-compute/pulse",
+    "expectedReleaseTag": "v1.0.0-beta.1",
+    "externalVerification": "pending"
+  },
+  "documentationInventory": {
+    "file": "release/documentation-inventory.json",
+    "validationCommand": "node scripts/release-preflight.cjs --check",
+    "requiredClassifications": [
+      "current-public",
+      "current-contributor",
+      "generated"
+    ]
+  },
+  "conformanceLedger": {
+    "schemaVersion": "pulse.release-conformance-ledger.v1",
+    "checkpoint": "sprint-7d-release-blocking-conformance",
+    "reviewedAt": "2026-07-25",
+    "statusVocabulary": [
+      "closed",
+      "explicitly-deferred",
+      "release-blocking"
+    ],
+    "summary": {
+      "closed": 10,
+      "explicitlyDeferred": 4,
+      "releaseBlocking": 0,
+      "unclassified": 0
+    },
+    "items": [
+      {
+        "id": "handler-cross-target-semantics",
+        "category": "javascript-native-semantic-drift",
+        "status": "closed",
+        "entryPoint": "runtime-effects",
+        "owner": "runtime-and-compiler",
+        "summary": "Managed async handlers, Router/context behavior, sequential effects, keyed parallel effects, and terminal transfer agree across supported execution modes.",
+        "evidence": [
+          "wasm/test/contracts/assert-node-router-context-parity.cjs",
+          "wasm/test/contracts/assert-node-cross-target-conformance.cjs",
+          "wasm/test/contracts/assert-four-mode-conformance.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --profile conformance --no-report"
+      },
+      {
+        "id": "request-body-policy",
+        "category": "schema-or-body-policy-mismatch",
+        "status": "closed",
+        "entryPoint": "runtime-effects",
+        "owner": "runtime-and-compiler",
+        "summary": "Structured projections, exact caller-owned bodies, opaque pass-through, and repeated headers retain bounded ownership across targets.",
+        "evidence": [
+          "wasm/test/contracts/assert-fetch-projections-request-bodies.cjs",
+          "wasm/test/runtime/assert-canonical-opaque-passthrough.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task fetch-projections-request-bodies --task canonical-opaque-node-emission --no-report"
+      },
+      {
+        "id": "schema-codec-parity",
+        "category": "schema-or-body-policy-mismatch",
+        "status": "closed",
+        "entryPoint": "schema-codecs",
+        "owner": "schema-codecs",
+        "summary": "pulse.schema strict boundaries and semantic JSON codecs agree across Node and Fastly Native and JavaScript modes.",
+        "evidence": [
+          "wasm/test/contracts/assert-schema-codecs.cjs",
+          "wasm/test/contracts/assert-four-mode-conformance.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task schema-codecs --task four-mode-conformance --no-report"
+      },
+      {
+        "id": "binding-and-redaction",
+        "category": "logging-or-redaction-drift",
+        "status": "closed",
+        "entryPoint": "provider-fastly",
+        "owner": "providers-and-runtime",
+        "summary": "Config, secret, KV, fetch, GRIP, and logging observations preserve binding isolation and redact secret values.",
+        "evidence": [
+          "wasm/test/contracts/assert-config-secrets-kv-redaction.cjs",
+          "wasm/test/provider/assert-fastly-apps.cjs",
+          "wasm/test/provider/assert-fastly-javascript-runtime.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task config-secrets-kv-redaction --task provider-fastly-apps --task fastly-javascript-runtime --no-report"
+      },
+      {
+        "id": "node-fastly-four-mode",
+        "category": "node-fastly-drift",
+        "status": "closed",
+        "entryPoint": "provider-fastly",
+        "owner": "providers-and-conformance",
+        "summary": "Node Native, Node JavaScript, Fastly Native, and Fastly JavaScript produce matching semantic traces with explicit target-correct artifacts.",
+        "evidence": [
+          "wasm/test/contracts/assert-four-mode-conformance.cjs",
+          "wasm/test/support/four-mode-conformance.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task four-mode-conformance --no-report"
+      },
+      {
+        "id": "grip-package-root",
+        "category": "package-root-lowering-mismatch",
+        "status": "closed",
+        "entryPoint": "package-surface",
+        "owner": "@pulse-compute/grip",
+        "summary": "The canonical GRIP package root provides real JavaScript behavior and the trusted Native lowerer emits matching bounded operations.",
+        "evidence": [
+          "wasm/test/contracts/assert-package-reachability.cjs",
+          "wasm/test/library/assert-grip-package-owned-lowering.cjs",
+          "wasm/test/package/assert-grip-package-runtime.cjs",
+          "wasm/test/contracts/assert-grip-cross-target-conformance.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task package-reachability --task grip-package-owned-lowering --task grip-package-runtime --task grip-cross-target-conformance --no-report"
+      },
+      {
+        "id": "target-eligibility-artifact-truth",
+        "category": "target-eligibility-or-metadata-mismatch",
+        "status": "closed",
+        "entryPoint": "provider-fastly",
+        "owner": "provider-and-cli",
+        "summary": "Inspection, eligibility, configured target, JavaScript source packages, and Native Wasm artifacts remain aligned without target masquerading.",
+        "evidence": [
+          "wasm/test/provider/assert-fastly-javascript-packaging.cjs",
+          "wasm/test/contracts/assert-four-mode-conformance.cjs",
+          "wasm/test/cli/assert-cli-project-guards.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task fastly-javascript-packaging --task four-mode-conformance --task cli-project-guards --no-report"
+      },
+      {
+        "id": "cli-workflow-diagnostics",
+        "category": "unstable-public-diagnostics",
+        "status": "closed",
+        "entryPoint": "project-workflow",
+        "owner": "cli",
+        "summary": "The normal project workflow, output containment, provider truth, stable diagnostics, remediation, and exit policy match the documented contract.",
+        "evidence": [
+          "wasm/test/cli/assert-cli-project-workflow.cjs",
+          "wasm/test/cli/assert-cli-project-guards.cjs",
+          "wasm/test/cli/assert-cli-diagnostics.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task cli-project-workflow --task cli-project-guards --task cli-diagnostics --no-report"
+      },
+      {
+        "id": "source-package-build-order",
+        "category": "source-package-contamination",
+        "status": "closed",
+        "entryPoint": "ordinary-wasm-test-chain",
+        "owner": "test-infrastructure",
+        "summary": "Conformance and provider tests construct declared package-root dist outputs as owned transients and remove them explicitly after execution.",
+        "evidence": [
+          "wasm/test/support/workspace-package-build.cjs",
+          "wasm/scripts/run-wasm-tests.cjs",
+          "wasm/test/provider/assert-fastly-javascript-packaging.cjs",
+          "wasm/test/provider/assert-fastly-javascript-runtime.cjs"
+        ],
+        "verification": "Run the GRIP, four-mode, and Fastly JavaScript lanes from a source-only tree and verify packages/assets and packages/grip contain no dist or tsbuildinfo residue."
+      },
+      {
+        "id": "automatic-fallback-policy",
+        "category": "unsupported-behavior-presented-as-supported",
+        "status": "closed",
+        "entryPoint": "runtime-effects",
+        "owner": "runtime-compiler-and-providers",
+        "summary": "Native ineligibility, provider failure, and explicit JavaScript selection remain fail-closed and never trigger automatic target fallback.",
+        "evidence": [
+          "wasm/test/contracts/assert-four-mode-conformance.cjs",
+          "wasm/test/contracts/assert-package-reachability.cjs",
+          "wasm/test/cli/assert-cli-project-guards.cjs"
+        ],
+        "verification": "node wasm/scripts/run-wasm-tests.cjs --task package-reachability --task four-mode-conformance --task cli-project-guards --no-report"
+      },
+      {
+        "id": "arbitrary-javascript-native-lowering",
+        "category": "handler-constraint-disagreement",
+        "status": "explicitly-deferred",
+        "entryPoint": "runtime-effects",
+        "owner": "future-architecture",
+        "summary": "Arbitrary Promises, ambient asynchronous APIs, provider SDKs, streams, and background work remain outside Native eligibility.",
+        "deferredTo": "post-beta-feasibility",
+        "reason": "The Beta documents these forms as JavaScript-only or unsupported; widening the compiler is prohibited in 7D."
+      },
+      {
+        "id": "third-party-lowerer-loading",
+        "category": "package-root-lowering-mismatch",
+        "status": "explicitly-deferred",
+        "entryPoint": "package-lowering",
+        "owner": "future-architecture",
+        "summary": "Arbitrary third-party compiler-lowerer discovery and execution remain unsupported.",
+        "deferredTo": "future-architecture-decision",
+        "reason": "Discovery, provenance, isolation, negotiation, and trust require a protected architecture decision."
+      },
+      {
+        "id": "standalone-node-native-launcher",
+        "category": "unsupported-behavior-presented-as-supported",
+        "status": "explicitly-deferred",
+        "entryPoint": "ordinary-provider-node-chain",
+        "owner": "provider-node",
+        "summary": "Pulse does not promise a standalone production Native Node launcher in the Beta.",
+        "deferredTo": "post-beta-provider-work",
+        "reason": "The maintained Node journey separates local execution from deployment-owner integration and does not overstate a production host adapter."
+      },
+      {
+        "id": "remote-deployment-and-activation",
+        "category": "build-deployment-metadata-inconsistency",
+        "status": "explicitly-deferred",
+        "entryPoint": "release-seal",
+        "owner": "human-release-and-provider-reality",
+        "summary": "Remote deployment, documentation promotion, npm publication, and Fastly activation are not authorized by local conformance.",
+        "deferredTo": "7f-provider-reality-and-human-authorization",
+        "reason": "7D proves supported behavior locally; packed candidates, external reality, and release authority belong to later checkpoints."
+      }
+    ]
+  },
+  "npmBootstrap": {
+    "required": true,
+    "bootstrapVersion": "0.0.0",
+    "bootstrapTag": "bootstrap",
+    "releaseTag": "beta",
+    "allowedLatestTargets": [
+      null,
+      "0.0.0"
+    ],
+    "authority": "human-release",
+    "authentication": "temporary-human-2fa",
+    "packageShape": {
+      "files": [
+        "package.json",
+        "README.md",
+        "LICENSE",
+        "NOTICE"
+      ],
+      "scriptsAllowed": false,
+      "dependenciesAllowed": false,
+      "exportsAllowed": false,
+      "executablesAllowed": false,
+      "license": "Apache-2.0"
+    },
+    "auditEvidence": {
+      "schemaVersion": "pulse.npm-catalog-audit-policy.v2",
+      "output": ".pulse-release-preflight/npm-catalog-audit.json",
+      "maxAgeHours": 24,
+      "manifestBinding": "sha256",
+      "requiredBy": "publication"
+    },
+    "procedure": [
+      "Generate and inspect an inert 0.0.0 tarball for each missing package name.",
+      "Publish each inert tarball with public access and the bootstrap dist-tag through a human 2FA-protected session.",
+      "Verify that every package name exists, bootstrap points to 0.0.0, and latest is either absent or still points to the same inert 0.0.0 bootstrap.",
+      "Configure the exact pulse-compute/pulse, npm-publish.yml, and npm-publish trusted-publisher identity on every package.",
+      "Revoke and remove the temporary bootstrap credential before the 1.0.0-beta.1 release candidate is published through OIDC.",
+      "Publish the synchronized 1.0.0-beta.1 candidate under beta only after protected human approval."
+    ]
+  },
+  "auditPolicy": {
+    "vulnerabilities": {
+      "command": "corepack pnpm audit --prod --json",
+      "evidencePath": ".pulse-release-preflight/production-vulnerability-audit.json",
+      "refreshAt": "release-seal",
+      "stopShipSeverities": [
+        "critical",
+        "high"
+      ],
+      "dispositionRequiredSeverities": [
+        "moderate",
+        "low"
+      ],
+      "acceptance": "No unresolved critical or high production advisory; every remaining production advisory has a release-owner disposition."
+    },
+    "dependencyLicenses": {
+      "command": "node scripts/audit-production-dependencies.cjs",
+      "evidencePath": ".pulse-release-preflight/production-license-inventory.json",
+      "refreshAt": "release-seal",
+      "automaticallyAcceptedSpdx": [
+        "0BSD",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "ISC",
+        "MIT",
+        "(MIT AND Apache-2.0)"
+      ],
+      "reviewRequired": "Any missing, custom, copyleft, source-available, or non-allowlisted production license requires an explicit human release disposition.",
+      "noticeRule": "Inspect NOTICE and attribution files for every production dependency whose material is bundled into a package or generated artifact; create and ship a root NOTICE only when redistribution obligations require it.",
+      "noticeDisposition": {
+        "schemaVersion": "pulse.release-notice-disposition.v1",
+        "status": "notice-required-and-shipped",
+        "basis": "Pulse Native schema artifacts compile AssemblyScript runtime code plus json-as and transitive xjb-as source into generated Wasm; their applicable notices and license attributions therefore travel with the release.",
+        "noticeFile": "NOTICE",
+        "noticeSha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+        "packageFiles": [
+          "LICENSE",
+          "NOTICE"
+        ],
+        "packagePolicy": "exact-root-files-in-every-publishable-tarball",
+        "components": [
+          {
+            "name": "assemblyscript",
+            "version": "0.28.18",
+            "license": "Apache-2.0",
+            "relationship": "Direct compiler runtime dependency and compiler/runtime material in generated Native artifacts.",
+            "attributionSource": "assemblyscript@0.28.18/NOTICE"
+          },
+          {
+            "name": "json-as",
+            "version": "1.5.0",
+            "license": "MIT",
+            "relationship": "Direct compiler runtime dependency whose schema-codec source is compiled into generated Native artifacts.",
+            "attributionSource": "json-as@1.5.0/LICENSE"
+          },
+          {
+            "name": "xjb-as",
+            "version": "0.1.0",
+            "license": "(MIT AND Apache-2.0)",
+            "relationship": "Transitive json-as dependency whose numeric formatting source is compiled into generated Native artifacts.",
+            "attributionSource": "xjb-as@0.1.0/LICENSE and NOTICE"
+          }
+        ]
+      }
+    }
+  },
+  "gates": [
+    {
+      "id": "release-framing",
+      "category": "release",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "human-release",
+      "summary": "The intended public candidate is Pulse 1.0.0-beta.1 Beta under beta, never latest.",
+      "evidence": [
+        "release/release-preflight.json#releaseCandidate"
+      ],
+      "verification": "node scripts/release-preflight.cjs --check"
+    },
+    {
+      "id": "project-license",
+      "category": "legal",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "human-release",
+      "summary": "Apache-2.0 is selected and propagated to the root and all publishable manifests.",
+      "evidence": [
+        "LICENSE",
+        "release/pulse-release-manifest.json#license"
+      ],
+      "verification": "npm run publication:check"
+    },
+    {
+      "id": "node-support",
+      "category": "toolchain",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "release-engineering",
+      "summary": "Supported Node is ^22.14.0 || ^24.0.0 and local development supports pnpm >=10 <11; reproducible publication uses Node 24.18.0, npm 11.15.0, and pnpm 10.0.0.",
+      "evidence": [
+        "release/pulse-release-manifest.json#publication",
+        ".github/workflows/validate.yml"
+      ],
+      "verification": "npm run publication:check"
+    },
+    {
+      "id": "dependency-closure",
+      "category": "toolchain",
+      "status": "pending",
+      "requiredBy": "release-seal",
+      "owner": "release-engineering",
+      "summary": "The release seal must restore the exact lockfile closure either directly or from the optional portable dependency bundle.",
+      "nextAction": "Run the release seal with a frozen install, --skip-install for an already verified closure, or --dependency-bundle for an offline restore.",
+      "verification": "npm run release:seal -- --require-fastly"
+    },
+    {
+      "id": "npm-bootstrap-design",
+      "category": "registry",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "human-release",
+      "summary": "The first-publication procedure reserves missing names with inert 0.0.0 packages under bootstrap before OIDC release publication.",
+      "evidence": [
+        "release/release-preflight.json#npmBootstrap"
+      ],
+      "verification": "node scripts/release-preflight.cjs --check"
+    },
+    {
+      "id": "npm-package-names",
+      "category": "registry",
+      "status": "pending",
+      "requiredBy": "publication",
+      "owner": "human-release",
+      "summary": "Every manifest-owned package name must exist before publication; mutable registry observations are generated evidence and are not stored in this source policy.",
+      "nextAction": "Before publication, run npm run release:audit-npm, bootstrap every reported missing name, remediate any reported bootstrap/latest dist-tag drift through human authority, and rerun the audit within the configured freshness window.",
+      "verification": "npm run release:audit-npm"
+    },
+    {
+      "id": "npm-organization",
+      "category": "registry",
+      "status": "pending",
+      "requiredBy": "publication",
+      "owner": "human-release",
+      "summary": "Organization ownership, maintainers, enforced 2FA, recovery, and public package access are not verifiable from the source archive.",
+      "nextAction": "Record the npm organization owners, two independent recovery paths, 2FA policy, and package access after external verification.",
+      "verification": "Human npm organization administration review"
+    },
+    {
+      "id": "npm-trusted-publishers",
+      "category": "registry",
+      "status": "pending",
+      "requiredBy": "publication",
+      "owner": "human-release",
+      "summary": "The repository contract requires OIDC, but the trusted-publisher identity cannot be configured until package bootstrap completes.",
+      "nextAction": "Configure pulse-compute/pulse, npm-publish.yml, and npm-publish on every bootstrapped package and audit the settings.",
+      "verification": "Protected npm settings review for every manifest-owned package"
+    },
+    {
+      "id": "npm-protected-environment",
+      "category": "repository",
+      "status": "pending",
+      "requiredBy": "publication",
+      "owner": "human-release",
+      "summary": "The npm-publish environment contract exists in source, but repository environment protection is external state.",
+      "nextAction": "Verify release-tag restrictions and a human release-authority reviewer on the npm-publish environment.",
+      "verification": "GitHub repository environment review"
+    },
+    {
+      "id": "public-repository",
+      "category": "repository",
+      "status": "pending",
+      "requiredBy": "publication",
+      "owner": "human-release",
+      "summary": "Source metadata names pulse-compute/pulse, but public visibility, team access, rulesets, and release settings remain externally unverified.",
+      "nextAction": "Verify the canonical public repository identity and apply the repository setup checklist.",
+      "verification": "GitHub repository administration review"
+    },
+    {
+      "id": "documentation-origin",
+      "category": "documentation",
+      "status": "pending",
+      "requiredBy": "documentation-deployment",
+      "owner": "human-release-infrastructure",
+      "summary": "The source contract names https://pulsecompute.io with immutable /v1.0.0-beta.1 routes, but the final origin and Fastly route are not externally proven.",
+      "nextAction": "Verify origin ownership, immutable version routing, latest promotion, and the protected documentation-production environment.",
+      "verification": "Documentation origin and Fastly route review"
+    },
+    {
+      "id": "fastly-reality-policy",
+      "category": "provider",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "release-engineering",
+      "summary": "The authoritative release seal requires real Fastly CLI execution; unavailable is not a passing state.",
+      "evidence": [
+        "release/AGENTS.md#release-seal",
+        "scripts/validate-release.cjs"
+      ],
+      "verification": "npm run release:seal -- --require-fastly"
+    },
+    {
+      "id": "release-conformance",
+      "category": "conformance",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "release-engineering",
+      "summary": "The Sprint 7D implementation ledger has zero release-blocking and zero unclassified conformance items.",
+      "evidence": [
+        "release/release-preflight.json#conformanceLedger"
+      ],
+      "verification": "node scripts/release-preflight.cjs --check"
+    },
+    {
+      "id": "release-snapshot",
+      "category": "release",
+      "status": "proven",
+      "requiredBy": "release-seal",
+      "owner": "release-engineering",
+      "summary": "The 1.0.0-beta.1 Beta snapshot is atomically aligned across release authority, documentation versions, package metadata, changelog, and generated references.",
+      "evidence": [
+        "release/pulse-release-manifest.json",
+        "release/documentation-versions.json",
+        "CHANGELOG.md",
+        "docs/reference/release-manifest.json",
+        "wasm/packages/cli/release-manifest.json"
+      ],
+      "verification": "npm run docs:check && node scripts/documentation-release.cjs"
+    },
+    {
+      "id": "fastly-cli",
+      "category": "provider",
+      "status": "pending",
+      "requiredBy": "release-seal",
+      "owner": "release-engineering",
+      "summary": "The final Fastly CLI version and its CLI-managed local Compute execution have not been recorded for the candidate.",
+      "nextAction": "Run fastly compute serve through the provider reality lane and record the Fastly CLI version; use an explicit Viceroy override only when diagnosing or reproducing that lower-level engine.",
+      "verification": "node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no-report"
+    },
+    {
+      "id": "vulnerability-audit-method",
+      "category": "security",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "release-engineering",
+      "summary": "The production vulnerability command and severity disposition policy are fixed.",
+      "evidence": [
+        "release/release-preflight.json#auditPolicy.vulnerabilities"
+      ],
+      "verification": "node scripts/release-preflight.cjs --check"
+    },
+    {
+      "id": "vulnerability-evidence",
+      "category": "security",
+      "status": "pending",
+      "requiredBy": "release-seal",
+      "owner": "release-engineering",
+      "summary": "A 2026-07-25 preflight run reported 49 production dependencies and zero advisories; final evidence must be regenerated from the frozen candidate.",
+      "nextAction": "Rerun the production audit from the clean frozen checkout and record dispositions in the final release evidence.",
+      "observedAt": "2026-07-25",
+      "observed": {
+        "productionDependencies": 49,
+        "advisories": 0,
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0
+      },
+      "verification": "corepack pnpm audit --prod --json"
+    },
+    {
+      "id": "dependency-license-method",
+      "category": "legal",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "release-engineering",
+      "summary": "Production license inventory, review, and NOTICE attribution rules are fixed.",
+      "evidence": [
+        "release/release-preflight.json#auditPolicy.dependencyLicenses"
+      ],
+      "verification": "node scripts/release-preflight.cjs --check"
+    },
+    {
+      "id": "dependency-license-evidence",
+      "category": "legal",
+      "status": "pending",
+      "requiredBy": "release-seal",
+      "owner": "human-release",
+      "summary": "The current production closure reports only MIT, Apache-2.0, and MIT AND Apache-2.0; the final packed and generated artifacts still require attribution review.",
+      "nextAction": "Regenerate the production license inventory from the frozen candidate and inspect all redistributed third-party material.",
+      "observedAt": "2026-07-25",
+      "observedLicenses": [
+        "MIT",
+        "Apache-2.0",
+        "(MIT AND Apache-2.0)"
+      ],
+      "verification": "node scripts/audit-production-dependencies.cjs"
+    },
+    {
+      "id": "notice-disposition",
+      "category": "legal",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "human-release",
+      "summary": "The release ships a root NOTICE for AssemblyScript, json-as, and xjb-as material compiled into generated Native artifacts, and every publishable tarball must carry the exact root legal files.",
+      "evidence": [
+        "NOTICE",
+        "release/release-preflight.json#auditPolicy.dependencyLicenses.noticeDisposition",
+        "scripts/pack-release.cjs"
+      ],
+      "verification": "Packed-package and generated-artifact attribution inspection"
+    },
+    {
+      "id": "documentation-inventory",
+      "category": "documentation",
+      "status": "proven",
+      "requiredBy": "documentation-release",
+      "owner": "docs-platform",
+      "summary": "Every checked-in documentation source is deterministically classified and all deletion/supersession decisions are explicit.",
+      "evidence": [
+        "release/documentation-inventory.json"
+      ],
+      "verification": "node scripts/release-preflight.cjs --check"
+    }
+  ],
+  "authorization": {
+    "merge": false,
+    "tag": false,
+    "npmPublication": false,
+    "documentationDeployment": false,
+    "providerDeployment": false
+  }
+}

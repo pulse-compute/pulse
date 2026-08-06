@@ -1,0 +1,76 @@
+{
+  "version": "pulse.grip-framing-contract.v1",
+  "contractId": "pulse.grip",
+  "ownership": {
+    "connectionOwner": "external-grip-gateway",
+    "pulseState": "request-only",
+    "providerEffect": "grip.broadcast",
+    "automaticFallback": false
+  },
+  "classification": {
+    "mediaType": "application/websocket-events",
+    "upgradeToken": "websocket",
+    "connectionToken": "upgrade",
+    "headerNamesCaseInsensitive": true,
+    "connectionTokensCaseInsensitive": true
+  },
+  "subscription": {
+    "modes": ["stream", "response"],
+    "channels": {
+      "minimum": 1,
+      "trim": true,
+      "ordered": true,
+      "repeatedHeader": "Grip-Channel",
+      "forbidden": ["empty", "comma", "carriage-return", "line-feed"]
+    },
+    "timeoutMs": {
+      "requiredType": "non-negative-safe-integer",
+      "header": "Grip-Timeout"
+    },
+    "holdHeader": "Grip-Hold",
+    "preserve": ["status", "statusText", "body", "headers"]
+  },
+  "handoff": {
+    "defaultStatus": 200,
+    "defaultContentType": "application/websocket-events",
+    "bodyOwnership": "caller-owned-exact-text"
+  },
+  "broadcast": {
+    "message": {
+      "required": ["channel", "data"],
+      "optional": ["event", "id"]
+    },
+    "acknowledgement": {
+      "required": ["accepted"],
+      "optional": ["status", "messageId"]
+    },
+    "requestOwned": true,
+    "cancellable": true,
+    "boundedRequest": true,
+    "boundedResponse": true,
+    "authentication": "named-secret-reference",
+    "ambientEndpoint": false,
+    "ambientCredentials": false
+  },
+  "stableFailureCodes": [
+    "PULSE_GRIP_BROADCAST_ABORTED",
+    "PULSE_GRIP_BROADCAST_AUTH_SCHEME_UNSUPPORTED",
+    "PULSE_GRIP_BROADCAST_CAPABILITY_REQUIRED",
+    "PULSE_GRIP_BROADCAST_CHANNEL_INVALID",
+    "PULSE_GRIP_BROADCAST_ENDPOINT_INVALID",
+    "PULSE_GRIP_BROADCAST_MESSAGE_INVALID",
+    "PULSE_GRIP_BROADCAST_NETWORK",
+    "PULSE_GRIP_BROADCAST_REJECTED",
+    "PULSE_GRIP_BROADCAST_REQUEST_TOO_LARGE",
+    "PULSE_GRIP_BROADCAST_RESPONSE_INVALID",
+    "PULSE_GRIP_BROADCAST_RESPONSE_TOO_LARGE",
+    "PULSE_GRIP_BROADCAST_SECRET_REFERENCE_REQUIRED",
+    "PULSE_GRIP_BROADCAST_SECRET_REQUIRED"
+  ],
+  "redaction": {
+    "safeFields": ["operation", "status", "secretRef", "maxRequestBytes", "maxResponseBytes"],
+    "secretValues": "never-recorded",
+    "authorizationHeaders": "never-recorded",
+    "providerBodies": "never-recorded-on-error"
+  }
+}

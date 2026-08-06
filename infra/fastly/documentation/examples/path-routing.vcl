@@ -1,0 +1,6 @@
+# Default documentation routing model.
+# Public: https://<fastly-domain>/pulse/...
+# Object: s3://<bucket>/pulse/...
+#
+# Use routing.vcl unchanged. It preserves /pulse as the object prefix,
+# then origin-signing.vcl prefixes the bucket name for path-style FOS access.

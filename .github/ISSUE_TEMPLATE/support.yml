@@ -1,0 +1,44 @@
+name: Usage question or support request
+description: Ask how to use the current documented alpha without proposing a new contract.
+title: "[support] "
+labels:
+  - type:support
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Exact Pulse version
+      placeholder: 1.0.0-beta.1
+    validations:
+      required: true
+  - type: input
+    id: target
+    attributes:
+      label: Target and environment
+      placeholder: Node local execution on Linux x64, or Fastly Compute build on macOS arm64
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to build?
+    validations:
+      required: true
+  - type: textarea
+    id: attempted
+    attributes:
+      label: What have you tried?
+      description: Include the relevant handler/configuration and exact command or diagnostic. Redact secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: docs
+    attributes:
+      label: Documentation consulted
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, private URLs, customer data, and proprietary source.
+          required: true

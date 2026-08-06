@@ -1,0 +1,24 @@
+{
+  "version": "pulse.entities-conformance.i9.v1",
+  "status": "target-overlap",
+  "corpus": "wasm/test/entities/entities-cross-target-corpus.json",
+  "corpusVersion": "pulse.entities-cross-target-corpus.i9.v1",
+  "evidence": "wasm/test/entities/assert-entities-cross-target.cjs",
+  "targets": [
+    "fastly-javascript",
+    "fastly-native",
+    "node-javascript",
+    "node-native"
+  ],
+  "semanticCases": [
+    "customer.lookup",
+    "echo.雪",
+    "invalid.output",
+    "system.notify"
+  ],
+  "policy": {
+    "externalFastlyExecutionRequired": true,
+    "automaticFallback": false,
+    "unexplainedSkips": 0
+  }
+}

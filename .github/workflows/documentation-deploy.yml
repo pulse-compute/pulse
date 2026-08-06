@@ -1,0 +1,245 @@
+name: Documentation deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag whose documentation should be deployed
+        required: true
+        default: v1.0.0-beta.1
+        type: string
+      promote_latest:
+        description: Promote root and latest only after the exact version and npm release are verified
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-production
+  cancel-in-progress: false
+
+jobs:
+  candidate:
+    name: candidate
+    runs-on: ubuntu-latest
+    outputs:
+      artifact_name: ${{ steps.identity.outputs.candidate_artifact }}
+    timeout-minutes: 30
+    steps:
+      - name: Check out the selected release tag
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Install lockfile-pinned workspace dependencies
+        shell: bash
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          corepack enable
+          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
+          corepack prepare "pnpm@$pnpm_version" --activate
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Verify the release tag and source identity
+        id: identity
+        shell: bash
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+          fail() {
+            echo "::error title=Documentation source identity::$*" >&2
+            exit 1
+          }
+          expected="v$(node -p "require('./release/pulse-release-manifest.json').releaseVersion")"
+          expected_ref="refs/tags/$expected"
+          [ "$REQUESTED_TAG" = "$expected" ] || fail "Requested tag $REQUESTED_TAG does not match release manifest tag $expected."
+          [ "$GITHUB_REF" = "$expected_ref" ] || fail "Run this workflow from the $expected tag; GitHub dispatched $GITHUB_REF."
+          [ "$GITHUB_REF_TYPE" = "tag" ] || fail "The workflow dispatch ref must be a tag, found $GITHUB_REF_TYPE."
+          commit="$(git rev-parse HEAD)"
+          tag_commit="$(git rev-parse "${expected_ref}^{commit}")"
+          [ "$tag_commit" = "$commit" ] || fail "$expected resolves to $tag_commit, but the checkout is $commit."
+          [ "$GITHUB_SHA" = "$commit" ] || fail "GitHub source $GITHUB_SHA does not match the checked-out release commit $commit."
+          [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || fail "Release commit is not a full lowercase SHA: $commit."
+          artifact_prefix="$(node -p "require('./release/documentation-deployment.json').candidateArtifact")"
+          echo "source_commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "source_ref=refs/tags/$expected" >> "$GITHUB_OUTPUT"
+          echo "candidate_artifact=$artifact_prefix-$expected" >> "$GITHUB_OUTPUT"
+      - name: Validate and build documentation
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm run docs:check
+          node scripts/documentation-release.cjs
+          pnpm run docs:site --json
+      - name: Seal the documentation deployment candidate
+        shell: bash
+        env:
+          SOURCE_COMMIT: ${{ steps.identity.outputs.source_commit }}
+          SOURCE_REF: ${{ steps.identity.outputs.source_ref }}
+        run: |
+          set -euo pipefail
+          node scripts/documentation-deployment.cjs seal \
+            --site-dir .pulse-docs-site \
+            --out .pulse-documentation-deployment \
+            --source-commit "$SOURCE_COMMIT" \
+            --source-ref "$SOURCE_REF" \
+            --require-release-ref \
+            --json-out documentation-candidate-verification.json
+      - name: Upload the sealed documentation candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ steps.identity.outputs.candidate_artifact }}
+          path: |
+            .pulse-documentation-deployment
+            documentation-candidate-verification.json
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  deploy:
+    name: deploy
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: documentation-production
+    permissions:
+      contents: read
+    env:
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+    steps:
+      - name: Check out the sealed release tag deployment tooling
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Install the release-owned npm CLI
+        run: npm install --global npm@11.15.0
+      - name: Download the sealed documentation candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ needs.candidate.outputs.artifact_name }}
+          path: .pulse-deployment-artifact
+      - name: Verify protected deployment configuration
+        shell: bash
+        env:
+          FASTLY_OBJECT_STORAGE_BUCKET: ${{ vars.FASTLY_OBJECT_STORAGE_BUCKET }}
+          FASTLY_OBJECT_STORAGE_REGION: ${{ vars.FASTLY_OBJECT_STORAGE_REGION }}
+          FASTLY_OBJECT_STORAGE_ENDPOINT: ${{ vars.FASTLY_OBJECT_STORAGE_ENDPOINT }}
+          FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID: ${{ secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID }}
+          FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY: ${{ secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY }}
+          PULSE_DOCUMENTATION_ORIGIN: ${{ vars.PULSE_DOCUMENTATION_ORIGIN }}
+          PULSE_DOCUMENTATION_BASE_PATH: ${{ vars.PULSE_DOCUMENTATION_BASE_PATH }}
+        run: |
+          set -euo pipefail
+          aws --version
+          test -n "$FASTLY_OBJECT_STORAGE_BUCKET"
+          test -n "$FASTLY_OBJECT_STORAGE_REGION"
+          test -n "$FASTLY_OBJECT_STORAGE_ENDPOINT"
+          test -n "$FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID"
+          test -n "$FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY"
+          test -n "$PULSE_DOCUMENTATION_ORIGIN"
+          test -n "$PULSE_DOCUMENTATION_BASE_PATH"
+          node <<'NODE'
+          const manifest = require('./release/pulse-release-manifest.json');
+          if (process.env.PULSE_DOCUMENTATION_ORIGIN !== manifest.documentation.origin) throw new Error('PULSE_DOCUMENTATION_ORIGIN differs from the release manifest');
+          if (process.env.PULSE_DOCUMENTATION_BASE_PATH !== manifest.documentation.basePath) throw new Error('PULSE_DOCUMENTATION_BASE_PATH differs from the release manifest');
+          NODE
+          node scripts/documentation-deployment.cjs verify-candidate \
+            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
+            --require-release-ref
+      - name: Upload and verify the immutable exact-version tree
+        shell: bash
+        env:
+          FASTLY_OBJECT_STORAGE_BUCKET: ${{ vars.FASTLY_OBJECT_STORAGE_BUCKET }}
+          FASTLY_OBJECT_STORAGE_REGION: ${{ vars.FASTLY_OBJECT_STORAGE_REGION }}
+          FASTLY_OBJECT_STORAGE_ENDPOINT: ${{ vars.FASTLY_OBJECT_STORAGE_ENDPOINT }}
+          FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID: ${{ secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID }}
+          FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY: ${{ secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY }}
+          PULSE_DOCUMENTATION_ORIGIN: ${{ vars.PULSE_DOCUMENTATION_ORIGIN }}
+          PULSE_DOCUMENTATION_BASE_PATH: ${{ vars.PULSE_DOCUMENTATION_BASE_PATH }}
+        run: |
+          set -euo pipefail
+          node scripts/documentation-deployment.cjs deploy \
+            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
+            --require-release-ref \
+            --driver aws \
+            --phase immutable \
+            --json-out documentation-immutable-deployment.json
+          node scripts/documentation-deployment.cjs verify-storage \
+            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
+            --require-release-ref \
+            --driver aws \
+            --phase immutable \
+            --json-out documentation-immutable-verification.json
+      - name: Verify the matching npm release before promotion
+        if: inputs.promote_latest
+        run: >-
+          node scripts/verify-npm-release.cjs
+          --catalog-only
+          --json-out npm-release-availability.json
+      - name: Promote root and latest routes
+        if: inputs.promote_latest
+        shell: bash
+        env:
+          FASTLY_OBJECT_STORAGE_BUCKET: ${{ vars.FASTLY_OBJECT_STORAGE_BUCKET }}
+          FASTLY_OBJECT_STORAGE_REGION: ${{ vars.FASTLY_OBJECT_STORAGE_REGION }}
+          FASTLY_OBJECT_STORAGE_ENDPOINT: ${{ vars.FASTLY_OBJECT_STORAGE_ENDPOINT }}
+          FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID: ${{ secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID }}
+          FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY: ${{ secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY }}
+          PULSE_DOCUMENTATION_ORIGIN: ${{ vars.PULSE_DOCUMENTATION_ORIGIN }}
+          PULSE_DOCUMENTATION_BASE_PATH: ${{ vars.PULSE_DOCUMENTATION_BASE_PATH }}
+        run: |
+          set -euo pipefail
+          node scripts/documentation-deployment.cjs deploy \
+            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
+            --require-release-ref \
+            --driver aws \
+            --phase promote \
+            --npm-verification npm-release-availability.json \
+            --json-out documentation-promotion-deployment.json
+          node scripts/documentation-deployment.cjs verify-storage \
+            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
+            --require-release-ref \
+            --driver aws \
+            --phase promote \
+            --json-out documentation-promotion-verification.json
+      - name: Verify the public Fastly route after promotion
+        if: inputs.promote_latest
+        env:
+          PULSE_DOCUMENTATION_ORIGIN: ${{ vars.PULSE_DOCUMENTATION_ORIGIN }}
+          PULSE_DOCUMENTATION_BASE_PATH: ${{ vars.PULSE_DOCUMENTATION_BASE_PATH }}
+        run: >-
+          node scripts/documentation-deployment.cjs verify-public
+          --origin "$PULSE_DOCUMENTATION_ORIGIN"
+          --base-path "$PULSE_DOCUMENTATION_BASE_PATH"
+          --json-out documentation-public-verification.json
+      - name: Upload deployment evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-documentation-production-${{ inputs.release_tag }}
+          path: |
+            npm-release-availability.json
+            documentation-immutable-deployment.json
+            documentation-immutable-verification.json
+            documentation-promotion-deployment.json
+            documentation-promotion-verification.json
+            documentation-public-verification.json
+          if-no-files-found: warn
+          retention-days: 90

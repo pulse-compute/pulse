@@ -1,0 +1,58 @@
+{
+  "version": "pulse.entities-i0-contract-freeze.v1",
+  "status": "frozen-for-i1",
+  "scope": "evidence-only-preimplementation",
+  "representation": {
+    "selected": "package-owned-bounded-scanner",
+    "jsonAsRaw": "contained-raw-value-carrier-only",
+    "reason": "JSON.Raw preserves nested values but does not own duplicate reserved-key rejection, envelope limits, or correlation-ID policy.",
+    "rawValuesRemainInternal": true,
+    "parseAndReserialize": false
+  },
+  "publicShape": {
+    "term": "EntityRouter",
+    "bindingForms": ["rpc.handle(ctx)"],
+    "bindingKind": "terminal-package-intrinsic",
+    "secondBinding": false,
+    "handlerReturn": "direct-schema-bound-value",
+    "notifications": "synchronous-request-lifecycle"
+  },
+  "adapter": {
+    "initial": "json-rpc-2.0",
+    "numericIds": "safe-integers-only",
+    "stringAndNullIds": true,
+    "absentIdIsNotification": true,
+    "positionalParams": false,
+    "batch": false
+  },
+  "schemaBridge": {
+    "version": "pulse.first-party-embedded-schema-codec-bridge.v1",
+    "visibility": "first-party-internal",
+    "decode": {
+      "inputs": ["declared-literal-schema-id", "package-owned-json-text"],
+      "output": "deeply-frozen-normalized-data"
+    },
+    "encode": {
+      "inputs": ["declared-literal-schema-id", "package-owned-value"],
+      "output": "encoded-json-text"
+    },
+    "forbiddenExports": ["RawJson", "JSON.Raw", "JSON.Value", "JSON.Obj", "json-as", "schema-codec-object", "provider-runtime-object"]
+  },
+  "ownership": {
+    "package": ["envelope-scan", "selection", "schema-binding", "dispatch", "json-rpc-framing", "diagnostics"],
+    "compilerCore": ["generic-terminal-intrinsic", "managed-handler-seam", "reachability"],
+    "providerAuthorityAdded": false,
+    "compilerCoreKnowsJsonRpc": false
+  },
+  "staticPolicy": {
+    "metadata": "bounded-static-json",
+    "selectionBeforeDecode": true,
+    "schemaTrialParsing": false,
+    "automaticJavascriptFallback": false
+  },
+  "futureRelationship": {
+    "events": "complementary-not-in-sprint",
+    "workerMessages": "deferred-adapter-validation-target",
+    "release": "unassigned"
+  }
+}
