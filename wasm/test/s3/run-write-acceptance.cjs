@@ -109,6 +109,7 @@ async function main() {
           assert.deepEqual(Buffer.from(request.body), Buffer.from(request.url === objectUrl('parallel-other') ? 'second' : row.text), `${row.id}/${mode}: exact encoded body`);
           const headers = Object.fromEntries(request.headers);
           assert.equal(headers['content-type'], row.route === '/flow' ? 'application/json;  charset=utf-8' : 'text/plain; charset=utf-8');
+          if (row.status >= 400 && row.status <= 499 && row.status !== 408) return;
           // The origin accepts before a deliberately lost acknowledgement.
           origin.set(request.url, Buffer.from(request.body));
           const bytes = origin.get(request.url);
@@ -142,10 +143,12 @@ async function main() {
       } else if (mode === 'node-native') {
         result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { signal: cancellation.signal, request, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144 }));
       } else {
+        const trace = [];
         const response = await executeNodeJavascriptApplication(js.loaded.application, new Request(request.url, { method: 'POST', body: request.body }), {
-          signal: cancellation.signal, s3: bindings.node.bindings.s3, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144
+          signal: cancellation.signal, s3: bindings.node.bindings.s3, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144,
+          onEffectObservation(event) { trace.push(event); }
         });
-        result = { response: { status: response.status, body: await response.text() } };
+        result = { response: { status: response.status, body: await response.text() }, trace };
       }
       return result;
       };
@@ -170,8 +173,10 @@ async function main() {
       } };
       if (row.route === '/parallel') expected = { first: stored(row.text), second: stored('second') };
       assert.deepEqual(actual, expected, `${row.id}/${mode}`);
+      if (actual.status === 'not-stored') assert.equal(origin.has(objectUrl(row.key)), false, 'Pre-dispatch failures and complete rejections do not write the fixture object');
       assert.equal(attempts.length, row.dispatch === false ? 0 : row.route === '/flow' ? 3 : row.route === '/parallel' ? 2 : 1, `${row.id}/${mode}: no retries`);
       const observations = JSON.stringify({ trace: result.trace, requests: result.outboundRequests });
+      assert.ok(result.trace.length > 0, 'Every target supplies actual observations for redaction checks');
       assert.equal(observations.includes('application/json;  charset=utf-8'), false, `${row.id}/${mode}: object metadata omitted`);
       assert.equal(observations.includes(hash(Buffer.from(row.text))), false, `${row.id}/${mode}: digest omitted from provider observations`);
       for (const value of Object.values(secrets)) assert.equal(JSON.stringify(result).includes(value), false, `${row.id}/${mode}: redacted credentials`);
