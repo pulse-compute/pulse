@@ -121,6 +121,14 @@ deployed cross-location acceptance. The legacy JavaScript fixture runner does
 not realize Native conditional KV; it reports a configuration failure. Exercise
 these operations through generated Wasm or the Compute execution lane.
 
+The required conditional KV acceptance task is `kv-conditional-acceptance`.
+It builds and installs exact tarballs and executes their Native artifact through
+Fastly CLI/Viceroy; an unavailable engine fails the task. Viceroy 0.21.0 currently
+fails the missing-key CAS contract: it creates the key instead of returning
+`conflict`. Conditional KV acceptance remains blocked on that discrepancy, with
+deployed cross-location evidence also pending the isolated development environment.
+Passing injected-host or portable tests does not clear this gate.
+
 ### Fastly JavaScript
 
 `target: 'javascript'` emits a deterministic, self-contained source closure:
