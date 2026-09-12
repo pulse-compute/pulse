@@ -96,6 +96,9 @@ const tasks = Object.freeze({
     evidence: 'unit',
     description: 'logging levels, ABI, reporting resolution, and public surfaces'
   }),
+  's3-design-contract': nodeTask('test/s3/assert-s3-design-contract.cjs', {
+    description: 'S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes'
+  }),
   'crypto-config-planning': nodeTask('test/crypto/assert-crypto-config-planning.cjs', {
     evidence: 'unit',
     timeoutMs: 180000,
@@ -748,6 +751,7 @@ const profiles = Object.freeze({
     'release-runtime-policy',
     'api-surface',
     'logging-contract',
+    's3-design-contract',
     'crypto-config-planning',
     'reachable-graph',
     'project-modules',
