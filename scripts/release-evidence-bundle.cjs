@@ -33,6 +33,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'workspace-hygiene',
       'hidden-contracts',
       'api-surface',
+      'kv-design-contract',
+      'kv-native-abi-feasibility',
       'reachable-graph',
       'project-modules',
       'entities-contracts',

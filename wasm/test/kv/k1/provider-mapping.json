@@ -1,0 +1,26 @@
+{
+  "version": "pulse.kv-conditional.provider-mapping.v1",
+  "canonicalContract": "pulse.kv-conditional",
+  "targets": {
+    "node-native": { "status": "planned", "phase": "K2", "model": "shared-deterministic-node-reference", "productionDurability": false },
+    "node-javascript": { "status": "planned", "phase": "K2", "model": "shared-deterministic-node-reference", "productionDurability": false },
+    "fastly-native": { "status": "mapping-established-realization-pending", "phase": "K3", "sdkRequired": false, "deployedEvidence": "K4-after-T2" },
+    "fastly-javascript": { "status": "incomplete", "conditionalEligibility": false, "reasons": ["generation-not-exposed-on-read", "generation-narrowed-in-sdk-host-tuple", "conditional-input-coerced-through-number"], "blocksOtherTargets": false, "sdkIsCanonical": false }
+  },
+  "fastlyNative": {
+    "generation": { "hostBits": 64, "unsigned": true, "encoding": "fastly-kv-v1:<16-lowercase-hex-digits>", "zero": "preserve-bits-and-condition-presence; no-create-sentinel" },
+    "read": { "calls": ["fastly_kv_store.open", "fastly_kv_store.lookup", "fastly_kv_store.lookup_wait_v2"], "generationBytes": 8, "metadataBufferBytes": 2000, "completeBodyRequired": true },
+    "insert": { "calls": ["fastly_kv_store.insert", "fastly_kv_store.insert_wait"], "configBytes": 32, "modeOffset": 0, "generationOffset": 24, "ifGenerationMatchMask": 32, "addMode": 1, "replaceMode": 0, "successReturnsGeneration": false, "backgroundFetch": false, "ttl": false },
+    "errors": { "0": "uninitialized", "1": "ok", "2": "bad-request", "3": "not-found", "4": "precondition-failed", "5": "payload-too-large", "6": "internal-error", "7": "too-many-requests" },
+    "hostStatusFailure": "output-slots-untrusted; dispatched-write-is-unknown",
+    "readConsistency": "may-be-stale; value-and-generation-must-remain-paired",
+    "deleteRecreateGenerationReuse": "unverified; excluded-from-initial-portable-guarantee"
+  },
+  "sources": [
+    { "id": "fastly-service-kv", "url": "https://www.fastly.com/documentation/reference/api/services/resources/kv-store-item/", "observed": "2026-09-12", "evidence": "documented-generation-match-and-stale-writer-exclusion; not-live-proof" },
+    { "id": "fastly-native-api", "url": "https://docs.rs/fastly/0.13.0/fastly/kv_store/struct.InsertBuilder.html", "evidence": "u64-generation-and-acknowledgement-without-new-generation" },
+    { "id": "fastly-abi-header", "url": "https://github.com/fastly/js-compute-runtime/blob/7d3a3394fc13c20c89359d4257d43b8562dcbf72/runtime/fastly/host-api/fastly.h", "evidence": "host-abi-signatures-options-layout-and-error-codes-only; not-Pulse-semantics" },
+    { "id": "fastly-js-runtime", "url": "https://github.com/fastly/js-compute-runtime/blob/7d3a3394fc13c20c89359d4257d43b8562dcbf72/runtime/fastly/builtins/kv-store.cpp", "evidence": "incomplete-sdk-capability-mapping-only" },
+    { "id": "fastly-js-host", "url": "https://github.com/fastly/js-compute-runtime/blob/7d3a3394fc13c20c89359d4257d43b8562dcbf72/runtime/fastly/host-api/host_api.cpp", "evidence": "lookup-tuple-narrows-u64-to-u32; not-used-by-Native" }
+  ]
+}

@@ -99,6 +99,13 @@ const tasks = Object.freeze({
   's3-design-contract': nodeTask('test/s3/assert-s3-design-contract.cjs', {
     description: 'S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes'
   }),
+  'kv-design-contract': nodeTask('test/kv/assert-kv-design-contract.cjs', {
+    description: 'K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty'
+  }),
+  'kv-native-abi-feasibility': nodeTask('test/kv/assert-kv-native-abi-feasibility.cjs', {
+    evidence: 'native',
+    description: 'K1 compiled Wasm ABI probe for exact 64-bit generation and conditional insert options; no provider acceptance'
+  }),
   's3-read-contract': nodeTask('test/s3/assert-s3-read-contract.cjs', {
     description: 'S3 read binding authority, lowering negatives and bounded result contract'
   }),
@@ -769,6 +776,7 @@ const profiles = Object.freeze({
     'api-surface',
     'logging-contract',
     's3-design-contract',
+    'kv-design-contract',
     's3-read-contract',
     's3-write-contract',
     'crypto-config-planning',
@@ -788,6 +796,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'kv-native-abi-feasibility',
     's3-native-read',
     's3-node-transport',
     'canonical-api-lowering',

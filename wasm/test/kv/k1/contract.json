@@ -1,0 +1,50 @@
+{
+  "version": "pulse.kv-conditional.k1.v1",
+  "status": "design-only",
+  "authority": {
+    "contractId": "pulse.kv-conditional",
+    "owner": "@pulse-compute/runtime",
+    "providerSdkIsCanonical": false,
+    "existingOperations": ["kv.get", "kv.put"],
+    "newOperations": [
+      { "method": "getVersioned", "kind": "kv.getVersioned", "arguments": ["key"], "result": "versioned-value" },
+      { "method": "insertIfAbsent", "kind": "kv.insertIfAbsent", "arguments": ["key", "value"], "result": "conditional-write" },
+      { "method": "compareAndSwap", "kind": "kv.compareAndSwap", "arguments": ["key", "generation", "value"], "result": "conditional-write" }
+    ]
+  },
+  "semantics": {
+    "conditionAndMutation": "atomic-at-one-key-authority",
+    "read": "value-and-generation-from-same-observation; may-be-stale",
+    "missingCompareAndSwap": "conflict",
+    "writeSuccessReturnsGeneration": false,
+    "readThenWriteEmulation": false,
+    "automaticRetries": 0,
+    "automaticRebase": false,
+    "cancellation": "existing-request-lifecycle; no-typed-cancel-result; no-rollback-inference",
+    "tokenScope": "same-provider-store-key; not-an-authorization-token",
+    "deleteRecreateExclusion": "separate-provider-guarantee; not-initial-portable-promise",
+    "excluded": ["transactions", "conditional-delete", "ttl", "list", "append", "prepend", "metadata-authoring", "durability-promise"]
+  },
+  "limits": {
+    "namespaceUtf8Bytes": 256,
+    "keyUtf8Bytes": 1024,
+    "generationBytes": 256,
+    "valueJsonUtf8Bytes": 65536,
+    "wireUtf8Bytes": 65560,
+    "valueDepth": 64,
+    "valueEntries": 10000,
+    "effectEnvelopeBytes": 262144,
+    "operationTimeoutMs": 10000
+  },
+  "generation": { "encoding": "opaque-visible-ascii-string", "minimumBytes": 1, "numericCoercion": false },
+  "wire": { "version": 1, "encoding": "strict-utf8-json", "marker": "__pulseKv", "fields": ["__pulseKv", "value"], "legacyRawJson": "explicit-migration-required", "generationInValue": false },
+  "lowering": {
+    "namespace": "compiler-proven-literal",
+    "keyGenerationValue": "runtime-data",
+    "placement": ["direct-await", "keyed-ctx.parallel"],
+    "snapshot": "before-dispatch-at-effect-admission",
+    "redaction": ["key", "generation", "value"],
+    "promotionPhase": "K2"
+  },
+  "evidence": { "k1": "design-corpus-and-local-abi-probe", "localRealizations": "K2-K3", "adversarialAndPacked": "K4", "deployedCrossLocation": "K4-after-T2" }
+}
