@@ -1,0 +1,34 @@
+{
+  "node": {
+    "bindings": {
+      "s3": {
+        "objects": {
+          "endpoint": "https://objects.example.invalid",
+          "bucket": "o1-fixture",
+          "region": "us-east-1",
+          "accessKeyIdSecret": "S3_ACCESS_KEY_ID",
+          "secretAccessKeySecret": "S3_SECRET_ACCESS_KEY",
+          "maxTextBytes": 32768,
+          "timeoutMs": 10000
+        }
+      }
+    }
+  },
+  "fastly": {
+    "bindings": {
+      "secretStore": "app_secrets",
+      "s3": {
+        "objects": {
+          "endpoint": "https://objects.example.invalid",
+          "bucket": "o1-fixture",
+          "region": "us-east-1",
+          "backend": "object_origin",
+          "accessKeyIdSecret": "S3_ACCESS_KEY_ID",
+          "secretAccessKeySecret": "S3_SECRET_ACCESS_KEY",
+          "maxTextBytes": 32768,
+          "timeoutMs": 10000
+        }
+      }
+    }
+  }
+}
