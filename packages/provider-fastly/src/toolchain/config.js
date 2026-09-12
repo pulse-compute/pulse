@@ -1,4 +1,5 @@
 'use strict';
+const { normalizeFastlyS3 } = require('./s3.js');
 
 function providerConfigError(code, message, detail) {
   const error = new TypeError(message);
@@ -37,6 +38,7 @@ function normalizeFastlyProviderConfig(value) {
       configStore: String(bindings.configStore || 'pulse_config'),
       secretStore: String(bindings.secretStore || 'pulse_secrets'),
       kv: normalizeStringMap(bindings.kv, 'PULSE_FASTLY_KV_BINDINGS_INVALID'),
+      s3: normalizeFastlyS3(bindings.s3),
       backends: normalizeStringMap(bindings.backends, 'PULSE_FASTLY_BACKEND_BINDINGS_INVALID'),
       grip: Object.freeze({
         fanoutBackend: gripInput.fanoutBackend === undefined ? undefined : String(gripInput.fanoutBackend),
@@ -98,6 +100,7 @@ const FASTLY_PROJECT_CONFIG_REFERENCE = Object.freeze({
     })
   ]),
   fields: Object.freeze([
+    Object.freeze({ section: 'fastly', path: 'fastly.bindings.s3', type: 'Readonly<Record<string, S3ReadBinding & { backend: string }>>', default: '`{}`', scope: 'Fastly Native S3 reads', description: 'Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).', security: 'Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.configStore', type: 'string', default: '`pulse_config`', scope: 'Fastly config capability', description: 'Fastly Config Store resource name.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.secretStore', type: 'string', default: '`pulse_secrets`', scope: 'Fastly secret capability', description: 'Fastly Secret Store resource name.', security: 'The name is build metadata; secret values are never embedded by this option.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.kv', type: 'Readonly<Record<string, string>>', default: '`{}`', scope: 'Fastly KV capability', description: 'Maps logical ctx.kv names to Fastly KV Store resource names.', diagnostics: Object.freeze(['PULSE_FASTLY_KV_BINDINGS_INVALID']) }),

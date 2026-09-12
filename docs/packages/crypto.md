@@ -58,6 +58,13 @@ realization. Target probing and automatic fallback are prohibited.
 
 ## Boundary
 
+Native capability packages can also select `SHA-256` and `HMAC-SHA256` for
+internal byte output. Their exact `guest-source:pulse-hmac-as` realization uses
+32-byte output, at most 32 KiB of data and 8 KiB of HMAC key material. Crypto owns
+a reusable, wiped host staging frame. These operations are separate from JWT's
+32-byte minimum HMAC verification key; the application verification API retains
+its existing limits. JavaScript byte-output realization is not implemented yet.
+
 The package root is the supported application contract. Native integration,
 guest provenance, and realization records are toolchain-owned surfaces. JWT
 owns compact-JWS parsing, key selection, and claims semantics; this package

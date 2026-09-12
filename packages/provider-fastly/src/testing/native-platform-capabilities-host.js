@@ -10,7 +10,7 @@ const FASTLY_STATUS_BUFLEN = 4;
 const FASTLY_STATUS_NONE = 10;
 const FASTLY_KV_ERROR_OK = 1;
 const FASTLY_KV_ERROR_NOT_FOUND = 3;
-const SENSITIVE_HEADERS = new Set(['authorization', 'proxy-authorization', 'x-api-key', 'x-auth-token', 'cookie', 'set-cookie']);
+const SENSITIVE_HEADERS = new Set(['authorization', 'proxy-authorization', 'x-api-key', 'x-auth-token', 'cookie', 'set-cookie', 'x-amz-security-token']);
 
 class FastlyNativePlatformCapabilitiesMockError extends Error {
   constructor(message, code = 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_FAILED', detail = {}) {
@@ -113,6 +113,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const url = String(requestInput.url || `https://pulse.test${pathValue.startsWith('/') ? pathValue : `/${pathValue}`}`);
   const requestHeaders = normalizeHeaders(requestInput.headers);
   const trace = [];
+  let monotonicMs = 0;
+  const privateUrls = new Set();
   let nextHandle = 10;
   const typedHandleStarts = options.handleStarts && typeof options.handleStarts === 'object' ? options.handleStarts : {};
   const typedHandleNext = new Map();
@@ -206,17 +208,37 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       headers,
       origin: true
     });
-    bodies.set(bodyHandle, { bytes: normalizeBody(body), readOffset: 0, writes: [] });
+    bodies.set(bodyHandle, { bytes: normalizeBody(body), readOffset: 0, writes: [], fixture: normalized, readyAt: monotonicMs + Number(normalized.bodyDelayMs || 0) });
     return { responseHandle, bodyHandle };
   }
 
+  function headerList(values, buffer, size, end, written) {
+    const output = Buffer.from(values.map((value) => String(value) + '\0').join(''));
+    writeU32(written, output.length); view().setBigInt64(Number(end), -1n, true);
+    if (output.length > Number(size)) return FASTLY_STATUS_BUFLEN;
+    new Uint8Array(memory().buffer, Number(buffer), output.length).set(output);
+    return FASTLY_STATUS_OK;
+  }
   const imports = {
+    fastly_async_io: {
+      select(handles, count, timeout, done) {
+        if (Number(count) !== 1 || Number(timeout) <= 0) return FASTLY_STATUS_ERROR;
+        const handle = view().getUint32(Number(handles), true);
+        const item = pending.get(handle) || bodies.get(handle);
+        if (!item) return FASTLY_STATUS_BADF;
+        const wait = Math.max(0, Number(item.readyAt || 0) - monotonicMs);
+        monotonicMs += Math.min(wait, Number(timeout));
+        writeU32(done, wait >= Number(timeout) ? 0xffffffff : 0);
+        trace.push({ module: 'fastly_async_io', name: 'select', timeout: Number(timeout), timedOut: wait >= Number(timeout) });
+        return FASTLY_STATUS_OK;
+      }
+    },
     wasi_snapshot_preview1: {
       clock_time_get(clockId, precision, timeOut) {
         const seconds = Number.isFinite(Number(options.clockUnixSeconds))
           ? Number(options.clockUnixSeconds)
           : Math.floor(Date.now() / 1000);
-        writeU64(timeOut, BigInt(Math.trunc(seconds * 1_000_000_000)));
+        writeU64(timeOut, BigInt(Math.trunc((Number(clockId) === 1 ? monotonicMs : seconds * 1000 + monotonicMs) * 1_000_000)));
         trace.push({
           module: 'wasi_snapshot_preview1',
           name: 'clock_time_get',
@@ -321,6 +343,20 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         trace.push({ module: 'fastly_http_req', name: 'header_insert', handle: Number(handle), header: [name, SENSITIVE_HEADERS.has(name.toLowerCase()) ? '[REDACTED]' : redactText(value)] });
         return FASTLY_STATUS_OK;
       },
+      cache_override_set(handle, tag, ttl, swr) {
+        const request = requests.get(Number(handle)); if (!request) return FASTLY_STATUS_BADF;
+        request.cacheOverride = Number(tag); return FASTLY_STATUS_OK;
+      },
+      auto_decompress_response_set(handle, encodings) {
+        const request = requests.get(Number(handle)); if (!request) return FASTLY_STATUS_BADF;
+        request.decompression = Number(encodings); return FASTLY_STATUS_OK;
+      },
+      close(handle) { return requests.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
+      pending_req_poll_v2(handle, detail, done, responseOut, bodyOut) {
+        const item = pending.get(Number(handle)); if (!item) return FASTLY_STATUS_BADF;
+        if (monotonicMs < item.readyAt) { writeU32(done, 0); return FASTLY_STATUS_OK; }
+        writeU32(done, 1); return imports.fastly_http_req.pending_req_wait(handle, responseOut, bodyOut);
+      },
       send_async(handle, bodyHandle, backendPointer, backendLength, pendingOut) {
         const request = requests.get(Number(handle));
         const body = bodies.get(Number(bodyHandle));
@@ -333,11 +369,14 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         }
         const pendingHandle = alloc('pending');
         const capturedBody = bodyBytes(bodyHandle);
-        pending.set(pendingHandle, { request: { ...request, headers: request.headers.map((entry) => [...entry]), body: capturedBody }, backend, fixture });
+        pending.set(pendingHandle, { request: { ...request, headers: request.headers.map((entry) => [...entry]), body: capturedBody }, backend, fixture, readyAt: monotonicMs + Number(fixture.delayMs || 0) });
+        if (typeof options.onOutboundRequest === 'function') options.onOutboundRequest({ ...request, backend, headers: request.headers.map((entry) => [...entry]), body: capturedBody });
+        if (request.headers.some(([name, value]) => name.toLowerCase() === 'authorization' && value.startsWith('AWS4-HMAC-SHA256 '))) privateUrls.add(request.url);
+        requests.delete(Number(handle)); bodies.delete(Number(bodyHandle));
         outboundRequests.push(Object.freeze({
           backend,
           method: request.method,
-          url: redactText(request.url),
+          url: privateUrls.has(request.url) ? '[REDACTED]' : redactText(request.url),
           headers: Object.freeze(redactRuntimeHeaders(request.headers).map((header) => Object.freeze(header))),
           body: redactText(capturedBody.toString('utf8'))
         }));
@@ -447,6 +486,16 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       }
     },
     fastly_http_resp: {
+      close(handle) { trace.push({ module: 'fastly_http_resp', name: 'close' }); return responses.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
+      header_names_get(handle, buffer, size, cursor, end, written) {
+        const response = responses.get(Number(handle)); if (!response || cursor !== 0) return FASTLY_STATUS_BADF;
+        return headerList([...new Set(response.headers.map(([name]) => name.toLowerCase()))], buffer, size, end, written);
+      },
+      header_values_get(handle, pointer, length, buffer, size, cursor, end, written) {
+        const response = responses.get(Number(handle)); if (!response || cursor !== 0) return FASTLY_STATUS_BADF;
+        const name = readUtf8(pointer, length).toLowerCase();
+        return headerList(response.headers.filter(([key]) => key.toLowerCase() === name).map(([, value]) => value), buffer, size, end, written);
+      },
       new(handleOut) {
         const handle = alloc('response');
         responses.set(handle, { status: 200, headers: [], origin: false });
@@ -503,6 +552,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       }
     },
     fastly_http_body: {
+      close(handle) { trace.push({ module: 'fastly_http_body', name: 'close' }); return bodies.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
       new(handleOut) {
         const handle = alloc('body');
         bodies.set(handle, { bytes: Buffer.alloc(0), readOffset: 0, writes: [] });
@@ -515,9 +565,10 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         if (!body) return FASTLY_STATUS_BADF;
         const source = bodyBytes(handle);
         const offset = body.readOffset || 0;
-        const count = Math.min(Number(bufferLength), Math.max(0, source.length - offset));
+        const count = Math.min(Number(bufferLength), Math.max(0, source.length - offset), Number(body.fixture && body.fixture.chunkBytes || 65536));
         if (count > 0) new Uint8Array(memory().buffer, Number(buffer), count).set(source.subarray(offset, offset + count));
         body.readOffset = offset + count;
+        body.readyAt = monotonicMs + Number(body.fixture && body.fixture.chunkDelayMs || 0);
         writeU32(readOut, count);
         trace.push({ module: 'fastly_http_body', name: 'read', handle: Number(handle), bytes: count });
         return FASTLY_STATUS_OK;
@@ -540,6 +591,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     throw new FastlyNativePlatformCapabilitiesMockError('Pass98 native module is missing _start.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_START_MISSING');
   }
   instance.exports._start();
+  for (const entry of trace) if (entry.url && privateUrls.has(entry.url)) entry.url = '[REDACTED]';
   const lastError = typeof instance.exports.pulse_fastly_last_error === 'function'
     ? Number(instance.exports.pulse_fastly_last_error())
     : undefined;

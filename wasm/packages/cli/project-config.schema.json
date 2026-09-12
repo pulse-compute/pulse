@@ -36,6 +36,11 @@
         "description": "Configure the foreground local server and local-only provider inputs."
       },
       {
+        "description": "Provider-owned Node profile configuration.",
+        "id": "node",
+        "title": "Node provider options"
+      },
+      {
         "description": "Options passed to fastly(...) from @pulse-compute/provider-fastly.",
         "id": "fastly",
         "title": "Fastly provider options"
@@ -111,7 +116,7 @@
       {
         "required": false,
         "default": "implicit no-crypto declaration",
-        "allowed": "`HS256`, `ES256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`",
+        "allowed": "`HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`",
         "precedence": "Used only when the selected profile omits `crypto`.",
         "security": "Keys and verification bytes are not configuration values. Target selection is deterministic and never probes or falls back.",
         "diagnostics": [
@@ -122,14 +127,14 @@
         ],
         "section": "crypto",
         "path": "pulse.crypto",
-        "type": "readonly ('HS256' | 'ES256')[] | { readonly HS256?: { readonly realization?: PulseCryptoRealization }; readonly ES256?: { readonly realization?: PulseCryptoRealization } }",
+        "type": "readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>",
         "scope": "global crypto requirement default",
         "description": "Declares the complete global algorithm set. Array entries are canonical algorithm names; object entries may pin one exact known realization."
       },
       {
         "required": false,
         "default": "inherit `pulse.crypto` when absent",
-        "allowed": "`[]` and `{}` explicitly select no crypto; otherwise `HS256` and/or `ES256`",
+        "allowed": "`[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`",
         "precedence": "Selected-profile declaration replaces `pulse.crypto`; absence inherits it.",
         "security": "Every declared algorithm must resolve for the selected target before lowering. A failed exact realization cannot select another backend.",
         "diagnostics": [
@@ -139,7 +144,7 @@
         ],
         "section": "crypto",
         "path": "<profile>.crypto",
-        "type": "readonly ('HS256' | 'ES256')[] | { readonly HS256?: { readonly realization?: PulseCryptoRealization }; readonly ES256?: { readonly realization?: PulseCryptoRealization } }",
+        "type": "readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>",
         "scope": "selected profile",
         "description": "Replaces the complete global crypto declaration for the selected profile. Arrays and objects never merge with `pulse.crypto`."
       },
@@ -329,6 +334,32 @@
         "type": "Readonly<Record<string, unknown>>",
         "scope": "local fetch capability",
         "description": "Deterministic fetch fixtures resolved before optional live network fetch."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Only named credential references are configuration. Runtime keys cannot override authority.",
+        "diagnostics": [],
+        "description": "Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
+        "path": "node.bindings.s3",
+        "scope": "Node Native S3 reads",
+        "section": "node",
+        "type": "Readonly<Record<string, S3ReadBinding>>"
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.",
+        "diagnostics": [],
+        "description": "Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
+        "path": "fastly.bindings.s3",
+        "scope": "Fastly Native S3 reads",
+        "section": "fastly",
+        "type": "Readonly<Record<string, S3ReadBinding & { backend: string }>>"
       },
       {
         "required": false,
@@ -729,7 +760,9 @@
               "items": {
                 "enum": [
                   "HS256",
-                  "ES256"
+                  "ES256",
+                  "SHA-256",
+                  "HMAC-SHA256"
                 ]
               }
             },
@@ -743,8 +776,8 @@
                   "properties": {
                     "realization": {
                       "enum": [
-                        "runtime-builtin",
                         "guest-source:pulse-hmac-as",
+                        "runtime-builtin",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
                     }
@@ -756,8 +789,34 @@
                   "properties": {
                     "realization": {
                       "enum": [
-                        "runtime-builtin",
                         "guest-source:pulse-hmac-as",
+                        "runtime-builtin",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                },
+                "SHA-256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "guest-source:pulse-hmac-as",
+                        "runtime-builtin",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                },
+                "HMAC-SHA256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "guest-source:pulse-hmac-as",
+                        "runtime-builtin",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
                     }
@@ -844,6 +903,10 @@
     "fastly": {
       "schemaVersion": "pulse.provider-fastly-config-schema.v1",
       "fields": {
+        "fastly.bindings.s3": {
+          "kind": "object",
+          "default": {}
+        },
         "fastly.configStore": {
           "kind": "string",
           "default": "pulse_config"

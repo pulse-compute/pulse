@@ -1309,10 +1309,10 @@ function assertCanonicalNativePlan(plan) {
         fail('plan crypto realization evidence is invalid', { crypto: plan.crypto });
       } else {
         const knownRealizations = new Map(
-          cryptoContract.CRYPTO_REALIZATIONS.map((entry) => [entry.id, entry])
+          cryptoContract.CRYPTO_REALIZATIONS.map((entry) => [`${entry.id}:${entry.algorithm}`, entry])
         );
         for (const entry of plan.crypto.algorithms) {
-          const known = entry && knownRealizations.get(entry.realization);
+          const known = entry && knownRealizations.get(`${entry.realization}:${entry.algorithm}`);
           if (
             !known
             || known.algorithm !== entry.algorithm

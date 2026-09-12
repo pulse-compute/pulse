@@ -244,7 +244,13 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
     && memory.buffer.byteLength === ES256_MEMORY_BYTES
     && typeof verifyEs256 === 'function'
   );
+  const byteAlgorithms = ['SHA-256', 'HMAC-SHA256'].filter((algorithm) =>
+    selectedAlgorithm(plan, algorithm, HS256_REALIZATION, 'guest-source', CRYPTO_GUEST_SOURCE_IMPLEMENTATION));
+  const digestMac = byteAlgorithms.length > 0
+    ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeDigestMac(moduleExports) : undefined;
   const selectedRealizations = Object.freeze([
+    ...byteAlgorithms.map((algorithm) => Object.freeze({ algorithm, realization: HS256_REALIZATION,
+      implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, guestUnitRequired: false, available: Boolean(digestMac) })),
     ...(selected ? [Object.freeze({
       algorithm: 'HS256',
       realization: HS256_REALIZATION,
@@ -271,6 +277,10 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
   });
 
   const verifier = Object.freeze({
+    ...(digestMac ? { bytes: Object.freeze({
+      ...(byteAlgorithms.includes('SHA-256') ? { sha256: digestMac.sha256 } : {}),
+      ...(byteAlgorithms.includes('HMAC-SHA256') ? { hmacSha256: digestMac.hmacSha256 } : {})
+    }) } : {}),
     mac: Object.freeze({
       verify(request) {
         const normalized = normalizeRequest(request);

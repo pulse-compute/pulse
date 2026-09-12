@@ -169,6 +169,7 @@ function createDriver() {
         runtimeClass: 'native',
         status: 'supported',
         capabilities: Object.freeze([
+          's3.head', 's3.getText',
           'jwt.verify',
           'jwt.verify.hs256',
           'jwt.verify.es256',
@@ -221,7 +222,7 @@ function createDriver() {
         automaticFallback: false,
         crypto: defineCryptoTargetCapabilities({
           target: 'native',
-          algorithms: [{
+          algorithms: [...['SHA-256', 'HMAC-SHA256'].map((algorithm) => ({ algorithm, realization: 'guest-source:pulse-hmac-as', implemented: true, status: 'implemented-o2' })), {
             algorithm: 'HS256',
             realization: 'guest-source:pulse-hmac-as',
             implemented: true,

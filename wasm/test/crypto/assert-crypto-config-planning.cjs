@@ -363,7 +363,7 @@ assert.equal(validateConfigValue('crypto', { HS256: {} }), true);
 assert.equal(validateConfigValue('crypto', { HS256: { realization: 'unknown' } }), false);
 assert.deepEqual(
   publicConfigSchema.jsonSchema.properties.crypto.oneOf[0].items.enum,
-  ['HS256', 'ES256']
+  ['HS256', 'ES256', 'SHA-256', 'HMAC-SHA256']
 );
 
 const coveredConfigurationCases = [

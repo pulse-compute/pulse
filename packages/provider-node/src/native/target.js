@@ -60,7 +60,7 @@ const NODE_NATIVE_TARGET_DESCRIPTOR = Object.freeze({
   automaticFallback: false,
   crypto: defineCryptoTargetCapabilities({
     target: 'native',
-    algorithms: [{
+    algorithms: [...['SHA-256', 'HMAC-SHA256'].map((algorithm) => ({ algorithm, realization: 'guest-source:pulse-hmac-as', implemented: true, status: 'implemented-o2' })), {
       algorithm: 'HS256',
       realization: 'guest-source:pulse-hmac-as',
       implemented: true,

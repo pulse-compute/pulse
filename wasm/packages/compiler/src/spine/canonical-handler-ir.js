@@ -119,6 +119,7 @@ function packageEffectSummary(packageEffects) {
     capability: effect.capability,
     result: effect.result,
     placement: effect.placement,
+    ...(effect.redaction ? { redaction: effect.redaction } : {}),
     range: effect.range
   })));
 }

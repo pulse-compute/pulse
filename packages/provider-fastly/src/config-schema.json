@@ -1,6 +1,10 @@
 {
   "schemaVersion": "pulse.provider-fastly-config-schema.v1",
   "fields": {
+    "fastly.bindings.s3": {
+      "kind": "object",
+      "default": {}
+    },
     "fastly.configStore": {
       "kind": "string",
       "default": "pulse_config"

@@ -232,7 +232,7 @@ function normalizeContribution(entry, definition) {
       { algorithm: entry.algorithm, realization: entry.realization }
     );
   }
-  const contribution = module.pulseHmacAssemblyScriptSource();
+  const contribution = module.pulseHmacAssemblyScriptSource(entry.algorithm);
   const expected = definition.source;
   if (
     !contribution
@@ -263,14 +263,21 @@ function normalizeContribution(entry, definition) {
     || !Array.isArray(contribution.imports)
     || contribution.imports.length !== 0
     || !Array.isArray(contribution.exports)
-    || contribution.exports.length !== 2
+    || contribution.exports.length !== 5
     || !contribution.exports.includes('pulse_crypto_hs256_verify')
     || !contribution.exports.includes('pulse_crypto_sha256_digest')
+    || !contribution.exports.includes('pulse_crypto_bytes_frame_v1')
+    || !contribution.exports.includes('pulse_crypto_sha256_bytes_v1')
+    || !contribution.exports.includes('pulse_crypto_hmac_sha256_bytes_v1')
     || !contribution.resourceLimits
     || contribution.resourceLimits.hmacKeyBytesMinimum !== 32
     || contribution.resourceLimits.hmacKeyBytesMaximum !== 4 * 1024
     || contribution.resourceLimits.macDataBytesMaximum !== 1024 * 1024
     || contribution.resourceLimits.hs256TagBytes !== 32
+    || contribution.resourceLimits.byteOperationKeyBytesMaximum !== 8192
+    || contribution.resourceLimits.byteOperationDataBytesMaximum !== 32768
+    || contribution.resourceLimits.byteOperationOutputBytes !== 32
+    || contribution.resourceLimits.byteOperationFrameBytes !== 40992
     || !contribution.resultCodes
     || contribution.resultCodes.valid !== 1
     || contribution.resultCodes.invalidAuthenticator !== 0
@@ -319,18 +326,24 @@ function buildNativeCryptoGuestSources(plan) {
       ? normalizeLinkedContribution(entry, definition)
       : normalizeContribution(entry, definition);
   });
-  const duplicateIds = contributions
-    .map((entry) => entry.id)
-    .filter((id, index, values) => values.indexOf(id) !== index);
-  if (duplicateIds.length > 0) {
-    throw new CryptoGuestSourceError(
-      'Canonical Native crypto plan contains duplicate guest-source contributions.',
-      'PULSE_CRYPTO_REALIZATION_UNAVAILABLE',
-      { duplicateIds: [...new Set(duplicateIds)].sort() }
-    );
+  const algorithmsSeen = new Set();
+  const sourcesById = new Map();
+  for (const contribution of contributions) {
+    const previous = sourcesById.get(contribution.id);
+    if (algorithmsSeen.has(contribution.algorithm) || (previous && (
+      previous.sourceSha256 !== contribution.sourceSha256
+      || JSON.stringify(previous.exports) !== JSON.stringify(contribution.exports)
+      || previous.owner !== contribution.owner || previous.packageVersion !== contribution.packageVersion
+      || previous.kind !== contribution.kind || previous.backendVersion !== contribution.backendVersion
+      || JSON.stringify(previous.imports) !== JSON.stringify(contribution.imports)
+      || JSON.stringify(previous.resourceLimits) !== JSON.stringify(contribution.resourceLimits)
+    ))) throw new CryptoGuestSourceError('Native Crypto contributions conflict.', 'PULSE_CRYPTO_REALIZATION_UNAVAILABLE');
+    algorithmsSeen.add(contribution.algorithm);
+    sourcesById.set(contribution.id, contribution);
   }
+  const uniqueSources = [...sourcesById.values()];
 
-  const source = contributions
+  const source = uniqueSources
     .map((entry) => [
       `/* Pulse crypto guest source: ${entry.id} (${entry.sourceSha256}) */`,
       entry.source.trimEnd(),
@@ -368,7 +381,7 @@ function buildNativeCryptoGuestSources(plan) {
     realizationPlanVersion: realizationPlan.version,
     realizationPlanHash: realizationPlan.planHash,
     algorithms,
-    sources: contributions.map((entry) => entry.source),
+    sources: uniqueSources.map((entry) => entry.source),
     source,
     sourceHash: sha256(source),
     automaticFallback: false

@@ -15,7 +15,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'request', 'response.json', 'response.text', 'response.custom', 'fetch',
     'config.get', 'secret.get', 'kv.get', 'kv.put', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify',
-    'opaque.pass-through'
+    'opaque.pass-through', 's3.head', 's3.getText'
   ],
   lowering: {
     request: 'fastly.compute.request',
@@ -33,6 +33,8 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'grip.publish': 'fastly.fanout.publish',
     'grip.broadcast': 'fastly.grip.publish-control',
     'jwt.verify': 'fastly.native.jwt.verify',
+    's3.head': 'fastly.native.s3.head',
+    's3.getText': 'fastly.native.s3.getText',
     'opaque.pass-through': 'fastly.response-body.stream'
   }
 });
@@ -53,6 +55,7 @@ function validateStaticBackendBindings(metadata = {}, bindings = {}) {
 }
 
 function createFastlyLoweringPlan(metadata, bindings = {}) {
+  require('./toolchain/s3.js').resolveFastlyS3(metadata.providerOperations || [], bindings.s3);
   validateStaticBackendBindings(metadata, bindings);
   return canonical.createProviderLoweringPlan(metadata, FASTLY_PROVIDER_DESCRIPTOR, {
     ...bindings,

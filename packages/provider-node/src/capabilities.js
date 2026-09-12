@@ -3,6 +3,7 @@
 const NODE_JWT_VERIFY_CAPABILITY = 'jwt.verify';
 
 const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
+  's3.head', 's3.getText',
   'request',
   'response.json',
   'response.text',
@@ -32,6 +33,8 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   'kv.put': 'node.runtime.kv.put',
   'event.ingress': 'node.event.reference.ingress',
   'event.emit': 'node.event.reference.accept',
+  's3.head': 'node.native.s3.head',
+  's3.getText': 'node.native.s3.getText',
   'assets.lookup': 'node.runtime.assets.lookup',
   'grip.broadcast': 'node.http.grip.publish',
   [NODE_JWT_VERIFY_CAPABILITY]: 'node.native.jwt.verify',
@@ -39,6 +42,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
 });
 
 const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
+  's3.head', 's3.getText',
   NODE_JWT_VERIFY_CAPABILITY,
   'jwt.verify.hs256',
   'jwt.verify.es256',

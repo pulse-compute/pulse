@@ -77,6 +77,9 @@ importers:
       '@pulse-compute/runtime':
         specifier: workspace:*
         version: link:../runtime
+      '@pulse-compute/s3':
+        specifier: workspace:*
+        version: link:../s3
       '@pulse-compute/wasm-build-support':
         specifier: workspace:*
         version: link:../../wasm/packages/build-support
@@ -111,6 +114,9 @@ importers:
       '@pulse-compute/runtime':
         specifier: workspace:*
         version: link:../runtime
+      '@pulse-compute/s3':
+        specifier: workspace:*
+        version: link:../s3
       '@pulse-compute/wasm-build-support':
         specifier: workspace:*
         version: link:../../wasm/packages/build-support
@@ -131,6 +137,15 @@ importers:
         version: link:../../wasm/packages/contracts
 
   packages/runtime: {}
+
+  packages/s3:
+    dependencies:
+      '@pulse-compute/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      '@pulse-compute/wasm-contracts':
+        specifier: workspace:*
+        version: link:../../wasm/packages/contracts
 
   wasm:
     devDependencies:
@@ -208,6 +223,9 @@ importers:
 
   wasm/packages/host-runtime:
     dependencies:
+      '@pulse-compute/crypto':
+        specifier: workspace:*
+        version: link:../../../packages/crypto
       '@pulse-compute/wasm-build-support':
         specifier: workspace:*
         version: link:../build-support
