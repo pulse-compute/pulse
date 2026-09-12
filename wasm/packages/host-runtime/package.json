@@ -31,7 +31,8 @@
     "@pulse-compute/wasm-build-support": "workspace:*",
     "@pulse-compute/wasm-contracts": "workspace:*",
     "@pulse-compute/wasm-schema-json": "workspace:*",
-    "@pulse-compute/crypto": "workspace:*"
+    "@pulse-compute/crypto": "workspace:*",
+    "@pulse-compute/runtime": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

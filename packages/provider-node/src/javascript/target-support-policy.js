@@ -89,7 +89,7 @@ function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, opt
   if (requirement === 'fetch' || requirement === 'opaque.pass-through' || ['body', 'headers', 'result'].includes(requirement)) {
     return decision(requirement, 'eligible', 'javascript-fetch-projection-realization', 'runtime');
   }
-  if (['config.get', 'secret.get', 'kv.get', 'kv.put'].includes(requirement)) {
+  if (['config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(requirement)) {
     return options.bindingsRedaction === true
       ? decision(requirement, 'eligible', 'javascript-binding-redaction-implemented', 'provider-node')
       : decision(requirement, 'pending', 'javascript-binding-effect-pending', 'provider-node');

@@ -1,6 +1,7 @@
 import type {
   Handler,
   PulseEffect,
+  PulseKvGeneration, PulseKvVersionedResult, PulseKvConditionalResult,
   PulseFetchResponse,
   PulseParallelEffect,
   PulseParallelResult,
@@ -14,6 +15,7 @@ export interface PulseJavascriptEffectHostExecution {
   readonly event?: PulseEventFrame;
   readonly application?: unknown;
   readonly signal?: AbortSignal;
+  readonly deadlineMonotonicMs?: number;
   /** Adds execution-owned sensitive text to runtime redaction before provider work continues. */
   registerRedactionValue(value: string | Uint8Array): void;
   /** Applies one project-owned schema codec directly to an in-memory semantic value. */
@@ -35,7 +37,26 @@ export interface PulseJavascriptEffectDescriptor {
   readonly [field: string]: unknown;
 }
 
+/** Host-only preparation hook. Resolving/staging must not dispatch; invoking
+ * the returned primitive is the conservative storage dispatch boundary. */
+export interface PulseConditionalKvExecution {
+  readonly signal?: AbortSignal;
+  readonly deadlineMonotonicMs?: number;
+  registerRedactionValue?(value: string): void;
+  onKvObservation?(value: Readonly<Record<string, unknown>>): void;
+}
+export interface PulseKvClock {
+  now(): number;
+  setTimeout(callback: () => void, delayMs: number): unknown;
+  clearTimeout(handle: unknown): void;
+}
+export type PulseConditionalKvPreparation = (
+  effect: Readonly<Record<string, unknown>>,
+  execution: PulseConditionalKvExecution
+) => Promise<(() => unknown) | undefined> | (() => unknown) | undefined;
+
 export interface PulseJavascriptEffectAdapterInput {
+  prepareConditionalKv?: PulseConditionalKvPreparation;
   readonly id?: string;
   dispatch(
     effect: PulseJavascriptEffectDescriptor,
@@ -46,6 +67,7 @@ export interface PulseJavascriptEffectAdapterInput {
 
 export interface PulseJavascriptEffectAdapter {
   readonly version: 'pulse.javascript-effect-adapter.v1';
+  readonly prepareConditionalKv?: PulseConditionalKvPreparation;
   readonly id: string;
   dispatch(
     effect: PulseJavascriptEffectDescriptor,
@@ -80,12 +102,16 @@ export interface PulseEventRecordingAdapter extends PulseJavascriptEffectAdapter
 }
 
 export interface PulseRuntimeHostKvNamespace<T = unknown> {
+  getVersioned?(key: string): Promise<PulseKvVersionedResult<T>> | PulseKvVersionedResult<T>;
+  insertIfAbsent?(key: string, value: T): Promise<PulseKvConditionalResult> | PulseKvConditionalResult;
+  compareAndSwap?(key: string, generation: PulseKvGeneration, value: T): Promise<PulseKvConditionalResult> | PulseKvConditionalResult;
   get(key: string): Promise<T | undefined> | T | undefined;
   put(key: string, value: T): Promise<boolean> | boolean;
 }
 
 /** Compatibility injection shape retained while providers move to one effect adapter. */
 export interface PulseRuntimeHostCapabilities {
+  prepareConditionalKv?: PulseConditionalKvPreparation;
   fetch?(
     url: string,
     init?: unknown,
@@ -115,7 +141,7 @@ export interface PulseRuntimeHostCapabilities {
 
 export interface PulseJavascriptEffectObservation {
   readonly version: 'pulse.javascript-effect-observation.v1';
-  readonly type: 'effect-dispatched' | 'effect-settled' | 'parallel-dispatched' | 'parallel-settled';
+  readonly type: 'effect-dispatched' | 'effect-settled' | 'parallel-dispatched' | 'parallel-settled' | 'kv-lifecycle';
   readonly [field: string]: unknown;
 }
 
@@ -129,6 +155,7 @@ export interface PulseJavascriptEffectSummary {
   readonly version: 'pulse.javascript-effect-observation.v1';
   readonly adapter: {
     readonly version: 'pulse.javascript-effect-adapter.v1';
+  readonly prepareConditionalKv?: PulseConditionalKvPreparation;
     readonly id: string;
   };
   readonly effectCount: number;
@@ -173,6 +200,10 @@ export interface PulseJavascriptEffectExecution {
 }
 
 export interface PulseRuntimeExecutionOptions {
+  /** Host-only monotonic clock/scheduler injection for deterministic lifecycle evidence. */
+  readonly kvClock?: PulseKvClock;
+  /** Host monotonic deadline; conditional KV uses the earlier of this and 10 seconds. */
+  readonly deadlineMonotonicMs?: number;
   /** Compatibility bridge. New providers should inject one shared effectAdapter instead. */
   readonly capabilities?: PulseRuntimeHostCapabilities;
   readonly effectAdapter?: PulseJavascriptEffectAdapter | PulseJavascriptEffectAdapterInput;
@@ -374,3 +405,16 @@ export declare const EVENT_EMIT_CODES: Readonly<{
   QUEUE_FULL: 'PULSE_RUNTIME_EVENT_EMIT_QUEUE_FULL';
   ADAPTER_INVALID: 'PULSE_RUNTIME_EVENT_ADAPTER_INVALID';
 }>;
+
+/** Shared host-only conditional KV boundary; no provider SDK tokens enter as numbers. */
+export declare const KV_CONDITIONAL_KINDS: readonly string[];
+export declare const KV_CONDITIONAL_LIMITS: Readonly<Record<string, number>>;
+export declare function isConditionalKv(kind: string): boolean;
+export declare function normalizeKvGeneration(value: unknown): PulseKvGeneration;
+export declare function normalizeConditionalKvKey(value: unknown, options?: PulseBindingValueLimits): string;
+export declare function encodeConditionalKvValue(value: unknown, options?: PulseBindingValueLimits): Uint8Array;
+export declare function decodeConditionalKvValue(bytes: Uint8Array, options?: PulseBindingValueLimits): unknown;
+export declare function admitConditionalKv(input: Readonly<Record<string, unknown>>, options?: PulseRuntimeExecutionOptions): Readonly<Record<string, unknown>>;
+export declare function normalizeConditionalKvResult(effect: Readonly<{ kind: string }>, value: unknown, options?: PulseBindingValueLimits): PulseKvVersionedResult<unknown> | PulseKvConditionalResult;
+export declare function executeConditionalKv(effect: Readonly<Record<string, unknown>>, prepare: PulseConditionalKvPreparation, execution?: PulseConditionalKvExecution, options?: PulseRuntimeExecutionOptions): Promise<PulseKvVersionedResult<unknown> | PulseKvConditionalResult>;
+export declare function registerKvRedactions(effect: Readonly<Record<string, unknown>>, register?: (value: string) => void): void;

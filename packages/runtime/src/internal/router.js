@@ -418,6 +418,7 @@ async function executeRouter(router, request, options = {}) {
     executionKind: 'request',
     signal: executionSignal,
     maxEffects: options.maxEffects,
+    kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
     maxBindingNameBytes: options.maxBindingNameBytes,
     maxBindingValueBytes: options.maxBindingValueBytes,
     maxKvNamespaceBytes: options.maxKvNamespaceBytes,

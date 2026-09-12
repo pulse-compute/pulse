@@ -78,6 +78,7 @@ async function executeApplication(application, request, options = {}) {
 }
 
 module.exports = Object.freeze({
+  ...require('./internal/conditional-kv.js'),
   RUNTIME_HOST_API_VERSION,
   JAVASCRIPT_EFFECT_PROTOCOL_VERSION,
   JAVASCRIPT_EFFECT_ADAPTER_VERSION,

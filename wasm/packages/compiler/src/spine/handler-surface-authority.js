@@ -182,7 +182,7 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
     }
   }
 
-  if (['get', 'put'].includes(method)) {
+  if (['get', 'put', 'getVersioned', 'insertIfAbsent', 'compareAndSwap'].includes(method)) {
     let store;
     if (receiver && ts.isCallExpression(receiver) && isPropertyAccessNamed(receiver.expression, ctxName, 'kv', options) && receiver.arguments.length === 1) {
       store = receiver.arguments[0];
@@ -190,7 +190,9 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
       store = kvAliases.get(receiver.text);
     }
     if (store) {
-      const expected = method === 'get' ? 1 : 2;
+      if (['getVersioned', 'insertIfAbsent', 'compareAndSwap'].includes(method)
+        && !ts.isStringLiteral(store) && !ts.isNoSubstitutionTemplateLiteral(store)) return undefined;
+      const expected = method === 'compareAndSwap' ? 3 : ['get', 'getVersioned'].includes(method) ? 1 : 2;
       if (current.arguments.length === expected) {
         return Object.freeze({
           call: current,
@@ -202,7 +204,8 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
           resource: store,
           store,
           key: current.arguments[0],
-          value: current.arguments[1],
+          value: current.arguments[method === 'compareAndSwap' ? 2 : 1],
+          generation: method === 'compareAndSwap' ? current.arguments[1] : undefined,
           args: Object.freeze([...current.arguments])
         });
       }

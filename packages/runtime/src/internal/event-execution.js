@@ -317,6 +317,7 @@ function effectExecutionOptions(options, application, frame) {
     executionKind: 'event',
     signal: options.signal,
     maxEffects: options.maxEffects,
+    kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
     maxBindingNameBytes: options.maxBindingNameBytes,
     maxBindingValueBytes: options.maxBindingValueBytes,
     maxKvNamespaceBytes: options.maxKvNamespaceBytes,

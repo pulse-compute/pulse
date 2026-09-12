@@ -1,4 +1,5 @@
 'use strict';
+const portableKv = require('@pulse-compute/runtime/host');
 
 const crypto = require('node:crypto');
 const {
@@ -81,6 +82,7 @@ function normalizeProviderAdapter(input) {
   if (!input || typeof input !== 'object') {
     return Object.freeze({
       id: 'unconfigured',
+      prepareConditionalKv() { return undefined; },
       version: 'pulse.canonical-native-unconfigured-provider.v1',
       async dispatchEffect(effect) {
         throw new CanonicalNativeHostError(`No provider adapter is configured for native effect ${effect.kind}.`, 'PULSE_PROVIDER_CAPABILITY_MISSING', { effectId: effect.id, kind: effect.kind });
@@ -104,6 +106,7 @@ function normalizeProviderAdapter(input) {
     id,
     version: String(input.version || `pulse.canonical-native-${id}-provider.v1`),
     dispatchEffect,
+    prepareConditionalKv: typeof input.prepareConditionalKv === 'function' ? input.prepareConditionalKv.bind(input) : undefined,
     resultMetadata: typeof input.resultMetadata === 'function' ? input.resultMetadata.bind(input) : () => undefined,
     disposeExecution: typeof input.disposeExecution === 'function' ? input.disposeExecution.bind(input) : () => undefined
   });
@@ -247,6 +250,7 @@ function nativeEffect(planEffect, payload) {
   }
   if (planEffect.kind === 'config.get' || planEffect.kind === 'secret.get') return { ...base, name: payload.name };
   if (planEffect.kind === 'kv.get' || planEffect.kind === 'kv.put') return { ...base, store: kvStoreName(payload.store), key: payload.key, value: planEffect.kind === 'kv.put' ? payload.value : undefined };
+  if (portableKv.isConditionalKv(planEffect.kind)) return { ...base, store: kvStoreName(payload.store), key: payload.key, value: payload.value, generation: payload.generation };
   if (planEffect.kind === 'event.emit') {
     return {
       ...base,
@@ -724,7 +728,9 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const effect = plan.effects && plan.effects[index];
       if (!effect) throw new CanonicalNativeHostError(`Native module requested unknown effect index ${index}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: index });
       const payload = value(payloadHandle);
-      pending.push(Object.freeze({ index, effect, payload }));
+      const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
+      if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
+      pending.push(Object.freeze({ index, effect, payload, ...(kvAdmission ? { kvAdmission } : {}) }));
     }
   };
 
@@ -782,7 +788,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       throw new CanonicalNativeHostError(`Native host cannot prepare an unknown effect index ${effectIndex}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex });
     }
 
-    let result = rawResult;
+    let result = portableKv.isConditionalKv(effect.kind) ? portableKv.normalizeConditionalKvResult(effect, rawResult, options) : rawResult;
     if (effect.kind === 'event.emit' && result !== undefined) {
       throw new canonicalRuntime.CanonicalRuntimeError(
         'EventAcceptanceError',
@@ -992,8 +998,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         if (eventMode && options.signal && options.signal.aborted) {
           throw nativeEventCancelled('Native event execution was cancelled before effect dispatch.');
         }
-        const rawEffect = nativeEffect(entry.effect, entry.payload);
-        const privateEffect = ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
+        const rawEffect = { ...nativeEffect(entry.effect, entry.payload), ...entry.kvAdmission };
+        const conditional = portableKv.isConditionalKv(rawEffect.kind);
+        const privateEffect = conditional || ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
           item.package === entry.effect.package && item.contractId === entry.effect.contractId && item.operation === entry.effect.operation
           && item.redaction && Object.keys(item.redaction).length > 0);
         const normalized = canonicalRuntime.normalizeProviderEffect(rawEffect, controller.schemaCodecs, {
@@ -1006,7 +1013,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           provider: adapter.id
         });
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: privateEffect ? '<redacted>' : entry.payload }, controller.sensitiveValues)));
-        const rawResult = await raceNativeEventSignal(adapter.dispatchEffect(normalized, {
+        const effectExecution = {
           ...options,
           executionId,
           metadata: compiled && compiled.plan ? compiled.plan.canonical : controller.plan.canonical,
@@ -1021,7 +1028,11 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           validateSchemaValue(schemaId, value, context = {}) {
             return controller.schemaCodecs.decode(String(schemaId), value, context.source || 'package-effect');
           }
-        }), eventMode ? options.signal : undefined);
+        };
+        const rawResult = conditional
+          ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
+              { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
+          : await raceNativeEventSignal(adapter.dispatchEffect(normalized, effectExecution), eventMode ? options.signal : undefined);
         const result = controller.prepareEffectResult(entry.index, rawResult);
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
         resolutionOrder.push(entry.effect.id);

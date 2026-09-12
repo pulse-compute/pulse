@@ -155,6 +155,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-schema-bridge',
       'fetch-projections-request-bodies',
       'config-secrets-kv-redaction',
+      'kv-conditional-runtime',
+      'kv-conditional-conformance',
       'schema-codecs'
     ])
   }),
