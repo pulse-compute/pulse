@@ -106,6 +106,17 @@ const tasks = Object.freeze({
     evidence: 'conformance', timeoutMs: 180000,
     description: 'K2 JavaScript, compiled Native and canonical reference races, token transport and dispatch lifecycle'
   }),
+  'kv-conditional-adversarial': nodeTask('test/kv/run-k4-consumer.cjs', {
+    evidence: 'conformance', timeoutMs: 180000,
+    description: 'K4 project consumers: concurrent requests, retained tombstones, ABA and acknowledgement loss'
+  }),
+  'kv-conditional-gates': nodeTask('test/kv/assert-k4-gates.cjs', {
+    description: 'K4 executable requirement and deployed evidence identity, location and uncertainty gates'
+  }),
+  'kv-conditional-acceptance': nodeTask('test/kv/assert-k4-acceptance.cjs', {
+    evidence: 'external', timeoutMs: 1200000,
+    description: 'K4 exact packed consumers and mandatory Fastly CLI/Viceroy execution; no availability skip'
+  }),
   'kv-design-contract': nodeTask('test/kv/assert-kv-design-contract.cjs', {
     description: 'K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty'
   }),
@@ -789,6 +800,7 @@ const profiles = Object.freeze({
     's3-design-contract',
     'kv-design-contract',
     'kv-conditional-runtime',
+    'kv-conditional-gates',
     's3-read-contract',
     's3-write-contract',
     'crypto-config-planning',
@@ -851,6 +863,7 @@ const profiles = Object.freeze({
     'fetch-projections-request-bodies',
     'config-secrets-kv-redaction',
     'kv-conditional-conformance',
+    'kv-conditional-adversarial',
     'fastly-conditional-kv',
     'schema-codecs',
     'node-cross-target-conformance',

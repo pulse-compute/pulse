@@ -114,7 +114,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-native-http-shell',
       'fastly-native-http-effects',
       'fastly-native-platform-capabilities',
-      'fastly-conditional-kv'
+      'fastly-conditional-kv',
+      'kv-conditional-adversarial'
     ])
   }),
   Object.freeze({
@@ -157,6 +158,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fetch-projections-request-bodies',
       'config-secrets-kv-redaction',
       'kv-conditional-runtime',
+      'kv-conditional-gates',
       'kv-conditional-conformance',
       'schema-codecs'
     ])

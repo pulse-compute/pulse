@@ -93,7 +93,8 @@ const externalTasks = new Set([
   'events-native-runtime',
   'events-node-reference',
   'events-candidate-seal',
-  'provider-fastly-compute-reality'
+  'provider-fastly-compute-reality',
+  'kv-conditional-acceptance'
 ]);
 assert.ok(expandProfile('unit').includes('test-orchestration'));
 for (const required of [
