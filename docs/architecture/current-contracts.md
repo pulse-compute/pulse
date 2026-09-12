@@ -148,8 +148,11 @@ The Node reference supplies one explicit local key authority; provider
 preparation and the send boundary remain distinct so unconfirmed writes preserve
 `unknown`. The Native host imports the existing workspace runtime owner rather
 than duplicating its validation, snapshots, limits, or outcome normalization.
-Fastly conditional realization remains pending, and its JavaScript SDK is
-capability mapping only. See [conditional KV](../concepts/effects-and-continuations.md#conditional-kv).
+The Fastly Native provider realizes conditional KV directly through its host ABI,
+with lossless generations, conditional options, bounded metadata/body reads and
+readiness deadlines. Its AssemblyScript limits come from the runtime owner; the
+shared corpus checks its wire and outcome semantics. Fastly JavaScript remains
+incomplete capability mapping. Deployed acceptance remains a separate gate. See [conditional KV](../concepts/effects-and-continuations.md#conditional-kv).
 
 `ctx.parallel({ ... })` is the explicit cross-target concurrency form. Router
 `next()` and `next(error)` are terminal cursor transfers, not onion-style calls:

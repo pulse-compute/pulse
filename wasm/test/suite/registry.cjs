@@ -661,6 +661,10 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'Fastly outbound HTTP effects and continuations'
   }),
+  'fastly-conditional-kv': nodeTask('test/provider/assert-fastly-conditional-kv.cjs', {
+    evidence: 'conformance', timeoutMs: 180000,
+    description: 'K3 actual Fastly Native conditional KV ABI, shared bytes, races, deadlines and uncertainty'
+  }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -847,6 +851,7 @@ const profiles = Object.freeze({
     'fetch-projections-request-bodies',
     'config-secrets-kv-redaction',
     'kv-conditional-conformance',
+    'fastly-conditional-kv',
     'schema-codecs',
     'node-cross-target-conformance',
     'grip-cross-target-conformance',

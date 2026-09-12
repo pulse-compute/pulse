@@ -13,7 +13,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   localExecution: true,
   capabilities: [
     'request', 'response.json', 'response.text', 'response.custom', 'fetch',
-    'config.get', 'secret.get', 'kv.get', 'kv.put', 'assets.lookup',
+    'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify',
     'opaque.pass-through', 's3.head', 's3.getText', 's3.putText'
   ],
@@ -27,6 +27,9 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'secret.get': 'fastly.secret-store.get',
     'kv.get': 'fastly.kv-store.get',
     'kv.put': 'fastly.kv-store.put',
+    'kv.getVersioned': 'fastly.native.kv-store.getVersioned',
+    'kv.insertIfAbsent': 'fastly.native.kv-store.insertIfAbsent',
+    'kv.compareAndSwap': 'fastly.native.kv-store.compareAndSwap',
     'assets.lookup': 'fastly.kv-store.assets.lookup',
     'grip.channel': 'fastly.fanout.channel',
     'grip.hold': 'fastly.fanout.hold',

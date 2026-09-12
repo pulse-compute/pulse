@@ -337,6 +337,10 @@ function createFastlyProviderAdapter(baseOptions = {}) {
   return Object.freeze({
     id: 'fastly',
     version: CANONICAL_FASTLY_RUNTIME_VERSION,
+    // This legacy JavaScript fixture surface has no Native KV host ABI. Keep
+    // that absence pre-dispatch/configuration, rather than pretending a failed
+    // fixture dispatch might have mutated storage. Real K3 evidence runs Wasm.
+    prepareConditionalKv() { return undefined; },
     async dispatchEffect(effect, executionOptions = {}) {
       const state = stateFor(executionOptions);
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
