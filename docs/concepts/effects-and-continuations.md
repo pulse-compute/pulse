@@ -246,8 +246,9 @@ pulse test ./my-app --json
 
 `ctx.kv<T>('name')` exposes `getVersioned(key)`, `insertIfAbsent(key, value)`, and
 `compareAndSwap(key, generation, value)` as direct awaited or keyed parallel
-effects. The K2 Node reference implements the same contract for JavaScript and
-compiled Native control flow. Fastly realization remains pending.
+effects. The Node reference implements the contract for JavaScript and compiled
+Native control flow. Fastly Native implements it through direct KV hostcalls;
+Fastly JavaScript conditional KV remains explicitly incomplete.
 
 The condition and mutation are atomic at one key's authority. A versioned read
 returns a value and an opaque generation from the same observation, which may be
@@ -286,3 +287,14 @@ clocks, and failure hooks belong to host evidence, not handler authority. This
 local model does not establish durability, global visibility, cross-key
 transactions, or a portable physical-delete/recreate guarantee. Fastly SDK
 limitations cannot redefine this contract or gate other targets.
+
+Fastly Native preserves all 64 generation bits in an opaque string. ADD and
+generation-conditioned overwrite remain distinct operations, including an explicit
+condition for zero bits. The adapter stages the complete envelope before dispatch,
+uses monotonic deadlines and readiness selection before pending waits and body
+reads, and closes acquired bodies. It accepts up to 65,560 wire bytes, including
+wrapper overhead. Provider key restrictions return `invalid-key` without changing
+the key. Pending KV operations have no cancellation hostcall; an expired operation
+is abandoned to invocation teardown and may still commit. Host termination never
+resumes an inactive handler. Local Wasm evidence is separate from K4's deployed
+cross-location acceptance.

@@ -105,8 +105,21 @@ pulse build ./my-app
 
 `target: 'native'` compiles the provider-neutral plan and emits generated
 `src/main.as.ts` plus compact `bin/main.wasm` importing the required `fastly_*`
-hostcalls directly. It contains no JavaScript runtime image, `pulse_host`, or
-WASI dependency.
+hostcalls directly. It contains no JavaScript runtime image or `pulse_host`.
+Clock-dependent capabilities import only WASI `clock_time_get`.
+
+Conditional KV (`getVersioned`, `insertIfAbsent`, `compareAndSwap`) uses this
+Native path and the existing logical KV bindings. It preserves generation tokens
+without numeric narrowing, stages a bounded Pulse JSON envelope, and distinguishes
+confirmed rejection from unconfirmed dispatch. Pending completion and body reads
+use readiness selection with a monotonic deadline. Read bodies are closed; expired
+pending operations remain owned by invocation teardown, with no rollback promise.
+Fastly JavaScript remains explicitly incomplete for these operations. See
+[conditional KV](../concepts/effects-and-continuations.md#conditional-kv) for the
+portable contract. The generated-Wasm corpus is local evidence; it does not replace
+deployed cross-location acceptance. The legacy JavaScript fixture runner does
+not realize Native conditional KV; it reports a configuration failure. Exercise
+these operations through generated Wasm or the Compute execution lane.
 
 ### Fastly JavaScript
 

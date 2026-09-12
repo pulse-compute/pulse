@@ -113,7 +113,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-cli-gate-surface',
       'fastly-native-http-shell',
       'fastly-native-http-effects',
-      'fastly-native-platform-capabilities'
+      'fastly-native-platform-capabilities',
+      'fastly-conditional-kv'
     ])
   }),
   Object.freeze({
