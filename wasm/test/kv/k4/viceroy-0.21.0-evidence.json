@@ -1,0 +1,347 @@
+{
+  "version": "pulse.kv-k4-packed.v1",
+  "status": "failed",
+  "results": {
+    "node-native": {
+      "status": "passed",
+      "requests": 171,
+      "groups": [
+        {
+          "width": 2,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        },
+        {
+          "width": 8,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        },
+        {
+          "width": 16,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        }
+      ],
+      "keyedParallel": true,
+      "boundaryValues": 4,
+      "failures": [],
+      "ambiguousCompletion": "passed"
+    },
+    "node-javascript": {
+      "status": "passed",
+      "requests": 171,
+      "groups": [
+        {
+          "width": 2,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        },
+        {
+          "width": 8,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        },
+        {
+          "width": 16,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        }
+      ],
+      "keyedParallel": true,
+      "boundaryValues": 4,
+      "failures": [],
+      "ambiguousCompletion": "passed"
+    },
+    "fastly-compute": {
+      "status": "failed",
+      "requests": 171,
+      "groups": [
+        {
+          "width": 2,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        },
+        {
+          "width": 8,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        },
+        {
+          "width": 16,
+          "revisions": 3,
+          "createWinners": 1,
+          "casWinnersPerRevision": 1,
+          "retainedTombstone": true
+        }
+      ],
+      "keyedParallel": true,
+      "boundaryValues": 4,
+      "failures": [
+        {
+          "check": "missing-key-cas",
+          "expected": {
+            "acknowledgement": "conflict",
+            "subsequentRead": "not-found"
+          },
+          "actual": {
+            "acknowledgement": "stored",
+            "subsequentRead": "found"
+          }
+        }
+      ],
+      "lostResponse": {
+        "status": "passed",
+        "dispatchedRequests": 1,
+        "clientTransport": "connection-reset",
+        "committedReceiptObserved": true,
+        "typedKvUnknown": false
+      },
+      "toolchain": {
+        "launcher": "fastly-cli",
+        "fastlyCli": {
+          "version": "15.4.0",
+          "sha256": "16e20c7a63e577a264a6573b834092b815568bfc8c5e7a13c0ff91bb22a417c3"
+        },
+        "viceroy": {
+          "version": "0.21.0",
+          "sha256": "cf983d730ac1eb31eaa18f2db6358612383f07ddefba055d352a1c4c60b7f18a"
+        }
+      },
+      "manifestSha256": "e66b1535165813f1d92233de043878b0f42fe6010db895018f27c1c1bdb13e54"
+    }
+  },
+  "module": {
+    "sha256": "4b737584a577c6d8922a068c5b9310701391471f56d1294499f9eddf0b337a75",
+    "bytes": 44926,
+    "imports": [
+      {
+        "module": "fastly_http_body",
+        "name": "close",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "send_downstream",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "write",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "read",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_body",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "clock_time_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "open",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "lookup_wait_v2",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "lookup",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "insert_wait",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_kv_store",
+        "name": "insert",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_set",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "status_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "new",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_resp",
+        "name": "header_append",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "uri_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "method_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_http_req",
+        "name": "body_downstream_get",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_abi",
+        "name": "init",
+        "kind": "function"
+      },
+      {
+        "module": "fastly_async_io",
+        "name": "select",
+        "kind": "function"
+      }
+    ]
+  },
+  "providerReality": true,
+  "deployed": "pending-T2",
+  "publicTypes": "passed",
+  "workspaceProductModules": 0,
+  "installedBytesUnchanged": true,
+  "packageCount": 19,
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.1",
+      "sha256": "5105f7111f13223b37aee87f4fd10cad0d3dab80e679bd93ca9636e40387c4ef"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.1",
+      "sha256": "b3a5bab1c7a86ffd0c84acafb3cfc58f2388e07c801574a6677e3196ac591c65"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.1",
+      "sha256": "0c54b40770ba4c50dc3933ce5571bdd2d24559c0135cf0929bbf114f83eafc79"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.1",
+      "sha256": "63cff305c7553728a77a9910b492a642e24a83f43812a1d8826ddab63f9d3b8d"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.1",
+      "sha256": "4d809718c7cd0eecbe0936aef8b26d87ec7e0a401a5357facecd5ce097feebd3"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.1",
+      "sha256": "238091e072fbdfe44da87012df839445e6ae543b8c1597b1959a9b003b351ced"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.1",
+      "sha256": "9e02762e90e28f5a3bf54efe72f9661468717ae59209d76b2025c10134e6366e"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.1",
+      "sha256": "bc4e0442f02502a38932b80250dd336147f1c9f700c01be7c9cf06606c49a955"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.1",
+      "sha256": "fab9bdac3748f29a89a4c274c4c56c27b42d77cace3f642f51e3b6bf0f1cef92"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.1",
+      "sha256": "2191d7d84a0b960d6ecdf7507490dfdd0481735d28a0de6b076bf7285dfb7b4b"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.1",
+      "sha256": "f684e5660a05a0e11bec185f0022dc961818aeb1d0e80499ed6e72b2a43d84aa"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.1",
+      "sha256": "92beb8c496c16469583cac678f1678c7fb720ab5de71b21204f5a229cc4cc8fe"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.1",
+      "sha256": "40d6390b7083a78d484a117e553e4397598d8e585f5e6a0ac9d3f26e96387bc9"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.1",
+      "sha256": "bcedfc8fed06dcdd87d5eb175d76c31bb3d83e8582ac7b613684489191a046e7"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.1",
+      "sha256": "694d34c59bd80f4b5a3cb777ba8347c0c87aa5266589ef6d7ee179405e43d8ce"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.1",
+      "sha256": "9c9262963b4bbe176eaac1801e78689cb1c6d3ef2e23b35ddf5580dce68dfd84"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.1",
+      "sha256": "10c1f8c6c3a8ab26b8951bf9b5b54c1ca51eae6d9af51095cf60aeb48f9592fe"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.1",
+      "sha256": "c19c974363ada8f18f9ccb6360ba351c2c03049c1e481f01d9163ea7574202e4"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.1",
+      "sha256": "8155828d15f37a97e56f499091fb5ad9d999821bb72ba6270e747581ae4f9d87"
+    }
+  ],
+  "registry": {
+    "total": 15,
+    "packuments": 15,
+    "tarballs": 0,
+    "rejected": 0,
+    "missing": 0,
+    "missingPackuments": {},
+    "missingTarballs": 0
+  }
+}
