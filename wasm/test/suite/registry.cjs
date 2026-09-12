@@ -256,6 +256,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'native and JavaScript Node HTTP-boundary parity'
   }),
+  'catalog-router-parity': nodeTask('test/contracts/assert-catalog-router-parity.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 300000,
+    description: 'Catalog original verb probe and 14 mutation routes across Node/Fastly Native/JavaScript'
+  }),
   'javascript-effect-adapter': nodeTask('test/contracts/assert-javascript-effect-adapter.cjs', {
     evidence: 'javascript',
     timeoutMs: 180000,
@@ -795,6 +800,7 @@ const profiles = Object.freeze({
     'crypto-cross-target-conformance',
     'events-conformance',
     'node-router-context-parity',
+    'catalog-router-parity',
     'fetch-projections-request-bodies',
     'config-secrets-kv-redaction',
     'schema-codecs',

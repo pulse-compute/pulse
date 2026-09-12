@@ -92,6 +92,19 @@ its exact HTTP method; a method mismatch advances the route cursor and normal
 exhaustion remains `404`. There is no automatic `OPTIONS` or `405` response.
 Ingress route methods do not widen the separate outbound `ctx.fetch` contract.
 
+The `catalog-router-parity` conformance task exercises the original Catalog
+consumer probe and all 14 of its PUT/PATCH/DELETE operations with their existing
+methods and paths. Its shared cases check mounted parameters, request text,
+middleware state, exact method misses, registration order, terminal fallthrough,
+404 exhaustion and handled errors on Node/Fastly JavaScript and Native. Native
+lanes execute compiled Wasm; Fastly evidence uses local provider emulation and
+the target ABI mock host, not a deployed service. The fixtures establish routing
+acceptance only; they do not implement Catalog persistence or authorization.
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task catalog-router-parity --no-report
+```
+
 ## `next()` is a terminal transfer
 
 `next()` is not an onion-style callback. It is a compiler-visible control transfer:
