@@ -21,6 +21,8 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'grip.publish',
   'grip.broadcast',
   'jwt.verify',
+  's3.head',
+  's3.getText',
   'opaque.pass-through'
 ]);
 

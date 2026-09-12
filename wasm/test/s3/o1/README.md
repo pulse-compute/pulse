@@ -138,8 +138,9 @@ the proof-only digest export and JWT's HS256 verifier are not S3 signing APIs.
 O2 first adds bounded internal SHA-256 and HMAC-SHA256 byte operations, with
 32-byte output, checked pointer/length ranges and temporary-key wiping. The
 HMAC primitive must allow short keys used by SigV4's derivation; do not weaken
-JWT verification's separate 32-byte minimum. Inputs need at most 4096 key bytes
-and 32768 data bytes for this subset, including a bounded canonical request.
+JWT verification's separate 32-byte minimum. O2 corrects the primitive bound:
+SigV4 prefixes a secret of up to 4096 bytes with `AWS4`, so Crypto allows up to
+8192 key bytes and 32768 data bytes. The provider secret limit remains 4096.
 Native guest-source emission and JavaScript Web Crypto must satisfy the same
 known answers. Exact export ABI is Crypto-owned and must be recorded with that
 implementation, rather than guessed by S3.
@@ -161,7 +162,8 @@ slice accepts the named `s3` facade. No third-party lowerer discovery is added.
 Each package call produces `pulse.canonical-package-effect.v1`, then the existing
 `pulse.canonical-package-operation.v1` and lowering bundle. For operation `op`:
 
-- `kind`, `providerKind` and `capability` are `s3.<op>`; `operation` is `<op>`.
+- `kind` and `capability` are `s3.<op>`; `operation` is `<op>`. O2 corrects
+  `providerKind` to `s3`, matching the package-level runtime authority.
 - `resource` and static `payload` contain `{ binding: 'objects' }`; PUT payload
   additionally contains the normalized literal `contentType`.
 - Runtime `key` maps to call argument 2; PUT `text` maps to argument 3. Neither
@@ -258,7 +260,8 @@ it must load provider-owned bindings through the real project configuration,
 compile the actual consumer and execute both Node Native and Fastly Native Wasm.
 It has no draft-type shim, custom S3 dispatcher, mock lowerer or JS fallback.
 Missing later dependencies or failed assertions are failures, never skipped passes.
-This target remains outside passing suite profiles until O2 closes it.
+O2 promotes this target into the Native profile after the real package and both
+Native implementations pass. The design-only fixture remains historical input.
 
 The fixed corpus covers runtime keys (including `%`, Unicode and repeated slashes),
 HEAD/GET agreement, strict byte length/digest/BOM handling, invalid/oversized bodies,

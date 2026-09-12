@@ -993,6 +993,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           throw nativeEventCancelled('Native event execution was cancelled before effect dispatch.');
         }
         const rawEffect = nativeEffect(entry.effect, entry.payload);
+        const privateEffect = ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
+          item.package === entry.effect.package && item.contractId === entry.effect.contractId && item.operation === entry.effect.operation
+          && item.redaction && Object.keys(item.redaction).length > 0);
         const normalized = canonicalRuntime.normalizeProviderEffect(rawEffect, controller.schemaCodecs, {
           ...options,
           strict: options.strict === undefined
@@ -1002,7 +1005,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           target: 'native',
           provider: adapter.id
         });
-        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: entry.payload }, controller.sensitiveValues)));
+        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: privateEffect ? '<redacted>' : entry.payload }, controller.sensitiveValues)));
         const rawResult = await raceNativeEventSignal(adapter.dispatchEffect(normalized, {
           ...options,
           executionId,
@@ -1020,7 +1023,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           }
         }), eventMode ? options.signal : undefined);
         const result = controller.prepareEffectResult(entry.index, rawResult);
-        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
+        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
         resolutionOrder.push(entry.effect.id);
         return { entry, result };
       }));

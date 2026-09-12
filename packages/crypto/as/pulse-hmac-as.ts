@@ -313,3 +313,32 @@ export function pulse_crypto_hs256_verify(
   __pulse_crypto_wipe(expected)
   return result
 }
+
+// Internal digest/MAC output contract. This frame is a rooted allocation owned
+// by Crypto; host callers may stage synchronously, copy the output, then wipe.
+// It does not grow Wasm memory per operation or overlap allocator-owned memory.
+const __pulse_crypto_bytes_frame = new Uint8Array(8192 + 32768 + 32)
+export function pulse_crypto_bytes_frame_v1(): i32 {
+  return <i32>__pulse_crypto_bytes_frame.dataStart
+}
+
+export function pulse_crypto_sha256_bytes_v1(dataPointer: i32, dataLength: i32, outputPointer: i32, outputLength: i32): i32 {
+  if (dataLength < 0 || dataLength > 32768 || outputLength != 32
+    || !__pulse_crypto_memory_range_valid(dataPointer, dataLength)
+    || !__pulse_crypto_memory_range_valid(outputPointer, outputLength)) return __PULSE_CRYPTO_INVALID_INPUT
+  const digest = __pulse_crypto_sha256_memory(<usize><u32>dataPointer, dataLength)
+  for (let i: i32 = 0; i < 32; i++) store<u8>(<usize><u32>outputPointer + <usize>i, unchecked(digest[i]))
+  __pulse_crypto_wipe(digest)
+  return __PULSE_CRYPTO_VALID
+}
+
+export function pulse_crypto_hmac_sha256_bytes_v1(keyPointer: i32, keyLength: i32, dataPointer: i32, dataLength: i32, outputPointer: i32, outputLength: i32): i32 {
+  if (keyLength < 0 || keyLength > 8192 || !__pulse_crypto_memory_range_valid(keyPointer, keyLength)) return __PULSE_CRYPTO_INVALID_KEY
+  if (dataLength < 0 || dataLength > 32768 || outputLength != 32
+    || !__pulse_crypto_memory_range_valid(dataPointer, dataLength)
+    || !__pulse_crypto_memory_range_valid(outputPointer, outputLength)) return __PULSE_CRYPTO_INVALID_INPUT
+  const digest = __pulse_crypto_hmac_sha256(<usize><u32>keyPointer, keyLength, <usize><u32>dataPointer, dataLength)
+  for (let i: i32 = 0; i < 32; i++) store<u8>(<usize><u32>outputPointer + <usize>i, unchecked(digest[i]))
+  __pulse_crypto_wipe(digest)
+  return __PULSE_CRYPTO_VALID
+}

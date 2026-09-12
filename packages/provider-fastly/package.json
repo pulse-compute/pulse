@@ -67,7 +67,8 @@
     "@pulse-compute/wasm-guest-link": "workspace:*",
     "@pulse-compute/wasm-host-runtime": "workspace:*",
     "@pulse-compute/wasm-runtime-core-as": "workspace:*",
-    "esbuild": "0.28.1"
+    "esbuild": "0.28.1",
+    "@pulse-compute/s3": "workspace:*"
   },
   "devDependencies": {
     "@fastly/js-compute": "3.43.1"

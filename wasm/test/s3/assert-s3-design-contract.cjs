@@ -67,7 +67,7 @@ for (const [index, op] of contract.lowering.operations.entries()) {
     version: contract.lowering.effectVersion,
     contractId: contract.authority.contractId, package: contract.authority.npmPackage,
     import: contract.authority.lowerableSubpath,
-    kind: op.kind, providerKind: op.kind, capability: op.kind, operation: op.name,
+    kind: op.kind, providerKind: 's3', capability: op.kind, operation: op.name,
     result: op.result, placement: 'await', range: { start: 0, end: 1 },
     resource: { binding: 'objects' },
     payload: { binding: 'objects', ...(op.method === 'PUT' ? { contentType: 'text/plain; charset=utf-8' } : {}) },

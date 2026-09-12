@@ -32,8 +32,11 @@ const reportingTargetCapability = Object.freeze({
   levels: Object.freeze(['off', 'error', 'warn', 'info', 'debug'])
 });
 
-function genericProviderConfig() {
-  return Object.freeze({ kind: 'node', bindings: Object.freeze({}), local: Object.freeze({}) });
+function genericProviderConfig(value) {
+  const input = value && typeof value === 'object' ? value : {};
+  const bindings = input.bindings || {};
+  if (Object.keys(bindings).some((key) => key !== 's3')) throw new TypeError('Unknown Node binding field.');
+  return Object.freeze({ kind: 'node', bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
 }
 
 function nodeRealization(nativeArtifact) {
@@ -139,14 +142,21 @@ function createDriver() {
     sourceOnlySupported: false,
     targetSupport: Object.freeze({ javascript: NODE_JAVASCRIPT_TARGET_SUPPORT_DECLARATION }),
     normalizeConfig: genericProviderConfig,
+    configReference: Object.freeze({
+      sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
+      fields: [{ section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3ReadBinding>>', default: '`{}`', scope: 'Node Native S3 reads',
+        description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).',
+        security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
+    }),
     defaultLocalNetworkFetch: true,
-    projectConfigDocument() { return undefined; },
+    projectConfigDocument(config) { return Object.keys(config.bindings.s3).length ? config : undefined; },
     initTemplate() {
       return Object.freeze({ profileFragment: '', dependencies: Object.freeze({}) });
     },
-    executionOptions(_config, values) {
+    executionOptions(config, values) {
       return Object.freeze({
         ...values,
+        s3: config.bindings.s3,
         providerAdapter: nodeRuntime.createNodeProviderAdapter()
       });
     },
@@ -205,7 +215,8 @@ function createDriver() {
       javascript: NODE_JAVASCRIPT_TARGET_DESCRIPTOR
     }),
     execute: nodeRuntime.executeCanonicalProgram,
-    createLoweringPlan(metadata) {
+    createLoweringPlan(metadata, config = {}) {
+      require('./config/s3.js').validateNodeS3Operations(metadata, config.bindings || {});
       return canonicalProvider.createProviderLoweringPlan(metadata, nodeRuntime.NODE_PROVIDER_DESCRIPTOR, {
         grip: 'node-reference-broadcaster'
       });

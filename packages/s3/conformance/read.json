@@ -1,0 +1,101 @@
+{
+  "keys": [
+    {
+      "key": "plain",
+      "encoded": "plain"
+    },
+    {
+      "key": "/a//b/",
+      "encoded": "/a//b/"
+    },
+    {
+      "key": "%2F",
+      "encoded": "%252F"
+    },
+    {
+      "key": "a b?#",
+      "encoded": "a%20b%3F%23"
+    },
+    {
+      "key": "!'()*",
+      "encoded": "%21%27%28%29%2A"
+    },
+    {
+      "key": "caf\u00e9/\u96ea",
+      "encoded": "caf%C3%A9/%E9%9B%AA"
+    },
+    {
+      "key": "cafe\u0301",
+      "encoded": "cafe%CC%81"
+    },
+    {
+      "key": "a\\b",
+      "encoded": "a%5Cb"
+    }
+  ],
+  "invalidKeys": [
+    "",
+    ".",
+    "..",
+    "a/../b",
+    "./a",
+    "a/.",
+    "\u0000",
+    "\u007f",
+    "\u0085",
+    "\ud800",
+    "\udfff"
+  ],
+  "bodies": [
+    {
+      "id": "empty",
+      "hex": "",
+      "text": "",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "json",
+      "hex": "7b2261223a317d0a",
+      "text": "{\"a\":1}\n",
+      "sha256": "e346432021b04179518d9614f3560ccd71354a4ee101ddcb893d6959a9d6301c"
+    },
+    {
+      "id": "unicode",
+      "hex": "636166c3a92fe99baa",
+      "text": "caf\u00e9/\u96ea",
+      "sha256": "3e5e62d27765a8a7bcb9866e733e86ee7c001fd768d8b0a3a7beaa60afd90ade"
+    },
+    {
+      "id": "bom",
+      "hex": "efbbbf68656c6c6f",
+      "text": "\ufeffhello",
+      "sha256": "7489ebbcc2a00056ddaaaac190bce473e5c03696ea1bd8ed83cf59a174283862"
+    },
+    {
+      "id": "nul",
+      "hex": "00",
+      "text": "\u0000",
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    }
+  ],
+  "invalidUtf8": [
+    "c080",
+    "eda080",
+    "f4908080",
+    "e282",
+    "80",
+    "ff"
+  ],
+  "signing": {
+    "source": "https://docs.aws.amazon.com/AmazonS3/latest/developerguide/sig-v4-header-based-auth.html",
+    "date": "20130524T000000Z",
+    "region": "us-east-1",
+    "host": "examplebucket.s3.amazonaws.com",
+    "path": "/test.txt",
+    "range": "bytes=0-9",
+    "accessKeyId": "AKIAIOSFODNN7EXAMPLE",
+    "secretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "canonicalRequestSha256": "7344ae5b7ee6c3e7e6b0fe0640412a37625d1fbfff95c48bbb2dc43964946972",
+    "signature": "f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41"
+  }
+}
