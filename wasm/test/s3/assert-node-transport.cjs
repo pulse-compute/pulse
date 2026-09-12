@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const https = require('node:https');
+const crypto = require('node:crypto');
 const { spawnSync } = require('node:child_process');
 const { originRequest } = require('../../../packages/provider-node/src/runtime/s3-reader.js');
 const { metadataFromHeaders } = require('../../../packages/s3/src/provider.js');
@@ -19,6 +20,17 @@ async function main() {
     https.globalAgent.options.ca = fs.readFileSync(cert);
     server = https.createServer({ key: fs.readFileSync(key), cert: fs.readFileSync(cert) }, (req, res) => {
       assert.equal(req.headers['accept-encoding'], 'identity');
+      if (req.method === 'PUT') {
+        const chunks = [];
+        req.on('data', (chunk) => chunks.push(chunk));
+        req.on('end', () => {
+          const bytes = Buffer.concat(chunks);
+          assert.deepEqual(bytes, Buffer.from('\ufeffé😀\u0000'));
+          assert.equal(req.headers['x-amz-content-sha256'], crypto.createHash('sha256').update(bytes).digest('hex'));
+          res.writeHead(200, { 'content-length': '0' }); res.end();
+        });
+        return;
+      }
       if (req.url === '/pending') return;
       if (req.url === '/redirect') { res.writeHead(302, { location: '/bytes' }); res.end(); return; }
       res.setHeader('etag', Buffer.from('"é"', 'utf8').toString('latin1'));
@@ -36,6 +48,12 @@ async function main() {
     const head = await read('/bytes', 'HEAD'); assert.equal(metadataFromHeaders(head.headers, true).byteLength, 4); head.close();
     const duplicate = await read('/duplicate'); assert.equal(metadataFromHeaders(duplicate.headers, false), null); duplicate.close();
     const redirect = await read('/redirect'); assert.equal(redirect.status, 302); redirect.close();
+    const bytes = Buffer.from('\ufeffé😀\u0000');
+    const write = await originRequest({ url: endpoint + '/write', method: 'PUT', body: bytes, headers: {
+      'accept-encoding': 'identity', 'content-length': String(bytes.length),
+      'x-amz-content-sha256': crypto.createHash('sha256').update(bytes).digest('hex')
+    } }, new AbortController().signal);
+    assert.equal(write.status, 200); for await (const chunk of write.body) assert.equal(chunk.length, 0); write.close();
     const controller = new AbortController(); const pending = read('/pending', 'GET', controller.signal); controller.abort();
     await assert.rejects(pending, { name: 'AbortError' });
     console.log('ok - Node TLS transport preserves header/body bytes and duplicates, exposes redirects and aborts');

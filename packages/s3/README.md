@@ -1,13 +1,13 @@
 # @pulse-compute/s3
 
-O2 provides bounded, exact-key `s3.head(ctx, binding, key)` and
-`s3.getText(ctx, binding, key)` effects for Node Native and Fastly Native.
-Await a read into a local variable or use it directly in keyed `ctx.parallel`.
-The binding is a literal logical name; the key can be a runtime string.
+O3 provides bounded, exact-key `head`, `getText` and `putText` effects for
+Node Native, Node JavaScript and Fastly Native. Await an operation into a local
+variable or use it directly in keyed `ctx.parallel`. The binding is a literal
+logical name; key and text may be runtime strings.
 
 Providers own fixed HTTPS origin, bucket, region, named credential references,
 deadline and transport. Fastly additionally requires a named static backend.
-Native Crypto selection must include `SHA-256` and `HMAC-SHA256`. Crypto owns the
+Crypto selection must include `SHA-256` and `HMAC-SHA256`. Crypto owns the
 digest and MAC primitives; S3 owns signing and exact object semantics.
 
 Put mappings under `<profile>.node.bindings.s3` or
@@ -32,5 +32,32 @@ and content type. HEAD requires a safe integer Content-Length but does not read 
 body. A 404 returns `not-found`; other failures return a bounded reason and an
 HTTP status when observed. Redirects, compression, retries and caching are disabled.
 
-This package is private during implementation. JavaScript realization, PUT,
-Assets alignment and release/support promotion are reserved for later phases.
+PUT accepts scalar text encoded once as UTF-8, including empty text, up to the
+binding's byte limit. Use `const result = await s3.putText(ctx, 'objects', key,
+text, { contentType: 'application/json' })`. Options are literal metadata; they
+do not serialize text. The default content type is `text/plain; charset=utf-8`.
+A complete 200 acknowledgement with an empty bounded body returns `stored`,
+sent byte length, SHA-256 and optional opaque ETag. The digest identifies sent
+bytes; it is not an origin durability receipt.
+
+Before dispatch, validation, credential, signing and deadline failures return
+`not-stored`. A complete explicit 4xx rejection, except 408, also returns
+`not-stored`. After entering send, transport loss, timeout, unavailable origin
+or malformed acknowledgement returns `unknown`: bytes may already be stored.
+There are no retries. Cancellation terminates the operation through the existing
+request lifecycle; it does not return an S3 outcome or promise rollback. Fastly
+has no pending-request cancel hostcall; invocation termination owns its release.
+
+Node JavaScript explicitly uses Crypto's bounded Web Crypto byte realization.
+Native targets compose Crypto's AssemblyScript primitives. Fastly JavaScript S3
+is ineligible because its SDK projects raw headers and loses required metadata
+information; see `wasm/test/s3/O3.md`. That SDK limitation does not gate O3.
+
+For a JSON request carrying the maximum text consisting of escaped control
+characters, configure the existing `schemas.maxBytes` request envelope to
+262144; the object itself remains bounded to 32768 UTF-8 bytes. The acceptance
+consumer uses generic JSON responses (`strict: false`) to compare the complete
+result unions. Applications using strict JSON must declare response schemas.
+
+This package remains private during implementation. O4 owns packed acceptance
+and release/support promotion. Assets alignment remains separate.

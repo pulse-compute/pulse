@@ -10,7 +10,7 @@ const FASTLY_STATUS_BUFLEN = 4;
 const FASTLY_STATUS_NONE = 10;
 const FASTLY_KV_ERROR_OK = 1;
 const FASTLY_KV_ERROR_NOT_FOUND = 3;
-const SENSITIVE_HEADERS = new Set(['authorization', 'proxy-authorization', 'x-api-key', 'x-auth-token', 'cookie', 'set-cookie', 'x-amz-security-token']);
+const SENSITIVE_HEADERS = new Set(['authorization', 'proxy-authorization', 'x-api-key', 'x-auth-token', 'cookie', 'set-cookie', 'x-amz-security-token', 'x-amz-content-sha256']);
 
 class FastlyNativePlatformCapabilitiesMockError extends Error {
   constructor(message, code = 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_FAILED', detail = {}) {
@@ -129,7 +129,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const secretStores = normalizeNamedStores(options.secretStores, options.secretStore || 'app_secrets', options.secrets);
   const secretValues = [...secretStores.values()].flatMap((values) => [...values.values()].map((value) => String(value))).filter(Boolean);
   const redactText = (value) => secretValues.reduce((output, secret) => output.split(secret).join('[REDACTED]'), String(value));
-  const redactRuntimeHeaders = (headers) => headers.map(([name, value]) => [name, SENSITIVE_HEADERS.has(String(name).toLowerCase()) ? '[REDACTED]' : redactText(value)]);
+  const redactRuntimeHeaders = (headers, privateS3 = false) => headers.map(([name, value]) => [name, SENSITIVE_HEADERS.has(String(name).toLowerCase()) || privateS3 && ['etag', 'content-type'].includes(String(name).toLowerCase()) ? '[REDACTED]' : redactText(value)]);
   const kvStores = normalizeNamedStores(options.kvStores, options.kvStore || 'app_sessions', undefined);
   for (const values of kvStores.values()) for (const [key, value] of values) values.set(key, encodeKvValue(value));
   const configHandles = new Map();
@@ -338,9 +338,10 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         if (!request) return FASTLY_STATUS_BADF;
         const name = readUtf8(namePointer, nameLength);
         const value = readUtf8(valuePointer, valueLength);
+        if (name.toLowerCase() === 'authorization' && value.includes('/s3/aws4_request')) privateUrls.add(request.url);
         request.headers = request.headers.filter(([headerName]) => headerName.toLowerCase() !== name.toLowerCase());
         request.headers.push([name, value]);
-        trace.push({ module: 'fastly_http_req', name: 'header_insert', handle: Number(handle), header: [name, SENSITIVE_HEADERS.has(name.toLowerCase()) ? '[REDACTED]' : redactText(value)] });
+        trace.push({ module: 'fastly_http_req', name: 'header_insert', handle: Number(handle), header: redactRuntimeHeaders([[name, value]], privateUrls.has(request.url))[0] });
         return FASTLY_STATUS_OK;
       },
       cache_override_set(handle, tag, ttl, swr) {
@@ -362,26 +363,29 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         const body = bodies.get(Number(bodyHandle));
         if (!request || !body) return FASTLY_STATUS_BADF;
         const backend = readUtf8(backendPointer, backendLength);
+        const signedS3 = request.headers.some(([name, value]) => name.toLowerCase() === 'authorization' && value.startsWith('AWS4-HMAC-SHA256 '));
+        if (signedS3) privateUrls.add(request.url);
         const fixture = resolveFixture(options.fixtures, backend, request.method, request.url);
         if (!fixture) {
-          trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), backend, method: request.method, url: request.url, missingFixture: true });
+          trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), backend, method: request.method, url: signedS3 ? '[REDACTED]' : request.url, missingFixture: true });
           return FASTLY_STATUS_ERROR;
         }
         const pendingHandle = alloc('pending');
         const capturedBody = bodyBytes(bodyHandle);
         pending.set(pendingHandle, { request: { ...request, headers: request.headers.map((entry) => [...entry]), body: capturedBody }, backend, fixture, readyAt: monotonicMs + Number(fixture.delayMs || 0) });
         if (typeof options.onOutboundRequest === 'function') options.onOutboundRequest({ ...request, backend, headers: request.headers.map((entry) => [...entry]), body: capturedBody });
+        if (fixture.sendStatus) { pending.delete(pendingHandle); return Number(fixture.sendStatus); }
         if (request.headers.some(([name, value]) => name.toLowerCase() === 'authorization' && value.startsWith('AWS4-HMAC-SHA256 '))) privateUrls.add(request.url);
         requests.delete(Number(handle)); bodies.delete(Number(bodyHandle));
         outboundRequests.push(Object.freeze({
           backend,
           method: request.method,
           url: privateUrls.has(request.url) ? '[REDACTED]' : redactText(request.url),
-          headers: Object.freeze(redactRuntimeHeaders(request.headers).map((header) => Object.freeze(header))),
-          body: redactText(capturedBody.toString('utf8'))
+          headers: Object.freeze(redactRuntimeHeaders(request.headers, signedS3).map((header) => Object.freeze(header))),
+          body: signedS3 ? '[REDACTED]' : redactText(capturedBody.toString('utf8'))
         }));
         writeU32(pendingOut, pendingHandle);
-        trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), bodyHandle: Number(bodyHandle), pendingHandle, backend, method: request.method, url: redactText(request.url), headers: redactRuntimeHeaders(request.headers), bodyBytes: capturedBody.length });
+        trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), bodyHandle: Number(bodyHandle), pendingHandle, backend, method: request.method, url: redactText(request.url), headers: redactRuntimeHeaders(request.headers, signedS3), bodyBytes: capturedBody.length });
         return FASTLY_STATUS_OK;
       },
       pending_req_wait(handle, responseOut, bodyOut) {
@@ -423,6 +427,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         const handle = alloc('secretStore'); secretStoreHandles.set(handle, values); writeU32(handleOut, handle); return FASTLY_STATUS_OK;
       },
       get(handle, keyPointer, keyLength, secretOut) {
+        monotonicMs += Number(options.secretDelayMs || 0);
+        if (typeof options.onSecretLookup === 'function') options.onSecretLookup();
         const values = secretStoreHandles.get(Number(handle));
         const key = readUtf8(keyPointer, keyLength);
         const value = values && values.get(key);
@@ -563,6 +569,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       read(handle, buffer, bufferLength, readOut) {
         const body = bodies.get(Number(handle));
         if (!body) return FASTLY_STATUS_BADF;
+        if (body.fixture && body.fixture.bodyReadStatus) return Number(body.fixture.bodyReadStatus);
         const source = bodyBytes(handle);
         const offset = body.readOffset || 0;
         const count = Math.min(Number(bufferLength), Math.max(0, source.length - offset), Number(body.fixture && body.fixture.chunkBytes || 65536));
@@ -576,7 +583,9 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       write(handle, buffer, bufferLength, end, writtenOut) {
         const body = bodies.get(Number(handle));
         if (!body) return FASTLY_STATUS_BADF;
-        const bytes = readBytes(buffer, bufferLength);
+        if (requests.size > 1 && options.outboundBodyWriteStatus) return Number(options.outboundBodyWriteStatus);
+        const length = Math.min(Number(bufferLength), Number(options.bodyWriteChunkBytes || bufferLength));
+        const bytes = readBytes(buffer, length);
         body.writes.push(bytes);
         writeU32(writtenOut, bytes.length);
         trace.push({ module: 'fastly_http_body', name: 'write', handle: Number(handle), bytes: bytes.length, end: Number(end) });
@@ -585,6 +594,15 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     }
   };
 
+  // Model invocation termination, including cancellation raised by a host call.
+  // Throwing stops the Wasm invocation; it never fabricates an effect result.
+  const checkActive = () => { if (options.signal && options.signal.aborted) throw options.signal.reason || new Error('Request cancelled.'); };
+  checkActive();
+  if (options.signal) for (const namespace of Object.values(imports)) {
+    for (const [name, hostcall] of Object.entries(namespace)) if (typeof hostcall === 'function') namespace[name] = (...args) => {
+      checkActive(); const result = hostcall(...args); checkActive(); return result;
+    };
+  }
   const module = new WebAssembly.Module(wasm);
   instance = new WebAssembly.Instance(module, imports);
   if (typeof instance.exports._start !== 'function') {

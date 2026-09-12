@@ -144,7 +144,7 @@ function createDriver() {
     normalizeConfig: genericProviderConfig,
     configReference: Object.freeze({
       sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
-      fields: [{ section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3ReadBinding>>', default: '`{}`', scope: 'Node Native S3 reads',
+      fields: [{ section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
         description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).',
         security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
     }),

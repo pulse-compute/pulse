@@ -3,6 +3,7 @@ const { normalizeDiagnostic, sourceLoc } = require('@pulse-compute/wasm-contract
 const { CANONICAL_PACKAGE_EFFECT_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-runtime');
 const { PACKAGE_CRYPTO_REQUIREMENT_VERSION } = require('@pulse-compute/wasm-contracts/package/package-contract');
 const { S3_PACKAGE, S3_CONTRACT_ID, S3_OPERATIONS, S3_LOWERING_PLAN_VERSION, S3_CRYPTO_ALGORITHMS } = require('@pulse-compute/wasm-contracts/s3/contracts');
+const { normalizePutOptions } = require('./src/provider.js');
 
 function buildS3LoweringPlan(input = {}) {
   const ts = input.typescript || require('typescript');
@@ -12,7 +13,7 @@ function buildS3LoweringPlan(input = {}) {
   const effects = [];
   const error = (node, suffix, message) => diagnostics.push(normalizeDiagnostic({
     phase: 's3-lowering', severity: 'error', code: `PULSEWASM_S3_${suffix}`, message,
-    hint: 'Use s3.head/getText(ctx, literalBinding, runtimeKey) in an awaited handler position.', loc: sourceLoc(source, node)
+    hint: 'Use a supported s3 call with literal binding/options and runtime key/text in an awaited handler position.', loc: sourceLoc(source, node)
   }));
   for (const statement of source.statements) {
     if (!ts.isImportDeclaration(statement) || statement.moduleSpecifier.text !== S3_PACKAGE) continue;
@@ -34,17 +35,33 @@ function buildS3LoweringPlan(input = {}) {
       && ts.isIdentifier(node.expression.expression) && namespaces.has(node.expression.expression.text)) {
       const method = node.expression.name.text;
       const op = S3_OPERATIONS[method];
-      if (!op) { error(node, 'OPERATION_UNSUPPORTED', 'This Native slice supports head and getText.'); return; }
+      if (!op) { error(node, 'OPERATION_UNSUPPORTED', 'S3 supports head, getText and putText.'); return; }
+      const put = method === 'putText';
       let fn = node.parent;
       while (fn && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) fn = fn.parent;
       const ctx = fn && fn.parameters[0] && fn.parameters[0].name;
-      if (node.arguments.length !== 3 || !ctx || !ts.isIdentifier(ctx)
+      if (!(put ? [4, 5].includes(node.arguments.length) : node.arguments.length === 3) || !ctx || !ts.isIdentifier(ctx)
         || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctx.text) {
-        error(node, 'ARGUMENTS_UNSUPPORTED', 'S3 reads require the current handler context, literal binding and key.'); return;
+        error(node, 'ARGUMENTS_UNSUPPORTED', 'S3 requires current handler context, literal binding, runtime key and, for PUT, text with optional literal options.'); return;
       }
       const binding = node.arguments[1];
       if (!ts.isStringLiteralLike(binding) || !/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(binding.text)) {
         error(binding, 'BINDING_UNSUPPORTED', 'S3 binding must be a valid literal logical name.'); return;
+      }
+      let options = {};
+      if (put) {
+        const nodeOptions = node.arguments[4];
+        try {
+          if (nodeOptions) {
+            if (!ts.isObjectLiteralExpression(nodeOptions) || nodeOptions.properties.length > 1) throw new TypeError();
+            for (const property of nodeOptions.properties) {
+              if (!ts.isPropertyAssignment(property) || !ts.isIdentifier(property.name) && !ts.isStringLiteralLike(property.name)
+                || property.name.text !== 'contentType' || !ts.isStringLiteralLike(property.initializer)) throw new TypeError();
+              options.contentType = property.initializer.text;
+            }
+          }
+          options = normalizePutOptions(options);
+        } catch { error(nodeOptions || node, 'OPTIONS_UNSUPPORTED', 'PUT options must be a literal object containing only a valid literal contentType.'); return; }
       }
       let placement = '';
       const parent = node.parent;
@@ -60,8 +77,8 @@ function buildS3LoweringPlan(input = {}) {
         version: CANONICAL_PACKAGE_EFFECT_VERSION, contractId: S3_CONTRACT_ID, package: S3_PACKAGE, import: S3_PACKAGE,
         ...op, providerKind: 's3', operation: method, placement,
         range: { start: node.getStart(source), end: node.getEnd() },
-        resource: { binding: binding.text }, payload: { binding: binding.text },
-        runtimeInputs: [{ name: 'key', argumentIndex: 2, source: 'package-call-argument' }],
+        resource: { binding: binding.text }, payload: { binding: binding.text, ...options },
+        runtimeInputs: [{ name: 'key', argumentIndex: 2, source: 'package-call-argument' }, ...(put ? [{ name: 'text', argumentIndex: 3, source: 'package-call-argument' }] : [])],
         providerRequirements: [op.kind, 'secret.get', 'time.wall-clock'], schemaReferences: [],
         redaction: ['key', 'text', 'sha256', 'etag', 'contentType'], loc: sourceLoc(source, node)
       });

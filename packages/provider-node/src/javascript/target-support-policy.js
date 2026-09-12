@@ -10,6 +10,7 @@ function decision(id, status, reasonId, owner, required = true) {
 
 function classifyNodeJavascriptCapability(id, options = {}) {
   const capability = String(id);
+  if (['s3.head', 's3.getText', 's3.putText'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (isJavascriptCoreCapability(capability)) {
     return decision(capability, 'eligible', 'node-router-context-parity', 'provider-node');
   }
@@ -75,6 +76,7 @@ function classifyNodeJavascriptCapability(id, options = {}) {
 
 function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, options = {}) {
   const requirement = String(id);
+  if (['s3.head', 's3.getText', 's3.putText'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (requirement === 'request') {
     const bodyRequired = compilerCapabilities.some((entry) => entry === 'request.json' || entry.startsWith('request.body'));
     return bodyRequired
