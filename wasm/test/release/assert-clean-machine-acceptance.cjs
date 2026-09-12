@@ -778,6 +778,8 @@ async function main() {
     assert.equal(s3.installedBytesUnchanged, true);
     assert.equal(s3.providerReality, false);
     fs.writeFileSync(path.join(testRoot, 's3-packed-acceptance.json'), `${JSON.stringify(s3, null, 2)}\n`);
+    // The suite deletes temporary installs; keep artifact identities in its retained task log too.
+    console.log(JSON.stringify(s3));
 
     await verifyInitializedProject(toolCli, 'node', installTarballs, packageNames);
     await verifyNodeJavascriptProject(toolCli, installTarballs, packageNames);
