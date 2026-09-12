@@ -17,7 +17,7 @@ const NODE_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor({
   },
   crypto: defineCryptoTargetCapabilities({
     target: 'javascript',
-    algorithms: [{
+    algorithms: [...['SHA-256', 'HMAC-SHA256'].map((algorithm) => ({ algorithm, realization: 'runtime-builtin', implemented: true, status: 'implemented-o3' })), {
       algorithm: 'HS256',
       realization: 'runtime-builtin',
       implemented: true,

@@ -52,6 +52,7 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     jwtCaptureWallClock: options.jwtCaptureWallClock,
     config: testCase.config || {},
     secrets: testCase.secrets || {},
+    s3: options.s3 || options.bindings && options.bindings.s3,
     kv: testCase.kv || {},
     application: options.application,
     requestHeaders: adapted.headerPairs,

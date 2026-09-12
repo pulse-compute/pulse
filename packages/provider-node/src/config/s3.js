@@ -13,7 +13,7 @@ function normalizeNodeS3(input = {}) {
 }
 function validateNodeS3Operations(metadata, bindings) {
   for (const effect of metadata.providerOperations || []) {
-    if (!['s3.head', 's3.getText'].includes(effect.kind)) continue;
+    if (!['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)) continue;
     if (!bindings.s3 || !Object.hasOwn(bindings.s3, effect.resource && effect.resource.binding)) throw new TypeError('The required Node S3 binding is missing.');
   }
 }

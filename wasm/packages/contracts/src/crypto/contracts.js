@@ -26,6 +26,10 @@ const CRYPTO_VERIFICATION_STATUSES = Object.freeze([
 const CRYPTO_ALGORITHMS = Object.freeze(['HS256', 'ES256', 'SHA-256', 'HMAC-SHA256']);
 const CRYPTO_REALIZATIONS = Object.freeze([
   ...['SHA-256', 'HMAC-SHA256'].map((algorithm) => Object.freeze({
+    id: 'runtime-builtin', kind: 'runtime-builtin', algorithm, targets: Object.freeze(['javascript']),
+    implementation: algorithm === 'SHA-256' ? 'webcrypto.subtle.sha-256-bytes.v1' : 'webcrypto.subtle.hmac-sha-256-bytes.v1'
+  })),
+  ...['SHA-256', 'HMAC-SHA256'].map((algorithm) => Object.freeze({
     id: 'guest-source:pulse-hmac-as', kind: 'guest-source', backend: 'pulse-hmac-as',
     implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, algorithm, targets: Object.freeze(['native']),
     source: Object.freeze({ package: '@pulse-compute/crypto', export: './pulsewasm-native',

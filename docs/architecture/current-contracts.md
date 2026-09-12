@@ -329,20 +329,33 @@ primary module, while Native ES256 selects the audited
 `guest-linked:pulse-es256-rustcrypto-p256` unit. Neither algorithm retries a
 different realization.
 
-The O2 S3 read slice adds exact `SHA-256` and `HMAC-SHA256` Native requirements.
-Both compose the same Crypto-owned source once; validation matches the pair of
-algorithm and realization. Crypto's internal output ABI checks memory ranges,
-uses 32-byte output, caps data at 32 KiB and HMAC keys at 8 KiB, and provides a
-reusable wiped staging frame. JWT verification keeps its separate limits.
+O3 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
+composes the same Crypto-owned source once; Node JavaScript explicitly selects
+Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
+`@pulse-compute/crypto/provider` export. Both return 32-byte results, cap data
+at 32 KiB and HMAC keys at 8 KiB, and snapshot and wipe staging inputs. Native
+also checks guest memory ranges. JWT verification retains its separate limits.
+No target probes or falls back to a different realization.
 
-The private `@pulse-compute/s3` package owns `head` and `getText`, literal binding
-authority, runtime-key lowering, SigV4 composition and bounded object results.
-Node and Fastly own fixed endpoint/bucket/region mappings, credential lookup,
-time and transport. Fastly requires a static named backend. Reads bypass cache,
-disable decompression and redirects, preserve raw-byte digest and strict UTF-8
-text, and do not retry. Native acceptance runs real Wasm through Node and the
-Fastly host-call fixture; it is local evidence, not live Object Storage proof.
-JavaScript, PUT, release promotion and Assets alignment remain later work.
+The private `@pulse-compute/s3` package owns `head`, `getText` and `putText`,
+literal binding/options authority, runtime key/text lowering, SigV4 composition
+and bounded results. Node and Fastly own fixed endpoint/bucket/region mappings,
+credential lookup, deadlines and transport. Fastly requires a static backend.
+Reads and writes bypass cache, disable decompression and redirects, preserve
+exact bytes and do not retry. PUT distinguishes pre-dispatch failure and
+complete rejection (`not-stored`) from unconfirmed dispatched writes (`unknown`).
+Only a complete 200 acknowledgement with a bounded empty body yields `stored`;
+its digest describes sent bytes, not durability. Request cancellation retains
+existing lifecycle behavior and does not fabricate a typed S3 outcome. Fastly
+pending requests lack a cancel ABI; invocation termination owns their release.
+
+One canonical consumer exercises Node Native, Node JavaScript and Fastly Native
+PUT/HEAD/GET, integrity, bounded acknowledgements and cancellation. Fastly Native
+runs compiled Wasm against a host ABI fixture. This is local evidence, not live
+Object Storage proof. Fastly JavaScript remains ineligible: its SDK projects raw
+response headers, losing multiplicity and aggregate-size evidence required by
+O1. The provider-specific limitation is documented in `wasm/test/s3/O3.md` and
+does not gate O3. Release promotion and Assets alignment remain later work.
 
 Package redaction declarations survive Handler IR projection into the Native
 plan. Native host effect traces omit declared private payloads and results;

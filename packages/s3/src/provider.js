@@ -43,17 +43,25 @@ function credentialsValid(accessId, secret, token) {
     && typeof secret === 'string' && secret.isWellFormed() && bytes(secret).length > 0 && bytes(secret).length <= 4096 && !/[\r\n]/.test(secret)
     && (token === undefined || typeof token === 'string' && /^[\x21-\x7e]{1,4096}$/.test(token));
 }
-async function signRead(input, crypto) {
+function normalizePutOptions(options = {}) {
+  record(options, ['contentType']);
+  const contentType = options.contentType === undefined ? 'text/plain; charset=utf-8' : options.contentType;
+  if (typeof contentType !== 'string' || !/^[\x20-\x7e]{1,128}$/.test(contentType) || contentType.trim() !== contentType) throw new TypeError('S3 content type is outside the bounded literal subset.');
+  return Object.freeze({ contentType });
+}
+async function signRequest(input, crypto) {
   const { binding, method, encodedKey, accessId, secret, token, now } = input;
-  if (!['HEAD', 'GET'].includes(method) || !credentialsValid(accessId, secret, token) || !Number.isFinite(now)) throw new TypeError('S3 signing input is invalid.');
+  const body = method === 'PUT' ? input.body : new Uint8Array();
+  const contentType = method === 'PUT' ? normalizePutOptions({ contentType: input.contentType }).contentType : undefined;
+  if (!['HEAD', 'GET', 'PUT'].includes(method) || !(body instanceof Uint8Array) || body.length > binding.maxTextBytes || !credentialsValid(accessId, secret, token) || !Number.isFinite(now) || now < 0) throw new TypeError('S3 signing input is invalid.');
   const date = new Date(now).toISOString().replace(/[:-]|\.\d{3}/g, '');
   if (!/^\d{8}T\d{6}Z$/.test(date)) throw new TypeError('S3 signing clock is invalid.');
-  const digest = hex(await crypto.sha256(new Uint8Array()));
+  const digest = hex(await crypto.sha256(body));
   const host = new URL(binding.endpoint).host;
-  const headers = { host, 'x-amz-content-sha256': digest, 'x-amz-date': date, ...(token === undefined ? {} : { 'x-amz-security-token': token }) };
+  const headers = { ...(contentType === undefined ? {} : { 'content-type': contentType }), host, 'x-amz-content-sha256': digest, 'x-amz-date': date, ...(token === undefined ? {} : { 'x-amz-security-token': token }) };
   const names = Object.keys(headers).sort();
   const uri = `/${binding.bucket}/${encodedKey}`;
-  const canonical = `${method}\n${uri}\n\n${names.map((name) => `${name}:${headers[name]}\n`).join('')}\n${names.join(';')}\n${digest}`;
+  const canonical = `${method}\n${uri}\n\n${names.map((name) => `${name}:${headers[name].replace(/ +/g, ' ')}\n`).join('')}\n${names.join(';')}\n${digest}`;
   const scope = `${date.slice(0, 8)}/${binding.region}/s3/aws4_request`;
   const toSign = `AWS4-HMAC-SHA256\n${date}\n${scope}\n${hex(await crypto.sha256(bytes(canonical)))}`;
   let key = bytes(`AWS4${secret}`);
@@ -65,10 +73,18 @@ async function signRead(input, crypto) {
     headers.authorization = `AWS4-HMAC-SHA256 Credential=${accessId}/${scope}, SignedHeaders=${names.join(';')}, Signature=${hex(signature)}`;
     signature.fill(0);
     headers['accept-encoding'] = 'identity';
-    return { method, url: binding.endpoint + uri, headers };
+    return { method, url: binding.endpoint + uri, headers, ...(method === 'PUT' ? { body } : {}) };
   } finally { key.fill(0); }
 }
 function failure(reason, httpStatus) { return Object.freeze({ status: 'failed', reason, ...(httpStatus === undefined ? {} : { httpStatus }) }); }
+function putFailure(reason, dispatched, httpStatus) {
+  return Object.freeze({ status: dispatched ? 'unknown' : 'not-stored', reason, ...(httpStatus === undefined ? {} : { httpStatus }) });
+}
+function putStatusResult(status) {
+  if (status === 200) return null;
+  if (status >= 400 && status <= 499 && status !== 408) return putFailure(status === 401 || status === 403 ? 'not-authorized' : status === 429 ? 'throttled' : 'rejected', false, status);
+  return putFailure(status === 408 ? 'timeout' : status >= 500 && status <= 599 ? 'unavailable' : 'protocol', true, status);
+}
 function statusResult(status) {
   if (status === 200) return null;
   if (status === 404) return Object.freeze({ status: 'not-found' });
@@ -94,17 +110,27 @@ function metadataFromHeaders(headers, head) {
     ...(selected.has('content-type') ? { contentType: selected.get('content-type') } : {}) };
 }
 function normalizeResult(operation, result) {
+  if (!['head', 'getText', 'putText'].includes(operation)) throw new TypeError('Unknown S3 result operation.');
   const allowed = ['status', 'reason', 'httpStatus', 'byteLength', 'etag', 'contentType', 'text', 'sha256'];
   record(result, allowed);
+  if (operation === 'putText') {
+    const reasons = result.status === 'not-stored' ? ['invalid-key', 'invalid-text', 'too-large', 'configuration', 'credentials', 'not-authorized', 'rejected', 'throttled', 'transport', 'timeout'] : result.status === 'unknown' ? ['transport', 'timeout', 'unavailable', 'protocol'] : [];
+    if (reasons.includes(result.reason) && Object.keys(result).every((key) => ['status', 'reason', 'httpStatus'].includes(key))
+      && (result.httpStatus === undefined || Number.isInteger(result.httpStatus) && result.httpStatus >= 100 && result.httpStatus <= 599)) return Object.freeze({ ...result });
+    if (result.status !== 'stored' || !Number.isInteger(result.byteLength) || result.byteLength < 0 || result.byteLength > S3_LIMITS.textBytes || typeof result.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(result.sha256)
+      || Object.keys(result).some((key) => !['status', 'byteLength', 'sha256', 'etag'].includes(key))
+      || result.etag !== undefined && (typeof result.etag !== 'string' || !result.etag.length || !result.etag.isWellFormed() || bytes(result.etag).length > S3_LIMITS.metadataBytes || /[\u0000-\u001f\u007f-\u009f]/u.test(result.etag))) throw new TypeError('PUT returned an invalid bounded result.');
+    return Object.freeze({ ...result });
+  }
   if (result.status === 'not-found' && Object.keys(result).length === 1) return Object.freeze({ ...result });
   if (result.status === 'failed' && ['invalid-key', 'configuration', 'credentials', 'not-authorized', 'throttled', 'unavailable', 'transport', 'timeout', 'protocol', 'too-large', 'invalid-utf8'].includes(result.reason)
     && Object.keys(result).every((name) => ['status', 'reason', 'httpStatus'].includes(name))
     && (result.httpStatus === undefined || Number.isInteger(result.httpStatus) && result.httpStatus >= 100 && result.httpStatus <= 599)) return Object.freeze({ ...result });
   if (result.status !== 'found' || !Number.isSafeInteger(result.byteLength) || result.byteLength < 0 || Object.hasOwn(result, 'reason') || Object.hasOwn(result, 'httpStatus')) throw new TypeError('S3 returned an invalid bounded result.');
   if (operation === 'head' && (Object.hasOwn(result, 'text') || Object.hasOwn(result, 'sha256'))) throw new TypeError('HEAD cannot return object bytes or a digest.');
-  if (operation === 'getText' && (typeof result.text !== 'string' || !result.text.isWellFormed() || bytes(result.text).length !== result.byteLength || result.byteLength > S3_LIMITS.textBytes || !/^[a-f0-9]{64}$/.test(result.sha256))) throw new TypeError('GET returned an invalid exact-text result.');
+  if (operation === 'getText' && (typeof result.text !== 'string' || !result.text.isWellFormed() || bytes(result.text).length !== result.byteLength || result.byteLength > S3_LIMITS.textBytes || typeof result.sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(result.sha256))) throw new TypeError('GET returned an invalid exact-text result.');
   for (const field of ['etag', 'contentType']) if (result[field] !== undefined && (typeof result[field] !== 'string' || !result[field].isWellFormed() || bytes(result[field]).length > S3_LIMITS.metadataBytes || /[\u0000-\u001f\u007f-\u009f]/u.test(result[field]) || field === 'etag' && !result[field].length)) throw new TypeError('S3 metadata exceeds its result contract.');
   if (bytes(JSON.stringify(result)).length > S3_LIMITS.envelopeBytes) throw new TypeError('S3 result envelope exceeds its bound.');
   return Object.freeze({ ...result });
 }
-module.exports = Object.freeze({ normalizeBinding, namePattern, encodeKey, credentialsValid, signRead, failure, statusResult, metadataFromHeaders, normalizeResult, hex, bytes });
+module.exports = Object.freeze({ normalizeBinding, namePattern, encodeKey, credentialsValid, normalizePutOptions, signRequest, signRead: signRequest, failure, putFailure, putStatusResult, statusResult, metadataFromHeaders, normalizeResult, hex, bytes });

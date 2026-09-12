@@ -23,6 +23,7 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'jwt.verify',
   's3.head',
   's3.getText',
+  's3.putText',
   'opaque.pass-through'
 ]);
 

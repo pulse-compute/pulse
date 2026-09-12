@@ -6,7 +6,7 @@
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
   },
-  "description": "Bounded exact-key S3 reads through Pulse Native effects.",
+  "description": "Bounded exact-key S3 reads and writes through Pulse effects.",
   "type": "commonjs",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
