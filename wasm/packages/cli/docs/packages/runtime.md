@@ -212,6 +212,14 @@ const token = await ctx.secret.get('API_TOKEN')
 const session = await ctx.kv<{ userId: number }>('sessions').get('current')
 ```
 
+Conditional KV extends the same namespace with `getVersioned`, `insertIfAbsent`,
+and `compareAndSwap`. The Node reference realizes them through JavaScript and
+compiled Native execution. Reads pair a value with an opaque string generation;
+writes distinguish `stored`, `conflict`, `not-stored`, and `unknown` (possibly
+committed). Pulse snapshots candidates, preserves tokens without numeric
+coercion, and performs no automatic retry. Fastly realization remains pending.
+The detailed contract is in [Effects and continuations](../concepts/effects-and-continuations.md#conditional-kv).
+
 Those calls are compiled into explicit effects and validated against the selected provider. See [Compilation and lowering](../concepts/compilation-and-lowering.md).
 
 ## Structured and opaque fetch results

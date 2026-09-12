@@ -16,6 +16,7 @@ function blockedRestriction(id, restriction) {
 
 function classifyFastlyJavascriptCapability(id, restrictions = {}) {
   const capability = String(id);
+  if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(capability)) return decision(capability, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
   if (['s3.head', 's3.getText', 's3.putText'].includes(capability)) return decision(capability, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
   if (isJavascriptCoreCapability(capability)) {
     return decision(capability, 'eligible', 'fastly-request-router-runtime', 'provider-fastly');
@@ -101,6 +102,7 @@ function classifyFastlyJavascriptCapability(id, restrictions = {}) {
 
 function classifyFastlyJavascriptProviderRequirement(id, restrictions = {}) {
   const requirement = String(id);
+  if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
   if (['s3.head', 's3.getText', 's3.putText'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
   if (requirement === 'request' || ['response.json', 'response.text', 'response.custom'].includes(requirement)) {
     return decision(requirement, 'eligible', 'fastly-request-response-lifecycle', 'provider-fastly');

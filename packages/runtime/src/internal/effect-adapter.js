@@ -9,6 +9,7 @@ const {
   normalizeKvNamespace,
   normalizeKvPutResult
 } = require('./bindings.js');
+const conditionalKv = require('./conditional-kv.js');
 const { fetchRequestInitForHost } = require('./fetch.js');
 const { createRedactionState } = require('./redaction.js');
 const { validateSchemaValue } = require('./schema.js');
@@ -168,6 +169,7 @@ function publicEffectDescriptor(effect, redaction) {
   if (effect.kind === 'config.get' || effect.kind === 'secret.get') {
     return Object.freeze({ ...base, name: redactString(effect.name) });
   }
+  if (conditionalKv.isConditionalKv(effect.kind)) return Object.freeze({ ...base, namespace: redactString(effect.namespace), key: '<redacted>', generation: '<redacted>', value: '<redacted>' });
   if (effect.kind === 'kv.get' || effect.kind === 'kv.put') {
     return Object.freeze({
       ...base,
@@ -209,6 +211,7 @@ function createJavascriptEffectAdapter(input) {
     version: JAVASCRIPT_EFFECT_ADAPTER_VERSION,
     id: String(input.id || 'pulse.javascript-effect-adapter.custom'),
     dispatch,
+    prepareConditionalKv: typeof input.prepareConditionalKv === 'function' ? input.prepareConditionalKv : undefined,
     dispose
   });
 }
@@ -226,6 +229,16 @@ function createCapabilityEffectAdapter(capabilities = {}) {
   const namespaces = new Map();
   return createJavascriptEffectAdapter({
     id: 'pulse.javascript-effect-adapter.capabilities',
+    async prepareConditionalKv(effect, execution) {
+      if (typeof value.prepareConditionalKv === 'function') return value.prepareConditionalKv(effect, execution);
+      if (typeof value.kv !== 'function') return undefined;
+      if (!namespaces.has(effect.namespace)) namespaces.set(effect.namespace, await value.kv(effect.namespace, execution));
+      const namespace = namespaces.get(effect.namespace), method = effect.kind.slice(3);
+      if (!namespace || typeof namespace[method] !== 'function') return undefined;
+      return () => method === 'getVersioned' ? namespace[method](effect.key, execution)
+        : method === 'insertIfAbsent' ? namespace[method](effect.key, effect.value, execution)
+        : namespace[method](effect.key, effect.generation, effect.value, execution);
+    },
     async dispatch(effect, execution) {
       if (effect.kind === 'fetch') {
         if (typeof value.fetch !== 'function') return unavailableCapability(effect);
@@ -261,6 +274,7 @@ function createCapabilityEffectAdapter(capabilities = {}) {
 
 function bindingLimits(options = {}) {
   return Object.freeze({
+    kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
     maxBindingNameBytes: options.maxBindingNameBytes,
     maxBindingValueBytes: options.maxBindingValueBytes,
     maxKvNamespaceBytes: options.maxKvNamespaceBytes,
@@ -273,6 +287,7 @@ function bindingLimits(options = {}) {
 
 function normalizeEffectDescriptor(input, limits) {
   const kind = String(input.kind || 'effect');
+  if (conditionalKv.isConditionalKv(kind)) return { ...conditionalKv.admitConditionalKv(input, limits), id: input.id, parallelEligible: input.parallelEligible };
   if (kind === 'config.get' || kind === 'secret.get') {
     const bindingKind = kind === 'secret.get' ? 'secret' : 'config';
     return { ...input, name: normalizeBindingName(bindingKind, input.name, limits) };
@@ -575,6 +590,7 @@ function createJavascriptEffectExecution(options = {}) {
       }
       dispatchedIds.add(descriptor.id);
       totalEffects += 1;
+      if (conditionalKv.isConditionalKv(kind)) conditionalKv.registerKvRedactions(descriptor, (value) => redaction.add(value));
       const publicDescriptor = publicEffectDescriptor(descriptor, redaction);
       observe({ type: 'effect-dispatched', effect: publicDescriptor });
 
@@ -582,6 +598,9 @@ function createJavascriptEffectExecution(options = {}) {
       const operationExecution = Object.freeze({ ...externalExecution, signal: operationSignal.signal });
       const raw = raceWithSignal(Promise.resolve().then(() => {
         if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
+        if (conditionalKv.isConditionalKv(kind)) return conditionalKv.executeConditionalKv(descriptor,
+          adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
+          { ...operationExecution, onKvObservation: observe }, limits);
         return adapter.dispatch(descriptor, operationExecution);
       }), operationSignal.signal).then(
         (value) => {

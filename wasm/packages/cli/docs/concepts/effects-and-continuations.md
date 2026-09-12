@@ -241,3 +241,48 @@ pulse test ./my-app --json
 - [Fetching and composing data](../guides/fetching-and-composition.md)
 - [Project configuration](../reference/project-config.md)
 - [Troubleshooting](../guides/troubleshooting.md)
+
+## Conditional KV
+
+`ctx.kv<T>('name')` exposes `getVersioned(key)`, `insertIfAbsent(key, value)`, and
+`compareAndSwap(key, generation, value)` as direct awaited or keyed parallel
+effects. The K2 Node reference implements the same contract for JavaScript and
+compiled Native control flow. Fastly realization remains pending.
+
+The condition and mutation are atomic at one key's authority. A versioned read
+returns a value and an opaque generation from the same observation, which may be
+stale. Generations are strings, not numbers, hashes or application versions.
+Create conflicts when present; CAS conflicts when absent or when its token is
+stale. Equal-byte replacement is still a write and changes its generation.
+Existing unconditional `get` and `put` remain available.
+
+A write returns `stored`, `conflict`, `not-stored` with a bounded reason, or
+`unknown` with a bounded reason. Unknown may have committed. A complete explicit
+provider rejection establishes no write; an exception from a send primitive
+does not. Pulse does not retry, reread-and-rebase, or invent a generation from a
+write acknowledgement. A subsequent missing or stale read cannot resolve an
+ambiguous write by itself.
+
+Admission detaches and freezes the candidate before provider preparation. The
+host's monotonic ten-second deadline starts at admission and is shortened by an
+owning request deadline. Preparation may resolve bindings and stage data but
+cannot send. Entry into the returned provider primitive marks dispatch even if
+it throws synchronously. Timeout before that boundary is `not-stored`; timeout
+or transport loss after it is `unknown`. Cancellation suppresses delivery to an
+inactive execution and records whether dispatch occurred; it promises no rollback.
+
+Exact keys are bounded Unicode scalar strings; generations are bounded visible
+ASCII strings. Values retain the portable KV JSON limits. Conditional storage
+uses a strict UTF-8 JSON envelope with exactly `__pulseKv: 1` and `value`, rejecting
+duplicate members, invalid values, and oversized bodies. The wrapper is not
+recursively unwrapped. Legacy raw JSON requires explicit migration. Keys, tokens,
+and values are omitted or redacted from runtime evidence and managed errors;
+application responses are not silently rewritten.
+
+Node reference instances retain nonreused generation identities for their own
+lifetime. Host code can explicitly reuse one reference across requests and target
+runners; independent instances isolate their state. Deterministic identities,
+clocks, and failure hooks belong to host evidence, not handler authority. This
+local model does not establish durability, global visibility, cross-key
+transactions, or a portable physical-delete/recreate guarantee. Fastly SDK
+limitations cannot redefine this contract or gate other targets.

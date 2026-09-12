@@ -30,7 +30,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.emit`](#ctxemit) | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
 | [`ctx.log`](#ctxlog) | HTTP and event handlers | Synchronous thresholded logging. |
 | [`ctx.config`, `ctx.secret`](#config-and-secrets) | HTTP and event handlers | Explicit configured binding reads. |
-| [`ctx.kv(name)`](#kv) | HTTP and event handlers | Bound `get` and `put` storage effects. |
+| [`ctx.kv(name)`](#kv) | HTTP and event handlers | Bound reads, writes, and conditional KV effects (Node reference). |
 | [`ctx.json`, `ctx.text`, `ctx.response`](#response-builders) | HTTP handlers and middleware | Synchronous response construction. |
 | `ctx.event` | Event handlers only | Exact event type and immutable validated payload. |
 
@@ -400,13 +400,44 @@ const value = await sessions.get('current')
 if (value !== undefined) await sessions.put('last', value)
 ```
 
-The Beta supports `get` and `put`. Store names and keys are
+The existing `get` and `put` operations remain available. Store names and keys are
 provider-neutral logical bindings. Values are bounded, detached, deeply frozen
 JSON-compatible trees; accessors, symbols, sparse arrays, repeated references,
 cycles, class instances, nonfinite numbers, and nested `undefined` are rejected.
 `put` resolves to an explicit boolean acknowledgement. Durability, consistency,
 and cross-request lifetime remain provider capabilities rather than properties
 of the common API.
+
+The K2 Node reference also realizes these portable operations on JavaScript and
+compiled Native targets, through direct await or keyed `ctx.parallel`:
+
+| Method | Result |
+| --- | --- |
+| `getVersioned(key)` | `found` with one observed `value` and opaque `generation`, `not-found`, or `failed` with a reason. |
+| `insertIfAbsent(key, value)` | Atomically creates an absent key. |
+| `compareAndSwap(key, generation, value)` | Atomically replaces the value only when its current generation matches. |
+
+Conditional writes return `stored`, `conflict`, `not-stored` with a reason, or
+`unknown` with a reason. `unknown` may have committed; Pulse never automatically
+retries or rebases. A write acknowledgement carries no new generation. An absent
+CAS conflicts. A read may be stale, but its value and token describe the same
+observation. Tokens are bounded opaque strings, never JavaScript numbers or
+application revision counters.
+
+Namespaces must be literal bindings; keys, generations, and candidates are runtime
+data. Candidates are snapshotted at admission. Keys are exact Unicode scalar
+strings of 1–1,024 UTF-8 bytes without C0/C1 controls; tokens are 1–256 visible
+ASCII bytes. Values retain the 65,536-byte JSON, depth-64 and 10,000-entry bounds.
+The host owns the ten-second operation deadline, shortened by a request deadline.
+Timeouts before dispatch are `not-stored`; unconfirmed writes after dispatch are
+`unknown`. Request cancellation follows the existing managed lifecycle and
+never implies rollback.
+
+The Node realization is an explicit in-memory reference instance, not a durable
+storage guarantee. Fastly conditional KV realization remains pending; its
+JavaScript SDK is incomplete capability mapping and does not define or block
+Pulse's contract. Conditional wire values use the strict
+`{"__pulseKv":1,"value":...}` envelope; legacy raw JSON requires explicit migration.
 
 ## Explicit JSON schemas
 

@@ -101,7 +101,30 @@ export interface PulseLogger {
   debug(message: string): void;
 }
 
+// Opaque, bounded string. It is neither an application version nor a number.
+export type PulseKvGeneration = string;
+export type PulseKvReadFailureReason =
+  | 'invalid-key' | 'configuration' | 'not-authorized' | 'throttled'
+  | 'unavailable' | 'transport' | 'timeout' | 'protocol' | 'too-large' | 'invalid-value';
+export type PulseKvVersionedResult<T> =
+  | { readonly status: 'found'; readonly value: T; readonly generation: PulseKvGeneration }
+  | { readonly status: 'not-found' }
+  | { readonly status: 'failed'; readonly reason: PulseKvReadFailureReason };
+
+export type PulseKvNotStoredReason =
+  | 'invalid-key' | 'invalid-value' | 'invalid-generation' | 'too-large'
+  | 'configuration' | 'not-authorized' | 'throttled' | 'rejected'
+  | 'unavailable' | 'transport' | 'timeout' | 'protocol';
+export type PulseKvConditionalResult =
+  | { readonly status: 'stored' }
+  | { readonly status: 'conflict' }
+  | { readonly status: 'not-stored'; readonly reason: PulseKvNotStoredReason }
+  | { readonly status: 'unknown'; readonly reason: 'transport' | 'timeout' | 'unavailable' | 'protocol' };
+
 export interface PulseKvNamespace<T = unknown> {
+  getVersioned(key: string): PulseParallelEffect<PulseKvVersionedResult<T>>;
+  insertIfAbsent(key: string, value: T): PulseParallelEffect<PulseKvConditionalResult>;
+  compareAndSwap(key: string, generation: PulseKvGeneration, value: T): PulseParallelEffect<PulseKvConditionalResult>;
   get(key: string): PulseParallelEffect<T | undefined>;
   put(key: string, value: T): PulseParallelEffect<boolean>;
 }

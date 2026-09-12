@@ -1,4 +1,5 @@
 'use strict';
+const portableKv = require('@pulse-compute/runtime/host');
 
 
 function loadRuntimeApi() {
@@ -886,6 +887,7 @@ function normalizeProviderEffect(effect, schemaCodecs, options = {}) {
   if (!effect || typeof effect !== 'object') {
     throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical provider effect must be an object.', { effect });
   }
+  if (portableKv.isConditionalKv(effect.kind)) return Object.freeze({ ...portableKv.admitConditionalKv(effect, options), id: effect.id, groupKey: effect.groupKey, source: effect.source });
   if (effect.kind === 'fetch') return normalizeFetchEffect(effect, schemaCodecs, options);
   const id = String(effect.id || '');
   if (!id) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical provider effect requires an id.', { effect });
@@ -980,6 +982,7 @@ function effectTraceStart(adapterId, executionId, normalized, sensitiveValues) {
     headers: redactedHeaders(normalized.init.headers, sensitiveValues)
   });
   if (normalized.kind === 'config.get' || normalized.kind === 'secret.get') return Object.freeze({ ...base, name: redactString(normalized.name, sensitiveValues) });
+  if (portableKv.isConditionalKv(normalized.kind)) return Object.freeze({ ...base, key: '<redacted>', generation: '<redacted>', value: '<redacted>' });
   if (normalized.kind === 'kv.get' || normalized.kind === 'kv.put') return Object.freeze({ ...base, store: redactString(normalized.store, sensitiveValues), key: redactString(normalized.key, sensitiveValues) });
   if (normalized.kind === 'event.emit') return Object.freeze({ ...base, eventType: redactString(normalized.frame.type, sensitiveValues), schemaId: normalized.frame.schemaId });
   if (normalized.package) return Object.freeze({ ...base, package: normalized.package, contractId: normalized.contractId, operation: normalized.operation });
@@ -991,6 +994,7 @@ function effectTraceResolved(adapterId, executionId, normalized, value) {
   if (normalized.kind === 'fetch') return Object.freeze({ ...base, status: value.status, bodyClass: value.bodyClass });
   if (normalized.kind === 'secret.get') return Object.freeze({ ...base, hit: value !== undefined, value: '<redacted>' });
   if (normalized.kind === 'config.get') return Object.freeze({ ...base, hit: value !== undefined });
+  if (portableKv.isConditionalKv(normalized.kind)) return Object.freeze({ ...base, status: value.status });
   if (normalized.kind === 'kv.get') return Object.freeze({ ...base, hit: value !== undefined });
   if (normalized.kind === 'kv.put') return Object.freeze({ ...base, stored: Boolean(value) });
   if (normalized.kind === 'event.emit') return Object.freeze({ ...base, accepted: value === undefined });
@@ -1288,6 +1292,7 @@ function normalizeProviderAdapter(input = {}) {
     version: String(input.version || `pulse.canonical-${id}-provider.v1`),
     createCapabilities: typeof input.createCapabilities === 'function' ? input.createCapabilities : () => ({}),
     dispatchEffect,
+    prepareConditionalKv: typeof input.prepareConditionalKv === 'function' ? input.prepareConditionalKv.bind(input) : undefined,
     resultMetadata: typeof input.resultMetadata === 'function' ? input.resultMetadata : () => undefined,
     disposeExecution: typeof input.disposeExecution === 'function' ? input.disposeExecution : () => undefined
   });
@@ -1361,10 +1366,15 @@ function createCanonicalHostRuntime(options = {}) {
 
     async function dispatchOne(effect) {
       const normalized = normalizeProviderEffect(effect, schemaCodecs, runtimeOptions);
+      const conditional = portableKv.isConditionalKv(normalized.kind);
+      if (conditional) portableKv.registerKvRedactions(normalized, (value) => sensitiveValues.add(value));
       recordTrace(effectTraceStart(adapter.id, executionId, normalized, sensitiveValues));
       dispatchedEffects += 1;
       try {
-        let snapshot = await adapter.dispatchEffect(normalized, { ...options, ...executionOptions, metadata, executionId, trace: traceSink });
+        const effectExecution = { ...options, ...executionOptions, metadata, executionId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
+        let snapshot = conditional
+          ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)), effectExecution, runtimeOptions)
+          : await adapter.dispatchEffect(normalized, effectExecution);
         if (normalized.kind === 'config.get' || normalized.kind === 'secret.get') {
           if (snapshot !== undefined && typeof snapshot !== 'string') {
             throw new CanonicalRuntimeError(

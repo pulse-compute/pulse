@@ -226,6 +226,9 @@ importers:
       '@pulse-compute/crypto':
         specifier: workspace:*
         version: link:../../../packages/crypto
+      '@pulse-compute/runtime':
+        specifier: workspace:*
+        version: link:../../../packages/runtime
       '@pulse-compute/wasm-build-support':
         specifier: workspace:*
         version: link:../build-support

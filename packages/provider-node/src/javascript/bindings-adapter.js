@@ -1,5 +1,6 @@
 'use strict';
 
+const { createNodeKvReference } = require('../runtime/conditional-kv.js');
 const runtimeHost = require('@pulse-compute/runtime/host');
 
 const NODE_JAVASCRIPT_BINDINGS_ADAPTER_VERSION = 'pulse.node-javascript-bindings-adapter.v1';
@@ -31,7 +32,7 @@ function recordEntries(input, label = 'binding record') {
 function createNodeJavascriptBindingCapabilities(options = {}) {
   const config = new Map();
   const secrets = new Map();
-  const stores = new Map();
+  const reference = options.kvReference || createNodeKvReference(options);
 
   for (const [rawName, rawValue] of recordEntries(options.config, 'config')) {
     const name = runtimeHost.normalizeBindingName('config', rawName, options);
@@ -41,22 +42,6 @@ function createNodeJavascriptBindingCapabilities(options = {}) {
     const name = runtimeHost.normalizeBindingName('secret', rawName, options);
     secrets.set(name, runtimeHost.normalizeBindingValue('secret.get', name, rawValue, options));
   }
-  for (const [rawNamespace, values] of recordEntries(options.kv, 'KV namespaces')) {
-    const namespace = runtimeHost.normalizeKvNamespace(rawNamespace, options);
-    const entries = new Map();
-    for (const [rawKey, value] of recordEntries(values, `KV namespace ${JSON.stringify(namespace)}`)) {
-      const key = runtimeHost.normalizeKvKey(rawKey, options);
-      entries.set(key, runtimeHost.cloneKvValue(value, options));
-    }
-    stores.set(namespace, entries);
-  }
-
-  function storeFor(namespaceInput) {
-    const namespace = runtimeHost.normalizeKvNamespace(namespaceInput, options);
-    if (!stores.has(namespace)) stores.set(namespace, new Map());
-    return Object.freeze({ namespace, store: stores.get(namespace) });
-  }
-
   return Object.freeze({
     version: NODE_JAVASCRIPT_BINDINGS_ADAPTER_VERSION,
     config(nameInput) {
@@ -67,23 +52,8 @@ function createNodeJavascriptBindingCapabilities(options = {}) {
       const name = runtimeHost.normalizeBindingName('secret', nameInput, options);
       return secrets.has(name) ? secrets.get(name) : undefined;
     },
-    kv(namespaceInput) {
-      const { store } = storeFor(namespaceInput);
-      return Object.freeze({
-        get(keyInput) {
-          const key = runtimeHost.normalizeKvKey(keyInput, options);
-          return runtimeHost.cloneKvValue(store.has(key) ? store.get(key) : undefined, {
-            ...options,
-            allowUndefined: true
-          });
-        },
-        put(keyInput, value) {
-          const key = runtimeHost.normalizeKvKey(keyInput, options);
-          store.set(key, runtimeHost.cloneKvValue(value, options));
-          return true;
-        }
-      });
-    }
+    prepareConditionalKv: reference.prepareConditionalKv,
+    kv: reference.kv
   });
 }
 
@@ -97,7 +67,7 @@ function withNodeBindingCapabilities(capabilities, options = {}) {
   const configured = options.bindings || createNodeJavascriptBindingCapabilities(options);
   if (needsConfig) output.config = configured.config;
   if (needsSecret) output.secret = configured.secret;
-  if (needsKv) output.kv = configured.kv;
+  if (needsKv) { output.kv = configured.kv; output.prepareConditionalKv = configured.prepareConditionalKv; }
   return Object.freeze(output);
 }
 

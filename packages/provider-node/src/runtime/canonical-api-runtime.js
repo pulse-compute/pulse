@@ -1,4 +1,5 @@
 'use strict';
+const { createNodeKvReference } = require('./conditional-kv.js');
 
 const path = require('node:path');
 const { Readable } = require('node:stream');
@@ -361,6 +362,7 @@ function effectToProviderEffect(normalized) {
 
 function createNodeProviderAdapter(baseOptions = {}) {
   const kvExecutions = new Map();
+  const sharedKv = baseOptions.kvReference || createNodeKvReference(baseOptions);
   const verifyNativeJwt = createNodeNativeJwtVerify({
     captureWallClock: baseOptions.captureJwtWallClock,
     secretLookup(name, executionOptions) {
@@ -449,29 +451,14 @@ function createNodeProviderAdapter(baseOptions = {}) {
     };
   }
 
-  function kvStoresFor(executionOptions) {
+  function kvReferenceFor(executionOptions) {
+    if (executionOptions.kvReference) return executionOptions.kvReference;
+    if (!Object.prototype.hasOwnProperty.call(executionOptions, 'kv') || executionOptions.kv === baseOptions.kv) return sharedKv;
     const executionId = String(executionOptions.executionId || 'default');
-    if (!kvExecutions.has(executionId)) {
-      const stores = new Map();
-      const limits = bindingOptions(executionOptions);
-      for (const [rawName, values] of recordEntries(valuesFor(executionOptions, 'kv'), 'KV namespace record')) {
-        const name = portableRuntimeHost.normalizeKvNamespace(rawName, limits);
-        const entries = new Map();
-        for (const [rawKey, value] of recordEntries(values, `KV namespace ${JSON.stringify(name)}`)) {
-          const key = portableRuntimeHost.normalizeKvKey(rawKey, limits);
-          entries.set(key, portableRuntimeHost.cloneKvValue(value, {
-            operation: 'seed',
-            maxBytes: limits.maxKvValueBytes,
-            maxDepth: limits.maxKvValueDepth,
-            maxEntries: limits.maxKvValueEntries
-          }));
-        }
-        stores.set(name, entries);
-      }
-      kvExecutions.set(executionId, stores);
-    }
+    if (!kvExecutions.has(executionId)) kvExecutions.set(executionId, createNodeKvReference({ ...baseOptions, ...executionOptions, ...bindingOptions(executionOptions) }));
     return kvExecutions.get(executionId);
   }
+  function kvStoresFor(executionOptions) { return kvReferenceFor(executionOptions).legacyStores(); }
 
   async function dispatchFetch(normalized, executionOptions = {}) {
     const fetchFixtures = normalizeFetchFixtures(executionOptions.fetches || baseOptions.fetches);
@@ -505,6 +492,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
   }
 
   return Object.freeze({
+    prepareConditionalKv(effect, execution) { return kvReferenceFor(execution).prepareConditionalKv(effect, execution); },
     id: 'node',
     version: CANONICAL_NODE_RUNTIME_VERSION,
     createCapabilities() { return {}; },
@@ -546,28 +534,9 @@ function createNodeProviderAdapter(baseOptions = {}) {
         );
       }
       if (effect.kind === 'kv.get' || effect.kind === 'kv.put') {
-        const limits = bindingOptions(executionOptions);
-        const namespace = portableRuntimeHost.normalizeKvNamespace(effect.store, limits);
-        const key = portableRuntimeHost.normalizeKvKey(effect.key, limits);
-        const stores = kvStoresFor(executionOptions);
-        if (!stores.has(namespace)) stores.set(namespace, new Map());
-        const store = stores.get(namespace);
-        if (effect.kind === 'kv.get') {
-          return portableRuntimeHost.cloneKvValue(store.get(key), {
-            operation: 'get',
-            allowUndefined: true,
-            maxBytes: bindingOptions(executionOptions).maxKvValueBytes,
-            maxDepth: bindingOptions(executionOptions).maxKvValueDepth,
-            maxEntries: bindingOptions(executionOptions).maxKvValueEntries
-          });
-        }
-        store.set(key, portableRuntimeHost.cloneKvValue(effect.value, {
-          operation: 'put',
-          maxBytes: bindingOptions(executionOptions).maxKvValueBytes,
-          maxDepth: bindingOptions(executionOptions).maxKvValueDepth,
-          maxEntries: bindingOptions(executionOptions).maxKvValueEntries
-        }));
-        return true;
+        const namespace = portableRuntimeHost.normalizeKvNamespace(effect.store, bindingOptions(executionOptions));
+        const store = kvReferenceFor(executionOptions).kv(namespace);
+        return effect.kind === 'kv.get' ? store.get(effect.key) : store.put(effect.key, effect.value);
       }
       if (effect.kind === 'event.emit') {
         const eventAdapter = executionOptions.eventAdapter || baseOptions.eventAdapter;
