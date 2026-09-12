@@ -179,6 +179,7 @@ function createNodeJavascriptHandler(application, options = {}) {
         config: options.config,
         secrets: options.secrets,
         kv: options.kv,
+        kvReference: options.kvReference,
         maxBindingNameBytes: options.maxBindingNameBytes,
         maxBindingValueBytes: options.maxBindingValueBytes,
         maxKvNamespaceBytes: options.maxKvNamespaceBytes,
@@ -203,6 +204,7 @@ function createNodeJavascriptHandler(application, options = {}) {
     const kv = hasDynamicBindings ? await resolveRequestOption(options.kv, requestContext) : options.kv;
     const bindings = staticBindings || createNodeJavascriptBindingCapabilities({
       config, secrets, kv,
+      kvReference: options.kvReference,
       maxBindingNameBytes: options.maxBindingNameBytes,
       maxBindingValueBytes: options.maxBindingValueBytes,
       maxKvNamespaceBytes: options.maxKvNamespaceBytes,
@@ -234,6 +236,7 @@ function createNodeJavascriptHandler(application, options = {}) {
       assets: options.assets,
       grip: options.grip,
       maxEffects: options.maxEffects,
+      kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
       maxRequestBodyBytes: options.maxRequestBodyBytes ?? options.maxBodyBytes,
       maxFetchBodyBytes: options.maxFetchBodyBytes,
       maxStructuredBodyBytes: options.maxStructuredBodyBytes,

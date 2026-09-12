@@ -6,6 +6,7 @@ const routeHandlerEffects = require('./route-handler-effects.js');
 const canonicalApiRuntime = require('./canonical-api-runtime.js');
 
 module.exports = {
+  ...require('./conditional-kv.js'),
   compiledWasmNodeAdapterKv,
   assetsProvider,
   routeHandlerEffects,

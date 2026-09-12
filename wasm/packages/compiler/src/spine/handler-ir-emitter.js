@@ -61,10 +61,11 @@ function providerEffectExpression(factory, sourceFile, site, providerOperation) 
   if (site.groupKey !== undefined) properties.push(literalProperty(factory, 'groupKey', stringLiteral(factory, site.groupKey)));
   if (providerOperation.kind === 'config.get' || providerOperation.kind === 'secret.get') {
     properties.push(literalProperty(factory, 'name', providerOperation.name));
-  } else if (providerOperation.kind === 'kv.get' || providerOperation.kind === 'kv.put') {
+  } else if (providerOperation.providerKind === 'kv') {
     properties.push(literalProperty(factory, 'store', providerOperation.store));
     properties.push(literalProperty(factory, 'key', providerOperation.key));
-    if (providerOperation.kind === 'kv.put') properties.push(literalProperty(factory, 'value', providerOperation.value));
+    if (providerOperation.generation) properties.push(literalProperty(factory, 'generation', providerOperation.generation));
+    if (providerOperation.value) properties.push(literalProperty(factory, 'value', providerOperation.value));
   } else if (providerOperation.kind === 'event.emit') {
     properties.push(literalProperty(factory, 'type', providerOperation.type));
     properties.push(literalProperty(factory, 'emission', providerOperation.emission));

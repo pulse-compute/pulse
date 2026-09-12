@@ -6,6 +6,7 @@ const {
 } = require('@pulse-compute/wasm-contracts/handler/surface-contract');
 const {
   recognizeHandlerSurface,
+  extractKvNamespaceDeclaration,
   unwrapExpression
 } = require('./handler-surface-authority.js');
 const {
@@ -92,6 +93,7 @@ function normalizeManagedHandler(functionNode, options = {}) {
   const diagnostics = [];
   const warnings = [];
   const changes = [];
+  let kvAliases = new Map();
   const awaitedRoots = new WeakSet();
   const parallelMemberRoots = new WeakSet();
   const userAuthoredAsync = (functionNode.modifiers || []).some((modifier) => modifier.kind === ts.SyntaxKind.AsyncKeyword);
@@ -115,6 +117,7 @@ function normalizeManagedHandler(functionNode, options = {}) {
   function surfaceFor(node, position) {
     return recognizeHandlerSurface(node, {
       ctxName,
+      kvAliases,
       nextName,
       role: options.role,
       strict,
@@ -126,6 +129,15 @@ function normalizeManagedHandler(functionNode, options = {}) {
 
   const transformer = (context) => {
     function visit(node) {
+      if (ts.isBlock(node)) {
+        const inherited = kvAliases; kvAliases = new Map(inherited);
+        try { return ts.visitEachChild(node, visit, context); } finally { kvAliases = inherited; }
+      }
+      if (ts.isVariableStatement(node)) {
+        const namespace = extractKvNamespaceDeclaration(node, ctxName, { unwrap: true });
+        for (const declaration of node.declarationList.declarations) if (ts.isIdentifier(declaration.name)) kvAliases.delete(declaration.name.text);
+        if (namespace) kvAliases.set(namespace.variableName, namespace.store);
+      }
       if (node !== functionNode && ts.isFunctionLike(node)) {
         const nestedAsync = (node.modifiers || []).some((modifier) => modifier.kind === ts.SyntaxKind.AsyncKeyword);
         if (nestedAsync) diagnostics.push(createHandlerDiagnostic({

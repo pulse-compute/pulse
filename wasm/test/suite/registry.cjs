@@ -99,6 +99,13 @@ const tasks = Object.freeze({
   's3-design-contract': nodeTask('test/s3/assert-s3-design-contract.cjs', {
     description: 'S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes'
   }),
+  'kv-conditional-runtime': nodeTask('test/kv/assert-kv-conditional-runtime.cjs', {
+    description: 'K2 production conditional KV types, wire bounds, snapshots and outcome contracts'
+  }),
+  'kv-conditional-conformance': nodeTask('test/kv/assert-kv-conditional-conformance.cjs', {
+    evidence: 'conformance', timeoutMs: 180000,
+    description: 'K2 JavaScript, compiled Native and canonical reference races, token transport and dispatch lifecycle'
+  }),
   'kv-design-contract': nodeTask('test/kv/assert-kv-design-contract.cjs', {
     description: 'K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty'
   }),
@@ -777,6 +784,7 @@ const profiles = Object.freeze({
     'logging-contract',
     's3-design-contract',
     'kv-design-contract',
+    'kv-conditional-runtime',
     's3-read-contract',
     's3-write-contract',
     'crypto-config-planning',
@@ -838,6 +846,7 @@ const profiles = Object.freeze({
     'catalog-router-parity',
     'fetch-projections-request-bodies',
     'config-secrets-kv-redaction',
+    'kv-conditional-conformance',
     'schema-codecs',
     'node-cross-target-conformance',
     'grip-cross-target-conformance',

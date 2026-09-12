@@ -207,6 +207,10 @@ function createContext(frame) {
     kv(name) {
       const namespace = normalizeKvNamespace(name, options);
       return Object.freeze({
+        ...Object.fromEntries(['getVersioned', 'insertIfAbsent', 'compareAndSwap'].map((operation) => [operation, (key, generationOrValue, value) => effects.dispatch({
+          kind: `kv.${operation}`, providerKind: 'kv', operation, capability: `kv.${operation}`, namespace, key,
+          ...(operation === 'compareAndSwap' ? { generation: generationOrValue, value } : operation === 'insertIfAbsent' ? { value: generationOrValue } : {})
+        })])),
         get(key) {
           const normalizedKey = normalizeKvKey(key, options);
           return effects.dispatch({
