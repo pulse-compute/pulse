@@ -1,5 +1,7 @@
 'use strict';
 
+const { ROUTER_API_DEFINITIONS } = require('../definitions/router-api.js');
+
 const LIFECYCLE_AUTHORING_ALIGNMENT_VERSION = 'pulsewasm.lifecycle-authoring-alignment.v1';
 const LIFECYCLE_AUTHORING_ALIGNMENT_PHASE = '52';
 const LIFECYCLE_AUTHORING_ALIGNMENT_ARTIFACT = 'lifecycle-authoring-alignment.json';
@@ -19,7 +21,9 @@ const LIFECYCLE_AUTHORING_ALIGNMENT_POLICY = Object.freeze({
   purpose: 'make the beta lowerable authoring subset explicit and fail fast when route methods and package-owned lowerable effect methods diverge',
   productionCompletenessRequired: false,
   simpleUserFunctionLoweringIntentional: true,
-  routerMethods: Object.freeze(['GET', 'HEAD', 'POST']),
+  routerMethods: Object.freeze(ROUTER_API_DEFINITIONS
+    .filter((definition) => definition.kind === 'route')
+    .map((definition) => definition.method)),
   packageEffectAlignment: Object.freeze({
     assets: Object.freeze({
       rule: 'assets.lookup method must match the owning router route method when route metadata is available',

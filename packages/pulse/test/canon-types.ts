@@ -38,6 +38,10 @@ void profile
 
 const handler: Handler = async (ctx: PulseContext): Promise<PulseResult> => ctx.json({ ok: true })
 app.get('/health', handler)
+const mutationApp: Pulse = app.put('/items/:id', handler)
+  .patch('/items/:id', async (ctx) => ctx.text(ctx.param('id') ?? 'missing'))
+  .delete('/items/:id', handler)
+void mutationApp
 
 const eventDeclaration: PulseEventDeclaration = { schema: 'events.DeviceButton' }
 const eventHandler: PulseEventHandler<{ readonly enabled: boolean }> = async (ctx: PulseEventContext<{ readonly enabled: boolean }>) => {

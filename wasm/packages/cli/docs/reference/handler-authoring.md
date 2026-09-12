@@ -189,7 +189,7 @@ compatible merely because both targets are JavaScript.
 ## Router topology and terminal transfer
 
 `Router` is a compile-time authoring marker. The v2 surface supports static
-`get`, `head`, and `post` routes; exact, named-parameter, and trailing-wildcard
+`get`, `head`, `post`, `put`, `patch`, and `delete` routes; exact, named-parameter, and trailing-wildcard
 paths; global and path-scoped middleware; acyclic mounts; fallthrough; and
 error middleware.
 

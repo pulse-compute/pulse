@@ -117,12 +117,12 @@ normal lane ends as `404 Not Found`; an unhandled error lane ends as
 
 The Beta Router supports:
 
-- `use`, `get`, `head`, `post`, `mount`, and `error`;
+- `use`, `get`, `head`, `post`, `put`, `patch`, `delete`, `mount`, and `error`;
 - exact paths, named `:parameters`, and a trailing `*` wildcard;
 - statically declared, acyclic mounted routers;
 - first-match order and explicit route fallthrough.
 
-It does not support `put`, `patch`, `delete`, regular-expression routes,
+It does not support `options`, `trace`, `connect`, regular-expression routes,
 runtime route registration, Express Router plugins, or hidden server lifecycle
 hooks. Keep an unsupported endpoint on its existing service or redesign it
 before moving that endpoint into Pulse; selecting a JavaScript target does not
@@ -165,7 +165,7 @@ Pulse never changes targets or falls back automatically.
 
 1. Inventory routes, methods, middleware order, error paths, body parsing, and
    ambient host dependencies.
-2. Move one supported `GET`, `HEAD`, or `POST` route to a statically declared
+2. Move one supported `GET`, `HEAD`, `POST`, `PUT`, `PATCH`, or `DELETE` route to a statically declared
    `Pulse` application.
 3. Replace response mutation with returned `ctx.json`, `ctx.text`, or
    `ctx.response` results.

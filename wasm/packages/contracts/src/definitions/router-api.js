@@ -34,6 +34,9 @@ const ROUTER_API_DEFINITIONS = Object.freeze([
   createHttpRouteDefinition('get', 'GET'),
   createHttpRouteDefinition('head', 'HEAD'),
   createHttpRouteDefinition('post', 'POST'),
+  createHttpRouteDefinition('put', 'PUT'),
+  createHttpRouteDefinition('patch', 'PATCH'),
+  createHttpRouteDefinition('delete', 'DELETE'),
   Object.freeze({
     name: 'mount',
     kind: 'mount',

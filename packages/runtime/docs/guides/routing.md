@@ -76,7 +76,7 @@ export default app
 
 - `new Router()` with a default-exported root router;
 - `use(handler)` and `use(path, handler)` middleware;
-- `get`, `head`, and `post` registrations;
+- `get`, `head`, `post`, `put`, `patch`, and `delete` registrations;
 - exact paths, named `:parameters`, and a trailing `*` wildcard;
 - static acyclic `mount` composition;
 - named or inline async-shaped route handlers using `(ctx)` or `(ctx, next)`;
@@ -86,6 +86,11 @@ export default app
 - first-match order, explicit route fallthrough, and compiler-owned 404/500 exhaustion.
 
 Every Router handler uses the normal canonical context. Fetches, schemas, config, secrets, KV, opaque responses, and trusted package effects lower into the same native execution plan as single-handler authoring.
+
+`Pulse` inherits the same route registration methods. Each registration matches
+its exact HTTP method; a method mismatch advances the route cursor and normal
+exhaustion remains `404`. There is no automatic `OPTIONS` or `405` response.
+Ingress route methods do not widen the separate outbound `ctx.fetch` contract.
 
 ## `next()` is a terminal transfer
 

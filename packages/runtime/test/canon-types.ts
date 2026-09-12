@@ -37,6 +37,9 @@ router.use(async (ctx, next) => {
   return next()
 })
 router.get('/health', async (ctx) => ctx.json({ ok: true }))
+router.put('/items/:id', async (ctx) => ctx.json({ id: ctx.param('id') }))
+  .patch('/items/:id', async (ctx, next) => ctx.param('id') ? ctx.text('patched') : next())
+  .delete('/items/:id', async (ctx) => ctx.text('', { status: 204 }))
 
 const handler: PulseHandler = async (ctx: PulseContext) => ctx.text('ok')
 void handler

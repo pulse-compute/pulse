@@ -48,6 +48,9 @@ api.get('/health', health)
 api.get('/users/:id', user)
 api.head('/status', (ctx) => ctx.text('', { status: 204, headers: [['x-route', 'status']] }))
 api.post('/echo', (ctx) => ctx.json({ method: ctx.req.method }))
+api.put('/users/:id', async (ctx) => ctx.json({ method: ctx.req.method, id: ctx.param('id') }))
+api.patch('/users/:id', async (ctx) => ctx.json({ method: ctx.req.method, id: ctx.param('id') }))
+api.delete('/users/:id', async (ctx) => ctx.json({ method: ctx.req.method, id: ctx.param('id') }))
 api.get('/files/*', (ctx) => ctx.text(ctx.req.path))
 app.mount('/api', api)
 export default app
@@ -66,6 +69,16 @@ function compileAt(root) {
 
 function bodyJson(result) {
   return JSON.parse(result.response.body);
+}
+
+async function assertMutationRoutes(execute) {
+  for (const method of ['PUT', 'PATCH', 'DELETE']) {
+    const result = await execute({ method, path: '/api/users/7' });
+    assert.equal(result.response.status, 200);
+    assert.deepEqual(bodyJson(result), { method, id: '7' });
+  }
+  const unsupported = await execute({ method: 'OPTIONS', path: '/api/users/7' });
+  assert.equal(unsupported.response.status, 404, 'method mismatch preserves Router exhaustion semantics');
 }
 
 function assertRouterDiagnostic(source, code) {
@@ -98,6 +111,9 @@ async function main() {
       ['GET', '/api/users/:id'],
       ['HEAD', '/api/status'],
       ['POST', '/api/echo'],
+      ['PUT', '/api/users/:id'],
+      ['PATCH', '/api/users/:id'],
+      ['DELETE', '/api/users/:id'],
       ['GET', '/api/files/*']
     ]);
     assert.equal(copyA.metadata.sourceHash, copyB.metadata.sourceHash, 'authoring hash must not depend on checkout location');
@@ -105,6 +121,7 @@ async function main() {
     assert.equal(copyA.generatedSource, copyB.generatedSource, 'generated canonical handler must be deterministic');
 
     const program = loadCanonicalModule(copyA);
+    await assertMutationRoutes((request) => executeCanonicalProgram(program, { request }));
     let result = await executeCanonicalProgram(program, { request: { method: 'GET', path: '/api/health' } });
     assert.deepEqual(bodyJson(result), { ok: true });
     result = await executeCanonicalProgram(program, { request: { method: 'POST', path: '/api/echo' } });
@@ -125,7 +142,7 @@ async function main() {
     assert.equal(planA.entry.kind, 'router');
     assert.equal(planA.planHash, planB.planHash, 'route-aware native plan hash must be checkout-independent');
     assert.equal(stableStringify(planA), stableStringify(planB), 'route-aware native plan JSON must be deterministic');
-    assert.equal(planA.routing.routes.length, 5);
+    assert.equal(planA.routing.routes.length, 8);
     const planJson = stableStringify(planA);
     assert.match(planJson, /\"name\":\"router\.match\"/);
     assert.match(planJson, /\"name\":\"router\.param\"/);
@@ -141,6 +158,9 @@ async function main() {
     }
 
     const nativeA = compileCanonicalNativePlan(planA, { cwd: repoRoot });
+    await assertMutationRoutes((request) => nativeHost.executeCanonicalNativeModule(nativeA, {
+      request, providerAdapter: createNodeProviderAdapter()
+    }));
     const nativeB = compileCanonicalNativePlan(planB, { cwd: os.tmpdir() });
     assert.deepEqual(nativeA.wasm, nativeB.wasm, 'portable routed Wasm must be deterministic');
     assert.ok(nativeA.inspection.imports.some((entry) => entry.module === 'pulse_host' && entry.name === 'router_match'));
@@ -169,6 +189,7 @@ async function main() {
       requirePlatformCapability: false,
       canonicalBuild: true
     });
+    await assertMutationRoutes((request) => fastlyMock.executeFastlyNativePlatformCapabilities(fastlyA, { request }));
     assert.deepEqual(fastlyA.wasm, fastlyB.wasm, 'native Fastly routed Wasm must be deterministic');
     assert.equal(fastlyA.inspection.imports.some((entry) => /pulse_host|wasi|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false);
     result = fastlyMock.executeFastlyNativePlatformCapabilities(fastlyA, {
@@ -180,6 +201,7 @@ async function main() {
     assert.equal(result.response.status, 404);
 
     const base = `import { Router } from '@pulse-compute/runtime'; const app = new Router();`;
+    assertRouterDiagnostic(`${base} app.options('/', async (ctx) => ctx.text('x')); export default app;`, 'PULSEWASM_UNSUPPORTED_ROUTER_METHOD');
     assertRouterDiagnostic(`${base} app.on('connect', (ctx) => ctx.text('x')); app.get('/', (ctx) => ctx.text('ok')); export default app;`, 'PULSE_CANONICAL_ROUTER_OPERATION_RETIRED');
     assertRouterDiagnostic(`${base} app.get('/users/:id', (ctx) => ctx.json({ value: ctx.param(name) })); export default app;`, 'PULSE_CANONICAL_ROUTER_PARAM_DYNAMIC');
     assertRouterDiagnostic(`${base} app.get('/', (ctx) => ctx.resolve(ctx.fetch('https://example.test'))); export default app;`, 'PULSE_CANONICAL_ROUTER_RESOLVE_RETIRED');

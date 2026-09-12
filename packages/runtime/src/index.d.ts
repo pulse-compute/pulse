@@ -172,7 +172,7 @@ export type PulseErrorHandler = RouterErrorHandler;
 
 /**
  * Static authoring marker compiled by Pulse. Router instances are not runtime dispatchers.
- * Canonical v2 supports terminal middleware/error transfer, get/head/post routes,
+ * Canonical v2 supports terminal middleware/error transfer, get/head/post/put/patch/delete routes,
  * fallthrough, and acyclic static mounts.
  */
 export declare class Router {
@@ -181,6 +181,9 @@ export declare class Router {
   get(path: string, handler: RouteHandler): this;
   head(path: string, handler: RouteHandler): this;
   post(path: string, handler: RouteHandler): this;
+  put(path: string, handler: RouteHandler): this;
+  patch(path: string, handler: RouteHandler): this;
+  delete(path: string, handler: RouteHandler): this;
   mount(path: string, router: Router): this;
   error(handler: RouterErrorHandler): this;
 }
