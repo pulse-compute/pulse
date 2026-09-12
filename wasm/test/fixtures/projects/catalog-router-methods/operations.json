@@ -1,0 +1,76 @@
+{
+  "source": "catalog-platform-foundation-v0.4.0/contracts/http/contract.json",
+  "sourceSha256": "5584551ced9d19958383e70e25aa9ee0d5ad440c0d45cf35ddc6d9ed274aaa70",
+  "operations": [
+    {
+      "method": "PATCH",
+      "path": "/api/v1/resources/:resourceId",
+      "operationId": "updateResource"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/resources/:resourceId/visibility",
+      "operationId": "setResourceVisibility"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/resources/:resourceId",
+      "operationId": "deleteResource"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/resources/:resourceId/acknowledgement",
+      "operationId": "acknowledgeResourceComments"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/capability-requests/:requestId",
+      "operationId": "updateCapabilityRequest"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/hosting-requests/:hostingRequestId",
+      "operationId": "updateHostingRequest"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/resources/:resourceId/signals/:signalType",
+      "operationId": "setResourceSignal"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/resources/:resourceId/signals/:signalType",
+      "operationId": "removeResourceSignal"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/capability-requests/:requestId/signals/:signalType",
+      "operationId": "setCapabilityRequestSignal"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/capability-requests/:requestId/signals/:signalType",
+      "operationId": "removeCapabilityRequestSignal"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/resources/:resourceId/relationships/:relationshipId",
+      "operationId": "deleteResourceRelationship"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/capability-requests/:requestId/relationships/:relationshipId",
+      "operationId": "deleteCapabilityRequestRelationship"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/me/stars/:resourceId",
+      "operationId": "starResource"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/me/stars/:resourceId",
+      "operationId": "unstarResource"
+    }
+  ]
+}
