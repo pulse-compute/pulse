@@ -408,8 +408,8 @@ cycles, class instances, nonfinite numbers, and nested `undefined` are rejected.
 and cross-request lifetime remain provider capabilities rather than properties
 of the common API.
 
-The K2 Node reference also realizes these portable operations on JavaScript and
-compiled Native targets, through direct await or keyed `ctx.parallel`:
+The Node reference on JavaScript and Native, and the Fastly Native adapter,
+realize these operations through direct await or keyed `ctx.parallel`:
 
 | Method | Result |
 | --- | --- |
@@ -434,8 +434,10 @@ Timeouts before dispatch are `not-stored`; unconfirmed writes after dispatch are
 never implies rollback.
 
 The Node realization is an explicit in-memory reference instance, not a durable
-storage guarantee. Fastly conditional KV realization remains pending; its
-JavaScript SDK is incomplete capability mapping and does not define or block
+storage guarantee. Fastly Native uses lossless 64-bit generation metadata and
+conditional host operations with bounded readiness and body acquisition. Deployed
+cross-location acceptance remains a separate gate. The Fastly JavaScript SDK is
+incomplete capability mapping and does not define or block
 Pulse's contract. Conditional wire values use the strict
 `{"__pulseKv":1,"value":...}` envelope; legacy raw JSON requires explicit migration.
 

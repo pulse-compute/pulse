@@ -594,6 +594,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     }
   };
 
+  const kvEvidence = options.conditionalKv ? require('./conditional-kv-host.js').attachConditionalKvHost(imports, {
+    view, writeU32, writeU64, readBytes, readUtf8, alloc, bodies, bodyBytes, trace,
+    now: () => monotonicMs, advance: ms => { monotonicMs += ms; }
+  }, options.conditionalKv) : undefined;
+
   // Model invocation termination, including cancellation raised by a host call.
   // Throwing stops the Wasm invocation; it never fabricates an effect result.
   const checkActive = () => { if (options.signal && options.signal.aborted) throw options.signal.reason || new Error('Request cancelled.'); };
@@ -608,6 +613,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   if (typeof instance.exports._start !== 'function') {
     throw new FastlyNativePlatformCapabilitiesMockError('Pass98 native module is missing _start.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_START_MISSING');
   }
+  if (options.conditionalKv && options.conditionalKv.deadlineNs !== undefined) instance.exports.pulse_fastly_kv_request_deadline(BigInt(options.conditionalKv.deadlineNs));
   instance.exports._start();
   for (const entry of trace) if (entry.url && privateUrls.has(entry.url)) entry.url = '[REDACTED]';
   const lastError = typeof instance.exports.pulse_fastly_last_error === 'function'
@@ -650,6 +656,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     logs: Object.freeze(logs),
     outboundRequests: Object.freeze(outboundRequests),
     stores: Object.freeze({ config: snapshotStores(configStores), secrets: Object.fromEntries([...secretStores].map(([name, values]) => [name, Object.fromEntries([...values].map(([key]) => [key, '[REDACTED]']))])), kv: snapshotStores(kvStores, true) }),
+    kvEvidence,
     instance
   });
 }

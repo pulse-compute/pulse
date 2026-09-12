@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const conditionalKv = require('./kv-native.js');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -94,6 +95,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES = 65536;
 const FASTLY_NATIVE_SIZE_OPTIMIZATION = EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
+  ...conditionalKv.KV_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   ...require('./s3-native.js').S3_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   Object.freeze(['fastly_abi', 'init']),
   Object.freeze(['fastly_http_req', 'body_downstream_get']),
@@ -152,7 +154,10 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'jwt.verify': 11,
   's3.head': 12,
   's3.getText': 13,
-  's3.putText': 14
+  's3.putText': 14,
+  'kv.getVersioned': 15,
+  'kv.insertIfAbsent': 16,
+  'kv.compareAndSwap': 17
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -165,6 +170,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'secret.get',
   'kv.get',
   'kv.put',
+  ...conditionalKv.KV_CONDITIONAL_KINDS,
   'grip.channel',
   'grip.hold',
   'grip.publish',
@@ -181,6 +187,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'secret.get',
   'kv.get',
   'kv.put',
+  ...conditionalKv.KV_CONDITIONAL_KINDS,
   'assets.lookup',
   'grip.channel',
   'grip.hold',
@@ -717,7 +724,7 @@ function resolveCapabilityBindings(plan, options = {}) {
 
   const kv = [];
   for (const [index, effect] of effects.entries()) {
-    if (effect.kind !== 'kv.get' && effect.kind !== 'kv.put' && effect.kind !== 'assets.lookup') continue;
+    if (effect.kind !== 'kv.get' && effect.kind !== 'kv.put' && !conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) && effect.kind !== 'assets.lookup') continue;
     const packagePayload = inputExpression(effect, 'payload');
     const logical = effect.resource && effect.resource.kind === 'literal'
       && effect.kind !== 'assets.lookup'
@@ -729,6 +736,7 @@ function resolveCapabilityBindings(plan, options = {}) {
         resource: effect.resource
       });
     }
+    if (conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) && Buffer.byteLength(logical, 'utf8') > conditionalKv.KV_CONDITIONAL_LIMITS.namespaceBytes) fail('Conditional KV namespace exceeds its portable bound.', 'PULSE_FASTLY_NATIVE_KV_NAMESPACE_DYNAMIC');
     const physical = stringBinding(
       kvMap[logical],
       `Fastly KV binding for ${logical}`,
@@ -883,6 +891,7 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('secret.get') || jwtSecretRequired || gripAuthenticationRequired) {
     for (const key of ['fastly_secret_store:open', 'fastly_secret_store:get', 'fastly_secret_store:plaintext']) keys.add(key);
   }
+  for (const kind of conditionalKv.KV_CONDITIONAL_KINDS) if (kinds.has(kind)) for (const key of conditionalKv.kvImports(kind)) keys.add(key);
   if (kinds.has('jwt.verify')) keys.add('wasi_snapshot_preview1:clock_time_get');
   if (kinds.has('kv.get') || kinds.has('kv.put') || kinds.has('assets.lookup')) keys.add('fastly_kv_store:open');
   if (kinds.has('kv.get') || kinds.has('assets.lookup')) for (const key of ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']) keys.add(key);
@@ -1030,7 +1039,7 @@ function effectResultSource(plan, bindings) {
   for (const [index, effect] of (plan.effects || []).entries()) {
     const result = effect.result || {};
     const decoder = result.decoder;
-    const waiter = ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
+    const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
       ? '__pulse_fastly_wait_fetch'
       : effect.kind === 'grip.publish'
         ? '__pulse_fastly_wait_grip_publish'
@@ -1075,6 +1084,7 @@ function effectDispatchSource(plan) {
     's3.putText': '__pulse_fastly_s3_begin',
     'kv.get': '__pulse_fastly_kv_get_begin',
     'kv.put': '__pulse_fastly_kv_put_begin',
+    ...Object.fromEntries(conditionalKv.KV_CONDITIONAL_KINDS.map(kind => [kind, '__pulse_fastly_kv_conditional_begin'])),
     'assets.lookup': '__pulse_fastly_assets_begin',
     'grip.channel': '__pulse_fastly_grip_channel_begin',
     'grip.hold': '__pulse_fastly_grip_hold_begin',
@@ -1274,11 +1284,14 @@ class __PulseJsonParser {
   source: string
   index: i32 = 0
   failed: bool = false
-  constructor(source: string) { this.source = source }
+  tooLarge: bool = false
+  entries: i32 = 0
+  constructor(source: string, public conditionalKv: bool = false) { this.source = source }
   skip(): void { while (this.index < this.source.length) { const c = this.source.charCodeAt(this.index); if (c != 32 && c != 9 && c != 10 && c != 13) return; this.index += 1 } }
   parse(): i32 { this.skip(); const value = this.value(0); this.skip(); if (this.index != this.source.length) this.failed = true; return this.failed ? 0 : value }
   value(depth: i32): i32 {
-    this.skip(); if (this.index >= this.source.length || depth > 64) { this.failed = true; return 0 }
+    this.skip(); if (this.conditionalKv && (depth > ${conditionalKv.KV_CONDITIONAL_LIMITS.depth + 1} || ++this.entries > ${conditionalKv.KV_CONDITIONAL_LIMITS.entries + 2})) { this.failed = true; this.tooLarge = true; return 0 }
+    if (this.index >= this.source.length || (!this.conditionalKv && depth > ${plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 128 : 64})) { this.failed = true; return 0 }
     const c = this.source.charCodeAt(this.index)
     if (c == 34) return __pulse_fastly_string_value(this.string())
     if (c == 123) return this.object(depth + 1)
@@ -1290,37 +1303,43 @@ class __PulseJsonParser {
     this.failed = true; return 0
   }
   string(): string {
-    let output = ""; this.index += 1
-    while (this.index < this.source.length) {
-      let c = this.source.charCodeAt(this.index); this.index += 1
-      if (c == 34) return output
+    // Find a bounded span, then decode each UTF-16 unit once. Concatenating one
+    // character at a time exhausts stub/fixed memory on a valid maximum KV value.
+    const start = this.index + 1; let end = start;
+    while (end < this.source.length) {
+      const c = this.source.charCodeAt(end);
+      if (c == 34) break;
+      if (c == 92) end += 1;
+      end += 1;
+    }
+    if (end >= this.source.length) { this.failed = true; return "" }
+    const output = new Uint16Array(end - start); let count = 0; this.index = start;
+    while (this.index < end) {
+      let c = this.source.charCodeAt(this.index++);
       if (c == 92) {
-        if (this.index >= this.source.length) { this.failed = true; return "" }
-        c = this.source.charCodeAt(this.index); this.index += 1
-        if (c == 34 || c == 92 || c == 47) output += String.fromCharCode(c)
-        else if (c == 98) output += String.fromCharCode(8)
-        else if (c == 102) output += String.fromCharCode(12)
-        else if (c == 110) output += "\n"
-        else if (c == 114) output += "\r"
-        else if (c == 116) output += "\t"
+        if (this.index >= end) { this.failed = true; return "" }
+        c = this.source.charCodeAt(this.index++);
+        if (c == 34 || c == 92 || c == 47) {}
+        else if (c == 98) c = 8;
+        else if (c == 102) c = 12;
+        else if (c == 110) c = 10;
+        else if (c == 114) c = 13;
+        else if (c == 116) c = 9;
         else if (c == 117) {
-          if (this.index + 4 > this.source.length) { this.failed = true; return "" }
-          let code = 0
-          for (let digitIndex = 0; digitIndex < 4; digitIndex += 1) {
-            const digitCode = this.source.charCodeAt(this.index + digitIndex)
-            let digit = -1
-            if (digitCode >= 48 && digitCode <= 57) digit = digitCode - 48
-            else if (digitCode >= 65 && digitCode <= 70) digit = digitCode - 55
-            else if (digitCode >= 97 && digitCode <= 102) digit = digitCode - 87
+          if (this.index + 4 > end) { this.failed = true; return "" }
+          c = 0;
+          for (let i = 0; i < 4; i++) {
+            const d = this.source.charCodeAt(this.index++);
+            const digit = d >= 48 && d <= 57 ? d - 48 : d >= 65 && d <= 70 ? d - 55 : d >= 97 && d <= 102 ? d - 87 : -1;
             if (digit < 0) { this.failed = true; return "" }
-            code = (code << 4) | digit
+            c = (c << 4) | digit;
           }
-          this.index += 4; output += String.fromCharCode(code)
         } else { this.failed = true; return "" }
       } else if (c < 32) { this.failed = true; return "" }
-      else output += String.fromCharCode(c)
+      output[count++] = u16(c);
     }
-    this.failed = true; return ""
+    this.index = end + 1;
+    return String.UTF16.decodeUnsafe(output.dataStart, count * 2);
   }
   numberValue(): i32 {
     const start = this.index
@@ -1369,6 +1388,7 @@ class __PulseJsonParser {
     while (!this.failed) {
       this.skip(); if (this.index >= this.source.length || this.source.charCodeAt(this.index) != 34) { this.failed = true; break }
       const key = this.string(); this.skip()
+      if (this.conditionalKv && __pulse_fastly_find(__pulse_fastly_value(output), key) >= 0) { this.failed = true; break }
       if (this.index >= this.source.length || this.source.charCodeAt(this.index) != 58) { this.failed = true; break }
       this.index += 1; host_value_object_set(output, __pulse_fastly_string_value(key), this.value(depth)); this.skip()
       if (this.index >= this.source.length) { this.failed = true; break }
@@ -1430,13 +1450,19 @@ function __pulse_fastly_redact(input: string): string { let output = input; for 
 function host_log(level: i32, messageHandle: i32): void { let endpoint = __pulse_fastly_log_handle; if (endpoint == -2) return; if (endpoint == -1) { const name = __pulse_fastly_utf8("stdout"); const out = __pulse_fastly_out_i32(); if (fastly_log_endpoint_get(changetype<usize>(name), name.byteLength, changetype<usize>(out)) != FASTLY_STATUS_OK) { __pulse_fastly_log_handle = -2; return } endpoint = __pulse_fastly_out_value(out); __pulse_fastly_log_handle = endpoint } let label = "unknown"; if (level == 1) label = "error"; else if (level == 2) label = "warn"; else if (level == 3) label = "info"; else if (level == 4) label = "debug"; const bytes = __pulse_fastly_utf8("[pulse:" + label + "] " + __pulse_fastly_redact(__pulse_fastly_string(messageHandle)) + "\n"); const written = __pulse_fastly_out_i32(); fastly_log_write(endpoint, changetype<usize>(bytes), bytes.byteLength, changetype<usize>(written)) }
 function __pulse_fastly_number(handle: i32): f64 { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_NUMBER) return value.number; if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? 1.0 : 0.0; if (value.kind == PULSE_VALUE_STRING) return F64.parseFloat(value.text); return 0.0 }
 function __pulse_fastly_hex(value: i32): string { return String.fromCharCode(value < 10 ? 48 + value : 87 + value) }
+function __pulse_fastly_is_unpaired(value: string, i: i32): bool {
+  const c = value.charCodeAt(i);
+  if (c >= 0xd800 && c <= 0xdbff) return i + 1 >= value.length || value.charCodeAt(i + 1) < 0xdc00 || value.charCodeAt(i + 1) > 0xdfff;
+  if (c >= 0xdc00 && c <= 0xdfff) return i == 0 || value.charCodeAt(i - 1) < 0xd800 || value.charCodeAt(i - 1) > 0xdbff;
+  return false;
+}
 function __pulse_fastly_quote(value: string): string {
   // Count once and write UTF-16 units once. Repeated concatenation can allocate
   // gigabytes for a valid bounded string when every byte needs JSON escaping.
   let size = 2;
   for (let i = 0; i < value.length; i++) {
     const c = value.charCodeAt(i);
-    size += c == 34 || c == 92 || c == 8 || c == 9 || c == 10 || c == 12 || c == 13 ? 2 : c < 32 ? 6 : 1;
+    size += c == 34 || c == 92 || c == 8 || c == 9 || c == 10 || c == 12 || c == 13 ? 2 : (c < 32 || __pulse_fastly_is_unpaired(value, i)) ? 6 : 1;
   }
   const out = new Uint16Array(size); let cursor = 0; out[cursor++] = 34;
   for (let i = 0; i < value.length; i++) {
@@ -1444,8 +1470,9 @@ function __pulse_fastly_quote(value: string): string {
     if (c == 34 || c == 92) { out[cursor++] = 92; out[cursor++] = u16(c); }
     else if (c == 8 || c == 9 || c == 10 || c == 12 || c == 13) {
       out[cursor++] = 92; out[cursor++] = c == 8 ? 98 : c == 9 ? 116 : c == 10 ? 110 : c == 12 ? 102 : 114;
-    } else if (c < 32) {
-      out[cursor++] = 92; out[cursor++] = 117; out[cursor++] = 48; out[cursor++] = 48;
+    } else if (c < 32 || __pulse_fastly_is_unpaired(value, i)) {
+      out[cursor++] = 92; out[cursor++] = 117;
+      out[cursor++] = u16('0123456789abcdef'.charCodeAt((c >> 12) & 15)); out[cursor++] = u16('0123456789abcdef'.charCodeAt((c >> 8) & 15));
       out[cursor++] = u16('0123456789abcdef'.charCodeAt((c >> 4) & 15)); out[cursor++] = u16('0123456789abcdef'.charCodeAt(c & 15));
     } else out[cursor++] = u16(c);
   }
@@ -1453,7 +1480,7 @@ function __pulse_fastly_quote(value: string): string {
   return String.UTF16.decodeUnsafe(out.dataStart, out.byteLength);
 }
 function __pulse_fastly_json(handle: i32, depth: i32): string {
-  if (depth > 64) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); return "null" }
+  if (depth > ${plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 128 : 64}) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); return "null" }
   const value = __pulse_fastly_value(handle)
   if (value.kind == PULSE_VALUE_UNDEFINED || value.kind == PULSE_VALUE_NULL) return "null"
   if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? "true" : "false"
@@ -1466,7 +1493,24 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
 function __pulse_fastly_read_req_string(kind: i32): string { const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = kind == 0 ? fastly_http_req_method_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)) : fastly_http_req_uri_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 10 + kind, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
-function __pulse_fastly_read_body(handle: i32, effectIndex: i32): string { let out = ""; let total = 0; while (true) { const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const read = __pulse_fastly_out_i32(); const status = fastly_http_body_read(handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(read)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" } const count = __pulse_fastly_out_value(read); if (count <= 0) return out; total += count; if (total > __PULSE_SCHEMA_MAX_BYTES && __PULSE_SCHEMA_MAX_BYTES > 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, effectIndex); return "" } out += __pulse_fastly_decode(buffer, count) } }
+function __pulse_fastly_read_body(handle: i32, effectIndex: i32): string {
+  const chunks = new Array<Uint8Array>(); let total = 0;
+  while (true) {
+    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();
+    const status = fastly_http_body_read(handle, buffer.dataStart, buffer.length, changetype<usize>(read));
+    if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
+    const count = __pulse_fastly_out_value(read);
+    if (count < 0 || count > buffer.length) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
+    if (!count) break;
+    total += count;
+    if (total > __PULSE_SCHEMA_MAX_BYTES && __PULSE_SCHEMA_MAX_BYTES > 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
+    chunks.push(buffer.subarray(0, count));
+  }
+  // UTF-8 scalars may straddle host read chunks. Decode the bounded body once.
+  const bytes = new Uint8Array(total); let offset = 0;
+  for (let i = 0; i < chunks.length; i++) { bytes.set(chunks[i], offset); offset += chunks[i].length; }
+  return __pulse_fastly_decode(bytes, total);
+}
 function __pulse_fastly_request_header_text(name: string): string { const nameBytes = __pulse_fastly_utf8(name); const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = fastly_http_req_header_value_get(__pulse_fastly_request_handle, changetype<usize>(nameBytes), nameBytes.byteLength, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status == FASTLY_STATUS_NONE) return ""; if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 22, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
 function __pulse_fastly_fetch_header_text(responseHandle: i32, name: string): string { const nameBytes = __pulse_fastly_utf8(name); const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = fastly_http_resp_header_value_get(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status == FASTLY_STATUS_NONE) return ""; if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 23, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
 function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (value.bodyLoaded == 0) { value.text = __pulse_fastly_read_body(value.bodyHandle, -1); value.bodyLoaded = 1 } return value.text }
@@ -1632,6 +1676,7 @@ function capabilityImports(effect) {
       'wasi_snapshot_preview1.clock_time_get'
     ];
   }
+  if (conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) return conditionalKv.kvImports(effect.kind).map(key => key.replace(':', '.'));
   if (effect.kind === 'kv.get') return ['fastly_kv_store.open', 'fastly_kv_store.lookup', 'fastly_kv_store.lookup_wait_v2', 'fastly_http_body.read'];
   if (effect.kind === 'kv.put') return ['fastly_kv_store.open', 'fastly_kv_store.insert', 'fastly_kv_store.insert_wait', 'fastly_http_body.new', 'fastly_http_body.write'];
   if (effect.kind === 'assets.lookup') return ['fastly_kv_store.open', 'fastly_kv_store.lookup', 'fastly_kv_store.lookup_wait_v2', 'fastly_http_body.read'];
@@ -1690,6 +1735,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     }),
     jwtSource ? jwtSource.source : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
+    conditionalKv.kvNativeSource(plan),
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
@@ -1761,8 +1807,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       providerNeutralInput: true,
       javascriptRuntime: false,
       jsComputeRuntime: false,
-      wasi: hasJwt || bindings.s3.length ? 'clock_time_get only' : false,
-      effects: 'fetch, config.get, secret.get, kv.get, kv.put, assets.lookup, grip.channel, grip.hold, grip.publish, grip.broadcast, jwt.verify',
+      wasi: hasJwt || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
+      effects: FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.join(', '),
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',
       config: 'Fastly Config Store open/get with undefined for missing values',
@@ -1770,7 +1816,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       jwt: hasJwt
         ? `package-owned compact-JWS and registered-claim semantics composed with ${jwtCrypto.realization}; provider-owned request, clock, schema, and transport`
         : 'inactive',
-      kv: 'Fastly KV Store async lookup/insert with Pulse JSON envelope compatibility',
+      kv: 'Fastly KV Store async lookup/insert; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
       assets: 'Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership',
       grip: 'canonical stateless framing plus bound, secret-referenced broadcast HTTP realization and stable acknowledgement',
       logging: 'best-effort redacted writes to the provider-owned stdout logging endpoint',
