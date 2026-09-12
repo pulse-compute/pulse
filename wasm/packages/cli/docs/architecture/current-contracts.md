@@ -141,6 +141,16 @@ authority but do
 not expose a Request, Response, route parameters, Router transfer, middleware,
 or response builders.
 
+Conditional KV is owned by the portable runtime authoring/host contract.
+`kv.getVersioned`, `kv.insertIfAbsent`, and `kv.compareAndSwap` lower through the
+ordinary effect and continuation machinery, including Native value handles.
+The Node reference supplies one explicit local key authority; provider
+preparation and the send boundary remain distinct so unconfirmed writes preserve
+`unknown`. The Native host imports the existing workspace runtime owner rather
+than duplicating its validation, snapshots, limits, or outcome normalization.
+Fastly conditional realization remains pending, and its JavaScript SDK is
+capability mapping only. See [conditional KV](../concepts/effects-and-continuations.md#conditional-kv).
+
 `ctx.parallel({ ... })` is the explicit cross-target concurrency form. Router
 `next()` and `next(error)` are terminal cursor transfers, not onion-style calls:
 no application code resumes after the transfer. Normal exhaustion produces

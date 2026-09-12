@@ -8,7 +8,7 @@ const CTX_SURFACE_IDS = Object.freeze([
   'ctx.param','ctx.req.method','ctx.req.url','ctx.req.path','ctx.req.header','ctx.req.headers',
   'ctx.state.get','ctx.state.set','ctx.json','ctx.text','ctx.response','ctx.req.text','ctx.req.json.schema',
   'ctx.req.json.generic','ctx.fetch.projected','ctx.fetch.opaque-return','ctx.config.get','ctx.secret.get',
-  'ctx.kv.get','ctx.kv.put','ctx.emit','package.operation'
+  'ctx.kv.get','ctx.kv.put','ctx.kv.getVersioned','ctx.kv.insertIfAbsent','ctx.kv.compareAndSwap','ctx.emit','package.operation'
 ]);
 const surfaceById = new Map(HANDLER_SURFACE_DEFINITIONS.map((entry) => [entry.id, entry]));
 const CTX_SURFACES = Object.freeze(CTX_SURFACE_IDS.map((id) => {

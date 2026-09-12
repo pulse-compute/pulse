@@ -348,6 +348,13 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     nativeBehavior: 'emit-kv-put-effect',
     status: 'supported'
   }),
+  ...['getVersioned', 'insertIfAbsent', 'compareAndSwap'].map((method) => surface({
+    id: `ctx.kv.${method}`, class: 'effect', canonicalOperation: `effect.kv.${method}`,
+    publicForms: [`ctx.kv<T>('namespace').${method}(${method === 'getVersioned' ? 'key' : method === 'compareAndSwap' ? 'key, generation, value' : 'key, value'})`],
+    awaitPolicy: 'required-when-consumed', validPositions: ['await-expression', 'parallel-member'],
+    targetSupport: { javascript: true, native: true }, nativeBehavior: 'emit-conditional-kv-effect-and-continuation',
+    redaction: 'key-generation-value-required', status: 'supported'
+  })),
   surface({
     id: 'ctx.emit',
     class: 'effect',

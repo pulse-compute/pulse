@@ -171,7 +171,7 @@ function clonePortableKvValue(value, state, path, depth) {
       }
       const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
       if (!descriptor || !Object.prototype.hasOwnProperty.call(descriptor, 'value')) {
-        throw kvValueError('Pulse KV arrays may not contain accessors.', `${path}[${index}]`, value[index]);
+        throw kvValueError('Pulse KV arrays may not contain accessors.', `${path}[${index}]`, undefined);
       }
       definePortableProperty(output, String(index), clonePortableKvValue(descriptor.value, state, `${path}[${index}]`, depth + 1));
     }
