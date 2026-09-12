@@ -7,7 +7,7 @@ pulse-doc-meta:end -->
 
 # Release packages and clean-consumer acceptance
 
-The current Beta candidate contains eighteen publishable packages
+The current Beta candidate contains nineteen publishable packages
 synchronized at version `1.0.0-beta.1`. The product-facing packages are:
 
 ```text
@@ -20,13 +20,32 @@ synchronized at version `1.0.0-beta.1`. The product-facing packages are:
 @pulse-compute/crypto
 @pulse-compute/jwt
 @pulse-compute/entities
+@pulse-compute/s3
 ```
 
 The CLI and providers depend on additional `@pulse-compute/wasm-*`
 implementation packages. Those packages are installable transitive
 dependencies, not the handler authoring surface. The generated
 [package support policy](../packages/README.md) defines the tier, audience,
-direct-install guidance, and supported entry points for all 18 artifacts.
+direct-install guidance, and supported entry points for all 19 artifacts.
+
+## S3 candidate acceptance
+
+The S3 package root supports bounded `head`, `getText` and `putText` on Node
+Native, Node JavaScript and Fastly Native. The clean-consumer gate repeats the
+same read and write failure corpus using installed package exports, packaged
+lowering and provider builds. It type-checks the public declarations and
+compares every installed Pulse package file against its exact tarball both
+before and after execution. No workspace links or installed dependency edits
+are permitted. The report `s3-packed-acceptance.json` includes all tarball
+SHA-256 identities and target execution counts in the acceptance task directory.
+
+Fastly's host ABI fixture supplies the platform to compiled Wasm; no workspace
+product implementation is loaded by the packed consumer. Fastly JavaScript S3
+remains ineligible for its documented raw-header limitation. Local acceptance
+does not claim live Object Storage behavior. That separate evidence follows
+infrastructure setup (T2); package promotion does not publish npm artifacts or
+change the existing registry bootstrap and release approval gates.
 
 ## Event experimental candidate
 
@@ -79,7 +98,7 @@ From the source workspace:
 pnpm release:pack
 ```
 
-This builds the workspace and writes eighteen package tarballs plus `pulse-release-manifest.json` under `.pulse-release/`. It prepares release artifacts; it does not publish them to a registry.
+This builds the workspace and writes nineteen package tarballs plus `pulse-release-manifest.json` under `.pulse-release/`. It prepares release artifacts; it does not publish them to a registry.
 
 Packing fails when:
 
@@ -143,7 +162,7 @@ as byte-reproducible. The candidate report distinguishes that toolchain-owned
 property from Pulse-owned deterministic input and metadata. It also records zero
 provider-reality runs, zero deployments, and zero publications.
 
-The task owns the eighteen publishable Pulse packages, not the packages in the
+The task owns the nineteen publishable Pulse packages, not the packages in the
 development installation. It installs every exact Pulse tarball into clean
 consumer projects and verifies the installed name, version, and real path. An
 ephemeral server bound to `127.0.0.1` is the fail-closed registry for the
@@ -216,7 +235,7 @@ Before the first trusted publication, every package name must exist and authoriz
 
 ## Publication hold points
 
-Before publication, confirm the repository, final documentation host/base path, package policy, and issue-tracker values centralized in `release/pulse-release-manifest.json`. Pulse is licensed under Apache-2.0: the release gate requires the exact root `LICENSE`, SPDX metadata in the workspace and all eighteen publishable packages, and the same license text in every npm tarball. A dependency-license audit and its dispositions remain separate release evidence.
+Before publication, confirm the repository, final documentation host/base path, package policy, and issue-tracker values centralized in `release/pulse-release-manifest.json`. Pulse is licensed under Apache-2.0: the release gate requires the exact root `LICENSE`, SPDX metadata in the workspace and all nineteen publishable packages, and the same license text in every npm tarball. A dependency-license audit and its dispositions remain separate release evidence.
 
 A human release authority must approve `npm-publish`. Codex may diagnose or prepare a patch but cannot publish, approve the environment, bootstrap package names, or mutate dist-tags.
 

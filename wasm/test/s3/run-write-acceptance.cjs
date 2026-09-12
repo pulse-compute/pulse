@@ -4,13 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { resolveProject } = require('../../packages/cli/src/project-config.js');
-const { inspectProject, compileNativeProjectInMemory, prepareJavascriptApplication } = require('../../packages/cli/src/project-execution.js');
-const { getProviderDriver } = require('../../packages/cli/src/provider-drivers.js');
-const { executeCanonicalNativeModule } = require('../../packages/host-runtime/src/runtime/canonical-native-host.js');
-const { executeNodeJavascriptApplication } = require('../../../packages/provider-node/src/javascript/runtime-host.js');
-const { compileFastlyNativePlatformCapabilitiesPlan } = require('../../../packages/provider-fastly/src/build/native-platform-capabilities.js');
-const { executeFastlyNativePlatformCapabilities } = require('../../../packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
+const { acceptanceToolchain } = require('./acceptance-toolchain.cjs');
 const root = path.resolve(__dirname, '../../..');
 const secrets = { S3_ACCESS_KEY_ID: 'o3-access-sentinel', S3_SECRET_ACCESS_KEY: 'o3-secret-sentinel', S3_SESSION_TOKEN: 'o3-token-sentinel' };
 const hash = (value) => crypto.createHash('sha256').update(value).digest('hex');
@@ -64,12 +58,17 @@ function cases() {
   return rows.map((row) => ({ route: '/put', key: 'write', text: 'payload', status: 200, body: '', ...row }));
 }
 
-async function main() {
-  const cwd = fs.mkdtempSync(path.join(__dirname, '.write-'));
+async function main(options = {}) {
+  const { resolveProject, inspectProject, compileNativeProjectInMemory, prepareJavascriptApplication,
+    executeCanonicalNativeModule, executeNodeJavascriptApplication, compileFastly,
+    executeFastlyNativePlatformCapabilities, classifyFastlyJavascriptProviderRequirement, driver } = acceptanceToolchain(options.packedRoot);
+  const cwd = options.cwd || fs.mkdtempSync(path.join(__dirname, '.write-'));
   try {
-    fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
-    for (const name of ['pulse', 's3']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
-    fs.mkdirSync(path.join(cwd, 'src')); fs.mkdirSync(path.join(cwd, '.pulse'));
+    if (!options.packedRoot) {
+      fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
+      for (const name of ['pulse', 's3']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
+    }
+    fs.mkdirSync(path.join(cwd, 'src'), { recursive: true }); fs.mkdirSync(path.join(cwd, '.pulse'), { recursive: true });
     fs.copyFileSync(path.join(__dirname, 'o3-consumer.ts'), path.join(cwd, 'src/index.ts'));
     const bindings = structuredClone(require('./o1/bindings.json'));
     for (const provider of ['node', 'fastly']) Object.assign(bindings[provider].bindings.s3.objects, { sessionTokenSecret: 'S3_SESSION_TOKEN', timeoutMs: 250 });
@@ -78,17 +77,15 @@ async function main() {
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import { defineConfig } from '@pulse-compute/pulse'\nexport default defineConfig((_scope) => (${JSON.stringify(config)}))`);
     const projects = Object.fromEntries(Object.keys(config).filter((name) => name !== 'pulse').map((profile) => [profile, resolveProject({ cwd, profile })]));
     const node = compileNativeProjectInMemory(projects['node-native']);
-    const fastly = compileFastlyNativePlatformCapabilitiesPlan(compileNativeProjectInMemory(projects['fastly-native']).plan, { cwd: root, bindings: bindings.fastly.bindings, canonicalBuild: true });
+    const fastly = compileFastly(projects['fastly-native']);
     const jsInspection = inspectProject(projects['node-javascript']);
     assert.equal(jsInspection.provider.selectedTargetDescriptor.automaticFallback, false);
     assert.equal(jsInspection.provider.targetSupport.project.status, 'eligible', JSON.stringify(jsInspection.provider.targetSupport));
     const js = prepareJavascriptApplication(projects['node-javascript']);
     assert.ok(js.loaded && js.loaded.application);
     assert.throws(() => inspectProject(projects['fastly-javascript']), /has no HMAC-SHA256 realization/);
-    const unsupported = require('../../../packages/provider-fastly/src/javascript/target-support-policy.js');
-    assert.ok(JSON.stringify(unsupported.classifyFastlyJavascriptProviderRequirement('s3.putText')).includes('fastly-javascript-s3-raw-headers-unavailable'), 'SDK limitation is provider/target specific.');
+    assert.ok(JSON.stringify(classifyFastlyJavascriptProviderRequirement('s3.putText')).includes('fastly-javascript-s3-raw-headers-unavailable'), 'SDK limitation is provider/target specific.');
     assert.equal(fastly.inspection.imports.some(({ module }) => /pulse_host|js[_-]?compute/i.test(module)), false);
-    const driver = getProviderDriver('node', { projectRoot: cwd });
     const rows = cases(); let executions = 0;
     for (const row of rows) for (const mode of ['node-native', 'node-javascript', 'fastly-native']) {
       if (row.modes && !row.modes.includes(mode)) continue;
@@ -182,7 +179,10 @@ async function main() {
       for (const value of Object.values(secrets)) assert.equal(JSON.stringify(result).includes(value), false, `${row.id}/${mode}: redacted credentials`);
       if (row.transportStatus || row.sendStatus || row.delayMs || row.bodyDelayMs) assert.ok(origin.has(objectUrl(row.key)), 'Unknown may already have stored bytes.');
     }
-    console.log(JSON.stringify({ status: 'passed', cases: rows.length, executions, targets: ['node-native', 'node-javascript', 'fastly-native'], fastlyJavascript: 'documented-sdk-limitation', providerReality: false }));
-  } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
+    const evidence = { status: 'passed', cases: rows.length, executions, targets: ['node-native', 'node-javascript', 'fastly-native'], fastlyJavascript: 'documented-sdk-limitation', providerReality: false };
+    if (!options.quiet) console.log(JSON.stringify(evidence));
+    return evidence;
+  } finally { if (!options.cwd) fs.rmSync(cwd, { recursive: true, force: true }); }
 }
-main().catch((error) => { console.error(error.stack || error); console.error(JSON.stringify(error.detail || error.diagnostics || {})); process.exitCode = 1; });
+module.exports = { main };
+if (require.main === module) main().catch((error) => { console.error(error.stack || error); console.error(JSON.stringify(error.detail || error.diagnostics || {})); process.exitCode = 1; });

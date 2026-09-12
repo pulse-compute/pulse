@@ -49,7 +49,8 @@ const required = [
   '@pulse-compute/provider-node',
   '@pulse-compute/provider-fastly',
   '@pulse-compute/grip',
-  '@pulse-compute/assets'
+  '@pulse-compute/assets',
+  '@pulse-compute/s3'
 ];
 for (const name of required) assert.ok(result.manifest.packages.some((entry) => entry.name === name), `release is missing ${name}`);
 for (const name of ['@pulse-compute/api']) assert.equal(result.manifest.packages.some((entry) => entry.name === name), false, `pre-public package ${name} must not be published`);
@@ -91,6 +92,20 @@ for (const packed of result.manifest.packages) {
     assert.ok(result.manifest.packages.some((entry) => entry.name === dependency.name), `${packed.name} depends on unpublished ${dependency.name}`);
   }
 }
+
+const s3 = result.manifest.packages.find((entry) => entry.name === '@pulse-compute/s3');
+assert.equal(s3.supportTier, 'supported-extension');
+assert.deepEqual(s3.entryPoints, ['@pulse-compute/s3']);
+const s3Entries = readTarEntries(path.join(outDir, s3.tarball));
+for (const file of ['src/index.js', 'src/index.d.ts', 'src/provider.js', 'pulse.package.json',
+  'pulsewasm.manifest.cjs', 'pulsewasm.compiler.cjs', 'pulsewasm.native.cjs', 'as/read.as.ts', 'conformance/read.json']) {
+  assert.ok(s3Entries.has(`package/${file}`), `S3 packed lowering/runtime closure is missing ${file}`);
+}
+for (const provider of ['@pulse-compute/provider-node', '@pulse-compute/provider-fastly']) {
+  assert.ok(result.manifest.packages.find(({ name }) => name === provider).pulseDependencies.some(({ name }) => name === s3.name));
+}
+const cryptoPackage = result.manifest.packages.find(({ name }) => name === '@pulse-compute/crypto');
+assert.ok(readTarEntries(path.join(outDir, cryptoPackage.tarball)).has('package/src/provider.cjs'), 'Crypto byte realization must be packed');
 
 const compiler = result.manifest.packages.find((entry) => entry.name === '@pulse-compute/wasm-compiler');
 const compilerEntries = readTarEntries(path.join(outDir, compiler.tarball));

@@ -18,7 +18,7 @@
 - **Documentation inventory:** `release/documentation-inventory.json`
 - **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.1/`
 - **Runtime targets:** 3
-- **Packages:** 18
+- **Packages:** 19
 
 The installed CLI ships the same machine-readable data as
 `release-manifest.json`. The atomic snapshot transaction aligns
@@ -75,6 +75,7 @@ scoped package name.
 | `@pulse-compute/crypto` | Supported provider/extension surface | [Guide](../packages/crypto.md) | Yes, when an application uses the crypto verification surface directly; JWT applications receive it transitively. |
 | `@pulse-compute/jwt` | Supported provider/extension surface | [Guide](../packages/jwt.md) | Yes, when an application verifies JWTs. |
 | `@pulse-compute/entities` | Supported provider/extension surface | [Guide](../packages/entities.md) | Yes, when an application declares entity operations. |
+| `@pulse-compute/s3` | Supported provider/extension surface | [Guide](../packages/s3.md) | Yes, when an application uses S3 object operations. |
 | `@pulse-compute/wasm-build-support` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively where required. |
 | `@pulse-compute/wasm-compiler` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; use the pulse CLI. |
 | `@pulse-compute/wasm-guest-link` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is an internal synchronized compiler dependency. |

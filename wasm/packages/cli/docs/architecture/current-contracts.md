@@ -329,7 +329,7 @@ primary module, while Native ES256 selects the audited
 `guest-linked:pulse-es256-rustcrypto-p256` unit. Neither algorithm retries a
 different realization.
 
-O3 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
+S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
 `@pulse-compute/crypto/provider` export. Both return 32-byte results, cap data
@@ -337,7 +337,7 @@ at 32 KiB and HMAC keys at 8 KiB, and snapshot and wipe staging inputs. Native
 also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.
 
-The private `@pulse-compute/s3` package owns `head`, `getText` and `putText`,
+The supported-extension `@pulse-compute/s3` package owns `head`, `getText` and `putText`,
 literal binding/options authority, runtime key/text lowering, SigV4 composition
 and bounded results. Node and Fastly own fixed endpoint/bucket/region mappings,
 credential lookup, deadlines and transport. Fastly requires a static backend.
@@ -355,7 +355,10 @@ runs compiled Wasm against a host ABI fixture. This is local evidence, not live
 Object Storage proof. Fastly JavaScript remains ineligible: its SDK projects raw
 response headers, losing multiplicity and aggregate-size evidence required by
 O1. The provider-specific limitation is documented in `wasm/test/s3/O3.md` and
-does not gate O3. Release promotion and Assets alignment remain later work.
+does not gate supported targets. O4 adds S3 to the synchronized release package
+set and repeats the three-target read/write corpus against isolated exact
+tarballs, including package-owned lowering. These are local candidate checks;
+live origin acceptance follows T2. Assets alignment remains separate.
 
 Package redaction declarations survive Handler IR projection into the Native
 plan. Native host effect traces omit declared private payloads and results;

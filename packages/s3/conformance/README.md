@@ -1,15 +1,13 @@
-Run from the repository root:
+# S3 conformance
 
-- `node wasm/test/s3/run-native-read-acceptance.cjs`: O2 read regression, 65 cases
-  on Node Native and Fastly Native.
-- `node wasm/test/s3/run-write-acceptance.cjs`: O3 canonical PUT/HEAD/GET on Node
-  Native, Node JavaScript and Fastly Native; exact bytes, signature oracle,
-  ambiguous acknowledgements, bounded errors and cancellation.
-- `node wasm/test/s3/assert-s3-write-contract.cjs`: PUT lowering and Crypto
-  JavaScript primitive bounds, vectors, snapshots and cleanup.
-- `node wasm/test/s3/assert-node-transport.cjs`: local TLS byte/header evidence.
+`read.json` contains exact key-encoding and raw-body vectors. The package
+contract records all three operations: `head`, `getText` and `putText`.
 
-Fastly Native executes real compiled Wasm against host ABI fixtures. These are
-local conformance checks, not live Object Storage acceptance. Fastly JavaScript
-is excluded for the documented SDK limitation in `wasm/test/s3/O3.md`.
-Published consumer acceptance belongs to O4.
+Repository acceptance runs the same read and write failure corpus against
+Node Native, Node JavaScript and Fastly Native, then repeats it with the exact
+installed release tarballs. It checks independent SigV4 signatures, UTF-8,
+metadata limits, truncation, deadlines, write uncertainty and secret redaction.
+Fastly Native executes compiled Wasm against host ABI fixtures. These checks
+do not establish live origin behavior; that evidence follows infrastructure
+setup. Fastly JavaScript is ineligible for S3 because its SDK loses raw header
+metadata. See the [S3 guide](https://pulsecompute.io/v1.0.0-beta.1/packages/s3/).

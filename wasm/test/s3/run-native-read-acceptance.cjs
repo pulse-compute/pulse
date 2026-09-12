@@ -1,32 +1,18 @@
 #!/usr/bin/env node
 'use strict';
 
-// O2 acceptance target defined by O1. No draft import mapping or S3 dispatcher.
+// O1 read corpus, extended to three-target and exact packed acceptance by O4.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const contract = require('./o1/contract.json');
-const vectors = require('../../../packages/s3/conformance/read.json');
 const bindings = require('./o1/bindings.json');
 const root = path.resolve(__dirname, '../../..');
 
-if (!fs.existsSync(path.join(root, 'packages/s3/package.json'))) {
-  console.log(JSON.stringify({
-    status: 'blocked', phase: 'O2', providerReality: false,
-    reason: 'The real @pulse-compute/s3 package, lowering and Native provider realizations are required.',
-    targets: contract.nativeAcceptance.targets,
-  }));
-  process.exitCode = contract.nativeAcceptance.missingRealizationExitCode;
-} else {
-  main().catch((error) => {
-    console.error(error.stack || error);
-    console.error(JSON.stringify(error.detail && error.detail.stderr ? { stderr: error.detail.stderr } : error.detail || error.diagnostics || {}));
-    process.exitCode = 1;
-  });
-}
+const { acceptanceToolchain } = require('./acceptance-toolchain.cjs');
 
-function cases() {
+function cases(vectors) {
   const rows = [];
   const metadata = (body) => ({ byteLength: body.length, etag: '"opaque-o1"', contentType: 'text/plain; charset=utf-8' });
   function add(id, route, key, encoded, body, overrides = {}, expected) {
@@ -64,6 +50,8 @@ function cases() {
   for (const route of ['/head', '/get']) add(`absent${route}`, route, 'absent', 'absent', Buffer.alloc(0), { status: 404 }, { status: 'not-found' });
   add('head-missing-length', '/head', 'length', 'length', Buffer.alloc(0), { headers: {} }, failure('protocol'));
   add('get-wrong-length', '/get', 'length', 'length', Buffer.from('abc'), { headers: { 'content-length': '4' } }, failure('protocol'));
+  add('get-truncated-stream', '/get', 'truncated', 'truncated', Buffer.from('abc'), { bodyReadStatus: 1 }, failure('protocol'));
+  for (const route of ['/head', '/get']) add(`transport${route}`, route, 'transport', 'transport', Buffer.alloc(0), { transportStatus: 1 }, { status: 'failed', reason: 'transport' });
   add('get-encoded', '/get', 'encoded', 'encoded', Buffer.from('abc'), { headers: { 'content-encoding': 'gzip' } }, failure('protocol'));
   for (const [i, key] of ['', '.', 'a/../b', 'a'.repeat(contract.limits.keyUtf8Bytes + 1)].entries()) {
     rows.push({ id: `invalid-key-${i}`, route: '/get', key, expected: { status: 'failed', reason: 'invalid-key' } });
@@ -94,23 +82,25 @@ function verifySignature(request, secrets) {
   assert.equal(match[4], crypto.createHmac('sha256', key).update(signing).digest('hex'), 'independent SigV4 verification');
 }
 
-async function main() {
-  const { resolveProject } = require('../../packages/cli/src/project-config.js');
-  const { inspectProject, compileNativeProjectInMemory } = require('../../packages/cli/src/project-execution.js');
-  const { getProviderDriver } = require('../../packages/cli/src/provider-drivers.js');
-  const { executeCanonicalNativeModule } = require('../../packages/host-runtime/src/runtime/canonical-native-host.js');
-  const { compileFastlyNativePlatformCapabilitiesPlan } = require('../../../packages/provider-fastly/src/build/native-platform-capabilities.js');
-  const { executeFastlyNativePlatformCapabilities } = require('../../../packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
-  const cwd = fs.mkdtempSync(path.join(__dirname, '.native-read-'));
+async function main(options = {}) {
+  const { resolveProject, inspectProject, compileNativeProjectInMemory, prepareJavascriptApplication,
+    executeCanonicalNativeModule, executeNodeJavascriptApplication, compileFastly,
+    executeFastlyNativePlatformCapabilities, driver } = acceptanceToolchain(options.packedRoot);
+  const cwd = options.cwd || fs.mkdtempSync(path.join(__dirname, '.native-read-'));
   try {
     fs.cpSync(path.join(__dirname, 'o1/native-read'), cwd, { recursive: true });
+    if (!options.packedRoot) {
+      fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
+      for (const name of ['pulse', 's3']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
+    }
     // Literal provider fragments go through the actual config compiler/schema.
     // They cannot be silently dropped and reintroduced through a custom host.
     const readBindings = structuredClone(bindings);
     for (const name of ['node', 'fastly']) Object.assign(readBindings[name].bindings.s3.objects, { timeoutMs: 1000, sessionTokenSecret: 'S3_SESSION_TOKEN' });
     const config = {
-      pulse: { entry: 'src/index.ts', defaultProfile: 'node-native', strict: true, crypto: ['SHA-256', 'HMAC-SHA256'] },
+      pulse: { entry: 'src/index.ts', defaultProfile: 'node-native', strict: false, crypto: ['SHA-256', 'HMAC-SHA256'] },
       'node-native': { host: 'node', target: 'native', node: readBindings.node },
+      'node-javascript': { host: 'node', target: 'javascript', node: readBindings.node },
       'fastly-native': { host: 'fastly', target: 'native', fastly: readBindings.fastly },
     };
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'),
@@ -124,13 +114,12 @@ async function main() {
       assert.ok(project.providerConfig.bindings.s3.objects, 'provider config must preserve and validate the logical S3 binding');
     }
     const node = compileNativeProjectInMemory(nodeProject);
-    const fastlyPlan = compileNativeProjectInMemory(fastlyProject).plan;
-    const fastly = compileFastlyNativePlatformCapabilitiesPlan(fastlyPlan, {
-      cwd: root, bindings: fastlyProject.providerConfig.bindings, canonicalBuild: true,
-    });
+    const fastly = compileFastly(fastlyProject);
+    const jsProject = resolveProject({ cwd, profile: 'node-javascript' });
+    assert.equal(inspectProject(jsProject).provider.targetSupport.project.status, 'eligible');
+    const js = prepareJavascriptApplication(jsProject);
     assert.ok(node.native.wasm.length > 0 && fastly.wasm.length > 0);
     assert.equal(fastly.inspection.imports.some(({ module }) => /pulse_host|js[_-]?compute/i.test(module)), false);
-    const driver = getProviderDriver(nodeProject.providerSelector || 'node', { projectRoot: cwd });
     const secrets = {
       S3_ACCESS_KEY_ID: 'o1-access-id-secret-sentinel',
       S3_SESSION_TOKEN: 'session-token-sentinel',
@@ -139,7 +128,10 @@ async function main() {
     for (const artifact of [node.native.wasm, fastly.wasm]) {
       for (const secret of Object.values(secrets)) assert.equal(Buffer.from(artifact).includes(Buffer.from(secret)), false);
     }
-    const rows = cases();
+    const vectorsFile = options.packedRoot
+      ? path.join(options.packedRoot, 'node_modules/@pulse-compute/s3/conformance/read.json')
+      : path.join(root, 'packages/s3/conformance/read.json');
+    const rows = cases(JSON.parse(fs.readFileSync(vectorsFile, 'utf8')));
     for (const row of rows) {
       const caseSecrets = { ...secrets, ...row.secrets };
       const request = { method: 'POST', path: row.route, url: `https://app.example.invalid${row.route}`, headers: [], body: row.key };
@@ -152,18 +144,30 @@ async function main() {
         assert.equal(req.redirect, 'manual', `${row.id}: redirects must be disabled`);
         assert.equal(req.headers.get('accept-encoding'), 'identity');
         verifySignature({ method: req.method, url: req.url, headers: req.headers }, caseSecrets);
+        if (row.origin.transportStatus) throw new Error('Fixture origin transport failed');
         if (row.origin.delayMs) return new Promise(() => {});
         const response = new Response(req.method === 'HEAD' || row.origin.status === 204 ? null : row.origin.body, { status: row.origin.status });
         return { status: row.origin.status, headers: Array.isArray(row.origin.headers) ? row.origin.headers : Object.entries(row.origin.headers),
-          body: row.origin.bodyDelayMs ? new ReadableStream({ start() {} }) : response.body };
+          body: row.origin.bodyReadStatus ? new ReadableStream({ start(controller) { controller.error(new Error('Fixture origin body truncated')); } })
+            : row.origin.bodyDelayMs ? new ReadableStream({ start() {} }) : response.body };
       };
       const nodeResult = await executeCanonicalNativeModule(node.native, driver.executionOptions(nodeProject.providerConfig, {
-        request, strict: true, secrets: caseSecrets, fetchImplementation,
+        request, strict: false, secrets: caseSecrets, fetchImplementation,
       }));
       assert.equal(nodeResult.status, 'completed', row.id);
       for (const event of nodeResult.trace.filter((event) => event.type === 'native-effect-start' || event.type === 'native-effect-resolved')) {
         assert.equal(event.payload || event.result, '<redacted>', 'S3 effect trace is private');
       }
+      const jsCapturedStart = captured.length;
+      const jsTrace = [];
+      const jsResponse = await executeNodeJavascriptApplication(js.loaded.application,
+        new Request(request.url, { method: 'POST', body: row.key }), {
+          s3: readBindings.node.bindings.s3, secrets: caseSecrets, fetchImplementation,
+          strict: false,
+          onEffectObservation(event) { jsTrace.push(event); },
+        });
+      const jsResult = { response: { status: jsResponse.status, body: await jsResponse.text() }, trace: jsTrace };
+      const jsCaptured = captured.splice(jsCapturedStart);
       const fixtures = Object.fromEntries(methods.map((method) => [`${method} ${row.url}`, {
         ...row.origin, body: method === 'HEAD' ? Buffer.alloc(0) : row.origin.body,
       }]));
@@ -179,18 +183,31 @@ async function main() {
       });
       for (const [target, result, outbound] of [
         ['node-native', nodeResult, captured],
+        ['node-javascript', jsResult, jsCaptured],
         ['fastly-native', fastlyResult, fastlyCaptured],
       ]) {
         assert.equal(result.response.status, 200, `${row.id}/${target}: consumer result`);
         assert.deepEqual(JSON.parse(result.response.body), row.expected, `${row.id}/${target}: exact result`);
         assert.deepEqual(outbound.map(({ method, url }) => `${method} ${url}`).sort(),
           methods.map((method) => `${method} ${row.url}`).sort(), `${row.id}/${target}: exact origin requests, no retries`);
+        assert.ok(result.trace.length > 0, `${row.id}/${target}: actual observations required`);
+        const observations = JSON.stringify({ trace: result.trace, requests: result.outboundRequests });
+        if (row.origin) assert.equal(observations.includes(crypto.createHash('sha256').update(row.origin.body).digest('hex')), false, `${row.id}/${target}: raw-byte digest is private`);
         for (const secret of Object.values(secrets)) assert.equal(JSON.stringify(result).includes(secret), false, `${row.id}/${target}: secret redaction`);
       }
     }
-    console.log(JSON.stringify({ status: 'passed', cases: rows.length, executions: rows.length * 2,
-      targets: contract.nativeAcceptance.targets, providerReality: false }));
+    const evidence = { status: 'passed', cases: rows.length, executions: rows.length * 3,
+      targets: ['node-native', 'node-javascript', 'fastly-native'], providerReality: false };
+    if (!options.quiet) console.log(JSON.stringify(evidence));
+    return evidence;
   } finally {
-    fs.rmSync(cwd, { recursive: true, force: true });
+    if (!options.cwd) fs.rmSync(cwd, { recursive: true, force: true });
   }
 }
+
+module.exports = { main };
+if (require.main === module) main().catch((error) => {
+  console.error(error.stack || error);
+  console.error(JSON.stringify(error.detail || error.diagnostics || {}));
+  process.exitCode = 1;
+});
