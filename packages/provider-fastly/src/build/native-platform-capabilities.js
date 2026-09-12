@@ -151,7 +151,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'assets.lookup': 10,
   'jwt.verify': 11,
   's3.head': 12,
-  's3.getText': 13
+  's3.getText': 13,
+  's3.putText': 14
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -171,7 +172,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'assets.lookup',
   'jwt.verify',
   's3.head',
-  's3.getText'
+  's3.getText',
+  's3.putText'
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
@@ -186,7 +188,8 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'grip.broadcast',
   'jwt.verify',
   's3.head',
-  's3.getText'
+  's3.getText',
+  's3.putText'
 ]);
 
 class FastlyNativePlatformCapabilitiesError extends Error {
@@ -580,7 +583,7 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.operation === 'verify'
       && effect.capability === 'jwt.verify';
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
-      && ['head', 'getText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+      && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     return !grip && !assets && !jwt && !s3;
   });
   if (unsupportedPackages.length > 0) {
@@ -602,7 +605,7 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.operation === 'verify'
       && effect.capability === 'jwt.verify';
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
-      && ['head', 'getText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+      && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     return !grip && !assets && !jwt && !s3;
   });
   if (unsupportedDeclarations.length > 0) {
@@ -689,7 +692,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   const effects = plan.effects || [];
   const hasConfig = effects.some((effect) => effect.kind === 'config.get');
   const hasSecret = effects.some((effect) => (
-    effect.kind === 'secret.get' || ['s3.head', 's3.getText'].includes(effect.kind)
+    effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)
     || (effect.kind === 'jwt.verify' && effect.resource && effect.resource.keyType === 'secret')
   ));
   const hasGripHold = effects.some((effect) => effect.kind === 'grip.hold');
@@ -812,7 +815,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   return Object.freeze({
     configStore,
     secretStore,
-    s3: require('../toolchain/s3.js').resolveFastlyS3(effects, source.s3),
+    s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: { contentType: literalObjectField(inputExpression(effect, 'payload'), 'contentType') || undefined } })), source.s3),
     kv: Object.freeze(kv),
     fetch: Object.freeze(fetch),
     backends: Object.freeze(backends),
@@ -889,7 +892,7 @@ function requiredImportsForPlan(plan, bindings) {
     keys.add('fastly_log:endpoint_get');
     keys.add('fastly_log:write');
   }
-  if (kinds.has('s3.head') || kinds.has('s3.getText')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
+  if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   return Object.freeze([...keys].sort());
 }
 
@@ -1027,7 +1030,7 @@ function effectResultSource(plan, bindings) {
   for (const [index, effect] of (plan.effects || []).entries()) {
     const result = effect.result || {};
     const decoder = result.decoder;
-    const waiter = ['s3.head', 's3.getText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
+    const waiter = ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
       ? '__pulse_fastly_wait_fetch'
       : effect.kind === 'grip.publish'
         ? '__pulse_fastly_wait_grip_publish'
@@ -1069,6 +1072,7 @@ function effectDispatchSource(plan) {
     'jwt.verify': '__pulse_fastly_jwt_begin',
     's3.head': '__pulse_fastly_s3_begin',
     's3.getText': '__pulse_fastly_s3_begin',
+    's3.putText': '__pulse_fastly_s3_begin',
     'kv.get': '__pulse_fastly_kv_get_begin',
     'kv.put': '__pulse_fastly_kv_put_begin',
     'assets.lookup': '__pulse_fastly_assets_begin',

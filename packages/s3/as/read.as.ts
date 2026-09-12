@@ -83,11 +83,11 @@ function __pulse_s3_date(seconds: i64): string {
 class __PulseS3Signature {
   date: string = ''; digest: string = ''; authorization: string = '';
 }
-function __pulse_s3_sign(method: string, path: string, host: string, region: string, id: string, secret: string, token: string, seconds: i64): __PulseS3Signature {
+function __pulse_s3_sign(method: string, path: string, host: string, region: string, id: string, secret: string, token: string, seconds: i64, body: Uint8Array, contentType: string): __PulseS3Signature {
   const result = new __PulseS3Signature(); result.date = __pulse_s3_date(seconds);
-  result.digest = __pulse_s3_hex(__pulse_s3_sha(new Uint8Array(0)));
-  const names = 'host;x-amz-content-sha256;x-amz-date' + (token.length ? ';x-amz-security-token' : '');
-  const headers = 'host:' + host + '\nx-amz-content-sha256:' + result.digest + '\nx-amz-date:' + result.date + '\n'
+  result.digest = __pulse_s3_hex(__pulse_s3_sha(body));
+  const names = (contentType.length ? 'content-type;' : '') + 'host;x-amz-content-sha256;x-amz-date' + (token.length ? ';x-amz-security-token' : '');
+  const headers = (contentType.length ? 'content-type:' + __pulse_s3_header_spaces(contentType) + '\n' : '') + 'host:' + host + '\nx-amz-content-sha256:' + result.digest + '\nx-amz-date:' + result.date + '\n'
     + (token.length ? 'x-amz-security-token:' + token + '\n' : '');
   const canonical = method + '\n' + path + '\n\n' + headers + '\n' + names + '\n' + result.digest;
   const day = result.date.slice(0, 8), scope = day + '/' + region + '/s3/aws4_request';
@@ -102,4 +102,14 @@ function __pulse_s3_status_reason(status: i32): string {
   if (status == 401 || status == 403) return 'not-authorized';
   if (status == 429) return 'throttled'; if (status == 408) return 'timeout';
   if (status >= 500 && status <= 599) return 'unavailable'; return 'protocol';
+}
+
+function __pulse_s3_header_spaces(text: string): string {
+  let output = '', space = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charAt(i);
+    if (c != ' ' || !space) output += c;
+    space = c == ' ';
+  }
+  return output;
 }

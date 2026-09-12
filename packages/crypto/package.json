@@ -14,13 +14,15 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
-    "./pulsewasm-native": "./pulsewasm.native.cjs"
+    "./pulsewasm-native": "./pulsewasm.native.cjs",
+    "./provider": "./src/provider.cjs"
   },
   "files": [
     "as",
     "dist",
     "pulsewasm.native.cjs",
-    "README.md"
+    "README.md",
+    "src/provider.cjs"
   ],
   "scripts": {
     "build": "tsc -b",

@@ -344,9 +344,9 @@
         "diagnostics": [],
         "description": "Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
         "path": "node.bindings.s3",
-        "scope": "Node Native S3 reads",
+        "scope": "Node Native and JavaScript S3",
         "section": "node",
-        "type": "Readonly<Record<string, S3ReadBinding>>"
+        "type": "Readonly<Record<string, S3Binding>>"
       },
       {
         "required": false,
@@ -357,9 +357,9 @@
         "diagnostics": [],
         "description": "Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
         "path": "fastly.bindings.s3",
-        "scope": "Fastly Native S3 reads",
+        "scope": "Fastly Native S3",
         "section": "fastly",
-        "type": "Readonly<Record<string, S3ReadBinding & { backend: string }>>"
+        "type": "Readonly<Record<string, S3Binding & { backend: string }>>"
       },
       {
         "required": false,
@@ -776,8 +776,8 @@
                   "properties": {
                     "realization": {
                       "enum": [
-                        "guest-source:pulse-hmac-as",
                         "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
                     }
@@ -789,8 +789,8 @@
                   "properties": {
                     "realization": {
                       "enum": [
-                        "guest-source:pulse-hmac-as",
                         "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
                     }
@@ -802,8 +802,8 @@
                   "properties": {
                     "realization": {
                       "enum": [
-                        "guest-source:pulse-hmac-as",
                         "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
                     }
@@ -815,8 +815,8 @@
                   "properties": {
                     "realization": {
                       "enum": [
-                        "guest-source:pulse-hmac-as",
                         "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
                     }

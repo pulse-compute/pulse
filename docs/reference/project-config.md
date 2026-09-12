@@ -292,10 +292,10 @@ Provider-owned Node profile configuration.
 
 Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).
 
-- **Type:** Readonly<Record<string, S3ReadBinding>>
+- **Type:** Readonly<Record<string, S3Binding>>
 - **Required/default:** Optional; default `{}`.
 - **Allowed values or constraints:** —
-- **Scope:** Node Native S3 reads
+- **Scope:** Node Native and JavaScript S3
 - **Precedence:** Configuration value.
 - **Security and safety:** Only named credential references are configuration. Runtime keys cannot override authority.
 - **Related diagnostics:** None specific.
@@ -308,10 +308,10 @@ Options passed to fastly(...) from @pulse-compute/provider-fastly.
 
 Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).
 
-- **Type:** Readonly<Record<string, S3ReadBinding & { backend: string }>>
+- **Type:** Readonly<Record<string, S3Binding & { backend: string }>>
 - **Required/default:** Optional; default `{}`.
 - **Allowed values or constraints:** —
-- **Scope:** Fastly Native S3 reads
+- **Scope:** Fastly Native S3
 - **Precedence:** Configuration value.
 - **Security and safety:** Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.
 - **Related diagnostics:** None specific.

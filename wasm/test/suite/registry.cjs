@@ -102,6 +102,13 @@ const tasks = Object.freeze({
   's3-read-contract': nodeTask('test/s3/assert-s3-read-contract.cjs', {
     description: 'S3 read binding authority, lowering negatives and bounded result contract'
   }),
+  's3-write-contract': nodeTask('test/s3/assert-s3-write-contract.cjs', {
+    description: 'S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle'
+  }),
+  's3-write-conformance': nodeTask('test/s3/run-write-acceptance.cjs', {
+    timeoutMs: 180000,
+    description: 'Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native'
+  }),
   's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
     timeoutMs: 180000,
     description: 'Exact HEAD/GET through Node Native and Fastly Native local modules'
@@ -763,6 +770,7 @@ const profiles = Object.freeze({
     'logging-contract',
     's3-design-contract',
     's3-read-contract',
+    's3-write-contract',
     'crypto-config-planning',
     'reachable-graph',
     'project-modules',
@@ -814,6 +822,7 @@ const profiles = Object.freeze({
     'assets-javascript-runtime'
   ]),
   conformance: Object.freeze([
+    's3-write-conformance',
     'crypto-cross-target-conformance',
     'events-conformance',
     'node-router-context-parity',
