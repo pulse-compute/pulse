@@ -102,7 +102,6 @@ function createEffectSignal(lifecycleSignal, descriptor) {
 
 function raceWithSignal(promise, signal) {
   if (!signal) return Promise.resolve(promise);
-  if (signal.aborted) return Promise.reject(abortedEffectError(signal.reason));
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (callback, value) => {
@@ -117,6 +116,8 @@ function raceWithSignal(promise, signal) {
       (value) => finish(resolve, value),
       (error) => finish(reject, error)
     );
+    // Observe the owned promise even when cancellation preceded the race.
+    if (signal.aborted) onAbort();
   });
 }
 

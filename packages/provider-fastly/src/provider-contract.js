@@ -15,7 +15,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'request', 'response.json', 'response.text', 'response.custom', 'fetch',
     'config.get', 'secret.get', 'kv.get', 'kv.put', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify',
-    'opaque.pass-through', 's3.head', 's3.getText'
+    'opaque.pass-through', 's3.head', 's3.getText', 's3.putText'
   ],
   lowering: {
     request: 'fastly.compute.request',
@@ -35,6 +35,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'jwt.verify': 'fastly.native.jwt.verify',
     's3.head': 'fastly.native.s3.head',
     's3.getText': 'fastly.native.s3.getText',
+    's3.putText': 'fastly.native.s3.putText',
     'opaque.pass-through': 'fastly.response-body.stream'
   }
 });

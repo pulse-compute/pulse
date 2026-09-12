@@ -2,7 +2,7 @@
 'use strict';
 
 // Runs the pinned Fastly JavaScript engine against a local raw HTTP origin.
-// A successful exit establishes the information-loss blocker, not S3 support.
+// A successful exit establishes the information-loss limitation, not S3 support.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const net = require('node:net');
@@ -77,7 +77,7 @@ async function main() {
     assert.ok(headerBytes(observed['/header-limit'].headers) < 16384);
     assert.ok(metadataFromHeaders(observed['/header-limit'].headers, true), 'The projection also hides the raw header budget violation.');
     console.log(JSON.stringify({
-      status: 'blocker-confirmed', s3Acceptance: false,
+      status: 'limitation-confirmed', s3Acceptance: false,
       sdk: sdkPackage.version, launcher: launcher.kind, runtime: launcher.inspection.version,
       indistinguishable: observed['/single'],
       headerLimit: { rawBytes: headerBytes(fixtures['/header-limit']), projectedBytes: headerBytes(observed['/header-limit'].headers) },

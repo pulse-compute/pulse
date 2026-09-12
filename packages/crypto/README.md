@@ -125,3 +125,15 @@ The G3 composition and shared ES256 corpus are recorded in
 `wasm/.test-results/jwt-g3/jwt-g3-evidence.json`. This working-candidate proof
 does not add signing, remote key discovery, fallback, publication, or
 deployment.
+
+## Trusted byte-output composition
+
+S3 uses Crypto-owned SHA-256 and HMAC-SHA256 byte outputs. Native composes the
+existing guest-source unit; Node JavaScript explicitly binds Web Crypto through
+`@pulse-compute/crypto/provider`. The trusted seam snapshots Uint8Array input,
+allows at most 32768 data bytes and 8192 HMAC key bytes, returns exactly 32 bytes,
+and wipes input staging on success or failure. It rejects unavailable selected
+primitives and does not fall back. Empty HMAC keys use the equivalent padded
+zero block required by HMAC, preserving Native semantics despite Web Crypto's
+zero-length import restriction. This provider seam does not add an author-facing
+signing API or change JWT key limits.

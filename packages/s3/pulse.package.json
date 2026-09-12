@@ -3,13 +3,14 @@
   "kind": "pulse.package-contract",
   "contractId": "pulse.s3",
   "npmPackage": "@pulse-compute/s3",
-  "description": "Bounded exact-key S3 Native reads.",
+  "description": "Bounded exact-key S3 reads and writes.",
   "authoring": {
     "namespace": "s3",
     "import": "@pulse-compute/s3",
     "symbols": [
       "head",
-      "getText"
+      "getText",
+      "putText"
     ]
   },
   "ownership": {
@@ -31,15 +32,23 @@
       "providerRequirements": [
         "s3.head",
         "s3.getText",
+        "s3.putText",
         "secret.get",
         "time.wall-clock"
       ],
       "reasonCode": "PULSE_PACKAGE_PROVIDER_CAPABILITY_REQUIRED"
     },
     "javascript": {
-      "status": "unsupported",
-      "realization": "none",
-      "reasonCode": "PULSE_PACKAGE_TARGET_UNSUPPORTED"
+      "status": "supported",
+      "realization": "javascript-package-runtime",
+      "entry": "./",
+      "providerRequirements": [
+        "s3.head",
+        "s3.getText",
+        "s3.putText",
+        "secret.get",
+        "time.wall-clock"
+      ]
     }
   },
   "lowering": {
@@ -50,13 +59,14 @@
     "providerRequirementVersion": "pulse.provider-requirement-record.v1"
   },
   "conformance": {
-    "status": "native-contract-only",
+    "status": "target-overlap",
     "fixtureRoots": [
       "./conformance"
     ],
     "semanticCases": [
       "s3.head",
-      "s3.getText"
+      "s3.getText",
+      "s3.putText"
     ]
   },
   "docs": {

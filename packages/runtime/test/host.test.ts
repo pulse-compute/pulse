@@ -241,6 +241,21 @@ describe('@pulse-compute/runtime host bridge', () => {
     await execution.close()
   })
 
+  it('observes owned promise failures when cancellation precedes effect creation', async () => {
+    const controller = new AbortController()
+    controller.abort(new Error('already cancelled'))
+    let called = false
+    const execution = host.createJavascriptEffectExecution({
+      signal: controller.signal,
+      effectAdapter: { dispatch() { called = true; throw new Error('must not dispatch') } },
+    })
+    await expect(execution.local('request.json', () => { called = true })).rejects.toMatchObject({ code: 'PULSE_RUNTIME_EFFECT_ABORTED' })
+    await expect(execution.dispatch({ kind: 'test.cancel', providerKind: 'test', operation: 'wait', capability: 'test.cancel' })).rejects.toMatchObject({ code: 'PULSE_RUNTIME_EFFECT_ABORTED' })
+    await execution.close()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(called).toBe(false)
+  })
+
   it('enforces the runtime keyed-parallel shape and one-time effect-root ownership', async () => {
     const execution = host.createJavascriptEffectExecution({
       effectAdapter: { dispatch: (effect: any) => effect.capability },

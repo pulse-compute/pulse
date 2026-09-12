@@ -118,7 +118,7 @@ assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), 
 assert.ok(catalog.contracts.every((entry) => entry.compilerTrust === 'first-party'));
 assert.ok(catalog.contracts.every((entry) => entry.targetSupport.native === true));
 assert.ok(catalog.contracts.filter((entry) => entry.contractId !== 'pulse.s3').every((entry) => entry.targetSupport.javascript === 'declared'));
-assert.equal(catalog.contracts.find((entry) => entry.contractId === 'pulse.s3').targetSupport.javascript, 'not-realized');
+assert.equal(catalog.contracts.find((entry) => entry.contractId === 'pulse.s3').targetSupport.javascript, 'declared');
 const entitiesCatalogContract = catalog.contracts.find((entry) => entry.contractId === 'pulse.entities');
 assert.equal(entitiesCatalogContract.targetSupport.native, true);
 assert.equal(entitiesCatalogContract.targetSupport.javascript, 'declared');

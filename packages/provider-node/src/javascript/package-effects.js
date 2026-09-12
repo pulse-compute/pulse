@@ -31,9 +31,14 @@ function createNodeJavascriptPackageEffectCapabilities(options = {}) {
   const assetsLookup = options.assetsLookup || (options.assets && options.assets.lookup);
   const gripBroadcast = options.gripBroadcast || (options.grip && options.grip.broadcast);
   const jwtVerify = options.jwtVerify || (options.jwt && options.jwt.verify);
+  const s3 = options.s3;
   return Object.freeze({
     version: NODE_JAVASCRIPT_PACKAGE_EFFECTS_VERSION,
     async effect(effect, execution) {
+      if (effect && effect.contractId === 'pulse.s3') {
+        if (typeof s3 !== 'function') return unavailable(effect);
+        return s3(effect, execution);
+      }
       if (effect && effect.contractId === 'pulse.assets' && effect.operation === 'lookup') {
         if (typeof assetsLookup !== 'function') return unavailable(effect);
         return assetsLookup(effect.payload, execution);
@@ -61,6 +66,7 @@ function withNodePackageEffectCapabilities(capabilities, options = {}) {
         effect.contractId === 'pulse.assets'
         || effect.contractId === 'pulse.grip'
         || effect.contractId === 'pulse.jwt'
+        || effect.contractId === 'pulse.s3'
       )) {
         return packageCapabilities.effect(effect, execution);
       }

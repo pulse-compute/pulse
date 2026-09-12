@@ -10,6 +10,7 @@ const { createNodeJavascriptFixtureFetch, withNodeFetchCapability } = require('.
 const { createNodeJavascriptAssetsLookup } = require('./assets-adapter.js');
 const { createNodeJavascriptGripBroadcast } = require('./grip-broadcast.js');
 const { createNodeJavascriptJwtVerify } = require('./jwt-verifier.js');
+const { createNodeJavascriptS3 } = require('./s3.js');
 const { createNodeJavascriptPackageEffectCapabilities, withNodePackageEffectCapabilities } = require('./package-effects.js');
 const { NODE_JAVASCRIPT_TARGET_DESCRIPTOR } = require('./target.js');
 
@@ -65,6 +66,7 @@ function nodeJavascriptProviderCapabilities(options) {
       assetsLookup: configuredAssetsLookup,
       gripBroadcast: configuredGripBroadcast,
       jwtVerify: configuredJwtVerify,
+      s3: createNodeJavascriptS3(options, bindingCapabilities.secret),
       assets: options.assets,
       grip: options.grip
     }
