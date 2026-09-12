@@ -1,0 +1,93 @@
+{
+  "version": "pulse.kv-conditional.vectors.v1",
+  "tokens": [
+    {"decimal": "0", "token": "fastly-kv-v1:0000000000000000", "littleEndian": "0000000000000000"},
+    {"decimal": "1", "token": "fastly-kv-v1:0000000000000001", "littleEndian": "0100000000000000"},
+    {"decimal": "4294967296", "token": "fastly-kv-v1:0000000100000000", "littleEndian": "0000000001000000"},
+    {"decimal": "9007199254740991", "token": "fastly-kv-v1:001fffffffffffff", "littleEndian": "ffffffffffff1f00"},
+    {"decimal": "9007199254740992", "token": "fastly-kv-v1:0020000000000000", "littleEndian": "0000000000002000"},
+    {"decimal": "9007199254740993", "token": "fastly-kv-v1:0020000000000001", "littleEndian": "0100000000002000"},
+    {"decimal": "9223372036854775808", "token": "fastly-kv-v1:8000000000000000", "littleEndian": "0000000000000080"},
+    {"decimal": "18446744073709551615", "token": "fastly-kv-v1:ffffffffffffffff", "littleEndian": "ffffffffffffffff"}
+  ],
+  "invalidTokens": [
+    "",
+    "bad token",
+    "\n",
+    "é",
+    null,
+    1
+  ],
+  "invalidFastlyTokens": [
+    "fastly-kv-v1:000000000000000",
+    "fastly-kv-v1:00000000000000000",
+    "fastly-kv-v1:FFFFFFFFFFFFFFFF",
+    "fastly-kv-v1:000000000000000g",
+    "other-provider:1"
+  ],
+  "wire": [
+    {"value": null, "wire": "{\"__pulseKv\":1,\"value\":null}"},
+    {"value": {"text": "snow 雪", "n": 1}, "wire": "{\"__pulseKv\":1,\"value\":{\"text\":\"snow 雪\",\"n\":1}}"},
+    {"value": {"__pulseKv": 1, "value": "user-data"}, "wire": "{\"__pulseKv\":1,\"value\":{\"__pulseKv\":1,\"value\":\"user-data\"}}"}
+  ],
+  "invalidWire": [
+    "null",
+    "{\"raw\":\"legacy\"}",
+    "{\"__pulseKv\":2,\"value\":0}",
+    "{\"__pulseKv\":1}",
+    "{\"__pulseKv\":1,\"value\":0,\"extra\":1}",
+    "{\"__pulseKv\":1,\"value\":1,\"value\":2}",
+    "{\"__pulseKv\":1,\"value\":{\"x\":1,\"\\u0078\":2}}",
+    "﻿{\"__pulseKv\":1,\"value\":0}"
+  ],
+  "outcomes": [
+    {"id": "insertIfAbsent-kv-0", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 0}, "expected": {"status": "unknown", "reason": "protocol"}},
+    {"id": "insertIfAbsent-kv-1", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 1}, "expected": {"status": "stored"}},
+    {"id": "insertIfAbsent-kv-2", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 2}, "expected": {"status": "not-stored", "reason": "rejected"}},
+    {"id": "insertIfAbsent-kv-3", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 3}, "expected": {"status": "unknown", "reason": "protocol"}},
+    {"id": "insertIfAbsent-kv-4", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 4}, "expected": {"status": "conflict"}},
+    {"id": "insertIfAbsent-kv-5", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 5}, "expected": {"status": "not-stored", "reason": "too-large"}},
+    {"id": "insertIfAbsent-kv-6", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 6}, "expected": {"status": "unknown", "reason": "unavailable"}},
+    {"id": "insertIfAbsent-kv-7", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 7}, "expected": {"status": "not-stored", "reason": "throttled"}},
+    {"id": "insertIfAbsent-kv-8", "input": {"operation": "insertIfAbsent", "dispatched": true, "hostStatus": 0, "kvError": 8}, "expected": {"status": "unknown", "reason": "protocol"}},
+    {"id": "compareAndSwap-kv-0", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 0}, "expected": {"status": "unknown", "reason": "protocol"}},
+    {"id": "compareAndSwap-kv-1", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 1}, "expected": {"status": "stored"}},
+    {"id": "compareAndSwap-kv-2", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 2}, "expected": {"status": "not-stored", "reason": "rejected"}},
+    {"id": "compareAndSwap-kv-3", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 3}, "expected": {"status": "conflict"}},
+    {"id": "compareAndSwap-kv-4", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 4}, "expected": {"status": "conflict"}},
+    {"id": "compareAndSwap-kv-5", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 5}, "expected": {"status": "not-stored", "reason": "too-large"}},
+    {"id": "compareAndSwap-kv-6", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 6}, "expected": {"status": "unknown", "reason": "unavailable"}},
+    {"id": "compareAndSwap-kv-7", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 7}, "expected": {"status": "not-stored", "reason": "throttled"}},
+    {"id": "compareAndSwap-kv-8", "input": {"operation": "compareAndSwap", "dispatched": true, "hostStatus": 0, "kvError": 8}, "expected": {"status": "unknown", "reason": "protocol"}},
+    {"id": "host-error-invalidates-output-1", "input": {"dispatched": true, "hostStatus": 1, "kvError": 1}, "expected": {"status": "unknown", "reason": "transport"}},
+    {"id": "host-error-invalidates-output-4", "input": {"dispatched": true, "hostStatus": 1, "kvError": 4}, "expected": {"status": "unknown", "reason": "transport"}},
+    {"id": "host-error-invalidates-output-7", "input": {"dispatched": true, "hostStatus": 1, "kvError": 7}, "expected": {"status": "unknown", "reason": "transport"}},
+    {"id": "timeout-dispatched-False", "input": {"dispatched": false, "hostStatus": 1, "reason": "timeout"}, "expected": {"status": "not-stored", "reason": "timeout"}},
+    {"id": "transport-dispatched-False", "input": {"dispatched": false, "hostStatus": 1, "reason": "transport"}, "expected": {"status": "not-stored", "reason": "transport"}},
+    {"id": "unavailable-dispatched-False", "input": {"dispatched": false, "hostStatus": 1, "reason": "unavailable"}, "expected": {"status": "not-stored", "reason": "unavailable"}},
+    {"id": "protocol-dispatched-False", "input": {"dispatched": false, "hostStatus": 1, "reason": "protocol"}, "expected": {"status": "not-stored", "reason": "protocol"}},
+    {"id": "cancel-dispatched-False", "input": {"dispatched": false, "cancelled": true}, "expected": {"lifecycle": "cancelled", "mayHaveCommitted": false}},
+    {"id": "timeout-dispatched-True", "input": {"dispatched": true, "hostStatus": 1, "reason": "timeout"}, "expected": {"status": "unknown", "reason": "timeout"}},
+    {"id": "transport-dispatched-True", "input": {"dispatched": true, "hostStatus": 1, "reason": "transport"}, "expected": {"status": "unknown", "reason": "transport"}},
+    {"id": "unavailable-dispatched-True", "input": {"dispatched": true, "hostStatus": 1, "reason": "unavailable"}, "expected": {"status": "unknown", "reason": "unavailable"}},
+    {"id": "protocol-dispatched-True", "input": {"dispatched": true, "hostStatus": 1, "reason": "protocol"}, "expected": {"status": "unknown", "reason": "protocol"}},
+    {"id": "cancel-dispatched-True", "input": {"dispatched": true, "cancelled": true}, "expected": {"lifecycle": "cancelled", "mayHaveCommitted": true}}
+  ],
+  "readOutcomes": [
+    {"id": "read-kv-0", "input": {"hostStatus": 0, "kvError": 0}, "expected": {"status": "failed", "reason": "protocol"}},
+    {"id": "read-kv-2", "input": {"hostStatus": 0, "kvError": 2}, "expected": {"status": "failed", "reason": "protocol"}},
+    {"id": "read-kv-3", "input": {"hostStatus": 0, "kvError": 3}, "expected": {"status": "not-found"}},
+    {"id": "read-kv-4", "input": {"hostStatus": 0, "kvError": 4}, "expected": {"status": "failed", "reason": "protocol"}},
+    {"id": "read-kv-5", "input": {"hostStatus": 0, "kvError": 5}, "expected": {"status": "failed", "reason": "too-large"}},
+    {"id": "read-kv-6", "input": {"hostStatus": 0, "kvError": 6}, "expected": {"status": "failed", "reason": "unavailable"}},
+    {"id": "read-kv-7", "input": {"hostStatus": 0, "kvError": 7}, "expected": {"status": "failed", "reason": "throttled"}},
+    {"id": "read-kv-8", "input": {"hostStatus": 0, "kvError": 8}, "expected": {"status": "failed", "reason": "protocol"}},
+    {"id": "read-host-failure-1", "input": {"hostStatus": 1, "kvError": 1}, "expected": {"status": "failed", "reason": "transport"}},
+    {"id": "read-host-failure-3", "input": {"hostStatus": 1, "kvError": 3}, "expected": {"status": "failed", "reason": "transport"}},
+    {"id": "read-body-protocol", "input": {"hostStatus": 0, "kvError": 1, "bodyFailure": "protocol"}, "expected": {"status": "failed", "reason": "protocol"}},
+    {"id": "read-body-invalid-value", "input": {"hostStatus": 0, "kvError": 1, "bodyFailure": "invalid-value"}, "expected": {"status": "failed", "reason": "invalid-value"}},
+    {"id": "read-body-too-large", "input": {"hostStatus": 0, "kvError": 1, "bodyFailure": "too-large"}, "expected": {"status": "failed", "reason": "too-large"}},
+    {"id": "read-body-timeout", "input": {"hostStatus": 0, "kvError": 1, "bodyFailure": "timeout"}, "expected": {"status": "failed", "reason": "timeout"}},
+    {"id": "read-found-null", "input": {"hostStatus": 0, "kvError": 1, "state": {"generation": "opaque:g1", "wire": "{\"__pulseKv\":1,\"value\":null}"}}, "expected": {"status": "found", "value": null, "generation": "opaque:g1"}}
+  ]
+}
