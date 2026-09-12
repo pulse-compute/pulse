@@ -1,0 +1,77 @@
+{
+  "version": "pulse.s3.o1-design.v1",
+  "status": "design-only",
+  "authority": {
+    "contractId": "pulse.s3",
+    "npmPackage": "@pulse-compute/s3",
+    "lowerableSubpath": "@pulse-compute/s3",
+    "hostCapabilities": ["s3.head", "s3.getText", "s3.putText"]
+  },
+  "limits": {
+    "keyUtf8Bytes": 1024,
+    "encodedKeyBytes": 3072,
+    "textUtf8Bytes": 32768,
+    "metadataValueBytes": 1024,
+    "bindingNameBytes": 64,
+    "contentTypeBytes": 128,
+    "structuredEnvelopeBytes": 262144,
+    "responseHeaderBytes": 16384,
+    "defaultTimeoutMs": 10000,
+    "maximumTimeoutMs": 30000
+  },
+  "body": {
+    "encoding": "utf-8-strict",
+    "preserveBom": true,
+    "hashBeforeDecode": true,
+    "digest": "sha256-lowercase-hex",
+    "automaticJson": false,
+    "automaticCompression": false,
+    "binary": false,
+    "streaming": false
+  },
+  "binding": {
+    "style": "path",
+    "endpoint": "https-origin-only",
+    "region": "explicit",
+    "credentials": "provider-secret-references",
+    "redirects": "reject",
+    "cache": "bypass",
+    "automaticRetries": 0,
+    "guestOverrides": []
+  },
+  "lowering": {
+    "contextArgument": 0,
+    "literalBindingArgument": 1,
+    "literalPutOptionsArgument": 4,
+    "trustedBuilder": "packages/s3/pulsewasm.compiler.cjs",
+    "facade": "s3",
+    "effectVersion": "pulse.canonical-package-effect.v1",
+    "operationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "cryptoRequirements": ["SHA-256", "HMAC-SHA256"],
+    "operations": [
+      {
+        "name": "head", "method": "HEAD", "kind": "s3.head", "result": "s3-head-result",
+        "runtimeInputs": [{ "name": "key", "argumentIndex": 2, "source": "package-call-argument" }]
+      },
+      {
+        "name": "getText", "method": "GET", "kind": "s3.getText", "result": "s3-get-text-result",
+        "runtimeInputs": [{ "name": "key", "argumentIndex": 2, "source": "package-call-argument" }]
+      },
+      {
+        "name": "putText", "method": "PUT", "kind": "s3.putText", "result": "s3-put-text-result",
+        "runtimeInputs": [
+          { "name": "key", "argumentIndex": 2, "source": "package-call-argument" },
+          { "name": "text", "argumentIndex": 3, "source": "package-call-argument" }
+        ]
+      }
+    ]
+  },
+  "nativeAcceptance": {
+    "command": "node wasm/test/s3/run-native-read-acceptance.cjs",
+    "targets": ["node-native", "fastly-native"],
+    "realizationPhase": "O2",
+    "missingRealizationExitCode": 2,
+    "providerReality": false
+  }
+}
