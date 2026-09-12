@@ -94,6 +94,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES = 65536;
 const FASTLY_NATIVE_SIZE_OPTIMIZATION = EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
+  ...require('./s3-native.js').S3_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   Object.freeze(['fastly_abi', 'init']),
   Object.freeze(['fastly_http_req', 'body_downstream_get']),
   Object.freeze(['fastly_http_req', 'method_get']),
@@ -127,7 +128,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_log', 'endpoint_get']),
   Object.freeze(['fastly_log', 'write']),
   Object.freeze(['wasi_snapshot_preview1', 'clock_time_get'])
-]);
+].filter(([module, name], index, entries) => entries.findIndex((item) => item[0] === module && item[1] === name) === index));
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_REQUIRED_IMPORTS = Object.freeze([
   Object.freeze(['fastly_abi', 'init']),
@@ -148,7 +149,9 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'grip.publish': 8,
   'grip.broadcast': 9,
   'assets.lookup': 10,
-  'jwt.verify': 11
+  'jwt.verify': 11,
+  's3.head': 12,
+  's3.getText': 13
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -166,7 +169,9 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'grip.publish',
   'grip.broadcast',
   'assets.lookup',
-  'jwt.verify'
+  'jwt.verify',
+  's3.head',
+  's3.getText'
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
@@ -179,7 +184,9 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'grip.hold',
   'grip.publish',
   'grip.broadcast',
-  'jwt.verify'
+  'jwt.verify',
+  's3.head',
+  's3.getText'
 ]);
 
 class FastlyNativePlatformCapabilitiesError extends Error {
@@ -245,7 +252,7 @@ function selectedJwtCrypto(plan) {
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');
   if (!hasJwt) return undefined;
   const algorithms = plan.crypto && Array.isArray(plan.crypto.algorithms)
-    ? plan.crypto.algorithms
+    ? plan.crypto.algorithms.filter((entry) => ['HS256', 'ES256'].includes(entry.algorithm))
     : [];
   if (algorithms.length !== 1) {
     fail(
@@ -572,7 +579,9 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.kind === 'jwt.verify'
       && effect.operation === 'verify'
       && effect.capability === 'jwt.verify';
-    return !grip && !assets && !jwt;
+    const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
+      && ['head', 'getText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+    return !grip && !assets && !jwt && !s3;
   });
   if (unsupportedPackages.length > 0) {
     fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, and JWT package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
@@ -592,7 +601,9 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.kind === 'jwt.verify'
       && effect.operation === 'verify'
       && effect.capability === 'jwt.verify';
-    return !grip && !assets && !jwt;
+    const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
+      && ['head', 'getText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+    return !grip && !assets && !jwt && !s3;
   });
   if (unsupportedDeclarations.length > 0) {
     fail('Fastly native package realization is restricted to the Assets, GRIP, and JWT contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
@@ -678,7 +689,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   const effects = plan.effects || [];
   const hasConfig = effects.some((effect) => effect.kind === 'config.get');
   const hasSecret = effects.some((effect) => (
-    effect.kind === 'secret.get'
+    effect.kind === 'secret.get' || ['s3.head', 's3.getText'].includes(effect.kind)
     || (effect.kind === 'jwt.verify' && effect.resource && effect.resource.keyType === 'secret')
   ));
   const hasGripHold = effects.some((effect) => effect.kind === 'grip.hold');
@@ -801,6 +812,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   return Object.freeze({
     configStore,
     secretStore,
+    s3: require('../toolchain/s3.js').resolveFastlyS3(effects, source.s3),
     kv: Object.freeze(kv),
     fetch: Object.freeze(fetch),
     backends: Object.freeze(backends),
@@ -877,6 +889,7 @@ function requiredImportsForPlan(plan, bindings) {
     keys.add('fastly_log:endpoint_get');
     keys.add('fastly_log:write');
   }
+  if (kinds.has('s3.head') || kinds.has('s3.getText')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   return Object.freeze([...keys].sort());
 }
 
@@ -1014,7 +1027,7 @@ function effectResultSource(plan, bindings) {
   for (const [index, effect] of (plan.effects || []).entries()) {
     const result = effect.result || {};
     const decoder = result.decoder;
-    const waiter = effect.kind === 'fetch'
+    const waiter = ['s3.head', 's3.getText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
       ? '__pulse_fastly_wait_fetch'
       : effect.kind === 'grip.publish'
         ? '__pulse_fastly_wait_grip_publish'
@@ -1054,6 +1067,8 @@ function effectDispatchSource(plan) {
     'config.get': '__pulse_fastly_config_begin',
     'secret.get': '__pulse_fastly_secret_begin',
     'jwt.verify': '__pulse_fastly_jwt_begin',
+    's3.head': '__pulse_fastly_s3_begin',
+    's3.getText': '__pulse_fastly_s3_begin',
     'kv.get': '__pulse_fastly_kv_get_begin',
     'kv.put': '__pulse_fastly_kv_put_begin',
     'assets.lookup': '__pulse_fastly_assets_begin',
@@ -1411,7 +1426,28 @@ function __pulse_fastly_redact(input: string): string { let output = input; for 
 function host_log(level: i32, messageHandle: i32): void { let endpoint = __pulse_fastly_log_handle; if (endpoint == -2) return; if (endpoint == -1) { const name = __pulse_fastly_utf8("stdout"); const out = __pulse_fastly_out_i32(); if (fastly_log_endpoint_get(changetype<usize>(name), name.byteLength, changetype<usize>(out)) != FASTLY_STATUS_OK) { __pulse_fastly_log_handle = -2; return } endpoint = __pulse_fastly_out_value(out); __pulse_fastly_log_handle = endpoint } let label = "unknown"; if (level == 1) label = "error"; else if (level == 2) label = "warn"; else if (level == 3) label = "info"; else if (level == 4) label = "debug"; const bytes = __pulse_fastly_utf8("[pulse:" + label + "] " + __pulse_fastly_redact(__pulse_fastly_string(messageHandle)) + "\n"); const written = __pulse_fastly_out_i32(); fastly_log_write(endpoint, changetype<usize>(bytes), bytes.byteLength, changetype<usize>(written)) }
 function __pulse_fastly_number(handle: i32): f64 { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_NUMBER) return value.number; if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? 1.0 : 0.0; if (value.kind == PULSE_VALUE_STRING) return F64.parseFloat(value.text); return 0.0 }
 function __pulse_fastly_hex(value: i32): string { return String.fromCharCode(value < 10 ? 48 + value : 87 + value) }
-function __pulse_fastly_quote(value: string): string { let out = "\""; for (let i = 0; i < value.length; i += 1) { const c = value.charCodeAt(i); if (c == 34) out += "\\\""; else if (c == 92) out += "\\\\"; else if (c == 8) out += "\\b"; else if (c == 9) out += "\\t"; else if (c == 10) out += "\\n"; else if (c == 12) out += "\\f"; else if (c == 13) out += "\\r"; else if (c < 32) out += "\\u00" + __pulse_fastly_hex((c >> 4) & 15) + __pulse_fastly_hex(c & 15); else out += String.fromCharCode(c) } return out + "\"" }
+function __pulse_fastly_quote(value: string): string {
+  // Count once and write UTF-16 units once. Repeated concatenation can allocate
+  // gigabytes for a valid bounded string when every byte needs JSON escaping.
+  let size = 2;
+  for (let i = 0; i < value.length; i++) {
+    const c = value.charCodeAt(i);
+    size += c == 34 || c == 92 || c == 8 || c == 9 || c == 10 || c == 12 || c == 13 ? 2 : c < 32 ? 6 : 1;
+  }
+  const out = new Uint16Array(size); let cursor = 0; out[cursor++] = 34;
+  for (let i = 0; i < value.length; i++) {
+    const c = value.charCodeAt(i);
+    if (c == 34 || c == 92) { out[cursor++] = 92; out[cursor++] = u16(c); }
+    else if (c == 8 || c == 9 || c == 10 || c == 12 || c == 13) {
+      out[cursor++] = 92; out[cursor++] = c == 8 ? 98 : c == 9 ? 116 : c == 10 ? 110 : c == 12 ? 102 : 114;
+    } else if (c < 32) {
+      out[cursor++] = 92; out[cursor++] = 117; out[cursor++] = 48; out[cursor++] = 48;
+      out[cursor++] = u16('0123456789abcdef'.charCodeAt((c >> 4) & 15)); out[cursor++] = u16('0123456789abcdef'.charCodeAt(c & 15));
+    } else out[cursor++] = u16(c);
+  }
+  out[cursor] = 34;
+  return String.UTF16.decodeUnsafe(out.dataStart, out.byteLength);
+}
 function __pulse_fastly_json(handle: i32, depth: i32): string {
   if (depth > 64) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); return "null" }
   const value = __pulse_fastly_value(handle)
@@ -1649,6 +1685,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       es256KeyRecords
     }),
     jwtSource ? jwtSource.source : '',
+    require('./s3-native.js').s3NativeSource(plan, bindings),
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
@@ -1720,7 +1757,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       providerNeutralInput: true,
       javascriptRuntime: false,
       jsComputeRuntime: false,
-      wasi: hasJwt ? 'clock_time_get only' : false,
+      wasi: hasJwt || bindings.s3.length ? 'clock_time_get only' : false,
       effects: 'fetch, config.get, secret.get, kv.get, kv.put, assets.lookup, grip.channel, grip.hold, grip.publish, grip.broadcast, jwt.verify',
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',

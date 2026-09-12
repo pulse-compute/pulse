@@ -320,7 +320,7 @@ objects do not merge. An empty declaration enables no algorithms. An unknown,
 missing, unavailable, or failed realization stops with a normalized diagnostic
 and never authorizes fallback.
 
-JavaScript targets select `runtime-builtin` and use Web Crypto with explicit
+For JWT verification, JavaScript targets select `runtime-builtin` and use Web Crypto with explicit
 HMAC/SHA-256 or ECDSA/P-256/SHA-256 parameters. The crypto boundary receives a
 normalized 64-byte P-256 point; its JavaScript adapter validates that point and
 constructs the runtime-private JWK used for import. Native HS256 selects
@@ -328,6 +328,25 @@ constructs the runtime-private JWK used for import. Native HS256 selects
 primary module, while Native ES256 selects the audited
 `guest-linked:pulse-es256-rustcrypto-p256` unit. Neither algorithm retries a
 different realization.
+
+The O2 S3 read slice adds exact `SHA-256` and `HMAC-SHA256` Native requirements.
+Both compose the same Crypto-owned source once; validation matches the pair of
+algorithm and realization. Crypto's internal output ABI checks memory ranges,
+uses 32-byte output, caps data at 32 KiB and HMAC keys at 8 KiB, and provides a
+reusable wiped staging frame. JWT verification keeps its separate limits.
+
+The private `@pulse-compute/s3` package owns `head` and `getText`, literal binding
+authority, runtime-key lowering, SigV4 composition and bounded object results.
+Node and Fastly own fixed endpoint/bucket/region mappings, credential lookup,
+time and transport. Fastly requires a static named backend. Reads bypass cache,
+disable decompression and redirects, preserve raw-byte digest and strict UTF-8
+text, and do not retry. Native acceptance runs real Wasm through Node and the
+Fastly host-call fixture; it is local evidence, not live Object Storage proof.
+JavaScript, PUT, release promotion and Assets alignment remain later work.
+
+Package redaction declarations survive Handler IR projection into the Native
+plan. Native host effect traces omit declared private payloads and results;
+applications still control their own response and logging use of returned data.
 
 All four target classes—Node JavaScript, Fastly JavaScript, Node Native, and
 Fastly Native—execute the same HS256 semantics. ES256 adds exact default and

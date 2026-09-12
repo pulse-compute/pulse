@@ -513,6 +513,9 @@ function createNodeProviderAdapter(baseOptions = {}) {
     },
     dispatchFetch,
     async dispatchEffect(effect, executionOptions = {}) {
+      if (effect.kind === 's3.head' || effect.kind === 's3.getText') {
+        return require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions }, (name) => bindingValue(executionOptions, 'secrets', name));
+      }
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
       if (effect.kind === 'jwt.verify') return verifyNativeJwt(effect, executionOptions);
       if (effect.kind === 'grip.broadcast') {

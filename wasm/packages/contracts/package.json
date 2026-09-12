@@ -109,7 +109,8 @@
     "./project/javascript-application": "./src/project/javascript-application.js",
     "./project/target-support-evidence": "./src/project/target-support-evidence.js",
     "./project/javascript-core-capabilities": "./src/project/javascript-core-capabilities.js",
-    "./project/native-optimization": "./src/project/native-optimization.js"
+    "./project/native-optimization": "./src/project/native-optimization.js",
+    "./s3/contracts": "./src/s3/contracts.js"
   },
   "publishConfig": {
     "access": "public"

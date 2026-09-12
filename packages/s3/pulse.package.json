@@ -1,0 +1,66 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.s3",
+  "npmPackage": "@pulse-compute/s3",
+  "description": "Bounded exact-key S3 Native reads.",
+  "authoring": {
+    "namespace": "s3",
+    "import": "@pulse-compute/s3",
+    "symbols": [
+      "head",
+      "getText"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "s3",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "s3",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_PACKAGE_COMPOSITION_HELPER_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/s3",
+      "providerRequirements": [
+        "s3.head",
+        "s3.getText",
+        "secret.get",
+        "time.wall-clock"
+      ],
+      "reasonCode": "PULSE_PACKAGE_PROVIDER_CAPABILITY_REQUIRED"
+    },
+    "javascript": {
+      "status": "unsupported",
+      "realization": "none",
+      "reasonCode": "PULSE_PACKAGE_TARGET_UNSUPPORTED"
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "native-contract-only",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "s3.head",
+      "s3.getText"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

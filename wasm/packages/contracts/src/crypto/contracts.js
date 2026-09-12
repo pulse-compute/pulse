@@ -23,8 +23,14 @@ const CRYPTO_VERIFICATION_STATUSES = Object.freeze([
   'realization-failure'
 ]);
 
-const CRYPTO_ALGORITHMS = Object.freeze(['HS256', 'ES256']);
+const CRYPTO_ALGORITHMS = Object.freeze(['HS256', 'ES256', 'SHA-256', 'HMAC-SHA256']);
 const CRYPTO_REALIZATIONS = Object.freeze([
+  ...['SHA-256', 'HMAC-SHA256'].map((algorithm) => Object.freeze({
+    id: 'guest-source:pulse-hmac-as', kind: 'guest-source', backend: 'pulse-hmac-as',
+    implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, algorithm, targets: Object.freeze(['native']),
+    source: Object.freeze({ package: '@pulse-compute/crypto', export: './pulsewasm-native',
+      contractVersion: 'pulse.crypto-guest-source.v1', contribution: 'pulse-hmac-as' })
+  })),
   Object.freeze({
     id: 'runtime-builtin',
     kind: 'runtime-builtin',
@@ -586,7 +592,7 @@ function planCryptoRealizations(input = {}) {
       algorithm: configured.algorithm,
       primitive: configured.algorithm === 'ES256'
         ? Object.freeze({ kind: 'ecdsa', curve: 'P-256', hash: 'SHA-256' })
-        : Object.freeze({ kind: 'hmac', hash: 'SHA-256' }),
+        : Object.freeze({ kind: configured.algorithm === 'SHA-256' ? 'digest' : 'hmac', hash: 'SHA-256' }),
       requestedBy: requirement ? requirement.requestedBy : Object.freeze([]),
       semanticOwner: requirements.semanticOwner,
       realization,

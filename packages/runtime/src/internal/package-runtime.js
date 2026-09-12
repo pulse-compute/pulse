@@ -16,6 +16,12 @@ const DEFAULT_MAX_PAYLOAD_ENTRIES = 4096;
 const PACKAGE_CONTEXTS = new WeakMap();
 
 const TRUSTED_PACKAGE_EFFECT_CATALOG = Object.freeze({
+  '@pulse-compute/s3': Object.freeze({
+    contractId: 'pulse.s3', providerKind: 's3', operations: Object.freeze({
+      head: Object.freeze({ kind: 's3.head', capability: 's3.head', result: 's3-head-result' }),
+      getText: Object.freeze({ kind: 's3.getText', capability: 's3.getText', result: 's3-get-text-result' })
+    })
+  }),
   '@pulse-compute/assets': Object.freeze({
     contractId: 'pulse.assets',
     providerKind: 'assets',

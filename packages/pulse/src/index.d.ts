@@ -40,7 +40,7 @@ export type {
 
 export type PulseExecutionTarget = 'native' | 'javascript';
 export type PulseReportingLevel = 'off' | 'error' | 'warn' | 'info' | 'debug';
-export type PulseCryptoAlgorithm = 'HS256' | 'ES256';
+export type PulseCryptoAlgorithm = 'HS256' | 'ES256' | 'SHA-256' | 'HMAC-SHA256';
 export type PulseCryptoRealization =
   | 'runtime-builtin'
   | 'guest-source:pulse-hmac-as'

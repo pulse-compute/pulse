@@ -99,6 +99,16 @@ const tasks = Object.freeze({
   's3-design-contract': nodeTask('test/s3/assert-s3-design-contract.cjs', {
     description: 'S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes'
   }),
+  's3-read-contract': nodeTask('test/s3/assert-s3-read-contract.cjs', {
+    description: 'S3 read binding authority, lowering negatives and bounded result contract'
+  }),
+  's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
+    timeoutMs: 180000,
+    description: 'Exact HEAD/GET through Node Native and Fastly Native local modules'
+  }),
+  's3-node-transport': nodeTask('test/s3/assert-node-transport.cjs', {
+    description: 'Node S3 TLS wire byte fidelity, raw header duplicates, redirects and abort'
+  }),
   'crypto-config-planning': nodeTask('test/crypto/assert-crypto-config-planning.cjs', {
     evidence: 'unit',
     timeoutMs: 180000,
@@ -752,6 +762,7 @@ const profiles = Object.freeze({
     'api-surface',
     'logging-contract',
     's3-design-contract',
+    's3-read-contract',
     'crypto-config-planning',
     'reachable-graph',
     'project-modules',
@@ -769,6 +780,8 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    's3-native-read',
+    's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',
     'logging-lowering',
