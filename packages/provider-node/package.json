@@ -47,7 +47,8 @@
     "@pulse-compute/wasm-build-support": "workspace:*",
     "@pulse-compute/wasm-contracts": "workspace:*",
     "@pulse-compute/wasm-host-runtime": "workspace:*",
-    "@pulse-compute/runtime": "workspace:*"
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/s3": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

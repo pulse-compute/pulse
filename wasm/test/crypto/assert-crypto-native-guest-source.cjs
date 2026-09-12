@@ -181,13 +181,20 @@ assert.equal(cryptoEvidence.sourceBytes, sourceContract.sourceBytes);
 assert.deepEqual(cryptoEvidence.imports, []);
 assert.deepEqual(cryptoEvidence.exports, [
   'pulse_crypto_hs256_verify',
-  'pulse_crypto_sha256_digest'
+  'pulse_crypto_sha256_digest',
+  'pulse_crypto_bytes_frame_v1',
+  'pulse_crypto_sha256_bytes_v1',
+  'pulse_crypto_hmac_sha256_bytes_v1'
 ]);
 assert.deepEqual(cryptoEvidence.resourceLimits, {
   hmacKeyBytesMinimum: 32,
   hmacKeyBytesMaximum: 4 * 1024,
   macDataBytesMaximum: 1024 * 1024,
-  hs256TagBytes: 32
+  hs256TagBytes: 32,
+  byteOperationKeyBytesMaximum: 8192,
+  byteOperationDataBytesMaximum: 32768,
+  byteOperationOutputBytes: 32,
+  byteOperationFrameBytes: 40992
 });
 assert.deepEqual(cryptoEvidence.resultCodes, resultCodes);
 assert.deepEqual(cryptoEvidence.comparison, {
@@ -205,6 +212,33 @@ for (const compiled of [first, optimized]) {
   assert.equal(compiled.manifest.crypto.algorithms[0].sourceSha256, sourceContract.sourceSha256);
 
   const controller = controllerFor(compiled);
+  const byteCrypto = require('../../../packages/crypto/pulsewasm.native.cjs').bindNativeDigestMac(controller.exports);
+  for (const algorithm of ['SHA-256', 'HMAC-SHA256']) {
+    const selected = planProjectCrypto({
+      declaration: normalizeCryptoConfiguration([algorithm]),
+      requirements: normalizeCryptoRequirements([{ algorithm, requestedBy: '@pulse-compute/crypto' }]),
+      targetDescriptor: NODE_NATIVE_TARGET_DESCRIPTOR, target: 'native', profile: 'native'
+    });
+    const bridge = require('../../packages/host-runtime/src/runtime/native-crypto-verifier.js').createNativeGuestSourceCryptoVerifier({ exports: controller.exports, plan: { crypto: selected } });
+    assert.equal(bridge.realization.algorithms[0].available, true);
+    assert.deepEqual(Object.keys(bridge.verifier.bytes), [algorithm === 'SHA-256' ? 'sha256' : 'hmacSha256'], 'only the selected byte authority is exposed');
+  }
+  for (const keyLength of [0, 1, 20, 32, 64, 65, 4096, 4100, 8192]) {
+    const key = Buffer.alloc(keyLength, 0x0b), data = Buffer.from('Hi There');
+    assert.equal(Buffer.from(byteCrypto.hmacSha256(key, data)).toString('hex'), crypto.createHmac('sha256', key).update(data).digest('hex'));
+  }
+  for (const length of [0, 1, 55, 56, 64, 32768]) {
+    const bytes = Buffer.alloc(length, 0xab);
+    assert.equal(Buffer.from(byteCrypto.sha256(bytes)).toString('hex'), crypto.createHash('sha256').update(bytes).digest('hex'));
+  }
+  assert.throws(() => byteCrypto.sha256(Buffer.alloc(32769)));
+  assert.throws(() => byteCrypto.hmacSha256(Buffer.alloc(8193), Buffer.alloc(0)));
+  const frame = controller.exports.pulse_crypto_bytes_frame_v1();
+  for (let i = 0; i < 100; i++) { byteCrypto.hmacSha256(Buffer.alloc(32), Buffer.alloc(32)); assert.equal(controller.exports.pulse_crypto_bytes_frame_v1(), frame); }
+  assert.equal(new Uint8Array(controller.exports.memory.buffer, frame, 40992).every((byte) => byte === 0), true, 'Crypto staging frame is wiped');
+  assert.equal(controller.exports.pulse_crypto_sha256_bytes_v1(-1, 10, frame, 32), -2);
+  assert.equal(controller.exports.pulse_crypto_sha256_bytes_v1(frame, 0, frame, 31), -2);
+  assert.equal(controller.exports.pulse_crypto_hs256_verify(frame, 1, frame, 0, frame, 32), -1, 'JWT still rejects short HMAC keys');
   assert.equal(
     digest(controller, Buffer.alloc(0)).toString('hex'),
     'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',

@@ -100,22 +100,25 @@ assert.equal(projectionContract.policies.automaticTargetFallback, false);
 
 const catalog = discoverPackageContractCatalog({ cwd: fixtureRoot, workspaceRoot: repoRoot });
 assert.equal(catalog.version, PACKAGE_CONTRACT_CATALOG_VERSION);
-assert.deepEqual(catalog.contracts.map((entry) => entry.contractId), ['pulse.assets', 'pulse.entities', 'pulse.grip', 'pulse.jwt']);
+assert.deepEqual(catalog.contracts.map((entry) => entry.contractId), ['pulse.assets', 'pulse.entities', 'pulse.grip', 'pulse.jwt', 'pulse.s3']);
 assert.deepEqual(catalog.contracts.map((entry) => entry.lowerableSubpath), [
   '@pulse-compute/assets',
   '@pulse-compute/entities',
   '@pulse-compute/grip',
-  '@pulse-compute/jwt'
+  '@pulse-compute/jwt',
+  '@pulse-compute/s3'
 ]);
 assert.deepEqual(catalog.contracts.map((entry) => entry.compatibilitySubpaths), [
   ['@pulse-compute/assets/pulsewasm'],
   [],
   ['@pulse-compute/grip/pulsewasm'],
+  [],
   []
 ]);
 assert.ok(catalog.contracts.every((entry) => entry.compilerTrust === 'first-party'));
 assert.ok(catalog.contracts.every((entry) => entry.targetSupport.native === true));
-assert.ok(catalog.contracts.every((entry) => entry.targetSupport.javascript === 'declared'));
+assert.ok(catalog.contracts.filter((entry) => entry.contractId !== 'pulse.s3').every((entry) => entry.targetSupport.javascript === 'declared'));
+assert.equal(catalog.contracts.find((entry) => entry.contractId === 'pulse.s3').targetSupport.javascript, 'not-realized');
 const entitiesCatalogContract = catalog.contracts.find((entry) => entry.contractId === 'pulse.entities');
 assert.equal(entitiesCatalogContract.targetSupport.native, true);
 assert.equal(entitiesCatalogContract.targetSupport.javascript, 'declared');

@@ -1,0 +1,44 @@
+{
+  "name": "@pulse-compute/s3",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
+  "description": "Bounded exact-key S3 reads through Pulse Native effects.",
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "require": "./src/index.js",
+      "default": "./src/index.js"
+    },
+    "./provider": "./src/provider.js",
+    "./pulsewasm/manifest": "./pulsewasm.manifest.cjs",
+    "./pulsewasm/compiler": "./pulsewasm.compiler.cjs",
+    "./pulsewasm-native": "./pulsewasm.native.cjs"
+  },
+  "files": [
+    "src",
+    "as",
+    "conformance",
+    "pulse.package.json",
+    "pulsewasm.manifest.cjs",
+    "pulsewasm.compiler.cjs",
+    "pulsewasm.native.cjs",
+    "README.md"
+  ],
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "dependencies": {
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*"
+  }
+}

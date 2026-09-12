@@ -100,9 +100,9 @@ Declare exact algorithms for the global or selected profile and resolve one targ
 
 Declares the complete global algorithm set. Array entries are canonical algorithm names; object entries may pin one exact known realization.
 
-- **Type:** readonly ('HS256' | 'ES256')[] | { readonly HS256?: { readonly realization?: PulseCryptoRealization }; readonly ES256?: { readonly realization?: PulseCryptoRealization } }
+- **Type:** readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>
 - **Required/default:** Optional; default implicit no-crypto declaration.
-- **Allowed values or constraints:** `HS256`, `ES256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`
+- **Allowed values or constraints:** `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`
 - **Scope:** global crypto requirement default
 - **Precedence:** Used only when the selected profile omits `crypto`.
 - **Security and safety:** Keys and verification bytes are not configuration values. Target selection is deterministic and never probes or falls back.
@@ -112,9 +112,9 @@ Declares the complete global algorithm set. Array entries are canonical algorith
 
 Replaces the complete global crypto declaration for the selected profile. Arrays and objects never merge with `pulse.crypto`.
 
-- **Type:** readonly ('HS256' | 'ES256')[] | { readonly HS256?: { readonly realization?: PulseCryptoRealization }; readonly ES256?: { readonly realization?: PulseCryptoRealization } }
+- **Type:** readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>
 - **Required/default:** Optional; default inherit `pulse.crypto` when absent.
-- **Allowed values or constraints:** `[]` and `{}` explicitly select no crypto; otherwise `HS256` and/or `ES256`
+- **Allowed values or constraints:** `[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`
 - **Scope:** selected profile
 - **Precedence:** Selected-profile declaration replaces `pulse.crypto`; absence inherits it.
 - **Security and safety:** Every declared algorithm must resolve for the selected target before lowering. A failed exact realization cannot select another backend.
@@ -284,9 +284,37 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 - **Security and safety:** Prefer fixtures for deterministic tests and offline development.
 - **Related diagnostics:** None specific.
 
+## Node provider options
+
+Provider-owned Node profile configuration.
+
+### `node.bindings.s3`
+
+Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).
+
+- **Type:** Readonly<Record<string, S3ReadBinding>>
+- **Required/default:** Optional; default `{}`.
+- **Allowed values or constraints:** —
+- **Scope:** Node Native S3 reads
+- **Precedence:** Configuration value.
+- **Security and safety:** Only named credential references are configuration. Runtime keys cannot override authority.
+- **Related diagnostics:** None specific.
+
 ## Fastly provider options
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
+
+### `fastly.bindings.s3`
+
+Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).
+
+- **Type:** Readonly<Record<string, S3ReadBinding & { backend: string }>>
+- **Required/default:** Optional; default `{}`.
+- **Allowed values or constraints:** —
+- **Scope:** Fastly Native S3 reads
+- **Precedence:** Configuration value.
+- **Security and safety:** Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.
+- **Related diagnostics:** None specific.
 
 ### `fastly.configStore`
 
