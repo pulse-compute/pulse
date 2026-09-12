@@ -96,6 +96,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'canonical-opaque-node-emission',
       'javascript-effect-adapter',
+      's3-node-transport',
       'node-router-context-parity',
       'node-cross-target-conformance'
     ])
@@ -127,6 +128,11 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Package effects',
     tasks: Object.freeze([
       'package-reachability',
+      's3-design-contract',
+      's3-read-contract',
+      's3-write-contract',
+      's3-native-read',
+      's3-write-conformance',
       'assets-lowering-plan',
       'assets-package-owned-lowering',
       'grip-package-owned-lowering',
@@ -153,7 +159,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'four-mode-semantic-corpus',
     title: 'Four-mode semantic corpus',
-    tasks: Object.freeze(['crypto-cross-target-conformance', 'four-mode-conformance']),
+    tasks: Object.freeze(['crypto-cross-target-conformance', 'catalog-router-parity', 'four-mode-conformance']),
     artifact: 'fourMode'
   }),
   Object.freeze({
