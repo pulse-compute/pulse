@@ -32,6 +32,9 @@ assert.equal(router.use('/api', handler), router);
 assert.equal(router.get('/health', handler), router);
 assert.equal(router.head('/health', handler), router);
 assert.equal(router.post('/health', handler), router);
+assert.equal(router.put('/health', handler), router);
+assert.equal(router.patch('/health', handler), router);
+assert.equal(router.delete('/health', handler), router);
 assert.equal(router.mount('/api', new runtime.Router()), router);
 assert.equal(router.error(handler), router);
 assert.equal(Object.prototype.hasOwnProperty.call(router, 'on'), false, 'Router must remain HTTP-only');
@@ -45,6 +48,9 @@ assert.deepEqual(Object.keys(pulse), ['defineConfig', 'Pulse', 'PULSE_APPLICATIO
 assert.equal(typeof pulse.Pulse, 'function');
 assert.equal(pulse.PULSE_APPLICATION_API_VERSION, 'pulse.application-authoring.v3');
 const eventApplication = new pulse.Pulse({ auto: true });
+assert.equal(eventApplication.put('/items/:id', handler), eventApplication);
+assert.equal(eventApplication.patch('/items/:id', handler), eventApplication);
+assert.equal(eventApplication.delete('/items/:id', handler), eventApplication);
 assert.equal(eventApplication.on('system.tick', { schema: null }, async () => undefined), eventApplication);
 assert.equal(Object.prototype.hasOwnProperty.call(eventApplication, 'emit'), false, 'event emit remains unavailable');
 

@@ -19,6 +19,7 @@ const { buildDispatchTable } = require('../dispatch-table.js');
 const { buildExecutionPlan } = require('../execution-plan.js');
 const { buildEventTopology } = require('../events/event-topology.js');
 const { analyzeEventEmitHandlers } = require('../events/event-emit.js');
+const { ROUTER_API_DEFINITIONS } = require('../definitions/router-api.js');
 
 const ROUTER_TOPOLOGY_FRONTEND_VERSION = 'pulse.router-topology-frontend.v1';
 const CANONICAL_ROUTER_COMPILER_VERSION = 'pulse.canonical-router-compiler.v2';
@@ -28,7 +29,9 @@ const ROUTER_IMPORT = '@pulse-compute/runtime';
 const ROUTER_CLASS = 'Router';
 const PULSE_IMPORT = '@pulse-compute/pulse';
 const PULSE_CLASS = 'Pulse';
-const SUPPORTED_ROUTE_METHODS = new Set(['GET', 'HEAD', 'POST']);
+const SUPPORTED_ROUTE_METHODS = new Set(ROUTER_API_DEFINITIONS
+  .filter((definition) => definition.kind === 'route')
+  .map((definition) => definition.method));
 const DISALLOWED_OPERATION_KINDS = new Map([
   ['lifecycle', 'realtime lifecycle handlers'],
   ['channel', 'realtime channel registration'],

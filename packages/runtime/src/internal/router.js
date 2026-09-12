@@ -84,6 +84,33 @@ class Router {
     return this;
   }
 
+  put(path, handler) {
+    ROUTER_STATE.get(this).entries.push(entry('route', {
+      method: 'PUT',
+      path: compileRoutePath(path, { allowWildcard: true }),
+      handler: requireHandler(handler, 'put(path, handler)')
+    }));
+    return this;
+  }
+
+  patch(path, handler) {
+    ROUTER_STATE.get(this).entries.push(entry('route', {
+      method: 'PATCH',
+      path: compileRoutePath(path, { allowWildcard: true }),
+      handler: requireHandler(handler, 'patch(path, handler)')
+    }));
+    return this;
+  }
+
+  delete(path, handler) {
+    ROUTER_STATE.get(this).entries.push(entry('route', {
+      method: 'DELETE',
+      path: compileRoutePath(path, { allowWildcard: true }),
+      handler: requireHandler(handler, 'delete(path, handler)')
+    }));
+    return this;
+  }
+
   mount(path, router) {
     ROUTER_STATE.get(this).entries.push(entry('mount', {
       path: compileRoutePath(path, { scoped: true, allowWildcard: true }),
