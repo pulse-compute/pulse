@@ -29,7 +29,8 @@ includesAll(express, [
   '`ctx.param(\'id\')`',
   '`ctx.state.get()` / `ctx.state.set()`',
   '`return next()` permanently finishes this middleware',
-  'does not support `put`, `patch`, `delete`',
+  '`put`, `patch`, `delete`, `mount`, and `error`',
+  'does not support `options`, `trace`, `connect`',
   '`pulse dev` / `pulse build` plus a provider',
   'Express middleware packages cannot be mounted directly',
   'Pulse never changes targets or falls back automatically'
@@ -39,10 +40,10 @@ assert.doesNotMatch(express, /drop-in replacement for Express/i);
 const runtimeTypes = read('packages/runtime/src/index.d.ts');
 const routerDeclaration = /export declare class Router \{([\s\S]*?)\n\}/.exec(runtimeTypes);
 assert.ok(routerDeclaration, 'runtime declarations must expose Router');
-for (const method of ['use', 'get', 'head', 'post', 'mount', 'error']) {
+for (const method of ['use', 'get', 'head', 'post', 'put', 'patch', 'delete', 'mount', 'error']) {
   assert.match(routerDeclaration[1], new RegExp(`\\n  ${method}\\(`), `runtime declarations must retain Router.${method}`);
 }
-for (const unsupported of ['put', 'patch', 'delete']) {
+for (const unsupported of ['options', 'trace', 'connect']) {
   assert.doesNotMatch(routerDeclaration[1], new RegExp(`\\n  ${unsupported}\\(`), `runtime declarations must not expose Router.${unsupported}`);
 }
 assert.match(runtimeTypes, /export type RouterNext = \(error\?: unknown\) => never;/);

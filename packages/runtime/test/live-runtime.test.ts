@@ -10,6 +10,37 @@ const runtime = require('../src/internal/index.js') as {
 }
 
 describe('@pulse-compute/runtime live JavaScript core', () => {
+  it.each(['put', 'patch', 'delete'] as const)('dispatches %s through mounted routes with terminal fallthrough and request bodies', async (verb) => {
+    const app = new Router()
+    const child = new Router()
+    const seen: string[] = []
+    child.get('/items/:id', async (ctx: any) => ctx.text('wrong method'))
+    child[verb]('/items/:id', async (_ctx: any, next: any) => {
+      seen.push('first')
+      return next()
+    })
+    expect(child[verb]('/items/:id', async (ctx: any) => {
+      seen.push('second')
+      const input = await ctx.req.json()
+      return ctx.json({ method: ctx.req.method, id: ctx.param('id'), input })
+    })).toBe(child)
+    app.mount('/api', child)
+
+    const response = await runtime.executeRouter(app, new Request('https://example.test/api/items/7', {
+      method: verb.toUpperCase(),
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ name: 'Ada' }),
+    }))
+    expect(response.status).toBe(200)
+    expect(await response.json()).toEqual({ method: verb.toUpperCase(), id: '7', input: { name: 'Ada' } })
+    expect(seen).toEqual(['first', 'second'])
+
+    const missing = await runtime.executeRouter(app, new Request('https://example.test/api/items/7', { method: 'OPTIONS' }))
+    expect(missing.status).toBe(404)
+    expect(seen).toEqual(['first', 'second'])
+    expect(() => new Router()[verb]('/items', null)).toThrow(TypeError)
+  })
+
   it('preserves route order, scoped middleware, mounts, params, and request-local state', async () => {
     const app = new Router()
     const child = new Router()

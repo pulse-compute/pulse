@@ -15,7 +15,7 @@ targets.
 - Async-shaped provider-neutral TypeScript handlers; trusted Pulse awaits lower
   into explicit effects and continuations without a Promise runtime.
 - Static Router v2 with terminal middleware, route fallthrough, error
-  middleware, GET/HEAD/POST routes, exact paths, named parameters, trailing
+  middleware, GET/HEAD/POST/PUT/PATCH/DELETE routes, exact paths, named parameters, trailing
   wildcards, and acyclic mounts.
 - Basic branching and structured object, array, and scalar manipulation.
 - Request method, URL, path, headers, text, and JSON access.

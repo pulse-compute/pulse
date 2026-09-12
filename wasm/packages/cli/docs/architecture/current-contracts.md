@@ -52,6 +52,14 @@ their own topology while normalizing handler bodies into the same canonical IR.
 Provider realization begins only after the complete reachable program and its
 capability requirements are known.
 
+HTTP Router authoring supports static `get`, `head`, `post`, `put`, `patch`,
+and `delete` registrations, inherited by `Pulse`. The owned Router API registry
+defines compiler admission; topology and lifecycle method catalogs derive from
+that registry. Each verb uses the existing route entry, exact-method dispatch,
+terminal transfer and 404/500 exhaustion contracts. This expands ingress
+registration without changing outgoing fetch methods or the effect/continuation
+ABI.
+
 The compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`
 declarations as a separate static event topology. Event types and schema IDs
 must be literal, schema IDs must resolve through the project registry, each

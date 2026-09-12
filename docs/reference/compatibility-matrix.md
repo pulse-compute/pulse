@@ -29,7 +29,7 @@ the Native build; it does not authorize automatic JavaScript fallback.
 | Source form | Node JS | Fastly JS | Node Native | Fastly Native | Notes |
 |---|---:|---:|---:|---:|---|
 | Async-shaped managed handler | Yes | Yes | Yes | Yes | Native erases the authoring wrapper; it does not link Promise, JSPI, or Asyncify semantics. |
-| Static `Router` topology and terminal `next()` | Yes | Yes | Yes | Yes | Covers static `get`, `head`, `post`, middleware, mounts, parameters, trailing wildcard, fallthrough, and the error lane. |
+| Static `Router` topology and terminal `next()` | Yes | Yes | Yes | Yes | Covers static `get`, `head`, `post`, `put`, `patch`, `delete`, middleware, mounts, parameters, trailing wildcard, fallthrough, and the error lane. |
 | Root-only `Pulse.on` and non-HTTP event context | Yes | No | Yes | No | Node owns the bounded reference ingress. Fastly source remains inspectable but execution/build eligibility fails closed. |
 | Awaited one-way `ctx.emit` acceptance | Yes | No | Yes | No | Static schema-bound frames only; no delivery, loopback, public bus, call surface, or target fallback. |
 | Sequential awaits of trusted Pulse effects | Yes | Yes | Yes | Yes | JavaScript preserves source order. Native lowers effects and continuations and may group adjacent independent effects without changing results. |

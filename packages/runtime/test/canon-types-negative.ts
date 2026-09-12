@@ -40,6 +40,16 @@ const resultEventHandler: PulseEventHandler = async (_eventCtx) => ({ status: 20
 void resultEventHandler
 
 const router = new Router()
+// @ts-expect-error OPTIONS registration is outside the supported Router subset
+router.options('/items', async (ctx) => ctx.text('unsupported'))
+// @ts-expect-error PUT retains the async route handler contract
+router.put('/items', (routeCtx) => routeCtx.text('sync'))
+// @ts-expect-error PATCH requires a route path
+router.patch(async (routeCtx: PulseContext) => routeCtx.text('missing path'))
+// @ts-expect-error DELETE requires a callable route handler
+router.delete('/items', 'invalid')
+// @ts-expect-error ingress PUT does not widen outgoing fetch methods
+ctx.fetch('https://origin.test/items', { method: 'PUT' })
 // @ts-expect-error lifecycle methods are provider-owned
 router.bind()
 // @ts-expect-error lifecycle methods are provider-owned

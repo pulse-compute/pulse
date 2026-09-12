@@ -83,7 +83,7 @@ app.mount('/api', api)
 export default app
 ```
 
-`Router` is a compile-time marker. Canonical v2 supports `get`, `head`, `post`, exact paths, named parameters, a trailing wildcard, static mounts, global/path-scoped/mounted middleware, route fallthrough, and error middleware. `ctx.param(name)` returns the matched named parameter inside route handlers.
+`Router` is a compile-time marker. Canonical v2 supports `get`, `head`, `post`, `put`, `patch`, `delete`, exact paths, named parameters, a trailing wildcard, static mounts, global/path-scoped/mounted middleware, route fallthrough, and error middleware. `Pulse` inherits these registrations. `ctx.param(name)` returns the matched named parameter inside route handlers.
 
 `next()` is a terminal control transfer. `return next()` advances the normal Router cursor and permanently ends the current handler scope. `return next(error)` enters or advances the error lane. There is no onion-style downstream return or post-`next()` resume. Normal and error exhaustion produce compiler-owned 404 and 500 responses respectively.
 
