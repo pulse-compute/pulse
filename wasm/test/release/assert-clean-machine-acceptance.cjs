@@ -770,6 +770,17 @@ async function main() {
     assert.equal(packageRootSmoke.stdout, 'ok');
     assert.equal(run(toolCli, ['--version'], { cwd: toolRoot }).stdout.trim(), RELEASE_VERSION);
 
+    console.log('acceptance - replay S3 read/write failure corpus from exact installed tarballs');
+    const s3 = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/s3/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000,
+    }));
+    assert.equal(s3.status, 'passed');
+    assert.equal(s3.installedBytesUnchanged, true);
+    assert.equal(s3.providerReality, false);
+    fs.writeFileSync(path.join(testRoot, 's3-packed-acceptance.json'), `${JSON.stringify(s3, null, 2)}\n`);
+    // The suite deletes temporary installs; keep artifact identities in its retained task log too.
+    console.log(JSON.stringify(s3));
+
     await verifyInitializedProject(toolCli, 'node', installTarballs, packageNames);
     await verifyNodeJavascriptProject(toolCli, installTarballs, packageNames);
     await verifyInitializedProject(toolCli, 'fastly', installTarballs, packageNames);

@@ -140,6 +140,10 @@
     "preview-scope": {
       "source": "docs/preview-scope.md",
       "label": "Beta scope"
+    },
+    "s3-package": {
+      "source": "docs/packages/s3.md",
+      "label": "S3"
     }
   },
   "sourceAliases": {
@@ -460,6 +464,9 @@
       "CHANGELOG.md": {
         "title": "Changelog",
         "order": 5
+      },
+      "docs/packages/s3.md": {
+        "order": 68
       }
     }
   },

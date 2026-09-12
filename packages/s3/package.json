@@ -1,7 +1,6 @@
 {
   "name": "@pulse-compute/s3",
   "version": "1.0.0-beta.1",
-  "private": true,
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -40,5 +39,17 @@
   "dependencies": {
     "@pulse-compute/runtime": "workspace:*",
     "@pulse-compute/wasm-contracts": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/s3"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/s3/",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
   }
 }
