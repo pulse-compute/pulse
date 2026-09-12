@@ -295,6 +295,20 @@
       "stability": "The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only."
     },
     {
+      "dir": "packages/s3",
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.1",
+      "documentation": "docs/packages/s3.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications using bounded exact-key object reads and writes through Pulse effects.",
+      "directInstall": "Yes, when an application uses S3 object operations.",
+      "entryPoints": [
+        "@pulse-compute/s3"
+      ],
+      "stability": "The package root supports head, getText and putText on Node Native, Node JavaScript and Fastly Native. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
+    },
+    {
       "dir": "wasm/packages/build-support",
       "name": "@pulse-compute/wasm-build-support",
       "version": "1.0.0-beta.1",

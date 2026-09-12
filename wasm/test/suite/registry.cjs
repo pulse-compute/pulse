@@ -111,7 +111,7 @@ const tasks = Object.freeze({
   }),
   's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
     timeoutMs: 180000,
-    description: 'Exact HEAD/GET through Node Native and Fastly Native local modules'
+    description: 'Exact HEAD/GET failure parity through Node Native/JavaScript and Fastly Native'
   }),
   's3-node-transport': nodeTask('test/s3/assert-node-transport.cjs', {
     description: 'Node S3 TLS wire byte fidelity, raw header duplicates, redirects and abort'

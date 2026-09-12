@@ -1,6 +1,17 @@
 # @pulse-compute/s3
 
-O3 provides bounded, exact-key `head`, `getText` and `putText` effects for
+<!-- pulse-package-status:start -->
+> **Support tier:** Supported provider/extension surface<br>
+> **Audience:** Applications using bounded exact-key object reads and writes through Pulse effects.<br>
+> **Install directly:** Yes, when an application uses S3 object operations.<br>
+> **Supported entry points:** `@pulse-compute/s3`<br>
+> **Stability:** The package root supports head, getText and putText on Node Native, Node JavaScript and Fastly Native. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/s3/)
+>
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+<!-- pulse-package-status:end -->
+
+This package provides bounded, exact-key `head`, `getText` and `putText` effects for
 Node Native, Node JavaScript and Fastly Native. Await an operation into a local
 variable or use it directly in keyed `ctx.parallel`. The binding is a literal
 logical name; key and text may be runtime strings.
@@ -51,7 +62,7 @@ has no pending-request cancel hostcall; invocation termination owns its release.
 Node JavaScript explicitly uses Crypto's bounded Web Crypto byte realization.
 Native targets compose Crypto's AssemblyScript primitives. Fastly JavaScript S3
 is ineligible because its SDK projects raw headers and loses required metadata
-information; see `wasm/test/s3/O3.md`. That SDK limitation does not gate O3.
+information. This target exclusion does not gate supported targets.
 
 For a JSON request carrying the maximum text consisting of escaped control
 characters, configure the existing `schemas.maxBytes` request envelope to
@@ -59,5 +70,13 @@ characters, configure the existing `schemas.maxBytes` request envelope to
 consumer uses generic JSON responses (`strict: false`) to compare the complete
 result unions. Applications using strict JSON must declare response schemas.
 
-This package remains private during implementation. O4 owns packed acceptance
-and release/support promotion. Assets alignment remains separate.
+The package root is the supported application API in the synchronized
+`1.0.0-beta.1` release candidate. Provider, manifest, compiler and Native
+subpaths are trusted toolchain integration, not application imports. Install
+S3 with the exact compatible Pulse, CLI and provider candidate set; candidate
+preparation does not imply npm publication.
+
+See the [S3 guide](https://pulsecompute.io/v1.0.0-beta.1/packages/s3/) for the
+lowering contract, support matrix and acceptance boundaries. Local acceptance
+executes Node Native, Node JavaScript and compiled Fastly Native Wasm against
+controlled origins. Live Object Storage evidence follows infrastructure setup.
