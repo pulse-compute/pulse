@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+const { releaseVersion } = require('../../../release/pulse-release-manifest.json');
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -229,7 +231,7 @@ const packageRoot = path.join(repoRoot, 'packages/entities');
 const packageJson = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
 const pulsePackage = JSON.parse(fs.readFileSync(path.join(packageRoot, 'pulse.package.json'), 'utf8'));
 assert.equal(packageJson.name, '@pulse-compute/entities');
-assert.equal(packageJson.version, '1.0.0-beta.1');
+assert.equal(packageJson.version, releaseVersion);
 assert.deepEqual(Object.keys(packageJson.exports), ['.', './pulsewasm/manifest', './pulsewasm/compiler', './pulsewasm-native']);
 assert.deepEqual(packageJson.pulsewasm, { manifest: './pulsewasm.manifest.cjs' });
 assert.deepEqual(packageJson.files, ['dist', 'README.md', 'pulse.package.json', 'pulsewasm.manifest.cjs', 'pulsewasm.compiler.cjs', 'pulsewasm.native.cjs', 'as', 'conformance']);

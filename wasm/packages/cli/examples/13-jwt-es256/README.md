@@ -70,7 +70,7 @@ pulse test --json
 | Final linked `canonical-native.wasm` | 23.1 KiB (23,647 bytes) | 22.9 KiB (23,461 bytes) | 0.8% |
 
 The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.1`. These are uncompressed on-disk sizes, not transfer sizes or
+`1.0.0-beta.2`. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits. The first two rows are the exact primary and guest inputs
 recorded by `guest-link-report.json`; the last row is the validated output of
 the deterministic static link. Linked output is not the arithmetic sum of its

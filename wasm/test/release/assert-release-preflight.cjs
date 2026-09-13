@@ -2,8 +2,10 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const { createHash } = require('node:crypto');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { runInNewContext } = require('node:vm');
 const {
   AUDIT_SCHEMA,
   PREFLIGHT_FILE,
@@ -17,6 +19,8 @@ const {
 } = require('../../../scripts/release-preflight.cjs');
 const {
   parseArgs: parsePreparationArgs,
+  planRelease,
+  assertManifestConsistency,
   isAllowedChangedPath
 } = require('../../../scripts/release-prepare.cjs');
 
@@ -25,18 +29,49 @@ const preflight = JSON.parse(fs.readFileSync(path.join(repoRoot, PREFLIGHT_FILE)
 const inventory = JSON.parse(fs.readFileSync(path.join(repoRoot, INVENTORY_FILE), 'utf8'));
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release', 'pulse-release-manifest.json'), 'utf8'));
 const rootManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
+const documentationVersions = require('../../../release/documentation-versions.json');
+const archivePlan = planRelease(
+  releaseManifest,
+  documentationVersions,
+  parsePreparationArgs(['9.9.9-beta.1', '--archive-current', '--date', '2026-09-14']),
+  assertManifestConsistency(releaseManifest, documentationVersions)
+);
+const archivedCurrent = archivePlan.nextDocumentationVersions.versions.find((entry) => entry.version === releaseManifest.releaseVersion);
+assert.equal(archivedCurrent.status, 'archived');
+assert.equal(archivedCurrent.sourceManifest, `release/documentation-site-archives/v${releaseManifest.releaseVersion}/release-manifest.json`);
+assert.equal(archivePlan.nextDocumentationVersions.versions[0].sourceManifest, 'release/pulse-release-manifest.json');
+for (const entry of documentationVersions.versions.filter((entry) => entry.status === 'archived')) {
+  assert.deepEqual(archivePlan.nextDocumentationVersions.versions.find((candidate) => candidate.version === entry.version), entry);
+}
+const guestFile = path.join(repoRoot, 'packages/crypto/guests/es256-rustcrypto/pulse.guest-unit.json');
+const currentGuest = JSON.parse(fs.readFileSync(guestFile, 'utf8'));
+const nextGuest = JSON.parse(archivePlan.writes.get(guestFile));
+const guestBuildFile = path.resolve(path.dirname(guestFile), currentGuest.provenance.buildScript);
+assert.equal(nextGuest.packageVersion, '9.9.9-beta.1');
+assert.equal(nextGuest.provenance.buildScriptSha256,
+  createHash('sha256').update(archivePlan.writes.get(guestBuildFile)).digest('hex'));
+assert.notEqual(nextGuest.provenance.buildScriptSha256, currentGuest.provenance.buildScriptSha256);
+assert.deepEqual(nextGuest.artifact, currentGuest.artifact);
+assert.deepEqual(nextGuest.source, currentGuest.source);
+const guestContractFile = path.join(repoRoot, 'wasm/packages/wasm-guest-link/src/constants.js');
+const plannedContract = { exports: {} };
+runInNewContext(archivePlan.writes.get(guestContractFile), { module: plannedContract });
+assert.equal(plannedContract.exports.es256GuestUnit.provenance.buildScriptSha256, nextGuest.provenance.buildScriptSha256);
+assert.equal(plannedContract.exports.es256GuestUnit.packageVersion, nextGuest.packageVersion);
+assert.equal(plannedContract.exports.es256GuestUnit.artifact.sha256, currentGuest.artifact.sha256);
+assert.equal(plannedContract.exports.es256GuestUnit.source.treeSha256, currentGuest.source.treeSha256);
 
 assert.equal(rootManifest.engines.pnpm, releaseManifest.publication.pnpmDevelopmentRange);
 assert.equal(Object.hasOwn(rootManifest, 'packageManager'), false);
 assert.equal(releaseManifest.publication.pnpmVersion, '10.0.0');
 assert.equal(releaseManifest.readiness.versionPreparation.gitTagging, 'separate-human-action-after-release-seal');
-assert.equal(parsePreparationArgs(['1.0.0-beta.2', '--replace-unpublished']).historyMode, 'replace-unpublished');
-assert.throws(() => parsePreparationArgs(['1.0.0-beta.2', '--replace-unpublished', '--archive-current']), /choose exactly one/);
+assert.equal(parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']).historyMode, 'replace-unpublished');
+assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished', '--archive-current']), /choose exactly one/);
 assert.equal(isAllowedChangedPath('docs/reference/release-manifest.json', new Set(), releaseManifest.readiness.versionPreparation), true);
 assert.equal(isAllowedChangedPath('packages/runtime/src/internal/body.js', new Set(), releaseManifest.readiness.versionPreparation), false);
 const preparation = spawnSync(process.execPath, [
   'scripts/release-prepare.cjs',
-  '1.0.0-beta.2',
+  '9.9.9-beta.1',
   '--channel', 'beta',
   '--date', '2026-08-02',
   '--replace-unpublished',
@@ -58,7 +93,7 @@ assert.deepEqual(result.statuses, { proven: 11, pending: 10, blocked: 0 });
 assert.deepEqual(result.vocabulary, {
   schemaVersion: 'pulse.release-vocabulary.v1',
   displayLabel: 'Beta',
-  displayName: 'Pulse 1.0.0-beta.1 — Beta',
+  displayName: `Pulse ${releaseManifest.releaseVersion} — Beta`,
   npmDistTag: 'beta',
   activationStage: 'documentation-release'
 });
@@ -81,11 +116,11 @@ assert.deepEqual(result.conformance, {
 });
 assert.deepEqual(result.snapshot, {
   status: 'applied',
-  version: '1.0.0-beta.1',
+  version: releaseManifest.releaseVersion,
   channel: 'beta',
-  releasedAt: '2026-08-01',
+  releasedAt: releaseManifest.releasedAt,
   packages: releaseManifest.packages.length,
-  dependencyRanges: 52
+  dependencyRanges: 58
 });
 assert.deepEqual(result.audits.noticeDisposition, {
   schemaVersion: 'pulse.release-notice-disposition.v1',
@@ -95,11 +130,11 @@ assert.deepEqual(result.audits.noticeDisposition, {
   packageFiles: ['LICENSE', 'NOTICE'],
   components: 3
 });
-assert.equal(result.documentation.sources, 241);
+assert.equal(result.documentation.sources, 248);
 assert.deepEqual(result.documentation.counts, {
-  'current-public': 61,
-  'current-contributor': 69,
-  generated: 111
+  'current-public': 62,
+  'current-contributor': 74,
+  generated: 112
 });
 
 const sourcePaths = result.documentation.entries.map((entry) => entry.path);

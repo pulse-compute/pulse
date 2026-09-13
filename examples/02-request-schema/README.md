@@ -47,7 +47,7 @@ pulse test --json
 | `canonical-native.wasm` | 38.9 KiB (39,795 bytes) | 30.8 KiB (31,578 bytes) | 20.6% |
 
 The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.1`. These are uncompressed on-disk sizes, not transfer sizes or
+`1.0.0-beta.2`. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits.
 
 ## Handler

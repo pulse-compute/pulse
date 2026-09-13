@@ -6,10 +6,11 @@
 > **Install directly:** No for application projects; use the pulse CLI.<br>
 > **Supported entry points:** `None for application authors.`<br>
 > **Stability:** Internal compiler interface; no application-author compatibility guarantee.<br>
+> **npm:** [`@pulse-compute/wasm-compiler`](https://www.npmjs.com/package/@pulse-compute/wasm-compiler)<br>
 > **Canonical replacement:** `@pulse-compute/cli`<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 Whole-project compiler implementation used by the `pulse` workflow. Application projects should use `@pulse-compute/cli`, not import this package directly.
@@ -51,4 +52,4 @@ The package exports its root implementation plus focused compiler, CLI, extracto
 
 Compiler changes should be covered by focused static/lowering tests, canonical project inspection, provider-plan parity, packed-package discovery where relevant, and the release documentation gates.
 
-See the installed [implementation package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/) and [compilation concepts](https://pulsecompute.io/v1.0.0-beta.1/concepts/compilation-and-lowering/).
+See the installed [implementation package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/) and [compilation concepts](https://pulsecompute.io/v1.0.0-beta.2/concepts/compilation-and-lowering/).

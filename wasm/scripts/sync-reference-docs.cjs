@@ -76,6 +76,7 @@ function readJson(file) { return JSON.parse(fs.readFileSync(file, 'utf8')); }
 function inlineCode(value) { return `\`${String(value).replace(/`/g, '\\`')}\``; }
 function packageManifest(entry) { return readJson(path.join(repoRoot, entry.dir, 'package.json')); }
 function packageName(entry) { return packageManifest(entry).name; }
+function npmPackageUrl(name) { return `https://www.npmjs.com/package/${name}`; }
 function publicCliDoc(relativePath, anchor = '') {
   return documentationUrl(relativePath, anchor);
 }
@@ -90,6 +91,7 @@ function renderStatusBlock(entry, manifest) {
     `> **Install directly:** ${entry.directInstall}<br>`,
     `> **Supported entry points:** ${entryPoints}<br>`,
     `> **Stability:** ${entry.stability}<br>`,
+    `> **npm:** [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)})<br>`,
     ...(entry.replacement ? [`> **Canonical replacement:** ${inlineCode(entry.replacement)}<br>`] : []),
     `> **Canonical documentation:** [Package guide](${publicCliDoc(entry.documentation)})`,
     '>',
@@ -113,7 +115,7 @@ function renderPackagePolicy() {
     const tier = SUPPORT_TIERS[entry.tier];
     const direct = entry.directInstall.startsWith('Yes') ? 'Yes' : 'No';
     const guide = `./${path.basename(entry.documentation)}`;
-    return `| [${inlineCode(manifest.name)}](${guide}) | ${tier.label} | ${direct} | ${entry.stability} |`;
+    return `| [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)}) | [Guide](${guide}) | ${tier.label} | ${direct} | ${entry.stability} |`;
   });
   return stable(`# Package support policy
 
@@ -121,8 +123,8 @@ ${GENERATED_NOTICE}
 
 Pulse ${RELEASE_VERSION} publishes one synchronized ${PACKAGE_SET.length}-package release set. Publication does not make every package an application-author SDK: the support tier and listed entry points define the release promise.
 
-| Package | Support tier | Install directly | Release promise |
-|---|---|---:|---|
+| Package on npm | Guide | Support tier | Install directly | Release promise |
+|---|---|---|---:|---|
 ${rows.join('\n')}
 
 ## Tier definitions
@@ -156,7 +158,7 @@ function renderPackageGroupPage(tierName, title, introduction) {
   const sections = entries.map((entry) => {
     const manifest = packageManifest(entry);
     const points = entry.entryPoints.map((value) => `- ${inlineCode(value)}`).join('\n');
-    return `## ${inlineCode(manifest.name)}\n\n${entry.audience}\n\n- **Install directly:** ${entry.directInstall}\n- **Stability:** ${entry.stability}${entry.replacement ? `\n- **Canonical replacement:** ${inlineCode(entry.replacement)}` : ''}\n\n### Supported entry points\n\n${points}`;
+    return `## ${inlineCode(manifest.name)}\n\n${entry.audience}\n\n- **npm:** [${inlineCode(manifest.name)}](${npmPackageUrl(manifest.name)})\n- **Install directly:** ${entry.directInstall}\n- **Stability:** ${entry.stability}${entry.replacement ? `\n- **Canonical replacement:** ${inlineCode(entry.replacement)}` : ''}\n\n### Supported entry points\n\n${points}`;
   }).join('\n\n');
   return stable(`# ${title}\n\n${GENERATED_NOTICE}\n\n${introduction}\n\nThe package status and supported entry-point lists below come from the synchronized Pulse ${RELEASE_VERSION} release policy.\n\n${sections}\n\n## Support boundary\n\nOnly the entry points explicitly listed above carry the stated release promise. Exported implementation subpaths are not promoted into application-author APIs merely because npm can resolve them.\n`);
 }
@@ -340,7 +342,7 @@ Completion candidates include the seven project commands, help/version/completio
 
 function renderReleaseManifestReference() {
   const tierRows = Object.entries(SUPPORT_TIERS).map(([id, value]) => `| ${inlineCode(id)} | ${value.label} | ${value.promise} |`);
-  const packageRows = PACKAGE_SET.map((entry) => `| ${inlineCode(entry.name)} | ${SUPPORT_TIERS[entry.tier].label} | [Guide](../${entry.documentation.slice('docs/'.length)}) | ${entry.directInstall} |`);
+  const packageRows = PACKAGE_SET.map((entry) => `| [${inlineCode(entry.name)}](${npmPackageUrl(entry.name)}) | ${SUPPORT_TIERS[entry.tier].label} | [Guide](../${entry.documentation.slice('docs/'.length)}) | ${entry.directInstall} |`);
   const targetRows = RUNTIME_TARGETS.map((entry) => `| ${inlineCode(entry.id)} | ${entry.label} | ${inlineCode(entry.mode)} | ${entry.summary} |`);
   return stable(`# Release manifest and generated package policy
 

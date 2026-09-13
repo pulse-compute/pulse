@@ -31,7 +31,7 @@ GitHub Pages deployment is no longer part of the repository workflow. The releas
 
 ## Object classes
 
-The `1.0.0-beta.1` layout is:
+The `1.0.0-beta.2` layout is:
 
 ```text
 <bucket>/pulse/
@@ -41,8 +41,8 @@ The `1.0.0-beta.1` layout is:
   versions.json                      mutable
   site-manifest.json                 mutable
   public-site-manifest.json          mutable
-  v1.0.0-beta.1/**                         immutable
-  deployments/v1.0.0-beta.1.json           immutable receipt
+  v1.0.0-beta.2/**                         immutable
+  deployments/v1.0.0-beta.2.json           immutable receipt
 ```
 
 The exact-version tree is the archival release. Root and `latest` are convenience surfaces promoted only after exact-version verification and matching npm package verification.
@@ -72,7 +72,7 @@ npm run docs:deployment:prepare
 npm run docs:deployment:verify
 ```
 
-`.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.1.json`. Candidate verification rejects any root or site file outside that sealed inventory.
+`.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.2.json`. Candidate verification rejects any root or site file outside that sealed inventory.
 
 A local adapter exercised by `npm run publication:check` proves:
 

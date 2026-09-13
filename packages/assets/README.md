@@ -6,9 +6,10 @@
 > **Install directly:** Yes, only when the application uses the assets capability.<br>
 > **Supported entry points:** `@pulse-compute/assets`<br>
 > **Stability:** The package root is the supported JavaScript API and canonical Native authoring surface; /pulsewasm remains a compatibility subpath, while manifest/compiler subpaths are toolchain integration.<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/assets/)
+> **npm:** [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/assets/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 The normal package root is the supported JavaScript API and canonical Native authoring surface:
@@ -29,4 +30,4 @@ facade. Direct JavaScript execution of that subpath throws
 `PulseWasmAssetsLoweringError`; applications should use the normal package
 root. Manifest and compiler exports are toolchain integration. Migration
 guidance is published at
-<https://pulsecompute.io/v1.0.0-beta.1/guides/compatibility-imports/>.
+<https://pulsecompute.io/v1.0.0-beta.2/guides/compatibility-imports/>.

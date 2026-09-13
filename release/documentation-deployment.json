@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.documentation-deployment.v1",
-  "releaseVersion": "1.0.0-beta.1",
+  "releaseVersion": "1.0.0-beta.2",
   "provider": "fastly-object-storage",
   "workflowFile": "documentation-deploy.yml",
   "environment": "documentation-production",
@@ -28,7 +28,7 @@
   },
   "deployment": {
     "immutableVersionPattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:/|$)",
-    "currentVersionDirectory": "v1.0.0-beta.1",
+    "currentVersionDirectory": "v1.0.0-beta.2",
     "mutableRoots": [
       ".nojekyll",
       "404.html",
@@ -41,10 +41,10 @@
     "neverDelete": true,
     "metadataHashKey": "pulse-sha256",
     "immutableRoots": [
-      "deployments/v1.0.0-beta.1.json"
+      "deployments/v1.0.0-beta.2.json"
     ],
     "requiresNpmVerificationBeforePromotion": true,
-    "receiptPath": "deployments/v1.0.0-beta.1.json",
+    "receiptPath": "deployments/v1.0.0-beta.2.json",
     "promotionCommitObjects": [
       "latest/index.html",
       "index.html"
@@ -66,26 +66,26 @@
       "path": "/latest/",
       "status": 200,
       "contentType": "text/html",
-      "bodyIncludes": "Pulse 1.0.0-beta.1"
+      "bodyIncludes": "Pulse 1.0.0-beta.2"
     },
     {
       "path": "/latest/getting-started/",
       "status": 200,
       "contentType": "text/html",
-      "bodyIncludes": "Pulse 1.0.0-beta.1"
+      "bodyIncludes": "Pulse 1.0.0-beta.2"
     },
     {
-      "path": "/v1.0.0-beta.1/",
+      "path": "/v1.0.0-beta.2/",
       "status": 200,
       "contentType": "text/html"
     },
     {
-      "path": "/v1.0.0-beta.1/assets/site.css",
+      "path": "/v1.0.0-beta.2/assets/site.css",
       "status": 200,
       "contentType": "text/css"
     },
     {
-      "path": "/v1.0.0-beta.1/reference/cli/",
+      "path": "/v1.0.0-beta.2/reference/cli/",
       "method": "HEAD",
       "status": 200,
       "contentType": "text/html"
@@ -94,7 +94,7 @@
       "path": "/site-manifest.json",
       "status": 200,
       "contentType": "application/json",
-      "bodyIncludes": "\"releaseVersion\": \"1.0.0-beta.1\""
+      "bodyIncludes": "\"releaseVersion\": \"1.0.0-beta.2\""
     },
     {
       "path": "/__pulse_missing_release_document__",

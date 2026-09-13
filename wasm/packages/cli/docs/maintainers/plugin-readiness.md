@@ -4,7 +4,7 @@
 
 > **Decision:** Deferred. No public third-party plugin API is available in this release.
 
-Pulse 1.0.0-beta.1 keeps general plugin discovery and package lowering inside the synchronized trusted release. Provider bootstrap is explicit and exact. The current boundaries are:
+Pulse 1.0.0-beta.2 keeps general plugin discovery and package lowering inside the synchronized trusted release. Provider bootstrap is explicit and exact. The current boundaries are:
 
 - **Lowerers:** trusted first-party release packages only.
 - **Providers:** explicit package selection through pulse.provider-toolchain.v1; bare host IDs use the @pulse-compute/provider-<id> convention, scoped names are exact, and none is internal; no scanning or self-registration.

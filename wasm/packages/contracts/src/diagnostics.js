@@ -2,7 +2,7 @@
 
 const path = require('node:path');
 
-const PACKAGE_VERSION = 'pulsewasm-route-extractor@1.0.0-beta.1';
+const PACKAGE_VERSION = 'pulsewasm-route-extractor@1.0.0-beta.2';
 const DIAGNOSTICS_VERSION = 'pulsewasm.diagnostics.v1';
 
 function stableFileName(fileName, cwd) {

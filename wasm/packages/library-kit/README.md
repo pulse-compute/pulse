@@ -6,9 +6,10 @@
 > **Install directly:** No for application projects; it is installed transitively.<br>
 > **Supported entry points:** `None for application authors.`<br>
 > **Stability:** Internal package-lowering interface synchronized with this release set.<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/)
+> **npm:** [`@pulse-compute/wasm-library-kit`](https://www.npmjs.com/package/@pulse-compute/wasm-library-kit)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 PulseWasm package-owned library contract, sidecar, and host capability builders.
