@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+const { releaseVersion } = require('../../../release/pulse-release-manifest.json');
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -45,7 +47,7 @@ async function main() {
     assert.ok(traceForCanonicalSourceOutput(sourceInspection), 'JavaScript inspection retains the compiler phase trace');
     assert.equal(sourceInspection.generatedSource, undefined);
     write('package.json', JSON.stringify({ name: 'javascript-target-regression', version: '1.0.0', private: true,
-      dependencies: { '@fixture/ordinary': '1.0.0', '@pulse-compute/pulse': '1.0.0-beta.1', '@pulse-compute/provider-node': '1.0.0-beta.1' }
+      dependencies: { '@fixture/ordinary': '1.0.0', '@pulse-compute/pulse': releaseVersion, '@pulse-compute/provider-node': releaseVersion }
     }));
     fs.mkdirSync(path.join(root, 'node_modules'), { recursive: true });
     fs.mkdirSync(path.join(root, 'node_modules/@pulse-compute'), { recursive: true });

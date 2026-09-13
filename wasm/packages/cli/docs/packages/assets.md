@@ -7,7 +7,7 @@ The package root exposes the complete JavaScript asset implementation—local fi
 ## Install
 
 ```bash
-npm install @pulse-compute/assets@1.0.0-beta.1
+npm install @pulse-compute/assets@1.0.0-beta.2
 ```
 
 ## Portable lookup surface

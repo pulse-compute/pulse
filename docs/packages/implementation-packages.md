@@ -4,12 +4,13 @@
 
 These packages are synchronized parts of the release set for compiler, provider, runtime, and package-lowering maintainers. They are not application-author SDKs.
 
-The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.1 release policy.
+The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.2 release policy.
 
 ## `@pulse-compute/wasm-build-support`
 
 Pulse release-set and compiler maintainers.
 
+- **npm:** [`@pulse-compute/wasm-build-support`](https://www.npmjs.com/package/@pulse-compute/wasm-build-support)
 - **Install directly:** No for application projects; it is installed transitively where required.
 - **Stability:** Internal release-set interface; exported modules may change with compiler implementation needs.
 
@@ -21,6 +22,7 @@ Pulse release-set and compiler maintainers.
 
 Pulse compiler and release maintainers.
 
+- **npm:** [`@pulse-compute/wasm-compiler`](https://www.npmjs.com/package/@pulse-compute/wasm-compiler)
 - **Install directly:** No for application projects; use the pulse CLI.
 - **Stability:** Internal compiler interface; no application-author compatibility guarantee.
 - **Canonical replacement:** `@pulse-compute/cli`
@@ -33,6 +35,7 @@ Pulse compiler and release maintainers.
 
 Pulse compiler, release, and first-party guest-unit maintainers.
 
+- **npm:** [`@pulse-compute/wasm-guest-link`](https://www.npmjs.com/package/@pulse-compute/wasm-guest-link)
 - **Install directly:** No for application projects; it is an internal synchronized compiler dependency.
 - **Stability:** Internal first-party prebuilt guest-link interface synchronized with the compiler; no application-author or third-party guest compatibility guarantee.
 
@@ -44,6 +47,7 @@ Pulse compiler, release, and first-party guest-unit maintainers.
 
 Pulse compiler, runtime, provider, and package-lowering maintainers.
 
+- **npm:** [`@pulse-compute/wasm-contracts`](https://www.npmjs.com/package/@pulse-compute/wasm-contracts)
 - **Install directly:** Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively.
 - **Stability:** The provider toolchain contract is versioned and supported for the Beta; other protocol and proof interfaces remain internal.
 
@@ -55,6 +59,7 @@ Pulse compiler, runtime, provider, and package-lowering maintainers.
 
 Pulse host-runtime and provider maintainers.
 
+- **npm:** [`@pulse-compute/wasm-host-runtime`](https://www.npmjs.com/package/@pulse-compute/wasm-host-runtime)
 - **Install directly:** No for application projects; it is installed transitively.
 - **Stability:** Internal compiler/runtime interface synchronized with this release set.
 
@@ -66,6 +71,7 @@ Pulse host-runtime and provider maintainers.
 
 Pulse package-lowering and compiler maintainers.
 
+- **npm:** [`@pulse-compute/wasm-library-kit`](https://www.npmjs.com/package/@pulse-compute/wasm-library-kit)
 - **Install directly:** No for application projects; it is installed transitively.
 - **Stability:** Internal package-lowering interface synchronized with this release set.
 
@@ -77,6 +83,7 @@ Pulse package-lowering and compiler maintainers.
 
 Pulse canonical Node provider and compiler maintainers.
 
+- **npm:** [`@pulse-compute/provider-node`](https://www.npmjs.com/package/@pulse-compute/provider-node)
 - **Install directly:** No for application projects; select provider: node through the CLI.
 - **Stability:** The listed built-in toolchain entry is synchronized with the Beta bootstrap contract; other canonical Node provider interfaces remain internal.
 - **Canonical replacement:** `provider: 'node' through @pulse-compute/cli`
@@ -89,6 +96,7 @@ Pulse canonical Node provider and compiler maintainers.
 
 Pulse AssemblyScript runtime-core and compiler maintainers.
 
+- **npm:** [`@pulse-compute/wasm-runtime-core-as`](https://www.npmjs.com/package/@pulse-compute/wasm-runtime-core-as)
 - **Install directly:** No for application projects; it is installed transitively.
 - **Stability:** Internal code-generation interface synchronized with this release set.
 
@@ -100,6 +108,7 @@ Pulse AssemblyScript runtime-core and compiler maintainers.
 
 Pulse schema compiler and runtime maintainers.
 
+- **npm:** [`@pulse-compute/wasm-schema-json`](https://www.npmjs.com/package/@pulse-compute/wasm-schema-json)
 - **Install directly:** No for application projects; declare schemas in the selected .pulse/config.ts profile.
 - **Stability:** Internal schema compiler interface synchronized with this release set.
 - **Canonical replacement:** `schemas in .pulse/config.ts through the Pulse project workflow`

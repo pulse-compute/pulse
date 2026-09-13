@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/pulse",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -37,7 +37,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/pulse"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.1/packages/pulse/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.2/packages/pulse/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

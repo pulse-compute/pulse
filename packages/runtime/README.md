@@ -6,9 +6,10 @@
 > **Install directly:** Yes. Install it in every Pulse application.<br>
 > **Supported entry points:** `@pulse-compute/runtime`<br>
 > **Stability:** Supported application authoring and execution contract.<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/runtime/)
+> **npm:** [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/runtime/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 `@pulse-compute/runtime` is the low-level, provider-neutral Pulse application contract.

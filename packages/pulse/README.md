@@ -6,9 +6,10 @@
 > **Install directly:** Yes. Install it in every conventional Pulse project.<br>
 > **Supported entry points:** `@pulse-compute/pulse`, `@pulse-compute/pulse/schema`<br>
 > **Stability:** Supported conventional application, project-configuration, and schema-authoring contract.<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/pulse/)
+> **npm:** [`@pulse-compute/pulse`](https://www.npmjs.com/package/@pulse-compute/pulse)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/pulse/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 This package owns the project-aware authoring layer above the low-level

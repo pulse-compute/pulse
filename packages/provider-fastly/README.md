@@ -6,9 +6,10 @@
 > **Install directly:** Yes, for Fastly projects. Node-only projects do not need to import it directly.<br>
 > **Supported entry points:** `@pulse-compute/provider-fastly`, `@pulse-compute/provider-fastly/contract`, `@pulse-compute/provider-fastly/toolchain`, `@pulse-compute/provider-fastly/config-schema`, `@pulse-compute/provider-fastly/runtime/canonical-api-runtime`, `@pulse-compute/provider-fastly/build/canonical-target`, `@pulse-compute/provider-fastly/testing/fastly-cli`<br>
 > **Stability:** The listed entry points are supported for the Beta; all other exported subpaths are implementation-only.<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/provider-fastly/)
+> **npm:** [`@pulse-compute/provider-fastly`](https://www.npmjs.com/package/@pulse-compute/provider-fastly)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/provider-fastly/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 Fastly provider configuration, canonical capability lowering, local conformance execution, Compute target generation, and explicit external-tool boundaries.
@@ -48,7 +49,7 @@ trusted wall-clock authority. It does not fall back to Node execution.
 
 ## Documentation
 
-- [Fastly package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/provider-fastly/)
-- [Project configuration](https://pulsecompute.io/v1.0.0-beta.1/reference/project-config/#fastly-provider-options)
-- [Fastly capabilities guide](https://pulsecompute.io/v1.0.0-beta.1/guides/fastly-capabilities/)
-- [Environment variables](https://pulsecompute.io/v1.0.0-beta.1/reference/environment/#pulse-fastly-bin)
+- [Fastly package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/provider-fastly/)
+- [Project configuration](https://pulsecompute.io/v1.0.0-beta.2/reference/project-config/#fastly-provider-options)
+- [Fastly capabilities guide](https://pulsecompute.io/v1.0.0-beta.2/guides/fastly-capabilities/)
+- [Environment variables](https://pulsecompute.io/v1.0.0-beta.2/reference/environment/#pulse-fastly-bin)

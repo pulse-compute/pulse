@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+const { releaseVersion } = require('../../../release/pulse-release-manifest.json');
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -148,7 +150,7 @@ assert.throws(
   (error) => error instanceof PulseProjectError && error.code === 'PULSE_ARGUMENT_UNEXPECTED'
 );
 
-const expectedMachineSpec = JSON.parse(JSON.stringify(publicCommandSpecDocument({ version: '1.0.0-beta.1', completionShells: COMPLETION_SHELLS })));
+const expectedMachineSpec = JSON.parse(JSON.stringify(publicCommandSpecDocument({ version: releaseVersion, completionShells: COMPLETION_SHELLS })));
 assert.deepEqual(JSON.parse(fs.readFileSync(machineSpecPath, 'utf8')), expectedMachineSpec);
 assert.deepEqual(JSON.parse(fs.readFileSync(path.join(cliRoot, 'cli-spec.json'), 'utf8')), expectedMachineSpec);
 for (const shell of COMPLETION_SHELLS) {

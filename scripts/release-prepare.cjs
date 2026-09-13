@@ -2,6 +2,7 @@
 'use strict';
 
 const fs = require('node:fs');
+const { createHash } = require('node:crypto');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { classifyDocumentation } = require('./release-preflight.cjs');
@@ -293,7 +294,11 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
         releasedAt: options.releasedAt,
         status: 'current',
         sourceManifest: 'release/pulse-release-manifest.json'
-      }, ...documentationVersions.versions.map((entry) => ({ ...entry, status: entry.status === 'current' ? 'archived' : entry.status }))]
+      }, ...documentationVersions.versions.map((entry) => entry.status === 'current' ? {
+        ...entry,
+        status: 'archived',
+        sourceManifest: `release/documentation-site-archives/${entry.segment}/release-manifest.json`
+      } : entry)]
     };
   }
   putJson(documentationVersionsFile, nextDocumentationVersions);
@@ -335,6 +340,33 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
     const source = writes.get(file) || fs.readFileSync(file, 'utf8');
     const replaced = replaceText(source, currentVersion, nextVersion);
     if (replaced !== source) putText(file, replaced);
+  }
+
+  // Version literals in a guest's reconstruction script are part of its
+  // provenance. Bind the planned manifest to the planned script bytes, while
+  // refusing to bless a mismatch that already existed before preparation.
+  for (const name of policy.literalOwners.filter((entry) => entry.endsWith('/pulse.guest-unit.json'))) {
+    const file = path.join(repoRoot, name);
+    const original = readJson(file);
+    const script = assertContained(path.resolve(path.dirname(file), original.provenance.buildScript));
+    const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
+    if (hash(fs.readFileSync(script)) !== original.provenance.buildScriptSha256) {
+      fail(`guest build script provenance is stale: ${name}`);
+    }
+    const next = JSON.parse(writes.get(file) || fs.readFileSync(file, 'utf8'));
+    next.provenance.buildScriptSha256 = hash(writes.get(script) || fs.readFileSync(script));
+    putJson(file, next);
+    if (original.id === 'pulse.crypto.es256.rustcrypto-p256.v1') {
+      const contractName = 'wasm/packages/wasm-guest-link/src/constants.js';
+      if (!policy.literalOwners.includes(contractName)) fail(`guest contract is not a release literal owner: ${contractName}`);
+      const contractFile = path.join(repoRoot, contractName);
+      const source = writes.get(contractFile) || fs.readFileSync(contractFile, 'utf8');
+      const pins = [...source.matchAll(/buildScriptSha256: '([a-f0-9]{64})'/g)];
+      if (pins.length !== 1 || pins[0][1] !== original.provenance.buildScriptSha256) {
+        fail(`guest build script contract is stale: ${contractName}`);
+      }
+      putText(contractFile, source.replace(pins[0][0], `buildScriptSha256: '${next.provenance.buildScriptSha256}'`));
+    }
   }
 
   if (options.historyMode === 'replace-unpublished') {

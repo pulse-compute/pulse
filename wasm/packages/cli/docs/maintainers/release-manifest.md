@@ -6,8 +6,8 @@
 
 ## Beta candidate
 
-- **Candidate:** Pulse 1.0.0-beta.1 — Beta
-- **Version:** `1.0.0-beta.1`
+- **Candidate:** Pulse 1.0.0-beta.2 — Beta
+- **Version:** `1.0.0-beta.2`
 - **Activation stage:** `documentation-release`
 - **License:** `Apache-2.0`
 - **Supported Node:** `^22.14.0 || ^24.0.0`
@@ -16,7 +16,7 @@
 - **Reproducible publication toolchain:** Node `24.18.0` with npm `11.15.0`
 - **Readiness register:** `release/release-preflight.json`
 - **Documentation inventory:** `release/documentation-inventory.json`
-- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.1/`
+- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.2/`
 - **Runtime targets:** 3
 - **Packages:** 19
 
@@ -66,24 +66,24 @@ scoped package name.
 
 | Package | Support tier | Canonical guide | Direct installation |
 |---|---|---|---|
-| `@pulse-compute/runtime` | Canonical application surface | [Guide](../packages/runtime.md) | Yes. Install it in every Pulse application. |
-| `@pulse-compute/pulse` | Canonical application surface | [Guide](../packages/pulse.md) | Yes. Install it in every conventional Pulse project. |
-| `@pulse-compute/cli` | Canonical application surface | [Guide](../packages/cli.md) | Yes. Install the package globally or as a project development dependency. |
-| `@pulse-compute/provider-fastly` | Supported provider/extension surface | [Guide](../packages/provider-fastly.md) | Yes, for Fastly projects. Node-only projects do not need to import it directly. |
-| `@pulse-compute/grip` | Supported provider/extension surface | [Guide](../packages/grip.md) | Yes, only when the application uses GRIP/Fanout behavior. |
-| `@pulse-compute/assets` | Supported provider/extension surface | [Guide](../packages/assets.md) | Yes, only when the application uses the assets capability. |
-| `@pulse-compute/crypto` | Supported provider/extension surface | [Guide](../packages/crypto.md) | Yes, when an application uses the crypto verification surface directly; JWT applications receive it transitively. |
-| `@pulse-compute/jwt` | Supported provider/extension surface | [Guide](../packages/jwt.md) | Yes, when an application verifies JWTs. |
-| `@pulse-compute/entities` | Supported provider/extension surface | [Guide](../packages/entities.md) | Yes, when an application declares entity operations. |
-| `@pulse-compute/s3` | Supported provider/extension surface | [Guide](../packages/s3.md) | Yes, when an application uses S3 object operations. |
-| `@pulse-compute/wasm-build-support` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively where required. |
-| `@pulse-compute/wasm-compiler` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; use the pulse CLI. |
-| `@pulse-compute/wasm-guest-link` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is an internal synchronized compiler dependency. |
-| `@pulse-compute/wasm-contracts` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively. |
-| `@pulse-compute/wasm-host-runtime` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively. |
-| `@pulse-compute/wasm-library-kit` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively. |
-| `@pulse-compute/provider-node` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; select provider: node through the CLI. |
-| `@pulse-compute/wasm-runtime-core-as` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively. |
-| `@pulse-compute/wasm-schema-json` | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; declare schemas in the selected .pulse/config.ts profile. |
+| [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime) | Canonical application surface | [Guide](../packages/runtime.md) | Yes. Install it in every Pulse application. |
+| [`@pulse-compute/pulse`](https://www.npmjs.com/package/@pulse-compute/pulse) | Canonical application surface | [Guide](../packages/pulse.md) | Yes. Install it in every conventional Pulse project. |
+| [`@pulse-compute/cli`](https://www.npmjs.com/package/@pulse-compute/cli) | Canonical application surface | [Guide](../packages/cli.md) | Yes. Install the package globally or as a project development dependency. |
+| [`@pulse-compute/provider-fastly`](https://www.npmjs.com/package/@pulse-compute/provider-fastly) | Supported provider/extension surface | [Guide](../packages/provider-fastly.md) | Yes, for Fastly projects. Node-only projects do not need to import it directly. |
+| [`@pulse-compute/grip`](https://www.npmjs.com/package/@pulse-compute/grip) | Supported provider/extension surface | [Guide](../packages/grip.md) | Yes, only when the application uses GRIP/Fanout behavior. |
+| [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets) | Supported provider/extension surface | [Guide](../packages/assets.md) | Yes, only when the application uses the assets capability. |
+| [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | Supported provider/extension surface | [Guide](../packages/crypto.md) | Yes, when an application uses the crypto verification surface directly; JWT applications receive it transitively. |
+| [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt) | Supported provider/extension surface | [Guide](../packages/jwt.md) | Yes, when an application verifies JWTs. |
+| [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities) | Supported provider/extension surface | [Guide](../packages/entities.md) | Yes, when an application declares entity operations. |
+| [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3) | Supported provider/extension surface | [Guide](../packages/s3.md) | Yes, when an application uses S3 object operations. |
+| [`@pulse-compute/wasm-build-support`](https://www.npmjs.com/package/@pulse-compute/wasm-build-support) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively where required. |
+| [`@pulse-compute/wasm-compiler`](https://www.npmjs.com/package/@pulse-compute/wasm-compiler) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; use the pulse CLI. |
+| [`@pulse-compute/wasm-guest-link`](https://www.npmjs.com/package/@pulse-compute/wasm-guest-link) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is an internal synchronized compiler dependency. |
+| [`@pulse-compute/wasm-contracts`](https://www.npmjs.com/package/@pulse-compute/wasm-contracts) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively. |
+| [`@pulse-compute/wasm-host-runtime`](https://www.npmjs.com/package/@pulse-compute/wasm-host-runtime) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively. |
+| [`@pulse-compute/wasm-library-kit`](https://www.npmjs.com/package/@pulse-compute/wasm-library-kit) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively. |
+| [`@pulse-compute/provider-node`](https://www.npmjs.com/package/@pulse-compute/provider-node) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; select provider: node through the CLI. |
+| [`@pulse-compute/wasm-runtime-core-as`](https://www.npmjs.com/package/@pulse-compute/wasm-runtime-core-as) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively. |
+| [`@pulse-compute/wasm-schema-json`](https://www.npmjs.com/package/@pulse-compute/wasm-schema-json) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; declare schemas in the selected .pulse/config.ts profile. |
 
 A package export that is absent from its manifest entry is not promoted to a supported application-author API merely because Node or npm can resolve it.

@@ -44,8 +44,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.1 \
-  -f release_tag=v1.0.0-beta.1 \
+  --ref v1.0.0-beta.2 \
+  -f release_tag=v1.0.0-beta.2 \
   -f operation=audit
 ```
 

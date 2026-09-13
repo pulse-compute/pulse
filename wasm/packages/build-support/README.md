@@ -6,9 +6,10 @@
 > **Install directly:** No for application projects; it is installed transitively where required.<br>
 > **Supported entry points:** `None for application authors.`<br>
 > **Stability:** Internal release-set interface; exported modules may change with compiler implementation needs.<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.1/packages/implementation-packages/)
+> **npm:** [`@pulse-compute/wasm-build-support`](https://www.npmjs.com/package/@pulse-compute/wasm-build-support)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.1` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
 <!-- pulse-package-status:end -->
 
 Shared build-time helpers for PulseWasm package-owned builders.

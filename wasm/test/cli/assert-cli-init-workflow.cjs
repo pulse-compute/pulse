@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+const { releaseVersion } = require('../../../release/pulse-release-manifest.json');
+
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
@@ -60,9 +62,9 @@ function main() {
     assert.equal(fs.readFileSync(path.join(firstRoot, '.pulse', '.gitignore'), 'utf8'), '*\n!.gitignore\n!config.ts\n');
 
     const manifest = JSON.parse(fs.readFileSync(path.join(firstRoot, 'package.json'), 'utf8'));
-    assert.equal(manifest.dependencies['@pulse-compute/pulse'], '1.0.0-beta.1');
+    assert.equal(manifest.dependencies['@pulse-compute/pulse'], releaseVersion);
     assert.equal(manifest.dependencies['@pulse-compute/runtime'], undefined);
-    assert.equal(manifest.devDependencies['@pulse-compute/cli'], '1.0.0-beta.1');
+    assert.equal(manifest.devDependencies['@pulse-compute/cli'], releaseVersion);
     assert.deepEqual(Object.keys(manifest.scripts).sort(), ['build', 'compile', 'dev', 'doctor', 'inspect', 'test']);
     assert.match(fs.readFileSync(path.join(firstRoot, 'src', 'index.ts'), 'utf8'), /const app = new Pulse\(\{ auto: true \}\)/);
     assert.match(fs.readFileSync(path.join(firstRoot, 'src', 'index.ts'), 'utf8'), /app\.get\('\/health', async \(ctx\)/);
@@ -74,7 +76,7 @@ function main() {
     const fastly = initProject(fastlyRoot, { provider: 'fastly', name: 'fastly-generated' });
     assert.deepEqual(fastly.files, expectedFiles);
     const fastlyManifest = JSON.parse(fs.readFileSync(path.join(fastlyRoot, 'package.json'), 'utf8'));
-    assert.equal(fastlyManifest.dependencies['@pulse-compute/provider-fastly'], '1.0.0-beta.1');
+    assert.equal(fastlyManifest.dependencies['@pulse-compute/provider-fastly'], releaseVersion);
     assert.match(fs.readFileSync(path.join(fastlyRoot, '.pulse', 'config.ts'), 'utf8'), /host: 'fastly'/);
     assert.match(fs.readFileSync(path.join(fastlyRoot, '.pulse', 'config.ts'), 'utf8'), /bindings:/);
     verifyProject(fastlyRoot, 'fastly');

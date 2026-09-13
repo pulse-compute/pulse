@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.public-site.v1",
-  "releaseVersion": "1.0.0-beta.1",
+  "releaseVersion": "1.0.0-beta.2",
   "product": {
     "name": "Pulse",
     "eyebrow": "TypeScript in / inspectable Wasm out",
@@ -292,12 +292,12 @@
       "docs/guides/json-schemas.md": {
         "order": 20
       },
-    "docs/guides/routing.md": {
-      "order": 30
-    },
-    "docs/guides/events.md": {
-      "order": 35
-    },
+      "docs/guides/routing.md": {
+        "order": 30
+      },
+      "docs/guides/events.md": {
+        "order": 35
+      },
       "docs/guides/deploying-node.md": {
         "order": 40
       },
@@ -449,9 +449,9 @@
       "examples/09-router-lowering/README.md": {
         "order": 90
       },
-    "examples/10-entities-tools/README.md": {
-      "order": 100
-    },
+      "examples/10-entities-tools/README.md": {
+        "order": 100
+      },
       "examples/11-events/README.md": {
         "order": 110
       },

@@ -31,7 +31,7 @@ npm run build
 `pulse init` writes exact package versions but does not perform network
 installation. Packed-package acceptance installs the synchronized release set
 and verifies this path without workspace links. Published package availability
-remains defined by the 18-package release manifest.
+remains defined by the 19-package release manifest.
 
 This is the normal application lifecycle. Use `pulse inspect` when you need to
 examine the compiler/provider plan, and use the advanced provider-neutral
@@ -106,20 +106,21 @@ inspection, userland stream transforms, background tasks, or raw sockets.
 
 ## Public packages
 
-The public `1.0.0-beta.1` catalog is defined by the release manifest.
+The public `1.0.0-beta.2` catalog is defined by the release manifest.
 
 
 | Package | Role |
 |---|---|
-| `@pulse-compute/pulse` | Conventional application root, deferred project configuration, schema declarations, and runtime type re-exports. |
-| `@pulse-compute/runtime` | Canonical provider-neutral application types, plain handlers, and the static `Router` authoring surface. |
-| `@pulse-compute/cli` | Project configuration and the supported `pulse` workflow. |
-| `@pulse-compute/provider-fastly` | Typed Fastly configuration, Native lowering, JavaScript execution, local conformance, and Compute target generation. |
-| `@pulse-compute/grip` | Stateless GRIP framing and request-bound broadcast across supported targets. |
-| `@pulse-compute/assets` | JavaScript asset runtime and package-owned Native lookup lowering. |
-| `@pulse-compute/crypto` | Bounded provider-neutral HS256 and ES256 verification. |
-| `@pulse-compute/jwt` | Bounded provider-neutral JWT verification and claims validation. |
-| `@pulse-compute/entities` | Statically declared schema-backed operations with the first-party JSON-RPC adapter. |
+| [`@pulse-compute/pulse`](https://www.npmjs.com/package/@pulse-compute/pulse) | Conventional application root, deferred project configuration, schema declarations, and runtime type re-exports. |
+| [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime) | Canonical provider-neutral application types, plain handlers, and the static `Router` authoring surface. |
+| [`@pulse-compute/cli`](https://www.npmjs.com/package/@pulse-compute/cli) | Project configuration and the supported `pulse` workflow. |
+| [`@pulse-compute/provider-fastly`](https://www.npmjs.com/package/@pulse-compute/provider-fastly) | Typed Fastly configuration, Native lowering, JavaScript execution, local conformance, and Compute target generation. |
+| [`@pulse-compute/grip`](https://www.npmjs.com/package/@pulse-compute/grip) | Stateless GRIP framing and request-bound broadcast across supported targets. |
+| [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets) | JavaScript asset runtime and package-owned Native lookup lowering. |
+| [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | Bounded provider-neutral HS256 and ES256 verification. |
+| [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt) | Bounded provider-neutral JWT verification and claims validation. |
+| [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities) | Statically declared schema-backed operations with the first-party JSON-RPC adapter. |
+| [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3) | Bounded exact-key object reads and writes on supported Node and Fastly Native targets. |
 
 `@pulse-compute/pulse` and `@pulse-compute/runtime` are layered public
 application contracts: the former owns conventional project ergonomics and the
@@ -129,7 +130,7 @@ never changes targets automatically.
 
 ## Documentation
 
-The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.1/) is release-pinned; repository Markdown remains the reviewable source.
+The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.2/) is release-pinned; repository Markdown remains the reviewable source.
 
 - [Documentation index](./docs/README.md)
 - [Changelog](./CHANGELOG.md)

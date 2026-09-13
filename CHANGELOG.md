@@ -2,6 +2,30 @@
 
 Pulse follows semantic versioning for public releases. The repository begins its public history with the `1.0.0-beta.1` prerelease.
 
+## 1.0.0-beta.2 — Beta (2026-09-13)
+
+This candidate synchronizes the 19-package release catalog and prepares the
+next npm `beta` release:
+
+- adds bounded S3-compatible object storage in `@pulse-compute/s3`, backed by
+  the Crypto hashing and signing primitives; the Assets contract stays intact;
+- adds conditional KV operations and opaque generation tokens, with explicit
+  conflict handling and no non-atomic emulation;
+- propagates explicit JavaScript targets through project analysis, retaining
+  resolved static third-party imports and ordinary awaited calls while
+  checking Native eligibility independently;
+- clarifies maintainer ownership, target boundaries, evidence requirements,
+  and human release authority;
+- links public and internal package listings to npm and preserves the exact
+  published beta.1 documentation snapshot alongside the beta.2 documentation.
+
+Conditional KV acceptance remains gated separately from the aggregate seal:
+Viceroy 0.21.0 creates a missing key for an existing-generation CAS, contrary to
+the required conflict behavior, and deployed Pulse cross-location acceptance
+is still pending. The standalone live Fastly probe confirms missing-key
+rejection but does not satisfy those Pulse acceptance gates. See
+[`wasm/test/kv/K4.md`](wasm/test/kv/K4.md) for the evidence and release boundary.
+
 ## 1.0.0-beta.1 — Beta (2026-08-01)
 
 The first public Beta establishes a native-first Pulse application contract
