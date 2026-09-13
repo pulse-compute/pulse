@@ -47,6 +47,30 @@ does not claim live Object Storage behavior. That separate evidence follows
 infrastructure setup (T2); package promotion does not publish npm artifacts or
 change the existing registry bootstrap and release approval gates.
 
+## Conditional KV acceptance
+
+Conditional KV has additional required acceptance beyond the aggregate release
+profile and the generic Fastly Compute reality task:
+
+- `node wasm/scripts/run-wasm-tests.cjs --task kv-conditional-acceptance --no-report`
+  installs exact candidate tarballs and executes the Native consumer through
+  Fastly CLI/Viceroy. An unavailable engine or semantic failure fails this gate.
+- Full deployed Pulse cross-location acceptance uses the reviewed isolated
+  environment and probe driver described in the
+  [K4 acceptance record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/K4.md).
+
+The retained Viceroy 0.21.0 run fails missing-key CAS. The standalone deployed
+Rust SDK probe confirms rejection for never-created and deleted keys in its
+tested cases, but does not satisfy either required Pulse acceptance gate. Full
+Pulse deployed cross-location evidence remains pending the isolated environment.
+
+Report these gates separately even when `release:seal -- --require-fastly`
+passes: that command does not include the dedicated K4 acceptance task or its
+deployed runner. Preserve the local failure and pending deployed requirement as
+release-readiness blockers. An explicit human-directed acceptance-policy change
+must specify any replacement evidence and update the owning gates and current
+contracts; a guidance update alone neither waives a gate nor changes CAS behavior.
+
 ## Event experimental candidate
 
 Before changing release identity or package composition, the event surface has

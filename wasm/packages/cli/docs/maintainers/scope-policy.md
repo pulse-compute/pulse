@@ -23,6 +23,12 @@ Every issue and pull request begins with one change class:
 
 The first four classes can normally move to implementation and human review. The last three require a separate human decision before implementation is treated as approved direction.
 
+A direct human task can supply that decision. Record its scope in the PR and
+continue the necessary implementation, tests, canonical documentation,
+regeneration and PR preparation. Do not ask again for the same direction.
+New semantics or authority outside that scope still require a new decision;
+implementation approval does not authorize merge, publication or deployment.
+
 ## Declare affected boundaries
 
 Path rules conservatively infer protected boundaries, including the public API, effects and capabilities, continuations, lowerer trust, provider registry, configuration contract, compatibility surface, package publication, maintenance control plane, and release authority.
@@ -43,6 +49,12 @@ Human decision: not-required
 ```
 
 Use comma-separated boundary IDs, or `none`. Use `required` when scope, architecture, or release authority needs an explicit decision.
+
+`Human decision: required` identifies the decision authority even when the human
+has already supplied direction. Keep the field accurate and describe the supplied
+direction and any outstanding question in prose. The classifier does not verify
+or grant approval. A protected-path match alone does not require this field to be
+`required` for a defect that preserves the existing contract.
 
 The `Maintainer scope / scope` check compares the declaration with changed paths. It has three outcomes:
 
@@ -72,7 +84,7 @@ Run the classifier locally with a pull-request body saved to a file:
 
 ```bash
 node scripts/maintainer-scope.cjs \
-  --base origin/main \
+  --base <actual-pr-base-ref> \
   --head HEAD \
   --declaration-file /tmp/pulse-pr-body.md \
   --check

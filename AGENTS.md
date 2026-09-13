@@ -4,12 +4,12 @@ These instructions apply to every task in this repository. Read `release/mainten
 
 ## Product center
 
-Pulse compiles a deliberately constrained TypeScript handler into explicit, provider-realizable programs. The current release-manifest-defined surface supports one canonical authoring API, one CLI workflow, Node execution, Fastly Compute build/execution, compile-only inspection, and the documented first-party assets and GRIP lowerers.
+Pulse uses one deliberately constrained TypeScript authoring API and one CLI workflow across explicitly selected Native and JavaScript targets. The release manifest owns the current package set, supported entry points, providers, and target status; use it instead of a historical package list.
 
 Preserve these invariants:
 
-- Compile only behavior the toolchain can prove. Never add a silent JavaScript fallback.
-- Keep host authority outside the guest. Network, secrets, stores, persistence, and other consequential work remain explicit effects or provider bindings.
+- For Native, compile only behavior the toolchain can prove. Never add a silent JavaScript fallback.
+- Keep host authority outside the guest. Pulse-provided network, secrets, stores, persistence, and other consequential operations remain explicit effects or provider bindings.
 - Keep effect and continuation boundaries observable and bounded.
 - Keep canonical handlers provider-neutral. Do not expose provider SDKs through `ctx`.
 - Package lowerers remain trusted first-party release components until explicit human direction and an update to the current architecture contracts change discovery, isolation, negotiation, and trust.
@@ -17,6 +17,15 @@ Preserve these invariants:
 - Structured bodies remain bounded; opaque and streaming bodies must not be decoded or mutated implicitly.
 - Public support is defined by the release manifest and package status blocks, not by every resolvable internal module.
 - Compatibility packages remain bounded non-canonical surfaces.
+
+An explicit JavaScript target retains resolved static imports and ordinary
+awaited calls in its original source graph. Canonical topology, graph containment,
+schemas and Pulse effect-await rules still apply. JavaScript inspection describes
+recognized Pulse behavior; it neither proves dependency internals nor supplies a
+sandbox guarantee for ordinary JavaScript. Runtime imports grant no compiler or
+lowerer trust. Native eligibility is checked independently; `pulse compile`
+still requires Native-compatible source. Keep these contracts aligned with
+`docs/architecture/current-contracts.md`.
 
 ## Repository orientation
 
@@ -41,7 +50,9 @@ are repository-root-relative. Read `Contracts` first, then only the listed
 `Write`, `Read`, `Evidence`, and `Supplements` needed for the task. `Write` is
 the outer mutation boundary, not a request to edit every listed path; `Read`
 never grants mutation. If the work needs another contract or a path outside
-`Write`, stop and split or explicitly widen the task. Repository authority,
+`Write`, name the additional owner and scope before proceeding. An existing
+explicit human task may already authorize that scope; otherwise stop and split
+or obtain direction. Do not infer permission from a dependency alone. Repository authority,
 classification, generated-file, and validation rules remain in force.
 A `Derived` section classifies generated outputs already contained by `Write`;
 it grants no additional mutation authority and those outputs must be
@@ -185,6 +196,9 @@ boundaries, and cross-target schema semantics.
 
 One named first-party package lowerer at a time: its facade, manifest, compiler
 builder, sidecar, generic trusted-loader bridge, and focused parity evidence.
+Resolve its exact package directory and documentation from the release manifest,
+then its lowerer and contract owners from the existing trusted package manifests.
+State those paths before editing. Catalog membership alone grants no lowerer trust.
 JWT may use this entry point only for the package-owned lowering passes; its
 package-only JavaScript verifier work belongs to `package-surface`.
 
@@ -194,32 +208,21 @@ package-only JavaScript verifier work belongs to `package-surface`.
 - `wasm/packages/contracts/src/library/manifest.js`
 - `wasm/packages/contracts/src/library/contracts.js`
 - `wasm/packages/contracts/src/package/package-contract.js`
-- `wasm/packages/contracts/src/assets/contracts.js`
-- `wasm/packages/contracts/src/grip/contracts.js`
-- `wasm/packages/contracts/src/jwt/contracts.js`
-- `packages/assets/pulse.package.json`
-- `packages/grip/pulse.package.json`
-- `packages/jwt/pulse.package.json`
+- the named package's `pulse.package.json` and declared compiler/manifest entry points
+- the named lowerer's canonical contract files
 
 **Write**
 
 Select only the package named by the task; the sibling lowerer remains
 read-only parity evidence.
 
-- `packages/assets/**`
-- `packages/grip/**`
-- `packages/jwt/**`
-- `wasm/packages/contracts/src/assets/**`
-- `wasm/packages/contracts/src/grip/**`
-- `wasm/packages/contracts/src/jwt/**`
+- the named package directory and its identified lowerer contract directory only
 - `wasm/packages/contracts/src/library/**`
 - `wasm/packages/contracts/src/package/**`
 - `wasm/packages/library-kit/src/compiler/**`
 - `wasm/packages/compiler/src/spine/package-operation-seam.js`
 - `wasm/packages/compiler/src/canonical-project-compiler.js`
-- `wasm/test/assets/**`
-- `wasm/test/library/**`
-- `wasm/test/jwt/**`
+- the named lowerer's focused test files, selected from the test registry
 - `wasm/test/package/**`
 - `wasm/test/compiled/assert-package-root-native.cjs`
 - `wasm/test/contracts/assert-package-reachability.cjs`
@@ -233,8 +236,8 @@ read-only parity evidence.
 
 **Evidence**
 
-- Assets: `node wasm/scripts/run-wasm-tests.cjs --task package-reachability --task assets-package-owned-lowering --task package-root-native --no-report`
-- GRIP: `node wasm/scripts/run-wasm-tests.cjs --task package-reachability --task grip-package-owned-lowering --task grip-package-runtime --no-report`
+- `node wasm/scripts/run-wasm-tests.cjs --task package-reachability --no-report`
+- Select the named package's lowering and target-parity tasks from `node wasm/scripts/run-wasm-tests.cjs --list`; record the exact task IDs and run them through the same runner.
 - `node wasm/scripts/run-wasm-tests.cjs --task package-exports --no-report` when manifest, exports, or packed files change
 
 **Supplements**
@@ -265,6 +268,15 @@ Never:
 - turn usage evidence into a compatibility promise without human direction.
 
 A direct human task may authorize implementation work, but every protected boundary must still be named in the pull-request declaration and reviewed explicitly.
+
+Distinguish a protected-path touch, a semantic boundary change, and an external
+release action. Path classification requires declaration and review; it does not
+by itself require a new design decision. Once human direction covers the task,
+continue its necessary implementation, tests, canonical documentation,
+regeneration and PR preparation without asking for the same permission again.
+Record the direction and its scope in the PR. Stop for a new semantic or authority
+decision beyond that scope. Implementation approval does not authorize merge,
+publication, deployment, settings changes or approval of one's own work.
 
 ## Classify before implementing
 
@@ -297,6 +309,17 @@ The path classifier is conservative. A protected-path match means “name and re
 5. Run the portable checks selected by the maintenance policy.
 6. State dependency-bound checks that remain for the release owner; never report them as passing when dependencies are absent.
 7. Summarize changed boundaries, evidence, and residual uncertainty.
+
+When a check produces a report, confirm terminal status and completed task coverage
+as well as process exit. Preserve failed attempts and identify retries; focused or
+resumed runs are development evidence, not the complete release replay. Record
+the tested source identity and working-tree state. A commit ID alone does not
+identify uncommitted bytes. See `docs/maintainers/testing.md` for evidence rules.
+
+Before a planned pause or handoff, record the branch/base/head, uncommitted work,
+artifact and report paths, checks completed or still running, blockers and the
+next action. End each completed task with its outcome and remaining work; a
+launched command or created artifact is not a completion report.
 
 Do not install new production dependencies without explicit human approval. Prefer repository scripts and Node built-ins for maintenance automation.
 

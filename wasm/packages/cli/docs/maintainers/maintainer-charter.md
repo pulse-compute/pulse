@@ -29,6 +29,13 @@ The human maintainer owns decisions that change what Pulse is:
 
 A direct task can authorize implementation, but approval must remain visible in the pull request when a protected boundary changes.
 
+Once that direction is supplied, Codex may complete the necessary implementation,
+tests, canonical documentation, regeneration and PR preparation within its scope.
+It records the authorization rather than requesting it again. A protected-path
+touch requires declaration and review; a semantic change beyond the authorized
+scope requires a new decision. Implementation direction does not authorize merge,
+publication, deployment or self-approval.
+
 ### Codex resident maintainer
 
 Codex provides first-line maintenance capacity:
@@ -48,11 +55,20 @@ Codex does not receive standing authority to expand scope. It does not merge or 
 
 ### Preserve host sovereignty
 
-The guest receives bounded inputs and declared capabilities. Consequential authority remains with the host and is represented through explicit effects or bindings. A maintenance change must not introduce ambient filesystem, network, secret, store, provider SDK, or process authority into canonical user code.
+The Native guest receives bounded inputs and declared capabilities. Pulse host
+authority is represented through explicit effects or bindings. A maintenance
+change must not introduce ambient filesystem, network, secret, store, provider
+SDK or process authority into the Native guest or the Pulse handler context.
 
 ### Compile only what can be proven
 
 Unsupported behavior fails visibly. A convenience change must not add a hidden JavaScript fallback, reinterpret a rejected program under another runtime, or make provider behavior diverge silently.
+
+Explicit JavaScript targets retain the original source graph, resolved static
+imports and ordinary awaited calls while preserving canonical application and
+Pulse effect validation. Inspection describes recognized Pulse effects; it does
+not prove dependency internals, grant lowerer trust or imply sandbox enforcement
+for ordinary JavaScript. Native eligibility remains independent.
 
 ### Separate evidence from promises
 

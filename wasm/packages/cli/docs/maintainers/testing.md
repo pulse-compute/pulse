@@ -39,6 +39,11 @@ node wasm/scripts/run-wasm-tests.cjs --task schema-codecs
 node wasm/scripts/run-wasm-tests.cjs --list
 ```
 
+`wasm/test/suite/registry.cjs` owns the exact task and profile IDs. Agent
+instructions, this guide, release acceptance commands and maintenance-policy
+commands are checked against it by `npm run maintainer:check`. Use explicit
+runner commands for named selections so stale references are detectable.
+
 The event mechanism has focused provider-neutral tasks, plus one project-level
 workflow task included in the `cli` and `release` profiles:
 
@@ -278,6 +283,47 @@ anything.
 ## Runner evidence
 
 The runner writes `wasm/.test-results/last-run.json` atomically after every task and stores one log per task. When a task fails, task-owned `*.log` files such as npm debug logs are copied into that run's durable diagnostics directory before the temporary root is removed. On timeout it captures a Node diagnostic report, terminates the entire task process group, and reports any surviving descendants. The directory is ephemeral and should contain only evidence produced from the current tree.
+
+Before reporting a run as passed, verify process exit, terminal report status,
+the requested/selected task set, completed task count and each task result. A
+zero exit with a missing or incomplete expected report is unresolved. When
+`--no-report` is used, retain the terminal task results and aggregate summary;
+exit status alone does not establish coverage.
+
+Record the source revision and working-tree state alongside the toolchain,
+command and artifact identities. The runner's Git commit identity alone does not
+identify uncommitted changes. Label those runs as development evidence and retain
+the tested diff or tree digest. Preserve failures when retrying, identify why the
+rerun was bounded, and report the retry separately. Focused, split or resumed
+development runs do not substitute for the complete clean-candidate release
+replay or permit combining reports from different source trees.
+
+On an interruption or handoff, record the branch, base/head, uncommitted work,
+report/artifact paths, completed and running checks, blockers and the next action.
+A task handoff must distinguish implemented, validated, pushed and merged work.
+
+## Provider evidence boundaries
+
+| Evidence | Establishes | Does not establish |
+| --- | --- | --- |
+| Injected host or ABI fixture | Behavior under the modeled host outcomes | Real engine or deployed service behavior |
+| Fastly CLI/Viceroy execution | The identified artifact ran on the identified local engine | Deployed Fastly behavior |
+| Standalone live SDK probe | The tested service cases through that probe | Pulse package acceptance or untested concurrent/cross-location behavior |
+| Deployed Pulse acceptance | The identified Pulse artifact passed the bounded deployed corpus | Exhaustive consistency or guarantees outside that corpus |
+
+Report tool versions, artifact identity, execution/deployment identity where
+applicable, corpus scope and pass/fail/inconclusive status separately. Executing
+a real engine is not itself a passing semantic result. A caller-supplied Wasm
+hash is not deployed binary attestation.
+
+For conditional KV, the Fastly JavaScript SDK is incomplete capability mapping,
+not semantic canon or an acceptance gate for other targets. Keep provider docs,
+wire observations and executable behavior distinguishable when they disagree.
+Retain the discrepancy and the unchanged Pulse assertion; do not compensate with
+hidden retries, non-atomic prechecks or weaker expected results. Substituting one
+kind of evidence for a required gate needs an explicit human-directed acceptance
+policy change. See [conditional KV acceptance](./release-acceptance.md#conditional-kv-acceptance)
+for the currently unresolved gates.
 
 ## Redundancy policy
 
