@@ -16,7 +16,7 @@ const {
 } = require('@pulse-compute/wasm-compiler/canonical-project-compiler');
 const { createCanonicalSchemaCodecs } = require('@pulse-compute/wasm-schema-json/compiler/canonical-schema-codecs');
 const { buildJavascriptApplicationPlan } = require('@pulse-compute/wasm-compiler/javascript-application-plan');
-const { buildCanonicalNativePlan } = require('@pulse-compute/wasm-compiler/canonical-native-plan');
+const { buildCanonicalNativePlan, CanonicalNativePlanError } = require('@pulse-compute/wasm-compiler/canonical-native-plan');
 const {
   compileCanonicalNativePlan,
   writeCanonicalNativeModule
@@ -293,9 +293,10 @@ function jsonPolicyInspection(project, compiled, nativePlan) {
 
 function compileProject(project, options = {}) {
   const handlerAuthoring = options.handlerAuthoring || HANDLER_AUTHORING_MODES.ASYNC_REQUIRED;
-  const configuredTarget = project.target || 'native';
+  const configuredTarget = options.target || project.target || 'native';
   const packageTargetDescriptor = getProviderTargetDescriptor(providerDriver(project), configuredTarget);
   return compileCanonicalProject(project.entryFile, {
+    target: configuredTarget,
     rootDir: project.root,
     // Package lowerers are discovered from the nearest package-manager workspace.
     // The Pulse project root remains authoritative for config and paths, but a
@@ -308,7 +309,6 @@ function compileProject(project, options = {}) {
     handlerAuthoring,
     requireAsync: handlerAuthoring === HANDLER_AUTHORING_MODES.ASYNC_REQUIRED,
     requireEffectAwait: false,
-    nativeEligibilityMode: (project.target || 'native') === 'javascript' ? 'record' : 'enforce',
     packageTargetDescriptor,
     packageTarget: configuredTarget,
     applicationProjectMetadata: Object.freeze({
@@ -322,14 +322,26 @@ function compileProject(project, options = {}) {
       crypto: project.profilePlan && project.profilePlan.crypto,
       reporting: project.reporting,
       reportingLevel: project.reportingLevel,
-      target: project.target || 'native',
+      target: configuredTarget,
       host: project.provider || null
     })
   });
 }
 
 function compileNativeProjectInMemory(project, options = {}) {
-  const compiled = options.compiled || compileProject(project);
+  let compiled;
+  try {
+    compiled = options.compiled && options.compiled.target !== 'javascript'
+      ? options.compiled
+      : compileProject(project, { ...options, target: 'native' });
+  } catch (error) {
+    // Native inspection is independent of a successful JavaScript compilation.
+    // Keep its rejection in the Native diagnostic lane used by doctor/inspect.
+    if ((project.target || 'native') !== 'javascript' || !Array.isArray(error.diagnostics)) throw error;
+    const failure = new CanonicalNativePlanError(error.message, error.diagnostics);
+    failure.detail = Object.freeze({ ...error.detail, causeCode: error.code, automaticFallback: false });
+    throw failure;
+  }
   const plan = buildCanonicalNativePlan(compiled, { reporting: project.reporting });
   const native = compileCanonicalNativePlan(plan, {
     cwd: project.root,
@@ -1894,7 +1906,11 @@ function doctorProject(project, options = {}) {
   let eventInspection;
   try {
     compiled = compileProject(project);
-    check('canonical-compile', (compiled.metadata.warningCount || 0) > 0 ? 'warning' : 'passed', `Canonical source lowered with ${compiled.metadata.effectCount} effect(s), ${compiled.metadata.continuationCount} continuation(s), and ${compiled.metadata.warningCount || 0} warning(s).`, { capabilities: compiled.metadata.capabilities, warnings: compiled.metadata.warnings || [] });
+    check('canonical-compile', (compiled.metadata.warningCount || 0) > 0 ? 'warning' : 'passed',
+      compiled.target === 'javascript'
+        ? `JavaScript source inspected with ${compiled.metadata.effectCount} recognized Pulse effect(s) and ${compiled.metadata.warningCount || 0} warning(s); execution retains the original source graph.`
+        : `Canonical source lowered with ${compiled.metadata.effectCount} effect(s), ${compiled.metadata.continuationCount} continuation(s), and ${compiled.metadata.warningCount || 0} warning(s).`,
+      { capabilities: compiled.metadata.capabilities, warnings: compiled.metadata.warnings || [] });
     eventSupport = selectedEventTargetSupport(project, compiled, selectedTargetDescriptor);
     if (eventSupport) {
       eventInspection = eventInspectionProjection(project, compiled, eventSupport);

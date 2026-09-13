@@ -375,6 +375,13 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
 
 function findCanonicalHandler(sourceFile, diagnostics, options = {}) {
   const allowedRuntimeImports = new Set([...ALLOWED_IMPORTS, ...(options.allowedRuntimeImports || []).map(String)]);
+  if (options.target === 'javascript') {
+    // The project graph owns import resolution and containment. These remain
+    // source-runtime imports, never lowerer grants.
+    for (const statement of sourceFile.statements) {
+      if (ts.isImportDeclaration(statement) && ts.isStringLiteral(statement.moduleSpecifier)) allowedRuntimeImports.add(statement.moduleSpecifier.text);
+    }
+  }
   for (const statement of sourceFile.statements) {
     if (!ts.isImportDeclaration(statement)) continue;
     const moduleName = statement.moduleSpecifier && ts.isStringLiteral(statement.moduleSpecifier) ? statement.moduleSpecifier.text : '';
@@ -486,6 +493,7 @@ function preparePlainHandlerSource(sourceText, options = {}, recognition) {
       role: 'handler',
       strict: options.strict === true,
       frontend: 'canonical-source',
+      target: options.target,
       handlerAuthoring: options.handlerAuthoring,
       requireAsync: options.requireAsync === true,
       requireEffectAwait: options.requireEffectAwait === true,

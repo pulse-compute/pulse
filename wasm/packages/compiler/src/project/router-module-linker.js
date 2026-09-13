@@ -563,7 +563,7 @@ function linkProjectRouterModules(graphBuild, options = {}) {
 
   const rootGlobalName = routerSymbols.get(`${root.module.path}:${root.localName}`);
   const ordered = orderLinkedRouters(routers, rootGlobalName);
-  validateRuntimeProjectImports(context, consumedImports, diagnostics);
+  if (options.target !== 'javascript') validateRuntimeProjectImports(context, consumedImports, diagnostics);
   const combinedIr = Object.freeze({
     source: entryModule.path,
     routerIR: Object.freeze(ordered.routers),
@@ -652,7 +652,7 @@ function linkProjectPlainHandler(graphBuild, options = {}) {
       { resolvedKind: root && root.kind || 'unknown' }
     ));
   }
-  validateRuntimeProjectImports(context, consumedImports, diagnostics);
+  if (options.target !== 'javascript') validateRuntimeProjectImports(context, consumedImports, diagnostics);
   if (diagnostics.some((entry) => entry.severity !== 'warning')) {
     throw new RouterModuleLinkError(`Project plain-handler linking failed with ${diagnostics.length} diagnostic(s).`, diagnostics, { entry: entryModule.path });
   }
