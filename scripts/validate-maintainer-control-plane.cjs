@@ -119,6 +119,77 @@ function ancestorAgentFiles(relativeAgent) {
   return candidates.filter((entry, index, all) => all.indexOf(entry) === index && exists(entry));
 }
 
+function testRegistryNames() {
+  // This gate also runs before dependency installation. Read the registry's
+  // literal catalog keys without loading task implementations or Vitest.
+  const source = read('wasm/test/suite/registry.cjs');
+  const names = {};
+  for (const kind of ['tasks', 'profiles']) {
+    const block = source.match(new RegExp(`^const ${kind} = Object.freeze\\(\\{\\r?\\n([\\s\\S]*?)^\\}\\);`, 'm'));
+    if (!block) fail(`test registry has no literal ${kind} catalog`);
+    const entries = [...block[1].matchAll(/^  (?:'([a-zA-Z0-9_-]+)'|([a-zA-Z0-9_-]+)):\s/gm)].map((match) => match[1] || match[2]);
+    if (!entries.length || new Set(entries).size !== entries.length) fail(`test registry ${kind} keys are empty or duplicated`);
+    names[kind] = new Set(entries);
+  }
+  return names;
+}
+
+function validateTestCommandReferences(source, context, registry) {
+  const joined = source.replace(/\\\r?\n[ \t]*/g, ' ');
+  let commands = 0;
+  let selections = 0;
+  for (const command of joined.matchAll(/\bnode[ \t]+(?:wasm\/)?scripts\/run-wasm-tests\.cjs\b([^\r\n`]*)/g)) {
+    commands += 1;
+    const args = command[1].split(/&&|\|\||;/)[0];
+    for (const flag of args.matchAll(/--(task|profile)(?==|[ \t]|$)/g)) {
+      const rest = args.slice(flag.index + flag[0].length);
+      const value = rest.match(/^(?:=|[ \t]+)(?:"([a-zA-Z0-9_-]+)"|'([a-zA-Z0-9_-]+)'|([a-zA-Z0-9_-]+))(?=[ \t]|$)/);
+      const name = value && (value[1] || value[2] || value[3]);
+      const catalog = registry[flag[1] === 'task' ? 'tasks' : 'profiles'];
+      if (!name || !catalog.has(name)) fail(`${context} references unknown test ${flag[1]} ${name || '(missing or non-literal)'}; consult wasm/test/suite/registry.cjs`);
+      selections += 1;
+    }
+  }
+  return { commands, selections };
+}
+
+function validateGuidanceTestCommands(agentFiles) {
+  const registry = testRegistryNames();
+  const files = [...agentFiles, 'docs/maintainers/testing.md', 'docs/maintainers/release-acceptance.md'];
+  const sources = files.map((file) => [file, read(file)]);
+  for (const [id, check] of Object.entries(MAINTENANCE_POLICY.checks)) sources.push([`maintenance-policy checks.${id}`, check.command]);
+  let commands = 0;
+  let selections = 0;
+  for (const [context, source] of sources) {
+    const count = validateTestCommandReferences(source, context, registry);
+    commands += count.commands;
+    selections += count.selections;
+  }
+
+  const prefix = 'node wasm/scripts/run-wasm-tests.cjs';
+  const fixtures = [
+    { source: `${prefix} --profile unit --task package-exports`, selections: 2 },
+    { source: `${prefix} \\\n  --profile="native" \\\n  --task 'canonical-native-wasm'`, selections: 2 },
+    { source: 'pulse test --profile application-specific', selections: 0 },
+    ...['static', 'contracts', 'lowering'].map((name) => ({ source: `${prefix} --profile ${name}`, rejected: true })),
+    { source: `${prefix} --task=not-a-registered-task`, rejected: true },
+    { source: `${prefix} --profile unit-extra`, rejected: true },
+    { source: `${prefix} --task`, rejected: true }
+  ];
+  for (const [index, fixture] of fixtures.entries()) {
+    let result;
+    let error;
+    try { result = validateTestCommandReferences(fixture.source, `command-reference fixture ${index}`, registry); }
+    catch (caught) { error = caught; }
+    if (fixture.rejected) {
+      if (!error || error.code !== 'PULSE_MAINTAINER_CONTROL_PLANE_INVALID') fail(`command-reference fixture ${index} did not reject its invalid reference`);
+    } else if (error || result.selections !== fixture.selections) {
+      fail(`command-reference fixture ${index} did not validate its exact selections: ${error ? error.message : result.selections}`);
+    }
+  }
+  return Object.freeze({ files: files.length, policyCommands: Object.keys(MAINTENANCE_POLICY.checks).length, commands, selections, regressionCases: fixtures.length });
+}
+
 function validateAgentInstructions() {
   const required = [
     'AGENTS.md',
@@ -192,7 +263,8 @@ function validateAgentInstructions() {
     rootEntryPoints,
     nestedEntryPoints: Object.freeze(nestedEntryPoints),
     largestCombinedBytes: largestChain,
-    largestChainFor
+    largestChainFor,
+    commandReferences: validateGuidanceTestCommands(allAgents)
   });
 }
 
@@ -473,6 +545,39 @@ function validateScopeClassifier() {
       files: ['new-unclassified-surface.xyz'],
       body: declaration('hardening', 'inside-developer-preview', [], 'required'),
       expected: 'decision-required'
+    },
+    ...[
+      'wasm/packages/cli/src/project-execution.js',
+      'wasm/packages/compiler/src/canonical-api-compiler.js',
+      'wasm/packages/compiler/src/canonical-project-compiler.js',
+      'wasm/packages/compiler/src/canonical-native-plan.js',
+      'wasm/packages/compiler/src/javascript-application-plan.js',
+      'wasm/packages/compiler/src/project/router-module-linker.js',
+      'wasm/packages/compiler/src/spine/async-surface-normalizer.js',
+      'wasm/packages/compiler/src/spine/plain-handler-frontend.js',
+      'wasm/packages/compiler/src/spine/router-handler-frontend.js'
+    ].map((file) => ({
+      name: `target-preserving defect ${file}`,
+      files: [file],
+      body: declaration('defect', 'inside-developer-preview', [
+        'runtime-target-fluidity',
+        ...(file.endsWith('/canonical-project-compiler.js') ? ['lowerer-trust'] : [])
+      ], 'not-required'),
+      expected: 'pass',
+      expectedBoundary: 'runtime-target-fluidity',
+      expectedChecks: ['native', 'javascript', 'conformance', 'cli']
+    })),
+    {
+      name: 'missing target boundary fail',
+      files: ['wasm/packages/compiler/src/canonical-project-compiler.js'],
+      body: declaration('defect', 'inside-developer-preview', ['lowerer-trust'], 'not-required'),
+      expected: 'fail'
+    },
+    {
+      name: 'target semantic change exposes decision',
+      files: ['wasm/packages/cli/src/project-execution.js'],
+      body: declaration('architecture', 'architecture-change', ['runtime-target-fluidity'], 'required'),
+      expected: 'decision-required'
     }
   ];
   for (const test of cases) {
@@ -480,6 +585,8 @@ function validateScopeClassifier() {
     if (parsed.errors.length) fail(`synthetic declaration ${test.name} is invalid: ${parsed.errors.join(', ')}`);
     const report = scopeReport(test.files, test.body);
     if (report.status !== test.expected) fail(`scope classifier ${test.name} expected ${test.expected}, found ${report.status}: ${report.consistency.errors.join(', ')}`);
+    if (test.expectedBoundary && !report.inferred.protectedBoundaries.includes(test.expectedBoundary)) fail(`scope classifier ${test.name} did not infer ${test.expectedBoundary}`);
+    for (const check of test.expectedChecks || []) if (!report.inferred.requiredChecks.includes(check)) fail(`scope classifier ${test.name} did not require ${check}`);
   }
 
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-maintainer-scope-'));
@@ -594,7 +701,7 @@ function main() {
   }
   const result = validateMaintainerControlPlane({ jsonFile });
   if (json) process.stdout.write(stableJson(result));
-  else process.stdout.write(`ok - ${result.policy.changeClasses} change classes, ${result.policy.boundaries} protected boundaries, ${result.agents.files} AGENTS files, ${result.workflows.files} workflows, ${result.publication.documentationDeployment.objectCount} documentation deployment objects, and ${result.scopeClassifier.cases} scope cases validated\n`);
+  else process.stdout.write(`ok - ${result.policy.changeClasses} change classes, ${result.policy.boundaries} protected boundaries, ${result.agents.files} AGENTS files, ${result.agents.commandReferences.commands} documented test commands, ${result.workflows.files} workflows, ${result.publication.documentationDeployment.objectCount} documentation deployment objects, and ${result.scopeClassifier.cases} scope cases validated\n`);
 }
 
 module.exports = Object.freeze({
