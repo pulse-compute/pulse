@@ -7,6 +7,7 @@ The CLI is a public contract. Its declarative command specification, project-con
 - Every public diagnostic needs title, summary, remediation, exit class, scope, stability, and a resolvable exact-version anchor.
 - Preserve one-object JSON output for completed commands and newline-delimited event output for `pulse dev --json`.
 - Keep provider loading behind the approved exact `./toolchain` package resolver. Do not add CLI host branches, dependency scanning, self-registration, or fallback discovery.
+- Carry the selected target into compiler, package and provider planning. JavaScript execution uses the original source graph; Native eligibility is advisory for that selected target, while `pulse compile` requires a real Native compilation. Keep these results distinct in doctor/inspect output.
 - Run docs synchronization, `unit`, and the CLI profile; run provider/build/release evidence when affected.
 
 ## Pulse entry points

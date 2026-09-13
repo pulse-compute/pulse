@@ -7,6 +7,9 @@ bindings, generated AssemblyScript, and native Wasm realization.
 - Keep secrets and configured binding values out of diagnostics and generated public artifacts.
 - Treat new hostcalls, bindings, provider fields, or deployment behavior as protected provider/configuration work.
 - Keep selection configuration-owned; native builds emit source and verified `bin/main.wasm` together.
+- Separate injected-host fixtures, local Fastly CLI/Viceroy execution, standalone deployed probes and deployed Pulse acceptance. Record tool/artifact identities and the exact claim each proves; `providerReality: true` alone is not a passing result.
+- For conditional KV, the Fastly JavaScript SDK is incomplete capability mapping, never the semantic canon or a gate for other targets. Preserve the Pulse contract when docs, wire observations or engines disagree; report the discrepancy with its scope and evidence. Do not add retries, non-atomic prechecks or weaker assertions to conceal it.
+- Consult `wasm/test/kv/K4.md` and `docs/maintainers/release-acceptance.md` before claiming conditional KV acceptance. The recorded Viceroy failure and standalone live success are distinct; existing local and deployed Pulse requirements remain in force until an explicit acceptance-policy decision changes them.
 
 ## Pulse entry points
 

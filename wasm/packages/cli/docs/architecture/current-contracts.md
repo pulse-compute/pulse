@@ -123,10 +123,10 @@ See [Compilation and lowering](../concepts/compilation-and-lowering.md) and the
 
 ## Execution ownership
 
-Host authority is explicit. Fetch, config, secrets, KV, GRIP, assets, and future
-host operations enter the program as canonical capabilities or package
-operations. Provider SDK objects, ambient process state, and hidden host
-namespaces do not enter handler scope.
+Pulse-provided host authority is explicit. Fetch, config, secrets, KV, GRIP,
+assets, and future host operations enter the program as canonical capabilities
+or package operations. Pulse does not expose provider SDK objects, ambient
+process state, or hidden host namespaces through the handler context.
 
 Native execution erases managed async notation into explicit effects and
 single-use continuations. JavaScript targets execute the same application
@@ -195,7 +195,9 @@ JavaScript compilation returns canonical inspection metadata without an
 executable normalized generator. The provider's graph-backed loader and source
 packager execute the original module closure with its JavaScript async semantics.
 Inspection describes recognized Pulse effects; it does not infer effects inside
-ordinary dependency implementations. Native inspection compiles the source
+ordinary dependency implementations or certify their isolation. An ordinary
+JavaScript import gains no compiler/lowerer authority or Native guest sandbox
+guarantee. Native inspection compiles the source
 independently under Native rules. Its failure is advisory for a selected
 JavaScript target; `pulse compile` still requires a real Native compilation.
 
@@ -433,6 +435,20 @@ and resumable promotion without bucket-wide deletion. Human CODEOWNERS retain
 architecture, merge, repository-setting, and release authority. Codex may
 analyze, review, reproduce, and prepare bounded patches; deterministic checks
 remain authoritative even when Codex is unavailable.
+
+A protected-path match requires a boundary declaration and review; it does not
+establish that the patch changes that boundary's semantics. Human direction
+already supplied for a bounded task covers its necessary implementation, tests,
+canonical documentation, regeneration and PR preparation. The PR records that
+direction and any remaining decision. A new semantic or authority change beyond
+the authorized scope requires new direction. Implementation approval does not
+transfer merge, publication, deployment or self-approval authority.
+
+Validation claims distinguish injected hosts, local Compute engines, standalone
+live probes and deployed Pulse artifacts. SDK capability mappings and observed
+provider discrepancies do not redefine Pulse's contract. Required acceptance
+gates remain separate from the aggregate release command; their status and any
+human-directed policy changes must be explicit before claiming release readiness.
 
 See the [maintainer charter](../maintainers/maintainer-charter.md),
 [release acceptance](../maintainers/release-acceptance.md),

@@ -6,7 +6,10 @@ Release files are protected human-authority surfaces.
 - Keep release-owned manifests internally consistent and regenerate every hosted/installed copy.
 - `maintenance-policy.json` is the source of truth for agent authority, scope classification, labels, CODEOWNERS output, and required checks.
 - Any change here requires `Human decision: required` in the pull-request declaration and the appropriate protected boundaries.
+- That field identifies human decision authority, not whether direction is still outstanding. Record already supplied human direction and continue within it; it does not authorize merge, publication or deployment.
 - A passing portable validation set does not substitute for the real pnpm build, release pack, package acceptance, clean-machine acceptance, or external provider reality checks.
+- Report aggregate seal status separately from additional feature acceptance gates. Conditional KV's required local task and deployed Pulse cross-location evidence are not satisfied by the generic Fastly reality task, the portable release profile or a standalone live SDK probe. Consult `wasm/test/kv/K4.md`; carry unresolved requirements as blockers, without waiving assertions or relabeling a known failure as passed.
+- Authoritative release evidence requires the complete replay on the clean candidate source, terminal passing reports and exact package/artifact identities. Development reruns, partial task ranges and reports from another tree cannot be pooled into a seal.
 
 - `pulse-release-manifest.json#publication` owns npm registry, channel tag, trusted-publisher identity, toolchain, and canonical smoke package.
 - `documentation-deployment.json` owns Object Storage prefixes, immutable and mutable classes, deployment receipts, cache classes, and public verification routes.

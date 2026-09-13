@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 6,
+  "policyVersion": 7,
   "releaseVersion": "1.0.0-beta.1",
-  "reviewedAt": "2026-08-01",
+  "reviewedAt": "2026-09-13",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -434,6 +434,37 @@
         "build"
       ],
       "risk": "critical"
+    },
+    {
+      "id": "target-compilation",
+      "patterns": [
+        "wasm/packages/cli/src/project-execution.js",
+        "wasm/packages/compiler/src/canonical-api-compiler.js",
+        "wasm/packages/compiler/src/canonical-project-compiler.js",
+        "wasm/packages/compiler/src/canonical-native-plan.js",
+        "wasm/packages/compiler/src/javascript-application-plan.js",
+        "wasm/packages/compiler/src/project/router-module-linker.js",
+        "wasm/packages/compiler/src/spine/async-surface-normalizer.js",
+        "wasm/packages/compiler/src/spine/plain-handler-frontend.js",
+        "wasm/packages/compiler/src/spine/router-handler-frontend.js"
+      ],
+      "areas": [
+        "compiler",
+        "cli"
+      ],
+      "boundaries": [
+        "runtime-target-fluidity"
+      ],
+      "checks": [
+        "documentation",
+        "unit",
+        "native",
+        "javascript",
+        "conformance",
+        "cli",
+        "build"
+      ],
+      "risk": "high"
     },
     {
       "id": "configuration",
