@@ -193,6 +193,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     role,
     strict: Boolean(topology.options && topology.options.strict === true),
     frontend: 'canonical-router',
+    target: topology.options && topology.options.target,
     handlerAuthoring: topology.options && topology.options.handlerAuthoring,
     requireAsync: topology.options && topology.options.requireAsync === true,
     requireEffectAwait: topology.options && topology.options.requireEffectAwait === true,

@@ -182,6 +182,23 @@ A generally available target can reject an ineligible project. A passing local
 runtime does not claim that an external deployment, binding, service, or
 provider control plane is healthy.
 
+The selected target reaches project linking and handler validation explicitly.
+For `javascript`, resolved static package imports and project-relative helper
+imports remain source-runtime boundaries; they do not acquire Native lowerer
+authority. Canonical application topology, schemas, effect-await rules, graph
+containment and entry lifecycle checks still apply. An ordinary imported async
+call may be awaited in a JavaScript handler. Native compilation continues to
+reject unsupported imports and awaits, including when graph eligibility is
+requested in record-only mode.
+
+JavaScript compilation returns canonical inspection metadata without an
+executable normalized generator. The provider's graph-backed loader and source
+packager execute the original module closure with its JavaScript async semantics.
+Inspection describes recognized Pulse effects; it does not infer effects inside
+ordinary dependency implementations. Native inspection compiles the source
+independently under Native rules. Its failure is advisory for a selected
+JavaScript target; `pulse compile` still requires a real Native compilation.
+
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target
 support policy. The compiler owns the neutral bootstrap, contract validation,

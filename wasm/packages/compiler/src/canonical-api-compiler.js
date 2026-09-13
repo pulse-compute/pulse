@@ -52,9 +52,8 @@ function stableSourceName(file, options = {}) {
   return relative && !relative.startsWith('../') ? relative : path.basename(absolute);
 }
 
-function emitCanonicalProgramFromHandlerIr(ir) {
+function emitCanonicalProgramFromHandlerIr(ir, options = {}) {
   const payload = payloadForCanonicalHandlerIr(ir);
-  const emitted = emitCanonicalHandlerGenerator(payload.operationIr);
   const sourceFile = payload.sourceFile;
   const schemaBundle = payload.schemaBundle;
   const explicitParallelCount = ir.continuationSites.filter((site) => site.kind === 'parallel-group').length;
@@ -100,9 +99,23 @@ function emitCanonicalProgramFromHandlerIr(ir) {
     compilerPreludeHash: ir.compilerPreludeHash,
     userAuthoredAsync: ir.invariants.userAuthoredAsync,
     promiseSemantics: ir.invariants.promiseSemantics,
-    asyncify: ir.invariants.asyncify
+    asyncify: ir.invariants.asyncify,
+    ...(options.target === 'javascript' ? { target: 'javascript', promiseSemantics: true } : {})
   });
 
+  // JavaScript executes the original module graph through its provider. The
+  // normalized IR describes recognized Pulse behavior only; erased awaits and
+  // source-runtime imports must never become an executable generator.
+  if (options.target === 'javascript') return Object.freeze({
+    ok: true,
+    version: CANONICAL_API_COMPILER_VERSION,
+    target: 'javascript',
+    metadata,
+    schemaBundle,
+    diagnostics: Object.freeze([])
+  });
+
+  const emitted = emitCanonicalHandlerGenerator(payload.operationIr);
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
   const generatorText = printer.printNode(ts.EmitHint.Unspecified, emitted.generator, sourceFile);
   const metadataSource = JSON.stringify(metadata, null, 2);
@@ -171,8 +184,16 @@ const PLAIN_HANDLER_IMPLEMENTATION = Object.freeze({
   emitCanonicalProgram: emitCanonicalProgramFromHandlerIr
 });
 
+const JAVASCRIPT_HANDLER_INSPECTION = Object.freeze({
+  ...PLAIN_HANDLER_IMPLEMENTATION,
+  emitCanonicalProgram: (ir) => emitCanonicalProgramFromHandlerIr(ir, { target: 'javascript' })
+});
+
 function compileCanonicalSource(sourceText, options = {}) {
-  return executeCanonicalSourceSpine(sourceText, options, PLAIN_HANDLER_IMPLEMENTATION);
+  if (options.target !== undefined && !['native', 'javascript'].includes(options.target)) throw new TypeError('target must be native or javascript.');
+  return executeCanonicalSourceSpine(sourceText, options, options.target === 'javascript'
+    ? JAVASCRIPT_HANDLER_INSPECTION
+    : PLAIN_HANDLER_IMPLEMENTATION);
 }
 
 function compileCanonicalFile(file, options = {}) {
@@ -191,6 +212,9 @@ function loadCanonicalModule(compiled, options = {}) {
 }
 
 function writeCanonicalBuild(compiled, outDir, options = {}) {
+  if (!compiled || compiled.ok !== true || typeof compiled.generatedSource !== 'string') {
+    throw new TypeError('writeCanonicalBuild requires an executable canonical compilation; JavaScript projects use provider source packaging.');
+  }
   const target = path.resolve(outDir);
   fs.mkdirSync(target, { recursive: true });
   const handlerFile = path.join(target, options.handlerFile || 'canonical-handler.cjs');
