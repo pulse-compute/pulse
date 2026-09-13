@@ -125,9 +125,14 @@ The required conditional KV acceptance task is `kv-conditional-acceptance`.
 It builds and installs exact tarballs and executes their Native artifact through
 Fastly CLI/Viceroy; an unavailable engine fails the task. Viceroy 0.21.0 currently
 fails the missing-key CAS contract: it creates the key instead of returning
-`conflict`. Conditional KV acceptance remains blocked on that discrepancy, with
-deployed cross-location evidence also pending the isolated development environment.
-Passing injected-host or portable tests does not clear this gate.
+`conflict`. A September 12, 2026 standalone Rust SDK probe on deployed Fastly
+rejected CAS on both never-created and deleted keys, which remained absent.
+This resolves the live missing-key concern for those cases and distinguishes it
+from the Viceroy defect. The required local gate still fails, and full Pulse
+deployed cross-location acceptance remains pending the isolated development
+environment. The [K4 acceptance record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/K4.md)
+retains both captures and their scope. Neither that standalone probe nor passing
+injected-host or portable tests clears the full acceptance gates.
 
 ### Fastly JavaScript
 

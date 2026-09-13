@@ -1,0 +1,468 @@
+{
+  "started_at": "2026-09-12T22:47:15.101041+00:00",
+  "url": "https://cas-88936451e9e8.edgecompute.app",
+  "run_id": "13a453ee30074b3e902add83796431a1",
+  "wasm_sha256": "78711e064c90e603144d214314ea78ed7441c6cee9b41f531ccdf3d37d6476b8",
+  "steps": [
+    {
+      "method": "PUT",
+      "slot": "claim",
+      "value": "claimed",
+      "generation": null,
+      "add": true,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "3f1f995c7e814ada9e84000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "add",
+        "key": "cas/13a453ee30074b3e902add83796431a1/claim",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "control",
+      "value": "v1",
+      "generation": null,
+      "add": true,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "c8c3e44e2daa49b7978c000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "add",
+        "key": "cas/13a453ee30074b3e902add83796431a1/control",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "control",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "f3fd0cbcbd25481c9b35000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/control",
+        "method": "GET",
+        "result": {
+          "generation": "1789253236067373",
+          "status": "found",
+          "value": "v1"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "control",
+      "value": "v2",
+      "generation": "1789253236067373",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "adb71ab8a70640e2b51d000000000001"
+        },
+        "if_generation_match": "1789253236067373",
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/control",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "control",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "9584529d31054bdfb41b000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/control",
+        "method": "GET",
+        "result": {
+          "generation": "1789253236906432",
+          "status": "found",
+          "value": "v2"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "control",
+      "value": "stale-write",
+      "generation": "1789253236067373",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "64722d010711425e8872000000000001"
+        },
+        "if_generation_match": "1789253236067373",
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/control",
+        "method": "PUT",
+        "result": {
+          "sdk_error": "ItemPreconditionFailed",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "control",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "3dc29228136149fe9770000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/control",
+        "method": "GET",
+        "result": {
+          "generation": "1789253236906432",
+          "status": "found",
+          "value": "v2"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "fresh",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "cb476263001046c6926e000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/fresh",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "fresh",
+      "value": "conditional-write",
+      "generation": "1789253236906432",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "4e759215f6b844948db9000000000001"
+        },
+        "if_generation_match": "1789253236906432",
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/fresh",
+        "method": "PUT",
+        "result": {
+          "sdk_error": "ItemPreconditionFailed",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "fresh",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "dfd7721b97774ebabc77000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/fresh",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "deleted",
+      "value": "before-delete",
+      "generation": null,
+      "add": true,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "8ef854de32e741d3b516000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "add",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "faac9ff1153346ddbeef000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "GET",
+        "result": {
+          "generation": "1789253240757801",
+          "status": "found",
+          "value": "before-delete"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "DELETE",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "fade7c2e8b844ef4a3e7000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "DELETE",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "165faef2fc484b20a1b0000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "e003536d260c40a18feb000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "deleted",
+      "value": "conditional-write",
+      "generation": "1789253240757801",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "715729ad7c0e4cc7a16e000000000001"
+        },
+        "if_generation_match": "1789253240757801",
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "PUT",
+        "result": {
+          "sdk_error": "ItemPreconditionFailed",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "DEN",
+          "service_id": "wkXHMEWmDXiAtNpksmEX28",
+          "service_version": "1",
+          "trace_id": "677bbe4ec8724b4ea9fc000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/13a453ee30074b3e902add83796431a1/deleted",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    }
+  ],
+  "controls": "passed",
+  "missing_key_cases": {
+    "never_created": {
+      "generation": "1789253236906432",
+      "before": {
+        "sdk_error": "ItemNotFound",
+        "status": "error"
+      },
+      "ack": {
+        "sdk_error": "ItemPreconditionFailed",
+        "status": "error"
+      },
+      "outcome": "rejected",
+      "after": {
+        "sdk_error": "ItemNotFound",
+        "status": "error"
+      }
+    },
+    "deleted_after_read": {
+      "generation": "1789253240757801",
+      "before": {
+        "sdk_error": "ItemNotFound",
+        "status": "error"
+      },
+      "ack": {
+        "sdk_error": "ItemPreconditionFailed",
+        "status": "error"
+      },
+      "outcome": "rejected",
+      "after": {
+        "sdk_error": "ItemNotFound",
+        "status": "error"
+      }
+    }
+  },
+  "experiment": "completed"
+}

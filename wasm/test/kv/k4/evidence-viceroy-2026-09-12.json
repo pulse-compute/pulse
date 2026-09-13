@@ -1,0 +1,468 @@
+{
+  "started_at": "2026-09-12T22:15:40.346462+00:00",
+  "url": "http://127.0.0.1:7676",
+  "run_id": "e60b9fc5912c462a9e75e84ec0af2fee",
+  "wasm_sha256": "78711e064c90e603144d214314ea78ed7441c6cee9b41f531ccdf3d37d6476b8",
+  "steps": [
+    {
+      "method": "PUT",
+      "slot": "claim",
+      "value": "claimed",
+      "generation": null,
+      "add": true,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000000"
+        },
+        "if_generation_match": null,
+        "insert_mode": "add",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/claim",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "control",
+      "value": "v1",
+      "generation": null,
+      "add": true,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000001"
+        },
+        "if_generation_match": null,
+        "insert_mode": "add",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/control",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "control",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000002"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/control",
+        "method": "GET",
+        "result": {
+          "generation": "1789251340355193000",
+          "status": "found",
+          "value": "v1"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "control",
+      "value": "v2",
+      "generation": "1789251340355193000",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000003"
+        },
+        "if_generation_match": "1789251340355193000",
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/control",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "control",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000004"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/control",
+        "method": "GET",
+        "result": {
+          "generation": "1789251340356032000",
+          "status": "found",
+          "value": "v2"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "control",
+      "value": "stale-write",
+      "generation": "1789251340355193000",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000005"
+        },
+        "if_generation_match": "1789251340355193000",
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/control",
+        "method": "PUT",
+        "result": {
+          "sdk_error": "ItemPreconditionFailed",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "control",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000006"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/control",
+        "method": "GET",
+        "result": {
+          "generation": "1789251340356032000",
+          "status": "found",
+          "value": "v2"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "fresh",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000007"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/fresh",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "fresh",
+      "value": "conditional-write",
+      "generation": "1789251340356032000",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000008"
+        },
+        "if_generation_match": "1789251340356032000",
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/fresh",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "fresh",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000009"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/fresh",
+        "method": "GET",
+        "result": {
+          "generation": "1789251340357612000",
+          "status": "found",
+          "value": "conditional-write"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "deleted",
+      "value": "before-delete",
+      "generation": null,
+      "add": true,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "0000000000000000000000000000000a"
+        },
+        "if_generation_match": null,
+        "insert_mode": "add",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "0000000000000000000000000000000b"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "GET",
+        "result": {
+          "generation": "1789251340358163000",
+          "status": "found",
+          "value": "before-delete"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "DELETE",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "0000000000000000000000000000000c"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "DELETE",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "0000000000000000000000000000000d"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "0000000000000000000000000000000e"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "GET",
+        "result": {
+          "sdk_error": "ItemNotFound",
+          "status": "error"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "PUT",
+      "slot": "deleted",
+      "value": "conditional-write",
+      "generation": "1789251340358163000",
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "0000000000000000000000000000000f"
+        },
+        "if_generation_match": "1789251340358163000",
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "PUT",
+        "result": {
+          "status": "ok"
+        },
+        "store": "cas-evidence"
+      }
+    },
+    {
+      "method": "GET",
+      "slot": "deleted",
+      "value": null,
+      "generation": null,
+      "add": false,
+      "http_status": 200,
+      "response": {
+        "environment": {
+          "pop": "XXX",
+          "service_id": "0000000000000000000000",
+          "service_version": "0",
+          "trace_id": "00000000000000000000000000000010"
+        },
+        "if_generation_match": null,
+        "insert_mode": "overwrite",
+        "key": "cas/e60b9fc5912c462a9e75e84ec0af2fee/deleted",
+        "method": "GET",
+        "result": {
+          "generation": "1789251340359698000",
+          "status": "found",
+          "value": "conditional-write"
+        },
+        "store": "cas-evidence"
+      }
+    }
+  ],
+  "controls": "passed",
+  "missing_key_cases": {
+    "never_created": {
+      "generation": "1789251340356032000",
+      "before": {
+        "sdk_error": "ItemNotFound",
+        "status": "error"
+      },
+      "ack": {
+        "status": "ok"
+      },
+      "outcome": "accepted_and_value_observed",
+      "after": {
+        "generation": "1789251340357612000",
+        "status": "found",
+        "value": "conditional-write"
+      }
+    },
+    "deleted_after_read": {
+      "generation": "1789251340358163000",
+      "before": {
+        "sdk_error": "ItemNotFound",
+        "status": "error"
+      },
+      "ack": {
+        "status": "ok"
+      },
+      "outcome": "accepted_and_value_observed",
+      "after": {
+        "generation": "1789251340359698000",
+        "status": "found",
+        "value": "conditional-write"
+      }
+    }
+  },
+  "experiment": "completed"
+}
