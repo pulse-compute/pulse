@@ -154,6 +154,10 @@ function normalizeManagedHandler(functionNode, options = {}) {
         const inner = unwrapExpression(node.expression);
         const surface = surfaceFor(inner, 'await-expression');
         if (!surface || surface.surfaceId === 'javascript.await' || surface.class === 'javascript-only') {
+          // The explicit JavaScript project path uses this normalized tree only
+          // for inspection. Its original async source executes through the
+          // application loader; Native compilation still rejects this boundary.
+          if (options.target === 'javascript') return ts.visitNode(node.expression, visit);
           diagnostics.push(createHandlerDiagnostic({
             frontend,
             issue: 'handler.await.native-unsupported',

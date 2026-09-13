@@ -783,6 +783,11 @@ const tasks = Object.freeze({
   'release-runtime-policy': nodeTask('test/release/assert-release-runtime-policy.cjs', {
     evidence: 'unit',
     description: 'Node release-line acceptance and Fastly CLI lifecycle ownership'
+  }),
+  'cli-javascript-target-compilation': nodeTask('test/cli/assert-cli-javascript-target-compilation.cjs', {
+    evidence: 'javascript',
+    timeoutMs: 120000,
+    description: 'explicit JavaScript target propagation, ordinary imports, source execution and Native rejection'
   })
 });
 
@@ -848,6 +853,7 @@ const profiles = Object.freeze({
     'canonical-native-wasm'
   ]),
   javascript: Object.freeze([
+    'cli-javascript-target-compilation',
     'target-support',
     'crypto-runtime-builtin',
     'javascript-effect-adapter',
