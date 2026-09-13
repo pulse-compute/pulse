@@ -304,7 +304,7 @@ function planCanonicalProjectCrypto(options, entryFile, recognizedRequirements =
       declaration: metadata.crypto && metadata.crypto.declaration,
       packageRequirements,
       targetDescriptor: options.packageTargetDescriptor,
-      target: options.packageTarget || metadata.target || null,
+      target: options.target || options.packageTarget || metadata.target || null,
       profile,
       profileSelectionSource: selected && typeof selected === 'object'
         ? selected.source
@@ -324,7 +324,7 @@ function planCanonicalProjectCrypto(options, entryFile, recognizedRequirements =
 }
 
 function assertGraphPreflight(graphBuild, entryFile, options = {}) {
-  const nativeEligibilityMode = options.nativeEligibilityMode || 'enforce';
+  const nativeEligibilityMode = options.nativeEligibilityMode || (options.target === 'javascript' ? 'record' : 'enforce');
   if (!['enforce', 'record'].includes(nativeEligibilityMode)) {
     throw new TypeError('nativeEligibilityMode must be enforce or record.');
   }
@@ -957,8 +957,10 @@ function attachPackageSchemaReferences(compiled, recognition) {
   return Object.freeze({
     ...compiled,
     metadata,
-    generatedSource: replaceGeneratedMetadata(compiled.generatedSource, metadata, 'commonjs'),
-    generatedEsmSource: replaceGeneratedMetadata(compiled.generatedEsmSource, metadata, 'esm')
+    ...(compiled.target !== 'javascript' ? {
+      generatedSource: replaceGeneratedMetadata(compiled.generatedSource, metadata, 'commonjs'),
+      generatedEsmSource: replaceGeneratedMetadata(compiled.generatedEsmSource, metadata, 'esm')
+    } : {})
   });
 }
 
@@ -1046,9 +1048,10 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   if (multiModule) {
     try {
       linkedProjectModules = root.kind === 'router'
-        ? linkProjectRouterModules(graphBuild, { rootDir })
+        ? linkProjectRouterModules(graphBuild, { rootDir, target: options.target })
         : linkProjectPlainHandler(graphBuild, {
             rootDir,
+            target: options.target,
             consumedRuntimeImports: managedHandlerRuntimeImportKeys(packageOperationRecognition.managedHandlers)
           });
     } catch (error) {
@@ -1199,6 +1202,9 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
 }
 
 function compileCanonicalProject(entryFile, options = {}) {
+  if (options.target !== undefined && !['native', 'javascript'].includes(options.target)) {
+    throw new TypeError('target must be native or javascript.');
+  }
   return executeCanonicalProjectSpine(entryFile, options, compileCanonicalProjectLegacy);
 }
 

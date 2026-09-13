@@ -187,8 +187,11 @@ const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-entities-i9-build-'
 try {
   const outA = path.join(scratch, 'a');
   const outB = path.join(scratch, 'b');
-  const buildA = writeCanonicalBuild(nodeCompiled, outA);
-  const buildB = writeCanonicalBuild(nodeCompiled, outB);
+  const nativeCompiled = compileProject(nodeProject, { target: 'native' });
+  assert.deepEqual(nativeCompiled.packageInspection, inspection);
+  assert.equal(nodeCompiled.generatedSource, undefined, 'JavaScript inspection is not an executable canonical generator');
+  const buildA = writeCanonicalBuild(nativeCompiled, outA);
+  const buildB = writeCanonicalBuild(nativeCompiled, outB);
   assert.deepEqual(buildA.packageInspectionArtifacts.map((entry) => entry.id), [
     'pulse.entities-catalog.v1',
     'pulse.entities-inspection.v1'

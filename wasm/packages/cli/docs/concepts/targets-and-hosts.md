@@ -6,6 +6,14 @@ branches on. The release distinguishes current execution proof from forward
 host work so architectural direction does not become an accidental support
 claim.
 
+An explicit JavaScript profile can retain resolved static package imports and
+project-relative helpers, including awaited calls into ordinary JavaScript
+dependencies. Pulse checks the canonical application surface and packages its
+original source graph. Native eligibility is reported separately and does not
+block JavaScript execution. Unsupported dynamic module boundaries and missing
+`await` on Pulse effects still fail validation. `pulse compile` continues to
+require Native-compatible source; use `pulse build` for a JavaScript package.
+
 ## Current Beta targets
 
 `1.0.0-beta.1` exercises four explicit modes through one conformance corpus:

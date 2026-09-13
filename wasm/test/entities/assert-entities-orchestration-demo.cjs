@@ -247,7 +247,10 @@ async function main() {
     const project = resolveProject({ cwd: exampleRoot, profile: 'node-javascript' });
     const compiled = compileProject(project);
     assert.equal(compiled.packageApplication.realization, 'provider-dependent');
-    const build = writeCanonicalBuild(compiled, path.join(tempRoot, 'catalog-build'));
+    const nativeProject = resolveProject({ cwd: exampleRoot, profile: 'node-native' });
+    const nativeCompiled = compileProject(nativeProject);
+    assert.deepEqual(nativeCompiled.packageInspection, compiled.packageInspection);
+    const build = writeCanonicalBuild(nativeCompiled, path.join(tempRoot, 'catalog-build'));
     const catalogArtifact = build.packageInspectionArtifacts.find((entry) => entry.id === 'pulse.entities-catalog.v1');
     assert.ok(catalogArtifact);
     assert.equal(path.basename(catalogArtifact.file), 'entities-catalog.json');
@@ -259,8 +262,6 @@ async function main() {
     assert.ok(catalog.routers[0].entities.every((entry) => Object.values(entry.eligibility).every(Boolean)));
 
     const javascript = await runJavascript(compiled, project, catalog);
-    const nativeProject = resolveProject({ cwd: exampleRoot, profile: 'node-native' });
-    const nativeCompiled = compileProject(nativeProject);
     const model = compileModel(nativeCompiled, nativeProject);
     assert.equal(model.nativeSource.summary.routes, 2);
     assert.equal(model.nativeSource.summary.schemas, 2);
