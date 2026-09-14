@@ -634,6 +634,30 @@ function createCanonicalContext(options, trace) {
   }
 
   const ctx = Object.freeze({
+    decodeJson(text, schemaId) {
+      const key = requireSchemaId(schemaCodecs, schemaId, 'application-text');
+      const event = {
+        boundary: 'application-text', schemaId: key, responseCaseId: null,
+        operationId: `application-text:${key}`, status: null,
+        contentType: null, headers: [], bodyOwnership: 'application-owned',
+        target: options.target || null, provider: options.provider || null,
+        effectId: null, groupId: null
+      };
+      try {
+        if (typeof text !== 'string') {
+          throw new CanonicalRuntimeError('SchemaDecodeError', 'PULSE_SCHEMA_DECODE',
+            'Application JSON text must be a string.',
+            { schemaId: key, source: 'application-text', expected: 'string', actualKind: typeof text });
+        }
+        assertSchemaBodySize(schemaCodecs, text, key, 'application-text');
+        const value = schemaCodecs.decodeJsonText(key, text, 'application-text');
+        jsonTrace(trace, { ...event, kind: 'json.decode.text' }, value);
+        return value;
+      } catch (error) {
+        jsonTrace(trace, { ...event, kind: 'json.decode.error', ...jsonTraceErrorDetail(error) });
+        throw error;
+      }
+    },
     encodeJson(value, schemaId) {
       const key = requireSchemaId(schemaCodecs, schemaId, 'application-value');
       const event = {

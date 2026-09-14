@@ -10,6 +10,7 @@ const {
 (async () => {
   const proof = await buildSchemaCodecProof();
   await require('../support/schema-value-encoding.cjs').assertSchemaValueEncoding();
+  await require('../support/schema-text-decoding.cjs').assertSchemaTextDecoding();
   assert.equal(proof.version, SCHEMA_CODEC_PROOF_VERSION);
   assert.equal(proof.authority.registry, 'pulse.schema');
   assert.equal(proof.authority.fullCodecRealization, true);

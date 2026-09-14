@@ -203,6 +203,7 @@ function intrinsicForContextCall(parts) {
     'req.json': ['request.json', 'json'],
     json: ['response.json', 'pulse-result'],
     encodeJson: ['schema.encode.text', 'string'],
+    decodeJson: ['schema.decode.text', 'json'],
     text: ['response.text', 'pulse-result'],
     response: ['response.custom', 'pulse-result'],
     kv: ['kv.namespace', 'kv-namespace'],

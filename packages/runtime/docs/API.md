@@ -28,6 +28,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.fetch`](#ctxfetch) | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
 | [`ctx.parallel`](#ctxparallel) | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
 | [`ctx.encodeJson`](#ctxencodejson) | HTTP and event handlers | Synchronous schema-bound, size-limited JSON text. |
+| [`ctx.decodeJson`](#ctxdecodejson) | HTTP and event handlers | Synchronous schema-bound decode of bounded application text. |
 | [`ctx.emit`](#ctxemit) | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
 | [`ctx.log`](#ctxlog) | HTTP and event handlers | Synchronous thresholded logging. |
 | [`ctx.config`, `ctx.secret`](#config-and-secrets) | HTTP and event handlers | Explicit configured binding reads. |
@@ -454,6 +455,19 @@ in UTF-8 bytes. It does not create a response or dispatch an effect. Invalid
 values and oversized text fail before subsequent writes. Declaration order and
 array order are preserved; cross-target parity is semantic, not a universal
 canonical-byte format. See [application-owned encoding](https://pulsecompute.io/v1.0.0-beta.4/guides/json-schemas/#encode-application-owned-text).
+
+## `ctx.decodeJson`
+
+```ts
+const candidate = ctx.decodeJson<Candidate>(stored.text, 'app.Candidate')
+```
+
+Requires a literal registered schema even in non-strict mode. The input must
+be a string within `schemas.maxBytes` UTF-8 bytes. Decoding returns a detached,
+deeply immutable value with declared fields only. It performs no effect and
+does not apply HTTP content-type policy. Keep the original text for hashing,
+verification and retries; decoding does not establish byte canonicalization or
+storage acceptance. See [application text decoding](https://pulsecompute.io/v1.0.0-beta.4/guides/json-schemas/#decode-application-owned-text).
 
 ## Explicit JSON schemas
 

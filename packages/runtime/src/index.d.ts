@@ -137,6 +137,8 @@ export type PulseEmitEvent<Payload = unknown> =
 export interface PulseExecutionContext {
   /** Validate/project a value through a literal registered schema and return bounded JSON text. */
   encodeJson(value: unknown, schemaId: string): string;
+  /** Decode bounded application-owned JSON text through a literal registered schema. */
+  decodeJson<T = unknown>(text: string, schemaId: string): T;
   readonly state: PulseState;
   readonly log: PulseLogger;
   fetch(url: string, init?: PulseFetchInit): PulseFetchOperation;

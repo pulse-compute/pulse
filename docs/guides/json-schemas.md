@@ -151,6 +151,7 @@ The schema-boundary forms are:
 | Outbound fetch body | `ctx.fetch(url, { json: value, schema: 'app.Input' })` | Encode |
 | Application response | `ctx.json(value, { schema: 'app.Output' })` | Encode |
 | Application-owned text | `ctx.encodeJson(value, 'app.Output')` | Encode |
+| Application-owned text | `ctx.decodeJson<T>(text, 'app.Input')` | Decode |
 
 A registered response case is shorthand for response status plus schema:
 
@@ -195,6 +196,44 @@ canonicalization API, and numeric spellings can differ between codecs. For
 content hashes, preserve and hash the returned bytes instead of decoding and
 re-encoding them. An application needing a portable command fingerprint must
 specify and version its own canonical representation.
+
+## Decode application-owned text
+
+`ctx.decodeJson<T>(text, 'app.Candidate')` synchronously decodes an existing
+string through a compiled schema. Use it to validate an object read with
+`s3.getText`, or another application-owned JSON string. The schema ID must be a
+declared literal in both strict and non-strict mode; the TypeScript parameter
+does not register or select a schema.
+
+```ts
+const stored = await s3.getText(ctx, 'objects', 'candidate.json')
+if (stored.status !== 'found') return ctx.text('object unavailable', { status: 502 })
+const candidate = ctx.decodeJson<Candidate>(stored.text, 'app.Candidate')
+```
+
+The input must be a string. Its complete UTF-8 length, including whitespace and
+unknown fields, is bounded by `schemas.maxBytes` before parsing. There is no
+HTTP content type at this boundary, so `schemas.contentTypePolicy` does not
+apply. The operation is shared by HTTP and event contexts and dispatches no
+effect. It returns a new, deeply immutable value on each call; unknown fields
+are dropped recursively and required, nullable, enum and numeric rules are the
+same as other schema boundaries.
+
+JSON member names are unescaped before matching. As with the existing JSON
+decoders, the last occurrence of a duplicate member wins before schema
+validation. This API does not impose a duplicate-rejection policy or normalize
+Unicode for a command fingerprint. Malformed JSON fails with
+`PULSE_SCHEMA_JSON_MALFORMED`, invalid values with `PULSE_SCHEMA_DECODE`, and
+oversized input with `PULSE_BODY_TOO_LARGE` on Node. Node semantic traces use
+`json.decode.text` or `json.decode.error` at `application-text`. Fastly Native
+retains its JSON/schema error categories and stage diagnostics; application
+error-response parity is separate work.
+
+Preserve `stored.text` when checking a content hash, copying an immutable
+artifact or retrying a prepared write. The decoder does not alter that string,
+but encoding its returned value can change field order, whitespace, numeric
+spelling and unknown fields. A valid schema proves the decoded shape; it does
+not prove an object's authenticity, history linkage or acceptance by KV.
 
 ## Understand strict mode
 

@@ -46,6 +46,9 @@ void handler
 
 const eventHandler: PulseEventHandler<{ readonly enabled: boolean }> = async (ctx: PulseEventContext<{ readonly enabled: boolean }>) => {
   const shared: PulseExecutionContext = ctx
+  const decoded = shared.decodeJson<{ enabled: boolean }>('{"enabled":true}', 'events.Input')
+  const enabled: boolean = decoded.enabled
+  void enabled
   shared.state.set('enabled', String(ctx.event.payload.enabled))
   shared.log.info(ctx.event.type)
   await shared.config.get('MODE')
