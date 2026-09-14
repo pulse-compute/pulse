@@ -11,7 +11,7 @@ Start with [Pulse-aware package authoring](./pulse-aware-packages.md) to decide
 whether the package needs Native lowering at all. Ordinary target-compatible
 JavaScript packages do not require a compiler builder.
 
-> **Scope and trust boundary:** Pulse `1.0.0-beta.3` executes package-owned compiler builders only when their manifest declares `compiler.trust: 'first-party'` and the package is part of the synchronized release set. This is a core-repository contributor workflow, **not an external plugin** interface or a supported third-party plugin API. An external package cannot self-register arbitrary compiler code.
+> **Scope and trust boundary:** Pulse `1.0.0-beta.4` executes package-owned compiler builders only when their manifest declares `compiler.trust: 'first-party'` and the package is part of the synchronized release set. This is a core-repository contributor workflow, **not an external plugin** interface or a supported third-party plugin API. An external package cannot self-register arbitrary compiler code.
 
 A package-owned lowerer lets one release package define a narrow TypeScript facade and keep its domain-specific static validation outside compiler core. GRIP is the clearest current example; assets is the second implementation proving that the generic loader is not GRIP-specific.
 

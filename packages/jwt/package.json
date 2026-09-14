@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/jwt",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -55,7 +55,7 @@
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/jwt/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.4/packages/jwt/",
   "pulse": {
     "contract": "./pulse.package.json"
   },

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 7,
-  "releaseVersion": "1.0.0-beta.3",
-  "reviewedAt": "2026-09-13",
+  "policyVersion": 8,
+  "releaseVersion": "1.0.0-beta.4",
+  "reviewedAt": "2026-09-14",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -532,7 +532,10 @@
         "scripts/bundle_deps.sh",
         "scripts/restore_deps.sh",
         ".gitignore",
-        "scripts/package-support.cjs"
+        "scripts/package-support.cjs",
+        "scripts/release-prepare.cjs",
+        "scripts/release-prepare-pr.cjs",
+        "scripts/release-pr-check.cjs"
       ],
       "areas": [
         "release"

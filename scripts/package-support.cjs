@@ -109,7 +109,7 @@ function loadReleaseManifest(file = RELEASE_MANIFEST_FILE) {
   for (const field of ['metadataOwners', 'literalOwners', 'dependencyManifestRoots', 'replaceUnpublishedDocumentationClasses', 'generatedPathPrefixes', 'generatedExactPaths']) {
     nonEmptyStringArray(versionPreparation[field], `readiness.versionPreparation.${field}`);
   }
-  if (versionPreparation.gitTagging !== 'separate-human-action-after-release-seal') {
+  if (versionPreparation.gitTagging !== 'separate-human-action-before-publication-seal') {
     fail('release manifest version preparation must keep Git tagging separate and human-controlled');
   }
 

@@ -280,7 +280,8 @@ function validateWorkflowSecurity() {
     '.github/workflows/maintainer-labels.yml',
     '.github/workflows/documentation.yml',
     '.github/workflows/npm-publish.yml',
-    '.github/workflows/documentation-deploy.yml'
+    '.github/workflows/documentation-deploy.yml',
+    '.github/workflows/release-prepare.yml'
   ];
   requireFiles(required, 'GitHub workflow set');
   const workflows = workflowFiles();
@@ -323,6 +324,9 @@ function validateWorkflowSecurity() {
   includes(validation, 'name: maintenance', 'repository validation workflow');
   includes(validation, 'name: portable', 'repository validation workflow');
   includes(validation, 'npm run maintainer:check', 'repository validation workflow');
+  includes(validation, "github.base_ref == 'main'", 'release preparation gate');
+  includes(validation, 'node scripts/release-pr-check.cjs --base "$RELEASE_BASE" --head "$RELEASE_HEAD"', 'release preparation gate');
+  includes(validation, 'ready_for_review', 'release PR CI activation');
   includes(validation, "publication.pnpmVersion", 'repository validation workflow');
   includes(validation, 'corepack prepare "pnpm@$pnpm_version" --activate', 'repository validation workflow');
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
@@ -339,9 +343,20 @@ function validateWorkflowSecurity() {
   const documentation = read('.github/workflows/documentation.yml');
   includes(documentation, 'name: Documentation', 'documentation workflow');
   includes(documentation, 'build:', 'documentation workflow');
+  includes(documentation, 'ready_for_review', 'release PR documentation activation');
   includes(documentation, 'Upload generated preview', 'documentation workflow');
   includes(documentation, 'documentation-deployment.cjs seal', 'documentation workflow');
   if (documentation.includes('deploy-pages') || documentation.includes('upload-pages-artifact') || documentation.includes('pages: write') || documentation.includes('github-pages')) fail('documentation validation workflow must not deploy to GitHub Pages');
+
+  const preparation = read('.github/workflows/release-prepare.yml');
+  includes(preparation, 'workflow_dispatch:', 'release preparation workflow');
+  includes(preparation, "if: github.ref == 'refs/heads/main'", 'release preparation workflow');
+  includes(preparation, 'node scripts/release-prepare-pr.cjs "$RELEASE_VERSION"', 'release preparation workflow');
+  includes(preparation, 'needs: prepare', 'release preparation writer isolation');
+  const writer = preparation.indexOf('\n  open-pr:');
+  if (writer < 0 || /(?:contents|pull-requests): write/.test(preparation.slice(0, writer))) fail('preparation must run before and outside the write-token job');
+  for (const needle of ['bundle', 'verify', 'Prepared bundle head mismatch', 'current.data.object.sha !== base', "base: 'main'", 'draft: true']) includes(preparation, needle, 'release preparation writer');
+  if (/pull_request:|pull_request_target:|id-token: write|secrets\.|--force|pulls\.merge|createReview/.test(preparation)) fail('release preparation must not publish, merge, force-push, approve, or receive production secrets');
 
   const npmPublication = read('.github/workflows/npm-publish.yml');
   includes(npmPublication, 'name: npm publication', 'npm publication workflow');

@@ -99,7 +99,7 @@ const es256GuestUnit = Object.freeze({
   id: 'pulse.crypto.es256.rustcrypto-p256.v1',
   module: 'pulse_crypto_es256',
   owner: '@pulse-compute/crypto',
-  packageVersion: '1.0.0-beta.3',
+  packageVersion: '1.0.0-beta.4',
   abi: 'pulse.crypto.es256.verify.v1',
   artifact: Object.freeze({
     file: 'prebuilt/es256-verifier.wasm',
@@ -119,7 +119,7 @@ const es256GuestUnit = Object.freeze({
     cargoLockSha256: '7aa8c6d72751653717a371147e71a546d8f21dfcd1cf698919563e79e2946cb4',
     reconstructionCommandIdentity: 'pulse.crypto.es256.rustcrypto-build.v1',
     buildScript: 'build.cjs',
-    buildScriptSha256: '492b7bd132b928b8ad65a7578f819e9e7bd636b800b0508e780fada295deadcf',
+    buildScriptSha256: '9d9fe63de85c865467e204c4b078e392a913ee7018c3b8298f1b8689bdb36111',
     optimizationPosture: 'native-size',
     binaryenWasmOptSha256: '1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56',
     g0SourceDecision: '../../../../wasm/.test-results/jwt-g0/es256-source-decision.json',

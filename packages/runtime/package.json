@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/runtime",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -39,7 +39,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/runtime"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/runtime/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.4/packages/runtime/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/runtime`<br>
 > **Stability:** Supported application authoring and execution contract.<br>
 > **npm:** [`@pulse-compute/runtime`](https://www.npmjs.com/package/@pulse-compute/runtime)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/runtime/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/runtime/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
 <!-- pulse-package-status:end -->
 
 `@pulse-compute/runtime` is the low-level, provider-neutral Pulse application contract.

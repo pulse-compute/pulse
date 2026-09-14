@@ -4,8 +4,14 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.4 — Beta (2026-09-14)
+
 - Add `ctx.encodeJson(value, 'schema.id')` for schema-validated, bounded JSON text
   before storage or other effects, across JavaScript and Native execution.
+- Add manual release preparation that opens a draft PR, validates version
+  readiness before main, and leaves final tagged-source sealing to publication.
+- Preserve published documentation and changelog history while advancing
+  current references during release preparation.
 
 ## 1.0.0-beta.3 — Beta (2026-09-14)
 

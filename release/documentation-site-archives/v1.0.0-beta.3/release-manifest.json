@@ -1,0 +1,441 @@
+{
+  "schemaVersion": "pulse.release-catalog.v1",
+  "releaseVersion": "1.0.0-beta.3",
+  "channel": "beta",
+  "releasedAt": "2026-09-14",
+  "license": "Apache-2.0",
+  "display": {
+    "productName": "Pulse",
+    "candidateLabel": "Beta",
+    "candidateName": "Pulse 1.0.0-beta.3 — Beta",
+    "activationStage": "documentation-release"
+  },
+  "legal": {
+    "licenseFile": "LICENSE",
+    "noticeFile": "NOTICE",
+    "noticeSha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+    "packageFiles": [
+      "LICENSE",
+      "NOTICE"
+    ],
+    "packagePolicy": "exact-root-files-in-every-publishable-tarball"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "web": "https://github.com/pulse-compute/pulse",
+    "bugs": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "documentation": {
+    "origin": "https://pulsecompute.io",
+    "basePath": "/",
+    "version": "v1.0.0-beta.3",
+    "latestAlias": "latest",
+    "source": "docs/README.md"
+  },
+  "readiness": {
+    "preflight": "release/release-preflight.json",
+    "documentationInventory": "release/documentation-inventory.json",
+    "vocabulary": "release/release-preflight.json#releaseVocabulary",
+    "legalDisposition": "release/release-preflight.json#auditPolicy.dependencyLicenses.noticeDisposition",
+    "validationCommand": "npm run release:preflight",
+    "versionPreparation": {
+      "schemaVersion": "pulse.release-version-preparation.v1",
+      "metadataOwners": [
+        "release/release-preflight.json",
+        "release/documentation-site.json",
+        "release/documentation-deployment.json",
+        "release/plugin-readiness.json",
+        "release/maintenance-policy.json"
+      ],
+      "literalOwners": [
+        "wasm/packages/wasm-guest-link/src/constants.js",
+        "wasm/packages/contracts/src/diagnostics.js",
+        "wasm/packages/cli/src/documentation.js",
+        "wasm/packages/cli/src/project-config-schema.js",
+        "packages/crypto/guests/es256-rustcrypto/pulse.guest-unit.json",
+        "packages/crypto/guests/es256-rustcrypto/build.cjs"
+      ],
+      "dependencyManifestRoots": [
+        "examples",
+        "wasm/packages/cli/examples"
+      ],
+      "replaceUnpublishedDocumentationClasses": [
+        "current-public",
+        "current-contributor"
+      ],
+      "generatedPathPrefixes": [
+        "docs/reference/",
+        "wasm/packages/cli/docs/",
+        "wasm/packages/cli/examples/",
+        "wasm/packages/cli/completions/",
+        "packages/runtime/docs/"
+      ],
+      "generatedExactPaths": [
+        ".github/CODEOWNERS",
+        ".github/labels.yml",
+        ".github/codex/schemas/maintainer-review.schema.json",
+        "docs/packages/README.md",
+        "docs/packages/implementation-packages.md",
+        "docs/maintainers/maintenance-policy.md",
+        "docs/maintainers/maintenance-policy.json",
+        "docs/maintainers/plugin-readiness.md",
+        "docs/maintainers/plugin-readiness.json",
+        "docs/maintainers/release-manifest.md",
+        "wasm/packages/cli/src/documentation.js",
+        "wasm/packages/cli/cli-spec.json",
+        "wasm/packages/cli/project-config.schema.json",
+        "wasm/packages/cli/release-manifest.json",
+        "wasm/packages/cli/documentation-versions.json",
+        "wasm/packages/cli/documentation-site.json",
+        "wasm/packages/cli/API.md",
+        "wasm/packages/cli/CHANGELOG.md",
+        "pnpm-lock.yaml"
+      ],
+      "gitTagging": "separate-human-action-after-release-seal"
+    }
+  },
+  "publication": {
+    "registry": "https://registry.npmjs.org",
+    "distTag": "latest",
+    "access": "public",
+    "authentication": "npm-trusted-publishing-oidc",
+    "provenance": "automatic",
+    "workflowFile": "npm-publish.yml",
+    "environment": "npm-publish",
+    "candidateArtifact": "pulse-npm-release-candidate",
+    "nodeEngines": "^22.14.0 || ^24.0.0",
+    "nodeMinimumVersion": "22.14.0",
+    "nodeReleaseRange": "^24.0.0",
+    "nodeVersion": "24.18.0",
+    "npmVersion": "11.15.0",
+    "pnpmDevelopmentRange": ">=10 <11",
+    "pnpmVersion": "10.0.0",
+    "requireExistingPackageNames": true,
+    "canonicalSmokePackage": "@pulse-compute/cli",
+    "canonicalSmokeBinary": "pulse"
+  },
+  "runtimeTargets": [
+    {
+      "id": "node",
+      "label": "Node",
+      "mode": "execute",
+      "summary": "Explicit Native and generally available JavaScript execution over one canonical application contract."
+    },
+    {
+      "id": "fastly",
+      "label": "Fastly Compute",
+      "mode": "execute-and-build",
+      "summary": "Explicit Native direct-host-ABI Wasm and generally available JavaScript source/deployment candidates."
+    },
+    {
+      "id": "none",
+      "label": "Compile only",
+      "mode": "compile",
+      "summary": "Compilation and inspection without a runnable provider target."
+    }
+  ],
+  "supportTiers": {
+    "canonical-application": {
+      "label": "Canonical application surface",
+      "promise": "Fully documented and supported as the Pulse application authoring or workflow contract."
+    },
+    "supported-extension": {
+      "label": "Supported provider/extension surface",
+      "promise": "Documented entry points are supported; implementation and toolchain subpaths are explicitly excluded."
+    },
+    "implementation": {
+      "label": "Implementation/transitive surface",
+      "promise": "Installable as part of the synchronized release set, without an application-author compatibility guarantee."
+    }
+  },
+  "packages": [
+    {
+      "dir": "packages/runtime",
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/runtime.md",
+      "role": "public-runtime",
+      "tier": "canonical-application",
+      "audience": "Pulse application authors and library authors who type portable handlers and static routers.",
+      "directInstall": "Yes. Install it in every Pulse application.",
+      "entryPoints": [
+        "@pulse-compute/runtime"
+      ],
+      "stability": "Supported application authoring and execution contract."
+    },
+    {
+      "dir": "packages/pulse",
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/pulse.md",
+      "role": "public-api",
+      "tier": "canonical-application",
+      "audience": "Pulse application authors using the conventional project root, configuration factory, and schema declarations.",
+      "directInstall": "Yes. Install it in every conventional Pulse project.",
+      "entryPoints": [
+        "@pulse-compute/pulse",
+        "@pulse-compute/pulse/schema"
+      ],
+      "stability": "Supported conventional application, project-configuration, and schema-authoring contract."
+    },
+    {
+      "dir": "wasm/packages/cli",
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/cli.md",
+      "role": "public-cli",
+      "tier": "canonical-application",
+      "audience": "Pulse application authors, CI workflows, and tooling integrations.",
+      "directInstall": "Yes. Install the package globally or as a project development dependency.",
+      "entryPoints": [
+        "pulse binary",
+        "@pulse-compute/cli",
+        "@pulse-compute/cli/workflow",
+        "@pulse-compute/cli/project-config",
+        "@pulse-compute/cli/project-execution",
+        "@pulse-compute/cli/project-config-schema",
+        "@pulse-compute/cli/diagnostics",
+        "@pulse-compute/cli/project-config.schema.json",
+        "@pulse-compute/cli/cli-spec.json",
+        "@pulse-compute/cli/release-manifest.json",
+        "@pulse-compute/cli/documentation-versions.json",
+        "@pulse-compute/cli/documentation-site.json"
+      ],
+      "stability": "Supported Beta workflow and project-configuration contract."
+    },
+    {
+      "dir": "packages/provider-fastly",
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/provider-fastly.md",
+      "role": "public-provider",
+      "tier": "supported-extension",
+      "audience": "Applications targeting Fastly Compute and Pulse provider maintainers.",
+      "directInstall": "Yes, for Fastly projects. Node-only projects do not need to import it directly.",
+      "entryPoints": [
+        "@pulse-compute/provider-fastly",
+        "@pulse-compute/provider-fastly/contract",
+        "@pulse-compute/provider-fastly/toolchain",
+        "@pulse-compute/provider-fastly/config-schema",
+        "@pulse-compute/provider-fastly/runtime/canonical-api-runtime",
+        "@pulse-compute/provider-fastly/build/canonical-target",
+        "@pulse-compute/provider-fastly/testing/fastly-cli"
+      ],
+      "stability": "The listed entry points are supported for the Beta; all other exported subpaths are implementation-only."
+    },
+    {
+      "dir": "packages/grip",
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/grip.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications using stateless GRIP/Fanout HTTP framing and request-bound broadcast behavior.",
+      "directInstall": "Yes, only when the application uses GRIP/Fanout behavior.",
+      "entryPoints": [
+        "@pulse-compute/grip"
+      ],
+      "stability": "The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only."
+    },
+    {
+      "dir": "packages/assets",
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/assets.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications using JavaScript asset middleware or the package-owned lowerable asset lookup capability.",
+      "directInstall": "Yes, only when the application uses the assets capability.",
+      "entryPoints": [
+        "@pulse-compute/assets"
+      ],
+      "stability": "The package root is the supported JavaScript API and canonical Native authoring surface; /pulsewasm remains a compatibility subpath, while manifest/compiler subpaths are toolchain integration."
+    },
+    {
+      "dir": "packages/crypto",
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/crypto.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications and first-party packages using provider-neutral cryptographic verification.",
+      "directInstall": "Yes, when an application uses the crypto verification surface directly; JWT applications receive it transitively.",
+      "entryPoints": [
+        "@pulse-compute/crypto"
+      ],
+      "stability": "The package root is the supported bounded verification contract; realization and Native integration subpaths remain toolchain-only."
+    },
+    {
+      "dir": "packages/jwt",
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/jwt.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications verifying bounded JWT bearer credentials through Pulse providers.",
+      "directInstall": "Yes, when an application verifies JWTs.",
+      "entryPoints": [
+        "@pulse-compute/jwt"
+      ],
+      "stability": "The package root is the supported provider-neutral verification contract; provider and compiler integration subpaths are not application APIs."
+    },
+    {
+      "dir": "packages/entities",
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/entities.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications declaring bounded schema-backed entity operations through the first-party JSON-RPC adapter.",
+      "directInstall": "Yes, when an application declares entity operations.",
+      "entryPoints": [
+        "@pulse-compute/entities"
+      ],
+      "stability": "The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only."
+    },
+    {
+      "dir": "packages/s3",
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/s3.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Applications using bounded exact-key object reads and writes through Pulse effects.",
+      "directInstall": "Yes, when an application uses S3 object operations.",
+      "entryPoints": [
+        "@pulse-compute/s3"
+      ],
+      "stability": "The package root supports head, getText and putText on Node Native, Node JavaScript and Fastly Native. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
+    },
+    {
+      "dir": "wasm/packages/build-support",
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse release-set and compiler maintainers.",
+      "directInstall": "No for application projects; it is installed transitively where required.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal release-set interface; exported modules may change with compiler implementation needs."
+    },
+    {
+      "dir": "wasm/packages/compiler",
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse compiler and release maintainers.",
+      "directInstall": "No for application projects; use the pulse CLI.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal compiler interface; no application-author compatibility guarantee.",
+      "replacement": "@pulse-compute/cli"
+    },
+    {
+      "dir": "wasm/packages/wasm-guest-link",
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse compiler, release, and first-party guest-unit maintainers.",
+      "directInstall": "No for application projects; it is an internal synchronized compiler dependency.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal first-party prebuilt guest-link interface synchronized with the compiler; no application-author or third-party guest compatibility guarantee."
+    },
+    {
+      "dir": "wasm/packages/contracts",
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse compiler, runtime, provider, and package-lowering maintainers.",
+      "directInstall": "Provider toolchain authors may install it for the versioned bootstrap contract; application projects receive it transitively.",
+      "entryPoints": [
+        "@pulse-compute/wasm-contracts/provider/toolchain"
+      ],
+      "stability": "The provider toolchain contract is versioned and supported for the Beta; other protocol and proof interfaces remain internal."
+    },
+    {
+      "dir": "wasm/packages/host-runtime",
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse host-runtime and provider maintainers.",
+      "directInstall": "No for application projects; it is installed transitively.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal compiler/runtime interface synchronized with this release set."
+    },
+    {
+      "dir": "wasm/packages/library-kit",
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse package-lowering and compiler maintainers.",
+      "directInstall": "No for application projects; it is installed transitively.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal package-lowering interface synchronized with this release set."
+    },
+    {
+      "dir": "packages/provider-node",
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse canonical Node provider and compiler maintainers.",
+      "directInstall": "No for application projects; select provider: node through the CLI.",
+      "entryPoints": [
+        "@pulse-compute/provider-node/toolchain"
+      ],
+      "stability": "The listed built-in toolchain entry is synchronized with the Beta bootstrap contract; other canonical Node provider interfaces remain internal.",
+      "replacement": "provider: 'node' through @pulse-compute/cli"
+    },
+    {
+      "dir": "wasm/packages/runtime-core-as",
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse AssemblyScript runtime-core and compiler maintainers.",
+      "directInstall": "No for application projects; it is installed transitively.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal code-generation interface synchronized with this release set."
+    },
+    {
+      "dir": "wasm/packages/schema-json",
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.3",
+      "documentation": "docs/packages/implementation-packages.md",
+      "role": "implementation",
+      "tier": "implementation",
+      "audience": "Pulse schema compiler and runtime maintainers.",
+      "directInstall": "No for application projects; declare schemas in the selected .pulse/config.ts profile.",
+      "entryPoints": [
+        "None for application authors."
+      ],
+      "stability": "Internal schema compiler interface synchronized with this release set.",
+      "replacement": "schemas in .pulse/config.ts through the Pulse project workflow"
+    }
+  ]
+}

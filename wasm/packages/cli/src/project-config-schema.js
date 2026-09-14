@@ -36,7 +36,7 @@ function field(value) {
 
 const CONFIG_SECTIONS = Object.freeze([
   Object.freeze({ id: 'project', title: 'Project and provider selection', description: 'Select the canonical entry, provider, and build output.' }),
-  Object.freeze({ id: 'crypto', title: 'Cryptographic requirements', description: 'Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.3 package set.' }),
+  Object.freeze({ id: 'crypto', title: 'Cryptographic requirements', description: 'Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.4 package set.' }),
   Object.freeze({ id: 'schemas', title: 'JSON schema policy', description: 'Configure bounded schema-body policy. Conventional projects declare registry identity only through pulse.schema.' }),
   Object.freeze({ id: 'dev', title: 'Local development', description: 'Configure the foreground local server and local-only provider inputs.' }),
   ...providerConfigSections

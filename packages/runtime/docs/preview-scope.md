@@ -1,6 +1,6 @@
 # Beta scope
 
-Pulse `1.0.0-beta.3` is a Beta of one provider-neutral application contract
+Pulse `1.0.0-beta.4` is a Beta of one provider-neutral application contract
 with explicit Native and JavaScript execution targets. The intended 1.0
 surface is present, but deliberate corrections may still occur before the
 stable `1.0.0` release.
@@ -106,13 +106,13 @@ JavaScript-selected project into a Native one.
 ## Compatibility authority
 
 The single source-form, provider-binding, artifact, and deployment-boundary
-table is [Provider and target compatibility](https://pulsecompute.io/v1.0.0-beta.3/reference/compatibility-matrix/).
+table is [Provider and target compatibility](https://pulsecompute.io/v1.0.0-beta.4/reference/compatibility-matrix/).
 It uses one public target order—Node JavaScript, Fastly JavaScript, Node Native,
 and Fastly Native—and links every row to a focused proof or canonical contract.
 
 The exact portable language subset and the JavaScript-only Native eligibility
 boundaries are defined in
-[Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.3/reference/handler-authoring/).
+[Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.4/reference/handler-authoring/).
 
 ## Body model
 

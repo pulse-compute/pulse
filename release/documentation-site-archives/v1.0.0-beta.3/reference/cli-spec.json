@@ -1,0 +1,575 @@
+{
+  "schemaVersion": "pulse.cli-command-spec.v5",
+  "cliVersion": "1.0.0-beta.3",
+  "completionShells": [
+    "bash",
+    "zsh",
+    "fish"
+  ],
+  "metaInvocations": [
+    {
+      "syntax": "pulse --help | pulse -h | pulse help",
+      "description": "Print public help."
+    },
+    {
+      "syntax": "pulse --version | pulse -v | pulse version",
+      "description": "Print the installed CLI package version."
+    },
+    {
+      "syntax": "pulse completion <bash|zsh|fish>",
+      "description": "Print a shell completion script generated from the public command specification."
+    }
+  ],
+  "globalOptions": [
+    {
+      "id": "help",
+      "key": "help",
+      "flags": [
+        {
+          "name": "--help"
+        },
+        {
+          "name": "-h"
+        }
+      ],
+      "kind": "boolean",
+      "description": "Print public CLI help and exit."
+    },
+    {
+      "id": "json",
+      "key": "json",
+      "flags": [
+        {
+          "name": "--json"
+        }
+      ],
+      "kind": "boolean",
+      "description": "Emit machine-readable JSON. pulse dev emits one JSON event per line."
+    },
+    {
+      "id": "dry-run",
+      "key": "dryRun",
+      "flags": [
+        {
+          "name": "--dry-run"
+        },
+        {
+          "name": "--plan"
+        }
+      ],
+      "kind": "boolean",
+      "description": "Resolve and report the command plan without executing it."
+    }
+  ],
+  "commands": [
+    {
+      "name": "init",
+      "summary": "Create a conventional .pulse workspace with an async Pulse application and dedicated test harness.",
+      "usage": [
+        "pulse init [directory] [--name <package-name>] [--force]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "target",
+          "description": "Target directory. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "force",
+          "key": "force",
+          "flags": [
+            {
+              "name": "--force"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Allow generated files to replace entries in a non-empty target directory."
+        },
+        {
+          "id": "name",
+          "key": "name",
+          "flags": [
+            {
+              "name": "--name"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<package-name>",
+          "description": "Set the generated npm package name."
+        }
+      ],
+      "examples": [
+        "pulse init ./my-pulse-app",
+        "pulse init ./edge-app --name @example/edge-app"
+      ],
+      "diagnostics": [
+        "PULSE_INIT_NOT_EMPTY",
+        "PULSE_INIT_FILE_EXISTS",
+        "PULSE_PROVIDER_UNSUPPORTED"
+      ],
+      "outputs": [
+        "Human output lists generated files and next steps.",
+        "With --json, emits one initialization result object."
+      ],
+      "sideEffects": [
+        "Creates .pulse/config.ts, an async Pulse application, a dedicated test harness, package scripts, and documentation.",
+        "Does not install dependencies or run npm, pnpm, or any network operation."
+      ],
+      "exit": "0 on success; 2 for invalid usage, provider selection, or unsafe overwrite conditions."
+    },
+    {
+      "name": "doctor",
+      "summary": "Audit project shape, compilation, schemas, provider bindings, output safety, and required tools.",
+      "usage": [
+        "pulse doctor [directory] [--profile <name>] [--strict]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "strict",
+          "key": "strict",
+          "flags": [
+            {
+              "name": "--strict"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Treat doctor warnings as failed checks."
+        },
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        }
+      ],
+      "examples": [
+        "pulse doctor ./my-pulse-app",
+        "pulse doctor ./edge-app --strict --json"
+      ],
+      "diagnostics": [
+        "PULSE_CONFIG_NOT_FOUND",
+        "PULSE_PROJECT_COMPILE_FAILED",
+        "PULSE_NODE_VERSION_UNSUPPORTED",
+        "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
+      ],
+      "outputs": [
+        "Human output prints every check.",
+        "With --json, emits one completed audit object including failed and warning checks."
+      ],
+      "sideEffects": [
+        "Reads and compiles the project.",
+        "Does not write the build output."
+      ],
+      "exit": "0 when the audit passes; 1 when a completed audit contains failed checks; 2–5 only when the audit command itself cannot be completed."
+    },
+    {
+      "name": "inspect",
+      "summary": "Report canonical compiler, schema, effect, continuation, capability, provider, and build-mode details.",
+      "usage": [
+        "pulse inspect [directory] [--profile <name>]",
+        "pulse inspect --artifact <file.json>"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        },
+        {
+          "id": "artifact",
+          "key": "artifact",
+          "flags": [
+            {
+              "name": "--artifact"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<file.json>",
+          "description": "Inspect an existing JSON build or compiler artifact instead of a project."
+        }
+      ],
+      "examples": [
+        "pulse inspect ./my-pulse-app --json",
+        "pulse inspect --artifact ./dist/pulse-build.json"
+      ],
+      "diagnostics": [
+        "PULSE_CONFIG_NOT_FOUND",
+        "PULSE_PROJECT_COMPILE_FAILED",
+        "PULSE_CANONICAL_COMPILE_FAILED"
+      ],
+      "outputs": [
+        "Human output prints a compact project/compiler summary.",
+        "With --json, emits one inspection or artifact object."
+      ],
+      "sideEffects": [
+        "Compiles and validates the project in memory.",
+        "Does not write the build output."
+      ],
+      "exit": "0 on success; 2–5 according to the emitted stable diagnostic."
+    },
+    {
+      "name": "test",
+      "summary": "Run configured cases through the selected provider local-conformance runtime.",
+      "usage": [
+        "pulse test [directory] [--profile <name>] [--case <name>]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        },
+        {
+          "id": "case",
+          "key": "caseName",
+          "flags": [
+            {
+              "name": "--case"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<name>",
+          "description": "Run one named project test case."
+        }
+      ],
+      "examples": [
+        "pulse test ./my-pulse-app",
+        "pulse test ./my-pulse-app --case smoke --json"
+      ],
+      "diagnostics": [
+        "PULSE_TEST_PROVIDER_REQUIRED",
+        "PULSE_PROVIDER_CAPABILITY_MISSING",
+        "PULSE_SCHEMA_DECODE"
+      ],
+      "outputs": [
+        "Human output uses TAP-like case lines and a summary.",
+        "With --json, emits one test-run object; expected stable errors remain inside their case results."
+      ],
+      "sideEffects": [
+        "Compiles the project and executes configured deterministic or live fixtures.",
+        "Does not write the build output."
+      ],
+      "exit": "0 when all selected cases pass; 1 when the completed test run has failed cases; 2–5 when setup, compilation, runtime, or toolchain execution fails before a normal result."
+    },
+    {
+      "name": "dev",
+      "summary": "Start the foreground local server with the selected provider conformance runtime.",
+      "usage": [
+        "pulse dev [directory] [--profile <name>] [--host <host>] [--port <port>] [--watch|--no-watch] [--once]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "once",
+          "key": "once",
+          "flags": [
+            {
+              "name": "--once"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Close the development server after the first completed request."
+        },
+        {
+          "id": "watch",
+          "key": "watch",
+          "flags": [
+            {
+              "name": "--watch",
+              "value": true
+            },
+            {
+              "name": "--no-watch",
+              "value": false
+            }
+          ],
+          "kind": "boolean-value",
+          "description": "Enable or disable entry and schema dependency watching. Watching is enabled by default."
+        },
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        },
+        {
+          "id": "host",
+          "key": "host",
+          "flags": [
+            {
+              "name": "--host"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<host>",
+          "description": "Override the development listen host."
+        },
+        {
+          "id": "port",
+          "key": "port",
+          "flags": [
+            {
+              "name": "--port"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<port>",
+          "description": "Override the development listen port. Use 0 to request an ephemeral port."
+        }
+      ],
+      "examples": [
+        "pulse dev ./my-pulse-app",
+        "pulse dev ./my-pulse-app --port 0 --once --json"
+      ],
+      "diagnostics": [
+        "PULSE_DEV_PROVIDER_UNSUPPORTED",
+        "PULSE_REQUEST_BODY_TOO_LARGE",
+        "PULSE_FETCH_NETWORK"
+      ],
+      "outputs": [
+        "Human output reports the ready URL and reload or error messages.",
+        "With --json, stdout is newline-delimited JSON events: compiled, ready, reloaded, request, compile-error, and request-error. It is not one enclosing JSON document."
+      ],
+      "sideEffects": [
+        "Binds a foreground HTTP listener.",
+        "Watches the entry and schema dependency graph by default.",
+        "Configuration-file changes require restarting the command."
+      ],
+      "exit": "0 after a normal server close; 2–5 when setup, compilation, provider, runtime, or toolchain initialization fails."
+    },
+    {
+      "name": "compile",
+      "summary": "Compile the canonical project into provider-neutral Pulse-owned WebAssembly.",
+      "usage": [
+        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "clean",
+          "key": "clean",
+          "flags": [
+            {
+              "name": "--clean",
+              "value": true
+            },
+            {
+              "name": "--no-clean",
+              "value": false
+            }
+          ],
+          "kind": "boolean-value",
+          "description": "Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default."
+        },
+        {
+          "id": "experimental-native-size",
+          "key": "experimentalNativeSize",
+          "flags": [
+            {
+              "name": "--experimental-native-size"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag."
+        },
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        },
+        {
+          "id": "out",
+          "key": "outDir",
+          "flags": [
+            {
+              "name": "--out"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<dir>",
+          "description": "Override the project-relative artifact output directory."
+        }
+      ],
+      "examples": [
+        "pulse compile ./my-pulse-app",
+        "pulse compile ./edge-app --out ./dist --json",
+        "pulse compile ./edge-app --experimental-native-size"
+      ],
+      "diagnostics": [
+        "PULSE_BUILD_OUT_UNSAFE",
+        "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+        "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
+      ],
+      "outputs": [
+        "Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, WAT, and native manifest.",
+        "The output is provider-neutral and does not package a deployment provider runtime.",
+        "Experimental size builds record the exact non-default Native compiler optimization settings.",
+        "With --json, emits one compile result object containing exact artifact paths and native metadata."
+      ],
+      "sideEffects": [
+        "Cleans the output directory by default.",
+        "Invokes the lockfile-pinned AssemblyScript compiler.",
+        "Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root."
+      ],
+      "exit": "0 on success; 2–5 according to the emitted stable diagnostic."
+    },
+    {
+      "name": "build",
+      "summary": "Compile the canonical project and realize the deployment provider selected by the active project profile.",
+      "usage": [
+        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "clean",
+          "key": "clean",
+          "flags": [
+            {
+              "name": "--clean",
+              "value": true
+            },
+            {
+              "name": "--no-clean",
+              "value": false
+            }
+          ],
+          "kind": "boolean-value",
+          "description": "Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default."
+        },
+        {
+          "id": "experimental-native-size",
+          "key": "experimentalNativeSize",
+          "flags": [
+            {
+              "name": "--experimental-native-size"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag."
+        },
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        },
+        {
+          "id": "out",
+          "key": "outDir",
+          "flags": [
+            {
+              "name": "--out"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<dir>",
+          "description": "Override the project-relative artifact output directory."
+        }
+      ],
+      "examples": [
+        "pulse build ./my-pulse-app",
+        "pulse build ./edge-app --out ./dist --json",
+        "pulse build ./edge-app --experimental-native-size"
+      ],
+      "diagnostics": [
+        "PULSE_BUILD_OUT_UNSAFE",
+        "PULSE_BUILD_PROVIDER_REQUIRED",
+        "PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+        "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
+      ],
+      "outputs": [
+        "Writes pulse-build.json, the provider-neutral native module, and the configured provider realization.",
+        "Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.",
+        "Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.",
+        "With --json, emits one build result object containing exact portable and provider artifact paths."
+      ],
+      "sideEffects": [
+        "Cleans the output directory by default.",
+        "Invokes the native compiler and configured provider realization.",
+        "Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root."
+      ],
+      "exit": "0 on success; 2–5 according to the emitted stable diagnostic."
+    }
+  ]
+}

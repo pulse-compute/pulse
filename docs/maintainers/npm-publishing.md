@@ -26,15 +26,57 @@ The machine-readable publication contract is the `publication` object in `releas
 
 ## Prepare release identity
 
-Use the manifest-owned preparation policy instead of repository-wide version replacement:
+Run **Release preparation** from `main` with the next version (without `v`).
+It starts from `latest`, reconciles `main`, rebuilds the previous documentation
+snapshot from its exact release tag, prepares the version metadata, validates
+the result, and opens a draft release PR into `main`.
 
 ```bash
-pnpm release:prepare -- 1.0.0-beta.3 --channel beta --replace-unpublished
+gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION"
 ```
 
-`--replace-unpublished` replaces the current candidate without inventing release history. After a version has actually shipped, use `--archive-current`; that mode requires the committed immutable documentation snapshot. The command updates only catalogued JSON, package, guest-metadata, and current-documentation owners, runs named generators, rejects newly changed paths outside its allowlist, and writes an ignored stale-version-token report for review.
+Set `NEXT_VERSION` to the release you intend to prepare and write its notes in
+`CHANGELOG.md` under `Unreleased` first. Preparation moves those notes into the
+new version section and preserves published changelog history. Existing
+archives are compared with the tagged source and never silently overwritten.
 
-Release preparation never creates a Git tag and never contacts npm. A human release authority creates the exact `v<version>` tag from the reviewed, sealed commit as a separate action.
+Preparation runs with read-only repository permissions. A separate job pushes
+the prepared Git bundle to a new branch and creates a draft PR; it does not
+execute the prepared source with its write token. The repository must allow
+GitHub Actions to create pull requests. No additional credential is required.
+If PR creation is disabled, the job reports the prepared branch for manual PR
+creation rather than changing repository settings.
+
+Mark the draft **ready for review** to trigger the ordinary PR checks. GitHub
+does not trigger those workflows for PR creation using `GITHUB_TOKEN`; the
+human ready-for-review event starts them without another credential. Existing
+checks include release preparation inside `Repository validation / maintenance`:
+publishable code changes into `main` require a newer, synchronized version,
+archived previous documentation, and a changelog section. Documentation and
+workflow-only changes can retain the version. The check is preparation evidence,
+not a release seal or permission to publish.
+
+After review and merge, the release owner tags the final `main` commit and runs
+**npm publication** from that tag. Its candidate job automatically runs
+`release:seal`, packs the release, and seals the exact publication bundle before
+protected publishing approval. A local seal is useful development evidence but
+is not a prerequisite that must be committed before tagging. Reconcile `main`
+back into `latest` after the release so development starts from the new version.
+
+For local preparation, the underlying command remains available:
+
+```bash
+node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --archive-current
+```
+
+`--archive-current` requires the committed immutable documentation snapshot.
+Use `--replace-unpublished` only when replacing a candidate that has not shipped.
+The command updates catalogued metadata and current documentation, runs named
+generators, rejects newly changed paths outside its allowlist, and writes an
+ignored stale-version-token report. Neither preparation route creates or moves
+tags, publishes packages, or deploys documentation. If a tag was created before
+the version bump, prepare and merge the metadata first; the release owner must
+then correct the unpublished tag before starting publication.
 
 ## Authority and trigger
 
@@ -44,8 +86,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.3 \
-  -f release_tag=v1.0.0-beta.3 \
+  --ref v1.0.0-beta.4 \
+  -f release_tag=v1.0.0-beta.4 \
   -f operation=audit
 ```
 

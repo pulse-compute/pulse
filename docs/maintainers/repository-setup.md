@@ -27,6 +27,13 @@ Run the manual **Maintainer labels** workflow from the default branch. It create
 
 Labels classify intake and review state. They do not authorize implementation or merge.
 
+For **Release preparation**, enable **Allow GitHub Actions to create and approve
+pull requests** in Workflow permissions if the organization permits it. The
+workflow uses that setting only to create a draft PR; it never approves or
+merges one. Preparation runs without a write token, followed by a separate
+branch/PR writer job. A human marks the draft ready for review to start normal
+checks. No new secret or required status-check name is needed.
+
 ## 3. Create a branch ruleset for `main`
 
 Create a ruleset targeting the default branch and require pull requests. Recommended settings are:
@@ -47,6 +54,12 @@ Create a ruleset targeting the default branch and require pull requests. Recomme
 Keep workflow, CODEOWNERS, `AGENTS.md`, release-policy, and governance changes under CODEOWNER review. The deterministic scope workflow executes the classifier from an archive of the pull request's trusted base commit rather than running the proposed classifier.
 
 The portable validation job installs the lockfile-pinned workspace graph with lifecycle scripts disabled, builds the workspace outputs needed by tests, and runs the unit, native, JavaScript, and conformance profiles. It does not replace provider, CLI, package, clean-consumer, or external-host evidence in the aggregate release seal.
+
+The existing `Repository validation / maintenance` check also rejects PRs into
+`main` that change publishable code without preparing a newer release version.
+It checks package/documentation identity, previous-version archival and the
+new changelog section. Documentation and workflow-only changes need no version
+bump. Final sealing runs on the tagged commit in the publication workflow.
 
 ## 4. Create the protected Codex environment
 

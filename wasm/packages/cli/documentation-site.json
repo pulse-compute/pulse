@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.public-site.v1",
-  "releaseVersion": "1.0.0-beta.3",
+  "releaseVersion": "1.0.0-beta.4",
   "product": {
     "name": "Pulse",
     "eyebrow": "TypeScript in / inspectable Wasm out",

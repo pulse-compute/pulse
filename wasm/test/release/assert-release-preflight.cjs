@@ -1,5 +1,7 @@
 'use strict';
 
+require('./assert-release-pr-check.cjs');
+
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const { createHash } = require('node:crypto');
@@ -78,7 +80,7 @@ assert.equal(plannedContract.exports.es256GuestUnit.source.treeSha256, currentGu
 assert.equal(rootManifest.engines.pnpm, releaseManifest.publication.pnpmDevelopmentRange);
 assert.equal(Object.hasOwn(rootManifest, 'packageManager'), false);
 assert.equal(releaseManifest.publication.pnpmVersion, '10.0.0');
-assert.equal(releaseManifest.readiness.versionPreparation.gitTagging, 'separate-human-action-after-release-seal');
+assert.equal(releaseManifest.readiness.versionPreparation.gitTagging, 'separate-human-action-before-publication-seal');
 assert.equal(parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']).historyMode, 'replace-unpublished');
 assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished', '--archive-current']), /choose exactly one/);
 assert.equal(isAllowedChangedPath('docs/reference/release-manifest.json', new Set(), releaseManifest.readiness.versionPreparation), true);
@@ -144,10 +146,10 @@ assert.deepEqual(result.audits.noticeDisposition, {
   packageFiles: ['LICENSE', 'NOTICE'],
   components: 3
 });
-assert.equal(result.documentation.sources, 248);
+assert.equal(result.documentation.sources, 249);
 assert.deepEqual(result.documentation.counts, {
   'current-public': 62,
-  'current-contributor': 74,
+  'current-contributor': 75,
   generated: 112
 });
 
