@@ -1,11 +1,11 @@
 # Pulse runtime contract
 
 For source eligibility, use [Managed handler TypeScript and
-JavaScript](https://pulsecompute.io/v1.0.0-beta.2/reference/handler-authoring/). For provider and target
+JavaScript](https://pulsecompute.io/v1.0.0-beta.3/reference/handler-authoring/). For provider and target
 differences, use the [compatibility
-matrix](https://pulsecompute.io/v1.0.0-beta.2/reference/compatibility-matrix/). For CLI and runtime failures,
+matrix](https://pulsecompute.io/v1.0.0-beta.3/reference/compatibility-matrix/). For CLI and runtime failures,
 use the stable codes in the [diagnostics
-reference](https://pulsecompute.io/v1.0.0-beta.2/reference/diagnostics/).
+reference](https://pulsecompute.io/v1.0.0-beta.3/reference/diagnostics/).
 
 This document describes the provider-neutral TypeScript application contract compiled by Pulse. Low-level authoring types and the static `Router` come from `@pulse-compute/runtime`. The public `@pulse-compute/pulse` package owns the conventional `Pulse` application root, deferred project configuration, and schema declarations, while `@pulse-compute/cli` owns workspace orchestration.
 
@@ -49,7 +49,7 @@ Every managed handler is async-shaped:
 type Handler = (ctx: PulseContext) => Promise<PulseResult | PulseFetchResponse>
 ```
 
-For native targets the compiler erases the async wrapper. Awaited Pulse effects lower into the existing explicit effect and continuation state machine; no Promise runtime or Asyncify transform is linked. Awaiting a proven synchronous `ctx` expression is redundant and may warn, while arbitrary non-Pulse awaits mark the native eligibility boundary. The canonical [handler authoring reference](https://pulsecompute.io/v1.0.0-beta.2/reference/handler-authoring/) defines the static language subset; the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.2/reference/compatibility-matrix/) owns the tested four-mode claims.
+For native targets the compiler erases the async wrapper. Awaited Pulse effects lower into the existing explicit effect and continuation state machine; no Promise runtime or Asyncify transform is linked. Awaiting a proven synchronous `ctx` expression is redundant and may warn, while arbitrary non-Pulse awaits mark the native eligibility boundary. The canonical [handler authoring reference](https://pulsecompute.io/v1.0.0-beta.3/reference/handler-authoring/) defines the static language subset; the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.3/reference/compatibility-matrix/) owns the tested four-mode claims.
 
 ## Static `Router`
 
@@ -137,9 +137,9 @@ eligibility. Fastly targets fail closed because no event ingress/emit adapter is
 claimed. There is no public event injection command, no event-aware development
 listener, no HTTP/GRIP translation, and no automatic target fallback.
 
-The [static events guide](https://pulsecompute.io/v1.0.0-beta.2/guides/events/) owns the complete frame,
+The [static events guide](https://pulsecompute.io/v1.0.0-beta.3/guides/events/) owns the complete frame,
 queue, target-eligibility, diagnostic, and Native-extension contract. The
-source-bound [event example](https://pulsecompute.io/v1.0.0-beta.2/examples/11-events/) runs the same mixed project
+source-bound [event example](https://pulsecompute.io/v1.0.0-beta.3/examples/11-events/) runs the same mixed project
 on Node JavaScript and Node Native.
 
 ## `ctx.req`
@@ -482,12 +482,12 @@ forms lower into canonical package operations; JavaScript targets execute the
 real package implementation.
 
 Older `/pulsewasm` imports are compatibility-only and are isolated in the
-[migration guide](https://pulsecompute.io/v1.0.0-beta.2/guides/compatibility-imports/). See the
-[GRIP package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/grip/) for the complete current surface.
+[migration guide](https://pulsecompute.io/v1.0.0-beta.3/guides/compatibility-imports/). See the
+[GRIP package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/grip/) for the complete current surface.
 
 ## Entities API
 
-`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.2` package
+`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.3` package
 set. The application surface has two runtime values:
 
 ```ts
@@ -549,9 +549,9 @@ Registrations and the terminal binding must use the supported static form. The
 first-party JSON-RPC adapter accepts bounded JSON-RPC 2.0 request objects and
 named params, validates declared schemas, uses stable error framing, and
 acknowledges notifications with HTTP `204`. See the [package
-guide](https://pulsecompute.io/v1.0.0-beta.2/packages/entities/), [entity/adapter
-model](https://pulsecompute.io/v1.0.0-beta.2/concepts/entities-and-adapters/), and [executable
-example](https://pulsecompute.io/v1.0.0-beta.2/examples/10-entities-tools/).
+guide](https://pulsecompute.io/v1.0.0-beta.3/packages/entities/), [entity/adapter
+model](https://pulsecompute.io/v1.0.0-beta.3/concepts/entities-and-adapters/), and [executable
+example](https://pulsecompute.io/v1.0.0-beta.3/examples/10-entities-tools/).
 
 ## Project workflow
 
@@ -568,5 +568,5 @@ selected profile, handler entry, schema declarations, provider bindings, and
 output directory through `.pulse/config.ts`. `pulse inspect` is optional
 observability, and `pulse compile` is the advanced provider-neutral Native
 artifact command; neither is required before `pulse build`. See the [project
-lifecycle guide](https://pulsecompute.io/v1.0.0-beta.2/guides/project-lifecycle/) and [CLI
-reference](https://pulsecompute.io/v1.0.0-beta.2/reference/cli/).
+lifecycle guide](https://pulsecompute.io/v1.0.0-beta.3/guides/project-lifecycle/) and [CLI
+reference](https://pulsecompute.io/v1.0.0-beta.3/reference/cli/).

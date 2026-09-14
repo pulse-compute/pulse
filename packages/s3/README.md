@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/s3`<br>
 > **Stability:** The package root supports head, getText and putText on Node Native, Node JavaScript and Fastly Native. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.<br>
 > **npm:** [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/s3/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/s3/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
 <!-- pulse-package-status:end -->
 
 This package provides bounded, exact-key `head`, `getText` and `putText` effects for
@@ -72,12 +72,12 @@ consumer uses generic JSON responses (`strict: false`) to compare the complete
 result unions. Applications using strict JSON must declare response schemas.
 
 The package root is the supported application API in the synchronized
-`1.0.0-beta.2` release candidate. Provider, manifest, compiler and Native
+`1.0.0-beta.3` release candidate. Provider, manifest, compiler and Native
 subpaths are trusted toolchain integration, not application imports. Install
 S3 with the exact compatible Pulse, CLI and provider candidate set; candidate
 preparation does not imply npm publication.
 
-See the [S3 guide](https://pulsecompute.io/v1.0.0-beta.2/packages/s3/) for the
+See the [S3 guide](https://pulsecompute.io/v1.0.0-beta.3/packages/s3/) for the
 lowering contract, support matrix and acceptance boundaries. Local acceptance
 executes Node Native, Node JavaScript and compiled Fastly Native Wasm against
 controlled origins. Live Object Storage evidence follows infrastructure setup.

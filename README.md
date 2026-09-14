@@ -106,7 +106,7 @@ inspection, userland stream transforms, background tasks, or raw sockets.
 
 ## Public packages
 
-The public `1.0.0-beta.2` catalog is defined by the release manifest.
+The public `1.0.0-beta.3` catalog is defined by the release manifest.
 
 
 | Package | Role |
@@ -130,7 +130,7 @@ never changes targets automatically.
 
 ## Documentation
 
-The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.2/) is release-pinned; repository Markdown remains the reviewable source.
+The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.3/) is release-pinned; repository Markdown remains the reviewable source.
 
 - [Documentation index](./docs/README.md)
 - [Changelog](./CHANGELOG.md)

@@ -1,6 +1,6 @@
 # Beta scope
 
-Pulse `1.0.0-beta.2` is a Beta of one provider-neutral application contract
+Pulse `1.0.0-beta.3` is a Beta of one provider-neutral application contract
 with explicit Native and JavaScript execution targets. The intended 1.0
 surface is present, but deliberate corrections may still occur before the
 stable `1.0.0` release.

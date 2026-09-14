@@ -6,7 +6,7 @@ on:
       release_tag:
         description: Existing release tag to build, audit, or publish
         required: true
-        default: v1.0.0-beta.2
+        default: v1.0.0-beta.3
         type: string
       operation:
         description: Audit package names or publish the sealed release

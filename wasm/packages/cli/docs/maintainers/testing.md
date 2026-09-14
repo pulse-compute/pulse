@@ -237,7 +237,7 @@ node wasm/scripts/run-wasm-tests.cjs --task deployment-candidates --no-report
 
 ## JWT and crypto proof seals
 
-The `1.0.0-beta.2` JWT/crypto packages build on the focused crypto seal,
+The `1.0.0-beta.3` JWT/crypto packages build on the focused crypto seal,
 which replays the
 configuration, JavaScript runtime, Native guest-source, shared cross-target
 corpus, and real Fastly Compute proofs. First record the one phase-boundary

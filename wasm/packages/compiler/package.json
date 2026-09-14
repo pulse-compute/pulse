@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/wasm-compiler",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "license": "Apache-2.0",
   "description": "PulseWasm compiler package inside the Pulse monorepo.",
   "type": "commonjs",
@@ -61,7 +61,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "wasm/packages/compiler"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

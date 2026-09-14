@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/provider-fastly",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -92,7 +92,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/provider-fastly"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.2/packages/provider-fastly/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/provider-fastly/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

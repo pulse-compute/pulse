@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/wasm-schema-json",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -35,7 +35,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "wasm/packages/schema-json"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

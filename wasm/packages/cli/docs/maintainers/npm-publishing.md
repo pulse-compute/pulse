@@ -29,7 +29,7 @@ The machine-readable publication contract is the `publication` object in `releas
 Use the manifest-owned preparation policy instead of repository-wide version replacement:
 
 ```bash
-pnpm release:prepare -- 1.0.0-beta.2 --channel beta --replace-unpublished
+pnpm release:prepare -- 1.0.0-beta.3 --channel beta --replace-unpublished
 ```
 
 `--replace-unpublished` replaces the current candidate without inventing release history. After a version has actually shipped, use `--archive-current`; that mode requires the committed immutable documentation snapshot. The command updates only catalogued JSON, package, guest-metadata, and current-documentation owners, runs named generators, rejects newly changed paths outside its allowlist, and writes an ignored stale-version-token report for review.
@@ -44,8 +44,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.2 \
-  -f release_tag=v1.0.0-beta.2 \
+  --ref v1.0.0-beta.3 \
+  -f release_tag=v1.0.0-beta.3 \
   -f operation=audit
 ```
 
