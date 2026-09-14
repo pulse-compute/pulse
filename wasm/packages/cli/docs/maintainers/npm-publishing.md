@@ -185,12 +185,19 @@ version present with different integrity
 
 This is resumable after a partially completed synchronized-package release without pretending npm publication is transactional. A same-version integrity mismatch cannot be repaired by overwriting the registry artifact; the human release authority must investigate and choose a new version if necessary.
 
-npm can accept an upload while the version is still being processed. After
-each successful publish, the script polls for up to ten minutes for both the
-sealed integrity and configured tag, using fresh registry reads and intervals
-capped at 30 seconds. Progress goes to stderr and identifies the package,
-attempt, elapsed time, and whether the version or tag is still pending.
-An observed integrity conflict stops immediately.
+npm can accept an upload while the version is still being processed. The script
+uploads the remaining tarballs in dependency order, with the CLI last, without
+waiting for each package's registry visibility. It then polls the pending set
+under one shared ten-minute deadline for both sealed integrity and configured
+tag. Each round reads pending packages in order and pauses once, with intervals
+capped at 30 seconds; ready packages leave the polling set. Registry processing
+can overlap even though uploads and registry reads remain sequential.
+
+Progress goes to stderr and identifies each package, attempt, elapsed time, and
+whether the version or tag is still pending. An observed integrity conflict
+stops immediately. A timeout reports the unresolved packages. Upload order is
+not a registry visibility guarantee: dependants may become visible before their
+dependencies, and the release remains incomplete until full verification passes.
 
 If processing exceeds the deadline, wait for registry visibility and use
 **Re-run failed jobs** on the same workflow run. Keep the release tag and sealed
@@ -201,7 +208,7 @@ dispatch instead; GitHub reruns retain the original event's commit SHA.
 
 ## Verification
 
-The protected publish job verifies each package immediately. A separate unprivileged job then confirms:
+The protected publish job waits for the uploaded set and verifies the complete release. A separate unprivileged job then confirms:
 
 - every manifest-owned `name@version` record exists;
 - registry `dist.integrity` equals the sealed tarball integrity;

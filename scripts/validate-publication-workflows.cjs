@@ -22,6 +22,8 @@ const {
   auditPackageNames,
   publicationPlan,
   waitForRegistry,
+  waitForRegistryPackages,
+  publishPlannedPackages,
   verifyRegistryRelease,
   verifyCatalogRelease,
   sha256,
@@ -465,7 +467,53 @@ function validateRegistryConvergence() {
   if (clock !== 0) fail('integrity conflict consumed a processing retry');
   expectFailure(() => waitForRegistry(delayed, entry, 'latest', { ...timing, timeoutMs: -1 }), undefined, 'invalid registry deadline');
   expectFailure(() => waitForRegistry(delayed, entry, 'latest', { ...timing, attempts: 0 }), undefined, 'invalid registry attempt limit');
-  return Object.freeze({ delayedVisibility: true, delayedTag: true, timeoutMs: 600000, immediateIntegrityConflict: true, progress: true });
+  const second = { ...entry, name: '@pulse-compute/cli' };
+  const skipped = { ...entry, name: '@pulse-compute/already-published' };
+  clock = 0;
+  const events = [];
+  const uploadedAt = new Map();
+  const batched = {
+    version(name) {
+      events.push(`read:${name}`);
+      if (uploadedAt.size !== 2) fail('registry polling blocked a remaining upload');
+      return clock >= uploadedAt.get(name) + 300000 ? { integrity: entry.integrity } : undefined;
+    },
+    tags() { return { latest: entry.version }; }
+  };
+  const results = publishPlannedPackages(batched, [entry, skipped, second],
+    [{ action: 'publish' }, { action: 'already-published' }, { action: 'publish' }], 'latest',
+    (item) => { events.push(`publish:${item.name}`); uploadedAt.set(item.name, clock); }, timing);
+  if (events[0] !== `publish:${entry.name}` || events[1] !== `publish:${second.name}`) fail('ordered uploads did not precede the registry wait');
+  if (clock < 300000 || clock > 330000) fail('registry processing delays were serialized across packages');
+  if (results[1].action !== 'already-published' || results[0].registryIntegrity !== entry.integrity || results[2].registryIntegrity !== entry.integrity) fail('batch publication lost verified or resumed results');
+
+  clock = 0;
+  const reads = new Map();
+  const partialTimeout = expectFailure(() => waitForRegistryPackages({
+    version(name) { reads.set(name, (reads.get(name) || 0) + 1); return name === entry.name ? { integrity: entry.integrity } : undefined; },
+    tags() { return { latest: entry.version }; }
+  }, [entry, second], 'latest', timing), 'PULSE_NPM_REGISTRY_DID_NOT_CONVERGE', 'shared partial visibility deadline');
+  if (clock !== 600000 || reads.get(entry.name) !== 1 || partialTimeout.details.pending.length !== 1
+    || partialTimeout.details.pending[0].name !== second.name) fail('batch wait reset the deadline, repolled ready packages, or lost pending identity');
+
+  clock = 0;
+  expectFailure(() => waitForRegistryPackages({
+    version(name) { return name === second.name ? { integrity: 'sha512-conflict' } : undefined; },
+    tags() { fail('conflicting batch queried tags'); }
+  }, [entry, second], 'latest', timing), 'PULSE_NPM_INTEGRITY_CONFLICT', 'batch integrity conflict');
+  if (clock !== 0) fail('pending earlier package hid a later integrity conflict');
+
+  let uploaded = 0;
+  expectFailure(() => publishPlannedPackages({ version() { fail('failed upload started polling'); } },
+    [entry, second], [{ action: 'publish' }, { action: 'publish' }], 'latest', () => {
+      if (++uploaded === 2) throw Object.assign(new Error('fixture upload failure'), { code: 'FIXTURE_UPLOAD_FAILED' });
+    }, timing), 'FIXTURE_UPLOAD_FAILED', 'partial upload failure');
+  if (uploaded !== 2) fail('failed upload was retried');
+  const resumed = publishPlannedPackages({ version() { fail('already published package was polled'); } },
+    [entry], [{ action: 'already-published' }], 'latest', () => fail('already published package was uploaded'), timing);
+  if (resumed[0].action !== 'already-published') fail('fully resumed release lost its result');
+  return Object.freeze({ delayedVisibility: true, delayedTag: true, timeoutMs: 600000, immediateIntegrityConflict: true,
+    progress: true, sharedBatchDeadline: true, orderedUploadsBeforeWait: true, pendingOnlyPolling: true, resumableUploads: true });
 }
 
 function validatePublicationBundle() {
