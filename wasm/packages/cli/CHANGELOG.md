@@ -24,7 +24,7 @@ Viceroy 0.21.0 creates a missing key for an existing-generation CAS, contrary to
 the required conflict behavior, and deployed Pulse cross-location acceptance
 is still pending. The standalone live Fastly probe confirms missing-key
 rejection but does not satisfy those Pulse acceptance gates. See
-[`wasm/test/kv/K4.md`](wasm/test/kv/K4.md) for the evidence and release boundary.
+[`wasm/test/kv/K4.md`](https://github.com/pulse-compute/pulse/blob/16444cc5e116498e1fdf5f1e4815b4b8c3c74349/wasm/test/kv/K4.md) for the evidence and release boundary.
 
 ## 1.0.0-beta.1 — Beta (2026-08-01)
 
