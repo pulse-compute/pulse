@@ -26,7 +26,7 @@ The homepage and exact current documentation load the same assets under `/v<vers
 The canonical URL for this release begins with:
 
 ```text
-https://pulsecompute.io/v1.0.0-beta.3/
+https://pulsecompute.io/v1.0.0-beta.4/
 ```
 
 Diagnostics, package status blocks, and package metadata use exact-version URLs. This prevents a diagnostic emitted by an older CLI from silently opening instructions for a newer contract.
@@ -47,18 +47,24 @@ Every published release has its own generated `search-index.json`. Navigation gr
 
 ## Adding a documentation version
 
-Before changing the release manifest, snapshot the still-current exact site:
+The **Release preparation** workflow rebuilds and snapshots the previous
+version from its exact release tag before changing the release manifest. This
+prevents newer integration-branch documentation from being archived as an old
+release. For manual preparation, run the following in a checkout of the
+published tag:
 
 ```bash
 pnpm docs:site -- --snapshot
 ```
 
-This writes `release/documentation-site-archives/v<current-version>/`. Commit that directory unchanged. Then:
+This writes `release/documentation-site-archives/v<current-version>/`. Copy
+that directory unchanged into the preparation branch and commit it. Then use
+`release:prepare` with `--archive-current` to:
 
 1. add the new release to `release/documentation-versions.json` and leave the old entry in place;
 2. update `release/pulse-release-manifest.json` with the new version and exact segment;
 3. run the generated-documentation and site gates;
-4. publish the combined site artifact.
+4. prepare the combined site artifact for separately authorized deployment.
 
 The builder copies every non-current version from `release/documentation-site-archives/` and validates its version manifest, release manifest, public-site manifest, search index, pages, and versioned assets before deployment. The moving root homepage is regenerated for the current release; the archived exact subtree preserves the old release’s presentation and routes. A version bump therefore fails rather than silently dropping or rebuilding an older exact release. Existing archive directories are never overwritten unless the snapshot command is given `--force` deliberately.
 

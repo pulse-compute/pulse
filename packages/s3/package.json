@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/s3",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -48,7 +48,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/s3"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/s3/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.4/packages/s3/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

@@ -1,6 +1,6 @@
 # Pulse documentation
 
-Pulse documentation is organized in layers so you can stop when you have enough detail. The `1.0.0-beta.3` candidate uses async-shaped managed handlers, trusted Pulse effects, a conventional `.pulse/config.ts` workspace, and the `pulse` CLI. The synchronized 18-package release catalog remains the authority for npm availability and support tiers.
+Pulse documentation is organized in layers so you can stop when you have enough detail. The `1.0.0-beta.4` candidate uses async-shaped managed handlers, trusted Pulse effects, a conventional `.pulse/config.ts` workspace, and the `pulse` CLI. The synchronized 18-package release catalog remains the authority for npm availability and support tiers.
 
 ## 1. Start and ship a first project
 

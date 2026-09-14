@@ -7,9 +7,9 @@
 > **Supported entry points:** `None for application authors.`<br>
 > **Stability:** Internal compiler/runtime interface synchronized with this release set.<br>
 > **npm:** [`@pulse-compute/wasm-host-runtime`](https://www.npmjs.com/package/@pulse-compute/wasm-host-runtime)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
 <!-- pulse-package-status:end -->
 
 Package-owned PulseWasm host-runtime build-time builders and local runtime helpers.

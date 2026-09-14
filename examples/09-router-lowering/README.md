@@ -83,7 +83,7 @@ pulse test --json
 | `canonical-native.wasm` | 6.1 KiB (6,271 bytes) | 5.4 KiB (5,496 bytes) | 12.4% |
 
 The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.3`. These are uncompressed on-disk sizes, not transfer sizes or
+`1.0.0-beta.4`. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits.
 
 ## Router application

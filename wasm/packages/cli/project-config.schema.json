@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.project-config-schema-bundle.v1",
-  "releaseVersion": "1.0.0-beta.3",
+  "releaseVersion": "1.0.0-beta.4",
   "project": {
     "schemaVersion": "pulse.project-config-schema.v1",
     "discovery": [
@@ -23,7 +23,7 @@
       {
         "id": "crypto",
         "title": "Cryptographic requirements",
-        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.3 package set."
+        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.4 package set."
       },
       {
         "id": "schemas",

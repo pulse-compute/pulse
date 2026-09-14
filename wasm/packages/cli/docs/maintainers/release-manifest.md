@@ -6,8 +6,8 @@
 
 ## Beta candidate
 
-- **Candidate:** Pulse 1.0.0-beta.3 — Beta
-- **Version:** `1.0.0-beta.3`
+- **Candidate:** Pulse 1.0.0-beta.4 — Beta
+- **Version:** `1.0.0-beta.4`
 - **Activation stage:** `documentation-release`
 - **License:** `Apache-2.0`
 - **Supported Node:** `^22.14.0 || ^24.0.0`
@@ -16,7 +16,7 @@
 - **Reproducible publication toolchain:** Node `24.18.0` with npm `11.15.0`
 - **Readiness register:** `release/release-preflight.json`
 - **Documentation inventory:** `release/documentation-inventory.json`
-- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.3/`
+- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.4/`
 - **Runtime targets:** 3
 - **Packages:** 19
 

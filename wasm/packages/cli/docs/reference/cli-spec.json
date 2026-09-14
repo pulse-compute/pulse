@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.cli-command-spec.v5",
-  "cliVersion": "1.0.0-beta.3",
+  "cliVersion": "1.0.0-beta.4",
   "completionShells": [
     "bash",
     "zsh",

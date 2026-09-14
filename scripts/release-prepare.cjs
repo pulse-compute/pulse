@@ -207,6 +207,16 @@ function replaceCandidateText(source, releaseManifest, nextVersion, releasedAt) 
   return replaced.split(oldHeading).join(nextHeading);
 }
 
+function prepareChangelog(source, nextVersion, label, releasedAt) {
+  if (source.includes(`\n## ${nextVersion} — `)) fail(`changelog already contains ${nextVersion}`);
+  const marker = '\n## Unreleased\n';
+  const start = source.indexOf(marker);
+  if (start < 0) fail('changelog requires an Unreleased section before release preparation');
+  const end = source.indexOf('\n## ', start + marker.length);
+  const notes = source.slice(start + marker.length, end < 0 ? source.length : end).trim();
+  return `${source.slice(0, start)}${marker}\n## ${nextVersion} — ${label} (${releasedAt})\n\n${notes}\n${end < 0 ? '' : source.slice(end)}`;
+}
+
 function filesUnder(root, predicate, out = []) {
   if (!fs.existsSync(root)) return out;
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
@@ -371,12 +381,12 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
     }
   }
 
-  if (options.historyMode === 'replace-unpublished') {
-    for (const file of documentationOwners(policy)) {
-      const source = writes.get(file) || fs.readFileSync(file, 'utf8');
-      const replaced = replaceCandidateText(source, releaseManifest, nextVersion, options.releasedAt);
-      if (replaced !== source) putText(file, replaced);
-    }
+  for (const file of documentationOwners(policy)) {
+    const source = writes.get(file) || fs.readFileSync(file, 'utf8');
+    const replaced = options.historyMode === 'archive-current' && relative(file) === 'CHANGELOG.md'
+      ? prepareChangelog(source, nextVersion, releaseManifest.display.candidateLabel, options.releasedAt)
+      : replaceCandidateText(source, releaseManifest, nextVersion, options.releasedAt);
+    if (replaced !== source) putText(file, replaced);
   }
 
   return Object.freeze({ writes, nextRelease, nextDocumentationVersions, dependencyUpdates, currentEntry });
@@ -393,7 +403,7 @@ function synchronize(plan, options) {
   if (options.noSync || options.dryRun) return [];
   const pnpm = `pnpm@${plan.nextRelease.publication.pnpmVersion}`;
   const commands = [
-    ['corepack', [pnpm, 'install', '--lockfile-only']],
+    ['corepack', [pnpm, 'install', '--lockfile-only', '--ignore-scripts']],
     ['corepack', [pnpm, 'run', '-s', 'maintainer:sync']],
     ['corepack', [pnpm, 'run', '-s', 'docs:sync']]
   ];
@@ -495,7 +505,7 @@ function main(argv = process.argv.slice(2)) {
     snapshot ? `  archived snapshot: ${relative(snapshot.root)} (${snapshot.pages} pages)` : '',
     applied.synchronized.length ? `  synchronized: ${applied.synchronized.join(', ')}` : '  synchronization: skipped',
     `  stale-token report: ${relative(tokenReportFile)} (${applied.tokens.files} files, ${applied.tokens.occurrences} occurrences)`,
-    '  Git tag: not created; human release authority tags the exact sealed commit separately.',
+    '  Git tag: not created; tag the final reviewed commit, then publication seals its exact artifacts.',
     ''
   ].filter(Boolean).join('\n'));
 }
@@ -505,6 +515,7 @@ module.exports = Object.freeze({
   assertManifestConsistency,
   replaceReleaseIdentity,
   replaceCandidateText,
+  prepareChangelog,
   updatePulseDependencies,
   planRelease,
   isAllowedChangedPath,

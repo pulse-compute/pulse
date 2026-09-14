@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "dependencies": {
-    "@pulse-compute/pulse": "1.0.0-beta.3",
-    "@pulse-compute/s3": "1.0.0-beta.3"
+    "@pulse-compute/pulse": "1.0.0-beta.4",
+    "@pulse-compute/s3": "1.0.0-beta.4"
   }
 }

@@ -6,7 +6,6 @@ on:
       release_tag:
         description: Existing release tag whose documentation should be deployed
         required: true
-        default: v1.0.0-beta.3
         type: string
       promote_latest:
         description: Promote root and latest only after the exact version and npm release are verified

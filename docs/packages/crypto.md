@@ -4,7 +4,7 @@
 verification for Pulse applications and first-party capability packages.
 
 ```bash
-npm install @pulse-compute/crypto@1.0.0-beta.3
+npm install @pulse-compute/crypto@1.0.0-beta.4
 ```
 
 ## Verification surface

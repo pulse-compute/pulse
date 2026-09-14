@@ -2,7 +2,7 @@
 
 Package-owned lowering lets a synchronized Pulse package extend the canonical compiler with narrow, statically recognized operations while keeping domain rules out of compiler core.
 
-The synchronized `1.0.0-beta.3` release uses this pattern for Assets, GRIP,
+The synchronized `1.0.0-beta.4` release uses this pattern for Assets, GRIP,
 JWT, and Entities.
 It is a **trusted first-party synchronization mechanism**, not a public
 registry that executes arbitrary npm compiler plugins.

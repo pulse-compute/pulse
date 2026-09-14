@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/wasm-guest-link",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.4",
   "license": "Apache-2.0",
   "description": "Internal first-party guest-unit validation, materialization, core Wasm composition, optimization, and final audit for Pulse.",
   "type": "commonjs",
@@ -29,7 +29,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "wasm/packages/wasm-guest-link"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.4/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

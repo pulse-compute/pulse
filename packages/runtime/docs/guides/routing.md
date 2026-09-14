@@ -1,6 +1,6 @@
 # Static Router authoring
 
-Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.3/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.3/reference/compatibility-matrix/).
+Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.4/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.4/reference/compatibility-matrix/).
 
 <!-- pulse-doc-source: examples/09-router-lowering/src/index.ts -->
 ```ts

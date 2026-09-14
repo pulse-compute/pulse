@@ -7,13 +7,13 @@
 > **Supported entry points:** `pulse binary`, `@pulse-compute/cli`, `@pulse-compute/cli/workflow`, `@pulse-compute/cli/project-config`, `@pulse-compute/cli/project-execution`, `@pulse-compute/cli/project-config-schema`, `@pulse-compute/cli/diagnostics`, `@pulse-compute/cli/project-config.schema.json`, `@pulse-compute/cli/cli-spec.json`, `@pulse-compute/cli/release-manifest.json`, `@pulse-compute/cli/documentation-versions.json`, `@pulse-compute/cli/documentation-site.json`<br>
 > **Stability:** Supported Beta workflow and project-configuration contract.<br>
 > **npm:** [`@pulse-compute/cli`](https://www.npmjs.com/package/@pulse-compute/cli)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/cli/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/cli/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
 <!-- pulse-package-status:end -->
 
 The public CLI and conventional `@pulse-compute/pulse` application root are
-both part of the synchronized `1.0.0-beta.3` release set. Validate the generated
+both part of the synchronized `1.0.0-beta.4` release set. Validate the generated
 workflow from the repository or the exact packed acceptance set:
 
 ```bash

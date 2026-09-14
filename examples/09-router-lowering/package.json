@@ -12,11 +12,11 @@
     "build": "pulse build"
   },
   "dependencies": {
-    "@pulse-compute/runtime": "1.0.0-beta.3",
-    "@pulse-compute/pulse": "1.0.0-beta.3"
+    "@pulse-compute/runtime": "1.0.0-beta.4",
+    "@pulse-compute/pulse": "1.0.0-beta.4"
   },
   "devDependencies": {
-    "@pulse-compute/cli": "1.0.0-beta.3",
+    "@pulse-compute/cli": "1.0.0-beta.4",
     "typescript": "5.9.3"
   }
 }

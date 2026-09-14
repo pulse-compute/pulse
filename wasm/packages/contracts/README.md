@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/wasm-contracts/provider/toolchain`<br>
 > **Stability:** The provider toolchain contract is versioned and supported for the Beta; other protocol and proof interfaces remain internal.<br>
 > **npm:** [`@pulse-compute/wasm-contracts`](https://www.npmjs.com/package/@pulse-compute/wasm-contracts)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
 <!-- pulse-package-status:end -->
 
 This package owns stable data contracts shared by the compiler, runtime, and providers.
