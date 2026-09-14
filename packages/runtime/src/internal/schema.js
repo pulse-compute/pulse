@@ -247,9 +247,10 @@ function encodeSchemaValue(schemaId, value, options = {}, context = {}) {
   const codecs = requireSchemaCodecs(options, id, source);
   try {
     const text = codecs.encodeJsonText(id, value, source);
+    if (source === 'application-value') assertSchemaBodySize(options, text, id, source);
     const normalized = codecs.decodeJsonText(id, text, `${source}-trace`);
     emitSchemaTrace(options, {
-      kind: source === 'fetch-request' ? 'json.encode.fetch' : 'json.encode.response',
+      kind: source === 'application-value' ? 'json.encode.value' : source === 'fetch-request' ? 'json.encode.fetch' : 'json.encode.response',
       boundary: source,
       schemaId: id,
       responseCaseId: context.responseCaseId || null,

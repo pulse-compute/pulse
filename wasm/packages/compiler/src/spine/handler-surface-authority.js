@@ -264,6 +264,7 @@ function recognizeHandlerSurface(node, options = {}) {
         const direct = Object.freeze({
           param: 'ctx.param',
           json: 'ctx.json',
+          encodeJson: 'ctx.encodeJson',
           text: 'ctx.text',
           response: 'ctx.response'
         });

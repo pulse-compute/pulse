@@ -9,10 +9,11 @@ const JSON_TRACE_EVENT_KINDS = Object.freeze([
   'json.decode.fetch',
   'json.encode.response',
   'json.encode.fetch',
+  'json.encode.value',
   'json.decode.error',
   'json.encode.error'
 ]);
-const JSON_BOUNDARIES = Object.freeze(['request', 'fetch-response', 'application-response', 'fetch-request']);
+const JSON_BOUNDARIES = Object.freeze(['request', 'fetch-response', 'application-response', 'fetch-request', 'application-value']);
 const JSON_BODY_OWNERSHIP = Object.freeze([
   'request-snapshot',
   'fetched-response-snapshot',
@@ -24,8 +25,9 @@ const JSON_EVENT_BOUNDARIES = Object.freeze({
   'json.decode.fetch': Object.freeze(['fetch-response']),
   'json.encode.response': Object.freeze(['application-response']),
   'json.encode.fetch': Object.freeze(['fetch-request']),
+  'json.encode.value': Object.freeze(['application-value']),
   'json.decode.error': Object.freeze(['request', 'fetch-response']),
-  'json.encode.error': Object.freeze(['application-response', 'fetch-request'])
+  'json.encode.error': Object.freeze(['application-response', 'fetch-request', 'application-value'])
 });
 
 function traceError(code, message, details = {}) {

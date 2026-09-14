@@ -173,7 +173,7 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
       );
       return;
     }
-    const encode = usage === 'response-encode' || usage === 'fetch-encode';
+    const encode = usage === 'response-encode' || usage === 'fetch-encode' || usage === 'value-encode';
     schemaReferences.push(Object.freeze({
       id: schemaId,
       usage,
@@ -335,6 +335,13 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
               validateFetchSchema(node);
             }
             if (surface.detail.fetch.decoderCall === node) validateDecoderCall(node, 'fetch-decode');
+          } else if (surface.surfaceId === 'ctx.encodeJson') {
+            if (node.arguments.length !== 2) {
+              reject(node, 'PULSE_CANONICAL_DECODER_ARGUMENTS_UNSUPPORTED', 'ctx.encodeJson requires exactly a value and a registered literal schema ID.', { usage: 'value-encode', arguments: node.arguments.length });
+            } else {
+              recordSchemaReference(node, node.arguments[1], 'value-encode');
+              schemaBoundJsonCount += 1;
+            }
           } else if (['ctx.json', 'ctx.text', 'ctx.response'].includes(surface.surfaceId)) {
             const method = surface.surfaceId.slice('ctx.'.length);
             capabilities.add(`response.${method}`);

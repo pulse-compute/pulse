@@ -254,7 +254,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       maxBuffer: 16 * 1024 * 1024,
       timeout: Number(options.timeoutMs || 120000),
       env: schemaCodecsActive
-        ? { ...process.env, JSON_STRICT: 'true', JSON_USE_FAST_PATH: '0' }
+        ? { ...process.env, JSON_STRICT: 'true', JSON_USE_FAST_PATH: '0', JSON_MODE: 'NAIVE' }
         : process.env
     });
     const durationMs = Date.now() - startedAt;
@@ -308,7 +308,7 @@ function verifyCanonicalNativeRealization(realization) {
     assemblyScript: Object.freeze({ package: 'assemblyscript', version: realization.assemblyScriptVersion }),
     optimization: resolveNativeOptimization(realization.optimization),
     jsonAs: realization.jsonAsVersion
-      ? Object.freeze({ package: 'json-as', version: realization.jsonAsVersion, transform: true, strict: true })
+      ? Object.freeze({ package: 'json-as', version: realization.jsonAsVersion, transform: true, strict: true, mode: 'NAIVE', fastPath: false })
       : null,
     wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),
     wat: Object.freeze({ bytes: Buffer.byteLength(realization.wat), sha256: sha256(realization.wat) }),

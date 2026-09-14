@@ -20,7 +20,7 @@ function defaultHandlerTypesContract() {
       set: 'void'
     }),
     executionContexts: Object.freeze({
-      shared: Object.freeze(['state', 'log', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit']),
+      shared: Object.freeze(['state', 'log', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson']),
       http: Object.freeze(['req', 'json', 'text', 'response']),
       route: Object.freeze(['param']),
       event: Object.freeze(['event.type', 'event.payload']),
