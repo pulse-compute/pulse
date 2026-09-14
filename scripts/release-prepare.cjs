@@ -154,7 +154,7 @@ function gitState(options) {
 function assertManifestConsistency(releaseManifest, documentationVersions) {
   const currentVersion = assertVersion(releaseManifest.releaseVersion, 'release manifest version');
   if (releaseManifest.documentation?.version !== `v${currentVersion}`) fail('release manifest documentation.version does not match releaseVersion');
-  if (releaseManifest.publication?.distTag !== releaseManifest.channel) fail('release manifest publication.distTag does not match channel');
+  if (![releaseManifest.channel, 'latest'].includes(releaseManifest.publication?.distTag)) fail('release manifest publication.distTag must be the release channel or explicitly configured latest');
   if (!Array.isArray(releaseManifest.packages) || releaseManifest.packages.length === 0) fail('release manifest packages must be a non-empty array');
   for (const entry of releaseManifest.packages) if (entry.version !== currentVersion) fail(`${entry.name} release-catalog version does not match ${currentVersion}`);
   if (!Array.isArray(documentationVersions.versions)) fail('documentation versions manifest must contain versions[]');
@@ -265,7 +265,7 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
   nextRelease.releasedAt = options.releasedAt;
   nextRelease.display.candidateName = `${nextRelease.display.productName} ${nextVersion} — ${nextRelease.display.candidateLabel}`;
   nextRelease.documentation.version = `v${nextVersion}`;
-  nextRelease.publication.distTag = channel;
+  nextRelease.publication.distTag = releaseManifest.publication.distTag;
   for (const entry of nextRelease.packages) entry.version = nextVersion;
   putJson(releaseManifestFile, nextRelease);
 
@@ -310,11 +310,13 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
     if (name === 'release/release-preflight.json') {
       value.reviewedAt = options.releasedAt;
       value.releaseCandidate.version = nextVersion;
-      value.releaseCandidate.publicationTag = channel;
+      value.releaseCandidate.publicationTag = nextRelease.publication.distTag;
+      value.releaseCandidate.latestTagAllowed = nextRelease.publication.distTag === 'latest';
       value.releaseCandidate.currentSnapshotChannel = channel;
       value.releaseCandidate.snapshotAppliedAt = options.releasedAt;
       value.releaseVocabulary.displayName = nextRelease.display.candidateName;
-      value.releaseVocabulary.npmDistTag = channel;
+      value.releaseVocabulary.npmDistTag = nextRelease.publication.distTag;
+      value.npmBootstrap.releaseTag = nextRelease.publication.distTag;
       value.sourceAuthority.expectedReleaseTag = `v${nextVersion}`;
     }
     putJson(file, value);

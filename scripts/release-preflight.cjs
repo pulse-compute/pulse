@@ -77,15 +77,17 @@ function stringArray(value, context, options = {}) {
   return value;
 }
 
-function bootstrapLatestTargetAllowed(target) {
-  return target === null || target === '0.0.0';
+function documentedReleaseVersions(root) {
+  return new Set(readJson('release/documentation-versions.json', root).versions.map((entry) => entry.version));
 }
 
-function bootstrapEntryCompliant(entry) {
+function bootstrapEntryCompliant(entry, releaseVersions) {
+  const latestAllowed = entry.latestTagTarget === null || entry.latestTagTarget === '0.0.0'
+    || (entry.latestTagVersionPresent && releaseVersions.has(entry.latestTagTarget));
   return entry.state === 'exists'
     && entry.bootstrap.versionPresent
     && entry.bootstrap.tagTarget === '0.0.0'
-    && bootstrapLatestTargetAllowed(entry.latestTagTarget);
+    && latestAllowed;
 }
 
 function filesUnder(root, options, out = []) {
@@ -219,6 +221,7 @@ function validateBootstrap(preflight) {
   if (JSON.stringify(bootstrap.allowedLatestTargets) !== JSON.stringify([null, bootstrap.bootstrapVersion])) {
     fail('npm bootstrap latest may only be absent or point to the inert bootstrap version');
   }
+  if (bootstrap.releasedLatestPolicy !== 'documented-published-version') fail('npm bootstrap must retain documented published latest versions');
   if (bootstrap.authority !== 'human-release' || bootstrap.authentication !== 'temporary-human-2fa') fail('npm bootstrap must remain human and 2FA protected');
   const shape = bootstrap.packageShape;
   if (!shape || shape.license !== LICENSE || shape.scriptsAllowed !== false || shape.dependenciesAllowed !== false || shape.exportsAllowed !== false || shape.executablesAllowed !== false) {
@@ -457,7 +460,7 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
     || current.length !== 1
     || current[0].version !== candidate.version
     || current[0].segment !== `v${candidate.version}`
-    || current[0].channel !== candidate.publicationTag
+    || current[0].channel !== RELEASE_MANIFEST.channel
     || current[0].releasedAt !== candidate.snapshotAppliedAt
     || current[0].sourceManifest !== 'release/pulse-release-manifest.json'
   ) {
@@ -525,9 +528,9 @@ function validatePreflight(options = {}) {
     || candidate.version !== RELEASE_VERSION
     || candidate.label !== DISPLAY.candidateLabel
     || candidate.publicationTag !== PUBLICATION.distTag
-    || candidate.latestTagAllowed !== false
+    || candidate.latestTagAllowed !== (PUBLICATION.distTag === 'latest')
   ) {
-    fail('release candidate framing must match the manifest-owned version, label, and non-latest channel');
+    fail('release candidate framing must match the manifest-owned version, label, and publication tag');
   }
   if (RELEASE_VERSION !== candidate.version) {
     fail('current release manifest version no longer matches the Beta candidate');
@@ -694,6 +697,7 @@ function validateNpmAuditEvidence(report, options = {}) {
   if (JSON.stringify(report.packages.map((entry) => entry.name)) !== JSON.stringify(expectedNames)) fail('npm catalog audit package order does not match the release manifest');
 
   const counts = { total: report.packages.length, existing: 0, missing: 0, indeterminate: 0, bootstrapCompliant: 0, tagRemediation: 0 };
+  const releaseVersions = documentedReleaseVersions(root);
   for (const entry of report.packages) {
     if (!['exists', 'missing', 'indeterminate'].includes(entry.state)) fail(`npm catalog audit has invalid state for ${entry.name}`);
     counts[entry.state === 'exists' ? 'existing' : entry.state] += 1;
@@ -707,8 +711,12 @@ function validateNpmAuditEvidence(report, options = {}) {
     }
     if (entry.release.tagTarget !== null && typeof entry.release.tagTarget !== 'string') fail(`npm catalog audit release tag is invalid for ${entry.name}`);
     if (entry.latestTagTarget !== null && typeof entry.latestTagTarget !== 'string') fail(`npm catalog audit latest tag is invalid for ${entry.name}`);
+    if (typeof entry.latestTagVersionPresent !== 'boolean'
+      || (entry.latestTagTarget === null && entry.latestTagVersionPresent)) fail(`npm catalog audit latest version facts are invalid for ${entry.name}`);
+    if (entry.latestTagTarget === entry.release.version && entry.latestTagVersionPresent !== entry.release.versionPresent) fail(`npm catalog audit latest and release version facts disagree for ${entry.name}`);
+    if (PUBLICATION.distTag === 'latest' && entry.release.tagTarget !== entry.latestTagTarget) fail(`npm catalog audit latest and release tag facts disagree for ${entry.name}`);
     if (entry.state === 'exists') {
-      if (bootstrapEntryCompliant(entry)) counts.bootstrapCompliant += 1;
+      if (bootstrapEntryCompliant(entry, releaseVersions)) counts.bootstrapCompliant += 1;
       else counts.tagRemediation += 1;
     }
     if (entry.state === 'indeterminate') nonEmpty(entry.error, `npm catalog audit error for ${entry.name}`);
@@ -729,6 +737,7 @@ function validateNpmAuditEvidence(report, options = {}) {
 
 async function auditNpmPackageNames(options = {}) {
   const root = path.resolve(options.repoRoot || repoRoot);
+  const releaseVersions = documentedReleaseVersions(root);
   const registry = String(PUBLICATION.registry).replace(/\/$/, '');
   const auditNonce = Date.now().toString(36);
   const packages = [];
@@ -767,7 +776,8 @@ async function auditNpmPackageNames(options = {}) {
         distTag: PUBLICATION.distTag,
         tagTarget: typeof distTags[PUBLICATION.distTag] === 'string' ? distTags[PUBLICATION.distTag] : null
       }),
-      latestTagTarget: typeof distTags.latest === 'string' ? distTags.latest : null
+      latestTagTarget: typeof distTags.latest === 'string' ? distTags.latest : null,
+      latestTagVersionPresent: typeof distTags.latest === 'string' && Object.hasOwn(versions, distTags.latest)
     };
     if (state === 'indeterminate') observation.error = errorMessage || `registry returned HTTP ${response?.status || 'unknown'}`;
     packages.push(Object.freeze(observation));
@@ -777,8 +787,8 @@ async function auditNpmPackageNames(options = {}) {
     existing: packages.filter((entry) => entry.state === 'exists').length,
     missing: packages.filter((entry) => entry.state === 'missing').length,
     indeterminate: packages.filter((entry) => entry.state === 'indeterminate').length,
-    bootstrapCompliant: packages.filter(bootstrapEntryCompliant).length,
-    tagRemediation: packages.filter((entry) => entry.state === 'exists' && !bootstrapEntryCompliant(entry)).length
+    bootstrapCompliant: packages.filter((entry) => bootstrapEntryCompliant(entry, releaseVersions)).length,
+    tagRemediation: packages.filter((entry) => entry.state === 'exists' && !bootstrapEntryCompliant(entry, releaseVersions)).length
   });
   return Object.freeze({
     schemaVersion: AUDIT_SCHEMA,

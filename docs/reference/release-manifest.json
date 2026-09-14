@@ -97,7 +97,7 @@
   },
   "publication": {
     "registry": "https://registry.npmjs.org",
-    "distTag": "beta",
+    "distTag": "latest",
     "access": "public",
     "authentication": "npm-trusted-publishing-oidc",
     "provenance": "automatic",
