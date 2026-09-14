@@ -180,7 +180,8 @@ function sleep(milliseconds) {
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, wait);
 }
 
-function waitForRegistry(adapter, entry, distTag, options = {}) {
+// Uploads stay ordered; registry processing overlaps across the pending set.
+function waitForRegistryPackages(adapter, entries, distTag, options = {}) {
   const timeoutMs = options.timeoutMs ?? 600000;
   const attempts = options.attempts ?? Infinity;
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0
@@ -192,44 +193,79 @@ function waitForRegistry(adapter, entry, distTag, options = {}) {
   const progress = options.onProgress || (() => {});
   const startedAt = now();
   const deadline = startedAt + timeoutMs;
-  let last;
-  for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    if (last && now() >= deadline) {
-      last = Object.freeze({ ...last, elapsedMs: now() - startedAt });
-      progress(Object.freeze({ name: entry.name, version: entry.version, distTag,
-        attempt: last.attempt, elapsedMs: last.elapsedMs, state: 'timeout', retryInMs: 0 }));
-      break;
+  const pending = new Set(entries);
+  const observations = new Map();
+  for (let attempt = 1; pending.size && attempt <= attempts && now() < deadline; attempt += 1) {
+    for (const entry of pending) {
+      if (now() >= deadline) break;
+      const published = adapter.version(entry.name, entry.version, { timeoutMs: Math.max(1, deadline - now()) });
+      if (published && published.integrity && published.integrity !== entry.integrity) {
+        fail(`${entry.name}@${entry.version} has a registry integrity conflict; do not republish or overwrite this version`,
+          'PULSE_NPM_INTEGRITY_CONFLICT', { expectedIntegrity: entry.integrity, published });
+      }
+      const tags = published && now() < deadline
+        ? adapter.tags(entry.name, { timeoutMs: Math.max(1, deadline - now()) }) : {};
+      const last = Object.freeze({
+        published,
+        distTagVersion: tags[distTag] || null,
+        integrityMatches: Boolean(published && published.integrity === entry.integrity),
+        distTagMatches: tags[distTag] === entry.version,
+        attempt,
+        elapsedMs: now() - startedAt
+      });
+      observations.set(entry, last);
+      const ready = last.integrityMatches && last.distTagMatches && now() <= deadline;
+      const remainingMs = Math.max(0, deadline - now());
+      const retryInMs = ready || !remainingMs || attempt === attempts ? 0
+        : Math.min(remainingMs, 30000, 1000 * (2 ** Math.min(attempt - 1, 5)));
+      progress(Object.freeze({
+        name: entry.name, version: entry.version, distTag, attempt, elapsedMs: last.elapsedMs,
+        state: ready ? 'ready' : published ? 'waiting-for-tag' : 'waiting-for-version', retryInMs
+      }));
+      if (ready) pending.delete(entry);
     }
-    const published = adapter.version(entry.name, entry.version, { timeoutMs: Math.max(1, deadline - now()) });
-    if (published && published.integrity && published.integrity !== entry.integrity) {
-      fail(`${entry.name}@${entry.version} has a registry integrity conflict; do not republish or overwrite this version`,
-        'PULSE_NPM_INTEGRITY_CONFLICT', { expectedIntegrity: entry.integrity, published });
+    if (pending.size && attempt < attempts && now() < deadline) {
+      // One backoff per round, not one backoff/deadline per package.
+      pause(Math.min(deadline - now(), 30000, 1000 * (2 ** Math.min(attempt - 1, 5))));
     }
-    const tags = published && now() < deadline
-      ? adapter.tags(entry.name, { timeoutMs: Math.max(1, deadline - now()) }) : {};
-    last = Object.freeze({
-      published,
-      distTagVersion: tags[distTag] || null,
-      integrityMatches: Boolean(published && published.integrity === entry.integrity),
-      distTagMatches: tags[distTag] === entry.version,
-      attempt,
-      elapsedMs: now() - startedAt
-    });
-    const ready = last.integrityMatches && last.distTagMatches;
-    const remainingMs = Math.max(0, deadline - now());
-    const retryInMs = ready || !remainingMs || attempt === attempts ? 0
-      : Math.min(remainingMs, 30000, 1000 * (2 ** Math.min(attempt - 1, 5)));
-    progress(Object.freeze({
-      name: entry.name, version: entry.version, distTag, attempt, elapsedMs: last.elapsedMs,
-      state: ready ? 'ready' : !retryInMs ? 'timeout' : published ? 'waiting-for-tag' : 'waiting-for-version',
-      retryInMs
-    }));
-    if (ready) return last;
-    if (!retryInMs) break;
-    pause(retryInMs);
   }
-  fail(`${entry.name}@${entry.version} did not become visible with matching integrity and ${distTag} within the registry wait. npm accepted the upload and may still be processing it. Once visible, re-run the failed publish job with the same release tag and sealed candidate; matching packages will be skipped.`,
-    'PULSE_NPM_REGISTRY_DID_NOT_CONVERGE', last);
+  if (pending.size) {
+    const elapsedMs = now() - startedAt;
+    const unresolved = [...pending].map((entry) => {
+      const last = observations.get(entry);
+      progress(Object.freeze({ name: entry.name, version: entry.version, distTag,
+        attempt: last?.attempt || 0, elapsedMs, state: 'timeout', retryInMs: 0 }));
+      return Object.freeze({ name: entry.name, version: entry.version, ...last });
+    });
+    fail(`${unresolved.map((entry) => `${entry.name}@${entry.version}`).join(', ')} did not become visible with matching integrity and ${distTag} within the shared registry wait. npm accepted the uploads and may still be processing them. Once visible, re-run the failed publish job with the same release tag and sealed candidate; matching packages will be skipped.`,
+      'PULSE_NPM_REGISTRY_DID_NOT_CONVERGE', { elapsedMs, pending: unresolved });
+  }
+  return entries.map((entry) => observations.get(entry));
+}
+
+function waitForRegistry(adapter, entry, distTag, options = {}) {
+  return waitForRegistryPackages(adapter, [entry], distTag, options)[0];
+}
+
+// The production caller supplies the protected npm invocation. Fixtures supply
+// an in-process uploader so ordering and partial failure need no registry writes.
+function publishPlannedPackages(adapter, entries, planned, distTag, publish, options = {}) {
+  const pending = [];
+  const results = entries.map((entry, index) => {
+    const action = planned[index].action;
+    if (action === 'already-published') {
+      return Object.freeze({ name: entry.name, version: entry.version, action, integrity: entry.integrity });
+    }
+    if (action !== 'publish') fail(`unexpected publication action ${action} for ${entry.name}`);
+    publish(entry);
+    pending.push(entry);
+    return { name: entry.name, version: entry.version, action: 'published', integrity: entry.integrity, distTag };
+  });
+  const verified = waitForRegistryPackages(adapter, pending, distTag, options);
+  let index = 0;
+  return results.map((result) => result.action === 'already-published' ? result : Object.freeze({
+    ...result, registryIntegrity: verified[index++].published.integrity
+  }));
 }
 
 function gitValue(repoRoot, args, fallback = '') {
@@ -816,19 +852,12 @@ function publishBundle(options = {}) {
   assertTrustedPublishingEnvironment(verification.manifest, options);
   const adapter = options.adapter || npmRegistryAdapter(options);
   const plan = publicationPlan({ ...options, adapter, check: true });
-  const results = [];
+  let results;
   const authRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-npm-oidc-'));
   const userConfig = path.join(authRoot, 'npmrc');
   fs.writeFileSync(userConfig, `registry=${config.registry}\nprovenance=true\n`);
   try {
-    for (let index = 0; index < verification.manifest.packages.length; index += 1) {
-      const entry = verification.manifest.packages[index];
-      const planned = plan.packages[index];
-      if (planned.action === 'already-published') {
-        results.push(Object.freeze({ name: entry.name, version: entry.version, action: 'already-published', integrity: entry.integrity }));
-        continue;
-      }
-      if (planned.action !== 'publish') fail(`unexpected publication action ${planned.action} for ${entry.name}`);
+    results = publishPlannedPackages(adapter, verification.manifest.packages, plan.packages, config.distTag, (entry) => {
       const tarball = path.join(verification.bundleDir, entry.tarball);
       run('npm', [
         'publish', tarball,
@@ -843,21 +872,12 @@ function publishBundle(options = {}) {
         timeout: 300000,
         env: securePublishEnvironment(userConfig)
       });
-      const published = waitForRegistry(adapter, entry, config.distTag, {
-        attempts: options.verifyAttempts,
-        onProgress(event) {
-          process.stderr.write(`[npm registry] ${event.name}@${event.version}: ${event.state}; attempt ${event.attempt}, ${Math.round(event.elapsedMs / 1000)}s elapsed${event.retryInMs ? `; retry in ${Math.ceil(event.retryInMs / 1000)}s` : ''}\n`);
-        }
-      });
-      results.push(Object.freeze({
-        name: entry.name,
-        version: entry.version,
-        action: 'published',
-        integrity: entry.integrity,
-        registryIntegrity: published.published.integrity,
-        distTag: config.distTag
-      }));
-    }
+    }, {
+      attempts: options.verifyAttempts,
+      onProgress(event) {
+        process.stderr.write(`[npm registry] ${event.name}@${event.version}: ${event.state}; attempt ${event.attempt}, ${Math.round(event.elapsedMs / 1000)}s elapsed${event.retryInMs ? `; next round in up to ${Math.ceil(event.retryInMs / 1000)}s` : ''}\n`);
+      }
+    });
   } finally {
     fs.rmSync(authRoot, { recursive: true, force: true });
   }
@@ -1045,6 +1065,8 @@ module.exports = Object.freeze({
   validateReleaseIdentity,
   compareVersions,
   waitForRegistry,
+  waitForRegistryPackages,
+  publishPlannedPackages,
   npmRegistryAdapter,
   sha256,
   sha512,
