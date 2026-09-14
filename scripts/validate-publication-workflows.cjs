@@ -21,6 +21,7 @@ const {
   publishOrder,
   auditPackageNames,
   publicationPlan,
+  waitForRegistry,
   verifyRegistryRelease,
   verifyCatalogRelease,
   sha256,
@@ -428,6 +429,45 @@ function fixtureFromBundle(manifest, mode = 'unpublished') {
 
 function writeFixture(file, value) { fs.writeFileSync(file, stableJson(value)); return file; }
 
+function validateRegistryConvergence() {
+  const entry = { name: '@pulse-compute/wasm-host-runtime', version: RELEASE_VERSION, integrity: 'sha512-expected' };
+  let clock = 0;
+  const progress = [];
+  const timing = { now: () => clock, sleep: (ms) => { clock += ms; }, onProgress: (event) => progress.push(event) };
+  const delayed = {
+    version() { return clock >= 240000 ? { integrity: entry.integrity } : undefined; },
+    tags() { return { latest: clock >= 300000 ? entry.version : '0.0.0' }; }
+  };
+  const ready = waitForRegistry(delayed, entry, 'latest', timing);
+  if (!ready.integrityMatches || !ready.distTagMatches || clock < 300000 || clock > 600000) fail('delayed npm processing did not converge within the expanded window');
+  for (const state of ['waiting-for-version', 'waiting-for-tag', 'ready']) {
+    if (!progress.some((event) => event.state === state)) fail(`registry progress omitted ${state}`);
+  }
+  if (progress.some((event) => event.retryInMs > 30000)) fail('registry polling interval exceeded 30 seconds');
+
+  clock = 0;
+  progress.length = 0;
+  const timeout = expectFailure(() => waitForRegistry({
+    version(name, version, lookup) {
+      if (lookup.timeoutMs !== 600000 - clock) fail('registry lookup was not bounded by the remaining deadline');
+      return undefined;
+    },
+    tags() { fail('tags were queried before the version existed'); }
+  }, entry, 'latest', timing), 'PULSE_NPM_REGISTRY_DID_NOT_CONVERGE', 'registry processing deadline');
+  if (clock !== 600000 || timeout.details.elapsedMs !== 600000 || progress.at(-1).state !== 'timeout') fail('registry wait did not stop at its deadline');
+  if (!timeout.message.includes('same release tag and sealed candidate')) fail('registry timeout omitted the resume instructions');
+
+  clock = 0;
+  expectFailure(() => waitForRegistry({
+    version() { return { integrity: 'sha512-conflict' }; },
+    tags() { fail('integrity conflict queried tags instead of stopping'); }
+  }, entry, 'latest', timing), 'PULSE_NPM_INTEGRITY_CONFLICT', 'immediate immutable integrity conflict');
+  if (clock !== 0) fail('integrity conflict consumed a processing retry');
+  expectFailure(() => waitForRegistry(delayed, entry, 'latest', { ...timing, timeoutMs: -1 }), undefined, 'invalid registry deadline');
+  expectFailure(() => waitForRegistry(delayed, entry, 'latest', { ...timing, attempts: 0 }), undefined, 'invalid registry attempt limit');
+  return Object.freeze({ delayedVisibility: true, delayedTag: true, timeoutMs: 600000, immediateIntegrityConflict: true, progress: true });
+}
+
 function validatePublicationBundle() {
   const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-publication-validation-'));
   try {
@@ -474,6 +514,11 @@ function validatePublicationBundle() {
     const matching = writeFixture(path.join(temp, 'matching.json'), matchingFixture);
     const resumed = publicationPlan({ repoRoot, bundleDir, fixtureFile: matching });
     if (resumed.status !== 'ready' || resumed.packages.some((entry) => entry.action !== 'already-published')) fail('matching registry fixture is not resumable');
+    const partialFixture = fixtureFromBundle(verified.manifest, 'published');
+    for (const entry of verified.manifest.packages.slice(9)) partialFixture.packages[entry.name] = { versions: {}, distTags: {} };
+    const partial = publicationPlan({ repoRoot, bundleDir, fixtureFile: writeFixture(path.join(temp, 'partial.json'), partialFixture) });
+    if (partial.packages.filter((entry) => entry.action === 'already-published').length !== 9
+      || partial.packages.filter((entry) => entry.action === 'publish').length !== PACKAGE_SET.length - 9) fail('partial release did not resume only the remaining packages');
     const registryVerification = verifyRegistryRelease({ repoRoot, bundleDir, fixtureFile: matching });
     const catalogVerification = verifyCatalogRelease({ repoRoot, fixtureFile: matching });
     if (registryVerification.failures !== 0 || catalogVerification.failures !== 0) fail('matching registry fixture did not verify');
@@ -917,6 +962,7 @@ function validatePublicationControlPlane(options = {}) {
     configuration: validateConfiguration(),
     workflows: validateWorkflows(),
     npmPublication: validatePublicationBundle(),
+    registryConvergence: validateRegistryConvergence(),
     documentationDeployment: validateDocumentationBundle(),
     fastlyVcl: validateFastlyVcl(),
     packageScripts: validatePackageScripts(),

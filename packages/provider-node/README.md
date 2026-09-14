@@ -8,9 +8,9 @@
 > **Stability:** The listed built-in toolchain entry is synchronized with the Beta bootstrap contract; other canonical Node provider interfaces remain internal.<br>
 > **npm:** [`@pulse-compute/provider-node`](https://www.npmjs.com/package/@pulse-compute/provider-node)<br>
 > **Canonical replacement:** `provider: 'node' through @pulse-compute/cli`<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
 <!-- pulse-package-status:end -->
 
 Canonical Node provider implementation used internally when a project selects `provider: 'node'`.
@@ -60,4 +60,4 @@ The package exposes focused compiler and runtime modules for the synchronized
 repository, including `runtime/canonical-api-runtime`. Those exports are
 implementation interfaces, not application-author APIs.
 
-See [Contracts and providers](https://pulsecompute.io/v1.0.0-beta.2/concepts/contracts-and-providers/) and [Implementation packages](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/).
+See [Contracts and providers](https://pulsecompute.io/v1.0.0-beta.3/concepts/contracts-and-providers/) and [Implementation packages](https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/).

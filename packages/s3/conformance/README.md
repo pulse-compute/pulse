@@ -10,4 +10,4 @@ metadata limits, truncation, deadlines, write uncertainty and secret redaction.
 Fastly Native executes compiled Wasm against host ABI fixtures. These checks
 do not establish live origin behavior; that evidence follows infrastructure
 setup. Fastly JavaScript is ineligible for S3 because its SDK loses raw header
-metadata. See the [S3 guide](https://pulsecompute.io/v1.0.0-beta.2/packages/s3/).
+metadata. See the [S3 guide](https://pulsecompute.io/v1.0.0-beta.3/packages/s3/).

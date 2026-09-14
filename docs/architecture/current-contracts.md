@@ -238,6 +238,18 @@ guest-link packaging authorization have already been checked. It does not
 contain a TypeScript AST/service, compiler cache, builder, mutable manifest,
 compiled-program object, raw target option bag, or alternate target.
 
+CLI Native test/dev execution that needs guest crypto or conditional KV uses
+an optional provider-owned `prepareNativeExecution` driver hook. It receives the
+same immutable, validated invocation with action `execute-native` and returns a
+local request executor. The CLI never substitutes another provider's host.
+Node executes the compiled neutral Wasm with its provider adapter. Fastly
+realizes its own Native artifact and runs the existing fixture ABI, including
+the conditional-KV authority. Its result identifies the artifact hash and fixture
+kind; unavailable effect telemetry is reported as such. This does not establish
+Viceroy or deployed Fastly acceptance. S3 fixtures preserve raw response streams
+inside the provider transport while ordinary fetch retains its opaque response
+contract. Dev retains a last-good Native executor if recompilation fails.
+
 Native realization and JavaScript source packaging are normalized into
 versioned, data-only results before the CLI consumes them. Provider packaging
 must report the same artifact identity authorized by the final guest audit.
@@ -335,7 +347,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.2` JWT/crypto packages compose
+The synchronized `1.0.0-beta.3` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -416,7 +428,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.2` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.3` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no

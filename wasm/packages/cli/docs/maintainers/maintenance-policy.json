@@ -1,7 +1,7 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
   "policyVersion": 7,
-  "releaseVersion": "1.0.0-beta.2",
+  "releaseVersion": "1.0.0-beta.3",
   "reviewedAt": "2026-09-13",
   "maintainerModel": {
     "residentMaintainer": "Codex",

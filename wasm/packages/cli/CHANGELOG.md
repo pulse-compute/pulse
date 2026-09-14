@@ -2,6 +2,12 @@
 
 Pulse follows semantic versioning for public releases. The repository begins its public history with the `1.0.0-beta.1` prerelease.
 
+## 1.0.0-beta.3 — Beta (2026-09-14)
+
+- Fix CLI storage execution on Node Native, Node JavaScript and the Fastly Native local fixture host, including S3 response streams, bindings and conditional KV.
+- Keep the last working Native application available when a development reload fails.
+- Allow bounded npm registry propagation time and publish future releases directly under the `latest` npm tag while retaining the Beta release label.
+
 ## 1.0.0-beta.2 — Beta (2026-09-13)
 
 This candidate synchronizes the 19-package release catalog and prepares the

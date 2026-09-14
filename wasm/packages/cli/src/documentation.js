@@ -3,7 +3,7 @@
 // Generated from release/pulse-release-manifest.json by wasm/scripts/sync-reference-docs.cjs.
 const DOCUMENTATION_ORIGIN = "https://pulsecompute.io";
 const DOCUMENTATION_BASE_PATH = "";
-const DOCUMENTATION_VERSION = "v1.0.0-beta.2";
+const DOCUMENTATION_VERSION = "v1.0.0-beta.3";
 const DOCUMENTATION_LATEST_ALIAS = "latest";
 
 function trimSlashes(value) { return String(value || '').replace(/^\/+|\/+$/g, ''); }

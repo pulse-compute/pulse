@@ -16,7 +16,7 @@ require Native-compatible source; use `pulse build` for a JavaScript package.
 
 ## Current Beta targets
 
-`1.0.0-beta.2` exercises four explicit modes through one conformance corpus:
+`1.0.0-beta.3` exercises four explicit modes through one conformance corpus:
 
 | Host | Target | Current release status | Build shape |
 |---|---|---|---|
@@ -45,7 +45,7 @@ adapter, lifecycle, conformance evidence, and package claim.
 The [ESP32 reference host](https://github.com/pulsecompute/pulse-esp32-host)
 tests whether the event/effect/continuation model remains useful without a
 JavaScript fallback, abundant memory, or an HTTP-centered lifecycle. It is a
-boundary witness, not a `1.0.0-beta.2` provider or compatibility promise. The
+boundary witness, not a `1.0.0-beta.3` provider or compatibility promise. The
 [architecture vision](../architecture/vision.md#esp32-as-a-boundary-witness)
 describes the intended host-owned interrupt queue and non-reentrant Wasm entry.
 

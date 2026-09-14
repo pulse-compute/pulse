@@ -4,7 +4,7 @@
 
 These packages are synchronized parts of the release set for compiler, provider, runtime, and package-lowering maintainers. They are not application-author SDKs.
 
-The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.2 release policy.
+The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.3 release policy.
 
 ## `@pulse-compute/wasm-build-support`
 

@@ -302,6 +302,29 @@ export default defineConfig((scope) => ({
     assert.equal(fastlyParityInspect.compiler.providerLowering.deployable, true);
     assert.equal(fastlyParityInspect.compiler.providerLowering.providerSpecificUserland, false);
 
+    const storageRoot = require('./storage-fixture.cjs').storageFixture(path.join(tmpRoot, 'storage'));
+    for (const profile of ['local', 'javascript', 'fastly']) {
+      const storage = parseJson(run(['test', '--profile', profile, '--json'], storageRoot, parityRunOptions));
+      assert.deepEqual(storage.summary, { total: 3, passed: 3, failed: 0 });
+      if (profile === 'fastly') {
+        for (const entry of storage.cases) {
+          assert.equal(entry.executionEvidence.kind, 'fastly-native-fixture-abi');
+          assert.equal(entry.executionEvidence.providerRealityValidated, false);
+          assert.match(entry.executionEvidence.wasmSha256, /^[a-f0-9]{64}$/);
+          assert.equal(entry.effects, null, 'ABI fixtures must not fabricate canonical effect telemetry');
+        }
+      }
+    }
+    // A KV-only project must select the provider's Native executor independently
+    // of S3's guest-source crypto requirements.
+    const storageSource = path.join(storageRoot, 'src/index.ts');
+    fs.writeFileSync(storageSource, fs.readFileSync(storageSource, 'utf8')
+      .replace(/import \{ s3 \}[^\n]+\n/, '')
+      .replace(/app.post\('\/objects'[\s\S]+?(?=export default app)/, ''));
+    const kvOnly = parseJson(run(['test', '--profile', 'fastly', '--case', 'conditional KV consumer', '--json'], storageRoot, parityRunOptions));
+    assert.deepEqual(kvOnly.summary, { total: 1, passed: 1, failed: 0 });
+    assert.equal(kvOnly.cases[0].executionEvidence.kind, 'fastly-native-fixture-abi');
+
     const fastlyInitRoot = path.join(tmpRoot, 'fastly-pulse');
     const fastlyInit = parseError(run(['init', fastlyInitRoot, '--provider', 'fastly', '--json'], tmpRoot));
     assert.equal(fastlyInit.error.code, 'PULSE_PROVIDER_FLAG_REMOVED');

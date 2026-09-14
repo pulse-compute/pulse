@@ -502,7 +502,10 @@ function createNodeProviderAdapter(baseOptions = {}) {
     dispatchFetch,
     async dispatchEffect(effect, executionOptions = {}) {
       if (['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)) {
-        return require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions }, (name) => bindingValue(executionOptions, 'secrets', name));
+        return require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions,
+          fetchImplementation: executionOptions.s3FetchImplementation || baseOptions.s3FetchImplementation
+            || executionOptions.fetchImplementation || baseOptions.fetchImplementation
+        }, (name) => bindingValue(executionOptions, 'secrets', name));
       }
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
       if (effect.kind === 'jwt.verify') return verifyNativeJwt(effect, executionOptions);

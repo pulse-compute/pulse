@@ -7,15 +7,15 @@
 > **Supported entry points:** `@pulse-compute/crypto`<br>
 > **Stability:** The package root is the supported bounded verification contract; realization and Native integration subpaths remain toolchain-only.<br>
 > **npm:** [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/crypto/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/crypto/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
 <!-- pulse-package-status:end -->
 
 Provider-neutral cryptographic verification contracts for Pulse.
 
 This package and `@pulse-compute/jwt` are members of the synchronized
-`1.0.0-beta.2` release catalog.
+`1.0.0-beta.3` release catalog.
 
 ## Verification contract
 

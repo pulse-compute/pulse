@@ -29,7 +29,7 @@ The machine-readable publication contract is the `publication` object in `releas
 Use the manifest-owned preparation policy instead of repository-wide version replacement:
 
 ```bash
-pnpm release:prepare -- 1.0.0-beta.2 --channel beta --replace-unpublished
+pnpm release:prepare -- 1.0.0-beta.3 --channel beta --replace-unpublished
 ```
 
 `--replace-unpublished` replaces the current candidate without inventing release history. After a version has actually shipped, use `--archive-current`; that mode requires the committed immutable documentation snapshot. The command updates only catalogued JSON, package, guest-metadata, and current-documentation owners, runs named generators, rejects newly changed paths outside its allowlist, and writes an ignored stale-version-token report for review.
@@ -44,8 +44,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.2 \
-  -f release_tag=v1.0.0-beta.2 \
+  --ref v1.0.0-beta.3 \
+  -f release_tag=v1.0.0-beta.3 \
   -f operation=audit
 ```
 
@@ -66,9 +66,23 @@ environment: npm-publish
 ```
 
 The workflow publishes public packages directly under the dist-tag in the
-release manifest. OIDC is deliberately not combined with a post-publication
-`npm dist-tag` mutation. The protected script verifies the native GitHub tag ref
+release manifest, now explicitly `latest` for future releases. The release
+channel and prerelease version remain Beta; the npm tag determines what an
+unqualified `npm install` selects. Release preparation preserves this tag
+policy across version bumps. An explicitly configured channel tag remains
+supported for a release intended for a separate preview stream.
+
+The pinned npm CLI's trusted publishing does not support a separate
+post-publication `npm dist-tag` update. Each successful `npm publish --tag latest`
+therefore advances that package's default version as part of publication;
+the historical `beta` alias is not also advanced. The package set is published
+in dependency order, with the public CLI last, and promotion is not atomic
+across packages. The protected script verifies the native GitHub tag ref
 and SHA against the sealed candidate before the first publish.
+
+This policy applies to future candidate source. Finish an already-started
+release using its original tag, tooling, and sealed tarballs. Do not move that
+tag or rebuild the same published version to adopt a new publication policy.
 
 ## One-time package bootstrap
 
@@ -78,7 +92,7 @@ An npm trusted publisher can be configured only after the package name exists un
 npm run release:audit-npm
 ```
 
-The command derives every package name from the release manifest and writes a timestamped, manifest-digest-bound report to `.pulse-release-preflight/npm-catalog-audit.json`. That report is ignored source evidence: it never rewrites the canonical preflight policy and it performs no registry mutation. The audit is ready only when every name exists, `bootstrap` points to `0.0.0`, and `latest` is either absent or still points to the same inert `0.0.0` placeholder. A different `latest` target remains blocking and any required dist-tag remediation is an explicit human registry action.
+The command derives every package name from the release manifest and writes a timestamped, manifest-digest-bound report to `.pulse-release-preflight/npm-catalog-audit.json`. That report is ignored source evidence: it never rewrites the canonical preflight policy and it performs no registry mutation. Every name must exist with the inert `0.0.0` version and `bootstrap` tag. The `latest` tag may be absent, point to that placeholder, or point to a version both present in the registry and listed in `release/documentation-versions.json`. This preserves existing releases during the next bootstrap audit. Missing versions and unknown release targets remain blocking; any remediation is an explicit human registry action.
 
 Any missing package name requires a one-time human, 2FA-protected bootstrap publication through `scripts/npm_bootstrap.sh <package-name>`. After all names exist:
 
@@ -128,6 +142,20 @@ version present with different integrity
 ```
 
 This is resumable after a partially completed synchronized-package release without pretending npm publication is transactional. A same-version integrity mismatch cannot be repaired by overwriting the registry artifact; the human release authority must investigate and choose a new version if necessary.
+
+npm can accept an upload while the version is still being processed. After
+each successful publish, the script polls for up to ten minutes for both the
+sealed integrity and configured tag, using fresh registry reads and intervals
+capped at 30 seconds. Progress goes to stderr and identifies the package,
+attempt, elapsed time, and whether the version or tag is still pending.
+An observed integrity conflict stops immediately.
+
+If processing exceeds the deadline, wait for registry visibility and use
+**Re-run failed jobs** on the same workflow run. Keep the release tag and sealed
+candidate unchanged: matching published packages are skipped, and publication
+continues with the remaining packages. No new seal is required for that retry.
+If source changes and a tag is moved before any publication, start a new workflow
+dispatch instead; GitHub reruns retain the original event's commit SHA.
 
 ## Verification
 

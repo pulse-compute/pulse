@@ -7,9 +7,9 @@
 > **Supported entry points:** `None for application authors.`<br>
 > **Stability:** Internal first-party prebuilt guest-link interface synchronized with the compiler; no application-author or third-party guest compatibility guarantee.<br>
 > **npm:** [`@pulse-compute/wasm-guest-link`](https://www.npmjs.com/package/@pulse-compute/wasm-guest-link)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.2/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.3/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.2` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.3` package policy.
 <!-- pulse-package-status:end -->
 
 Internal Pulse implementation package for connecting validated first-party core

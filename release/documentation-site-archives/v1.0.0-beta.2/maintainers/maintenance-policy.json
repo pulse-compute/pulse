@@ -1,0 +1,809 @@
+{
+  "schemaVersion": "pulse.maintenance-policy.v2",
+  "policyVersion": 7,
+  "releaseVersion": "1.0.0-beta.2",
+  "reviewedAt": "2026-09-13",
+  "maintainerModel": {
+    "residentMaintainer": "Codex",
+    "architectureAuthority": "human",
+    "mergeAuthority": "human-only",
+    "releaseAuthority": "human-only",
+    "defaultAgentMode": "analyze-review-and-prepare-patches",
+    "agentMayMerge": false,
+    "agentMayPublish": false,
+    "agentMayChangeRepositorySettings": false,
+    "agentMayApproveProtectedBoundaryChanges": false
+  },
+  "github": {
+    "codeOwners": [
+      "@pulse-compute/pulse-maintainers"
+    ],
+    "openAiSecret": "OPENAI_API_KEY",
+    "codexEnvironment": "codex-maintainer",
+    "requiredStatusChecks": [
+      "Maintainer scope / scope",
+      "Repository validation / maintenance",
+      "Repository validation / node-floor",
+      "Repository validation / portable",
+      "Documentation / build"
+    ],
+    "codexMode": "manual-policy-review-plus-optional-native-review",
+    "actionPins": {
+      "actions/checkout": {
+        "sha": "9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0",
+        "version": "v7.0.0"
+      },
+      "actions/setup-node": {
+        "sha": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e",
+        "version": "v6.4.0"
+      },
+      "actions/upload-artifact": {
+        "sha": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+        "version": "v7.0.1"
+      },
+      "actions/download-artifact": {
+        "sha": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c",
+        "version": "v8.0.1"
+      },
+      "actions/github-script": {
+        "sha": "3a2844b7e9c422d3c10d287c895573f7108da1b3",
+        "version": "v9.0.0"
+      },
+      "openai/codex-action": {
+        "sha": "52fe01ec70a42f454c9d2ebd47598f9fd6893d56",
+        "version": "v1.11"
+      }
+    },
+    "protectedEnvironments": {
+      "codex-maintainer": {
+        "authority": "human-maintainer",
+        "allowedRefs": "default-branch",
+        "secrets": [
+          "OPENAI_API_KEY"
+        ],
+        "variables": []
+      },
+      "npm-publish": {
+        "authority": "human-release",
+        "allowedRefs": "release-tags",
+        "secrets": [],
+        "variables": []
+      },
+      "documentation-production": {
+        "authority": "human-release-infrastructure",
+        "allowedRefs": "release-tags",
+        "secrets": [
+          "FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID",
+          "FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY"
+        ],
+        "variables": [
+          "FASTLY_OBJECT_STORAGE_BUCKET",
+          "FASTLY_OBJECT_STORAGE_REGION",
+          "FASTLY_OBJECT_STORAGE_ENDPOINT",
+          "PULSE_DOCUMENTATION_ORIGIN",
+          "PULSE_DOCUMENTATION_BASE_PATH"
+        ]
+      }
+    }
+  },
+  "changeClasses": {
+    "defect": {
+      "label": "Defect",
+      "summary": "Supported behavior does not match the documented or tested contract.",
+      "agentMayImplement": true,
+      "humanDecisionRequired": false,
+      "defaultScope": "inside-developer-preview"
+    },
+    "hardening": {
+      "label": "Hardening",
+      "summary": "Reliability, security, diagnostics, performance, or test strength improves without widening supported behavior.",
+      "agentMayImplement": true,
+      "humanDecisionRequired": false,
+      "defaultScope": "inside-developer-preview"
+    },
+    "documentation": {
+      "label": "Documentation",
+      "summary": "Documentation, examples, generated references, or presentation change without runtime behavior expansion.",
+      "agentMayImplement": true,
+      "humanDecisionRequired": false,
+      "defaultScope": "inside-developer-preview"
+    },
+    "evidence": {
+      "label": "Evidence",
+      "summary": "A reproduction, benchmark, fixture, experiment, or usage report records information without creating a product promise.",
+      "agentMayImplement": true,
+      "humanDecisionRequired": false,
+      "defaultScope": "evidence-only"
+    },
+    "scope-expansion": {
+      "label": "Scope expansion",
+      "summary": "New authoring syntax, capability, provider, effect, public entry point, compatibility promise, or product behavior is proposed.",
+      "agentMayImplement": false,
+      "humanDecisionRequired": true,
+      "defaultScope": "scope-expansion"
+    },
+    "architecture": {
+      "label": "Architecture",
+      "summary": "A protected boundary, trust assumption, ownership rule, execution contract, or governance mechanism changes.",
+      "agentMayImplement": false,
+      "humanDecisionRequired": true,
+      "defaultScope": "architecture-change"
+    },
+    "release": {
+      "label": "Release",
+      "summary": "Versioning, publication, signing, provenance, package composition, or release-channel behavior changes.",
+      "agentMayImplement": false,
+      "humanDecisionRequired": true,
+      "defaultScope": "release-change"
+    }
+  },
+  "scopeStates": {
+    "inside-developer-preview": {
+      "label": "Inside Beta",
+      "humanDecisionRequired": false
+    },
+    "evidence-only": {
+      "label": "Evidence only",
+      "humanDecisionRequired": false
+    },
+    "scope-expansion": {
+      "label": "Scope expansion",
+      "humanDecisionRequired": true
+    },
+    "architecture-change": {
+      "label": "Architecture change",
+      "humanDecisionRequired": true
+    },
+    "release-change": {
+      "label": "Release change",
+      "humanDecisionRequired": true
+    }
+  },
+  "checks": {
+    "maintenance-policy": {
+      "label": "Maintainer control plane",
+      "command": "node scripts/validate-maintainer-control-plane.cjs",
+      "portable": true
+    },
+    "publication-control-plane": {
+      "label": "Publication and documentation deployment control plane",
+      "command": "node scripts/validate-publication-workflows.cjs",
+      "portable": true
+    },
+    "release-preflight": {
+      "label": "Release preflight and documentation inventory",
+      "command": "node scripts/release-preflight.cjs --check",
+      "portable": true
+    },
+    "documentation": {
+      "label": "Documentation synchronization and site",
+      "command": "npm run docs:check",
+      "portable": true
+    },
+    "unit": {
+      "label": "Unit and repository contract evidence",
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report",
+      "portable": true
+    },
+    "native": {
+      "label": "Native compilation and runtime evidence",
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile native --no-report",
+      "portable": true
+    },
+    "javascript": {
+      "label": "JavaScript target evidence",
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile javascript --no-report",
+      "portable": true
+    },
+    "conformance": {
+      "label": "Cross-target conformance evidence",
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile conformance --no-report",
+      "portable": true
+    },
+    "cli": {
+      "label": "CLI truth profile",
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile cli --no-report",
+      "portable": true
+    },
+    "providers": {
+      "label": "Provider realization evidence",
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile providers --no-report",
+      "portable": false
+    },
+    "build": {
+      "label": "Workspace TypeScript build",
+      "command": "pnpm build",
+      "portable": false
+    },
+    "release": {
+      "label": "Aggregate release seal",
+      "command": "npm run release:seal",
+      "portable": false
+    }
+  },
+  "protectedBoundaries": [
+    {
+      "id": "public-authoring-api",
+      "label": "Public authoring API",
+      "summary": "The provider-neutral TypeScript handler and exported application types.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "effect-capability-model",
+      "label": "Effect and capability model",
+      "summary": "The explicit operations a guest can request and the authority a host can realize.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "continuation-runtime",
+      "label": "Continuation runtime",
+      "summary": "Suspension, resumption, timeout, identity, and lifecycle semantics between effects.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "lowerer-trust",
+      "label": "Lowerer trust boundary",
+      "summary": "Discovery and execution of package-owned lowerers and the first-party trust restriction.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "provider-registry",
+      "label": "Provider registry",
+      "summary": "Provider namespace resolution, exact scoped-package bootstrap, provider contracts, host bindings, and target realization.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "configuration-contract",
+      "label": "Configuration contract",
+      "summary": "Public project configuration fields, defaults, precedence, and runtime constraints.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": false
+    },
+    {
+      "id": "runtime-target-fluidity",
+      "label": "Runtime target fluidity",
+      "summary": "The stable runtime authoring contract and the explicit boundary between native, JavaScript, and future sidecar execution targets.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "package-publication",
+      "label": "Package publication contract",
+      "summary": "Published package set, exports, support tiers, exact versions, and packed payloads.",
+      "decisionKind": "release",
+      "contractUpdateRequired": false
+    },
+    {
+      "id": "maintenance-control-plane",
+      "label": "Maintenance control plane",
+      "summary": "Agent authority, scope policy, repository workflows, ownership, and review gates.",
+      "decisionKind": "architecture",
+      "contractUpdateRequired": true
+    },
+    {
+      "id": "documentation-deployment",
+      "label": "Documentation deployment contract",
+      "summary": "Immutable version objects, mutable promotion surfaces, Object Storage delivery, public routing, and production activation.",
+      "decisionKind": "release",
+      "contractUpdateRequired": false
+    },
+    {
+      "id": "release-authority",
+      "label": "Release authority",
+      "summary": "Version, channel, publication, deployment, signing, and provenance decisions.",
+      "decisionKind": "release",
+      "contractUpdateRequired": false
+    }
+  ],
+  "pathRules": [
+    {
+      "id": "maintainer-control-plane",
+      "patterns": [
+        "AGENTS.md",
+        "**/AGENTS.md",
+        ".github/**",
+        "CONTRIBUTING.md",
+        "SECURITY.md",
+        "SUPPORT.md",
+        "release/maintenance-policy.json",
+        "scripts/maintenance-policy.cjs",
+        "scripts/maintainer-*.cjs",
+        "scripts/validate-maintainer-control-plane.cjs",
+        "docs/maintainers/README.md",
+        "docs/maintainers/maintainer-charter.md",
+        "docs/maintainers/scope-policy.md",
+        "docs/maintainers/codex-maintainer.md",
+        "docs/maintainers/repository-setup.md",
+        "docs/maintainers/support-and-triage.md",
+        "docs/maintainers/maintenance-policy.*"
+      ],
+      "areas": [
+        "governance"
+      ],
+      "boundaries": [
+        "maintenance-control-plane"
+      ],
+      "checks": [
+        "maintenance-policy",
+        "documentation"
+      ],
+      "risk": "high"
+    },
+    {
+      "id": "public-api",
+      "patterns": [
+        "API.md",
+        "packages/pulse/**",
+        "packages/runtime/**"
+      ],
+      "areas": [
+        "api"
+      ],
+      "boundaries": [
+        "public-authoring-api"
+      ],
+      "checks": [
+        "documentation",
+        "unit",
+        "native",
+        "conformance",
+        "build"
+      ],
+      "risk": "high"
+    },
+    {
+      "id": "effects-and-continuations",
+      "patterns": [
+        "wasm/packages/contracts/src/handler/**",
+        "wasm/packages/host-runtime/src/runtime/**",
+        "wasm/packages/runtime-core-as/src/compiler/route-handler-effects.js",
+        "wasm/packages/runtime-core-as/src/compiler/route-handler-context.js",
+        "wasm/packages/compiler/src/codegen/effect-*.js",
+        "wasm/packages/compiler/src/codegen/host-runtime-kernel.js"
+      ],
+      "areas": [
+        "compiler",
+        "runtime"
+      ],
+      "boundaries": [
+        "effect-capability-model",
+        "continuation-runtime"
+      ],
+      "checks": [
+        "unit",
+        "native",
+        "conformance",
+        "build"
+      ],
+      "risk": "critical"
+    },
+    {
+      "id": "lowerer-trust",
+      "patterns": [
+        "packages/*/pulsewasm.manifest.cjs",
+        "packages/*/pulsewasm.compiler.cjs",
+        "packages/*/src/pulsewasm*.ts",
+        "wasm/packages/contracts/src/library/**",
+        "wasm/packages/library-kit/src/compiler/package-lowering.js",
+        "wasm/packages/compiler/src/canonical-project-compiler.js",
+        "wasm/packages/library-kit/src/compiler/handler-library-contracts.js"
+      ],
+      "areas": [
+        "lowering"
+      ],
+      "boundaries": [
+        "lowerer-trust"
+      ],
+      "checks": [
+        "unit",
+        "native",
+        "build"
+      ],
+      "risk": "critical"
+    },
+    {
+      "id": "providers",
+      "patterns": [
+        "wasm/packages/cli/src/provider-drivers.js",
+        "wasm/packages/compiler/src/provider-toolchain.js",
+        "wasm/packages/compiler/src/project-target-support.js",
+        "wasm/packages/contracts/src/project/javascript-core-capabilities.js",
+        "wasm/packages/contracts/src/project/native-optimization.js",
+        "wasm/packages/contracts/src/provider/**",
+        "packages/provider-node/**",
+        "packages/provider-fastly/**"
+      ],
+      "areas": [
+        "provider"
+      ],
+      "boundaries": [
+        "provider-registry",
+        "runtime-target-fluidity"
+      ],
+      "checks": [
+        "unit",
+        "native",
+        "javascript",
+        "conformance",
+        "providers",
+        "build"
+      ],
+      "risk": "critical"
+    },
+    {
+      "id": "target-compilation",
+      "patterns": [
+        "wasm/packages/cli/src/project-execution.js",
+        "wasm/packages/compiler/src/canonical-api-compiler.js",
+        "wasm/packages/compiler/src/canonical-project-compiler.js",
+        "wasm/packages/compiler/src/canonical-native-plan.js",
+        "wasm/packages/compiler/src/javascript-application-plan.js",
+        "wasm/packages/compiler/src/project/router-module-linker.js",
+        "wasm/packages/compiler/src/spine/async-surface-normalizer.js",
+        "wasm/packages/compiler/src/spine/plain-handler-frontend.js",
+        "wasm/packages/compiler/src/spine/router-handler-frontend.js"
+      ],
+      "areas": [
+        "compiler",
+        "cli"
+      ],
+      "boundaries": [
+        "runtime-target-fluidity"
+      ],
+      "checks": [
+        "documentation",
+        "unit",
+        "native",
+        "javascript",
+        "conformance",
+        "cli",
+        "build"
+      ],
+      "risk": "high"
+    },
+    {
+      "id": "configuration",
+      "patterns": [
+        "wasm/packages/cli/src/project-config*.js",
+        "wasm/packages/cli/src/project-config*.d.ts",
+        "packages/provider-fastly/src/config-schema.*",
+        "docs/reference/project-config*"
+      ],
+      "areas": [
+        "cli",
+        "configuration"
+      ],
+      "boundaries": [
+        "configuration-contract"
+      ],
+      "checks": [
+        "maintenance-policy",
+        "documentation",
+        "unit",
+        "cli",
+        "build"
+      ],
+      "risk": "high"
+    },
+    {
+      "id": "cli-and-diagnostics",
+      "patterns": [
+        "wasm/packages/cli/**",
+        "wasm/scripts/pulse.cjs",
+        "docs/reference/cli*",
+        "docs/reference/diagnostics.md",
+        "docs/reference/environment.md"
+      ],
+      "areas": [
+        "cli"
+      ],
+      "boundaries": [],
+      "checks": [
+        "documentation",
+        "unit",
+        "cli",
+        "build"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": "release-system",
+      "patterns": [
+        "LICENSE",
+        "NOTICE",
+        "release/pulse-release-manifest.json",
+        "release/release-preflight.json",
+        "release/documentation-inventory.json",
+        "release/documentation-versions.json",
+        "release/documentation-site.json",
+        "package.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "packages/*/package.json",
+        "wasm/packages/*/package.json",
+        "scripts/pack-release.cjs",
+        "scripts/release-preflight.cjs",
+        "scripts/validate-release.cjs",
+        "scripts/bundle_deps.sh",
+        "scripts/restore_deps.sh",
+        ".gitignore",
+        "scripts/package-support.cjs"
+      ],
+      "areas": [
+        "release"
+      ],
+      "boundaries": [
+        "package-publication",
+        "release-authority"
+      ],
+      "checks": [
+        "maintenance-policy",
+        "release-preflight",
+        "documentation",
+        "unit",
+        "build",
+        "release"
+      ],
+      "risk": "critical"
+    },
+    {
+      "id": "publication-and-delivery",
+      "patterns": [
+        "LICENSE",
+        "NOTICE",
+        "release/pulse-release-manifest.json",
+        "release/release-preflight.json",
+        "release/documentation-inventory.json",
+        "release/documentation-deployment.json",
+        "scripts/pack-release.cjs",
+        "scripts/release-candidate.cjs",
+        "scripts/release-publication.cjs",
+        "scripts/publish-release.cjs",
+        "scripts/verify-npm-release.cjs",
+        "scripts/documentation-deployment.cjs",
+        "scripts/validate-publication-workflows.cjs",
+        "scripts/release-preflight.cjs",
+        "wasm/test/release/assert-release-packages.cjs",
+        ".github/workflows/npm-publish.yml",
+        ".github/workflows/documentation.yml",
+        ".github/workflows/documentation-deploy.yml",
+        "infra/fastly/documentation/**",
+        "docs/maintainers/npm-publishing.md",
+        "docs/maintainers/documentation-deployment.md"
+      ],
+      "areas": [
+        "release",
+        "documentation",
+        "deployment"
+      ],
+      "boundaries": [
+        "package-publication",
+        "documentation-deployment",
+        "release-authority"
+      ],
+      "checks": [
+        "maintenance-policy",
+        "publication-control-plane",
+        "release-preflight",
+        "documentation",
+        "unit",
+        "build",
+        "release"
+      ],
+      "risk": "critical"
+    },
+    {
+      "id": "documentation",
+      "patterns": [
+        "CHANGELOG.md",
+        "README.md",
+        "docs/**",
+        "examples/**",
+        "scripts/documentation-*.cjs",
+        "scripts/build-docs-site.cjs",
+        "scripts/documentation-site/**",
+        "wasm/scripts/sync-*.cjs",
+        "packages/*/README.md",
+        "wasm/packages/*/README.md",
+        "wasm/MAPPING.md",
+        "scripts/environment-reference.cjs"
+      ],
+      "areas": [
+        "documentation"
+      ],
+      "boundaries": [],
+      "checks": [
+        "maintenance-policy",
+        "documentation"
+      ],
+      "risk": "low"
+    },
+    {
+      "id": "tests-and-evidence",
+      "patterns": [
+        "wasm/test/**"
+      ],
+      "areas": [
+        "testing"
+      ],
+      "boundaries": [],
+      "checks": [
+        "maintenance-policy",
+        "unit"
+      ],
+      "risk": "medium"
+    },
+    {
+      "id": "compiler-default",
+      "patterns": [
+        "wasm/packages/build-support/**",
+        "wasm/packages/compiler/**",
+        "wasm/packages/contracts/**",
+        "wasm/packages/host-runtime/**",
+        "wasm/packages/library-kit/**",
+        "wasm/packages/runtime-core-as/**",
+        "wasm/packages/schema-json/**"
+      ],
+      "areas": [
+        "compiler"
+      ],
+      "boundaries": [],
+      "checks": [
+        "unit",
+        "native",
+        "javascript",
+        "conformance",
+        "build"
+      ],
+      "risk": "high"
+    }
+  ],
+  "pullRequestDeclaration": {
+    "startMarker": "<!-- pulse-maintainer-declaration:start -->",
+    "endMarker": "<!-- pulse-maintainer-declaration:end -->",
+    "fields": {
+      "Change class": [
+        "defect",
+        "hardening",
+        "documentation",
+        "evidence",
+        "scope-expansion",
+        "architecture",
+        "release"
+      ],
+      "Scope": [
+        "inside-developer-preview",
+        "evidence-only",
+        "scope-expansion",
+        "architecture-change",
+        "release-change"
+      ],
+      "Protected boundaries": "boundary-list-or-none",
+      "Human decision": [
+        "not-required",
+        "required"
+      ]
+    }
+  },
+  "labels": [
+    {
+      "name": "type:defect",
+      "color": "d73a4a",
+      "description": "Supported behavior is broken or inconsistent."
+    },
+    {
+      "name": "type:hardening",
+      "color": "fbca04",
+      "description": "Reliability, security, diagnostics, performance, or test hardening."
+    },
+    {
+      "name": "type:documentation",
+      "color": "0075ca",
+      "description": "Documentation, examples, or generated reference work."
+    },
+    {
+      "name": "type:evidence",
+      "color": "bfdadc",
+      "description": "Reproduction, experiment, benchmark, or usage evidence."
+    },
+    {
+      "name": "type:scope-proposal",
+      "color": "c5def5",
+      "description": "Proposal to widen current product scope."
+    },
+    {
+      "name": "type:support",
+      "color": "d4c5f9",
+      "description": "Usage question or support request."
+    },
+    {
+      "name": "decision:human-required",
+      "color": "b60205",
+      "description": "Architecture, scope, or release authority decision is required."
+    },
+    {
+      "name": "decision:architecture",
+      "color": "5319e7",
+      "description": "A protected architecture boundary is involved."
+    },
+    {
+      "name": "status:needs-reproduction",
+      "color": "fef2c0",
+      "description": "A minimal reproduction or additional evidence is required."
+    },
+    {
+      "name": "status:blocked",
+      "color": "000000",
+      "description": "Work cannot proceed until an explicit dependency or decision is resolved."
+    },
+    {
+      "name": "area:compiler",
+      "color": "1d76db",
+      "description": "Compiler, lowering, contracts, or generated program work."
+    },
+    {
+      "name": "area:cli",
+      "color": "0e8a16",
+      "description": "CLI, configuration, diagnostics, or workflow work."
+    },
+    {
+      "name": "area:provider",
+      "color": "0052cc",
+      "description": "Provider contract, host binding, or target work."
+    },
+    {
+      "name": "area:documentation",
+      "color": "006b75",
+      "description": "Documentation system or public site work."
+    },
+    {
+      "name": "area:release",
+      "color": "e99695",
+      "description": "Package publication, versioning, or release acceptance work."
+    },
+    {
+      "name": "area:deployment",
+      "color": "0b7285",
+      "description": "npm publication, Object Storage, or CDN delivery work."
+    },
+    {
+      "name": "area:governance",
+      "color": "7057ff",
+      "description": "Maintainer policy, agent guidance, or repository automation work."
+    }
+  ],
+  "issueForms": {
+    "bug.yml": {
+      "changeClass": "defect",
+      "labels": [
+        "type:defect",
+        "status:needs-reproduction"
+      ]
+    },
+    "documentation.yml": {
+      "changeClass": "documentation",
+      "labels": [
+        "type:documentation",
+        "area:documentation"
+      ]
+    },
+    "scope-proposal.yml": {
+      "changeClass": "scope-expansion",
+      "labels": [
+        "type:scope-proposal",
+        "decision:human-required"
+      ]
+    },
+    "support.yml": {
+      "changeClass": "evidence",
+      "labels": [
+        "type:support"
+      ]
+    }
+  }
+}

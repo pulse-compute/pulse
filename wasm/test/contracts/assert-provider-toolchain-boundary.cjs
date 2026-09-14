@@ -92,6 +92,12 @@ const invocationInput = {
   timeoutMs: 1000
 };
 
+const executionInvocation = contracts.createProviderTargetInvocation({ ...invocationInput, action: 'execute-native' });
+assert.equal(executionInvocation.action, 'execute-native');
+assert.equal(executionInvocation.project.outDir, null);
+assert.equal(executionInvocation.nativeArtifact.finalArtifact.sha256, wasmHash);
+assert.throws(() => contracts.createProviderTargetInvocation({ ...invocationInput, action: 'execute-native', nativeArtifact: null }), /Native artifact/);
+
 const invocation = contracts.createProviderTargetInvocation(invocationInput);
 assert.equal(invocation.version, contracts.PROVIDER_TARGET_INVOCATION_VERSION);
 assert.deepEqual(Object.keys(invocation).sort(), [

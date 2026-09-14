@@ -36,10 +36,24 @@ const archivePlan = planRelease(
   parsePreparationArgs(['9.9.9-beta.1', '--archive-current', '--date', '2026-09-14']),
   assertManifestConsistency(releaseManifest, documentationVersions)
 );
+const previewManifest = structuredClone(releaseManifest);
+previewManifest.publication.distTag = 'beta';
+assert.equal(planRelease(previewManifest, documentationVersions,
+  parsePreparationArgs(['9.9.9-beta.1', '--archive-current', '--date', '2026-09-14']),
+  assertManifestConsistency(previewManifest, documentationVersions)).nextRelease.publication.distTag, 'beta');
+previewManifest.publication.distTag = 'unreviewed-tag';
+assert.throws(() => assertManifestConsistency(previewManifest, documentationVersions), /explicitly configured latest/);
 const archivedCurrent = archivePlan.nextDocumentationVersions.versions.find((entry) => entry.version === releaseManifest.releaseVersion);
 assert.equal(archivedCurrent.status, 'archived');
 assert.equal(archivedCurrent.sourceManifest, `release/documentation-site-archives/v${releaseManifest.releaseVersion}/release-manifest.json`);
 assert.equal(archivePlan.nextDocumentationVersions.versions[0].sourceManifest, 'release/pulse-release-manifest.json');
+assert.equal(archivePlan.nextRelease.channel, 'beta');
+assert.equal(archivePlan.nextRelease.publication.distTag, 'latest');
+const nextPreflight = JSON.parse(archivePlan.writes.get(path.join(repoRoot, PREFLIGHT_FILE)));
+assert.equal(nextPreflight.releaseCandidate.publicationTag, 'latest');
+assert.equal(nextPreflight.releaseCandidate.latestTagAllowed, true);
+assert.equal(nextPreflight.releaseVocabulary.npmDistTag, 'latest');
+assert.equal(nextPreflight.npmBootstrap.releaseTag, 'latest');
 for (const entry of documentationVersions.versions.filter((entry) => entry.status === 'archived')) {
   assert.deepEqual(archivePlan.nextDocumentationVersions.versions.find((candidate) => candidate.version === entry.version), entry);
 }
@@ -94,13 +108,13 @@ assert.deepEqual(result.vocabulary, {
   schemaVersion: 'pulse.release-vocabulary.v1',
   displayLabel: 'Beta',
   displayName: `Pulse ${releaseManifest.releaseVersion} — Beta`,
-  npmDistTag: 'beta',
+  npmDistTag: 'latest',
   activationStage: 'documentation-release'
 });
 assert.equal(result.bootstrap.packageCount, releaseManifest.packages.length);
 assert.equal(result.bootstrap.version, '0.0.0');
 assert.equal(result.bootstrap.tag, 'bootstrap');
-assert.equal(result.bootstrap.releaseTag, 'beta');
+assert.equal(result.bootstrap.releaseTag, 'latest');
 assert.equal(result.bootstrap.auditEvidence.output, '.pulse-release-preflight/npm-catalog-audit.json');
 assert.equal(result.bootstrap.auditEvidence.requiredBy, 'publication');
 assert.deepEqual(result.conformance, {
@@ -172,8 +186,9 @@ const auditEvidence = {
     statusCode: 200,
     versionCount: 1,
     bootstrap: { version: '0.0.0', versionPresent: true, tagTarget: '0.0.0' },
-    release: { version: releaseManifest.releaseVersion, versionPresent: false, distTag: releaseManifest.publication.distTag, tagTarget: null },
-    latestTagTarget: '0.0.0'
+    release: { version: releaseManifest.releaseVersion, versionPresent: false, distTag: releaseManifest.publication.distTag, tagTarget: '0.0.0' },
+    latestTagTarget: '0.0.0',
+    latestTagVersionPresent: true
   })),
   summary: {
     total: releaseManifest.packages.length,
@@ -188,7 +203,11 @@ const validatedAudit = validateNpmAuditEvidence(auditEvidence, { repoRoot, now: 
 assert.equal(validatedAudit.status, 'ready');
 assert.equal(validatedAudit.summary.existing, releaseManifest.packages.length);
 const absentLatestAudit = structuredClone(auditEvidence);
-for (const entry of absentLatestAudit.packages) entry.latestTagTarget = null;
+for (const entry of absentLatestAudit.packages) {
+  entry.latestTagTarget = null;
+  entry.latestTagVersionPresent = false;
+  entry.release.tagTarget = null;
+}
 assert.equal(
   validateNpmAuditEvidence(absentLatestAudit, { repoRoot, now: '2026-08-01T12:00:00.000Z', maxAgeHours: 24 }).status,
   'ready'
@@ -196,12 +215,27 @@ assert.equal(
 const unsafeLatestAudit = structuredClone(auditEvidence);
 unsafeLatestAudit.status = 'remediation-required';
 unsafeLatestAudit.packages[0].latestTagTarget = releaseManifest.releaseVersion;
+unsafeLatestAudit.packages[0].latestTagVersionPresent = false;
+unsafeLatestAudit.packages[0].release.tagTarget = releaseManifest.releaseVersion;
 unsafeLatestAudit.summary.bootstrapCompliant -= 1;
 unsafeLatestAudit.summary.tagRemediation += 1;
 assert.equal(
   validateNpmAuditEvidence(unsafeLatestAudit, { repoRoot, now: '2026-08-01T12:00:00.000Z', maxAgeHours: 24 }).status,
   'remediation-required'
 );
+const releasedLatestAudit = structuredClone(auditEvidence);
+releasedLatestAudit.packages[0].latestTagTarget = documentationVersions.versions.find((entry) => entry.status === 'archived').version;
+releasedLatestAudit.packages[0].release.tagTarget = releasedLatestAudit.packages[0].latestTagTarget;
+assert.equal(validateNpmAuditEvidence(releasedLatestAudit, { repoRoot, now: '2026-08-01T12:00:00.000Z' }).status, 'ready');
+releasedLatestAudit.packages[0].latestTagTarget = releaseManifest.releaseVersion;
+releasedLatestAudit.packages[0].release.versionPresent = true;
+releasedLatestAudit.packages[0].release.tagTarget = releaseManifest.releaseVersion;
+assert.equal(validateNpmAuditEvidence(releasedLatestAudit, { repoRoot, now: '2026-08-01T12:00:00.000Z' }).status, 'ready');
+const unknownLatestAudit = structuredClone(unsafeLatestAudit);
+unknownLatestAudit.packages[0].latestTagTarget = '999.0.0';
+unknownLatestAudit.packages[0].latestTagVersionPresent = true;
+unknownLatestAudit.packages[0].release.tagTarget = '999.0.0';
+assert.equal(validateNpmAuditEvidence(unknownLatestAudit, { repoRoot, now: '2026-08-01T12:00:00.000Z' }).status, 'remediation-required');
 assert.throws(
   () => validateNpmAuditEvidence({ ...auditEvidence, releaseManifestSha256: '0'.repeat(64) }, { repoRoot, now: '2026-08-01T12:00:00.000Z' }),
   /not bound to the current release manifest/

@@ -86,7 +86,7 @@ separate ordinary-lifecycle and Fastly Native integration boundaries.
 ## JWT and crypto Beta packages
 
 This table records the sealed Phase D and E behavior of the synchronized
-`1.0.0-beta.2` JWT/crypto packages. Validation does not itself authorize npm
+`1.0.0-beta.3` JWT/crypto packages. Validation does not itself authorize npm
 publication.
 
 | Candidate capability | Node JS | Fastly JS | Node Native | Fastly Native | Notes |
