@@ -1,5 +1,11 @@
 # Structured and opaque bodies
 
+Application-owned JSON strings can be decoded synchronously with
+`ctx.decodeJson<T>(text, 'schema.id')`. The registered schema and UTF-8 size
+limit apply without fetching the body again. Keep the original string for
+byte hashes and retries; a decoded value is a detached schema projection.
+See [application text decoding](../guides/json-schemas.md#decode-application-owned-text).
+
 Pulse distinguishes bodies that application code may inspect from bodies that must remain host-owned. That distinction is part of the provider-neutral contract and is visible in types, compiler metadata, tests, and diagnostics.
 
 A useful rule is:
