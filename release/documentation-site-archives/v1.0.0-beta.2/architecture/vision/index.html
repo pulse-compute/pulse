@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Pulse Vision Status: North-star architecture and product direction. This document describes the intended shape of Pulse from the Beta toward a compatibility-bearing 1.0. It is directional rather than a compatibility prom">
+  <meta name="theme-color" content="#0b0908">
+  <link rel="canonical" href="https://pulsecompute.io/v1.0.0-beta.2/architecture/vision/">
+  <link rel="icon" href="/v1.0.0-beta.2/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/v1.0.0-beta.2/assets/tokens.css">
+  <link rel="stylesheet" href="/v1.0.0-beta.2/assets/site.css">
+  <script src="/v1.0.0-beta.2/assets/boot.js"></script>
+  <title>Pulse Vision · Pulse 1.0.0-beta.2</title>
+</head>
+<body class="docs-body" data-page-kind="docs" data-search-index="/v1.0.0-beta.2/search-index.json" data-base-path="" data-current-route="architecture/vision/" data-current-version="v1.0.0-beta.2">
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="/" aria-label="Pulse home"><svg class="brand__mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12h4l2.1-5.5 3.3 11L14 12h8"></path></svg><span>Pulse</span><span class="brand__separator" aria-hidden="true"></span><span class="brand__context">Documentation</span></a>
+    <button class="icon-button icon-button--menu" type="button" data-nav-open aria-label="Open documentation navigation" aria-controls="documentation-drawer" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h14"></path></svg></button>
+    <nav class="primary-nav" aria-label="Primary"><a href="/v1.0.0-beta.2/" aria-current="page">Docs</a><a href="/v1.0.0-beta.2/examples/">Examples</a><a href="/v1.0.0-beta.2/concepts/compilation-and-lowering/">Concepts</a><a href="https://github.com/pulse-compute/pulse" rel="noopener">GitHub</a></nav>
+    <div class="docs-controls">
+      <label class="version-control"><span>Version</span><select id="version-select" aria-label="Documentation version"><option value="v1.0.0-beta.2" selected>1.0.0-beta.2 · Beta</option><option value="v1.0.0-beta.1">1.0.0-beta.1 · beta</option></select></label>
+      <div class="search"><label class="sr-only" for="search-input">Search this release</label><input id="search-input" type="search" placeholder="Search 1.0.0-beta.2" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="search-results" aria-expanded="false"><div id="search-results" class="search-results" role="listbox" hidden></div></div>
+    </div>
+  </div>
+</header>
+  <div class="release-banner"><strong>Pulse 1.0.0-beta.2 beta</strong><span>Exact, immutable release documentation.</span><a href="/latest/architecture/vision/">Browse latest</a></div>
+  <div class="docs-shell">
+    <aside class="docs-sidebar" aria-label="Documentation navigation"><p class="docs-sidebar__label">Documentation</p><details class="nav-section" data-nav-section="start" open><summary>Start</summary><ul><li><a href="/v1.0.0-beta.2/">Overview</a></li><li><a href="/v1.0.0-beta.2/project/">Repository overview</a></li><li><a href="/v1.0.0-beta.2/changelog/">Changelog</a></li><li><a href="/v1.0.0-beta.2/getting-started/">Getting started</a></li><li><a href="/v1.0.0-beta.2/preview-scope/">Beta scope</a></li></ul></details><details class="nav-section" data-nav-section="examples" open><summary>Examples</summary><ul><li><a href="/v1.0.0-beta.2/examples/01-hello-json/">Hello JSON</a></li><li><a href="/v1.0.0-beta.2/examples/">Canonical examples</a></li><li><a href="/v1.0.0-beta.2/examples/02-request-schema/">Request schema</a></li><li><a href="/v1.0.0-beta.2/examples/03-fetch-composition/">Fetch composition</a></li><li><a href="/v1.0.0-beta.2/examples/05-fastly-capabilities/">Fastly capabilities</a></li><li><a href="/v1.0.0-beta.2/examples/07-opaque-proxy/">Opaque binary proxy</a></li><li><a href="/v1.0.0-beta.2/examples/09-router-lowering/">Router lowering</a></li><li><a href="/v1.0.0-beta.2/examples/10-entities-tools/">Entities tools facade</a></li><li><a href="/v1.0.0-beta.2/examples/11-events/">Static events</a></li><li><a href="/v1.0.0-beta.2/examples/12-mcp-proxy/">MCP-shaped HTTP proxy</a></li><li><a href="/v1.0.0-beta.2/examples/13-jwt-es256/">ES256 bearer verification</a></li></ul></details><details class="nav-section" data-nav-section="guides"><summary>Guides</summary><ul><li><a href="/v1.0.0-beta.2/guides/project-lifecycle/">Project lifecycle</a></li><li><a href="/v1.0.0-beta.2/guides/migrating-from-express/">Migrate an Express service</a></li><li><a href="/v1.0.0-beta.2/guides/fetching-and-composition/">Fetching and composing data</a></li><li><a href="/v1.0.0-beta.2/guides/json-schemas/">Explicit JSON schemas</a></li><li><a href="/v1.0.0-beta.2/guides/routing/">Static Router authoring</a></li><li><a href="/v1.0.0-beta.2/guides/events/">Static events and outbound emission</a></li><li><a href="/v1.0.0-beta.2/guides/deploying-node/">Node build and execution</a></li><li><a href="/v1.0.0-beta.2/guides/deploying-fastly/">Fastly deployment candidates</a></li><li><a href="/v1.0.0-beta.2/guides/fastly-capabilities/">Fastly config, secrets, KV, and backends</a></li><li><a href="/v1.0.0-beta.2/guides/grip/">GRIP and Fanout</a></li><li><a href="/v1.0.0-beta.2/guides/compatibility-imports/">Compatibility imports and migration</a></li><li><a href="/v1.0.0-beta.2/guides/troubleshooting/">Troubleshooting</a></li></ul></details><details class="nav-section" data-nav-section="concepts" open><summary>Concepts</summary><ul><li><a href="/v1.0.0-beta.2/architecture/overview/">Architecture overview</a></li><li><a href="/v1.0.0-beta.2/architecture/current-contracts/">Current architecture contracts</a></li><li><a href="/v1.0.0-beta.2/architecture/vision/" aria-current="page">Pulse Vision</a></li><li><a href="/v1.0.0-beta.2/concepts/compilation-and-lowering/">Compilation and lowering</a></li><li><a href="/v1.0.0-beta.2/concepts/effects-and-continuations/">Effects and continuations</a></li><li><a href="/v1.0.0-beta.2/concepts/bodies/">Structured and opaque bodies</a></li><li><a href="/v1.0.0-beta.2/concepts/contracts-and-providers/">Contracts and providers</a></li><li><a href="/v1.0.0-beta.2/concepts/targets-and-hosts/">Targets and host work</a></li><li><a href="/v1.0.0-beta.2/concepts/package-owned-lowering/">Package-owned lowering</a></li><li><a href="/v1.0.0-beta.2/concepts/entities-and-adapters/">Entity engine, adapters, and facades</a></li></ul></details><details class="nav-section" data-nav-section="packages"><summary>Packages</summary><ul><li><a href="/v1.0.0-beta.2/packages/">Package overview</a></li><li><a href="/v1.0.0-beta.2/packages/pulse/">@pulse-compute/pulse</a></li><li><a href="/v1.0.0-beta.2/packages/runtime/">@pulse-compute/runtime</a></li><li><a href="/v1.0.0-beta.2/packages/cli/">@pulse-compute/cli</a></li><li><a href="/v1.0.0-beta.2/packages/provider-fastly/">@pulse-compute/provider-fastly</a></li><li><a href="/v1.0.0-beta.2/packages/grip/">@pulse-compute/grip</a></li><li><a href="/v1.0.0-beta.2/packages/assets/">@pulse-compute/assets</a></li><li><a href="/v1.0.0-beta.2/packages/crypto/">@pulse-compute/crypto</a></li><li><a href="/v1.0.0-beta.2/packages/jwt/">@pulse-compute/jwt</a></li><li><a href="/v1.0.0-beta.2/packages/entities/">@pulse-compute/entities</a></li><li><a href="/v1.0.0-beta.2/packages/s3/">@pulse-compute/s3</a></li><li><a href="/v1.0.0-beta.2/packages/implementation-packages/">Implementation packages</a></li></ul></details><details class="nav-section" data-nav-section="reference"><summary>Reference</summary><ul><li><a href="/v1.0.0-beta.2/reference/">Reference overview</a></li><li><a href="/v1.0.0-beta.2/api/">Pulse runtime contract</a></li><li><a href="/v1.0.0-beta.2/reference/compatibility-matrix/">Provider and target compatibility</a></li><li><a href="/v1.0.0-beta.2/reference/handler-authoring/">Managed handler TypeScript and JavaScript</a></li><li><a href="/v1.0.0-beta.2/reference/cli/">CLI reference</a></li><li><a href="/v1.0.0-beta.2/reference/project-config/">Project configuration reference</a></li><li><a href="/v1.0.0-beta.2/reference/diagnostics/">Diagnostics and remediation</a></li><li><a href="/v1.0.0-beta.2/reference/environment/">Environment-variable reference</a></li><li><a href="/v1.0.0-beta.2/reference/shell-completion/">Shell completion</a></li></ul></details><details class="nav-section" data-nav-section="authors"><summary>Authors and contributors</summary><ul><li><a href="/v1.0.0-beta.2/contributing/">Contributor overview</a></li><li><a href="/v1.0.0-beta.2/contributing/pulse-aware-packages/">Pulse-aware package authoring</a></li><li><a href="/v1.0.0-beta.2/contributing/adding-first-party-lowerer/">Add a first-party package-owned lowerer</a></li><li><a href="/v1.0.0-beta.2/contributing/package-lowerer-contract/">Package lowerer contract reference</a></li><li><a href="/v1.0.0-beta.2/contributing/entities-lowering/">Entities lowering maintainer reference</a></li><li><a href="/v1.0.0-beta.2/contributing/adding-core-provider/">Add a provider toolchain</a></li></ul></details></aside>
+    <main id="content" class="docs-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><a href="/v1.0.0-beta.2/">Documentation</a><span aria-hidden="true">/</span><span>Concepts</span><span aria-hidden="true">/</span><span aria-current="page">Pulse Vision</span></nav>
+      <div class="page-meta"><span>Documentation platform maintainers</span><span>active</span><span>Reviewed 2026-09-13</span><span>Review by 2027-01-12</span></div>
+      <article class="docs-article"><h1 id="pulse-vision">Pulse Vision<a class="heading-anchor" href="#pulse-vision" aria-label="Link to this section">#</a></h1>
+<blockquote><p><strong>Status:</strong> North-star architecture and product direction.  </p><p>This document describes the intended shape of Pulse from the Beta</p><p>toward a compatibility-bearing 1.0. It is directional rather than a</p><p>compatibility promise for every current release.</p></blockquote>
+<p>Pulse is a portable application contract for progressively constrained compute.</p>
+<p>It lets developers begin with familiar TypeScript, choose an execution target deliberately, and move toward compact native WebAssembly without hiding where the source stops being eligible. Pulse does not attempt to make every host identical, compile the entire JavaScript ecosystem, or silently change deployment architecture. It makes boundaries explicit so teams can ship now and reduce execution debt over time.</p>
+<p>The long-term goal is not merely “TypeScript to Wasm.” It is a disciplined path from familiar application code to small, host-realizable programs across servers, edge platforms, and constrained devices.</p>
+<h2 id="the-problem">The problem<a class="heading-anchor" href="#the-problem" aria-label="Link to this section">#</a></h2>
+<p>Application code tends to accumulate host assumptions gradually:</p>
+<ul><li>framework-specific request and response objects;</li><li>implicit event-loop and Promise behavior;</li><li>direct access to environment variables and secrets;</li><li>provider SDKs embedded in business logic;</li><li>large dependencies added for a single feature;</li><li>opaque JSON contracts;</li><li>deployment behavior that changes without a clear source-level milestone.</li></ul>
+<p>Those assumptions are easy to introduce and difficult to remove later. By the time a team wants a smaller artifact, a more constrained host, or a different provider, the application and execution environment may be inseparable.</p>
+<p>Traditional approaches often force an all-or-nothing choice:</p>
+<ol><li>stay in a general JavaScript runtime and accept its operational cost; or</li><li>rewrite the application into a constrained language or platform-specific SDK before receiving any native benefit.</li></ol>
+<p>Pulse aims for a third path.</p>
+<h2 id="the-thesis">The thesis<a class="heading-anchor" href="#the-thesis" aria-label="Link to this section">#</a></h2>
+<p>Pulse provides one stable application model and several explicit execution targets.</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">familiar TypeScript application
+        ↓
+Pulse runtime semantics
+        ↓
+eligibility analysis
+        ↓
+explicitly selected target
+        ↓
+native Wasm, JavaScript runtime, or another host realization</code></pre>
+<p>The source remains recognizable. The target determines which parts can be lowered and how the host realizes capabilities.</p>
+<p>Pulse should tell the operator:</p>
+<ul><li>what target was selected;</li><li>what was lowered;</li><li>what could not be lowered;</li><li>the first exact boundary where native eligibility ended;</li><li>which alternate targets are available;</li><li>what size, validation, or execution tradeoffs the selection introduces.</li></ul>
+<p>Pulse must not silently fall back from native Wasm to JavaScript. Changing the target is an operator decision expressed in configuration or an explicit CLI invocation.</p>
+<h2 id="familiar-typescript-is-the-migration-surface">Familiar TypeScript is the migration surface<a class="heading-anchor" href="#familiar-typescript-is-the-migration-surface" aria-label="Link to this section">#</a></h2>
+<p>Pulse should feel like ordinary TypeScript application code, not a compiler DSL.</p>
+<p>The intended handler shape is async:</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-smi">app</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">&#39;</span>/users/:id<span class="pl-pds">&#39;</span></span>, <span class="pl-k">async</span> (<span class="pl-v">ctx</span>) <span class="pl-k">=&gt;</span> {
+  <span class="pl-k">const</span> <span class="pl-c1">user</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">ctx</span>
+    .<span class="pl-en">fetch</span>(<span class="pl-s"><span class="pl-pds">`</span>/origin/users/${<span class="pl-smi">ctx</span>.<span class="pl-en">param</span>(<span class="pl-pds">&#39;</span>id<span class="pl-pds">&#39;</span>)}<span class="pl-pds">`</span></span>)
+    .<span class="pl-en">json</span>&lt;<span class="pl-en">User</span>&gt;(<span class="pl-s"><span class="pl-pds">&#39;</span>app.User<span class="pl-pds">&#39;</span></span>)
+
+  <span class="pl-k">return</span> <span class="pl-smi">ctx</span>.<span class="pl-en">json</span>({ <span class="pl-smi">user</span> })
+})</code></pre>
+<p>The same source has different mechanics under different targets.</p>
+<h3 id="native-target">Native target<a class="heading-anchor" href="#native-target" aria-label="Link to this section">#</a></h3>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">async wrapper
+    → erased by lowering
+
+await trusted Pulse effect
+    → effect emission
+    → state-machine suspension
+    → host completion
+    → continuation resume
+
+Promise runtime
+    → absent</code></pre>
+<h3 id="javascript-target">JavaScript target<a class="heading-anchor" href="#javascript-target" aria-label="Link to this section">#</a></h3>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">async wrapper
+    → ordinary async JavaScript
+
+await trusted Pulse effect
+    → Promise-backed runtime operation
+
+continuation
+    → JavaScript runtime</code></pre>
+<p>The mechanics differ, but Pulse-visible semantics must not:</p>
+<ul><li>route and middleware order;</li><li>capability ordering;</li><li>error-lane behavior;</li><li>status and headers;</li><li>body ownership;</li><li>schema results;</li><li>redaction;</li><li>completion and fallthrough.</li></ul>
+<p>All Pulse handlers should be async-shaped even when a particular handler contains no <code>await</code>. That keeps the source stable when capability work is added later.</p>
+<h2 id="a-small-control-flow-grammar">A small control-flow grammar<a class="heading-anchor" href="#a-small-control-flow-grammar" aria-label="Link to this section">#</a></h2>
+<p>Pulse intentionally keeps routing control separate from capability suspension.</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">await effect      → suspend for external capability work
+return next()     → permanently transfer Router control
+return response   → complete the request</code></pre>
+<p>Terminal middleware avoids onion-style resumption:</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-smi">app</span>.<span class="pl-en">use</span>(<span class="pl-k">async</span> (<span class="pl-v">ctx</span>, <span class="pl-v">next</span>) <span class="pl-k">=&gt;</span> {
+  <span class="pl-k">const</span> <span class="pl-c1">session</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">ctx</span>.<span class="pl-smi">kv</span>.<span class="pl-c1">get</span>(<span class="pl-s"><span class="pl-pds">&#39;</span>sessions<span class="pl-pds">&#39;</span></span>, <span class="pl-smi">ctx</span>.<span class="pl-smi">req</span>.<span class="pl-en">header</span>(<span class="pl-s"><span class="pl-pds">&#39;</span>x-session<span class="pl-pds">&#39;</span></span>))
+
+  <span class="pl-k">if</span> (<span class="pl-k">!</span><span class="pl-smi">session</span>) {
+    <span class="pl-k">return</span> <span class="pl-smi">ctx</span>.<span class="pl-en">json</span>({ error: <span class="pl-s"><span class="pl-pds">&#39;</span>unauthorized<span class="pl-pds">&#39;</span></span> }, { status: <span class="pl-c1">401</span> })
+  }
+
+  <span class="pl-k">return</span> <span class="pl-en">next</span>()
+})</code></pre>
+<p><code>next()</code> is not awaited and does not return control to the middleware. This removes suspended middleware frames, post-response mutation, ambiguous cleanup order, and accidental double responses.</p>
+<p>The constraint simplifies native lowering, JavaScript execution, inspection, and cross-target conformance.</p>
+<h2 id="explicit-execution-targets">Explicit execution targets<a class="heading-anchor" href="#explicit-execution-targets" aria-label="Link to this section">#</a></h2>
+<p>Pulse should classify execution honestly.</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">native
+    fully lowered into Pulse-owned Wasm
+
+javascript
+    executed by a JavaScript runtime using the same Pulse semantics
+
+sidecar
+    executed across an explicit serialized boundary
+
+rejected
+    unsupported for the selected target</code></pre>
+<p>Not every target must exist for every provider.</p>
+<p>A native build that encounters unsupported code should fail precisely:</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">PULSE_NATIVE_AWAIT_UNSUPPORTED
+
+Route:
+  POST /reports
+
+Handler:
+  createReport
+
+Unsupported boundary:
+  await reportingLibrary.render(data)
+
+The selected native target supports await only on trusted Pulse effects.
+
+Available paths:
+  - remove or isolate the dependency;
+  - replace it with a Pulse capability;
+  - provide package-owned lowering;
+  - explicitly select the JavaScript target;
+  - move the operation behind a sidecar boundary.</code></pre>
+<p>The failure is useful product output. It records the moment architectural debt entered the stack.</p>
+<p>An operator can then deliberately choose a different target and continue shipping:</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-en">defineConfig</span>({
+  execution: {
+    target: <span class="pl-s"><span class="pl-pds">&#39;</span>javascript<span class="pl-pds">&#39;</span></span>,
+  },
+})</code></pre>
+<p>Pulse still reports native eligibility while building the JavaScript target, so the path back toward native remains visible.</p>
+<h2 id="hosts-are-not-equal">Hosts are not equal<a class="heading-anchor" href="#hosts-are-not-equal" aria-label="Link to this section">#</a></h2>
+<p>Pulse can target multiple hosts, but it must not pretend that every host has the same capabilities, execution models, or escape routes.</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">Node
+  native target:      available
+  JavaScript target:  available
+  host strengths:     broad local and server integration
+
+Fastly
+  native target:      available
+  JavaScript target:  available as an explicit larger-runtime choice
+  host strengths:     edge HTTP, named backends, config, secrets, KV
+
+ESP32
+  native target:      architectural goal / reference host
+  JavaScript target:  unavailable
+  host strengths:     GPIO, timers, sensors, constrained event processing</code></pre>
+<p>This is not “write once, run anywhere.”</p>
+<p>It is:</p>
+<blockquote><p>Use one application contract, then let each host state clearly what it can realize.</p></blockquote>
+<p>A provider owns the concrete ABI and lifecycle. Pulse owns application semantics.</p>
+<h3 id="pulse-owns">Pulse owns<a class="heading-anchor" href="#pulse-owns" aria-label="Link to this section">#</a></h3>
+<ul><li>Router topology and matching;</li><li>terminal middleware;</li><li>normal and error lanes;</li><li>effects and continuations;</li><li>request and response semantics;</li><li>schema and JSON contracts;</li><li>capability identities;</li><li>eligibility diagnostics;</li><li>portable inspection artifacts.</li></ul>
+<h3 id="the-host-owns">The host owns<a class="heading-anchor" href="#the-host-owns" aria-label="Link to this section">#</a></h3>
+<ul><li>sockets and HTTP stacks;</li><li>interrupts and event queues;</li><li>GPIO and sensors;</li><li>clocks and timers;</li><li>storage engines;</li><li>concrete network APIs;</li><li>process lifecycle;</li><li>resource handles;</li><li>ABI realization.</li></ul>
+<p>Host sovereignty is a feature. It prevents the runtime contract from becoming a lowest-common-denominator abstraction.</p>
+<h2 id="containment-reduces-friction-later">Containment reduces friction later<a class="heading-anchor" href="#containment-reduces-friction-later" aria-label="Link to this section">#</a></h2>
+<p>Pulse is intentionally disciplined at boundaries:</p>
+<ul><li>capability access goes through <code>ctx</code>;</li><li>Router control uses terminal transfers;</li><li>native suspension occurs only at trusted effects;</li><li>schemas provide runtime truth;</li><li>provider mechanics stay outside application logic;</li><li>target changes are explicit;</li><li>unsupported lowering stops at the first exact boundary.</li></ul>
+<p>This can feel stricter at the point of authoring, but it reduces friction later.</p>
+<p>Containment gives the project:</p>
+<ul><li>smaller native artifacts;</li><li>deterministic lowering;</li><li>simpler host adapters;</li><li>better cross-target testing;</li><li>clearer security and secret boundaries;</li><li>visible dependency debt;</li><li>less provider lock-in inside business logic;</li><li>a practical path from general code toward constrained execution.</li></ul>
+<p>The goal is not maximal permissiveness. The goal is to make the cost and ownership of every escape understandable.</p>
+<h2 id="schemas-are-optimization-and-validation-artifacts">Schemas are optimization and validation artifacts<a class="heading-anchor" href="#schemas-are-optimization-and-validation-artifacts" aria-label="Link to this section">#</a></h2>
+<p>TypeScript generics help the author but disappear at runtime. Pulse schemas provide runtime identity across targets.</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-k">const</span> <span class="pl-c1">input</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">ctx</span>.<span class="pl-smi">req</span>.<span class="pl-en">json</span>&lt;<span class="pl-en">CreateUser</span>&gt;(<span class="pl-s"><span class="pl-pds">&#39;</span>app.CreateUser<span class="pl-pds">&#39;</span></span>)</code></pre>
+<h3 id="native-execution">Native execution<a class="heading-anchor" href="#native-execution" aria-label="Link to this section">#</a></h3>
+<p>The schema can drive:</p>
+<ul><li>specialized decoding;</li><li>projection;</li><li>bounded layouts;</li><li>smaller artifacts;</li><li>predictable memory use;</li><li>precise validation.</li></ul>
+<h3 id="javascript-execution">JavaScript execution<a class="heading-anchor" href="#javascript-execution" aria-label="Link to this section">#</a></h3>
+<p>The same schema can drive generated validation after <code>JSON.parse</code>.</p>
+<p>Validation policy should be explicit:</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-k">export</span> <span class="pl-k">default</span> <span class="pl-en">defineConfig</span>({
+  schema: {
+    validation: <span class="pl-s"><span class="pl-pds">&#39;</span>strict<span class="pl-pds">&#39;</span></span>, <span class="pl-c">// strict | warn | off</span>
+  },
+})</code></pre>
+<ul><li><code>strict</code>: reject invalid values;</li><li><code>warn</code>: continue but record a contract violation;</li><li><code>off</code>: parse only, while retaining schema visibility for tooling and eligibility analysis.</li></ul>
+<p>Schemas should specialize and verify JSON; they should not become the price of admission for JSON.</p>
+<p>Pulse should support a gradient:</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">strict projected schema
+→ status-indexed schema variants
+→ generic native JSON
+→ explicit JavaScript parse-only behavior</code></pre>
+<p>Response contracts should be status-aware rather than forcing unrelated success and failure payloads into one artificial shape:</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-en">responses</span>: {
+  <span class="pl-c1">200</span>: <span class="pl-s"><span class="pl-pds">&#39;</span>app.User<span class="pl-pds">&#39;</span></span>,
+  <span class="pl-c1">404</span>: <span class="pl-s"><span class="pl-pds">&#39;</span>app.NotFound<span class="pl-pds">&#39;</span></span>,
+  <span class="pl-s"><span class="pl-pds">&#39;</span>5xx<span class="pl-pds">&#39;</span></span>: <span class="pl-s"><span class="pl-pds">&#39;</span>app.ServerError<span class="pl-pds">&#39;</span></span>,
+  <span class="pl-k">default</span>: <span class="pl-s"><span class="pl-pds">&#39;</span>json<span class="pl-pds">&#39;</span></span>,
+}</code></pre>
+<p>Tooling should help observe, diff, propose, and verify these contracts over time.</p>
+<h2 id="eligibility-is-a-first-class-artifact">Eligibility is a first-class artifact<a class="heading-anchor" href="#eligibility-is-a-first-class-artifact" aria-label="Link to this section">#</a></h2>
+<p>A Pulse build should produce more than a deployable binary.</p>
+<p>It should also produce an architectural ledger:</p>
+<pre class="code-block"><code class="code-block__content language-json" data-highlighted="starry-night" data-scope="source.json">{
+  <span class="pl-ent">&quot;selectedTarget&quot;</span>: <span class="pl-s"><span class="pl-pds">&quot;</span>javascript<span class="pl-pds">&quot;</span></span>,
+  <span class="pl-ent">&quot;nativeEligibility&quot;</span>: {
+    <span class="pl-ent">&quot;eligible&quot;</span>: <span class="pl-c1">false</span>,
+    <span class="pl-ent">&quot;eligibleRoutes&quot;</span>: <span class="pl-c1">12</span>,
+    <span class="pl-ent">&quot;blockedRoutes&quot;</span>: <span class="pl-c1">1</span>,
+    <span class="pl-ent">&quot;firstUnsupportedBoundary&quot;</span>: {
+      <span class="pl-ent">&quot;route&quot;</span>: <span class="pl-s"><span class="pl-pds">&quot;</span>POST /reports<span class="pl-pds">&quot;</span></span>,
+      <span class="pl-ent">&quot;handler&quot;</span>: <span class="pl-s"><span class="pl-pds">&quot;</span>createReport<span class="pl-pds">&quot;</span></span>,
+      <span class="pl-ent">&quot;kind&quot;</span>: <span class="pl-s"><span class="pl-pds">&quot;</span>unsupported-import<span class="pl-pds">&quot;</span></span>,
+      <span class="pl-ent">&quot;specifier&quot;</span>: <span class="pl-s"><span class="pl-pds">&quot;</span>large-reporting-library<span class="pl-pds">&quot;</span></span>
+    }
+  }
+}</code></pre>
+<p>Teams should be able to see when a release moved from fully native-eligible to partially blocked, why it happened, and what must change to recover eligibility.</p>
+<p>This turns constraint into feedback rather than punishment.</p>
+<h2 id="cross-target-semantics-must-be-enforced">Cross-target semantics must be enforced<a class="heading-anchor" href="#cross-target-semantics-must-be-enforced" aria-label="Link to this section">#</a></h2>
+<p>Native and JavaScript targets must share one conformance corpus.</p>
+<p>The same application cases should run through every supported realization:</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">native Node
+native Fastly
+JavaScript Node
+JavaScript Fastly</code></pre>
+<p>The contract suite should compare Pulse-visible behavior:</p>
+<ul><li>response status;</li><li>ordered and repeated headers;</li><li>structured and opaque bodies;</li><li>route and middleware ordering;</li><li>terminal <code>next()</code> behavior;</li><li>error-lane transitions;</li><li>capability ordering;</li><li>schema success and failure;</li><li>transport errors versus HTTP errors;</li><li>redaction;</li><li>compiler-owned 404 and 500 behavior.</li></ul>
+<p>Provider mechanics may differ. Pulse semantics may not.</p>
+<p>Drift should fail CI and block release.</p>
+<h2 id="esp32-as-a-boundary-witness">ESP32 as a boundary witness<a class="heading-anchor" href="#esp32-as-a-boundary-witness" aria-label="Link to this section">#</a></h2>
+<p>The ESP32 reference host exists to test whether Pulse is genuinely a constrained-compute model or merely an HTTP compiler.</p>
+<p>Reference repository:</p>
+<p><a href="https://github.com/pulsecompute/pulse-esp32-host" rel="noopener">pulsecompute/pulse-esp32-host</a></p>
+<p>A device-oriented application might look like:</p>
+<pre class="code-block"><code class="code-block__content language-ts" data-highlighted="starry-night" data-scope="source.ts"><span class="pl-smi">app</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">&#39;</span>gpio:button<span class="pl-pds">&#39;</span></span>, <span class="pl-k">async</span> (<span class="pl-v">ctx</span>) <span class="pl-k">=&gt;</span> {
+  <span class="pl-k">const</span> <span class="pl-c1">enabled</span> <span class="pl-k">=</span> <span class="pl-k">await</span> <span class="pl-smi">ctx</span>.<span class="pl-smi">kv</span>.<span class="pl-en">get</span>&lt;<span class="pl-c1">boolean</span>&gt;(<span class="pl-s"><span class="pl-pds">&#39;</span>device<span class="pl-pds">&#39;</span></span>, <span class="pl-s"><span class="pl-pds">&#39;</span>enabled<span class="pl-pds">&#39;</span></span>)
+
+  <span class="pl-k">await</span> <span class="pl-smi">ctx</span>.<span class="pl-smi">gpio</span>.<span class="pl-c1">write</span>(<span class="pl-s"><span class="pl-pds">&#39;</span>status-led<span class="pl-pds">&#39;</span></span>, <span class="pl-k">!</span><span class="pl-smi">enabled</span>)
+  <span class="pl-k">await</span> <span class="pl-smi">ctx</span>.<span class="pl-smi">kv</span>.<span class="pl-en">put</span>(<span class="pl-s"><span class="pl-pds">&#39;</span>device<span class="pl-pds">&#39;</span></span>, <span class="pl-s"><span class="pl-pds">&#39;</span>enabled<span class="pl-pds">&#39;</span></span>, <span class="pl-k">!</span><span class="pl-smi">enabled</span>)
+})</code></pre>
+<p>On an ESP32 host, those <code>await</code> expressions would not require a Promise runtime. They would lower into host operations and continuation states.</p>
+<p>The event path must remain host-controlled:</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">native interrupt service routine
+→ host event queue
+→ Pulse event frame
+→ Wasm handler</code></pre>
+<p>Pulse should never make reentrant calls from an interrupt directly into Wasm.</p>
+<p>The ESP32 host is not a promise that every Pulse application runs on a microcontroller. It demonstrates that the abstractions still make sense when these assumptions are removed:</p>
+<ul><li>no JavaScript fallback;</li><li>no abundant memory;</li><li>no cloud runtime;</li><li>no HTTP-centric lifecycle;</li><li>no generic operating-system services.</li></ul>
+<p>Fastly proves native edge execution. ESP32 tests the larger architectural claim.</p>
+<h2 id="product-milestones">Product milestones<a class="heading-anchor" href="#product-milestones" aria-label="Link to this section">#</a></h2>
+<h3 id="beta-explicit-execution-fluidity">Beta: explicit execution fluidity<a class="heading-anchor" href="#beta-explicit-execution-fluidity" aria-label="Link to this section">#</a></h3>
+<p>The Beta proves:</p>
+<ul><li>the public runtime and conventional Pulse application contracts;</li><li>Router and terminal middleware;</li><li>async-shaped handlers and trusted <code>await</code> lowering;</li><li>effects, continuations, schemas, and package-owned capabilities;</li><li>compact portable and provider-native Wasm;</li><li>explicit Node and Fastly JavaScript execution and packaging;</li><li>deliberate target selection with native-eligibility diagnostics;</li><li>a shared four-mode conformance corpus;</li><li>explicit failure at unsupported Native boundaries;</li><li>no silent fallback.</li></ul>
+<p>The preview remains a deliberate pre-compatibility release. Passing its technical gates does not authorize publication or deployment.</p>
+<h3 id="10-compatibility-bearing-runtime-contract">1.0: compatibility-bearing runtime contract<a class="heading-anchor" href="#10-compatibility-bearing-runtime-contract" aria-label="Link to this section">#</a></h3>
+<p>The first stable release begins when the Beta contract has been exercised publicly and the runtime, CLI, target-selection, and conformance policies are ready to carry compatibility obligations.</p>
+<p>Sidecar partitioning, richer observability, additional hosts, and higher-order <code>@pulse-compute/pulse</code> ergonomics can continue after 1.0.</p>
+<h2 id="what-pulse-refuses-to-promise">What Pulse refuses to promise<a class="heading-anchor" href="#what-pulse-refuses-to-promise" aria-label="Link to this section">#</a></h2>
+<p>Pulse does not promise:</p>
+<ul><li>that arbitrary JavaScript becomes native Wasm;</li><li>that every npm package is supported by every target;</li><li>that every provider has the same capabilities;</li><li>that JavaScript and native targets have identical size or startup cost;</li><li>that TypeScript generics provide runtime validation;</li><li>that unsupported code silently changes the deployment target;</li><li>that a host abstraction erases host ownership;</li><li>that all Pulse applications run on every device.</li></ul>
+<p>These refusals protect the useful promises.</p>
+<h2 id="north-star">North star<a class="heading-anchor" href="#north-star" aria-label="Link to this section">#</a></h2>
+<p>Pulse should let a team say:</p>
+<blockquote><p>We began with a familiar TypeScript application.  </p><p>We shipped it using an explicit execution target.  </p><p>Pulse showed us exactly where native eligibility ended.  </p><p>We removed dependencies, introduced trusted effects and schemas, and progressively constrained the program.  </p><p>The application model stayed stable while the artifact became smaller, more portable, and easier to host.</p></blockquote>
+<p>That is the vision:</p>
+<pre class="code-block"><code class="code-block__content language-text" data-highlighted="plain">familiar TypeScript
++ explicit host capabilities
++ visible eligibility boundaries
++ deliberate execution targets
++ progressive containment
+= constrained compute without an all-or-nothing rewrite</code></pre></article>
+      <details class="mobile-nav-fallback"><summary>Browse other documentation</summary><div class="mobile-nav-fallback__body"><details class="nav-section" data-nav-section="start" open><summary>Start</summary><ul><li><a href="/v1.0.0-beta.2/">Overview</a></li><li><a href="/v1.0.0-beta.2/project/">Repository overview</a></li><li><a href="/v1.0.0-beta.2/changelog/">Changelog</a></li><li><a href="/v1.0.0-beta.2/getting-started/">Getting started</a></li><li><a href="/v1.0.0-beta.2/preview-scope/">Beta scope</a></li></ul></details><details class="nav-section" data-nav-section="examples" open><summary>Examples</summary><ul><li><a href="/v1.0.0-beta.2/examples/01-hello-json/">Hello JSON</a></li><li><a href="/v1.0.0-beta.2/examples/">Canonical examples</a></li><li><a href="/v1.0.0-beta.2/examples/02-request-schema/">Request schema</a></li><li><a href="/v1.0.0-beta.2/examples/03-fetch-composition/">Fetch composition</a></li><li><a href="/v1.0.0-beta.2/examples/05-fastly-capabilities/">Fastly capabilities</a></li><li><a href="/v1.0.0-beta.2/examples/07-opaque-proxy/">Opaque binary proxy</a></li><li><a href="/v1.0.0-beta.2/examples/09-router-lowering/">Router lowering</a></li><li><a href="/v1.0.0-beta.2/examples/10-entities-tools/">Entities tools facade</a></li><li><a href="/v1.0.0-beta.2/examples/11-events/">Static events</a></li><li><a href="/v1.0.0-beta.2/examples/12-mcp-proxy/">MCP-shaped HTTP proxy</a></li><li><a href="/v1.0.0-beta.2/examples/13-jwt-es256/">ES256 bearer verification</a></li></ul></details><details class="nav-section" data-nav-section="guides"><summary>Guides</summary><ul><li><a href="/v1.0.0-beta.2/guides/project-lifecycle/">Project lifecycle</a></li><li><a href="/v1.0.0-beta.2/guides/migrating-from-express/">Migrate an Express service</a></li><li><a href="/v1.0.0-beta.2/guides/fetching-and-composition/">Fetching and composing data</a></li><li><a href="/v1.0.0-beta.2/guides/json-schemas/">Explicit JSON schemas</a></li><li><a href="/v1.0.0-beta.2/guides/routing/">Static Router authoring</a></li><li><a href="/v1.0.0-beta.2/guides/events/">Static events and outbound emission</a></li><li><a href="/v1.0.0-beta.2/guides/deploying-node/">Node build and execution</a></li><li><a href="/v1.0.0-beta.2/guides/deploying-fastly/">Fastly deployment candidates</a></li><li><a href="/v1.0.0-beta.2/guides/fastly-capabilities/">Fastly config, secrets, KV, and backends</a></li><li><a href="/v1.0.0-beta.2/guides/grip/">GRIP and Fanout</a></li><li><a href="/v1.0.0-beta.2/guides/compatibility-imports/">Compatibility imports and migration</a></li><li><a href="/v1.0.0-beta.2/guides/troubleshooting/">Troubleshooting</a></li></ul></details><details class="nav-section" data-nav-section="concepts" open><summary>Concepts</summary><ul><li><a href="/v1.0.0-beta.2/architecture/overview/">Architecture overview</a></li><li><a href="/v1.0.0-beta.2/architecture/current-contracts/">Current architecture contracts</a></li><li><a href="/v1.0.0-beta.2/architecture/vision/" aria-current="page">Pulse Vision</a></li><li><a href="/v1.0.0-beta.2/concepts/compilation-and-lowering/">Compilation and lowering</a></li><li><a href="/v1.0.0-beta.2/concepts/effects-and-continuations/">Effects and continuations</a></li><li><a href="/v1.0.0-beta.2/concepts/bodies/">Structured and opaque bodies</a></li><li><a href="/v1.0.0-beta.2/concepts/contracts-and-providers/">Contracts and providers</a></li><li><a href="/v1.0.0-beta.2/concepts/targets-and-hosts/">Targets and host work</a></li><li><a href="/v1.0.0-beta.2/concepts/package-owned-lowering/">Package-owned lowering</a></li><li><a href="/v1.0.0-beta.2/concepts/entities-and-adapters/">Entity engine, adapters, and facades</a></li></ul></details><details class="nav-section" data-nav-section="packages"><summary>Packages</summary><ul><li><a href="/v1.0.0-beta.2/packages/">Package overview</a></li><li><a href="/v1.0.0-beta.2/packages/pulse/">@pulse-compute/pulse</a></li><li><a href="/v1.0.0-beta.2/packages/runtime/">@pulse-compute/runtime</a></li><li><a href="/v1.0.0-beta.2/packages/cli/">@pulse-compute/cli</a></li><li><a href="/v1.0.0-beta.2/packages/provider-fastly/">@pulse-compute/provider-fastly</a></li><li><a href="/v1.0.0-beta.2/packages/grip/">@pulse-compute/grip</a></li><li><a href="/v1.0.0-beta.2/packages/assets/">@pulse-compute/assets</a></li><li><a href="/v1.0.0-beta.2/packages/crypto/">@pulse-compute/crypto</a></li><li><a href="/v1.0.0-beta.2/packages/jwt/">@pulse-compute/jwt</a></li><li><a href="/v1.0.0-beta.2/packages/entities/">@pulse-compute/entities</a></li><li><a href="/v1.0.0-beta.2/packages/s3/">@pulse-compute/s3</a></li><li><a href="/v1.0.0-beta.2/packages/implementation-packages/">Implementation packages</a></li></ul></details><details class="nav-section" data-nav-section="reference"><summary>Reference</summary><ul><li><a href="/v1.0.0-beta.2/reference/">Reference overview</a></li><li><a href="/v1.0.0-beta.2/api/">Pulse runtime contract</a></li><li><a href="/v1.0.0-beta.2/reference/compatibility-matrix/">Provider and target compatibility</a></li><li><a href="/v1.0.0-beta.2/reference/handler-authoring/">Managed handler TypeScript and JavaScript</a></li><li><a href="/v1.0.0-beta.2/reference/cli/">CLI reference</a></li><li><a href="/v1.0.0-beta.2/reference/project-config/">Project configuration reference</a></li><li><a href="/v1.0.0-beta.2/reference/diagnostics/">Diagnostics and remediation</a></li><li><a href="/v1.0.0-beta.2/reference/environment/">Environment-variable reference</a></li><li><a href="/v1.0.0-beta.2/reference/shell-completion/">Shell completion</a></li></ul></details><details class="nav-section" data-nav-section="authors"><summary>Authors and contributors</summary><ul><li><a href="/v1.0.0-beta.2/contributing/">Contributor overview</a></li><li><a href="/v1.0.0-beta.2/contributing/pulse-aware-packages/">Pulse-aware package authoring</a></li><li><a href="/v1.0.0-beta.2/contributing/adding-first-party-lowerer/">Add a first-party package-owned lowerer</a></li><li><a href="/v1.0.0-beta.2/contributing/package-lowerer-contract/">Package lowerer contract reference</a></li><li><a href="/v1.0.0-beta.2/contributing/entities-lowering/">Entities lowering maintainer reference</a></li><li><a href="/v1.0.0-beta.2/contributing/adding-core-provider/">Add a provider toolchain</a></li></ul></details></div></details>
+      <nav class="docs-pagination" aria-label="Previous and next documentation"><a href="/v1.0.0-beta.2/architecture/current-contracts/"><small>Previous</small><strong>Current architecture contracts</strong></a><a href="/v1.0.0-beta.2/concepts/compilation-and-lowering/"><small>Next</small><strong>Compilation and lowering</strong></a></nav>
+      <footer class="docs-source"><p>Source: <code>docs/architecture/vision.md</code> · <a href="https://github.com/pulse-compute/pulse/blob/v1.0.0-beta.2/docs/architecture/vision.md">View release source</a></p></footer>
+    </main>
+    <aside class="docs-toc" aria-label="On this page"><h2>On this page</h2><ol><li class="toc-level-2"><a data-toc-link href="#the-problem">The problem</a></li><li class="toc-level-2"><a data-toc-link href="#the-thesis">The thesis</a></li><li class="toc-level-2"><a data-toc-link href="#familiar-typescript-is-the-migration-surface">Familiar TypeScript is the migration surface</a></li><li class="toc-level-3"><a data-toc-link href="#native-target">Native target</a></li><li class="toc-level-3"><a data-toc-link href="#javascript-target">JavaScript target</a></li><li class="toc-level-2"><a data-toc-link href="#a-small-control-flow-grammar">A small control-flow grammar</a></li><li class="toc-level-2"><a data-toc-link href="#explicit-execution-targets">Explicit execution targets</a></li><li class="toc-level-2"><a data-toc-link href="#hosts-are-not-equal">Hosts are not equal</a></li><li class="toc-level-3"><a data-toc-link href="#pulse-owns">Pulse owns</a></li><li class="toc-level-3"><a data-toc-link href="#the-host-owns">The host owns</a></li><li class="toc-level-2"><a data-toc-link href="#containment-reduces-friction-later">Containment reduces friction later</a></li><li class="toc-level-2"><a data-toc-link href="#schemas-are-optimization-and-validation-artifacts">Schemas are optimization and validation artifacts</a></li><li class="toc-level-3"><a data-toc-link href="#native-execution">Native execution</a></li><li class="toc-level-3"><a data-toc-link href="#javascript-execution">JavaScript execution</a></li><li class="toc-level-2"><a data-toc-link href="#eligibility-is-a-first-class-artifact">Eligibility is a first-class artifact</a></li><li class="toc-level-2"><a data-toc-link href="#cross-target-semantics-must-be-enforced">Cross-target semantics must be enforced</a></li><li class="toc-level-2"><a data-toc-link href="#esp32-as-a-boundary-witness">ESP32 as a boundary witness</a></li><li class="toc-level-2"><a data-toc-link href="#product-milestones">Product milestones</a></li><li class="toc-level-3"><a data-toc-link href="#beta-explicit-execution-fluidity">Beta: explicit execution fluidity</a></li><li class="toc-level-3"><a data-toc-link href="#10-compatibility-bearing-runtime-contract">1.0: compatibility-bearing runtime contract</a></li><li class="toc-level-2"><a data-toc-link href="#what-pulse-refuses-to-promise">What Pulse refuses to promise</a></li><li class="toc-level-2"><a data-toc-link href="#north-star">North star</a></li></ol></aside>
+  </div>
+  <aside id="documentation-drawer" class="nav-drawer" data-nav-drawer aria-label="Documentation navigation" aria-hidden="true" inert><div class="nav-drawer__head"><strong>Documentation</strong><button class="icon-button" type="button" data-nav-close aria-label="Close documentation navigation"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"></path></svg></button></div><details class="nav-section" data-nav-section="start" open><summary>Start</summary><ul><li><a href="/v1.0.0-beta.2/">Overview</a></li><li><a href="/v1.0.0-beta.2/project/">Repository overview</a></li><li><a href="/v1.0.0-beta.2/changelog/">Changelog</a></li><li><a href="/v1.0.0-beta.2/getting-started/">Getting started</a></li><li><a href="/v1.0.0-beta.2/preview-scope/">Beta scope</a></li></ul></details><details class="nav-section" data-nav-section="examples" open><summary>Examples</summary><ul><li><a href="/v1.0.0-beta.2/examples/01-hello-json/">Hello JSON</a></li><li><a href="/v1.0.0-beta.2/examples/">Canonical examples</a></li><li><a href="/v1.0.0-beta.2/examples/02-request-schema/">Request schema</a></li><li><a href="/v1.0.0-beta.2/examples/03-fetch-composition/">Fetch composition</a></li><li><a href="/v1.0.0-beta.2/examples/05-fastly-capabilities/">Fastly capabilities</a></li><li><a href="/v1.0.0-beta.2/examples/07-opaque-proxy/">Opaque binary proxy</a></li><li><a href="/v1.0.0-beta.2/examples/09-router-lowering/">Router lowering</a></li><li><a href="/v1.0.0-beta.2/examples/10-entities-tools/">Entities tools facade</a></li><li><a href="/v1.0.0-beta.2/examples/11-events/">Static events</a></li><li><a href="/v1.0.0-beta.2/examples/12-mcp-proxy/">MCP-shaped HTTP proxy</a></li><li><a href="/v1.0.0-beta.2/examples/13-jwt-es256/">ES256 bearer verification</a></li></ul></details><details class="nav-section" data-nav-section="guides"><summary>Guides</summary><ul><li><a href="/v1.0.0-beta.2/guides/project-lifecycle/">Project lifecycle</a></li><li><a href="/v1.0.0-beta.2/guides/migrating-from-express/">Migrate an Express service</a></li><li><a href="/v1.0.0-beta.2/guides/fetching-and-composition/">Fetching and composing data</a></li><li><a href="/v1.0.0-beta.2/guides/json-schemas/">Explicit JSON schemas</a></li><li><a href="/v1.0.0-beta.2/guides/routing/">Static Router authoring</a></li><li><a href="/v1.0.0-beta.2/guides/events/">Static events and outbound emission</a></li><li><a href="/v1.0.0-beta.2/guides/deploying-node/">Node build and execution</a></li><li><a href="/v1.0.0-beta.2/guides/deploying-fastly/">Fastly deployment candidates</a></li><li><a href="/v1.0.0-beta.2/guides/fastly-capabilities/">Fastly config, secrets, KV, and backends</a></li><li><a href="/v1.0.0-beta.2/guides/grip/">GRIP and Fanout</a></li><li><a href="/v1.0.0-beta.2/guides/compatibility-imports/">Compatibility imports and migration</a></li><li><a href="/v1.0.0-beta.2/guides/troubleshooting/">Troubleshooting</a></li></ul></details><details class="nav-section" data-nav-section="concepts" open><summary>Concepts</summary><ul><li><a href="/v1.0.0-beta.2/architecture/overview/">Architecture overview</a></li><li><a href="/v1.0.0-beta.2/architecture/current-contracts/">Current architecture contracts</a></li><li><a href="/v1.0.0-beta.2/architecture/vision/" aria-current="page">Pulse Vision</a></li><li><a href="/v1.0.0-beta.2/concepts/compilation-and-lowering/">Compilation and lowering</a></li><li><a href="/v1.0.0-beta.2/concepts/effects-and-continuations/">Effects and continuations</a></li><li><a href="/v1.0.0-beta.2/concepts/bodies/">Structured and opaque bodies</a></li><li><a href="/v1.0.0-beta.2/concepts/contracts-and-providers/">Contracts and providers</a></li><li><a href="/v1.0.0-beta.2/concepts/targets-and-hosts/">Targets and host work</a></li><li><a href="/v1.0.0-beta.2/concepts/package-owned-lowering/">Package-owned lowering</a></li><li><a href="/v1.0.0-beta.2/concepts/entities-and-adapters/">Entity engine, adapters, and facades</a></li></ul></details><details class="nav-section" data-nav-section="packages"><summary>Packages</summary><ul><li><a href="/v1.0.0-beta.2/packages/">Package overview</a></li><li><a href="/v1.0.0-beta.2/packages/pulse/">@pulse-compute/pulse</a></li><li><a href="/v1.0.0-beta.2/packages/runtime/">@pulse-compute/runtime</a></li><li><a href="/v1.0.0-beta.2/packages/cli/">@pulse-compute/cli</a></li><li><a href="/v1.0.0-beta.2/packages/provider-fastly/">@pulse-compute/provider-fastly</a></li><li><a href="/v1.0.0-beta.2/packages/grip/">@pulse-compute/grip</a></li><li><a href="/v1.0.0-beta.2/packages/assets/">@pulse-compute/assets</a></li><li><a href="/v1.0.0-beta.2/packages/crypto/">@pulse-compute/crypto</a></li><li><a href="/v1.0.0-beta.2/packages/jwt/">@pulse-compute/jwt</a></li><li><a href="/v1.0.0-beta.2/packages/entities/">@pulse-compute/entities</a></li><li><a href="/v1.0.0-beta.2/packages/s3/">@pulse-compute/s3</a></li><li><a href="/v1.0.0-beta.2/packages/implementation-packages/">Implementation packages</a></li></ul></details><details class="nav-section" data-nav-section="reference"><summary>Reference</summary><ul><li><a href="/v1.0.0-beta.2/reference/">Reference overview</a></li><li><a href="/v1.0.0-beta.2/api/">Pulse runtime contract</a></li><li><a href="/v1.0.0-beta.2/reference/compatibility-matrix/">Provider and target compatibility</a></li><li><a href="/v1.0.0-beta.2/reference/handler-authoring/">Managed handler TypeScript and JavaScript</a></li><li><a href="/v1.0.0-beta.2/reference/cli/">CLI reference</a></li><li><a href="/v1.0.0-beta.2/reference/project-config/">Project configuration reference</a></li><li><a href="/v1.0.0-beta.2/reference/diagnostics/">Diagnostics and remediation</a></li><li><a href="/v1.0.0-beta.2/reference/environment/">Environment-variable reference</a></li><li><a href="/v1.0.0-beta.2/reference/shell-completion/">Shell completion</a></li></ul></details><details class="nav-section" data-nav-section="authors"><summary>Authors and contributors</summary><ul><li><a href="/v1.0.0-beta.2/contributing/">Contributor overview</a></li><li><a href="/v1.0.0-beta.2/contributing/pulse-aware-packages/">Pulse-aware package authoring</a></li><li><a href="/v1.0.0-beta.2/contributing/adding-first-party-lowerer/">Add a first-party package-owned lowerer</a></li><li><a href="/v1.0.0-beta.2/contributing/package-lowerer-contract/">Package lowerer contract reference</a></li><li><a href="/v1.0.0-beta.2/contributing/entities-lowering/">Entities lowering maintainer reference</a></li><li><a href="/v1.0.0-beta.2/contributing/adding-core-provider/">Add a provider toolchain</a></li></ul></details></aside>
+  <button class="nav-overlay" type="button" data-nav-overlay aria-label="Close documentation navigation" tabindex="-1"></button>
+  <script src="/v1.0.0-beta.2/assets/site.js" defer></script>
+</body>
+</html>
