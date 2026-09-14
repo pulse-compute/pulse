@@ -2,6 +2,11 @@
 
 Pulse follows semantic versioning for public releases. The repository begins its public history with the `1.0.0-beta.1` prerelease.
 
+## Unreleased
+
+- Add `ctx.encodeJson(value, 'schema.id')` for schema-validated, bounded JSON text
+  before storage or other effects, across JavaScript and Native execution.
+
 ## 1.0.0-beta.3 — Beta (2026-09-14)
 
 - Fix CLI storage execution on Node Native, Node JavaScript and the Fastly Native local fixture host, including S3 response streams, bindings and conditional KV.

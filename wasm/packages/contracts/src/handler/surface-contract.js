@@ -213,6 +213,18 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     status: 'existing-alias-normalization'
   }),
   surface({
+    id: 'ctx.encodeJson',
+    class: 'sync',
+    canonicalOperation: 'schema.encode.text',
+    publicForms: ["ctx.encodeJson(value, 'schema.id')"],
+    awaitPolicy: 'optional-redundant-warning',
+    validPositions: ['expression', 'statement', 'return'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'schema-validated-bounded-json-text',
+    schemaPolicy: 'literal-schema-required',
+    status: 'supported'
+  }),
+  surface({
     id: 'ctx.text',
     class: 'sync',
     canonicalOperation: 'result.text',

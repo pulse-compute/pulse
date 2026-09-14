@@ -140,14 +140,17 @@ function nativeSchemaCodecSource(plan) {
       declarations.push('');
     }
     const root = symbols.get('');
+    // json-as 1.5.0's slow struct scanner treats a closing quote after a
+    // doubled backslash as escaped. A JSON-equivalent Unicode spelling avoids
+    // that scanner defect without changing schema values or admitting fallback.
     const decode = `__pulse_schema_decode_${schemaIndex}`;
     const encode = `__pulse_schema_encode_${schemaIndex}`;
     declarations.push(`function ${decode}(input: string): string {`);
-    declarations.push(`  const value = JSON.parse<${root}>(input)`);
+    declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
     declarations.push(`  return JSON.stringify<${root}>(value)`);
     declarations.push('}');
     declarations.push(`function ${encode}(input: string): string {`);
-    declarations.push(`  const value = JSON.parse<${root}>(input)`);
+    declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
     declarations.push(`  return JSON.stringify<${root}>(value)`);
     declarations.push('}');
     declarations.push('');
@@ -483,6 +486,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
           'request.text': () => 'host_request_text()',
           'request.json': () => `host_request_json(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'response.json': () => `host_response_json(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
+          'schema.encode.text': () => `host_schema_encode(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
           'response.text': () => `host_response_text(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
           'response.custom': () => `host_response_custom(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'grip.is-websocket': () => 'host_grip_is_websocket()',

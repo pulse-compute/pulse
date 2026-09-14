@@ -46,6 +46,7 @@ const CANONICAL_NATIVE_INTRINSICS = Object.freeze([
   'request.text',
   'request.json',
   'response.json',
+  'schema.encode.text',
   'response.text',
   'response.custom',
   'kv.namespace',

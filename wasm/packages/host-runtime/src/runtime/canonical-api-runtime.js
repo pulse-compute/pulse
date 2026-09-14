@@ -634,6 +634,26 @@ function createCanonicalContext(options, trace) {
   }
 
   const ctx = Object.freeze({
+    encodeJson(value, schemaId) {
+      const key = requireSchemaId(schemaCodecs, schemaId, 'application-value');
+      const event = {
+        boundary: 'application-value', schemaId: key, responseCaseId: null,
+        operationId: `application-value:${key}`, status: null,
+        contentType: 'application/json; charset=utf-8', headers: [],
+        bodyOwnership: 'application-owned', target: options.target || null,
+        provider: options.provider || null, effectId: null, groupId: null
+      };
+      try {
+        const text = schemaCodecs.encodeJsonText(key, value, 'application-value');
+        assertSchemaBodySize(schemaCodecs, text, key, 'application-value');
+        const normalized = schemaCodecs.decodeJsonText(key, text, 'application-value-trace');
+        jsonTrace(trace, { ...event, kind: 'json.encode.value' }, normalized);
+        return text;
+      } catch (error) {
+        jsonTrace(trace, { ...event, kind: 'json.encode.error', ...jsonTraceErrorDetail(error) });
+        throw error;
+      }
+    },
     req: requestSurface.surface,
     log: Object.freeze(log),
     fetch() {

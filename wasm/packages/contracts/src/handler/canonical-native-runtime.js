@@ -74,6 +74,7 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['router_match', ['i32', 'i32'], ['i32']],
   ['router_param', ['i32', 'i32', 'i32'], ['i32']],
   ['response_json', ['i32', 'i32'], ['i32']],
+  ['schema_encode', ['i32', 'i32'], ['i32']],
   ['response_text', ['i32', 'i32'], ['i32']],
   ['response_custom', ['i32'], ['i32']],
   ['grip_is_websocket', [], ['i32']],

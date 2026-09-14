@@ -27,8 +27,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '02-request-schema',
     provider: 'node',
-    guestWasmBytes: 39795,
-    optimizedGuestWasmBytes: 31578,
+    guestWasmBytes: 40981,
+    optimizedGuestWasmBytes: 32604,
     capabilities: ['request.json', 'response.json'],
     schemas: ['app.CreateUserInput', 'app.CreateUserOutput']
   }),
@@ -88,8 +88,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '11-events',
     provider: 'node',
-    guestWasmBytes: 39358,
-    optimizedGuestWasmBytes: 31313,
+    guestWasmBytes: 40546,
+    optimizedGuestWasmBytes: 32339,
     capabilities: ['event.emit', 'logging', 'response.text'],
     schemas: ['events.DeviceReading', 'events.DeviceReadingAccepted'],
     events: Object.freeze({

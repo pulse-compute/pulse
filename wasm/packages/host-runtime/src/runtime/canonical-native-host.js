@@ -655,6 +655,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     router_match(pathHandle, patternHandle) { return put(routerMatch(value(pathHandle), value(patternHandle))); },
     router_param(pathHandle, patternHandle, nameHandle) { return put(routerParam(value(pathHandle), value(patternHandle), value(nameHandle))); },
     response_json(valueHandle, optionsHandle) { requireHttpSurface('ctx.json'); return put(context.ctx.json(value(valueHandle), value(optionsHandle))); },
+    schema_encode(valueHandle, schemaHandle) { return put(context.ctx.encodeJson(value(valueHandle), value(schemaHandle))); },
     response_text(valueHandle, optionsHandle) { requireHttpSurface('ctx.text'); return put(context.ctx.text(value(valueHandle), value(optionsHandle))); },
     response_custom(valueHandle) { requireHttpSurface('ctx.response'); return put(context.ctx.response(value(valueHandle))); },
     grip_is_websocket() {

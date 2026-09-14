@@ -18,6 +18,7 @@ SDK object in userland.
 | Incoming request text/JSON | Request host owns body bytes | `ctx.req.text()` or `ctx.req.json()` | Current request owns the bounded structured value and read cache. |
 | Fetched response text/JSON | Provider adapter owns response bytes | `.text()` or `.json()` on the fetch operation | Current request owns the bounded structured projection. |
 | Outbound fetch JSON | Application owns a supported structured value | `ctx.fetch(url, { json, schema })` | Pulse encodes the semantic value; the provider owns dispatched body bytes. |
+| Application-owned JSON text | Application owns a structured value | `ctx.encodeJson(value, 'schema.id')` | Application owns detached schema-encoded text within `schemas.maxBytes`. |
 | Application text/JSON response | Application owns a supported structured value | `ctx.text()`, `ctx.json()`, or `ctx.response()` | Pulse returns a terminal result; the provider owns response realization. |
 | Opaque fetch or package response | Provider owns the body handle | Return the response directly | Provider retains ownership through terminal pass-through. |
 
@@ -148,6 +149,14 @@ The two body classes have different guarantees:
 Pulse does not infer that a body is safe to inspect merely because one provider could expose it. The same canonical source must retain equivalent meaning across supported providers.
 
 ## Schema encoding
+
+`ctx.encodeJson(value, 'namespace.Type')` exposes schema encoding as bounded
+application-owned text, before a response or storage effect. It always requires
+a literal registered schema ID. The returned UTF-8 text is limited by
+`schemas.maxBytes`; invalid or oversized output fails before subsequent writes.
+Keep those exact bytes for upload and verification. See
+[application-owned encoding](../guides/json-schemas.md#encode-application-owned-text)
+for determinism and fingerprint boundaries.
 
 `ctx.json(value, { schema: 'namespace.Type' })` validates and encodes a structured response against the compiled schema contract. Schema identifiers must be static and declared in project configuration. Failures use [`PULSE_SCHEMA_ENCODE`](../reference/diagnostics.md#pulse-schema-encode) or [`PULSE_RESPONSE_ENCODE`](../reference/diagnostics.md#pulse-response-encode).
 

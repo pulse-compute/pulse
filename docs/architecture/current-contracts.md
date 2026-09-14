@@ -160,6 +160,28 @@ no application code resumes after the transfer. Normal exhaustion produces
 404, error exhaustion produces 500, and effects keep the identity of the route
 or middleware entry that owns them.
 
+`ctx.encodeJson(value, 'schema.id')` is a synchronous shared-context operation
+that returns application-owned text through the existing compiled schema codec.
+The compiler requires a literal registered ID in both strict and non-strict
+mode. Encoding validates/projects declared fields and bounds returned UTF-8
+bytes by the registry's `maxBytes`; failures precede subsequent effect dispatch.
+The Native `schema.encode.text` intrinsic uses the additive `schema_encode`
+value-handle import in the provider-neutral ABI; Fastly realizes it in generated
+AssemblyScript without a new platform hostcall or provider binding. It grants
+no general JavaScript serialization or ambient authority. Codec determinism is
+scoped to the selected schema and target; cross-target numeric spellings are
+not a portable canonical-hash contract.
+
+The pinned json-as 1.5.0 backend uses its scalar (`NAIVE`) mode with strict
+validation and generated-struct fast paths disabled. Its SWAR string path can
+corrupt surrogate pairs. Before its slow struct parser receives normalized JSON,
+generated codecs spell doubled backslashes as equivalent `\u005c` escapes;
+that parser otherwise mistakes a closing quote after a trailing backslash for
+an escaped quote. These are compiler-owned compatibility measures for the pinned
+backend, exercised with single-field strings, escaping, Unicode and storage
+consumers. They neither weaken schema validation nor execute application
+JavaScript. Native build metadata records the selected mode.
+
 Structured JSON and text bodies become bounded values. Binary and streaming
 bodies remain opaque host-owned handles. An opaque body can be passed through or
 returned by a supported operation, but it cannot be decoded, duplicated, or
