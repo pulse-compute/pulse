@@ -13,7 +13,7 @@ function createNodeJavascriptS3(options, secretLookup) {
     catch { selected = null; }
     return readS3(effect, {
       s3, signal: execution.signal, registerRedactionValue: execution.registerRedactionValue,
-      fetchImplementation: options.fetchImplementation, cryptoTarget: 'javascript',
+      fetchImplementation: options.s3FetchImplementation || options.fetchImplementation, cryptoTarget: 'javascript',
       cryptoVerifier: selected, cryptoRealization: selected && selected.realization
     }, (name) => secretLookup(name, execution));
   };

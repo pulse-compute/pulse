@@ -87,6 +87,36 @@ async function main() {
     watched.child.kill('SIGTERM');
     await waitForClose(watched.child, watched.stderrText);
 
+    const storageRoot = require('./storage-fixture.cjs').storageFixture(path.join(tmpRoot, 'storage'));
+    for (const profile of ['local', 'javascript', 'fastly']) {
+      const storage = spawnDev(['dev', '--profile', profile, '--port', '0', '--watch', '--json'], storageRoot, children);
+      const storageReady = await waitForJsonEvent(storage.child, 'ready', storage.stderrText);
+      const objects = await fetch(`${storageReady.url}/objects`, { method: 'POST' });
+      assert.equal(objects.status, 200, storage.stderrText());
+      const body = await objects.json();
+      assert.equal(body.written.status, 'stored', `${profile}: ${JSON.stringify(body)}`);
+      assert.equal(body.metadata.status, 'found', JSON.stringify(body));
+      assert.equal(body.object.text, 'storage!', JSON.stringify(body));
+      const kv = await fetch(`${storageReady.url}/conditional-kv`, { method: 'POST' });
+      assert.equal(kv.status, 200, storage.stderrText());
+      assert.equal((await kv.json()).stale, 'conflict');
+      if (profile === 'local') {
+        const sourceFile = path.join(storageRoot, 'src/index.ts');
+        const good = fs.readFileSync(sourceFile, 'utf8');
+        const failedReload = waitForJsonEvent(storage.child, 'compile-error', storage.stderrText);
+        fs.writeFileSync(sourceFile, 'export default async function broken( {');
+        assert.equal((await failedReload).retainedLastGoodProgram, true);
+        const retained = await fetch(`${storageReady.url}/objects`, { method: 'POST' });
+        assert.equal((await retained.json()).object.text, 'storage!');
+        storage.child.kill('SIGTERM');
+        await waitForClose(storage.child, storage.stderrText);
+        fs.writeFileSync(sourceFile, good);
+      } else {
+        storage.child.kill('SIGTERM');
+        await waitForClose(storage.child, storage.stderrText);
+      }
+    }
+
     console.log('ok - pulse dev serves generated conventional Node/Fastly projects with live host fetch, wildcard-host reachability, one-request mode, graceful shutdown, and debounced source reload');
   } finally {
     for (const child of children) { try { child.kill('SIGKILL'); } catch (_) { /* best effort */ } }
