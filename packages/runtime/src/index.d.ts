@@ -135,6 +135,8 @@ export type PulseEmitEvent<Payload = unknown> =
 
 /** Plane-neutral authority shared by one isolated HTTP request or event invocation. */
 export interface PulseExecutionContext {
+  /** Validate/project a value through a literal registered schema and return bounded JSON text. */
+  encodeJson(value: unknown, schemaId: string): string;
   readonly state: PulseState;
   readonly log: PulseLogger;
   fetch(url: string, init?: PulseFetchInit): PulseFetchOperation;

@@ -142,7 +142,7 @@ export default app
 ```
 <!-- /pulse-doc-source -->
 
-The four schema-boundary forms are:
+The schema-boundary forms are:
 
 | Boundary | Authoring form | Operation |
 |---|---|---|
@@ -150,6 +150,7 @@ The four schema-boundary forms are:
 | Fetched response | `await ctx.fetch(url).json<T>('app.Output')` | Decode |
 | Outbound fetch body | `ctx.fetch(url, { json: value, schema: 'app.Input' })` | Encode |
 | Application response | `ctx.json(value, { schema: 'app.Output' })` | Encode |
+| Application-owned text | `ctx.encodeJson(value, 'app.Output')` | Encode |
 
 A registered response case is shorthand for response status plus schema:
 
@@ -160,6 +161,40 @@ return ctx.json(user, 'user.created')
 IDs must be string literals. An outbound `schema` property is valid only with
 the semantic `json` property; a raw string `body` and `json` are mutually
 exclusive.
+
+## Encode application-owned text
+
+`ctx.encodeJson(value, 'app.Candidate')` synchronously validates and projects a
+value through a compiled schema and returns JSON text. The schema ID is required
+and must be a declared string literal, including when `pulse.strict` is false.
+This operation is available on the shared HTTP/event context; it does not
+suspend, dispatch an effect, or construct an HTTP response.
+
+```ts
+const text = ctx.encodeJson(candidate, 'app.Candidate')
+```
+
+Use the returned string when an application must prepare exact bytes before a
+storage write. Encoding requires every declared field, omits unknown fields
+recursively, preserves array order, and emits object fields in schema declaration
+order. The returned string is detached from later changes to the source value.
+Finite numbers, nullable fields and enums follow the existing schema contract.
+No replacer, `toJSON` hook, runtime schema inference or generic serializer is
+invoked through this API.
+
+The UTF-8 size of the encoded output, including JSON escaping, must not exceed
+`schemas.maxBytes` (default `65_536`). Oversized output fails with
+`PULSE_BODY_TOO_LARGE`; invalid values fail with `PULSE_SCHEMA_ENCODE` before a
+subsequent effect can dispatch. A Node semantic trace records `json.encode.value`
+or `json.encode.error` at the `application-value` boundary. Fastly Native uses
+its existing schema error category and stage diagnostics.
+
+Encoding is deterministic for a fixed schema, value and target codec. The
+cross-target contract is semantic equivalence; this is not an RFC 8785
+canonicalization API, and numeric spellings can differ between codecs. For
+content hashes, preserve and hash the returned bytes instead of decoding and
+re-encoding them. An application needing a portable command fingerprint must
+specify and version its own canonical representation.
 
 ## Understand strict mode
 

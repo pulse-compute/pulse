@@ -27,6 +27,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.state`](#ctxstate) | HTTP and event handlers | Invocation-local string state shared across one execution. |
 | [`ctx.fetch`](#ctxfetch) | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
 | [`ctx.parallel`](#ctxparallel) | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
+| [`ctx.encodeJson`](#ctxencodejson) | HTTP and event handlers | Synchronous schema-bound, size-limited JSON text. |
 | [`ctx.emit`](#ctxemit) | HTTP and event handlers | One-way, schema-bound event acceptance effect. |
 | [`ctx.log`](#ctxlog) | HTTP and event handlers | Synchronous thresholded logging. |
 | [`ctx.config`, `ctx.secret`](#config-and-secrets) | HTTP and event handlers | Explicit configured binding reads. |
@@ -440,6 +441,19 @@ cross-location acceptance remains a separate gate. The Fastly JavaScript SDK is
 incomplete capability mapping and does not define or block
 Pulse's contract. Conditional wire values use the strict
 `{"__pulseKv":1,"value":...}` envelope; legacy raw JSON requires explicit migration.
+
+## `ctx.encodeJson`
+
+```ts
+const text = ctx.encodeJson(candidate, 'app.Candidate')
+```
+
+Requires a literal registered schema even in non-strict mode. Validates and
+projects the value, then returns detached JSON text bounded by `schemas.maxBytes`
+in UTF-8 bytes. It does not create a response or dispatch an effect. Invalid
+values and oversized text fail before subsequent writes. Declaration order and
+array order are preserved; cross-target parity is semantic, not a universal
+canonical-byte format. See [application-owned encoding](https://pulsecompute.io/v1.0.0-beta.3/guides/json-schemas/#encode-application-owned-text).
 
 ## Explicit JSON schemas
 

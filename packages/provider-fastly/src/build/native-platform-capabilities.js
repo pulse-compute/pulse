@@ -1094,6 +1094,7 @@ function effectDispatchSource(plan) {
   const kinds = [...new Set((plan.effects || []).map((effect) => effect.kind))];
   const lines = [
     'function host_effect_begin(effectIndex: i32, payload: i32): void {',
+    ...((plan.schemas && plan.schemas.references || []).some(entry => entry.usage === 'value-encode') ? ['  if (__pulse_fastly_last_error != PULSE_ERROR_NONE) return'] : []),
     '  if (effectIndex < 0 || effectIndex >= PULSE_FASTLY_EFFECT_COUNT || unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_NONE) { __pulse_fastly_fail(PULSE_ERROR_STATE, 46, effectIndex); return }',
     '  const payloadValue = __pulse_fastly_value(payload)',
     '  if (payloadValue.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 47, effectIndex); return }',
@@ -1550,6 +1551,15 @@ function host_request_json(schema: i32): i32 { const parsed = __pulse_fastly_par
 function __pulse_fastly_headers_from_options(options: __PulseFastlyValue, output: __PulseFastlyValue): void { const index = __pulse_fastly_find(options, "headers"); if (index < 0) return; const headers = __pulse_fastly_value(unchecked(options.values[index])); if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const name = unchecked(headers.keys[i]); const value = __pulse_fastly_value(unchecked(headers.values[i])); if (value.kind == PULSE_VALUE_ARRAY) { for (let j = 0; j < value.values.length; j += 1) output.headers.push(new __PulseFastlyHeader(name, __pulse_fastly_string(unchecked(value.values[j])))) } else output.headers.push(new __PulseFastlyHeader(name, __pulse_fastly_string(unchecked(headers.values[i])))) } return } if (headers.kind == PULSE_VALUE_ARRAY) { for (let i = 0; i < headers.values.length; i += 1) { const pair = __pulse_fastly_value(unchecked(headers.values[i])); if (pair.kind != PULSE_VALUE_ARRAY || pair.values.length < 2) continue; output.headers.push(new __PulseFastlyHeader(__pulse_fastly_string(unchecked(pair.values[0])), __pulse_fastly_string(unchecked(pair.values[1])))) } } }
 function __pulse_fastly_response(value: i32, optionsHandle: i32, json: bool): i32 { const output = new __PulseFastlyValue(); output.kind = PULSE_VALUE_RESPONSE; output.status = 200; const options = __pulse_fastly_value(optionsHandle); let bodyValue = value; if (options.kind == PULSE_VALUE_OBJECT) { const statusIndex = __pulse_fastly_find(options, "status"); if (statusIndex >= 0) output.status = i32(__pulse_fastly_number(unchecked(options.values[statusIndex]))); const schemaIndex = __pulse_fastly_find(options, "schema"); if (json && schemaIndex >= 0) { bodyValue = __pulse_fastly_schema_apply(__pulse_fastly_string(unchecked(options.values[schemaIndex])), value, true); if (bodyValue <= 0) return 0 } __pulse_fastly_headers_from_options(options, output) } output.text = json ? __pulse_fastly_json(bodyValue, 0) : __pulse_fastly_string(value); let hasContentType = false; for (let i = 0; i < output.headers.length; i += 1) if (unchecked(output.headers[i]).name.toLowerCase() == "content-type") hasContentType = true; if (!hasContentType) output.headers.push(new __PulseFastlyHeader("content-type", json ? "application/json; charset=utf-8" : "text/plain; charset=utf-8")); return __pulse_fastly_put(output) }
 function host_response_json(value: i32, options: i32): i32 { return __pulse_fastly_response(value, options, true) }
+function host_schema_encode(value: i32, schema: i32): i32 {
+  const id = __pulse_fastly_value(schema)
+  if (id.kind != PULSE_VALUE_STRING || id.text.length == 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 55, -1); return 0 }
+  const projected = __pulse_fastly_schema_apply(id.text, value, true)
+  if (projected <= 0) return 0
+  const text = __pulse_fastly_json(projected, 0)
+  if (String.UTF8.byteLength(text) > __PULSE_SCHEMA_MAX_BYTES) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, -1); return 0 }
+  return __pulse_fastly_string_value(text)
+}
 function host_response_text(value: i32, options: i32): i32 { return __pulse_fastly_response(value, options, false) }
 function host_response_custom(specHandle: i32): i32 { const spec = __pulse_fastly_value(specHandle); if (spec.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 40, -1); return 0 } const output = new __PulseFastlyValue(); output.kind = PULSE_VALUE_RESPONSE; output.status = 200; const statusIndex = __pulse_fastly_find(spec, "status"); if (statusIndex >= 0) output.status = i32(__pulse_fastly_number(unchecked(spec.values[statusIndex]))); const bodyIndex = __pulse_fastly_find(spec, "body"); if (bodyIndex >= 0) output.text = __pulse_fastly_string(unchecked(spec.values[bodyIndex])); __pulse_fastly_headers_from_options(spec, output); return __pulse_fastly_put(output) }
 function __pulse_fastly_grip_frame_channels(options: __PulseFastlyValue, output: __PulseFastlyValue): bool { const channelsIndex = __pulse_fastly_find(options, "channels"); const channelIndex = __pulse_fastly_find(options, "channel"); let count = 0; if (channelsIndex >= 0) { const channels = __pulse_fastly_value(unchecked(options.values[channelsIndex])); if (channels.kind != PULSE_VALUE_ARRAY) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 133, -1); return false } for (let i = 0; i < channels.values.length; i += 1) { const channel = __pulse_fastly_string(unchecked(channels.values[i])).trim(); if (channel.length == 0 || channel.indexOf(",") >= 0 || channel.indexOf("\r") >= 0 || channel.indexOf("\n") >= 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 134, -1); return false } output.headers.push(new __PulseFastlyHeader("Grip-Channel", channel)); count += 1 } } else if (channelIndex >= 0) { const channel = __pulse_fastly_string(unchecked(options.values[channelIndex])).trim(); if (channel.length == 0 || channel.indexOf(",") >= 0 || channel.indexOf("\r") >= 0 || channel.indexOf("\n") >= 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 134, -1); return false } output.headers.push(new __PulseFastlyHeader("Grip-Channel", channel)); count = 1 } if (count == 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 135, -1); return false } return true }
@@ -1972,7 +1982,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       maxBuffer: 64 * 1024 * 1024,
       timeout: Number(options.timeoutMs || 180000),
       env: schemaCodecsActive
-        ? { ...process.env, JSON_STRICT: 'true', JSON_USE_FAST_PATH: '0' }
+        ? { ...process.env, JSON_STRICT: 'true', JSON_USE_FAST_PATH: '0', JSON_MODE: 'NAIVE' }
         : process.env
     });
     const assemblyScriptDurationMs = Date.now() - startedAt;
@@ -2112,7 +2122,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
       assemblyScript: Object.freeze({ package: 'assemblyscript', version: require(path.join(asc.packageRoot, 'package.json')).version }),
       jsonAs: jsonAs
-        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true })
+        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false })
         : undefined,
       optimization,
       wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),

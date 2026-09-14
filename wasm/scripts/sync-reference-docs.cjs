@@ -731,6 +731,7 @@ function transformApiCopy(sourceRelative, content) {
       .replaceAll('./docs/reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md'))
       .replaceAll('./docs/reference/diagnostics.md', publicCliDoc('docs/reference/diagnostics.md'))
       .replaceAll('./docs/reference/cli.md', publicCliDoc('docs/reference/cli.md'))
+      .replaceAll('./docs/guides/json-schemas.md', publicCliDoc('docs/guides/json-schemas.md'))
       .replaceAll('./docs/guides/project-lifecycle.md', publicCliDoc('docs/guides/project-lifecycle.md'))
       .replaceAll('./docs/guides/compatibility-imports.md', publicCliDoc('docs/guides/compatibility-imports.md'))
       .replaceAll('./docs/guides/events.md', publicCliDoc('docs/guides/events.md'))

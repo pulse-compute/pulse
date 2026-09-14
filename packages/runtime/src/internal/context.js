@@ -2,7 +2,7 @@
 
 const { createStructuredBodyReader, normalizeBodyLimit } = require('./body.js');
 const { normalizeFetchRequest } = require('./fetch.js');
-const { decodeSchemaText, strictSchemaPolicy } = require('./schema.js');
+const { decodeSchemaText, encodeSchemaValue, requireExplicitSchemaId, strictSchemaPolicy } = require('./schema.js');
 const {
   cloneKvValue,
   normalizeBindingName,
@@ -157,6 +157,10 @@ function createContext(frame) {
 
   const eventContext = frame.event !== undefined;
   const ctx = {
+    encodeJson(value, schemaId) {
+      const id = requireExplicitSchemaId(schemaId, options, 'application-value');
+      return encodeSchemaValue(id, value, options, { source: 'application-value' }).text;
+    },
     ...(eventContext ? {} : { req }),
     state,
     log,
