@@ -230,6 +230,8 @@ function createNodeJavascriptHandler(application, options = {}) {
       requestHeaders: adapted.headerPairs,
       signal: options.signal || adapted.request.signal,
       fetchImplementation: options.fetchImplementation,
+      s3: options.s3 || options.bindings && options.bindings.s3,
+      s3FetchImplementation: options.s3FetchImplementation,
       assetsLookup: options.assetsLookup,
       gripBroadcast: options.gripBroadcast,
       jwtCaptureWallClock: options.jwtCaptureWallClock,

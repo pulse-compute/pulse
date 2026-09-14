@@ -1,0 +1,9 @@
+{
+  "name": "pulse-cli-storage-fixture",
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "@pulse-compute/pulse": "1.0.0-beta.2",
+    "@pulse-compute/s3": "1.0.0-beta.2"
+  }
+}

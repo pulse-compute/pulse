@@ -51,6 +51,7 @@ const DRIVER_FIELDS = Object.freeze([
   'events',
   'targets',
   'execute',
+  'prepareNativeExecution',
   'createLoweringPlan',
   'inspectRealization',
   'writeTarget',
@@ -366,6 +367,9 @@ function defineProviderDriver(input, expected = {}) {
   if ((targets.native && (targets.native.commands.test || targets.native.commands.dev)) && typeof input.execute !== 'function') {
     throw new TypeError(`Pulse provider driver ${id} is missing execute().`);
   }
+  if (input.prepareNativeExecution !== undefined && typeof input.prepareNativeExecution !== 'function') {
+    throw new TypeError(`Pulse provider driver ${id} prepareNativeExecution must be a function.`);
+  }
   const descriptor = input.descriptor === undefined ? undefined : normalizeDescriptor(input.descriptor);
   if (descriptor && descriptor.id !== id) throw new TypeError(`Pulse provider driver ${id} descriptor identity does not match.`);
   const javascript = normalizeJavascriptDriver(input.javascript, targets.javascript);
@@ -392,6 +396,7 @@ function defineProviderDriver(input, expected = {}) {
     events,
     targets,
     execute: input.execute,
+    prepareNativeExecution: input.prepareNativeExecution,
     createLoweringPlan: input.createLoweringPlan,
     inspectRealization: input.inspectRealization,
     writeTarget: input.writeTarget,
@@ -622,7 +627,7 @@ function createProviderTargetInvocation(input) {
     throw new TypeError(`Pulse provider target invocation version must be ${PROVIDER_TARGET_INVOCATION_VERSION}.`);
   }
   const action = nonEmpty(input.action, 'invocation action');
-  if (!['inspect-native', 'write-native', 'write-javascript'].includes(action)) {
+  if (!['inspect-native', 'write-native', 'write-javascript', 'execute-native'].includes(action)) {
     throw new TypeError(`Pulse provider target invocation action ${action} is unsupported.`);
   }
   const target = action.endsWith('javascript') ? 'javascript' : 'native';

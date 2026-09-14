@@ -157,6 +157,10 @@ function createDriver() {
       return Object.freeze({
         ...values,
         s3: config.bindings.s3,
+        s3FetchImplementation: values.s3FetchImplementation || require('./javascript/fetch-adapter.js').createNodeJavascriptFixtureFetch(
+          values.fetches || {}, values.fetchImplementation || (values.liveFetch === true ? globalThis.fetch : undefined),
+          { rawResponse: true }
+        ),
         providerAdapter: nodeRuntime.createNodeProviderAdapter()
       });
     },
@@ -215,6 +219,11 @@ function createDriver() {
       javascript: NODE_JAVASCRIPT_TARGET_DESCRIPTOR
     }),
     execute: nodeRuntime.executeCanonicalProgram,
+    prepareNativeExecution(invocation) {
+      const { executeCanonicalNativeModule } = require('@pulse-compute/wasm-host-runtime/runtime/canonical-native-host');
+      const native = { ...invocation.nativeArtifact, plan: invocation.applicationPlan };
+      return (options) => executeCanonicalNativeModule(native, options);
+    },
     createLoweringPlan(metadata, config = {}) {
       require('./config/s3.js').validateNodeS3Operations(metadata, config.bindings || {});
       return canonicalProvider.createProviderLoweringPlan(metadata, nodeRuntime.NODE_PROVIDER_DESCRIPTOR, {

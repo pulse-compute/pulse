@@ -21,9 +21,6 @@ const {
   compileCanonicalNativePlan,
   writeCanonicalNativeModule
 } = require('@pulse-compute/wasm-compiler/canonical-native-compiler');
-const {
-  executeCanonicalNativeModule
-} = require('@pulse-compute/wasm-host-runtime/runtime/canonical-native-host');
 const { PulseProjectError, projectJson, relative } = require('./project-config.js');
 const { describeDiagnostic, decorateDiagnostic, httpStatusForDiagnostic } = require('./diagnostics.js');
 const {
@@ -494,13 +491,23 @@ function providerExecutionOptions(project, values = {}) {
   return driver.executionOptions ? driver.executionOptions(project.providerConfig, resolved) : resolved;
 }
 
-function requiresExactNativeCrypto(compiled) {
-  return Boolean(
-    compiled
-    && compiled.cryptoRealizationPlan
-    && Array.isArray(compiled.cryptoRealizationPlan.algorithms)
-    && compiled.cryptoRealizationPlan.algorithms.some((entry) => entry.kind === 'guest-linked')
-  );
+function requiresExactNativeExecution(compiled) {
+  const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
+  const operations = compiled.metadata && compiled.metadata.providerOperations || [];
+  return algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
+}
+
+function prepareNativeExecution(project, compiled, native) {
+  const driver = providerDriver(project);
+  if (typeof driver.prepareNativeExecution !== 'function') {
+    throw new TypeError(`Provider ${driver.id} cannot execute this Native artifact locally.`);
+  }
+  const execute = driver.prepareNativeExecution(providerTargetInvocation(
+    project, 'execute-native', native.plan, providerLoweringPlan(project, compiled.metadata), { native }
+  ));
+  if (typeof execute !== 'function') throw new TypeError('Provider Native execution preparation must return a function.');
+  return execute;
 }
 
 function providerLoweringPlan(project, metadata) {
@@ -1525,11 +1532,12 @@ async function runProjectTests(project, options = {}) {
   assertImplementedTarget(project, 'test');
   const executeCanonicalProgram = driver.execute;
   if (!compiled) compiled = compileProject(project);
-  const exactNativeCrypto = requiresExactNativeCrypto(compiled);
-  const program = exactNativeCrypto ? null : loadCanonicalModule(compiled);
-  const native = hasEventCase || exactNativeCrypto
+  const exactNativeExecution = requiresExactNativeExecution(compiled);
+  const program = exactNativeExecution ? null : loadCanonicalModule(compiled);
+  const native = hasEventCase || exactNativeExecution
     ? compileNativeProjectInMemory(project, { ...options, compiled }).native
     : null;
+  const executeNative = exactNativeExecution ? prepareNativeExecution(project, compiled, native) : null;
   const cases = [];
   let failed = 0;
   for (const testCase of selected) {
@@ -1567,8 +1575,8 @@ async function runProjectTests(project, options = {}) {
         continuationTtlMs: testCase.continuationTtlMs,
         executionId: `test:${testCase.name}`
       });
-      const execution = exactNativeCrypto
-        ? await executeCanonicalNativeModule(native, executionOptions)
+      const execution = exactNativeExecution
+        ? await executeNative(executionOptions)
         : await executeCanonicalProgram(program, executionOptions);
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
       assertExpectation(testCase, Object.freeze({
@@ -1581,6 +1589,7 @@ async function runProjectTests(project, options = {}) {
         durationMs: Number(process.hrtime.bigint() - started) / 1e6,
         response: Object.freeze({ status: execution.response.status, bodyClass: execution.response.bodyClass, kind: execution.response.kind }),
         effects: execution.effectCount,
+        ...(execution.evidence ? { executionEvidence: execution.evidence } : {}),
         continuations: execution.continuations.map((entry) => Object.freeze({ id: entry.id, state: entry.state, effectIds: entry.effectIds })),
         resolutionOrder: execution.resolutionOrder
       }));
@@ -2611,6 +2620,12 @@ async function startJavascriptDevServer(project, options = {}) {
     config: project.dev.config,
     secrets: project.dev.secrets,
     kv: project.dev.kv,
+    bindings: project.providerConfig.bindings,
+    s3FetchImplementation: javascript.createFixtureFetch(
+      project.dev.fetches,
+      project.dev.networkFetch ? globalThis.fetch : undefined,
+      { rawResponse: true }
+    ),
     fetchImplementation: javascript.createFixtureFetch(
       project.dev.fetches,
       project.dev.networkFetch ? globalThis.fetch : undefined
@@ -2680,7 +2695,8 @@ async function startDevServer(project, options = {}) {
   let compiled;
   let program;
   let native;
-  let exactNativeCrypto = false;
+  let executeNative;
+  let exactNativeExecution = false;
   let packageArtifacts = Object.freeze([]);
   let compileError;
   let reloadTimer;
@@ -2705,15 +2721,17 @@ async function startDevServer(project, options = {}) {
   function reload(reason) {
     try {
       const nextCompiled = compileProject(project);
-      const nextExactNativeCrypto = requiresExactNativeCrypto(nextCompiled);
-      const nextProgram = nextExactNativeCrypto ? null : loadCanonicalModule(nextCompiled);
-      const nextNative = nextExactNativeCrypto
+      const nextExactNativeExecution = requiresExactNativeExecution(nextCompiled);
+      const nextProgram = nextExactNativeExecution ? null : loadCanonicalModule(nextCompiled);
+      const nextNative = nextExactNativeExecution
         ? compileNativeProjectInMemory(project, { ...options, compiled: nextCompiled }).native
         : null;
+      const nextExecuteNative = nextExactNativeExecution ? prepareNativeExecution(project, nextCompiled, nextNative) : null;
       compiled = nextCompiled;
       program = nextProgram;
       native = nextNative;
-      exactNativeCrypto = nextExactNativeCrypto;
+      executeNative = nextExecuteNative;
+      exactNativeExecution = nextExactNativeExecution;
       packageArtifacts = packageRealizationArtifactsForCompiled(nextCompiled);
       compileError = undefined;
       syncWatchFiles(compiled.watchFiles);
@@ -2726,8 +2744,8 @@ async function startDevServer(project, options = {}) {
         watchFiles: Object.freeze(compiled.watchFiles.map((file) => relative(file, project.root)))
       }));
     } catch (error) {
-      if (!program) compileError = error;
-      events(Object.freeze({ event: 'compile-error', retainedLastGoodProgram: Boolean(program), error: errorSummary(error, project.dev.secrets) }));
+      if (!program && !executeNative) compileError = error;
+      events(Object.freeze({ event: 'compile-error', retainedLastGoodProgram: Boolean(program || executeNative), error: errorSummary(error, project.dev.secrets) }));
     }
   }
   function scheduleReload() {
@@ -2758,8 +2776,8 @@ async function startDevServer(project, options = {}) {
         liveFetch: project.dev.networkFetch,
         executionId: `dev:${++handled}`
       });
-      const execution = exactNativeCrypto
-        ? await executeCanonicalNativeModule(native, executionOptions)
+      const execution = exactNativeExecution
+        ? await executeNative(executionOptions)
         : await executeCanonicalProgram(program, executionOptions);
       writeNodeHttpResponse(res, execution.response);
       events(Object.freeze({ event: 'request', method: req.method || 'GET', path: url.pathname, status: execution.response.status, effects: execution.effectCount }));

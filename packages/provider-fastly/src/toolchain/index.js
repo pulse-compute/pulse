@@ -242,6 +242,7 @@ function createDriver() {
       javascript: FASTLY_JAVASCRIPT_TARGET_DESCRIPTOR
     }),
     execute: fastlyRuntime.executeCanonicalProgram,
+    prepareNativeExecution: require('./native-execution.js').prepareFastlyNativeExecution,
     createLoweringPlan(metadata, providerConfig = {}) {
       return createFastlyLoweringPlan(metadata, providerConfig.bindings || {});
     },

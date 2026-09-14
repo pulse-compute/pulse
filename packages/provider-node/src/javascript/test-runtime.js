@@ -47,6 +47,10 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     effectAdapter: options.effectAdapter,
     fetchImplementation: fixtureFetch,
     gripFetchImplementation: gripFixtureFetch,
+    s3FetchImplementation: options.s3FetchImplementation || createNodeJavascriptFixtureFetch(
+      testCase.fetches || {}, options.fetchImplementation || (options.networkFetch === true ? globalThis.fetch : undefined),
+      { rawResponse: true }
+    ),
     grip: testCase.grip || options.grip,
     gripBroadcast: options.gripBroadcast,
     jwtCaptureWallClock: options.jwtCaptureWallClock,
