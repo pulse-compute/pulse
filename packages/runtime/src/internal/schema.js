@@ -187,6 +187,7 @@ function emitSchemaTrace(options, event, value) {
 
 function decodeSchemaText(schemaId, text, options = {}, context = {}) {
   const source = String(context.source || 'json');
+  const applicationText = source === 'application-text';
   const id = requireSchemaId(schemaId, options, source);
   if (id === undefined) {
     try {
@@ -197,24 +198,28 @@ function decodeSchemaText(schemaId, text, options = {}, context = {}) {
   }
   let contentType = normalizeContentType(headerValue(context.headers, 'content-type'));
   const event = {
-    boundary: source === 'request' ? 'request' : 'fetch-response',
+    boundary: applicationText ? source : source === 'request' ? 'request' : 'fetch-response',
     schemaId: id,
     responseCaseId: null,
     operationId: String(context.operationId || `${source}:${id}`),
     status: context.status ?? null,
     headers: context.headers || [],
-    bodyOwnership: source === 'request' ? 'request-snapshot' : 'fetched-response-snapshot',
+    bodyOwnership: applicationText ? 'application-owned' : source === 'request' ? 'request-snapshot' : 'fetched-response-snapshot',
     effectId: context.effectId || null,
     groupId: context.groupId || null
   };
   try {
-    contentType = assertSchemaContentType(options, context.headers, id, source);
+    if (applicationText && typeof text !== 'string') {
+      throw schemaRuntimeError('PULSE_SCHEMA_DECODE', 'Application JSON text must be a string.',
+        { schemaId: id, source, expected: 'string', actualKind: typeof text });
+    }
+    if (!applicationText) contentType = assertSchemaContentType(options, context.headers, id, source);
     assertSchemaBodySize(options, text, id, source);
     const codecs = requireSchemaCodecs(options, id, source);
     const value = codecs.decodeJsonText(id, String(text), source);
     emitSchemaTrace(options, {
       ...event,
-      kind: source === 'request' ? 'json.decode.request' : 'json.decode.fetch',
+      kind: applicationText ? 'json.decode.text' : source === 'request' ? 'json.decode.request' : 'json.decode.fetch',
       contentType: contentType || null
     }, value);
     return value;

@@ -114,7 +114,7 @@ assert.doesNotMatch(hostDeclarations, /eventListener|queueTransport|executeCall/
 const handlerTypes = handlerTypesContract.defaultHandlerTypesContract();
 assert.equal(handlerTypes.version, 'pulse.handler-types.v4');
 assert.equal(handlerTypes.runtimeVersion, 'pulse.runtime-authoring.v4');
-assert.deepEqual(handlerTypes.executionContexts.shared, ['state', 'log', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson']);
+assert.deepEqual(handlerTypes.executionContexts.shared, ['state', 'log', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson', 'decodeJson']);
 assert.deepEqual(handlerTypes.executionContexts.event, ['event.type', 'event.payload']);
 assert.equal(handlerTypes.executionContexts.emitPublished, true);
 assert.equal(handlerTypes.compiler.acceptsEventHandlers, true);

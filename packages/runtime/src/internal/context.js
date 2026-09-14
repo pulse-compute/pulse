@@ -161,6 +161,10 @@ function createContext(frame) {
       const id = requireExplicitSchemaId(schemaId, options, 'application-value');
       return encodeSchemaValue(id, value, options, { source: 'application-value' }).text;
     },
+    decodeJson(text, schemaId) {
+      const id = requireExplicitSchemaId(schemaId, options, 'application-text');
+      return decodeSchemaText(id, text, options, { source: 'application-text' });
+    },
     ...(eventContext ? {} : { req }),
     state,
     log,

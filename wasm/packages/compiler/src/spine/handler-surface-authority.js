@@ -265,6 +265,7 @@ function recognizeHandlerSurface(node, options = {}) {
           param: 'ctx.param',
           json: 'ctx.json',
           encodeJson: 'ctx.encodeJson',
+          decodeJson: 'ctx.decodeJson',
           text: 'ctx.text',
           response: 'ctx.response'
         });

@@ -172,6 +172,19 @@ no general JavaScript serialization or ambient authority. Codec determinism is
 scoped to the selected schema and target; cross-target numeric spellings are
 not a portable canonical-hash contract.
 
+`ctx.decodeJson<T>(text, 'schema.id')` is the complementary synchronous
+application-text boundary. It requires a literal registered ID and string
+input, bounds the original UTF-8 text before parsing, and returns a detached,
+deeply immutable schema value. It has no content-type policy or effect and
+does not cache repeated calls. Existing duplicate-member semantics (last wins)
+are preserved; this is not a canonical command-fingerprint parser.
+The Native `schema.decode.text` intrinsic uses the additive `schema_decode`
+value-handle import. Node uses the existing preflight and guest json-as codec;
+Fastly uses its provider-owned parser and generated schema codec and freezes
+the returned value tree. Decode failures block subsequent effect dispatch.
+The application retains the original string for byte identity; shape validation
+does not establish storage acceptance or an atomic S3/KV transaction.
+
 The pinned json-as 1.5.0 backend uses its scalar (`NAIVE`) mode with strict
 validation and generated-struct fast paths disabled. Its SWAR string path can
 corrupt surrogate pairs. Before its slow struct parser receives normalized JSON,
