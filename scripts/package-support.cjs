@@ -122,7 +122,7 @@ function loadReleaseManifest(file = RELEASE_MANIFEST_FILE) {
   try { registry = new URL(publication.registry); }
   catch (error) { fail(`release manifest publication.registry is invalid: ${error.message}`); }
   if (registry.protocol !== 'https:') fail('release manifest publication.registry must use HTTPS');
-  if (publication.distTag !== raw.channel) fail('release manifest publication.distTag must match channel');
+  if (![raw.channel, 'latest'].includes(publication.distTag)) fail('release manifest publication.distTag must be the release channel or explicitly configured latest');
   if (publication.authentication !== 'npm-trusted-publishing-oidc') fail('release manifest publication.authentication must be npm-trusted-publishing-oidc');
   if (publication.provenance !== 'automatic') fail('release manifest publication.provenance must be automatic');
   if (!/^[A-Za-z0-9_.-]+\.ya?ml$/.test(publication.workflowFile)) fail('release manifest publication.workflowFile must be a workflow filename');

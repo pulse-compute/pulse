@@ -11,8 +11,8 @@
   "releaseCandidate": {
     "version": "1.0.0-beta.2",
     "label": "Beta",
-    "publicationTag": "beta",
-    "latestTagAllowed": false,
+    "publicationTag": "latest",
+    "latestTagAllowed": true,
     "currentSnapshotChannel": "beta",
     "applicationStage": "documentation-release",
     "snapshotStatus": "applied",
@@ -23,7 +23,7 @@
     "productName": "Pulse",
     "displayLabel": "Beta",
     "displayName": "Pulse 1.0.0-beta.2 — Beta",
-    "npmDistTag": "beta",
+    "npmDistTag": "latest",
     "disallowedCurrentLabels": [
       "alpha",
       "preview"
@@ -256,7 +256,7 @@
     "required": true,
     "bootstrapVersion": "0.0.0",
     "bootstrapTag": "bootstrap",
-    "releaseTag": "beta",
+    "releaseTag": "latest",
     "allowedLatestTargets": [
       null,
       "0.0.0"
@@ -286,11 +286,12 @@
     "procedure": [
       "Generate and inspect an inert 0.0.0 tarball for each missing package name.",
       "Publish each inert tarball with public access and the bootstrap dist-tag through a human 2FA-protected session.",
-      "Verify that every package name exists, bootstrap points to 0.0.0, and latest is either absent or still points to the same inert 0.0.0 bootstrap.",
+      "Verify that every package name exists, bootstrap points to 0.0.0, and latest is absent, points to the inert 0.0.0 bootstrap, or resolves to a published version listed in the documentation release history.",
       "Configure the exact pulse-compute/pulse, npm-publish.yml, and npm-publish trusted-publisher identity on every package.",
       "Revoke and remove the temporary bootstrap credential before the 1.0.0-beta.2 release candidate is published through OIDC.",
-      "Publish the synchronized 1.0.0-beta.2 candidate under beta only after protected human approval."
-    ]
+      "Publish the synchronized 1.0.0-beta.2 candidate under the manifest-owned npm tag only after protected human approval."
+    ],
+    "releasedLatestPolicy": "documented-published-version"
   },
   "auditPolicy": {
     "vulnerabilities": {
@@ -366,7 +367,7 @@
       "status": "proven",
       "requiredBy": "documentation-release",
       "owner": "human-release",
-      "summary": "The intended public candidate is Pulse 1.0.0-beta.2 Beta under beta, never latest.",
+      "summary": "The intended public candidate remains Pulse 1.0.0-beta.2 Beta; future releases publish directly under the explicitly configured latest npm tag.",
       "evidence": [
         "release/release-preflight.json#releaseCandidate"
       ],

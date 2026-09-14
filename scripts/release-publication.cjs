@@ -181,22 +181,55 @@ function sleep(milliseconds) {
 }
 
 function waitForRegistry(adapter, entry, distTag, options = {}) {
-  const attempts = Number(options.attempts || 10);
+  const timeoutMs = options.timeoutMs ?? 600000;
+  const attempts = options.attempts ?? Infinity;
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0
+    || (attempts !== Infinity && (!Number.isSafeInteger(attempts) || attempts <= 0))) {
+    fail('registry wait requires a positive timeout and attempt limit');
+  }
+  const now = options.now || Date.now;
+  const pause = options.sleep || sleep;
+  const progress = options.onProgress || (() => {});
+  const startedAt = now();
+  const deadline = startedAt + timeoutMs;
   let last;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
-    const published = adapter.version(entry.name, entry.version);
-    const tags = published ? adapter.tags(entry.name) : {};
+    if (last && now() >= deadline) {
+      last = Object.freeze({ ...last, elapsedMs: now() - startedAt });
+      progress(Object.freeze({ name: entry.name, version: entry.version, distTag,
+        attempt: last.attempt, elapsedMs: last.elapsedMs, state: 'timeout', retryInMs: 0 }));
+      break;
+    }
+    const published = adapter.version(entry.name, entry.version, { timeoutMs: Math.max(1, deadline - now()) });
+    if (published && published.integrity && published.integrity !== entry.integrity) {
+      fail(`${entry.name}@${entry.version} has a registry integrity conflict; do not republish or overwrite this version`,
+        'PULSE_NPM_INTEGRITY_CONFLICT', { expectedIntegrity: entry.integrity, published });
+    }
+    const tags = published && now() < deadline
+      ? adapter.tags(entry.name, { timeoutMs: Math.max(1, deadline - now()) }) : {};
     last = Object.freeze({
       published,
       distTagVersion: tags[distTag] || null,
       integrityMatches: Boolean(published && published.integrity === entry.integrity),
-      distTagMatches: tags[distTag] === entry.version
+      distTagMatches: tags[distTag] === entry.version,
+      attempt,
+      elapsedMs: now() - startedAt
     });
-    if (last.integrityMatches && last.distTagMatches) return last;
-    if (published && published.integrity && published.integrity !== entry.integrity) break;
-    if (attempt < attempts) sleep(Math.min(30000, 1000 * (2 ** Math.min(attempt - 1, 5))));
+    const ready = last.integrityMatches && last.distTagMatches;
+    const remainingMs = Math.max(0, deadline - now());
+    const retryInMs = ready || !remainingMs || attempt === attempts ? 0
+      : Math.min(remainingMs, 30000, 1000 * (2 ** Math.min(attempt - 1, 5)));
+    progress(Object.freeze({
+      name: entry.name, version: entry.version, distTag, attempt, elapsedMs: last.elapsedMs,
+      state: ready ? 'ready' : !retryInMs ? 'timeout' : published ? 'waiting-for-tag' : 'waiting-for-version',
+      retryInMs
+    }));
+    if (ready) return last;
+    if (!retryInMs) break;
+    pause(retryInMs);
   }
-  fail(`${entry.name}@${entry.version} did not converge in the npm registry`, 'PULSE_NPM_REGISTRY_DID_NOT_CONVERGE', last);
+  fail(`${entry.name}@${entry.version} did not become visible with matching integrity and ${distTag} within the registry wait. npm accepted the upload and may still be processing it. Once visible, re-run the failed publish job with the same release tag and sealed candidate; matching packages will be skipped.`,
+    'PULSE_NPM_REGISTRY_DID_NOT_CONVERGE', last);
 }
 
 function gitValue(repoRoot, args, fallback = '') {
@@ -208,7 +241,7 @@ function loadPublicationConfig() {
   const config = PUBLICATION;
   if (!config || typeof config !== 'object') fail('release manifest publication policy is missing');
   if (config.registry !== 'https://registry.npmjs.org') fail('npm publication registry must be the canonical public registry');
-  if (config.distTag !== RELEASE_MANIFEST.channel) fail('npm dist-tag must match the release channel');
+  if (![RELEASE_MANIFEST.channel, 'latest'].includes(config.distTag)) fail('npm dist-tag must be the release channel or explicitly configured latest');
   if (config.workflowFile !== 'npm-publish.yml') fail('trusted publishing must remain bound to npm-publish.yml');
   if (!/^[A-Za-z0-9_.-]+$/.test(config.candidateArtifact || '')) fail('npm publication candidateArtifact is invalid');
   if (config.authentication !== 'npm-trusted-publishing-oidc') fail('npm publication must use trusted publishing OIDC');
@@ -343,7 +376,7 @@ function validatePackManifest(packDir) {
     expected.delete(entry.name);
   }
   if (expected.size) fail(`packed release is missing ${[...expected.keys()].join(', ')}`);
-  if (config.distTag !== manifest.channel) fail('publication dist-tag differs from the packed release channel');
+  if (config.distTag !== sourceCatalog.publication.distTag) fail('publication dist-tag differs from the packed source catalog');
   return Object.freeze({ manifest, sourceCatalog, manifestFile, sourceCatalogFile, packages: Object.freeze(packages) });
 }
 
@@ -612,8 +645,8 @@ function npmRegistryAdapter(options = {}) {
       if (/E404|404 Not Found|is not in this registry/i.test(detail)) return false;
       fail(`npm registry package lookup failed for ${name}: ${detail.trim()}`);
     },
-    version(name, version) {
-      const result = run('npm', ['view', `${name}@${version}`, 'dist', 'dependencies', 'optionalDependencies', 'peerDependencies', '--json', '--registry', registry], { allowFailure: true, timeout: 120000 });
+    version(name, version, lookup = {}) {
+      const result = run('npm', ['view', `${name}@${version}`, 'dist', 'dependencies', 'optionalDependencies', 'peerDependencies', '--json', '--prefer-online', '--registry', registry], { allowFailure: true, timeout: Math.min(120000, lookup.timeoutMs || 120000) });
       if (result.status !== 0) {
         const detail = `${result.stdout || ''}\n${result.stderr || ''}`;
         if (/E404|404 Not Found|is not in this registry/i.test(detail)) return undefined;
@@ -632,8 +665,8 @@ function npmRegistryAdapter(options = {}) {
         peerDependencies: Object.freeze({ ...(value.peerDependencies || {}) })
       });
     },
-    tags(name) {
-      const result = run('npm', ['view', name, 'dist-tags', '--json', '--registry', registry], { timeout: 120000 });
+    tags(name, lookup = {}) {
+      const result = run('npm', ['view', name, 'dist-tags', '--json', '--prefer-online', '--registry', registry], { timeout: Math.min(120000, lookup.timeoutMs || 120000) });
       return Object.freeze(parseJsonOutput(result, `npm view ${name} dist-tags`) || {});
     }
   });
@@ -810,7 +843,12 @@ function publishBundle(options = {}) {
         timeout: 300000,
         env: securePublishEnvironment(userConfig)
       });
-      const published = waitForRegistry(adapter, entry, config.distTag, { attempts: options.verifyAttempts });
+      const published = waitForRegistry(adapter, entry, config.distTag, {
+        attempts: options.verifyAttempts,
+        onProgress(event) {
+          process.stderr.write(`[npm registry] ${event.name}@${event.version}: ${event.state}; attempt ${event.attempt}, ${Math.round(event.elapsedMs / 1000)}s elapsed${event.retryInMs ? `; retry in ${Math.ceil(event.retryInMs / 1000)}s` : ''}\n`);
+        }
+      });
       results.push(Object.freeze({
         name: entry.name,
         version: entry.version,
