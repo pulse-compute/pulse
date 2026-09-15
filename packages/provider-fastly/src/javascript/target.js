@@ -14,6 +14,11 @@ const FASTLY_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor(
   crypto: defineCryptoTargetCapabilities({
     target: 'javascript',
     algorithms: [{
+      algorithm: 'SHA-256',
+      realization: 'runtime-builtin',
+      implemented: true,
+      status: 'implemented-d1'
+    }, {
       algorithm: 'HS256',
       realization: 'runtime-builtin',
       implemented: true,
@@ -45,7 +50,7 @@ const FASTLY_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor(
       kv: true,
       parallel: true
     },
-    packages: ['pulse.assets', 'pulse.grip', 'pulse.jwt'],
+    packages: ['pulse.assets', 'pulse.crypto', 'pulse.grip', 'pulse.jwt'],
     restrictions: {
       fetch: 'origin-backend-map-or-dynamic-opt-in',
       kv: 'logical-store-map-required',

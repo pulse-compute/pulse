@@ -344,6 +344,7 @@ function createFastlyProviderAdapter(baseOptions = {}) {
     async dispatchEffect(effect, executionOptions = {}) {
       const state = stateFor(executionOptions);
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
+      if (effect.kind === 'crypto.digestText') return require('@pulse-compute/crypto/provider').createJavascriptTextDigest(baseOptions)(effect, executionOptions);
       if (effect.kind === 'time.now') return require('@pulse-compute/runtime/host').readWallTime(baseOptions.wallClock === undefined ? () => Date.now() : baseOptions.wallClock);
       if (effect.kind === 'config.get') return state.surface.config.adapter.get(effect.name);
       if (effect.kind === 'secret.get') {

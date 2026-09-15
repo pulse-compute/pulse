@@ -67,7 +67,7 @@ describe('@pulse-compute/crypto verification contract', () => {
     expect(CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION)
       .toBe('rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1');
     expect(CRYPTO_ALGORITHMS).toEqual(['HS256', 'ES256']);
-    expect(Object.keys(crypto)).toEqual(['mac', 'signature']);
+    expect(Object.keys(crypto)).toEqual(['digestText', 'mac', 'signature']);
     expect(CRYPTO_ES256_CONTRACT).toMatchObject({
       status: 'executable-g3',
       algorithm: 'ES256',

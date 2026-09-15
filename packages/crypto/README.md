@@ -2,20 +2,43 @@
 
 <!-- pulse-package-status:start -->
 > **Support tier:** Supported provider/extension surface<br>
-> **Audience:** Applications and first-party packages using provider-neutral cryptographic verification.<br>
-> **Install directly:** Yes, when an application uses the crypto verification surface directly; JWT applications receive it transitively.<br>
+> **Audience:** Applications and first-party packages using provider-neutral verification and exact-text SHA-256.<br>
+> **Install directly:** Yes, when an application uses verification or digestText directly; JWT applications receive it transitively.<br>
 > **Supported entry points:** `@pulse-compute/crypto`<br>
-> **Stability:** The package root is the supported bounded verification contract; realization and Native integration subpaths remain toolchain-only.<br>
+> **Stability:** The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only.<br>
 > **npm:** [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto)<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/crypto/)
 >
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
 <!-- pulse-package-status:end -->
 
-Provider-neutral cryptographic verification contracts for Pulse.
+Provider-neutral verification and bounded exact-text SHA-256 for Pulse.
 
 This package and `@pulse-compute/jwt` are members of the synchronized
 `1.0.0-beta.4` release catalog.
+
+## Exact-text SHA-256
+
+```ts
+import { crypto } from '@pulse-compute/crypto'
+
+const digest = await crypto.digestText(ctx, text)
+```
+
+Select `pulse.crypto: ['SHA-256']`. The current HTTP context owns this effect;
+use a directly awaited local variable or keyed `ctx.parallel` member.
+Success is `{ status: 'ok', sha256, byteLength }`: 64 lowercase hex characters
+and the exact UTF-8 length. The public `DIGEST_TEXT_MAX_BYTES` is 32768, empty
+input is accepted, and unpaired surrogates are rejected without replacement.
+No normalization, parsing, BOM stripping, or newline conversion occurs.
+Failures are `{ status: 'failed', reason }`, where reason is `invalid-text`,
+`too-large`, `unavailable`, or `realization-failure`; cancellation terminates
+the invocation. The named `digestText` export has the same contract.
+
+Node/Fastly Native reuse the selected Crypto SHA-256 guest source. Node/Fastly
+JavaScript use selected Web Crypto. Neither falls back. This bound matches
+current S3 text capacity and leaves larger Catalog envelopes for capacity work.
+See the [exact-text digest contract](https://pulsecompute.io/v1.0.0-beta.4/packages/crypto/#exact-text-digest).
 
 ## Verification contract
 

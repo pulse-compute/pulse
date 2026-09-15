@@ -146,6 +146,19 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'crypto profile replacement, reachable requirements, and deterministic target realization planning'
   }),
+  'crypto-digest-text-contract': nodeTask('test/crypto/assert-digest-text-contract.cjs', {
+    description: 'Exact-text digest admission, bounded failures, unavailable providers and cancellation'
+  }),
+  'crypto-digest-text-conformance': nodeTask('test/crypto/assert-digest-text-conformance.cjs', {
+    timeoutMs: 180000,
+    evidence: 'conformance',
+    description: 'Public exact-text SHA-256 vectors and byte bounds on four target/provider combinations'
+  }),
+  'crypto-digest-storage-conformance': nodeTask('test/crypto/assert-digest-storage-conformance.cjs', {
+    timeoutMs: 180000,
+    evidence: 'conformance',
+    description: 'Pre-upload digest, S3 receipt and exact readback including schema-encoded text'
+  }),
 
   'reachable-graph': nodeTask('test/contracts/assert-reachable-graph-contract.cjs', {
     evidence: 'unit',
@@ -840,6 +853,7 @@ const profiles = Object.freeze({
     's3-read-contract',
     's3-write-contract',
     'crypto-config-planning',
+    'crypto-digest-text-contract',
     'reachable-graph',
     'project-modules',
     'package-reachability',
@@ -896,6 +910,8 @@ const profiles = Object.freeze({
   conformance: Object.freeze([
     's3-write-conformance',
     'crypto-cross-target-conformance',
+    'crypto-digest-text-conformance',
+    'crypto-digest-storage-conformance',
     'events-conformance',
     'node-router-context-parity',
     'catalog-router-parity',

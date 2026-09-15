@@ -30,6 +30,7 @@ function unavailable(effect) {
 function createNodeJavascriptPackageEffectCapabilities(options = {}) {
   const assetsLookup = options.assetsLookup || (options.assets && options.assets.lookup);
   const gripBroadcast = options.gripBroadcast || (options.grip && options.grip.broadcast);
+  const digestText = require('@pulse-compute/crypto/provider').createJavascriptTextDigest(options);
   const jwtVerify = options.jwtVerify || (options.jwt && options.jwt.verify);
   const s3 = options.s3;
   return Object.freeze({
@@ -39,6 +40,7 @@ function createNodeJavascriptPackageEffectCapabilities(options = {}) {
         if (typeof s3 !== 'function') return unavailable(effect);
         return s3(effect, execution);
       }
+      if (effect && effect.contractId === 'pulse.crypto' && effect.operation === 'digestText') return digestText(effect, execution);
       if (effect && effect.contractId === 'pulse.assets' && effect.operation === 'lookup') {
         if (typeof assetsLookup !== 'function') return unavailable(effect);
         return assetsLookup(effect.payload, execution);
@@ -63,7 +65,8 @@ function withNodePackageEffectCapabilities(capabilities, options = {}) {
     ...base,
     effect(effect, execution) {
       if (effect && (
-        effect.contractId === 'pulse.assets'
+        effect.contractId === 'pulse.crypto'
+        || effect.contractId === 'pulse.assets'
         || effect.contractId === 'pulse.grip'
         || effect.contractId === 'pulse.jwt'
         || effect.contractId === 'pulse.s3'

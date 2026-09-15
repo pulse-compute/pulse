@@ -10,6 +10,7 @@ const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'response.custom',
   'fetch',
   'time.wall-clock',
+  'crypto.digestText',
   'config.get',
   'secret.get',
   'kv.get',
@@ -30,6 +31,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   'response.custom': 'node.http.response.custom',
   fetch: 'node.fetch.dispatch',
   'time.wall-clock': 'node.runtime.time.now',
+  'crypto.digestText': 'node.crypto.digest-text',
   'config.get': 'node.runtime.config.get',
   'secret.get': 'node.runtime.secret.get',
   'kv.get': 'node.runtime.kv.get',
@@ -56,7 +58,8 @@ const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
   'secret.get',
   'event.ingress',
   'event.emit',
-  'time.wall-clock'
+  'time.wall-clock',
+  'crypto.digestText'
 ]);
 
 module.exports = Object.freeze({

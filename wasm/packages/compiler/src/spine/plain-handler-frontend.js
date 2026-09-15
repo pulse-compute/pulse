@@ -117,9 +117,11 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
   let schemaBoundJsonCount = 0;
   const forbiddenCalls = new Set(['require', 'setTimeout', 'setInterval', 'setImmediate', 'queueMicrotask', 'eval', 'Function']);
   const forbiddenRoots = new Set(['process', 'global', 'globalThis', 'Deno', 'Bun', 'Buffer', 'console', 'WebSocket', 'XMLHttpRequest', 'EventSource', 'Worker']);
+  const packageEffectRanges = new Set();
 
   for (const effect of options.packageEffects || []) {
     if (effect && effect.capability) capabilities.add(String(effect.capability));
+    if (effect && effect.range) packageEffectRanges.add(`${effect.range.start}:${effect.range.end}`);
   }
 
   function reject(node, code, message, detail = {}) {
@@ -319,7 +321,12 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
         if (root && forbiddenRoots.has(root)) reject(node, 'PULSE_CANONICAL_AMBIENT_AUTHORITY_UNSUPPORTED', `Ambient ${root} authority is not available in canonical user scope.`, { identifier: root });
         if (root === 'Date' && node.expression.name.text === 'now') reject(node, 'PULSE_CANONICAL_NONDETERMINISM_UNSUPPORTED', 'Ambient clock access is not available in canonical user scope.');
         if (root === 'Math' && node.expression.name.text === 'random') reject(node, 'PULSE_CANONICAL_NONDETERMINISM_UNSUPPORTED', 'Ambient randomness is not available in canonical user scope.');
-        if (root === 'crypto') reject(node, 'PULSE_CANONICAL_AMBIENT_AUTHORITY_UNSUPPORTED', 'Ambient crypto authority is not available in canonical user scope.', { identifier: 'crypto' });
+        // A trusted package can own this exact call; its arguments still pass
+        // through ordinary ambient-authority validation below.
+        const packageEffect = typeof options.packageEffectForCall === 'function'
+          ? options.packageEffectForCall(node)
+          : packageEffectRanges.has(`${node.getStart(sourceFile)}:${node.getEnd()}`);
+        if (root === 'crypto' && !packageEffect) reject(node, 'PULSE_CANONICAL_AMBIENT_AUTHORITY_UNSUPPORTED', 'Ambient crypto authority is not available in canonical user scope.', { identifier: 'crypto' });
 
         const target = node.expression;
         const surface = recognizeHandlerSurface(node, { ctxName });

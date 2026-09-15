@@ -61,6 +61,11 @@ const SHARD_DEFINITIONS = Object.freeze([
       'logging-contract',
       'continuation-registry',
       'crypto-runtime-builtin',
+      'bounded-app-logic',
+      'time-conformance',
+      'time-consumer',
+      'application-errors',
+      'application-error-boundaries',
       'entities-javascript-runtime',
       'events-conformance',
       'canonical-api-runtime',
@@ -89,6 +94,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'guest-link-materialization-stage',
       'guest-link-audit-diagnostics',
       'jwt-package-owned-lowering',
+      'jwt-javascript-admission',
       'canonical-native-wasm'
     ])
   }),
@@ -132,6 +138,9 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Package effects',
     tasks: Object.freeze([
       'package-reachability',
+      'crypto-digest-text-contract',
+      'crypto-digest-text-conformance',
+      'crypto-digest-storage-conformance',
       's3-design-contract',
       's3-read-contract',
       's3-write-contract',
@@ -154,6 +163,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Schema and codec conformance',
     tasks: Object.freeze([
       'schema-registry',
+      'schema-kv-parity',
       'entities-schema-bridge',
       'fetch-projections-request-bodies',
       'config-secrets-kv-redaction',

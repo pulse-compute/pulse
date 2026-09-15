@@ -40,4 +40,73 @@ function bindJavascriptDigestMac(algorithms, subtle = globalThis.crypto && globa
     algorithms: Object.freeze(algorithms.map((algorithm) => Object.freeze({ algorithm, realization: 'runtime-builtin', implementation: IMPLEMENTATIONS[algorithm], available: true, automaticFallback: false })))
   }) });
 }
-module.exports = Object.freeze({ IMPLEMENTATIONS, bindJavascriptDigestMac });
+const DIGEST_TEXT_MAX_BYTES = 32768;
+const digestFailures = Object.freeze(Object.fromEntries(
+  ['invalid-text', 'too-large', 'unavailable', 'realization-failure'].map(reason => [reason, Object.freeze({ status: 'failed', reason })])
+));
+// Count scalar UTF-8 bytes before allocating staging; do not replace surrogates.
+function textDigestByteLength(text) {
+  if (typeof text !== 'string') return -1;
+  if (text.length > DIGEST_TEXT_MAX_BYTES) return -2;
+  let bytes = 0;
+  for (let i = 0; i < text.length; i++) {
+    const c = text.charCodeAt(i);
+    if (c >= 0xd800 && c <= 0xdbff) {
+      const low = text.charCodeAt(++i);
+      if (!(low >= 0xdc00 && low <= 0xdfff)) return -1;
+      bytes += 4;
+    } else if (c >= 0xdc00 && c <= 0xdfff) return -1;
+    else bytes += c < 0x80 ? 1 : c < 0x800 ? 2 : 3;
+  }
+  return bytes > DIGEST_TEXT_MAX_BYTES ? -2 : bytes;
+}
+function normalizeTextDigestResult(value) {
+  const failed = digestFailures['realization-failure'];
+  if (!value || typeof value !== 'object' || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) return failed;
+  const properties = Object.getOwnPropertyDescriptors(value), keys = Reflect.ownKeys(properties);
+  if (keys.some(key => typeof key !== 'string' || !properties[key].enumerable || !Object.hasOwn(properties[key], 'value'))) return failed;
+  const status = properties.status?.value, reason = properties.reason?.value;
+  if (status === 'failed' && keys.length === 2 && typeof reason === 'string' && Object.hasOwn(digestFailures, reason)) return digestFailures[reason];
+  const sha256 = properties.sha256?.value, byteLength = properties.byteLength?.value;
+  if (status !== 'ok' || keys.length !== 3 || typeof sha256 !== 'string' || !/^[a-f0-9]{64}$/.test(sha256)
+    || !Number.isInteger(byteLength) || byteLength < 0 || byteLength > DIGEST_TEXT_MAX_BYTES) return failed;
+  return Object.freeze({ status: 'ok', sha256, byteLength });
+}
+function checkDigestCancellation(signal) {
+  if (signal?.aborted) throw signal.reason || new Error('Pulse digest invocation cancelled.');
+}
+async function executeTextDigest(effect, options = {}) {
+  if (!effect || effect.package !== '@pulse-compute/crypto' || effect.contractId !== 'pulse.crypto'
+    || effect.providerKind !== 'crypto' || effect.operation !== 'digestText'
+    || effect.kind !== 'crypto.digestText' || effect.capability !== 'crypto.digestText') throw new TypeError('Invalid Crypto digest effect authority.');
+  checkDigestCancellation(options.signal);
+  const text = effect.payload?.text, byteLength = textDigestByteLength(text);
+  if (byteLength < 0) return digestFailures[byteLength === -1 ? 'invalid-text' : 'too-large'];
+  const realization = options.cryptoTarget === 'javascript' ? 'runtime-builtin' : 'guest-source:pulse-hmac-as';
+  const bytes = options.cryptoVerifier?.bytes, algorithms = options.cryptoRealization?.algorithms;
+  if (typeof bytes?.sha256 !== 'function' || !Array.isArray(algorithms)
+    || !algorithms.some(entry => entry.algorithm === 'SHA-256' && entry.available === true && entry.realization === realization)) return digestFailures.unavailable;
+  const data = new TextEncoder().encode(text);
+  let digest;
+  try {
+    digest = await bytes.sha256(data);
+    checkDigestCancellation(options.signal);
+    if (!(digest instanceof Uint8Array) || digest.length !== 32) return digestFailures['realization-failure'];
+    const sha256 = Array.from(digest, byte => byte.toString(16).padStart(2, '0')).join('');
+    return Object.freeze({ status: 'ok', sha256, byteLength });
+  } catch (error) {
+    checkDigestCancellation(options.signal);
+    return digestFailures['realization-failure'];
+  } finally { data.fill(0); if (digest instanceof Uint8Array) digest.fill(0); }
+}
+function createJavascriptTextDigest(options = {}) {
+  return (effect, execution = {}) => {
+    let selected;
+    try { selected = bindJavascriptDigestMac(['SHA-256'], options.digestSubtle === undefined ? globalThis.crypto?.subtle : options.digestSubtle); }
+    catch { selected = undefined; }
+    return executeTextDigest(effect, { signal: execution.signal, cryptoTarget: 'javascript',
+      cryptoVerifier: selected, cryptoRealization: selected?.realization });
+  };
+}
+module.exports = Object.freeze({ IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
+  textDigestByteLength, normalizeTextDigestResult, executeTextDigest, createJavascriptTextDigest });
