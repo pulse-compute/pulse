@@ -328,6 +328,17 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     status: 'supported'
   }),
   surface({
+    id: 'ctx.time.now',
+    class: 'effect',
+    canonicalOperation: 'effect.time.now',
+    publicForms: ['ctx.time.now()'],
+    awaitPolicy: 'required-when-consumed',
+    validPositions: ['await-expression', 'parallel-member'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'emit-provider-wall-clock-effect-and-continuation',
+    status: 'supported'
+  }),
+  surface({
     id: 'ctx.config.get',
     class: 'effect',
     canonicalOperation: 'effect.binding.config.get',

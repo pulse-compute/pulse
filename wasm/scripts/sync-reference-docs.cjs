@@ -736,6 +736,7 @@ function transformApiCopy(sourceRelative, content) {
       .replaceAll('./docs/guides/compatibility-imports.md', publicCliDoc('docs/guides/compatibility-imports.md'))
       .replaceAll('./docs/guides/events.md', publicCliDoc('docs/guides/events.md'))
       .replaceAll('./docs/packages/grip.md', publicCliDoc('docs/packages/grip.md'))
+      .replaceAll('./docs/packages/runtime.md', publicCliDoc('docs/packages/runtime.md'))
       .replaceAll('./docs/packages/entities.md', publicCliDoc('docs/packages/entities.md'))
       .replaceAll('./docs/concepts/entities-and-adapters.md', publicCliDoc('docs/concepts/entities-and-adapters.md'))
       .replaceAll('./examples/10-entities-tools/', publicCliDoc('examples/10-entities-tools/README.md'))

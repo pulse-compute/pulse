@@ -935,6 +935,7 @@ function normalizeProviderEffect(effect, schemaCodecs, options = {}) {
   if (effect.kind === 'fetch') return normalizeFetchEffect(effect, schemaCodecs, options);
   const id = String(effect.id || '');
   if (!id) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical provider effect requires an id.', { effect });
+  if (effect.kind === 'time.now') return Object.freeze({ id, kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock', source: effect.source, ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }) });
   if (effect.kind === 'config.get' || effect.kind === 'secret.get') {
     return Object.freeze({ id, kind: effect.kind, name: String(effect.name), ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }), source: effect.source });
   }
@@ -1439,6 +1440,7 @@ function createCanonicalHostRuntime(options = {}) {
             { receivedType: Array.isArray(snapshot) ? 'array' : snapshot === null ? 'null' : typeof snapshot }
           );
         }
+        if (normalized.kind === 'time.now') snapshot = require('@pulse-compute/runtime/host').normalizeTimeResult(snapshot);
         if (normalized.kind === 'event.emit' && snapshot !== undefined) {
           throw new CanonicalRuntimeError(
             'EventAcceptanceError',

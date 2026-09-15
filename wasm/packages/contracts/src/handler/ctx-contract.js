@@ -7,7 +7,7 @@ const CTX_CONTRACT_ID = 'pulse.ctx';
 const CTX_SURFACE_IDS = Object.freeze([
   'ctx.param','ctx.req.method','ctx.req.url','ctx.req.path','ctx.req.header','ctx.req.headers',
   'ctx.state.get','ctx.state.set','ctx.encodeJson','ctx.decodeJson','ctx.json','ctx.text','ctx.response','ctx.req.text','ctx.req.json.schema',
-  'ctx.req.json.generic','ctx.fetch.projected','ctx.fetch.opaque-return','ctx.config.get','ctx.secret.get',
+  'ctx.req.json.generic','ctx.fetch.projected','ctx.fetch.opaque-return','ctx.time.now','ctx.config.get','ctx.secret.get',
   'ctx.kv.get','ctx.kv.put','ctx.kv.getVersioned','ctx.kv.insertIfAbsent','ctx.kv.compareAndSwap','ctx.emit','package.operation'
 ]);
 const surfaceById = new Map(HANDLER_SURFACE_DEFINITIONS.map((entry) => [entry.id, entry]));
@@ -33,7 +33,7 @@ function defaultCtxContract() {
     handlerSurfaceVersion: HANDLER_SURFACE_CONTRACT_VERSION,
     surfaces: CTX_SURFACES,
     planes: Object.freeze({
-      sharedAuthoring: Object.freeze(['state', 'log', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson', 'decodeJson']),
+      sharedAuthoring: Object.freeze(['state', 'log', 'time', 'fetch', 'parallel', 'config', 'secret', 'kv', 'emit', 'encodeJson', 'decodeJson']),
       httpAuthoring: Object.freeze(['req', 'json', 'text', 'response']),
       routeAuthoring: Object.freeze(['param']),
       eventAuthoring: Object.freeze(['event.type', 'event.payload']),

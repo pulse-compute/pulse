@@ -25,6 +25,7 @@ process, provider SDK, or global network surface behind it.
 | [`ctx.req.header(name)`](#request-metadata-and-headers) | HTTP handlers and middleware | Case-insensitive first-value header lookup. |
 | [`ctx.param(name)`](#ctxparam) | Matched route handlers | Named parameters from the static route pattern. |
 | [`ctx.state`](#ctxstate) | HTTP and event handlers | Invocation-local string state shared across one execution. |
+| [`ctx.time.now()`](#ctxtime) | HTTP and event handlers | Provider wall-clock sample with matching Unix milliseconds and UTC text. |
 | [`ctx.fetch`](#ctxfetch) | HTTP and event handlers | Explicit outbound HTTP effect and structured or opaque response ownership. |
 | [`ctx.parallel`](#ctxparallel) | HTTP and event handlers | Statically keyed concurrent Pulse effects. |
 | [`ctx.encodeJson`](#ctxencodejson) | HTTP and event handlers | Synchronous schema-bound, size-limited JSON text. |
@@ -382,6 +383,16 @@ return ctx.json(output, {
   schema: 'app.Output',
 })
 ```
+
+## `ctx.time`
+
+`await ctx.time.now()` returns one provider-owned wall-clock sample. On success,
+`status` is `'ok'`, `unixEpochMs` is integer Unix milliseconds and `iso8601` is
+its matching UTC string. A failed sample has `status: 'failed'` and reason
+`'unavailable'` or `'invalid-clock'`. Direct awaited calls and keyed parallel
+members are supported on Node/Fastly Native and JavaScript. Wall time can regress
+and is separate from monotonic deadlines and exact commit timestamps. See the
+[complete result contract](https://pulsecompute.io/v1.0.0-beta.4/packages/runtime/#wall-time).
 
 ## Config and secrets
 

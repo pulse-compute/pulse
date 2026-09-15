@@ -174,6 +174,9 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
 
   if (receiver && ts.isPropertyAccessExpression(receiver) && isIdentifierNamed(receiver.expression, ctxName, options)) {
     const namespace = receiver.name.text;
+    if (namespace === 'time' && method === 'now' && current.arguments.length === 0) {
+      return Object.freeze({ call: current, surfaceId: 'ctx.time.now', kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock', args: Object.freeze([]) });
+    }
     if (namespace === 'config' && method === 'get' && current.arguments.length === 1) {
       return Object.freeze({ call: current, surfaceId: 'ctx.config.get', kind: 'config.get', providerKind: 'config', operation: 'get', capability: 'config.get', resource: current.arguments[0], name: current.arguments[0], args: Object.freeze([...current.arguments]) });
     }

@@ -159,7 +159,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   's3.putText': 14,
   'kv.getVersioned': 15,
   'kv.insertIfAbsent': 16,
-  'kv.compareAndSwap': 17
+  'kv.compareAndSwap': 17,
+  'time.now': 18
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -167,6 +168,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
+  'time.now',
   'fetch',
   'config.get',
   'secret.get',
@@ -185,6 +187,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
+  'time.now',
   'config.get',
   'secret.get',
   'kv.get',
@@ -894,7 +897,7 @@ function requiredImportsForPlan(plan, bindings) {
     for (const key of ['fastly_secret_store:open', 'fastly_secret_store:get', 'fastly_secret_store:plaintext']) keys.add(key);
   }
   for (const kind of conditionalKv.KV_CONDITIONAL_KINDS) if (kinds.has(kind)) for (const key of conditionalKv.kvImports(kind)) keys.add(key);
-  if (kinds.has('jwt.verify')) keys.add('wasi_snapshot_preview1:clock_time_get');
+  if (kinds.has('jwt.verify') || kinds.has('time.now')) keys.add('wasi_snapshot_preview1:clock_time_get');
   if (kinds.has('kv.get') || kinds.has('kv.put') || kinds.has('assets.lookup')) keys.add('fastly_kv_store:open');
   if (kinds.has('kv.get') || kinds.has('assets.lookup')) for (const key of ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']) keys.add(key);
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
@@ -1077,6 +1080,7 @@ function effectResultSource(plan, bindings) {
 
 function effectDispatchSource(plan) {
   const handlerByKind = Object.freeze({
+    'time.now': '__pulse_fastly_time_begin',
     fetch: '__pulse_fastly_fetch_begin',
     'config.get': '__pulse_fastly_config_begin',
     'secret.get': '__pulse_fastly_secret_begin',
@@ -1688,6 +1692,7 @@ ${applicationErrors.enabled(plan) ? applicationErrors.driverLoop(plan) : `  whil
 }
 
 function capabilityImports(effect) {
+  if (effect.kind === 'time.now') return ['wasi_snapshot_preview1.clock_time_get'];
   if (effect.kind === 'config.get') return ['fastly_config_store.open', 'fastly_config_store.get'];
   if (effect.kind === 'secret.get') return ['fastly_secret_store.open', 'fastly_secret_store.get', 'fastly_secret_store.plaintext'];
   if (effect.kind === 'jwt.verify') {
@@ -1761,6 +1766,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     }),
     jwtSource ? jwtSource.source : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
+    require('./time-native.js').timeNativeSource(plan),
     conditionalKv.kvNativeSource(plan),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource() : '',
     portableSource,

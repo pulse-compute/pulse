@@ -78,6 +78,7 @@ async function executeApplication(application, request, options = {}) {
 }
 
 module.exports = Object.freeze({
+  ...require('./internal/time.js'),
   isApplicationError: require('./internal/errors.js').isApplicationError,
   ...require('./internal/conditional-kv.js'),
   RUNTIME_HOST_API_VERSION,

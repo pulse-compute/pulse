@@ -10,6 +10,7 @@ An effect is an explicit request for host authority. Each effect has an identity
 
 - dispatching an outbound fetch;
 - reading config or a secret;
+- sampling provider-owned wall time through `ctx.time.now()`;
 - getting or putting a KV value;
 - accepting one outbound event through `ctx.emit`;
 - declaring a GRIP channel;
@@ -197,6 +198,15 @@ An effect failure is normalized into a stable public error. Examples include:
 - [`PULSE_FASTLY_BACKEND_REQUIRED`](../reference/diagnostics.md#pulse-fastly-backend-required).
 
 For an independent group, the runtime settles the group and reports the normalized failures through the owning continuation boundary. Userland does not receive partially live provider handles or background tasks that can outlive the request.
+
+## Wall time and deadlines
+
+`ctx.time.now()` returns a fresh provider wall-clock sample, with integer Unix
+milliseconds and the corresponding UTC string. It follows the same execution
+ownership, grouping, cancellation and effect-budget rules as other host work.
+It can report an unavailable or invalid clock. It does not replace the
+monotonic clock used for deadlines and can move backward. See the
+[public time contract](../packages/runtime.md#wall-time).
 
 ## Timeouts have two scopes
 

@@ -44,7 +44,10 @@ function nodeJavascriptProviderCapabilities(options) {
     maxKvValueDepth: options.maxKvValueDepth,
     maxKvValueEntries: options.maxKvValueEntries
   };
-  const bindingCapabilities = withNodeBindingCapabilities(options.capabilities, bindingOptions);
+  const bindingCapabilities = Object.freeze({
+    time: () => runtimeHost.readWallTime(options.wallClock === undefined ? () => Date.now() : options.wallClock),
+    ...withNodeBindingCapabilities(options.capabilities, bindingOptions)
+  });
   const configuredGripBroadcast = options.gripBroadcast
     || (options.grip && options.grip.broadcast)
     || (options.grip && options.grip.publishEndpoint
