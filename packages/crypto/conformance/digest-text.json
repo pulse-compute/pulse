@@ -1,0 +1,38 @@
+{
+  "version": "pulse.crypto-text-digest-corpus.v1",
+  "algorithm": "SHA-256",
+  "encoding": "lowercase-hex",
+  "maxUtf8Bytes": 32768,
+  "vectors": [
+    {
+      "text": "",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "byteLength": 0
+    },
+    {
+      "text": "abc",
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      "byteLength": 3
+    },
+    {
+      "text": "\ufeff\u00e9\ud83d\ude00\u0000\r\n",
+      "sha256": "894e231659c59a0e7c35180fbca175d0fb836eb20485a8d0dd02bf5ff8c2a4e7",
+      "byteLength": 12
+    },
+    {
+      "text": "\u00e9",
+      "sha256": "4a99557e4033c3539de2eb65472017cad5f9557f7a0625a09f1c3f6e2ba69c4c",
+      "byteLength": 2
+    },
+    {
+      "text": "e\u0301",
+      "sha256": "bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6",
+      "byteLength": 3
+    },
+    {
+      "text": "{ \"b\":2, \"a\":1 }",
+      "sha256": "a782da44b228c14de003efcebc359fbe0a5bc35d90d5da70513e54e25fa5428a",
+      "byteLength": 16
+    }
+  ]
+}

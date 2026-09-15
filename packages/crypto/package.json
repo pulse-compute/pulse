@@ -5,7 +5,7 @@
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
   },
-  "description": "Provider-neutral cryptographic verification contracts for Pulse.",
+  "description": "Provider-neutral cryptographic verification and bounded exact-text digests for Pulse.",
   "type": "module",
   "sideEffects": false,
   "exports": {
@@ -15,14 +15,20 @@
       "default": "./dist/index.js"
     },
     "./pulsewasm-native": "./pulsewasm.native.cjs",
-    "./provider": "./src/provider.cjs"
+    "./provider": "./src/provider.cjs",
+    "./pulsewasm/manifest": "./pulsewasm.manifest.cjs",
+    "./pulsewasm/compiler": "./pulsewasm.compiler.cjs"
   },
   "files": [
     "as",
     "dist",
     "pulsewasm.native.cjs",
     "README.md",
-    "src/provider.cjs"
+    "src/provider.cjs",
+    "pulse.package.json",
+    "pulsewasm.manifest.cjs",
+    "pulsewasm.compiler.cjs",
+    "conformance"
   ],
   "scripts": {
     "build": "tsc -b",
@@ -42,5 +48,15 @@
   },
   "homepage": "https://pulsecompute.io/v1.0.0-beta.4/packages/crypto/",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "pulse": {
+    "contract": "./pulse.package.json"
+  },
+  "pulsewasm": {
+    "manifest": "./pulsewasm.manifest.cjs"
+  },
+  "dependencies": {
+    "@pulse-compute/runtime": "workspace:*",
+    "@pulse-compute/wasm-contracts": "workspace:*"
+  }
 }

@@ -15,10 +15,12 @@ function unavailable(effect = {}) {
 function createFastlyJavascriptPackageEffectCapabilities(options = {}) {
   const assetsLookup = options.assetsLookup;
   const gripBroadcast = options.gripBroadcast;
+  const digestText = require('@pulse-compute/crypto/provider').createJavascriptTextDigest(options);
   const jwtVerify = options.jwtVerify;
   return Object.freeze({
     version: FASTLY_JAVASCRIPT_PACKAGE_EFFECTS_VERSION,
     effect(effect, execution) {
+      if (effect && effect.contractId === 'pulse.crypto' && effect.operation === 'digestText') return digestText(effect, execution);
       if (effect && effect.contractId === 'pulse.assets' && effect.operation === 'lookup') {
         if (typeof assetsLookup !== 'function') return unavailable(effect);
         return assetsLookup(effect.payload, execution);
@@ -49,7 +51,8 @@ function withFastlyPackageEffectCapabilities(capabilities, options = {}) {
     ...base,
     effect(effect, execution) {
       if (effect && (
-        effect.contractId === 'pulse.assets'
+        effect.contractId === 'pulse.crypto'
+        || effect.contractId === 'pulse.assets'
         || effect.contractId === 'pulse.grip'
         || effect.contractId === 'pulse.jwt'
       )) {

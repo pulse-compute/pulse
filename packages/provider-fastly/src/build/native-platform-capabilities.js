@@ -160,7 +160,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'kv.getVersioned': 15,
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
-  'time.now': 18
+  'time.now': 18,
+  'crypto.digestText': 19
 });
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
@@ -169,6 +170,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ALLOWED_IMPORTS = new Set([
 
 const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'time.now',
+  'crypto.digestText',
   'fetch',
   'config.get',
   'secret.get',
@@ -188,6 +190,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'time.now',
+  'crypto.digestText',
   'config.get',
   'secret.get',
   'kv.get',
@@ -596,10 +599,12 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.capability === 'jwt.verify';
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
       && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3;
+    const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
+      && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
+    return !grip && !assets && !jwt && !s3 && !digest;
   });
   if (unsupportedPackages.length > 0) {
-    fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, and JWT package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
+    fail('Fastly native realization only accepts the trusted first-party Assets, GRIP, JWT, S3, and Crypto digest package contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', {
       effects: unsupportedPackages.map((entry) => ({ id: entry.id, kind: entry.kind, package: entry.package, contractId: entry.contractId }))
     });
   }
@@ -618,10 +623,12 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.capability === 'jwt.verify';
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
       && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
-    return !grip && !assets && !jwt && !s3;
+    const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
+      && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
+    return !grip && !assets && !jwt && !s3 && !digest;
   });
   if (unsupportedDeclarations.length > 0) {
-    fail('Fastly native package realization is restricted to the Assets, GRIP, and JWT contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
+    fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
   }
   for (const effect of effects.filter((entry) => entry.kind === 'jwt.verify')) {
     const resource = effect.resource;
@@ -1081,6 +1088,7 @@ function effectResultSource(plan, bindings) {
 function effectDispatchSource(plan) {
   const handlerByKind = Object.freeze({
     'time.now': '__pulse_fastly_time_begin',
+    'crypto.digestText': '__pulse_fastly_digest_begin',
     fetch: '__pulse_fastly_fetch_begin',
     'config.get': '__pulse_fastly_config_begin',
     'secret.get': '__pulse_fastly_secret_begin',
@@ -1767,6 +1775,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     jwtSource ? jwtSource.source : '',
     require('./s3-native.js').s3NativeSource(plan, bindings),
     require('./time-native.js').timeNativeSource(plan),
+    require('./digest-native.js').digestNativeSource(plan),
     conditionalKv.kvNativeSource(plan),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource() : '',
     portableSource,

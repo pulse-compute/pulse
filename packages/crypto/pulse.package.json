@@ -1,0 +1,64 @@
+{
+  "version": "pulse.package-contract.v1",
+  "kind": "pulse.package-contract",
+  "contractId": "pulse.crypto",
+  "npmPackage": "@pulse-compute/crypto",
+  "description": "Bounded exact-text SHA-256 through an execution-owned effect.",
+  "authoring": {
+    "namespace": "crypto",
+    "import": "@pulse-compute/crypto",
+    "symbols": [
+      "digestText"
+    ]
+  },
+  "ownership": {
+    "profileFragment": "crypto",
+    "helperImports": [],
+    "reExportImports": []
+  },
+  "composition": {
+    "status": "reserved",
+    "helperSymbol": "crypto",
+    "profileToken": "opaque-direct-use",
+    "reasonCode": "PULSE_PACKAGE_COMPOSITION_HELPER_NOT_REALIZED"
+  },
+  "targets": {
+    "native": {
+      "status": "provider-dependent",
+      "realization": "canonical-package-lowering",
+      "lowerableSubpath": "@pulse-compute/crypto",
+      "providerRequirements": [
+        "crypto.digestText"
+      ],
+      "reasonCode": "PULSE_PACKAGE_PROVIDER_CAPABILITY_REQUIRED"
+    },
+    "javascript": {
+      "status": "supported",
+      "realization": "javascript-package-runtime",
+      "entry": "./dist/index.js",
+      "providerRequirements": [
+        "crypto.digestText"
+      ]
+    }
+  },
+  "lowering": {
+    "manifest": "./pulsewasm.manifest.cjs",
+    "trust": "first-party",
+    "canonicalOperationVersion": "pulse.canonical-package-operation.v1",
+    "bundleVersion": "pulse.package-lowering-bundle.v1",
+    "providerRequirementVersion": "pulse.provider-requirement-record.v1"
+  },
+  "conformance": {
+    "status": "target-overlap",
+    "fixtureRoots": [
+      "./conformance"
+    ],
+    "semanticCases": [
+      "crypto.digestText"
+    ]
+  },
+  "docs": {
+    "readme": "./README.md",
+    "contract": "./pulse.package.json"
+  }
+}

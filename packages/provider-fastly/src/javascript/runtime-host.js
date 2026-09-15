@@ -48,7 +48,7 @@ function createFastlyJavascriptCapabilities(options = {}) {
       withFastlyBindingCapabilities({ time: () => runtimeHost.readWallTime(options.wallClock === undefined ? () => Date.now() : options.wallClock), ...options.capabilities }, { ...options, bindingCapabilities }),
       { ...options, fetchImplementation: options.fetchImplementation }
     ),
-    { assetsLookup, gripBroadcast, jwtVerify }
+    { assetsLookup, gripBroadcast, jwtVerify, digestSubtle: options.digestSubtle }
   );
 }
 

@@ -456,6 +456,18 @@ primary module, while Native ES256 selects the audited
 `guest-linked:pulse-es256-rustcrypto-p256` unit. Neither algorithm retries a
 different realization.
 
+Crypto also owns the public request-bound `crypto.digestText(ctx, text)`
+operation. Its synchronized first-party lowerer emits `crypto.digestText`
+capability demand and exact `SHA-256` selection; catalog membership alone
+continues to grant no executable trust. The normal package bridge owns effect
+lifecycle. Crypto validates scalar text before encoding at most 32768 UTF-8
+bytes, preserves exact bytes, and returns lowercase hexadecimal SHA-256 plus
+byte length or a bounded failure. Native uses the existing Crypto guest source;
+Node/Fastly JavaScript use selected runtime-builtin SHA-256. The compiler admits
+an imported facade named `crypto` only for an exactly recognized package call;
+ambient crypto calls and authority in its arguments remain rejected. HMAC/JWT
+limits, fallback policy, and S3/Catalog capacity are separate contracts.
+
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted

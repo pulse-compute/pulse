@@ -54,3 +54,17 @@ crypto.signature.verify({ ...signatureRequest, signature: 'DER' });
 crypto.signature.verify({ ...signatureRequest, key });
 
 void signatureResult;
+
+import type { PulseContext, PulseParallelEffect } from '@pulse-compute/runtime';
+import { digestText, DIGEST_TEXT_MAX_BYTES, type TextDigestResult } from '../src/index.js';
+declare const ctx: PulseContext;
+const digest: PulseParallelEffect<TextDigestResult> = digestText(ctx, 'exact text');
+const maximum: 32768 = DIGEST_TEXT_MAX_BYTES;
+const grouped = ctx.parallel({ digest: crypto.digestText(ctx, '') });
+// @ts-expect-error Digest is text-only.
+digestText(ctx, new Uint8Array());
+// @ts-expect-error Digest always requires the current context.
+digestText('exact text');
+// @ts-expect-error Digest has no alternate algorithm or encoding options.
+digestText(ctx, 'text', { encoding: 'base64' });
+void [digest, maximum, grouped];
