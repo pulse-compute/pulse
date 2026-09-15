@@ -407,6 +407,25 @@ describe('@pulse-compute/runtime host bridge', () => {
     expect(redaction.values()).toEqual(['<redacted>'])
   })
 
+  it('collapses colliding redacted keys without exposing values or invoking accessors', () => {
+    const redaction = host.createRedactionState(['id', 'version'])
+    let accessed = false
+    const input = { id: 'first', version: 'second', '<redacted>': 'third', stable: { id: 1, version: 2 } }
+    Object.defineProperty(input, 'private-id', { enumerable: true, get() { accessed = true; return 'hidden' } })
+    Object.defineProperty(input, 'private-version', { enumerable: true, get() { accessed = true; return 'hidden' } })
+    Object.defineProperty(input, '__proto__', { enumerable: true, value: { safe: true } })
+    const safe: any = redaction.redactValue(input)
+    expect(safe).toEqual(JSON.parse('{"<redacted>":"<redacted>","stable":{"<redacted>":"<redacted>"},"private-<redacted>":"<redacted>","__proto__":{"safe":true}}'))
+    expect(Object.getPrototypeOf(safe)).toBe(Object.prototype)
+    expect(Object.isFrozen(safe)).toBe(true)
+    expect(Object.isFrozen(safe.stable)).toBe(true)
+    expect(input.id).toBe('first')
+    expect(accessed).toBe(false)
+    const error: any = new Error('failure')
+    error.detail = input
+    expect((redaction.redactError(error) as any).detail).toEqual(safe)
+  })
+
   it('redacts nested error causes and camelCase credential fields without invoking accessors', () => {
     const redaction = host.createRedactionState(['nested-secret'])
     const inner: any = new Error('inner nested-secret')
