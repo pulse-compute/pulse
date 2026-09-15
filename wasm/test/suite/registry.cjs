@@ -336,6 +336,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'cross-target rich schema codecs and four JSON boundaries'
   }),
+  'schema-kv-parity': nodeTask('test/contracts/assert-schema-kv-parity.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 240000,
+    description: 'strict schema and conditional KV public consumer parity'
+  }),
   'node-cross-target-conformance': nodeTask('test/contracts/assert-node-cross-target-conformance.cjs', {
     evidence: 'conformance',
     timeoutMs: 240000,
@@ -884,6 +889,7 @@ const profiles = Object.freeze({
     'kv-conditional-adversarial',
     'fastly-conditional-kv',
     'schema-codecs',
+    'schema-kv-parity',
     'node-cross-target-conformance',
     'grip-cross-target-conformance',
     'four-mode-conformance'
