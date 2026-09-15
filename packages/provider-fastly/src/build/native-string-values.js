@@ -19,6 +19,22 @@ function host_value_string_trim(handle: i32): i32 {
 }
 `;
 
+// Indexed reads expose one UTF-16 code unit, including an isolated surrogate.
+// Validate property spelling before converting to i32: "01", fractions,
+// negative indices and nonnumeric keys are ordinary missing properties.
+const nativeStringIndex = `
+function __pulse_fastly_string_index(text: string, keyHandle: i32): i32 {
+  const key = __pulse_fastly_value(keyHandle)
+  if (key.kind != PULSE_VALUE_NUMBER && key.kind != PULSE_VALUE_STRING) return host_value_undefined()
+  const index = __pulse_fastly_number(keyHandle)
+  if (!(index >= 0 && index < text.length)) return host_value_undefined()
+  const position = i32(index)
+  if (index != f64(position)) return host_value_undefined()
+  if (key.kind == PULSE_VALUE_STRING && key.text != position.toString()) return host_value_undefined()
+  return __pulse_fastly_string_value(text.charAt(position))
+}
+`;
+
 function needsNativeValueFailureGuard(plan) {
   if ((plan.schemas?.references || []).some(entry => ['value-encode', 'text-decode'].includes(entry.usage))) return true;
   function containsValueOperation(node) {
@@ -29,4 +45,4 @@ function needsNativeValueFailureGuard(plan) {
   return containsValueOperation(plan.entry?.body) || containsValueOperation(plan.effects);
 }
 
-module.exports = { nativeStringTrim, needsNativeValueFailureGuard };
+module.exports = { nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard };

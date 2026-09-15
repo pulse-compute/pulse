@@ -96,6 +96,16 @@ receiver without coercion. These value operations create no effect or
 continuation. An observed value failure blocks subsequent effect dispatch;
 application-visible error response parity remains a separate contract.
 
+Admitted string comparisons (`<`, `<=`, `>` and `>=`) compare UTF-16 code
+units when both operands are strings. Indexed string reads return one UTF-16
+code unit; missing indices return `undefined`. This supports bounded character
+checks and deterministic set ordering without callbacks. Numeric `%` retains
+remainder semantics, including fractional and negative finite operands. These
+value operations are realized in both Fastly Native build paths as well as Node;
+they do not add effects or permit ambient JavaScript helpers. Applications must
+still validate their numeric domain and reject malformed scalar text before
+hashing it.
+
 Loop caps do not establish a request memory, byte, latency or cancellation
 budget. Collection and encoded-byte budgets still belong to the application;
 immutable schema inputs must be projected into new values when changed. Keep
