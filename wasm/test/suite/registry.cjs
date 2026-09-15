@@ -612,6 +612,11 @@ const tasks = Object.freeze({
     timeoutMs: 60000,
     description: 'canonical application runtime effects and continuations'
   }),
+  'request-budget-transport': nodeTask('test/runtime/request-budget-transport.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'shared request deadline across S3 preparation and Node HTTP body admission'
+  }),
   'canonical-opaque-node-emission': nodeTask('test/runtime/assert-canonical-opaque-passthrough.cjs', {
     evidence: 'native',
     description: 'opaque body ownership and repeated Node headers'
@@ -930,6 +935,7 @@ const profiles = Object.freeze({
     'schema-kv-parity',
     'time-conformance',
     'time-consumer',
+    'request-budget-transport',
     'application-errors',
     'application-error-boundaries',
     'node-cross-target-conformance',

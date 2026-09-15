@@ -57,6 +57,9 @@ function requestHeaderPairs(request) {
 }
 
 async function executeFastlyJavascriptApplication(application, request, options = {}) {
+  if (options.maxDurationMs !== undefined || options.requestBudget !== undefined) {
+    throw new runtimeHost.PulseRuntimeContractError('PULSE_REQUEST_DURATION_UNSUPPORTED', 'Fastly JavaScript does not implement the request deadline; select Native.');
+  }
   const capabilities = options.effectAdapter === undefined
     ? createFastlyJavascriptCapabilities(options)
     : undefined;

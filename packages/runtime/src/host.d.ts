@@ -17,6 +17,8 @@ export interface PulseJavascriptEffectHostExecution {
   readonly application?: unknown;
   readonly signal?: AbortSignal;
   readonly deadlineMonotonicMs?: number;
+  /** Host-only request authority; package transports recheck before dispatch. */
+  readonly requestBudget?: PulseRequestBudget;
   /** Adds execution-owned sensitive text to runtime redaction before provider work continues. */
   registerRedactionValue(value: string | Uint8Array): void;
   /** Applies one project-owned schema codec directly to an in-memory semantic value. */
@@ -201,7 +203,32 @@ export interface PulseJavascriptEffectExecution {
   close(): Promise<void>;
 }
 
+export interface PulseRequestBudget {
+  readonly signal: AbortSignal;
+  readonly deadlineMonotonicMs?: number;
+  readonly clock: PulseKvClock;
+  check(): void;
+  onAbort(callback: () => void): () => void;
+  remainingMs(): number;
+  race<T>(value: T | PromiseLike<T>): Promise<T>;
+  close(): void;
+}
+export declare function normalizeRequestDuration(value?: number): number | undefined;
+export declare function createRequestBudget(options?: {
+  maxDurationMs?: number;
+  requestBudget?: PulseRequestBudget;
+  requestClock?: PulseKvClock;
+  signal?: AbortSignal;
+  requestSignal?: AbortSignal;
+}): PulseRequestBudget;
+
 export interface PulseRuntimeExecutionOptions {
+  /** Provider-owned total managed request budget, 1..30000 ms. Omitted preserves existing behavior. */
+  readonly maxDurationMs?: number;
+  /** Shared host budget; nested adapters must not restart or close an inherited budget. */
+  readonly requestBudget?: PulseRequestBudget;
+  /** Monotonic host clock/scheduler, never application wall time. */
+  readonly requestClock?: PulseKvClock;
   /** Host-only monotonic clock/scheduler injection for deterministic lifecycle evidence. */
   readonly kvClock?: PulseKvClock;
   /** Host monotonic deadline; conditional KV uses the earlier of this and 10 seconds. */

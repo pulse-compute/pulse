@@ -143,7 +143,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const downstreamRequestHandle = 1;
   const downstreamBodyHandle = 2;
   requests.set(downstreamRequestHandle, { method, url, headers: requestHeaders.map((entry) => [...entry]) });
-  bodies.set(downstreamBodyHandle, { bytes: normalizeBody(requestInput.body), readOffset: 0, writes: [] });
+  bodies.set(downstreamBodyHandle, { bytes: normalizeBody(requestInput.body), readOffset: 0, writes: [],
+    readyAt: monotonicMs + Number(requestInput.readyDelayMs || 0), fixture: requestInput });
   let downstream;
 
   function alloc(kind = 'default') {
@@ -235,6 +236,12 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     },
     wasi_snapshot_preview1: {
       clock_time_get(clockId, precision, timeOut) {
+        if (Number(clockId) === 1 && typeof options.monotonicClock === 'function') {
+          const sample = options.monotonicClock(monotonicMs);
+          if (sample.status) return sample.status;
+          writeU64(timeOut, sample.nanoseconds);
+          return FASTLY_STATUS_OK;
+        }
         if (Number(clockId) === 0 && typeof options.realtimeClock === 'function') {
           const sample = options.realtimeClock();
           trace.push({ module: 'wasi_snapshot_preview1', name: 'clock_time_get', clockId: 0, precision: String(precision), status: sample.status || 0 });
@@ -610,9 +617,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   // Throwing stops the Wasm invocation; it never fabricates an effect result.
   const checkActive = () => { if (options.signal && options.signal.aborted) throw options.signal.reason || new Error('Request cancelled.'); };
   checkActive();
-  if (options.signal) for (const namespace of Object.values(imports)) {
+  if (options.signal || options.hostcallDelayMs) for (const [moduleName, namespace] of Object.entries(imports)) {
     for (const [name, hostcall] of Object.entries(namespace)) if (typeof hostcall === 'function') namespace[name] = (...args) => {
-      checkActive(); const result = hostcall(...args); checkActive(); return result;
+      checkActive(); const result = hostcall(...args);
+      monotonicMs += Number(options.hostcallDelayMs?.[`${moduleName}.${name}`] || 0);
+      checkActive(); return result;
     };
   }
   const module = new WebAssembly.Module(wasm);

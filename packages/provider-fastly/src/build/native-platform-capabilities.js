@@ -833,6 +833,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   }
 
   return Object.freeze({
+    maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs),
     configStore,
     secretStore,
     s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: { contentType: literalObjectField(inputExpression(effect, 'payload'), 'contentType') || undefined } })), source.s3),
@@ -884,6 +885,7 @@ function requiredImportsForPlan(plan, bindings) {
     'fastly_http_body:new',
     'fastly_http_body:write'
   ]);
+  if (bindings && bindings.maxDurationMs !== undefined) { keys.add('wasi_snapshot_preview1:clock_time_get'); keys.add('fastly_async_io:select'); }
   const kinds = new Set((plan.effects || []).map((effect) => effect.kind));
   if (kinds.has('fetch') || kinds.has('grip.publish') || kinds.has('grip.broadcast')) {
     for (const key of [
@@ -1820,6 +1822,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     ''
   ].join('\n');
   if (applicationErrors.enabled(plan)) source = applicationErrors.instrument(source);
+  source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -1879,7 +1882,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       'pulse_fastly_error_stage',
       'pulse_fastly_error_effect',
       'pulse_plan_hash_ptr',
-      'pulse_plan_hash_length'
+      'pulse_plan_hash_length',
+      ...(bindings.maxDurationMs === undefined ? [] : ['pulse_fastly_request_expired'])
     ]),
     policy: Object.freeze({
       nativeFastly: true,
@@ -1887,7 +1891,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       providerNeutralInput: true,
       javascriptRuntime: false,
       jsComputeRuntime: false,
-      wasi: hasJwt || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
+      wasi: bindings.maxDurationMs !== undefined || hasJwt || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
       effects: FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.join(', '),
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',

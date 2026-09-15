@@ -171,6 +171,11 @@ function restriction(reasonId, configuration) {
 }
 
 function fastlyJavascriptProjectRestrictions(compiled, project) {
+  if (project.providerConfig?.maxDurationMs !== undefined) {
+    const error = new TypeError('fastly.maxDurationMs requires the Native target; Fastly JavaScript does not implement the request deadline.');
+    error.code = 'PULSE_REQUEST_DURATION_UNSUPPORTED';
+    throw error;
+  }
   const bindings = project.providerConfig && project.providerConfig.bindings || {};
   const backends = bindings.backends && typeof bindings.backends === 'object' ? bindings.backends : {};
   const kv = bindings.kv && typeof bindings.kv === 'object' ? bindings.kv : {};

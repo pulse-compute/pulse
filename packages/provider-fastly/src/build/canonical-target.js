@@ -229,6 +229,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
         projectRoot: options.projectRoot,
         profile: options.profile,
         bindings,
+        maxDurationMs: providerConfig.maxDurationMs,
         requirePlatformCapability: false,
         canonicalBuild: true,
         targetDescriptor: options.targetDescriptor,
@@ -241,6 +242,10 @@ function inspectFastlyCanonicalTarget(options = {}) {
           || (options.experimentalNativeSize === true ? 'experimental-native-size' : undefined),
         timeoutMs: options.compileTimeoutMs
       });
+  const duration = require('@pulse-compute/runtime/host').normalizeRequestDuration(providerConfig.maxDurationMs);
+  if (native.manifest.bindings?.maxDurationMs !== duration) {
+    throw providerBuildError('PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH', 'Fastly artifact request deadline does not match the selected provider profile.');
+  }
   return Object.freeze({
     target: FASTLY_CANONICAL_TARGET,
     provider: 'fastly',

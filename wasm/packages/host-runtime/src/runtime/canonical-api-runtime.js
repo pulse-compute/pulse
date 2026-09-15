@@ -1349,6 +1349,16 @@ function createCanonicalHostRuntime(options = {}) {
   const registry = options.continuationRegistry || createContinuationRegistry({ ttlMs: options.continuationTtlMs, clock: options.clock });
 
   async function execute(programModule, executionOptions = {}) {
+    const input = { ...options, ...executionOptions };
+    const budget = portableKv.createRequestBudget(input);
+    try {
+      budget.check();
+      return await executeInvocation(programModule, { ...executionOptions, requestBudget: budget, signal: budget.signal,
+        deadlineMonotonicMs: budget.deadlineMonotonicMs ?? input.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? input.kvClock : budget.clock });
+    } finally { if (!input.requestBudget) budget.close(); }
+  }
+
+  async function executeInvocation(programModule, executionOptions) {
     if (!programModule || typeof programModule.createHandler !== 'function') throw new TypeError('Canonical runtime requires a compiled canonical module.');
     const metadata = assertCanonicalProgramCompatibility(programModule);
     executionSequence += 1;
@@ -1410,6 +1420,7 @@ function createCanonicalHostRuntime(options = {}) {
     }
 
     async function dispatchOne(effect) {
+      executionOptions.requestBudget.check();
       const normalized = normalizeProviderEffect(effect, schemaCodecs, runtimeOptions);
       const conditional = portableKv.isConditionalKv(normalized.kind);
       if (conditional) portableKv.registerKvRedactions(normalized, (value) => sensitiveValues.add(value));
@@ -1419,7 +1430,8 @@ function createCanonicalHostRuntime(options = {}) {
         const effectExecution = { ...options, ...executionOptions, metadata, executionId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
         let snapshot = conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)), effectExecution, runtimeOptions)
-          : await adapter.dispatchEffect(normalized, effectExecution);
+          : await executionOptions.requestBudget.race(adapter.dispatchEffect(normalized, effectExecution));
+        executionOptions.requestBudget.check();
         if (normalized.kind === 'config.get' || normalized.kind === 'secret.get') {
           if (snapshot !== undefined && typeof snapshot !== 'string') {
             throw new CanonicalRuntimeError(
@@ -1513,7 +1525,7 @@ function createCanonicalHostRuntime(options = {}) {
     const generator = programModule.createHandler()(context.ctx, pulse);
     if (!generator || typeof generator.next !== 'function') throw new CanonicalRuntimeError('CanonicalHandlerProtocolError', 'PULSE_CANONICAL_HANDLER_PROTOCOL', 'Compiled canonical handler did not return a generator.');
     let step;
-    try { step = generator.next(); }
+    try { executionOptions.requestBudget.check(); step = generator.next(); }
     catch (error) { error.execution = { executionId, trace: [...trace], continuations: executionContinuations() }; throw error; }
 
     while (!step.done) {
@@ -1527,6 +1539,7 @@ function createCanonicalHostRuntime(options = {}) {
       let value;
       try {
         value = marker.kind === 'group' ? await dispatchGroup(effects) : await dispatchOne(effects[0]);
+        executionOptions.requestBudget.check();
         registry.resume(continuationId);
         recordTrace(Object.freeze({ type: 'continuation-resumed', provider: adapter.id, executionId, continuationId, branchPoint: marker.continuationId }));
         step = generator.next(value);
@@ -1543,7 +1556,7 @@ function createCanonicalHostRuntime(options = {}) {
     }
 
     let response;
-    try { response = finalResponse(step.value, context.request.method); }
+    try { executionOptions.requestBudget.check(); response = finalResponse(step.value, context.request.method); }
     catch (error) {
       error.execution = Object.freeze({ executionId, trace: Object.freeze([...trace]), continuations: Object.freeze(executionContinuations()), resolutionOrder: Object.freeze([...resolutionOrder]) });
       throw error;
@@ -1596,6 +1609,7 @@ module.exports = {
   CanonicalRuntimeError,
   assertCanonicalProgramCompatibility,
   createCanonicalHostRuntime,
+  createRequestBudget: portableKv.createRequestBudget,
   executeCanonicalProgram,
   createCanonicalContext,
   normalizeFetchResponse,

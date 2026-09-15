@@ -29,6 +29,10 @@ function createNodeJavascriptFetchCapability(options = {}) {
         signal: execution.signal,
         redirect: 'follow'
       });
+      if (execution.signal?.aborted) {
+        if (response instanceof Response && response.body) void response.body.cancel(execution.signal.reason).catch(() => {});
+        throw execution.signal.reason;
+      }
       if (!(response instanceof Response) && !runtimeHost.isPulseFetchResponse(response)) {
         throw fetchError(
           'PULSE_FETCH_RESPONSE_INVALID',

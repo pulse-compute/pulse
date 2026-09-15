@@ -493,6 +493,8 @@ function createJavascriptEffectExecution(options = {}) {
     event: options.event,
     application: options.application,
     signal: lifecycleController.signal,
+    deadlineMonotonicMs: options.deadlineMonotonicMs,
+    requestBudget: options.requestBudget,
     registerRedactionValue(value) {
       if (typeof value === 'string' && value.length > 0) redaction.add(value);
     },
@@ -544,6 +546,7 @@ function createJavascriptEffectExecution(options = {}) {
         'Pulse effect execution is already closed.'
       );
     }
+    options.requestBudget?.check();
   }
 
   function trackEffect(effect, data) {
@@ -600,20 +603,29 @@ function createJavascriptEffectExecution(options = {}) {
       const operationSignal = createEffectSignal(lifecycleController.signal, descriptor);
       const operationExecution = Object.freeze({ ...externalExecution, signal: operationSignal.signal });
       const raw = raceWithSignal(Promise.resolve().then(() => {
+        options.requestBudget?.check();
         if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
         if (conditionalKv.isConditionalKv(kind)) return conditionalKv.executeConditionalKv(descriptor,
           adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
           { ...operationExecution, onKvObservation: observe }, limits);
-        return adapter.dispatch(descriptor, operationExecution);
+        return Promise.resolve(adapter.dispatch(descriptor, operationExecution)).then(value => {
+          if (value instanceof Response && value.body && options.requestBudget) {
+            options.requestBudget.onAbort(() => {
+              if (!value.body.locked) void value.body.cancel(options.requestBudget.signal.reason).catch(() => {});
+            });
+          }
+          return value;
+        });
       }), operationSignal.signal).then(
         (value) => {
+          options.requestBudget?.check();
           const normalized = normalizeEffectResult(descriptor, value, limits);
           if (descriptor.kind === 'secret.get' && typeof normalized === 'string') redaction.add(normalized);
           return normalized;
         },
         (error) => { throw redaction.redactError(error); }
       ).finally(operationSignal.dispose);
-      const projected = (typeof projector === 'function' ? raw.then(projector) : raw).catch((error) => {
+      const projected = (typeof projector === 'function' ? raw.then(value => { options.requestBudget?.check(); return projector(value); }).then(value => { options.requestBudget?.check(); return value; }) : raw).catch((error) => {
         throw redaction.redactError(error);
       });
       const effectData = {
@@ -675,9 +687,10 @@ function createJavascriptEffectExecution(options = {}) {
       const publicDescriptor = publicEffectDescriptor(descriptor, redaction);
       observe({ type: 'effect-dispatched', effect: publicDescriptor });
       const promise = Promise.resolve().then(() => {
+        options.requestBudget?.check();
         if (lifecycleController.signal.aborted) throw abortedEffectError(lifecycleController.signal.reason);
         return producer(externalExecution);
-      }).catch((error) => { throw redaction.redactError(error); });
+      }).then(value => { options.requestBudget?.check(); return value; }).catch((error) => { throw redaction.redactError(error); });
       const effectData = {
         execution,
         id,
@@ -714,7 +727,7 @@ function createJavascriptEffectExecution(options = {}) {
             : 'Pulse effect projections require a request-owned Pulse effect.'
         );
       }
-      const projected = raceWithSignal(parent.then(projector), lifecycleController.signal).catch((error) => {
+      const projected = raceWithSignal(parent.then(value => { options.requestBudget?.check(); return projector(value); }).then(value => { options.requestBudget?.check(); return value; }), lifecycleController.signal).catch((error) => {
         throw redaction.redactError(error);
       });
       const effectData = {

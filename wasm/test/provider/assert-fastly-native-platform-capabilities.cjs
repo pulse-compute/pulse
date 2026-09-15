@@ -43,6 +43,7 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-platform-capabilities-'));
 try {
+  require('./assert-fastly-request-budget.cjs');
   require('./assert-fastly-native-value-parity.cjs').main('platform');
   const zeroEffectPlan = planForExample('hello');
   assert.equal(zeroEffectPlan.effects.length, 0, 'hello plan must exercise the zero-effect provider path');
