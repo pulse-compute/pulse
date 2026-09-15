@@ -24,7 +24,7 @@ function acceptanceToolchain(packedRoot) {
       executeFastlyNativePlatformCapabilities,
       compileFastly(project) {
         return compileFastlyNativePlatformCapabilitiesPlan(execution.compileNativeProjectInMemory(project).plan, {
-          cwd: project.root, bindings: project.providerConfig.bindings, canonicalBuild: true,
+          cwd: project.root, bindings: project.providerConfig.bindings, maxDurationMs: project.providerConfig.maxDurationMs, canonicalBuild: true,
         });
       },
     };

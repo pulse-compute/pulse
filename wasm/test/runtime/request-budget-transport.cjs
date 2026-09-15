@@ -4,20 +4,19 @@ const fs = require('node:fs');
 const path = require('node:path');
 const http = require('node:http');
 const {acceptanceToolchain} = require('../s3/acceptance-toolchain.cjs');
-const {compileFastlyNativePlatformCapabilitiesPlan} = require('../../../packages/provider-fastly/src/build/native-platform-capabilities');
-const tc = acceptanceToolchain();
 const {createConditionalKvAuthority} = require('../../../packages/provider-fastly/src/testing/conditional-kv-host');
 function clock() {
   let time = 0; const timers = new Map();
   return {now:()=>time,setTimeout(fn,ms){const id={};timers.set(id,{fn,at:time+ms});return id;},clearTimeout(id){timers.delete(id);},
     advance(ms){time+=ms;for(const[id,t]of[...timers])if(t.at<=time){timers.delete(id);t.fn();}},pending:()=>timers.size};
 }
-async function main() {
-  const cwd = fs.mkdtempSync(path.join(__dirname, '.deadline-'));
+async function main(options = {}) {
+  const tc = acceptanceToolchain(options.packedRoot);
+  const cwd = options.packedRoot || fs.mkdtempSync(path.join(__dirname, '.deadline-'));
   try {
-    fs.mkdirSync(path.join(cwd,'src')); fs.mkdirSync(path.join(cwd,'.pulse'));
+    fs.mkdirSync(path.join(cwd,'src'),{recursive:true}); fs.mkdirSync(path.join(cwd,'.pulse'),{recursive:true});
     fs.mkdirSync(path.join(cwd,'node_modules/@pulse-compute'),{recursive:true});
-    for(const name of ['pulse','s3']) fs.symlinkSync(path.resolve(__dirname,'../../../packages',name),path.join(cwd,'node_modules/@pulse-compute',name),'dir');
+    if (!options.packedRoot) for(const name of ['pulse','s3']) fs.symlinkSync(path.resolve(__dirname,'../../../packages',name),path.join(cwd,'node_modules/@pulse-compute',name),'dir');
     fs.writeFileSync(path.join(cwd,'src/index.ts'),`import {Pulse} from '@pulse-compute/pulse'
 import {s3} from '@pulse-compute/s3'
 const app = new Pulse({auto:true});
@@ -41,8 +40,7 @@ export default app;
     const projects=Object.fromEntries(['node-native','node-javascript','fastly-native'].map(profile=>[profile,tc.resolveProject({cwd,profile})]));
     const node=tc.compileNativeProjectInMemory(projects['node-native']);
     const js=tc.prepareJavascriptApplication(projects['node-javascript']);
-    const fastly=compileFastlyNativePlatformCapabilitiesPlan(tc.compileNativeProjectInMemory(projects['fastly-native']).plan,
-      {cwd,bindings:projects['fastly-native'].providerConfig.bindings,maxDurationMs:10000,canonicalBuild:true});
+    const fastly=tc.compileFastly(projects['fastly-native']);
     const secrets={S3_ACCESS_KEY_ID:'deadline-fixture',S3_SECRET_ACCESS_KEY:'deadline-fixture-secret'};
     for(const delay of [0,6000]) for(const mode of Object.keys(projects)) {
       const c=clock(),sent=[]; const request={method:'POST',path:'/step',url:'https://app.test/step',body:'',headers:[]};
@@ -83,8 +81,10 @@ export default app;
         assert.equal(response.status,504,`${target}: delayed inbound body`);
       } finally {active.server.closeAllConnections();await new Promise(resolve=>active.server.close(resolve));}
     }
-    console.log('ok - deadline covers cumulative S3 preparation on three targets and real Node Native/JS HTTP body admission');
-  } finally {fs.rmSync(cwd,{recursive:true,force:true});}
+    if (!options.quiet) console.log('ok - deadline covers cumulative S3 preparation on three targets and real Node Native/JS HTTP body admission');
+    return {profiles:Object.keys(projects),maxDurationMs:10000,cumulativeDelaysMs:[6000,6000],targetCases:6,httpAdmissionCases:2,
+      fastlyWasmSha256:require('node:crypto').createHash('sha256').update(fastly.wasm).digest('hex')};
+  } finally {if (!options.packedRoot) fs.rmSync(cwd,{recursive:true,force:true});}
 }
 module.exports={main};
 if(require.main===module)main().catch(error=>{console.error(error);process.exitCode=1;});
