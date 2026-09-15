@@ -92,7 +92,8 @@ function classifyPackage(reachable, planned, product, context, options = {}) {
   }
 
   const targetStatus = product && product.javascriptTarget && product.javascriptTarget.status;
-  if (targetStatus === 'not-realized' || targetStatus === 'provider-dependent') {
+  if (targetStatus === 'not-realized'
+    || (targetStatus === 'provider-dependent' && (!planned || planned.status !== 'package-runtime'))) {
     return Object.freeze({ ...common, status: 'pending', reasonId: 'package-javascript-realization-pending', owner: pendingPackageOwner(product) });
   }
   if (targetStatus === 'unsupported') {
@@ -335,7 +336,14 @@ function buildJavascriptTargetSupportEvidence(project, options = {}, policy = {}
   const capabilities = Object.freeze(compilerCapabilities
     .map((id) => policy.classifyCapability(id, context))
     .sort((a, b) => a.id.localeCompare(b.id)));
-  const providerRequirements = Object.freeze(requirementsFromMetadata(compiled.metadata)
+  const requiredContracts = new Set(packages.filter((entry) => entry.required).map((entry) => entry.contractId));
+  const packageRequirements = (compiled.packageProduct && compiled.packageProduct.contracts || [])
+    .filter((entry) => requiredContracts.has(entry.contractId) && entry.javascriptTarget
+      && entry.javascriptTarget.status === 'provider-dependent')
+    .flatMap((entry) => entry.javascriptTarget.providerRequirements || []);
+  const providerRequirements = Object.freeze([...new Set([
+    ...requirementsFromMetadata(compiled.metadata), ...packageRequirements
+  ])]
     .map((id) => policy.classifyProviderRequirement(id, compilerCapabilities, context))
     .sort((a, b) => a.id.localeCompare(b.id)));
   const status = expectedProjectStatus(application, capabilities, providerRequirements, packages);

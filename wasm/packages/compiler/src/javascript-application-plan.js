@@ -38,7 +38,10 @@ function packageStatus(module, graphBuild) {
     .find((entry) => entry.packageName === module.packageName);
   if (product) {
     const target = product.javascriptTarget;
-    if (target && target.status === 'supported') {
+    // Source loadability is separate from selected-provider eligibility. The
+    // target-support owner checks provider-dependent requirements before build.
+    if (target && ['supported', 'provider-dependent'].includes(target.status)
+      && target.realization === 'javascript-package-runtime' && target.entry) {
       return Object.freeze({ status: 'package-runtime', runtimeEntry: target.entry, reasonCode: null });
     }
     return Object.freeze({

@@ -166,6 +166,11 @@ const tasks = Object.freeze({
     evidence: 'javascript',
     description: 'complete explicit Node JavaScript target support'
   }),
+  'jwt-javascript-admission': nodeTask('test/jwt/assert-jwt-javascript-admission.cjs', {
+    evidence: 'javascript',
+    timeoutMs: 180000,
+    description: 'JWT source admission, provider requirements and HS256/ES256 consumer execution'
+  }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
     description: 'exact compiler-to-provider toolchain invocation and result boundary'
@@ -861,6 +866,7 @@ const profiles = Object.freeze({
   javascript: Object.freeze([
     'cli-javascript-target-compilation',
     'target-support',
+    'jwt-javascript-admission',
     'crypto-runtime-builtin',
     'javascript-effect-adapter',
     'logging-runtime',

@@ -745,6 +745,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/preview-scope.md') {
     return stable(content
+      .replaceAll('concepts/compilation-and-lowering.md', publicCliDoc('docs/concepts/compilation-and-lowering.md'))
       .replaceAll('./reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('./reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md')));
   }

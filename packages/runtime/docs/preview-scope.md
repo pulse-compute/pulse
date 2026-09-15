@@ -19,7 +19,7 @@ targets.
   wildcards, and acyclic mounts.
 - Basic branching and structured object, array, and scalar manipulation.
 - Literal-capped pure `for` loops and zero-argument string `.trim()` across
-  Native and JavaScript; see [bounded application values](concepts/compilation-and-lowering.md#bounded-application-values).
+  Native and JavaScript; see [bounded application values](https://pulsecompute.io/v1.0.0-beta.4/concepts/compilation-and-lowering/#bounded-application-values).
 - Request method, URL, path, headers, text, and JSON access.
 - Bounded, memoized structured body decoding.
 - Explicit TypeScript JSON schema declarations and literal schema IDs.
