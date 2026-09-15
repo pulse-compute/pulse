@@ -76,13 +76,6 @@ function sourceSha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
-function packageRequest(packageEntry, request) {
-  if (packageEntry.status !== 'package-runtime' || !packageEntry.runtimeEntry) return request;
-  if (!packageEntry.runtimeEntry.startsWith('.')) return packageEntry.runtimeEntry;
-  const suffix = packageEntry.runtimeEntry.replace(/^\.\/?/, '');
-  return suffix ? `${packageEntry.packageName}/${suffix}` : packageEntry.packageName;
-}
-
 function loadJavascriptApplication(plan, options = {}) {
   if (!isJavascriptApplicationPlan(plan)) {
     throw new PulseModuleLoadError('PULSE_JAVASCRIPT_APPLICATION_PLAN_INVALID', 'JavaScript application loading requires a normalized Pulse application plan.');
@@ -134,11 +127,9 @@ function loadJavascriptApplication(plan, options = {}) {
         { ...packageEntry, source: edge.source, automaticFallback: false }
       );
     }
-    const request = packageRequest(packageEntry, edge.specifier);
-    if (allowedPackages.has(edge.specifier)) {
-      loadedPackages.add(edge.specifier);
-      return allowedPackages.get(edge.specifier);
-    }
+    // The runtime entry is package-file metadata, not an exported subpath.
+    // Preserve the graph's public import and let package exports resolve it.
+    const request = edge.specifier;
     if (allowedPackages.has(request)) {
       loadedPackages.add(request);
       return allowedPackages.get(request);
