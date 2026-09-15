@@ -243,6 +243,130 @@ See [Effects and continuations](../concepts/effects-and-continuations.md),
 [routing](../guides/routing.md), and
 [structured and opaque bodies](../concepts/bodies.md).
 
+## Selected bounded HTTP deadline contract
+
+P-01 selects the following implementation contract on 15 September 2026.
+**Implementation and exact-package acceptance are pending P-02 and P-03.**
+This section does not claim that the current release enforces a total request
+deadline. Catalog O2 remains closed until its separate C-06 consumer acceptance.
+
+The selected profile option is `node.maxDurationMs` for Node Native and Node
+JavaScript, and `fastly.maxDurationMs` for Fastly Native. Its value must be an
+integer from 1 through 30000; omission preserves the existing behavior without
+a total deadline. Catalog O2 selects **10000 ms**. Fastly JavaScript must reject
+the option explicitly; it is outside this proof. Event invocations retain their
+existing lifecycle. Configuration references must be regenerated from their
+canonical schema owners when P-02 implements the option, not ahead of it.
+
+### Budget and authority
+
+One provider-owned monotonic budget starts at HTTP admission, before request
+body consumption, binding resolution, authentication or application execution.
+Admission means entry to the Node HTTP request callback or the Fastly Native
+request entry point. Network connection setup, header reception and platform
+queuing before that entry are outside this budget. Direct host invocation starts
+at the host execution entry; it does not prove HTTP admission coverage.
+
+Every managed operation and continuation inherits that same budget. An
+operation uses the earlier of its own deadline and the request deadline; nested
+execution, retries and effect groups cannot replenish it. Authentication,
+config/secrets, fetched structured bodies, conditional KV, S3 preparation and
+readback all consume it. Existing byte, count and operation limits still apply.
+Inbound headers, JWT expiry, `ctx.time.now()` and receipt timestamps do not grant
+or extend time. A failed or regressing monotonic clock fails closed.
+
+At `now >= deadline`, stop admitting managed effects and continuations, including
+checkpoint dispatch. Check before dispatch, after a result becomes available,
+before resumption and before response handoff. Request cancellation must reach
+provider-supported pending operations and body readers. Dispose of locally owned
+results/bodies that arrive too late, observe asynchronous rejection, and remove
+listeners/timers at terminal completion. Cleanup never resumes application work
+or issues a compensating write. Normal completion must not cancel a response
+body whose ownership has already transferred.
+
+This is cooperative managed execution. An event loop stall, synchronous guest or
+JavaScript work, or a noninterruptible hostcall can run past the nominal instant
+of expiry. The next managed boundary must fence its result. No hard CPU
+preemption or hard end-to-end latency guarantee follows from the timer.
+
+### Target scope and response handoff
+
+O2 uses bounded, fully materialized request and response bodies. Successful
+handler return alone is not HTTP completion. The HTTP owner keeps the same
+budget through response construction and the applicable handoff below.
+
+| Boundary | Node Native | Node JavaScript | Fastly Native |
+| --- | --- | --- | --- |
+| Admission | HTTP callback, before reading the body | HTTP callback, before request adaptation or dynamic bindings | Request entry, before downstream body reads |
+| Managed waiting | Shared request cancellation and remaining operation budget | Shared request cancellation and remaining operation budget | Monotonic checks and readiness waits capped by the remaining budget |
+| Continuation/result fence | Recheck after settlement and before resume/dispatch | Recheck managed settlement and reject late dispatch/resumption | Recheck effect readiness, resume and next dispatch |
+| Buffered response ownership | Through materialization and final check before `ServerResponse.end(buffer)`; successful return transfers the complete buffer to Node | Through body adaptation and the response writer: pipeline completion for a streamed Web Response wrapper, or successful `end()` for an empty response; retain cancellation while the writer is active | Through response construction and all body writes; final check immediately before nonstreaming `fastly_http_resp.send_downstream` |
+| Handoff completion | `end(buffer)` returns successfully; socket drain/client receipt excluded | Response writer settles successfully; later network/client receipt excluded | `send_downstream` returns success; downstream delivery excluded |
+
+Node JavaScript's writer may retain ownership longer than Node Native's buffer
+enqueue. That additional local wait is not a portable network-delivery promise.
+On Fastly, the final send hostcall is not preemptible: a successful handoff cannot
+be withdrawn if the call itself spans expiry. An unsuccessful send is a transport
+failure, not evidence of application write rollback. An embedder that bypasses
+these HTTP owners must supply the admission budget and response lifecycle itself;
+returning a Web Response or result snapshot from a direct execution API is not
+equivalent evidence.
+
+If expiry is observed before response headers are committed, the HTTP owner
+attempts a bounded 504 response. If headers are already committed, terminate the
+unfinished local response; do not send a second response or relabel it as 504.
+Timeout error emission and cleanup are terminal paths with no application
+effect authority. Direct Node execution rejects with
+`PULSE_REQUEST_DEADLINE_EXCEEDED`; clock failure is distinguished by
+`PULSE_REQUEST_CLOCK_INVALID`. HTTP delivery of either failure is best effort.
+
+Opaque pass-through, streaming endpoints, post-handoff stream completion and
+arbitrary CPU preemption are excluded from O2 acceptance. Existing streaming
+behavior is not expanded by this contract. A requirement for those guarantees
+reopens scope under P-10/P-11 before O2 can be accepted.
+
+### Writes and Catalog O2 acceptance
+
+Expiry proves neither rollback nor nonacceptance of a dispatched write. A
+conditional write stopped before dispatch is not stored by that attempt; after
+dispatch, an unconfirmed result remains unknown. The remote operation can finish
+after local cancellation. Only positive authoritative evidence can resolve it.
+A checkpoint already dispatched before expiry may therefore commit afterward;
+the requirement is **no new checkpoint dispatch or late local continuation after
+expiry**, not a promise that remote storage stops at ten seconds.
+
+For O2, head compaction must be confirmed before a checkpoint is admitted, and
+the shared deadline must still be live at that checkpoint boundary. A later
+authenticated invocation can reconcile/replay the same sequence and exact body.
+No fresh command identity, automatic rollback or acceptance claim is authorized
+by a 504. Lost responses, overlap and retry remain application contract concerns.
+
+The aligned O2 requirement is: **a 10000 ms provider-owned monotonic budget from
+HTTP admission through the selected buffered-response handoff, with managed
+effect/continuation fencing and honest uncertain write outcomes**. It does not
+require arbitrary CPU preemption or delivery to the client within ten seconds.
+This wording supersedes the earlier O2 proposal's unqualified “body streaming
+and response completion” scope; inbound reads of the bounded O2 body remain
+included. The service stays closed until the following evidence exists:
+
+- P-02: terminal focused runtime/provider and repository checks cover delayed
+  inbound bodies, cumulative KV/S3 delays, boundary expiry, late completion and
+  body disposal, normal response close and response handoff on all three targets.
+  Reproduce two individually valid 6000 ms waits against the one 10000 ms budget:
+  the second wait cannot authorize another managed effect or checkpoint. Include
+  preparation/commit uncertainty and independent overlapping requests. Use a
+  monotonic fixture clock; wall-clock regression must not extend execution.
+- P-03: fresh exact packages from the final validated source, complete closure
+  hashes and clean-consumer deadline smoke evidence, including stale artifact
+  rejection. Source-only success is insufficient.
+- C-06: Catalog replays its existing safety corpus and deadline counterexamples
+  against that exact closure, configures the actual HTTP owners, and proves no
+  late local work/checkpoint dispatch. Scheduler provisioning, deployment and
+  cross-location evidence remain separate gates.
+
+P-01 freezes scope only. The older interrupted suite, earlier passing runtime
+checks and pre-final package attempts cannot satisfy G-DL or G-O2.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support

@@ -32,6 +32,20 @@ compiled values
 
 A continuation is single-use and time-bounded. Expired or duplicate resume attempts fail with stable diagnostics such as [`PULSE_CONTINUATION_EXPIRED`](../reference/diagnostics.md#pulse-continuation-expired) and [`PULSE_CONTINUATION_DOUBLE_RESUME`](../reference/diagnostics.md#pulse-continuation-double-resume).
 
+## Bounded HTTP deadline work
+
+The [selected deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)
+defines one provider-owned monotonic budget across HTTP admission, bounded body
+reads, managed effects, continuations and buffered response handoff. Catalog O2
+selects ten seconds on Node Native, Node JavaScript and Fastly Native.
+Implementation and exact-package acceptance remain pending P-02/P-03; this is
+not an available-release claim. The linked target matrix owns the handoff
+exceptions and O2 acceptance wording.
+
+Cancellation fences subsequent managed work. A write already dispatched may
+still commit remotely, so a timeout cannot establish rollback. CPU preemption
+and client delivery after handoff are outside this bounded contract.
+
 ## Independent effects form a group
 
 The multi-fetch example declares three independent fetch values before consuming any of them:
