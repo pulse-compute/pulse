@@ -9,6 +9,7 @@ const {
   normalizeKvNamespace,
   normalizeKvPutResult
 } = require('./bindings.js');
+const { normalizeTimeResult, readWallTime } = require('./time.js');
 const conditionalKv = require('./conditional-kv.js');
 const { fetchRequestInitForHost } = require('./fetch.js');
 const { createRedactionState } = require('./redaction.js');
@@ -244,6 +245,7 @@ function createCapabilityEffectAdapter(capabilities = {}) {
         if (typeof value.fetch !== 'function') return unavailableCapability(effect);
         return value.fetch(effect.url, fetchRequestInitForHost(effect.init, execution.signal), execution);
       }
+      if (effect.kind === 'time.now') return typeof value.time === 'function' ? value.time(execution) : readWallTime();
       if (effect.kind === 'config.get') {
         if (typeof value.config !== 'function') return unavailableCapability(effect);
         return value.config(effect.name, execution);
@@ -305,6 +307,7 @@ function normalizeEffectDescriptor(input, limits) {
 }
 
 function normalizeEffectResult(descriptor, value, limits) {
+  if (descriptor.kind === 'time.now') return normalizeTimeResult(value);
   if (descriptor.kind === 'config.get' || descriptor.kind === 'secret.get') {
     return normalizeBindingValue(descriptor.kind, descriptor.name, value, limits);
   }

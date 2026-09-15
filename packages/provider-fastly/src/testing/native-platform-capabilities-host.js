@@ -235,6 +235,13 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     },
     wasi_snapshot_preview1: {
       clock_time_get(clockId, precision, timeOut) {
+        if (Number(clockId) === 0 && typeof options.realtimeClock === 'function') {
+          const sample = options.realtimeClock();
+          trace.push({ module: 'wasi_snapshot_preview1', name: 'clock_time_get', clockId: 0, precision: String(precision), status: sample.status || 0 });
+          if (sample.status) return sample.status;
+          writeU64(timeOut, sample.nanoseconds);
+          return FASTLY_STATUS_OK;
+        }
         const seconds = Number.isFinite(Number(options.clockUnixSeconds))
           ? Number(options.clockUnixSeconds)
           : Math.floor(Date.now() / 1000);

@@ -341,6 +341,14 @@ const tasks = Object.freeze({
     timeoutMs: 240000,
     description: 'strict schema and conditional KV public consumer parity'
   }),
+  'time-consumer': nodeTask('test/contracts/assert-time-consumer.cjs', {
+    evidence: 'conformance', timeoutMs: 240000,
+    description: 'public time package consumer, target inspection and builds'
+  }),
+  'time-conformance': nodeTask('test/contracts/assert-time-conformance.cjs', {
+    evidence: 'conformance', timeoutMs: 120000,
+    description: 'provider-owned wall time, UTC, failures and four-mode parity'
+  }),
   'application-errors': nodeTask('test/contracts/assert-application-errors.cjs', {
     evidence: 'conformance', timeoutMs: 240000,
     description: 'public schema and JWT application error recovery across targets'
@@ -898,6 +906,8 @@ const profiles = Object.freeze({
     'fastly-conditional-kv',
     'schema-codecs',
     'schema-kv-parity',
+    'time-conformance',
+    'time-consumer',
     'application-errors',
     'application-error-boundaries',
     'node-cross-target-conformance',

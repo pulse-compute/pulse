@@ -1,5 +1,6 @@
 import type {
   Handler,
+  PulseTimeResult,
   PulseEffect,
   PulseKvGeneration, PulseKvVersionedResult, PulseKvConditionalResult,
   PulseFetchResponse,
@@ -112,6 +113,7 @@ export interface PulseRuntimeHostKvNamespace<T = unknown> {
 /** Compatibility injection shape retained while providers move to one effect adapter. */
 export interface PulseRuntimeHostCapabilities {
   prepareConditionalKv?: PulseConditionalKvPreparation;
+  time?(execution?: PulseJavascriptEffectHostExecution): PulseTimeResult | Promise<PulseTimeResult>;
   fetch?(
     url: string,
     init?: unknown,
@@ -420,3 +422,8 @@ export declare function executeConditionalKv(effect: Readonly<Record<string, unk
 export declare function registerKvRedactions(effect: Readonly<Record<string, unknown>>, register?: (value: string) => void): void;
 /** Whether a data failure can transfer to the next Router error handler. */
 export declare function isApplicationError(error: unknown): boolean;
+
+/** Host-only wall-clock result contract; the callback samples integer Unix milliseconds. */
+export declare const WALL_TIME_MAX_MS: 253402300799999;
+export declare function readWallTime(clock?: (() => number) | null): PulseTimeResult;
+export declare function normalizeTimeResult(value: unknown): PulseTimeResult;

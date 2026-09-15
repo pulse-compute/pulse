@@ -220,6 +220,14 @@ bodies remain opaque host-owned handles. An opaque body can be passed through or
 returned by a supported operation, but it cannot be decoded, duplicated, or
 independently consumed by application or package code.
 
+`ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
+provider's `time.wall-clock` authority. It returns one validated UTC wall-clock
+sample or a bounded unavailable/invalid-clock result. The clock is sampled at
+dispatch, remains distinct from monotonic deadlines, and may regress. It grants
+no timers, scheduling, distributed ordering or exact commit-time guarantee.
+Native retains effect/continuation lowering; Fastly owns the realtime hostcall.
+The result and range contract is in [Wall time](../packages/runtime.md#wall-time).
+
 Router `app.error` recovery has a finite portable data-error catalog documented
 in [Static Router authoring](../guides/routing.md). Native code transfers only
 at compiler-owned handler boundaries through the optional `router_error_take`

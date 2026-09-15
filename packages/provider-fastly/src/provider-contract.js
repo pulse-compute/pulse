@@ -13,7 +13,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   localExecution: true,
   capabilities: [
     'request', 'response.json', 'response.text', 'response.custom', 'fetch',
-    'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'assets.lookup',
+    'time.wall-clock', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'assets.lookup',
     'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify',
     'opaque.pass-through', 's3.head', 's3.getText', 's3.putText'
   ],
@@ -23,6 +23,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'response.text': 'fastly.compute.response.text',
     'response.custom': 'fastly.compute.response.custom',
     fetch: 'fastly.backend.fetch',
+    'time.wall-clock': 'wasi.clock_time_get.realtime',
     'config.get': 'fastly.config-store.get',
     'secret.get': 'fastly.secret-store.get',
     'kv.get': 'fastly.kv-store.get',

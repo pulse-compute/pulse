@@ -45,7 +45,7 @@ function createFastlyJavascriptCapabilities(options = {}) {
     : undefined;
   return withFastlyPackageEffectCapabilities(
     withFastlyFetchCapability(
-      withFastlyBindingCapabilities(options.capabilities, { ...options, bindingCapabilities }),
+      withFastlyBindingCapabilities({ time: () => runtimeHost.readWallTime(options.wallClock === undefined ? () => Date.now() : options.wallClock), ...options.capabilities }, { ...options, bindingCapabilities }),
       { ...options, fetchImplementation: options.fetchImplementation }
     ),
     { assetsLookup, gripBroadcast, jwtVerify }

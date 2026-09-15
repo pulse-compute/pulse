@@ -41,7 +41,7 @@ The package exports:
 - `PulseFetchInit` and `PulseFetchResponse` for canonical outbound fetches;
 - structured and opaque response types;
 - `PulseExecutionContext`, shared by HTTP and event handlers, with state, logging,
-  fetch, config, secret, KV, keyed parallel, and one-way event emission;
+  provider wall time, fetch, config, secret, KV, keyed parallel, and one-way event emission;
 - `PulseContext` with the shared authority plus HTTP request and response construction;
 - `PulseEvent`, `PulseEventContext`, and `PulseEventHandler` for exact type,
   immutable schema payload, non-HTTP authority, and void completion;
@@ -200,6 +200,46 @@ A schema-backed JSON response names its compiled schema:
 ```ts
 return ctx.json(output, { schema: 'app.CreateUserOutput' })
 ```
+
+## Wall time
+
+`await ctx.time.now()` samples the selected provider's wall clock when the
+operation dispatches. It returns one detached `PulseTimeResult`:
+
+```ts
+const sample = await ctx.time.now()
+if (sample.status === 'failed') return ctx.text(sample.reason, { status: 503 })
+return ctx.text(sample.iso8601)
+```
+
+An `ok` result contains `unixEpochMs`, an integer from 0 through
+253402300799999, and the matching 24-character UTC `iso8601` string
+(`YYYY-MM-DDTHH:mm:ss.sssZ`, years 1970–9999). A `failed` result contains only
+`reason: 'unavailable'` or `reason: 'invalid-clock'`. Missing/throwing clocks are
+unavailable; fractional, non-finite, negative or out-of-range millisecond samples
+are invalid. Malformed provider result envelopes are protocol failures, not
+valid clock failures. No caller-supplied time, timezone or format is accepted.
+
+Each call is a new execution-owned effect and can be a member of `ctx.parallel`.
+Use a direct awaited call or a keyed parallel member. Clock failure performs
+no automatic retry; cancellation retains the existing invocation lifecycle.
+Node Native, Node JavaScript, Fastly Native and Fastly JavaScript realize the
+operation. Fastly Native reads WASI realtime nanoseconds and truncates to integer
+milliseconds before conversion to a number; its unsigned 64-bit source range is
+smaller than the portable result range. No provider-specific application import
+or JavaScript fallback is used.
+
+Wall time may move backward or differ between machines. It is separate from the
+host's monotonic deadline clock, does not establish distributed ordering, and
+is not an exact storage commit timestamp. Receipt code should capture and retain
+its own preparation-time sample; retry horizons and physical retention margins
+remain application policy. A request-start sample cannot stand in for a later
+acceptance time. `iso8601` formats the same sample without reading the clock twice.
+
+Host tests can inject `wallClock: () => integerMilliseconds` into the provider
+runtime. `@pulse-compute/runtime/host` owns `readWallTime`, `normalizeTimeResult`
+and `WALL_TIME_MAX_MS` for provider composition. This injection is host-only and
+never exposed through request data or project application configuration.
 
 ## Host capabilities
 
