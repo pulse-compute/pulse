@@ -133,12 +133,19 @@ export type PulseEmitEvent<Payload = unknown> =
   | Readonly<{ schema: string; payload: Payload }>
   | Readonly<{ schema: null; payload?: never }>;
 
+/** One provider wall-clock sample. This is neither monotonic nor a commit timestamp. */
+export type PulseTimeResult =
+  | { readonly status: 'ok'; readonly unixEpochMs: number; readonly iso8601: string }
+  | { readonly status: 'failed'; readonly reason: 'unavailable' | 'invalid-clock' };
+
 /** Plane-neutral authority shared by one isolated HTTP request or event invocation. */
 export interface PulseExecutionContext {
   /** Validate/project a value through a literal registered schema and return bounded JSON text. */
   encodeJson(value: unknown, schemaId: string): string;
   /** Decode bounded application-owned JSON text through a literal registered schema. */
   decodeJson<T = unknown>(text: string, schemaId: string): T;
+  /** Fresh sample at dispatch, UTC 1970–9999, integer Unix milliseconds. */
+  readonly time: { now(): PulseParallelEffect<PulseTimeResult> };
   readonly state: PulseState;
   readonly log: PulseLogger;
   fetch(url: string, init?: PulseFetchInit): PulseFetchOperation;

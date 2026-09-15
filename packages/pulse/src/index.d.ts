@@ -3,6 +3,7 @@ import { Router } from '@pulse-compute/runtime';
 export type {
   HeaderPair,
   PulseEffect,
+  PulseTimeResult,
   PulseParallelEffect,
   PulseEffectResult,
   PulseParallelResult,

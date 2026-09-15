@@ -91,3 +91,14 @@ const fetchBodyHandler: PulseHandler = async (ctx: PulseContext) => {
   return ctx.text(echoed)
 }
 void fetchBodyHandler
+
+const timeHandler: import('../src/index.js').Handler = async ctx => {
+  const result = await ctx.time.now();
+  if (result.status === 'failed') return ctx.text(result.reason, { status: 503 });
+  const ms: number = result.unixEpochMs;
+  const iso: string = result.iso8601;
+  // @ts-expect-error clock reads take no caller-supplied time
+  ctx.time.now(ms);
+  return ctx.text(iso);
+};
+void timeHandler;

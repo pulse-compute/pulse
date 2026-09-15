@@ -244,6 +244,7 @@ function nativeEffect(planEffect, payload) {
     resource: planEffect.resource,
     source: planEffect.source
   };
+  if (planEffect.kind === 'time.now') return { ...base, providerKind: 'time', operation: 'now', capability: 'time.wall-clock' };
   if (planEffect.kind === 'fetch') {
     const response = nativeFetchResponseContract(planEffect, payload);
     return { ...base, url: payload.url, init: payload.init, ...response };
@@ -819,6 +820,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     }
 
     let result = portableKv.isConditionalKv(effect.kind) ? portableKv.normalizeConditionalKvResult(effect, rawResult, options) : rawResult;
+    if (effect.kind === 'time.now') result = require('@pulse-compute/runtime/host').normalizeTimeResult(rawResult);
     if (effect.kind === 'event.emit' && result !== undefined) {
       throw new canonicalRuntime.CanonicalRuntimeError(
         'EventAcceptanceError',

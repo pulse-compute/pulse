@@ -187,6 +187,12 @@ function createContext(frame) {
       });
       return createFetchOperation(effects, fetchEffect, fetchRequest, options, effectId);
     },
+    time: Object.freeze({
+      now(...args) {
+        if (args.length) throw new TypeError('Pulse time.now takes no arguments.');
+        return effects.dispatch({ kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock' });
+      }
+    }),
     parallel(record) { return effects.parallel(record); },
     config: Object.freeze({
       get(name) {
