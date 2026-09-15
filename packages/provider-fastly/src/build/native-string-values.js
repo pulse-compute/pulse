@@ -25,6 +25,7 @@ function host_value_string_trim(handle: i32): i32 {
 const nativeStringIndex = `
 function __pulse_fastly_string_index(text: string, keyHandle: i32): i32 {
   const key = __pulse_fastly_value(keyHandle)
+  if (key.kind == PULSE_VALUE_STRING && key.text == "length") return host_value_number(text.length)
   if (key.kind != PULSE_VALUE_NUMBER && key.kind != PULSE_VALUE_STRING) return host_value_undefined()
   const index = __pulse_fastly_number(keyHandle)
   if (!(index >= 0 && index < text.length)) return host_value_undefined()
