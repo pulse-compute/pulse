@@ -3,7 +3,7 @@ import packageRuntime from '@pulse-compute/runtime/package';
 import digestProvider from '../src/provider.cjs';
 
 /** Exact UTF-8 text bound, independent of HMAC and JWT limits. */
-export const DIGEST_TEXT_MAX_BYTES = 32768 as const;
+export const DIGEST_TEXT_MAX_BYTES = 2097152 as const;
 export type TextDigestResult =
   | { readonly status: 'ok'; readonly sha256: string; readonly byteLength: number }
   | { readonly status: 'failed'; readonly reason: 'invalid-text' | 'too-large' | 'unavailable' | 'realization-failure' };

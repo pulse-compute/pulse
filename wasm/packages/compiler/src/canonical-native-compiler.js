@@ -230,6 +230,11 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       '--optimize'
     ];
     const optimization = appendAssemblyScriptOptimizationArgs(args, options.nativeOptimization);
+    // The text capacity profile bounds each Native module to 256 MiB.
+    // Linked guests retain their separately owned fixed-memory ABI.
+    if (guestUnits.length === 0 && plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.'))) {
+      args.push('--maximumMemory', '4096');
+    }
     if (guestUnits.length > 0) {
       args.push(
         '--importMemory',

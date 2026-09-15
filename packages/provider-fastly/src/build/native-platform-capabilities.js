@@ -1496,16 +1496,21 @@ function __pulse_fastly_quote(value: string): string {
   out[cursor] = 34;
   return String.UTF16.decodeUnsafe(out.dataStart, out.byteLength);
 }
-function __pulse_fastly_json(handle: i32, depth: i32): string {
-  if (depth > ${plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 128 : 64}) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); return "null" }
+function __pulse_fastly_json_parts(handle: i32, depth: i32, parts: Array<string>): void {
+  if (depth > ${plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 128 : 64}) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); parts.push("null"); return }
   const value = __pulse_fastly_value(handle)
-  if (value.kind == PULSE_VALUE_UNDEFINED || value.kind == PULSE_VALUE_NULL) return "null"
-  if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? "true" : "false"
-  if (value.kind == PULSE_VALUE_NUMBER) return __pulse_fastly_number_string(value.number)
-  if (value.kind == PULSE_VALUE_STRING) return __pulse_fastly_quote(value.text)
-  if (value.kind == PULSE_VALUE_ARRAY) { let out = "["; for (let i = 0; i < value.values.length; i += 1) { if (i > 0) out += ","; out += __pulse_fastly_json(unchecked(value.values[i]), depth + 1) } return out + "]" }
-  if (value.kind == PULSE_VALUE_OBJECT) { let out = "{"; for (let i = 0; i < value.keys.length; i += 1) { if (i > 0) out += ","; out += __pulse_fastly_quote(unchecked(value.keys[i])) + ":" + __pulse_fastly_json(unchecked(value.values[i]), depth + 1) } return out + "}" }
-  return "null"
+  if (value.kind == PULSE_VALUE_BOOLEAN) { parts.push(value.boolean != 0 ? "true" : "false"); return }
+  if (value.kind == PULSE_VALUE_NUMBER) { parts.push(__pulse_fastly_number_string(value.number)); return }
+  if (value.kind == PULSE_VALUE_STRING) { parts.push(__pulse_fastly_quote(value.text)); return }
+  if (value.kind == PULSE_VALUE_ARRAY) { parts.push("["); for (let i = 0; i < value.values.length; i += 1) { if (i > 0) parts.push(","); __pulse_fastly_json_parts(unchecked(value.values[i]), depth + 1, parts) } parts.push("]"); return }
+  if (value.kind == PULSE_VALUE_OBJECT) { parts.push("{"); for (let i = 0; i < value.keys.length; i += 1) { if (i > 0) parts.push(","); parts.push(__pulse_fastly_quote(unchecked(value.keys[i]))); parts.push(":"); __pulse_fastly_json_parts(unchecked(value.values[i]), depth + 1, parts) } parts.push("}"); return }
+  parts.push("null")
+}
+function __pulse_fastly_json(handle: i32, depth: i32): string {
+  // Join once, avoiding a complete copy of a multi-MiB leaf at every ancestor
+  // and at every following member in the response or effect result.
+  const parts = new Array<string>(); __pulse_fastly_json_parts(handle, depth, parts);
+  return parts.join("")
 }
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
@@ -1987,6 +1992,9 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       '--optimize'
     ];
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization);
+    if (!guestLinked && plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.'))) {
+      args.push('--maximumMemory', '4096');
+    }
     if (generated.guestUnits.length > 0) {
       args.push(
         '--disable', 'bulk-memory',

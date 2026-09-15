@@ -65,7 +65,9 @@ async function readS3(effect, options, lookup) {
     if (key === null) return failure('invalid-key');
     let body, contentType;
     if (put) {
-      if (typeof payload.text !== 'string' || !payload.text.isWellFormed()) return failure('invalid-text');
+      if (typeof payload.text !== 'string') return failure('invalid-text');
+      if (payload.text.length > binding.maxTextBytes) return failure('too-large');
+      if (!payload.text.isWellFormed()) return failure('invalid-text');
       body = protocol.bytes(payload.text);
       if (body.length > binding.maxTextBytes) return failure('too-large');
       try { contentType = protocol.normalizePutOptions({ contentType: payload.contentType }).contentType; }

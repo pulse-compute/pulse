@@ -150,12 +150,12 @@ Controls whether a JSON content type is mandatory.
 
 ### `schemas.maxBytes`
 
-Maximum buffered bytes accepted by schema decoding.
+Maximum UTF-8 bytes for schema decoding and encoding. Request transport and dev.maxBodyBytes may impose separate limits.
 
 - **Type:** positive safe integer
 - **Required/default:** Optional; default `65_536`.
 - **Allowed values or constraints:** —
-- **Scope:** structured schema decode
+- **Scope:** structured schema text
 - **Precedence:** Configuration value.
 - **Security and safety:** Raise deliberately; this is a memory and request-amplification boundary.
 - **Related diagnostics:** `PULSE_SCHEMA_BODY_LIMIT_INVALID` (family fallback; reference root), [`PULSE_BODY_TOO_LARGE`](diagnostics.md#pulse-body-too-large)
@@ -290,7 +290,7 @@ Provider-owned Node profile configuration.
 
 ### `node.bindings.s3`
 
-Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).
+Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).
 
 - **Type:** Readonly<Record<string, S3Binding>>
 - **Required/default:** Optional; default `{}`.
@@ -306,7 +306,7 @@ Options passed to fastly(...) from @pulse-compute/provider-fastly.
 
 ### `fastly.bindings.s3`
 
-Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).
+Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).
 
 - **Type:** Readonly<Record<string, S3Binding & { backend: string }>>
 - **Required/default:** Optional; default `{}`.

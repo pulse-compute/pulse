@@ -21,7 +21,7 @@ async function main() {
   }
   for (const call of ["return await s3.putText(ctx, 'objects', key, text)", "const r = await s3.putText(other, 'objects', key, text)", "const r = await s3.putText(ctx, name, key, text)"]) assert.equal(lower(call).hasErrors, true);
   for (const result of [
-    { status: 'stored', byteLength: 32769, sha256: '0'.repeat(64) },
+    { status: 'stored', byteLength: 2097153, sha256: '0'.repeat(64) },
     { status: 'stored', byteLength: 0, sha256: '0'.repeat(64), text: '' },
     { status: 'stored', byteLength: 0, sha256: '0'.repeat(64), etag: '' },
     { status: 'unknown', reason: 'rejected', httpStatus: 400 },
@@ -39,7 +39,7 @@ async function main() {
       assert.deepEqual(Buffer.from(await selected.bytes.hmacSha256(key, data)), crypto.createHmac('sha256', key).update(data).digest());
     }
   }
-  await assert.rejects(selected.bytes.sha256(new Uint8Array(32769)));
+  await assert.rejects(selected.bytes.sha256(new Uint8Array(2097153)));
   await assert.rejects(selected.bytes.hmacSha256(new Uint8Array(8193), new Uint8Array()));
   await assert.rejects(selected.bytes.hmacSha256(new Uint8Array(), new Uint8Array(32769)));
   assert.throws(() => bindJavascriptDigestMac(['SHA-256'], {}));

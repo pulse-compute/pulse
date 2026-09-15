@@ -71,7 +71,9 @@ function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
   let data = new Uint8Array(0);
   if (put) {
     const text = __pulse_fastly_value(__pulse_fastly_payload_field(payload, 'text'));
-    if (text.kind != PULSE_VALUE_STRING || !__pulse_s3_scalar(text.text)) { __s3_fail(index, 'invalid-text'); return; }
+    if (text.kind != PULSE_VALUE_STRING) { __s3_fail(index, 'invalid-text'); return; }
+    if (text.text.length > binding.max) { __s3_fail(index, 'too-large'); return; }
+    if (!__pulse_s3_scalar(text.text)) { __s3_fail(index, 'invalid-text'); return; }
     data = __pulse_s3_bytes(text.text);
     if (data.length > binding.max) { __s3_fail(index, 'too-large'); return; }
     __pulse_fastly_remember_secret(text.text);

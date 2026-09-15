@@ -192,8 +192,8 @@
         "section": "schemas",
         "path": "schemas.maxBytes",
         "type": "positive safe integer",
-        "scope": "structured schema decode",
-        "description": "Maximum buffered bytes accepted by schema decoding."
+        "scope": "structured schema text",
+        "description": "Maximum UTF-8 bytes for schema decoding and encoding. Request transport and dev.maxBodyBytes may impose separate limits."
       },
       {
         "required": false,
@@ -342,7 +342,7 @@
         "precedence": "Configuration value.",
         "security": "Only named credential references are configuration. Runtime keys cannot override authority.",
         "diagnostics": [],
-        "description": "Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
+        "description": "Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).",
         "path": "node.bindings.s3",
         "scope": "Node Native and JavaScript S3",
         "section": "node",
@@ -355,7 +355,7 @@
         "precedence": "Configuration value.",
         "security": "Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.",
         "diagnostics": [],
-        "description": "Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
+        "description": "Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).",
         "path": "fastly.bindings.s3",
         "scope": "Fastly Native S3",
         "section": "fastly",

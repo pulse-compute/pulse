@@ -19,7 +19,7 @@ function bindJavascriptDigestMac(algorithms, subtle = globalThis.crypto && globa
     || algorithms.includes('HMAC-SHA256') && (typeof subtle.sign !== 'function' || typeof subtle.importKey !== 'function')) throw new TypeError('Selected Web Crypto byte realization is unavailable.');
   const bytes = {};
   if (algorithms.includes('SHA-256')) bytes.sha256 = async (input) => {
-    const data = snapshot(input, 32768);
+    const data = snapshot(input, 2097152);
     try { return result(await subtle.digest({ name: 'SHA-256' }, data)); }
     finally { data.fill(0); }
   };
@@ -40,7 +40,7 @@ function bindJavascriptDigestMac(algorithms, subtle = globalThis.crypto && globa
     algorithms: Object.freeze(algorithms.map((algorithm) => Object.freeze({ algorithm, realization: 'runtime-builtin', implementation: IMPLEMENTATIONS[algorithm], available: true, automaticFallback: false })))
   }) });
 }
-const DIGEST_TEXT_MAX_BYTES = 32768;
+const DIGEST_TEXT_MAX_BYTES = 2097152;
 const digestFailures = Object.freeze(Object.fromEntries(
   ['invalid-text', 'too-large', 'unavailable', 'realization-failure'].map(reason => [reason, Object.freeze({ status: 'failed', reason })])
 ));

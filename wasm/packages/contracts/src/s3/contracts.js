@@ -3,7 +3,7 @@
 const S3_CONTRACT_ID = 'pulse.s3';
 const S3_PACKAGE = '@pulse-compute/s3';
 const S3_LOWERING_PLAN_VERSION = 'pulse.s3-lowering-plan.v1';
-const S3_LIMITS = Object.freeze({ keyBytes: 1024, textBytes: 32768, metadataBytes: 1024, headerBytes: 16384, envelopeBytes: 262144 });
+const S3_LIMITS = Object.freeze({ keyBytes: 1024, textBytes: 2097152, defaultTextBytes: 32768, metadataBytes: 1024, headerBytes: 16384, envelopeBytes: 12648448 });
 const S3_OPERATIONS = Object.freeze(Object.fromEntries(['head', 'getText', 'putText'].map((name) => [name, Object.freeze({
   kind: `s3.${name}`, capability: `s3.${name}`, result: name === 'head' ? 's3-head-result' : name === 'getText' ? 's3-get-text-result' : 's3-put-text-result'
 })])));

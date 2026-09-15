@@ -460,7 +460,7 @@ Crypto also owns the public request-bound `crypto.digestText(ctx, text)`
 operation. Its synchronized first-party lowerer emits `crypto.digestText`
 capability demand and exact `SHA-256` selection; catalog membership alone
 continues to grant no executable trust. The normal package bridge owns effect
-lifecycle. Crypto validates scalar text before encoding at most 32768 UTF-8
+lifecycle. Crypto validates scalar text before encoding at most 2097152 UTF-8
 bytes, preserves exact bytes, and returns lowercase hexadecimal SHA-256 plus
 byte length or a bounded failure. Native uses the existing Crypto guest source;
 Node/Fastly JavaScript use selected runtime-builtin SHA-256. The compiler admits
@@ -471,8 +471,9 @@ limits, fallback policy, and S3/Catalog capacity are separate contracts.
 S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
-`@pulse-compute/crypto/provider` export. Both return 32-byte results, cap data
-at 32 KiB and HMAC keys at 8 KiB, and snapshot and wipe staging inputs. Native
+`@pulse-compute/crypto/provider` export. Both return 32-byte results, cap SHA-256
+data at 2 MiB, HMAC data at 32 KiB and HMAC keys at 8 KiB, and snapshot and wipe
+staging inputs. Large host-staged hashes use a separate lazy digest frame. Native
 also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.
 
@@ -487,6 +488,13 @@ Only a complete 200 acknowledgement with a bounded empty body yields `stored`;
 its digest describes sent bytes, not durability. Request cancellation retains
 existing lifecycle behavior and does not fabricate a typed S3 outcome. Fastly
 pending requests lack a cancel ABI; invocation termination owns their release.
+
+S3 bindings can explicitly select up to 2 MiB text, retaining the 32 KiB default.
+Only digest/S3 text effects admit the 12,648,448-byte escaped envelope; generic
+package effects keep their existing bounds. Request/schema limits remain
+explicit and owning KV stays at 64 KiB. Primary-memory Native modules with
+these text operations enforce a 256 MiB maximum. The ES256 linked-guest fixed
+memory ABI does not change or establish the larger text capacity profile.
 
 One canonical consumer exercises Node Native, Node JavaScript and Fastly Native
 PUT/HEAD/GET, integrity, bounded acknowledgements and cancellation. Fastly Native
