@@ -3,12 +3,16 @@
 const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v2';
 const CANONICAL_NATIVE_PLAN_HASH_ALGORITHM = 'sha256';
 const CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION = 'pulse.canonical-native-ownership.v1';
+const CANONICAL_PURE_LOOP_LIMITS = Object.freeze({ maxIterations: 1024, maxNestedIterations: 65536 });
 
 const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'local',
   'effect',
   'effect-group',
   'if',
+  'pure-loop',
+  'break',
+  'continue',
   'return',
   'expression'
 ]);
@@ -120,7 +124,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
   javascriptRuntime: false,
   promiseSemantics: false,
   asyncify: false,
-  controlFlow: 'structured straight-line statements plus if/else branches',
+  controlFlow: 'structured statements, if/else, and literal-capped pure for loops; no effect iteration',
   suspension: 'explicit effect and effect-group statements with stable continuation IDs',
   values: 'versioned JSON expression tree with stable local identities',
   logging: 'compile-time threshold pruning plus synchronous provider-adapter emission',
@@ -131,6 +135,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 
 module.exports = Object.freeze({
   CANONICAL_NATIVE_PLAN_VERSION,
+  CANONICAL_PURE_LOOP_LIMITS,
   CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
   CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION,
   CANONICAL_NATIVE_STATEMENT_KINDS,

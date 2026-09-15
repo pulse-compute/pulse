@@ -277,6 +277,9 @@ function collectExpressions(plan) {
         add(statement.test);
         walkStatements(statement.then);
         walkStatements(statement.else);
+      } else if (statement.kind === 'pure-loop') {
+        add(statement.test);
+        walkStatements(statement.body);
       }
     }
   }
@@ -512,7 +515,10 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       case 'method-call': {
         const receiver = `${exprName(expression.receiver)}()`;
         const args = expression.arguments || [];
-        if (expression.method === 'json') {
+        if (expression.method === 'string.trim') {
+          if (args.length) fail('String trim does not accept arguments.');
+          emit(`return host_value_string_trim(${receiver})`);
+        } else if (expression.method === 'json') {
           if (args.length > 1) fail('Native fetch-response json() accepts at most one schema argument.', { method: expression.method, argumentCount: args.length });
           emit(`return host_fetch_json(${receiver}, ${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`);
         } else if (expression.method === 'text') {
@@ -627,6 +633,26 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     });
   }
 
+  let pureLoopIndex = 0;
+  function pureLines(statements) {
+    const lines = [];
+    for (const statement of statements || []) {
+      if (statement.kind === 'local') lines.push(`${localName(statement.localId)} = ${exprName(statement.value)}()`);
+      else if (statement.kind === 'expression') lines.push(`__pulse_drop(${exprName(statement.expression)}())`);
+      else if (statement.kind === 'break' || statement.kind === 'continue') lines.push(statement.kind);
+      else if (statement.kind === 'if') {
+        lines.push(`if (host_value_truthy(${exprName(statement.test)}()) != 0) {`, ...pureLines(statement.then).map(line => `  ${line}`), '} else {', ...pureLines(statement.else).map(line => `  ${line}`), '}');
+      } else if (statement.kind === 'pure-loop') {
+        const counter = `__pulse_iteration_${pureLoopIndex++}`;
+        lines.push(`for (let ${counter}: i32 = 0; ${counter} < ${statement.maxIterations}; ${counter} += 1) {`,
+          `  ${localName(statement.localId)} = host_value_number(<f64>${counter})`,
+          `  if (host_value_truthy(${exprName(statement.test)}()) == 0) break`,
+          ...pureLines(statement.body).map(line => `  ${line}`), '}');
+      } else fail('Pure loop contains an unsupported statement.', { kind: statement.kind });
+    }
+    return lines;
+  }
+
   function compileSequence(statements, nextBlock) {
     let next = nextBlock;
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
@@ -644,6 +670,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       } else if (statement.kind === 'effect') {
         const resume = resumeAction([statement.effectId], [{ effectId: statement.effectId, ...(statement.result || {}) }], next);
         next = suspendBlock([statement.effectId], statement.continuationId, resume);
+      } else if (statement.kind === 'pure-loop') {
+        next = block('action', { lines: pureLines([statement]), next });
       } else if (statement.kind === 'effect-group') {
         const resume = resumeAction(statement.effectIds || [], statement.results || [], next);
         next = suspendBlock(statement.effectIds || [], statement.continuationId, resume);

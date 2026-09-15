@@ -1,6 +1,7 @@
 'use strict';
 
 const ts = require('typescript');
+const { inspectBoundedPureLoop } = require('./bounded-pure-loop.js');
 const {
   extractFetchChain,
   extractKvNamespaceDeclaration,
@@ -623,8 +624,13 @@ function buildPlainHandlerIr(frontend, options = {}) {
         return createHandlerOperation('opaque-fetch-return', { statement, chain, site, continuation });
       }
     }
-    if (ts.isTryStatement(statement) || ts.isForStatement(statement) || ts.isForOfStatement(statement) || ts.isWhileStatement(statement) || ts.isDoStatement(statement) || ts.isSwitchStatement(statement)) {
-      diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED', 'The current canonical lowering supports straight-line code and if/else branching; loops, switch, and try/catch are reserved.'));
+    if (ts.isForStatement(statement)) {
+      const loop = inspectBoundedPureLoop(statement, { ctxName });
+      for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message));
+      return createHandlerOperation('source-statement', { statement, role: 'bounded-pure-loop' });
+    }
+    if (ts.isTryStatement(statement) || ts.isForInStatement(statement) || ts.isForOfStatement(statement) || ts.isWhileStatement(statement) || ts.isDoStatement(statement) || ts.isSwitchStatement(statement)) {
+      diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED', 'Canonical lowering supports if/else and literal-capped pure for loops; other loops, switch, and try/catch are reserved.'));
     }
     return createHandlerOperation('source-statement', { statement, role: 'preserved-source' });
   }
