@@ -45,8 +45,8 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 5454,
     optimizedGuestWasmBytes: 4888,
-    providerWasmBytes: 43782,
-    optimizedProviderWasmBytes: 36258,
+    providerWasmBytes: 45250,
+    optimizedProviderWasmBytes: 37680,
     capabilities: [
       'config.get',
       'secret.get',
@@ -62,8 +62,8 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 2200,
     optimizedGuestWasmBytes: 2101,
-    providerWasmBytes: 31154,
-    optimizedProviderWasmBytes: 26955,
+    providerWasmBytes: 32977,
+    optimizedProviderWasmBytes: 28544,
     capabilities: ['fetch'],
     opaque: true
   }),

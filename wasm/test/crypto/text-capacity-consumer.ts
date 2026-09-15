@@ -13,6 +13,188 @@ app.post('/encoded', async ctx => {
   const after = await crypto.digestText(ctx, read.text)
   return ctx.json({ before, written, after })
 })
+app.post('/scan', async ctx => {
+  const input = await ctx.req.json<{ text: string }>()
+  let points = input.text.length
+  let valid = true
+  for (let i = 0; i < 1024 && i + 0 < input.text.length; i++) {
+    const pos = i + 0
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 1024 < input.text.length; i++) {
+    const pos = i + 1024
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 2048 < input.text.length; i++) {
+    const pos = i + 2048
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 3072 < input.text.length; i++) {
+    const pos = i + 3072
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 4096 < input.text.length; i++) {
+    const pos = i + 4096
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 5120 < input.text.length; i++) {
+    const pos = i + 5120
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 6144 < input.text.length; i++) {
+    const pos = i + 6144
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 7168 < input.text.length; i++) {
+    const pos = i + 7168
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 8192 < input.text.length; i++) {
+    const pos = i + 8192
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 9216 < input.text.length; i++) {
+    const pos = i + 9216
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 10240 < input.text.length; i++) {
+    const pos = i + 10240
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 11264 < input.text.length; i++) {
+    const pos = i + 11264
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 12288 < input.text.length; i++) {
+    const pos = i + 12288
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 13312 < input.text.length; i++) {
+    const pos = i + 13312
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 14336 < input.text.length; i++) {
+    const pos = i + 14336
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  for (let i = 0; i < 1024 && i + 15360 < input.text.length; i++) {
+    const pos = i + 15360
+    const ch = input.text[pos]
+    if (ch >= '\ud800' && ch <= '\udbff') {
+      if (pos + 1 >= input.text.length || input.text[pos + 1] < '\udc00' || input.text[pos + 1] > '\udfff') valid = false
+    }
+    if (ch >= '\udc00' && ch <= '\udfff') {
+      points -= 1
+      if (pos === 0 || input.text[pos - 1] < '\ud800' || input.text[pos - 1] > '\udbff') valid = false
+    }
+  }
+  return ctx.json({ valid, points })
+})
 app.post('/response', async ctx => {
   const input = await ctx.req.json<{ text: string }>()
   return ctx.text(ctx.encodeJson(input, 'app.Text'))

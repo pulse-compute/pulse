@@ -40,6 +40,7 @@ async function main(options = {}) {
     const exactControls = '\0'.repeat(Math.floor((maximum - 11) / 6)) + 'a'.repeat((maximum - 11) % 6);
     const exactUnicode = '😀'.repeat(Math.floor((maximum - 11) / 4)) + 'a'.repeat((maximum - 11) % 4);
     const rows = [
+      { route: '/scan', text: '😀'.repeat(8192), expected: { valid: true, points: 8192 }, noSend: true },
       ...[exactAscii, exactControls, exactUnicode].map(text => ({ route: '/encoded', text })),
       { route: '/response', text: exactUnicode },
       { route: '/encoded', text: exactAscii + 'a', rejected: true },

@@ -493,7 +493,9 @@ S3 bindings can explicitly select up to 2 MiB text, retaining the 32 KiB default
 Only digest/S3 text effects admit the 12,648,448-byte escaped envelope; generic
 package effects keep their existing bounds. Request/schema limits remain
 explicit and owning KV stays at 64 KiB. Primary-memory Native modules with
-these text operations enforce a 256 MiB maximum. The ES256 linked-guest fixed
+these text operations enforce a 256 MiB maximum. Fastly joins JSON fragments
+once and uses bounded caches for immutable scalar handles so repeated text
+validation does not retain a new box for every scalar operation. The ES256 linked-guest fixed
 memory ABI does not change or establish the larger text capacity profile.
 
 One canonical consumer exercises Node Native, Node JavaScript and Fastly Native
