@@ -781,6 +781,16 @@ async function main() {
     // The suite deletes temporary installs; keep artifact identities in its retained task log too.
     console.log(JSON.stringify(s3));
 
+    console.log('acceptance - replay request deadlines from exact installed tarballs');
+    const deadline = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-request-deadline-packages.cjs'), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000,
+    }));
+    assert.equal(deadline.status, 'passed');
+    assert.equal(deadline.installedBytesUnchanged, true);
+    assert.equal(deadline.workspaceProductModules, 0);
+    fs.writeFileSync(path.join(testRoot, 'request-deadline-packed-acceptance.json'), `${JSON.stringify(deadline, null, 2)}\n`);
+    console.log(JSON.stringify(deadline));
+
     console.log('acceptance - replay conditional KV from exact installed tarballs');
     const kv = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/kv/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
       cwd: toolRoot, timeoutMs: 600000,
