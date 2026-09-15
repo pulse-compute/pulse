@@ -313,6 +313,9 @@ const allowedLocalIdentifierDefinitions = new Map(Object.entries({
   // K1 assigns the portable authoring/host boundary to runtime. Native and Node
   // consume that owner's host export; neither duplicates its operation ledger.
   'packages/runtime/src/internal/conditional-kv.js': ['KV_CONDITIONAL_KINDS'],
+  // Runtime owns Router error admission. The Native host consumes its host
+  // predicate; provider numeric diagnostics map into this documented catalog.
+  'packages/runtime/src/internal/errors.js': ['APPLICATION_ERROR_CODES'],
   'packages/runtime/src/internal/logging.js': [
     'LOG_METHODS'
   ],

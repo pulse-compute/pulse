@@ -68,7 +68,8 @@ async function assertSchemaTextDecoding() {
       if (lane === 'javascript') {
         const app = new Router();
         app.post('/', handler);
-        app.error(async (error, ctx) => ctx.text(error.cause.code || error.cause.name, { status: 400 }));
+        app.error(async (error, ctx) => ctx.text(error.code === 'PULSE_RUNTIME_UNHANDLED_ERROR'
+          ? error.cause.code || error.cause.name : error.code, { status: 400 }));
         const result = await jsHost.executeNodeJavascriptApplication(app, new Request('https://app.test/', request), {
           strict: true, schemaCodecs: codecs, onJsonTrace(event) { traces.push(event); },
           async fetchImplementation(_url, init) { sent.push(init.body); return new Response('stored'); },

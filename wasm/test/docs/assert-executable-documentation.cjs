@@ -70,8 +70,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '09-router-lowering',
     provider: 'node',
-    guestWasmBytes: 6271,
-    optimizedGuestWasmBytes: 5496,
+    guestWasmBytes: 15450,
+    optimizedGuestWasmBytes: 14662,
     capabilities: ['fetch', 'response.json', 'response.text'],
     routes: 7
   }),

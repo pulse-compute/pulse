@@ -580,7 +580,7 @@ describe('@pulse-compute/runtime live JavaScript core', () => {
 
     const tooLarge = new Router()
     tooLarge.post('/large', async (ctx: any) => ctx.text(await ctx.req.text()))
-    tooLarge.error(async (error: any, ctx: any) => ctx.text(error.cause.code, { status: 413 }))
+    tooLarge.error(async (error: any, ctx: any) => ctx.text(error.code, { status: 413 }))
     const large = await runtime.executeRouter(tooLarge, new Request('https://example.test/large', {
       method: 'POST', body: '123456789', headers: { 'content-type': 'text/plain' },
     }), { maxRequestBodyBytes: 8 })
@@ -607,7 +607,8 @@ describe('@pulse-compute/runtime live JavaScript core', () => {
 
     const abortedBody = new Router()
     abortedBody.post('/aborted', async (ctx: any) => ctx.text(await ctx.req.text()))
-    abortedBody.error(async (error: any, ctx: any) => ctx.text(error.cause.code, { status: 400 }))
+    let abortHandlerCalls = 0
+    abortedBody.error(async (_error: any, ctx: any) => { abortHandlerCalls += 1; return ctx.text('invalid recovery') })
     const abortController = new AbortController()
     const abortRequest = new Request('https://example.test/aborted', {
       method: 'POST',
@@ -617,8 +618,8 @@ describe('@pulse-compute/runtime live JavaScript core', () => {
     } as any)
     const abortResponsePromise = runtime.executeRouter(abortedBody, abortRequest, { signal: abortController.signal })
     abortController.abort(new Error('test abort'))
-    const aborted = await abortResponsePromise
-    expect(await aborted.text()).toBe('PULSE_RUNTIME_EFFECT_ABORTED')
+    await expect(abortResponsePromise).rejects.toThrow('test abort')
+    expect(abortHandlerCalls).toBe(0)
 
     const parallel = new Router()
     parallel.post('/parallel', async (ctx: any) => {

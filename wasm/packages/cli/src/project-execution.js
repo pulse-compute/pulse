@@ -507,6 +507,7 @@ function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
   return algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
     || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
 }
 

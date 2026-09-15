@@ -445,7 +445,7 @@ class NativePlanBuilder {
     if (ts.isBinaryExpression(current)) {
       const operator = current.operatorToken.getText(this.sourceFile);
       if (ASSIGNMENT_OPERATORS.has(operator)) {
-        const target = this.expression(current.left, scope);
+        const target = this.assignmentTarget(current.left, scope);
         const value = this.expression(current.right, scope);
         return Object.freeze({ kind: 'assignment', operator, target, value, valueKind: value.valueKind || 'unknown' });
       }
@@ -460,7 +460,7 @@ class NativePlanBuilder {
     if (ts.isPrefixUnaryExpression(current)) {
       const operator = ts.tokenToString(current.operator) || current.getText(this.sourceFile).slice(0, 1);
       if (UPDATE_OPERATORS.has(operator)) {
-        return Object.freeze({ kind: 'update', operator, prefix: true, target: this.expression(current.operand, scope), valueKind: 'number' });
+        return Object.freeze({ kind: 'update', operator, prefix: true, target: this.assignmentTarget(current.operand, scope), valueKind: 'number' });
       }
       if (!PREFIX_OPERATORS.has(operator)) {
         this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Prefix operator ${operator} is outside the canonical native value model.`, { operator });
@@ -472,7 +472,7 @@ class NativePlanBuilder {
     if (ts.isPostfixUnaryExpression(current)) {
       const operator = ts.tokenToString(current.operator) || current.getText(this.sourceFile).slice(-2);
       if (!UPDATE_OPERATORS.has(operator)) this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Postfix operator ${operator} is outside the canonical native value model.`, { operator });
-      return Object.freeze({ kind: 'update', operator, prefix: false, target: this.expression(current.operand, scope), valueKind: 'number' });
+      return Object.freeze({ kind: 'update', operator, prefix: false, target: this.assignmentTarget(current.operand, scope), valueKind: 'number' });
     }
 
     if (ts.isConditionalExpression(current)) {
@@ -610,6 +610,14 @@ class NativePlanBuilder {
 
     this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Direct function calls are outside the canonical native value model.', { callee: target.getText(this.sourceFile) });
     return Object.freeze({ kind: 'intrinsic', name: 'unsupported:call', arguments: Object.freeze([]), valueKind: 'unknown' });
+  }
+
+  assignmentTarget(node, scope) {
+    const target = this.expression(node, scope);
+    if (target.kind === 'local' && scope.get(target.name)?.declaration === 'const') {
+      this.fail(node, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'A const local cannot be reassigned.', { name: target.name });
+    }
+    return target;
   }
 
   allocateLocal(name, valueKind, statementPath, declaration) {
@@ -927,6 +935,16 @@ class NativePlanBuilder {
       this.summary.branchCount += 1;
       const thenScope = new Map(scope);
       const elseScope = new Map(scope);
+      const test = this.expression(statement.expression, scope);
+      // A const primitive cannot change between this guard and a branch read.
+      // Keep mutable locals and the scope after the branch unrefined.
+      if (test.kind === 'binary' && ['===', '!=='].includes(test.operator)) {
+        const read = test.left.kind === 'undefined' ? test.right : test.right.kind === 'undefined' ? test.left : undefined;
+        const local = read?.kind === 'local' ? scope.get(read.name) : undefined;
+        if (local?.declaration === 'const' && local.valueKind === 'string-or-undefined') {
+          (test.operator === '!==' ? thenScope : elseScope).set(local.name, Object.freeze({ ...local, valueKind: 'string' }));
+        }
+      }
       const thenBody = ts.isBlock(statement.thenStatement)
         ? this.statementList(statement.thenStatement.statements, thenScope, [...pathParts, 'then'], depth + 1)
         : this.statement(statement.thenStatement, thenScope, [...pathParts, 'then', 0], depth + 1);
@@ -937,7 +955,7 @@ class NativePlanBuilder {
           : this.statement(statement.elseStatement, elseScope, [...pathParts, 'else', 0], depth + 1);
       return [Object.freeze({
         kind: 'if',
-        test: this.expression(statement.expression, scope),
+        test,
         then: Object.freeze(thenBody),
         else: Object.freeze(elseBody),
         statementPath

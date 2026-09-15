@@ -43,7 +43,6 @@ async function main() {
         const response=await executeNodeJavascriptApplication(app,new Request('http://kv.test/',{method:'POST',headers:request.headers,body:request.body}),{
           kvReference:ref,strict:false,...options,onEffectObservation:e=>observations.push(e)
         });
-        if(options.signal && options.signal.aborted) { assert.equal(response.status,500); assert.equal(await response.text(),'Internal Server Error'); return {body:{lifecycle:'cancelled'},trace:observations}; }
         return {body:await response.json(),trace:observations};
       }
       const result=target==='native' ? await nativeHost.executeCanonicalNativeModule(native,{request,strict:false,providerAdapter:adapter,...options})
@@ -111,7 +110,7 @@ async function main() {
       await reached.promise;
       if(mode==='timeout') timer.advance(10001); else abort.abort();
       if(mode==='cancel') {
-        if(target==='javascript') assert.deepEqual((await operation).body,{lifecycle:'cancelled'});
+        if(target==='javascript') await assert.rejects(operation,error=>error===abort.signal.reason);
         else await assert.rejects(operation,error=>error.code==='PULSE_RUNTIME_EFFECT_ABORTED');
       }
       else {
