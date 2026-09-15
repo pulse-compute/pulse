@@ -186,25 +186,35 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const continuationSites = [];
   const effectCounters = new Map();
   let continuationIndex = 0;
-  const packageEffectsByStart = new Map();
+  // Offsets belong to a source file. Project-wide contributions can share an
+  // offset; only duplicate ranges within the same owning source are invalid.
+  const sourceKey = (file, start) => `${String(file).replace(/\\/g, '/')}\u0000${start}`;
+  const inputKey = (input, start) => sourceKey(input.loc && input.loc.file || sourceFile.fileName, start);
+  const callKey = (call) => {
+    const owner = call.getSourceFile() || sourceFile;
+    return sourceKey(owner.fileName, call.getStart(owner));
+  };
+  const packageEffectsBySource = new Map();
   for (const effectInput of options.packageEffects || []) {
     if (!effectInput || effectInput.version !== canonicalRuntimeContract.CANONICAL_PACKAGE_EFFECT_VERSION || !effectInput.range) continue;
     const start = Number(effectInput.range.start);
-    if (!Number.isSafeInteger(start) || packageEffectsByStart.has(start)) {
+    const key = inputKey(effectInput, start);
+    if (!Number.isSafeInteger(start) || packageEffectsBySource.has(key)) {
       diagnostics.push(diagnostic(sourceFile, handler, 'PULSE_CANONICAL_PACKAGE_EFFECT_RANGE_INVALID', 'Package-owned canonical effects require unique source ranges.', { effect: effectInput }));
       continue;
     }
-    packageEffectsByStart.set(start, effectInput);
+    packageEffectsBySource.set(key, effectInput);
   }
-  const packageIntrinsicsByStart = new Map();
-  const linkedPackageIntrinsicsByStart = new Map();
+  const packageIntrinsicsBySource = new Map();
+  const linkedPackageIntrinsicsBySource = new Map();
   for (const intrinsicInput of options.packageIntrinsics || []) {
     const start = Number(intrinsicInput && intrinsicInput.range && intrinsicInput.range.start);
-    if (!Number.isSafeInteger(start) || packageIntrinsicsByStart.has(start)) {
+    const key = intrinsicInput && inputKey(intrinsicInput, start);
+    if (!Number.isSafeInteger(start) || packageIntrinsicsBySource.has(key)) {
       diagnostics.push(diagnostic(sourceFile, handler, 'PULSE_CANONICAL_PACKAGE_INTRINSIC_RANGE_INVALID', 'Package-owned intrinsics require unique source ranges.', { intrinsic: intrinsicInput }));
       continue;
     }
-    packageIntrinsicsByStart.set(start, intrinsicInput);
+    packageIntrinsicsBySource.set(key, intrinsicInput);
   }
 
   function unwrapPackageCall(expression) {
@@ -223,7 +233,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
         return linked;
       }
     }
-    const effect = packageEffectsByStart.get(call.getStart(sourceFile));
+    const effect = packageEffectsBySource.get(callKey(call));
     if (effect) linkPackageIntrinsicsWithin(call);
     return effect;
   }
@@ -233,9 +243,11 @@ function buildPlainHandlerIr(frontend, options = {}) {
     if (typeof options.packageIntrinsicForCall === 'function') {
       const linked = options.packageIntrinsicForCall(call);
       if (linked) {
-        const start = call.getStart(sourceFile);
-        if (!linkedPackageIntrinsicsByStart.has(start)) {
-          linkedPackageIntrinsicsByStart.set(start, Object.freeze({
+        const owner = call.getSourceFile() || sourceFile;
+        const start = call.getStart(owner);
+        const key = callKey(call);
+        if (!linkedPackageIntrinsicsBySource.has(key)) {
+          linkedPackageIntrinsicsBySource.set(key, Object.freeze({
             ...linked,
             range: Object.freeze({ start, end: call.getEnd() })
           }));
@@ -243,9 +255,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
         return linked;
       }
     }
-    const start = call.getStart(sourceFile);
-    const intrinsic = packageIntrinsicsByStart.get(start);
-    if (intrinsic && !linkedPackageIntrinsicsByStart.has(start)) linkedPackageIntrinsicsByStart.set(start, intrinsic);
+    const key = callKey(call);
+    const intrinsic = packageIntrinsicsBySource.get(key);
+    if (intrinsic && !linkedPackageIntrinsicsBySource.has(key)) linkedPackageIntrinsicsBySource.set(key, intrinsic);
     return intrinsic;
   }
 
@@ -715,11 +727,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
     effectSites: Object.freeze(effectSites),
     continuationSites: Object.freeze(continuationSites),
     packageEffects: Object.freeze([...(options.packageEffects || [])]),
-    packageIntrinsics: Object.freeze(
-      typeof options.packageIntrinsicForCall === 'function'
-        ? [...linkedPackageIntrinsicsByStart.values()]
-        : [...(options.packageIntrinsics || [])]
-    ),
+    // The emitter consumes this handler's linked ranges, not the project-wide
+    // recognition index. Keep original loc metadata when rebasing a range.
+    packageIntrinsics: Object.freeze([...linkedPackageIntrinsicsBySource.values()]),
     packageResultAdapters: Object.freeze([...(options.packageResultAdapters || [])]),
     summary: Object.freeze({
       operationCount: operationSummary.operationCount,
