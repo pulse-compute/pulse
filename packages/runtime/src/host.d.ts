@@ -418,3 +418,5 @@ export declare function admitConditionalKv(input: Readonly<Record<string, unknow
 export declare function normalizeConditionalKvResult(effect: Readonly<{ kind: string }>, value: unknown, options?: PulseBindingValueLimits): PulseKvVersionedResult<unknown> | PulseKvConditionalResult;
 export declare function executeConditionalKv(effect: Readonly<Record<string, unknown>>, prepare: PulseConditionalKvPreparation, execution?: PulseConditionalKvExecution, options?: PulseRuntimeExecutionOptions): Promise<PulseKvVersionedResult<unknown> | PulseKvConditionalResult>;
 export declare function registerKvRedactions(effect: Readonly<Record<string, unknown>>, register?: (value: string) => void): void;
+/** Whether a data failure can transfer to the next Router error handler. */
+export declare function isApplicationError(error: unknown): boolean;

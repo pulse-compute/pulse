@@ -220,6 +220,17 @@ bodies remain opaque host-owned handles. An opaque body can be passed through or
 returned by a supported operation, but it cannot be decoded, duplicated, or
 independently consumed by application or package code.
 
+Router `app.error` recovery has a finite portable data-error catalog documented
+in [Static Router authoring](../guides/routing.md). Native code transfers only
+at compiler-owned handler boundaries through the optional `router_error_take`
+host import: zero means no failure, a positive handle carries a sanitized error,
+and a negative result terminates execution. Failed handlers never resume;
+already-started group members settle before recovery. A failed continuation
+remains failed even when a later error handler returns a response. Cancellation,
+VM traps and provider protocol faults do not gain application recovery. No
+transfer retries effects, rolls back writes or converts uncertain KV outcomes
+into proven non-writes.
+
 See [Effects and continuations](../concepts/effects-and-continuations.md),
 [routing](../guides/routing.md), and
 [structured and opaque bodies](../concepts/bodies.md).

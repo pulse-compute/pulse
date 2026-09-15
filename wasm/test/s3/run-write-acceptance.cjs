@@ -150,12 +150,7 @@ async function main(options = {}) {
       return result;
       };
       if (row.cancel) {
-        if (mode === 'node-javascript') {
-          const cancelled = await execute();
-          assert.equal(cancelled.response.status, 500, 'Router retains its existing aborted-request error response');
-          assert.equal(cancelled.response.body.includes('"status":"stored"'), false);
-          assert.equal(cancelled.response.body.includes('"status":"unknown"'), false, 'Cancellation is not a typed S3 outcome');
-        } else await assert.rejects(execute(), /cancel/i, `${row.id}/${mode}: cancellation terminates invocation`);
+        await assert.rejects(execute(), /cancel/i, `${row.id}/${mode}: cancellation terminates without an application response or typed S3 outcome`);
         assert.equal(attempts.length, row.dispatch === false ? 0 : 1);
         if (row.cancel === 'after') assert.ok(origin.has(objectUrl(row.key)), 'Cancellation cannot promise rollback.');
         continue;

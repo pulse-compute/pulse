@@ -4,6 +4,7 @@ const { compileRoutePath, matchRoutePath, normalizeRoutePath } = require('./path
 const { createContext, createRequestView } = require('./context.js');
 const { createJavascriptEffectExecution } = require('./effect-adapter.js');
 const { reportingLevel } = require('./logging.js');
+const { isApplicationError } = require('./errors.js');
 const {
   PulseRuntimeContractError,
   PulseUnhandledError,
@@ -159,7 +160,7 @@ function redactedError(frame, error) {
 
 function containUnexpected(error, frame) {
   const safe = redactedError(frame, error);
-  return safe instanceof PulseUnhandledError ? safe : new PulseUnhandledError(safe);
+  return isApplicationError(error) || safe instanceof PulseUnhandledError ? safe : new PulseUnhandledError(safe);
 }
 
 function contractError(code, message) {
@@ -192,6 +193,7 @@ async function dispatchRouter(router, frame, startIndex, activeError) {
   let error = activeError;
 
   while (index < entries.length) {
+    frame.signal?.throwIfAborted();
     const current = entries[index];
 
     if (error !== NO_ERROR) {
@@ -300,6 +302,7 @@ async function runNormalHandler(_router, frame, index, handler, routeContext) {
   } catch (error) {
     if (handlerError === undefined) handlerError = error;
   }
+  frame.signal?.throwIfAborted();
   if (handlerError !== undefined) {
     return Object.freeze({ kind: 'continue', index: index + 1, error: containUnexpected(handlerError, frame), frame });
   }
@@ -353,6 +356,7 @@ async function runErrorHandler(_router, frame, index, activeError, handler) {
   } catch (error) {
     if (handlerError === undefined) handlerError = error;
   }
+  frame.signal?.throwIfAborted();
   if (handlerError !== undefined) {
     return Object.freeze({ kind: 'continue', index: index + 1, error: containUnexpected(handlerError, frame), frame });
   }
@@ -455,6 +459,7 @@ async function executeRouter(router, request, options = {}) {
   };
   try {
     const result = await dispatchRouter(router, frame, 0, NO_ERROR);
+    executionSignal?.throwIfAborted();
     if (result.kind === 'response') return result.response;
     if (result.error !== NO_ERROR) {
       return new Response('Internal Server Error', {

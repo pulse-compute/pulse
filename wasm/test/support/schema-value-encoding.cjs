@@ -63,7 +63,7 @@ async function assertSchemaValueEncoding() {
       if (lane === 'javascript') {
         const app = new Router();
         app.post('/', sourceHandler);
-        app.error(async (error, ctx) => ctx.text(error.cause.code, { status: 400 }));
+        app.error(async (error, ctx) => ctx.text(error.code, { status: 400 }));
         const result = await jsHost.executeNodeJavascriptApplication(app, new Request('https://app.test/', request), {
           strict: true, schemaCodecs: codecs,
           onJsonTrace(event) { traces.push(event); },
