@@ -121,9 +121,12 @@ function createRedactionState(initialValues = []) {
         : redactValue(descriptor.value, key, seen, depth + 1);
       Object.defineProperty(output, outputKey, {
         enumerable: true,
-        configurable: false,
+        // Different private keys can redact to the same spelling. Their value
+        // association is lost, so collapse the collision to a redacted marker.
+        // Properties remain replaceable only until the completed record freezes.
+        configurable: true,
         writable: false,
-        value: outputValue
+        value: Object.prototype.hasOwnProperty.call(output, outputKey) ? REDACTED_VALUE : outputValue
       });
     }
     return Object.freeze(output);
