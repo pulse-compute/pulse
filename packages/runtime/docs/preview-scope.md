@@ -18,6 +18,8 @@ targets.
   middleware, GET/HEAD/POST/PUT/PATCH/DELETE routes, exact paths, named parameters, trailing
   wildcards, and acyclic mounts.
 - Basic branching and structured object, array, and scalar manipulation.
+- Literal-capped pure `for` loops and zero-argument string `.trim()` across
+  Native and JavaScript; see [bounded application values](concepts/compilation-and-lowering.md#bounded-application-values).
 - Request method, URL, path, headers, text, and JSON access.
 - Bounded, memoized structured body decoding.
 - Explicit TypeScript JSON schema declarations and literal schema IDs.
@@ -74,6 +76,9 @@ successful provider-neutral compile does not silently change a
 JavaScript-selected project into a Native one.
 
 ## Deliberately unsupported
+
+- Effectful or unbounded loops, arbitrary callback transformations, and Native
+  pure-helper calls. Pure loop bodies cannot transfer from the handler.
 
 - Automatic fallback from Native lowering to JavaScript execution.
 - Declaring general target availability without satisfying every declared

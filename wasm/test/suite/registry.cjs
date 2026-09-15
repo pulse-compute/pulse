@@ -369,6 +369,11 @@ const tasks = Object.freeze({
     timeoutMs: 60000,
     description: 'deterministic provider-neutral native plan'
   }),
+  'bounded-app-logic': nodeTask('test/lowering/assert-bounded-app-logic.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'literal-capped pure loops, string trim, target parity and pre-write failure containment'
+  }),
   'logging-lowering': nodeTask('test/lowering/assert-logging-lowering.cjs', {
     evidence: 'native',
     timeoutMs: 120000,
@@ -830,6 +835,7 @@ const profiles = Object.freeze({
     's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',
+    'bounded-app-logic',
     'logging-lowering',
     'canonical-router-lowering',
     'canonical-router-terminal-middleware',

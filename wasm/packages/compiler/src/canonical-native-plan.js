@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const { executeCanonicalNativePlanSpine } = require('./spine/canonical-native-plan.js');
+const { inspectBoundedPureLoop } = require('./spine/bounded-pure-loop.js');
 
 function loadNativePlanContract() {
   try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-plan'); }
@@ -588,6 +589,9 @@ class NativePlanBuilder {
     if (ts.isPropertyAccessExpression(target)) {
       const receiver = this.expression(target.expression, scope);
       const method = target.name.text;
+      if (method === 'trim' && !target.questionDotToken && !call.questionDotToken && call.arguments.length === 0) {
+        return Object.freeze({ kind: 'method-call', receiver, method: 'string.trim', arguments: Object.freeze([]), valueKind: 'string' });
+      }
       if (!FETCH_RESPONSE_METHODS.has(method) || receiver.valueKind !== 'fetch-response') {
         this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Method call .${method}() is outside the canonical native fetch-response contract.`, { method, receiverKind: receiver.valueKind });
       }
@@ -901,6 +905,24 @@ class NativePlanBuilder {
 
     if (ts.isVariableStatement(statement)) return this.lowerVariableStatement(statement, scope, pathParts, depth);
 
+    if (ts.isForStatement(statement)) {
+      const loop = inspectBoundedPureLoop(statement, { ctxName: this.ctxName });
+      for (const error of loop.errors) this.fail(error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
+      if (loop.errors.length) return [];
+      const loopScope = new Map(scope);
+      const local = this.allocateLocal(loop.name, 'number', statementPath, 'let');
+      loopScope.set(loop.name, local);
+      const previousDepth = this.pureLoopDepth || 0;
+      this.pureLoopDepth = previousDepth + 1;
+      const body = this.statement(statement.statement, loopScope, [...pathParts, 'body'], depth + 1);
+      this.pureLoopDepth = previousDepth;
+      return [Object.freeze({ kind: 'pure-loop', localId: local.id, maxIterations: loop.maxIterations,
+        test: this.expression(statement.condition, loopScope), body: Object.freeze(body), statementPath })];
+    }
+    if ((ts.isBreakStatement(statement) || ts.isContinueStatement(statement)) && this.pureLoopDepth && !statement.label) {
+      return [Object.freeze({ kind: ts.isBreakStatement(statement) ? 'break' : 'continue', statementPath })];
+    }
+
     if (ts.isIfStatement(statement)) {
       this.summary.branchCount += 1;
       const thenScope = new Map(scope);
@@ -1161,6 +1183,9 @@ function walkStatements(statements, visitor) {
       walkExpression(statement.test, visitor.expression);
       walkStatements(statement.then, visitor);
       walkStatements(statement.else, visitor);
+    } else if (statement.kind === 'pure-loop') {
+      walkExpression(statement.test, visitor.expression);
+      walkStatements(statement.body, visitor);
     } else if (statement.kind === 'return') walkExpression(statement.value, visitor.expression);
     else if (statement.kind === 'expression') walkExpression(statement.expression, visitor.expression);
   }
@@ -1195,6 +1220,9 @@ function summarizeNativePlan(body, locals, effects, continuations) {
         summary.expressionCount += countExpression(statement.test);
         visitStatements(statement.then, depth + 1);
         visitStatements(statement.else, depth + 1);
+      } else if (statement.kind === 'pure-loop') {
+        summary.expressionCount += countExpression(statement.test);
+        visitStatements(statement.body, depth + 1);
       } else if (statement.kind === 'return') {
         summary.returnCount += 1;
         summary.expressionCount += countExpression(statement.value);
@@ -1239,6 +1267,41 @@ function validateResult(result, fail, localIds, detail = {}) {
 }
 
 function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
+  function validateLoops(statements, counters = new Set(), product = 1) {
+    for (const statement of statements || []) {
+      if (statement.kind === 'pure-loop') {
+        const limit = statement.maxIterations;
+        if (!localIds.has(statement.localId) || counters.has(statement.localId)) fail('pure loop requires its own local counter');
+        if (!Number.isInteger(limit) || limit < 0 || limit > contract.CANONICAL_PURE_LOOP_LIMITS.maxIterations
+          || product * Math.max(1, limit) > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail('pure loop iteration bound is invalid');
+        let bound = statement.test;
+        while (bound && bound.kind === 'binary' && bound.operator === '&&') bound = bound.left;
+        if (!bound || bound.kind !== 'binary' || bound.operator !== '<' || bound.left?.kind !== 'local' || bound.left.id !== statement.localId
+          || bound.right?.kind !== 'literal' || bound.right.value !== limit) fail('pure loop test must start with its declared literal cap');
+        const active = new Set([...counters, statement.localId]);
+        checkPureExpression(statement.test, active, true);
+        validateLoops(statement.body, active, product * Math.max(1, limit));
+      } else {
+        if (counters.size && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
+        if (!counters.size && ['break', 'continue'].includes(statement.kind)) fail('loop transfer outside pure loop');
+        if (counters.size) {
+          if (statement.kind === 'local' && counters.has(statement.localId)) fail('pure loop counter cannot be rebound');
+          checkPureExpression(statement.value || statement.expression || statement.test, counters);
+        }
+        if (statement.kind === 'if') {
+          validateLoops(statement.then, counters, product);
+          validateLoops(statement.else, counters, product);
+        }
+      }
+    }
+  }
+  function checkPureExpression(expression, counters, test = false) {
+    walkExpression(expression, node => {
+      if (node.kind === 'intrinsic' || node.kind === 'context-read' || (node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length))) fail('pure loop contains a non-value call or context read');
+      if (['assignment', 'update'].includes(node.kind) && (test || (node.target?.kind === 'local' && counters.has(node.target.id)))) fail('pure loop test or counter mutation is invalid');
+    });
+  }
+  validateLoops(plan.entry && plan.entry.body);
   const visitor = (statement) => {
     if (!contract.CANONICAL_NATIVE_STATEMENT_KINDS.includes(statement.kind)) fail('statement kind is unknown', { kind: statement.kind });
     if (statement.kind === 'local' && !localIds.has(statement.localId)) fail('local statement references unknown local', { localId: statement.localId });

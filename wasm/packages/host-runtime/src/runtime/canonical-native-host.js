@@ -631,6 +631,11 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       return put(unary(operator, value(valueHandle)));
     },
     value_truthy(valueHandle) { return value(valueHandle) ? 1 : 0; },
+    value_string_trim(valueHandle) {
+      const input = value(valueHandle);
+      if (typeof input !== 'string') throw new CanonicalNativeHostError('String trim requires a string value.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE');
+      return put(input.trim());
+    },
     value_nullish(valueHandle) { return value(valueHandle) === null || value(valueHandle) === undefined ? 1 : 0; },
     log(level, messageHandle) {
       const methods = Object.freeze({ 1: 'error', 2: 'warn', 3: 'info', 4: 'debug' });

@@ -58,6 +58,56 @@ Router registrations, middleware, error handlers, and mounts
 
 Router dispatch is not a separate runtime or compiler. `pulse inspect` reports `compiler.routing.entries`, `compiler.routing.routes`, and terminal semantics. Host operations carry the stable identity of the route or middleware entry that owns them. See the [Router lowering example](../../examples/09-router-lowering/) and [routing guide](../guides/routing.md).
 
+## Bounded application values
+
+HTTP and event handlers can process variable-length collections with a
+literal-capped pure `for` loop. Check the application's collection budget before
+the loop; the cap is an execution bound, not permission to truncate commands.
+
+```ts
+if (input.items.length > 64) return ctx.text('too many items', { status: 400 })
+let selected = []
+for (let i = 0; i < 64 && i < input.items.length; i++) {
+  const item = input.items[i]
+  if (item.id === 'skip') continue
+  selected = [...selected, { id: item.id.trim(), version: item.version + 1 }]
+}
+```
+
+The initializer must declare one `let` counter at zero. The first condition is
+`counter < N`, where `N` is an integer literal from 0 through 1,024. Additional
+`&&` conditions can stop the scan early. The increment is `counter++`,
+`++counter`, or `counter += 1`. Nested literal caps have a maximum product of
+65,536 (a zero cap counts as one for this static check).
+
+Bodies admit local values, assignments, existing value expressions, `if/else`,
+nested bounded loops, and unlabelled `break`/`continue`. Counters cannot be
+assigned, updated or shadowed inside the body. Conditions cannot mutate values.
+Read context data before entering the loop and perform effects after leaving
+it. Context operations, logging, arbitrary calls, helpers, callbacks, closures,
+`return`, other loop forms and labelled transfers are rejected in loop bodies.
+This subset applies to both target selections. Native emits real bounded loops
+over its value handles; JavaScript retains the original admitted source.
+
+Zero-argument string `.trim()` also lowers on Native. It removes ECMAScript
+whitespace and line terminators from the two ends, preserves interior text and
+UTF-16 code units, and does not normalize Unicode. Native requires a string
+receiver without coercion. These value operations create no effect or
+continuation. An observed value failure blocks subsequent effect dispatch;
+application-visible error response parity remains a separate contract.
+
+Loop caps do not establish a request memory, byte, latency or cancellation
+budget. Collection and encoded-byte budgets still belong to the application;
+immutable schema inputs must be projected into new values when changed. Keep
+original encoded text separately when its bytes identify stored content. These
+operations do not make re-encoded JSON a portable command fingerprint or create
+transactional guarantees across effects.
+
+The executable `bounded-app-logic` fixture covers member selection, independent
+grant scans, retained-result lookup, Unicode trim and exact original text
+through a following write. Its supplied actor and receipt records exercise
+value processing only; they are not a trusted identity or accepted-state model.
+
 ## From source to an effect
 
 The single-fetch example uses the portable async authoring shape:

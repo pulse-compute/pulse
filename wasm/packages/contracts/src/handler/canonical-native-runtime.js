@@ -63,6 +63,7 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['value_unary', ['i32', 'i32'], ['i32']],
   ['value_truthy', ['i32'], ['i32']],
   ['value_nullish', ['i32'], ['i32']],
+  ['value_string_trim', ['i32'], ['i32']],
   ['log', ['i32', 'i32'], []],
   ['request_method', [], ['i32']],
   ['request_url', [], ['i32']],

@@ -121,6 +121,26 @@ JavaScript during Native compilation.
 See [Compilation and lowering](../concepts/compilation-and-lowering.md) and the
 [architecture overview](./overview.md).
 
+## Bounded pure control flow
+
+Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by
+JavaScript admission and Native planning. Counters start at zero, advance by
+one, and test a literal cap first; per-loop and nested-product limits are owned
+by the Native plan contract. Bodies cannot mutate active counters, read context
+authority, call effects or helpers, capture closures, or transfer from the
+handler. Unlabelled `break` and `continue` target the nearest pure loop. Native
+plan validation rechecks caps, pure bodies and counter ownership before emitting
+real loops, with no new continuation or effect-loop semantics.
+
+Native string `.trim()` uses the additive `value_string_trim` value-handle
+import. Node checks the string receiver; Fastly implements the same ECMAScript
+whitespace set in generated AssemblyScript, without a new platform hostcall or
+binding. Fastly plans using these value operations refuse to begin a later effect
+after an observed value error.
+This does not add rollback, preemption, a memory budget, arbitrary helper
+lowering or uniform HTTP exception handling. See
+[bounded application values](../concepts/compilation-and-lowering.md#bounded-application-values).
+
 ## Execution ownership
 
 Pulse-provided host authority is explicit. Fetch, config, secrets, KV, GRIP,

@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { nativeStringTrim, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const conditionalKv = require('./kv-native.js');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -1094,7 +1095,7 @@ function effectDispatchSource(plan) {
   const kinds = [...new Set((plan.effects || []).map((effect) => effect.kind))];
   const lines = [
     'function host_effect_begin(effectIndex: i32, payload: i32): void {',
-    ...((plan.schemas && plan.schemas.references || []).some(entry => ['value-encode', 'text-decode'].includes(entry.usage)) ? ['  if (__pulse_fastly_last_error != PULSE_ERROR_NONE) return'] : []),
+    ...(needsNativeValueFailureGuard(plan) ? ['  if (__pulse_fastly_last_error != PULSE_ERROR_NONE) return'] : []),
     '  if (effectIndex < 0 || effectIndex >= PULSE_FASTLY_EFFECT_COUNT || unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_NONE) { __pulse_fastly_fail(PULSE_ERROR_STATE, 46, effectIndex); return }',
     '  const payloadValue = __pulse_fastly_value(payload)',
     '  if (payloadValue.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 47, effectIndex); return }',
@@ -1440,6 +1441,7 @@ function __pulse_fastly_utf8(value: string): ArrayBuffer { return String.UTF8.en
 function __pulse_fastly_decode(buffer: Uint8Array, length: i32): string { return String.UTF8.decodeUnsafe(buffer.dataStart, length, false) }
 function __pulse_fastly_put(value: __PulseFastlyValue): i32 { __pulse_fastly_values.push(value); return __pulse_fastly_values.length }
 function __pulse_fastly_value(handle: i32): __PulseFastlyValue { if (handle <= 0 || handle > __pulse_fastly_values.length) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 1, -1); return new __PulseFastlyValue() } return unchecked(__pulse_fastly_values[handle - 1]) }
+${nativeStringTrim}
 function __pulse_fastly_deep_freeze(handle: i32): void { const value = __pulse_fastly_value(handle); if (value.immutable) return; value.immutable = true; if (value.kind == PULSE_VALUE_ARRAY || value.kind == PULSE_VALUE_OBJECT) for (let index = 0; index < value.values.length; index += 1) __pulse_fastly_deep_freeze(unchecked(value.values[index])) }
 function __pulse_fastly_string_value(value: string): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_STRING; item.text = value; return __pulse_fastly_put(item) }
 function __pulse_fastly_find(object: __PulseFastlyValue, key: string): i32 { for (let i = 0; i < object.keys.length; i += 1) if (unchecked(object.keys[i]) == key) return i; return -1 }
