@@ -948,6 +948,7 @@ function nativeEventCancelled(message) {
 }
 
 function nativeRequestCancelled(signal) {
+  if (['PULSE_REQUEST_DEADLINE_EXCEEDED', 'PULSE_REQUEST_CLOCK_INVALID'].includes(signal.reason?.code)) return signal.reason;
   return new portableKv.PulseRuntimeContractError('PULSE_RUNTIME_EFFECT_ABORTED',
     signal.reason instanceof Error ? signal.reason.message : 'Native execution was cancelled.',
     { cause: signal.reason });
@@ -999,11 +1000,13 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     if (eventMode && options.signal && options.signal.aborted) {
       throw nativeEventCancelled('Native event execution was cancelled before handler entry.');
     }
+    options.requestBudget?.check();
     status = eventMode ? controller.startEvent(invocation.frame) : controller.start();
     while (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.SUSPENDED) {
       if (eventMode && options.signal && options.signal.aborted) {
         throw nativeEventCancelled('Native event execution was cancelled while suspended.');
       }
+      options.requestBudget?.check();
       const pending = controller.pendingEffects();
       if (pending.length !== controller.exports.pulse_pending_count()) {
         throw new CanonicalNativeHostError('Native pending-effect count differs from host queue.', 'PULSE_CANONICAL_NATIVE_PENDING_MISMATCH', { moduleCount: controller.exports.pulse_pending_count(), hostCount: pending.length });
@@ -1037,6 +1040,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       effectCount += pending.length;
 
       const settled = await raceNativeSignal(Promise.allSettled(pending.map(async (entry) => {
+        options.requestBudget?.check();
         if (eventMode && options.signal && options.signal.aborted) {
           throw nativeEventCancelled('Native event execution was cancelled before effect dispatch.');
         }
@@ -1074,7 +1078,8 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         const rawResult = conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
               { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
-          : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), eventMode ? options.signal : undefined);
+          : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
+        options.requestBudget?.check();
         const result = controller.prepareEffectResult(entry.index, rawResult);
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
         resolutionOrder.push(entry.effect.id);
@@ -1084,6 +1089,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (eventMode && options.signal && options.signal.aborted) {
         throw nativeEventCancelled('Native event execution was cancelled while suspended.');
       }
+      options.requestBudget?.check();
       if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
       const failures = settled.filter(entry => entry.status === 'rejected');
       const failed = failures.find(entry => !portableKv.isApplicationError(entry.reason)) || failures[0];
@@ -1134,6 +1140,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       });
     }
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
+    options.requestBudget?.check();
     const response = controller.response();
     controller.trace.push(Object.freeze(redactValue({ type: 'native-execution-completed', executionId, provider: adapter.id, status: response.status, bodyClass: response.bodyClass }, controller.sensitiveValues)));
     return Object.freeze({
@@ -1174,7 +1181,11 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
 }
 
 async function executeCanonicalNativeModule(compiled, options = {}) {
-  return executeCanonicalNativeInvocation(compiled, options, Object.freeze({ plane: 'http' }));
+  const budget = portableKv.createRequestBudget(options);
+  try {
+    budget.check();
+    return await executeCanonicalNativeInvocation(compiled, { ...options, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
+  } finally { if (!options.requestBudget) budget.close(); }
 }
 
 function nativeEventFailure(error) {

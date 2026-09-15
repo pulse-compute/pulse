@@ -94,6 +94,7 @@ async function executeNodeJavascriptApplication(application, request, options = 
     application: options.application,
     requestHeaders: options.requestHeaders,
     signal: options.signal,
+    maxDurationMs: options.maxDurationMs, requestBudget: options.requestBudget, requestClock: options.requestClock,
     kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
     maxEffects: options.maxEffects,
     maxRequestBodyBytes: options.maxRequestBodyBytes,

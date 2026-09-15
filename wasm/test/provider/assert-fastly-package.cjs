@@ -30,6 +30,9 @@ assert.equal(Object.prototype.hasOwnProperty.call(provider, 'compiler'), false, 
 const safeDefaults = provider.fastly();
 assert.equal(safeDefaults.bindings.dynamicBackends, false, 'Fastly dynamic backends must require explicit opt-in');
 assert.deepEqual(safeDefaults.bindings.backends, {});
+assert.equal(Object.hasOwn(safeDefaults, 'maxDurationMs'), false, 'omitting the deadline preserves the existing configuration shape');
+assert.equal(provider.fastly({maxDurationMs: 10000}).maxDurationMs, 10000);
+assert.throws(() => provider.fastly({maxDurationMs: 0}), {code: 'PULSE_REQUEST_DURATION_INVALID'});
 
 const configured = provider.fastly({
   name: 'package-contract',

@@ -337,6 +337,19 @@
       },
       {
         "required": false,
+        "default": "omitted",
+        "allowed": "1–30000",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.",
+        "path": "node.maxDurationMs",
+        "scope": "HTTP request execution",
+        "section": "node",
+        "type": "integer"
+      },
+      {
+        "required": false,
         "default": "`{}`",
         "allowed": "—",
         "precedence": "Configuration value.",
@@ -347,6 +360,19 @@
         "scope": "Node Native and JavaScript S3",
         "section": "node",
         "type": "Readonly<Record<string, S3Binding>>"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "1–30000",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "One provider-owned monotonic budget through buffered response handoff; expiry attempts 504 before headers commit and never asserts rollback of dispatched writes. No CPU preemption or post-handoff delivery guarantee.",
+        "path": "fastly.maxDurationMs",
+        "scope": "HTTP request execution",
+        "section": "fastly",
+        "type": "integer"
       },
       {
         "required": false,
@@ -974,6 +1000,9 @@
         "fastly.local.networkFetch": {
           "kind": "boolean",
           "default": false
+        },
+        "fastly.maxDurationMs": {
+          "kind": "optional-number"
         }
       }
     }

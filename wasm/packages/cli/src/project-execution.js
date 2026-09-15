@@ -1455,6 +1455,7 @@ async function runJavascriptProjectTests(project, options = {}) {
       const execution = await javascript.executeTestCase(prepared.loaded.application, testCase, {
         ...runtimeOptions,
         bindings: project.providerConfig.bindings,
+        maxDurationMs: project.providerConfig.maxDurationMs,
         networkFetch: project.dev.networkFetch
       });
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
@@ -2232,16 +2233,32 @@ function doctorProject(project, options = {}) {
   });
 }
 
-async function readRequestBody(req, maxBytes) {
-  const chunks = [];
-  let bytes = 0;
-  for await (const chunk of req) {
-    const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
-    bytes += buffer.byteLength;
-    if (bytes > maxBytes) throw new PulseProjectError('PULSE_REQUEST_BODY_TOO_LARGE', `Request body exceeds ${maxBytes} bytes.`, { maxBytes, bytes });
-    chunks.push(buffer);
-  }
-  return Buffer.concat(chunks).toString('utf8');
+async function readRequestBody(request, maxBytes, budget) {
+  const signal = budget?.signal;
+  const limit = Number(maxBytes);
+  if (!Number.isSafeInteger(limit) || limit <= 0) throw new TypeError('Pulse Node maxBodyBytes must be a positive safe integer.');
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let bytes = 0;
+    function cleanup() {
+      for (const [event, fn] of [['data', data], ['end', end], ['error', error], ['aborted', aborted]]) request.removeListener(event, fn);
+      signal?.removeEventListener('abort', cancel);
+    }
+    function fail(cause) { cleanup(); chunks.length = 0; request.once('error', () => {}); request.resume(); reject(cause); }
+    function cancel() { fail(signal.reason); }
+    function error(cause) { fail(new PulseProjectError('PULSE_NODE_REQUEST_READ_FAILED', 'Pulse could not read the Node request body.', { causeName: cause?.name })); }
+    function aborted() { error(new Error('Request aborted')); }
+    function data(chunk) {
+      const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+      bytes += buffer.byteLength;
+      if (bytes > limit) return fail(new PulseProjectError('PULSE_REQUEST_BODY_TOO_LARGE', `Request body exceeds ${limit} bytes.`, { maxBytes: limit, bytes }));
+      chunks.push(buffer);
+    }
+    function end() { cleanup(); resolve(Buffer.concat(chunks).toString('utf8')); }
+    if (signal?.aborted) return cancel();
+    signal?.addEventListener('abort', cancel, { once: true });
+    request.on('data', data); request.once('end', end); request.once('error', error); request.once('aborted', aborted);
+  });
 }
 
 function requestHeaders(req) {
@@ -2261,6 +2278,7 @@ function devErrorResponse(res, error, secrets) {
   const summary = errorSummary(error, secrets);
   res.statusCode = httpStatusForDiagnostic(summary.code, 500);
   res.setHeader('content-type', 'application/json; charset=utf-8');
+  if (res.statusCode === 504) res.setHeader('connection', 'close');
   res.end(stableJson({
     error: summary.name,
     code: summary.code,
@@ -2333,6 +2351,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
   const events = typeof options.onEvent === 'function' ? options.onEvent : () => {};
   const environment = javascript.createLocalEnvironment({
     bindings: project.providerConfig.bindings,
+    maxDurationMs: project.providerConfig.maxDurationMs,
     config: project.dev.config,
     secrets: project.dev.secrets,
     kv: project.dev.kv,
@@ -2438,6 +2457,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
       const execution = await javascript.executeLocalRequest(application, request, {
         environment,
         bindings: project.providerConfig.bindings,
+        maxDurationMs: project.providerConfig.maxDurationMs,
         application: Object.freeze({
           projectHash: project.projectHash,
           planHash: project.planHash,
@@ -2634,6 +2654,7 @@ async function startJavascriptDevServer(project, options = {}) {
     secrets: project.dev.secrets,
     kv: project.dev.kv,
     bindings: project.providerConfig.bindings,
+    maxDurationMs: project.providerConfig.maxDurationMs,
     s3FetchImplementation: javascript.createFixtureFetch(
       project.dev.fetches,
       project.dev.networkFetch ? globalThis.fetch : undefined,
@@ -2770,15 +2791,18 @@ async function startDevServer(project, options = {}) {
 
   let handled = 0;
   const server = http.createServer(async (req, res) => {
+    const budget = require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').createRequestBudget(providerExecutionOptions(project, {}));
     if (options.once) res.once('finish', () => server.close());
     try {
       if (compileError) throw compileError;
       const bodyLimit = project.schemas.active ? Math.min(project.dev.maxBodyBytes, project.schemas.maxBytes) : project.dev.maxBodyBytes;
-      const body = await readRequestBody(req, bodyLimit);
+      budget.check();
+      const body = await budget.race(readRequestBody(req, bodyLimit, budget));
       const host = req.headers.host || `${project.dev.host}:${project.dev.port}`;
       const url = new URL(req.url || '/', `http://${host}`);
       const executionOptions = providerExecutionOptions(project, {
         packageArtifacts,
+        requestBudget: budget, signal: budget.signal,
         request: { method: req.method || 'GET', url: url.href, path: url.pathname, headers: requestHeaders(req), body: body || undefined },
         config: project.dev.config,
         secrets: project.dev.secrets,
@@ -2792,12 +2816,12 @@ async function startDevServer(project, options = {}) {
       const execution = exactNativeExecution
         ? await executeNative(executionOptions)
         : await executeCanonicalProgram(program, executionOptions);
-      writeNodeHttpResponse(res, execution.response);
+      writeNodeHttpResponse(res, execution.response, { requestBudget: budget });
       events(Object.freeze({ event: 'request', method: req.method || 'GET', path: url.pathname, status: execution.response.status, effects: execution.effectCount }));
     } catch (error) {
       devErrorResponse(res, error, project.dev.secrets);
       events(Object.freeze({ event: 'request-error', method: req.method || 'GET', path: req.url || '/', error: errorSummary(error, project.dev.secrets) }));
-    }
+    } finally { budget.close(); }
   });
 
   function cleanup() {

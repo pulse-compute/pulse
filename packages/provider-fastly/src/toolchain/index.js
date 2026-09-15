@@ -332,7 +332,7 @@ function createDriver() {
       });
     },
     executionOptions(providerConfig = {}, values = {}) {
-      return { ...values, bindings: providerConfig.bindings };
+      return { ...values, maxDurationMs: providerConfig.maxDurationMs, bindings: providerConfig.bindings };
     }
   });
 }

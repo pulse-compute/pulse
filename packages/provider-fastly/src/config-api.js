@@ -38,6 +38,7 @@ function fastly(options = {}) {
   const normalizedGrip = options.grip === undefined ? undefined : gripBindings(options.grip);
   return Object.freeze({
     kind: 'fastly',
+    ...(options.maxDurationMs === undefined ? {} : { maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs) }),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({
       configStore: String(options.configStore ?? fastlyConfigDefault('fastly.configStore')),

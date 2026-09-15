@@ -33,6 +33,7 @@ function normalizeFastlyProviderConfig(value) {
     : {};
   return Object.freeze({
     kind: 'fastly',
+    maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs),
     version: input.version ? String(input.version) : undefined,
     bindings: Object.freeze({
       configStore: String(bindings.configStore || 'pulse_config'),
@@ -67,6 +68,7 @@ function fastlyProjectConfigDocument(config) {
   return Object.freeze({
     kind: 'fastly',
     bindings: config.bindings,
+    maxDurationMs: config.maxDurationMs,
     build: config.build,
     local: config.local,
     providerSpecificUserland: false
@@ -100,6 +102,7 @@ const FASTLY_PROJECT_CONFIG_REFERENCE = Object.freeze({
     })
   ]),
   fields: Object.freeze([
+    Object.freeze({section:'fastly',path:'fastly.maxDurationMs',type:'integer',allowed:'1–30000',default:'omitted',scope:'HTTP request execution',description:'One provider-owned monotonic budget through buffered response handoff; expiry attempts 504 before headers commit and never asserts rollback of dispatched writes. No CPU preemption or post-handoff delivery guarantee.'}),
     Object.freeze({ section: 'fastly', path: 'fastly.bindings.s3', type: 'Readonly<Record<string, S3Binding & { backend: string }>>', default: '`{}`', scope: 'Fastly Native S3', description: 'Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).', security: 'Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.configStore', type: 'string', default: '`pulse_config`', scope: 'Fastly config capability', description: 'Fastly Config Store resource name.' }),
     Object.freeze({ section: 'fastly', path: 'fastly.secretStore', type: 'string', default: '`pulse_secrets`', scope: 'Fastly secret capability', description: 'Fastly Secret Store resource name.', security: 'The name is build metadata; secret values are never embedded by this option.' }),

@@ -12,7 +12,7 @@ function createNodeJavascriptS3(options, secretLookup) {
     try { selected = bindJavascriptDigestMac(['SHA-256', 'HMAC-SHA256']); }
     catch { selected = null; }
     return readS3(effect, {
-      s3, signal: execution.signal, registerRedactionValue: execution.registerRedactionValue,
+      s3, signal: execution.signal, requestBudget: execution.requestBudget, registerRedactionValue: execution.registerRedactionValue,
       fetchImplementation: options.s3FetchImplementation || options.fetchImplementation, cryptoTarget: 'javascript',
       cryptoVerifier: selected, cryptoRealization: selected && selected.realization
     }, (name) => secretLookup(name, execution));

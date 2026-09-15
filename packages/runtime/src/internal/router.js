@@ -1,4 +1,5 @@
 'use strict';
+const { createRequestBudget } = require('./request-budget.js');
 
 const { compileRoutePath, matchRoutePath, normalizeRoutePath } = require('./path.js');
 const { createContext, createRequestView } = require('./context.js');
@@ -413,52 +414,59 @@ async function executeRouter(router, request, options = {}) {
       // Logging evidence is best effort.
     }
   }
-  const executionSignal = options.signal || request.signal;
-  const effectExecution = createJavascriptEffectExecution({
-    effectAdapter: options.effectAdapter,
-    capabilities: options.capabilities,
-    application: options.application,
-    request,
-    executionKind: 'request',
-    signal: executionSignal,
-    maxEffects: options.maxEffects,
-    kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
-    maxBindingNameBytes: options.maxBindingNameBytes,
-    maxBindingValueBytes: options.maxBindingValueBytes,
-    maxKvNamespaceBytes: options.maxKvNamespaceBytes,
-    maxKvKeyBytes: options.maxKvKeyBytes,
-    maxKvValueBytes: options.maxKvValueBytes,
-    maxKvValueDepth: options.maxKvValueDepth,
-    maxKvValueEntries: options.maxKvValueEntries,
-    schemaCodecs: options.schemaCodecs,
-    strict: options.strict,
-    target: options.target,
-    provider: options.provider,
-    redactionValues: options.redactionValues,
-    onEffectObservation: options.onEffectObservation
-  });
-  const req = createRequestView(request, options.requestHeaders, effectExecution, {
-    ...options,
-    signal: executionSignal,
-    redactJsonTraceValue(value) { return effectExecution.redactValue(value); }
-  });
-  const executionOptions = Object.freeze({
-    ...options,
-    signal: executionSignal,
-    redactJsonTraceValue(value) { return effectExecution.redactValue(value); }
-  });
-  const frame = {
-    request,
-    req,
-    relativePath: normalizeRoutePath(req.path),
-    params: Object.freeze({}),
-    state: new Map(),
-    effectExecution,
-    signal: executionSignal,
-    executionOptions
-  };
+  const ownsBudget = options.requestBudget === undefined;
+  const budget = createRequestBudget({ ...options, requestSignal: request.signal });
+  options = { ...options, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock };
+  const executionSignal = budget.signal;
+  let effectExecution;
   try {
-    const result = await dispatchRouter(router, frame, 0, NO_ERROR);
+    budget.check();
+    effectExecution = createJavascriptEffectExecution({
+      effectAdapter: options.effectAdapter,
+      capabilities: options.capabilities,
+      application: options.application,
+      request,
+      executionKind: 'request',
+      signal: executionSignal,
+      requestBudget: budget,
+      maxEffects: options.maxEffects,
+      kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
+      maxBindingNameBytes: options.maxBindingNameBytes,
+      maxBindingValueBytes: options.maxBindingValueBytes,
+      maxKvNamespaceBytes: options.maxKvNamespaceBytes,
+      maxKvKeyBytes: options.maxKvKeyBytes,
+      maxKvValueBytes: options.maxKvValueBytes,
+      maxKvValueDepth: options.maxKvValueDepth,
+      maxKvValueEntries: options.maxKvValueEntries,
+      schemaCodecs: options.schemaCodecs,
+      strict: options.strict,
+      target: options.target,
+      provider: options.provider,
+      redactionValues: options.redactionValues,
+      onEffectObservation: options.onEffectObservation
+    });
+    const req = createRequestView(request, options.requestHeaders, effectExecution, {
+      ...options,
+      signal: executionSignal,
+      redactJsonTraceValue(value) { return effectExecution.redactValue(value); }
+    });
+    const executionOptions = Object.freeze({
+      ...options,
+      signal: executionSignal,
+      redactJsonTraceValue(value) { return effectExecution.redactValue(value); }
+    });
+    const frame = {
+      request,
+      req,
+      relativePath: normalizeRoutePath(req.path),
+      params: Object.freeze({}),
+      state: new Map(),
+      effectExecution,
+      signal: executionSignal,
+      executionOptions
+    };
+    budget.check();
+    const result = await budget.race(dispatchRouter(router, frame, 0, NO_ERROR));
     executionSignal?.throwIfAborted();
     if (result.kind === 'response') return result.response;
     if (result.error !== NO_ERROR) {
@@ -473,9 +481,10 @@ async function executeRouter(router, request, options = {}) {
     });
   } finally {
     try {
-      await effectExecution.close();
+      await effectExecution?.close();
     } finally {
-      if (typeof options.onEffectSummary === 'function') options.onEffectSummary(effectExecution.summary());
+      if (ownsBudget) budget.close();
+      if (effectExecution && typeof options.onEffectSummary === 'function') options.onEffectSummary(effectExecution.summary());
     }
   }
 }
