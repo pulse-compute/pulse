@@ -32,7 +32,7 @@ async function main() {
   assert.deepEqual(await unavailable(effect('abc')), { status: 'failed', reason: 'unavailable' });
   const fail = createJavascriptTextDigest({ digestSubtle: { digest() { calls++; throw new Error('private failure detail'); } } });
   for (const text of ['\ud800', '\udc00', null, {}]) assert.deepEqual(await fail(effect(text)), { status: 'failed', reason: 'invalid-text' });
-  for (const text of ['a'.repeat(32769), 'é'.repeat(16385)]) assert.deepEqual(await fail(effect(text)), { status: 'failed', reason: 'too-large' });
+  for (const text of ['a'.repeat(2097153), 'é'.repeat(1048577)]) assert.deepEqual(await fail(effect(text)), { status: 'failed', reason: 'too-large' });
   assert.equal(calls, 0, 'Invalid text never reaches the byte primitive.');
   assert.deepEqual(await fail(effect('abc')), { status: 'failed', reason: 'realization-failure' });
   for (const output of [null, new ArrayBuffer(31), new Uint8Array(32)]) {
@@ -44,7 +44,7 @@ async function main() {
   assert.deepEqual([...data], [0, 0, 0]);
   assert.ok(output.every(value => value === 0));
   assert.deepEqual(await executeTextDigest(effect('abc'), { ...native, cryptoRealization: { algorithms: [] } }), { status: 'failed', reason: 'unavailable' });
-  for (const value of [null, { status: 'ok', sha256: 'A'.repeat(64), byteLength: 0 }, { status: 'ok', sha256: 'a'.repeat(64), byteLength: 32769 }, { status: 'failed', reason: 'private detail' }, { status: 'failed', reason: 'unavailable', extra: true }, { get status() { throw new Error('must not read accessors'); } }]) assert.deepEqual(normalizeTextDigestResult(value), { status: 'failed', reason: 'realization-failure' });
+  for (const value of [null, { status: 'ok', sha256: 'A'.repeat(64), byteLength: 0 }, { status: 'ok', sha256: 'a'.repeat(64), byteLength: 2097153 }, { status: 'failed', reason: 'private detail' }, { status: 'failed', reason: 'unavailable', extra: true }, { get status() { throw new Error('must not read accessors'); } }]) assert.deepEqual(normalizeTextDigestResult(value), { status: 'failed', reason: 'realization-failure' });
 
   const { crypto } = await import('../../../packages/crypto/dist/index.js');
   for (const execute of [executeNodeJavascriptApplication, executeFastlyJavascriptApplication]) {
@@ -52,7 +52,7 @@ async function main() {
     const response = await execute(handler, new Request('https://digest.test/'), { digestSubtle: null, strict: false });
     assert.deepEqual(await response.json(), { status: 'failed', reason: 'unavailable' });
     const oversized = await execute(async ctx => {
-      const result = await crypto.digestText(ctx, 'a'.repeat(1024 * 1024));
+      const result = await crypto.digestText(ctx, 'a'.repeat(3 * 1024 * 1024));
       return ctx.json(result);
     }, new Request('https://digest.test/'), { strict: false });
     assert.deepEqual(await oversized.json(), { status: 'failed', reason: 'too-large' }, 'Oversized input does not overflow the generic effect envelope.');
@@ -60,7 +60,8 @@ async function main() {
     let started, release;
     const waiting = new Promise(resolve => { started = resolve; });
     const pending = new Promise(resolve => { release = resolve; });
-    const execution = execute(handler, new Request('https://digest.test/'), { signal: abort.signal, strict: false, digestSubtle: { digest() { started(); return pending; } } });
+    const largeHandler = async ctx => { const result = await crypto.digestText(ctx, '\0'.repeat(2097152)); return ctx.json(result); };
+    const execution = execute(largeHandler, new Request('https://digest.test/'), { signal: abort.signal, strict: false, digestSubtle: { digest() { started(); return pending; } } });
     await waiting;
     abort.abort(new Error('digest invocation cancelled'));
     await assert.rejects(execution, /digest invocation cancelled/);

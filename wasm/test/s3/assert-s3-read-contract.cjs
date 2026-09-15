@@ -11,7 +11,7 @@ assert.equal(normalizeNodeS3({ objects: binding }).objects.endpoint, binding.end
 assert.equal(normalizeFastlyS3(bindings.fastly.bindings.s3).objects.backend, 'object_origin');
 for (const value of [null, [], { endpoint: 'http://origin.invalid' }, { ...binding, endpoint: 'https://origin.invalid/path' },
   { ...binding, endpoint: 'https://name:password@origin.invalid' }, { ...binding, region: '' }, { ...binding, secretAccessKey: 'inline' },
-  { ...binding, maxTextBytes: 32769 }, { ...binding, timeoutMs: 30001 }, { ...binding, accessKeyIdSecret: '' }]) {
+  { ...binding, maxTextBytes: 2097153 }, { ...binding, timeoutMs: 30001 }, { ...binding, accessKeyIdSecret: '' }]) {
   assert.throws(() => normalizeNodeS3({ objects: value }));
 }
 assert.throws(() => normalizeFastlyS3({ objects: binding }));

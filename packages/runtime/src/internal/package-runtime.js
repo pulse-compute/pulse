@@ -10,6 +10,9 @@ const {
 const PACKAGE_RUNTIME_BRIDGE_VERSION = 'pulse.package-runtime-bridge.v1';
 const PACKAGE_SCHEMA_CODEC_BRIDGE_VERSION = 'pulse.first-party-embedded-schema-codec-bridge.v1';
 const DEFAULT_MAX_PAYLOAD_BYTES = 256 * 1024;
+// Fixed first-party text operations alone admit 2 MiB plus worst-case JSON
+// escaping and 64 KiB metadata. Other package operations retain their bounds.
+const TEXT_MAX_PAYLOAD_BYTES = 6 * 2097152 + 65536;
 const DEFAULT_MAX_PAYLOAD_DEPTH = 32;
 const DEFAULT_MAX_PAYLOAD_ENTRIES = 4096;
 
@@ -591,7 +594,10 @@ function createPackageRuntime(input) {
         operation,
         capability: declared.capability,
         result: declared.result,
-        payload: clonePackageEffectPayload(payload)
+        payload: clonePackageEffectPayload(payload, {
+          maxBytes: declared.kind === 'crypto.digestText' || declared.kind === 's3.putText'
+            ? TEXT_MAX_PAYLOAD_BYTES : DEFAULT_MAX_PAYLOAD_BYTES
+        })
       }, projector);
     }
   });

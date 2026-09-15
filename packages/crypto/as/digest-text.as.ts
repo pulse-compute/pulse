@@ -8,7 +8,7 @@ class __PulseTextDigestResult {
 function __pulse_crypto_digest_text(text: string | null): __PulseTextDigestResult {
   const result = new __PulseTextDigestResult()
   if (text === null) { result.reason = 'invalid-text'; return result }
-  if (text.length > 32768) { result.reason = 'too-large'; return result }
+  if (text.length > 2097152) { result.reason = 'too-large'; return result }
   let length = 0
   for (let i = 0; i < text.length; i++) {
     const c = text.charCodeAt(i)
@@ -21,7 +21,7 @@ function __pulse_crypto_digest_text(text: string | null): __PulseTextDigestResul
     } else if (c >= 0xdc00 && c <= 0xdfff) { result.reason = 'invalid-text'; return result }
     else length += c < 0x80 ? 1 : c < 0x800 ? 2 : 3
   }
-  if (length > 32768) { result.reason = 'too-large'; return result }
+  if (length > 2097152) { result.reason = 'too-large'; return result }
   const data = Uint8Array.wrap(String.UTF8.encode(text)), digest = new Uint8Array(32)
   const code = pulse_crypto_sha256_bytes_v1(data.dataStart, data.length, digest.dataStart, 32)
   data.fill(0)

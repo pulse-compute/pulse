@@ -31,7 +31,7 @@ Put mappings under `<profile>.node.bindings.s3` or
 | `bucket`, `region` | Explicit bucket and signing region |
 | `accessKeyIdSecret`, `secretAccessKeySecret` | Named provider secret references |
 | `sessionTokenSecret` | Optional named session-token reference |
-| `maxTextBytes` | 1–32768; default 32768 |
+| `maxTextBytes` | 1–2097152; default 32768 |
 | `timeoutMs` | 1–30000; default 10000 |
 | `backend` | Fastly-only named static backend |
 
@@ -65,9 +65,13 @@ Native targets compose Crypto's AssemblyScript primitives. Fastly JavaScript S3
 is ineligible because its SDK projects raw headers and loses required metadata
 information. This target exclusion does not gate supported targets.
 
-For a JSON request carrying the maximum text consisting of escaped control
-characters, configure the existing `schemas.maxBytes` request envelope to
-262144; the object itself remains bounded to 32768 UTF-8 bytes. The acceptance
+Select `maxTextBytes: 2097152` per binding for 2 MiB objects; the default remains
+32768. Request/schema limits are independent. Use `schemas.maxBytes: 2097152`
+for a 2 MiB encoded object, and explicitly size larger transport envelopes when
+JSON escaping requires it. The S3/text effect envelope is 12,648,448 bytes.
+Local HTTP ingress also uses `dev.maxBodyBytes`, default 65536. Primary-memory
+Native digest/S3 modules enforce a 256 MiB Wasm maximum; fixed-memory linked
+guests retain their separate ABI. KV values, HMAC and JWT do not grow with S3. The acceptance
 consumer uses generic JSON responses (`strict: false`) to compare the complete
 result unions. Applications using strict JSON must declare response schemas.
 

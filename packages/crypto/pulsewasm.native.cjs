@@ -45,6 +45,7 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
       'pulse_crypto_hs256_verify',
       'pulse_crypto_sha256_digest',
       'pulse_crypto_bytes_frame_v1',
+      'pulse_crypto_digest_frame_v1',
       'pulse_crypto_sha256_bytes_v1',
       'pulse_crypto_hmac_sha256_bytes_v1'
     ]),
@@ -55,8 +56,10 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
       hs256TagBytes: 32,
       byteOperationKeyBytesMaximum: 8192,
       byteOperationDataBytesMaximum: 32768,
+      digestDataBytesMaximum: 2097152,
       byteOperationOutputBytes: 32,
-      byteOperationFrameBytes: 40992
+      byteOperationFrameBytes: 40992,
+      digestFrameBytes: 2097184
     }),
     resultCodes: Object.freeze({
       valid: 1,
@@ -76,20 +79,23 @@ function pulseHmacAssemblyScriptSource(algorithm = 'HS256') {
 
 function bindNativeDigestMac(moduleExports) {
   const memory = moduleExports && moduleExports.memory;
-  const names = ['pulse_crypto_bytes_frame_v1', 'pulse_crypto_sha256_bytes_v1', 'pulse_crypto_hmac_sha256_bytes_v1'];
+  const names = ['pulse_crypto_bytes_frame_v1', 'pulse_crypto_digest_frame_v1', 'pulse_crypto_sha256_bytes_v1', 'pulse_crypto_hmac_sha256_bytes_v1'];
   if (!(memory instanceof WebAssembly.Memory) || names.some((name) => typeof moduleExports[name] !== 'function')) {
     throw new TypeError('Native Crypto digest/MAC exports are unavailable.');
   }
-  const frameBytes = 8192 + 32768 + 32;
   function run(data, key) {
-    if (!(data instanceof Uint8Array) || data.length > 32768
+    if (!(data instanceof Uint8Array) || data.length > (key === undefined ? 2097152 : 32768)
       || (key !== undefined && (!(key instanceof Uint8Array) || key.length > 8192))) {
       throw new TypeError('Native Crypto digest/MAC input exceeds its byte contract.');
     }
-    const pointer = moduleExports.pulse_crypto_bytes_frame_v1() >>> 0;
+    const largeDigest = key === undefined && data.length > 32768;
+    const dataBytes = largeDigest ? 2097152 : 32768;
+    const keyBytes = largeDigest ? 0 : 8192;
+    const frameBytes = keyBytes + dataBytes + 32;
+    const pointer = (largeDigest ? moduleExports.pulse_crypto_digest_frame_v1() : moduleExports.pulse_crypto_bytes_frame_v1()) >>> 0;
     if (pointer + frameBytes > memory.buffer.byteLength) throw new TypeError('Native Crypto frame is outside memory.');
-    const dataPointer = pointer + 8192;
-    const outputPointer = dataPointer + 32768;
+    const dataPointer = pointer + keyBytes;
+    const outputPointer = dataPointer + dataBytes;
     try {
       const view = new Uint8Array(memory.buffer);
       view.set(data, dataPointer);

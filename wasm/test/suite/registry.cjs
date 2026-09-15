@@ -159,6 +159,11 @@ const tasks = Object.freeze({
     evidence: 'conformance',
     description: 'Pre-upload digest, S3 receipt and exact readback including schema-encoded text'
   }),
+  'text-capacity-conformance': nodeTask('test/crypto/assert-text-capacity.cjs', {
+    timeoutMs: 180000,
+    evidence: 'conformance',
+    description: '2 MiB schema/storage boundaries, lower bindings, streamed failures and bounded Native memory'
+  }),
 
   'reachable-graph': nodeTask('test/contracts/assert-reachable-graph-contract.cjs', {
     evidence: 'unit',
@@ -912,6 +917,7 @@ const profiles = Object.freeze({
     'crypto-cross-target-conformance',
     'crypto-digest-text-conformance',
     'crypto-digest-storage-conformance',
+    'text-capacity-conformance',
     'events-conformance',
     'node-router-context-parity',
     'catalog-router-parity',

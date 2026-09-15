@@ -26,7 +26,7 @@ function normalizeBinding(value) {
     if (field === 'sessionTokenSecret' && input[field] === undefined) continue;
     if (typeof input[field] !== 'string' || !namePattern.test(input[field])) throw new TypeError('S3 credentials must be valid named secret references.');
   }
-  const maxTextBytes = input.maxTextBytes === undefined ? S3_LIMITS.textBytes : input.maxTextBytes;
+  const maxTextBytes = input.maxTextBytes === undefined ? S3_LIMITS.defaultTextBytes : input.maxTextBytes;
   const timeoutMs = input.timeoutMs === undefined ? 10000 : input.timeoutMs;
   if (!Number.isInteger(maxTextBytes) || maxTextBytes < 1 || maxTextBytes > S3_LIMITS.textBytes || !Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 30000) throw new TypeError('S3 limits are outside the bounded subset.');
   return Object.freeze({ ...input, endpoint: url.origin, maxTextBytes, timeoutMs });

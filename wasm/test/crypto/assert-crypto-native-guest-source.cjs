@@ -183,6 +183,7 @@ assert.deepEqual(cryptoEvidence.exports, [
   'pulse_crypto_hs256_verify',
   'pulse_crypto_sha256_digest',
   'pulse_crypto_bytes_frame_v1',
+  'pulse_crypto_digest_frame_v1',
   'pulse_crypto_sha256_bytes_v1',
   'pulse_crypto_hmac_sha256_bytes_v1'
 ]);
@@ -193,8 +194,10 @@ assert.deepEqual(cryptoEvidence.resourceLimits, {
   hs256TagBytes: 32,
   byteOperationKeyBytesMaximum: 8192,
   byteOperationDataBytesMaximum: 32768,
+  digestDataBytesMaximum: 2097152,
   byteOperationOutputBytes: 32,
-  byteOperationFrameBytes: 40992
+  byteOperationFrameBytes: 40992,
+  digestFrameBytes: 2097184
 });
 assert.deepEqual(cryptoEvidence.resultCodes, resultCodes);
 assert.deepEqual(cryptoEvidence.comparison, {
@@ -227,11 +230,14 @@ for (const compiled of [first, optimized]) {
     const key = Buffer.alloc(keyLength, 0x0b), data = Buffer.from('Hi There');
     assert.equal(Buffer.from(byteCrypto.hmacSha256(key, data)).toString('hex'), crypto.createHmac('sha256', key).update(data).digest('hex'));
   }
-  for (const length of [0, 1, 55, 56, 64, 32768]) {
+  for (const length of [0, 1, 55, 56, 64, 32768, 2097152]) {
     const bytes = Buffer.alloc(length, 0xab);
     assert.equal(Buffer.from(byteCrypto.sha256(bytes)).toString('hex'), crypto.createHash('sha256').update(bytes).digest('hex'));
   }
-  assert.throws(() => byteCrypto.sha256(Buffer.alloc(32769)));
+  assert.throws(() => byteCrypto.sha256(Buffer.alloc(2097153)));
+  assert.throws(() => byteCrypto.hmacSha256(Buffer.alloc(32), Buffer.alloc(32769)));
+  const digestFrame = controller.exports.pulse_crypto_digest_frame_v1();
+  assert.equal(new Uint8Array(controller.exports.memory.buffer, digestFrame, 2097184).every(byte => byte === 0), true);
   assert.throws(() => byteCrypto.hmacSha256(Buffer.alloc(8193), Buffer.alloc(0)));
   const frame = controller.exports.pulse_crypto_bytes_frame_v1();
   for (let i = 0; i < 100; i++) { byteCrypto.hmacSha256(Buffer.alloc(32), Buffer.alloc(32)); assert.equal(controller.exports.pulse_crypto_bytes_frame_v1(), frame); }

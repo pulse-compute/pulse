@@ -318,12 +318,18 @@ export function pulse_crypto_hs256_verify(
 // by Crypto; host callers may stage synchronously, copy the output, then wipe.
 // It does not grow Wasm memory per operation or overlap allocator-owned memory.
 const __pulse_crypto_bytes_frame = new Uint8Array(8192 + 32768 + 32)
+// Allocate the larger digest-only frame only when a host stages a large hash.
+// Small digest/MAC callers and fixed-memory JWT guests keep the original frame.
+@lazy const __pulse_crypto_digest_frame = new Uint8Array(2097152 + 32)
+export function pulse_crypto_digest_frame_v1(): i32 {
+  return <i32>__pulse_crypto_digest_frame.dataStart
+}
 export function pulse_crypto_bytes_frame_v1(): i32 {
   return <i32>__pulse_crypto_bytes_frame.dataStart
 }
 
 export function pulse_crypto_sha256_bytes_v1(dataPointer: i32, dataLength: i32, outputPointer: i32, outputLength: i32): i32 {
-  if (dataLength < 0 || dataLength > 32768 || outputLength != 32
+  if (dataLength < 0 || dataLength > 2097152 || outputLength != 32
     || !__pulse_crypto_memory_range_valid(dataPointer, dataLength)
     || !__pulse_crypto_memory_range_valid(outputPointer, outputLength)) return __PULSE_CRYPTO_INVALID_INPUT
   const digest = __pulse_crypto_sha256_memory(<usize><u32>dataPointer, dataLength)

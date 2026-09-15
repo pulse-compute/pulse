@@ -35,6 +35,8 @@ function cases() {
   rows.push(
     { id: 'cancel-before', cancel: 'before', dispatch: false },
     { id: 'cancel-after-send', cancel: 'after' },
+    { id: 'large-cancel-after-send', text: 'a'.repeat(2097152), cancel: 'after' },
+    { id: 'large-lost-ack', text: 'a'.repeat(2097152), transportStatus: 1, expected: failure('unknown', 'transport') },
     { id: 'write-buffer-failure', modes: ['fastly-native'], outboundBodyWriteStatus: 1, dispatch: false, expected: failure('not-stored', 'transport') },
     { id: 'credential-deadline', modes: ['fastly-native'], secretDelayMs: 1000, dispatch: false, expected: failure('not-stored', 'timeout') },
     { id: 'cancel-credentials', modes: ['fastly-native'], cancel: 'secret', dispatch: false },
@@ -50,7 +52,7 @@ function cases() {
     { id: 'malformed-ack', headers: [['etag', 'a'], ['etag', 'b']], expected: failure('unknown', 'protocol', 200) },
     { id: 'wrong-length', headers: [['content-length', '1']], expected: failure('unknown', 'protocol', 200) },
     { id: 'encoding', headers: [['content-encoding', 'gzip']], expected: failure('unknown', 'protocol', 200) },
-    { id: 'too-large', text: 'a'.repeat(32769), dispatch: false, expected: failure('not-stored', 'too-large') },
+    { id: 'too-large', text: 'a'.repeat(2097153), dispatch: false, expected: failure('not-stored', 'too-large') },
     { id: 'invalid-key', key: 'a/../b', dispatch: false, expected: failure('not-stored', 'invalid-key') },
     { id: 'invalid-text', text: '\ud800', dispatch: false, expected: failure('not-stored', 'invalid-text') },
     { id: 'credentials', secrets: { S3_ACCESS_KEY_ID: '' }, dispatch: false, expected: failure('not-stored', 'credentials') }
@@ -71,9 +73,9 @@ async function main(options = {}) {
     fs.mkdirSync(path.join(cwd, 'src'), { recursive: true }); fs.mkdirSync(path.join(cwd, '.pulse'), { recursive: true });
     fs.copyFileSync(path.join(__dirname, 'o3-consumer.ts'), path.join(cwd, 'src/index.ts'));
     const bindings = structuredClone(require('./o1/bindings.json'));
-    for (const provider of ['node', 'fastly']) Object.assign(bindings[provider].bindings.s3.objects, { sessionTokenSecret: 'S3_SESSION_TOKEN', timeoutMs: 250 });
+    for (const provider of ['node', 'fastly']) Object.assign(bindings[provider].bindings.s3.objects, { sessionTokenSecret: 'S3_SESSION_TOKEN', maxTextBytes: 2097152, timeoutMs: 250 });
     const config = { pulse: { entry: 'src/index.ts', defaultProfile: 'node-native', strict: false, crypto: ['SHA-256', 'HMAC-SHA256'] } };
-    for (const provider of ['node', 'fastly']) for (const target of ['native', 'javascript']) config[`${provider}-${target}`] = { host: provider, target, schemas: { maxBytes: 262144 }, [provider]: bindings[provider] };
+    for (const provider of ['node', 'fastly']) for (const target of ['native', 'javascript']) config[`${provider}-${target}`] = { host: provider, target, schemas: { maxBytes: 12648448 }, [provider]: bindings[provider] };
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import { defineConfig } from '@pulse-compute/pulse'\nexport default defineConfig((_scope) => (${JSON.stringify(config)}))`);
     const projects = Object.fromEntries(Object.keys(config).filter((name) => name !== 'pulse').map((profile) => [profile, resolveProject({ cwd, profile })]));
     const node = compileNativeProjectInMemory(projects['node-native']);
@@ -138,11 +140,11 @@ async function main(options = {}) {
           onOutboundRequest(request) { assert.equal(request.cacheOverride, 1); assert.equal(request.decompression, 0); accept(request); }
         });
       } else if (mode === 'node-native') {
-        result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { signal: cancellation.signal, request, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144 }));
+        result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { signal: cancellation.signal, request, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 12648448, maxStructuredBodyBytes: 12648448 }));
       } else {
         const trace = [];
         const response = await executeNodeJavascriptApplication(js.loaded.application, new Request(request.url, { method: 'POST', body: request.body }), {
-          signal: cancellation.signal, s3: bindings.node.bindings.s3, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144,
+          signal: cancellation.signal, s3: bindings.node.bindings.s3, secrets: { ...secrets, ...row.secrets }, fetchImplementation, strict: false, maxRequestBodyBytes: 12648448, maxStructuredBodyBytes: 12648448,
           onEffectObservation(event) { trace.push(event); }
         });
         result = { response: { status: response.status, body: await response.text() }, trace };

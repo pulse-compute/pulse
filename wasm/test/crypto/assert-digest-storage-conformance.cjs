@@ -22,16 +22,18 @@ async function main(options = {}) {
     fs.copyFileSync(path.join(__dirname, 'digest-storage-consumer.ts'), path.join(cwd, 'src/index.ts'));
     fs.writeFileSync(path.join(cwd, 'src/schemas.ts'), "import {defineSchemaRegistry, schema} from '@pulse-compute/pulse/schema'; interface Resource { text: string }; export default defineSchemaRegistry({schemas:{'app.Resource':schema<Resource>()}})");
     const bindings = structuredClone(require('../s3/o1/bindings.json'));
+    bindings.node.bindings.s3.objects.maxTextBytes = 2097152;
+    bindings.fastly.bindings.s3.objects.maxTextBytes = 2097152;
     const config = { pulse: { entry: 'src/index.ts', schema: 'src/schemas.ts', defaultProfile: 'node-native', strict: false, crypto: ['SHA-256', 'HMAC-SHA256'] } };
-    for (const [host, target] of [['node', 'native'], ['node', 'javascript'], ['fastly', 'native']]) config[`${host}-${target}`] = { host, target, schemas: { maxBytes: 262144 }, [host]: bindings[host] };
+    for (const [host, target] of [['node', 'native'], ['node', 'javascript'], ['fastly', 'native']]) config[`${host}-${target}`] = { host, target, schemas: { maxBytes: 12648448 }, [host]: bindings[host] };
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig((_scope) => (${JSON.stringify(config)}))`);
     const projects = Object.fromEntries(Object.keys(config).filter(name => name !== 'pulse').map(profile => [profile, resolveProject({ cwd, profile })]));
     const node = compileNativeProjectInMemory(projects['node-native']);
     const fastly = compileFastly(projects['fastly-native']);
     const js = prepareJavascriptApplication(projects['node-javascript']);
-    const rows = ['', '\ufeffé😀\u0000\r\n', '{ "b":2, "a":1 }', 'a'.repeat(32768), '\u0000'.repeat(32768), 'a'.repeat(32769)].map(text => ({ text, route: '/flow' }));
+    const rows = ['', '\ufeffé😀\u0000\r\n', '{ "b":2, "a":1 }', 'a'.repeat(2097152), '\u0000'.repeat(2097152), 'a'.repeat(2097153)].map(text => ({ text, route: '/flow' }));
     rows.push({ text: '\ufeffé😀\u0000\r\n', route: '/encoded' });
-    let executions = 0;
+    let executions = 0, nativeMemoryBytes = 0;
     for (const row of rows) for (const mode of Object.keys(projects)) {
       const text = row.route === '/encoded' ? JSON.stringify({ text: row.text }) : row.text;
       const bytes = Buffer.from(text), sha256 = createHash('sha256').update(bytes).digest('hex');
@@ -55,14 +57,18 @@ async function main(options = {}) {
       };
       let result;
       if (mode === 'fastly-native') result = executeFastlyNativePlatformCapabilities(fastly, { request, fixtures, secrets, secretStore: bindings.fastly.bindings.secretStore, clockUnixSeconds: 1369353600, bodyWriteChunkBytes: 97, onOutboundRequest: accept });
-      else if (mode === 'node-native') result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { request, secrets, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144 }));
+      else if (mode === 'node-native') result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { request, secrets, fetchImplementation, strict: false, maxRequestBodyBytes: 12648448, maxStructuredBodyBytes: 12648448 }));
       else {
-        const response = await executeNodeJavascriptApplication(js.loaded.application, new Request(request.url, { method: 'POST', body: request.body }), { schemaCodecs: createCanonicalSchemaCodecs(node.compiled.schema.bundle.registry), s3: bindings.node.bindings.s3, secrets, fetchImplementation, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144 });
+        const response = await executeNodeJavascriptApplication(js.loaded.application, new Request(request.url, { method: 'POST', body: request.body }), { schemaCodecs: createCanonicalSchemaCodecs(node.compiled.schema.bundle.registry), s3: bindings.node.bindings.s3, secrets, fetchImplementation, strict: false, maxRequestBodyBytes: 12648448, maxStructuredBodyBytes: 12648448 });
         result = { response: { status: response.status, body: await response.text() } };
+      }
+      if (mode === 'fastly-native') {
+        nativeMemoryBytes = Math.max(nativeMemoryBytes, result.instance.exports.memory.buffer.byteLength);
+        assert.ok(nativeMemoryBytes <= 268435456, 'Fastly storage execution stays within 256 MiB');
       }
       assert.equal(result.response.status, 200, mode);
       const actual = JSON.parse(result.response.body);
-      if (bytes.length > 32768) {
+      if (bytes.length > 2097152) {
         assert.deepEqual(actual, { status: 'failed', reason: 'too-large' }); assert.equal(sends, 0);
       } else {
         const digest = { status: 'ok', sha256, byteLength: bytes.length };
@@ -74,7 +80,7 @@ async function main(options = {}) {
       }
       executions++;
     }
-    const evidence = { status: 'passed', cases: rows.length, executions, targets: Object.keys(projects), providerReality: false };
+    const evidence = { status: 'passed', cases: rows.length, executions, nativeMemoryBytes, targets: Object.keys(projects), providerReality: false };
     if (!options.quiet) console.log(JSON.stringify(evidence));
     return evidence;
   } finally { if (!options.cwd) fs.rmSync(cwd, { recursive: true, force: true }); }

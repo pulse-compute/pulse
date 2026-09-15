@@ -30,7 +30,7 @@ async function main(options = {}) {
     fs.mkdirSync(path.join(cwd, '.pulse'), { recursive: true });
     fs.copyFileSync(path.join(__dirname, 'digest-consumer.ts'), path.join(cwd, 'src/index.ts'));
     const config = { pulse: { entry: 'src/index.ts', defaultProfile: 'node-native', strict: false, crypto: ['SHA-256'] } };
-    for (const host of ['node', 'fastly']) for (const target of ['native', 'javascript']) config[`${host}-${target}`] = { host, target, schemas: { maxBytes: 262144 } };
+    for (const host of ['node', 'fastly']) for (const target of ['native', 'javascript']) config[`${host}-${target}`] = { host, target, schemas: { maxBytes: 12648448 } };
     const configFile = path.join(cwd, '.pulse/config.ts');
     const writeConfig = () => fs.writeFileSync(configFile, `import { defineConfig } from '@pulse-compute/pulse'\nexport default defineConfig((_scope) => (${JSON.stringify(config)}))`);
     writeConfig();
@@ -44,21 +44,26 @@ async function main(options = {}) {
     assert.equal(fastly.inspection.imports.some(({ module }) => /pulse_host|js[_-]?compute/i.test(module)), false);
     const js = prepareJavascriptApplication(projects['node-javascript']);
     const rows = corpus.vectors.map(({ text, sha256, byteLength }) => ({ text, expected: { status: 'ok', sha256, byteLength } }));
-    for (const text of ['a'.repeat(32768), 'é'.repeat(16384), '😀'.repeat(8192), '\u0000'.repeat(32768)]) rows.push({ text, expected: expected(text) });
-    for (const text of ['a'.repeat(32769), 'é'.repeat(16385), '😀'.repeat(8193)]) rows.push({ text, expected: { status: 'failed', reason: 'too-large' } });
+    for (const text of ['a'.repeat(2097152), 'é'.repeat(1048576), '😀'.repeat(524288), '\u0000'.repeat(2097152)]) rows.push({ text, expected: expected(text) });
+    for (const text of ['a'.repeat(2097153), 'é'.repeat(1048577), '😀'.repeat(524289)]) rows.push({ text, expected: { status: 'failed', reason: 'too-large' } });
     for (const text of ['\ud800', '\udc00', 'a\ud800b', null, 17]) rows.push({ text, expected: { status: 'failed', reason: 'invalid-text' } });
     rows.push({ text: 'grouped', route: '/parallel', expected: { first: expected('grouped'), empty: expected('') } });
-    let executions = 0;
+    let executions = 0, nativeMemoryBytes = 0;
     for (const row of rows) for (const mode of Object.keys(projects)) {
       const route = row.route || '/digest';
       const request = { method: 'POST', path: route, url: `https://digest.test${route}`, headers: [], body: JSON.stringify({ text: row.text }) };
       let result;
-      if (mode === 'fastly-native') result = executeFastlyNativePlatformCapabilities(fastly, { request });
-      else if (mode === 'node-native') result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { request, strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144 }));
+      if (mode === 'fastly-native') {
+        result = executeFastlyNativePlatformCapabilities(fastly, { request });
+        nativeMemoryBytes = Math.max(nativeMemoryBytes, result.instance.exports.memory.buffer.byteLength);
+        assert.ok(nativeMemoryBytes <= 268435456, 'Fastly text execution stays within 256 MiB');
+        assert.throws(() => result.instance.exports.memory.grow(4097), RangeError, 'Wasm memory maximum is enforced');
+      }
+      else if (mode === 'node-native') result = await executeCanonicalNativeModule(node.native, driver.executionOptions(projects[mode].providerConfig, { request, strict: false, maxRequestBodyBytes: 12648448, maxStructuredBodyBytes: 12648448 }));
       else {
         const execute = mode === 'node-javascript' ? executeNodeJavascriptApplication : executeFastlyJavascriptApplication;
         const trace = [];
-        const response = await execute(js.loaded.application, new Request(request.url, { method: 'POST', body: request.body }), { strict: false, maxRequestBodyBytes: 262144, maxStructuredBodyBytes: 262144, onEffectObservation: event => trace.push(event) });
+        const response = await execute(js.loaded.application, new Request(request.url, { method: 'POST', body: request.body }), { strict: false, maxRequestBodyBytes: 12648448, maxStructuredBodyBytes: 12648448, onEffectObservation: event => trace.push(event) });
         result = { response: { status: response.status, body: await response.text() }, trace };
       }
       assert.equal(result.response.status, 200, mode);
@@ -92,7 +97,7 @@ async function main(options = {}) {
     config.pulse.crypto = [];
     writeConfig();
     for (const profile of Object.keys(projects)) assert.throws(() => inspectProject(resolveProject({ cwd, profile })), /SHA-256/);
-    const evidence = { status: 'passed', cases: rows.length, executions, targets: Object.keys(projects), providerReality: false };
+    const evidence = { status: 'passed', cases: rows.length, executions, nativeMemoryBytes, targets: Object.keys(projects), providerReality: false };
     if (!options.quiet) console.log(JSON.stringify(evidence));
     return evidence;
   } finally { if (!options.cwd) fs.rmSync(cwd, { recursive: true, force: true }); }
