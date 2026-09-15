@@ -60,6 +60,7 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     kv: testCase.kv || {},
     application: options.application,
     requestHeaders: adapted.headerPairs,
+    maxDurationMs: options.maxDurationMs, requestClock: options.requestClock, requestBudget: options.requestBudget, signal: options.signal,
     maxEffects: options.maxEffects,
     maxRequestBodyBytes: options.maxRequestBodyBytes ?? options.maxBodyBytes ?? testCase.maxBodyBytes,
     maxFetchBodyBytes: options.maxFetchBodyBytes ?? testCase.maxBodyBytes,

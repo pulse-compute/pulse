@@ -36,7 +36,7 @@ function genericProviderConfig(value) {
   const input = value && typeof value === 'object' ? value : {};
   const bindings = input.bindings || {};
   if (Object.keys(bindings).some((key) => key !== 's3')) throw new TypeError('Unknown Node binding field.');
-  return Object.freeze({ kind: 'node', bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
+  return Object.freeze({ kind: 'node', maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs), bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
 }
 
 function nodeRealization(nativeArtifact) {
@@ -144,18 +144,19 @@ function createDriver() {
     normalizeConfig: genericProviderConfig,
     configReference: Object.freeze({
       sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
-      fields: [{ section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
+      fields: [{ section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
         description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).',
         security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
     }),
     defaultLocalNetworkFetch: true,
-    projectConfigDocument(config) { return Object.keys(config.bindings.s3).length ? config : undefined; },
+    projectConfigDocument(config) { return (Object.keys(config.bindings.s3).length || config.maxDurationMs !== undefined) ? config : undefined; },
     initTemplate() {
       return Object.freeze({ profileFragment: '', dependencies: Object.freeze({}) });
     },
     executionOptions(config, values) {
       return Object.freeze({
         ...values,
+        maxDurationMs: config.maxDurationMs,
         s3: config.bindings.s3,
         s3FetchImplementation: values.s3FetchImplementation || require('./javascript/fetch-adapter.js').createNodeJavascriptFixtureFetch(
           values.fetches || {}, values.fetchImplementation || (values.liveFetch === true ? globalThis.fetch : undefined),

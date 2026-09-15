@@ -67,33 +67,31 @@ function bodyAllowed(method) {
   return normalized !== 'GET' && normalized !== 'HEAD';
 }
 
-async function readNodeRequestBody(request, maxBytes = DEFAULT_MAX_BODY_BYTES) {
+async function readNodeRequestBody(request, maxBytes = DEFAULT_MAX_BODY_BYTES, signal) {
   const limit = Number(maxBytes);
   if (!Number.isSafeInteger(limit) || limit <= 0) throw new TypeError('Pulse Node maxBodyBytes must be a positive safe integer.');
-  const chunks = [];
-  let bytes = 0;
-  try {
-    for await (const chunk of request) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    let bytes = 0;
+    function cleanup() {
+      for (const [event, fn] of [['data', data], ['end', end], ['error', error], ['aborted', aborted]]) request.removeListener(event, fn);
+      signal?.removeEventListener('abort', cancel);
+    }
+    function fail(cause) { cleanup(); chunks.length = 0; request.once('error', () => {}); request.resume(); reject(cause); }
+    function cancel() { fail(signal.reason); }
+    function error(cause) { fail(new PulseNodeJavascriptRequestError('PULSE_NODE_REQUEST_READ_FAILED', 'Pulse could not read the Node request body.', { causeName: cause?.name })); }
+    function aborted() { error(new Error('Request aborted')); }
+    function data(chunk) {
       const buffer = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
       bytes += buffer.byteLength;
-      if (bytes > limit) {
-        throw new PulseNodeJavascriptRequestError(
-          'PULSE_REQUEST_BODY_TOO_LARGE',
-          `Request body exceeds ${limit} bytes.`,
-          { maxBytes: limit, bytes }
-        );
-      }
+      if (bytes > limit) return fail(new PulseNodeJavascriptRequestError('PULSE_REQUEST_BODY_TOO_LARGE', `Request body exceeds ${limit} bytes.`, { maxBytes: limit, bytes }));
       chunks.push(buffer);
     }
-  } catch (error) {
-    if (error instanceof PulseNodeJavascriptRequestError) throw error;
-    throw new PulseNodeJavascriptRequestError(
-      'PULSE_NODE_REQUEST_READ_FAILED',
-      'Pulse could not read the Node request body.',
-      { causeName: error && error.name }
-    );
-  }
-  return Buffer.concat(chunks);
+    function end() { cleanup(); resolve(Buffer.concat(chunks)); }
+    if (signal?.aborted) return cancel();
+    signal?.addEventListener('abort', cancel, { once: true });
+    request.on('data', data); request.once('end', end); request.once('error', error); request.once('aborted', aborted);
+  });
 }
 
 async function nodeRequestToWebRequest(request, options = {}) {
@@ -104,7 +102,7 @@ async function nodeRequestToWebRequest(request, options = {}) {
   for (const [name, value] of headerPairs) headers.append(name, value);
   const init = { method, headers };
   if (bodyAllowed(method)) {
-    const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes);
+    const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
     if (body.byteLength > 0) {
       init.body = body;
       init.duplex = 'half';
@@ -144,25 +142,39 @@ async function writeWebResponseToNode(response, nodeResponse, options = {}) {
   if (!(response instanceof Response)) throw new TypeError('Pulse Node response adaptation requires a Web Response.');
   if (!nodeResponse || typeof nodeResponse.end !== 'function') throw new TypeError('Pulse Node response adaptation requires a ServerResponse-like object.');
 
-  nodeResponse.statusCode = response.status;
-  if (response.statusText && typeof nodeResponse.statusMessage === 'string') nodeResponse.statusMessage = response.statusText;
-  for (const group of groupHeaderPairs(runtimeHost.responseHeaderPairs(response))) {
-    nodeResponse.setHeader(group.name, group.values.length === 1 ? group.values[0] : [...group.values]);
-  }
+  const check = () => { options.requestBudget?.check(); options.signal?.throwIfAborted(); };
+  try {
+    check();
+    nodeResponse.statusCode = response.status;
+    if (response.statusText && typeof nodeResponse.statusMessage === 'string') nodeResponse.statusMessage = response.statusText;
+    for (const group of groupHeaderPairs(runtimeHost.responseHeaderPairs(response))) {
+      nodeResponse.setHeader(group.name, group.values.length === 1 ? group.values[0] : [...group.values]);
+    }
 
-  const method = String(options.requestMethod || 'GET').toUpperCase();
-  if (method === 'HEAD' || !statusAllowsBody(response.status) || response.body == null) {
-    nodeResponse.end();
+    const method = String(options.requestMethod || 'GET').toUpperCase();
+    if (method === 'HEAD' || !statusAllowsBody(response.status) || response.body == null) {
+      check();
+      nodeResponse.end();
+      return response;
+    }
+
+    if (typeof Readable.fromWeb === 'function') {
+      check();
+      await pipeline(Readable.fromWeb(response.body), nodeResponse, { signal: options.signal });
+      check();
+      return response;
+    }
+
+    const body = Buffer.from(await response.arrayBuffer());
+    check();
+    nodeResponse.end(body);
     return response;
+  } catch (error) {
+    if (response.body && !response.body.locked) void response.body.cancel(error).catch(() => {});
+    // Preserve the deadline diagnostic instead of pipeline's generic AbortError.
+    check();
+    throw error;
   }
-
-  if (typeof Readable.fromWeb === 'function') {
-    await pipeline(Readable.fromWeb(response.body), nodeResponse);
-    return response;
-  }
-
-  nodeResponse.end(Buffer.from(await response.arrayBuffer()));
-  return response;
 }
 
 async function resolveRequestOption(value, context) {
@@ -189,85 +201,92 @@ function createNodeJavascriptHandler(application, options = {}) {
         maxKvValueEntries: options.maxKvValueEntries
       });
   return async function pulseNodeJavascriptHandler(request, response) {
-    const adapted = await nodeRequestToWebRequest(request, options);
-    const requestContext = Object.freeze({
-      request,
-      response,
-      webRequest: adapted.request,
-      headerPairs: adapted.headerPairs
-    });
-    const requestedCapabilities = await resolveRequestOption(options.capabilities, requestContext);
-    const effectAdapter = await resolveRequestOption(options.effectAdapter, requestContext);
-    const schemaCodecs = await resolveRequestOption(options.schemaCodecs, requestContext);
-    const config = hasDynamicBindings ? await resolveRequestOption(options.config, requestContext) : options.config;
-    const secrets = hasDynamicBindings ? await resolveRequestOption(options.secrets, requestContext) : options.secrets;
-    const kv = hasDynamicBindings ? await resolveRequestOption(options.kv, requestContext) : options.kv;
-    const bindings = staticBindings || createNodeJavascriptBindingCapabilities({
-      config, secrets, kv,
-      kvReference: options.kvReference,
-      maxBindingNameBytes: options.maxBindingNameBytes,
-      maxBindingValueBytes: options.maxBindingValueBytes,
-      maxKvNamespaceBytes: options.maxKvNamespaceBytes,
-      maxKvKeyBytes: options.maxKvKeyBytes,
-      maxKvValueBytes: options.maxKvValueBytes,
-      maxKvValueDepth: options.maxKvValueDepth,
-      maxKvValueEntries: options.maxKvValueEntries
-    });
-    const capabilities = effectAdapter === undefined
-      ? withNodeBindingCapabilities(requestedCapabilities, { bindings })
-      : requestedCapabilities;
-    const started = process.hrtime.bigint();
-    const activeApplication = options.getApplication
-      ? runtimeHost.normalizeApplication(options.getApplication())
-      : normalizedApplication;
-    const webResponse = await executeNodeJavascriptApplication(activeApplication, adapted.request, {
-      capabilities,
-      effectAdapter,
-      config,
-      secrets,
-      kv,
-      application: options.application,
-      requestHeaders: adapted.headerPairs,
-      signal: options.signal || adapted.request.signal,
-      fetchImplementation: options.fetchImplementation,
-      s3: options.s3 || options.bindings && options.bindings.s3,
-      s3FetchImplementation: options.s3FetchImplementation,
-      assetsLookup: options.assetsLookup,
-      gripBroadcast: options.gripBroadcast,
-      jwtCaptureWallClock: options.jwtCaptureWallClock,
-      assets: options.assets,
-      grip: options.grip,
-      maxEffects: options.maxEffects,
-      kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
-      maxRequestBodyBytes: options.maxRequestBodyBytes ?? options.maxBodyBytes,
-      maxFetchBodyBytes: options.maxFetchBodyBytes,
-      maxStructuredBodyBytes: options.maxStructuredBodyBytes,
-      maxBindingNameBytes: options.maxBindingNameBytes,
-      maxBindingValueBytes: options.maxBindingValueBytes,
-      maxKvNamespaceBytes: options.maxKvNamespaceBytes,
-      maxKvKeyBytes: options.maxKvKeyBytes,
-      maxKvValueBytes: options.maxKvValueBytes,
-      maxKvValueDepth: options.maxKvValueDepth,
-      maxKvValueEntries: options.maxKvValueEntries,
-      schemaCodecs,
-      strict: options.strict === true,
-      provider: options.provider || 'node',
-      redactionValues: options.redactionValues,
-      onJsonTrace: options.onJsonTrace,
-      onEffectObservation: options.onEffectObservation,
-      onEffectSummary: options.onEffectSummary
-    });
-    await writeWebResponseToNode(webResponse, response, { requestMethod: adapted.method });
-    if (typeof options.onRequest === 'function') {
-      options.onRequest(Object.freeze({
-        method: adapted.method,
-        url: adapted.request.url,
-        path: new URL(adapted.request.url).pathname,
-        status: webResponse.status,
-        durationMs: Number(process.hrtime.bigint() - started) / 1e6
-      }));
-    }
-    return webResponse;
+    const budget = runtimeHost.createRequestBudget(options);
+    try {
+      budget.check();
+      const adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
+      const requestContext = Object.freeze({
+        request,
+        response,
+        webRequest: adapted.request,
+        signal: budget.signal,
+        headerPairs: adapted.headerPairs
+      });
+      const resolve = value => { budget.check(); return budget.race(resolveRequestOption(value, requestContext)); };
+      const requestedCapabilities = await resolve(options.capabilities);
+      const effectAdapter = await resolve(options.effectAdapter);
+      const schemaCodecs = await resolve(options.schemaCodecs);
+      const config = hasDynamicBindings ? await resolve(options.config) : options.config;
+      const secrets = hasDynamicBindings ? await resolve(options.secrets) : options.secrets;
+      const kv = hasDynamicBindings ? await resolve(options.kv) : options.kv;
+      const bindings = staticBindings || createNodeJavascriptBindingCapabilities({
+        config, secrets, kv,
+        kvReference: options.kvReference,
+        maxBindingNameBytes: options.maxBindingNameBytes,
+        maxBindingValueBytes: options.maxBindingValueBytes,
+        maxKvNamespaceBytes: options.maxKvNamespaceBytes,
+        maxKvKeyBytes: options.maxKvKeyBytes,
+        maxKvValueBytes: options.maxKvValueBytes,
+        maxKvValueDepth: options.maxKvValueDepth,
+        maxKvValueEntries: options.maxKvValueEntries
+      });
+      const capabilities = effectAdapter === undefined
+        ? withNodeBindingCapabilities(requestedCapabilities, { bindings })
+        : requestedCapabilities;
+      const started = process.hrtime.bigint();
+      const activeApplication = options.getApplication
+        ? runtimeHost.normalizeApplication(options.getApplication())
+        : normalizedApplication;
+      const webResponse = await executeNodeJavascriptApplication(activeApplication, adapted.request, {
+        capabilities,
+        effectAdapter,
+        config,
+        secrets,
+        kv,
+        application: options.application,
+        requestHeaders: adapted.headerPairs,
+        signal: budget.signal,
+        requestBudget: budget, requestClock: options.requestClock,
+        fetchImplementation: options.fetchImplementation,
+        s3: options.s3 || options.bindings && options.bindings.s3,
+        s3FetchImplementation: options.s3FetchImplementation,
+        assetsLookup: options.assetsLookup,
+        gripBroadcast: options.gripBroadcast,
+        jwtCaptureWallClock: options.jwtCaptureWallClock,
+        assets: options.assets,
+        grip: options.grip,
+        maxEffects: options.maxEffects,
+        kvClock: options.kvClock, deadlineMonotonicMs: options.deadlineMonotonicMs,
+        maxRequestBodyBytes: options.maxRequestBodyBytes ?? options.maxBodyBytes,
+        maxFetchBodyBytes: options.maxFetchBodyBytes,
+        maxStructuredBodyBytes: options.maxStructuredBodyBytes,
+        maxBindingNameBytes: options.maxBindingNameBytes,
+        maxBindingValueBytes: options.maxBindingValueBytes,
+        maxKvNamespaceBytes: options.maxKvNamespaceBytes,
+        maxKvKeyBytes: options.maxKvKeyBytes,
+        maxKvValueBytes: options.maxKvValueBytes,
+        maxKvValueDepth: options.maxKvValueDepth,
+        maxKvValueEntries: options.maxKvValueEntries,
+        schemaCodecs,
+        strict: options.strict === true,
+        provider: options.provider || 'node',
+        redactionValues: options.redactionValues,
+        onJsonTrace: options.onJsonTrace,
+        onEffectObservation: options.onEffectObservation,
+        onEffectSummary: options.onEffectSummary
+      });
+      await writeWebResponseToNode(webResponse, response, { requestMethod: adapted.method, signal: budget.signal, requestBudget: budget });
+      if (typeof options.onRequest === 'function') {
+        options.onRequest(Object.freeze({
+          method: adapted.method,
+          url: adapted.request.url,
+          path: new URL(adapted.request.url).pathname,
+          status: webResponse.status,
+          durationMs: Number(process.hrtime.bigint() - started) / 1e6
+        }));
+      }
+      return webResponse;
+    } finally { if (!options.requestBudget) budget.close(); }
   };
 }
 

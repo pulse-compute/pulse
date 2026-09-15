@@ -1,3 +1,4 @@
+const { normalizeRequestDuration } = require('@pulse-compute/runtime/host') as { normalizeRequestDuration(value?: number): number | undefined };
 import FASTLY_CONFIG_SCHEMA from './config-schema.json';
 
 type FastlySchemaRule = Readonly<{ kind: string; default?: unknown }>;
@@ -23,6 +24,7 @@ export interface PulseFastlyLocalOptions {
 }
 
 export interface PulseFastlyProviderOptions {
+  readonly maxDurationMs?: number;
   readonly configStore?: string;
   readonly secretStore?: string;
   readonly kv?: Readonly<Record<string, string>>;
@@ -36,6 +38,7 @@ export interface PulseFastlyProviderOptions {
 }
 
 export interface PulseFastlyProviderConfig {
+  readonly maxDurationMs?: number;
   readonly kind: 'fastly';
   readonly version: typeof FASTLY_PROVIDER_API_VERSION;
   readonly bindings: {
@@ -97,6 +100,7 @@ export function fastly(options: PulseFastlyProviderOptions = {}): PulseFastlyPro
   const normalizedGrip = options.grip === undefined ? undefined : gripBindings(options.grip);
   return Object.freeze({
     kind: 'fastly',
+    maxDurationMs: normalizeRequestDuration(options.maxDurationMs),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({
       configStore: String(options.configStore ?? fastlyDefaults['fastly.configStore']),

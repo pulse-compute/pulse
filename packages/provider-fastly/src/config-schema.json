@@ -72,6 +72,9 @@
     "fastly.local.networkFetch": {
       "kind": "boolean",
       "default": false
+    },
+    "fastly.maxDurationMs": {
+      "kind": "optional-number"
     }
   }
 }

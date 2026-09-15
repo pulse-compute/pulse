@@ -38,8 +38,8 @@ The [selected deadline contract](../architecture/current-contracts.md#selected-b
 defines one provider-owned monotonic budget across HTTP admission, bounded body
 reads, managed effects, continuations and buffered response handoff. Catalog O2
 selects ten seconds on Node Native, Node JavaScript and Fastly Native.
-Implementation and exact-package acceptance remain pending P-02/P-03; this is
-not an available-release claim. The linked target matrix owns the handoff
+P-02 implements the source paths; exact-package acceptance remains pending P-03.
+This is not an available-release claim. The linked target matrix owns the handoff
 exceptions and O2 acceptance wording.
 
 Cancellation fences subsequent managed work. A write already dispatched may

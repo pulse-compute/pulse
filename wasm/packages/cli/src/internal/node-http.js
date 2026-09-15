@@ -24,7 +24,8 @@ function groupHeaders(headers) {
   return order.map((key) => groups.get(key));
 }
 
-function writeNodeHttpResponse(response, hostResult) {
+function writeNodeHttpResponse(response, hostResult, options = {}) {
+  options.requestBudget?.check();
   const result = hostResult || { status: 500, kind: 'empty', headers: [] };
   response.statusCode = result.status || 500;
   for (const group of groupHeaders(result.headers || [])) {
@@ -47,7 +48,9 @@ function writeNodeHttpResponse(response, hostResult) {
       return result;
     }
   }
-  response.end(result.body === undefined || result.body === null ? '' : String(result.body));
+  const body = result.body === undefined || result.body === null ? '' : String(result.body);
+  options.requestBudget?.check();
+  response.end(body);
   return result;
 }
 

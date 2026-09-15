@@ -6,6 +6,7 @@ const { createNodeJavascriptHandler } = require('./node-adapter.js');
 const NODE_JAVASCRIPT_LIFECYCLE_VERSION = 'pulse.node-javascript-lifecycle.v1';
 
 function statusForError(error) {
+  if (['PULSE_REQUEST_DEADLINE_EXCEEDED', 'PULSE_REQUEST_CLOCK_INVALID'].includes(error?.code)) return 504;
   if (error && error.code === 'PULSE_REQUEST_BODY_TOO_LARGE') return 413;
   if (error && error.code === 'PULSE_NODE_REQUEST_READ_FAILED') return 400;
   return 500;
@@ -18,7 +19,8 @@ function writeSafeError(response, error) {
   }
   response.statusCode = statusForError(error);
   response.setHeader('content-type', 'text/plain; charset=utf-8');
-  response.end(response.statusCode === 413 ? 'Payload Too Large' : (response.statusCode === 400 ? 'Bad Request' : 'Internal Server Error'));
+  if (response.statusCode === 504) response.setHeader('connection', 'close');
+  response.end(response.statusCode === 504 ? 'Gateway Timeout' : response.statusCode === 413 ? 'Payload Too Large' : (response.statusCode === 400 ? 'Bad Request' : 'Internal Server Error'));
 }
 
 function createNodeJavascriptServer(application, options = {}) {

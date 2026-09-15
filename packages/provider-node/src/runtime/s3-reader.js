@@ -54,6 +54,7 @@ async function readS3(effect, options, lookup) {
   let timedOut = false;
   const deadline = performance.now() + binding.timeoutMs;
   const check = () => {
+    options.requestBudget?.check();
     if (performance.now() >= deadline) { timedOut = true; controller.abort(); }
     if (controller.signal.aborted) throw controller.signal.reason || new Error('S3 deadline expired.');
   };

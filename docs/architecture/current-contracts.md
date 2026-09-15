@@ -246,17 +246,16 @@ See [Effects and continuations](../concepts/effects-and-continuations.md),
 ## Selected bounded HTTP deadline contract
 
 P-01 selects the following implementation contract on 15 September 2026.
-**Implementation and exact-package acceptance are pending P-02 and P-03.**
-This section does not claim that the current release enforces a total request
-deadline. Catalog O2 remains closed until its separate C-06 consumer acceptance.
+P-02 implements this contract in the source tree. **Exact-package acceptance
+remains pending P-03.** This is not a published-release or deployed-service claim.
+Catalog O2 remains closed until its separate C-06 consumer acceptance.
 
 The selected profile option is `node.maxDurationMs` for Node Native and Node
 JavaScript, and `fastly.maxDurationMs` for Fastly Native. Its value must be an
 integer from 1 through 30000; omission preserves the existing behavior without
 a total deadline. Catalog O2 selects **10000 ms**. Fastly JavaScript must reject
 the option explicitly; it is outside this proof. Event invocations retain their
-existing lifecycle. Configuration references must be regenerated from their
-canonical schema owners when P-02 implements the option, not ahead of it.
+existing lifecycle. Configuration references are regenerated from their canonical provider owners.
 
 ### Budget and authority
 

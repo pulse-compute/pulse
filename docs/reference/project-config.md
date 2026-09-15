@@ -288,6 +288,18 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.maxDurationMs`
+
+One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.
+
+- **Type:** integer
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** 1–30000
+- **Scope:** HTTP request execution
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.bindings.s3`
 
 Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).
@@ -303,6 +315,18 @@ Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdS
 ## Fastly provider options
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
+
+### `fastly.maxDurationMs`
+
+One provider-owned monotonic budget through buffered response handoff; expiry attempts 504 before headers commit and never asserts rollback of dispatched writes. No CPU preemption or post-handoff delivery guarantee.
+
+- **Type:** integer
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** 1–30000
+- **Scope:** HTTP request execution
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
 
 ### `fastly.bindings.s3`
 
