@@ -9,7 +9,7 @@ const source=String.raw`export default async function handler(ctx) {
  const first=input.text[0];const second=input.text[1];
  return ctx.json({lt:input.left<input.right,le:input.left<=input.right,gt:input.left>input.right,ge:input.left>=input.right,
   length:input.text.length,keyedLength:input.text[input.lengthKey],first: first===input.first,second:second===input.second,
-  stringKey:input.text['0']===first,badStringKey:input.text['01']===undefined,negative:input.text[-1]===undefined,fractional:input.text[0.5]===undefined,pastEnd:input.text[input.text.length]===undefined,bits,remainder:input.dividend%input.divisor});
+  stringKey:input.text['0']===first,badStringKey:input.text['01']===undefined,negative:input.text[-1]===undefined,fractional:input.text[0.5]===undefined,pastEnd:input.text[input.text.length]===undefined,bits,remainder:input.dividend%input.divisor,negativeZero:(1 / (0 * -1)) < 0,positiveZero:(1 / 0) > 0,nan:((0 / 0) === (0 / 0)),cacheEdge:65535 + 1,uncachedFraction:0.5 + 0.25});
 }`;
 const rows=[
  {left:'a',right:'b',text:'ab',first:'a',second:'b',version:1,dividend:5,divisor:2},
@@ -26,7 +26,7 @@ function main(kind='both') {
   const artifact=require(compiler)[compile](plan,{backends:{'https://values.test':'values_backend'},bindings:{backends:{'https://values.test':'values_backend'}},requirePlatformCapability:false,canonicalBuild:true});
   for(const row of rows){const actual=require(host)[execute](artifact,{fixtures:{'https://values.test/ready':{status:200,body:'ready'}},request:{method:'POST',path:'/',headers:[['content-type','application/json']],body:JSON.stringify({...row,lengthKey:'length'})}});
    assert.equal(actual.response.status,200,mode);
-   const expected={lt:row.left<row.right,le:row.left<=row.right,gt:row.left>row.right,ge:row.left>=row.right,length:row.text.length,keyedLength:row.text.length,first:true,second:true,stringKey:true,badStringKey:true,negative:true,fractional:true,pastEnd:true,bits:row.version.toString(2).padStart(53,'0'),remainder:Number.isFinite(row.dividend%row.divisor)?row.dividend%row.divisor:null};
+   const expected={lt:row.left<row.right,le:row.left<=row.right,gt:row.left>row.right,ge:row.left>=row.right,length:row.text.length,keyedLength:row.text.length,first:true,second:true,stringKey:true,badStringKey:true,negative:true,fractional:true,pastEnd:true,bits:row.version.toString(2).padStart(53,'0'),remainder:Number.isFinite(row.dividend%row.divisor)?row.dividend%row.divisor:null,negativeZero:true,positiveZero:true,nan:false,cacheEdge:65536,uncachedFraction:0.75};
    assert.deepEqual(JSON.parse(actual.response.body),expected,mode+' '+JSON.stringify(row));
   }
  }

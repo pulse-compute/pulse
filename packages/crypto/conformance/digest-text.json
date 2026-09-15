@@ -2,7 +2,7 @@
   "version": "pulse.crypto-text-digest-corpus.v1",
   "algorithm": "SHA-256",
   "encoding": "lowercase-hex",
-  "maxUtf8Bytes": 32768,
+  "maxUtf8Bytes": 2097152,
   "vectors": [
     {
       "text": "",

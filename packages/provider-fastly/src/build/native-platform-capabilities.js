@@ -1419,6 +1419,12 @@ const PULSE_FASTLY_PENDING_NONE: i32 = 0
 const PULSE_FASTLY_PENDING_ASYNC: i32 = 1
 const PULSE_FASTLY_PENDING_READY: i32 = 2
 @lazy const __pulse_fastly_values = new Array<__PulseFastlyValue>()
+// Primitive handles have value semantics. Bounded caches keep admitted scalar
+// validation loops from retaining a fresh boxed value for every iteration.
+@lazy const __pulse_fastly_scalar_handles = new StaticArray<i32>(4)
+@lazy const __pulse_fastly_integer_handles = new StaticArray<i32>(65536)
+@lazy const __pulse_fastly_character_handles = new StaticArray<i32>(65537)
+@lazy const __pulse_fastly_literal_handles = new Map<string, i32>()
 @lazy const __pulse_fastly_pending = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 @lazy const __pulse_fastly_pending_mode = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 @lazy const __pulse_fastly_payloads = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
@@ -1457,7 +1463,14 @@ function __pulse_fastly_value(handle: i32): __PulseFastlyValue { if (handle <= 0
 ${nativeStringTrim}
 ${nativeStringIndex}
 function __pulse_fastly_deep_freeze(handle: i32): void { const value = __pulse_fastly_value(handle); if (value.immutable) return; value.immutable = true; if (value.kind == PULSE_VALUE_ARRAY || value.kind == PULSE_VALUE_OBJECT) for (let index = 0; index < value.values.length; index += 1) __pulse_fastly_deep_freeze(unchecked(value.values[index])) }
-function __pulse_fastly_string_value(value: string): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_STRING; item.text = value; return __pulse_fastly_put(item) }
+function __pulse_fastly_string_value(value: string): i32 {
+  const index = value.length == 0 ? 65536 : value.length == 1 ? value.charCodeAt(0) : -1;
+  if (index >= 0) { const cached = unchecked(__pulse_fastly_character_handles[index]); if (cached != 0) return cached }
+  const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_STRING; item.text = value;
+  const handle = __pulse_fastly_put(item);
+  if (index >= 0) unchecked(__pulse_fastly_character_handles[index] = handle);
+  return handle
+}
 function __pulse_fastly_find(object: __PulseFastlyValue, key: string): i32 { for (let i = 0; i < object.keys.length; i += 1) if (unchecked(object.keys[i]) == key) return i; return -1 }
 function __pulse_fastly_number_string(value: f64): string { if (value >= -9007199254740991.0 && value <= 9007199254740991.0 && Math.floor(value) == value) return i64(value).toString(); return value.toString() }
 function __pulse_fastly_string(handle: i32): string { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_STRING) return value.text; if (value.kind == PULSE_VALUE_NUMBER) return __pulse_fastly_number_string(value.number); if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? "true" : "false"; if (value.kind == PULSE_VALUE_NULL) return "null"; if (value.kind == PULSE_VALUE_UNDEFINED) return "undefined"; return __pulse_fastly_json(handle, 0) }
@@ -1496,16 +1509,21 @@ function __pulse_fastly_quote(value: string): string {
   out[cursor] = 34;
   return String.UTF16.decodeUnsafe(out.dataStart, out.byteLength);
 }
-function __pulse_fastly_json(handle: i32, depth: i32): string {
-  if (depth > ${plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 128 : 64}) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); return "null" }
+function __pulse_fastly_json_parts(handle: i32, depth: i32, parts: Array<string>): void {
+  if (depth > ${plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 128 : 64}) { __pulse_fastly_fail(PULSE_ERROR_JSON, 2, -1); parts.push("null"); return }
   const value = __pulse_fastly_value(handle)
-  if (value.kind == PULSE_VALUE_UNDEFINED || value.kind == PULSE_VALUE_NULL) return "null"
-  if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? "true" : "false"
-  if (value.kind == PULSE_VALUE_NUMBER) return __pulse_fastly_number_string(value.number)
-  if (value.kind == PULSE_VALUE_STRING) return __pulse_fastly_quote(value.text)
-  if (value.kind == PULSE_VALUE_ARRAY) { let out = "["; for (let i = 0; i < value.values.length; i += 1) { if (i > 0) out += ","; out += __pulse_fastly_json(unchecked(value.values[i]), depth + 1) } return out + "]" }
-  if (value.kind == PULSE_VALUE_OBJECT) { let out = "{"; for (let i = 0; i < value.keys.length; i += 1) { if (i > 0) out += ","; out += __pulse_fastly_quote(unchecked(value.keys[i])) + ":" + __pulse_fastly_json(unchecked(value.values[i]), depth + 1) } return out + "}" }
-  return "null"
+  if (value.kind == PULSE_VALUE_BOOLEAN) { parts.push(value.boolean != 0 ? "true" : "false"); return }
+  if (value.kind == PULSE_VALUE_NUMBER) { parts.push(__pulse_fastly_number_string(value.number)); return }
+  if (value.kind == PULSE_VALUE_STRING) { parts.push(__pulse_fastly_quote(value.text)); return }
+  if (value.kind == PULSE_VALUE_ARRAY) { parts.push("["); for (let i = 0; i < value.values.length; i += 1) { if (i > 0) parts.push(","); __pulse_fastly_json_parts(unchecked(value.values[i]), depth + 1, parts) } parts.push("]"); return }
+  if (value.kind == PULSE_VALUE_OBJECT) { parts.push("{"); for (let i = 0; i < value.keys.length; i += 1) { if (i > 0) parts.push(","); parts.push(__pulse_fastly_quote(unchecked(value.keys[i]))); parts.push(":"); __pulse_fastly_json_parts(unchecked(value.values[i]), depth + 1, parts) } parts.push("}"); return }
+  parts.push("null")
+}
+function __pulse_fastly_json(handle: i32, depth: i32): string {
+  // Join once, avoiding a complete copy of a multi-MiB leaf at every ancestor
+  // and at every following member in the response or effect result.
+  const parts = new Array<string>(); __pulse_fastly_json_parts(handle, depth, parts);
+  return parts.join("")
 }
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
@@ -1532,11 +1550,29 @@ function __pulse_fastly_request_header_text(name: string): string { const nameBy
 function __pulse_fastly_fetch_header_text(responseHandle: i32, name: string): string { const nameBytes = __pulse_fastly_utf8(name); const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = fastly_http_resp_header_value_get(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status == FASTLY_STATUS_NONE) return ""; if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 23, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
 function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (value.bodyLoaded == 0) { value.text = __pulse_fastly_read_body(value.bodyHandle, -1); value.bodyLoaded = 1 } return value.text }
 
-function host_value_undefined(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_UNDEFINED; return __pulse_fastly_put(item) }
-function host_value_null(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NULL; return __pulse_fastly_put(item) }
-function host_value_boolean(value: i32): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_BOOLEAN; item.boolean = value != 0 ? 1 : 0; return __pulse_fastly_put(item) }
-function host_value_number(value: f64): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NUMBER; item.number = value; return __pulse_fastly_put(item) }
-function host_value_string(pointer: i32, length: i32): i32 { return __pulse_fastly_string_value(changetype<string>(pointer)) }
+function __pulse_fastly_scalar(kind: i32, boolean: i32, slot: i32): i32 {
+  const cached = unchecked(__pulse_fastly_scalar_handles[slot]); if (cached != 0) return cached;
+  const item = new __PulseFastlyValue(); item.kind = kind; item.boolean = boolean;
+  const handle = __pulse_fastly_put(item); unchecked(__pulse_fastly_scalar_handles[slot] = handle); return handle
+}
+function host_value_undefined(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_UNDEFINED, 0, 0) }
+function host_value_null(): i32 { return __pulse_fastly_scalar(PULSE_VALUE_NULL, 0, 1) }
+function host_value_boolean(value: i32): i32 { return __pulse_fastly_scalar(PULSE_VALUE_BOOLEAN, value != 0 ? 1 : 0, value != 0 ? 3 : 2) }
+function host_value_number(value: f64): i32 {
+  // Preserve negative zero, NaN, infinities and nonintegral values exactly.
+  const cacheable = value >= 0 && value < 65536 && Math.floor(value) == value && (value != 0 || 1.0 / value > 0);
+  const index = cacheable ? i32(value) : -1;
+  if (index >= 0) { const cached = unchecked(__pulse_fastly_integer_handles[index]); if (cached != 0) return cached }
+  const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NUMBER; item.number = value;
+  const handle = __pulse_fastly_put(item); if (index >= 0) unchecked(__pulse_fastly_integer_handles[index] = handle); return handle
+}
+function host_value_string(pointer: i32, length: i32): i32 {
+  const text = changetype<string>(pointer);
+  if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.has(text)) return __pulse_fastly_literal_handles.get(text);
+  const handle = __pulse_fastly_string_value(text);
+  if (text.length > 1 && text.length <= 128 && __pulse_fastly_literal_handles.size < 1024) __pulse_fastly_literal_handles.set(text, handle);
+  return handle
+}
 function host_value_array(): i32 { const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_ARRAY; return __pulse_fastly_put(item) }
 function host_value_array_push(target: i32, value: i32): void { const item = __pulse_fastly_value(target); if (item.kind != PULSE_VALUE_ARRAY || item.immutable) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 30, -1); return } item.values.push(value) }
 function host_value_array_spread(target: i32, source: i32): void { const from = __pulse_fastly_value(source); if (from.kind != PULSE_VALUE_ARRAY) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 31, -1); return } for (let i = 0; i < from.values.length; i += 1) host_value_array_push(target, unchecked(from.values[i])) }
@@ -1987,6 +2023,9 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       '--optimize'
     ];
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization);
+    if (!guestLinked && plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.'))) {
+      args.push('--maximumMemory', '4096');
+    }
     if (generated.guestUnits.length > 0) {
       args.push(
         '--disable', 'bulk-memory',

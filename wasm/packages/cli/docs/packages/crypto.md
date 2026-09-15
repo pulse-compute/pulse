@@ -21,7 +21,7 @@ if (digest.status === 'failed') return ctx.text(digest.reason, { status: 422 })
 ```
 
 The root also exports `digestText`, `TextDigestResult`, and
-`DIGEST_TEXT_MAX_BYTES` (`32768`). The operation requires the current HTTP
+`DIGEST_TEXT_MAX_BYTES` (`2097152`). The operation requires the current HTTP
 `PulseContext`, a text argument, and `pulse.crypto: ['SHA-256']` in project
 configuration. Await it into a local variable or use it directly in a keyed
 `ctx.parallel` group. Named import aliases and the default `crypto` facade
@@ -32,8 +32,8 @@ Digest input is the exact Unicode scalar text encoded as UTF-8: no Unicode
 normalization, BOM removal, newline conversion, JSON parsing, or re-encoding.
 Empty input succeeds. Embedded NULs, CRLF and astral characters retain their
 bytes. Unpaired UTF-16 surrogates fail as `invalid-text` rather than being
-replaced. Input beyond 32 KiB fails as `too-large`; the early code-unit bound
-also rejects strings longer than 32768 code units before scanning them.
+replaced. Input beyond 2 MiB fails as `too-large`; the early code-unit bound
+also rejects strings longer than 2097152 code units before scanning them.
 
 The closed result is either `{ status: 'ok', sha256, byteLength }` or
 `{ status: 'failed', reason }`, with `reason` equal to `invalid-text`,
@@ -53,9 +53,20 @@ Hash the output of `ctx.encodeJson(value, 'app.Resource')` when that exact
 encoded text will be uploaded. On supported S3 targets, hashing the same text
 before `s3.putText` produces its receipt's `sha256` and `byteLength`; hashing
 the exact `s3.getText` text produces the same values. Hashes identify bytes,
-not parsed JSON equivalence. This 32 KiB primitive does not increase S3 or
-Catalog capacity; larger resource/history/receipt envelopes remain separate
-capacity work. Fastly JavaScript's existing S3 transport limitation remains.
+not parsed JSON equivalence. S3 bindings independently opt into up to 2 MiB; owning KV values and
+application history/receipt budgets remain separately bounded. Fastly JavaScript's existing S3 transport limitation remains.
+
+The fixed first-party digest/S3 PUT effect bridge admits at most 12,648,448
+encoded bytes (six times 2 MiB plus 64 KiB of metadata). This accommodates JSON
+escaping without increasing unrelated effect envelopes. Request bodies and
+schema encoding retain their explicit `schemas.maxBytes` limits; a transport
+carrying escaped text may need a larger envelope than the text itself.
+
+Primary-memory Native modules using digest or S3 enforce a 256 MiB Wasm ceiling.
+This is a module maximum, not a per-object allocation or a concurrency allowance.
+The separate fixed-memory ES256 guest ABI remains unchanged; its smaller heap
+cannot establish the 2 MiB capacity profile. Allocation failure never enables
+another realization. Applications must select a compatible capacity profile.
 
 ## Verification surface
 
@@ -110,8 +121,10 @@ realization. Target probing and automatic fallback are prohibited.
 
 Native capability packages can also select `SHA-256` and `HMAC-SHA256` for
 internal byte output. Their exact `guest-source:pulse-hmac-as` realization uses
-32-byte output, at most 32 KiB of data and 8 KiB of HMAC key material. Crypto owns
-a reusable, wiped host staging frame. These operations are separate from JWT's
+32-byte output, at most 2 MiB of SHA-256 data, 32 KiB of HMAC data and 8 KiB of
+HMAC key material. Crypto owns reusable, wiped host staging frames. The original
+40,992-byte frame serves HMAC and small hashes; a separate 2,097,184-byte frame
+is allocated lazily for larger host-staged hashes. These operations are separate from JWT's
 32-byte minimum HMAC verification key; the application verification API retains
 its existing limits. Node JavaScript also supports the trusted byte-output
 seam; Fastly JavaScript supports SHA-256 digest output.
