@@ -68,6 +68,10 @@ function errorIdentity(error) {
   });
 }
 
+function applicationErrorCode(error) {
+  return error.code === 'PULSE_RUNTIME_UNHANDLED_ERROR' ? error.cause.code : error.code;
+}
+
 async function requestBodySnapshotCase() {
   const app = new Router();
   let summary;
@@ -99,7 +103,7 @@ async function requestBodyDiagnosticsCase() {
     app.post('/body', async (ctx) => projection === 'json'
       ? ctx.json(await ctx.req.json())
       : ctx.text(await ctx.req.text()));
-    app.error(async (error, ctx) => ctx.text(error.cause.code, { status: 400 }));
+    app.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 400 }));
     const response = await runtimeHost.executeRouter(app, new Request('https://app.test/body', {
       method: 'POST',
       headers: { 'content-type': contentType || (projection === 'json' ? 'application/json' : 'text/plain') },
@@ -110,7 +114,7 @@ async function requestBodyDiagnosticsCase() {
 
   const unavailableApp = new Router();
   unavailableApp.post('/body', async (ctx) => ctx.text(await ctx.req.text()));
-  unavailableApp.error(async (error, ctx) => ctx.text(error.cause.code, { status: 400 }));
+  unavailableApp.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 400 }));
   const consumedRequest = new Request('https://app.test/body', {
     method: 'POST', body: 'consumed', headers: { 'content-type': 'text/plain' }
   });
@@ -119,7 +123,8 @@ async function requestBodyDiagnosticsCase() {
 
   const abortApp = new Router();
   abortApp.post('/body', async (ctx) => ctx.text(await ctx.req.text()));
-  abortApp.error(async (error, ctx) => ctx.text(error.cause.code, { status: 400 }));
+  let abortHandlerCalls = 0;
+  abortApp.error(async (_error, ctx) => { abortHandlerCalls++; return ctx.text('invalid recovery'); });
   const abortController = new AbortController();
   const abortRequest = new Request('https://app.test/body', {
     method: 'POST',
@@ -129,14 +134,15 @@ async function requestBodyDiagnosticsCase() {
   });
   const abortResponsePromise = runtimeHost.executeRouter(abortApp, abortRequest, { signal: abortController.signal });
   abortController.abort(new Error('fetch and body request body proof abort'));
-  const abortResponse = await abortResponsePromise;
+  await assert.rejects(abortResponsePromise, error => error === abortController.signal.reason);
+  assert.equal(abortHandlerCalls, 0);
 
   const parallel = new Router();
   parallel.post('/parallel', async (ctx) => {
     await ctx.parallel({ body: ctx.req.text() });
     return ctx.text('unreachable');
   });
-  parallel.error(async (error, ctx) => ctx.text(error.cause.code, { status: 400 }));
+  parallel.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 400 }));
   const parallelResponse = await runtimeHost.executeRouter(parallel, new Request('https://app.test/parallel', {
     method: 'POST', body: 'hello', headers: { 'content-type': 'text/plain' }
   }));
@@ -145,7 +151,7 @@ async function requestBodyDiagnosticsCase() {
     tooLarge: await codeFor('123456789', { maxRequestBodyBytes: 8 }, 'text'),
     opaque: await codeFor(new Uint8Array([0, 1]), {}, 'text', 'application/octet-stream'),
     unavailable: await unavailableResponse.text(),
-    aborted: await abortResponse.text(),
+    aborted: 'invocation-rejected-without-response',
     parallel: await parallelResponse.text()
   });
 }
@@ -186,7 +192,7 @@ async function fetchTimeoutCase() {
   const app = new Router();
   let sawAbort = false;
   app.get('/slow', async (ctx) => ctx.text(await ctx.fetch('https://origin.test/slow', { timeoutMs: 5 }).text()));
-  app.error(async (error, ctx) => ctx.text(error.cause.code, { status: 504 }));
+  app.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 504 }));
   const response = await runtimeHost.executeRouter(app, new Request('https://app.test/slow'), {
     effectAdapter: {
       id: 'pulse.fetch-body.timeout',
@@ -248,7 +254,7 @@ async function fetchProjectionCase() {
 async function fetchProjectionLimitCase() {
   const app = new Router();
   app.get('/large', async (ctx) => ctx.text(await ctx.fetch('https://origin.test/large').text()));
-  app.error(async (error, ctx) => ctx.text(error.cause.code, { status: 413 }));
+  app.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 413 }));
   const response = await runtimeHost.executeRouter(app, new Request('https://app.test/large'), {
     maxFetchBodyBytes: 4,
     capabilities: { fetch: async () => new Response('12345', { headers: { 'content-type': 'text/plain' } }) }
@@ -294,7 +300,7 @@ async function publicInspectionAndBodylessCase() {
   });
   app.head('/head', async (ctx) => ctx.fetch('https://origin.test/head'));
   app.get('/empty', async (ctx) => ctx.fetch('https://origin.test/empty'));
-  app.error(async (error, ctx) => ctx.text(error.cause.code, { status: 400 }));
+  app.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 400 }));
   const capability = async (url) => url.endsWith('/empty')
     ? new Response(null, { status: 204, headers: { 'x-empty': 'yes' } })
     : new Response('must-not-leak', { headers: { 'content-type': 'text/plain' } });
@@ -313,7 +319,7 @@ async function nodeFixtureCase() {
   app.get('/project', async (ctx) => ctx.json(await ctx.fetch('https://origin.test/project').json()));
   app.get('/direct', async (ctx) => ctx.fetch('https://origin.test/direct'));
   app.get('/network', async (ctx) => ctx.text(await ctx.fetch('https://origin.test/network').text()));
-  app.error(async (error, ctx) => ctx.text(error.cause.code, { status: 502 }));
+  app.error(async (error, ctx) => ctx.text(applicationErrorCode(error), { status: 502 }));
   const projected = await executeNodeJavascriptTestCase(app, {
     request: { method: 'GET', path: '/project' },
     fetches: {

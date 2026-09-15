@@ -201,6 +201,40 @@ assert.equal(structuredBody.effects.length, 0);
 assert.ok(structuredBody.capabilities.includes('request.json'));
 assert.ok(structuredBody.capabilities.includes('response.response'));
 
+function headerGuardPlan(body) {
+  return buildCanonicalNativePlan(compileCanonicalSource(`
+    export default function handler(ctx) { ${body} return ctx.text('ok'); }
+  `, { fileName: 'header-guard.ts' }));
+}
+
+for (const guard of ['value !== undefined', 'undefined !== value']) {
+  const plan = headerGuardPlan(`const value = ctx.req.header('x-value'); if (${guard}) ctx.state.set('value', value);`);
+  const writes = [];
+  walkStatements(plan.entry.body, (statement) => {
+    if (statement.kind === 'expression') walkExpression(statement.expression, (expression) => {
+      if (expression.kind === 'intrinsic' && expression.name === 'state.set') writes.push(expression);
+    });
+  });
+  assert.equal(writes.length, 1);
+  assert.equal(writes[0].arguments[1].valueKind, 'string');
+}
+headerGuardPlan(`const value = ctx.req.header('x-value'); if (value === undefined) return ctx.text('missing'); else ctx.state.set('value', value);`);
+for (const body of [
+  `const value = ctx.req.header('x-value'); ctx.state.set('value', value);`,
+  `let value = ctx.req.header('x-value'); if (value !== undefined) ctx.state.set('value', value);`,
+  `const value = ctx.req.header('x-value'); if (value === undefined) ctx.state.set('value', value);`,
+  `const value = ctx.req.header('x-value'); if (value !== undefined) ctx.state.set('inside', value); ctx.state.set('outside', value);`,
+  `const value = ctx.req.header('x-value'); if (value !== undefined) { value = undefined; ctx.state.set('value', value); }`,
+  `const value = 1; value++;`,
+  `const value = 1; ++value;`
+]) {
+  assert.throws(() => headerGuardPlan(body), (error) => {
+    assert.ok(error instanceof CanonicalNativePlanError);
+    assert.ok(error.diagnostics.some((entry) => entry.code === 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED'));
+    return true;
+  });
+}
+
 const tempRoot = fs.mkdtempSync(path.join(process.env.PULSEWASM_TEST_TMP_ROOT || os.tmpdir(), 'pulse-native-plan-'));
 try {
   const output = path.join(tempRoot, 'canonical-native-plan.json');
