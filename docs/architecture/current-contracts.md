@@ -419,6 +419,15 @@ objects do not merge. An empty declaration enables no algorithms. An unknown,
 missing, unavailable, or failed realization stops with a normalized diagnostic
 and never authorizes fallback.
 
+A provider-dependent JavaScript package with a declared runtime entry can enter
+the source application plan. Loadability alone does not establish target
+eligibility: the selected provider must classify every declared package
+requirement and every recognized operation requirement as eligible. Missing,
+pending or blocked requirements prevent source-package builds; importing a
+package without a recognized operation does not erase its declared requirements.
+The loader preserves the graph's public package import and resolves it through
+package exports; a declared runtime file is not an additional exported subpath.
+
 For JWT verification, JavaScript targets select `runtime-builtin` and use Web Crypto with explicit
 HMAC/SHA-256 or ECDSA/P-256/SHA-256 parameters. The crypto boundary receives a
 normalized 64-byte P-256 point; its JavaScript adapter validates that point and

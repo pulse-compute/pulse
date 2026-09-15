@@ -464,7 +464,19 @@ function selectedTargetSupportEvidence(project, compiled, javascriptApplication,
   if ((project.target || 'native') !== 'javascript') return null;
   const javascript = providerDriver(project).javascript;
   const policy = javascript && javascript.targetSupportPolicy;
-  if (!policy) return null;
+  if (!policy) {
+    const runtimeContracts = new Set(javascriptApplication.plan.packages.map((entry) => entry.contractId));
+    const providerDependent = (compiled.packageProduct && compiled.packageProduct.contracts || [])
+      .filter((entry) => runtimeContracts.has(entry.contractId) && entry.javascriptTarget
+        && entry.javascriptTarget.status === 'provider-dependent');
+    if (providerDependent.length) throw new PulseProjectError(
+      'PULSE_PROVIDER_CAPABILITY_UNSUPPORTED',
+      'Provider-dependent JavaScript packages require a selected provider target-support policy.',
+      { provider: project.provider, target: 'javascript',
+        packages: providerDependent.map((entry) => entry.packageName), automaticFallback: false }
+    );
+    return null;
+  }
   return buildJavascriptTargetSupportEvidence(project, {
     compiled,
     javascriptApplication,
