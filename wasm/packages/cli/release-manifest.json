@@ -260,12 +260,12 @@
       "documentation": "docs/packages/crypto.md",
       "role": "public-extension",
       "tier": "supported-extension",
-      "audience": "Applications and first-party packages using provider-neutral cryptographic verification.",
-      "directInstall": "Yes, when an application uses the crypto verification surface directly; JWT applications receive it transitively.",
+      "audience": "Applications and first-party packages using provider-neutral verification and exact-text SHA-256.",
+      "directInstall": "Yes, when an application uses verification or digestText directly; JWT applications receive it transitively.",
       "entryPoints": [
         "@pulse-compute/crypto"
       ],
-      "stability": "The package root is the supported bounded verification contract; realization and Native integration subpaths remain toolchain-only."
+      "stability": "The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only."
     },
     {
       "dir": "packages/jwt",

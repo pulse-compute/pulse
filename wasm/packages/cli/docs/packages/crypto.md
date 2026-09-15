@@ -1,11 +1,61 @@
 # `@pulse-compute/crypto`
 
 `@pulse-compute/crypto` provides bounded, provider-neutral cryptographic
-verification for Pulse applications and first-party capability packages.
+verification and exact-text SHA-256 for Pulse applications and first-party capability packages.
 
 ```bash
 npm install @pulse-compute/crypto@1.0.0-beta.4
 ```
+
+## Exact-text digest
+
+Use the public package root before uploading text:
+
+```ts
+import { crypto } from '@pulse-compute/crypto'
+
+const digest = await crypto.digestText(ctx, text)
+if (digest.status === 'failed') return ctx.text(digest.reason, { status: 422 })
+// digest.sha256 is 64 lowercase hexadecimal characters.
+// digest.byteLength is the exact UTF-8 byte length.
+```
+
+The root also exports `digestText`, `TextDigestResult`, and
+`DIGEST_TEXT_MAX_BYTES` (`32768`). The operation requires the current HTTP
+`PulseContext`, a text argument, and `pulse.crypto: ['SHA-256']` in project
+configuration. Await it into a local variable or use it directly in a keyed
+`ctx.parallel` group. Named import aliases and the default `crypto` facade
+are supported; detaching the operation, dynamically accessing it, or shadowing
+its imported binding is outside the lowering contract.
+
+Digest input is the exact Unicode scalar text encoded as UTF-8: no Unicode
+normalization, BOM removal, newline conversion, JSON parsing, or re-encoding.
+Empty input succeeds. Embedded NULs, CRLF and astral characters retain their
+bytes. Unpaired UTF-16 surrogates fail as `invalid-text` rather than being
+replaced. Input beyond 32 KiB fails as `too-large`; the early code-unit bound
+also rejects strings longer than 32768 code units before scanning them.
+
+The closed result is either `{ status: 'ok', sha256, byteLength }` or
+`{ status: 'failed', reason }`, with `reason` equal to `invalid-text`,
+`too-large`, `unavailable`, or `realization-failure`. Invalid runtime input
+uses `invalid-text`. Provider details and input bytes never appear in failures.
+Invocation cancellation terminates execution through the ordinary effect
+lifecycle and produces no digest success result.
+
+Node and Fastly Native reuse Crypto's selected
+`guest-source:pulse-hmac-as` SHA-256 implementation. Node and Fastly
+JavaScript use the selected `runtime-builtin` Web Crypto digest. The trusted
+package bridge owns execution, parallel grouping and cancellation; Crypto owns
+text validation, framing, encoding and results. Missing selection fails
+inspection; unavailable or failing execution never tries another realization.
+
+Hash the output of `ctx.encodeJson(value, 'app.Resource')` when that exact
+encoded text will be uploaded. On supported S3 targets, hashing the same text
+before `s3.putText` produces its receipt's `sha256` and `byteLength`; hashing
+the exact `s3.getText` text produces the same values. Hashes identify bytes,
+not parsed JSON equivalence. This 32 KiB primitive does not increase S3 or
+Catalog capacity; larger resource/history/receipt envelopes remain separate
+capacity work. Fastly JavaScript's existing S3 transport limitation remains.
 
 ## Verification surface
 
@@ -63,7 +113,8 @@ internal byte output. Their exact `guest-source:pulse-hmac-as` realization uses
 32-byte output, at most 32 KiB of data and 8 KiB of HMAC key material. Crypto owns
 a reusable, wiped host staging frame. These operations are separate from JWT's
 32-byte minimum HMAC verification key; the application verification API retains
-its existing limits. JavaScript byte-output realization is not implemented yet.
+its existing limits. Node JavaScript also supports the trusted byte-output
+seam; Fastly JavaScript supports SHA-256 digest output.
 
 The package root is the supported application contract. Native integration,
 guest provenance, and realization records are toolchain-owned surfaces. JWT

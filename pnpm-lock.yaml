@@ -34,7 +34,14 @@ importers:
         specifier: workspace:*
         version: link:../pulse
 
-  packages/crypto: {}
+  packages/crypto:
+    dependencies:
+      '@pulse-compute/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      '@pulse-compute/wasm-contracts':
+        specifier: workspace:*
+        version: link:../../wasm/packages/contracts
 
   packages/entities:
     dependencies:

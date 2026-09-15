@@ -110,7 +110,11 @@ export const signature = Object.freeze({
   verify: verifySignature,
 });
 
+export { DIGEST_TEXT_MAX_BYTES, digestText, type TextDigestResult } from './digest.js';
+import { digestText } from './digest.js';
+
 export const crypto = Object.freeze({
+  digestText,
   mac,
   signature,
 });
