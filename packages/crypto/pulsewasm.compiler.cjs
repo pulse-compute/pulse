@@ -34,6 +34,17 @@ function buildCryptoLoweringPlan(input = {}) {
       || ts.isPropertyAccessExpression(expression) && expression.name.text === 'digestText'
         && ts.isIdentifier(expression.expression) && namespaces.has(expression.expression.text);
   }
+  // Verification remains an ordinary JavaScript API. Its existing facade
+  // aliases and helpers must not acquire digest-specific authoring restrictions.
+  let hasDigestUse = false;
+  function findDigestUse(node) {
+    if (ts.isImportDeclaration(node) || ts.isTypeNode(node)) return;
+    if (isDigest(node)
+      || ts.isPropertyAccessExpression(node) && node.name.text === 'digestText'
+      || ts.isElementAccessExpression(node) && node.argumentExpression && ts.isStringLiteralLike(node.argumentExpression) && node.argumentExpression.text === 'digestText') hasDigestUse = true;
+    ts.forEachChild(node, findDigestUse);
+  }
+  findDigestUse(source);
   function visit(node) {
     if (ts.isTypeNode(node)) return;
     if ((ts.isVariableDeclaration(node) || ts.isParameter(node) || ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node)) && node.name) checkBinding(node.name);
@@ -69,7 +80,7 @@ function buildCryptoLoweringPlan(input = {}) {
     }
     ts.forEachChild(node, visit);
   }
-  visit(source);
+  if (hasDigestUse) visit(source);
   const cryptoRequirements = effects.length ? [{ version: PACKAGE_CRYPTO_REQUIREMENT_VERSION, algorithms: ['SHA-256'], reachable: true, requestedBy: PACKAGE, semanticOwner: PACKAGE }] : [];
   return { artifact: { version: 'pulse.crypto-text-lowering-plan.v1', contractId: 'pulse.crypto', package: PACKAGE, lowerableSubpath: PACKAGE,
     status: diagnostics.length ? 'error' : 'ok', canonicalEffects: effects, cryptoRequirements },

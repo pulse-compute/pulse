@@ -82,6 +82,11 @@ async function main(options = {}) {
       writeHandler('{crypto}', body);
       assert.throws(() => compileProject(resolveProject({ cwd, profile: 'node-native' })), undefined, body);
     }
+    config.pulse.crypto = ['HS256'];
+    writeConfig();
+    writeHandler('{crypto}', "const c = crypto; const r = await c.mac.verify({ algorithm: 'HS256', key: { type: 'hmac-key-bytes', bytes: new Uint8Array(32) }, data: new Uint8Array(), tag: new Uint8Array(32) }); return ctx.text(r.status);");
+    const verification = compileProject(resolveProject({ cwd, profile: 'node-javascript' }));
+    assert.equal(verification.ok, true, 'Existing ordinary JavaScript verification aliases remain admissible.');
     writeHandler('{crypto}', "const r = await crypto.digestText(ctx, 'abc'); return ctx.text(r.status);");
     // Reachable digest demand requires an explicit SHA-256 selection.
     config.pulse.crypto = [];

@@ -17,10 +17,11 @@ async function main() {
     assert.deepEqual(result.canonicalEffects[0].runtimeInputs, [{ name: 'text', argumentIndex: 1, source: 'package-call-argument' }]);
   }
   assert.equal(lower("const r = await ctx.parallel({ a: crypto.digestText(ctx, ''), b: digestText(ctx, text) })").hasErrors, false);
-  for (const body of ["const r = await crypto.digestText(other, text)", "const r = await digestText(ctx)", "const r = await digestText(ctx, text, {})", "return await digestText(ctx, text)", "digestText(ctx, text)", "const r = digestText(ctx, text)", "const hash = crypto.digestText", "const hash = digestText", "const c = crypto", "const r = await crypto['digestText'](ctx, text)", "const crypto = other; const r = await crypto.digestText(ctx, text)", "const { digestText } = other; const r = await digestText(ctx, text)"]) {
+  for (const body of ["const r = await crypto.digestText(other, text)", "const r = await digestText(ctx)", "const r = await digestText(ctx, text, {})", "return await digestText(ctx, text)", "digestText(ctx, text)", "const r = digestText(ctx, text)", "const hash = crypto.digestText", "const hash = digestText", "const c = crypto; const r = await c.digestText(ctx, text)", "const r = await crypto['digestText'](ctx, text)", "const crypto = other; const r = await crypto.digestText(ctx, text)", "const { digestText } = other; const r = await digestText(ctx, text)"]) {
     assert.equal(lower(body).hasErrors, true, body);
   }
   assert.equal(lower('const r = await crypto.mac.verify(request)').hasErrors, false, 'Existing ordinary JavaScript verification stays separate.');
+  assert.equal(lower('const c = crypto; const r = await c.mac.verify(request)').hasErrors, false, 'Existing JavaScript verification aliases stay separate.');
   for (const call of ["crypto.digestText(ctx, 'abc')", 'crypto.getRandomValues(value)', 'globalThis.crypto.digestText(ctx, text)']) assert.throws(() => compileCanonicalSource(`export default async ctx => { const r = await ${call}; return ctx.text('bad'); }`));
 
   const digest = createJavascriptTextDigest();
