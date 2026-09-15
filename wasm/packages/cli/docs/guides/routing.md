@@ -167,8 +167,8 @@ failed invocation had no external effects. Conditional KV results such as
 `conflict`, `not-stored` and `unknown` remain ordinary outcomes for the handler to
 inspect. Their meaning does not change when an error handler is registered.
 
-Cancellation ends the invocation without an application response. Native traps,
-provider protocol failures and unavailable capabilities remain terminal; they
+Cancellation ends the invocation without an application response. On Native,
+traps, provider protocol failures and unavailable capabilities remain terminal; they
 do not acquire recovery or rollback guarantees. Native authoring still does not
 admit arbitrary `throw` or `try`/`catch`. JavaScript retains its existing
 `PulseUnhandledError` containment for unexpected handler failures.
