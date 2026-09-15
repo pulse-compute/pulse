@@ -159,6 +159,11 @@ const tasks = Object.freeze({
     evidence: 'conformance',
     description: 'Pre-upload digest, S3 receipt and exact readback including schema-encoded text'
   }),
+  'multifile-source-identity': nodeTask('test/crypto/assert-multifile-source-identity.cjs', {
+    timeoutMs: 180000,
+    evidence: 'conformance',
+    description: 'Source-qualified effect and intrinsic identity, duplicate rejection and three-target multifile routing'
+  }),
   'text-capacity-conformance': nodeTask('test/crypto/assert-text-capacity.cjs', {
     timeoutMs: 180000,
     evidence: 'conformance',
@@ -922,6 +927,7 @@ const profiles = Object.freeze({
     'crypto-cross-target-conformance',
     'crypto-digest-text-conformance',
     'crypto-digest-storage-conformance',
+    'multifile-source-identity',
     'text-capacity-conformance',
     'events-conformance',
     'node-router-context-parity',
