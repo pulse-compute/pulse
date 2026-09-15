@@ -146,6 +146,33 @@ app.error(async (error, ctx, next) => {
 
 If the normal lane is exhausted, Pulse returns `404 Not Found`. If the error lane is exhausted, Pulse returns `500 Internal Server Error`.
 
+Schema data failures and JWT validation failures also enter the next registered
+error handler. Branch on `error.code`; the portable contract does not require
+identical messages, stacks, causes or detail fields across providers.
+
+| Boundary | Portable error codes |
+| --- | --- |
+| Schema data | `PULSE_SCHEMA_DECODE`, `PULSE_SCHEMA_ENCODE`, `PULSE_SCHEMA_JSON_MALFORMED`, `PULSE_SCHEMA_CONTENT_TYPE`, `PULSE_BODY_TOO_LARGE` |
+| JWT input and verification | `PULSE_JWT_TOKEN_REQUIRED`, `PULSE_JWT_BEARER_INVALID`, `PULSE_JWT_MALFORMED`, `PULSE_JWT_LIMIT_EXCEEDED`, `PULSE_JWT_ALGORITHM_NOT_ALLOWED`, `PULSE_JWT_KEY_INVALID`, `PULSE_JWT_SIGNATURE_INVALID` |
+| JWT claims | `PULSE_JWT_CLOCK_INVALID`, `PULSE_JWT_CLAIMS_INVALID`, `PULSE_JWT_CLAIMS_SCHEMA_INVALID` |
+
+Recovery moves forward in registration order, including through mounted
+routers. A failed handler never resumes. An error handler can return a response,
+forward with `return next(error)`, or clear the error lane with `return next()`.
+A data failure inside an error handler transfers to a later error handler.
+
+Already-started members of a failed effect group settle before application
+recovery. Pulse does not retry them, undo completed writes, or imply that a
+failed invocation had no external effects. Conditional KV results such as
+`conflict`, `not-stored` and `unknown` remain ordinary outcomes for the handler to
+inspect. Their meaning does not change when an error handler is registered.
+
+Cancellation ends the invocation without an application response. Native traps,
+provider protocol failures and unavailable capabilities remain terminal; they
+do not acquire recovery or rollback guarantees. Native authoring still does not
+admit arbitrary `throw` or `try`/`catch`. JavaScript retains its existing
+`PulseUnhandledError` containment for unexpected handler failures.
+
 ## Middleware scope and effects
 
 A path-scoped `use('/api', handler)` applies only to that subtree. Middleware declared on a mounted child Router is naturally limited to the mounted subtree.

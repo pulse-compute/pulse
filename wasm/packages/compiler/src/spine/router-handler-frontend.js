@@ -327,7 +327,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
       role,
       nextIndex: entry.nextIndex,
       transferFlag,
-      clearNormalMode: call.arguments.length === 0 && role !== 'error',
+      clearNormalMode: call.arguments.length === 0,
       errorExpression: call.arguments.length > 0 ? rewrite(call.arguments[0]) : undefined
     });
   }

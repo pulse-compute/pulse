@@ -576,9 +576,14 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   }
 
   const blocks = [];
+  const applicationErrors = (plan.routing?.entries || []).some(entry => entry.kind === 'error');
+  const routerLocal = name => (plan.locals || []).find(local => local.name === `__pulse_router_${name}`)?.id;
+  const routerCursor = routerLocal('cursor');
+  const protectedEntries = new Set();
+  let activeBoundary;
   function block(kind, data = {}) {
     const id = blocks.length;
-    blocks.push({ id, kind, ...data });
+    blocks.push({ id, kind, boundary: activeBoundary, ...data });
     return id;
   }
 
@@ -617,16 +622,19 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   function suspendBlock(effectIds, continuationId, resumeBlock) {
     const effects = effectIds.map((id) => effectRecord(id));
     const lines = [];
+    const payloadLines = [];
     for (const { index, effect } of effects) {
       lines.push(`__pulse_effect_pending_${index} = 1`);
       lines.push(`__pulse_effect_ready_${index} = 0`);
       lines.push(`__pulse_effect_result_${index} = 0`);
-      lines.push(`const payload_${index} = host_value_object()`);
-      for (const input of effect.inputs || []) lines.push(`host_value_object_set(payload_${index}, ${stringHandle(input.name)}, ${exprName(input.value)}())`);
+      const prepare = applicationErrors ? payloadLines : lines;
+      prepare.push(`const payload_${index} = host_value_object()`);
+      for (const input of effect.inputs || []) prepare.push(`host_value_object_set(payload_${index}, ${stringHandle(input.name)}, ${exprName(input.value)}())`);
       lines.push(`host_effect_begin(${index}, payload_${index})`);
     }
     return block('suspend', {
       lines,
+      payloadLines,
       continuationState: continuationState(continuationId),
       resumeBlock,
       pendingCount: effects.length
@@ -653,7 +661,9 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return lines;
   }
 
-  function compileSequence(statements, nextBlock) {
+  function compileSequence(statements, nextBlock, boundary) {
+    const previousBoundary = activeBoundary;
+    activeBoundary = boundary;
     let next = nextBlock;
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];
@@ -664,8 +674,13 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       } else if (statement.kind === 'return') {
         next = block('return', { expression: exprName(statement.value) });
       } else if (statement.kind === 'if') {
-        const thenBlock = compileSequence(statement.then || [], next);
-        const elseBlock = compileSequence(statement.else || [], next);
+        const test = statement.test;
+        const entry = applicationErrors && !boundary && test.kind === 'binary' && test.operator === '==='
+          && test.left.kind === 'local' && test.left.id === routerCursor && test.right.kind === 'literal'
+          && plan.routing.entries.find(entry => entry.index === test.right.value);
+        if (entry) protectedEntries.add(entry.index);
+        const thenBlock = compileSequence(statement.then || [], next, entry ? { nextBlock: next, nextIndex: entry.nextIndex } : boundary);
+        const elseBlock = compileSequence(statement.else || [], next, boundary);
         next = block('branch', { test: exprName(statement.test), thenBlock, elseBlock });
       } else if (statement.kind === 'effect') {
         const resume = resumeAction([statement.effectId], [{ effectId: statement.effectId, ...(statement.result || {}) }], next);
@@ -677,28 +692,52 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
         next = suspendBlock(statement.effectIds || [], statement.continuationId, resume);
       } else fail(`Unsupported native statement kind ${String(statement.kind)}.`, { kind: statement.kind, statementPath: statement.statementPath });
     }
+    activeBoundary = previousBoundary;
     return next;
   }
 
   const entryBlock = compileSequence(plan.entry.body || [], fallthroughBlock);
+  if (applicationErrors && (!routerCursor || !routerLocal('mode') || !routerLocal('error')
+    || plan.routing.entries.some(entry => !protectedEntries.has(entry.index)))) {
+    fail('Router application errors require explicit compiler-owned entry boundaries.');
+  }
   const resumeRequirements = new Map();
   for (const item of blocks) if (item.kind === 'resume' || item.kind === 'resume-return') resumeRequirements.set(item.id, item.required);
 
   function renderBlock(item) {
     const lines = [`    case ${item.id}: {`];
     const emit = (line) => lines.push(`      ${line}`);
+    const checkError = () => {
+      if (!item.boundary) return;
+      emit('{ const failure = host_router_error_take()');
+      emit(`  if (failure < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`);
+      emit('  if (failure > 0) {');
+      emit(`    ${localName(routerLocal('error'))} = failure`);
+      emit(`    ${localName(routerLocal('mode'))} = host_value_number(1.0)`);
+      emit(`    ${localName(routerCursor)} = host_value_number(${item.boundary.nextIndex}.0)`);
+      emit('    __pulse_pending = 0; __pulse_state = 0; __pulse_result = 0');
+      emit(`    __pulse_pc = ${item.boundary.nextBlock}; continue`);
+      emit('  } }');
+    };
+    checkError();
     if (item.kind === 'action') {
       for (const line of item.lines) emit(line);
+      checkError();
       emit(`__pulse_pc = ${item.next}`);
       emit('continue');
     } else if (item.kind === 'branch') {
-      emit(`__pulse_pc = host_value_truthy(${item.test}()) != 0 ? ${item.thenBlock} : ${item.elseBlock}`);
+      emit(`const matched = host_value_truthy(${item.test}())`);
+      checkError();
+      emit(`__pulse_pc = matched != 0 ? ${item.thenBlock} : ${item.elseBlock}`);
       emit('continue');
     } else if (item.kind === 'return') {
       emit(`__pulse_result = ${item.expression}()`);
+      checkError();
       emit('__pulse_pending = 0');
       emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE}`);
     } else if (item.kind === 'suspend') {
+      for (const line of item.payloadLines) emit(line);
+      checkError();
       for (const line of item.lines) emit(line);
       emit(`__pulse_state = ${item.continuationState}`);
       emit(`__pulse_pc = ${item.resumeBlock}`);
@@ -721,7 +760,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return lines.join('\n');
   }
 
-  const imports = runtimeContract.CANONICAL_NATIVE_IMPORTS.map(([name, parameters, results]) => {
+  const imports = runtimeContract.CANONICAL_NATIVE_IMPORTS.filter(([name]) => name !== 'router_error_take' || applicationErrors).map(([name, parameters, results]) => {
     const args = parameters.map((type, index) => `arg${index}: ${type}`).join(', ');
     const result = results.length > 0 ? results[0] : 'void';
     return `@external("${runtimeContract.CANONICAL_NATIVE_IMPORT_MODULE}", "${name}") declare function host_${name}(${args}): ${result}`;

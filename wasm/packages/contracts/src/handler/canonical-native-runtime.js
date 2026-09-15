@@ -74,6 +74,8 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['request_json', ['i32'], ['i32']],
   ['router_match', ['i32', 'i32'], ['i32']],
   ['router_param', ['i32', 'i32', 'i32'], ['i32']],
+  // 0: no failure; positive: application error handle; negative: terminal failure.
+  ['router_error_take', [], ['i32']],
   ['response_json', ['i32', 'i32'], ['i32']],
   ['schema_encode', ['i32', 'i32'], ['i32']],
   ['schema_decode', ['i32', 'i32'], ['i32']],

@@ -650,7 +650,12 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     request_url() { requireHttpSurface('ctx.req.url'); return put(context.ctx.req.url); },
     request_path() { requireHttpSurface('ctx.req.path'); return put(context.ctx.req.path); },
     request_headers() { requireHttpSurface('ctx.req.headers'); return put(context.ctx.req.headers); },
-    request_header(nameHandle) { requireHttpSurface('ctx.req.header'); return put(context.ctx.req.header(value(nameHandle))); },
+    request_header(nameHandle) {
+      requireHttpSurface('ctx.req.header');
+      const name = String(value(nameHandle)).toLowerCase();
+      const header = context.ctx.req.headers.find(([key]) => String(key).toLowerCase() === name);
+      return put(header ? header[1] : undefined);
+    },
     request_text() { requireHttpSurface('ctx.req.text'); return put(context.ctx.req.text()); },
     request_json(schemaHandle) {
       requireHttpSurface('ctx.req.json');
@@ -754,6 +759,24 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     else env[item.name] = () => { throw new CanonicalNativeHostError(`Unsupported AssemblyScript env import ${item.name}.`, 'PULSE_CANONICAL_NATIVE_ENV_IMPORT_UNSUPPORTED', { name: item.name }); };
   }
 
+  let applicationError = 0;
+  const applicationErrors = executionPlane === 'http' && (plan.routing?.entries || []).some(entry => entry.kind === 'error');
+  function captureApplicationError(error) {
+    if (!applicationErrors || options.signal?.aborted || !portableKv.isApplicationError(error)) return false;
+    if (!applicationError) {
+      const safe = canonicalRuntime.redactRuntimeError(error, sensitiveValues);
+      applicationError = put(Object.freeze({ name: safe.name, code: safe.code, message: safe.message }));
+    }
+    return true;
+  }
+  if (applicationErrors) for (const [name, implementation] of Object.entries(pulseHost)) {
+    pulseHost[name] = (...args) => {
+      if (applicationError) return 0;
+      try { return implementation(...args); }
+      catch (error) { if (!captureApplicationError(error)) throw error; return 0; }
+    };
+  }
+  pulseHost.router_error_take = () => { const error = applicationError; applicationError = 0; return error; };
   instance = new WebAssembly.Instance(module, { pulse_host: pulseHost, env });
   if (schemaIndexes.size > 0) {
     const available = new Set(moduleShape.exports.map((entry) => entry.name));
@@ -903,6 +926,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     resume() { return instance.exports.pulse_resume(); },
     pendingEffects: takePending,
     prepareEffectResult,
+    captureApplicationError,
     setEffectResult,
     resultValue,
     response() { requireHttpSurface('HTTP completion'); return canonicalRuntime.finalResponse(resultValue(), context.ctx.req.method); },
@@ -921,9 +945,17 @@ function nativeEventCancelled(message) {
   return new CanonicalNativeHostError(message, 'PULSE_CANONICAL_NATIVE_EVENT_CANCELLED');
 }
 
-function raceNativeEventSignal(value, signal) {
+function nativeRequestCancelled(signal) {
+  return new portableKv.PulseRuntimeContractError('PULSE_RUNTIME_EFFECT_ABORTED',
+    signal.reason instanceof Error ? signal.reason.message : 'Native execution was cancelled.',
+    { cause: signal.reason });
+}
+
+function raceNativeSignal(value, signal, eventMode = true) {
   if (!signal) return Promise.resolve(value);
-  if (signal.aborted) return Promise.reject(nativeEventCancelled('Native event execution was cancelled during effect dispatch.'));
+  const cancelled = () => eventMode ? nativeEventCancelled('Native event execution was cancelled during effect dispatch.')
+    : nativeRequestCancelled(signal);
+  if (signal.aborted) return Promise.reject(cancelled());
   return new Promise((resolve, reject) => {
     let settled = false;
     const finish = (callback, result) => {
@@ -932,7 +964,7 @@ function raceNativeEventSignal(value, signal) {
       signal.removeEventListener('abort', onAbort);
       callback(result);
     };
-    const onAbort = () => finish(reject, nativeEventCancelled('Native event execution was cancelled during effect dispatch.'));
+    const onAbort = () => finish(reject, cancelled());
     signal.addEventListener('abort', onAbort, { once: true });
     Promise.resolve(value).then(
       (result) => finish(resolve, result),
@@ -961,6 +993,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
   let executionFailure;
   let activeContinuation;
   try {
+    if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
     if (eventMode && options.signal && options.signal.aborted) {
       throw nativeEventCancelled('Native event execution was cancelled before handler entry.');
     }
@@ -1001,7 +1034,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       }
       effectCount += pending.length;
 
-      const settled = await Promise.allSettled(pending.map(async (entry) => {
+      const settled = await raceNativeSignal(Promise.allSettled(pending.map(async (entry) => {
         if (eventMode && options.signal && options.signal.aborted) {
           throw nativeEventCancelled('Native event execution was cancelled before effect dispatch.');
         }
@@ -1039,19 +1072,25 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         const rawResult = conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
               { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
-          : await raceNativeEventSignal(adapter.dispatchEffect(normalized, effectExecution), eventMode ? options.signal : undefined);
+          : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), eventMode ? options.signal : undefined);
         const result = controller.prepareEffectResult(entry.index, rawResult);
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
         resolutionOrder.push(entry.effect.id);
         return { entry, result };
-      }));
+      })), options.signal, eventMode);
 
       if (eventMode && options.signal && options.signal.aborted) {
         throw nativeEventCancelled('Native event execution was cancelled while suspended.');
       }
-      const failed = settled.find((entry) => entry.status === 'rejected');
-      if (failed) throw canonicalRuntime.redactRuntimeError(failed.reason, controller.sensitiveValues);
-      for (const item of settled) controller.setEffectResult(item.value.entry.index, item.value.result);
+      if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
+      const failures = settled.filter(entry => entry.status === 'rejected');
+      const failed = failures.find(entry => !portableKv.isApplicationError(entry.reason)) || failures[0];
+      if (failed && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
+        || !controller.captureApplicationError(failed.reason))) {
+        throw canonicalRuntime.redactRuntimeError(failed.reason, controller.sensitiveValues);
+      }
+      settled.forEach((item, index) => controller.setEffectResult(pending[index].index,
+        item.status === 'fulfilled' ? item.value.result : undefined));
       const previousPc = controller.programCounter();
       activeContinuation.state = 'resumed';
       activeContinuation.states.push('resumed');
@@ -1059,8 +1098,8 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.INVALID_RESUME) {
         throw new CanonicalNativeHostError('Native module rejected a complete effect-result set.', 'PULSE_CANONICAL_NATIVE_INVALID_RESUME', { programCounter: previousPc, errorCode: controller.lastErrorCode() });
       }
-      activeContinuation.state = 'completed';
-      activeContinuation.states.push('completed');
+      activeContinuation.state = failed ? 'failed' : 'completed';
+      activeContinuation.states.push(activeContinuation.state);
       controller.trace.push(Object.freeze(redactValue({ type: 'native-continuation-resumed', executionId, continuationId: continuation.id, continuationState }, controller.sensitiveValues)));
       activeContinuation = undefined;
     }
@@ -1092,6 +1131,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         valueHandleCount: controller.heap.size()
       });
     }
+    if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
     const response = controller.response();
     controller.trace.push(Object.freeze(redactValue({ type: 'native-execution-completed', executionId, provider: adapter.id, status: response.status, bodyClass: response.bodyClass }, controller.sensitiveValues)));
     return Object.freeze({
