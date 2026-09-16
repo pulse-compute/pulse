@@ -1279,6 +1279,7 @@ const PULSE_ERROR_SCHEMA: i32 = 1005
 const PULSE_ERROR_TRANSPORT: i32 = 1006
 const PULSE_ERROR_STATE: i32 = 1007
 const PULSE_ERROR_JWT: i32 = 1008
+const PULSE_ERROR_REQUEST_BODY: i32 = 1009
 
 class __PulseFastlyValue {
   kind: i32 = PULSE_VALUE_UNDEFINED
@@ -1530,7 +1531,7 @@ function __pulse_fastly_json(handle: i32, depth: i32): string {
 function __pulse_fastly_parse_json(text: string): i32 { const parser = new __PulseJsonParser(text); const value = parser.parse(); if (parser.failed || value <= 0) { __pulse_fastly_fail(PULSE_ERROR_JSON, 3, -1); return 0 } return value }
 function __pulse_fastly_path(uri: string): string { let start = 0; const scheme = uri.indexOf("://"); if (scheme >= 0) { const slash = uri.indexOf("/", scheme + 3); start = slash >= 0 ? slash : uri.length } let end = uri.length; const query = uri.indexOf("?", start); if (query >= 0 && query < end) end = query; const fragment = uri.indexOf("#", start); if (fragment >= 0 && fragment < end) end = fragment; return start >= end ? "/" : uri.substring(start, end) }
 function __pulse_fastly_read_req_string(kind: i32): string { const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = kind == 0 ? fastly_http_req_method_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)) : fastly_http_req_uri_get(__pulse_fastly_request_handle, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 10 + kind, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
-function __pulse_fastly_read_body(handle: i32, effectIndex: i32): string {
+function __pulse_fastly_read_body(handle: i32, effectIndex: i32, requestText: bool = false): string {
   const chunks = new Array<Uint8Array>(); let total = 0;
   while (true) {
     const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();
@@ -1540,12 +1541,13 @@ function __pulse_fastly_read_body(handle: i32, effectIndex: i32): string {
     if (count < 0 || count > buffer.length) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 20, effectIndex); return "" }
     if (!count) break;
     total += count;
-    if (total > __PULSE_SCHEMA_MAX_BYTES && __PULSE_SCHEMA_MAX_BYTES > 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
+    if (total > __PULSE_SCHEMA_MAX_BYTES && __PULSE_SCHEMA_MAX_BYTES > 0) { __pulse_fastly_fail(requestText ? PULSE_ERROR_REQUEST_BODY : PULSE_ERROR_SCHEMA, 21, effectIndex); return "" }
     chunks.push(buffer.subarray(0, count));
   }
   // UTF-8 scalars may straddle host read chunks. Decode the bounded body once.
   const bytes = new Uint8Array(total); let offset = 0;
   for (let i = 0; i < chunks.length; i++) { bytes.set(chunks[i], offset); offset += chunks[i].length; }
+  if (requestText && !__pulse_request_utf8_valid(bytes)) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, 24, effectIndex); return "" }
   return __pulse_fastly_decode(bytes, total);
 }
 function __pulse_fastly_request_header_text(name: string): string { const nameBytes = __pulse_fastly_utf8(name); const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = fastly_http_req_header_value_get(__pulse_fastly_request_handle, changetype<usize>(nameBytes), nameBytes.byteLength, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status == FASTLY_STATUS_NONE) return ""; if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 22, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
@@ -1600,7 +1602,7 @@ function host_router_param(path: i32, pattern: i32, name: i32): i32 { const valu
 function host_request_path(): i32 { return __pulse_fastly_string_value(__pulse_fastly_request_path) }
 function host_request_headers(): i32 { return host_value_object() }
 function host_request_header(name: i32): i32 { const value = __pulse_fastly_request_header_text(__pulse_fastly_string(name)); return value.length == 0 ? host_value_undefined() : __pulse_fastly_string_value(value) }
-function host_request_text(): i32 { if (__pulse_fastly_request_body_loaded == 0) { __pulse_fastly_request_body = __pulse_fastly_read_body(__pulse_fastly_request_body_handle, -1); __pulse_fastly_request_body_loaded = 1 } return __pulse_fastly_string_value(__pulse_fastly_request_body) }
+function host_request_text(): i32 { if (__pulse_request_body_failure != 0) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, __pulse_request_body_failure, -1); return 0 } if (__pulse_fastly_request_body_loaded == 0) { __pulse_fastly_request_body = __pulse_fastly_read_body(__pulse_fastly_request_body_handle, -1, true); __pulse_fastly_request_body_loaded = 1; if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY) __pulse_request_body_failure = __pulse_fastly_error_stage } if (__pulse_fastly_last_error != 0) return 0; return __pulse_fastly_string_value(__pulse_fastly_request_body) }
 function host_request_json(schema: i32): i32 { const parsed = __pulse_fastly_parse_json(__pulse_fastly_string(host_request_text())); if (parsed <= 0) return 0; const schemaValue = __pulse_fastly_value(schema); return schemaValue.kind == PULSE_VALUE_STRING ? __pulse_fastly_schema_apply(schemaValue.text, parsed, false) : parsed }
 function __pulse_fastly_headers_from_options(options: __PulseFastlyValue, output: __PulseFastlyValue): void { const index = __pulse_fastly_find(options, "headers"); if (index < 0) return; const headers = __pulse_fastly_value(unchecked(options.values[index])); if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const name = unchecked(headers.keys[i]); const value = __pulse_fastly_value(unchecked(headers.values[i])); if (value.kind == PULSE_VALUE_ARRAY) { for (let j = 0; j < value.values.length; j += 1) output.headers.push(new __PulseFastlyHeader(name, __pulse_fastly_string(unchecked(value.values[j])))) } else output.headers.push(new __PulseFastlyHeader(name, __pulse_fastly_string(unchecked(headers.values[i])))) } return } if (headers.kind == PULSE_VALUE_ARRAY) { for (let i = 0; i < headers.values.length; i += 1) { const pair = __pulse_fastly_value(unchecked(headers.values[i])); if (pair.kind != PULSE_VALUE_ARRAY || pair.values.length < 2) continue; output.headers.push(new __PulseFastlyHeader(__pulse_fastly_string(unchecked(pair.values[0])), __pulse_fastly_string(unchecked(pair.values[1])))) } } }
 function __pulse_fastly_response(value: i32, optionsHandle: i32, json: bool): i32 { const output = new __PulseFastlyValue(); output.kind = PULSE_VALUE_RESPONSE; output.status = 200; const options = __pulse_fastly_value(optionsHandle); let bodyValue = value; if (options.kind == PULSE_VALUE_OBJECT) { const statusIndex = __pulse_fastly_find(options, "status"); if (statusIndex >= 0) output.status = i32(__pulse_fastly_number(unchecked(options.values[statusIndex]))); const schemaIndex = __pulse_fastly_find(options, "schema"); if (json && schemaIndex >= 0) { bodyValue = __pulse_fastly_schema_apply(__pulse_fastly_string(unchecked(options.values[schemaIndex])), value, true); if (bodyValue <= 0) return 0 } __pulse_fastly_headers_from_options(options, output) } output.text = json ? __pulse_fastly_json(bodyValue, 0) : __pulse_fastly_string(value); let hasContentType = false; for (let i = 0; i < output.headers.length; i += 1) if (unchecked(output.headers[i]).name.toLowerCase() == "content-type") hasContentType = true; if (!hasContentType) output.headers.push(new __PulseFastlyHeader("content-type", json ? "application/json; charset=utf-8" : "text/plain; charset=utf-8")); return __pulse_fastly_put(output) }
@@ -1816,12 +1818,14 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./time-native.js').timeNativeSource(plan),
     require('./digest-native.js').digestNativeSource(plan),
     conditionalKv.kvNativeSource(plan),
+    require('./native-request-body.js').runtimeSource(),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource() : '',
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
   ].join('\n');
   if (applicationErrors.enabled(plan)) source = applicationErrors.instrument(source);
+  source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;

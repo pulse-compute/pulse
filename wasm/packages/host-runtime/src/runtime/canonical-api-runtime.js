@@ -390,6 +390,7 @@ function assertSchemaBodySize(schemaCodecs, text, schemaId, source) {
 const runtimeValueErrorCodes = Object.freeze({
   BodyTooLargeError: 'PULSE_BODY_TOO_LARGE',
   BodyDecodeError: 'PULSE_BODY_DECODE',
+  RequestBodyInvalidUtf8Error: 'PULSE_REQUEST_BODY_INVALID_UTF8',
   BodyUnavailableError: 'PULSE_BODY_UNAVAILABLE',
   OpaqueBodyInspectionError: 'PULSE_OPAQUE_BODY_INSPECTION',
   ResponseEncodeError: 'PULSE_RESPONSE_ENCODE',
@@ -431,7 +432,7 @@ function normalizeRequest(options = {}) {
 function createRequestSurface(request, options = {}, schemaCodecs, trace) {
   const body = runtimeApi.body.createValue(
     { body: request.body, headers: request.headers },
-    { maxBytes: options.maxRequestBodyBytes || options.maxBodyBytes || options.maxStructuredBodyBytes }
+    { maxBytes: options.maxRequestBodyBytes || options.maxBodyBytes || options.maxStructuredBodyBytes, strictUtf8: true }
   );
   const schemaMemo = new Map();
   return Object.freeze({
