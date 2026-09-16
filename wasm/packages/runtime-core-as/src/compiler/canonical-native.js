@@ -1,6 +1,8 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { schemaHasOptionalProperties } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { generateSchemaPresenceCodec } = require('./schema-presence-codec.js');
 const {
   buildNativeCryptoGuestSources
 } = require('./crypto-guest-source.js');
@@ -125,34 +127,47 @@ function nativeSchemaCodecSource(plan) {
   }
 
   schemas.forEach((schema, schemaIndex) => {
-    const symbols = new Map();
-    const records = [];
-    collectObjects(schema, schemaIndex, schema.root, symbols, records);
-    for (const record of records) {
-      declarations.push('@json');
-      declarations.push(`class ${record.symbol} {`);
-      record.node.fields.forEach((field, fieldIndex) => {
-        const member = `field_${fieldIndex}`;
-        declarations.push(`  @alias(${quote(field.name)})`);
-        declarations.push(`  ${member}: ${typeFor(field.value, symbols, [...record.path, field.name])} = ${defaultFor(field.value, symbols, [...record.path, field.name])}`);
-      });
-      declarations.push('}');
-      declarations.push('');
-    }
-    const root = symbols.get('');
-    // json-as 1.5.0's slow struct scanner treats a closing quote after a
-    // doubled backslash as escaped. A JSON-equivalent Unicode spelling avoids
-    // that scanner defect without changing schema values or admitting fallback.
     const decode = `__pulse_schema_decode_${schemaIndex}`;
     const encode = `__pulse_schema_encode_${schemaIndex}`;
-    declarations.push(`function ${decode}(input: string): string {`);
-    declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
-    declarations.push(`  return JSON.stringify<${root}>(value)`);
-    declarations.push('}');
-    declarations.push(`function ${encode}(input: string): string {`);
-    declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
-    declarations.push(`  return JSON.stringify<${root}>(value)`);
-    declarations.push('}');
+    let root;
+    if (schemaHasOptionalProperties(schema.root)) {
+      root = 'JSON.Value';
+      const presence = generateSchemaPresenceCodec(schema.root, schemaIndex);
+      declarations.push(...presence.declarations);
+      for (const fn of [decode, encode]) {
+        declarations.push(`function ${fn}(input: string): string {`);
+        declarations.push(`  const value = JSON.parse<JSON.Value>(input)`);
+        declarations.push(`  return JSON.stringify<JSON.Value>(${presence.apply}(value))`);
+        declarations.push('}');
+      }
+    } else {
+      const symbols = new Map();
+      const records = [];
+      collectObjects(schema, schemaIndex, schema.root, symbols, records);
+      for (const record of records) {
+        declarations.push('@json');
+        declarations.push(`class ${record.symbol} {`);
+        record.node.fields.forEach((field, fieldIndex) => {
+          const member = `field_${fieldIndex}`;
+          declarations.push(`  @alias(${quote(field.name)})`);
+          declarations.push(`  ${member}: ${typeFor(field.value, symbols, [...record.path, field.name])} = ${defaultFor(field.value, symbols, [...record.path, field.name])}`);
+        });
+        declarations.push('}');
+        declarations.push('');
+      }
+      root = symbols.get('');
+      // json-as 1.5.0's slow struct scanner treats a closing quote after a
+      // doubled backslash as escaped. A JSON-equivalent Unicode spelling avoids
+      // that scanner defect without changing schema values or admitting fallback.
+      declarations.push(`function ${decode}(input: string): string {`);
+      declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
+      declarations.push(`  return JSON.stringify<${root}>(value)`);
+      declarations.push('}');
+      declarations.push(`function ${encode}(input: string): string {`);
+      declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
+      declarations.push(`  return JSON.stringify<${root}>(value)`);
+      declarations.push('}');
+    }
     declarations.push('');
     codecEntries.push(Object.freeze({
       id: String(schema.id),

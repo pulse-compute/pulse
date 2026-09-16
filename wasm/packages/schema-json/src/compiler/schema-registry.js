@@ -330,7 +330,7 @@ function classifyType(graph, record, typeNode, state) {
   if (typeNode.kind === ts.SyntaxKind.BooleanKeyword) return Object.freeze({ kind: 'boolean' });
   if (typeNode.kind === ts.SyntaxKind.NumberKeyword) return Object.freeze({ kind: 'f64' });
   if (typeNode.kind === ts.SyntaxKind.UndefinedKeyword || typeNode.kind === ts.SyntaxKind.VoidKeyword) {
-    fail('PULSE_SCHEMA_OPTIONAL_FIELD_RESERVED', 'undefined and optional schema fields are reserved beyond IR v1.', typeNode, record);
+    fail('PULSE_SCHEMA_OPTIONAL_FIELD_RESERVED', 'Explicit undefined schema types are reserved; use a question-mark property for absence.', typeNode, record);
   }
   if (ts.isArrayTypeNode(typeNode)) {
     return Object.freeze({ kind: 'array', element: classifyType(graph, record, typeNode.elementType, state) });
@@ -420,15 +420,7 @@ function classifyMembers(graph, record, members, state) {
     if (!ts.isPropertySignature(member)) {
       fail(
         'PULSE_SCHEMA_OBJECT_MEMBER_UNSUPPORTED',
-        'Schema object types allow required property signatures only.',
-        member,
-        record
-      );
-    }
-    if (member.questionToken) {
-      fail(
-        'PULSE_SCHEMA_OPTIONAL_FIELD_RESERVED',
-        'Optional schema fields are reserved until absence-preserving encode semantics are defined.',
+        'Schema object types allow property signatures only.',
         member,
         record
       );
@@ -444,7 +436,7 @@ function classifyMembers(graph, record, members, state) {
     names.add(name);
     fields.push(Object.freeze({
       name,
-      required: true,
+      required: !member.questionToken,
       value: classifyType(graph, record, member.type, { ...state, node: member }),
       source: sourceLocation(record, member.name)
     }));
@@ -621,7 +613,7 @@ function schemaRegistryLegacyBridge(registry) {
   const deferred = [];
   for (const schema of registry.schemas) {
     const fieldPairs = schema.root.fields.map((field) => [field.name, legacyFieldType(field.value)]);
-    if (schema.typeName.startsWith('Inline_') || fieldPairs.some(([, type]) => type === null)) {
+    if (schema.typeName.startsWith('Inline_') || schema.root.fields.some(field => !field.required) || fieldPairs.some(([, type]) => type === null)) {
       deferred.push(schema.id);
       continue;
     }

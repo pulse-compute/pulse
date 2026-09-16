@@ -180,6 +180,16 @@ no application code resumes after the transfer. Normal exhaustion produces
 404, error exhaustion produces 500, and effects keep the identity of the route
 or middleware entry that owns them.
 
+Schema registry IR v2 records requiredness for every object property. A
+question-mark property preserves absence through encode/decode, including nested
+objects and array elements; a present value must satisfy its type. Nullability
+is independent, present undefined is invalid, and optional fields receive no
+default. Codecs project own data properties in declaration order. Native schemas
+containing optional fields use schema-generated presence-aware projections over
+`json-as` values, while required-only schemas retain generated struct codecs.
+Provider and host preflight preserve the same rules. This extends schema
+semantics without widening effect authority or selecting a target fallback.
+
 `ctx.encodeJson(value, 'schema.id')` is a synchronous shared-context operation
 that returns application-owned text through the existing compiled schema codec.
 The compiler requires a literal registered ID in both strict and non-strict

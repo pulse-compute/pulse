@@ -36,17 +36,46 @@ are not discovered automatically and do not become runtime schema IDs.
 
 The schema subset is intentionally portable:
 
-- an object root with required property signatures;
+- an object root with required or question-mark optional property signatures;
 - `string`, `boolean`, and finite JSON `number`;
 - `Int32` and `Uint32` marker types imported with `import type`;
 - nested object types and arrays;
 - string-literal enums such as `'admin' | 'member'`;
 - one supported type unioned with `null`.
 
-Optional fields, `undefined`, recursive or generic types, interface inheritance,
+Explicit `undefined` types/unions, recursive or generic types, interface inheritance,
 arbitrary unions, computed registry keys, runtime registry code, and public
 `json-as` decorators or imports are not supported. Relative type-only imports
 and re-exports can organize the type graph inside the project.
+
+## Optional fields
+
+A question mark permits an absent own property at any object depth, including
+objects inside arrays:
+
+```ts
+interface Resource {
+  id: string
+  notes?: string
+  owner: { label: string; id?: string }
+  locations: { id: string; url?: string; instructions?: string }[]
+}
+```
+
+Encoding omits absent optional properties; decoding leaves them absent. It does
+not insert defaults, empty strings, or nulls. Present empty strings, `false`, zero,
+empty objects and arrays remain present when allowed by the declared type.
+`notes?: string` rejects null; `notes?: string | null` admits both absence and a
+present null, as distinct values. A present `undefined` value is rejected rather
+than silently omitted. Inherited properties do not supply schema data, and
+accessors are rejected without invoking their getters. Required properties retain
+their existing validation. Decoded values remain deeply immutable.
+
+Schema registry IR and codec inputs use v2 to record requiredness. Pulse generates
+presence-aware Native projections for schemas containing optional fields, using
+its internal `json-as` backend. Required-only schemas retain their struct codec.
+There is no application decorator, serializer hook, or JavaScript fallback.
+The existing semantic cross-target and encoded-byte-bound contracts apply.
 
 ## Add semantic response cases
 
@@ -176,7 +205,7 @@ const text = ctx.encodeJson(candidate, 'app.Candidate')
 ```
 
 Use the returned string when an application must prepare exact bytes before a
-storage write. Encoding requires every declared field, omits unknown fields
+storage write. Encoding requires every required field, preserves optional-property absence, omits unknown fields
 recursively, preserves array order, and emits object fields in schema declaration
 order. The returned string is detached from later changes to the source value.
 Finite numbers, nullable fields and enums follow the existing schema contract.

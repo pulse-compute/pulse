@@ -13,8 +13,8 @@ const {
 const CANONICAL_SCHEMA_BUNDLE_VERSION = 'pulse.canonical-schema-bundle.v2';
 const CANONICAL_SCHEMA_REGISTRY_VERSION = 'pulse.canonical-schema-registry.v2';
 const CANONICAL_SCHEMA_CODECS_VERSION = 'pulse.canonical-schema-codecs.v2';
-const JAVASCRIPT_SCHEMA_CODEC_VERSION = 'pulse.javascript-schema-codec.v1';
-const NATIVE_SCHEMA_CODEC_VERSION = 'pulse.native-json-as-schema-codec.v1';
+const JAVASCRIPT_SCHEMA_CODEC_VERSION = 'pulse.javascript-schema-codec.v2';
+const NATIVE_SCHEMA_CODEC_VERSION = 'pulse.native-json-as-schema-codec.v2';
 
 function stableObject(value) {
   if (Array.isArray(value)) return value.map(stableObject);
@@ -225,6 +225,7 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push("    if (!value || typeof value !== 'object' || Array.isArray(value)) throw __pulse_schema_failure(mode, undefined, schemaId, path, 'object', __pulse_schema_kind(value), source);");
   lines.push('    const output = {};');
   lines.push('    for (const field of node.fields) {');
+  lines.push("      if (!field.required && !Object.prototype.hasOwnProperty.call(value, field.name)) continue;");
   lines.push('      const fieldPath = __pulse_schema_pointer(path, field.name);');
   lines.push('      const fieldValue = __pulse_schema_data_value(value, field.name, mode, schemaId, fieldPath, source);');
   lines.push('      Object.defineProperty(output, field.name, { enumerable: true, configurable: false, writable: false, value: __pulse_schema_apply_node(field.value, fieldValue, mode, schemaId, fieldPath, source) });');

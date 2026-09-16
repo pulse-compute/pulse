@@ -27,7 +27,11 @@ export interface SchemaRegistryDeclaration<
   readonly [schemaRegistryBrand]: true;
 }
 
-/** Declare one required object-root schema. The stable string key is authoritative. */
+/**
+ * Declare one object-root schema. The stable string key is authoritative.
+ * Question-mark properties preserve absence; present values must satisfy their
+ * declared type. Nullable and absent are distinct; present undefined is invalid.
+ */
 export declare function schema<Type>(): SchemaDeclaration<Type>;
 
 /** Map one semantic response-case ID to an HTTP status and registered schema ID. */
