@@ -206,7 +206,13 @@ function createStructuredBodyReader(owner, options = {}) {
 
   function text() {
     assertInspectable();
-    if (!textPromise) textPromise = bytes().then((value) => new TextDecoder().decode(value));
+    if (!textPromise) textPromise = bytes().then((value) => {
+      if (label !== 'request') return new TextDecoder().decode(value);
+      try { return new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(value); }
+      catch (cause) {
+        throw bodyError('PULSE_REQUEST_BODY_INVALID_UTF8', 'Pulse request text must be well-formed UTF-8.', {}, cause);
+      }
+    });
     return textPromise;
   }
 

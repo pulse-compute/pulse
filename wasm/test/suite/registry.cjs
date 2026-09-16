@@ -622,6 +622,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'shared request deadline across S3 preparation and Node HTTP body admission'
   }),
+  'http-input-outcomes': nodeTask('test/runtime/http-input-outcomes.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'strict bounded UTF-8 and buffered HTTP denial/uncertainty on selected adapters'
+  }),
   'canonical-opaque-node-emission': nodeTask('test/runtime/assert-canonical-opaque-passthrough.cjs', {
     evidence: 'native',
     description: 'opaque body ownership and repeated Node headers'
@@ -942,6 +947,7 @@ const profiles = Object.freeze({
     'time-conformance',
     'time-consumer',
     'request-budget-transport',
+    'http-input-outcomes',
     'application-errors',
     'application-error-boundaries',
     'node-cross-target-conformance',

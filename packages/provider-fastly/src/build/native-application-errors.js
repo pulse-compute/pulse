@@ -14,6 +14,8 @@ function runtimeSource() {
 let __pulse_application_schema: i32 = 0
 let __pulse_application_failed_schema: i32 = 0
 function __pulse_application_code(): string {
+  if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY)
+    return __pulse_fastly_error_stage == 21 ? "PULSE_BODY_TOO_LARGE" : "PULSE_REQUEST_BODY_INVALID_UTF8"
   if (__pulse_fastly_jwt_error > 0) {
     if (__pulse_fastly_last_error != PULSE_ERROR_JWT
       && !(__pulse_fastly_last_error == PULSE_ERROR_SCHEMA && __pulse_fastly_jwt_error == 10)) return ""
