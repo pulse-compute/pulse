@@ -134,6 +134,15 @@ environment. The [K4 acceptance record](https://github.com/pulse-compute/pulse/b
 retains both captures and their scope. Neither that standalone probe nor passing
 injected-host or portable tests clears the full acceptance gates.
 
+The Native `ctx.req.headers` snapshot is a cached, immutable array of name/value
+pairs. Names are lowercased; repeated values remain separate pairs in their
+per-name order, including empty values. Enumeration is lazy and bounded to
+256 pairs and 64 KiB of UTF-8 name/value bytes, counting a terminator for each
+name and value. An incomplete, malformed or oversized host result fails the
+request before later effects or a success response; it never returns a partial
+snapshot. This is a provider read limit, not a configurable HTTP ingress limit.
+`ctx.req.header(name)` retains its single-value lookup behavior.
+
 ### Fastly JavaScript
 
 `target: 'javascript'` emits a deterministic, self-contained source closure:
