@@ -2254,7 +2254,7 @@ async function readRequestBody(request, maxBytes, budget) {
       if (bytes > limit) return fail(new PulseProjectError('PULSE_REQUEST_BODY_TOO_LARGE', `Request body exceeds ${limit} bytes.`, { maxBytes: limit, bytes }));
       chunks.push(buffer);
     }
-    function end() { cleanup(); resolve(Buffer.concat(chunks).toString('utf8')); }
+    function end() { cleanup(); resolve(Buffer.concat(chunks)); }
     if (signal?.aborted) return cancel();
     signal?.addEventListener('abort', cancel, { once: true });
     request.on('data', data); request.once('end', end); request.once('error', error); request.once('aborted', aborted);

@@ -36,6 +36,18 @@ a userland stream.
 
 `ctx.req.text()` and `ctx.req.json()` read a bounded request body. JSON can be decoded generically or against an explicitly compiled schema. Repeated schema reads are deterministic within one request.
 
+On Node Native, Node JavaScript and Fastly Native, request text is strict UTF-8.
+The original encoded-byte limit is enforced before decoding. Malformed,
+truncated, overlong, surrogate and out-of-range encodings fail with
+`PULSE_REQUEST_BODY_INVALID_UTF8` before text reaches the application. Valid
+replacement characters, a leading U+FEFF, and scalars split across transport
+chunks are preserved without normalization. An application error handler may
+map this request-data failure to its own bounded 400 response. Without that
+handler, Node JavaScript retains its exhausted-error-lane 500 response; the
+Native HTTP boundaries reject malformed request text with 400. Transport size
+failures remain 413. A schema projection does not establish rejection of
+duplicate or unknown properties; that validation policy remains application-owned.
+
 The schema example decodes one body twice and proves that the request-local decoded value is reused:
 
 <!-- pulse-doc-source: examples/02-request-schema/src/index.ts -->

@@ -802,6 +802,17 @@ async function main() {
     fs.writeFileSync(path.join(testRoot, 'multifile-packed-acceptance.json'), `${JSON.stringify(multifile, null, 2)}\n`);
     console.log(JSON.stringify(multifile));
 
+    console.log('acceptance - replay HTTP input and outcomes from exact installed tarballs');
+    const httpInput = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-http-input-packages.cjs'), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000,
+    }));
+    assert.equal(httpInput.status, 'passed');
+    assert.equal(httpInput.installedBytesUnchanged, true);
+    assert.equal(httpInput.workspaceProductModules, 0);
+    assert.equal(httpInput.providerReality, false);
+    fs.writeFileSync(path.join(testRoot, 'http-input-packed-acceptance.json'), `${JSON.stringify(httpInput, null, 2)}\n`);
+    console.log(JSON.stringify(httpInput));
+
     console.log('acceptance - replay conditional KV from exact installed tarballs');
     const kv = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/kv/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
       cwd: toolRoot, timeoutMs: 600000,
