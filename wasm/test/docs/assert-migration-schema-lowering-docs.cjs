@@ -51,7 +51,9 @@ assert.match(runtimeTypes, /export type RouterNext = \(error\?: unknown\) => nev
 const schemas = read('docs/guides/json-schemas.md');
 includesAll(schemas, [
   'The compiler does not execute the registry module',
-  'an object root with required property signatures',
+  'an object root with required or question-mark optional property signatures',
+  'Encoding omits absent optional properties; decoding leaves them absent.',
+  'A present `undefined` value is rejected rather',
   '## Add semantic response cases',
   "response(201, 'app.User')",
   "await ctx.req.json<T>('app.Input')",
