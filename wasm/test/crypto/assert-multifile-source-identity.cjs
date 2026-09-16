@@ -6,12 +6,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { acceptanceToolchain } = require('../s3/acceptance-toolchain.cjs');
-const ts = require('typescript');
-const { buildPlainHandlerIr } = require('../../packages/compiler/src/spine/handler-ir.js');
-const { emitCanonicalHandlerGenerator } = require('../../packages/compiler/src/spine/handler-ir-emitter.js');
-const { CANONICAL_PACKAGE_EFFECT_VERSION } = require('../../packages/contracts/src/handler/canonical-runtime.js');
 
 function assertSourceIndexes() {
+  const ts = require('typescript');
+  const { buildPlainHandlerIr } = require('../../packages/compiler/src/spine/handler-ir.js');
+  const { emitCanonicalHandlerGenerator } = require('../../packages/compiler/src/spine/handler-ir-emitter.js');
+  const { CANONICAL_PACKAGE_EFFECT_VERSION } = require('../../packages/contracts/src/handler/canonical-runtime.js');
   const source = 'const handler = (ctx) => { const value = operation(ctx); return ctx.text(value); };';
   const files = ['src/first.ts', 'src/other.ts'].map(file => ts.createSourceFile(file, source, ts.ScriptTarget.ES2022, true));
   const handlerFor = file => file.statements[0].declarationList.declarations[0].initializer;
@@ -58,19 +58,41 @@ function assertSourceIndexes() {
   assert.equal(linked.ir.packageIntrinsics[0].loc.file, 'src/other.ts', 'Generated-call rebasing retains original source ownership');
 }
 
-async function main() {
-  assertSourceIndexes();
-  const tc = acceptanceToolchain();
+async function main(options = {}) {
+  if (!options.packedRoot) assertSourceIndexes();
+  const tc = acceptanceToolchain(options.packedRoot);
   const root = path.resolve(__dirname, '../../..');
-  const cwd = fs.mkdtempSync(path.join(__dirname, '.multifile-'));
+  const cwd = fs.mkdtempSync(path.join(options.packedRoot || __dirname, '.multifile-'));
   let executions = 0;
+  const artifacts = [];
+  const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
+  function artifactFiles(directory) {
+    const files = [];
+    function visit(dir) {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+        const file = path.join(dir, entry.name);
+        assert.equal(entry.isSymbolicLink(), false);
+        if (entry.isDirectory()) visit(file);
+        else files.push({ path: path.relative(directory, file), sha256: sha256(fs.readFileSync(file)) });
+      }
+    }
+    visit(directory);
+    assert.ok(files.length > 0);
+    return files;
+  }
   try {
     fs.cpSync(path.join(__dirname, '../fixtures/projects/multifile-digest'), path.join(cwd, 'src'), { recursive: true });
-    fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
-    for (const name of ['pulse', 'crypto']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
+    if (options.packedRoot) {
+      // Resolve this project's dependencies inside its declared boundary, using
+      // only the byte-verified isolated install (never workspace packages).
+      fs.symlinkSync(path.join(options.packedRoot, 'node_modules'), path.join(cwd, 'node_modules'), 'junction');
+    } else {
+      fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
+      for (const name of ['pulse', 'crypto']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
+    }
     fs.mkdirSync(path.join(cwd, '.pulse'));
     const config = { pulse: { entry: 'src/index.ts', defaultProfile: 'node-native', strict: false, crypto: ['SHA-256'] } };
-    for (const [host, target] of [['node', 'native'], ['node', 'javascript'], ['fastly', 'native']]) config[`${host}-${target}`] = { host, target };
+    for (const [host, target] of [['node', 'native'], ['node', 'javascript'], ['fastly', 'native']]) config[`${host}-${target}`] = { host, target, outDir: `dist/${host}-${target}` };
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig((_scope) => (${JSON.stringify(config)}));`);
     const resolve = profile => tc.resolveProject({ cwd, profile });
     const first = fs.readFileSync(path.join(cwd, 'src/first.ts'), 'utf8');
@@ -87,6 +109,28 @@ async function main() {
       const node = tc.compileNativeProjectInMemory(resolve('node-native'));
       const fastly = tc.compileFastly(resolve('fastly-native'));
       const js = tc.prepareJavascriptApplication(resolve('node-javascript'));
+      if (options.packedRoot) {
+        for (const profile of ['node-native', 'node-javascript', 'fastly-native']) {
+          const project = resolve(profile);
+          const inspection = tc.inspectProject(project);
+          assert.equal(inspection.status, 'ok');
+          if (project.target === 'javascript') assert.equal(inspection.provider.targetSupport.project.status, 'eligible');
+          else {
+            assert.equal(inspection.provider.realization.nativeWasm, true);
+            assert.equal(inspection.provider.realization.javascriptRuntime, false);
+          }
+          const firstBuild = tc.buildProject(project);
+          assert.equal(firstBuild.status, 'built');
+          const firstFiles = artifactFiles(firstBuild.outDir);
+          fs.rmSync(firstBuild.outDir, { recursive: true, force: true });
+          const secondBuild = tc.buildProject(project);
+          assert.equal(secondBuild.status, 'built');
+          assert.deepEqual(artifactFiles(secondBuild.outDir), firstFiles, `${profile}: regenerated artifacts match`);
+          if (profile === 'fastly-native') assert.equal(sha256(fs.readFileSync(path.join(firstBuild.outDir, 'bin/main.wasm'))), sha256(fastly.wasm));
+          assert.match(inspection.compiler.sourceHash, /^[a-f0-9]{64}$/);
+          artifacts.push({ profile, sourceOrder: names, sourceHash: inspection.compiler.sourceHash, files: firstFiles });
+        }
+      }
       const sites = node.compiled.metadata.effectSites.filter(site => site.kind === 'crypto.digestText');
       assert.equal(sites.length, 2);
       assert.deepEqual(sites.map(site => site.position.file).sort(), ['src/first.ts', 'src/other.ts']);
@@ -108,8 +152,11 @@ async function main() {
         }
       }
     }
-    console.log(JSON.stringify({ status: 'passed', executions, sourceOrders: 2, providerReality: false }));
+    const result = { status: 'passed', executions, sourceOrders: 2, artifacts, providerReality: false };
+    if (!options.quiet) console.log(JSON.stringify(result));
+    return result;
   } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
 }
 
-main().catch(error => { console.error(error.stack || error); console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });
+module.exports = { main };
+if (require.main === module) main().catch(error => { console.error(error.stack || error); console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });

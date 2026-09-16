@@ -791,6 +791,17 @@ async function main() {
     fs.writeFileSync(path.join(testRoot, 'request-deadline-packed-acceptance.json'), `${JSON.stringify(deadline, null, 2)}\n`);
     console.log(JSON.stringify(deadline));
 
+    console.log('acceptance - replay multifile source identity from exact installed tarballs');
+    const multifile = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-multifile-packages.cjs'), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000,
+    }));
+    assert.equal(multifile.status, 'passed');
+    assert.equal(multifile.installedBytesUnchanged, true);
+    assert.equal(multifile.workspaceProductModules, 0);
+    assert.equal(multifile.regeneratedArtifactsMatch, true);
+    fs.writeFileSync(path.join(testRoot, 'multifile-packed-acceptance.json'), `${JSON.stringify(multifile, null, 2)}\n`);
+    console.log(JSON.stringify(multifile));
+
     console.log('acceptance - replay conditional KV from exact installed tarballs');
     const kv = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/kv/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
       cwd: toolRoot, timeoutMs: 600000,
