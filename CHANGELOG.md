@@ -4,6 +4,25 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.5 — Beta (2026-09-16)
+
+- Add bounded application-owned JSON decoding, pure application loops and string
+  trimming, execution-owned wall time, and exact-text SHA-256 digests.
+- Preserve schema/KV parity, optional-property absence, JWT JavaScript support,
+  application error handling, bounded UTF-8 input and HTTP outcomes across the
+  selected targets.
+- Add provider-owned HTTP request deadlines and verify their exact packed
+  consumer closure, including cumulative effects and uncertain write outcomes.
+- Preserve source-qualified effect identity and multifile composition through
+  exact installed packages.
+- Bound Fastly Native string concatenation and avoid eager collection allocation
+  for scalar values, resolving large schema-encoding memory traps.
+- Preserve bounded Fastly Native request headers and raise selected digest/S3
+  text capacity to 2 MiB.
+- Share npm registry visibility polling across all release packages.
+- Add a release-owner tagging helper with a dry-run default, clean-source and
+  remote-main checks, and immutable existing-tag handling.
+
 ## 1.0.0-beta.4 — Beta (2026-09-14)
 
 - Add `ctx.encodeJson(value, 'schema.id')` for schema-validated, bounded JSON text

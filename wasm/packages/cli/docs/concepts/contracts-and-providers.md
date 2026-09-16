@@ -38,7 +38,7 @@ GRIP uses the same split. `isWebSocket`, `subscribe`, and `handoff` are pure HTT
 
 ## Provider selection
 
-Pulse `1.0.0-beta.4` has three provider driver identifiers:
+Pulse `1.0.0-beta.5` has three provider driver identifiers:
 
 | Provider | Local execution | Deployable build | Purpose |
 |---|---:|---:|---|
@@ -96,7 +96,7 @@ For Fastly, `pulse build` additionally emits a real Compute target. The explicit
 
 ## Current extension boundary
 
-There is no automatic provider plugin registry in `1.0.0-beta.4`. Configuration
+There is no automatic provider plugin registry in `1.0.0-beta.5`. Configuration
 selects a bare host ID, internal `none`, or an exact scoped project-installed
 package name. Bare IDs resolve by the `@pulse-compute/provider-<id>` convention.
 A package is loadable only when selected and when it exports the versioned

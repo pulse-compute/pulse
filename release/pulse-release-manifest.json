@@ -1,13 +1,13 @@
 {
   "schemaVersion": "pulse.release-catalog.v1",
-  "releaseVersion": "1.0.0-beta.4",
+  "releaseVersion": "1.0.0-beta.5",
   "channel": "beta",
-  "releasedAt": "2026-09-14",
+  "releasedAt": "2026-09-16",
   "license": "Apache-2.0",
   "display": {
     "productName": "Pulse",
     "candidateLabel": "Beta",
-    "candidateName": "Pulse 1.0.0-beta.4 \u2014 Beta",
+    "candidateName": "Pulse 1.0.0-beta.5 — Beta",
     "activationStage": "documentation-release"
   },
   "legal": {
@@ -29,7 +29,7 @@
   "documentation": {
     "origin": "https://pulsecompute.io",
     "basePath": "/",
-    "version": "v1.0.0-beta.4",
+    "version": "v1.0.0-beta.5",
     "latestAlias": "latest",
     "source": "docs/README.md"
   },
@@ -154,7 +154,7 @@
     {
       "dir": "packages/runtime",
       "name": "@pulse-compute/runtime",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/runtime.md",
       "role": "public-runtime",
       "tier": "canonical-application",
@@ -168,7 +168,7 @@
     {
       "dir": "packages/pulse",
       "name": "@pulse-compute/pulse",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/pulse.md",
       "role": "public-api",
       "tier": "canonical-application",
@@ -183,7 +183,7 @@
     {
       "dir": "wasm/packages/cli",
       "name": "@pulse-compute/cli",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/cli.md",
       "role": "public-cli",
       "tier": "canonical-application",
@@ -208,7 +208,7 @@
     {
       "dir": "packages/provider-fastly",
       "name": "@pulse-compute/provider-fastly",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/provider-fastly.md",
       "role": "public-provider",
       "tier": "supported-extension",
@@ -228,7 +228,7 @@
     {
       "dir": "packages/grip",
       "name": "@pulse-compute/grip",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/grip.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -242,7 +242,7 @@
     {
       "dir": "packages/assets",
       "name": "@pulse-compute/assets",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/assets.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -256,7 +256,7 @@
     {
       "dir": "packages/crypto",
       "name": "@pulse-compute/crypto",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/crypto.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -270,7 +270,7 @@
     {
       "dir": "packages/jwt",
       "name": "@pulse-compute/jwt",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/jwt.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -284,7 +284,7 @@
     {
       "dir": "packages/entities",
       "name": "@pulse-compute/entities",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/entities.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -298,7 +298,7 @@
     {
       "dir": "packages/s3",
       "name": "@pulse-compute/s3",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/s3.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -312,7 +312,7 @@
     {
       "dir": "wasm/packages/build-support",
       "name": "@pulse-compute/wasm-build-support",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -326,7 +326,7 @@
     {
       "dir": "wasm/packages/compiler",
       "name": "@pulse-compute/wasm-compiler",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -341,7 +341,7 @@
     {
       "dir": "wasm/packages/wasm-guest-link",
       "name": "@pulse-compute/wasm-guest-link",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -355,7 +355,7 @@
     {
       "dir": "wasm/packages/contracts",
       "name": "@pulse-compute/wasm-contracts",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -369,7 +369,7 @@
     {
       "dir": "wasm/packages/host-runtime",
       "name": "@pulse-compute/wasm-host-runtime",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -383,7 +383,7 @@
     {
       "dir": "wasm/packages/library-kit",
       "name": "@pulse-compute/wasm-library-kit",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -397,7 +397,7 @@
     {
       "dir": "packages/provider-node",
       "name": "@pulse-compute/provider-node",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -412,7 +412,7 @@
     {
       "dir": "wasm/packages/runtime-core-as",
       "name": "@pulse-compute/wasm-runtime-core-as",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -426,7 +426,7 @@
     {
       "dir": "wasm/packages/schema-json",
       "name": "@pulse-compute/wasm-schema-json",
-      "version": "1.0.0-beta.4",
+      "version": "1.0.0-beta.5",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",

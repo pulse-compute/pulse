@@ -10,7 +10,7 @@ Install it only in projects that select the Fastly provider.
 ## Install
 
 ```bash
-npm install @pulse-compute/provider-fastly@1.0.0-beta.4
+npm install @pulse-compute/provider-fastly@1.0.0-beta.5
 ```
 
 ## Configure a project

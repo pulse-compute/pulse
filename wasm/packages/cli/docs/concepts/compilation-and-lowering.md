@@ -468,7 +468,7 @@ generic loader handles reachable-graph discovery and trusted invocation. Older
 `/pulsewasm` imports are isolated in the
 [compatibility migration guide](../guides/compatibility-imports.md).
 
-In Pulse `1.0.0-beta.4`, package-owned builders must declare `compiler.trust: 'first-party'` and ship in the synchronized release set. This is an internal contributor mechanism, not a general third-party plugin API. See [Add a first-party package-owned lowerer](../contributing/adding-first-party-lowerer.md).
+In Pulse `1.0.0-beta.5`, package-owned builders must declare `compiler.trust: 'first-party'` and ship in the synchronized release set. This is an internal contributor mechanism, not a general third-party plugin API. See [Add a first-party package-owned lowerer](../contributing/adding-first-party-lowerer.md).
 
 ## Provider lowering is a second contract
 

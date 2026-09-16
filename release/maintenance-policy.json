@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 8,
-  "releaseVersion": "1.0.0-beta.4",
-  "reviewedAt": "2026-09-14",
+  "policyVersion": 9,
+  "releaseVersion": "1.0.0-beta.5",
+  "reviewedAt": "2026-09-16",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -535,7 +535,8 @@
         "scripts/package-support.cjs",
         "scripts/release-prepare.cjs",
         "scripts/release-prepare-pr.cjs",
-        "scripts/release-pr-check.cjs"
+        "scripts/release-pr-check.cjs",
+        "scripts/release-tag.cjs"
       ],
       "areas": [
         "release"

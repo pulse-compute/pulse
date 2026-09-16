@@ -2,27 +2,27 @@
   "schemaVersion": "pulse.release-preflight.v1",
   "checkpoint": "sprint-7a-release-preflight",
   "baselineCheckpoint": "2d8468f",
-  "reviewedAt": "2026-09-14",
+  "reviewedAt": "2026-09-16",
   "statusVocabulary": [
     "proven",
     "pending",
     "blocked"
   ],
   "releaseCandidate": {
-    "version": "1.0.0-beta.4",
+    "version": "1.0.0-beta.5",
     "label": "Beta",
     "publicationTag": "latest",
     "latestTagAllowed": true,
     "currentSnapshotChannel": "beta",
     "applicationStage": "documentation-release",
     "snapshotStatus": "applied",
-    "snapshotAppliedAt": "2026-09-14"
+    "snapshotAppliedAt": "2026-09-16"
   },
   "releaseVocabulary": {
     "schemaVersion": "pulse.release-vocabulary.v1",
     "productName": "Pulse",
     "displayLabel": "Beta",
-    "displayName": "Pulse 1.0.0-beta.4 — Beta",
+    "displayName": "Pulse 1.0.0-beta.5 — Beta",
     "npmDistTag": "latest",
     "disallowedCurrentLabels": [
       "alpha",
@@ -43,7 +43,7 @@
     "kind": "repository",
     "expectedRepository": "pulse-compute/pulse",
     "expectedWeb": "https://github.com/pulse-compute/pulse",
-    "expectedReleaseTag": "v1.0.0-beta.4",
+    "expectedReleaseTag": "v1.0.0-beta.5",
     "externalVerification": "pending"
   },
   "documentationInventory": {
@@ -288,8 +288,8 @@
       "Publish each inert tarball with public access and the bootstrap dist-tag through a human 2FA-protected session.",
       "Verify that every package name exists, bootstrap points to 0.0.0, and latest is absent, points to the inert 0.0.0 bootstrap, or resolves to a published version listed in the documentation release history.",
       "Configure the exact pulse-compute/pulse, npm-publish.yml, and npm-publish trusted-publisher identity on every package.",
-      "Revoke and remove the temporary bootstrap credential before the 1.0.0-beta.4 release candidate is published through OIDC.",
-      "Publish the synchronized 1.0.0-beta.4 candidate under the manifest-owned npm tag only after protected human approval."
+      "Revoke and remove the temporary bootstrap credential before the 1.0.0-beta.5 release candidate is published through OIDC.",
+      "Publish the synchronized 1.0.0-beta.5 candidate under the manifest-owned npm tag only after protected human approval."
     ],
     "releasedLatestPolicy": "documented-published-version"
   },
@@ -367,7 +367,7 @@
       "status": "proven",
       "requiredBy": "documentation-release",
       "owner": "human-release",
-      "summary": "The intended public candidate remains Pulse 1.0.0-beta.4 Beta; future releases publish directly under the explicitly configured latest npm tag.",
+      "summary": "The intended public candidate remains Pulse 1.0.0-beta.5 Beta; future releases publish directly under the explicitly configured latest npm tag.",
       "evidence": [
         "release/release-preflight.json#releaseCandidate"
       ],
@@ -477,7 +477,7 @@
       "status": "pending",
       "requiredBy": "documentation-deployment",
       "owner": "human-release-infrastructure",
-      "summary": "The source contract names https://pulsecompute.io with immutable /v1.0.0-beta.4 routes, but the final origin and Fastly route are not externally proven.",
+      "summary": "The source contract names https://pulsecompute.io with immutable /v1.0.0-beta.5 routes, but the final origin and Fastly route are not externally proven.",
       "nextAction": "Verify origin ownership, immutable version routing, latest promotion, and the protected documentation-production environment.",
       "verification": "Documentation origin and Fastly route review"
     },
@@ -512,7 +512,7 @@
       "status": "proven",
       "requiredBy": "release-seal",
       "owner": "release-engineering",
-      "summary": "The 1.0.0-beta.4 Beta snapshot is atomically aligned across release authority, documentation versions, package metadata, changelog, and generated references.",
+      "summary": "The 1.0.0-beta.5 Beta snapshot is atomically aligned across release authority, documentation versions, package metadata, changelog, and generated references.",
       "evidence": [
         "release/pulse-release-manifest.json",
         "release/documentation-versions.json",
