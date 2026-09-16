@@ -206,7 +206,25 @@ expectExtractionCode(`${sharedPrefix}
 `, 'PULSE_SCHEMA_REGISTRY_STATIC_KEY_REQUIRED');
 expectExtractionCode(`${sharedPrefix}
   export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })
-`, 'PULSE_SCHEMA_OPTIONAL_FIELD_RESERVED', 'export interface Value { id?: string }\n');
+`, 'PULSE_SCHEMA_OPTIONAL_FIELD_RESERVED', 'export interface Value { id: undefined }\n');
+expectExtractionCode(`${sharedPrefix}
+  export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })
+`, 'PULSE_SCHEMA_UNION_UNSUPPORTED', 'export interface Value { id: string | undefined }\n');
+const optionalRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-schema-optional-'));
+try {
+  const text = `${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`;
+  const file = writeCase(optionalRoot, text, 'export interface Value { id?: string }\n');
+  const optional = extractSchemaRegistry(file, { projectRoot: optionalRoot });
+  assert.equal(optional.registry.schemas[0].root.fields[0].required, false);
+  assert.equal(optional.codecInputs.native.schemas[0].representation, 'schema-projected-json-value');
+  assert.equal(optional.registry.policies.presentUndefined, 'reject');
+  writeCase(optionalRoot, text, 'export interface Value { id: string }\n');
+  const required = extractSchemaRegistry(file, { projectRoot: optionalRoot });
+  assert.notEqual(required.registry.registryHash, optional.registry.registryHash);
+  assert.equal(required.codecInputs.native.schemas[0].representation, 'required-struct');
+} finally {
+  fs.rmSync(optionalRoot, { recursive: true, force: true });
+}
 expectExtractionCode(`
   import { JSON } from 'json-as'
   import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
@@ -217,7 +235,7 @@ expectExtractionCode(`
 const registryContract = defaultSchemaRegistryContract();
 assert.equal(registryContract.policies.canonicalEntrypoint, 'pulse.schema');
 assert.equal(registryContract.policies.oldSchemasJsonSupported, false);
-assert.equal(registryContract.policies.optionalPropertiesSupported, false);
+assert.equal(registryContract.policies.optionalPropertiesSupported, true);
 assert.equal(registryContract.policies.publicJsonAsImportsSupported, false);
 assert.equal(registryContract.policies.automaticFallback, false);
 assert.deepEqual(registryContract.boundaryPolicy, defaultSchemaBoundaryPolicy());

@@ -2,8 +2,8 @@
 
 const { sha256Hex, stableStringify } = require('../stable-id.js');
 
-const SCHEMA_REGISTRY_IR_VERSION = 'pulse.schema-registry-ir.v1';
-const SCHEMA_CODEC_INPUTS_VERSION = 'pulse.schema-codec-inputs.v1';
+const SCHEMA_REGISTRY_IR_VERSION = 'pulse.schema-registry-ir.v2';
+const SCHEMA_CODEC_INPUTS_VERSION = 'pulse.schema-codec-inputs.v2';
 const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v1';
 const SCHEMA_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)+$/;
 const RESPONSE_CASE_ID_PATTERN = SCHEMA_ID_PATTERN;
@@ -106,15 +106,15 @@ function normalizeSchemaNode(input, field = 'schema.root', stack = []) {
       throw schemaContractError('PULSE_SCHEMA_IR_FIELD_DUPLICATE', `${field} declares field ${name} more than once.`, { field, name });
     }
     names.add(name);
-    if (entry.required !== true) {
-      throw schemaContractError('PULSE_SCHEMA_OPTIONAL_FIELD_RESERVED', `${field}.${name} must be required in schema IR v1.`, {
+    if (typeof entry.required !== 'boolean') {
+      throw schemaContractError('PULSE_SCHEMA_IR_FIELD_REQUIRED', `${field}.${name}.required must be a boolean.`, {
         field,
         name
       });
     }
     return Object.freeze({
       name,
-      required: true,
+      required: entry.required,
       value: normalizeSchemaNode(entry.value, `${field}.fields[${index}].value`, [...stack, name]),
       source: entry.source ? normalizeSource(entry.source, `${field}.fields[${index}].source`) : undefined
     });
@@ -193,7 +193,9 @@ function normalizeSchemaRegistry(input) {
     responses,
     policies: deepFreeze({
       objectRoots: true,
-      requiredFieldsOnly: true,
+      requiredFieldsOnly: false,
+      optionalFields: 'omit-absent-own-properties',
+      presentUndefined: 'reject',
       unknownInputFields: 'drop',
       outputFields: 'declared-only',
       outputFieldOrder: 'declaration',
@@ -248,7 +250,7 @@ function collectNativeClasses(schema, node, symbols, classes, pathParts = []) {
     fields: Object.freeze(node.fields.map((field) => Object.freeze({
       name: field.name,
       type: assemblyScriptType(field.value, symbols, [...pathParts, field.name]),
-      required: true,
+      required: field.required,
       constraints: field.value.kind === 'string-enum'
         ? Object.freeze({ enum: field.value.values })
         : Object.freeze({})
@@ -256,18 +258,27 @@ function collectNativeClasses(schema, node, symbols, classes, pathParts = []) {
   }));
 }
 
+function schemaHasOptionalProperties(node) {
+  if (node.kind === 'nullable') return schemaHasOptionalProperties(node.value);
+  if (node.kind === 'array') return schemaHasOptionalProperties(node.element);
+  return node.kind === 'object' && node.fields.some(field => !field.required || schemaHasOptionalProperties(field.value));
+}
+
 function codecInputsForRegistry(registryInput) {
   const registry = normalizeSchemaRegistry(registryInput);
   const nativeSchemas = registry.schemas.map((schema) => {
     const schemaClasses = [];
     const symbols = new Map();
-    collectNativeClasses(schema, schema.root, symbols, schemaClasses);
+    const presence = schemaHasOptionalProperties(schema.root);
+    if (!presence) collectNativeClasses(schema, schema.root, symbols, schemaClasses);
+    const rootClass = presence ? 'JSON.Value' : symbols.get('');
     return Object.freeze({
       id: schema.id,
-      rootClass: symbols.get(''),
+      rootClass,
+      representation: presence ? 'schema-projected-json-value' : 'required-struct',
       classes: Object.freeze(schemaClasses),
-      parse: `JSON.parse<${symbols.get('')}>`,
-      stringify: `JSON.stringify<${symbols.get('')}>`
+      parse: `JSON.parse<${rootClass}>`,
+      stringify: `JSON.stringify<${rootClass}>`
     });
   });
   return deepFreeze({
@@ -333,7 +344,7 @@ function defaultSchemaRegistryContract() {
       stableStringIds: true,
       exactLiteralIdsAtBoundaries: true,
       oldSchemasJsonSupported: false,
-      optionalPropertiesSupported: false,
+      optionalPropertiesSupported: true,
       recursiveSchemasSupported: false,
       publicJsonAsImportsSupported: false,
       automaticFallback: false
@@ -354,6 +365,7 @@ module.exports = Object.freeze({
   normalizeSchemaNode,
   normalizeSchemaRegistry,
   codecInputsForRegistry,
+  schemaHasOptionalProperties,
   defaultSchemaBoundaryPolicy,
   defaultSchemaRegistryContract
 });
