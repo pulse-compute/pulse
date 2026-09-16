@@ -127,7 +127,8 @@ async function main(options = {}) {
           assert.equal(secondBuild.status, 'built');
           assert.deepEqual(artifactFiles(secondBuild.outDir), firstFiles, `${profile}: regenerated artifacts match`);
           if (profile === 'fastly-native') assert.equal(sha256(fs.readFileSync(path.join(firstBuild.outDir, 'bin/main.wasm'))), sha256(fastly.wasm));
-          artifacts.push({ profile, sourceOrder: names, sourceHash: node.compiled.sourceHash, files: firstFiles });
+          assert.match(inspection.compiler.sourceHash, /^[a-f0-9]{64}$/);
+          artifacts.push({ profile, sourceOrder: names, sourceHash: inspection.compiler.sourceHash, files: firstFiles });
         }
       }
       const sites = node.compiled.metadata.effectSites.filter(site => site.kind === 'crypto.digestText');
