@@ -64,6 +64,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'bounded-app-logic',
       'time-conformance',
       'time-consumer',
+      'request-budget-transport',
+      'http-input-outcomes',
       'application-errors',
       'application-error-boundaries',
       'entities-javascript-runtime',
@@ -79,6 +81,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'canonical-api-lowering',
       'canonical-native-plan',
+      'multifile-source-identity',
       'logging-lowering',
       'canonical-router-lowering',
       'canonical-router-terminal-middleware',
@@ -119,6 +122,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-cli-gate-surface',
       'fastly-native-http-shell',
       'fastly-native-http-effects',
+      'fastly-request-headers',
       'fastly-native-platform-capabilities',
       'fastly-conditional-kv',
       'kv-conditional-adversarial'
@@ -164,6 +168,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'schema-registry',
       'schema-kv-parity',
+      'text-capacity-conformance',
       'entities-schema-bridge',
       'fetch-projections-request-bodies',
       'config-secrets-kv-redaction',
@@ -209,7 +214,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'maintainer-publication-controls',
     title: 'Maintainer and publication control planes',
-    tasks: Object.freeze(['release-runtime-policy']),
+    tasks: Object.freeze(['release-runtime-policy', 'release-tag']),
     releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release'])
   })
 ]);
