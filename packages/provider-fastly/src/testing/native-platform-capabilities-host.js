@@ -220,6 +220,28 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     new Uint8Array(memory().buffer, Number(buffer), output.length).set(output);
     return FASTLY_STATUS_OK;
   }
+  function requestHeaderList(values, buffer, size, cursor, end, written, kind) {
+    const limit = Math.min(Number(size), options.requestHeaderPageBytes ?? Number(size));
+    let index = Number(cursor), count = 0;
+    if (index < 0 || index > values.length) return FASTLY_STATUS_ERROR;
+    while (index < values.length) {
+      const bytes = Buffer.from(String(values[index]) + '\0');
+      if (count + bytes.length > limit) {
+        if (count === 0) { writeU32(written, bytes.length); return FASTLY_STATUS_BUFLEN; }
+        break;
+      }
+      new Uint8Array(memory().buffer, Number(buffer) + count, bytes.length).set(bytes);
+      count += bytes.length; index++;
+    }
+    writeU32(written, count);
+    view().setBigInt64(Number(end), index === values.length ? -1n : BigInt(index), true);
+    // Fault injection is host-fixture-only; neither values nor faults enter traces.
+    const fault = options.requestHeaderFault?.({kind, cursor: Number(cursor)});
+    if (fault?.written !== undefined) writeU32(written, fault.written);
+    if (fault?.cursor !== undefined) view().setBigInt64(Number(end), BigInt(fault.cursor), true);
+    if (fault?.unterminated && count) new Uint8Array(memory().buffer)[Number(buffer) + count - 1] = 65;
+    return fault?.status ?? FASTLY_STATUS_OK;
+  }
   const imports = {
     fastly_async_io: {
       select(handles, count, timeout, done) {
@@ -317,6 +339,19 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         const request = requests.get(Number(handle));
         trace.push({ module: 'fastly_http_req', name: 'uri_get', handle: Number(handle) });
         return request ? writeUtf8(request.url, buffer, bufferLength, writtenOut) : FASTLY_STATUS_BADF;
+      },
+      header_names_get(handle, buffer, size, cursor, end, written) {
+        trace.push({module: 'fastly_http_req', name: 'header_names_get', cursor: Number(cursor)});
+        const request = requests.get(Number(handle));
+        if (!request) return FASTLY_STATUS_BADF;
+        return requestHeaderList([...new Set(request.headers.map(([name]) => name.toLowerCase()))], buffer, size, cursor, end, written, 'names');
+      },
+      header_values_get(handle, pointer, length, buffer, size, cursor, end, written) {
+        trace.push({module: 'fastly_http_req', name: 'header_values_get', cursor: Number(cursor)});
+        const request = requests.get(Number(handle));
+        if (!request) return FASTLY_STATUS_BADF;
+        const name = readUtf8(pointer, length).toLowerCase();
+        return requestHeaderList(request.headers.filter(([key]) => key.toLowerCase() === name).map(([, value]) => value), buffer, size, cursor, end, written, 'values');
       },
       header_value_get(handle, namePointer, nameLength, valuePointer, valueLength, writtenOut) {
         const request = requests.get(Number(handle));

@@ -740,6 +740,10 @@ const tasks = Object.freeze({
     evidence: 'conformance', timeoutMs: 180000,
     description: 'K3 actual Fastly Native conditional KV ABI, shared bytes, races, deadlines and uncertainty'
   }),
+  'fastly-request-headers': nodeTask('test/provider/assert-fastly-request-headers.cjs', {
+    evidence: 'providers', timeoutMs: 180000,
+    description: 'Fastly Native bounded request-header snapshots, duplicates and fail-closed enumeration'
+  }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -988,7 +992,8 @@ const profiles = Object.freeze({
     'fastly-javascript-tooling',
     'fastly-native-http-shell',
     'fastly-native-http-effects',
-    'fastly-native-platform-capabilities'
+    'fastly-native-platform-capabilities',
+    'fastly-request-headers'
   ]),
   release: Object.freeze([
     '@unit',

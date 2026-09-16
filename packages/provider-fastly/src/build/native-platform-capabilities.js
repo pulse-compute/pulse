@@ -104,6 +104,8 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_http_req', 'method_get']),
   Object.freeze(['fastly_http_req', 'uri_get']),
   Object.freeze(['fastly_http_req', 'header_value_get']),
+  Object.freeze(['fastly_http_req', 'header_names_get']),
+  Object.freeze(['fastly_http_req', 'header_values_get']),
   Object.freeze(['fastly_http_req', 'new']),
   Object.freeze(['fastly_http_req', 'method_set']),
   Object.freeze(['fastly_http_req', 'uri_set']),
@@ -1600,7 +1602,7 @@ function __pulse_router_param_text(path: string, pattern: string, name: string):
 function host_router_match(path: i32, pattern: i32): i32 { return host_value_boolean(__pulse_router_match_text(__pulse_fastly_string(path), __pulse_fastly_string(pattern)) ? 1 : 0) }
 function host_router_param(path: i32, pattern: i32, name: i32): i32 { const value = __pulse_router_param_text(__pulse_fastly_string(path), __pulse_fastly_string(pattern), __pulse_fastly_string(name)); return value === null ? host_value_undefined() : __pulse_fastly_string_value(value) }
 function host_request_path(): i32 { return __pulse_fastly_string_value(__pulse_fastly_request_path) }
-function host_request_headers(): i32 { return host_value_object() }
+function host_request_headers(): i32 { return __pulse_request_headers_read() }
 function host_request_header(name: i32): i32 { const value = __pulse_fastly_request_header_text(__pulse_fastly_string(name)); return value.length == 0 ? host_value_undefined() : __pulse_fastly_string_value(value) }
 function host_request_text(): i32 { if (__pulse_request_body_failure != 0) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, __pulse_request_body_failure, -1); return 0 } if (__pulse_fastly_request_body_loaded == 0) { __pulse_fastly_request_body = __pulse_fastly_read_body(__pulse_fastly_request_body_handle, -1, true); __pulse_fastly_request_body_loaded = 1; if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY) __pulse_request_body_failure = __pulse_fastly_error_stage } if (__pulse_fastly_last_error != 0) return 0; return __pulse_fastly_string_value(__pulse_fastly_request_body) }
 function host_request_json(schema: i32): i32 { const parsed = __pulse_fastly_parse_json(__pulse_fastly_string(host_request_text())); if (parsed <= 0) return 0; const schemaValue = __pulse_fastly_value(schema); return schemaValue.kind == PULSE_VALUE_STRING ? __pulse_fastly_schema_apply(schemaValue.text, parsed, false) : parsed }
@@ -1819,12 +1821,14 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./digest-native.js').digestNativeSource(plan),
     conditionalKv.kvNativeSource(plan),
     require('./native-request-body.js').runtimeSource(),
+    require('./native-request-headers.js').runtimeSource(),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource() : '',
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
   ].join('\n');
   if (applicationErrors.enabled(plan)) source = applicationErrors.instrument(source);
+  source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
