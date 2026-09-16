@@ -115,6 +115,7 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
   PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED: entry('provider', { exitCode: 3, remediation: ['Configure the Fastly GRIP publish backend and URL binding.'] }),
 
   PULSE_BODY_DECODE: entry('request', { exitCode: 4, httpStatus: 400, remediation: ['Send valid JSON or text matching the documented request shape.'] }),
+  PULSE_REQUEST_BODY_INVALID_UTF8: entry('request', { exitCode: 4, httpStatus: 400, remediation: ['Send well-formed UTF-8 request bytes; Pulse does not repair malformed input.'] }),
   PULSE_SCHEMA_DECODE: entry('request', { exitCode: 4, httpStatus: 400, remediation: ['Send JSON with the required content type and schema fields.', 'Use `pulse test` with a failing case to reproduce the validation error locally.'] }),
   PULSE_BODY_TOO_LARGE: entry('request', { exitCode: 4, httpStatus: 413, remediation: ['Reduce the request payload or increase the configured structured-body limit deliberately.'] }),
   PULSE_REQUEST_DEADLINE_EXCEEDED: entry('request', { exitCode: 4, httpStatus: 504, remediation: ['Split the work into bounded invocations or deliberately adjust the provider maxDurationMs profile. A timeout does not prove rollback of dispatched writes.'] }),
@@ -239,6 +240,7 @@ const DIAGNOSTIC_SUMMARIES = Object.freeze({
   PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED: 'A GRIP hold operation requires a configured Fastly Fanout backend.',
   PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED: 'A GRIP publish operation requires configured Fastly publish URL and backend bindings.',
   PULSE_BODY_DECODE: 'A structured request body could not be decoded in the requested representation.',
+  PULSE_REQUEST_BODY_INVALID_UTF8: 'Request bytes are not well-formed UTF-8; no repaired text is exposed to the application.',
   PULSE_SCHEMA_DECODE: 'JSON input did not satisfy the explicitly declared schema and content-type policy.',
   PULSE_BODY_TOO_LARGE: 'A structured body exceeded the configured bounded-body limit.',
   PULSE_REQUEST_DEADLINE_EXCEEDED: 'The provider-owned total request budget expired.',

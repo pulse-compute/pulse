@@ -146,12 +146,13 @@ app.error(async (error, ctx, next) => {
 
 If the normal lane is exhausted, Pulse returns `404 Not Found`. If the error lane is exhausted, Pulse returns `500 Internal Server Error`.
 
-Schema data failures and JWT validation failures also enter the next registered
+Request UTF-8 failures, schema data failures and JWT validation failures enter the next registered
 error handler. Branch on `error.code`; the portable contract does not require
 identical messages, stacks, causes or detail fields across providers.
 
 | Boundary | Portable error codes |
 | --- | --- |
+| Request text encoding | `PULSE_REQUEST_BODY_INVALID_UTF8` (Node Native, Node JavaScript, Fastly Native) |
 | Schema data | `PULSE_SCHEMA_DECODE`, `PULSE_SCHEMA_ENCODE`, `PULSE_SCHEMA_JSON_MALFORMED`, `PULSE_SCHEMA_CONTENT_TYPE`, `PULSE_BODY_TOO_LARGE` |
 | JWT input and verification | `PULSE_JWT_TOKEN_REQUIRED`, `PULSE_JWT_BEARER_INVALID`, `PULSE_JWT_MALFORMED`, `PULSE_JWT_LIMIT_EXCEEDED`, `PULSE_JWT_ALGORITHM_NOT_ALLOWED`, `PULSE_JWT_KEY_INVALID`, `PULSE_JWT_SIGNATURE_INVALID` |
 | JWT claims | `PULSE_JWT_CLOCK_INVALID`, `PULSE_JWT_CLAIMS_INVALID`, `PULSE_JWT_CLAIMS_SCHEMA_INVALID` |

@@ -12,6 +12,7 @@ const ERROR_KINDS = Object.freeze({
   fetchTimeout: 'FetchTimeoutError',
   bodyTooLarge: 'BodyTooLargeError',
   bodyDecode: 'BodyDecodeError',
+  requestBodyInvalidUtf8: 'RequestBodyInvalidUtf8Error',
   bodyUnavailable: 'BodyUnavailableError',
   opaqueBodyInspection: 'OpaqueBodyInspectionError',
   responseEncode: 'ResponseEncodeError',
@@ -113,7 +114,7 @@ function readInputBody(input) {
     : Object.prototype.hasOwnProperty.call(source, 'text')
       ? source.text
       : source.jsonText;
-  return { available: true, text: Buffer.isBuffer(value) ? value.toString('utf8') : String(value ?? '') };
+  return { available: true, value };
 }
 
 function createStructuredBodyValue(input = {}, options = {}) {
@@ -124,7 +125,8 @@ function createStructuredBodyValue(input = {}, options = {}) {
   const contentClass = classifyContentType(contentType);
   const forceStructured = options.forceStructured === true;
   const body = readInputBody(input);
-  const bytes = utf8ByteLength(body.text);
+  const raw = body.value instanceof Uint8Array ? body.value : undefined;
+  const bytes = raw ? raw.byteLength : utf8ByteLength(body.value);
   const counters = { bodyCopies: 0, textTransforms: 0, jsonTransforms: 0, errors: 0 };
   let textMemo;
   let jsonMemo;
@@ -156,12 +158,20 @@ function createStructuredBodyValue(input = {}, options = {}) {
       textMemo = rejected;
       return textMemo;
     }
+    let value;
+    try {
+      value = raw ? new TextDecoder('utf-8', { fatal: options.strictUtf8 === true, ignoreBOM: true }).decode(raw) : String(body.value ?? '');
+    } catch (_) {
+      counters.errors += 1;
+      textMemo = runtimeValueError(ERROR_KINDS.requestBodyInvalidUtf8, 'Pulse request text must be well-formed UTF-8.');
+      return textMemo;
+    }
     counters.bodyCopies += 1;
     counters.textTransforms += 1;
     textMemo = deepFreeze({
       ok: true,
       kind: 'structured-text',
-      value: String(body.text),
+      value,
       bytes,
       contentType: String(contentType || ''),
       contentClass,
