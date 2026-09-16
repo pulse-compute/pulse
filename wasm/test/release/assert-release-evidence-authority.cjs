@@ -165,7 +165,7 @@ assert.deepEqual(
     .find((entry) => entry.id === 'maintainer-publication-controls')
     .tasks
     .map((entry) => entry.name),
-  ['release-runtime-policy']
+  ['release-runtime-policy', 'release-tag']
 );
 assert.deepEqual(aggregate.summary, {
   shards: 16,
