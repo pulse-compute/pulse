@@ -362,13 +362,28 @@ class __PulseFastlyValue {
   boolean: i32 = 0
   number: f64 = 0.0
 ${nativeStringFields}
-  keys: Array<string> = new Array<string>()
-  values: Array<i32> = new Array<i32>()
+  // Scalar handles do not need collection backing stores.
+  private keysStorage: Array<string> | null = null
+  get keys(): Array<string> {
+    if (this.keysStorage === null) this.keysStorage = new Array<string>()
+    return this.keysStorage!
+  }
+  // Scalar handles do not need collection backing stores.
+  private valuesStorage: Array<i32> | null = null
+  get values(): Array<i32> {
+    if (this.valuesStorage === null) this.valuesStorage = new Array<i32>()
+    return this.valuesStorage!
+  }
   responseHandle: i32 = 0
   bodyHandle: i32 = 0
   bodyLoaded: i32 = 0
   status: i32 = 200
-  headers: Array<__PulseFastlyHeader> = new Array<__PulseFastlyHeader>()
+  // Scalar handles do not need collection backing stores.
+  private headersStorage: Array<__PulseFastlyHeader> | null = null
+  get headers(): Array<__PulseFastlyHeader> {
+    if (this.headersStorage === null) this.headersStorage = new Array<__PulseFastlyHeader>()
+    return this.headersStorage!
+  }
 }
 class __PulseFastlyHeader {
   constructor(public name: string, public value: string) {}
