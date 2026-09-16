@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/provider-node",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -62,7 +62,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/provider-node"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.4/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

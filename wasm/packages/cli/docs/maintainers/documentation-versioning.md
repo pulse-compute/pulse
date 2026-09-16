@@ -26,7 +26,7 @@ The homepage and exact current documentation load the same assets under `/v<vers
 The canonical URL for this release begins with:
 
 ```text
-https://pulsecompute.io/v1.0.0-beta.4/
+https://pulsecompute.io/v1.0.0-beta.5/
 ```
 
 Diagnostics, package status blocks, and package metadata use exact-version URLs. This prevents a diagnostic emitted by an older CLI from silently opening instructions for a newer contract.

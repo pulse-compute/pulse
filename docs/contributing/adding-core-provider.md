@@ -75,7 +75,7 @@ Descriptors are normalized by the shared provider contract. A conceptual descrip
 ```js
 const EXAMPLE_PROVIDER_DESCRIPTOR = createProviderDescriptor({
   id: 'example',
-  providerVersion: '1.0.0-beta.4',
+  providerVersion: '1.0.0-beta.5',
   package: '@pulse-compute/provider-example',
   runtime: 'pulse.canonical-example-runtime.v1',
   buildTarget: 'example-edge',

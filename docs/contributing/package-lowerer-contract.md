@@ -8,7 +8,7 @@ pulse-doc-meta:end -->
 # Package lowerer contract reference
 
 This reference describes the internal first-party lowerer protocol used by the
-synchronized `1.0.0-beta.4` release. It documents current repository
+synchronized `1.0.0-beta.5` release. It documents current repository
 interfaces; it is not a third-party plugin compatibility promise. Package
 availability remains owned by the release catalog.
 
@@ -370,7 +370,7 @@ Package lowerer code must not choose `node.*`, `fastly.*`, backend names, store 
 
 ## Compatibility status
 
-This protocol is synchronized inside the `1.0.0-beta.4` release set. It can change with compiler implementation needs. Only explicitly documented application facades carry the package support promise.
+This protocol is synchronized inside the `1.0.0-beta.5` release set. It can change with compiler implementation needs. Only explicitly documented application facades carry the package support promise.
 
 A public external lowerer API would require a new contract that addresses trust, sandboxing, provenance, protocol negotiation, resource limits, lifecycle support, and semver compatibility.
 

@@ -56,6 +56,26 @@ archived previous documentation, and a changelog section. Documentation and
 workflow-only changes can retain the version. The check is preparation evidence,
 not a release seal or permission to publish.
 
+For a preparation PR targeting `latest`, merge the reviewed changes there and
+then manually merge the release into `main`. The tagging helper works only once
+HEAD matches the current remote `main` commit and the checkout is clean:
+
+```bash
+git fetch origin main --tags
+git switch main
+git pull --ff-only origin main
+npm run release:tag -- 1.0.0-beta.5
+npm run release:tag -- 1.0.0-beta.5 --write
+```
+
+The first invocation checks and prints the plan. `--write` creates an annotated
+local `v1.0.0-beta.5` tag and prints the exact push and workflow commands for the
+release owner. It never pushes, dispatches publication, claims a seal, or replaces
+an existing tag. A matching tag is idempotent; conflicting commits, lightweight
+tags and differing local/remote tag objects fail closed. Run those printed
+commands only after review. The publication workflow seals the final tagged
+commit before protected publication approval.
+
 After review and merge, the release owner tags the final `main` commit and runs
 **npm publication** from that tag. Its candidate job automatically runs
 `release:seal`, packs the release, and seals the exact publication bundle before
@@ -86,8 +106,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.4 \
-  -f release_tag=v1.0.0-beta.4 \
+  --ref v1.0.0-beta.5 \
+  -f release_tag=v1.0.0-beta.5 \
   -f operation=audit
 ```
 

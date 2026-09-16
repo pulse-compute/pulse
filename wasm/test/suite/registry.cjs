@@ -848,6 +848,10 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'real Fastly Compute local execution'
   }),
+  'release-tag': nodeTask('test/release/assert-release-tag.cjs', {
+    evidence: 'unit',
+    description: 'release-owner tagging guards and immutable tag identity'
+  }),
   'release-runtime-policy': nodeTask('test/release/assert-release-runtime-policy.cjs', {
     evidence: 'unit',
     description: 'Node release-line acceptance and Fastly CLI lifecycle ownership'
@@ -868,6 +872,7 @@ const profiles = Object.freeze({
     'workspace-hygiene',
     'hidden-contracts',
     'release-runtime-policy',
+    'release-tag',
     'api-surface',
     'logging-contract',
     's3-design-contract',
