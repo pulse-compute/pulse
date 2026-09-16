@@ -5,7 +5,7 @@
 ## Install
 
 ```bash
-npm install @pulse-compute/runtime@1.0.0-beta.4
+npm install @pulse-compute/runtime@1.0.0-beta.5
 ```
 
 A project created by `pulse init` depends on the public

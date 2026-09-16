@@ -7,15 +7,15 @@
 > **Supported entry points:** `@pulse-compute/crypto`<br>
 > **Stability:** The package root supports bounded verification and request-owned exact-text digests; provider, manifest/compiler and Native integration subpaths remain toolchain-only.<br>
 > **npm:** [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/crypto/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/crypto/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
 <!-- pulse-package-status:end -->
 
 Provider-neutral verification and bounded exact-text SHA-256 for Pulse.
 
 This package and `@pulse-compute/jwt` are members of the synchronized
-`1.0.0-beta.4` release catalog.
+`1.0.0-beta.5` release catalog.
 
 ## Exact-text SHA-256
 
@@ -38,7 +38,7 @@ the invocation. The named `digestText` export has the same contract.
 Node/Fastly Native reuse the selected Crypto SHA-256 guest source. Node/Fastly
 JavaScript use selected Web Crypto. Neither falls back. This bound matches
 current S3 text capacity and leaves larger Catalog envelopes for capacity work.
-See the [exact-text digest contract](https://pulsecompute.io/v1.0.0-beta.4/packages/crypto/#exact-text-digest).
+See the [exact-text digest contract](https://pulsecompute.io/v1.0.0-beta.5/packages/crypto/#exact-text-digest).
 
 ## Verification contract
 

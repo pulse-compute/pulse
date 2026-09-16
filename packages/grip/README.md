@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/grip`<br>
 > **Stability:** The package root has bounded JavaScript and Native HTTP-framing realization plus configured Node/Fastly broadcast; /pulsewasm remains compatibility-only.<br>
 > **npm:** [`@pulse-compute/grip`](https://www.npmjs.com/package/@pulse-compute/grip)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/grip/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/grip/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
 <!-- pulse-package-status:end -->
 
 The normal package root provides stateless GRIP/Fanout HTTP framing:
@@ -41,6 +41,6 @@ Pulse owns no WebSocket object or connection lifecycle. An external gateway owns
 `@pulse-compute/grip/pulsewasm` remains a compatibility Native facade for
 existing fixtures and is not recommended for new applications. Migration
 guidance is published at
-<https://pulsecompute.io/v1.0.0-beta.4/guides/compatibility-imports/>.
+<https://pulsecompute.io/v1.0.0-beta.5/guides/compatibility-imports/>.
 
 Broadcast configuration is provider-owned. It requires an explicit publish/control endpoint and may name a bearer-token secret reference; it never discovers an ambient endpoint or credential. Public gateway URLs and ingress routes are separate concerns. This bounded realization is included in both generally available JavaScript targets.

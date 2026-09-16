@@ -526,7 +526,7 @@ Older `/pulsewasm` imports are compatibility-only and are isolated in the
 
 ## Entities API
 
-`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.4` package
+`@pulse-compute/entities` is part of the synchronized `1.0.0-beta.5` package
 set. The application surface has two runtime values:
 
 ```ts

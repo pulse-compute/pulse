@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "pulse.plugin-readiness.v1",
+  "releaseVersion": "1.0.0-beta.4",
+  "publicPluginApi": false,
+  "decision": "deferred",
+  "requirements": {
+    "trustModel": false,
+    "packageDiscovery": false,
+    "versionNegotiation": false,
+    "securityPolicy": false,
+    "compatibilityContract": false,
+    "isolatedPackageLoading": false
+  },
+  "currentExtensionBoundary": {
+    "lowerers": "trusted first-party release packages only",
+    "providers": "explicit package selection through pulse.provider-toolchain.v1; bare host IDs use the @pulse-compute/provider-<id> convention, scoped names are exact, and none is internal; no scanning or self-registration"
+  },
+  "designRule": "The explicit provider toolchain contract does not imply general plugin discovery, isolated loading, or lowerer extensibility. Do not publish a general third-party plugin API design until every readiness requirement is implemented and release-gated."
+}

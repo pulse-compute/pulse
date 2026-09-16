@@ -8,7 +8,7 @@ pulse-doc-meta:end -->
 # Release packages and clean-consumer acceptance
 
 The current Beta candidate contains nineteen publishable packages
-synchronized at version `1.0.0-beta.4`. The product-facing packages are:
+synchronized at version `1.0.0-beta.5`. The product-facing packages are:
 
 ```text
 @pulse-compute/pulse
@@ -271,7 +271,7 @@ The release owns a versioned hosted-documentation gate:
 pnpm docs:site:check
 ```
 
-The check builds the exact `v1.0.0-beta.4` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
+The check builds the exact `v1.0.0-beta.5` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
 
 The **Documentation** workflow repeats those checks for pull requests and `main`, seals a preview deployment manifest, and uploads artifacts without production credentials. It does not deploy to GitHub Pages.
 
@@ -279,7 +279,7 @@ Production delivery uses the manually dispatched **Documentation deployment** wo
 
 ```text
 build and seal
-→ upload/verify v1.0.0-beta.4 and its receipt immutably
+→ upload/verify v1.0.0-beta.5 and its receipt immutably
 → verify all matching npm packages and configured dist-tags
 → promote root and latest
 → verify representative URLs through Fastly

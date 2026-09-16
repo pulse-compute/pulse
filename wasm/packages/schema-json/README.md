@@ -8,9 +8,9 @@
 > **Stability:** Internal schema compiler interface synchronized with this release set.<br>
 > **npm:** [`@pulse-compute/wasm-schema-json`](https://www.npmjs.com/package/@pulse-compute/wasm-schema-json)<br>
 > **Canonical replacement:** `schemas in .pulse/config.ts through the Pulse project workflow`<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.4/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.4` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
 <!-- pulse-package-status:end -->
 
 JSON schema compiler, canonical codec, registry, sidecar, and body-policy implementation for Pulse.
@@ -35,4 +35,4 @@ Application projects declare schemas in `pulse.config.*`; they do not install or
 
 The exported compiler modules are synchronized implementation interfaces without an application-author compatibility promise.
 
-See [Explicit JSON schemas](https://pulsecompute.io/v1.0.0-beta.4/guides/json-schemas/), [Project configuration](https://pulsecompute.io/v1.0.0-beta.4/reference/project-config/#json-schema-policy), and [Implementation packages](https://pulsecompute.io/v1.0.0-beta.4/packages/implementation-packages/).
+See [Explicit JSON schemas](https://pulsecompute.io/v1.0.0-beta.5/guides/json-schemas/), [Project configuration](https://pulsecompute.io/v1.0.0-beta.5/reference/project-config/#json-schema-policy), and [Implementation packages](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/).

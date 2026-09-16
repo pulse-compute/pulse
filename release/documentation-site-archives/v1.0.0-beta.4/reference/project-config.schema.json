@@ -1,0 +1,981 @@
+{
+  "schemaVersion": "pulse.project-config-schema-bundle.v1",
+  "releaseVersion": "1.0.0-beta.4",
+  "project": {
+    "schemaVersion": "pulse.project-config-schema.v1",
+    "discovery": [
+      ".pulse/config.ts"
+    ],
+    "precedence": [
+      "Discovery starts at the positional directory or the current working directory and searches upward for .pulse/config.ts.",
+      "Profile precedence is --profile, PULSE_PROFILE, then pulse.defaultProfile.",
+      "A selected-profile crypto declaration replaces pulse.crypto completely; array and object forms never merge.",
+      "Command-line output, host, port, and watch values override the corresponding active-profile field for that command. Entry, provider, and target remain project-configured.",
+      "Dedicated harness case inputs replace development inputs for that case; they do not configure deployment resources.",
+      "Provider deployment bindings come from the configured provider object; handler source never receives provider SDK objects."
+    ],
+    "sections": [
+      {
+        "id": "project",
+        "title": "Project and provider selection",
+        "description": "Select the canonical entry, provider, and build output."
+      },
+      {
+        "id": "crypto",
+        "title": "Cryptographic requirements",
+        "description": "Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.4 package set."
+      },
+      {
+        "id": "schemas",
+        "title": "JSON schema policy",
+        "description": "Configure bounded schema-body policy. Conventional projects declare registry identity only through pulse.schema."
+      },
+      {
+        "id": "dev",
+        "title": "Local development",
+        "description": "Configure the foreground local server and local-only provider inputs."
+      },
+      {
+        "description": "Provider-owned Node profile configuration.",
+        "id": "node",
+        "title": "Node provider options"
+      },
+      {
+        "description": "Options passed to fastly(...) from @pulse-compute/provider-fastly.",
+        "id": "fastly",
+        "title": "Fastly provider options"
+      }
+    ],
+    "fields": [
+      {
+        "required": false,
+        "default": "`./src/index.ts`",
+        "allowed": "—",
+        "precedence": "`pulse.entry` in `.pulse/config.ts`.",
+        "security": "Must resolve to an existing file.",
+        "diagnostics": [
+          "PULSE_ENTRY_NOT_FOUND"
+        ],
+        "section": "project",
+        "path": "entry",
+        "type": "string",
+        "scope": "all project commands",
+        "description": "Project-relative TypeScript handler entry."
+      },
+      {
+        "required": false,
+        "default": "`node`",
+        "allowed": "`node`, `fastly`, `none`, another bare host id, or an exact scoped package name",
+        "precedence": "Bare host ids resolve to `@pulse-compute/provider-<id>`; scoped package names are loaded exactly from the project.",
+        "security": "Package loading is explicit and limited to the selected package `./toolchain` export; there is no scanning or fallback discovery.",
+        "diagnostics": [
+          "PULSE_PROVIDER_PACKAGE_NOT_FOUND",
+          "PULSE_PROVIDER_TOOLCHAIN_LOAD_FAILED",
+          "PULSE_PROVIDER_TOOLCHAIN_INVALID",
+          "PULSE_PROVIDER_UNSUPPORTED",
+          "PULSE_PROVIDER_COMPILE_ONLY",
+          "PULSE_TEST_PROVIDER_REQUIRED",
+          "PULSE_DEV_PROVIDER_UNSUPPORTED"
+        ],
+        "section": "project",
+        "path": "provider",
+        "type": "'node' | 'fastly' | 'none' | scoped package name | provider configuration",
+        "scope": "compile/build/dev/test",
+        "description": "Selects provider validation, local conformance, and build realization through the provider package toolchain contract."
+      },
+      {
+        "required": false,
+        "default": "`./dist`",
+        "allowed": "—",
+        "precedence": "`--out` overrides this field for the current command.",
+        "security": "Must remain a real child of the project root; absolute, parent-traversal, and symbolic-link traversal outside the project root is rejected.",
+        "diagnostics": [
+          "PULSE_BUILD_OUT_UNSAFE"
+        ],
+        "section": "project",
+        "path": "outDir",
+        "type": "string",
+        "scope": "compile/build",
+        "description": "Project-relative artifact output directory."
+      },
+      {
+        "required": false,
+        "default": "`info`",
+        "allowed": "`off`, `error`, `warn`, `info`, `debug`",
+        "precedence": "Selected-profile `reporting`, then `pulse.reporting`, then `info`.",
+        "security": "Known request-owned secret values are redacted before provider emission.",
+        "diagnostics": [
+          "PULSE_REPORTING_LEVEL_UNSUPPORTED"
+        ],
+        "section": "project",
+        "path": "reporting",
+        "type": "'off' | 'error' | 'warn' | 'info' | 'debug'",
+        "scope": "compile/build/dev/test",
+        "description": "Resolved synchronous logging threshold after the flat profile override is applied."
+      },
+      {
+        "required": false,
+        "default": "implicit no-crypto declaration",
+        "allowed": "`HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`",
+        "precedence": "Used only when the selected profile omits `crypto`.",
+        "security": "Keys and verification bytes are not configuration values. Target selection is deterministic and never probes or falls back.",
+        "diagnostics": [
+          "PULSE_CRYPTO_CONFIG_SHAPE_INVALID",
+          "PULSE_CRYPTO_ALGORITHM_DUPLICATE",
+          "PULSE_CRYPTO_ALGORITHM_UNKNOWN",
+          "PULSE_CRYPTO_REALIZATION_UNKNOWN"
+        ],
+        "section": "crypto",
+        "path": "pulse.crypto",
+        "type": "readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>",
+        "scope": "global crypto requirement default",
+        "description": "Declares the complete global algorithm set. Array entries are canonical algorithm names; object entries may pin one exact known realization."
+      },
+      {
+        "required": false,
+        "default": "inherit `pulse.crypto` when absent",
+        "allowed": "`[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`",
+        "precedence": "Selected-profile declaration replaces `pulse.crypto`; absence inherits it.",
+        "security": "Every declared algorithm must resolve for the selected target before lowering. A failed exact realization cannot select another backend.",
+        "diagnostics": [
+          "PULSE_CRYPTO_CONFIG_REQUIRED",
+          "PULSE_CRYPTO_REALIZATION_PIN_INVALID",
+          "PULSE_CRYPTO_REALIZATION_UNAVAILABLE"
+        ],
+        "section": "crypto",
+        "path": "<profile>.crypto",
+        "type": "readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>",
+        "scope": "selected profile",
+        "description": "Replaces the complete global crypto declaration for the selected profile. Arrays and objects never merge with `pulse.crypto`."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Structured bodies are bounded before decoding.",
+        "diagnostics": [
+          "PULSE_SCHEMA_COMPILE_FAILED"
+        ],
+        "section": "schemas",
+        "path": "schemas",
+        "type": "PulseSchemaConfig",
+        "scope": "compile/dev/test/build",
+        "description": "Sets schema body limits and content-type policy. Schema identities come from the module selected by pulse.schema."
+      },
+      {
+        "required": false,
+        "default": "`accept-json-or-missing`",
+        "allowed": "`accept-json-or-missing`, `require-json`",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_SCHEMA_CONTENT_TYPE_POLICY_INVALID",
+          "PULSE_SCHEMA_DECODE"
+        ],
+        "section": "schemas",
+        "path": "schemas.contentTypePolicy",
+        "type": "'accept-json-or-missing' | 'require-json'",
+        "scope": "request and fetched-body schema decode",
+        "description": "Controls whether a JSON content type is mandatory."
+      },
+      {
+        "required": false,
+        "default": "`65_536`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Raise deliberately; this is a memory and request-amplification boundary.",
+        "diagnostics": [
+          "PULSE_SCHEMA_BODY_LIMIT_INVALID",
+          "PULSE_BODY_TOO_LARGE"
+        ],
+        "section": "schemas",
+        "path": "schemas.maxBytes",
+        "type": "positive safe integer",
+        "scope": "structured schema decode",
+        "description": "Maximum buffered bytes accepted by schema decoding."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "section": "dev",
+        "path": "dev",
+        "type": "object",
+        "scope": "pulse dev and local conformance",
+        "description": "Development listener and local fixture inputs."
+      },
+      {
+        "required": false,
+        "default": "`127.0.0.1`",
+        "allowed": "—",
+        "precedence": "`--host` overrides this field.",
+        "security": "Binding a non-loopback address exposes the local development server.",
+        "diagnostics": [
+          "PULSE_DEV_HOST_INVALID"
+        ],
+        "section": "dev",
+        "path": "dev.host",
+        "type": "string",
+        "scope": "pulse dev",
+        "description": "Listener host."
+      },
+      {
+        "required": false,
+        "default": "`8787`",
+        "allowed": "`0`–`65535`; `0` requests an ephemeral port",
+        "precedence": "`--port` overrides this field.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_DEV_PORT_INVALID"
+        ],
+        "section": "dev",
+        "path": "dev.port",
+        "type": "integer",
+        "scope": "pulse dev",
+        "description": "Listener port."
+      },
+      {
+        "required": false,
+        "default": "`true`",
+        "allowed": "—",
+        "precedence": "`--watch` or `--no-watch` overrides this field.",
+        "security": "Configuration-file changes still require a restart.",
+        "diagnostics": [],
+        "section": "dev",
+        "path": "dev.watch",
+        "type": "boolean",
+        "scope": "pulse dev",
+        "description": "Watches the entry and schema dependency graph."
+      },
+      {
+        "required": false,
+        "default": "`65_536`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Raise deliberately; this is a memory and request-amplification boundary.",
+        "diagnostics": [
+          "PULSE_DEV_BODY_LIMIT_INVALID",
+          "PULSE_REQUEST_BODY_TOO_LARGE"
+        ],
+        "section": "dev",
+        "path": "dev.maxBodyBytes",
+        "type": "positive safe integer",
+        "scope": "incoming local requests",
+        "description": "Maximum request body accepted by the local development server."
+      },
+      {
+        "required": false,
+        "default": "selected provider default",
+        "allowed": "—",
+        "precedence": "This explicit field overrides the selected provider local default.",
+        "security": "Keep disabled for deterministic or untrusted test inputs.",
+        "diagnostics": [
+          "PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE",
+          "PULSE_FETCH_NETWORK"
+        ],
+        "section": "dev",
+        "path": "dev.networkFetch",
+        "type": "boolean",
+        "scope": "local fetch realization",
+        "description": "Allows unmatched local fetches to use the network."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Development input only; it does not configure deployed provider stores.",
+        "diagnostics": [],
+        "section": "dev",
+        "path": "dev.config",
+        "type": "Readonly<Record<string, string>>",
+        "scope": "local config capability",
+        "description": "Local configuration-store values."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Raw values are omitted from project JSON, diagnostics, and runtime error details; do not commit real production secrets.",
+        "diagnostics": [],
+        "section": "dev",
+        "path": "dev.secrets",
+        "type": "Readonly<Record<string, string>>",
+        "scope": "local secret capability",
+        "description": "Local secret-store values."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Development input only; it is not deployed.",
+        "diagnostics": [],
+        "section": "dev",
+        "path": "dev.kv",
+        "type": "Readonly<Record<string, Readonly<Record<string, unknown>>>>",
+        "scope": "local KV capability",
+        "description": "Local KV stores keyed by configured logical store name."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Prefer fixtures for deterministic tests and offline development.",
+        "diagnostics": [],
+        "section": "dev",
+        "path": "dev.fetches",
+        "type": "Readonly<Record<string, unknown>>",
+        "scope": "local fetch capability",
+        "description": "Deterministic fetch fixtures resolved before optional live network fetch."
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Only named credential references are configuration. Runtime keys cannot override authority.",
+        "diagnostics": [],
+        "description": "Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
+        "path": "node.bindings.s3",
+        "scope": "Node Native and JavaScript S3",
+        "section": "node",
+        "type": "Readonly<Record<string, S3Binding>>"
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Credentials resolve through the configured Secret Store at execution. Dynamic backend authority and guest endpoint overrides are forbidden.",
+        "diagnostics": [],
+        "description": "Maps logical names to fixed HTTPS endpoint, bucket, region, named static backend, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–32768, default 32768) and timeoutMs (1–30000, default 10000).",
+        "path": "fastly.bindings.s3",
+        "scope": "Fastly Native S3",
+        "section": "fastly",
+        "type": "Readonly<Record<string, S3Binding & { backend: string }>>"
+      },
+      {
+        "required": false,
+        "default": "`pulse_config`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Fastly Config Store resource name.",
+        "path": "fastly.configStore",
+        "scope": "Fastly config capability",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "`pulse_secrets`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "The name is build metadata; secret values are never embedded by this option.",
+        "diagnostics": [],
+        "description": "Fastly Secret Store resource name.",
+        "path": "fastly.secretStore",
+        "scope": "Fastly secret capability",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_KV_BINDINGS_INVALID"
+        ],
+        "description": "Maps logical ctx.kv names to Fastly KV Store resource names.",
+        "path": "fastly.kv",
+        "scope": "Fastly KV capability",
+        "section": "fastly",
+        "type": "Readonly<Record<string, string>>"
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Prefer explicit backends over dynamic origin authority.",
+        "diagnostics": [
+          "PULSE_FASTLY_BACKEND_BINDINGS_INVALID",
+          "PULSE_FASTLY_BACKEND_REQUIRED"
+        ],
+        "description": "Maps static absolute origin URLs to named Fastly backends.",
+        "path": "fastly.backends",
+        "scope": "Fastly fetch capability",
+        "section": "fastly",
+        "type": "Readonly<Record<string, string>>"
+      },
+      {
+        "required": false,
+        "default": "`false`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Opt in deliberately because it broadens outbound authority.",
+        "diagnostics": [
+          "PULSE_FASTLY_BACKEND_REQUIRED"
+        ],
+        "description": "Allows undeclared outbound origins to use dynamic backends.",
+        "path": "fastly.dynamicBackends",
+        "scope": "Fastly fetch capability",
+        "section": "fastly",
+        "type": "boolean"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Provider-owned bindings used by package-owned GRIP compatibility and canonical broadcast effects.",
+        "path": "fastly.grip",
+        "scope": "Fastly GRIP capability",
+        "section": "fastly",
+        "type": "object"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_GRIP_FANOUT_BACKEND_REQUIRED"
+        ],
+        "description": "Named Fastly Fanout backend.",
+        "path": "fastly.grip.fanoutBackend",
+        "scope": "GRIP hold",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED"
+        ],
+        "description": "Provider-owned absolute publish/control endpoint; distinct from public gateway and ingress URLs.",
+        "path": "fastly.grip.publishEndpoint",
+        "scope": "GRIP broadcast",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED"
+        ],
+        "description": "Absolute publish endpoint URL.",
+        "path": "fastly.grip.publishUrl",
+        "scope": "GRIP publish",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_GRIP_PUBLISH_BINDING_REQUIRED"
+        ],
+        "description": "Named backend for the provider publish endpoint.",
+        "path": "fastly.grip.publishBackend",
+        "scope": "GRIP broadcast/publish",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "Store the value in Fastly Secret Store and configure only secretRef.",
+        "diagnostics": [],
+        "description": "Authentication metadata containing references only; no credential value is accepted here.",
+        "path": "fastly.grip.authentication",
+        "scope": "GRIP broadcast authentication",
+        "section": "fastly",
+        "type": "object"
+      },
+      {
+        "required": false,
+        "default": "`bearer`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_NATIVE_GRIP_AUTH_SCHEME_UNSUPPORTED"
+        ],
+        "description": "Provider authentication scheme.",
+        "path": "fastly.grip.authentication.scheme",
+        "scope": "GRIP broadcast authentication",
+        "section": "fastly",
+        "type": "'bearer'"
+      },
+      {
+        "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "The secret value is resolved only at request execution and is redacted from traces.",
+        "diagnostics": [
+          "PULSE_FASTLY_NATIVE_GRIP_SECRET_REFERENCE_MISSING"
+        ],
+        "description": "Named Fastly Secret Store key used for the bearer token.",
+        "path": "fastly.grip.authentication.secretRef",
+        "scope": "GRIP broadcast authentication",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "`true`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Enables the direct host-owned hold response realization.",
+        "path": "fastly.grip.directHold",
+        "scope": "GRIP hold",
+        "section": "fastly",
+        "type": "boolean"
+      },
+      {
+        "required": false,
+        "default": "`pulse-app`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Generated Fastly package name.",
+        "path": "fastly.name",
+        "scope": "Fastly package metadata",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "`Pulse application`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Generated Fastly package description.",
+        "path": "fastly.description",
+        "scope": "Fastly package metadata",
+        "section": "fastly",
+        "type": "string"
+      },
+      {
+        "required": false,
+        "default": "`[]`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Generated Fastly package authors.",
+        "path": "fastly.authors",
+        "scope": "Fastly package metadata",
+        "section": "fastly",
+        "type": "readonly string[]"
+      },
+      {
+        "required": false,
+        "default": "`{}`",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Local-only behavior; it does not alter the deployed target.",
+        "path": "fastly.local",
+        "scope": "local Fastly conformance",
+        "section": "fastly",
+        "type": "object"
+      },
+      {
+        "required": false,
+        "default": "`false`",
+        "allowed": "—",
+        "precedence": "`dev.networkFetch` overrides this value when explicitly set.",
+        "security": "Keep disabled for deterministic tests and offline development.",
+        "diagnostics": [],
+        "description": "Allows unmatched local Fastly fetches to use the network.",
+        "path": "fastly.local.networkFetch",
+        "scope": "local Fastly fetch realization",
+        "section": "fastly",
+        "type": "boolean"
+      }
+    ],
+    "runtimeRules": {
+      "entry": {
+        "kind": "string",
+        "default": "./src/index.ts",
+        "nonEmpty": true
+      },
+      "provider": {
+        "kind": "provider-package",
+        "default": "node",
+        "builtinValues": [
+          "node",
+          "fastly",
+          "none"
+        ]
+      },
+      "outDir": {
+        "kind": "string",
+        "default": "./dist",
+        "nonEmpty": true
+      },
+      "reporting": {
+        "kind": "enum",
+        "default": "info",
+        "values": [
+          "off",
+          "error",
+          "warn",
+          "info",
+          "debug"
+        ]
+      },
+      "crypto": {
+        "kind": "crypto-configuration",
+        "optional": true
+      },
+      "schemas.contentTypePolicy": {
+        "kind": "enum",
+        "default": "accept-json-or-missing",
+        "values": [
+          "accept-json-or-missing",
+          "require-json"
+        ]
+      },
+      "schemas.maxBytes": {
+        "kind": "positive-safe-integer",
+        "default": 65536
+      },
+      "dev.host": {
+        "kind": "string",
+        "default": "127.0.0.1",
+        "nonEmpty": true
+      },
+      "dev.port": {
+        "kind": "integer",
+        "default": 8787,
+        "minimum": 0,
+        "maximum": 65535
+      },
+      "dev.watch": {
+        "kind": "boolean",
+        "default": true
+      },
+      "dev.maxBodyBytes": {
+        "kind": "positive-safe-integer",
+        "default": 65536
+      },
+      "harness.maxBodyBytes": {
+        "kind": "positive-safe-integer",
+        "optional": true
+      },
+      "harness.continuationTtlMs": {
+        "kind": "non-negative-safe-integer",
+        "optional": true
+      }
+    },
+    "jsonSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "$id": "urn:pulse:project-config:v1",
+      "title": "Pulse project configuration",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entry": {
+          "type": "string",
+          "minLength": 1,
+          "default": "./src/index.ts"
+        },
+        "provider": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "object",
+              "required": [
+                "kind"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": true
+            }
+          ],
+          "default": "node"
+        },
+        "outDir": {
+          "type": "string",
+          "minLength": 1,
+          "default": "./dist"
+        },
+        "reporting": {
+          "enum": [
+            "off",
+            "error",
+            "warn",
+            "info",
+            "debug"
+          ],
+          "default": "info"
+        },
+        "crypto": {
+          "oneOf": [
+            {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "HS256",
+                  "ES256",
+                  "SHA-256",
+                  "HMAC-SHA256"
+                ]
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "HS256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                },
+                "ES256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                },
+                "SHA-256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                },
+                "HMAC-SHA256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "runtime-builtin",
+                        "guest-source:pulse-hmac-as",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "schemas": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contentTypePolicy": {
+              "enum": [
+                "accept-json-or-missing",
+                "require-json"
+              ],
+              "default": "accept-json-or-missing"
+            },
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 65536
+            }
+          }
+        },
+        "dev": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "host": {
+              "type": "string",
+              "minLength": 1,
+              "default": "127.0.0.1"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535,
+              "default": 8787
+            },
+            "watch": {
+              "type": "boolean",
+              "default": true
+            },
+            "maxBodyBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991,
+              "default": 65536
+            },
+            "networkFetch": {
+              "type": "boolean"
+            },
+            "config": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "secrets": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "kv": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object"
+              }
+            },
+            "fetches": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "providers": {
+    "fastly": {
+      "schemaVersion": "pulse.provider-fastly-config-schema.v1",
+      "fields": {
+        "fastly.bindings.s3": {
+          "kind": "object",
+          "default": {}
+        },
+        "fastly.configStore": {
+          "kind": "string",
+          "default": "pulse_config"
+        },
+        "fastly.secretStore": {
+          "kind": "string",
+          "default": "pulse_secrets"
+        },
+        "fastly.kv": {
+          "kind": "string-map",
+          "default": {}
+        },
+        "fastly.backends": {
+          "kind": "string-map",
+          "default": {}
+        },
+        "fastly.dynamicBackends": {
+          "kind": "boolean",
+          "default": false
+        },
+        "fastly.grip": {
+          "kind": "object"
+        },
+        "fastly.grip.fanoutBackend": {
+          "kind": "optional-string"
+        },
+        "fastly.grip.publishEndpoint": {
+          "kind": "optional-string"
+        },
+        "fastly.grip.publishUrl": {
+          "kind": "optional-string"
+        },
+        "fastly.grip.publishBackend": {
+          "kind": "optional-string"
+        },
+        "fastly.grip.authentication": {
+          "kind": "object"
+        },
+        "fastly.grip.authentication.scheme": {
+          "kind": "optional-string"
+        },
+        "fastly.grip.authentication.secretRef": {
+          "kind": "optional-string"
+        },
+        "fastly.grip.directHold": {
+          "kind": "boolean",
+          "default": true
+        },
+        "fastly.name": {
+          "kind": "string",
+          "default": "pulse-app"
+        },
+        "fastly.description": {
+          "kind": "string",
+          "default": "Pulse application"
+        },
+        "fastly.authors": {
+          "kind": "string-array",
+          "default": []
+        },
+        "fastly.local": {
+          "kind": "object",
+          "default": {}
+        },
+        "fastly.local.networkFetch": {
+          "kind": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}

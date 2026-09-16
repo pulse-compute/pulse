@@ -48,7 +48,8 @@
     "release:candidate": "node scripts/release-candidate.cjs prepare --pack-dir .pulse-release --out .pulse-publication",
     "release:verify-bundle": "node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication",
     "release:prepare": "node scripts/release-prepare.cjs",
-    "docs:site:check": "node scripts/build-docs-site.cjs --check"
+    "docs:site:check": "node scripts/build-docs-site.cjs --check",
+    "release:tag": "node scripts/release-tag.cjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.15",
