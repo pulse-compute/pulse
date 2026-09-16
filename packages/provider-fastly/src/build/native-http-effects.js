@@ -217,11 +217,13 @@ function generateSchemaRuntime(plan) {
       body.push('  const output = host_value_object()');
       fields.forEach(({ field, apply }, fieldIndex) => {
         body.push(`  const key_${currentIndex}_${fieldIndex} = __pulse_fastly_string_value(${quote(field.name)})`);
+        if (!field.required) body.push(`  if (__pulse_fastly_find(input, ${quote(field.name)}) >= 0) {`);
         body.push(`  const field_${currentIndex}_${fieldIndex} = host_value_property(valueHandle, key_${currentIndex}_${fieldIndex})`);
         body.push(`  if (__pulse_fastly_value(field_${currentIndex}_${fieldIndex}).kind == PULSE_VALUE_UNDEFINED) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 51, -1); return 0 }`);
         body.push(`  const projected_${currentIndex}_${fieldIndex} = ${apply}(field_${currentIndex}_${fieldIndex})`);
         body.push(`  if (projected_${currentIndex}_${fieldIndex} <= 0) return 0`);
         body.push(`  host_value_object_set(output, key_${currentIndex}_${fieldIndex}, projected_${currentIndex}_${fieldIndex})`);
+        if (!field.required) body.push('  }');
       });
       body.push('  return output');
     } else if (node.kind === 'string') {
