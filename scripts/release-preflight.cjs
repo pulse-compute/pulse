@@ -14,6 +14,8 @@ const {
   PUBLICATION
 } = require('./package-support.cjs');
 
+const { validateShardCoverage } = require('./release-evidence-bundle.cjs');
+
 const PREFLIGHT_SCHEMA = 'pulse.release-preflight.v1';
 const CONFORMANCE_LEDGER_SCHEMA = 'pulse.release-conformance-ledger.v1';
 const INVENTORY_SCHEMA = 'pulse.documentation-inventory.v2';
@@ -514,6 +516,7 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
 }
 
 function validatePreflight(options = {}) {
+  const shards = validateShardCoverage();
   const root = path.resolve(options.repoRoot || repoRoot);
   const preflight = options.preflight || readJson(PREFLIGHT_FILE, root);
   const inventory = options.inventory || readJson(INVENTORY_FILE, root);
@@ -626,6 +629,7 @@ function validatePreflight(options = {}) {
     releaseCandidate: Object.freeze({ ...candidate }),
     vocabulary,
     statuses: Object.freeze(statuses),
+    shards: shards.length,
     gates: preflight.gates.length,
     bootstrap,
     audits: auditPolicy,
@@ -851,7 +855,7 @@ async function main() {
     process.stdout.write(
       `ok - release preflight classified ${validation.gates} gate(s) `
       + `(${validation.statuses.proven} proven, ${validation.statuses.pending} pending, ${validation.statuses.blocked} blocked) `
-      + `and ${validation.documentation.sources} documentation source(s)\n`
+      + `and ${validation.documentation.sources} documentation source(s); ${validation.shards} release shards mapped\n`
     );
   }
 }

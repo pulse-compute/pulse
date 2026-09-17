@@ -10,6 +10,7 @@ const { expandProfile } = require('../suite/registry.cjs');
 const {
   AGGREGATE_VERSION,
   SHARD_DEFINITIONS,
+  validateShardCoverage,
   aggregateValidation,
   treeSnapshot,
   targetIntegrityReport,
@@ -55,6 +56,31 @@ try {
 
 const sourceRevision = 'a'.repeat(40);
 const expectedTasks = expandProfile('release');
+const coverage = validateShardCoverage();
+assert.equal(coverage.length, 16);
+assert.throws(
+  () => validateShardCoverage([...expectedTasks, 'new-unmapped-task']),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED' && /new-unmapped-task/.test(error.message)
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, [...SHARD_DEFINITIONS, { id: 'stale', tasks: ['removed-task'] }]),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_TASK_UNKNOWN' && /stale.*removed-task/.test(error.message)
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, [...SHARD_DEFINITIONS, SHARD_DEFINITIONS[0]]),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_SHARD_INVALID'
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, [...SHARD_DEFINITIONS, { id: 'empty', taskPrefix: ['missing-prefix-'] }]),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_SHARD_INVALID'
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, SHARD_DEFINITIONS.filter((shard) => shard.id !== 'fastly-javascript-provider')),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED' || error.code === 'PULSE_RELEASE_EVIDENCE_SHARD_INVALID'
+);
+// Overlap between shards remains intentional; prefix expansion covers new matching tasks.
+assert.ok(validateShardCoverage([...expectedTasks, 'docs-new-example'])
+  .find((shard) => shard.id === 'cli-documentation').tasks.includes('docs-new-example'));
 const taskReport = {
   sourceRevision,
   status: 'passed',

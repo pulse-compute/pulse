@@ -212,6 +212,24 @@ The aggregate candidate seal is:
 npm run release:seal
 ```
 
+Before restoring dependencies, the seal checks that every release-profile task
+maps to an evidence shard and every explicit shard task is in that profile.
+After the workspace build, a size-only documentation preflight rebuilds the
+canonical examples in default and experimental Native-size modes. It checks the
+existing README baselines, guest/provider bytes, and guest-link input sizes
+before running unit tests and the complete release profile. Run that bounded
+check directly with:
+
+```bash
+node wasm/test/docs/assert-executable-documentation.cjs --section sizes
+```
+
+Seal steps report start, completion, elapsed time and failure; size checks report
+the example and build mode; packing reports each package on stderr so `--json`
+stdout remains machine-readable. A successful preflight is development evidence.
+The full example workflows and exact-source complete release replay remain
+mandatory; preflight results cannot replace or be pooled into the final seal.
+
 It restores dependencies, validates the repository and generated documentation, runs the complete release profile, and adds the external Fastly task when the Fastly CLI can start its managed local Compute lifecycle. Use `--require-fastly` to make that host proof mandatory.
 
 The seal also regenerates the production vulnerability and installed-platform

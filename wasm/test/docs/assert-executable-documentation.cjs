@@ -142,7 +142,7 @@ function parseArgs(argv) {
     if (token === '--help' || token === '-h') { out.help = true; continue; }
     throw new Error(`unknown executable-documentation option: ${token}`);
   }
-  if (!['all', 'contracts', 'init-dev'].includes(out.section)) throw new Error(`unknown executable-documentation section: ${out.section}`);
+  if (!['all', 'contracts', 'init-dev', 'sizes'].includes(out.section)) throw new Error(`unknown executable-documentation section: ${out.section}`);
   if (out.example && out.section !== 'all') throw new Error('--example cannot be combined with --section');
   if (out.example && !examples.some((entry) => entry.id === out.example)) throw new Error(`unknown documentation example: ${out.example}`);
   return Object.freeze(out);
@@ -150,7 +150,7 @@ function parseArgs(argv) {
 
 function usage() {
   return [
-    'Usage: node assert-executable-documentation.cjs [--section contracts|init-dev] [--example <id>]',
+    'Usage: node assert-executable-documentation.cjs [--section contracts|init-dev|sizes] [--example <id>]',
     '',
     'No selection runs the complete executable-documentation proof.',
     `Examples: ${examples.map((entry) => entry.id).join(', ')}`
@@ -511,6 +511,60 @@ function verifyOptimizedNativeBuild(example, projectDir, outputs) {
   return Object.freeze({ guestWasmBytes, providerWasmBytes });
 }
 
+function verifyDefaultNativeSizes(example, buildDir, build) {
+  const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
+  assert.equal(guestWasmBytes, example.guestWasmBytes, `${example.id} documented application guest Wasm size changed`);
+  if (example.linkedGuestInputBytes) {
+    const report = JSON.parse(fs.readFileSync(path.join(buildDir, 'guest-link-report.json'), 'utf8'));
+    assert.equal(report.inputs.primary.bytes, example.applicationInputBytes, `${example.id} primary guest-link input changed`);
+    assert.equal(report.inputs.guest.bytes, example.linkedGuestInputBytes, `${example.id} linked guest input changed`);
+    assert.equal(report.finalArtifact.bytes, example.guestWasmBytes, `${example.id} linked output size changed`);
+  }
+  let wasmBytes = 0;
+  if (example.provider === 'fastly') {
+    wasmBytes = inspectWasm(path.join(buildDir, 'bin', 'main.wasm'), example.id);
+    assert.equal(wasmBytes, example.providerWasmBytes, `${example.id} documented provider Wasm size changed`);
+    assert.equal(build.json.manifest.providerTarget.compiledWasmPresent, true, `${example.id} did not report compiled Wasm`);
+    assert.equal(build.json.manifest.providerTarget.target, 'fastly-compute-native');
+    assert.equal(build.json.manifest.providerTarget.javascriptRuntime, false);
+    assert.equal(build.json.manifest.providerTarget.wasm.magic, '0061736d01000000');
+    assert.ok(fs.existsSync(path.join(buildDir, 'fastly.toml')), `${example.id} Fastly build is missing fastly.toml`);
+    assert.ok(fs.existsSync(path.join(buildDir, 'fastly-build.json')), `${example.id} Fastly build is missing fastly-build.json`);
+  } else {
+    assert.equal(fs.existsSync(path.join(buildDir, 'bin', 'main.wasm')), false, `${example.id} Node build must not claim a Fastly provider target`);
+  }
+  return Object.freeze({ guestWasmBytes, wasmBytes });
+}
+
+// Builds only the documented artifacts; the full example workflows still replay later.
+function verifyDocumentationSizes() {
+  const syncResult = verifySourceContracts();
+  for (const [index, example] of examples.entries()) {
+    console.log(`docs sizes - ${index + 1}/${examples.length}: ${example.id}`);
+    const projectDir = path.join(repoRoot, 'examples', example.id);
+    const project = resolveProject({ cwd: projectDir });
+    assertExampleReadme(example, project, syncResult);
+    if (example.noApplicationWasm) {
+      console.log(`ok - docs sizes ${example.id}: no documented application Wasm`);
+      continue;
+    }
+    const buildDir = path.join(projectDir, BUILD_DIR);
+    const guestCacheDir = path.join(projectDir, '.pulse', 'guests');
+    for (const directory of [buildDir, guestCacheDir]) {
+      fs.rmSync(directory, { recursive: true, force: true });
+      cleanupPaths.add(directory);
+    }
+    console.log(`docs sizes - ${example.id}: default build`);
+    const build = runPulse('build', projectDir, ['--out', BUILD_DIR], 360000);
+    assert.equal(build.json.status, 'built', `${example.id} size preflight build failed`);
+    const defaults = verifyDefaultNativeSizes(example, buildDir, build);
+    console.log(`docs sizes - ${example.id}: optimized build`);
+    const optimized = verifyOptimizedNativeBuild(example, projectDir, []);
+    console.log(`ok - docs sizes ${example.id}: guest=${defaults.guestWasmBytes}/${optimized.guestWasmBytes} provider=${defaults.wasmBytes}/${optimized.providerWasmBytes}`);
+  }
+  console.log(`ok - documentation size preflight checked ${examples.length} examples; full replay still required`);
+}
+
 function verifyExampleWorkflow(example, syncResult) {
   console.log(`docs - verify canonical example ${example.id}`);
   const projectDir = path.join(repoRoot, 'examples', example.id);
@@ -659,27 +713,7 @@ function verifyExampleWorkflow(example, syncResult) {
     assert.equal(manifest.events.targetSupport.status, 'eligible', `${example.id} build must retain event target eligibility`);
     assert.deepEqual(manifest.events.files, { catalog: 'event-catalog.json', inspection: 'event-inspection.json' });
   }
-  const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
-  assert.equal(guestWasmBytes, example.guestWasmBytes, `${example.id} documented application guest Wasm size changed`);
-  if (example.linkedGuestInputBytes) {
-    const report = JSON.parse(fs.readFileSync(path.join(buildDir, 'guest-link-report.json'), 'utf8'));
-    assert.equal(report.inputs.primary.bytes, example.applicationInputBytes, `${example.id} primary guest-link input changed`);
-    assert.equal(report.inputs.guest.bytes, example.linkedGuestInputBytes, `${example.id} linked guest input changed`);
-    assert.equal(report.finalArtifact.bytes, example.guestWasmBytes, `${example.id} linked output size changed`);
-  }
-  let wasmBytes = 0;
-  if (example.provider === 'fastly') {
-    wasmBytes = inspectWasm(path.join(buildDir, 'bin', 'main.wasm'), example.id);
-    assert.equal(wasmBytes, example.providerWasmBytes, `${example.id} documented provider Wasm size changed`);
-    assert.equal(build.json.manifest.providerTarget.compiledWasmPresent, true, `${example.id} did not report compiled Wasm`);
-    assert.equal(build.json.manifest.providerTarget.target, 'fastly-compute-native');
-    assert.equal(build.json.manifest.providerTarget.javascriptRuntime, false);
-    assert.equal(build.json.manifest.providerTarget.wasm.magic, '0061736d01000000');
-    assert.ok(fs.existsSync(path.join(buildDir, 'fastly.toml')), `${example.id} Fastly build is missing fastly.toml`);
-    assert.ok(fs.existsSync(path.join(buildDir, 'fastly-build.json')), `${example.id} Fastly build is missing fastly-build.json`);
-  } else {
-    assert.equal(fs.existsSync(path.join(buildDir, 'bin', 'main.wasm')), false, `${example.id} Node build must not claim a Fastly provider target`);
-  }
+  const { guestWasmBytes, wasmBytes } = verifyDefaultNativeSizes(example, buildDir, build);
   if ((example.schemas || []).length > 0) {
     assert.ok(fs.existsSync(path.join(buildDir, 'schema-json-registry.json')), `${example.id} schema build is missing the registry`);
     assert.ok(fs.existsSync(path.join(buildDir, 'schema-json-codecs.cjs')), `${example.id} schema build is missing generated codecs`);
@@ -832,6 +866,10 @@ async function main() {
   if (options.help) { console.log(usage()); return; }
   if (options.list) { console.log(examples.map((entry) => entry.id).join('\n')); return; }
   try {
+    if (options.section === 'sizes') {
+      verifyDocumentationSizes();
+      return;
+    }
     if (options.example) {
       const syncResult = verifySourceContracts();
       const example = examples.find((entry) => entry.id === options.example);
@@ -883,7 +921,11 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error && error.stack ? error.stack : String(error));
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error && error.stack ? error.stack : String(error));
+    process.exit(1);
+  });
+}
+
+module.exports = Object.freeze({ verifyDefaultNativeSizes });

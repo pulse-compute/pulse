@@ -64,7 +64,7 @@ function packageManagerInvocation() {
 }
 
 function runStep(steps, id, description, command, args, options = {}) {
-  process.stdout.write(`\n[pulse:release] ${description}\n`);
+  process.stdout.write(`\n[pulse:release] Step ${steps.length + 1} started: ${id} — ${description}\n`);
   const startedAt = new Date().toISOString();
   const result = spawnSync(command, args, {
     cwd: repoRoot,
@@ -84,6 +84,7 @@ function runStep(steps, id, description, command, args, options = {}) {
     error: result.error ? result.error.message : null
   });
   steps.push(step);
+  process.stdout.write(`[pulse:release] Step ${steps.length} ${step.status}: ${id} (${Date.parse(step.completedAt) - Date.parse(startedAt)}ms)\n`);
   if (step.status !== 'passed') {
     const error = new Error(`${description} failed (${step.command})`);
     error.code = 'PULSE_RELEASE_SEAL_STEP_FAILED';
@@ -133,7 +134,8 @@ function main(argv = process.argv.slice(2)) {
     return;
   }
   const runtime = assertReleaseNode();
-  validatePreflight();
+  const preflight = validatePreflight();
+  process.stdout.write(`[pulse:release] Preflight passed: ${preflight.shards} release shards mapped; full replay still required.\n`);
 
   const startedAt = new Date().toISOString();
   const sourceIdentity = resolveSourceIdentity(repoRoot);
@@ -183,6 +185,17 @@ function main(argv = process.argv.slice(2)) {
       );
     }
 
+    runStep(steps, 'maintainer', 'Validate the maintainer control plane', 'node', ['scripts/validate-maintainer-control-plane.cjs']);
+    runStep(steps, 'publication', 'Validate publication and deployment controls', 'node', ['scripts/validate-publication-workflows.cjs']);
+    runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
+    runStep(
+      steps,
+      'documentation-sizes',
+      'Preflight documented Wasm sizes before the complete release replay',
+      process.execPath,
+      ['wasm/test/docs/assert-executable-documentation.cjs', '--section', 'sizes'],
+      { timeoutMs: 10 * 60 * 1000, env: identityEnv }
+    );
     runStep(
       steps,
       'production-dependency-audit',
@@ -191,9 +204,6 @@ function main(argv = process.argv.slice(2)) {
       ['scripts/audit-production-dependencies.cjs'],
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv }
     );
-    runStep(steps, 'maintainer', 'Validate the maintainer control plane', 'node', ['scripts/validate-maintainer-control-plane.cjs']);
-    runStep(steps, 'publication', 'Validate publication and deployment controls', 'node', ['scripts/validate-publication-workflows.cjs']);
-    runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
     runPackageManagerStep('workspace-unit', 'Run workspace unit tests', ['run', '-s', 'test'], 10 * 60 * 1000);
     runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
     runStep(
