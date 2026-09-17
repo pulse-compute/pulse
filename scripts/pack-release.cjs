@@ -89,9 +89,7 @@ function readTarEntries(tarball) {
 }
 
 function pnpmInvocation(repoRoot) {
-  const bundled = path.join(repoRoot, '.validation-tools', 'pnpm', 'bin', 'pnpm.cjs');
-  if (fs.existsSync(bundled)) return { command: process.execPath, prefix: [bundled] };
-  return { command: 'corepack', prefix: [`pnpm@${PUBLICATION.pnpmVersion}`] };
+  return require('./pnpm-toolchain.cjs').pnpmInvocation(repoRoot);
 }
 
 function run(command, args, options = {}) {

@@ -41,9 +41,10 @@ jobs:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
         run: |
           set -euo pipefail
-          corepack enable
           pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          corepack prepare "pnpm@$pnpm_version" --activate
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

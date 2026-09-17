@@ -117,7 +117,16 @@ A human release authority must approve that environment. Codex may inspect failu
 
 ## Trusted publishing
 
-Pulse uses npm trusted publishing through GitHub Actions OIDC. No `NPM_TOKEN` or `NODE_AUTH_TOKEN` is provided. Published packages support `^22.14.0 || ^24.0.0`; local development supports pnpm `>=10 <11`. Release packing, CI, and the portable dependency bundle select the exact pnpm version in the release manifest (currently 10.0.0). Local release seals accept Node `^24.0.0` and record the exact patch used. The protected publication workflow remains reproducibly pinned to Node 24.18.0 and npm 11.15.0, and `scripts/release-publication.cjs` rejects a different Node patch, a different npm version, or known long-lived npm credential variables in that job.
+Pulse uses npm trusted publishing through GitHub Actions OIDC. No `NPM_TOKEN` or `NODE_AUTH_TOKEN` is provided. Published packages support `^22.14.0 || ^24.0.0`; local development supports pnpm `^12.4.2`. Release packing, CI, and the portable dependency bundle select the exact pnpm version in the release manifest (currently 12.4.2). The development range is a compatibility range, not a patch pin; release validators require the exact version to satisfy it. To install the release toolchain and workspace dependencies without lifecycle scripts:
+
+```bash
+node scripts/pnpm-toolchain.cjs --install
+node scripts/pnpm-toolchain.cjs -- install --frozen-lockfile --ignore-scripts
+```
+
+Version 12 of pnpm supplies a native executable. The bootstrap installs the exact npm distribution with lifecycle scripts disabled, verifies its native executable version, and carries that executable in `.validation-tools/pnpm/bin`. Bundle creation verifies the lockfile against registry supply-chain policies and records `lockfileVerification` with its SHA-256. Offline restore first validates that hash and the exact toolchain/platform, then uses pnpm’s `trust-lockfile` mode for the already-verified lockfile; package integrity checks remain enabled. This avoids requiring uncached registry/provenance metadata offline. Normal online installs and CI keep full verification enabled. Release commands use the bundled runner directly. Rebuild dependency bundles when changing the manifest pin; restore rejects a stale toolchain before replacing dependencies. Older release-tag documentation rebuilds retain their original pnpm version.
+
+Local release seals accept Node `^24.0.0` and record the exact patch used. The protected publication workflow remains reproducibly pinned to Node 24.18.0 and npm 11.15.0, and `scripts/release-publication.cjs` rejects a different Node patch, a different npm version, or known long-lived npm credential variables in that job.
 
 Every manifest-owned npm package setting must authorize exactly:
 

@@ -39,9 +39,7 @@ function atomicJson(file, value) {
 }
 
 function packageManagerInvocation() {
-  const bundled = path.join(repoRoot, '.validation-tools', 'pnpm', 'bin', 'pnpm.cjs');
-  if (fs.existsSync(bundled)) return Object.freeze({ command: process.execPath, prefix: Object.freeze([bundled]) });
-  return Object.freeze({ command: 'corepack', prefix: Object.freeze([`pnpm@${PUBLICATION.pnpmVersion}`]) });
+  return require('./pnpm-toolchain.cjs').pnpmInvocation(repoRoot);
 }
 
 function runJson(args, options = {}) {

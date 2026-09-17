@@ -53,9 +53,10 @@ jobs:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
         run: |
           set -euo pipefail
-          corepack enable
           pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          corepack prepare "pnpm@$pnpm_version" --activate
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Build on the current Node 22 support line
         run: pnpm run build
@@ -88,9 +89,10 @@ jobs:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
         run: |
           set -euo pipefail
-          corepack enable
           pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          corepack prepare "pnpm@$pnpm_version" --activate
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Build workspace outputs used by portable profiles
         run: pnpm run build

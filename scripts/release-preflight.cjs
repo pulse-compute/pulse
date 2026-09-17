@@ -350,7 +350,7 @@ function validateAuditPolicy(preflight, root = repoRoot) {
   if (!policy || typeof policy !== 'object' || Array.isArray(policy)) fail('release preflight auditPolicy is required');
   const vulnerabilities = policy.vulnerabilities;
   const licenses = policy.dependencyLicenses;
-  if (!vulnerabilities || vulnerabilities.command !== 'corepack pnpm audit --prod --json' || vulnerabilities.refreshAt !== 'release-seal') {
+  if (!vulnerabilities || vulnerabilities.command !== 'node scripts/pnpm-toolchain.cjs -- audit --prod --json' || vulnerabilities.refreshAt !== 'release-seal') {
     fail('production vulnerability audit method is not fixed to the frozen release closure');
   }
   if (JSON.stringify(vulnerabilities.stopShipSeverities) !== JSON.stringify(['critical', 'high'])) fail('critical and high production vulnerabilities must remain stop-ship');
@@ -545,8 +545,6 @@ function validatePreflight(options = {}) {
     || PUBLICATION.nodeReleaseRange !== '^24.0.0'
     || PUBLICATION.nodeVersion !== '24.18.0'
     || PUBLICATION.npmVersion !== '11.15.0'
-    || PUBLICATION.pnpmDevelopmentRange !== '>=10 <11'
-    || PUBLICATION.pnpmVersion !== '10.0.0'
   ) {
     fail('release preflight Node, npm, pnpm, or license decision drifted');
   }

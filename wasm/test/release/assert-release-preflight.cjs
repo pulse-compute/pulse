@@ -1,6 +1,7 @@
 'use strict';
 
 require('./assert-release-pr-check.cjs');
+require('./assert-pnpm-toolchain.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -111,7 +112,8 @@ assert.equal(plannedContract.exports.es256GuestUnit.source.treeSha256, currentGu
 
 assert.equal(rootManifest.engines.pnpm, releaseManifest.publication.pnpmDevelopmentRange);
 assert.equal(Object.hasOwn(rootManifest, 'packageManager'), false);
-assert.equal(releaseManifest.publication.pnpmVersion, '10.0.0');
+assert.ok(require('../../../scripts/package-support.cjs').versionSatisfiesCaretRange(
+  releaseManifest.publication.pnpmVersion, releaseManifest.publication.pnpmDevelopmentRange));
 assert.equal(releaseManifest.readiness.versionPreparation.gitTagging, 'separate-human-action-before-publication-seal');
 assert.equal(parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']).historyMode, 'replace-unpublished');
 assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished', '--archive-current']), /choose exactly one/);

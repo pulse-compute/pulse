@@ -27,8 +27,8 @@ function snapshotPreviousRelease(root, manifest) {
   const checkout = path.join(temporary, 'source');
   try {
     git(['worktree', 'add', '--detach', checkout, tag], root, false);
-    const pnpm = `pnpm@${tagged.publication.pnpmVersion}`;
-    run('corepack', [pnpm, 'install', '--frozen-lockfile', '--ignore-scripts'], checkout);
+    const pnpm = require('./pnpm-toolchain.cjs').pnpmInvocation(checkout, tagged.publication.pnpmVersion);
+    run(pnpm.command, [...pnpm.prefix, 'install', '--frozen-lockfile', '--ignore-scripts'], checkout);
     run(process.execPath, ['scripts/build-docs-site.cjs', '--snapshot'], checkout);
     const destination = path.join(root, archive);
     if (fs.existsSync(destination)) {
