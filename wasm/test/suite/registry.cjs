@@ -17,10 +17,13 @@ function nodeTask(file, options = {}) {
 }
 
 function vitestTask(files, options = {}) {
-  const vitest = path.join(path.dirname(require.resolve('vitest')), 'vitest.mjs');
   return Object.freeze({
     command: node,
-    args: [vitest, 'run', '--root', path.resolve(wasmRoot, '..'), ...files],
+    // Release preflight reads profile metadata before dependencies are installed.
+    get args() {
+      const vitest = path.join(path.dirname(require.resolve('vitest')), 'vitest.mjs');
+      return [vitest, 'run', '--root', path.resolve(wasmRoot, '..'), ...files];
+    },
     timeoutMs: options.timeoutMs || 120000,
     evidence: options.evidence || 'javascript',
     description: options.description || files.join(', '),

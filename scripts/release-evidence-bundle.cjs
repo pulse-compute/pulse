@@ -10,9 +10,6 @@ const { spawnSync } = require('node:child_process');
 const { expandProfile } = require('../wasm/test/suite/registry.cjs');
 const { MAINTENANCE_POLICY } = require('./maintenance-policy.cjs');
 const { reportForInputs, renderMarkdown } = require('./maintainer-scope.cjs');
-const {
-  FASTLY_JAVASCRIPT_TARGET_SUPPORT_DECLARATION
-} = require('../packages/provider-fastly/src/javascript/support.js');
 
 const EVIDENCE_BUNDLE_VERSION = 'pulse.release-evidence-bundle.v1';
 const AGGREGATE_VERSION = 'pulse.release-evidence-aggregate.v1';
@@ -648,6 +645,11 @@ function scopeReport(ledger, baseRevision, headRevision) {
 }
 
 function targetIntegrityReport(headRevision, fourMode, candidates) {
+  // Provider realization needs installed workspace links; shard preflight does not.
+  const {
+    FASTLY_JAVASCRIPT_TARGET_SUPPORT_DECLARATION
+  } = require('../packages/provider-fastly/src/javascript/support.js');
+
   const availability = FASTLY_JAVASCRIPT_TARGET_SUPPORT_DECLARATION.availability;
   if (availability.definition !== 'full-target-support'
       || !availability.fullTargetSupportReady
