@@ -203,10 +203,10 @@ function createPlan(packageFixture) {
     },
     materialization: {
       workspace: '.pulse/guests',
-      directory: `.pulse/guests/${unit.id}/${unit.artifact.sha256}`,
+      directory: `.pulse/guests/${unit.id}/${unit.artifact.sha256}/${packageFixture.manifestSha256}`,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     },
@@ -291,6 +291,15 @@ async function main() {
     fs.mkdirSync(inputRoot, { recursive: true });
     const packageFixture = createPackage(packageRoot);
     const plan = createPlan(packageFixture);
+    for (const directory of [
+      `.pulse/guests/${plan.unit.id}/${plan.unit.artifactSha256}`,
+      `.pulse/guests/${plan.unit.id}/${plan.unit.artifactSha256}/${'0'.repeat(64)}`
+    ]) {
+      assert.throws(() => guestLink.normalizeGuestUnitPlan({
+        ...plan,
+        materialization: { ...plan.materialization, directory }
+      }), error => error?.code === guestLink.diagnosticCodes.materializationFailed);
+    }
     const primaryFile = path.join(inputRoot, 'primary.wasm');
     const memoryOwnerFile = path.join(inputRoot, 'memory-owner.wasm');
     decodeFixture('primary', primaryFile);

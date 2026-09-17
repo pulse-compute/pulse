@@ -11,7 +11,8 @@ const guestLink = require('../../packages/wasm-guest-link/src/index.js');
 const {
   GUEST_LINK_STAGE_INVOCATION_VERSION,
   GUEST_LINK_STAGE_RESULT_VERSION,
-  realizeGuestLinkStage
+  realizeGuestLinkStage,
+  makeGuestUnitPlan
 } = require('../../packages/wasm-guest-link/src/stage.js');
 const {
   GUEST_UNIT_CONTRIBUTION_VERSION,
@@ -52,7 +53,7 @@ function makePackage(root) {
   fs.cpSync(path.join(fixtureRoot, 'memory', 'rust'), source, { recursive: true });
   fs.writeFileSync(path.join(root, 'package.json'), stableJson({
     name: '@pulse-compute/wasm-guest-link',
-    version: '1.0.0-beta.1'
+    version: '1.0.0-beta.4'
   }));
   const artifact = fixtureWasm('guest');
   fs.writeFileSync(path.join(native, 'unit.wasm'), artifact);
@@ -62,7 +63,7 @@ function makePackage(root) {
     id: 'pulse.guest-link.proof.borrowed-span',
     module: 'pulse_guest_memory',
     owner: '@pulse-compute/wasm-guest-link',
-    packageVersion: '1.0.0-beta.1',
+    packageVersion: '1.0.0-beta.4',
     abi: 'pulse.guest-link.proof.borrowed-span.v1',
     origin: 'package-prebuilt',
     artifact: { file: 'native/proof/unit.wasm', bytes: artifact.length, sha256: sha256(artifact) },
@@ -138,6 +139,35 @@ function main() {
       synchronizedPackages: [{ name: manifest.owner, version: manifest.packageVersion }],
       optimizationPosture: 'native-default'
     };
+    // Exercise v2 planning against the current packaged ES256 manifest.
+    const es256PackageRoot = path.join(repoRoot, 'packages', 'crypto');
+    const es256ManifestFile = './guests/es256-rustcrypto/pulse.guest-unit.json';
+    const es256Bytes = fs.readFileSync(path.join(es256PackageRoot, es256ManifestFile));
+    const es256Manifest = guestLink.normalizeGuestUnitManifest(JSON.parse(es256Bytes));
+    const es256Selection = {
+      packageRoot: es256PackageRoot,
+      contribution: normalizeGuestUnitContribution({
+        version: GUEST_UNIT_CONTRIBUTION_VERSION,
+        id: es256Manifest.id,
+        manifest: es256ManifestFile
+      }, { owner: es256Manifest.owner, packageVersion: es256Manifest.packageVersion })
+    };
+    const es256Plan = makeGuestUnitPlan(es256Selection, {
+      manifest: es256Manifest,
+      manifestSha256: sha256(es256Bytes)
+    }, invocation, Buffer.from([0, 97, 115, 109, 1, 0, 0, 0]));
+    assert.equal(es256Plan.version, guestLink.versions.guestUnitPlanV2);
+    assert.equal(es256Plan.materialization.directory,
+      `.pulse/guests/${es256Manifest.id}/${es256Manifest.artifact.sha256}/${sha256(es256Bytes)}`);
+    for (const suffix of ['', `/${'0'.repeat(64)}`]) {
+      assert.throws(() => guestLink.normalizeGuestUnitPlan({
+        ...es256Plan,
+        materialization: {
+          ...es256Plan.materialization,
+          directory: `.pulse/guests/${es256Manifest.id}/${es256Manifest.artifact.sha256}${suffix}`
+        }
+      }), error => error?.code === guestLink.diagnosticCodes.materializationFailed);
+    }
     const primary = fixtureWasm('primary');
     const realize = (overrides = {}) => realizeGuestLinkStage({
       ...invocation,
@@ -150,7 +180,7 @@ function main() {
     assert.equal(first.version, GUEST_LINK_STAGE_RESULT_VERSION);
     assert.equal(first.materialization.reused, false);
     assert.equal(second.materialization.reused, true);
-    assert.equal(first.plan.materialization.directory, `.pulse/guests/${manifest.id}/${manifest.artifact.sha256}`);
+    assert.equal(first.plan.materialization.directory, `.pulse/guests/${manifest.id}/${manifest.artifact.sha256}/${first.plan.unit.manifestSha256}`);
     assert.equal(first.report.fallback.enabled, false);
     assert.equal(first.report.fallback.used, false);
     assert.equal(first.audit.providerPackaging.authorized, true);
@@ -239,6 +269,55 @@ function main() {
     assert.deepEqual(fs.readdirSync(materializedDirectory).sort(), ['unit.json', 'unit.wasm']);
     const firstMaterializedArtifact = fs.readFileSync(path.join(materializedDirectory, 'unit.wasm'));
     const firstMaterializedManifest = fs.readFileSync(path.join(materializedDirectory, 'unit.json'));
+    // P-15: keep a legacy artifact-only cache through a real package upgrade.
+    const legacyDirectory = path.join(projectRoot, '.pulse', 'guests', manifest.id, manifest.artifact.sha256);
+    fs.mkdirSync(legacyDirectory, { recursive: true });
+    fs.writeFileSync(path.join(legacyDirectory, 'unit.wasm'), firstMaterializedArtifact);
+    fs.writeFileSync(path.join(legacyDirectory, 'unit.json'), firstMaterializedManifest);
+    const packageFile = path.join(packageRoot, 'package.json');
+    const manifestFile = path.join(packageRoot, 'native', 'proof', 'unit.json');
+    const packageBytes = fs.readFileSync(packageFile);
+    const upgradedManifest = { ...manifest, packageVersion: '1.0.0-beta.5' };
+    const upgradedManifestBytes = Buffer.from(stableJson(upgradedManifest));
+    fs.writeFileSync(packageFile, stableJson({ name: manifest.owner, version: upgradedManifest.packageVersion }));
+    fs.writeFileSync(manifestFile, upgradedManifestBytes);
+    const upgradedContribution = normalizeGuestUnitContribution({
+      version: GUEST_UNIT_CONTRIBUTION_VERSION,
+      id: manifest.id,
+      manifest: './native/proof/unit.json'
+    }, { owner: manifest.owner, packageVersion: upgradedManifest.packageVersion });
+    const realizeUpgraded = () => realize({
+      synchronizedPackages: [{ name: manifest.owner, version: upgradedManifest.packageVersion }],
+      guestUnits: [{ contribution: upgradedContribution, packageRoot }]
+    });
+    const upgraded = realizeUpgraded();
+    assert.equal(upgraded.materialization.reused, false);
+    assert.notEqual(upgraded.plan.materialization.directory, first.plan.materialization.directory);
+    assert.equal(upgraded.plan.unit.artifactSha256, first.plan.unit.artifactSha256);
+    assert.deepEqual(upgraded.wasm, first.wasm);
+    assert.equal(realizeUpgraded().materialization.reused, true);
+    const upgradedDirectory = path.join(projectRoot, upgraded.plan.materialization.directory);
+    assert.deepEqual(fs.readFileSync(path.join(upgradedDirectory, 'unit.json')), upgradedManifestBytes);
+
+    // Identity is the exact manifest, not merely the package version.
+    fs.appendFileSync(manifestFile, '\n');
+    const revised = realizeUpgraded();
+    assert.notEqual(revised.plan.materialization.directory, upgraded.plan.materialization.directory);
+    assert.equal(revised.plan.unit.packageVersion, upgraded.plan.unit.packageVersion);
+    assert.deepEqual(revised.wasm, first.wasm);
+    fs.writeFileSync(manifestFile, upgradedManifestBytes);
+    assert.equal(realizeUpgraded().materialization.reused, true);
+    for (const [name, original] of [['unit.json', upgradedManifestBytes], ['unit.wasm', firstMaterializedArtifact]]) {
+      fs.writeFileSync(path.join(upgradedDirectory, name), 'corrupt');
+      assert.throws(realizeUpgraded, error => error?.code === guestLink.diagnosticCodes.materializationFailed);
+      fs.writeFileSync(path.join(upgradedDirectory, name), original);
+    }
+    assert.deepEqual(fs.readFileSync(path.join(legacyDirectory, 'unit.json')), firstMaterializedManifest);
+    assert.deepEqual(fs.readFileSync(path.join(legacyDirectory, 'unit.wasm')), firstMaterializedArtifact);
+    fs.writeFileSync(packageFile, packageBytes);
+    fs.writeFileSync(manifestFile, firstMaterializedManifest);
+    assert.equal(realize().materialization.reused, true);
+    assert.deepEqual(fs.readFileSync(path.join(materializedDirectory, 'unit.json')), firstMaterializedManifest);
     fs.rmSync(path.join(projectRoot, '.pulse', 'guests'), { recursive: true, force: true });
     assert.equal(fs.existsSync(materializedDirectory), false);
     const recreated = realize();
