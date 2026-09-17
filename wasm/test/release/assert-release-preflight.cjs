@@ -27,6 +27,38 @@ const {
 } = require('../../../scripts/release-prepare.cjs');
 
 const repoRoot = path.resolve(__dirname, '..', '..', '..');
+// Loading the shard/profile plan must not resolve installed test executables.
+const registryFile = path.join(repoRoot, 'wasm/test/suite/registry.cjs');
+let executableResolutions = 0;
+const withoutDependencies = (id) => require(id);
+withoutDependencies.resolve = (id) => {
+  executableResolutions += 1;
+  throw Object.assign(new Error(`Cannot find module '${id}'`), { code: 'MODULE_NOT_FOUND' });
+};
+const registryModule = { exports: {} };
+runInNewContext(fs.readFileSync(registryFile, 'utf8'), {
+  require: withoutDependencies, module: registryModule, process, __dirname: path.dirname(registryFile)
+}, { filename: registryFile });
+assert.ok(registryModule.exports.expandProfile('release').includes('crypto-runtime-builtin'));
+assert.equal(executableResolutions, 0, 'profile discovery must work before dependency installation');
+assert.throws(() => registryModule.exports.tasks['crypto-runtime-builtin'].args,
+  (error) => error.code === 'MODULE_NOT_FOUND' && /vitest/.test(error.message));
+assert.equal(executableResolutions, 1, 'executing a Vitest task must still require Vitest');
+const dependencyFreePreflight = spawnSync(process.execPath, ['-e', `
+  const Module = require('node:module');
+  const path = require('node:path');
+  const resolve = Module._resolveFilename;
+  Module._resolveFilename = function (request, ...args) {
+    if (!request.startsWith('.') && !path.isAbsolute(request) && !Module.isBuiltin(request)) {
+      throw new Error('Preflight attempted an installed dependency: ' + request);
+    }
+    return resolve.call(this, request, ...args);
+  };
+  require('./scripts/release-preflight.cjs').validatePreflight();
+`], { cwd: repoRoot, encoding: 'utf8', timeout: 30000 });
+assert.equal(dependencyFreePreflight.status, 0, dependencyFreePreflight.stderr);
+
+
 const preflight = JSON.parse(fs.readFileSync(path.join(repoRoot, PREFLIGHT_FILE), 'utf8'));
 const inventory = JSON.parse(fs.readFileSync(path.join(repoRoot, INVENTORY_FILE), 'utf8'));
 const releaseManifest = JSON.parse(fs.readFileSync(path.join(repoRoot, 'release', 'pulse-release-manifest.json'), 'utf8'));
