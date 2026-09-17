@@ -208,9 +208,9 @@ function validatePlan(contract, unitContract) {
   assertRelativePath(plan.materialization.directory, 'guest materialization directory');
   assert.equal(
     plan.materialization.directory,
-    `${plan.materialization.workspace}/${plan.unit.id}/${plan.unit.artifactSha256}`
+    `${plan.materialization.workspace}/${plan.unit.id}/${plan.unit.artifactSha256}/${plan.unit.manifestSha256}`
   );
-  assert.equal(plan.materialization.contentAddress, 'artifact-sha256');
+  assert.equal(plan.materialization.contentAddress, 'artifact-and-manifest-sha256');
   assert.equal(plan.materialization.generated, true);
   assert.equal(plan.materialization.authoritative, false);
   assert.equal(plan.trust.status, 'passed');

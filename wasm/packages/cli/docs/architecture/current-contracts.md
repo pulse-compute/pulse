@@ -538,7 +538,12 @@ contract is deliberately closed: one package-prebuilt unit, one fixed
 link-stage-owned memory, borrowed bounded input, MVP features, no start
 function, no allocation or pointer retention, no undeclared imports, and no
 fallback. `.pulse/guests/` is generated, content-addressed,
-non-authoritative, and reproducible after deletion.
+non-authoritative, and reproducible after deletion. Each entry lives at
+`.pulse/guests/<unit-id>/<artifact-sha256>/<manifest-sha256>/`, keyed by the
+exact artifact and manifest bytes. Upgrading a package whose Wasm is unchanged
+creates a separate entry when its manifest changes. Legacy artifact-only cache
+files remain untouched and are not reused. Reusing an exact entry still verifies
+both files byte for byte and rejects corruption.
 
 Only synchronized first-party package identity is trusted. Manifests contain
 normalized metadata and hashes, never executable commands. A failed selected

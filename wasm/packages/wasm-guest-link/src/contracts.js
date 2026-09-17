@@ -715,10 +715,10 @@ function normalizeGuestUnitPlanV1(input) {
   const directory = assertRelativePath(input.materialization.directory, 'guest unit plan materialization.directory');
   if (
     workspace !== '.pulse/guests'
-    || directory !== `${workspace}/${unit.id}/${unit.artifactSha256}`
+    || directory !== `${workspace}/${unit.id}/${unit.artifactSha256}/${unit.manifestSha256}`
     || input.materialization.artifact !== 'unit.wasm'
     || input.materialization.manifest !== 'unit.json'
-    || input.materialization.contentAddress !== 'artifact-sha256'
+    || input.materialization.contentAddress !== 'artifact-and-manifest-sha256'
     || input.materialization.generated !== true
     || input.materialization.authoritative !== false
   ) {
@@ -762,7 +762,7 @@ function normalizeGuestUnitPlanV1(input) {
       directory,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     }),
@@ -921,10 +921,10 @@ function normalizeGuestUnitPlanV2(input) {
   );
   if (
     workspace !== '.pulse/guests'
-    || directory !== `${workspace}/${unit.id}/${unit.artifact.sha256}`
+    || directory !== `${workspace}/${unit.id}/${unit.artifact.sha256}/${unit.manifestSha256}`
     || input.materialization.artifact !== 'unit.wasm'
     || input.materialization.manifest !== 'unit.json'
-    || input.materialization.contentAddress !== 'artifact-sha256'
+    || input.materialization.contentAddress !== 'artifact-and-manifest-sha256'
     || input.materialization.generated !== true
     || input.materialization.authoritative !== false
   ) {
@@ -1003,7 +1003,7 @@ function normalizeGuestUnitPlanV2(input) {
       directory,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     }),

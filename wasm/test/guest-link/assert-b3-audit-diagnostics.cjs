@@ -145,10 +145,10 @@ function createPlan(fixture) {
     },
     materialization: {
       workspace: '.pulse/guests',
-      directory: `.pulse/guests/${unit.id}/${unit.artifact.sha256}`,
+      directory: `.pulse/guests/${unit.id}/${unit.artifact.sha256}/${fixture.manifestSha256}`,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     },

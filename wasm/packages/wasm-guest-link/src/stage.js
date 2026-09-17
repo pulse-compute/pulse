@@ -364,10 +364,10 @@ function makeGuestUnitPlan(selection, resolved, facts, primaryBytes) {
     targetPolicy,
     materialization: {
       workspace: '.pulse/guests',
-      directory: `.pulse/guests/${manifest.id}/${manifest.artifact.sha256}`,
+      directory: `.pulse/guests/${manifest.id}/${manifest.artifact.sha256}/${resolved.manifestSha256}`,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     },
