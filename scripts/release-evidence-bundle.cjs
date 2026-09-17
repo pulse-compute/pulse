@@ -388,6 +388,38 @@ function artifactStatus(name, artifacts) {
   return 'failed';
 }
 
+// This checks the plan only. Passing coverage is never execution evidence.
+function validateShardCoverage(expectedTasks = expandProfile('release'), definitions = SHARD_DEFINITIONS) {
+  const known = new Set(expectedTasks);
+  const ids = new Set();
+  const shards = definitions.map((definition) => {
+    if (!definition.id || ids.has(definition.id)) {
+      fail('PULSE_RELEASE_EVIDENCE_SHARD_INVALID', `Duplicate or missing release shard ID: ${definition.id}`);
+    }
+    ids.add(definition.id);
+    const tasks = definition.taskPrefix
+      ? expectedTasks.filter((name) => definition.taskPrefix.some((prefix) => name.startsWith(prefix)))
+      : [...(definition.tasks || [])];
+    const unknown = tasks.filter((name) => !known.has(name));
+    if (unknown.length) {
+      fail('PULSE_RELEASE_EVIDENCE_TASK_UNKNOWN', `Shard ${definition.id} references tasks outside the release profile: ${unknown.join(', ')}`);
+    }
+    if (!tasks.length || new Set(tasks).size !== tasks.length) {
+      fail('PULSE_RELEASE_EVIDENCE_SHARD_INVALID', `Shard ${definition.id} has empty or duplicate task coverage`);
+    }
+    return Object.freeze({ ...definition, tasks: Object.freeze(tasks) });
+  });
+  const covered = new Set(shards.flatMap((shard) => shard.tasks));
+  const missing = expectedTasks.filter((name) => !covered.has(name));
+  if (missing.length) {
+    fail('PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED', `Release tasks are not mapped to a shard: ${missing.join(', ')}`);
+  }
+  if (shards.length !== 16) {
+    fail('PULSE_RELEASE_EVIDENCE_SHARD_INVALID', `Expected 16 release evidence shards, found ${shards.length}`);
+  }
+  return Object.freeze(shards);
+}
+
 function aggregateValidation(input) {
   const {
     sourceRevision,
@@ -419,10 +451,8 @@ function aggregateValidation(input) {
   }
   const stepById = new Map(releaseSeal.steps.map((entry) => [entry.id, entry]));
   const artifacts = { fourMode, candidates, replay };
-  const shards = SHARD_DEFINITIONS.map((definition) => {
-    const taskNames = definition.taskPrefix
-      ? expectedTasks.filter((name) => definition.taskPrefix.some((prefix) => name.startsWith(prefix)))
-      : [...(definition.tasks || [])];
+  const shards = validateShardCoverage(expectedTasks).map((definition) => {
+    const taskNames = definition.tasks;
     const taskResults = taskNames.map((name) => {
       const result = resultByName.get(name);
       return Object.freeze({
@@ -453,11 +483,6 @@ function aggregateValidation(input) {
         : null
     });
   });
-  const coveredTasks = new Set(shards.flatMap((entry) => entry.tasks.map((task) => task.name)));
-  const uncoveredTasks = expectedTasks.filter((name) => !coveredTasks.has(name));
-  if (uncoveredTasks.length > 0) {
-    fail('PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED', `Release tasks are not mapped to a shard: ${uncoveredTasks.join(', ')}`);
-  }
   if (shards.length !== 16 || shards.some((entry) => entry.status !== 'passed')) {
     fail('PULSE_RELEASE_EVIDENCE_SHARD_FAILED', 'One or more release evidence shards did not pass.');
   }
@@ -962,6 +987,7 @@ module.exports = Object.freeze({
   TARGET_INTEGRITY_VERSION,
   MIGRATION_LEDGER_VERSION,
   SHARD_DEFINITIONS,
+  validateShardCoverage,
   parseArgs,
   aggregateValidation,
   treeSnapshot,

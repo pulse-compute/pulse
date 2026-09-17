@@ -237,7 +237,9 @@ function packRelease(options = {}) {
     COREPACK_HOME: path.join(packageManagerCache, 'corepack'),
     npm_config_cache: path.join(packageManagerCache, 'npm')
   };
+  const progress = (message) => process.stderr.write(`[pulse:pack] ${message}\n`);
   try {
+    progress('Checking documentation source');
     validateDocumentationSource({ repoRoot });
     const legalBytes = new Map();
     for (const legalFile of LEGAL.packageFiles) {
@@ -246,6 +248,7 @@ function packRelease(options = {}) {
       legalBytes.set(legalFile, fs.readFileSync(source));
     }
     const pnpm = pnpmInvocation(repoRoot);
+    if (options.build !== false) progress('Building workspace');
     if (options.build !== false) run(pnpm.command, [...pnpm.prefix, 'run', '-s', 'build'], { cwd: repoRoot, env: packageManagerEnv, inherit: options.inheritBuild === true, timeout: 300000 });
     fs.rmSync(outDir, { recursive: true, force: true });
     fs.mkdirSync(outDir, { recursive: true });
@@ -254,7 +257,8 @@ function packRelease(options = {}) {
     const documentationArchives = [];
     const stagingRoot = path.join(packageManagerCache, 'staging');
     fs.mkdirSync(stagingRoot, { recursive: true });
-    for (const entry of PACKAGE_SET) {
+    for (const [index, entry] of PACKAGE_SET.entries()) {
+      progress(`Package ${index + 1}/${PACKAGE_SET.length}: ${entry.name}`);
       const sourceManifest = validateSourcePackage(repoRoot, entry);
       const stagedPackage = stagePackageForPack(repoRoot, entry, sourceManifest, stagingRoot);
       const before = new Set(fs.readdirSync(outDir));
@@ -264,8 +268,10 @@ function packRelease(options = {}) {
       const tarball = path.join(outDir, created[0]);
       const packed = validatePackedPackage(tarball, sourceManifest, entry, legalBytes);
       packages.push(packed);
+      progress(`Verified ${packed.name}: ${packed.bytes} bytes`);
       documentationArchives.push(Object.freeze({ name: packed.name, tarball, entries: readTarEntries(tarball) }));
     }
+    progress('Checking packed documentation links');
     validatePackedDocumentationSet(documentationArchives);
 
     const names = packages.map((entry) => entry.name);
