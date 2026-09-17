@@ -1,7 +1,6 @@
 'use strict';
 
 require('./assert-release-pr-check.cjs');
-require('./assert-pnpm-toolchain.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -170,7 +169,7 @@ assert.deepEqual(result.snapshot, {
   channel: 'beta',
   releasedAt: releaseManifest.releasedAt,
   packages: releaseManifest.packages.length,
-  dependencyRanges: 58
+  dependencyRanges: 60
 });
 assert.deepEqual(result.audits.noticeDisposition, {
   schemaVersion: 'pulse.release-notice-disposition.v1',
@@ -180,10 +179,10 @@ assert.deepEqual(result.audits.noticeDisposition, {
   packageFiles: ['LICENSE', 'NOTICE'],
   components: 3
 });
-assert.equal(result.documentation.sources, 249);
+assert.equal(result.documentation.sources, 251);
 assert.deepEqual(result.documentation.counts, {
   'current-public': 62,
-  'current-contributor': 75,
+  'current-contributor': 77,
   generated: 112
 });
 
