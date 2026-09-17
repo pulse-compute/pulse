@@ -36,10 +36,9 @@ function walk(dir, visitor) {
 
 const rootManifest = readJson(path.join(repoRoot, 'package.json'));
 const releaseManifest = readJson(path.join(repoRoot, 'release', 'pulse-release-manifest.json'));
-assert.equal(rootManifest.engines?.pnpm, '>=10 <11', 'root engines must support the pnpm 10.x development line');
 assert.equal(rootManifest.engines.pnpm, releaseManifest.publication.pnpmDevelopmentRange, 'root pnpm range must match release policy');
 assert.equal(Object.hasOwn(rootManifest, 'packageManager'), false, 'root development metadata must not hard-pin one pnpm patch');
-assert.match(releaseManifest.publication.pnpmVersion, /^10\.\d+\.\d+$/, 'release policy must select an exact pnpm 10.x toolchain');
+assert.match(releaseManifest.publication.pnpmVersion, /^\d+\.\d+\.\d+$/, 'release policy must select an exact pnpm toolchain');
 
 const expectedWorkspacePackages = ['packages/*', 'wasm', 'wasm/packages/*'];
 assert.deepEqual(rootManifest.workspaces, expectedWorkspacePackages, 'package.json workspaces must stay aligned with pnpm-workspace.yaml');

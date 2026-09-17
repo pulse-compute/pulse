@@ -80,9 +80,10 @@ jobs:
           set -euo pipefail
           npm install --global npm@11.15.0
           test "$(npm --version)" = "11.15.0"
-          corepack enable
           pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          corepack prepare "pnpm@$pnpm_version" --activate
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Build and validate the release source
         shell: bash

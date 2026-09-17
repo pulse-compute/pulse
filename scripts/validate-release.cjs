@@ -58,9 +58,7 @@ function commandText(command, args) {
 }
 
 function packageManagerInvocation() {
-  const bundled = path.join(repoRoot, '.validation-tools', 'pnpm', 'bin', 'pnpm.cjs');
-  if (fs.existsSync(bundled)) return Object.freeze({ command: process.execPath, prefix: [bundled] });
-  return Object.freeze({ command: 'corepack', prefix: [`pnpm@${PUBLICATION.pnpmVersion}`] });
+  return require('./pnpm-toolchain.cjs').pnpmInvocation(repoRoot);
 }
 
 function runStep(steps, id, description, command, args, options = {}) {

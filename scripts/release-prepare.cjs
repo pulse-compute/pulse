@@ -401,12 +401,12 @@ function isAllowedChangedPath(name, planned, policy) {
 
 function synchronize(plan, options) {
   if (options.noSync || options.dryRun) return [];
-  const pnpm = `pnpm@${plan.nextRelease.publication.pnpmVersion}`;
+  const pnpm = require('./pnpm-toolchain.cjs').pnpmInvocation(repoRoot, plan.nextRelease.publication.pnpmVersion);
   const commands = [
-    ['corepack', [pnpm, 'install', '--lockfile-only', '--ignore-scripts']],
-    ['corepack', [pnpm, 'run', '-s', 'maintainer:sync']],
-    ['corepack', [pnpm, 'run', '-s', 'docs:sync']]
-  ];
+    ['install', '--lockfile-only', '--ignore-scripts'],
+    ['run', '-s', 'maintainer:sync'],
+    ['run', '-s', 'docs:sync']
+  ].map((args) => [pnpm.command, [...pnpm.prefix, ...args]]);
   for (const [command, args] of commands) run(command, args);
   return commands.map(([command, args]) => `${command} ${args.join(' ')}`);
 }

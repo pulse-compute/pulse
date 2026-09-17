@@ -295,7 +295,7 @@
   },
   "auditPolicy": {
     "vulnerabilities": {
-      "command": "corepack pnpm audit --prod --json",
+      "command": "node scripts/pnpm-toolchain.cjs -- audit --prod --json",
       "evidencePath": ".pulse-release-preflight/production-vulnerability-audit.json",
       "refreshAt": "release-seal",
       "stopShipSeverities": [
@@ -392,7 +392,7 @@
       "status": "proven",
       "requiredBy": "documentation-release",
       "owner": "release-engineering",
-      "summary": "Supported Node is ^22.14.0 || ^24.0.0 and local development supports pnpm >=10 <11; reproducible publication uses Node 24.18.0, npm 11.15.0, and pnpm 10.0.0.",
+      "summary": "Supported Node is ^22.14.0 || ^24.0.0 and local development supports pnpm ^12.4.2; reproducible publication uses Node 24.18.0, npm 11.15.0, and pnpm 12.4.2.",
       "evidence": [
         "release/pulse-release-manifest.json#publication",
         ".github/workflows/validate.yml"
@@ -561,7 +561,7 @@
         "moderate": 0,
         "low": 0
       },
-      "verification": "corepack pnpm audit --prod --json"
+      "verification": "node scripts/pnpm-toolchain.cjs -- audit --prod --json"
     },
     {
       "id": "dependency-license-method",

@@ -94,7 +94,7 @@ try {
     // Preserve source identity inspection without spawning test/build processes.
     if (command === 'git') return originalSpawn(command, args, { encoding: 'utf8' });
     commands.push([command, ...args]);
-    if (args.includes('version') || args.includes('--version')) return { status: 1, stdout: '', stderr: '' };
+    if (command !== process.execPath && (args.includes('version') || args.includes('--version'))) return { status: 1, stdout: '', stderr: '' };
     const fail = failSizes ? args.includes('sizes') : args.includes('--profile');
     return { status: fail ? 1 : 0, signal: null };
   };

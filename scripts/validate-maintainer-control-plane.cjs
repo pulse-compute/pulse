@@ -328,7 +328,7 @@ function validateWorkflowSecurity() {
   includes(validation, 'node scripts/release-pr-check.cjs --base "$RELEASE_BASE" --head "$RELEASE_HEAD"', 'release preparation gate');
   includes(validation, 'ready_for_review', 'release PR CI activation');
   includes(validation, "publication.pnpmVersion", 'repository validation workflow');
-  includes(validation, 'corepack prepare "pnpm@$pnpm_version" --activate', 'repository validation workflow');
+  includes(validation, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'repository validation workflow');
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
   includes(validation, 'pnpm run build', 'repository validation workflow');
   for (const profile of ['unit', 'native', 'javascript', 'conformance']) {

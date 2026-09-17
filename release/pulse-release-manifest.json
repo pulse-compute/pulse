@@ -110,8 +110,8 @@
     "nodeReleaseRange": "^24.0.0",
     "nodeVersion": "24.18.0",
     "npmVersion": "11.15.0",
-    "pnpmDevelopmentRange": ">=10 <11",
-    "pnpmVersion": "10.0.0",
+    "pnpmDevelopmentRange": "^12.4.2",
+    "pnpmVersion": "12.4.2",
     "requireExistingPackageNames": true,
     "canonicalSmokePackage": "@pulse-compute/cli",
     "canonicalSmokeBinary": "pulse"

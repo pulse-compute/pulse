@@ -121,6 +121,12 @@ function validateDependencyBundlePolicy() {
   includes(restore, 'publication.pnpmVersion', 'dependency restore script');
   includes(restore, 'publication.pnpmDevelopmentRange', 'dependency restore script');
   includes(restore, 'restore requires release-owned Node', 'dependency restore script');
+  includes(bundle, 'scripts/pnpm-toolchain.cjs --install', 'dependency bundle script');
+  includes(bundle, 'ignoreScripts: true', 'dependency bundle script');
+  includes(bundle, 'trustLockfile: false', 'dependency bundle script');
+  includes(restore, '--config.trust-lockfile=true install --offline --frozen-lockfile --ignore-scripts', 'dependency restore script');
+  for (const source of [bundle, restore]) includes(source, "lockfileVerification: 'verified-during-fetch-and-bound-by-sha256'", 'dependency bundle verification contract');
+  includes(restore, 'bundled pnpm version mismatch', 'dependency restore script');
   return Object.freeze({ nodeVersion: PUBLICATION.nodeVersion, nodeEngines: PUBLICATION.nodeEngines, pnpmVersion: PUBLICATION.pnpmVersion, pnpmDevelopmentRange: PUBLICATION.pnpmDevelopmentRange, restoreInstructions: true });
 }
 
@@ -131,8 +137,8 @@ function validateConfiguration() {
   if (npm !== PUBLICATION) fail('npm publication must be owned by release/pulse-release-manifest.json');
   if (documentation.releaseVersion !== RELEASE_VERSION) fail('documentation deployment is not release-bound');
   if (npm.environment !== 'npm-publish' || documentation.environment !== 'documentation-production') fail('protected production environment names changed unexpectedly');
-  if (npm.nodeEngines !== '^22.14.0 || ^24.0.0' || npm.nodeMinimumVersion !== '22.14.0' || npm.nodeReleaseRange !== '^24.0.0' || npm.nodeVersion !== '24.18.0' || npm.npmVersion !== '11.15.0' || npm.pnpmDevelopmentRange !== '>=10 <11' || npm.pnpmVersion !== '10.0.0') {
-    fail('trusted publishing policy must retain the selected Node/npm toolchain, pnpm 10.x development range, and exact release pnpm for this release');
+  if (npm.nodeEngines !== '^22.14.0 || ^24.0.0' || npm.nodeMinimumVersion !== '22.14.0' || npm.nodeReleaseRange !== '^24.0.0' || npm.nodeVersion !== '24.18.0' || npm.npmVersion !== '11.15.0') {
+    fail('trusted publishing policy must retain the selected Node/npm toolchain for this release; pnpm follows the validated release manifest');
   }
   if (documentation.deployment.neverDelete !== true || documentation.deployment.requiresNpmVerificationBeforePromotion !== true) fail('documentation history or npm promotion gates are disabled');
   if (JSON.stringify(documentation.deployment.promotionCommitObjects) !== JSON.stringify(['latest/index.html', 'index.html'])) fail('documentation promotion commit order changed unexpectedly');
@@ -194,7 +200,7 @@ function validateWorkflows() {
   includes(docs, 'include-hidden-files: true', 'documentation validation workflow');
   includes(docs, 'package-manager-cache: false', 'documentation validation workflow');
   includes(docs, 'publication.pnpmVersion', 'documentation validation workflow');
-  includes(docs, 'corepack prepare "pnpm@$pnpm_version" --activate', 'documentation validation workflow');
+  includes(docs, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation validation workflow');
   includes(docs, 'pnpm run docs:check', 'documentation validation workflow');
   includes(docs, 'pnpm run docs:site --json', 'documentation validation workflow');
   excludes(docs, 'run: npm run docs:', 'documentation validation workflow');
@@ -209,7 +215,7 @@ function validateWorkflows() {
   includes(npm, 'id-token: write', 'npm publication workflow');
   includes(npm, 'npm install --global npm@11.15.0', 'npm publication workflow');
   includes(npm, 'publication.pnpmVersion', 'npm publication workflow');
-  includes(npm, 'corepack prepare "pnpm@$pnpm_version" --activate', 'npm publication workflow');
+  includes(npm, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'npm publication workflow');
   includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
   includes(npm, 'pnpm run release:seal --skip-install --no-report', 'npm publication workflow');
   includes(npm, 'pnpm run release:pack', 'npm publication workflow');
@@ -291,7 +297,7 @@ function validateWorkflows() {
   if (!(immutableAt >= 0 && npmAt > immutableAt && promotionAt > npmAt && publicAt > promotionAt)) fail('documentation deployment order must be immutable, npm verification, promotion, then public verification');
   includes(deploy, 'package-manager-cache: false', 'documentation deployment workflow');
   includes(deploy, 'publication.pnpmVersion', 'documentation deployment workflow');
-  includes(deploy, 'corepack prepare "pnpm@$pnpm_version" --activate', 'documentation deployment workflow');
+  includes(deploy, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation deployment workflow');
   includes(deploy, 'pnpm run docs:check', 'documentation deployment workflow');
   includes(deploy, 'pnpm run docs:site --json', 'documentation deployment workflow');
   excludes(deploy, '          npm run docs:', 'documentation deployment workflow');
@@ -321,7 +327,7 @@ function validateWorkflows() {
   includes(validation, "node-version: '22.x'", 'repository validation workflow');
   includes(validation, "node-version: '24.x'", 'repository validation workflow');
   includes(validation, 'publication.pnpmVersion', 'repository validation workflow');
-  includes(validation, 'corepack prepare "pnpm@$pnpm_version" --activate', 'repository validation workflow');
+  includes(validation, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'repository validation workflow');
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
   includes(validation, 'pnpm run build', 'repository validation workflow');
   includes(validation, '--task cli-init-workflow --report .test-results/node-floor.json', 'repository validation workflow');
