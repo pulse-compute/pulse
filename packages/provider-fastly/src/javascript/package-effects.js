@@ -35,7 +35,7 @@ function createFastlyJavascriptPackageEffectCapabilities(options = {}) {
         }
         return gripBroadcast(effect.payload, execution);
       }
-      if (effect && effect.contractId === 'pulse.jwt' && effect.operation === 'verify') {
+      if (effect && effect.contractId === 'pulse.jwt' && ['verify', 'sign'].includes(effect.operation)) {
         if (typeof jwtVerify !== 'function') return unavailable(effect);
         return jwtVerify(effect, execution);
       }

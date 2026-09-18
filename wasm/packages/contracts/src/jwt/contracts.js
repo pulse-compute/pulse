@@ -139,6 +139,36 @@ const JWT_VERIFY_OPERATION = Object.freeze({
   clock: 'provider-wall-clock'
 });
 
+const JWT_SIGN_OPERATION = Object.freeze({
+  version: JWT_CANONICAL_EFFECT_VERSION, contractId: JWT_CONTRACT_ID,
+  package: JWT_PACKAGE_NAME, import: JWT_PACKAGE_NAME,
+  kind: 'jwt.sign', providerKind: 'jwt', operation: 'sign', capability: 'jwt.sign',
+  result: 'string', placement: 'variable', clock: 'provider-wall-clock'
+});
+const JWT_SIGN_CONTRACT = Object.freeze({
+  version: 'pulse.jwt-sign.v1', algorithm: 'HS256', keyType: 'secret',
+  header: Object.freeze({ alg: 'HS256', typ: 'JWT' }),
+  claimsBytes: 8192, claimsEntries: 1024, claimsDepth: 32,
+  keyBytesMinimum: 32, keyBytesMaximum: 4096,
+  expiresInSecondsMinimum: 1, expiresInSecondsMaximum: 300,
+  reservedClaims: Object.freeze(['iat', 'exp', 'nbf']),
+  providerRequirements: Object.freeze(['jwt.sign', 'secret.get', 'time.wall-clock']),
+  cryptoAlgorithm: 'HMAC-SHA256', automaticFallback: false
+});
+
+function normalizeJwtSignEffect(effect) {
+  if (!ordinaryObject(effect) || ['contractId', 'package', 'kind', 'providerKind', 'operation', 'capability', 'result']
+    .some(name => dataProperty(effect, name) !== JWT_SIGN_OPERATION[name])) {
+    throw new PulseJwtContractError('Pulse JWT provider received an invalid signing operation.', { field: 'identity' });
+  }
+  const payload = dataProperty(effect, 'payload');
+  if (!ordinaryObject(payload) || Reflect.ownKeys(payload).length !== 2
+    || !ordinaryObject(dataProperty(payload, 'claims')) || !ordinaryObject(dataProperty(payload, 'options'))) {
+    throw new PulseJwtContractError('Pulse JWT signing requires claims and options.', { field: 'payload' });
+  }
+  return Object.freeze({ claims: dataProperty(payload, 'claims'), options: dataProperty(payload, 'options') });
+}
+
 const JWT_EXECUTION_REQUIREMENTS = Object.freeze({
   containment: 'request-owned-effect',
   cancellation: 'request-lifecycle-signal',
@@ -414,6 +444,9 @@ module.exports = Object.freeze({
   JWT_RESOURCE_LIMITS,
   JWT_ES256_KEY_NORMALIZATION_CONTRACT,
   JWT_VERIFY_OPERATION,
+  JWT_SIGN_OPERATION,
+  JWT_SIGN_CONTRACT,
+  normalizeJwtSignEffect,
   JWT_EXECUTION_REQUIREMENTS,
   JWT_NATIVE_LOWERING_CONTRACT,
   JWT_TARGET_REALIZATIONS,

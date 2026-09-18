@@ -21,6 +21,7 @@ const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'assets.lookup',
   'grip.broadcast',
   NODE_JWT_VERIFY_CAPABILITY,
+  'jwt.sign',
   'opaque.pass-through'
 ]);
 
@@ -47,12 +48,14 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   'assets.lookup': 'node.runtime.assets.lookup',
   'grip.broadcast': 'node.http.grip.publish',
   [NODE_JWT_VERIFY_CAPABILITY]: 'node.native.jwt.verify',
+  'jwt.sign': 'node.native.jwt.sign',
   'opaque.pass-through': 'node.http.response.stream'
 });
 
 const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
   's3.head', 's3.getText', 's3.putText',
   NODE_JWT_VERIFY_CAPABILITY,
+  'jwt.sign',
   'jwt.verify.hs256',
   'jwt.verify.es256',
   'secret.get',

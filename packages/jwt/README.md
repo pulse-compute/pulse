@@ -2,17 +2,17 @@
 
 <!-- pulse-package-status:start -->
 > **Support tier:** Supported provider/extension surface<br>
-> **Audience:** Applications verifying bounded JWT bearer credentials through Pulse providers.<br>
-> **Install directly:** Yes, when an application verifies JWTs.<br>
+> **Audience:** Applications verifying JWT credentials and issuing bounded HS256 worker tokens through Pulse providers.<br>
+> **Install directly:** Yes, when an application verifies or signs JWTs.<br>
 > **Supported entry points:** `@pulse-compute/jwt`<br>
-> **Stability:** The package root is the supported provider-neutral verification contract; provider and compiler integration subpaths are not application APIs.<br>
+> **Stability:** The package root supports provider-neutral verification and bounded HS256 signing; provider and compiler integration subpaths are not application APIs.<br>
 > **npm:** [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt)<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/jwt/)
 >
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
 <!-- pulse-package-status:end -->
 
-Bounded, provider-neutral JWT verification for Pulse handlers.
+Bounded, provider-neutral JWT verification and short-lived HS256 signing for Pulse handlers.
 
 This package and `@pulse-compute/crypto` are members of the synchronized
 `1.0.0-beta.5` release catalog.
@@ -53,7 +53,16 @@ claims, captures one wall-clock instant only after authenticity, evaluates
 registered claims before an optional runtime schema, and returns a detached,
 deeply frozen result. It does not authorize application or host behavior.
 
-RS256, EdDSA, signing, remote key authority, custom crypto providers, and
+`jwt.sign(ctx, claims, { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 45 })`
+returns a compact JWT through a request-owned effect. Select `HMAC-SHA256` in
+the crypto profile. The provider resolves a 32–4096 byte secret and captures
+one trusted clock reading; the package supplies `iat` and `exp`. Lifetimes
+are 1–300 seconds. Claims are bounded ordinary JSON; caller-supplied `iat`,
+`exp`, and `nbf` are rejected. See the package guide for exact limits and
+Native authoring requirements. Four-target signing fixtures exercise Node and
+Fastly Native/JavaScript; they are not deployed Fastly evidence.
+
+RS256, EdDSA, asymmetric signing, remote key authority, custom crypto providers, and
 automatic fallback remain unavailable. The shared G3 ES256 corpus and
 package-to-crypto composition are recorded in
 `wasm/.test-results/jwt-g3/jwt-g3-evidence.json`; the six-cell target matrix is

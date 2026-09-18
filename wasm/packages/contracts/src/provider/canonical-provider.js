@@ -23,7 +23,7 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'grip.hold',
   'grip.publish',
   'grip.broadcast',
-  'jwt.verify',
+  'jwt.verify', 'jwt.sign',
   's3.head',
   's3.getText',
   's3.putText',

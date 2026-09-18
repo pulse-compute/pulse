@@ -41,7 +41,8 @@ function classifyNodeJavascriptCapability(id, options = {}) {
     return decision(capability, 'eligible', 'node-provider-wall-clock-authority', 'provider-node');
   }
   if (
-    capability === 'jwt.verify'
+    capability === 'jwt.sign'
+    || capability === 'jwt.verify'
     || capability === 'jwt.verify.hs256'
     || capability === 'jwt.verify.es256'
   ) {
@@ -106,7 +107,8 @@ function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, opt
     return decision(requirement, 'eligible', 'node-provider-wall-clock-authority', 'provider-node');
   }
   if (
-    requirement === 'jwt.verify'
+    requirement === 'jwt.sign'
+    || requirement === 'jwt.verify'
     || requirement === 'jwt.verify.hs256'
     || requirement === 'jwt.verify.es256'
   ) {

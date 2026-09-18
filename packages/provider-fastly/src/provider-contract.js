@@ -14,7 +14,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
   capabilities: [
     'request', 'response.json', 'response.text', 'response.custom', 'fetch',
     'time.wall-clock', 'crypto.digestText', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap', 'assets.lookup',
-    'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify',
+    'grip.channel', 'grip.hold', 'grip.publish', 'grip.broadcast', 'jwt.verify', 'jwt.sign',
     'opaque.pass-through', 's3.head', 's3.getText', 's3.putText'
   ],
   lowering: {
@@ -38,6 +38,7 @@ const FASTLY_PROVIDER_DESCRIPTOR = canonical.normalizeDescriptor({
     'grip.publish': 'fastly.fanout.publish',
     'grip.broadcast': 'fastly.grip.publish-control',
     'jwt.verify': 'fastly.native.jwt.verify',
+    'jwt.sign': 'fastly.native.jwt.sign',
     's3.head': 'fastly.native.s3.head',
     's3.getText': 'fastly.native.s3.getText',
     's3.putText': 'fastly.native.s3.putText',

@@ -152,6 +152,10 @@ const tasks = Object.freeze({
   'crypto-digest-text-contract': nodeTask('test/crypto/assert-digest-text-contract.cjs', {
     description: 'Exact-text digest admission, bounded failures, unavailable providers and cancellation'
   }),
+  'jwt-signing': nodeTask('test/jwt/assert-jwt-signing.cjs', {
+    timeoutMs: 180000, evidence: 'conformance',
+    description: 'Bounded HS256 issuance, independent verification, failures and redaction on four targets'
+  }),
   'crypto-digest-text-conformance': nodeTask('test/crypto/assert-digest-text-conformance.cjs', {
     timeoutMs: 180000,
     evidence: 'conformance',
@@ -402,6 +406,7 @@ const tasks = Object.freeze({
   'assets-javascript-runtime': vitestTask([
     path.join(wasmRoot, '..', 'packages/assets/test/javascript-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/provider-runtime.test.ts'),
+    path.join(wasmRoot, '..', 'packages/jwt/test/sign.test.ts'),
     path.join(wasmRoot, '..', 'packages/runtime/test/package-runtime.test.ts')
   ], {
     evidence: 'javascript',
@@ -940,6 +945,7 @@ const profiles = Object.freeze({
     'assets-javascript-runtime'
   ]),
   conformance: Object.freeze([
+    'jwt-signing',
     's3-write-conformance',
     'crypto-cross-target-conformance',
     'crypto-digest-text-conformance',

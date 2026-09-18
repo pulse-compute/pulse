@@ -221,6 +221,7 @@ function resultKindForEffect(site, decoder, continuation, resultMode) {
   if (site.result === 'opaque-response') return 'opaque-response';
   if (site.result === 'structured-response') return 'structured-response';
   if (site.result === 'ack') return 'ack';
+  if (site.result === 'string') return 'string';
   if (site.kind === 'fetch') return 'fetch-response';
   if (site.kind === 'config.get' || site.kind === 'secret.get') return 'string-or-undefined';
   if (site.kind === 'time.now') return 'json';

@@ -156,6 +156,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   'grip.broadcast': 9,
   'assets.lookup': 10,
   'jwt.verify': 11,
+  'jwt.sign': 20,
   's3.head': 12,
   's3.getText': 13,
   's3.putText': 14,
@@ -185,6 +186,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'grip.broadcast',
   'assets.lookup',
   'jwt.verify',
+  'jwt.sign',
   's3.head',
   's3.getText',
   's3.putText'
@@ -204,6 +206,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'grip.publish',
   'grip.broadcast',
   'jwt.verify',
+  'jwt.sign',
   's3.head',
   's3.getText',
   's3.putText'
@@ -270,7 +273,14 @@ function packageFacts(_plan, options = {}) {
 
 function selectedJwtCrypto(plan) {
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');
-  if (!hasJwt) return undefined;
+  const hasSign = (plan.effects || []).some((effect) => effect.kind === 'jwt.sign');
+  const signer = plan.crypto?.algorithms.find(entry => entry.algorithm === 'HMAC-SHA256');
+  if (hasSign && (!signer || signer.realization !== 'guest-source:pulse-hmac-as'
+    || signer.implementation !== 'pulse-hmac-as.v1' || signer.kind !== 'guest-source'
+    || signer.targetImplemented !== true || signer.automaticFallback !== false)) {
+    fail('JWT signing requires the explicitly selected HMAC-SHA256 guest.', 'PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID');
+  }
+  if (!hasJwt) return hasSign ? Object.freeze({ ...signer, guestUnitRequired: false }) : undefined;
   const algorithms = plan.crypto && Array.isArray(plan.crypto.algorithms)
     ? plan.crypto.algorithms.filter((entry) => ['HS256', 'ES256'].includes(entry.algorithm))
     : [];
@@ -483,7 +493,7 @@ function es256KeyArtifactSource(records) {
 }
 
 function jwtCryptoCompositionSource(selected) {
-  if (!selected) {
+  if (!selected || selected.algorithm === 'HMAC-SHA256') {
     return [
       'function __pulse_fastly_jwt_capture_signing_input(input: Uint8Array): void { void input }',
       'function __pulse_fastly_jwt_crypto_verify(algorithm: string, key: Uint8Array, data: Uint8Array, signature: Uint8Array): i32 { void algorithm; void key; void data; void signature; return -3 }'
@@ -596,9 +606,8 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.kind === 'assets.lookup';
     const jwt = effect.package === '@pulse-compute/jwt'
       && effect.contractId === 'pulse.jwt'
-      && effect.kind === 'jwt.verify'
-      && effect.operation === 'verify'
-      && effect.capability === 'jwt.verify';
+      && ['verify', 'sign'].includes(effect.operation)
+      && effect.kind === `jwt.${effect.operation}` && effect.capability === effect.kind;
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
       && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
@@ -620,9 +629,8 @@ function validatePlanBoundary(plan, options = {}) {
       && effect.kind === 'assets.lookup';
     const jwt = effect.package === '@pulse-compute/jwt'
       && effect.contractId === 'pulse.jwt'
-      && effect.kind === 'jwt.verify'
-      && effect.operation === 'verify'
-      && effect.capability === 'jwt.verify';
+      && ['verify', 'sign'].includes(effect.operation)
+      && effect.kind === `jwt.${effect.operation}` && effect.capability === effect.kind;
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
       && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
@@ -632,7 +640,7 @@ function validatePlanBoundary(plan, options = {}) {
   if (unsupportedDeclarations.length > 0) {
     fail('Fastly native package realization is restricted to the Assets, GRIP, JWT, S3, and Crypto digest contracts.', 'PULSE_FASTLY_NATIVE_PLATFORM_PACKAGE_UNSUPPORTED', { effects: unsupportedDeclarations });
   }
-  for (const effect of effects.filter((entry) => entry.kind === 'jwt.verify')) {
+  for (const effect of effects.filter((entry) => ['jwt.verify', 'jwt.sign'].includes(entry.kind))) {
     const resource = effect.resource;
     const knownShape = resource
       && !Object.keys(resource)
@@ -647,7 +655,7 @@ function validatePlanBoundary(plan, options = {}) {
       && typeof resource.keyArtifactId === 'string'
       && resource.keyArtifactId.length > 0
       && resource.secretBinding === null;
-    if (!namedSecret && !staticPublicKey) {
+    if (!namedSecret && (!staticPublicKey || effect.kind === 'jwt.sign')) {
       fail('Fastly Native JWT requires one exact named-secret or bounded static public-key descriptor.', 'PULSE_FASTLY_NATIVE_JWT_KEY_DESCRIPTOR_INVALID', {
         effectId: effect.id,
         resource,
@@ -714,7 +722,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   const hasConfig = effects.some((effect) => effect.kind === 'config.get');
   const hasSecret = effects.some((effect) => (
     effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)
-    || (effect.kind === 'jwt.verify' && effect.resource && effect.resource.keyType === 'secret')
+    || (['jwt.verify', 'jwt.sign'].includes(effect.kind) && effect.resource && effect.resource.keyType === 'secret')
   ));
   const hasGripHold = effects.some((effect) => effect.kind === 'grip.hold');
   const hasGripBroadcast = effects.some((effect) => effect.kind === 'grip.broadcast');
@@ -900,7 +908,7 @@ function requiredImportsForPlan(plan, bindings) {
   const gripAuthenticationRequired = kinds.has('grip.broadcast')
     && (!bindings || Boolean(bindings.grip && bindings.grip.authentication));
   const jwtSecretRequired = (plan.effects || []).some((effect) => (
-    effect.kind === 'jwt.verify'
+    ['jwt.verify', 'jwt.sign'].includes(effect.kind)
     && effect.resource
     && effect.resource.keyType === 'secret'
   ));
@@ -908,7 +916,7 @@ function requiredImportsForPlan(plan, bindings) {
     for (const key of ['fastly_secret_store:open', 'fastly_secret_store:get', 'fastly_secret_store:plaintext']) keys.add(key);
   }
   for (const kind of conditionalKv.KV_CONDITIONAL_KINDS) if (kinds.has(kind)) for (const key of conditionalKv.kvImports(kind)) keys.add(key);
-  if (kinds.has('jwt.verify') || kinds.has('time.now')) keys.add('wasi_snapshot_preview1:clock_time_get');
+  if (kinds.has('jwt.verify') || kinds.has('jwt.sign') || kinds.has('time.now')) keys.add('wasi_snapshot_preview1:clock_time_get');
   if (kinds.has('kv.get') || kinds.has('kv.put') || kinds.has('assets.lookup')) keys.add('fastly_kv_store:open');
   if (kinds.has('kv.get') || kinds.has('assets.lookup')) for (const key of ['fastly_kv_store:lookup', 'fastly_kv_store:lookup_wait_v2', 'fastly_http_body:read']) keys.add(key);
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
@@ -1037,7 +1045,7 @@ function effectResultSource(plan, bindings) {
   lines.push(`function __pulse_fastly_secret_store(effectIndex: i32): string { return ${quote(bindings.secretStore)} }`, '');
   lines.push('function __pulse_fastly_jwt_secret_binding(effectIndex: i32): string {', '  switch (effectIndex) {');
   for (const [index, effect] of (plan.effects || []).entries()) {
-    if (effect.kind === 'jwt.verify' && effect.resource.keyType === 'secret') {
+    if (['jwt.verify', 'jwt.sign'].includes(effect.kind) && effect.resource.keyType === 'secret') {
       lines.push(`    case ${index}: return ${quote(effect.resource.secretBinding)}`);
     }
   }
@@ -1099,6 +1107,7 @@ function effectDispatchSource(plan) {
     'config.get': '__pulse_fastly_config_begin',
     'secret.get': '__pulse_fastly_secret_begin',
     'jwt.verify': '__pulse_fastly_jwt_begin',
+    'jwt.sign': '__pulse_fastly_jwt_sign_begin',
     's3.head': '__pulse_fastly_s3_begin',
     's3.getText': '__pulse_fastly_s3_begin',
     's3.putText': '__pulse_fastly_s3_begin',
@@ -1679,6 +1688,7 @@ function __pulse_fastly_jwt_record_verified(): void { __pulse_fastly_jwt_verifie
 function __pulse_fastly_jwt_record_signing_input(bytes: i32, digest: string): void { __pulse_fastly_jwt_signing_input_bytes = bytes; __pulse_fastly_jwt_signing_input_sha256 = digest }
 function __pulse_fastly_jwt_capture_clock(effectIndex: i32): f64 { __pulse_fastly_jwt_clock_calls += 1; __pulse_fastly_jwt_event_order += "C"; const out = new StaticArray<i64>(1); const status = wasi_snapshot_preview1_clock_time_get(0, 1, changetype<usize>(out)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 226, effectIndex); return NaN } ${jwtClockOverride ? `return ${jwtClockOverride}` : 'return f64(load<i64>(changetype<usize>(out))) / 1000000000.0'} }
 function __pulse_fastly_jwt_validate_schema(effectIndex: i32, schemaId: string, claimsHandle: i32): i32 { __pulse_fastly_jwt_schema_calls += 1; __pulse_fastly_jwt_event_order += "H"; if (__pulse_fastly_jwt_case_id() == "claims-schema-failure-after-registered-claims") return 0; return __pulse_fastly_schema_apply(schemaId, claimsHandle, false) }
+function __pulse_fastly_jwt_sign_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const result = pulse_jwt_fastly_sign(effectIndex, unchecked(__pulse_fastly_payloads[effectIndex])); if (result > 0 && __pulse_fastly_last_error == 0) __pulse_fastly_ready_effect(effectIndex, result) }
 function __pulse_fastly_jwt_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const result = pulse_jwt_fastly_verify(effectIndex, unchecked(__pulse_fastly_payloads[effectIndex])); if (result > 0 && __pulse_fastly_last_error == 0) __pulse_fastly_ready_effect(effectIndex, result) }
 function __pulse_fastly_start_request(effectIndex: i32, url: string, method: string, headers: __PulseFastlyValue, body: string, backend: string): void { const requestOut = __pulse_fastly_out_i32(); let status = fastly_http_req_new(changetype<usize>(requestOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 70, effectIndex); return } const requestHandle = __pulse_fastly_out_value(requestOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 71, effectIndex); return } const bodyHandle = __pulse_fastly_out_value(bodyOut); const methodBytes = __pulse_fastly_utf8(method); status = fastly_http_req_method_set(requestHandle, changetype<usize>(methodBytes), methodBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 72, effectIndex); return } const urlBytes = __pulse_fastly_utf8(url); status = fastly_http_req_uri_set(requestHandle, changetype<usize>(urlBytes), urlBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 73, effectIndex); return } if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const nameBytes = __pulse_fastly_utf8(unchecked(headers.keys[i])); const valueBytes = __pulse_fastly_utf8(__pulse_fastly_string(unchecked(headers.values[i]))); status = fastly_http_req_header_insert(requestHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 74, effectIndex); return } } } if (body.length > 0) { status = __pulse_fastly_write_body(bodyHandle, body); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 75, effectIndex); return } } if (backend.length == 0) { __pulse_fastly_fail(PULSE_ERROR_STATE, 76, effectIndex); return } const backendBytes = __pulse_fastly_utf8(backend); const pendingOut = __pulse_fastly_out_i32(); status = fastly_http_req_send_async(requestHandle, bodyHandle, changetype<usize>(backendBytes), backendBytes.byteLength, changetype<usize>(pendingOut)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_TRANSPORT, 77, effectIndex); return } unchecked(__pulse_fastly_pending[effectIndex] = __pulse_fastly_out_value(pendingOut)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_ASYNC) }
 function __pulse_fastly_fetch_begin(effectIndex: i32, payload: __PulseFastlyValue): void { const urlIndex = __pulse_fastly_find(payload, "url"); if (urlIndex < 0) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 48, effectIndex); return } const url = __pulse_fastly_string(unchecked(payload.values[urlIndex])); const initIndex = __pulse_fastly_find(payload, "init"); const init = initIndex >= 0 ? __pulse_fastly_value(unchecked(payload.values[initIndex])) : new __PulseFastlyValue(); let method = "GET"; let body = ""; let headers = new __PulseFastlyValue(); headers.kind = PULSE_VALUE_OBJECT; if (init.kind == PULSE_VALUE_OBJECT) { const methodIndex = __pulse_fastly_find(init, "method"); if (methodIndex >= 0) method = __pulse_fastly_string(unchecked(init.values[methodIndex])).toUpperCase(); const headersIndex = __pulse_fastly_find(init, "headers"); if (headersIndex >= 0) headers = __pulse_fastly_value(unchecked(init.values[headersIndex])); const bodyIndex = __pulse_fastly_find(init, "body"); const jsonIndex = __pulse_fastly_find(init, "json"); if (bodyIndex >= 0) { const bodyValue = unchecked(init.values[bodyIndex]); const bodyObject = __pulse_fastly_value(bodyValue); body = bodyObject.kind == PULSE_VALUE_STRING ? bodyObject.text : __pulse_fastly_json(bodyValue, 0) } else if (jsonIndex >= 0) { body = __pulse_fastly_json(unchecked(init.values[jsonIndex]), 0); let hasContentType = false; for (let i = 0; i < headers.keys.length; i += 1) if (unchecked(headers.keys[i]).toLowerCase() == "content-type") hasContentType = true; if (!hasContentType) { headers.keys.push("content-type"); headers.values.push(__pulse_fastly_string_value("application/json; charset=utf-8")) } } } __pulse_fastly_start_request(effectIndex, url, method, headers, body, __pulse_fastly_backend(effectIndex)) }
@@ -1764,7 +1774,7 @@ function capabilityImports(effect) {
   if (effect.kind === 'time.now') return ['wasi_snapshot_preview1.clock_time_get'];
   if (effect.kind === 'config.get') return ['fastly_config_store.open', 'fastly_config_store.get'];
   if (effect.kind === 'secret.get') return ['fastly_secret_store.open', 'fastly_secret_store.get', 'fastly_secret_store.plaintext'];
-  if (effect.kind === 'jwt.verify') {
+  if (['jwt.verify', 'jwt.sign'].includes(effect.kind)) {
     return [
       ...(effect.resource && effect.resource.keyType === 'secret'
         ? [
@@ -1823,7 +1833,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   const portable = generateCanonicalNativeAssemblyScript(plan, options);
   const portableSource = stripPulseHostImports(portable.source);
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');
-  const jwtSource = hasJwt ? pulseJwtAssemblyScriptSource() : undefined;
+  const hasSign = plan.effects.some(effect => effect.kind === 'jwt.sign');
+  const jwtSource = hasJwt || hasSign ? pulseJwtAssemblyScriptSource({ includeSigning: hasSign }) : undefined;
   let source = [
     '/* Generated by Pulse Pass98 Fastly native platform capability compiler. */',
     'export function __pulse_fastly_abort(message: string | null, fileName: string | null = null, line: u32 = 0, column: u32 = 0): void { unreachable() }',
@@ -1917,14 +1928,14 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       providerNeutralInput: true,
       javascriptRuntime: false,
       jsComputeRuntime: false,
-      wasi: bindings.maxDurationMs !== undefined || hasJwt || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
+      wasi: bindings.maxDurationMs !== undefined || hasJwt || hasSign || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
       effects: FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.join(', '),
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',
       config: 'Fastly Config Store open/get with undefined for missing values',
       secrets: 'Fastly Secret Store open/get/plaintext; proof traces redact plaintext values',
-      jwt: hasJwt
-        ? `package-owned compact-JWS and registered-claim semantics composed with ${jwtCrypto.realization}; provider-owned request, clock, schema, and transport`
+      jwt: hasJwt || hasSign
+        ? `package-owned compact-JWS, registered-claim, and bounded issuance semantics composed with ${jwtCrypto.realization}; provider-owned request, secret, clock, schema, and transport`
         : 'inactive',
       kv: 'Fastly KV Store async lookup/insert; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
       assets: 'Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership',

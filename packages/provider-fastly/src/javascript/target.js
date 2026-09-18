@@ -14,6 +14,11 @@ const FASTLY_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor(
   crypto: defineCryptoTargetCapabilities({
     target: 'javascript',
     algorithms: [{
+      algorithm: 'HMAC-SHA256',
+      realization: 'runtime-builtin',
+      implemented: true,
+      status: 'implemented-jwt-sign'
+    }, {
       algorithm: 'SHA-256',
       realization: 'runtime-builtin',
       implemented: true,
