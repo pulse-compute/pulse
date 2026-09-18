@@ -46,11 +46,11 @@ export type {
 
 export type PulseExecutionTarget = 'native' | 'javascript';
 export type PulseReportingLevel = 'off' | 'error' | 'warn' | 'info' | 'debug';
-export type PulseCryptoAlgorithm = 'HS256' | 'ES256' | 'SHA-256' | 'HMAC-SHA256';
+export type PulseCryptoAlgorithm = 'HS256' | 'ES256' | 'RS256' | 'SHA-256' | 'HMAC-SHA256';
 export type PulseCryptoRealization =
   | 'runtime-builtin'
   | 'guest-source:pulse-hmac-as'
-  | 'guest-linked:pulse-es256-rustcrypto-p256';
+  | 'guest-linked:pulse-es256-rustcrypto-p256' | 'guest-linked:pulse-rs256-bearssl-i31';
 export type PulseCryptoConfiguration =
   | readonly PulseCryptoAlgorithm[]
   | Readonly<Partial<Record<PulseCryptoAlgorithm, Readonly<{

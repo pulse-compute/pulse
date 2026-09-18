@@ -13,17 +13,17 @@ export const CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION =
   'rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1' as const;
 
 /**
- * Executable algorithms remain intentionally narrower than frozen future
- * contracts. G3, not G0, owns activation of ES256.
+ * Executable verification algorithms. Signature keys remain algorithm-bound.
  */
 export const CRYPTO_ALGORITHMS = Object.freeze([
   'HS256',
   'ES256',
+  'RS256',
 ] as const);
 
 export type CryptoAlgorithm = typeof CRYPTO_ALGORITHMS[number];
 export type MacAlgorithm = 'HS256';
-export type SignatureAlgorithm = 'ES256';
+export type SignatureAlgorithm = 'ES256' | 'RS256';
 
 export const CRYPTO_VERIFICATION_STATUSES = Object.freeze([
   'valid',
@@ -71,14 +71,13 @@ export interface P256PublicKeyBytes {
   readonly bytes: Uint8Array;
 }
 
-export interface SignatureVerifyRequest {
-  readonly algorithm: SignatureAlgorithm;
-  readonly key: P256PublicKeyBytes;
+export type SignatureVerifyRequest = Readonly<{
   /** Exact original signing bytes; never a reserialized JWT representation. */
-  readonly data: Uint8Array;
-  /** Exactly 64 bytes: 32-byte big-endian r followed by 32-byte big-endian s. */
-  readonly signature: Uint8Array;
-}
+  data: Uint8Array;
+  /** JOSE P-256 r||s, or one RSA modulus-width octet string. */
+  signature: Uint8Array;
+}> & (Readonly<{ algorithm: 'ES256'; key: P256PublicKeyBytes }>
+  | Readonly<{ algorithm: 'RS256'; key: RsaPublicKeyBytes }>);
 
 /**
  * Crypto-owned adapter input for the one JOSE representation accepted by the
@@ -107,6 +106,9 @@ export const CRYPTO_RESOURCE_LIMITS = Object.freeze({
   es256PublicKeyBytes: 64,
   es256SignatureBytes: 64,
   es256SigningInputBytesMaximum: 16_340,
+  rs256ModulusBytes: Object.freeze([256, 384, 512] as const),
+  rs256PublicExponentMaximum: 0xffffffff,
+  rs256SigningInputBytesMaximum: 12_288,
 } as const);
 
 export const CRYPTO_ES256_CONTRACT = Object.freeze({
@@ -151,7 +153,7 @@ export const CRYPTO_ES256_CONTRACT = Object.freeze({
     unitId: 'pulse.crypto.es256.rustcrypto-p256.v1',
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
-    abi: 'pulse.crypto.es256.verify-and-sign.v2',
+    abi: 'pulse.crypto.es256-rs256.verify-and-sign.v3',
     export: Object.freeze({
       name: 'pulse_crypto_es256_verify',
       parameters: Object.freeze(['i32', 'i32'] as const),
@@ -226,3 +228,17 @@ export const CRYPTO_ES256_CONTRACT = Object.freeze({
   }),
   automaticFallback: false,
 } as const);
+
+export interface RsaPublicKeyBytes {
+  readonly type: 'rsa-public-key-bytes';
+  /** LE32 modulus byte length, big-endian modulus, four-byte public exponent. */
+  readonly bytes: Uint8Array;
+}
+export interface Rs256JoseVerifyInput {
+  readonly key: Readonly<{ n: string; e: string }>;
+  readonly data: Uint8Array;
+  readonly signature: string;
+}
+export const CRYPTO_RS256_GUEST_LINKED_REALIZATION = 'guest-linked:pulse-rs256-bearssl-i31' as const;
+export const CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION = 'bearssl.0.6.rsa-i31.sha256.v1' as const;
+export const CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION = 'webcrypto.subtle.rsassa-pkcs1-v1_5-sha-256.v1' as const;

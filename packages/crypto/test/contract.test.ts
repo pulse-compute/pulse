@@ -40,7 +40,7 @@ function request(overrides: Readonly<Record<string, unknown>> = {}): any {
 describe('@pulse-compute/crypto verification contract', () => {
   it('publishes the executable verification algorithms and closed result taxonomy', () => {
     expect(CRYPTO_CONTRACT_VERSION).toBe('pulse.crypto.verification.v1');
-    expect(CRYPTO_ALGORITHMS).toEqual(['HS256', 'ES256']);
+    expect(CRYPTO_ALGORITHMS).toEqual(['HS256', 'ES256', 'RS256']);
     expect(CRYPTO_VERIFICATION_STATUSES).toEqual([
       'valid',
       'invalid-authenticator',
@@ -66,7 +66,7 @@ describe('@pulse-compute/crypto verification contract', () => {
       .toBe('guest-linked:pulse-es256-rustcrypto-p256');
     expect(CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION)
       .toBe('rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1');
-    expect(CRYPTO_ALGORITHMS).toEqual(['HS256', 'ES256']);
+    expect(CRYPTO_ALGORITHMS).toEqual(['HS256', 'ES256', 'RS256']);
     expect(Object.keys(crypto)).toEqual(['digestText', 'mac', 'signature']);
     expect(CRYPTO_ES256_CONTRACT).toMatchObject({
       status: 'executable-g3',

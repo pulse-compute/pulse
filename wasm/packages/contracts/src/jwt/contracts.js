@@ -17,7 +17,7 @@ const JWT_CONTRACT_ID = 'pulse.jwt';
 const JWT_PACKAGE_NAME = '@pulse-compute/jwt';
 
 const JWT_ALGORITHMS = Object.freeze(['HS256', 'RS256', 'ES256', 'EdDSA']);
-const JWT_IMPLEMENTED_ALGORITHMS = Object.freeze(['HS256', 'ES256']);
+const JWT_IMPLEMENTED_ALGORITHMS = Object.freeze(['HS256', 'ES256', 'RS256']);
 const JWT_KEY_TYPES = Object.freeze(['secret', 'jwk', 'jwks']);
 const JWT_IMPLEMENTED_KEY_TYPES = Object.freeze(['secret', 'jwk', 'jwks']);
 const JWT_NATIVE_REALIZATION_KINDS = Object.freeze(['crypto-composed']);
@@ -146,7 +146,7 @@ const JWT_SIGN_OPERATION = Object.freeze({
   result: 'string', placement: 'variable', clock: 'provider-wall-clock'
 });
 const JWT_SIGN_CONTRACT = Object.freeze({
-  version: 'pulse.jwt-sign.v2', algorithms: Object.freeze(['HS256', 'ES256']), keyType: 'secret',
+  version: 'pulse.jwt-sign.v2', algorithms: Object.freeze(['HS256', 'ES256', 'RS256']), keyType: 'secret',
   kidBytesMaximum: 256, es256PrivateKey: 'secret-json-p256-private-jwk',
   header: Object.freeze({ alg: 'selected-algorithm', typ: 'JWT', kid: 'optional-explicit-key-id' }),
   claimsBytes: 8192, claimsEntries: 1024, claimsDepth: 32,
@@ -155,7 +155,7 @@ const JWT_SIGN_CONTRACT = Object.freeze({
   expirationSecondsMaximum: 8_640_000_000_000, lifetimePolicy: 'application-owned',
   reservedClaims: Object.freeze(['iat', 'exp', 'nbf']),
   providerRequirements: Object.freeze(['jwt.sign', 'secret.get', 'time.wall-clock']),
-  cryptoAlgorithms: Object.freeze({ HS256: 'HMAC-SHA256', ES256: 'ES256' }), automaticFallback: false
+  cryptoAlgorithms: Object.freeze({ HS256: 'HMAC-SHA256', ES256: 'ES256', RS256: 'RS256' }), automaticFallback: false
 });
 
 function normalizeJwtSignEffect(effect) {
@@ -207,6 +207,7 @@ const JWT_NATIVE_LOWERING_CONTRACT = Object.freeze({
     'jwt.verify',
     'jwt.verify.hs256',
     'jwt.verify.es256',
+    'jwt.verify.rs256',
     'secret.get',
     'time.wall-clock'
   ]),
@@ -223,6 +224,11 @@ const JWT_NATIVE_LOWERING_CONTRACT = Object.freeze({
     ES256: Object.freeze({
       realization: 'guest-linked:pulse-es256-rustcrypto-p256',
       implementation: 'rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1',
+      guestUnitRequired: true
+    }),
+    RS256: Object.freeze({
+      realization: 'guest-linked:pulse-rs256-bearssl-i31',
+      implementation: 'bearssl.0.6.rsa-i31.sha256.v1',
       guestUnitRequired: true
     })
   }),

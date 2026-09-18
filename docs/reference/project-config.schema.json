@@ -116,7 +116,7 @@
       {
         "required": false,
         "default": "implicit no-crypto declaration",
-        "allowed": "`HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`",
+        "allowed": "`HS256`, `ES256`, `RS256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, `guest-linked:pulse-es256-rustcrypto-p256`, and `guest-linked:pulse-rs256-bearssl-i31`",
         "precedence": "Used only when the selected profile omits `crypto`.",
         "security": "Keys and verification bytes are not configuration values. Target selection is deterministic and never probes or falls back.",
         "diagnostics": [
@@ -134,7 +134,7 @@
       {
         "required": false,
         "default": "inherit `pulse.crypto` when absent",
-        "allowed": "`[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`",
+        "allowed": "`[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `RS256`, `SHA-256`, `HMAC-SHA256`",
         "precedence": "Selected-profile declaration replaces `pulse.crypto`; absence inherits it.",
         "security": "Every declared algorithm must resolve for the selected target before lowering. A failed exact realization cannot select another backend.",
         "diagnostics": [
@@ -787,6 +787,7 @@
                 "enum": [
                   "HS256",
                   "ES256",
+                  "RS256",
                   "SHA-256",
                   "HMAC-SHA256"
                 ]
@@ -803,6 +804,7 @@
                     "realization": {
                       "enum": [
                         "runtime-builtin",
+                        "guest-linked:pulse-rs256-bearssl-i31",
                         "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
@@ -816,6 +818,21 @@
                     "realization": {
                       "enum": [
                         "runtime-builtin",
+                        "guest-linked:pulse-rs256-bearssl-i31",
+                        "guest-source:pulse-hmac-as",
+                        "guest-linked:pulse-es256-rustcrypto-p256"
+                      ]
+                    }
+                  }
+                },
+                "RS256": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "realization": {
+                      "enum": [
+                        "runtime-builtin",
+                        "guest-linked:pulse-rs256-bearssl-i31",
                         "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
@@ -829,6 +846,7 @@
                     "realization": {
                       "enum": [
                         "runtime-builtin",
+                        "guest-linked:pulse-rs256-bearssl-i31",
                         "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]
@@ -842,6 +860,7 @@
                     "realization": {
                       "enum": [
                         "runtime-builtin",
+                        "guest-linked:pulse-rs256-bearssl-i31",
                         "guest-source:pulse-hmac-as",
                         "guest-linked:pulse-es256-rustcrypto-p256"
                       ]

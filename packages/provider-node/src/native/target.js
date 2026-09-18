@@ -55,6 +55,19 @@ const NODE_NATIVE_TARGET_DESCRIPTOR = Object.freeze({
       guestUnitRequired: true,
       portable: true,
       automaticFallback: false
+    }),
+Object.freeze({
+      kind: 'crypto-composed',
+      realization: 'guest-linked:pulse-rs256-bearssl-i31',
+      implementation: 'bearssl.0.6.rsa-i31.sha256.v1',
+      algorithms: Object.freeze(['RS256']),
+      keyTypes: Object.freeze(['jwk', 'jwks']),
+      implemented: true,
+      status: 'implemented-rs256',
+      semanticOwner: '@pulse-compute/crypto',
+      guestUnitRequired: true,
+      portable: true,
+      automaticFallback: false
     })
   ]),
   automaticFallback: false,
@@ -70,6 +83,11 @@ const NODE_NATIVE_TARGET_DESCRIPTOR = Object.freeze({
       realization: 'guest-linked:pulse-es256-rustcrypto-p256',
       implemented: true,
       status: 'implemented-g3'
+    }, {
+      algorithm: 'RS256',
+      realization: 'guest-linked:pulse-rs256-bearssl-i31',
+      implemented: true,
+      status: 'implemented-rs256'
     }]
   }),
   finalWasmPolicy: nodeFinalWasmPolicy

@@ -58,6 +58,7 @@ const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
   'jwt.sign',
   'jwt.verify.hs256',
   'jwt.verify.es256',
+  'jwt.verify.rs256',
   'secret.get',
   'event.ingress',
   'event.emit',

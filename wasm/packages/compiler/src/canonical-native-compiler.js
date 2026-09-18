@@ -237,6 +237,9 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     }
     if (guestUnits.length > 0) {
       args.push(
+        '--disable', 'bulk-memory',
+        '--disable', 'nontrapping-f2i',
+        '--disable', 'sign-extension',
         '--importMemory',
         '--noExportMemory',
         '--initialMemory', String(memoryAbi.minimumPages),

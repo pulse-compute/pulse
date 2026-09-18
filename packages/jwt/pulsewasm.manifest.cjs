@@ -87,11 +87,11 @@ const pulseWasmManifest = Object.freeze({
         realization: 'guest-source:pulse-hmac-as',
         implementation: 'pulse-hmac-as.v1',
         packageSource: 'pulse-jwt-as',
-        algorithms: Object.freeze(['HS256', 'ES256']),
+        algorithms: Object.freeze(['HS256', 'ES256', 'RS256']),
         keyTypes: Object.freeze(['secret', 'jwk', 'jwks']),
         guestUnitRequired: false,
         guestUnits: Object.freeze({
-          ES256: 'pulse.crypto.es256.rustcrypto-p256.v1'
+          ES256: 'pulse.crypto.es256.rustcrypto-p256.v1', RS256: 'pulse.crypto.es256.rustcrypto-p256.v1'
         }),
         portable: true,
         automaticFallback: false

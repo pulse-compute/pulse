@@ -1,6 +1,7 @@
 import {
   CRYPTO_VERIFICATION_STATUSES,
   normalizeEs256JoseVerifyRequest,
+  normalizeRs256JoseVerifyRequest,
   type CryptoVerificationResult,
   type CryptoVerificationStatus,
   type MacVerifyRequest,
@@ -9,7 +10,7 @@ import {
 import { isJwtError, jwtError } from './errors.js';
 import {
   normalizeJwtVerifyOptions,
-  selectEs256VerificationJwk,
+  selectSignatureVerificationJwk,
   type JwtAlgorithm,
   type JwtClaims,
   type JwtVerificationKey,
@@ -237,11 +238,14 @@ export async function verifyJwtWithCrypto<Claims = JwtClaims>(
       } finally {
         keyBytes.fill(0);
       }
-    } else if (selectedAlgorithm === 'ES256') {
+    } else if (selectedAlgorithm === 'ES256' || selectedAlgorithm === 'RS256') {
       const verifySignature = cryptoSignatureVerify(crypto);
-      const selectedJwk = selectEs256VerificationJwk(options.key, kid);
+      const selectedJwk = selectSignatureVerificationJwk(options.key, kid, selectedAlgorithm);
       const compact = compactJwtParts(token as string);
-      const normalized = normalizeEs256JoseVerifyRequest({
+      const normalized = selectedAlgorithm === 'RS256' ? normalizeRs256JoseVerifyRequest({
+        key: { n: selectedJwk.n as string, e: selectedJwk.e as string },
+        data: compact.signingInput, signature: compact.signatureSegment,
+      }) : normalizeEs256JoseVerifyRequest({
         key: {
           x: selectedJwk.x as string,
           y: selectedJwk.y as string,

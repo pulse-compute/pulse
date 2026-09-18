@@ -86,6 +86,7 @@ function classifyFastlyJavascriptCapability(id, restrictions = {}) {
     || capability === 'jwt.verify'
     || capability === 'jwt.verify.hs256'
     || capability === 'jwt.verify.es256'
+    || capability === 'jwt.verify.rs256'
   ) {
     return blockedRestriction(capability, restrictions.jwt)
       || decision(capability, 'eligible', 'fastly-javascript-jwt-crypto-runtime-builtin', 'provider-fastly');
@@ -152,6 +153,7 @@ function classifyFastlyJavascriptProviderRequirement(id, restrictions = {}) {
     || requirement === 'jwt.verify'
     || requirement === 'jwt.verify.hs256'
     || requirement === 'jwt.verify.es256'
+    || requirement === 'jwt.verify.rs256'
   ) {
     return blockedRestriction(requirement, restrictions.jwt)
       || decision(requirement, 'eligible', 'fastly-javascript-jwt-crypto-runtime-builtin', 'provider-fastly');

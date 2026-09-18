@@ -292,7 +292,7 @@ export function pulse_jwt_fastly_verify(effectIndex: i32, outerHandle: i32): i32
   const algorithmPolicy = __pulse_fastly_value(__pulse_jwt_object_field(policy, "algorithms"))
   if (
     algorithm === null ||
-    (algorithm != "HS256" && algorithm != "ES256") ||
+    (algorithm != "HS256" && algorithm != "ES256" && algorithm != "RS256") ||
     !__pulse_jwt_array_contains(algorithmPolicy, algorithm)
   ) {
     return __pulse_jwt_fail(effectIndex, __PULSE_JWT_ERROR_ALGORITHM_NOT_ALLOWED, 212)
@@ -333,7 +333,7 @@ export function pulse_jwt_fastly_verify(effectIndex: i32, outerHandle: i32): i32
   } else {
     const kid = __pulse_jwt_string_member(protectedHeader, "kid")
     key = __pulse_fastly_jwt_resolve_es256_key(effectIndex, kid)
-    if (key === null || key.byteLength != __PULSE_JWT_ES256_PUBLIC_KEY_BYTES) {
+    if (key === null || (algorithm == "ES256" ? key.byteLength != __PULSE_JWT_ES256_PUBLIC_KEY_BYTES : key.byteLength < 8 || key.byteLength != 8 + signature.byteLength)) {
       return __pulse_jwt_fail(effectIndex, __PULSE_JWT_ERROR_KEY_INVALID, 216)
     }
   }

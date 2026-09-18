@@ -271,18 +271,23 @@ function packageFacts(_plan, options = {}) {
   });
 }
 
+function jwtVerificationAlgorithm(effect) {
+  return effect.resource.keyType === 'secret' ? 'HS256' : String(effect.resource.keyArtifactId).startsWith('pulse.jwt.rs256-key.') ? 'RS256' : 'ES256';
+}
+
 function selectedJwtCrypto(plan) {
   const effects = plan.effects || [];
   const signing = effects.filter(effect => effect.kind === 'jwt.sign');
   const verifies = effects.filter(effect => effect.kind === 'jwt.verify');
   const required = new Set([
-    ...signing.map(effect => literalObjectField(inputExpression(effect, 'payload'), 'algorithm') === 'ES256' ? 'ES256' : 'HMAC-SHA256'),
-    ...verifies.map(effect => effect.resource.keyType === 'secret' ? 'HS256' : 'ES256')
+    ...signing.map(effect => literalObjectField(inputExpression(effect, 'payload'), 'algorithm') === 'HS256' ? 'HMAC-SHA256' : literalObjectField(inputExpression(effect, 'payload'), 'algorithm')),
+    ...verifies.map(effect => jwtVerificationAlgorithm(effect))
   ]);
   if (!required.size) return undefined;
   const definitions = {
     'HMAC-SHA256': ['guest-source:pulse-hmac-as', 'pulse-hmac-as.v1', 'guest-source'],
     HS256: ['guest-source:pulse-hmac-as', 'pulse-hmac-as.v1', 'guest-source'],
+    RS256: ['guest-linked:pulse-rs256-bearssl-i31', 'bearssl.0.6.rsa-i31.sha256.v1', 'guest-linked'],
     ES256: ['guest-linked:pulse-es256-rustcrypto-p256', 'rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1', 'guest-linked']
   };
   for (const algorithm of required) {
@@ -293,11 +298,11 @@ function selectedJwtCrypto(plan) {
       fail('JWT requires its explicitly selected Crypto realization.', 'PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID');
     }
   }
-  const verificationAlgorithms = [...new Set(verifies.map(effect => effect.resource.keyType === 'secret' ? 'HS256' : 'ES256'))];
+  const verificationAlgorithms = [...new Set(verifies.map(effect => jwtVerificationAlgorithm(effect)))];
   if (verificationAlgorithms.length > 1) fail('Fastly Native JWT verification requires one exact algorithm.', 'PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID');
-  const algorithm = verificationAlgorithms[0] || (required.has('ES256') ? 'ES256' : 'HMAC-SHA256');
+  const algorithm = verificationAlgorithms[0] || (required.has('RS256') ? 'RS256' : required.has('ES256') ? 'ES256' : 'HMAC-SHA256');
   return Object.freeze({ ...plan.crypto.algorithms.find(entry => entry.algorithm === algorithm),
-    guestUnitRequired: required.has('ES256'), signingAlgorithms: signing.map(effect => literalObjectField(inputExpression(effect, 'payload'), 'algorithm')) });
+    guestUnitRequired: required.has('ES256') || required.has('RS256'), signingAlgorithms: signing.map(effect => literalObjectField(inputExpression(effect, 'payload'), 'algorithm')) });
 }
 
 function decodeP256Coordinate(value, artifactId, field) {
@@ -317,6 +322,26 @@ function decodeP256Coordinate(value, artifactId, field) {
     );
   }
   return bytes;
+}
+
+function normalizedRs256Jwk(value, artifactId) {
+  const invalid = () => fail('Invalid bounded RSA public key artifact.', 'PULSE_FASTLY_NATIVE_JWT_KEY_ARTIFACT_INVALID', { artifactId });
+  if (!value || typeof value !== 'object' || Array.isArray(value)
+    || Object.keys(value).some(name => !['kty', 'n', 'e', 'alg', 'use', 'key_ops', 'kid'].includes(name))
+    || value.kty !== 'RSA' || value.alg !== undefined && value.alg !== 'RS256'
+    || value.use !== undefined && value.use !== 'sig'
+    || value.key_ops !== undefined && (!Array.isArray(value.key_ops) || value.key_ops.length !== 1 || value.key_ops[0] !== 'verify')
+    || value.kid !== undefined && (typeof value.kid !== 'string' || !value.kid.length || value.kid.includes('\0') || Buffer.byteLength(value.kid) > 256)) invalid();
+  const decode = (text, maximum) => {
+    if (typeof text !== 'string' || text.length > Math.ceil(maximum * 4 / 3) || !/^[A-Za-z0-9_-]+$/.test(text)) invalid();
+    const bytes = Buffer.from(text, 'base64url');
+    if (!bytes.length || bytes.length > maximum || bytes[0] === 0 || bytes.toString('base64url') !== text) invalid();
+    return bytes;
+  };
+  const n = decode(value.n, 512), e = decode(value.e, 4), k = n.length;
+  if (![256, 384, 512].includes(k) || n[0] < 128 || !(n[k-1] & 1) || e.readUIntBE(0, e.length) < 3 || !(e.at(-1) & 1)) invalid();
+  const bytes = Buffer.alloc(8+k); bytes.writeUInt32LE(k); n.copy(bytes, 4); e.copy(bytes, 8+k-e.length);
+  return Object.freeze({ kid: value.kid, bytes });
 }
 
 function normalizedEs256Jwk(value, artifactId) {
@@ -365,13 +390,14 @@ function resolveEs256KeyArtifacts(plan, facts) {
     }
     const artifactId = effect.resource.keyArtifactId;
     const artifact = artifacts.get(artifactId);
+    const algorithm = jwtVerificationAlgorithm(effect).toLowerCase();
     if (
       !artifact
-      || artifact.version !== 'pulse.jwt-es256-key-artifact.v1'
+      || artifact.version !== `pulse.jwt-${algorithm}-key-artifact.v1`
       || artifact.contractId !== 'pulse.jwt'
       || artifact.package !== '@pulse-compute/jwt'
-      || artifact.kind !== 'jwt-es256-static-public-key'
-      || artifact.mediaType !== 'application/vnd.pulse.jwt-es256-key+json'
+      || artifact.kind !== `jwt-${algorithm}-static-public-key`
+      || artifact.mediaType !== `application/vnd.pulse.jwt-${algorithm}-key+json`
       || artifact.id !== artifactId
       || artifact.materialHash !== sha256(stableStringify(artifact.data))
       || !artifact.data
@@ -397,7 +423,7 @@ function resolveEs256KeyArtifacts(plan, facts) {
         { effectId: effect.id, artifactId, keyCount: keys && keys.length }
       );
     }
-    const normalized = keys.map((key) => normalizedEs256Jwk(key, artifactId));
+    const normalized = keys.map((key) => algorithm === 'rs256' ? normalizedRs256Jwk(key, artifactId) : normalizedEs256Jwk(key, artifactId));
     const kids = normalized.map((key) => key.kid).filter((kid) => kid !== undefined);
     if (new Set(kids).size !== kids.length) {
       fail(
@@ -477,8 +503,10 @@ function jwtSigningCryptoCompositionSource(selected) {
   const algorithms = selected?.signingAlgorithms || [];
   const hs = algorithms.includes('HS256');
   const es = algorithms.includes('ES256');
+  const rs = algorithms.includes('RS256');
   return `function __pulse_fastly_jwt_crypto_sign(algorithm: string, key: Uint8Array, data: Uint8Array, output: Uint8Array): i32 {
     ${hs ? `if (algorithm == "HS256") return pulse_crypto_hmac_sha256_bytes_v1(key.dataStart, key.length, data.dataStart, data.length, output.dataStart, output.length)` : ''}
+    ${rs ? `if (algorithm == "RS256") return __pulse_fastly_rs256(true, key, data, output)` : ''}
     ${es ? `if (algorithm == "ES256") {
       if (key.length != 96 || output.length != 64 || data.length > 16340) return -2
       const pointer: usize = 524288
@@ -499,6 +527,42 @@ function jwtSigningCryptoCompositionSource(selected) {
 }
 
 function jwtCryptoCompositionSource(selected) {
+  const rsa = selected && (selected.algorithm === 'RS256' || selected.signingAlgorithms?.includes('RS256'));
+  const helper = rsa ? rs256CompositionSource() : '';
+  return helper + jwtVerificationCompositionSource(selected);
+}
+
+function rs256CompositionSource() {
+  return `function __pulse_fastly_rs256(signing: bool, key: Uint8Array, data: Uint8Array, signature: Uint8Array): i32 {
+    if (key.length < 8 || data.length > 12288) return -2
+    const k = load<u32>(key.dataStart)
+    if ((k != 256 && k != 384 && k != 512) || signature.length != i32(k) || key.length != i32(signing ? 8 + k * 9 / 2 : 8 + k)) return -2
+    const pointer: usize = 524288
+    const output = (64 + key.length + 15) & ~15
+    const input = output + signature.length
+    memory.fill(pointer, 0, 16640)
+    store<u32>(pointer, 0x32534550); store<u32>(pointer + 4, 2); store<u32>(pointer + 8, 64)
+    store<u32>(pointer + 12, (input + data.length + 15) & ~15); store<u32>(pointer + 16, 2)
+    store<u32>(pointer + 24, input); store<u32>(pointer + 28, data.length)
+    store<u32>(pointer + 32, 64); store<u32>(pointer + 36, key.length)
+    store<u32>(pointer + 40, output); store<u32>(pointer + 44, k)
+    memory.copy(pointer + 64, key.dataStart, key.length); memory.copy(pointer + input, data.dataStart, data.length)
+    if (!signing) memory.copy(pointer + output, signature.dataStart, signature.length)
+    const status = signing ? __pulse_crypto_rs256_sign_anchor(i32(pointer), 16640) : __pulse_crypto_rs256_verify_anchor(i32(pointer), 16640)
+    if (signing && status == 1) memory.copy(signature.dataStart, pointer + output, signature.length)
+    memory.fill(pointer, 0, 16640); memory.fill(0, 0, 65536)
+    return status
+  }\n`;
+}
+
+function jwtVerificationCompositionSource(selected) {
+  if (selected?.algorithm === 'RS256') return `
+function __pulse_fastly_jwt_capture_signing_input(input: Uint8Array): void { __pulse_fastly_jwt_record_signing_input(input.byteLength, "") }
+function __pulse_fastly_jwt_crypto_verify(algorithm: string, key: Uint8Array, data: Uint8Array, signature: Uint8Array): i32 {
+  if (algorithm != "RS256") return -2
+  return __pulse_fastly_rs256(false, key, data, signature)
+}`;
+
   if (!selected || selected.algorithm === 'HMAC-SHA256') {
     return [
       'function __pulse_fastly_jwt_capture_signing_input(input: Uint8Array): void { void input }',
@@ -1813,7 +1877,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   validatePlanBoundary(plan, options);
   const facts = packageFacts(plan, options);
   const jwtCrypto = selectedJwtCrypto(plan);
-  const es256KeyRecords = jwtCrypto && jwtCrypto.algorithm === 'ES256'
+  const es256KeyRecords = jwtCrypto && ['ES256', 'RS256'].includes(jwtCrypto.algorithm)
     ? resolveEs256KeyArtifacts(plan, facts)
     : Object.freeze([]);
   if (jwtCrypto && jwtCrypto.guestUnitRequired && facts.guestUnits.length !== 1) {
@@ -1893,7 +1957,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     crypto: portable.manifest.crypto,
     jwt: jwtSource
       ? Object.freeze({
-          status: jwtCrypto && jwtCrypto.algorithm === 'ES256'
+          status: jwtCrypto && ['ES256', 'RS256'].includes(jwtCrypto.algorithm)
             ? 'implemented-g4'
             : 'implemented-e2',
           package: jwtSource.owner,

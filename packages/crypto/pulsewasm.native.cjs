@@ -155,8 +155,42 @@ function bindNativeEs256Signer(moduleExports) {
   };
 }
 
+function bindNativeRs256(moduleExports) {
+  const memory = moduleExports && moduleExports.memory;
+  if (!(memory instanceof WebAssembly.Memory) || memory.buffer.byteLength !== 2097152
+    || typeof moduleExports.pulse_crypto_rs256_sign !== 'function' || typeof moduleExports.pulse_crypto_rs256_verify !== 'function') {
+    throw new TypeError('Native RS256 exports are unavailable.');
+  }
+  const invalidKey = () => Object.assign(new TypeError('Invalid RSA signing key.'), { code: 'PULSE_CRYPTO_KEY_INVALID' });
+  function run(key, data, signature) {
+    const signing = signature === undefined;
+    if (!(key instanceof Uint8Array) || key.length < 8) throw invalidKey();
+    const k = new DataView(key.buffer, key.byteOffset, 4).getUint32(0, true);
+    if (![256, 384, 512].includes(k) || key.length !== (signing ? 8 + k * 9 / 2 : 8 + k)) throw invalidKey();
+    if (!(data instanceof Uint8Array) || data.length > 12288
+      || !signing && (!(signature instanceof Uint8Array) || signature.length !== k)) throw new TypeError('Invalid RS256 byte request.');
+    const pointer = 524288, capacity = 16640, output = (64 + key.length + 15) & ~15, input = output + k;
+    const frame = new Uint8Array(memory.buffer, pointer, capacity);
+    frame.fill(0);
+    try {
+      const header = new DataView(memory.buffer, pointer, 64);
+      for (const [offset, value] of [[0, 0x32534550], [4, 2], [8, 64], [12, (input + data.length + 15) & ~15],
+        [16, 2], [24, input], [28, data.length], [32, 64], [36, key.length], [40, output], [44, k]]) header.setUint32(offset, value, true);
+      frame.set(key, 64); frame.set(data, input);
+      if (!signing) frame.set(signature, output);
+      const status = moduleExports[signing ? 'pulse_crypto_rs256_sign' : 'pulse_crypto_rs256_verify'](pointer, capacity);
+      if (!signing) return Object.freeze({ status: ({ 1: 'valid', 0: 'invalid-authenticator', '-1': 'invalid-key', '-2': 'invalid-input' })[status] || 'realization-failure' });
+      if (status === -1) throw invalidKey();
+      if (status !== 1) throw new TypeError('Native RS256 signing failed.');
+      return frame.slice(output, output + k);
+    } finally { frame.fill(0); new Uint8Array(memory.buffer, 0, 65536).fill(0); }
+  }
+  return Object.freeze({ sign: (key, data) => run(key, data), verify: (key, data, signature) => run(key, data, signature) });
+}
+
 module.exports = Object.freeze({
   bindNativeEs256Signer,
+  bindNativeRs256,
   CRYPTO_GUEST_SOURCE_CONTRACT_VERSION,
   GUEST_UNIT_CONTRIBUTION_VERSION,
   pulseHmacAssemblyScriptSource,

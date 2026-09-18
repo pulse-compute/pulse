@@ -2,6 +2,7 @@
 
 const {
   CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION,
+  CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION, CRYPTO_RS256_GUEST_LINKED_REALIZATION,
   CRYPTO_ES256_GUEST_LINKED_REALIZATION,
   CRYPTO_GUEST_SOURCE_IMPLEMENTATION
 } = require('@pulse-compute/wasm-contracts/crypto/contracts');
@@ -20,6 +21,12 @@ const NODE_NATIVE_JWT_REALIZATIONS = Object.freeze({
     algorithm: 'ES256',
     realization: CRYPTO_ES256_GUEST_LINKED_REALIZATION,
     implementation: CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION,
+    guestUnitRequired: true
+  }),
+  RS256: Object.freeze({
+    algorithm: 'RS256',
+    realization: CRYPTO_RS256_GUEST_LINKED_REALIZATION,
+    implementation: CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION,
     guestUnitRequired: true
   })
 });
@@ -124,10 +131,10 @@ function keyArtifact(executionOptions, artifactId, jwtProvider) {
   const data = artifact && dataRecord(artifact.get('data'));
   if (
     !artifact
-    || artifact.get('version') !== 'pulse.jwt-es256-key-artifact.v1'
+    || !['pulse.jwt-es256-key-artifact.v1', 'pulse.jwt-rs256-key-artifact.v1'].includes(artifact.get('version'))
     || artifact.get('contractId') !== 'pulse.jwt'
     || artifact.get('package') !== '@pulse-compute/jwt'
-    || artifact.get('kind') !== 'jwt-es256-static-public-key'
+    || !['jwt-es256-static-public-key', 'jwt-rs256-static-public-key'].includes(artifact.get('kind'))
     || !data
   ) {
     throw jwtProvider.jwtError('PULSE_JWT_KEY_INVALID', {
@@ -223,7 +230,7 @@ function createNodeNativeJwtVerify(baseOptions = {}) {
     const selectedCrypto = requireCryptoVerifier(
       executionOptions,
       jwtProvider,
-      signing ? (input.options.algorithm === 'ES256' ? 'ES256' : 'HMAC-SHA256') : input.options.algorithms[0]
+      signing ? (input.options.algorithm === 'HS256' ? 'HMAC-SHA256' : input.options.algorithm) : input.options.algorithms[0]
     );
     const execution = dataRecord(executionOptions);
     const executionClock = execution && execution.get('captureJwtWallClock');

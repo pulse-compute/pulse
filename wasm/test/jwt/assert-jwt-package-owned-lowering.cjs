@@ -104,7 +104,7 @@ assert.equal(jwtManifest.modes.wasm.realization.kind, 'crypto-composed');
 assert.equal(jwtManifest.modes.wasm.realization.semanticOwner, '@pulse-compute/crypto');
 assert.equal(jwtManifest.modes.wasm.realization.realization, 'guest-source:pulse-hmac-as');
 assert.equal(jwtManifest.modes.wasm.realization.implementation, 'pulse-hmac-as.v1');
-assert.deepEqual(jwtManifest.modes.wasm.realization.algorithms, ['HS256', 'ES256']);
+assert.deepEqual(jwtManifest.modes.wasm.realization.algorithms, ['HS256', 'ES256', 'RS256']);
 assert.deepEqual(jwtManifest.modes.wasm.realization.keyTypes, ['secret', 'jwk', 'jwks']);
 assert.equal(jwtManifest.modes.wasm.realization.guestUnitRequired, false);
 assert.equal(jwtManifest.modes.wasm.realization.automaticFallback, false);
@@ -122,6 +122,7 @@ assert.deepEqual(jwtProduct.targets.native.providerRequirements, [
   'jwt.verify',
   'jwt.verify.es256',
   'jwt.verify.hs256',
+  'jwt.verify.rs256',
   'secret.get',
   'time.wall-clock'
 ]);
@@ -130,7 +131,7 @@ assert.equal(jwtProduct.targets.javascript.status, 'provider-dependent');
 
 assert.equal(classifyFastlyJavascriptCapability('jwt.verify.hs256').status, 'eligible');
 assert.equal(classifyFastlyJavascriptProviderRequirement('time.wall-clock').status, 'eligible');
-assert.equal(classifyFastlyJavascriptCapability('jwt.verify.rs256').status, 'blocked');
+assert.equal(classifyFastlyJavascriptCapability('jwt.verify.rs256').status, 'eligible');
 
 const discovered = discoverLowerableLibraryManifests({
   cwd: repoRoot,
@@ -260,8 +261,8 @@ expectCode(
 );
 const asymmetric = expectCode(
   sourceWith(`{
-    algorithms: ['RS256'],
-    key: { type: 'jwk', key: { kty: 'RSA', n: 'D3_PUBLIC_MATERIAL', e: 'AQAB' } }
+    algorithms: ['EdDSA'],
+    key: { type: 'jwk', key: { kty: 'OKP', crv: 'Ed25519', x: 'D3_PUBLIC_MATERIAL' } }
   }`, undefined, 'return'),
   jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED
 );
@@ -411,7 +412,7 @@ for (const call of ['jwt.sign', 'issue']) {
 }
 for (const policy of [
   'dynamicOptions',
-  signPolicy.replace("'HS256'", "'RS256'"),
+  signPolicy.replace("'HS256'", "'PS256'"),
   signPolicy.replace('45', '0'), signPolicy.replace('45', '9007199254740992'), signPolicy.replace('45', 'ttl'),
   signPolicy.replace("'WORKER_KEY'", 'binding'),
   signPolicy.replace("type: 'secret'", "type: 'jwk'"),

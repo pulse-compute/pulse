@@ -46,7 +46,7 @@ describe('bounded JWT signing', () => {
     await expect(signJwtWithCrypto({ claims: {}, options: { ...options, expiresInSeconds } }, host(), selected()))
       .rejects.toMatchObject({ code: 'PULSE_JWT_OPERATION_FAILED', detail: { category: 'sign-expiration' } });
   });
-  it.each(['none', 'RS256', 'HS384'])('rejects signing algorithm %s', algorithm => {
+  it.each(['none', 'PS256', 'HS384'])('rejects signing algorithm %s', algorithm => {
     expect(() => normalizeJwtSignOptions({ ...options, algorithm } as any)).toThrowError();
   });
   it.each([undefined, '', 'x'.repeat(31), 'x'.repeat(4097)])('fails closed on missing/invalid key', async key => {

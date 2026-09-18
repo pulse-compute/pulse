@@ -1,3 +1,4 @@
+import cryptoProvider from '@pulse-compute/crypto/provider';
 import { parsePrivateKeyObject } from './token.js';
 import { isJwtError, jwtError } from './errors.js';
 import type { JwtClaims, JwtJsonValue } from './options.js';
@@ -5,9 +6,9 @@ import { jwtDataRecord, jwtDenseArrayValues } from './internal/data.js';
 import { captureJwtCurrentDate, type JwtWallClockCapture } from './internal/clock.js';
 import { registerClaimStrings, registerSensitive, verifierHostFunction, type JwtVerifierHost } from './internal/verifier-authority.js';
 
-/** HS256/ES256 issuance using provider-owned secret and clock authority. */
+/** HS256/ES256/RS256 issuance using provider-owned secret and clock authority. */
 export interface JwtSignOptions {
-  readonly algorithm: 'HS256' | 'ES256';
+  readonly algorithm: 'HS256' | 'ES256' | 'RS256';
   readonly kid?: string;
   readonly key: { readonly type: 'secret'; readonly binding: string };
   readonly expiresInSeconds: number;
@@ -16,6 +17,7 @@ export interface JwtSignOptions {
 export interface JwtSignerCrypto {
   readonly bytes: {
     readonly hmacSha256?: (key: Uint8Array, data: Uint8Array) => Uint8Array | PromiseLike<Uint8Array>;
+    readonly rs256Sign?: (key: Uint8Array, data: Uint8Array) => Uint8Array | PromiseLike<Uint8Array>;
     readonly es256Sign?: (key: Uint8Array, data: Uint8Array) => Uint8Array | PromiseLike<Uint8Array>;
   };
 }
@@ -26,7 +28,7 @@ export function normalizeJwtSignOptions(value: JwtSignOptions): Readonly<JwtSign
     throw jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-options' });
   }
   const algorithm = record.get('algorithm');
-  if (algorithm !== 'HS256' && algorithm !== 'ES256') throw jwtError('PULSE_JWT_ALGORITHM_NOT_ALLOWED');
+  if (algorithm !== 'HS256' && algorithm !== 'ES256' && algorithm !== 'RS256') throw jwtError('PULSE_JWT_ALGORITHM_NOT_ALLOWED');
   const key = jwtDataRecord(record.get('key'));
   const binding = key?.get('binding');
   if (!key || key.size !== 2 || key.get('type') !== 'secret' || typeof binding !== 'string'
@@ -98,20 +100,29 @@ function protectedSegment(options: JwtSignOptions): string {
 
 export function normalizeJwtSignature(value: unknown, options: JwtSignOptions): string {
   const segments = typeof value === 'string' ? value.split('.') : [];
-  const size = options.algorithm === 'ES256' ? 86 : 43;
+  const sizes = options.algorithm === 'RS256' ? [342, 512, 683] : [options.algorithm === 'ES256' ? 86 : 43];
   if (typeof value !== 'string' || value.length > 16384 || segments.length !== 3
     || segments[0] !== protectedSegment(options) || !/^[A-Za-z0-9_-]+$/.test(segments[1])
-    || segments[2].length !== size || !/^[A-Za-z0-9_-]+$/.test(segments[2])) {
+    || !sizes.includes(segments[2].length) || !/^[A-Za-z0-9_-]+$/.test(segments[2])) {
     throw jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-result' });
   }
   return value;
 }
 
-function privateKeyBytes(secret: Uint8Array, options: JwtSignOptions, host: JwtVerifierHost): Uint8Array {
+async function privateKeyBytes(secret: Uint8Array, options: JwtSignOptions, host: JwtVerifierHost): Promise<Uint8Array> {
   let output: Uint8Array | undefined;
   try {
     const jwk = parsePrivateKeyObject(new TextDecoder('utf-8', { fatal: true }).decode(secret));
     registerClaimStrings(host, jwk);
+    if (options.algorithm === 'RS256') {
+      if (Object.keys(jwk).some(name => !['kty', 'n', 'e', 'd', 'p', 'q', 'dp', 'dq', 'qi', 'alg', 'use', 'key_ops', 'kid', 'ext'].includes(name))
+        || jwk.kty !== 'RSA' || jwk.alg !== undefined && jwk.alg !== 'RS256'
+        || jwk.use !== undefined && jwk.use !== 'sig' || jwk.ext !== undefined && typeof jwk.ext !== 'boolean'
+        || jwk.key_ops !== undefined && (!Array.isArray(jwk.key_ops) || jwk.key_ops.length !== 1 || jwk.key_ops[0] !== 'sign')
+        || jwk.kid !== undefined && (typeof jwk.kid !== 'string' || !jwk.kid.length || jwk.kid.includes('\0')
+          || new TextEncoder().encode(jwk.kid).length > 256 || options.kid !== undefined && jwk.kid !== options.kid)) throw new Error();
+      return await cryptoProvider.rsaPrivateKeyBytes(jwk);
+    }
     if (Object.keys(jwk).some(name => !['kty', 'crv', 'x', 'y', 'd', 'alg', 'use', 'key_ops', 'kid', 'ext'].includes(name))
       || jwk.kty !== 'EC' || jwk.crv !== 'P-256' || (jwk.alg !== undefined && jwk.alg !== 'ES256')
       || (jwk.use !== undefined && jwk.use !== 'sig') || (jwk.ext !== undefined && typeof jwk.ext !== 'boolean')
@@ -159,9 +170,9 @@ export async function signJwtWithCrypto(
     else if (secret instanceof Uint8Array && secret.length <= 4096) key = new Uint8Array(secret);
     if (!key || key.length < (options.algorithm === 'HS256' ? 32 : 1) || key.length > 4096) throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'sign-key' });
     registerSensitive(host, secret as string | Uint8Array);
-    if (options.algorithm === 'ES256') {
+    if (options.algorithm !== 'HS256') {
       const encoded = key;
-      try { key = privateKeyBytes(encoded, options, host); } finally { encoded.fill(0); }
+      try { key = await privateKeyBytes(encoded, options, host); } finally { encoded.fill(0); }
     }
     const now = Math.floor((await captureJwtCurrentDate(verifierHostFunction(host, 'captureWallClock') as JwtWallClockCapture | undefined)).getTime() / 1000);
     if (now > 8_640_000_000_000 - options.expiresInSeconds) {
@@ -172,10 +183,10 @@ export async function signJwtWithCrypto(
     const signingInput = protectedSegment(options) + '.' + base64url(new TextEncoder().encode(text));
     data = new TextEncoder().encode(signingInput);
     const bytes = jwtDataRecord(jwtDataRecord(crypto)?.get('bytes'));
-    const hmac = bytes?.get(options.algorithm === 'HS256' ? 'hmacSha256' : 'es256Sign');
+    const hmac = bytes?.get(options.algorithm === 'HS256' ? 'hmacSha256' : options.algorithm === 'RS256' ? 'rs256Sign' : 'es256Sign');
     if (typeof hmac !== 'function') throw jwtError('PULSE_JWT_TARGET_UNSUPPORTED', { category: 'crypto-realization' });
     tag = await hmac(key, data);
-    if (!(tag instanceof Uint8Array) || tag.length !== (options.algorithm === 'HS256' ? 32 : 64)) throw jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'crypto-signing' });
+    if (!(tag instanceof Uint8Array) || tag.length !== (options.algorithm === 'HS256' ? 32 : options.algorithm === 'ES256' ? 64 : new DataView(key.buffer, key.byteOffset, 4).getUint32(0, true))) throw jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'crypto-signing' });
     const signature = base64url(tag);
     const token = normalizeJwtSignature(signingInput + '.' + signature, options);
     registerSensitive(host, signature);

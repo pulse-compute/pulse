@@ -397,10 +397,10 @@ export function redactMacVerifyRequest(
 export function redactSignatureVerifyRequest(
   request: SignatureVerifyRequest | NormalizedSignatureVerifyRequest,
 ): Readonly<{
-  algorithm: 'ES256';
+  algorithm: 'ES256' | 'RS256';
   key: Readonly<{
-    type: 'p256-public-key-bytes';
-    compatibleAlgorithms: readonly ['ES256'];
+    type: 'p256-public-key-bytes' | 'rsa-public-key-bytes';
+    compatibleAlgorithms: readonly ('ES256' | 'RS256')[];
     identity: '[redacted]';
   }>;
   data: '[redacted]';
@@ -409,8 +409,8 @@ export function redactSignatureVerifyRequest(
   return Object.freeze({
     algorithm: request.algorithm,
     key: Object.freeze({
-      type: 'p256-public-key-bytes',
-      compatibleAlgorithms: Object.freeze(['ES256'] as const),
+      type: request.key.type,
+      compatibleAlgorithms: Object.freeze([request.algorithm]),
       identity: '[redacted]',
     }),
     data: '[redacted]',

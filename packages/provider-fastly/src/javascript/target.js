@@ -33,6 +33,11 @@ const FASTLY_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor(
       realization: 'runtime-builtin',
       implemented: true,
       status: 'implemented-h4'
+    }, {
+      algorithm: 'RS256',
+      realization: 'runtime-builtin',
+      implemented: true,
+      status: 'implemented-h4'
     }]
   }),
   capabilities: {
