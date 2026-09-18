@@ -1,6 +1,7 @@
 'use strict';
 
 const {
+  normalizeJwtSignEffect,
   normalizeJwtVerifyEffect
 } = require('@pulse-compute/wasm-contracts/jwt/contracts');
 const {
@@ -83,12 +84,15 @@ function createFastlyJavascriptJwtVerify(options = {}) {
   return async function verifyFastlyJavascriptJwt(effect, execution) {
     const { jwtProvider, cryptoProvider } = await loadRuntimeModules();
     assertRequestActive(execution, jwtProvider);
-    const input = normalizeJwtVerifyEffect(effect);
-    if (execution && typeof execution.registerRedactionValue === 'function') {
+    const signing = effect.operation === 'sign';
+    const input = signing ? normalizeJwtSignEffect(effect) : normalizeJwtVerifyEffect(effect);
+    if (!signing && execution && typeof execution.registerRedactionValue === 'function') {
       execution.registerRedactionValue(input.token);
     }
     assertRequestActive(execution, jwtProvider);
-    const selectedCrypto = assertRuntimeBuiltin(cryptoProvider, jwtProvider);
+    const selectedCrypto = signing
+      ? require('@pulse-compute/crypto/provider').bindJavascriptDigestMac(['HMAC-SHA256'])
+      : assertRuntimeBuiltin(cryptoProvider, jwtProvider);
     const host = {
       async captureWallClock() {
         assertRequestActive(execution, jwtProvider);
@@ -118,7 +122,7 @@ function createFastlyJavascriptJwtVerify(options = {}) {
         return result;
       };
     }
-    const result = await jwtProvider.verifyJwtWithCrypto(
+    const result = await (signing ? jwtProvider.signJwtWithCrypto : jwtProvider.verifyJwtWithCrypto)(
       input,
       Object.freeze(host),
       selectedCrypto

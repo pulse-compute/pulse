@@ -15,6 +15,8 @@ import {
 } from './result.js';
 import { preflightCompactJwt } from './token.js';
 import { pulseJwtRuntime } from './internal/package-runtime.js';
+import { normalizeJwtSignClaims, normalizeJwtSignOptions, normalizeJwtSignature, type JwtSignOptions } from './sign.js';
+export type { JwtSignOptions } from './sign.js';
 
 export { bearer, JwtError, JWT_ERROR_CODES };
 export type {
@@ -64,9 +66,17 @@ export function verify(
   );
 }
 
+export function sign(ctx: PulseContext, claims: JwtClaims, options: JwtSignOptions): PulseParallelEffect<string> {
+  return pulseJwtRuntime.effect(ctx, 'sign', {
+    claims: normalizeJwtSignClaims(claims),
+    options: normalizeJwtSignOptions(options),
+  }, normalizeJwtSignature);
+}
+
 export const jwt = Object.freeze({
   bearer,
   verify,
+  sign,
 });
 
 export default jwt;

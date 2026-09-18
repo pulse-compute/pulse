@@ -3,13 +3,14 @@
   "kind": "pulse.package-contract",
   "contractId": "pulse.jwt",
   "npmPackage": "@pulse-compute/jwt",
-  "description": "Bounded, provider-neutral JWT verification.",
+  "description": "Bounded, provider-neutral JWT verification and short-lived HS256 signing.",
   "authoring": {
     "namespace": "jwt",
     "import": "@pulse-compute/jwt",
     "symbols": [
       "bearer",
-      "verify"
+      "verify",
+      "sign"
     ]
   },
   "ownership": {
@@ -33,7 +34,8 @@
         "jwt.verify.hs256",
         "jwt.verify.es256",
         "secret.get",
-        "time.wall-clock"
+        "time.wall-clock",
+        "jwt.sign"
       ],
       "reasonCode": "PULSE_JWT_TARGET_CAPABILITY_REQUIRED"
     },
@@ -46,7 +48,8 @@
         "jwt.verify.hs256",
         "jwt.verify.es256",
         "secret.get",
-        "time.wall-clock"
+        "time.wall-clock",
+        "jwt.sign"
       ],
       "reasonCode": "PULSE_JWT_PROVIDER_CAPABILITY_REQUIRED"
     }
@@ -65,7 +68,8 @@
     ],
     "semanticCases": [
       "jwt.bearer",
-      "jwt.verify"
+      "jwt.verify",
+      "jwt.sign"
     ]
   },
   "docs": {

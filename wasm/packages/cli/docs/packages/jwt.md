@@ -1,6 +1,6 @@
 # `@pulse-compute/jwt`
 
-`@pulse-compute/jwt` provides bounded, provider-neutral JWT verification for
+`@pulse-compute/jwt` provides bounded, provider-neutral JWT verification and signing for
 Pulse handlers.
 
 ```bash
@@ -37,8 +37,47 @@ P-256 JWKs or static JWKS values with at most 16 entries. Key selection is
 deterministic and fails closed for duplicate, missing, ambiguous, or unknown
 identities.
 
-RS256, EdDSA, signing, remote discovery, custom crypto providers, and automatic
+RS256, EdDSA, asymmetric signing, remote discovery, custom crypto providers, and automatic
 fallback are not part of this release.
+
+## Issue a short-lived worker token
+
+```ts
+const token = await jwt.sign(ctx, {
+  iss: 'catalog', aud: 'projection-worker', sub: 'scheduler',
+  scope: 'reconcile', job: 'projection', epoch: 7,
+  method: 'POST', path: '/step', bodySha256: bodyDigest,
+}, {
+  algorithm: 'HS256',
+  key: { type: 'secret', binding: 'WORKER_KEY' },
+  expiresInSeconds: 45,
+})
+```
+
+Select `HMAC-SHA256` in the profile's `crypto` configuration. A profile that also
+verifies HS256 tokens selects both `HMAC-SHA256` and `HS256`. Provision a
+32–4096 byte secret under the named binding; Fastly also needs
+`fastly.bindings.secretStore`. Keys are resolved at execution and are never embedded in
+the application artifact.
+
+Signing is a request-owned effect on Node and Fastly, with Native guest HMAC
+and explicit JavaScript Web Crypto realizations. Native calls require literal
+options and a direct awaited local assignment or keyed `ctx.parallel` member.
+Claims can be computed within the supported handler language.
+
+The protected header is exactly `{"alg":"HS256","typ":"JWT"}`. One trusted
+provider clock reading supplies integer `iat` and `exp`; `expiresInSeconds`
+must be 1–300. Caller-supplied `iat`, `exp`, and `nbf` are rejected. The result
+is a compact JWT string. The signer does not validate application authorization:
+the caller chooses issuer, audience, subject, scope and request binding claims,
+and the worker must verify them against the actual request.
+
+Claims must be an ordinary JSON object, with no accessors, methods, sparse
+arrays, cycles or non-finite numbers. Limits are 32 levels, 1024 values
+including the root, and 8192 UTF-8 bytes after adding timestamps. Secrets,
+claim strings, serialized claims, signatures and tokens are registered for
+request log redaction. Invalid inputs, unavailable authority and crypto
+failures terminate the effect without fallback or retry.
 
 ## Boundary
 

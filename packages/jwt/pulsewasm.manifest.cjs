@@ -9,7 +9,7 @@ const pulseWasmManifest = Object.freeze({
   facade: Object.freeze({
     namespace: 'jwt',
     import: '@pulse-compute/jwt',
-    symbols: Object.freeze(['bearer', 'verify'])
+    symbols: Object.freeze(['bearer', 'verify', 'sign'])
   }),
   publicApi: Object.freeze({
     package: '@pulse-compute/jwt',
@@ -18,12 +18,13 @@ const pulseWasmManifest = Object.freeze({
       'JwtError',
       'bearer',
       'jwt',
-      'verify'
+      'verify',
+      'sign'
     ]),
     compatibilitySubpaths: Object.freeze([]),
     loweringIntentionallyNarrow: true
   }),
-  description: 'Package-owned Native lowering contract for bounded, provider-neutral JWT verification.',
+  description: 'Package-owned Native lowering contract for bounded, provider-neutral JWT verification and HS256 signing.',
   compiler: Object.freeze({
     version: 'pulsewasm.lowerable-compiler-builder.v1',
     entry: './pulsewasm.compiler.cjs',
@@ -63,6 +64,7 @@ const pulseWasmManifest = Object.freeze({
         ])
       }),
       lowerings: Object.freeze([
+        Object.freeze({ tsSymbol: 'jwt.sign', asSymbol: 'pulse_jwt_sign', callShape: 'claims-static-sign-policy', hostCapabilities: Object.freeze(['clock', 'result']) }),
         Object.freeze({
           tsSymbol: 'jwt.verify',
           asSymbol: 'pulse_jwt_verify',

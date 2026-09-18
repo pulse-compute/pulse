@@ -13,8 +13,8 @@ function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
 }
 
-function pulseJwtAssemblyScriptSource() {
-  const source = fs.readFileSync(sourceFile, 'utf8');
+function pulseJwtAssemblyScriptSource(options = {}) {
+  const source = fs.readFileSync(sourceFile, 'utf8') + (options.includeSigning === true ? '\n' + fs.readFileSync(path.join(__dirname, 'as/sign.as.ts'), 'utf8') : '');
   return Object.freeze({
     version: JWT_NATIVE_SOURCE_CONTRACT_VERSION,
     id: 'pulse-jwt-as',
@@ -26,13 +26,16 @@ function pulseJwtAssemblyScriptSource() {
     origin: 'package-source',
     sourceIncluded: true,
     sourceFile: sourceRelativeFile,
+    sourceFiles: Object.freeze([sourceRelativeFile, ...(options.includeSigning === true ? ['as/sign.as.ts'] : [])]),
     source,
     sourceBytes: Buffer.byteLength(source),
     sourceSha256: sha256(source),
     imports: Object.freeze([]),
     exports: Object.freeze([
       'pulse_jwt_verify',
-      'pulse_jwt_fastly_verify'
+      'pulse_jwt_fastly_verify',
+      'pulse_jwt_sign',
+      ...(options.includeSigning === true ? ['pulse_jwt_fastly_sign'] : [])
     ]),
     semanticOwnership: Object.freeze([
       'compact-jws-parsing',

@@ -274,12 +274,12 @@
       "documentation": "docs/packages/jwt.md",
       "role": "public-extension",
       "tier": "supported-extension",
-      "audience": "Applications verifying bounded JWT bearer credentials through Pulse providers.",
-      "directInstall": "Yes, when an application verifies JWTs.",
+      "audience": "Applications verifying JWT credentials and issuing bounded HS256 worker tokens through Pulse providers.",
+      "directInstall": "Yes, when an application verifies or signs JWTs.",
       "entryPoints": [
         "@pulse-compute/jwt"
       ],
-      "stability": "The package root is the supported provider-neutral verification contract; provider and compiler integration subpaths are not application APIs."
+      "stability": "The package root supports provider-neutral verification and bounded HS256 signing; provider and compiler integration subpaths are not application APIs."
     },
     {
       "dir": "packages/entities",

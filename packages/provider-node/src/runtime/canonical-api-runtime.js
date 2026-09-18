@@ -535,7 +535,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
         }, (name) => bindingValue(executionOptions, 'secrets', name));
       }
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
-      if (effect.kind === 'jwt.verify') return verifyNativeJwt(effect, executionOptions);
+      if (effect.kind === 'jwt.verify' || effect.kind === 'jwt.sign') return verifyNativeJwt(effect, executionOptions);
       if (effect.kind === 'grip.broadcast') {
         const grip = executionOptions.grip || baseOptions.grip || {};
         const broadcast = createNodeJavascriptGripBroadcast({

@@ -797,6 +797,7 @@ function collectFacadeBindings(ts, sourceFile, manifest) {
   const bindings = {
     namespaces: new Set(),
     verify: new Set(),
+    sign: new Set(),
     bearer: new Set(),
     imports: []
   };
@@ -821,6 +822,7 @@ function collectFacadeBindings(ts, sourceFile, manifest) {
         const local = specifier.name.text;
         if (imported === 'jwt' || imported === 'default') bindings.namespaces.add(local);
         if (imported === 'verify') bindings.verify.add(local);
+        if (imported === 'sign') bindings.sign.add(local);
         if (imported === 'bearer') bindings.bearer.add(local);
         bindings.imports.push({ imported, local, loc: locFor(sourceFile, specifier.name) });
       }
@@ -834,13 +836,14 @@ function resolveFacadeCall(ts, call, bindings) {
   if (expression && ts.isPropertyAccessExpression(expression)) {
     const object = unwrapExpression(ts, expression.expression);
     if (object && ts.isIdentifier(object) && bindings.namespaces.has(object.text)) {
-      if (expression.name.text === 'verify' || expression.name.text === 'bearer') {
+      if (['verify', 'bearer', 'sign'].includes(expression.name.text)) {
         return { method: expression.name.text, local: object.text };
       }
     }
   }
   if (expression && ts.isIdentifier(expression)) {
     if (bindings.verify.has(expression.text)) return { method: 'verify', local: expression.text };
+    if (bindings.sign.has(expression.text)) return { method: 'sign', local: expression.text };
     if (bindings.bearer.has(expression.text)) return { method: 'bearer', local: expression.text };
   }
   return undefined;
@@ -1066,6 +1069,41 @@ function buildJwtLoweringPlan(inputs = {}) {
   function visit(node) {
     if (ts.isCallExpression(node)) {
       const resolved = resolveFacadeCall(ts, node, bindings);
+      if (resolved && resolved.method === 'sign') {
+        const contextName = enclosingContextName(ts, node);
+        const placement = placementForCall(ts, node, contextName);
+        const error = (code, message) => diagnostics.push(makeDiagnostic(sourceFile, node, code, message,
+          'Await jwt.sign(ctx, claims, { algorithm: "HS256", key: { type: "secret", binding: "NAME" }, expiresInSeconds: 45 }) into a local or in ctx.parallel.'));
+        if (node.arguments.length !== 3 || !currentContextArgument(ts, node.arguments[0], contextName)) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.ARGUMENT_SHAPE_UNSUPPORTED, 'Signing requires the current handler context, claims, and static options.');
+          return;
+        }
+        if (!(placement.kind === 'variable' && placement.awaited || placement.parallel && ts.isAwaitExpression(placement.parallel.parent))) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.PLACEMENT_UNSUPPORTED, 'Signing must be directly awaited or grouped.');
+        }
+        const members = objectMembers(ts, sourceFile, node.arguments[2], new Set(['algorithm', 'key', 'expiresInSeconds']), diagnostics,
+          jwtContracts.JWT_DIAGNOSTIC_CODES.OPTIONS_LITERAL_REQUIRED, 'JWT signing options');
+        const algorithm = literalString(ts, members.get('algorithm'));
+        const expiresInSeconds = literalNumber(ts, members.get('expiresInSeconds'));
+        if (algorithm !== 'HS256') error(jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED, 'Signing supports only HS256.');
+        if (!Number.isInteger(expiresInSeconds) || expiresInSeconds < 1 || expiresInSeconds > 300) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.POLICY_LIMIT_EXCEEDED, 'Signing requires a literal lifetime from 1 through 300 seconds.');
+        }
+        const key = parseKey(ts, sourceFile, members.get('key') || node, ['HS256'], diagnostics);
+        if (key.descriptor.type !== 'secret' || !key.resource.secretBinding || key.resource.secretBinding.length > 256
+          || key.resource.secretBinding.includes('\0') || !key.resource.secretBinding.trim()) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.KEY_TYPE_UNSUPPORTED, 'Signing requires a bounded named secret binding.');
+        }
+        const effect = Object.freeze({ ...jwtContracts.JWT_SIGN_OPERATION, placement: placement.kind,
+          range: rangeFor(sourceFile, node), loc: locFor(sourceFile, node), resource: key.resource,
+          payload: { algorithm: 'HS256', expiresInSeconds: expiresInSeconds || 0 },
+          runtimeInputs: [{ name: 'claims', argumentIndex: 1, source: 'package-call-argument' }],
+          providerRequirements: jwtContracts.JWT_SIGN_CONTRACT.providerRequirements,
+          schemaReferences: [], redaction: ['claims', 'token', 'signature', 'key-material', 'secret-value'] });
+        entries.push(Object.freeze({ kind: 'jwt-sign', symbol: 'jwt.sign', placement: placement.kind,
+          awaited: placement.awaited, algorithms: [], key: key.descriptor,
+          providerRequirements: effect.providerRequirements, range: effect.range, loc: effect.loc, canonicalEffect: effect }));
+      }
       if (resolved && resolved.method === 'bearer') bearerCalls.push(node);
       if (resolved && resolved.method === 'verify') {
         const contextName = enclosingContextName(ts, node);
@@ -1141,14 +1179,17 @@ function buildJwtLoweringPlan(inputs = {}) {
       'Pass jwt.bearer(ctx.req) directly as the second jwt.verify argument.'
     ));
   }
-  for (const entry of entries) validateResultAccess(ts, sourceFile, entry, diagnostics);
+  for (const entry of entries.filter(entry => entry.kind === 'jwt-verify')) validateResultAccess(ts, sourceFile, entry, diagnostics);
 
   const canonicalEffects = entries.map((entry) => entry.canonicalEffect);
   const canonicalIntrinsics = entries.map((entry) => entry.bearerIntrinsic).filter(Boolean);
   const schemaReferences = entries.map((entry) => entry.schemaReference).filter(Boolean);
-  const cryptoRequirements = jwtContracts.jwtCryptoRequirements(
+  const cryptoRequirements = Object.freeze([...jwtContracts.jwtCryptoRequirements(
     entries.flatMap((entry) => entry.algorithms)
-  );
+  ), ...(entries.some(entry => entry.kind === 'jwt-sign') ? [{
+    version: packageContracts.PACKAGE_CRYPTO_REQUIREMENT_VERSION, requestedBy: jwtContracts.JWT_PACKAGE_NAME,
+    semanticOwner: '@pulse-compute/crypto', reachable: true, algorithms: ['HMAC-SHA256']
+  }] : [])]);
   const keyArtifacts = entries
     .filter((entry) => entry.key.keyArtifactId)
     .map((entry) => Object.freeze({

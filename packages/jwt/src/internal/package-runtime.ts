@@ -5,6 +5,7 @@ export const pulseJwtRuntime = packageRuntime.createPackageRuntime({
   contractId: 'pulse.jwt',
   providerKind: 'jwt',
   operations: {
+    sign: { kind: 'jwt.sign', capability: 'jwt.sign', result: 'string' },
     verify: {
       kind: 'jwt.verify',
       capability: 'jwt.verify',

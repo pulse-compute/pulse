@@ -386,3 +386,8 @@ export function pulse_jwt_fastly_verify(effectIndex: i32, outerHandle: i32): i32
   __pulse_fastly_jwt_record_verified()
   return output
 }
+
+export function pulse_jwt_sign(operationRef: i32, invocationRef: i32, resultRef: i32): i32 {
+  void operationRef; void invocationRef; void resultRef
+  return PULSE_JWT_VERIFY_CRYPTO_COMPOSITION_REQUIRED
+}

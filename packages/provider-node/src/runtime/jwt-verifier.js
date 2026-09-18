@@ -8,6 +8,8 @@ const {
 
 const NODE_NATIVE_JWT_VERIFIER_VERSION = 'pulse.node-native-jwt-verifier.v1';
 const NODE_NATIVE_JWT_REALIZATIONS = Object.freeze({
+  'HMAC-SHA256': Object.freeze({ algorithm: 'HMAC-SHA256', realization: 'guest-source:pulse-hmac-as',
+    implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, guestUnitRequired: false }),
   HS256: Object.freeze({
     algorithm: 'HS256',
     realization: 'guest-source:pulse-hmac-as',
@@ -205,11 +207,23 @@ function createNodeNativeJwtVerify(baseOptions = {}) {
   return async function verifyNodeNativeJwt(effect, executionOptions = {}) {
     const jwtProvider = await loadJwtProvider();
     requestActive(executionOptions, jwtProvider);
-    const input = effectInput(effect, executionOptions, jwtProvider);
+    const signing = effect.kind === 'jwt.sign';
+    let input;
+    if (signing) {
+      const resource = dataRecord(effect.resource), payload = dataRecord(effect.payload);
+      if (effect.contractId !== 'pulse.jwt' || effect.package !== '@pulse-compute/jwt'
+        || effect.operation !== 'sign' || effect.capability !== 'jwt.sign'
+        || !resource || resource.size !== 3 || resource.get('keyType') !== 'secret'
+        || resource.get('keyArtifactId') !== null || !payload || payload.size !== 3) {
+        throw jwtProvider.jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-input' });
+      }
+      input = { claims: payload.get('claims'), options: { algorithm: payload.get('algorithm'),
+        expiresInSeconds: payload.get('expiresInSeconds'), key: { type: 'secret', binding: resource.get('secretBinding') } } };
+    } else input = effectInput(effect, executionOptions, jwtProvider);
     const selectedCrypto = requireCryptoVerifier(
       executionOptions,
       jwtProvider,
-      input.options.algorithms[0]
+      signing ? 'HMAC-SHA256' : input.options.algorithms[0]
     );
     const execution = dataRecord(executionOptions);
     const executionClock = execution && execution.get('captureJwtWallClock');
@@ -246,7 +260,7 @@ function createNodeNativeJwtVerify(baseOptions = {}) {
         return result;
       };
     }
-    const result = await jwtProvider.verifyJwtWithCrypto(
+    const result = await (signing ? jwtProvider.signJwtWithCrypto : jwtProvider.verifyJwtWithCrypto)(
       input,
       Object.freeze(host),
       selectedCrypto

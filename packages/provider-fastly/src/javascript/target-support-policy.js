@@ -82,7 +82,8 @@ function classifyFastlyJavascriptCapability(id, restrictions = {}) {
     return decision(capability, 'eligible', 'fastly-javascript-provider-wall-clock-authority', 'provider-fastly');
   }
   if (
-    capability === 'jwt.verify'
+    capability === 'jwt.sign'
+    || capability === 'jwt.verify'
     || capability === 'jwt.verify.hs256'
     || capability === 'jwt.verify.es256'
   ) {
@@ -147,7 +148,8 @@ function classifyFastlyJavascriptProviderRequirement(id, restrictions = {}) {
     return decision(requirement, 'eligible', 'fastly-javascript-provider-wall-clock-authority', 'provider-fastly');
   }
   if (
-    requirement === 'jwt.verify'
+    requirement === 'jwt.sign'
+    || requirement === 'jwt.verify'
     || requirement === 'jwt.verify.hs256'
     || requirement === 'jwt.verify.es256'
   ) {
@@ -188,7 +190,7 @@ function fastlyJavascriptProjectRestrictions(compiled, project) {
   const secretSites = sites.filter((entry) => entry.kind === 'secret.get');
   const jwtSites = sites.filter((entry) => (
     entry.contractId === 'pulse.jwt'
-    && (entry.operation === 'verify' || entry.kind === 'jwt.verify')
+    && (['verify', 'sign'].includes(entry.operation) || ['jwt.verify', 'jwt.sign'].includes(entry.kind))
   ));
   const output = {};
 

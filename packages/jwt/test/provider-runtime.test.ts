@@ -366,4 +366,16 @@ describe('D3 JavaScript JWT realization integration', () => {
     expect(JSON.stringify(projection)).not.toContain('AUTH_JWT');
     expect(JSON.stringify(projection)).not.toContain(SECRET);
   });
+  it('cancels after secret resolution without reading the clock or releasing a token', async () => {
+    const controller = new AbortController();
+    let clocks = 0;
+    const execute = createNodeJavascriptJwtVerify({
+      secretLookup: async () => { controller.abort(); return SECRET; },
+      captureWallClock: () => { clocks++; return { trusted: true, unixEpochSeconds: 1 }; },
+    });
+    const effect = { package: '@pulse-compute/jwt', contractId: 'pulse.jwt', providerKind: 'jwt',
+      kind: 'jwt.sign', operation: 'sign', capability: 'jwt.sign', result: 'string', payload: { claims: {}, options: { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 45 } } };
+    await expect(execute(effect, { signal: controller.signal })).rejects.toHaveProperty('code');
+    expect(clocks).toBe(0);
+  });
 });
