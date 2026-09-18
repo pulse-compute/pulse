@@ -138,17 +138,11 @@ function assertSelectedDefinition(entry) {
 }
 
 function normalizeLinkedContribution(entry, definition) {
-  if (
-    entry.algorithm !== 'ES256'
-    || definition.id !== cryptoContracts.CRYPTO_ES256_GUEST_LINKED_REALIZATION
-    || definition.implementation !==
-      cryptoContracts.CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION
-  ) {
-    throw new CryptoGuestSourceError(
-      `Selected crypto realization ${entry.realization} is not a recognized linked guest.`,
-      'PULSE_CRYPTO_REALIZATION_UNAVAILABLE',
-      { algorithm: entry.algorithm, realization: entry.realization }
-    );
+  const accepted = entry.algorithm === 'ES256'
+    ? [cryptoContracts.CRYPTO_ES256_GUEST_LINKED_REALIZATION, cryptoContracts.CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION]
+    : entry.algorithm === 'RS256' ? [cryptoContracts.CRYPTO_RS256_GUEST_LINKED_REALIZATION, cryptoContracts.CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION] : [];
+  if (definition.id !== accepted[0] || definition.implementation !== accepted[1]) {
+    throw new CryptoGuestSourceError('Unrecognized linked Crypto guest.', 'PULSE_CRYPTO_REALIZATION_UNAVAILABLE');
   }
   const module = loadGuestSourceModule(definition);
   const guest = module
@@ -171,6 +165,11 @@ function normalizeLinkedContribution(entry, definition) {
     );
   }
   const source = [
+    ...['verify', 'sign'].flatMap(operation => [
+      `@external("pulse_crypto_es256", "pulse_crypto_rs256_${operation}")`,
+      `declare function __pulse_crypto_rs256_guest_${operation}(framePointer: i32, frameCapacity: i32): i32`,
+      `export function __pulse_crypto_rs256_${operation}_anchor(framePointer: i32, frameCapacity: i32): i32 { return __pulse_crypto_rs256_guest_${operation}(framePointer, frameCapacity) }`,
+    ]),
     '@external("pulse_crypto_es256", "pulse_crypto_es256_verify")',
     'declare function __pulse_crypto_es256_guest_verify(framePointer: i32, frameCapacity: i32): i32',
     'export function __pulse_crypto_es256_link_anchor(framePointer: i32, frameCapacity: i32): i32 {',
@@ -203,8 +202,9 @@ function normalizeLinkedContribution(entry, definition) {
       module: 'pulse_crypto_es256',
       name: 'pulse_crypto_es256_verify',
       kind: 'function'
-    }, { module: 'pulse_crypto_es256', name: 'pulse_crypto_es256_sign', kind: 'function' }],
-    exports: ['__pulse_crypto_es256_link_anchor', '__pulse_crypto_es256_sign_anchor'],
+    }, { module: 'pulse_crypto_es256', name: 'pulse_crypto_es256_sign', kind: 'function' },
+      ...['sign', 'verify'].map(operation => ({ module: 'pulse_crypto_es256', name: `pulse_crypto_rs256_${operation}`, kind: 'function' }))],
+    exports: ['__pulse_crypto_es256_link_anchor', '__pulse_crypto_es256_sign_anchor', '__pulse_crypto_rs256_sign_anchor', '__pulse_crypto_rs256_verify_anchor'],
     resourceLimits: {
       es256PublicKeyBytes: 64,
       es256SignatureBytes: 64,
@@ -340,7 +340,7 @@ function buildNativeCryptoGuestSources(plan) {
       previous.sourceSha256 !== contribution.sourceSha256
       || JSON.stringify(previous.exports) !== JSON.stringify(contribution.exports)
       || previous.owner !== contribution.owner || previous.packageVersion !== contribution.packageVersion
-      || previous.kind !== contribution.kind || previous.backendVersion !== contribution.backendVersion
+      || previous.kind !== contribution.kind || (previous.kind !== 'guest-linked' && previous.backendVersion !== contribution.backendVersion)
       || JSON.stringify(previous.imports) !== JSON.stringify(contribution.imports)
       || JSON.stringify(previous.resourceLimits) !== JSON.stringify(contribution.resourceLimits)
     ))) throw new CryptoGuestSourceError('Native Crypto contributions conflict.', 'PULSE_CRYPTO_REALIZATION_UNAVAILABLE');

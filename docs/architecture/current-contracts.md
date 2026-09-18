@@ -726,10 +726,10 @@ superseded state.
 
 ### JWT issuance and canonical guest linking
 
-JWT signing supports HS256 and ES256 through request-owned secret and clock
+JWT signing supports HS256, ES256 and RS256 through request-owned secret and clock
 effects. Private P-256 JWK parsing belongs to JWT; the private Crypto adapter
 accepts bounded `x || y || d` bytes. Native ES256 uses the exact revised
-`pulse.crypto.es256.verify-and-sign.v2` guest ABI, retaining the verification
+`pulse.crypto.es256-rs256.verify-and-sign.v3` guest ABI, retaining the verification
 frame and adding a distinct signing export. The caller clears the signing
 frame and borrowed Rust stack. No public generic signing primitive, remote key
 authority, dynamic lowerer, algorithm fallback, or provider discovery is added.
@@ -740,3 +740,24 @@ separately checks the final artifact against its selected provider descriptor;
 Fastly's final artifact must not retain `pulse_host` or crypto guest imports.
 This separates the two artifact boundaries without widening either import set.
 Historical G0/G3/G4/G5 reports do not attest the revised signing binary.
+
+
+RS256 shares the exact first-party signature guest with ES256. Its separate
+sign/verify exports use algorithm code 2 in the checked invocation envelope,
+12288 input bytes, and 256/384/512-byte signatures. The original ES256 frame
+semantics remain algorithm code 1. RSA uses vendored, pinned BearSSL 0.6 i31
+arithmetic compiled with Zig 0.13.0's Clang and statically linked by Cargo;
+source inventory, toolchain identity and final bytes are part of the trusted
+package catalog. The existing module/path identifiers are retained, while the
+ABI/build identities advance to v3. This expands neither linked-unit count
+nor the fixed memory/host-import policy. Native SHA/HMAC source composition
+remains rejected by that policy, and Fastly Native keeps one verification
+algorithm per artifact.
+
+JWT owns strict private/public RSA JWK metadata and deterministic static JWKS
+selection. Crypto checks RSA/CRT consistency and signing output. No remote
+key discovery, key generation, certificate/PEM parsing, PSS, or public generic
+sign primitive is added. Native constant-time design assumptions and the
+JavaScript BigInt key-validation timing limitation are documented in the
+Crypto package guide. Existing secret/clock authority, cancellation,
+redaction and application lifetime ownership are retained.

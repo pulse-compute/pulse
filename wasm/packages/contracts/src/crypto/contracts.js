@@ -23,8 +23,15 @@ const CRYPTO_VERIFICATION_STATUSES = Object.freeze([
   'realization-failure'
 ]);
 
-const CRYPTO_ALGORITHMS = Object.freeze(['HS256', 'ES256', 'SHA-256', 'HMAC-SHA256']);
+const CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION = 'webcrypto.subtle.rsassa-pkcs1-v1_5-sha-256.v1';
+const CRYPTO_RS256_GUEST_LINKED_REALIZATION = 'guest-linked:pulse-rs256-bearssl-i31';
+const CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION = 'bearssl.0.6.rsa-i31.sha256.v1';
+const CRYPTO_ALGORITHMS = Object.freeze(['HS256', 'ES256', 'RS256', 'SHA-256', 'HMAC-SHA256']);
 const CRYPTO_REALIZATIONS = Object.freeze([
+  { id: 'runtime-builtin', kind: 'runtime-builtin', algorithm: 'RS256', targets: ['javascript'], implementation: CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION },
+  { id: CRYPTO_RS256_GUEST_LINKED_REALIZATION, kind: 'guest-linked', algorithm: 'RS256', targets: ['native'],
+    backend: 'pulse-rs256-bearssl-i31', implementation: CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION,
+    source: { package: '@pulse-compute/crypto', export: './pulsewasm-native', contractVersion: 'pulse.guest-unit-contribution.v1', contribution: 'pulseEs256GuestUnit' } },
   ...['SHA-256', 'HMAC-SHA256'].map((algorithm) => Object.freeze({
     id: 'runtime-builtin', kind: 'runtime-builtin', algorithm, targets: Object.freeze(['javascript']),
     implementation: algorithm === 'SHA-256' ? 'webcrypto.subtle.sha-256-bytes.v1' : 'webcrypto.subtle.hmac-sha-256-bytes.v1'
@@ -148,7 +155,7 @@ const CRYPTO_ES256_CONTRACT = deepFreeze({
     unitId: 'pulse.crypto.es256.rustcrypto-p256.v1',
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
-    abi: 'pulse.crypto.es256.verify-and-sign.v2',
+    abi: 'pulse.crypto.es256-rs256.verify-and-sign.v3',
     export: {
       name: 'pulse_crypto_es256_verify',
       parameters: ['i32', 'i32'],
@@ -594,7 +601,7 @@ function planCryptoRealizations(input = {}) {
     const requirement = requirements.algorithms.find((entry) => entry.algorithm === configured.algorithm);
     return {
       algorithm: configured.algorithm,
-      primitive: configured.algorithm === 'ES256'
+      primitive: configured.algorithm === 'RS256' ? Object.freeze({ kind: 'rsa-pkcs1-v1_5', hash: 'SHA-256' }) : configured.algorithm === 'ES256'
         ? Object.freeze({ kind: 'ecdsa', curve: 'P-256', hash: 'SHA-256' })
         : Object.freeze({ kind: configured.algorithm === 'SHA-256' ? 'digest' : 'hmac', hash: 'SHA-256' }),
       requestedBy: requirement ? requirement.requestedBy : Object.freeze([]),
@@ -623,6 +630,7 @@ function planCryptoRealizations(input = {}) {
 }
 
 module.exports = Object.freeze({
+  CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION, CRYPTO_RS256_GUEST_LINKED_REALIZATION, CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION,
   CRYPTO_CONFIGURATION_VERSION,
   CRYPTO_TARGET_CAPABILITIES_VERSION,
   CRYPTO_REQUIREMENTS_VERSION,

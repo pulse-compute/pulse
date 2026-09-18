@@ -45,6 +45,7 @@ function classifyNodeJavascriptCapability(id, options = {}) {
     || capability === 'jwt.verify'
     || capability === 'jwt.verify.hs256'
     || capability === 'jwt.verify.es256'
+    || capability === 'jwt.verify.rs256'
   ) {
     return decision(capability, 'eligible', 'node-javascript-jwt-crypto-runtime-builtin', 'provider-node');
   }
@@ -111,6 +112,7 @@ function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, opt
     || requirement === 'jwt.verify'
     || requirement === 'jwt.verify.hs256'
     || requirement === 'jwt.verify.es256'
+    || requirement === 'jwt.verify.rs256'
   ) {
     return decision(requirement, 'eligible', 'node-javascript-jwt-crypto-runtime-builtin', 'provider-node');
   }

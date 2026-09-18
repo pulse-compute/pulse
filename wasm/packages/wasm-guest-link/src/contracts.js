@@ -409,7 +409,7 @@ function normalizeGuestUnitManifestV2(input) {
   );
 
   exactKeys(input.toolchain, ['kind', 'target', 'locked', 'versions'], [], 'guest unit v2 toolchain');
-  exactKeys(input.toolchain.versions, ['rustc', 'cargo', 'binaryen'], [], 'guest unit v2 toolchain.versions');
+  exactKeys(input.toolchain.versions, ['rustc', 'cargo', 'zig', 'binaryen'], [], 'guest unit v2 toolchain.versions');
   const toolchain = Object.freeze({
     kind: string(input.toolchain.kind, 'guest unit v2 toolchain.kind'),
     target: string(input.toolchain.target, 'guest unit v2 toolchain.target'),
@@ -417,6 +417,7 @@ function normalizeGuestUnitManifestV2(input) {
     versions: Object.freeze({
       rustc: string(input.toolchain.versions.rustc, 'guest unit v2 rustc version'),
       cargo: string(input.toolchain.versions.cargo, 'guest unit v2 cargo version'),
+      zig: string(input.toolchain.versions.zig, 'guest unit v2 Zig version'),
       binaryen: string(input.toolchain.versions.binaryen, 'guest unit v2 Binaryen version')
     })
   });
@@ -449,7 +450,7 @@ function normalizeGuestUnitManifestV2(input) {
     })
   })]);
   exactValue(imports, expectedImports, 'guest unit v2 imports', diagnosticCodes.importMismatch);
-  const expectedExports = Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify'].map(name => Object.freeze({
+  const expectedExports = Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify', 'pulse_crypto_rs256_sign', 'pulse_crypto_rs256_verify'].map(name => Object.freeze({
     name, kind: 'function', parameters: es256FrameV2.parameters, results: es256FrameV2.results, role: 'abi'
   })));
   exactValue(exports, expectedExports, 'guest unit v2 exports', diagnosticCodes.exportMismatch);

@@ -96,8 +96,10 @@ publication.
 | Exact realization selection | Yes | Yes | Yes | Yes | Profile replacement is whole-value replacement; there is no array or object merging. |
 | Disabled fallback | Yes | Yes | Yes | Yes | Missing capability, unavailable pins, and realization failures stop without choosing another backend or target. |
 | Secret-safe realization reporting | Yes | Yes | Yes | Yes | Reports identify algorithms and realizations but never key, message, or authenticator bytes. |
-| Prebuilt `guest-linked` unit required | No | No | ES256 only | ES256 only | Native HS256 remains first-party AssemblyScript in the primary module; Native ES256 uses the exact audited RustCrypto guest. |
-| JWT verification | HS256, ES256 | HS256, ES256 | HS256, ES256 | HS256, ES256 | RS256 and EdDSA remain unavailable; no failure changes algorithms, realizations, targets, or providers. |
+| RS256 verification and JWT issuance | Web Crypto | Web Crypto | BearSSL i31 guest | BearSSL i31 guest | Exactly 2048/3072/4096-bit RSA, PKCS#1 v1.5/SHA-256; portable host fixtures, not deployed acceptance. |
+| JWT issuance | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | Secret and clock authority remain request-owned; lifetime policy remains application-owned. |
+| Prebuilt `guest-linked` unit required | No | No | ES256/RS256 | ES256/RS256 | Native HS256 remains first-party AssemblyScript in the primary module; Native ES256/RS256 share the pinned RustCrypto/BearSSL signature guest. |
+| JWT verification | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | EdDSA remains unavailable; no failure changes algorithms, realizations, targets, or providers. |
 | JWT authenticity before claims | Yes | Yes | Yes | Yes | Invalid authenticity exposes no claims and stops before clock, registered-claim, or schema authority. |
 | Exact final-artifact execution | Package runtime | Compute artifact | Primary Native module | `bin/main.wasm` | Native cells execute the package-owned guest sources; JavaScript cells execute the exact selected runtime builtin. |
 
@@ -167,3 +169,11 @@ documented managed-surface rule with the canonical handler-surface registry.
 - [Node build and execution](../guides/deploying-node.md)
 - [Fastly deployment candidates](../guides/deploying-fastly.md)
 - [Diagnostics and remediation](./diagnostics.md)
+
+
+RS256 and ES256 can share a Native artifact. The fixed-memory linked guest
+currently cannot compose with the allocating SHA/HMAC guest. Fastly Native
+also requires one JWT verification algorithm per artifact. These builds fail
+closed; an explicitly selected JavaScript target can compose these algorithms.
+See [JWT](../packages/jwt.md) for canonical key limits and
+[Crypto](../packages/crypto.md) for private-key timing and memory assumptions.

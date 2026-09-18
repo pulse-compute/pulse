@@ -2,6 +2,7 @@
 
 const {
   CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION,
+  CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION, CRYPTO_RS256_GUEST_LINKED_REALIZATION,
   CRYPTO_ES256_GUEST_LINKED_REALIZATION,
   CRYPTO_GUEST_SOURCE_IMPLEMENTATION,
   CRYPTO_REALIZATION_PLAN_VERSION
@@ -230,6 +231,9 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
   const moduleExports = input.exports;
   const selected = selectedHs256(plan);
   const selectedSignature = selectedEs256(plan);
+  const selectedRsa = selectedAlgorithm(plan, 'RS256', CRYPTO_RS256_GUEST_LINKED_REALIZATION, 'guest-linked', CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION);
+  let rsa;
+  if (selectedRsa) { try { rsa = require('@pulse-compute/crypto/pulsewasm-native').bindNativeRs256(moduleExports); } catch {} }
   const memory = moduleExports && moduleExports.memory;
   const verifyHs256 = moduleExports && moduleExports[HS256_EXPORT];
   const verifyEs256 = moduleExports && moduleExports[ES256_EXPORT];
@@ -249,6 +253,7 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
   const digestMac = byteAlgorithms.length > 0
     ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeDigestMac(moduleExports) : undefined;
   const selectedRealizations = Object.freeze([
+    ...(selectedRsa ? [{ algorithm: 'RS256', realization: CRYPTO_RS256_GUEST_LINKED_REALIZATION, implementation: CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION, guestUnitRequired: true, available: Boolean(rsa) }] : []),
     ...byteAlgorithms.map((algorithm) => Object.freeze({ algorithm, realization: HS256_REALIZATION,
       implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, guestUnitRequired: false, available: Boolean(digestMac) })),
     ...(selected ? [Object.freeze({
@@ -279,8 +284,9 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
   const signer = es256Available && typeof moduleExports.pulse_crypto_es256_sign === 'function'
     ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeEs256Signer(moduleExports) : undefined;
   const verifier = Object.freeze({
-    ...(digestMac || signer ? { bytes: Object.freeze({
+    ...(digestMac || signer || rsa ? { bytes: Object.freeze({
       ...(signer ? { es256Sign: signer } : {}),
+      ...(rsa ? { rs256Sign: rsa.sign } : {}),
       ...(byteAlgorithms.includes('SHA-256') ? { sha256: digestMac.sha256 } : {}),
       ...(byteAlgorithms.includes('HMAC-SHA256') ? { hmacSha256: digestMac.hmacSha256 } : {})
     }) } : {}),
@@ -316,6 +322,13 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
     }),
     signature: Object.freeze({
       verify(request) {
+        if (ownData(request, 'algorithm') === 'RS256') {
+          const key = ownData(request, 'key');
+          if (ownData(key, 'type') !== 'rsa-public-key-bytes') return result('invalid-key');
+          if (!rsa) return result('realization-failure');
+          try { return rsa.verify(ownData(key, 'bytes'), ownData(request, 'data'), ownData(request, 'signature')); }
+          catch (error) { return result(error.code === 'PULSE_CRYPTO_KEY_INVALID' ? 'invalid-key' : 'invalid-input'); }
+        }
         const normalized = normalizeSignatureRequest(request);
         if (normalized.result) return normalized.result;
         if (!es256Available) return result('realization-failure');

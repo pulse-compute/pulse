@@ -102,7 +102,7 @@ Declares the complete global algorithm set. Array entries are canonical algorith
 
 - **Type:** readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>
 - **Required/default:** Optional; default implicit no-crypto declaration.
-- **Allowed values or constraints:** `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`
+- **Allowed values or constraints:** `HS256`, `ES256`, `RS256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, `guest-linked:pulse-es256-rustcrypto-p256`, and `guest-linked:pulse-rs256-bearssl-i31`
 - **Scope:** global crypto requirement default
 - **Precedence:** Used only when the selected profile omits `crypto`.
 - **Security and safety:** Keys and verification bytes are not configuration values. Target selection is deterministic and never probes or falls back.
@@ -114,7 +114,7 @@ Replaces the complete global crypto declaration for the selected profile. Arrays
 
 - **Type:** readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>
 - **Required/default:** Optional; default inherit `pulse.crypto` when absent.
-- **Allowed values or constraints:** `[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`
+- **Allowed values or constraints:** `[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `RS256`, `SHA-256`, `HMAC-SHA256`
 - **Scope:** selected profile
 - **Precedence:** Selected-profile declaration replaces `pulse.crypto`; absence inherits it.
 - **Security and safety:** Every declared algorithm must resolve for the selected target before lowering. A failed exact realization cannot select another backend.

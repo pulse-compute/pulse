@@ -137,5 +137,46 @@ function bindJavascriptEs256Signer(subtle = globalThis.crypto?.subtle) {
   } }) });
 }
 
-module.exports = Object.freeze({ bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
+// Metadata parsing remains JWT-owned. This adapter normalizes only RSA integers.
+async function rsaPrivateKeyBytes(components) {
+  return (await import('../dist/internal/rsa.js')).rsaKeyBytes(components, true);
+}
+function bindJavascriptRs256Signer(subtle = globalThis.crypto?.subtle) {
+  if (!subtle || typeof subtle.importKey !== 'function' || typeof subtle.sign !== 'function'
+    || typeof subtle.verify !== 'function') throw new TypeError('Selected RS256 signing realization is unavailable.');
+  const invalidKey = () => Object.assign(new TypeError('Invalid RSA signing key.'), { code: 'PULSE_CRYPTO_KEY_INVALID' });
+  return Object.freeze({ bytes: Object.freeze({ async rs256Sign(key, data) {
+    const { rsaWireJwk, RSA_DATA_BYTES_MAXIMUM } = await import('../dist/internal/rsa.js');
+    if (!(data instanceof Uint8Array) || data.length > RSA_DATA_BYTES_MAXIMUM) throw new TypeError('RS256 input exceeds its byte contract.');
+    let jwk, signingKey, verifyingKey;
+    const algorithm = { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' };
+    try {
+      jwk = rsaWireJwk(key, true);
+      // Web Crypto implementations need not check every redundant CRT field.
+      // Check consistency explicitly at import. JavaScript BigInt has no
+      // constant-time guarantee; private exponentiation remains Web Crypto.
+      const integer = text => {
+        const binary = atob(text.replace(/-/g, '+').replace(/_/g, '/'));
+        let value = 0n; for (const byte of binary) value = value * 256n + BigInt(byte.charCodeAt(0));
+        return value;
+      };
+      const { n, e, d, p, q, dp, dq, qi } = Object.fromEntries(['n', 'e', 'd', 'p', 'q', 'dp', 'dq', 'qi'].map(name => [name, integer(jwk[name])]));
+      const k = key.length > 8 ? new DataView(key.buffer, key.byteOffset, 4).getUint32(0, true) : 0;
+      const halfMinimum = 1n << BigInt(k * 4 - 1);
+      if (p < halfMinimum || q < halfMinimum || !(p & q & 1n) || p === q || p*q !== n
+        || d <= 0n || d >= n || d % (p-1n) !== dp || d % (q-1n) !== dq
+        || e*dp % (p-1n) !== 1n || e*dq % (q-1n) !== 1n || qi <= 0n || qi >= p || q*qi % p !== 1n) throw invalidKey();
+      signingKey = await subtle.importKey('jwk', jwk, algorithm, false, ['sign']);
+      verifyingKey = await subtle.importKey('jwk', { kty: 'RSA', n: jwk.n, e: jwk.e }, algorithm, false, ['verify']);
+    } catch { throw invalidKey(); }
+    const signature = new Uint8Array(await subtle.sign(algorithm, signingKey, data));
+    try {
+      if (signature.length !== new DataView(key.buffer, key.byteOffset, 4).getUint32(0, true)
+        || !await subtle.verify(algorithm, verifyingKey, signature, data)) throw invalidKey();
+      return signature.slice();
+    } finally { signature.fill(0); }
+  } }) });
+}
+
+module.exports = Object.freeze({ rsaPrivateKeyBytes, bindJavascriptRs256Signer, bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
   textDigestByteLength, normalizeTextDigestResult, executeTextDigest, createJavascriptTextDigest });

@@ -39,7 +39,7 @@ const EXPECTED_RUSTC = '1.97.1 (8bab26f4f 2026-07-14)';
 const EXPECTED_CARGO = '1.97.1 (c980f4866 2026-06-30)';
 const TARGET = 'wasm32v1-none';
 const CRATE_STEM = 'pulse_es256_rustcrypto_verifier.wasm';
-const BUILD_IDENTITY = 'pulse.crypto.es256.rustcrypto-build.v2';
+const BUILD_IDENTITY = 'pulse.crypto.es256-rs256.build.v3';
 
 function usage() {
   process.stderr.write('Usage: node build.cjs (--write|--check)\n');
@@ -134,7 +134,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
     packageVersion: '1.0.0-beta.5',
-    abi: 'pulse.crypto.es256.verify-and-sign.v2',
+    abi: 'pulse.crypto.es256-rs256.verify-and-sign.v3',
     origin: 'package-prebuilt',
     artifact: Object.freeze({
       file: 'prebuilt/es256-verifier.wasm',
@@ -153,6 +153,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
       versions: Object.freeze({
         rustc,
         cargo,
+        zig: '0.13.0',
         binaryen: binaryen.version,
       }),
     }),
@@ -166,7 +167,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
         shared: false,
       }),
     })]),
-    exports: Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify'].map(name => Object.freeze({
+    exports: Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify', 'pulse_crypto_rs256_sign', 'pulse_crypto_rs256_verify'].map(name => Object.freeze({
       name,
       kind: 'function',
       parameters: Object.freeze(['i32', 'i32']),
@@ -214,6 +215,15 @@ function main() {
   if (!['--write', '--check'].includes(mode) || process.argv.length !== 3) {
     usage();
     return;
+  }
+  assert.equal(fs.existsSync(path.join(sourceDirectory, 'target')), false,
+    'Guest source must be clean: set CARGO_TARGET_DIR outside source for direct Cargo experiments.');
+  const upstreamRoot = path.join(sourceDirectory, 'bearssl');
+  const upstream = JSON.parse(fs.readFileSync(path.join(upstreamRoot, 'UPSTREAM.json'), 'utf8'));
+  assert.equal(upstream.version, '0.6');
+  assert.equal(upstream.archiveSha256, '6705bba1714961b41a728dfc5debbe348d2966c117649392f8c8139efc83ff14');
+  for (const [file, expected] of Object.entries(upstream.files)) {
+    assert.equal(sha256(fs.readFileSync(path.join(upstreamRoot, file))), expected, `Vendored upstream file differs: ${file}`);
   }
   const cargoExecutable = process.env.CARGO || 'cargo';
   const rustcExecutable = process.env.RUSTC || 'rustc';

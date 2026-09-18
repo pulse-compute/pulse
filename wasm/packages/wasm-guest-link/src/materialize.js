@@ -127,8 +127,8 @@ function assertGuestBinary(manifest, inspection) {
         type: 'i32',
         initializer: { instruction: 'i32.const', value: contract.layout.rustStack.endExclusive }
       })
-      || inspection.instructions.globalSet !== 92
-      || inspection.instructions.store !== 697
+      || inspection.instructions.globalSet !== 104
+      || inspection.instructions.store !== 823
     ) {
       fail(
         diagnosticCodes.memoryMismatch,
@@ -156,9 +156,9 @@ function assertGuestBinary(manifest, inspection) {
     }))) !== JSON.stringify([{
       memoryIndex: 0,
       offset: 131072,
-      endExclusive: 131712,
-      bytes: 640,
-      sha256: 'f75b74804133932a16bb0b2e0349c92d98c4dfae2a1518e83f50810a51c726ef'
+      endExclusive: 131722,
+      bytes: 650,
+      sha256: 'a33fcc685d2bb0bbbaa4678207d5c4ab2698f41ed7694be4fe0ba590e93d98ce'
     }])
   ) {
     fail(diagnosticCodes.memoryMismatch, `Guest unit ${manifest.id} static data does not match the reviewed layout.`);

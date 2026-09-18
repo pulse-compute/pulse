@@ -302,6 +302,7 @@ describe('D3 JavaScript JWT realization integration', () => {
     expect(FASTLY_JAVASCRIPT_JWT_REALIZATION).toEqual(expected);
     expect(FASTLY_JAVASCRIPT_JWT_REALIZATIONS).toEqual({
       HS256: expected,
+      RS256: { algorithm: 'RS256', realization: 'runtime-builtin', implementation: 'webcrypto.subtle.rsassa-pkcs1-v1_5-sha-256.v1', automaticFallback: false },
       ES256: {
         algorithm: 'ES256',
         realization: 'runtime-builtin',
@@ -327,15 +328,15 @@ describe('D3 JavaScript JWT realization integration', () => {
     });
     expect(jwtContracts.JWT_TARGET_REALIZATIONS.fastly.javascript)
       .toMatchObject({
-        algorithms: ['HS256', 'ES256'],
+        algorithms: ['HS256', 'ES256', 'RS256'],
         keyTypes: ['secret', 'jwk', 'jwks'],
         automaticFallback: false,
       });
-    expect(classifyNodeJavascriptCapability('jwt.verify.rs256')).toMatchObject({
+    expect(classifyNodeJavascriptCapability('jwt.verify.eddsa')).toMatchObject({
       status: 'blocked',
       reasonId: 'jwt-crypto-realization-unavailable',
     });
-    expect(classifyFastlyJavascriptCapability('jwt.verify.rs256')).toMatchObject({
+    expect(classifyFastlyJavascriptCapability('jwt.verify.eddsa')).toMatchObject({
       status: 'blocked',
       reasonId: 'jwt-crypto-realization-unavailable',
     });

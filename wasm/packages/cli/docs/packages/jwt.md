@@ -32,12 +32,12 @@ detached and deeply frozen.
 
 ## Algorithms and keys
 
-The Beta supports HS256 and ES256 verification. ES256 accepts inline public
+The Beta supports HS256, ES256 and RS256 verification. ES256 accepts inline public
 P-256 JWKs or static JWKS values with at most 16 entries. Key selection is
 deterministic and fails closed for duplicate, missing, ambiguous, or unknown
 identities.
 
-RS256, EdDSA, remote discovery, custom crypto providers, and automatic
+EdDSA, remote discovery, custom crypto providers, and automatic
 fallback are not part of this release.
 
 ## Issue a short-lived worker token
@@ -126,3 +126,52 @@ are not application APIs.
 - [Project configuration](../reference/project-config.md)
 - [Provider and target compatibility](../reference/compatibility-matrix.md)
 - [Package-owned lowering](../concepts/package-owned-lowering.md)
+
+
+## RS256 issuance and verification
+
+Select `RS256` in `pulse.crypto` and in `jwt.sign` options. The named secret
+contains a UTF-8 JSON private RSA JWK with `kty: "RSA"`, `n`, `e`, `d`, `p`,
+`q`, `dp`, `dq`, and `qi`. Its total encoded size is at most 4096 bytes.
+Optional metadata is `alg: "RS256"`, `use: "sig"`, `key_ops: ["sign"]`,
+boolean `ext`, and a `kid` of at most 256 UTF-8 bytes. If signing options and
+the secret both carry `kid`, they must agree. Never put private JWKs into
+application source or verification options.
+
+Verification uses `algorithms: ['RS256']` with an inline public JWK or a
+static JWKS of at most 16 entries. Public keys require only `kty`, `n`, and
+`e`; optional `alg`, `use`, `key_ops: ['verify']`, and `kid` follow the same
+policy. Private, certificate, multi-prime (`oth`), and unknown fields are
+rejected. Duplicate `kid` values reject the set; selection is exact by `kid`
+or requires one eligible key. Failure never retries another key.
+
+Supported modulus sizes are exactly 2048, 3072, and 4096 bits, with an odd
+public exponent from 3 through 4294967295. JWK integers use minimal unsigned,
+canonical unpadded base64url. Private keys require two distinct, odd factors
+of half the modulus width with their top bit set. Crypto checks `n = p*q`,
+`d < n`, the two reduced exponents, their relation to `e`, and `q*qi mod p`.
+These checks establish consistency; key generation and primality testing
+remain outside this API.
+
+RS256 means RSASSA-PKCS1-v1_5 with SHA-256. RSA-PSS is not accepted. Signatures
+are exactly 256, 384, or 512 bytes, and original signing input is bounded to
+12288 bytes. Issued claims retain the 8192-byte bound and application-owned
+positive safe-integer lifetime. The provider owns secret lookup and clock
+capture; authenticity precedes claim validation.
+
+Node and Fastly JavaScript use Web Crypto. Both Native providers use the
+pinned BearSSL 0.6 `i31` code in the shared signature guest. Each signer
+verifies its output before returning it. JavaScript uses BigInt to check
+redundant private key fields during import; that validation and the engine's
+key handling have no Pulse constant-time guarantee. Native uses BearSSL's
+constant-time arithmetic design; compiled Wasm timing still depends on the
+engine and CPU. See the Crypto guide for the implementation assumptions.
+
+Native RS256 and ES256 share one linked guest. The current fixed-memory
+linker rejects composition with the allocating SHA-256/HMAC guest; use a
+separate Native artifact or an explicitly selected JavaScript target for
+that combination. Fastly Native also retains one verification algorithm per
+artifact. Signing and verification with RS256 together, issuance alone,
+verification alone, and RS256/ES256 issuance composition are tested through
+the normal CLI build path. Injected Fastly hosts are portable evidence, not
+a deployed-service confirmation or an aggregate release seal.

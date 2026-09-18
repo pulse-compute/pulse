@@ -175,6 +175,7 @@ function createDriver() {
           'jwt.sign',
           'jwt.verify.hs256',
           'jwt.verify.es256',
+          'jwt.verify.rs256',
           'secret.get',
           'time.wall-clock'
         ]),
@@ -198,6 +199,19 @@ function createDriver() {
             realization: 'guest-linked:pulse-es256-rustcrypto-p256',
             implementation: 'rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1',
             algorithms: Object.freeze(['ES256']),
+            keyTypes: Object.freeze(['jwk', 'jwks']),
+            implemented: true,
+            status: 'implemented-g4',
+            semanticOwner: '@pulse-compute/crypto',
+            guestUnitRequired: true,
+            portable: true,
+            automaticFallback: false
+          }),
+          Object.freeze({
+            kind: 'crypto-composed',
+            realization: 'guest-linked:pulse-rs256-bearssl-i31',
+            implementation: 'bearssl.0.6.rsa-i31.sha256.v1',
+            algorithms: Object.freeze(['RS256']),
             keyTypes: Object.freeze(['jwk', 'jwks']),
             implemented: true,
             status: 'implemented-g4',
@@ -232,6 +246,11 @@ function createDriver() {
           }, {
             algorithm: 'ES256',
             realization: 'guest-linked:pulse-es256-rustcrypto-p256',
+            implemented: true,
+            status: 'implemented-g4'
+          }, {
+            algorithm: 'RS256',
+            realization: 'guest-linked:pulse-rs256-bearssl-i31',
             implemented: true,
             status: 'implemented-g4'
           }]

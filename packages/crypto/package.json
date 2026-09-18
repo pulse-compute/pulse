@@ -21,10 +21,12 @@
   },
   "files": [
     "as",
+    "guests",
     "dist",
     "pulsewasm.native.cjs",
     "README.md",
     "src/provider.cjs",
+    "src/provider.d.cts",
     "pulse.package.json",
     "pulsewasm.manifest.cjs",
     "pulsewasm.compiler.cjs",

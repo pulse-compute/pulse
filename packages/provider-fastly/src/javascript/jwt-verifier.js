@@ -6,6 +6,7 @@ const {
 } = require('@pulse-compute/wasm-contracts/jwt/contracts');
 const {
   CRYPTO_ES256_RUNTIME_BUILTIN_IMPLEMENTATION,
+  CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION,
   CRYPTO_RUNTIME_BUILTIN_IMPLEMENTATION
 } = require('@pulse-compute/wasm-contracts/crypto/contracts');
 
@@ -17,6 +18,7 @@ const FASTLY_JAVASCRIPT_JWT_REALIZATIONS = Object.freeze({
     implementation: CRYPTO_RUNTIME_BUILTIN_IMPLEMENTATION,
     automaticFallback: false
   }),
+  RS256: Object.freeze({ algorithm: 'RS256', realization: 'runtime-builtin', implementation: CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION, automaticFallback: false }),
   ES256: Object.freeze({
     algorithm: 'ES256',
     realization: 'runtime-builtin',
@@ -91,7 +93,9 @@ function createFastlyJavascriptJwtVerify(options = {}) {
     }
     assertRequestActive(execution, jwtProvider);
     const selectedCrypto = signing
-      ? (input.options.algorithm === 'ES256'
+      ? (input.options.algorithm === 'RS256'
+        ? require('@pulse-compute/crypto/provider').bindJavascriptRs256Signer()
+        : input.options.algorithm === 'ES256'
         ? require('@pulse-compute/crypto/provider').bindJavascriptEs256Signer()
         : require('@pulse-compute/crypto/provider').bindJavascriptDigestMac(['HMAC-SHA256']))
       : assertRuntimeBuiltin(cryptoProvider, jwtProvider);

@@ -152,9 +152,17 @@ const tasks = Object.freeze({
   'crypto-digest-text-contract': nodeTask('test/crypto/assert-digest-text-contract.cjs', {
     description: 'Exact-text digest admission, bounded failures, unavailable providers and cancellation'
   }),
+  'jwt-rs256': nodeTask('test/jwt/assert-jwt-rs256.cjs', {
+    timeoutMs: 600000, evidence: 'conformance',
+    description: 'RS256 issuance and verification through all four targets and normal CLI builds'
+  }),
   'jwt-es256-signing': nodeTask('test/jwt/assert-jwt-es256-signing.cjs', {
     timeoutMs: 180000, evidence: 'conformance',
     description: 'ES256 private-key signing, independent verification, CLI build and failures on four targets'
+  }),
+  'crypto-rs256': nodeTask('test/crypto/assert-rs256.cjs', {
+    timeoutMs: 180000, evidence: 'unit',
+    description: 'RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup'
   }),
   'crypto-es256-signing': nodeTask('test/crypto/assert-es256-signing.cjs', {
     timeoutMs: 180000, evidence: 'unit',
@@ -899,6 +907,7 @@ const profiles = Object.freeze({
     's3-write-contract',
     'crypto-config-planning',
     'crypto-es256-signing',
+    'crypto-rs256',
     'crypto-digest-text-contract',
     'reachable-graph',
     'project-modules',
@@ -956,6 +965,7 @@ const profiles = Object.freeze({
   conformance: Object.freeze([
     'jwt-signing',
     'jwt-es256-signing',
+    'jwt-rs256',
     's3-write-conformance',
     'crypto-cross-target-conformance',
     'crypto-digest-text-conformance',
