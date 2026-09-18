@@ -104,7 +104,7 @@ fn outer_frame_is_valid(frame_pointer: u32, frame_capacity: u32) -> bool {
     }
 }
 
-fn header_is_valid(frame: &[u8]) -> Option<(Span, Span, Span)> {
+fn header_is_valid(frame: &[u8], key_bytes: u32) -> Option<(Span, Span, Span)> {
     let total_length = read_u32_le(frame, HEADER_TOTAL_LENGTH);
     if read_u32_le(frame, HEADER_MAGIC) != FRAME_MAGIC
         || read_u32_le(frame, HEADER_VERSION) != FRAME_VERSION
@@ -127,7 +127,7 @@ fn header_is_valid(frame: &[u8]) -> Option<(Span, Span, Span)> {
     let public_key_length = read_u32_le(frame, HEADER_PUBLIC_KEY_LENGTH);
     let signature_length = read_u32_le(frame, HEADER_SIGNATURE_LENGTH);
     if signing_input_length > ES256_SIGNING_INPUT_BYTES_MAXIMUM
-        || public_key_length != P256_PUBLIC_KEY_BYTES
+        || public_key_length != key_bytes
         || signature_length != ES256_SIGNATURE_BYTES
     {
         return None;
@@ -227,7 +227,7 @@ pub unsafe extern "C" fn pulse_crypto_es256_verify(
         frame_capacity as usize,
     );
     let (signing_input, public_key, signature) =
-        match header_is_valid(frame) {
+        match header_is_valid(frame, P256_PUBLIC_KEY_BYTES) {
             Some(value) => value,
             None => return STATUS_INVALID_INPUT,
         };
@@ -237,4 +237,35 @@ pub unsafe extern "C" fn pulse_crypto_es256_verify(
         &frame[public_key.start as usize..public_key.end as usize],
         &frame[signature.start as usize..signature.end as usize],
     )
+}
+
+
+/// Sign one ES256 request using x || y || d private-key bytes. The frame
+/// follows the verification envelope with a 96-byte key and writable output.
+/// Input spans must not overlap. Callers clear the frame and borrowed Rust
+/// stack after capturing the signature; this function retains no pointers.
+#[no_mangle]
+pub unsafe extern "C" fn pulse_crypto_es256_sign(frame_pointer: u32, frame_capacity: u32) -> i32 {
+    use p256::ecdsa::{signature::hazmat::PrehashSigner, SigningKey};
+    if !outer_frame_is_valid(frame_pointer, frame_capacity) { return STATUS_INVALID_INPUT; }
+    let frame = slice::from_raw_parts_mut(frame_pointer as *mut u8, frame_capacity as usize);
+    let (input, key, output) = match header_is_valid(frame, 96) {
+        Some(value) => value, None => return STATUS_INVALID_INPUT,
+    };
+    // Clear output before validating the key so failed calls cannot expose a
+    // prior signature. Header validation already proved disjoint spans.
+    frame[output.start as usize..output.end as usize].fill(0);
+    let key_start = key.start as usize;
+    let signer = match SigningKey::from_slice(&frame[key_start + 64..key.end as usize]) {
+        Ok(value) => value, Err(_) => return STATUS_INVALID_KEY,
+    };
+    let public = signer.verifying_key().to_encoded_point(false);
+    if public.as_bytes()[1..] != frame[key_start..key_start + 64] { return STATUS_INVALID_KEY; }
+    let digest = Sha256::digest(&frame[input.start as usize..input.end as usize]);
+    // RustCrypto's deterministic RFC6979 signing requires no host randomness.
+    let signature: P256Signature = match signer.sign_prehash(&digest) {
+        Ok(value) => value, Err(_) => return STATUS_INVALID_KEY,
+    };
+    frame[output.start as usize..output.end as usize].copy_from_slice(&signature.to_bytes());
+    STATUS_VALID
 }

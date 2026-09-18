@@ -91,7 +91,9 @@ function createFastlyJavascriptJwtVerify(options = {}) {
     }
     assertRequestActive(execution, jwtProvider);
     const selectedCrypto = signing
-      ? require('@pulse-compute/crypto/provider').bindJavascriptDigestMac(['HMAC-SHA256'])
+      ? (input.options.algorithm === 'ES256'
+        ? require('@pulse-compute/crypto/provider').bindJavascriptEs256Signer()
+        : require('@pulse-compute/crypto/provider').bindJavascriptDigestMac(['HMAC-SHA256']))
       : assertRuntimeBuiltin(cryptoProvider, jwtProvider);
     const host = {
       async captureWallClock() {

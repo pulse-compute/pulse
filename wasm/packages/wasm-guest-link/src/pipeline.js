@@ -208,7 +208,7 @@ function assertPrimaryAndOwner(plan, manifest, primary, owner) {
     kind: entry.kind,
     type: { parameters: entry.parameters, results: entry.results }
   }));
-  if (!equal(guestImports.map(surfaceImport), expectedGuestImports)) {
+  if (!equal(sortedSurface(guestImports.map(surfaceImport)), sortedSurface(expectedGuestImports))) {
     fail(diagnosticCodes.abiMismatch, 'Primary guest imports do not exactly match the selected guest ABI.');
   }
   const memoryImports = primary.imports.filter((entry) => entry.kind === 'memory');

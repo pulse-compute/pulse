@@ -114,12 +114,12 @@ const examples = Object.freeze([
   Object.freeze({
     id: '13-jwt-es256',
     provider: 'node',
-    guestWasmBytes: 23647,
-    optimizedGuestWasmBytes: 23461,
-    applicationInputBytes: 2759,
-    optimizedApplicationInputBytes: 2577,
-    linkedGuestInputBytes: 21009,
-    optimizedLinkedGuestInputBytes: 21009,
+    guestWasmBytes: 29294,
+    optimizedGuestWasmBytes: 29104,
+    applicationInputBytes: 2849,
+    optimizedApplicationInputBytes: 2667,
+    linkedGuestInputBytes: 26607,
+    optimizedLinkedGuestInputBytes: 26607,
     capabilities: ['jwt.verify', 'response.text'],
     crypto: Object.freeze({
       algorithm: 'ES256',

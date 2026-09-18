@@ -148,6 +148,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       's3-native-read',
       's3-write-conformance',
       'jwt-signing',
+      'jwt-es256-signing',
+      'crypto-es256-signing',
       'assets-lowering-plan',
       'assets-package-owned-lowering',
       'grip-package-owned-lowering',

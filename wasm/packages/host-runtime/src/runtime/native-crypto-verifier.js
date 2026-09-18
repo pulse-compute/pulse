@@ -276,8 +276,11 @@ function createNativeGuestSourceCryptoVerifier(input = {}) {
     ...(selectedRealizations.length === 1 ? selectedRealizations[0] : {})
   });
 
+  const signer = es256Available && typeof moduleExports.pulse_crypto_es256_sign === 'function'
+    ? require('@pulse-compute/crypto/pulsewasm-native').bindNativeEs256Signer(moduleExports) : undefined;
   const verifier = Object.freeze({
-    ...(digestMac ? { bytes: Object.freeze({
+    ...(digestMac || signer ? { bytes: Object.freeze({
+      ...(signer ? { es256Sign: signer } : {}),
       ...(byteAlgorithms.includes('SHA-256') ? { sha256: digestMac.sha256 } : {}),
       ...(byteAlgorithms.includes('HMAC-SHA256') ? { hmacSha256: digestMac.hmacSha256 } : {})
     }) } : {}),

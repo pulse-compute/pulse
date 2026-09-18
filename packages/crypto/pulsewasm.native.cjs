@@ -124,7 +124,39 @@ function pulseEs256GuestUnit() {
   });
 }
 
+
+function bindNativeEs256Signer(moduleExports) {
+  const memory = moduleExports && moduleExports.memory;
+  const sign = moduleExports && moduleExports.pulse_crypto_es256_sign;
+  if (!(memory instanceof WebAssembly.Memory) || memory.buffer.byteLength !== 2097152 || typeof sign !== 'function') {
+    throw new TypeError('Native ES256 signing exports are unavailable.');
+  }
+  return (key, data) => {
+    if (!(key instanceof Uint8Array) || key.length !== 96 || !(data instanceof Uint8Array) || data.length > 16340) {
+      throw new TypeError('Invalid ES256 signing byte request.');
+    }
+    const pointer = 524288, capacity = 16640;
+    const frame = new Uint8Array(memory.buffer, pointer, capacity);
+    frame.fill(0);
+    try {
+      const header = new DataView(memory.buffer, pointer, 64);
+      for (const [offset, value] of [[0, 0x32534550], [4, 2], [8, 64], [12, (224 + data.length + 15) & ~15],
+        [16, 1], [24, 224], [28, data.length], [32, 64], [36, 96], [40, 160], [44, 64]]) header.setUint32(offset, value, true);
+      frame.set(key, 64); frame.set(data, 224);
+      const status = sign(pointer, capacity);
+      if (status === -1) throw Object.assign(new TypeError('Invalid P-256 signing key.'), { code: 'PULSE_CRYPTO_KEY_INVALID' });
+      if (status !== 1) throw new TypeError('Native ES256 signing failed.');
+      return frame.slice(160, 224);
+    } finally {
+      frame.fill(0);
+      // The synchronous guest has returned: clear its borrowed stack as well.
+      new Uint8Array(memory.buffer, 0, 65536).fill(0);
+    }
+  };
+}
+
 module.exports = Object.freeze({
+  bindNativeEs256Signer,
   CRYPTO_GUEST_SOURCE_CONTRACT_VERSION,
   GUEST_UNIT_CONTRIBUTION_VERSION,
   pulseHmacAssemblyScriptSource,

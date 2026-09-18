@@ -67,10 +67,11 @@ export function verify(
 }
 
 export function sign(ctx: PulseContext, claims: JwtClaims, options: JwtSignOptions): PulseParallelEffect<string> {
+  const normalized = normalizeJwtSignOptions(options);
   return pulseJwtRuntime.effect(ctx, 'sign', {
     claims: normalizeJwtSignClaims(claims),
-    options: normalizeJwtSignOptions(options),
-  }, normalizeJwtSignature);
+    options: normalized,
+  }, value => normalizeJwtSignature(value, normalized));
 }
 
 export const jwt = Object.freeze({

@@ -449,17 +449,10 @@ function normalizeGuestUnitManifestV2(input) {
     })
   })]);
   exactValue(imports, expectedImports, 'guest unit v2 imports', diagnosticCodes.importMismatch);
-  const expectedExports = Object.freeze([Object.freeze({
-    name: es256FrameV2.export,
-    kind: 'function',
-    parameters: es256FrameV2.parameters,
-    results: es256FrameV2.results,
-    role: 'abi'
-  })]);
+  const expectedExports = Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify'].map(name => Object.freeze({
+    name, kind: 'function', parameters: es256FrameV2.parameters, results: es256FrameV2.results, role: 'abi'
+  })));
   exactValue(exports, expectedExports, 'guest unit v2 exports', diagnosticCodes.exportMismatch);
-  if (exports.filter((entry) => entry.role === 'abi').length !== 1) {
-    fail(diagnosticCodes.abiMismatch, 'Guest unit v2 must declare exactly one ABI function export.');
-  }
 
   exactKeys(input.memory, ['identity', 'import', 'owner'], [], 'guest unit v2 memory');
   exactValue(input.memory, {

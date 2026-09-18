@@ -68,7 +68,10 @@ function realizeSelectedGuestUnits(realization, guestUnits, options = {}) {
     ...realization,
     wasm: result.wasm,
     wat: result.wat,
-    guestUnits: result.guestUnits,
+    // Preserve trusted package roots for subsequent provider-specific linking.
+    guestUnits: Object.freeze(result.guestUnits.map(unit => Object.freeze({
+      ...unit, packageRoot: selected.find(selection => selection.id === unit.id).packageRoot
+    }))),
     guestLink: Object.freeze({
       version: result.version,
       plan: result.plan,

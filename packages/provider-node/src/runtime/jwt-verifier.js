@@ -214,16 +214,16 @@ function createNodeNativeJwtVerify(baseOptions = {}) {
       if (effect.contractId !== 'pulse.jwt' || effect.package !== '@pulse-compute/jwt'
         || effect.operation !== 'sign' || effect.capability !== 'jwt.sign'
         || !resource || resource.size !== 3 || resource.get('keyType') !== 'secret'
-        || resource.get('keyArtifactId') !== null || !payload || payload.size !== 3) {
+        || resource.get('keyArtifactId') !== null || !payload || ![3, 4].includes(payload.size) || [...payload.keys()].some(name => !['claims', 'algorithm', 'expiresInSeconds', 'kid'].includes(name))) {
         throw jwtProvider.jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-input' });
       }
       input = { claims: payload.get('claims'), options: { algorithm: payload.get('algorithm'),
-        expiresInSeconds: payload.get('expiresInSeconds'), key: { type: 'secret', binding: resource.get('secretBinding') } } };
+        expiresInSeconds: payload.get('expiresInSeconds'), key: { type: 'secret', binding: resource.get('secretBinding') }, ...(payload.has('kid') ? { kid: payload.get('kid') } : {}) } };
     } else input = effectInput(effect, executionOptions, jwtProvider);
     const selectedCrypto = requireCryptoVerifier(
       executionOptions,
       jwtProvider,
-      signing ? 'HMAC-SHA256' : input.options.algorithms[0]
+      signing ? (input.options.algorithm === 'ES256' ? 'ES256' : 'HMAC-SHA256') : input.options.algorithms[0]
     );
     const execution = dataRecord(executionOptions);
     const executionClock = execution && execution.get('captureJwtWallClock');

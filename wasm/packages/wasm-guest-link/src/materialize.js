@@ -127,12 +127,12 @@ function assertGuestBinary(manifest, inspection) {
         type: 'i32',
         initializer: { instruction: 'i32.const', value: contract.layout.rustStack.endExclusive }
       })
-      || inspection.instructions.globalSet !== 64
-      || inspection.instructions.store !== 500
+      || inspection.instructions.globalSet !== 92
+      || inspection.instructions.store !== 697
     ) {
       fail(
         diagnosticCodes.memoryMismatch,
-        `Guest unit ${manifest.id} binary does not match the reviewed stack-only mutable-state posture.`
+        `Guest unit ${manifest.id} binary does not match the reviewed stack and bounded-signature-output posture.`
       );
     }
   }
@@ -156,9 +156,9 @@ function assertGuestBinary(manifest, inspection) {
     }))) !== JSON.stringify([{
       memoryIndex: 0,
       offset: 131072,
-      endExclusive: 131656,
-      bytes: 584,
-      sha256: '231fcd9a2fc4e8190c8b96c9f89708b8039ea1b801cc564e32fbc14ff44e53ee'
+      endExclusive: 131712,
+      bytes: 640,
+      sha256: 'f75b74804133932a16bb0b2e0349c92d98c4dfae2a1518e83f50810a51c726ef'
     }])
   ) {
     fail(diagnosticCodes.memoryMismatch, `Guest unit ${manifest.id} static data does not match the reviewed layout.`);

@@ -2,17 +2,17 @@
 
 <!-- pulse-package-status:start -->
 > **Support tier:** Supported provider/extension surface<br>
-> **Audience:** Applications verifying JWT credentials and issuing bounded HS256 worker tokens through Pulse providers.<br>
+> **Audience:** Applications verifying JWT credentials and issuing bounded HS256/ES256 worker tokens through Pulse providers.<br>
 > **Install directly:** Yes, when an application verifies or signs JWTs.<br>
 > **Supported entry points:** `@pulse-compute/jwt`<br>
-> **Stability:** The package root supports provider-neutral verification and bounded HS256 signing; provider and compiler integration subpaths are not application APIs.<br>
+> **Stability:** The package root supports provider-neutral verification and bounded HS256/ES256 signing; provider and compiler integration subpaths are not application APIs.<br>
 > **npm:** [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt)<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/jwt/)
 >
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
 <!-- pulse-package-status:end -->
 
-Bounded, provider-neutral JWT verification and HS256 signing for Pulse handlers.
+Bounded, provider-neutral JWT verification and HS256/ES256 signing for Pulse handlers.
 
 This package and `@pulse-compute/crypto` are members of the synchronized
 `1.0.0-beta.5` release catalog.
@@ -41,7 +41,7 @@ const verified = await jwt.verify(
 )
 ```
 
-ES256 accepts only inline public P-256 JWKs or static JWKS values with at most
+ES256 verification accepts only inline public P-256 JWKs or static JWKS values with at most
 16 entries. Coordinates are canonical unpadded base64url encodings of exactly
 32 bytes. Private and certificate members are rejected; `kid` selection is
 deterministic; duplicate, missing, ambiguous, and unknown selections fail
@@ -63,9 +63,19 @@ supported Date range. Applications own lifetime policy. Claims are bounded ordin
 Native authoring requirements. Four-target signing fixtures exercise Node and
 Fastly Native/JavaScript; they are not deployed Fastly evidence.
 
-RS256, EdDSA, asymmetric signing, remote key authority, custom crypto providers, and
+RS256, EdDSA, remote key authority, custom crypto providers, and
 automatic fallback remain unavailable. The shared G3 ES256 corpus and
 package-to-crypto composition are recorded in
 `wasm/.test-results/jwt-g3/jwt-g3-evidence.json`; the six-cell target matrix is
 recorded in `wasm/.test-results/boundary-h4/es256-six-cell-matrix.json`. The
 prior four-cell HS256 seal remains historical regression evidence.
+
+ES256 issuance selects `ES256` in both signing options and the crypto profile.
+The named secret contains a UTF-8 JSON private P-256 JWK (`kty`, `crv`, `x`,
+`y`, `d`); the private scalar must match the public point. An optional `kid`
+(up to 256 UTF-8 bytes) is copied into the protected header for key selection.
+Private keys never belong in application options or static JWKS artifacts.
+Native signing uses the revised, reproducibly built RustCrypto guest; JavaScript
+uses Web Crypto. Historical verification seals do not validate the revised
+binary. Current signing fixtures cover all four targets without claiming a
+live deployment or a new aggregate release seal.

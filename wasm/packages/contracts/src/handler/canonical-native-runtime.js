@@ -119,6 +119,21 @@ const CANONICAL_NATIVE_IMPORT_NAMES = Object.freeze(CANONICAL_NATIVE_IMPORTS.map
 const CANONICAL_NATIVE_EXPORT_NAMES = Object.freeze(CANONICAL_NATIVE_EXPORTS.map(([name]) => name));
 const CANONICAL_NATIVE_SCHEMA_EXPORT_NAMES = Object.freeze(CANONICAL_NATIVE_SCHEMA_EXPORTS.map(([name]) => name));
 
+// Canonical compilation produces a Pulse host-ABI module before provider
+// packaging. Its imports are checked independently of the final provider ABI.
+const { defineFinalWasmPolicy, FINAL_WASM_POLICY_VERSION } = require('../provider/final-wasm-policy.js');
+const CANONICAL_NATIVE_FINAL_WASM_POLICY = defineFinalWasmPolicy({
+  version: FINAL_WASM_POLICY_VERSION,
+  descriptorOwner: '@pulse-compute/wasm-contracts',
+  toolchainVersion: 'pulse.provider-toolchain.v1',
+  descriptorIdentity: 'pulse-canonical-native-host',
+  permittedImports: [
+    ...CANONICAL_NATIVE_IMPORT_NAMES.map(name => ({ module: 'pulse_host', name, kind: 'function' })),
+    ...CANONICAL_NATIVE_ALLOWED_ENV_IMPORTS.map(name => ({ module: 'env', name, kind: 'function' }))
+  ],
+  requiredExports: CANONICAL_NATIVE_EXPORTS.map(([name, second]) => ({ name, kind: second === 'memory' ? 'memory' : 'function' }))
+});
+
 const CANONICAL_NATIVE_DIAGNOSTIC_CODES = Object.freeze({
   PLAN_REQUIRED: 'PULSE_CANONICAL_NATIVE_WASM_PLAN_REQUIRED',
   PLAN_INVALID: 'PULSE_CANONICAL_NATIVE_WASM_PLAN_INVALID',
@@ -169,5 +184,6 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_SCHEMA_EXPORTS,
   CANONICAL_NATIVE_SCHEMA_EXPORT_NAMES,
   CANONICAL_NATIVE_DIAGNOSTIC_CODES,
-  CANONICAL_NATIVE_POLICY
+  CANONICAL_NATIVE_POLICY,
+  CANONICAL_NATIVE_FINAL_WASM_POLICY
 });

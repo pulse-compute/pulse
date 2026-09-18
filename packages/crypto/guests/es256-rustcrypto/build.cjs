@@ -39,7 +39,7 @@ const EXPECTED_RUSTC = '1.97.1 (8bab26f4f 2026-07-14)';
 const EXPECTED_CARGO = '1.97.1 (c980f4866 2026-06-30)';
 const TARGET = 'wasm32v1-none';
 const CRATE_STEM = 'pulse_es256_rustcrypto_verifier.wasm';
-const BUILD_IDENTITY = 'pulse.crypto.es256.rustcrypto-build.v1';
+const BUILD_IDENTITY = 'pulse.crypto.es256.rustcrypto-build.v2';
 
 function usage() {
   process.stderr.write('Usage: node build.cjs (--write|--check)\n');
@@ -125,17 +125,16 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
   const wasmOpt = binaryen.tools.find((entry) => entry.name === 'wasm-opt');
   assert.ok(wasmOpt);
   const buildScript = fs.readFileSync(__filename);
-  const g0SourceDecision = fs.readFileSync(path.join(
-    repoRoot,
-    'wasm/.test-results/jwt-g0/es256-source-decision.json',
-  ));
+  // Historical source-selection attestation is pinned in the reviewed guest
+  // catalog. Reconstruction must not depend on ignored local evidence files.
+  const g0SourceDecisionSha256 = '58db9e3587ace112a8864c7916f603d8773dce653deafb7d743c0dc1f4d62d63';
   return Object.freeze({
     version: 'pulse.guest-unit.v2',
     id: 'pulse.crypto.es256.rustcrypto-p256.v1',
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
     packageVersion: '1.0.0-beta.5',
-    abi: 'pulse.crypto.es256.verify.v1',
+    abi: 'pulse.crypto.es256.verify-and-sign.v2',
     origin: 'package-prebuilt',
     artifact: Object.freeze({
       file: 'prebuilt/es256-verifier.wasm',
@@ -167,13 +166,13 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
         shared: false,
       }),
     })]),
-    exports: Object.freeze([Object.freeze({
-      name: 'pulse_crypto_es256_verify',
+    exports: Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify'].map(name => Object.freeze({
+      name,
       kind: 'function',
       parameters: Object.freeze(['i32', 'i32']),
       results: Object.freeze(['i32']),
       role: 'abi',
-    })]),
+    }))),
     memory: Object.freeze({
       identity: 'pulse.guest-memory.invocation-frame.v2',
       import: 'env.memory',
@@ -200,7 +199,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
       binaryenWasmOptSha256: wasmOpt.sha256,
       g0SourceDecision:
         '../../../../wasm/.test-results/jwt-g0/es256-source-decision.json',
-      g0SourceDecisionSha256: sha256(g0SourceDecision),
+      g0SourceDecisionSha256,
     }),
   });
 }

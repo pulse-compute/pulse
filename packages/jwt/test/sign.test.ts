@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+import { createHmac, generateKeyPairSync, verify as verifySignature } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { describe, expect, it } from 'vitest';
 import { normalizeJwtSignClaims, normalizeJwtSignOptions, signJwtWithCrypto, type JwtSignOptions } from '../src/sign.js';
@@ -7,7 +7,7 @@ import { crypto } from '../../crypto/src/index.js';
 import { sign } from '../src/index.js';
 
 const require = createRequire(import.meta.url);
-const { bindJavascriptDigestMac } = require('../../crypto/src/provider.cjs');
+const { bindJavascriptDigestMac, bindJavascriptEs256Signer } = require('../../crypto/src/provider.cjs');
 const options: JwtSignOptions = { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 45 };
 const secret = 'fixture-only-signing-key-32-bytes-long';
 const selected = () => bindJavascriptDigestMac(['HMAC-SHA256']);
@@ -46,7 +46,7 @@ describe('bounded JWT signing', () => {
     await expect(signJwtWithCrypto({ claims: {}, options: { ...options, expiresInSeconds } }, host(), selected()))
       .rejects.toMatchObject({ code: 'PULSE_JWT_OPERATION_FAILED', detail: { category: 'sign-expiration' } });
   });
-  it.each(['none', 'ES256', 'HS384'])('rejects signing algorithm %s', algorithm => {
+  it.each(['none', 'RS256', 'HS384'])('rejects signing algorithm %s', algorithm => {
     expect(() => normalizeJwtSignOptions({ ...options, algorithm } as any)).toThrowError();
   });
   it.each([undefined, '', 'x'.repeat(31), 'x'.repeat(4097)])('fails closed on missing/invalid key', async key => {
@@ -98,4 +98,47 @@ describe('bounded JWT signing', () => {
   });
 
 
+});
+
+
+describe('ES256 signing', () => {
+  const pair = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const privateJwk = pair.privateKey.export({ format: 'jwk' });
+  const publicJwk = pair.publicKey.export({ format: 'jwk' });
+  const policy: JwtSignOptions = { ...options, algorithm: 'ES256', kid: 'rotation-1', expiresInSeconds: 3600 };
+  const esHost = (key: unknown = privateJwk) => ({ ...host(), resolveSecret: () => typeof key === 'string' ? key : JSON.stringify(key) });
+
+  it('independently verifies ES256 and round-trips public JWK verification', async () => {
+    const token = await signJwtWithCrypto({ claims: { sub: 'signer' }, options: policy }, esHost(), bindJavascriptEs256Signer());
+    const [header, payload, signature] = token.split('.');
+    expect(JSON.parse(Buffer.from(header, 'base64url').toString())).toEqual({ alg: 'ES256', typ: 'JWT', kid: 'rotation-1' });
+    expect(verifySignature('sha256', Buffer.from(header + '.' + payload), { key: pair.publicKey, dsaEncoding: 'ieee-p1363' }, Buffer.from(signature, 'base64url'))).toBe(true);
+    const verified = await verifyJwtWithCrypto({ token, options: { algorithms: ['ES256'], key: { type: 'jwk', key: { ...publicJwk, kid: 'rotation-1' } as any } } }, host(), crypto);
+    expect(verified.claims.exp).toBe(1800003600);
+    expect(verified.claims.sub).toBe('signer');
+  });
+
+  it.each([
+    ['public only', publicJwk], ['invalid scalar', { ...privateJwk, d: Buffer.alloc(32).toString('base64url') }],
+    ['mismatched point', { ...privateJwk, ...generateKeyPairSync('ec', { namedCurve: 'prime256v1' }).publicKey.export({ format: 'jwk' }) }],
+    ['wrong curve', { ...privateJwk, crv: 'P-384' }], ['wrong algorithm', { ...privateJwk, alg: 'HS256' }],
+    ['wrong use', { ...privateJwk, use: 'enc' }], ['verify-only', { ...privateJwk, key_ops: ['verify'] }],
+    ['mismatched kid', { ...privateJwk, kid: 'rotation-2' }], ['unknown field', { ...privateJwk, private: true }],
+    ['padded scalar', { ...privateJwk, d: privateJwk.d + '=' }], ['malformed JSON', '{'],
+    ['duplicate field', JSON.stringify(privateJwk).replace('{', '{"kty":"EC",')],
+  ])('rejects %s', async (_name, key) => {
+    await expect(signJwtWithCrypto({ claims: {}, options: policy }, esHost(key), bindJavascriptEs256Signer()))
+      .rejects.toMatchObject({ code: 'PULSE_JWT_KEY_INVALID' });
+  });
+  it('rejects invalid kid values before dispatch', () => {
+    for (const kid of ['', '\0', 'é'.repeat(129), undefined]) {
+      expect(() => normalizeJwtSignOptions({ ...policy, kid })).toThrowError();
+    }
+  });
+  it('rejects absent ES256 realization and redacts the private scalar', async () => {
+    const redactions: unknown[] = [];
+    await expect(signJwtWithCrypto({ claims: {}, options: policy }, { ...esHost(), registerSensitiveValue: value => { redactions.push(value); } }, selected()))
+      .rejects.toMatchObject({ code: 'PULSE_JWT_TARGET_UNSUPPORTED' });
+    expect(redactions).toContain(privateJwk.d);
+  });
 });
