@@ -100,15 +100,15 @@ const es256GuestUnit = Object.freeze({
   module: 'pulse_crypto_es256',
   owner: '@pulse-compute/crypto',
   packageVersion: '1.0.0-beta.5',
-  abi: 'pulse.crypto.es256.verify.v1',
+  abi: 'pulse.crypto.es256.verify-and-sign.v2',
   artifact: Object.freeze({
     file: 'prebuilt/es256-verifier.wasm',
-    bytes: 21009,
-    sha256: 'ee5ab1639cbe1be5a9510c01ab15a3569c0394818a9db98f3e0114ae829fff50'
+    bytes: 26607,
+    sha256: '33cabe4f9d61e4d359af8fb3626a2f0645fe2a2faefc4fd2e6d95c8bbb07143c'
   }),
   source: Object.freeze({
     directory: 'source',
-    treeSha256: '76c8cf985b2ed384d069f7ba0d7ff1c8513679ea7aec513e1a07a3eeaa3b7208'
+    treeSha256: 'e5d866f16ca96a2f97e12880a98343c37ec797f49aceb73b486b4fd190cd97e9'
   }),
   toolchain: Object.freeze({
     rustc: '1.97.1 (8bab26f4f 2026-07-14)',
@@ -116,10 +116,10 @@ const es256GuestUnit = Object.freeze({
     binaryen: binaryenVersion
   }),
   provenance: Object.freeze({
-    cargoLockSha256: '7aa8c6d72751653717a371147e71a546d8f21dfcd1cf698919563e79e2946cb4',
-    reconstructionCommandIdentity: 'pulse.crypto.es256.rustcrypto-build.v1',
+    cargoLockSha256: 'd5ecc12c9c846468686974aaed841156cc82ab8f876fec4d40b2baa29dff1551',
+    reconstructionCommandIdentity: 'pulse.crypto.es256.rustcrypto-build.v2',
     buildScript: 'build.cjs',
-    buildScriptSha256: '026b5405eae3fa2a69834ca914388bb10e4e9c751ee2965c9a29c076e15f9e90',
+    buildScriptSha256: '4d30b2cb9fb5d326d71713b882dc379aead17f6afb854607a92cb251eadc8521',
     optimizationPosture: 'native-size',
     binaryenWasmOptSha256: '1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56',
     g0SourceDecision: '../../../../wasm/.test-results/jwt-g0/es256-source-decision.json',

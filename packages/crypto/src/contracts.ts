@@ -151,7 +151,7 @@ export const CRYPTO_ES256_CONTRACT = Object.freeze({
     unitId: 'pulse.crypto.es256.rustcrypto-p256.v1',
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
-    abi: 'pulse.crypto.es256.verify.v1',
+    abi: 'pulse.crypto.es256.verify-and-sign.v2',
     export: Object.freeze({
       name: 'pulse_crypto_es256_verify',
       parameters: Object.freeze(['i32', 'i32'] as const),

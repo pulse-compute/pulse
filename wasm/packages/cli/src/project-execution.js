@@ -57,6 +57,8 @@ const {
   CANONICAL_PACKAGE_INSPECTION_VERSION
 } = require('@pulse-compute/wasm-contracts/package/package-contract');
 
+const { CANONICAL_NATIVE_FINAL_WASM_POLICY } = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
+
 const PROJECT_EXECUTION_VERSION = 'pulse.project-execution.v10';
 const EVENT_INSPECTION_VERSION = 'pulse.event-inspection.v1';
 const BUILD_MANIFEST = 'pulse-build.json';
@@ -344,7 +346,9 @@ function compileNativeProjectInMemory(project, options = {}) {
     cwd: project.root,
     projectRoot: project.root,
     profile: project.selectedProfile && project.selectedProfile.name || project.profile && project.profile.name || 'native',
-    targetDescriptor: getProviderTargetDescriptor(providerDriver(project), 'native'),
+    // This intermediate artifact uses Pulse's host ABI. The provider writer
+    // separately validates its final artifact against the selected provider ABI.
+    targetDescriptor: { finalWasmPolicy: CANONICAL_NATIVE_FINAL_WASM_POLICY },
     synchronizedPackages: releaseCatalog.packages.map(({ name, version }) => Object.freeze({ name, version })),
     timeoutMs: options.timeoutMs,
     nativeOptimization: options.experimentalNativeSize === true

@@ -108,5 +108,34 @@ function createJavascriptTextDigest(options = {}) {
       cryptoVerifier: selected, cryptoRealization: selected?.realization });
   };
 }
-module.exports = Object.freeze({ IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
+
+function bindJavascriptEs256Signer(subtle = globalThis.crypto?.subtle) {
+  if (!subtle || typeof subtle.importKey !== 'function' || typeof subtle.sign !== 'function'
+    || typeof subtle.verify !== 'function') throw new TypeError('Selected ES256 signing realization is unavailable.');
+  const encode = bytes => {
+    let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte);
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  };
+  const invalidKey = () => Object.assign(new TypeError('Invalid P-256 signing key.'), { code: 'PULSE_CRYPTO_KEY_INVALID' });
+  return Object.freeze({ bytes: Object.freeze({ async es256Sign(key, data) {
+    if (!(key instanceof Uint8Array) || key.length !== 96) throw invalidKey();
+    if (!(data instanceof Uint8Array) || data.length > 16340) throw new TypeError('ES256 input exceeds its byte contract.');
+    const jwk = { kty: 'EC', crv: 'P-256', x: encode(key.subarray(0, 32)), y: encode(key.subarray(32, 64)), d: encode(key.subarray(64)) };
+    let signingKey, verifyingKey;
+    try {
+      signingKey = await subtle.importKey('jwk', jwk, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+      verifyingKey = await subtle.importKey('jwk', { kty: jwk.kty, crv: jwk.crv, x: jwk.x, y: jwk.y },
+        { name: 'ECDSA', namedCurve: 'P-256' }, false, ['verify']);
+    } catch { throw invalidKey(); }
+    const signature = new Uint8Array(await subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, signingKey, data));
+    try {
+      if (signature.length !== 64 || !await subtle.verify({ name: 'ECDSA', hash: 'SHA-256' }, verifyingKey, signature, data)) {
+        throw invalidKey();
+      }
+      return signature.slice();
+    } finally { signature.fill(0); }
+  } }) });
+}
+
+module.exports = Object.freeze({ bindJavascriptEs256Signer, IMPLEMENTATIONS, bindJavascriptDigestMac, DIGEST_TEXT_MAX_BYTES,
   textDigestByteLength, normalizeTextDigestResult, executeTextDigest, createJavascriptTextDigest });

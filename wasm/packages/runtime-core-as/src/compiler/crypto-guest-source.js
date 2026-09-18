@@ -176,6 +176,9 @@ function normalizeLinkedContribution(entry, definition) {
     'export function __pulse_crypto_es256_link_anchor(framePointer: i32, frameCapacity: i32): i32 {',
     '  return __pulse_crypto_es256_guest_verify(framePointer, frameCapacity)',
     '}',
+    '@external("pulse_crypto_es256", "pulse_crypto_es256_sign")',
+    'declare function __pulse_crypto_es256_guest_sign(framePointer: i32, frameCapacity: i32): i32',
+    'export function __pulse_crypto_es256_sign_anchor(framePointer: i32, frameCapacity: i32): i32 { return __pulse_crypto_es256_guest_sign(framePointer, frameCapacity) }',
     ''
   ].join('\n');
   return deepFreeze({
@@ -200,8 +203,8 @@ function normalizeLinkedContribution(entry, definition) {
       module: 'pulse_crypto_es256',
       name: 'pulse_crypto_es256_verify',
       kind: 'function'
-    }],
-    exports: ['__pulse_crypto_es256_link_anchor'],
+    }, { module: 'pulse_crypto_es256', name: 'pulse_crypto_es256_sign', kind: 'function' }],
+    exports: ['__pulse_crypto_es256_link_anchor', '__pulse_crypto_es256_sign_anchor'],
     resourceLimits: {
       es256PublicKeyBytes: 64,
       es256SignatureBytes: 64,

@@ -723,3 +723,20 @@ required for the inferred boundaries. The pull request must name those
 boundaries, expose the human decision, and explain the resulting contract change
 where reviewers can evaluate it. Git history and sealed checkpoints retain the
 superseded state.
+
+### JWT issuance and canonical guest linking
+
+JWT signing supports HS256 and ES256 through request-owned secret and clock
+effects. Private P-256 JWK parsing belongs to JWT; the private Crypto adapter
+accepts bounded `x || y || d` bytes. Native ES256 uses the exact revised
+`pulse.crypto.es256.verify-and-sign.v2` guest ABI, retaining the verification
+frame and adding a distinct signing export. The caller clears the signing
+frame and borrowed Rust stack. No public generic signing primitive, remote key
+authority, dynamic lowerer, algorithm fallback, or provider discovery is added.
+
+CLI canonical compilation checks its intermediate module against the fixed
+Pulse host ABI owned by `canonical-native-runtime.js`. Provider packaging
+separately checks the final artifact against its selected provider descriptor;
+Fastly's final artifact must not retain `pulse_host` or crypto guest imports.
+This separates the two artifact boundaries without widening either import set.
+Historical G0/G3/G4/G5 reports do not attest the revised signing binary.

@@ -146,15 +146,16 @@ const JWT_SIGN_OPERATION = Object.freeze({
   result: 'string', placement: 'variable', clock: 'provider-wall-clock'
 });
 const JWT_SIGN_CONTRACT = Object.freeze({
-  version: 'pulse.jwt-sign.v1', algorithm: 'HS256', keyType: 'secret',
-  header: Object.freeze({ alg: 'HS256', typ: 'JWT' }),
+  version: 'pulse.jwt-sign.v2', algorithms: Object.freeze(['HS256', 'ES256']), keyType: 'secret',
+  kidBytesMaximum: 256, es256PrivateKey: 'secret-json-p256-private-jwk',
+  header: Object.freeze({ alg: 'selected-algorithm', typ: 'JWT', kid: 'optional-explicit-key-id' }),
   claimsBytes: 8192, claimsEntries: 1024, claimsDepth: 32,
   keyBytesMinimum: 32, keyBytesMaximum: 4096,
   expiresInSecondsMinimum: 1, expiresInSecondsMaximum: Number.MAX_SAFE_INTEGER,
   expirationSecondsMaximum: 8_640_000_000_000, lifetimePolicy: 'application-owned',
   reservedClaims: Object.freeze(['iat', 'exp', 'nbf']),
   providerRequirements: Object.freeze(['jwt.sign', 'secret.get', 'time.wall-clock']),
-  cryptoAlgorithm: 'HMAC-SHA256', automaticFallback: false
+  cryptoAlgorithms: Object.freeze({ HS256: 'HMAC-SHA256', ES256: 'ES256' }), automaticFallback: false
 });
 
 function normalizeJwtSignEffect(effect) {

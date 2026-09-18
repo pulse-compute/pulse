@@ -1081,11 +1081,15 @@ function buildJwtLoweringPlan(inputs = {}) {
         if (!(placement.kind === 'variable' && placement.awaited || placement.parallel && ts.isAwaitExpression(placement.parallel.parent))) {
           error(jwtContracts.JWT_DIAGNOSTIC_CODES.PLACEMENT_UNSUPPORTED, 'Signing must be directly awaited or grouped.');
         }
-        const members = objectMembers(ts, sourceFile, node.arguments[2], new Set(['algorithm', 'key', 'expiresInSeconds']), diagnostics,
+        const members = objectMembers(ts, sourceFile, node.arguments[2], new Set(['algorithm', 'key', 'expiresInSeconds', 'kid']), diagnostics,
           jwtContracts.JWT_DIAGNOSTIC_CODES.OPTIONS_LITERAL_REQUIRED, 'JWT signing options');
         const algorithm = literalString(ts, members.get('algorithm'));
         const expiresInSeconds = literalNumber(ts, members.get('expiresInSeconds'));
-        if (algorithm !== 'HS256') error(jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED, 'Signing supports only HS256.');
+        if (!['HS256', 'ES256'].includes(algorithm)) error(jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED, 'Signing supports HS256 and ES256.');
+        const kid = members.has('kid') ? literalString(ts, members.get('kid')) : undefined;
+        if (members.has('kid') && (typeof kid !== 'string' || !kid.length || kid.includes('\0') || Buffer.byteLength(kid) > 256)) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.KEY_TYPE_UNSUPPORTED, 'Signing kid must be a nonempty literal of at most 256 UTF-8 bytes.');
+        }
         if (!Number.isSafeInteger(expiresInSeconds) || expiresInSeconds < 1) {
           error(jwtContracts.JWT_DIAGNOSTIC_CODES.POLICY_LIMIT_EXCEEDED, 'Signing requires a literal positive safe-integer lifetime in seconds.');
         }
@@ -1096,12 +1100,12 @@ function buildJwtLoweringPlan(inputs = {}) {
         }
         const effect = Object.freeze({ ...jwtContracts.JWT_SIGN_OPERATION, placement: placement.kind,
           range: rangeFor(sourceFile, node), loc: locFor(sourceFile, node), resource: key.resource,
-          payload: { algorithm: 'HS256', expiresInSeconds: expiresInSeconds || 0 },
+          payload: { algorithm, expiresInSeconds: expiresInSeconds || 0, ...(kid === undefined ? {} : { kid }) },
           runtimeInputs: [{ name: 'claims', argumentIndex: 1, source: 'package-call-argument' }],
           providerRequirements: jwtContracts.JWT_SIGN_CONTRACT.providerRequirements,
           schemaReferences: [], redaction: ['claims', 'token', 'signature', 'key-material', 'secret-value'] });
         entries.push(Object.freeze({ kind: 'jwt-sign', symbol: 'jwt.sign', placement: placement.kind,
-          awaited: placement.awaited, algorithms: [], key: key.descriptor,
+          awaited: placement.awaited, algorithms: [], signingAlgorithm: algorithm, key: key.descriptor,
           providerRequirements: effect.providerRequirements, range: effect.range, loc: effect.loc, canonicalEffect: effect }));
       }
       if (resolved && resolved.method === 'bearer') bearerCalls.push(node);
@@ -1186,10 +1190,11 @@ function buildJwtLoweringPlan(inputs = {}) {
   const schemaReferences = entries.map((entry) => entry.schemaReference).filter(Boolean);
   const cryptoRequirements = Object.freeze([...jwtContracts.jwtCryptoRequirements(
     entries.flatMap((entry) => entry.algorithms)
-  ), ...(entries.some(entry => entry.kind === 'jwt-sign') ? [{
-    version: packageContracts.PACKAGE_CRYPTO_REQUIREMENT_VERSION, requestedBy: jwtContracts.JWT_PACKAGE_NAME,
-    semanticOwner: '@pulse-compute/crypto', reachable: true, algorithms: ['HMAC-SHA256']
-  }] : [])]);
+  ), ...[...new Set(entries.filter(entry => entry.kind === 'jwt-sign').map(entry =>
+    entry.signingAlgorithm === 'ES256' ? 'ES256' : 'HMAC-SHA256'))].map(algorithm => ({
+      version: packageContracts.PACKAGE_CRYPTO_REQUIREMENT_VERSION, requestedBy: jwtContracts.JWT_PACKAGE_NAME,
+      semanticOwner: '@pulse-compute/crypto', reachable: true, algorithms: [algorithm]
+    }))]);
   const keyArtifacts = entries
     .filter((entry) => entry.key.keyArtifactId)
     .map((entry) => Object.freeze({
@@ -1202,7 +1207,7 @@ function buildJwtLoweringPlan(inputs = {}) {
   const uniqueKeyArtifacts = [...new Map(keyArtifacts.map((entry) => [entry.id, entry])).values()];
   const realizationArtifacts = [...new Map(privateRealizationArtifacts
     .map((entry) => [entry.id, entry])).values()];
-  const guestUnits = entries.some((entry) => entry.algorithms.includes('ES256'))
+  const guestUnits = entries.some((entry) => entry.algorithms.includes('ES256') || entry.signingAlgorithm === 'ES256')
     ? Object.freeze([loadCryptoGuestContribution()])
     : Object.freeze([]);
   const artifact = deepFreeze(normalizeArtifact({
