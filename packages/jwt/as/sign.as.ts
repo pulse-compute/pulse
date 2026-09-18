@@ -46,7 +46,7 @@ export function pulse_jwt_fastly_sign(effectIndex: i32, outerHandle: i32): i32 {
   const claims = __pulse_fastly_value(claimsHandle)
   const lifetime = __pulse_jwt_numeric_claim(policy, 'expiresInSeconds')
   if (__pulse_jwt_string_member(policy, 'algorithm') != 'HS256' || !isFinite(lifetime)
-    || Math.floor(lifetime) != lifetime || lifetime < 1 || lifetime > 300) {
+    || Math.floor(lifetime) != lifetime || lifetime < 1 || lifetime > 9007199254740991.0) {
     return __pulse_jwt_fail(effectIndex, __PULSE_JWT_ERROR_OPERATION_FAILED, 240)
   }
   if (claims.kind != PULSE_VALUE_OBJECT || __pulse_jwt_has_field(claims, 'iat')
@@ -65,9 +65,13 @@ export function pulse_jwt_fastly_sign(effectIndex: i32, outerHandle: i32): i32 {
   }
   const captured = __pulse_fastly_jwt_capture_clock(effectIndex)
   const now = Math.floor(captured)
-  if (!isFinite(captured) || captured < 0 || now > 8640000000000.0 - lifetime) {
+  if (!isFinite(captured) || captured < 0 || captured > 8640000000000.0) {
     __pulse_jwt_wipe(key)
     return __pulse_jwt_fail(effectIndex, __PULSE_JWT_ERROR_CLOCK_INVALID, 245)
+  }
+  if (now > 8640000000000.0 - lifetime) {
+    __pulse_jwt_wipe(key)
+    return __pulse_jwt_fail(effectIndex, __PULSE_JWT_ERROR_OPERATION_FAILED, 248)
   }
   const issued = host_value_object()
   for (let i = 0; i < claims.keys.length; i++) {

@@ -67,7 +67,11 @@ Claims can be computed within the supported handler language.
 
 The protected header is exactly `{"alg":"HS256","typ":"JWT"}`. One trusted
 provider clock reading supplies integer `iat` and `exp`; `expiresInSeconds`
-must be 1–300. Caller-supplied `iat`, `exp`, and `nbf` are rejected. The result
+must be a positive safe integer, with an expiration within the supported
+JavaScript Date range (at most 8,640,000,000,000 epoch seconds). Pulse imposes
+no application lifetime ceiling; the 45-second worker lifetime above is an
+application choice. Verifiers enforce their configured expiration and maximum-age
+policies. Caller-supplied `iat`, `exp`, and `nbf` are rejected. The result
 is a compact JWT string. The signer does not validate application authorization:
 the caller chooses issuer, audience, subject, scope and request binding claims,
 and the worker must verify them against the actual request.

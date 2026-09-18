@@ -412,12 +412,15 @@ for (const call of ['jwt.sign', 'issue']) {
 for (const policy of [
   'dynamicOptions',
   signPolicy.replace("'HS256'", "'ES256'"),
-  signPolicy.replace('45', '0'), signPolicy.replace('45', '301'), signPolicy.replace('45', 'ttl'),
+  signPolicy.replace('45', '0'), signPolicy.replace('45', '9007199254740992'), signPolicy.replace('45', 'ttl'),
   signPolicy.replace("'WORKER_KEY'", 'binding'),
   signPolicy.replace("type: 'secret'", "type: 'jwk'"),
   signPolicy.replace("algorithm: 'HS256'", "...other, algorithm: 'HS256'"),
   signPolicy.replace('expiresInSeconds: 45', 'expiresInSeconds: 45, kid: "override"'),
 ]) assert.equal(build(signSource(policy)).hasErrors, true, policy);
+for (const ttl of [301, 3600, 86400, Number.MAX_SAFE_INTEGER]) {
+  assert.equal(build(signSource(signPolicy.replace('45', String(ttl)))).hasErrors, false);
+}
 assert.equal(build(signSource().replace('await jwt.sign', 'jwt.sign')).hasErrors, true);
 assert.equal(build(signSource().replace('jwt.sign(ctx,', 'jwt.sign(other,')).hasErrors, true);
 console.log('ok - JWT signing owns static policy validation, secret/clock authority and explicit HMAC-SHA256 demand');

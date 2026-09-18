@@ -4,7 +4,7 @@ import { jwtDataRecord, jwtDenseArrayValues } from './internal/data.js';
 import { captureJwtCurrentDate, type JwtWallClockCapture } from './internal/clock.js';
 import { registerClaimStrings, registerSensitive, verifierHostFunction, type JwtVerifierHost } from './internal/verifier-authority.js';
 
-/** Short-lived HS256 issuance using provider-owned secret and clock authority. */
+/** HS256 issuance using provider-owned secret and clock authority. */
 export interface JwtSignOptions {
   readonly algorithm: 'HS256';
   readonly key: { readonly type: 'secret'; readonly binding: string };
@@ -28,7 +28,7 @@ export function normalizeJwtSignOptions(value: JwtSignOptions): Readonly<JwtSign
     throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'sign-key' });
   }
   const expiresInSeconds = record.get('expiresInSeconds');
-  if (typeof expiresInSeconds !== 'number' || !Number.isInteger(expiresInSeconds) || expiresInSeconds < 1 || expiresInSeconds > 300) {
+  if (typeof expiresInSeconds !== 'number' || !Number.isSafeInteger(expiresInSeconds) || expiresInSeconds < 1) {
     throw jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-lifetime' });
   }
   return Object.freeze({ algorithm: 'HS256', key: Object.freeze({ type: 'secret', binding }), expiresInSeconds });
@@ -111,7 +111,9 @@ export async function signJwtWithCrypto(
     if (!key || key.length < 32 || key.length > 4096) throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'sign-key' });
     registerSensitive(host, secret as string | Uint8Array);
     const now = Math.floor((await captureJwtCurrentDate(verifierHostFunction(host, 'captureWallClock') as JwtWallClockCapture | undefined)).getTime() / 1000);
-    if (now > 8_640_000_000_000 - options.expiresInSeconds) throw jwtError('PULSE_JWT_CLOCK_INVALID');
+    if (now > 8_640_000_000_000 - options.expiresInSeconds) {
+      throw jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-expiration' });
+    }
     const text = boundedClaimsText({ ...claims, iat: now, exp: now + options.expiresInSeconds });
     registerSensitive(host, text);
     const signingInput = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' + base64url(new TextEncoder().encode(text));
