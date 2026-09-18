@@ -150,7 +150,8 @@ const JWT_SIGN_CONTRACT = Object.freeze({
   header: Object.freeze({ alg: 'HS256', typ: 'JWT' }),
   claimsBytes: 8192, claimsEntries: 1024, claimsDepth: 32,
   keyBytesMinimum: 32, keyBytesMaximum: 4096,
-  expiresInSecondsMinimum: 1, expiresInSecondsMaximum: 300,
+  expiresInSecondsMinimum: 1, expiresInSecondsMaximum: Number.MAX_SAFE_INTEGER,
+  expirationSecondsMaximum: 8_640_000_000_000, lifetimePolicy: 'application-owned',
   reservedClaims: Object.freeze(['iat', 'exp', 'nbf']),
   providerRequirements: Object.freeze(['jwt.sign', 'secret.get', 'time.wall-clock']),
   cryptoAlgorithm: 'HMAC-SHA256', automaticFallback: false

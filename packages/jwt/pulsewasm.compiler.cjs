@@ -1086,8 +1086,8 @@ function buildJwtLoweringPlan(inputs = {}) {
         const algorithm = literalString(ts, members.get('algorithm'));
         const expiresInSeconds = literalNumber(ts, members.get('expiresInSeconds'));
         if (algorithm !== 'HS256') error(jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED, 'Signing supports only HS256.');
-        if (!Number.isInteger(expiresInSeconds) || expiresInSeconds < 1 || expiresInSeconds > 300) {
-          error(jwtContracts.JWT_DIAGNOSTIC_CODES.POLICY_LIMIT_EXCEEDED, 'Signing requires a literal lifetime from 1 through 300 seconds.');
+        if (!Number.isSafeInteger(expiresInSeconds) || expiresInSeconds < 1) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.POLICY_LIMIT_EXCEEDED, 'Signing requires a literal positive safe-integer lifetime in seconds.');
         }
         const key = parseKey(ts, sourceFile, members.get('key') || node, ['HS256'], diagnostics);
         if (key.descriptor.type !== 'secret' || !key.resource.secretBinding || key.resource.secretBinding.length > 256

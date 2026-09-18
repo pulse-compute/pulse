@@ -17,4 +17,24 @@ app.get('/parallel', async ctx => {
   })
   return ctx.json(result)
 })
+app.get('/five-minutes-plus', async ctx => {
+  const token = await jwt.sign(ctx, { sub: 'lifetime' }, { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 301 })
+  return ctx.text(token)
+})
+app.get('/one-hour', async ctx => {
+  const token = await jwt.sign(ctx, { sub: 'lifetime' }, { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 3600 })
+  return ctx.text(token)
+})
+app.get('/one-day', async ctx => {
+  const token = await jwt.sign(ctx, { sub: 'lifetime' }, { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 86400 })
+  return ctx.text(token)
+})
+app.get('/date-limit', async ctx => {
+  const token = await jwt.sign(ctx, { sub: 'lifetime' }, { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 8638200000000 })
+  return ctx.text(token)
+})
+app.get('/date-overflow', async ctx => {
+  const token = await jwt.sign(ctx, { sub: 'lifetime' }, { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 8638200000001 })
+  return ctx.text(token)
+})
 export default app

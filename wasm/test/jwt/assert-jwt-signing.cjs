@@ -75,6 +75,11 @@ app.get('/verify', async ctx => {
       { claims: { sub: 'long-key' }, key: 'x'.repeat(4097), failed: true },
       { route: '/parallel' },
       { route: '/verify' },
+      { route: '/five-minutes-plus', ttl: 301 },
+      { route: '/one-hour', ttl: 3600 },
+      { route: '/one-day', ttl: 86400 },
+      { route: '/date-limit', ttl: 8640000000000 - NOW },
+      { route: '/date-overflow', failed: true },
     ];
     function validate(token, claims, ttl, key = KEY) {
       const [header, payload, signature] = token.split('.');
@@ -112,8 +117,8 @@ app.get('/verify', async ctx => {
           // does not enable the verification-only diagnostic HTTP harness.
           assert.equal(error.code, 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED');
           assert.equal(error.detail.lastError, 1008);
-          assert.ok([241, 242, 243, 244, 246].includes(error.detail.errorStage), JSON.stringify(error.detail));
-        } else assert.match(error.code, /^PULSE_JWT_(CLAIMS_INVALID|LIMIT_EXCEEDED|KEY_INVALID)$/);
+          assert.ok([241, 242, 243, 244, 246, 248].includes(error.detail.errorStage), JSON.stringify(error.detail));
+        } else assert.match(error.code, /^PULSE_JWT_(CLAIMS_INVALID|LIMIT_EXCEEDED|KEY_INVALID|OPERATION_FAILED)$/);
         assert.equal(JSON.stringify(error).includes(KEY), false);
         executions++; continue;
       }
@@ -124,6 +129,7 @@ app.get('/verify', async ctx => {
       } else {
         assert.equal(result.response.status, 200, `${mode}: ${body}`);
         if (row.route === '/verify') assert.equal(body, 'scheduler', `${mode}: signer/verifier round-trip`);
+        else if (row.ttl) validate(body, { sub: 'lifetime' }, row.ttl);
         else if (row.route) { const tokens = JSON.parse(body); validate(tokens.first, { sub: 'first' }, 1); validate(tokens.second, { sub: 'second' }, 300); }
         else {
           validate(body, row.claims, 45, key);

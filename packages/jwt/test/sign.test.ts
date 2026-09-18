@@ -34,8 +34,17 @@ describe('bounded JWT signing', () => {
     expect(redactions).toContain(signature);
   });
 
-  it.each([0, -1, 301, 1.5, Infinity, NaN])('rejects lifetime %s', expiresInSeconds => {
+  it.each([0, -1, 1.5, Infinity, NaN, Number.MAX_SAFE_INTEGER + 1])('rejects lifetime %s', expiresInSeconds => {
     expect(() => normalizeJwtSignOptions({ ...options, expiresInSeconds })).toThrowError(/JWT/);
+  });
+  it.each([301, 3600, 86400, 8_640_000_000_000 - 1800000000])('accepts application lifetime %s', async expiresInSeconds => {
+    const token = await signJwtWithCrypto({ claims: {}, options: { ...options, expiresInSeconds } }, host(), selected());
+    const claims = JSON.parse(Buffer.from(token.split('.')[1], 'base64url').toString());
+    expect(claims.exp).toBe(1800000000 + expiresInSeconds);
+  });
+  it.each([8_640_000_000_000 - 1800000000 + 1, Number.MAX_SAFE_INTEGER])('rejects unrepresentable expiration %s', async expiresInSeconds => {
+    await expect(signJwtWithCrypto({ claims: {}, options: { ...options, expiresInSeconds } }, host(), selected()))
+      .rejects.toMatchObject({ code: 'PULSE_JWT_OPERATION_FAILED', detail: { category: 'sign-expiration' } });
   });
   it.each(['none', 'ES256', 'HS384'])('rejects signing algorithm %s', algorithm => {
     expect(() => normalizeJwtSignOptions({ ...options, algorithm } as any)).toThrowError();

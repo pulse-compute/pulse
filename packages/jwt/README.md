@@ -12,7 +12,7 @@
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
 <!-- pulse-package-status:end -->
 
-Bounded, provider-neutral JWT verification and short-lived HS256 signing for Pulse handlers.
+Bounded, provider-neutral JWT verification and HS256 signing for Pulse handlers.
 
 This package and `@pulse-compute/crypto` are members of the synchronized
 `1.0.0-beta.5` release catalog.
@@ -57,7 +57,8 @@ deeply frozen result. It does not authorize application or host behavior.
 returns a compact JWT through a request-owned effect. Select `HMAC-SHA256` in
 the crypto profile. The provider resolves a 32–4096 byte secret and captures
 one trusted clock reading; the package supplies `iat` and `exp`. Lifetimes
-are 1–300 seconds. Claims are bounded ordinary JSON; caller-supplied `iat`,
+are explicit positive safe integers in seconds, and expiration must fit the
+supported Date range. Applications own lifetime policy. Claims are bounded ordinary JSON; caller-supplied `iat`,
 `exp`, and `nbf` are rejected. See the package guide for exact limits and
 Native authoring requirements. Four-target signing fixtures exercise Node and
 Fastly Native/JavaScript; they are not deployed Fastly evidence.
