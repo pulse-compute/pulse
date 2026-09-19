@@ -12,6 +12,8 @@ const {
 const {
   SCHEMA_REGISTRY_IR_VERSION,
   SCHEMA_CODEC_INPUTS_VERSION,
+  SCALAR_RECORD_LIMITS,
+  normalizeSchemaNode,
   defaultSchemaBoundaryPolicy,
   defaultSchemaRegistryContract
 } = require('../../packages/contracts/src/schema-json/registry.js');
@@ -232,10 +234,35 @@ expectExtractionCode(`
   export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })
 `, 'PULSE_SCHEMA_PUBLIC_JSON_AS_IMPORT_FORBIDDEN');
 
+const scalarRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-schema-scalar-record-'));
+try {
+  const text = `${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`;
+  const file = writeCase(scalarRoot, text, `
+    import type { ScalarRecord as Properties } from '@pulse-compute/pulse/schema'
+    export interface Value { properties: Properties; samples?: Properties[] }
+  `);
+  const scalar = extractSchemaRegistry(file, { projectRoot: scalarRoot });
+  assert.deepEqual(scalar.registry.schemas[0].root.fields[0].value, { kind: 'scalar-record', limits: SCALAR_RECORD_LIMITS });
+  assert.equal(scalar.codecInputs.native.schemas[0].representation, 'schema-projected-json-value');
+  assert.equal(scalar.registry.policies.scalarRecordDuplicateKeys, 'reject-after-unescaping');
+  assert.throws(() => normalizeSchemaNode({ kind: 'scalar-record', limits: { ...SCALAR_RECORD_LIMITS, maxKeys: 33 } }),
+    { code: 'PULSE_SCHEMA_IR_NODE_KIND_UNSUPPORTED' });
+} finally {
+  fs.rmSync(scalarRoot, { recursive: true, force: true });
+}
+for (const [model, code] of [
+  ["import { ScalarRecord } from '@pulse-compute/pulse/schema'; export interface Value { properties: ScalarRecord }", 'PULSE_SCHEMA_MARKER_TYPE_IMPORT_REQUIRED'],
+  ["import type { ScalarRecord } from '@pulse-compute/pulse/schema'; export interface Value { properties: ScalarRecord<string> }", 'PULSE_SCHEMA_MARKER_GENERIC_UNSUPPORTED'],
+  ["import type { ScalarRecord } from '@pulse-compute/pulse/schema'; export type Value = ScalarRecord", 'PULSE_SCHEMA_ROOT_OBJECT_REQUIRED'],
+  ["export interface Value { properties: Record<string, unknown> }", 'PULSE_SCHEMA_GENERIC_TYPE_UNSUPPORTED'],
+  ["import type { ScalarRecord } from 'other-schema'; export interface Value { properties: ScalarRecord }", 'PULSE_SCHEMA_TYPE_IMPORT_NONRELATIVE']
+]) expectExtractionCode(`${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`, code, model);
+
 const registryContract = defaultSchemaRegistryContract();
 assert.equal(registryContract.policies.canonicalEntrypoint, 'pulse.schema');
 assert.equal(registryContract.policies.oldSchemasJsonSupported, false);
 assert.equal(registryContract.policies.optionalPropertiesSupported, true);
+assert.equal(registryContract.policies.scalarRecordsSupported, true);
 assert.equal(registryContract.policies.publicJsonAsImportsSupported, false);
 assert.equal(registryContract.policies.automaticFallback, false);
 assert.deepEqual(registryContract.boundaryPolicy, defaultSchemaBoundaryPolicy());

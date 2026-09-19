@@ -3,8 +3,11 @@
 const crypto = require('node:crypto');
 const {
   SCHEMA_REGISTRY_IR_VERSION,
-  normalizeSchemaRegistry
+  normalizeSchemaRegistry,
+  scalarRecordStringBytes,
+  schemaHasScalarRecord
 } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { projectScalarRecord, validateScalarRecordText } = require('./scalar-record-codec.js');
 const {
   normalizeJsonTraceEvent,
   semanticValueDigest
@@ -155,6 +158,13 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   const codecsName = options.codecsName || '__pulse_schema_codecs';
   const lines = [];
   lines.push(`const ${registryName} = Object.freeze(${JSON.stringify(registry, null, 2)});`);
+  const scalarRecords = registry.schemas.some(schema => schemaHasScalarRecord(schema.root));
+  if (scalarRecords) {
+    // Keep generated declarations in the existing reserved schema namespace.
+    for (const helper of [scalarRecordStringBytes, projectScalarRecord, validateScalarRecordText]) {
+      lines.push(helper.toString().replace(/\b(scalarRecordStringBytes|projectScalarRecord|validateScalarRecordText)\b/g, name => '__pulse_schema_' + name));
+    }
+  }
   lines.push('function __pulse_schema_kind(value) {');
   lines.push("  if (value === null) return 'null';");
   lines.push("  if (Array.isArray(value)) return 'array';");
@@ -189,6 +199,11 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push('}');
   lines.push('function __pulse_schema_apply_node(node, value, mode, schemaId, path, source) {');
   lines.push('  const kind = node.kind;');
+  if (scalarRecords) {
+    lines.push("  if (kind === 'scalar-record') return __pulse_schema_projectScalarRecord(value, node.limits, (key, expected, actual) => {");
+    lines.push('    throw __pulse_schema_failure(mode, undefined, schemaId, key === null ? path : __pulse_schema_pointer(path, key), expected, actual, source);');
+    lines.push('  });');
+  }
   lines.push("  if (kind === 'nullable') {");
   lines.push("    if (value === null) return null;");
   lines.push('    return __pulse_schema_apply_node(node.value, value, mode, schemaId, path, source);');
@@ -267,6 +282,10 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push('    let value;');
   lines.push('    try { value = JSON.parse(String(text)); }');
   lines.push("    catch (cause) { throw __pulse_schema_failure('decode', 'PULSE_SCHEMA_JSON_MALFORMED', String(schemaId), '', 'valid-json', 'malformed-json', source, cause); }");
+  if (scalarRecords) {
+    lines.push('    const schema = this.schema(schemaId);');
+    lines.push("    if (schema) __pulse_schema_validateScalarRecordText(String(text), schema.root, (path, expected, actual) => { throw __pulse_schema_failure('decode', undefined, String(schemaId), path, expected, actual, source); });");
+  }
   lines.push("    return __pulse_schema_apply(schemaId, value, 'decode', source);");
   lines.push('  },');
   lines.push("  encodeJsonText(schemaId, value, source = 'response') {");

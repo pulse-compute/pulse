@@ -1,4 +1,15 @@
 import { Pulse } from '../src/index.js'
+import type { ScalarRecord } from '../src/schema.js'
+
+// @ts-expect-error scalar dictionaries cannot contain nested objects
+const nestedAttributes: ScalarRecord = { nested: { value: true } }
+// @ts-expect-error scalar dictionaries cannot contain arrays
+const arrayAttributes: ScalarRecord = { values: [1] }
+// @ts-expect-error present undefined is not a scalar value
+const undefinedAttributes: ScalarRecord = { value: undefined }
+const scalarAttributes: ScalarRecord = { value: true }
+// @ts-expect-error decoded scalar dictionaries are immutable
+scalarAttributes.value = false
 
 const app = new Pulse({ auto: true })
 // @ts-expect-error lifecycle remains provider-owned
