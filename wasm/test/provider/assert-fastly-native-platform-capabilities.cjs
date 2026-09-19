@@ -52,6 +52,32 @@ try {
   const zeroEffectCompiled = platform.compileFastlyNativePlatformCapabilitiesPlan(zeroEffectPlan, { cwd: repoRoot, bindings: {}, requirePlatformCapability: false, canonicalBuild: true });
   assertNativePlatformModule('zero-effect-http', zeroEffectCompiled, ['fastly_abi', 'fastly_http_req', 'fastly_http_resp', 'fastly_http_body'], ['fastly_config_store', 'fastly_secret_store', 'fastly_kv_store'], { platformCapabilities: false });
   assert.doesNotMatch(zeroEffectCompiled.source, /^\s*else __pulse_fastly_fail\(PULSE_ERROR_UNSUPPORTED/m, 'zero-effect dispatch must not emit a dangling else');
+  // A custom section changes module size without changing executable behavior.
+  // Exercise the former ceiling, the inclusive new boundary, and rejection.
+  const leb = (value) => {
+    const bytes = [];
+    do { const next = value >>> 7; bytes.push((value & 127) | (next ? 128 : 0)); value = next; } while (value);
+    return Buffer.from(bytes);
+  };
+  const paddedTo = (size) => {
+    let payloadBytes = size - zeroEffectCompiled.wasm.length - 5;
+    while (zeroEffectCompiled.wasm.length + 1 + leb(payloadBytes).length + payloadBytes !== size) {
+      payloadBytes = size - zeroEffectCompiled.wasm.length - 1 - leb(payloadBytes).length;
+    }
+    return Buffer.concat([zeroEffectCompiled.wasm, Buffer.from([0]), leb(payloadBytes), Buffer.alloc(payloadBytes)]);
+  };
+  assert.equal(platform.FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES, 4 * 1024 * 1024);
+  for (const bytes of [1024 * 1024 + 1, 4 * 1024 * 1024]) {
+    const inspected = platform.inspectFastlyNativePlatformCapabilitiesWasm(paddedTo(bytes));
+    assert.equal(inspected.bytes, bytes);
+    assert.deepEqual(inspected.imports, zeroEffectCompiled.inspection.imports);
+    assert.deepEqual(inspected.exports, zeroEffectCompiled.inspection.exports);
+  }
+  assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(paddedTo(4 * 1024 * 1024 + 1)),
+    (error) => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'
+      && error.detail.bytes === 4 * 1024 * 1024 + 1 && error.detail.maxBytes === 4 * 1024 * 1024);
+  assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(Buffer.from('invalid')),
+    (error) => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_INVALID');
   const zeroEffectResult = mock.executeFastlyNativePlatformCapabilities(zeroEffectCompiled, {
     request: { method: 'GET', path: '/health' },
     kvStores: {}

@@ -92,7 +92,9 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION = 'pulse.fastly-native-platfor
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_GENERATOR_VERSION = 'pulse.fastly-native-platform-capabilities-generator.v1';
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION = 'pulse.fastly-native-platform-capabilities-compiler.v1';
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION = 1;
-const FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES = 1024 * 1024;
+// Internal compilation budget, not a Fastly service limit. Keep a finite guard
+// while allowing composed applications beyond the original 1 MiB proof fixture.
+const FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES = 4 * 1024 * 1024;
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES = 65536;
 const FASTLY_NATIVE_SIZE_OPTIMIZATION = EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
 
@@ -2044,6 +2046,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
 
 function inspectFastlyNativePlatformCapabilitiesWasm(input) {
   const bytes = Buffer.isBuffer(input) ? input : fs.readFileSync(path.resolve(input));
+  if (bytes.length > FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES) fail('Generated Fastly native platform capabilities module exceeds the Pulse internal 4 MiB compilation budget.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE', { bytes: bytes.length, maxBytes: FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES });
   if (!WebAssembly.validate(bytes)) fail('Generated Fastly native platform capabilities module is not valid WebAssembly.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_INVALID');
   const module = new WebAssembly.Module(bytes);
   const imports = WebAssembly.Module.imports(module).map((entry) => Object.freeze({ module: entry.module, name: entry.name, kind: entry.kind }));
@@ -2059,7 +2062,6 @@ function inspectFastlyNativePlatformCapabilitiesWasm(input) {
   const requiredExports = ['_start', 'memory', 'pulse_fastly_last_error', 'pulse_fastly_error_stage', 'pulse_fastly_error_effect', 'pulse_start', 'pulse_resume', 'pulse_set_effect_result', 'pulse_result_handle'];
   const missingExports = requiredExports.filter((name) => !exportNames.has(name));
   if (missingExports.length > 0) fail('Generated Fastly native platform capabilities module is missing required exports.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_EXPORT_MISSING', { missingExports, exports });
-  if (bytes.length > FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES) fail('Generated Fastly native platform capabilities module exceeds the Pass98 size ceiling.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE', { bytes: bytes.length, maxBytes: FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES });
   return Object.freeze({
     valid: true,
     bytes: bytes.length,

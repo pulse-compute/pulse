@@ -7,6 +7,13 @@ Fastly CLI boundary.
 
 Install it only in projects that select the Fastly provider.
 
+The Native platform-capabilities compiler enforces a 4 MiB final-Wasm budget
+(4,194,304 bytes, inclusive), raised from its original 1 MiB proof budget. This
+is a Pulse build guard, not a Fastly service limit or a runtime-memory allowance.
+Modules above it fail with `PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE`
+before WebAssembly validation or compilation; modules within it still require
+valid Wasm and the expected host ABI.
+
 ## Install
 
 ```bash
