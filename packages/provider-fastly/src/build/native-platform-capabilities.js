@@ -2108,6 +2108,8 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     }
     jsonAs = Object.freeze({ transform, dependencyRoot, version: packageJson.version });
   }
+  if (options.emitWat !== undefined && typeof options.emitWat !== 'boolean') throw new TypeError('emitWat must be a boolean.');
+  const emitWat = options.emitWat === true;
   const stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-native-platform-'));
   const requestedOutDir = options.outDir ? path.resolve(options.outDir) : undefined;
   const outputDir = requestedOutDir || stagingDir;
@@ -2115,6 +2117,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
   const sourceFile = path.join(stagingDir, 'fastly-native-platform-capabilities.as.ts');
   const wasmFile = path.join(outputDir, options.wasmFile || 'fastly-native-platform-capabilities.wasm');
   const watFile = path.join(outputDir, options.watFile || 'fastly-native-platform-capabilities.wat');
+  if (!emitWat) fs.rmSync(watFile, { force: true });
   const guestLinked = generated.guestUnits.length > 0;
   // asc resolves custom runtimes like module names and appends ".ts".
   const fixedMemoryRuntimeModule = path.join(__dirname, 'fixed-memory-runtime.as');
@@ -2131,13 +2134,13 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       asc.script,
       path.basename(sourceFile),
       '--outFile', assemblyScriptWasmFile,
-      '--textFile', assemblyScriptWatFile,
       '--runtime', guestLinked
         ? fixedMemoryRuntimeModule
         : (schemaCodecsActive ? 'incremental' : 'stub'),
       '--noAssert',
       '--optimize'
     ];
+    if (emitWat) args.push('--textFile', assemblyScriptWatFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization);
     if (!guestLinked && plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.'))) {
       args.push('--maximumMemory', '4096');
@@ -2218,7 +2221,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
           failureMessage: 'Fastly Native start wrapper composition failed.'
         }
       );
-      runGuestTool(
+      if (emitWat) runGuestTool(
         'wasm-dis',
         [wasmFile, '--mvp-features', '-o', watFile],
         {
@@ -2248,7 +2251,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       });
     }
     const primaryWasm = fs.readFileSync(wasmFile);
-    const primaryWat = fs.existsSync(watFile) ? fs.readFileSync(watFile, 'utf8') : '';
+    const primaryWat = emitWat ? fs.readFileSync(watFile, 'utf8') : '';
     const primaryArtifact = Object.freeze({
       bytes: primaryWasm.length,
       sha256: sha256(primaryWasm)
@@ -2281,7 +2284,8 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       realization = Object.freeze({
         ...realization,
         wasm: stageResult.wasm,
-        wat: stageResult.wat,
+        // Required guest-link disassembly audits remain enabled.
+        wat: emitWat ? stageResult.wat : '',
         guestUnits: stageResult.guestUnits,
         guestLink: Object.freeze({
           version: stageResult.version,
@@ -2299,7 +2303,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     const wat = realization.wat;
     if (requestedOutDir && generated.guestUnits.length > 0) {
       fs.writeFileSync(wasmFile, wasm);
-      fs.writeFileSync(watFile, wat, 'utf8');
+      if (emitWat) fs.writeFileSync(watFile, wat, 'utf8');
     }
     const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes });
     const imported = new Set(inspection.imports.map((entry) => `${entry.module}:${entry.name}`));
@@ -2315,7 +2319,9 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         : undefined,
       optimization,
       wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),
-      wat: Object.freeze({ bytes: Buffer.byteLength(wat), sha256: sha256(wat) }),
+      wat: Object.freeze(emitWat
+        ? { emitted: true, bytes: Buffer.byteLength(wat), sha256: sha256(wat) }
+        : { emitted: false, bytes: 0, sha256: null }),
       importModules: inspection.importModules,
       imports: inspection.imports,
       requiredImports,
@@ -2348,7 +2354,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       assemblyScriptDurationMs,
       primaryArtifact,
       startWrapper,
-      output: requestedOutDir ? Object.freeze({ outDir: outputDir, wasmFile, watFile }) : undefined
+      output: requestedOutDir ? Object.freeze({ outDir: outputDir, wasmFile, watFile: emitWat ? watFile : null }) : undefined
     });
   } finally {
     fs.rmSync(stagingDir, { recursive: true, force: true });
@@ -2366,10 +2372,12 @@ function writeFastlyNativePlatformCapabilitiesModule(compiled, outDir, options =
   const manifestFile = path.join(target, options.manifestFile || 'fastly-native-platform-capabilities-manifest.json');
   fs.writeFileSync(sourceFile, compiled.source, 'utf8');
   fs.writeFileSync(wasmFile, compiled.wasm);
-  fs.writeFileSync(watFile, compiled.wat, 'utf8');
+  const emitWat = compiled.manifest.wat.emitted !== false;
+  if (emitWat) fs.writeFileSync(watFile, compiled.wat, 'utf8');
+  else fs.rmSync(watFile, { force: true });
   fs.writeFileSync(planFile, `${stableStringify(compiled.plan, 2)}\n`, 'utf8');
   fs.writeFileSync(manifestFile, `${stableStringify(compiled.manifest, 2)}\n`, 'utf8');
-  return Object.freeze({ target, sourceFile, wasmFile, watFile, planFile, manifestFile, manifest: compiled.manifest });
+  return Object.freeze({ target, sourceFile, wasmFile, watFile: emitWat ? watFile : null, planFile, manifestFile, manifest: compiled.manifest });
 }
 
 module.exports = Object.freeze({

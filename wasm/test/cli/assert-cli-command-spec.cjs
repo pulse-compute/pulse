@@ -89,7 +89,7 @@ const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'pub
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
 assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build']);
-assert.equal(publicOptions.length, 16, 'the CLI must expose exactly 16 documented option contracts');
+assert.equal(publicOptions.length, 17, 'the CLI must expose exactly 17 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
 for (const command of PUBLIC_COMMAND_ORDER) {

@@ -396,7 +396,7 @@
       "name": "compile",
       "summary": "Compile the canonical project into provider-neutral Pulse-owned WebAssembly.",
       "usage": [
-        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]"
+        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]"
       ],
       "positionals": [
         {
@@ -421,6 +421,17 @@
           ],
           "kind": "boolean-value",
           "description": "Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default."
+        },
+        {
+          "id": "emit-wat",
+          "key": "emitWat",
+          "flags": [
+            {
+              "name": "--emit-wat"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity."
         },
         {
           "id": "experimental-native-size",
@@ -469,7 +480,7 @@
         "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
       ],
       "outputs": [
-        "Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, WAT, and native manifest.",
+        "Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.",
         "The output is provider-neutral and does not package a deployment provider runtime.",
         "Experimental size builds record the exact non-default Native compiler optimization settings.",
         "With --json, emits one compile result object containing exact artifact paths and native metadata."
@@ -485,7 +496,7 @@
       "name": "build",
       "summary": "Compile the canonical project and realize the deployment provider selected by the active project profile.",
       "usage": [
-        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]"
+        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]"
       ],
       "positionals": [
         {
@@ -510,6 +521,17 @@
           ],
           "kind": "boolean-value",
           "description": "Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default."
+        },
+        {
+          "id": "emit-wat",
+          "key": "emitWat",
+          "flags": [
+            {
+              "name": "--emit-wat"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity."
         },
         {
           "id": "experimental-native-size",
@@ -556,10 +578,11 @@
         "PULSE_BUILD_OUT_UNSAFE",
         "PULSE_BUILD_PROVIDER_REQUIRED",
         "PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED",
+        "PULSE_NATIVE_TEXT_UNSUPPORTED",
         "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
       ],
       "outputs": [
-        "Writes pulse-build.json, the provider-neutral native module, and the configured provider realization.",
+        "Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.",
         "Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.",
         "Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.",
         "With --json, emits one build result object containing exact portable and provider artifact paths."

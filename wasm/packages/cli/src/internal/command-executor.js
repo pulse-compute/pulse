@@ -108,7 +108,8 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
       result: operations.compileNativeProject(project, {
         clean: request.clean,
         outDir: request.outDir,
-        experimentalNativeSize: request.experimentalNativeSize
+        experimentalNativeSize: request.experimentalNativeSize,
+        emitWat: request.emitWat
       })
     };
   }
@@ -118,7 +119,8 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
       result: operations.buildProject(project, {
         clean: request.clean,
         outDir: request.outDir,
-        experimentalNativeSize: request.experimentalNativeSize
+        experimentalNativeSize: request.experimentalNativeSize,
+        emitWat: request.emitWat
       })
     };
   }

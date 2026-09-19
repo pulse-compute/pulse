@@ -67,7 +67,9 @@ function realizeSelectedGuestUnits(realization, guestUnits, options = {}) {
   return Object.freeze({
     ...realization,
     wasm: result.wasm,
-    wat: result.wat,
+    // Guest linking retains its mandatory independent disassembly audit.
+    // Only an explicitly requested diagnostic becomes an output artifact.
+    wat: realization.textEmitted ? result.wat : '',
     // Preserve trusted package roots for subsequent provider-specific linking.
     guestUnits: Object.freeze(result.guestUnits.map(unit => Object.freeze({
       ...unit, packageRoot: selected.find(selection => selection.id === unit.id).packageRoot

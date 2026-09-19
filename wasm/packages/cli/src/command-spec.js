@@ -23,6 +23,7 @@ const OPTION_SPECS = Object.freeze([
   freezeOption({ id: 'once', key: 'once', flags: ['--once'], kind: 'boolean', commands: ['dev'], visibility: 'public', description: 'Close the development server after the first completed request.' }),
   freezeOption({ id: 'watch', key: 'watch', flags: [{ name: '--watch', value: true }, { name: '--no-watch', value: false }], kind: 'boolean-value', commands: ['dev'], visibility: 'public', description: 'Enable or disable entry and schema dependency watching. Watching is enabled by default.' }),
   freezeOption({ id: 'clean', key: 'clean', flags: [{ name: '--clean', value: true }, { name: '--no-clean', value: false }], kind: 'boolean-value', commands: ['compile', 'build'], visibility: 'public', description: 'Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.' }),
+  freezeOption({ id: 'emit-wat', key: 'emitWat', flags: ['--emit-wat'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.' }),
   freezeOption({ id: 'experimental-native-size', key: 'experimentalNativeSize', flags: ['--experimental-native-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.' }),
 
   freezeOption({ id: 'profile', key: 'profile', flags: ['--profile'], kind: 'value', valueName: '<profile>', commands: ['doctor', 'inspect', 'test', 'dev', 'compile', 'build'], visibility: 'public', description: 'Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.' }),
@@ -114,24 +115,24 @@ const COMMAND_SPECS = Object.freeze({
   compile: freezeCommand({
     name: 'compile',
     summary: 'Compile the canonical project into provider-neutral Pulse-owned WebAssembly.',
-    usage: ['pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]'],
+    usage: ['pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'out', 'clean', 'experimental-native-size'],
+    optionIds: ['profile', 'out', 'clean', 'experimental-native-size', 'emit-wat'],
     examples: ['pulse compile ./my-pulse-app', 'pulse compile ./edge-app --out ./dist --json', 'pulse compile ./edge-app --experimental-native-size'],
     diagnostics: ['PULSE_BUILD_OUT_UNSAFE', 'PULSE_CANONICAL_NATIVE_PLAN_FAILED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
-    outputs: ['Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, WAT, and native manifest.', 'The output is provider-neutral and does not package a deployment provider runtime.', 'Experimental size builds record the exact non-default Native compiler optimization settings.', 'With --json, emits one compile result object containing exact artifact paths and native metadata.'],
+    outputs: ['Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.', 'The output is provider-neutral and does not package a deployment provider runtime.', 'Experimental size builds record the exact non-default Native compiler optimization settings.', 'With --json, emits one compile result object containing exact artifact paths and native metadata.'],
     sideEffects: ['Cleans the output directory by default.', 'Invokes the lockfile-pinned AssemblyScript compiler.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
     exit: '0 on success; 2–5 according to the emitted stable diagnostic.'
   }),
   build: freezeCommand({
     name: 'build',
     summary: 'Compile the canonical project and realize the deployment provider selected by the active project profile.',
-    usage: ['pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]'],
+    usage: ['pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]'],
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
-    optionIds: ['profile', 'out', 'clean', 'experimental-native-size'],
+    optionIds: ['profile', 'out', 'clean', 'experimental-native-size', 'emit-wat'],
     examples: ['pulse build ./my-pulse-app', 'pulse build ./edge-app --out ./dist --json', 'pulse build ./edge-app --experimental-native-size'],
-    diagnostics: ['PULSE_BUILD_OUT_UNSAFE', 'PULSE_BUILD_PROVIDER_REQUIRED', 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
-    outputs: ['Writes pulse-build.json, the provider-neutral native module, and the configured provider realization.', 'Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.', 'Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.', 'With --json, emits one build result object containing exact portable and provider artifact paths.'],
+    diagnostics: ['PULSE_BUILD_OUT_UNSAFE', 'PULSE_BUILD_PROVIDER_REQUIRED', 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED', 'PULSE_NATIVE_TEXT_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
+    outputs: ['Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.', 'Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.', 'Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.', 'With --json, emits one build result object containing exact portable and provider artifact paths.'],
     sideEffects: ['Cleans the output directory by default.', 'Invokes the native compiler and configured provider realization.', 'Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root.'],
     exit: '0 on success; 2–5 according to the emitted stable diagnostic.'
   })

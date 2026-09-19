@@ -106,7 +106,6 @@ async function main() {
       'canonical-native-plan.json',
       'canonical-native.as.ts',
       'canonical-native.wasm',
-      'canonical-native.wat',
       'canonical-native-manifest.json',
       'pulse-compile.json'
     ]) {
@@ -124,6 +123,15 @@ async function main() {
     assert.equal(nativeManifest.native.wasm.bytes, nativeBytes.length);
     assert.equal(nativeManifest.native.wasm.sha256, crypto.createHash('sha256').update(nativeBytes).digest('hex'));
     const nativeFirstHash = nativeManifest.native.wasm.sha256;
+    assert.deepEqual(nativeManifest.native.wat, { file: null, emitted: false, bytes: 0, sha256: null });
+    assert.equal(fs.existsSync(path.join(nativeOut, 'canonical-native.wat')), false);
+    const withText = parseJson(run(['compile', '--out', nativeOut, '--emit-wat', '--json'], projectRoot));
+    assert.equal(withText.manifest.native.wat.emitted, true);
+    assert.equal(withText.manifest.native.wasm.sha256, nativeFirstHash);
+    assert.ok(fs.readFileSync(path.join(nativeOut, 'canonical-native.wat'), 'utf8').startsWith('(module'));
+    const withoutText = parseJson(run(['compile', '--out', nativeOut, '--no-clean', '--json'], projectRoot));
+    assert.equal(withoutText.manifest.native.wat.emitted, false);
+    assert.equal(fs.existsSync(path.join(nativeOut, 'canonical-native.wat')), false);
     const nativeSecond = parseJson(run(['compile', '--out', nativeOut, '--json'], projectRoot));
     assert.equal(nativeSecond.manifest.native.wasm.sha256, nativeFirstHash, 'pulse compile must be deterministic');
     const expectedNativeSizeOptimization = {
@@ -227,6 +235,14 @@ async function main() {
       '--json'
     ], projectRoot));
     assert.equal(javascriptExperimental.error.code, 'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED');
+    for (const planningFlags of [[], ['--dry-run']]) {
+      const javascriptText = parseError(run([
+        'build', '--profile', 'javascript', '--emit-wat', ...planningFlags, '--json'
+      ], projectRoot));
+      assert.equal(javascriptText.error.code, 'PULSE_NATIVE_TEXT_UNSUPPORTED');
+    }
+    const textPlan = parseJson(run(['compile', '--emit-wat', '--dry-run', '--json'], projectRoot));
+    assert.deepEqual(textPlan.plan.textArtifacts, { wat: true });
 
     const parityRoot = path.join(tmpRoot, 'provider-parity');
     fs.mkdirSync(path.join(parityRoot, '.pulse'), { recursive: true });
@@ -301,6 +317,16 @@ export default defineConfig((scope) => ({
     assert.equal(fastlyParityInspect.compiler.providerLowering.buildTarget, 'fastly-compute');
     assert.equal(fastlyParityInspect.compiler.providerLowering.deployable, true);
     assert.equal(fastlyParityInspect.compiler.providerLowering.providerSpecificUserland, false);
+
+    const fastlyTextBuild = parseJson(run(['build', '--profile', 'fastly', '--emit-wat', '--json'], parityRoot, parityRunOptions));
+    assert.equal(fastlyTextBuild.manifest.portable.wat.emitted, true);
+    assert.equal(fastlyTextBuild.manifest.providerTarget.wat.emitted, true);
+    const fastlyWat = path.join(parityRoot, 'fastly-provider-dist', 'bin', 'main.wat');
+    assert.ok(fs.readFileSync(fastlyWat, 'utf8').startsWith('(module'));
+    const fastlyWithoutText = parseJson(run(['build', '--profile', 'fastly', '--no-clean', '--json'], parityRoot, parityRunOptions));
+    assert.deepEqual(fastlyWithoutText.manifest.providerTarget.wat, { file: null, emitted: false, bytes: 0, sha256: null });
+    assert.equal(fastlyWithoutText.manifest.providerTarget.wasm.sha256, fastlyTextBuild.manifest.providerTarget.wasm.sha256);
+    assert.equal(fs.existsSync(fastlyWat), false);
 
     const storageRoot = require('./storage-fixture.cjs').storageFixture(path.join(tmpRoot, 'storage'));
     for (const profile of ['local', 'javascript', 'fastly']) {

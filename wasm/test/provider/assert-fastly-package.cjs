@@ -182,10 +182,13 @@ try {
     output.packageFile,
     output.sourceEntryFile,
     output.wasmFile,
-    output.watFile,
     output.nativePlanFile,
     output.nativeManifestFile
   ]) assert.equal(fs.existsSync(file), true, `${path.basename(file)} must be emitted`);
+  assert.equal(output.watFile, null);
+  assert.deepEqual(output.build.wat, { file: null, emitted: false, bytes: 0, sha256: null });
+  assert.equal(output.build.files.wat, null);
+  assert.equal(fs.existsSync(path.join(tmp, 'bin', 'main.wat')), false);
 
   const wasmBytes = fs.readFileSync(output.wasmFile);
   assert.equal(WebAssembly.validate(wasmBytes), true);

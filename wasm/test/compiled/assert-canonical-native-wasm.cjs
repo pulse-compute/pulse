@@ -319,12 +319,31 @@ async function main() {
   }, nodeOptions()), (error) => error && error.code === 'PULSE_CANONICAL_NATIVE_PLAN_HASH_MISMATCH');
   assert.throws(() => inspectCanonicalNativeWasm(Buffer.from('not wasm')), (error) => error && error.name === 'CanonicalNativeCompileError');
 
+  const textModule = compileCanonicalNativePlan(plans.get('hello'), { cwd: repoRoot, emitWat: true });
+  assert.deepEqual(textModule.wasm, modules.get('hello').wasm, 'text emission must not change executable bytes');
+  assert.ok(textModule.wat.startsWith('(module'));
+  assert.equal(textModule.manifest.wat.emitted, true);
+  assert.deepEqual(modules.get('hello').manifest.wat, { emitted: false, bytes: 0, sha256: null });
+  assert.throws(() => compileCanonicalNativePlan(plans.get('hello'), { cwd: repoRoot, emitWat: 'yes' }), /emitWat must be a boolean/);
+
   const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-canonical-native-write-'));
   try {
     const written = writeCanonicalNativeModule(modules.get('hello'), outputRoot);
     assert.ok(fs.existsSync(written.sourceFile));
     assert.ok(fs.existsSync(written.wasmFile));
-    assert.ok(fs.existsSync(written.watFile));
+    assert.equal(written.watFile, null);
+    assert.equal(fs.existsSync(path.join(outputRoot, 'canonical-native.wat')), false);
+    const withText = writeCanonicalNativeModule(textModule, outputRoot);
+    assert.equal(fs.readFileSync(withText.watFile, 'utf8'), textModule.wat);
+    writeCanonicalNativeModule(modules.get('hello'), outputRoot);
+    assert.equal(fs.existsSync(withText.watFile), false, 'reusing an output directory removes stale diagnostic text');
+    // Inspect the compiler output directly so generating and merely discarding
+    // WAT cannot satisfy the default-omission contract.
+    fs.writeFileSync(withText.watFile, 'stale diagnostic');
+    const direct = compileCanonicalNativePlan(plans.get('hello'), { cwd: repoRoot, outDir: outputRoot });
+    assert.equal(direct.output.watFile, null);
+    assert.equal(fs.existsSync(withText.watFile), false, 'AssemblyScript must not emit default WAT');
+    assert.deepEqual(direct.wasm, textModule.wasm);
     assert.ok(fs.existsSync(written.planFile));
     assert.ok(fs.existsSync(written.manifestFile));
     assert.equal(JSON.parse(fs.readFileSync(written.manifestFile, 'utf8')).wasm.sha256, modules.get('hello').inspection.sha256);
