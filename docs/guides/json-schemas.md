@@ -38,7 +38,7 @@ The schema subset is intentionally portable:
 
 - an object root with required or question-mark optional property signatures;
 - `string`, `boolean`, and finite JSON `number`;
-- `Int32` and `Uint32` marker types imported with `import type`;
+- `Int32`, `Uint32`, and bounded `ScalarRecord` marker types imported with `import type`;
 - nested object types and arrays;
 - string-literal enums such as `'admin' | 'member'`;
 - one supported type unioned with `null`.
@@ -71,11 +71,70 @@ than silently omitted. Inherited properties do not supply schema data, and
 accessors are rejected without invoking their getters. Required properties retain
 their existing validation. Decoded values remain deeply immutable.
 
-Schema registry IR and codec inputs use v2 to record requiredness. Pulse generates
-presence-aware Native projections for schemas containing optional fields, using
-its internal `json-as` backend. Required-only schemas retain their struct codec.
+Schema registry IR and codec inputs use v3 to record requiredness and bounded
+scalar records. Pulse generates Native value projections for schemas containing
+optional fields or `ScalarRecord`, using its internal `json-as` backend. Other
+required-only schemas retain their struct codec.
 There is no application decorator, serializer hook, or JavaScript fallback.
 The existing semantic cross-target and encoded-byte-bound contracts apply.
+
+## Bounded scalar records
+
+Use `ScalarRecord` for extensible properties inside an otherwise declared object:
+
+```ts
+import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
+import type { ScalarRecord } from '@pulse-compute/pulse/schema'
+
+interface AnalyticsEvent {
+  event: string
+  context: { source: string }
+  properties: ScalarRecord
+}
+
+export default defineSchemaRegistry({
+  schemas: { 'app.AnalyticsEvent': schema<AnalyticsEvent>() },
+})
+```
+
+`properties` preserves dynamic string keys. Each value must be a string, finite
+number, boolean, or null. Objects, arrays, undefined, functions, and symbols are
+invalid inside the record. The surrounding envelope and context retain their
+declared-field validation and unknown-field removal. Existing array and nullable
+syntax can contain records, for example `samples?: ScalarRecord[]` or
+`properties: ScalarRecord | null`. A schema root must still be a declared object.
+
+These fixed limits apply independently to every record on encode and decode:
+
+| Constraint | Limit |
+|---|---:|
+| Own string keys | 32 |
+| Key length | 64 UTF-16 code units |
+| String value length | 1,024 UTF-16 code units |
+| Conservative JSON byte budget | 8,192 bytes |
+
+The byte budget includes braces, commas, colons, quoted keys and values, and JSON
+escaping. It reserves 24 bytes per number and six per control code unit; other
+characters use their UTF-8 JSON size, including surrogate escaping. This gives
+the same admission rule across target codecs despite different number and escape
+spellings. Some records whose actual encoding is under 8 KiB can therefore exceed
+the budget. Whitespace in input is excluded from this record budget; the existing
+`schemas.maxBytes` limit separately bounds the complete input and encoded output.
+These limits are not generic type parameters or profile settings.
+
+Decoding rejects duplicate record keys after JSON unescaping: `"x"` and
+`"\u0078"` are the same key. Ordinary declared objects retain last-member-wins
+semantics. Encoding a JavaScript object cannot recover duplicates already lost
+by a prior `JSON.parse`; pass original text through `ctx.decodeJson` when duplicate
+rejection matters.
+
+Decoded records are immutable own data properties. Encoding accepts plain or
+null-prototype objects, rejects accessors without invoking them, and rejects
+symbol keys and custom prototypes. Keys such as `__proto__` remain data. Records
+have deterministic encoding for a fixed target, but key order and number spelling
+are not a portable byte-canonicalization contract. Construct a new record when
+editing decoded values. TypeScript checks scalar value types and readonly access;
+the compiled codecs enforce the numeric and size constraints at runtime.
 
 ## Add semantic response cases
 
@@ -248,10 +307,10 @@ effect. It returns a new, deeply immutable value on each call; unknown fields
 are dropped recursively and required, nullable, enum and numeric rules are the
 same as other schema boundaries.
 
-JSON member names are unescaped before matching. As with the existing JSON
-decoders, the last occurrence of a duplicate member wins before schema
-validation. This API does not impose a duplicate-rejection policy or normalize
-Unicode for a command fingerprint. Malformed JSON fails with
+JSON member names are unescaped before matching. In ordinary declared objects,
+the last occurrence of a duplicate member wins before schema validation.
+`ScalarRecord` members instead reject duplicate keys after unescaping. This API
+does not normalize Unicode for a command fingerprint. Malformed JSON fails with
 `PULSE_SCHEMA_JSON_MALFORMED`, invalid values with `PULSE_SCHEMA_DECODE`, and
 oversized input with `PULSE_BODY_TOO_LARGE` on Node. Node semantic traces use
 `json.decode.text` or `json.decode.error` at `application-text`. Fastly Native
@@ -290,9 +349,9 @@ provider JSON object:
   request after decode;
 - repeated request reads of the same schema reuse the request-local decoded
   value;
-- unknown input fields are removed recursively;
-- every declared field is required;
-- response and fetch encoding emits declared fields only, in declaration order;
+- unknown fields of declared objects are removed recursively; `ScalarRecord` preserves valid dynamic keys;
+- declared fields are required unless marked optional with `?`;
+- response and fetch encoding emits declared object fields in declaration order;
 - numeric values must be finite JSON numbers;
 - JavaScript and Native use the same registry contract and semantic trace.
 

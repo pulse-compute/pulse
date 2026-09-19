@@ -22,6 +22,22 @@ function generateSchemaPresenceCodec(root, schemaIndex) {
         lines.push(`  if (field_${index} !== null) output.set<JSON.Value>(${quote(field.name)}, ${child}(field_${index}!))`);
       });
       lines.push('  return JSON.Value.from<JSON.Obj>(output)');
+    } else if (node.kind === 'scalar-record') {
+      const limits = node.limits;
+      check('value.type == JSON.Types.Object');
+      lines.push('  const input = value.get<JSON.Obj>()', '  const keys = input.keys().sort()', '  const output = new JSON.Obj()');
+      check(`keys.length <= ${limits.maxKeys}`);
+      lines.push('  let bytes = 2', '  for (let i = 0; i < keys.length; i++) {', '    const key = keys[i]', '    const item = input.get(key)!');
+      check(`key.length <= ${limits.maxKeyLength}`);
+      lines.push('    let size = 0');
+      lines.push('    if (item.type == JSON.Types.String) {', '      const text = item.get<string>()');
+      check(`text.length <= ${limits.maxStringLength}`);
+      lines.push('      size = __pulse_scalar_record_string_bytes(text)', '    } else if (item.type == JSON.Types.F64) {');
+      check('isFinite(item.get<f64>())');
+      lines.push(`      size = ${limits.numberBytes}`, '    } else if (item.type == JSON.Types.Bool) size = item.get<bool>() ? 4 : 5', '    else if (item.type == JSON.Types.Null) size = 4', '    else abort("Invalid ScalarRecord value", "pulse-schema-codecs", 0, 0)');
+      lines.push('    bytes += (i == 0 ? 0 : 1) + __pulse_scalar_record_string_bytes(key) + 1 + size');
+      check(`bytes <= ${limits.maxBytes}`);
+      lines.push('    output.set<JSON.Value>(key, item)', '  }', '  return JSON.Value.from<JSON.Obj>(output)');
     } else if (node.kind === 'array') {
       const child = emit(node.element);
       check('value.type == JSON.Types.Array');

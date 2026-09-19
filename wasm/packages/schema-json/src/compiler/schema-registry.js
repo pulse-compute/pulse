@@ -11,7 +11,7 @@ const {
 const SCHEMA_REGISTRY_EXTRACTOR_VERSION = 'pulse.schema-registry-extractor.v1';
 const AUTHORING_MODULE = '@pulse-compute/pulse/schema';
 const HELPER_EXPORTS = new Set(['defineSchemaRegistry', 'schema', 'response']);
-const MARKER_EXPORTS = new Map([['Int32', 'i32'], ['Uint32', 'u32']]);
+const MARKER_EXPORTS = new Map([['Int32', 'i32'], ['Uint32', 'u32'], ['ScalarRecord', 'scalar-record']]);
 
 class SchemaRegistryExtractionError extends Error {
   constructor(code, message, detail = {}) {

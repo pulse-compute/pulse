@@ -1,6 +1,13 @@
 export type Int32 = number & { readonly __pulseInt32?: never };
 export type Uint32 = number & { readonly __pulseUint32?: never };
 
+/**
+ * An immutable scalar dictionary: at most 32 own string keys, 64 UTF-16 units
+ * per key, 1,024 per string value, and an 8 KiB conservative JSON byte budget.
+ * Numbers must be finite. Nested containers and duplicate JSON keys are invalid.
+ */
+export type ScalarRecord = Readonly<Record<string, string | number | boolean | null>>;
+
 declare const schemaDeclarationBrand: unique symbol;
 declare const responseCaseDeclarationBrand: unique symbol;
 declare const schemaRegistryBrand: unique symbol;

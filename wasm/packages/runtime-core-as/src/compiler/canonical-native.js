@@ -1,7 +1,8 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const { schemaHasOptionalProperties } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { schemaNeedsValueProjection, schemaHasScalarRecord } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { scalarRecordRuntimeSource, generateScalarRecordTextValidation } = require('./schema-scalar-record.js');
 const { generateSchemaPresenceCodec } = require('./schema-presence-codec.js');
 const {
   buildNativeCryptoGuestSources
@@ -126,17 +127,21 @@ function nativeSchemaCodecSource(plan) {
     records.push(Object.freeze({ symbol, node, path: Object.freeze([...path]) }));
   }
 
+  if (schemas.some(schema => schemaHasScalarRecord(schema.root))) declarations.push(scalarRecordRuntimeSource());
   schemas.forEach((schema, schemaIndex) => {
     const decode = `__pulse_schema_decode_${schemaIndex}`;
     const encode = `__pulse_schema_encode_${schemaIndex}`;
     let root;
-    if (schemaHasOptionalProperties(schema.root)) {
+    if (schemaNeedsValueProjection(schema.root)) {
       root = 'JSON.Value';
       const presence = generateSchemaPresenceCodec(schema.root, schemaIndex);
       declarations.push(...presence.declarations);
+      const recordText = schemaHasScalarRecord(schema.root) ? generateScalarRecordTextValidation(schema.root, schemaIndex) : null;
+      if (recordText) declarations.push(...recordText.declarations);
       for (const fn of [decode, encode]) {
         declarations.push(`function ${fn}(input: string): string {`);
         declarations.push(`  const value = JSON.parse<JSON.Value>(input)`);
+        if (recordText) declarations.push(`  ${recordText.apply}(new __PulseSchemaTextCursor(input), 0)`);
         declarations.push(`  return JSON.stringify<JSON.Value>(${presence.apply}(value))`);
         declarations.push('}');
       }

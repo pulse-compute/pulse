@@ -190,15 +190,30 @@ no application code resumes after the transfer. Normal exhaustion produces
 404, error exhaustion produces 500, and effects keep the identity of the route
 or middleware entry that owns them.
 
-Schema registry IR v2 records requiredness for every object property. A
+Schema registry IR v3 records object-property requiredness and the bounded
+`scalar-record` node. A
 question-mark property preserves absence through encode/decode, including nested
 objects and array elements; a present value must satisfy its type. Nullability
 is independent, present undefined is invalid, and optional fields receive no
 default. Codecs project own data properties in declaration order. Native schemas
-containing optional fields use schema-generated presence-aware projections over
-`json-as` values, while required-only schemas retain generated struct codecs.
+containing optional fields or scalar records use schema-generated projections
+over `json-as` values; other required-only schemas retain generated struct codecs.
 Provider and host preflight preserve the same rules. This extends schema
 semantics without widening effect authority or selecting a target fallback.
+
+The public type-only `ScalarRecord` marker admits dynamic own string keys only
+inside a declared object schema, with string, finite number, boolean or null
+values. Each record permits 32 keys, 64 UTF-16 units per key, 1,024 per string
+value and an 8 KiB conservative JSON byte budget. Budget accounting reserves 24
+bytes per number and six per control code unit, includes JSON structure and
+escaping, and uses UTF-8 size for other characters. This can reject an actual
+encoding under 8 KiB but gives target-independent admission. The full boundary's
+`maxBytes` remains independent. Limits are fixed, not user-defined generics.
+Decoded records are immutable. Nested containers, unsupported values, accessors,
+symbols and custom prototypes are rejected. Duplicate keys in schema-selected
+records are rejected after unescaping; ordinary declared objects retain last wins.
+JavaScript codecs, direct Native guest codecs and both Fastly Native preflight
+paths enforce these rules. See [bounded scalar records](../guides/json-schemas.md#bounded-scalar-records).
 
 `ctx.encodeJson(value, 'schema.id')` is a synchronous shared-context operation
 that returns application-owned text through the existing compiled schema codec.
@@ -216,8 +231,8 @@ not a portable canonical-hash contract.
 application-text boundary. It requires a literal registered ID and string
 input, bounds the original UTF-8 text before parsing, and returns a detached,
 deeply immutable schema value. It has no content-type policy or effect and
-does not cache repeated calls. Existing duplicate-member semantics (last wins)
-are preserved; this is not a canonical command-fingerprint parser.
+does not cache repeated calls. Ordinary declared objects preserve existing
+duplicate-member semantics (last wins); scalar records reject duplicates; this is not a canonical command-fingerprint parser.
 The Native `schema.decode.text` intrinsic uses the additive `schema_decode`
 value-handle import. Node uses the existing preflight and guest json-as codec;
 Fastly uses its provider-owned parser and generated schema codec and freezes

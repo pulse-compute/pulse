@@ -2,13 +2,31 @@
 
 const { sha256Hex, stableStringify } = require('../stable-id.js');
 
-const SCHEMA_REGISTRY_IR_VERSION = 'pulse.schema-registry-ir.v2';
-const SCHEMA_CODEC_INPUTS_VERSION = 'pulse.schema-codec-inputs.v2';
+const SCHEMA_REGISTRY_IR_VERSION = 'pulse.schema-registry-ir.v3';
+const SCHEMA_CODEC_INPUTS_VERSION = 'pulse.schema-codec-inputs.v3';
 const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v1';
 const SCHEMA_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)+$/;
 const RESPONSE_CASE_ID_PATTERN = SCHEMA_ID_PATTERN;
 const SCALAR_KINDS = Object.freeze(['string', 'boolean', 'i32', 'u32', 'f64']);
-const NODE_KINDS = Object.freeze([...SCALAR_KINDS, 'object', 'array', 'string-enum', 'nullable']);
+const NODE_KINDS = Object.freeze([...SCALAR_KINDS, 'object', 'array', 'string-enum', 'nullable', 'scalar-record']);
+const SCALAR_RECORD_LIMITS = Object.freeze({ maxKeys: 32, maxKeyLength: 64, maxStringLength: 1024, maxBytes: 8192, numberBytes: 24 });
+
+// Shared conservative UTF-8 JSON string sizing. Native code generation reuses
+// this pure function body; keep it independent of host APIs and mutable state.
+function scalarRecordStringBytes(text) {
+  let bytes = 2;
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (code < 32) bytes += 6;
+    else if (code === 34 || code === 92) bytes += 2;
+    else if (code < 128) bytes += 1;
+    else if (code < 2048) bytes += 2;
+    else if (code >= 0xd800 && code <= 0xdbff && i + 1 < text.length && text.charCodeAt(i + 1) >= 0xdc00 && text.charCodeAt(i + 1) <= 0xdfff) { bytes += 4; i++; }
+    else if (code >= 0xd800 && code <= 0xdfff) bytes += 6;
+    else bytes += 3;
+  }
+  return bytes;
+}
 
 function schemaContractError(code, message, details = {}) {
   const error = new TypeError(message);
@@ -73,6 +91,13 @@ function normalizeSchemaNode(input, field = 'schema.root', stack = []) {
     throw schemaContractError('PULSE_SCHEMA_IR_NODE_KIND_UNSUPPORTED', `${field}.kind is unsupported: ${kind}.`, { field, kind });
   }
   if (SCALAR_KINDS.includes(kind)) return Object.freeze({ kind });
+  if (kind === 'scalar-record') {
+    if (input.limits !== undefined && (!plainObject(input.limits)
+      || stableStringify(input.limits) !== stableStringify(SCALAR_RECORD_LIMITS))) {
+      throw schemaContractError('PULSE_SCHEMA_IR_NODE_KIND_UNSUPPORTED', `${field} must use the fixed ScalarRecord limits.`, { field, kind });
+    }
+    return Object.freeze({ kind, limits: SCALAR_RECORD_LIMITS });
+  }
   if (kind === 'array') {
     return Object.freeze({ kind, element: normalizeSchemaNode(input.element, `${field}.element`, stack) });
   }
@@ -199,6 +224,8 @@ function normalizeSchemaRegistry(input) {
       unknownInputFields: 'drop',
       outputFields: 'declared-only',
       outputFieldOrder: 'declaration',
+      scalarRecords: 'bounded-own-scalar-properties',
+      scalarRecordDuplicateKeys: 'reject-after-unescaping',
       numericPolicy: 'finite-rfc-json',
       parity: 'semantic',
       dynamicIds: false,
@@ -264,12 +291,23 @@ function schemaHasOptionalProperties(node) {
   return node.kind === 'object' && node.fields.some(field => !field.required || schemaHasOptionalProperties(field.value));
 }
 
+function schemaHasScalarRecord(node) {
+  if (node.kind === 'scalar-record') return true;
+  if (node.kind === 'nullable') return schemaHasScalarRecord(node.value);
+  if (node.kind === 'array') return schemaHasScalarRecord(node.element);
+  return node.kind === 'object' && node.fields.some(field => schemaHasScalarRecord(field.value));
+}
+
+function schemaNeedsValueProjection(node) {
+  return schemaHasOptionalProperties(node) || schemaHasScalarRecord(node);
+}
+
 function codecInputsForRegistry(registryInput) {
   const registry = normalizeSchemaRegistry(registryInput);
   const nativeSchemas = registry.schemas.map((schema) => {
     const schemaClasses = [];
     const symbols = new Map();
-    const presence = schemaHasOptionalProperties(schema.root);
+    const presence = schemaNeedsValueProjection(schema.root);
     if (!presence) collectNativeClasses(schema, schema.root, symbols, schemaClasses);
     const rootClass = presence ? 'JSON.Value' : symbols.get('');
     return Object.freeze({
@@ -336,7 +374,8 @@ function defaultSchemaRegistryContract() {
     scalarKinds: SCALAR_KINDS,
     nodeKinds: NODE_KINDS,
     helpers: ['defineSchemaRegistry', 'schema', 'response'],
-    markerTypes: ['Int32', 'Uint32'],
+    markerTypes: ['Int32', 'Uint32', 'ScalarRecord'],
+    scalarRecordLimits: SCALAR_RECORD_LIMITS,
     policies: {
       canonicalEntrypoint: 'pulse.schema',
       defaultExportRequired: true,
@@ -345,6 +384,7 @@ function defaultSchemaRegistryContract() {
       exactLiteralIdsAtBoundaries: true,
       oldSchemasJsonSupported: false,
       optionalPropertiesSupported: true,
+      scalarRecordsSupported: true,
       recursiveSchemasSupported: false,
       publicJsonAsImportsSupported: false,
       automaticFallback: false
@@ -361,11 +401,15 @@ module.exports = Object.freeze({
   RESPONSE_CASE_ID_PATTERN,
   SCALAR_KINDS,
   NODE_KINDS,
+  SCALAR_RECORD_LIMITS,
+  scalarRecordStringBytes,
   schemaContractError,
   normalizeSchemaNode,
   normalizeSchemaRegistry,
   codecInputsForRegistry,
   schemaHasOptionalProperties,
+  schemaHasScalarRecord,
+  schemaNeedsValueProjection,
   defaultSchemaBoundaryPolicy,
   defaultSchemaRegistryContract
 });
