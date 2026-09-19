@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { normalizeFastlyMaxWasmBytes, assertFastlyWasmBudget } = require('./wasm-budget.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const { CANONICAL_NATIVE_PLAN_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
@@ -222,6 +223,8 @@ function inspectFastlyCanonicalTarget(options = {}) {
   }
   const providerConfig = options.providerConfig || {};
   const bindings = options.bindings || providerConfig.bindings || {};
+  const maxWasmBytes = normalizeFastlyMaxWasmBytes(providerConfig.build?.maxWasmBytes);
+  if (isFastlyNativeArtifact(options.native)) assertFastlyWasmBudget(options.native.wasm.length, maxWasmBytes);
   const native = isFastlyNativeArtifact(options.native)
     ? assertExactProviderNative(options.native)
     : compileFastlyNativePlatformCapabilitiesPlan(plan, {
@@ -230,6 +233,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
         profile: options.profile,
         bindings,
         maxDurationMs: providerConfig.maxDurationMs,
+        maxWasmBytes,
         requirePlatformCapability: false,
         canonicalBuild: true,
         targetDescriptor: options.targetDescriptor,
@@ -292,6 +296,8 @@ function writeFastlyCanonicalTarget(options = {}) {
   fs.mkdirSync(binDir, { recursive: true });
 
   let native;
+  const maxWasmBytes = normalizeFastlyMaxWasmBytes(providerConfig.build?.maxWasmBytes);
+  if (isFastlyNativeArtifact(options.native)) assertFastlyWasmBudget(options.native.wasm.length, maxWasmBytes);
   const auditedNative = isFastlyNativeArtifact(options.native)
     ? assertExactProviderNative(options.native)
     : null;

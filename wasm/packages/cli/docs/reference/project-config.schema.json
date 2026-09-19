@@ -363,6 +363,32 @@
       },
       {
         "required": false,
+        "default": "4194304 (4 MiB)",
+        "allowed": "positive safe integer",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.",
+        "path": "fastly.maxWasmBytes",
+        "scope": "fastly() facade",
+        "section": "fastly",
+        "type": "integer"
+      },
+      {
+        "required": false,
+        "default": "4194304 (4 MiB)",
+        "allowed": "positive safe integer",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Inclusive byte budget checked for newly compiled and reused artifacts. Raising it does not increase runtime memory or change Fastly service limits. The fastly() facade accepts maxWasmBytes.",
+        "path": "fastly.build.maxWasmBytes",
+        "scope": "Native final Wasm artifact",
+        "section": "fastly",
+        "type": "integer"
+      },
+      {
+        "required": false,
         "default": "omitted",
         "allowed": "1–30000",
         "precedence": "Configuration value.",
@@ -1022,6 +1048,13 @@
         },
         "fastly.maxDurationMs": {
           "kind": "optional-number"
+        },
+        "fastly.build.maxWasmBytes": {
+          "kind": "positive-safe-integer",
+          "default": 4194304
+        },
+        "fastly.maxWasmBytes": {
+          "kind": "positive-safe-integer"
         }
       }
     }

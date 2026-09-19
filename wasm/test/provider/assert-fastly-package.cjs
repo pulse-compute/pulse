@@ -34,6 +34,30 @@ assert.equal(Object.hasOwn(safeDefaults, 'maxDurationMs'), false, 'omitting the 
 assert.equal(provider.fastly({maxDurationMs: 10000}).maxDurationMs, 10000);
 assert.throws(() => provider.fastly({maxDurationMs: 0}), {code: 'PULSE_REQUEST_DURATION_INVALID'});
 
+const { normalizeFastlyProviderConfig, fastlyProjectConfigDocument } = require(path.join(providerRoot, 'src/toolchain/config.js'));
+assert.equal(safeDefaults.build.maxWasmBytes, 4194304);
+assert.equal(provider.fastly({maxWasmBytes: 8388608}).build.maxWasmBytes, 8388608);
+assert.equal(normalizeFastlyProviderConfig({build:{maxWasmBytes:8388608}}).build.maxWasmBytes, 8388608);
+assert.equal(fastlyProjectConfigDocument(normalizeFastlyProviderConfig({build:{maxWasmBytes:1024}})).build.maxWasmBytes, 1024);
+for (const value of [0, -1, 1.5, NaN, Infinity, '4194304', null, true, Number.MAX_SAFE_INTEGER + 1]) {
+  assert.throws(() => provider.fastly({maxWasmBytes:value}), {code:'PULSE_FASTLY_MAX_WASM_BYTES_INVALID'});
+  assert.throws(() => normalizeFastlyProviderConfig({build:{maxWasmBytes:value}}), {code:'PULSE_FASTLY_MAX_WASM_BYTES_INVALID'});
+}
+
+const profileFixture = fs.mkdtempSync(path.join(repoRoot, 'wasm', '.fastly-budget-config-'));
+try {
+  const exampleRoot = path.join(repoRoot, 'examples', '05-fastly-capabilities');
+  fs.cpSync(exampleRoot, profileFixture, {recursive:true});
+  const configFile = path.join(profileFixture, '.pulse', 'config.ts');
+  const source = fs.readFileSync(configFile, 'utf8');
+  assert.ok(source.includes('build: { name:'));
+  fs.writeFileSync(configFile, source.replace('build: { name:', 'build: { maxWasmBytes: 8388608, name:'));
+  const {resolveProject} = require('../../packages/cli/src/project-config.js');
+  assert.equal(resolveProject({cwd:profileFixture,profile:'local'}).providerConfig.build.maxWasmBytes, 8388608);
+  fs.writeFileSync(configFile, source.replace('build: { name:', 'build: { maxWasmBytes: 0, name:'));
+  assert.throws(() => resolveProject({cwd:profileFixture,profile:'local'}), {code:'PULSE_FASTLY_MAX_WASM_BYTES_INVALID'});
+} finally { fs.rmSync(profileFixture, {recursive:true,force:true}); }
+
 const configured = provider.fastly({
   name: 'package-contract',
   description: 'Fastly package extraction proof',
@@ -81,6 +105,7 @@ assert.deepEqual(configured, {
     }
   },
   build: {
+    maxWasmBytes: 4194304,
     name: 'package-contract',
     description: 'Fastly package extraction proof',
     authors: ['Pulse'],

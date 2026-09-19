@@ -1,3 +1,4 @@
+const { normalizeFastlyMaxWasmBytes } = require('../src/build/wasm-budget.js') as { normalizeFastlyMaxWasmBytes(value?: number): number };
 const { normalizeRequestDuration } = require('@pulse-compute/runtime/host') as { normalizeRequestDuration(value?: number): number | undefined };
 import FASTLY_CONFIG_SCHEMA from './config-schema.json';
 
@@ -24,6 +25,8 @@ export interface PulseFastlyLocalOptions {
 }
 
 export interface PulseFastlyProviderOptions {
+  /** Inclusive final Native Wasm byte budget; default 4 MiB. */
+  readonly maxWasmBytes?: number;
   readonly maxDurationMs?: number;
   readonly configStore?: string;
   readonly secretStore?: string;
@@ -60,6 +63,7 @@ export interface PulseFastlyProviderConfig {
     readonly dynamicBackends: boolean;
   };
   readonly build: {
+    readonly maxWasmBytes: number;
     readonly name: string;
     readonly description: string;
     readonly authors: readonly string[];
@@ -111,6 +115,7 @@ export function fastly(options: PulseFastlyProviderOptions = {}): PulseFastlyPro
       dynamicBackends: options.dynamicBackends === undefined ? Boolean(fastlyDefaults['fastly.dynamicBackends']) : options.dynamicBackends === true
     }),
     build: Object.freeze({
+      maxWasmBytes: normalizeFastlyMaxWasmBytes(options.maxWasmBytes),
       name: String(options.name ?? fastlyDefaults['fastly.name']),
       description: String(options.description ?? fastlyDefaults['fastly.description']),
       authors: Object.freeze((options.authors ?? (Array.isArray(fastlyDefaults['fastly.authors']) ? fastlyDefaults['fastly.authors'] : [])).map(String)),
