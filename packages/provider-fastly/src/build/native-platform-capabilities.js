@@ -1,6 +1,6 @@
 'use strict';
 
-const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
+const { hasScalarRecords, scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const applicationErrors = require('./native-application-errors.js');
 
 const crypto = require('node:crypto');
@@ -1372,7 +1372,7 @@ const PULSE_ERROR_JWT: i32 = 1008
 const PULSE_ERROR_REQUEST_BODY: i32 = 1009
 
 class __PulseFastlyValue {
-  duplicateJsonKeys: bool = false
+  ${hasScalarRecords(plan) ? 'duplicateJsonKeys: bool = false' : ''}
   kind: i32 = PULSE_VALUE_UNDEFINED
   boolean: i32 = 0
   number: f64 = 0.0
@@ -1514,7 +1514,7 @@ class __PulseJsonParser {
       const key = this.string(); this.skip()
       if (this.conditionalKv && __pulse_fastly_find(__pulse_fastly_value(output), key) >= 0) { this.failed = true; break }
       if (this.index >= this.source.length || this.source.charCodeAt(this.index) != 58) { this.failed = true; break }
-      if (__pulse_fastly_find(__pulse_fastly_value(output), key) >= 0) __pulse_fastly_value(output).duplicateJsonKeys = true
+      ${hasScalarRecords(plan) ? 'if (__pulse_fastly_find(__pulse_fastly_value(output), key) >= 0) __pulse_fastly_value(output).duplicateJsonKeys = true' : ''}
       this.index += 1; host_value_object_set(output, __pulse_fastly_string_value(key), this.value(depth)); this.skip()
       if (this.index >= this.source.length) { this.failed = true; break }
       const c = this.source.charCodeAt(this.index); this.index += 1

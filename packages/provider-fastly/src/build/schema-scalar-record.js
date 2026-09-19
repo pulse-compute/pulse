@@ -1,5 +1,11 @@
 'use strict';
 
+const { schemaHasScalarRecord } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+
+function hasScalarRecords(plan) {
+  return (plan.schemas?.registry?.schemas || []).some(schema => schemaHasScalarRecord(schema.root));
+}
+
 // Both Fastly Native realizations validate handles before json-as sees them.
 function scalarRecordProjectionLines(node) {
   const limits = node.limits;
@@ -32,4 +38,4 @@ function scalarRecordProjectionLines(node) {
   ];
 }
 
-module.exports = { scalarRecordProjectionLines };
+module.exports = { hasScalarRecords, scalarRecordProjectionLines };
