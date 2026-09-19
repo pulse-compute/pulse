@@ -15,6 +15,10 @@ import {
   type RouterNext,
 } from '../src/index.js'
 import { Router, type Handler as RuntimeHandler } from '@pulse-compute/runtime'
+import type { ScalarRecord } from '../src/schema.js'
+
+const attributes: ScalarRecord = { page: 'overview', duration: 2.5, enabled: false, empty: null }
+void attributes
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false
 type Assert<T extends true> = T

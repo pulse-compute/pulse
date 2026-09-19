@@ -12,6 +12,7 @@ const {
   await require('../support/schema-value-encoding.cjs').assertSchemaValueEncoding();
   await require('../support/schema-text-decoding.cjs').assertSchemaTextDecoding();
   await require('../support/schema-optional-properties.cjs').assertSchemaOptionalProperties();
+  await require('../support/schema-scalar-records.cjs').assertSchemaScalarRecords();
   assert.equal(proof.version, SCHEMA_CODEC_PROOF_VERSION);
   assert.equal(proof.authority.registry, 'pulse.schema');
   assert.equal(proof.authority.fullCodecRealization, true);

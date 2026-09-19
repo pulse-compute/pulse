@@ -1,5 +1,7 @@
 'use strict';
 
+const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
+
 const crypto = require('node:crypto');
 const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
 const fs = require('node:fs');
@@ -199,19 +201,21 @@ function generateSchemaRuntime(plan) {
     const fields = node.kind === 'object'
       ? node.fields.map((field) => Object.freeze({ field, apply: emitNode(schemaIndex, field.value) }))
       : [];
-    const body = [`function ${functionName}(valueHandle: i32): i32 {`, '  const input = __pulse_fastly_value(valueHandle)'];
+    const body = [`function ${functionName}(valueHandle: i32, checkDuplicates: bool): i32 {`, '  const input = __pulse_fastly_value(valueHandle)'];
     if (node.kind === 'nullable') {
       body.push('  if (input.kind == PULSE_VALUE_NULL) return valueHandle');
-      body.push(`  return ${child}(valueHandle)`);
+      body.push(`  return ${child}(valueHandle, checkDuplicates)`);
     } else if (node.kind === 'array') {
       body.push('  if (input.kind != PULSE_VALUE_ARRAY) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 52, -1); return 0 }');
       body.push('  const output = host_value_array()');
       body.push('  for (let index = 0; index < input.values.length; index += 1) {');
-      body.push(`    const item = ${child}(unchecked(input.values[index]))`);
+      body.push(`    const item = ${child}(unchecked(input.values[index]), checkDuplicates)`);
       body.push('    if (item <= 0) return 0');
       body.push('    host_value_array_push(output, item)');
       body.push('  }');
       body.push('  return output');
+    } else if (node.kind === 'scalar-record') {
+      body.push(...scalarRecordProjectionLines(node));
     } else if (node.kind === 'object') {
       body.push('  if (input.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 50, -1); return 0 }');
       body.push('  const output = host_value_object()');
@@ -220,7 +224,7 @@ function generateSchemaRuntime(plan) {
         if (!field.required) body.push(`  if (__pulse_fastly_find(input, ${quote(field.name)}) >= 0) {`);
         body.push(`  const field_${currentIndex}_${fieldIndex} = host_value_property(valueHandle, key_${currentIndex}_${fieldIndex})`);
         body.push(`  if (__pulse_fastly_value(field_${currentIndex}_${fieldIndex}).kind == PULSE_VALUE_UNDEFINED) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 51, -1); return 0 }`);
-        body.push(`  const projected_${currentIndex}_${fieldIndex} = ${apply}(field_${currentIndex}_${fieldIndex})`);
+        body.push(`  const projected_${currentIndex}_${fieldIndex} = ${apply}(field_${currentIndex}_${fieldIndex}, checkDuplicates)`);
         body.push(`  if (projected_${currentIndex}_${fieldIndex} <= 0) return 0`);
         body.push(`  host_value_object_set(output, key_${currentIndex}_${fieldIndex}, projected_${currentIndex}_${fieldIndex})`);
         if (!field.required) body.push('  }');
@@ -264,7 +268,7 @@ function generateSchemaRuntime(plan) {
   ];
   for (const [schemaIndex, schema] of schemas.entries()) {
     lines.push(`${schemaIndex === 0 ? '  if' : '  else if'} (schemaId == ${quote(schema.id)}) {`);
-    lines.push(`    const projected = ${roots[schemaIndex]}(valueHandle)`);
+    lines.push(`    const projected = ${roots[schemaIndex]}(valueHandle, !encode)`);
     lines.push('    if (projected <= 0) return 0');
     lines.push('    const input = __pulse_fastly_json(projected, 0)');
     lines.push(`    const normalized = encode ? __pulse_schema_encode_${schemaIndex}(input) : __pulse_schema_decode_${schemaIndex}(input)`);
@@ -357,6 +361,7 @@ const PULSE_ERROR_TRANSPORT: i32 = 1006
 const PULSE_ERROR_STATE: i32 = 1007
 
 class __PulseFastlyValue {
+  duplicateJsonKeys: bool = false
   immutable: bool = false
   kind: i32 = PULSE_VALUE_UNDEFINED
   boolean: i32 = 0
@@ -488,6 +493,7 @@ class __PulseJsonParser {
       this.skip(); if (this.index >= this.source.length || this.source.charCodeAt(this.index) != 34) { this.failed = true; break }
       const key = this.string(); this.skip()
       if (this.index >= this.source.length || this.source.charCodeAt(this.index) != 58) { this.failed = true; break }
+      if (__pulse_fastly_find(__pulse_fastly_value(output), key) >= 0) __pulse_fastly_value(output).duplicateJsonKeys = true
       this.index += 1; host_value_object_set(output, __pulse_fastly_string_value(key), this.value(depth)); this.skip()
       if (this.index >= this.source.length) { this.failed = true; break }
       const c = this.source.charCodeAt(this.index); this.index += 1
