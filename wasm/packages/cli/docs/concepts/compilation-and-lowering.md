@@ -554,3 +554,30 @@ A healthy canonical plan reports all three provider isolation flags as `false`:
 - [CLI reference](../reference/cli.md#pulse-inspect)
 - [Diagnostics](../reference/diagnostics.md)
 - [Architecture overview](../architecture/overview.md)
+
+## Optional Native text artifacts
+
+`pulse compile` and Native `pulse build` emit executable Wasm and generated
+source. Diagnostic WebAssembly text is omitted by default, including during
+ordinary Native test, dev, doctor, and inspect compilation. Use `--emit-wat` with
+compile or build when a textual module is needed:
+
+```sh
+pulse compile --emit-wat
+pulse build --profile fastly --emit-wat
+```
+
+The compiler does not request AssemblyScript text emission when the option is
+absent. This avoids materializing a potentially very large Stack IR text string
+just to obtain executable Wasm. Text remains a diagnostic with its own compiler
+capacity limits; requesting it can still fail for large applications. The option
+does not change optimizer settings, Wasm bytes, import/export checks, guest-link
+audits, or execution budgets. Required independent guest-link disassembly audits
+remain enabled; they are separate from optional output artifacts.
+
+Native manifest `wat` metadata always reports `emitted`. When omitted it reports
+`emitted: false`, `bytes: 0`, and `sha256: null`; build/compile file metadata reports
+`file: null`. An emitted artifact has `emitted: true` and its actual byte count and
+hash. Reusing an output directory removes the previous compiler-owned WAT file
+when the new build omits text, including with `--no-clean`. JavaScript build
+profiles reject `--emit-wat`; `pulse compile` still explicitly targets Native.

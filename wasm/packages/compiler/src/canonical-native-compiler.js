@@ -209,6 +209,8 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     }
     jsonAs = Object.freeze({ transform, packageRoot, dependencyRoot, version: packageJson.version });
   }
+  if (options.emitWat !== undefined && typeof options.emitWat !== 'boolean') throw new TypeError('emitWat must be a boolean.');
+  const emitWat = options.emitWat === true;
   const stagingDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-canonical-native-'));
   const requestedOutDir = options.outDir ? path.resolve(options.outDir) : undefined;
   const outputDir = requestedOutDir || stagingDir;
@@ -216,6 +218,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
   const sourceFile = path.join(stagingDir, 'canonical-native.as.ts');
   const wasmFile = path.join(outputDir, options.wasmFile || 'canonical-native.wasm');
   const watFile = path.join(outputDir, options.watFile || 'canonical-native.wat');
+  if (!emitWat) fs.rmSync(watFile, { force: true });
   try {
     fs.writeFileSync(sourceFile, generated.source, 'utf8');
     // Compile from a stable, relative entry name so AssemblyScript's name section and
@@ -224,11 +227,11 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       asc.script,
       path.basename(sourceFile),
       '--outFile', wasmFile,
-      '--textFile', watFile,
       '--runtime', schemaCodecsActive ? 'incremental' : 'stub',
       '--noAssert',
       '--optimize'
     ];
+    if (emitWat) args.push('--textFile', watFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, options.nativeOptimization);
     // The text capacity profile bounds each Native module to 256 MiB.
     // Linked guests retain their separately owned fixed-memory ABI.
@@ -284,12 +287,13 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       guestUnits,
       generated,
       wasm: fs.readFileSync(wasmFile),
-      wat: fs.existsSync(watFile) ? fs.readFileSync(watFile, 'utf8') : '',
+      wat: emitWat ? fs.readFileSync(watFile, 'utf8') : '',
+      textEmitted: emitWat,
       assemblyScriptVersion: require(path.join(asc.packageRoot, 'package.json')).version,
       jsonAsVersion: jsonAs && jsonAs.version,
       optimization,
       durationMs,
-      output: requestedOutDir ? Object.freeze({ outDir: outputDir, wasmFile, watFile }) : undefined
+      output: requestedOutDir ? Object.freeze({ outDir: outputDir, wasmFile, watFile: emitWat ? watFile : null }) : undefined
     });
   } finally {
     fs.rmSync(stagingDir, { recursive: true, force: true });
@@ -319,7 +323,9 @@ function verifyCanonicalNativeRealization(realization) {
       ? Object.freeze({ package: 'json-as', version: realization.jsonAsVersion, transform: true, strict: true, mode: 'NAIVE', fastPath: false })
       : null,
     wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),
-    wat: Object.freeze({ bytes: Buffer.byteLength(realization.wat), sha256: sha256(realization.wat) }),
+    wat: Object.freeze(realization.textEmitted
+      ? { emitted: true, bytes: Buffer.byteLength(realization.wat), sha256: sha256(realization.wat) }
+      : { emitted: false, bytes: 0, sha256: null }),
     importModules: inspection.importModules,
     imports: inspection.imports,
     exports: inspection.exports,
@@ -384,7 +390,9 @@ function writeCanonicalNativeModule(compiled, outDir, options = {}) {
     : undefined;
   fs.writeFileSync(sourceFile, compiled.source, 'utf8');
   fs.writeFileSync(wasmFile, compiled.wasm);
-  fs.writeFileSync(watFile, compiled.wat, 'utf8');
+  const emitWat = compiled.manifest.wat.emitted !== false;
+  if (emitWat) fs.writeFileSync(watFile, compiled.wat, 'utf8');
+  else fs.rmSync(watFile, { force: true });
   fs.writeFileSync(planFile, `${nativePlanCompiler.stableStringify(compiled.plan, 2)}\n`, 'utf8');
   fs.writeFileSync(manifestFile, `${stableStringify(compiled.manifest, 2)}\n`, 'utf8');
   if (realizationArtifactsFile) {
@@ -397,7 +405,7 @@ function writeCanonicalNativeModule(compiled, outDir, options = {}) {
     target,
     sourceFile,
     wasmFile,
-    watFile,
+    watFile: emitWat ? watFile : null,
     planFile,
     manifestFile,
     realizationArtifactsFile,

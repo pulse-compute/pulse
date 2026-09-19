@@ -296,8 +296,23 @@ try {
 
   const writtenRoot = path.join(tempRoot, 'written');
   const written = platform.writeFastlyNativePlatformCapabilitiesModule(gripCompiled, writtenRoot);
-  for (const file of [written.sourceFile, written.wasmFile, written.watFile, written.planFile, written.manifestFile]) assert.equal(fs.existsSync(file), true, `${path.basename(file)} must be written`);
+  for (const file of [written.sourceFile, written.wasmFile, written.planFile, written.manifestFile]) assert.equal(fs.existsSync(file), true, `${path.basename(file)} must be written`);
   assert.deepEqual(fs.readFileSync(written.wasmFile), gripCompiled.wasm);
+  assert.equal(written.watFile, null);
+  assert.deepEqual(configFirst.manifest.wat, { emitted: false, bytes: 0, sha256: null });
+  const withText = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: configBindings, emitWat: true });
+  assert.deepEqual(withText.wasm, configFirst.wasm, 'WAT must not change Fastly Wasm bytes');
+  assert.equal(withText.manifest.wat.emitted, true);
+  assert.ok(withText.wat.startsWith('(module'));
+  const textWritten = platform.writeFastlyNativePlatformCapabilitiesModule(withText, writtenRoot);
+  assert.equal(fs.readFileSync(textWritten.watFile, 'utf8'), withText.wat);
+  platform.writeFastlyNativePlatformCapabilitiesModule(gripCompiled, writtenRoot);
+  assert.equal(fs.existsSync(textWritten.watFile), false);
+  fs.writeFileSync(textWritten.watFile, 'stale diagnostic');
+  const direct = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: configBindings, outDir: writtenRoot });
+  assert.equal(direct.output.watFile, null);
+  assert.equal(fs.existsSync(textWritten.watFile), false, 'AssemblyScript must not emit default Fastly WAT');
+  assert.deepEqual(direct.wasm, withText.wasm);
 
   assert.throws(
     () => platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: { secretStore: 'app_secrets', effectBackends: configBindings.effectBackends } }),

@@ -121,6 +121,16 @@ JavaScript during Native compilation.
 See [Compilation and lowering](../concepts/compilation-and-lowering.md) and the
 [architecture overview](./overview.md).
 
+## Native diagnostic artifacts
+
+Executable Native Wasm and its verification do not depend on optional compiler
+text output. Routine compilation omits diagnostic WAT; `pulse compile` and Native
+`pulse build` opt in with `--emit-wat`. Manifest and file metadata distinguish
+omission from an emitted artifact, and writers remove stale compiler-owned text
+on reuse. Required guest-link disassembly audits remain mandatory. This changes
+artifact policy, not handler admission, the effect ABI, optimizer posture, or
+provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
+
 ## Bounded pure control flow
 
 Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by

@@ -351,6 +351,7 @@ function compileNativeProjectInMemory(project, options = {}) {
     targetDescriptor: { finalWasmPolicy: CANONICAL_NATIVE_FINAL_WASM_POLICY },
     synchronizedPackages: releaseCatalog.packages.map(({ name, version }) => Object.freeze({ name, version })),
     timeoutMs: options.timeoutMs,
+    emitWat: options.emitWat,
     nativeOptimization: options.experimentalNativeSize === true
       ? 'experimental-native-size'
       : options.nativeOptimization
@@ -678,6 +679,9 @@ function buildProject(project, options = {}) {
       { provider: project.provider, replacement: 'pulse build' }
     );
   }
+  if (options.emitWat === true && (project.target || 'native') !== 'native') {
+    throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: project.target || 'native' });
+  }
   if (options.experimentalNativeSize === true && (project.target || 'native') !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
@@ -962,7 +966,7 @@ function buildProject(project, options = {}) {
       optimization: nativeManifest.optimization,
       source: Object.freeze({ file: path.basename(nativeBuild.sourceFile), sha256: prepared.native.sourceHash }),
       wasm: Object.freeze({ file: path.basename(nativeBuild.wasmFile), ...nativeManifest.wasm }),
-      wat: Object.freeze({ file: path.basename(nativeBuild.watFile), ...nativeManifest.wat }),
+      wat: Object.freeze({ file: nativeBuild.watFile ? path.basename(nativeBuild.watFile) : null, ...nativeManifest.wat }),
       plan: path.basename(nativeBuild.planFile),
       manifest: path.basename(nativeBuild.manifestFile),
       packageRealizationArtifacts: Object.freeze({
@@ -1130,7 +1134,7 @@ function compileNativeProject(project, options = {}) {
         ...nativeManifest.wasm
       }),
       wat: Object.freeze({
-        file: path.basename(nativeBuild.watFile),
+        file: nativeBuild.watFile ? path.basename(nativeBuild.watFile) : null,
         ...nativeManifest.wat
       }),
       plan: path.basename(nativeBuild.planFile),

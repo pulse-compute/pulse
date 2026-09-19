@@ -244,6 +244,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
           || (options.native && options.native.guestUnits),
         nativeOptimization: options.nativeOptimization
           || (options.experimentalNativeSize === true ? 'experimental-native-size' : undefined),
+        emitWat: options.emitWat,
         timeoutMs: options.compileTimeoutMs
       });
   const duration = require('@pulse-compute/runtime/host').normalizeRequestDuration(providerConfig.maxDurationMs);
@@ -319,6 +320,7 @@ function writeFastlyCanonicalTarget(options = {}) {
         || (options.native && options.native.guestUnits),
       nativeOptimization: options.nativeOptimization
         || (options.experimentalNativeSize === true ? 'experimental-native-size' : undefined),
+      emitWat: options.emitWat,
       compileTimeoutMs: options.compileTimeoutMs
     });
     native = realization.native;
@@ -384,7 +386,7 @@ function writeFastlyCanonicalTarget(options = {}) {
     }),
     optimization: native.manifest.optimization,
     wasm: Object.freeze({ file: 'bin/main.wasm', ...native.manifest.wasm }),
-    wat: Object.freeze({ file: 'bin/main.wat', ...native.manifest.wat }),
+    wat: Object.freeze({ file: written.watFile ? 'bin/main.wat' : null, ...native.manifest.wat }),
     imports: native.manifest.imports,
     importModules: native.manifest.importModules,
     exports: native.manifest.exports,
@@ -413,7 +415,7 @@ function writeFastlyCanonicalTarget(options = {}) {
       localEntry: 'fastly-entry.cjs',
       sourceEntry: 'src/main.as.ts',
       wasm: 'bin/main.wasm',
-      wat: 'bin/main.wat',
+      wat: written.watFile ? 'bin/main.wat' : null,
       nativePlan: 'fastly-native-plan.json',
       nativeManifest: 'fastly-native-manifest.json',
       fastlyToml: 'fastly.toml',

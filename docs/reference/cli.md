@@ -309,7 +309,7 @@ Compile the canonical project into provider-neutral Pulse-owned WebAssembly.
 Syntax:
 
 ```text
-pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]
+pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]
 ```
 
 ### Positionals
@@ -321,6 +321,7 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 | Option | Behavior |
 |---|---|
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
+| `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
 | `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <dir>` | Override the project-relative artifact output directory. |
@@ -343,7 +344,7 @@ pulse compile ./edge-app --experimental-native-size
 
 ### Output
 
-- Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, WAT, and native manifest.
+- Writes pulse-compile.json, the canonical program, native plan, generated AssemblyScript, compact Wasm, and native manifest; --emit-wat adds diagnostic WAT.
 - The output is provider-neutral and does not package a deployment provider runtime.
 - Experimental size builds record the exact non-default Native compiler optimization settings.
 - With --json, emits one compile result object containing exact artifact paths and native metadata.
@@ -365,7 +366,7 @@ Compile the canonical project and realize the deployment provider selected by th
 Syntax:
 
 ```text
-pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size]
+pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]
 ```
 
 ### Positionals
@@ -377,6 +378,7 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 | Option | Behavior |
 |---|---|
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
+| `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
 | `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <dir>` | Override the project-relative artifact output directory. |
@@ -395,12 +397,13 @@ pulse build ./edge-app --experimental-native-size
 - [`PULSE_BUILD_OUT_UNSAFE`](diagnostics.md#pulse-build-out-unsafe) — The resolved build output can escape or alias outside the project root.
 - [`PULSE_BUILD_PROVIDER_REQUIRED`](diagnostics.md#pulse-build-provider-required) — pulse build requires a configured deployment provider; provider-neutral output belongs to pulse compile.
 - [`PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED`](diagnostics.md#pulse-experimental-native-size-unsupported) — The experimental Native size optimizer cannot be used for a JavaScript build target.
+- [`PULSE_NATIVE_TEXT_UNSUPPORTED`](diagnostics.md#pulse-native-text-unsupported) — Diagnostic WebAssembly text is available only for Native compilation.
 - [`PULSE_CANONICAL_NATIVE_COMPILE_FAILED`](diagnostics.md#pulse-canonical-native-compile-failed) — The provider-neutral native plan could not be compiled into Pulse-owned WebAssembly.
 
 
 ### Output
 
-- Writes pulse-build.json, the provider-neutral native module, and the configured provider realization.
+- Writes pulse-build.json, the provider-neutral native module, and the configured provider realization; Native --emit-wat builds also write diagnostic WAT.
 - Fastly builds write generated AssemblyScript and direct-host-ABI native Wasm at bin/main.wasm; no JavaScript runtime image is packaged.
 - Experimental size builds record the exact non-default Native compiler optimization settings in portable, provider, and build metadata.
 - With --json, emits one build result object containing exact portable and provider artifact paths.

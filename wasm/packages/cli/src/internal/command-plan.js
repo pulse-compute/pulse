@@ -35,6 +35,9 @@ function createCommandPlan(requestValue, options = {}) {
     throw new TypeError(`Pulse ${request.command} planning requires the authoritative ProjectContext`);
   }
   const project = projectDocumentForContext(projectContext);
+  if (request.emitWat === true && request.command === 'build' && projectContext.target !== 'native') {
+    throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: projectContext.target });
+  }
   if (request.experimentalNativeSize === true && request.command === 'build' && projectContext.target !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
@@ -57,6 +60,7 @@ function createCommandPlan(requestValue, options = {}) {
       : (request.command === 'build'
           ? ((projectContext.target || project.target || 'native') === 'javascript' ? 'javascript-source-package' : 'native-provider')
           : undefined),
+    ...(request.command === 'compile' || request.command === 'build' ? { textArtifacts: { wat: request.emitWat === true } } : {}),
     optimization: request.experimentalNativeSize === true ? EXPERIMENTAL_NATIVE_SIZE_PLAN : undefined,
     backgroundWork: false,
     foregroundServer: request.command === 'dev'
