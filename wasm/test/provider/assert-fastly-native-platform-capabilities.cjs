@@ -78,6 +78,22 @@ try {
       && error.detail.bytes === 4 * 1024 * 1024 + 1 && error.detail.maxBytes === 4 * 1024 * 1024);
   assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(Buffer.from('invalid')),
     (error) => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_INVALID');
+  assert.equal(platform.inspectFastlyNativePlatformCapabilitiesWasm(paddedTo(4 * 1024 * 1024 + 1), {maxWasmBytes:8 * 1024 * 1024}).valid, true);
+  const actualBytes = zeroEffectCompiled.wasm.length;
+  assert.equal(platform.inspectFastlyNativePlatformCapabilitiesWasm(zeroEffectCompiled.wasm, {maxWasmBytes:actualBytes}).valid, true);
+  assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(zeroEffectCompiled.wasm, {maxWasmBytes:actualBytes-1}),
+    error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE' && error.detail.maxBytes === actualBytes-1);
+  const {inspectFastlyCanonicalTarget,writeFastlyCanonicalTarget} = require('../../../packages/provider-fastly/src/build/canonical-target.js');
+  assert.throws(() => inspectFastlyCanonicalTarget({plan:zeroEffectPlan,native:zeroEffectCompiled,providerConfig:{build:{maxWasmBytes:actualBytes-1}}}),
+    {code:'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'});
+  assert.equal(inspectFastlyCanonicalTarget({plan:zeroEffectPlan,native:zeroEffectCompiled,providerConfig:{build:{maxWasmBytes:actualBytes}}}).wasm.bytes, actualBytes);
+  assert.throws(() => inspectFastlyCanonicalTarget({plan:zeroEffectPlan,providerConfig:{build:{maxWasmBytes:1}}}),
+    {code:'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'});
+  const zeroProviderPlan = require('../../../packages/provider-fastly/src/provider-contract.js').createFastlyLoweringPlan(compileExample(EXAMPLES.hello).compiled.metadata, {});
+  assert.throws(() => writeFastlyCanonicalTarget({outDir:path.join(tempRoot,'reused-budget'),plan:zeroEffectPlan,providerPlan:zeroProviderPlan,native:zeroEffectCompiled,providerConfig:{build:{maxWasmBytes:actualBytes-1}}}),
+    {code:'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'});
+  assert.throws(() => platform.compileFastlyNativePlatformCapabilitiesPlan(zeroEffectPlan, {maxWasmBytes:NaN}),
+    {code:'PULSE_FASTLY_MAX_WASM_BYTES_INVALID'});
   const zeroEffectResult = mock.executeFastlyNativePlatformCapabilities(zeroEffectCompiled, {
     request: { method: 'GET', path: '/health' },
     kvStores: {}

@@ -316,6 +316,30 @@ Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdS
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
 
+### `fastly.maxWasmBytes`
+
+Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.
+
+- **Type:** integer
+- **Required/default:** Optional; default 4194304 (4 MiB).
+- **Allowed values or constraints:** positive safe integer
+- **Scope:** fastly() facade
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `fastly.build.maxWasmBytes`
+
+Inclusive byte budget checked for newly compiled and reused artifacts. Raising it does not increase runtime memory or change Fastly service limits. The fastly() facade accepts maxWasmBytes.
+
+- **Type:** integer
+- **Required/default:** Optional; default 4194304 (4 MiB).
+- **Allowed values or constraints:** positive safe integer
+- **Scope:** Native final Wasm artifact
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `fastly.maxDurationMs`
 
 One provider-owned monotonic budget through buffered response handoff; expiry attempts 504 before headers commit and never asserts rollback of dispatched writes. No CPU preemption or post-handoff delivery guarantee.

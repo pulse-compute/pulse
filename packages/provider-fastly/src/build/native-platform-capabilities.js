@@ -94,7 +94,8 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION = 'pulse.fastly-nativ
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION = 1;
 // Internal compilation budget, not a Fastly service limit. Keep a finite guard
 // while allowing composed applications beyond the original 1 MiB proof fixture.
-const FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES = 4 * 1024 * 1024;
+const { DEFAULT_FASTLY_MAX_WASM_BYTES, normalizeFastlyMaxWasmBytes, assertFastlyWasmBudget } = require('./wasm-budget.js');
+const FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES = DEFAULT_FASTLY_MAX_WASM_BYTES;
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES = 65536;
 const FASTLY_NATIVE_SIZE_OPTIMIZATION = EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
 
@@ -2044,9 +2045,9 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   });
 }
 
-function inspectFastlyNativePlatformCapabilitiesWasm(input) {
+function inspectFastlyNativePlatformCapabilitiesWasm(input, options = {}) {
   const bytes = Buffer.isBuffer(input) ? input : fs.readFileSync(path.resolve(input));
-  if (bytes.length > FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES) fail('Generated Fastly native platform capabilities module exceeds the Pulse internal 4 MiB compilation budget.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE', { bytes: bytes.length, maxBytes: FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES });
+  assertFastlyWasmBudget(bytes.length, options.maxWasmBytes);
   if (!WebAssembly.validate(bytes)) fail('Generated Fastly native platform capabilities module is not valid WebAssembly.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_INVALID');
   const module = new WebAssembly.Module(bytes);
   const imports = WebAssembly.Module.imports(module).map((entry) => Object.freeze({ module: entry.module, name: entry.name, kind: entry.kind }));
@@ -2074,6 +2075,7 @@ function inspectFastlyNativePlatformCapabilitiesWasm(input) {
 }
 
 function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
+  const maxWasmBytes = normalizeFastlyMaxWasmBytes(options.maxWasmBytes);
   const generated = generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options);
   const cwd = path.resolve(options.cwd || process.cwd());
   const compilerFallback = path.resolve(__dirname, '..', '..', '..', '..', 'wasm', 'packages', 'compiler');
@@ -2299,7 +2301,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       fs.writeFileSync(wasmFile, wasm);
       fs.writeFileSync(watFile, wat, 'utf8');
     }
-    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm);
+    const inspection = inspectFastlyNativePlatformCapabilitiesWasm(wasm, { maxWasmBytes });
     const imported = new Set(inspection.imports.map((entry) => `${entry.module}:${entry.name}`));
     const requiredImports = requiredImportsForPlan(plan, generated.bindings);
     const missingRequiredImports = requiredImports.filter((key) => !imported.has(key));

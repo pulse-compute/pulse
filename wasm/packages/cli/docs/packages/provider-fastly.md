@@ -7,12 +7,26 @@ Fastly CLI boundary.
 
 Install it only in projects that select the Fastly provider.
 
-The Native platform-capabilities compiler enforces a 4 MiB final-Wasm budget
-(4,194,304 bytes, inclusive), raised from its original 1 MiB proof budget. This
-is a Pulse build guard, not a Fastly service limit or a runtime-memory allowance.
-Modules above it fail with `PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE`
-before WebAssembly validation or compilation; modules within it still require
-valid Wasm and the expected host ABI.
+The Native platform-capabilities compiler defaults to a 4 MiB final-Wasm budget
+(4,194,304 bytes, inclusive). Configure a different positive safe integer byte
+count in the selected profile:
+
+```ts
+fastly: {
+  build: { name: 'my-app', maxWasmBytes: 8388608 }, // 8 MiB
+}
+```
+
+The `fastly()` facade accepts `fastly({ maxWasmBytes: 8388608 })` and projects it
+into the same `build.maxWasmBytes` field. Zero, negative, fractional, nonnumeric,
+and unsafe integer values fail with `PULSE_FASTLY_MAX_WASM_BYTES_INVALID`.
+
+This is a Pulse build guard, not a Fastly service limit or a runtime-memory
+allowance. It applies to newly compiled and reused Native artifacts. Modules
+above it fail with `PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE`
+and the observed/configured byte counts; modules within it still require valid
+Wasm and the expected host ABI. No unlimited setting or runtime allocation
+change is implied. The option does not control JavaScript-target packaging.
 
 ## Install
 
