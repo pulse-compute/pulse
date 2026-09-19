@@ -64,12 +64,17 @@ includesAll(schemas, [
   '`pulse.strict` defaults to `true`',
   '`schemas.contentTypePolicy`',
   '`schemas.maxBytes`',
-  'unknown input fields are removed recursively',
+  'unknown fields of declared objects are removed recursively',
+  '`ScalarRecord` preserves valid dynamic keys',
+  '## Bounded scalar records',
+  'These fixed limits apply independently to every record on encode and decode',
+  'Decoding rejects duplicate record keys after JSON unescaping',
   'generic JSON when an ID is missing from the registry'
 ], 'JSON schema guide');
 
 const schemaTypes = read('packages/pulse/src/schema.d.ts');
 includesAll(schemaTypes, [
+  'export type ScalarRecord = Readonly<Record<string, string | number | boolean | null>>;',
   'export declare function schema<Type>()',
   'export declare function response<',
   'export declare function defineSchemaRegistry<'
