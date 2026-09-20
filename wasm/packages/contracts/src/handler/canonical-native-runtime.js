@@ -2,7 +2,7 @@
 
 const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
-const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v3';
+const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v4';
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
 const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v3';
 

@@ -724,7 +724,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const resumeRequirements = new Map();
   for (const item of blocks) if (item.kind === 'resume' || item.kind === 'resume-return') resumeRequirements.set(item.id, item.required);
 
-  function renderBlock(item) {
+  function renderBlock(item, partitioned = false) {
+    const advance = partitioned ? 'return 2' : 'continue';
     const lines = [`    case ${item.id}: {`];
     const emit = (line) => lines.push(`      ${line}`);
     const checkError = () => {
@@ -736,7 +737,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       emit(`    ${localName(routerLocal('mode'))} = host_value_number(1.0)`);
       emit(`    ${localName(routerCursor)} = host_value_number(${item.boundary.nextIndex}.0)`);
       emit('    __pulse_pending = 0; __pulse_state = 0; __pulse_result = 0');
-      emit(`    __pulse_pc = ${item.boundary.nextBlock}; continue`);
+      emit(`    __pulse_pc = ${item.boundary.nextBlock}; ${advance}`);
       emit('  } }');
     };
     checkError();
@@ -744,12 +745,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       for (const line of item.lines) emit(line);
       checkError();
       emit(`__pulse_pc = ${item.next}`);
-      emit('continue');
+      emit(advance);
     } else if (item.kind === 'branch') {
       emit(`const matched = host_value_truthy(${item.test}())`);
       checkError();
       emit(`__pulse_pc = matched != 0 ? ${item.thenBlock} : ${item.elseBlock}`);
-      emit('continue');
+      emit(advance);
     } else if (item.kind === 'return') {
       emit(`__pulse_result = ${item.expression}()`);
       checkError();
@@ -770,7 +771,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       if (item.kind === 'resume-return') emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE}`);
       else {
         emit(`__pulse_pc = ${item.next}`);
-        emit('continue');
+        emit(advance);
       }
     } else if (item.kind === 'fail') {
       emit(`__pulse_error = ${item.errorCode}`);
@@ -779,6 +780,60 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     lines.push('    }');
     return lines.join('\n');
   }
+
+  // Bound optimizer work per dispatcher function without changing plan state IDs.
+  // A pure-loop state stays indivisible: these are partition targets, not an
+  // absolute source/Wasm size limit on arbitrary authored expressions or loops.
+  const maxChunkStates = 64;
+  const maxChunkCharacters = 24000;
+  const renderedBlocks = blocks.map(item => ({ item, source: renderBlock(item) }));
+  const partitioned = blocks.length > maxChunkStates
+    || renderedBlocks.reduce((size, block) => size + block.source.length, 0) > maxChunkCharacters;
+  const chunks = [];
+  if (partitioned) {
+    let chunk = [], characters = 0;
+    for (const { item } of renderedBlocks) {
+      const rendered = renderBlock(item, true);
+      if (chunk.length && (chunk.length >= maxChunkStates || characters + rendered.length > maxChunkCharacters)) {
+        chunks.push(chunk);
+        chunk = [];
+        characters = 0;
+      }
+      chunk.push({ id: item.id, source: rendered });
+      characters += rendered.length;
+    }
+    if (chunk.length) chunks.push(chunk);
+  }
+  const invalidProgramCounter = `__pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_PROGRAM_COUNTER}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`;
+  // @noinline prevents optimization from rebuilding the monolithic function.
+  const dispatcherFunctions = chunks.flatMap((chunk, index) => [
+    '@noinline',
+    `function __pulse_chunk_${index}(): i32 {`,
+    '  switch (__pulse_pc) {',
+    ...chunk.map(block => block.source),
+    `    default: ${invalidProgramCounter}`,
+    '  }',
+    '}'
+  ]);
+  // Balanced selection keeps dispatch depth logarithmic as the program grows.
+  function selectChunk(first, last, indent) {
+    if (first === last) return [`${indent}return __pulse_chunk_${first}()`];
+    const middle = Math.floor((first + last) / 2);
+    const upper = chunks[middle][chunks[middle].length - 1].id;
+    return [
+      `${indent}if (__pulse_pc <= ${upper}) {`,
+      ...selectChunk(first, middle, indent + '  '),
+      `${indent}} else {`,
+      ...selectChunk(middle + 1, last, indent + '  '),
+      `${indent}}`
+    ];
+  }
+  if (partitioned) dispatcherFunctions.push(
+    '@noinline',
+    'function __pulse_step(): i32 {',
+    ...selectChunk(0, chunks.length - 1, '  '),
+    '}'
+  );
 
   const imports = runtimeContract.CANONICAL_NATIVE_IMPORTS.filter(([name]) => name !== 'router_error_take' || applicationErrors).map(([name, parameters, results]) => {
     const args = parameters.map((type, index) => `arg${index}: ${type}`).join(', ');
@@ -885,14 +940,21 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '    default: return',
     '  }',
     '}',
+    ...dispatcherFunctions,
     'function __pulse_run(): i32 {',
     `  let guard: i32 = ${Math.max(64, blocks.length * 8)}`,
     '  while (guard > 0) {',
     '    guard -= 1',
-    '    switch (__pulse_pc) {',
-    ...blocks.map(renderBlock),
-    `      default: __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_PROGRAM_COUNTER}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`,
-    '    }',
+    ...(partitioned ? [
+      '    const status = __pulse_step()',
+      // Private status 2 advances exactly one state under the original guard.
+      '    if (status != 2) return status'
+    ] : [
+      '    switch (__pulse_pc) {',
+      ...renderedBlocks.map(block => block.source),
+      `      default: ${invalidProgramCounter}`,
+      '    }'
+    ]),
     '  }',
     `  __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}`,
     `  return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`,
@@ -944,6 +1006,15 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     sourceHash: stableHash(source),
     entryBlock,
     blockCount: blocks.length,
+    dispatcher: Object.freeze({
+      strategy: partitioned ? 'bounded-state-chunks' : 'single-function',
+      chunkCount: chunks.length,
+      maxChunkStates,
+      maxChunkCharacters,
+      oversizedStateCount: (partitioned ? chunks.flat() : renderedBlocks).filter(block => block.source.length > maxChunkCharacters).length,
+      guard: 'shared-once-per-state',
+      chunkInlining: partitioned ? 'disabled' : 'not-applicable'
+    }),
     expressionCount: expressions.length,
     localCount: (plan.locals || []).length,
     schemaCodecs: Object.freeze({

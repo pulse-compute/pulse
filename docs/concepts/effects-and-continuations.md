@@ -322,3 +322,21 @@ the key. Pending KV operations have no cancellation hostcall; an expired operati
 is abandoned to invocation teardown and may still commit. Host termination never
 resumes an inactive handler. Local Wasm evidence is separate from K4's deployed
 cross-location acceptance.
+
+## Native dispatcher containment
+
+The Native emitter keeps small plans in one guarded dispatcher. Larger plans use
+internal functions grouped by up to 64 states or 24,000 rendered source characters.
+Selection uses a balanced tree, and chunks are marked `@noinline` so optimization
+cannot reconstruct the original large function. These are internal partition
+budgets, not public request, route, or Wasm-byte limits. A single pure-loop state
+remains whole and may exceed the character budget; the generated manifest reports
+that case instead of truncating or rejecting admitted work.
+
+One shared guard decrements once per original state. The private continue status
+is consumed inside the dispatcher and never crosses the host ABI. Program-counter
+values, effect and continuation identities, pending-result checks, application
+error transfers, and pure-loop `break`/`continue` behavior are unchanged. Generator
+identity and source hashes record the emitter change; plan identity and host ABI
+remain unchanged. This contains optimizer work for large dispatchers without
+introducing user-callable functions, new effects, or a JavaScript fallback.
