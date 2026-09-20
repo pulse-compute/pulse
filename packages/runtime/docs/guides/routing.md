@@ -157,6 +157,11 @@ identical messages, stacks, causes or detail fields across providers.
 | JWT input and verification | `PULSE_JWT_TOKEN_REQUIRED`, `PULSE_JWT_BEARER_INVALID`, `PULSE_JWT_MALFORMED`, `PULSE_JWT_LIMIT_EXCEEDED`, `PULSE_JWT_ALGORITHM_NOT_ALLOWED`, `PULSE_JWT_KEY_INVALID`, `PULSE_JWT_SIGNATURE_INVALID` |
 | JWT claims | `PULSE_JWT_CLOCK_INVALID`, `PULSE_JWT_CLAIMS_INVALID`, `PULSE_JWT_CLAIMS_SCHEMA_INVALID` |
 
+These admitted `error.code` values remain stable through redaction, including
+when a secret, KV key or array index overlaps their spelling. Messages, stacks,
+causes, details and arbitrary provider error codes remain subject to redaction.
+This preserves the existing recovery catalog; it does not admit new failures.
+
 Recovery moves forward in registration order, including through mounted
 routers. A failed handler never resumes. An error handler can return a response,
 forward with `return next(error)`, or clear the error lane with `return next()`.

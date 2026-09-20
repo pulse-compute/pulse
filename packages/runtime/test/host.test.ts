@@ -33,6 +33,7 @@ const host = require('../src/host.js') as {
   createRedactionState(values?: Iterable<unknown> | string): any
 }
 const { Router } = root as { Router: new () => any }
+const { PulseRuntimeContractError, PulseUnhandledError, isApplicationError } = require('../src/internal/errors.js')
 
 describe('@pulse-compute/runtime host bridge', () => {
   it('keeps the application root surface unchanged and exposes a separate provider-maintainer bridge', () => {
@@ -405,6 +406,41 @@ describe('@pulse-compute/runtime host bridge', () => {
     expect(safe.detail).toEqual({ token: '<redacted>', url: 'https://example.test/<redacted>' })
     expect(String(safe.stack)).not.toContain('top-secret')
     expect(redaction.values()).toEqual(['<redacted>'])
+  })
+
+  it.each(['PULSE_REQUEST_BODY_INVALID_UTF8', 'PULSE_SCHEMA_DECODE', 'PULSE_JWT_CLAIMS_INVALID'])(
+    'preserves admitted %s through repeated redaction without exposing private error text', code => {
+      const redaction = host.createRedactionState(['8', 'PULSE', 'code', 'private-value'])
+      for (const failure of [
+        new PulseRuntimeContractError(code, 'private-value', { cause: new Error('private-value'), detail: { note: 'private-value' } }),
+        Object.assign(new Error('private-value'), { code }),
+      ]) {
+        const once = redaction.redactError(failure)
+        const twice = redaction.redactError(once)
+        expect(once.code).toBe(code)
+        expect(twice.code).toBe(code)
+        expect(isApplicationError(twice)).toBe(true)
+        expect(twice.message).toBe('<redacted>')
+        expect(String(twice.stack)).not.toContain('private-value')
+        expect(JSON.stringify(twice)).not.toContain('private-value')
+      }
+    },
+  )
+
+  it('preserves the fixed containment code but redacts arbitrary error codes', () => {
+    const redaction = host.createRedactionState(['PULSE', 'private-value'])
+    const contained = redaction.redactError(new PulseUnhandledError(new Error('private-value')))
+    expect(contained.code).toBe('PULSE_RUNTIME_UNHANDLED_ERROR')
+    expect(isApplicationError(contained)).toBe(false)
+    for (const code of ['PULSE_PROVIDER_PROTOCOL_INVALID', 'PULSE_private-value', 'private-value']) {
+      const safe = redaction.redactError(Object.assign(new Error('private-value'), { code }))
+      expect(safe.code).not.toContain('PULSE')
+      expect(safe.code).not.toContain('private-value')
+      expect(isApplicationError(safe)).toBe(false)
+    }
+    const record = redaction.redactError({code: 'PULSE_SCHEMA_DECODE'})
+    expect(record.code).toBe('<redacted>_SCHEMA_DECODE')
+    expect(isApplicationError(record)).toBe(false)
   })
 
   it('collapses colliding redacted keys without exposing values or invoking accessors', () => {
