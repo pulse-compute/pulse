@@ -34,7 +34,7 @@ sizes; each example page includes exact byte counts.
 | `03-fetch-composition` | 5.0 KiB | 4.2 KiB | 15.0% | — |
 | `05-fastly-capabilities` | 5.3 KiB | 4.8 KiB | 10.4% | 40.4 → 33.7 KiB |
 | `07-opaque-proxy` | 2.1 KiB | 2.1 KiB | 4.5% | 28.9 → 25.3 KiB |
-| `09-router-lowering` | 6.1 KiB | 5.4 KiB | 12.4% | — |
+| `09-router-lowering` | 9.2 KiB | 8.4 KiB | 8.4% | — |
 | `10-entities-tools` | — | — | Not applicable | JavaScript-first candidate |
 | `11-events` | 38.4 KiB | 30.6 KiB | 20.4% | — |
 | `12-mcp-proxy` | 2.5 KiB | 2.4 KiB | 6.6% | — |

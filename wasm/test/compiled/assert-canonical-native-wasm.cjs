@@ -67,6 +67,7 @@ function assertPortableModule(name, compiled) {
 }
 
 async function main() {
+  await require('./native-dispatcher-partitions.cjs').main();
   await require('../runtime/request-budget.cjs').main();
   const plans = new Map();
   for (const name of Object.keys(EXAMPLES)) plans.set(name, planForExample(name));

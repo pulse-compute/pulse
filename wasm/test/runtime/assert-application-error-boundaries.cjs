@@ -14,6 +14,8 @@ const rootDir = path.resolve(__dirname, '../../..');
 const source = `import { Router } from '@pulse-compute/runtime';
 const app = new Router();
 app.get('/group', async (ctx) => {
+  let padding = 0;
+  ${'padding += 1;\n'.repeat(160)}
   const { first, second } = await ctx.parallel({ first: ctx.config.get('FIRST'), second: ctx.config.get('SECOND') });
   const late = await ctx.config.get('TOO_LATE');
   return ctx.text(late);
@@ -36,6 +38,7 @@ async function main() {
     internalGeneratedHandler: true, metadataExtensions: { router: router.metadata }
   });
   const native = compileCanonicalNativePlan(buildCanonicalNativePlan(compiled), { cwd: rootDir });
+  assert.equal(native.manifest.dispatcher.strategy, 'bounded-state-chunks');
   for (const scenario of ['recover', 'fatal-sibling', 'trap-cause', 'abort']) {
     const seen = [];
     const abort = new AbortController();
