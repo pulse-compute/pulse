@@ -262,7 +262,10 @@ function redactRuntimeError(error, sensitiveValues = new Set(), seen = new WeakS
   const rawDetail = ownDataValue(error, 'detail');
   const message = redactString(typeof rawMessage === 'string' ? rawMessage : 'Pulse runtime failure.', sensitiveValues);
   const name = redactString(typeof rawName === 'string' ? rawName : 'Error', sensitiveValues);
-  const code = typeof rawCode === 'string' ? redactString(rawCode, sensitiveValues) : undefined;
+  // Keep the finite admitted discriminator intact; messages, causes and arbitrary
+  // provider codes still pass through ordinary sensitive-value redaction.
+  const code = portableKv.isApplicationError(error) ? rawCode
+    : typeof rawCode === 'string' ? redactString(rawCode, sensitiveValues) : undefined;
   const detail = rawDetail === undefined ? undefined : redactRuntimeValue(rawDetail, sensitiveValues, seen, 'detail', depth + 1);
 
   const safe = code === undefined

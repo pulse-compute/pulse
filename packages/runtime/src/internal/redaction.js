@@ -1,6 +1,6 @@
 'use strict';
 
-const { PulseRuntimeContractError, PulseUnhandledError } = require('./errors.js');
+const { PulseRuntimeContractError, PulseUnhandledError, isApplicationError } = require('./errors.js');
 
 const REDACTED_VALUE = '<redacted>';
 const CIRCULAR_VALUE = '<circular>';
@@ -145,6 +145,10 @@ function createRedactionState(initialValues = []) {
     const rawMessage = ownDataValue(error, 'message');
     const rawName = ownDataValue(error, 'name');
     const rawCode = ownDataValue(error, 'code');
+    // Admitted discriminators are fixed protocol vocabulary, not private text.
+    // Short KV keys/array indexes must not change Router recovery decisions.
+    const stableCode = isApplicationError(error) ? rawCode
+      : error instanceof PulseUnhandledError ? 'PULSE_RUNTIME_UNHANDLED_ERROR' : undefined;
     const message = redactString(typeof rawMessage === 'string' ? rawMessage : 'Pulse runtime failure.');
     const causeDescriptor = Object.getOwnPropertyDescriptor(error, 'cause');
     const cause = causeDescriptor && Object.prototype.hasOwnProperty.call(causeDescriptor, 'value')
@@ -170,6 +174,10 @@ function createRedactionState(initialValues = []) {
     }
 
     const reserved = new Set(['name', 'message', 'stack', 'cause', 'detail']);
+    if (stableCode !== undefined) {
+      reserved.add('code');
+      Object.defineProperty(safe, 'code', { enumerable: true, configurable: true, writable: false, value: stableCode });
+    }
     for (const key of Reflect.ownKeys(error).slice(0, MAX_REDACTION_ENTRIES)) {
       if (typeof key !== 'string' || reserved.has(key)) continue;
       const descriptor = Object.getOwnPropertyDescriptor(error, key);
