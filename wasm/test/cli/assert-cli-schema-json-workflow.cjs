@@ -204,6 +204,60 @@ function parseNonzeroJson(result, expectedStatus, stream = 'stdout') {
   return JSON.parse(result[stream]);
 }
 
+function assertNestedJsonCli(projectRoot) {
+  copyFixture(projectRoot);
+  const schemaFile = path.join(projectRoot, 'src', 'schemas.ts');
+  const schemaSource = `import { defineSchemaRegistry, schema, type JsonObject, type JsonValue } from '@pulse-compute/pulse/schema';
+interface Event { properties: JsonObject; data?: JsonValue; }
+export default defineSchemaRegistry({ schemas: {
+  'app.Event': schema<Event>({ json: { maxDepth: 8, maxNodes: 32 } }),
+} });
+`;
+  fs.writeFileSync(schemaFile, schemaSource);
+  fs.writeFileSync(path.join(projectRoot, 'src', 'index.ts'), `export default async function handler(ctx) {
+  const value = await ctx.req.json('app.Event');
+  const sent = await ctx.fetch('https://api.example.test/users/7', { method: 'POST', json: value, schema: 'app.Event' }).text();
+  return ctx.json(value, { schema: 'app.Event' });
+}
+`);
+  const value = { properties: { items: [null, { active: true, label: 'é😀' }] }, data: [0, false] };
+  fs.writeFileSync(path.join(projectRoot, 'tests', 'pulse.harness.ts'), `export default { cases: [{
+  name: 'nested-json',
+  request: { method: 'POST', path: '/', headers: { 'content-type': 'application/json' }, body: ${JSON.stringify(JSON.stringify(value))} },
+  fetches: { 'https://api.example.test/users/7': { status: 200, body: 'stored' } },
+  expect: { status: 200, json: ${JSON.stringify(value)} },
+}] };
+`);
+  const inspected = parseJson(run(['inspect', '--profile', 'node', '--json'], projectRoot));
+  const schema = inspected.compiler.schemas.registry.schemas[0];
+  assert.equal(schema.jsonLimits.maxDepth, 8);
+  assert.equal(schema.jsonLimits.maxNodes, 32);
+  assert.equal(schema.jsonLimits.maxArrayItems, 1024);
+  assert.ok(JSON.stringify(schema.root).includes('json-object'));
+  assert.ok(JSON.stringify(schema.root).includes('json-value'));
+  for (const profile of ['node', 'fastly']) {
+    const tested = parseJson(run(['test', '--profile', profile, '--json'], projectRoot, { timeout: 60000 }));
+    assert.deepEqual(tested.summary, { total: 1, passed: 1, failed: 0 });
+    const built = parseJson(run(['build', '--profile', profile, '--json'], projectRoot, { timeout: 120000 }));
+    assert.equal(built.status, 'built');
+    const out = path.join(projectRoot, profile === 'node' ? 'dist' : 'dist-fastly');
+    const registry = JSON.parse(fs.readFileSync(path.join(out, 'schema-json-registry.json'), 'utf8'));
+    assert.deepEqual(registry.schemas, inspected.compiler.schemas.registry.schemas);
+    const codecs = require(path.join(out, 'schema-json-codecs.cjs'));
+    const decoded = codecs.decodeJsonText('app.Event', JSON.stringify(value));
+    assert.deepEqual(decoded, value);
+    assert.ok(Object.isFrozen(decoded.properties.items[1]));
+  }
+  fs.writeFileSync(schemaFile, schemaSource.replace('maxDepth: 8', 'maxDepth: 0'));
+  const invalid = parseNonzeroJson(run(['doctor', '--profile', 'node', '--json'], projectRoot), 3, 'stderr');
+  assert.equal(invalid.error.code, 'PULSE_SCHEMA_JSON_LIMITS_INVALID');
+  assert.equal(invalid.error.scope, 'public');
+  assert.match(invalid.error.docs, /#pulse-schema-json-limits-invalid$/);
+  fs.writeFileSync(schemaFile, schemaSource.replace('maxDepth: 8', 'maxDepth: 129'));
+  const unsupported = parseError(run(['build', '--profile', 'node', '--json'], projectRoot, { timeout: 60000 }), 3);
+  assert.equal(unsupported.error.code, 'PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED');
+}
+
 async function main() {
   const parent = process.env.PULSEWASM_TEST_TMP_ROOT
     ? path.join(process.env.PULSEWASM_TEST_TMP_ROOT, 'schema-json-cli')
@@ -405,6 +459,8 @@ async function main() {
     assert.equal(reloaded.schemaSourceHash, registry.sourceHash);
     watched.child.kill('SIGTERM');
     await waitForClose(watched.child, watched.stderrText);
+
+    assertNestedJsonCli(path.join(parent, 'nested-json'));
 
     console.log('ok - pulse CLI compiles explicit TypeScript JSON schemas, links exact handler references, executes shared Node/Fastly codecs, emits registry/codecs for both targets, rejects invalid references, and reloads schema dependencies');
   } finally {

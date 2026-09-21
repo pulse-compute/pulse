@@ -1,9 +1,11 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const { schemaNeedsValueProjection, schemaHasScalarRecord } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { schemaNeedsValueProjection, schemaHasScalarRecord, schemaHasNestedJson } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 const { scalarRecordRuntimeSource, generateScalarRecordTextValidation } = require('./schema-scalar-record.js');
 const { generateSchemaPresenceCodec } = require('./schema-presence-codec.js');
+const { jsonAdmissionRuntimeSource, generateSchemaJsonPolicy } = require('./schema-admission.js');
+const { nestedJsonProjectionSource } = require('./schema-nested-json.js');
 const {
   buildNativeCryptoGuestSources
 } = require('./crypto-guest-source.js');
@@ -127,22 +129,33 @@ function nativeSchemaCodecSource(plan) {
     records.push(Object.freeze({ symbol, node, path: Object.freeze([...path]) }));
   }
 
-  if (schemas.some(schema => schemaHasScalarRecord(schema.root))) declarations.push(scalarRecordRuntimeSource());
+  if (schemas.some(schema => schemaHasScalarRecord(schema.root) || schemaHasNestedJson(schema.root))) declarations.push(scalarRecordRuntimeSource());
+  if (schemas.some(schema => schema.jsonLimits)) declarations.push(jsonAdmissionRuntimeSource());
+  if (schemas.some(schema => schemaHasNestedJson(schema.root))) declarations.push(nestedJsonProjectionSource());
   schemas.forEach((schema, schemaIndex) => {
     const decode = `__pulse_schema_decode_${schemaIndex}`;
     const encode = `__pulse_schema_encode_${schemaIndex}`;
     let root;
-    if (schemaNeedsValueProjection(schema.root)) {
+    if (schema.jsonLimits) declarations.push(generateSchemaJsonPolicy(schema, schemaIndex, registry.maxBytes));
+    if (schemaNeedsValueProjection(schema.root) || schema.jsonLimits) {
       root = 'JSON.Value';
       const presence = generateSchemaPresenceCodec(schema.root, schemaIndex);
       declarations.push(...presence.declarations);
-      const recordText = schemaHasScalarRecord(schema.root) ? generateScalarRecordTextValidation(schema.root, schemaIndex) : null;
+      const nested = schemaHasNestedJson(schema.root);
+      const recordText = schemaHasScalarRecord(schema.root) || nested ? generateScalarRecordTextValidation(schema.root, schemaIndex) : null;
       if (recordText) declarations.push(...recordText.declarations);
       for (const fn of [decode, encode]) {
         declarations.push(`function ${fn}(input: string): string {`);
+        if (schema.jsonLimits) {
+          declarations.push(`  const admission = __pulse_schema_json_scan_${schemaIndex}(input)`);
+          declarations.push('  if (admission.failure != 0) abort("JSON admission failed", "pulse-schema-codecs", 0, 0)');
+          if (recordText) declarations.push(`  ${recordText.apply}(new __PulseSchemaTextCursor(input), 0${nested ? ', admission.duplicateObjects' : ''})`);
+        }
         declarations.push(`  const value = JSON.parse<JSON.Value>(input)`);
-        if (recordText) declarations.push(`  ${recordText.apply}(new __PulseSchemaTextCursor(input), 0)`);
-        declarations.push(`  return JSON.stringify<JSON.Value>(${presence.apply}(value))`);
+        if (recordText && !schema.jsonLimits) declarations.push(`  ${recordText.apply}(new __PulseSchemaTextCursor(input), 0)`);
+        declarations.push(`  const text = JSON.stringify<JSON.Value>(${presence.apply}(value))`);
+        if (schema.jsonLimits) declarations.push(`  if (__pulse_schema_json_scan_${schemaIndex}(text, 0).failure != 0) abort("JSON output admission failed", "pulse-schema-codecs", 0, 0)`);
+        declarations.push('  return text');
         declarations.push('}');
       }
     } else {

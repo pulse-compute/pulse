@@ -1,5 +1,22 @@
 import { Pulse } from '../src/index.js'
-import type { ScalarRecord } from '../src/schema.js'
+import { schema, type ScalarRecord, type JsonObject, type JsonValue } from '../src/schema.js'
+
+// @ts-expect-error object-root dynamic fields do not admit arrays
+const objectArray: JsonObject = []
+// @ts-expect-error present undefined is not JSON
+const undefinedJson: JsonValue = { value: undefined }
+// @ts-expect-error functions are not JSON
+const functionJson: JsonValue = { value: () => true }
+const jsonObject: JsonObject = { nested: [true] }
+// @ts-expect-error dynamic properties are immutable
+jsonObject.nested = false
+const jsonArray: JsonValue = [true]
+// @ts-expect-error dynamic arrays are immutable
+jsonArray.push(false)
+// @ts-expect-error unknown schema limits are rejected
+schema<{ data: JsonValue }>({ json: { maxKeys: 32 } })
+// @ts-expect-error schema limit values must be numeric
+schema<{ data: JsonValue }>({ json: { maxDepth: '32' } })
 
 // @ts-expect-error scalar dictionaries cannot contain nested objects
 const nestedAttributes: ScalarRecord = { nested: { value: true } }

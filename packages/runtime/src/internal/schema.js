@@ -144,7 +144,17 @@ function utf8Bytes(value) {
 
 function assertSchemaBodySize(options, text, schemaId, source) {
   const configured = Number(schemaRegistry(options)?.maxBytes);
-  const maxBytes = Number.isSafeInteger(configured) && configured > 0 ? configured : 65_536;
+  let maxBytes = Number.isSafeInteger(configured) && configured > 0 ? configured : 65_536;
+  const jsonLimits = schemaCodecs(options)?.schema?.(schemaId)?.jsonLimits;
+  if (jsonLimits) {
+    maxBytes = Math.min(maxBytes, jsonLimits.maxTextBytes);
+    // UTF-16 length is a lower bound on UTF-8 bytes. Reject large application
+    // strings before TextEncoder allocates their complete encoded form.
+    if (typeof text === 'string' && text.length > maxBytes) {
+      throw schemaRuntimeError('PULSE_BODY_TOO_LARGE', `Pulse ${source} schema body exceeds the ${maxBytes} byte limit.`,
+        { schemaId: String(schemaId), source, bytesAtLeast: text.length, maxBytes });
+    }
+  }
   const bytes = utf8Bytes(text);
   if (bytes <= maxBytes) return bytes;
   throw schemaRuntimeError(

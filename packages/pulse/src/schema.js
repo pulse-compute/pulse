@@ -1,13 +1,15 @@
 'use strict';
 
-const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v1';
+const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v2';
 const SCHEMA_DECLARATION_BRAND = Symbol.for('pulse.schema-declaration.v1');
 const RESPONSE_CASE_DECLARATION_BRAND = Symbol.for('pulse.response-case-declaration.v1');
 const SCHEMA_REGISTRY_BRAND = Symbol.for('pulse.schema-registry.v1');
 
-function schema() {
+function schema(options) {
   return Object.freeze({
     version: SCHEMA_AUTHORING_VERSION,
+    ...(options === undefined ? {} : { options: Object.freeze({ ...options,
+      ...(options.json === undefined ? {} : { json: Object.freeze({ ...options.json }) }) }) }),
     [SCHEMA_DECLARATION_BRAND]: true
   });
 }

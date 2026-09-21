@@ -8,6 +8,25 @@ export type Uint32 = number & { readonly __pulseUint32?: never };
  */
 export type ScalarRecord = Readonly<Record<string, string | number | boolean | null>>;
 
+/** Recursively immutable JSON. Compiled codecs reject non-finite numbers. */
+export type JsonValue = string | number | boolean | null | readonly JsonValue[] | JsonObject;
+/** Dynamic own string keys whose values are bounded, recursively nested JSON. */
+export interface JsonObject { readonly [key: string]: JsonValue }
+
+export interface JsonLimits {
+  readonly maxTextBytes: number;
+  readonly maxDepth: number;
+  readonly maxNodes: number;
+  readonly maxObjectMembers: number;
+  readonly maxArrayItems: number;
+  readonly maxKeyLength: number;
+  readonly maxStringLength: number;
+  readonly maxJsonBytes: number;
+}
+
+/** Supply a static object literal; each override must be a positive i32 literal. */
+export interface SchemaOptions { readonly json?: Partial<JsonLimits> }
+
 declare const schemaDeclarationBrand: unique symbol;
 declare const responseCaseDeclarationBrand: unique symbol;
 declare const schemaRegistryBrand: unique symbol;
@@ -39,7 +58,7 @@ export interface SchemaRegistryDeclaration<
  * Question-mark properties preserve absence; present values must satisfy their
  * declared type. Nullable and absent are distinct; present undefined is invalid.
  */
-export declare function schema<Type>(): SchemaDeclaration<Type>;
+export declare function schema<Type>(options?: SchemaOptions): SchemaDeclaration<Type>;
 
 /** Map one semantic response-case ID to an HTTP status and registered schema ID. */
 export declare function response<const Status extends number, const SchemaId extends string>(
@@ -59,4 +78,4 @@ export declare function defineSchemaRegistry<
   readonly responses?: Responses;
 }): SchemaRegistryDeclaration<Schemas, Responses>;
 
-export declare const SCHEMA_AUTHORING_VERSION: 'pulse.schema-authoring.v1';
+export declare const SCHEMA_AUTHORING_VERSION: 'pulse.schema-authoring.v2';

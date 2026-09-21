@@ -65,8 +65,11 @@ includesAll(schemas, [
   '`schemas.contentTypePolicy`',
   '`schemas.maxBytes`',
   'unknown fields of declared objects are removed recursively',
-  '`ScalarRecord` preserves valid dynamic keys',
+  '`ScalarRecord`, `JsonObject` and `JsonValue` preserve their admitted dynamic keys',
   '## Bounded scalar records',
+  '## Configurable nested JSON',
+  "schema<Event>({ json: { maxDepth: 64, maxNodes: 8192 } })",
+  'PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED',
   'These fixed limits apply independently to every record on encode and decode',
   'Decoding rejects duplicate record keys after JSON unescaping',
   'generic JSON when an ID is missing from the registry'
@@ -75,7 +78,10 @@ includesAll(schemas, [
 const schemaTypes = read('packages/pulse/src/schema.d.ts');
 includesAll(schemaTypes, [
   'export type ScalarRecord = Readonly<Record<string, string | number | boolean | null>>;',
-  'export declare function schema<Type>()',
+  'export type JsonValue =',
+  'export interface JsonObject',
+  'export interface JsonLimits',
+  'export declare function schema<Type>(options?: SchemaOptions)',
   'export declare function response<',
   'export declare function defineSchemaRegistry<'
 ], 'schema authoring declarations');

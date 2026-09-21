@@ -5,13 +5,14 @@ const path = require('node:path');
 const ts = require('typescript');
 const {
   normalizeSchemaRegistry,
-  codecInputsForRegistry
+  codecInputsForRegistry,
+  normalizeJsonSchemaLimits
 } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
-const SCHEMA_REGISTRY_EXTRACTOR_VERSION = 'pulse.schema-registry-extractor.v1';
+const SCHEMA_REGISTRY_EXTRACTOR_VERSION = 'pulse.schema-registry-extractor.v2';
 const AUTHORING_MODULE = '@pulse-compute/pulse/schema';
 const HELPER_EXPORTS = new Set(['defineSchemaRegistry', 'schema', 'response']);
-const MARKER_EXPORTS = new Map([['Int32', 'i32'], ['Uint32', 'u32'], ['ScalarRecord', 'scalar-record']]);
+const MARKER_EXPORTS = new Map([['Int32', 'i32'], ['Uint32', 'u32'], ['ScalarRecord', 'scalar-record'], ['JsonValue', 'json-value'], ['JsonObject', 'json-object']]);
 
 class SchemaRegistryExtractionError extends Error {
   constructor(code, message, detail = {}) {
@@ -232,13 +233,13 @@ class TypeGraph {
             fail('PULSE_SCHEMA_HELPER_VALUE_IMPORT_REQUIRED', `${imported} must be imported as a value.`, element, record, { imported });
           }
           record.helpers.set(local, imported);
-        } else if (MARKER_EXPORTS.has(imported)) {
+        } else if (MARKER_EXPORTS.has(imported) || imported === 'JsonLimits' || imported === 'SchemaOptions') {
           if (!clause.isTypeOnly && !element.isTypeOnly) {
             fail('PULSE_SCHEMA_MARKER_TYPE_IMPORT_REQUIRED', `${imported} must be imported with import type.`, element, record, {
               imported
             });
           }
-          record.markers.set(local, MARKER_EXPORTS.get(imported));
+          if (MARKER_EXPORTS.has(imported)) record.markers.set(local, MARKER_EXPORTS.get(imported));
         } else {
           fail('PULSE_SCHEMA_AUTHORING_IMPORT_UNKNOWN', `Unsupported schema authoring import ${imported}.`, element, record, {
             imported
@@ -285,6 +286,14 @@ class TypeGraph {
         record
       );
     }
+    if (statement.moduleSpecifier.text === AUTHORING_MODULE && statement.exportClause && ts.isNamedExports(statement.exportClause)) {
+      for (const element of statement.exportClause.elements) {
+        const imported = element.propertyName ? element.propertyName.text : element.name.text;
+        if (!MARKER_EXPORTS.has(imported)) fail('PULSE_SCHEMA_AUTHORING_IMPORT_UNKNOWN', `Unsupported schema marker ${imported}.`, element, record);
+        record.reExports.set(element.name.text, { marker: MARKER_EXPORTS.get(imported) });
+      }
+      return;
+    }
     const resolved = this.resolveRelative(record.file, statement.moduleSpecifier.text, statement.moduleSpecifier, record);
     this.load(resolved);
     if (!statement.exportClause) {
@@ -314,6 +323,7 @@ class TypeGraph {
     const imported = record.imports.get(name);
     if (imported) return this.resolve(this.load(imported.file), imported.name, true, seen);
     const reExport = record.reExports.get(name);
+    if (reExport && reExport.marker) return { record, marker: reExport.marker };
     if (reExport) return this.resolve(this.load(reExport.file), reExport.name, true, seen);
     for (const file of record.exportStars) {
       const resolved = this.resolve(this.load(file), name, true, new Set(seen));
@@ -387,6 +397,7 @@ function classifyType(graph, record, typeNode, state) {
     if (!resolved) {
       fail('PULSE_SCHEMA_TYPE_NOT_FOUND', `Could not resolve schema type ${name}.`, typeNode, record, { typeName: name });
     }
+    if (resolved.marker) return Object.freeze({ kind: resolved.marker });
     const key = `${resolved.record.file}#${resolved.declaration.name.text}`;
     if (state.stack.has(key)) {
       fail('PULSE_SCHEMA_RECURSIVE_TYPE_RESERVED', `Recursive schema type ${name} is reserved beyond IR v1.`, typeNode, record, {
@@ -509,10 +520,10 @@ function extractSchemas(graph, record, property) {
     if (ids.has(id)) fail('PULSE_SCHEMA_ID_DUPLICATE', `Schema ID ${id} is declared more than once.`, declaration.name, record, { id });
     ids.add(id);
     const call = helperCall(declaration.initializer, record, 'schema');
-    if (call.arguments.length !== 0 || !call.typeArguments || call.typeArguments.length !== 1) {
+    if (call.arguments.length > 1 || !call.typeArguments || call.typeArguments.length !== 1) {
       fail(
         'PULSE_SCHEMA_DECLARATION_SIGNATURE_INVALID',
-        `Schema ${id} must use schema<Type>() with one type argument and no runtime arguments.`,
+        `Schema ${id} must use schema<Type>() with one type argument and at most one static options object.`,
         call,
         record,
         { id }
@@ -522,7 +533,8 @@ function extractSchemas(graph, record, property) {
     const typeReferenceName = ts.isTypeReferenceNode(typeNode) && ts.isIdentifier(typeNode.typeName)
       ? typeNode.typeName.text
       : null;
-    const resolvedRoot = typeReferenceName ? graph.resolve(record, typeReferenceName) : null;
+    const resolution = typeReferenceName ? graph.resolve(record, typeReferenceName) : null;
+    const resolvedRoot = resolution && resolution.declaration ? resolution : null;
     const typeName = resolvedRoot
       ? resolvedRoot.declaration.name.text
       : `Inline_${id.replace(/[^A-Za-z0-9_$]+/g, '_')}`;
@@ -530,10 +542,27 @@ function extractSchemas(graph, record, property) {
       stack: new Set(),
       node: typeNode
     });
+    let jsonLimits;
+    if (call.arguments.length) {
+      const options = objectProperties(call.arguments[0], record, new Set(['json']), 'schema options');
+      const json = options.properties.get('json');
+      const limits = {};
+      if (json) {
+        const fields = objectProperties(json.initializer, record, new Set(Object.keys(normalizeJsonSchemaLimits())), 'schema JSON limits');
+        for (const [key, property] of fields.properties) {
+          const literal = unwrapExpression(property.initializer);
+          if (!ts.isNumericLiteral(literal)) fail('PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED', 'Schema JSON limits require positive integer literals.', literal, record);
+          limits[key] = Number(literal.text);
+        }
+      }
+      try { jsonLimits = normalizeJsonSchemaLimits(limits); }
+      catch (error) { fail(error.code, error.message, call.arguments[0], record); }
+    }
     schemas.push(Object.freeze({
       id,
       typeName,
       root,
+      ...(jsonLimits ? { jsonLimits } : {}),
       source: resolvedRoot
         ? sourceLocation(resolvedRoot.record, resolvedRoot.declaration.name)
         : sourceLocation(record, declaration.name)
