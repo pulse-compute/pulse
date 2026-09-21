@@ -32,6 +32,37 @@ compiled values
 
 A continuation is single-use and time-bounded. Expired or duplicate resume attempts fail with stable diagnostics such as [`PULSE_CONTINUATION_EXPIRED`](../reference/diagnostics.md#pulse-continuation-expired) and [`PULSE_CONTINUATION_DOUBLE_RESUME`](../reference/diagnostics.md#pulse-continuation-double-resume).
 
+### Bounded sequential reads
+
+The [PS1 compiler contract](../architecture/current-contracts.md#bounded-sequential-read-loops-ps1)
+supports dependent storage traversal with an explicit literal bound:
+
+```ts
+let key = ctx.req.header('x-page') || ''
+for (let page = 0; page < 64 && key !== ''; page++) {
+  const stored = await ctx.kv<{ next: string; match: boolean }>('pages').getVersioned(key)
+  if (stored.status !== 'found') return ctx.text('unavailable', { status: 503 })
+  if (stored.value.match) return ctx.text('found')
+  key = stored.value.next
+}
+return ctx.text(key === '' ? 'not found' : 'incomplete', { status: key === '' ? 404 : 503 })
+```
+
+Each iteration can call `s3.getText`, `kv.getVersioned` and `crypto.digestText`
+sequentially, decode registered JSON, update carried values, and exit early.
+The literal cap is checked first and cannot exceed 64. `continue` advances the
+counter; `break` exits the nearest loop. Existing bounded pure inner loops are
+allowed, with the combined iteration-product limit still enforced. Read-loop
+diagnostics reject parallel groups, writes, nested effect loops, arbitrary
+helpers and counter mutation. The source fixture at
+`wasm/test/fixtures/projects/bounded-read-loops/src/index.ts` exercises a
+read/digest/decode traversal and inner pure collection processing.
+
+A bound limits iteration count, not retained memory. PS2 invocation-lifecycle
+work, PS3 memory containment and PS4 production qualification remain separate
+gates. Do not treat PS1's compiler and fixture parity as production acceptance,
+or a chain that reaches its cap as a complete search.
+
 ## Bounded HTTP deadline work
 
 The [selected deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)

@@ -1,7 +1,7 @@
 'use strict';
 
 const ts = require('typescript');
-const { inspectBoundedPureLoop } = require('./bounded-pure-loop.js');
+const { inspectBoundedPureLoop, inspectBoundedReadLoop } = require('./bounded-pure-loop.js');
 const {
   extractFetchChain,
   extractKvNamespaceDeclaration,
@@ -31,6 +31,7 @@ const HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'source-statement',
   'block',
   'if',
+  'read-loop',
   'fetch-single',
   'fetch-group',
   'provider-variable',
@@ -160,6 +161,7 @@ function summarizeHandlerOperation(body) {
       if (entry.elseOperation) countOperation(entry.elseOperation);
     }
     if (entry.kind === 'router-guard') countOperation(entry.body);
+    if (entry.kind === 'read-loop') countOperation(entry.body);
   }
   countOperation(body);
   return Object.freeze({
@@ -594,13 +596,17 @@ function buildPlainHandlerIr(frontend, options = {}) {
         index += 1;
         continue;
       }
-      out.push(buildStatement(statement, aliases));
+      out.push(buildStatement(statement, aliases, true));
       index += 1;
     }
     return Object.freeze(out.flat().filter(Boolean));
   }
 
-  function buildStatement(statement, aliases) {
+  function buildStatement(statement, aliases, fromList = false) {
+    if (!fromList && (ts.isExpressionStatement(statement) || ts.isVariableStatement(statement))) {
+      const statements = buildStatementList([statement], aliases);
+      return statements.length === 1 ? statements[0] : createHandlerOperation('block', { statement: ts.factory.createBlock([statement], true), statements });
+    }
     if (ts.isBlock(statement)) return createHandlerOperation('block', { statement, statements: buildStatementList(statement.statements, aliases) });
     if (ts.isIfStatement(statement)) {
       const thenOperation = buildStatement(statement.thenStatement, new Map(aliases));
@@ -637,12 +643,27 @@ function buildPlainHandlerIr(frontend, options = {}) {
       }
     }
     if (ts.isForStatement(statement)) {
+      const effectForCall = call => extractProviderCall(call, ctxName, aliases) || packageEffectForCall(call);
+      let hasEffect = false;
+      function findEffect(node) {
+        if (ts.isCallExpression(node) && effectForCall(node)) hasEffect = true;
+        ts.forEachChild(node, findEffect);
+      }
+      findEffect(statement);
+      if (hasEffect) {
+        const loop = inspectBoundedReadLoop(statement, { ctxName, effectForCall, namespaceAliases: [...aliases.keys()] });
+        for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED', error.message));
+        if (loop.errors.length) return createHandlerOperation('source-statement', { statement, role: 'read-loop-rejected' });
+        return createHandlerOperation('read-loop', { statement, counter: loop.name, maxIterations: loop.maxIterations,
+          initializer: statement.initializer, test: statement.condition, increment: statement.incrementor,
+          body: buildStatement(statement.statement, new Map(aliases)) });
+      }
       const loop = inspectBoundedPureLoop(statement, { ctxName });
       for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message));
       return createHandlerOperation('source-statement', { statement, role: 'bounded-pure-loop' });
     }
     if (ts.isTryStatement(statement) || ts.isForInStatement(statement) || ts.isForOfStatement(statement) || ts.isWhileStatement(statement) || ts.isDoStatement(statement) || ts.isSwitchStatement(statement)) {
-      diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED', 'Canonical lowering supports if/else and literal-capped pure for loops; other loops, switch, and try/catch are reserved.'));
+      diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED', 'Canonical lowering supports if/else, literal-capped pure for loops and bounded sequential read loops; other loops, switch, and try/catch are reserved.'));
     }
     return createHandlerOperation('source-statement', { statement, role: 'preserved-source' });
   }
@@ -700,6 +721,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
       if (ts.isReturnStatement(statement) && packageEffectForCall(unwrapPackageCall(statement.expression))) continue;
       if (ts.isReturnStatement(statement) && extractFetchChain(statement.expression, ctxName)) continue;
       if (ts.isBlock(statement)) { scanOriginalStatements(statement.statements, aliases); continue; }
+      if (ts.isForStatement(statement)) { scanOriginalStatements([statement.statement], aliases); continue; }
       if (ts.isIfStatement(statement)) {
         scanOriginalStatements(ts.isBlock(statement.thenStatement) ? statement.thenStatement.statements : [statement.thenStatement], aliases);
         if (statement.elseStatement) scanOriginalStatements(ts.isBlock(statement.elseStatement) ? statement.elseStatement.statements : [statement.elseStatement], aliases);

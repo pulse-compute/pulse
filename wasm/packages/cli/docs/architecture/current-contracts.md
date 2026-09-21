@@ -151,6 +151,45 @@ This does not add rollback, preemption, a memory budget, arbitrary helper
 lowering or uniform HTTP exception handling. See
 [bounded application values](../concepts/compilation-and-lowering.md#bounded-application-values).
 
+### Bounded sequential read loops (PS1)
+
+The additional `pulse.bounded-read-loop.v1` contract admits non-nested `for`
+loops whose `let` counter starts at zero, tests a literal cap from 0 through 64
+as the first conjunct, and advances by one. Each loop contains at least one
+directly bound or discarded sequential `s3.getText`, `kv.getVersioned`, or
+`crypto.digestText` site. Dynamic keys and carried values survive suspension.
+Schema text decoding/encoding and result construction are allowed alongside
+the existing pure value operations. Other context authority is read before the
+loop. Counters, the context parameter and inherited KV namespace aliases cannot
+be rebound or shadowed inside it.
+
+Unlabelled `break` exits the nearest loop; `continue` runs that loop's increment
+before retesting. `return` exits the handler. Nested loops must satisfy the
+existing pure contract, including the 65,536 combined iteration-product limit;
+their transfers target the inner loop. Nested effect loops, parallel groups,
+writes, arbitrary calls/awaits, closures and labelled transfers are rejected.
+The public diagnostic is `PULSE_CANONICAL_READ_LOOP_UNSUPPORTED`.
+
+Handler IR owns a read-loop operation containing the initializer, condition,
+body and increment. The Native plan adds a versioned `read-loop` statement with
+an explicit counter local, initial value and increment expression. Plan
+validation independently checks the cap, counter ownership, admitted effects,
+value operations and nesting before generation. Native emits initialization,
+test, body/suspend/resume, increment and exit states, including across dispatcher
+partitions. Effect and continuation tables contain static call sites, not an
+unrolled entry per iteration. Original-source JavaScript retains its authored
+loop; its target is selected explicitly and is never a Native fallback.
+
+PS1 is the compiler foundation. PS2 owns invocation identity, late-result
+protection and cumulative-budget closure; PS3 owns retained-value memory
+containment; PS4 owns packed/provider/application qualification. In particular,
+the internal normalized-generator host still keys its legacy registry by a
+static continuation site and cannot execute repeated sites yet; that is PS2
+work, not the selected original-source JavaScript execution path. PS1 does not
+change the result ABI or release retained values per iteration. Production
+qualification remains open. Applications must handle a continuing chain at
+the cap as incomplete rather than conclude that the searched value is absent.
+
 ## Execution ownership
 
 Pulse-provided host authority is explicit. Fetch, config, secrets, KV, GRIP,

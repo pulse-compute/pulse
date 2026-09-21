@@ -59,6 +59,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'continuation-registry',
       'crypto-runtime-builtin',
       'bounded-app-logic',
+      'bounded-read-loops',
       'time-conformance',
       'time-consumer',
       'request-budget-transport',

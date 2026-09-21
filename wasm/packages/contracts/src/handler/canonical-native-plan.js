@@ -4,6 +4,16 @@ const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v2';
 const CANONICAL_NATIVE_PLAN_HASH_ALGORITHM = 'sha256';
 const CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION = 'pulse.canonical-native-ownership.v1';
 const CANONICAL_PURE_LOOP_LIMITS = Object.freeze({ maxIterations: 1024, maxNestedIterations: 65536 });
+const CANONICAL_READ_LOOP_CONTRACT = Object.freeze({
+  version: 'pulse.bounded-read-loop.v1',
+  maxIterations: 64,
+  maxNestedIterations: CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations,
+  effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText']),
+  valueIntrinsics: Object.freeze(['schema.decode.text', 'schema.encode.text', 'response.text', 'response.json', 'response.custom']),
+  nestedEffects: false,
+  continueTarget: 'increment',
+  breakTarget: 'exit'
+});
 
 const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'local',
@@ -11,6 +21,7 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'effect-group',
   'if',
   'pure-loop',
+  'read-loop',
   'break',
   'continue',
   'return',
@@ -124,7 +135,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
   javascriptRuntime: false,
   promiseSemantics: false,
   asyncify: false,
-  controlFlow: 'structured statements, if/else, and literal-capped pure for loops; no effect iteration',
+  controlFlow: 'structured statements, if/else, literal-capped pure for loops and non-nested bounded sequential read loops',
   suspension: 'explicit effect and effect-group statements with stable continuation IDs',
   values: 'versioned JSON expression tree with stable local identities',
   logging: 'compile-time threshold pruning plus synchronous provider-adapter emission',
@@ -136,6 +147,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 module.exports = Object.freeze({
   CANONICAL_NATIVE_PLAN_VERSION,
   CANONICAL_PURE_LOOP_LIMITS,
+  CANONICAL_READ_LOOP_CONTRACT,
   CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
   CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION,
   CANONICAL_NATIVE_STATEMENT_KINDS,
