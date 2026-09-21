@@ -111,7 +111,7 @@ async function managedHosts(compiled, native, source) {
       }, { signal: abort.signal, maxDurationMs: 100, requestClock: lateClock });
       let failure;
       const rejected = assert.rejects(pending, error => { failure = error; return /CANCELLED|ABORTED/.test(error.code) || error.name === 'AbortError'; });
-      await admitted; abort.abort(); await rejected;
+      await admitted; abort.abort(target === 'generator' && lateFailure ? null : undefined); await rejected;
       const terminal = JSON.stringify(failure.execution);
       assert.equal(providerSignal.aborted, true);
       settle(); await new Promise(resolve => setImmediate(resolve));

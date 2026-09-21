@@ -1493,7 +1493,7 @@ function createCanonicalHostRuntime(options = {}) {
       } catch (error) {
         // A request deadline outranks a capability's concurrent abort result.
         try { executionOptions.requestBudget.check(); } catch (failure) {
-          if (typeof failure.code === 'string' && failure.code.startsWith('PULSE_REQUEST_')) error = failure;
+          if (typeof failure?.code === 'string' && failure.code.startsWith('PULSE_REQUEST_')) error = failure;
         }
         recordTrace(Object.freeze({ type: 'effect-failed', provider: adapter.id, executionId, effectId: effect.id, kind: normalized.kind, error: error.name || 'Error', code: error.code }));
         throw redactRuntimeError(error, sensitiveValues);
