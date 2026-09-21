@@ -51,7 +51,7 @@ remains in the explicit reality profile.
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
 | `canonical-native.wasm` | 5.3 KiB (5,454 bytes) | 4.8 KiB (4,888 bytes) | 10.4% |
-| `bin/main.wasm` | 45.2 KiB (46,237 bytes) | 37.6 KiB (38,490 bytes) | 16.8% |
+| `bin/main.wasm` | 45.5 KiB (46,593 bytes) | 37.8 KiB (38,676 bytes) | 17.0% |
 
 The executable documentation gate rebuilds and measures both variants on
 `1.0.0-beta.5`. These are uncompressed on-disk sizes, not transfer sizes or
