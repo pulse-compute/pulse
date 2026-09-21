@@ -29,7 +29,10 @@ ${jwt.map((code, i) => `      case ${i + 1}: return "PULSE_JWT_${code}"`).join('
   if (__pulse_fastly_last_error != PULSE_ERROR_SCHEMA) return ""
   if (__pulse_fastly_error_stage == 21) return "PULSE_BODY_TOO_LARGE"
   if (__pulse_fastly_error_stage == 44) return "PULSE_SCHEMA_CONTENT_TYPE"
-  if (__pulse_fastly_error_stage >= 50 && __pulse_fastly_error_stage <= 54)
+  // Stages 56/57 reject ScalarRecord and bounded nested JSON data.
+  // Stage 55 remains a fatal schema-ID/configuration error.
+  if ((__pulse_fastly_error_stage >= 50 && __pulse_fastly_error_stage <= 54)
+    || __pulse_fastly_error_stage == 56 || __pulse_fastly_error_stage == 57)
     return __pulse_application_failed_schema == 2 ? "PULSE_SCHEMA_ENCODE" : "PULSE_SCHEMA_DECODE"
   return ""
 }
