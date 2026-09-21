@@ -310,7 +310,8 @@ function collectExpressions(plan) {
         add(statement.test);
         walkStatements(statement.then);
         walkStatements(statement.else);
-      } else if (statement.kind === 'pure-loop') {
+      } else if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+        if (statement.kind === 'read-loop') { add(statement.initial); add(statement.increment); }
         add(statement.test);
         walkStatements(statement.body);
       }
@@ -694,7 +695,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return lines;
   }
 
-  function compileSequence(statements, nextBlock, boundary) {
+  function compileSequence(statements, nextBlock, boundary, loopTargets) {
     const previousBoundary = activeBoundary;
     activeBoundary = boundary;
     let next = nextBlock;
@@ -712,14 +713,23 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
           && test.left.kind === 'local' && test.left.id === routerCursor && test.right.kind === 'literal'
           && plan.routing.entries.find(entry => entry.index === test.right.value);
         if (entry) protectedEntries.add(entry.index);
-        const thenBlock = compileSequence(statement.then || [], next, entry ? { nextBlock: next, nextIndex: entry.nextIndex } : boundary);
-        const elseBlock = compileSequence(statement.else || [], next, boundary);
+        const thenBlock = compileSequence(statement.then || [], next, entry ? { nextBlock: next, nextIndex: entry.nextIndex } : boundary, loopTargets);
+        const elseBlock = compileSequence(statement.else || [], next, boundary, loopTargets);
         next = block('branch', { test: exprName(statement.test), thenBlock, elseBlock });
       } else if (statement.kind === 'effect') {
         const resume = resumeAction([statement.effectId], [{ effectId: statement.effectId, ...(statement.result || {}) }], next);
         next = suspendBlock([statement.effectId], statement.continuationId, resume);
       } else if (statement.kind === 'pure-loop') {
         next = block('action', { lines: pureLines([statement]), next });
+      } else if (statement.kind === 'read-loop') {
+        const guard = block('branch', { test: exprName(statement.test), thenBlock: undefined, elseBlock: next });
+        const increment = block('action', { lines: [`__pulse_drop(${exprName(statement.increment)}())`], next: guard });
+        const body = compileSequence(statement.body, increment, boundary, { break: next, continue: increment });
+        blocks[guard].thenBlock = body;
+        next = block('action', { lines: [`${localName(statement.localId)} = ${exprName(statement.initial)}()`], next: guard });
+      } else if (statement.kind === 'break' || statement.kind === 'continue') {
+        if (!loopTargets) fail('Loop transfer requires an enclosing read loop.', { kind: statement.kind });
+        next = loopTargets[statement.kind];
       } else if (statement.kind === 'effect-group') {
         const resume = resumeAction(statement.effectIds || [], statement.results || [], next);
         next = suspendBlock(statement.effectIds || [], statement.continuationId, resume);

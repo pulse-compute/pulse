@@ -5,7 +5,12 @@ const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const { executeCanonicalNativePlanSpine } = require('./spine/canonical-native-plan.js');
-const { inspectBoundedPureLoop } = require('./spine/bounded-pure-loop.js');
+const { inspectBoundedPureLoop, inspectBoundedReadLoop } = require('./spine/bounded-pure-loop.js');
+
+function containsYield(node) {
+  if (ts.isYieldExpression(node)) return true;
+  return Boolean(ts.forEachChild(node, child => containsYield(child) || undefined));
+}
 
 function loadNativePlanContract() {
   try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-plan'); }
@@ -916,20 +921,30 @@ class NativePlanBuilder {
     if (ts.isVariableStatement(statement)) return this.lowerVariableStatement(statement, scope, pathParts, depth);
 
     if (ts.isForStatement(statement)) {
-      const loop = inspectBoundedPureLoop(statement, { ctxName: this.ctxName });
-      for (const error of loop.errors) this.fail(error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
+      const readLoop = containsYield(statement);
+      const loop = readLoop
+        ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
+        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName });
+      for (const error of loop.errors) this.fail(error.node, readLoop ? 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED' : 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
       if (loop.errors.length) return [];
+      if (readLoop && (this.readLoopDepth || this.pureLoopDepth)) {
+        this.fail(statement, 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED', 'Effect loops cannot nest inside another loop.'); return [];
+      }
       const loopScope = new Map(scope);
       const local = this.allocateLocal(loop.name, 'number', statementPath, 'let');
       loopScope.set(loop.name, local);
-      const previousDepth = this.pureLoopDepth || 0;
-      this.pureLoopDepth = previousDepth + 1;
+      const depthField = readLoop ? 'readLoopDepth' : 'pureLoopDepth';
+      const previousDepth = this[depthField] || 0;
+      this[depthField] = previousDepth + 1;
       const body = this.statement(statement.statement, loopScope, [...pathParts, 'body'], depth + 1);
-      this.pureLoopDepth = previousDepth;
-      return [Object.freeze({ kind: 'pure-loop', localId: local.id, maxIterations: loop.maxIterations,
+      this[depthField] = previousDepth;
+      return [Object.freeze({ kind: readLoop ? 'read-loop' : 'pure-loop', localId: local.id, maxIterations: loop.maxIterations,
+        ...(readLoop ? { version: contract.CANONICAL_READ_LOOP_CONTRACT.version,
+          initial: this.expression(statement.initializer.declarations[0].initializer, loopScope),
+          increment: this.expression(statement.incrementor, loopScope) } : {}),
         test: this.expression(statement.condition, loopScope), body: Object.freeze(body), statementPath })];
     }
-    if ((ts.isBreakStatement(statement) || ts.isContinueStatement(statement)) && this.pureLoopDepth && !statement.label) {
+    if ((ts.isBreakStatement(statement) || ts.isContinueStatement(statement)) && (this.pureLoopDepth || this.readLoopDepth) && !statement.label) {
       return [Object.freeze({ kind: ts.isBreakStatement(statement) ? 'break' : 'continue', statementPath })];
     }
 
@@ -1203,7 +1218,11 @@ function walkStatements(statements, visitor) {
       walkExpression(statement.test, visitor.expression);
       walkStatements(statement.then, visitor);
       walkStatements(statement.else, visitor);
-    } else if (statement.kind === 'pure-loop') {
+    } else if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+      if (statement.kind === 'read-loop') {
+        walkExpression(statement.initial, visitor.expression);
+        walkExpression(statement.increment, visitor.expression);
+      }
       walkExpression(statement.test, visitor.expression);
       walkStatements(statement.body, visitor);
     } else if (statement.kind === 'return') walkExpression(statement.value, visitor.expression);
@@ -1240,7 +1259,8 @@ function summarizeNativePlan(body, locals, effects, continuations) {
         summary.expressionCount += countExpression(statement.test);
         visitStatements(statement.then, depth + 1);
         visitStatements(statement.else, depth + 1);
-      } else if (statement.kind === 'pure-loop') {
+      } else if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+        if (statement.kind === 'read-loop') summary.expressionCount += countExpression(statement.initial) + countExpression(statement.increment);
         summary.expressionCount += countExpression(statement.test);
         visitStatements(statement.body, depth + 1);
       } else if (statement.kind === 'return') {
@@ -1287,30 +1307,60 @@ function validateResult(result, fail, localIds, detail = {}) {
 }
 
 function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
-  function validateLoops(statements, counters = new Set(), product = 1) {
+  const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
+  function validateLoops(statements, counters = new Set(), product = 1, mode = 'outside') {
     for (const statement of statements || []) {
-      if (statement.kind === 'pure-loop') {
+      if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+        const readLoop = statement.kind === 'read-loop';
+        const label = readLoop ? 'read loop' : 'pure loop';
         const limit = statement.maxIterations;
-        if (!localIds.has(statement.localId) || counters.has(statement.localId)) fail('pure loop requires its own local counter');
-        if (!Number.isInteger(limit) || limit < 0 || limit > contract.CANONICAL_PURE_LOOP_LIMITS.maxIterations
-          || product * Math.max(1, limit) > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail('pure loop iteration bound is invalid');
+        if (!localIds.has(statement.localId) || counters.has(statement.localId)) fail(`${label} requires its own local counter`);
+        if (!Number.isInteger(limit) || limit < 0 || limit > (readLoop ? contract.CANONICAL_READ_LOOP_CONTRACT.maxIterations : contract.CANONICAL_PURE_LOOP_LIMITS.maxIterations)
+          || product * Math.max(1, limit) > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(`${label} iteration bound is invalid`);
+        if (readLoop) {
+          if (counters.size) fail('read loops cannot nest inside another loop');
+          if (statement.version !== contract.CANONICAL_READ_LOOP_CONTRACT.version) fail('read loop contract version is invalid');
+          if (statement.initial?.kind !== 'literal' || statement.initial.value !== 0) fail('read loop must initialize its counter to zero');
+          const step = statement.increment;
+          if (step?.target?.kind !== 'local' || step.target.id !== statement.localId
+            || !(step.kind === 'update' && step.operator === '++'
+              || step.kind === 'assignment' && step.operator === '+=' && step.value?.kind === 'literal' && step.value.value === 1)) fail('read loop increment must advance its own counter by one');
+        }
         let bound = statement.test;
         while (bound && bound.kind === 'binary' && bound.operator === '&&') bound = bound.left;
         if (!bound || bound.kind !== 'binary' || bound.operator !== '<' || bound.left?.kind !== 'local' || bound.left.id !== statement.localId
-          || bound.right?.kind !== 'literal' || bound.right.value !== limit) fail('pure loop test must start with its declared literal cap');
+          || bound.right?.kind !== 'literal' || bound.right.value !== limit) fail(`${label} test must start with its declared literal cap`);
         const active = new Set([...counters, statement.localId]);
         checkPureExpression(statement.test, active, true);
-        validateLoops(statement.body, active, product * Math.max(1, limit));
+        if (!Array.isArray(statement.body)) { fail(`${label} body must be an array`); continue; }
+        if (readLoop) {
+          let sites = 0;
+          const countSites = item => { if (item.kind === 'effect') sites += 1; };
+          countSites.expression = () => {};
+          walkStatements(statement.body, countSites);
+          if (!sites) fail('read loop requires a sequential effect site');
+        }
+        validateLoops(statement.body, active, product * Math.max(1, limit), readLoop ? 'read' : 'pure');
       } else {
-        if (counters.size && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
-        if (!counters.size && ['break', 'continue'].includes(statement.kind)) fail('loop transfer outside pure loop');
+        if (mode === 'pure' && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
+        if (mode === 'read' && !['local', 'expression', 'if', 'break', 'continue', 'return', 'effect'].includes(statement.kind)) fail('read loop contains an unsupported statement', { kind: statement.kind });
+        if (!counters.size && ['break', 'continue'].includes(statement.kind)) fail('loop transfer outside a loop');
         if (counters.size) {
           if (statement.kind === 'local' && counters.has(statement.localId)) fail('pure loop counter cannot be rebound');
-          checkPureExpression(statement.value || statement.expression || statement.test, counters);
+          if (mode === 'pure') checkPureExpression(statement.value || statement.expression || statement.test, counters);
+          else checkReadExpression(statement.value || statement.expression || statement.test, counters);
+        }
+        if (mode === 'read' && statement.kind === 'effect') {
+          const effect = effects.get(statement.effectId);
+          if (!effect || !contract.CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) fail('read loop effect kind is not admitted');
+          for (const result of [statement.result, effect?.result]) {
+            if (!['bind', 'discard'].includes(result?.mode) || counters.has(result?.localId)) fail('read loop effect result cannot replace the counter or return an effect');
+          }
+          for (const input of effect?.inputs || []) checkReadExpression(input.value, counters, true);
         }
         if (statement.kind === 'if') {
-          validateLoops(statement.then, counters, product);
-          validateLoops(statement.else, counters, product);
+          validateLoops(statement.then, counters, product, mode);
+          validateLoops(statement.else, counters, product, mode);
         }
       }
     }
@@ -1319,6 +1369,13 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     walkExpression(expression, node => {
       if (node.kind === 'intrinsic' || node.kind === 'context-read' || (node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length))) fail('pure loop contains a non-value call or context read');
       if (['assignment', 'update'].includes(node.kind) && (test || (node.target?.kind === 'local' && counters.has(node.target.id)))) fail('pure loop test or counter mutation is invalid');
+    });
+  }
+  function checkReadExpression(expression, counters, readonly = false) {
+    walkExpression(expression, node => {
+      if (node.kind === 'context-read' || node.kind === 'intrinsic' && !contract.CANONICAL_READ_LOOP_CONTRACT.valueIntrinsics.includes(node.name)
+        || node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length)) fail('read loop contains an unsupported value operation');
+      if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
     });
   }
   validateLoops(plan.entry && plan.entry.body);

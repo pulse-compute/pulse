@@ -447,6 +447,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'literal-capped pure loops, string trim, target parity and pre-write failure containment'
   }),
+  'bounded-read-loops': nodeTask('test/lowering/assert-bounded-read-loops.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'bounded sequential read loop admission, plan validation, control flow and Native/JavaScript parity'
+  }),
   'logging-lowering': nodeTask('test/lowering/assert-logging-lowering.cjs', {
     evidence: 'native',
     timeoutMs: 120000,
@@ -931,6 +936,7 @@ const profiles = Object.freeze({
     'canonical-api-lowering',
     'canonical-native-plan',
     'bounded-app-logic',
+    'bounded-read-loops',
     'logging-lowering',
     'canonical-router-lowering',
     'canonical-router-terminal-middleware',

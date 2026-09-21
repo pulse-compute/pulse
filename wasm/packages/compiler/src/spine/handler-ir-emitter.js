@@ -276,6 +276,8 @@ function emitCanonicalHandlerGenerator(ir) {
           emitOperation(entry.thenOperation),
           entry.elseOperation ? emitOperation(entry.elseOperation) : undefined
         );
+      case 'read-loop':
+        return factory.updateForStatement(entry.statement, entry.initializer, entry.test, entry.increment, emitOperation(entry.body));
       case 'fetch-single': {
         const { candidate, site, continuation } = entry;
         const marker = fetchEffectExpression(factory, sourceFile, site, candidate.chain);
