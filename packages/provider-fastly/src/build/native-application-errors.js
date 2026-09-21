@@ -66,6 +66,7 @@ function driverLoop(plan) {
     let schema = __pulse_application_failed_schema
     let fatal = failure != 0 && __pulse_application_code().length == 0
 ${(plan.effects || []).map((_, index) => `    if (__pulse_effect_pending_${index} != 0) {
+      const invocation = unchecked(__pulse_invocation_tickets[${index}])
       __pulse_application_clear()
       let result = host_value_undefined()
       if (unchecked(__pulse_fastly_pending_mode[${index}]) != PULSE_FASTLY_PENDING_NONE) {
@@ -81,7 +82,7 @@ ${(plan.effects || []).map((_, index) => `    if (__pulse_effect_pending_${index
         __pulse_application_clear()
         result = host_value_undefined()
       }
-      if (pulse_set_effect_result(${index}, result) != 1) { __pulse_fastly_fail(PULSE_ERROR_STATE, 101, ${index}); return }
+      if (__pulse_invocation_settle(${index}, invocation, result) != 1) { __pulse_fastly_fail(PULSE_ERROR_STATE, 101, ${index}); __pulse_fastly_jwt_send_error(); return }
     }`).join('\n')}
     __pulse_fastly_last_error = failure; __pulse_fastly_error_stage = stage; __pulse_fastly_error_effect = effect
     __pulse_fastly_jwt_error = jwt; __pulse_application_failed_schema = schema

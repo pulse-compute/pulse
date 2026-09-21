@@ -4,7 +4,7 @@ const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
 const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v4';
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
-const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v3';
+const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v4';
 
 const CANONICAL_NATIVE_RUN_STATUS = Object.freeze({
   COMPLETE: 0,
@@ -158,6 +158,7 @@ const CANONICAL_NATIVE_POLICY = Object.freeze({
   suspension: 'effect_begin records descriptors before one explicit suspension boundary; results are injected before pulse_resume',
   groupedEffects: 'all group members begin before one suspension boundary and all results must be ready before resume',
   incompleteResume: 'rejected without advancing the program counter or consuming available results',
+  resultFreshness: 'managed hosts authenticate single-use invocation tickets; raw ABI v2 index/handle exports are trusted-host operations',
   authority: 'request data and consequential effects remain host-owned; guest control flow remains authoritative',
   schemaJson: 'normalized registry IR generates json-as 1.5.0 guest codecs; host preflight enforces shared policy and structured errors',
   schemaBodyOwnership: 'request and fetched-response bytes are snapshotted once; application JSON values are encoded before suspension'

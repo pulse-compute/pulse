@@ -180,15 +180,51 @@ partitions. Effect and continuation tables contain static call sites, not an
 unrolled entry per iteration. Original-source JavaScript retains its authored
 loop; its target is selected explicitly and is never a Native fallback.
 
-PS1 is the compiler foundation. PS2 owns invocation identity, late-result
-protection and cumulative-budget closure; PS3 owns retained-value memory
-containment; PS4 owns packed/provider/application qualification. In particular,
-the internal normalized-generator host still keys its legacy registry by a
-static continuation site and cannot execute repeated sites yet; that is PS2
-work, not the selected original-source JavaScript execution path. PS1 does not
-change the result ABI or release retained values per iteration. Production
-qualification remains open. Applications must handle a continuing chain at
-the cap as incomplete rather than conclude that the searched value is absent.
+PS1 is the compiler foundation. PS2 supplies the invocation lifecycle below;
+PS3 owns retained-value memory containment and PS4 owns packed/provider/application
+qualification. Neither PS1 nor PS2 releases retained values per iteration.
+Production qualification remains open. Applications must handle a continuing
+chain at the cap as incomplete rather than conclude that the searched value is
+absent.
+
+### Read-loop invocation lifecycle (PS2)
+
+`pulse.effect-invocation.v1` distinguishes reusable static effect/continuation
+sites from each execution-owned invocation. The internal normalized-generator
+host now records a distinct continuation for each visit, including concurrent
+executions with the same caller-supplied execution label. Node Native effect and
+continuation traces include invocation IDs while retaining static site IDs.
+Original-source JavaScript continues to use its per-call effect identities.
+
+The managed Native controller (`pulse.canonical-native-host.v4`) accepts a pending effect's opaque ticket in
+`setEffectResult(ticket, result)`. Object identity authenticates the ticket;
+copied fields, foreign executions, old loop visits and duplicate settlement fail
+with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or
+entering the guest. The ticket is consumed before injection. Completion, failure,
+explicit close and cancellation invalidate pending tickets. An incomplete resume
+still preserves the current pending result set for a valid retry.
+
+Fastly's canonical Native platform driver uses request-instance-owned sequence
+tickets, checks the captured ticket before injecting each result, and closes its
+lifecycle on terminal return. A second entry into the same driver instance is
+rejected. Native guest ABI v2 is unchanged: direct calls to
+`pulse_set_effect_result(index, handle)` and other raw control exports remain
+trusted-host operations. These exports do not authenticate an invocation epoch;
+custom hosts must enforce freshness themselves. The managed ticket boundary is
+not a guest-enforced sandbox against a malicious host.
+
+Managed Node Native, internal-generator and original-source JavaScript hosts
+default to 1,024 cumulative effect invocations and retain their host-only
+`maxEffects` option. The canonical Fastly Native platform driver has a fixed
+1,024 ceiling, advertised in its artifact's `effectInvocations` policy; it adds
+no project configuration field. Each guest-requested group member counts,
+including one suppressed by an earlier application error. Reaching the ceiling
+is allowed; attempting the next invocation fails before provider dispatch
+(Fastly state error 1007, stage 170). Invalid Fastly lifecycle use is stage 171.
+Counts span loop visits, sequential loops, groups and error handling rather than
+counting static table entries. An inherited monotonic request deadline is never
+restarted on a loop visit; dispatch, settlement and resume remain fenced by it.
+Late asynchronous success or failure cannot continue a cancelled execution.
 
 ## Execution ownership
 

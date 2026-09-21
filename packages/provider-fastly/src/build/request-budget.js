@@ -18,6 +18,7 @@ function instrumentRequestBudget(input, duration, plan) {
   const handles = new StaticArray<i32>(2)
   const downstreamStatus`);
   replace('function host_effect_begin(effectIndex: i32, payload: i32): void {', 'function host_effect_begin(effectIndex: i32, payload: i32): void {\n  if (!__request_check(effectIndex)) return;');
+  replace('function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', 'function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {\n  if (!__request_check(index)) return 0;');
   replace('  let runStatus = pulse_start()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  let runStatus = pulse_start()');
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {', `function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
   if (!__request_check(effectIndex)) return 0;
