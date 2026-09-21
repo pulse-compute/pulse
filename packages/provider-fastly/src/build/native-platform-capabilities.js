@@ -1048,6 +1048,7 @@ function generateSchemaRuntime(plan) {
       body.push(...scalarRecordProjectionLines(node));
     } else if (node.kind === 'object') {
       body.push('  if (input.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 50, -1); return 0 }');
+      if (node.additionalProperties) body.push('  if (checkDuplicates && input.duplicateJsonKeys) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 57, -1); return 0 }');
       body.push('  const output = host_value_object()');
       fields.forEach(({ field, apply }, fieldIndex) => {
         body.push(`  const key_${currentIndex}_${fieldIndex} = __pulse_fastly_string_value(${quote(field.name)})`);
@@ -1059,6 +1060,12 @@ function generateSchemaRuntime(plan) {
         body.push(`  host_value_object_set(output, key_${currentIndex}_${fieldIndex}, projected_${currentIndex}_${fieldIndex})`);
         if (!field.required) body.push('  }');
       });
+      if (node.additionalProperties) {
+        body.push('  for (let index = 0; index < input.keys.length; index++) {', '    const key = unchecked(input.keys[index])');
+        if (node.fields.length) body.push(`    if (${node.fields.map(field => `key == ${quote(field.name)}`).join(' || ')}) continue`);
+        body.push('    const item = __pulse_fastly_copy_json(unchecked(input.values[index]), checkDuplicates)',
+          '    if (item <= 0) return 0', '    host_value_object_set(output, __pulse_fastly_string_value(key), item)', '  }');
+      }
       body.push('  return output');
     } else if (node.kind === 'string') {
       body.push('  if (input.kind != PULSE_VALUE_STRING) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 52, -1); return 0 }');

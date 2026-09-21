@@ -1,6 +1,19 @@
 import { Pulse } from '../src/index.js'
-import { schema, type ScalarRecord, type JsonObject, type JsonValue } from '../src/schema.js'
+import { schema, type ScalarRecord, type JsonObject, type JsonValue, type OpenObject } from '../src/schema.js'
 
+// @ts-expect-error declared fields retain their types
+const wrongKnown: OpenObject<{ source: string }> = { source: 1 }
+// @ts-expect-error declared required fields cannot become extras
+const missingKnown: OpenObject<{ source: string }> = { extra: true }
+// @ts-expect-error extra values must be JSON
+const badExtra: OpenObject<{ source: string }> = { source: 'test', extra: undefined }
+// @ts-expect-error present undefined is invalid even for optional known fields
+const badOptional: OpenObject<{ source: string; note?: string }> = { source: 'test', note: undefined }
+const open: OpenObject<{ source: string }> = { source: 'test', extra: [] }
+// @ts-expect-error known fields are readonly
+open.source = 'changed'
+// @ts-expect-error extra fields are readonly
+open.extra = true
 // @ts-expect-error object-root dynamic fields do not admit arrays
 const objectArray: JsonObject = []
 // @ts-expect-error present undefined is not JSON

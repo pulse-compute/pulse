@@ -207,8 +207,8 @@ function parseNonzeroJson(result, expectedStatus, stream = 'stdout') {
 function assertNestedJsonCli(projectRoot) {
   copyFixture(projectRoot);
   const schemaFile = path.join(projectRoot, 'src', 'schemas.ts');
-  const schemaSource = `import { defineSchemaRegistry, schema, type JsonObject, type JsonValue } from '@pulse-compute/pulse/schema';
-interface Event { properties: JsonObject; data?: JsonValue; }
+  const schemaSource = `import { defineSchemaRegistry, schema, type JsonObject, type JsonValue, type OpenObject } from '@pulse-compute/pulse/schema';
+type Event = OpenObject<{ properties: JsonObject; data?: JsonValue; context: OpenObject<{ source: string }> }>
 export default defineSchemaRegistry({ schemas: {
   'app.Event': schema<Event>({ json: { maxDepth: 8, maxNodes: 32 } }),
 } });
@@ -220,7 +220,7 @@ export default defineSchemaRegistry({ schemas: {
   return ctx.json(value, { schema: 'app.Event' });
 }
 `);
-  const value = { properties: { items: [null, { active: true, label: 'é😀' }] }, data: [0, false] };
+  const value = { properties: { items: [null, { active: true, label: 'é😀' }] }, data: [0, false], context: { source: 'cli', extra: [{ active: true }] }, extension: { array: [] } };
   fs.writeFileSync(path.join(projectRoot, 'tests', 'pulse.harness.ts'), `export default { cases: [{
   name: 'nested-json',
   request: { method: 'POST', path: '/', headers: { 'content-type': 'application/json' }, body: ${JSON.stringify(JSON.stringify(value))} },
@@ -230,6 +230,7 @@ export default defineSchemaRegistry({ schemas: {
 `);
   const inspected = parseJson(run(['inspect', '--profile', 'node', '--json'], projectRoot));
   const schema = inspected.compiler.schemas.registry.schemas[0];
+  assert.deepEqual(schema.root.additionalProperties, { kind: 'json-value' });
   assert.equal(schema.jsonLimits.maxDepth, 8);
   assert.equal(schema.jsonLimits.maxNodes, 32);
   assert.equal(schema.jsonLimits.maxArrayItems, 1024);
@@ -247,6 +248,9 @@ export default defineSchemaRegistry({ schemas: {
     const decoded = codecs.decodeJsonText('app.Event', JSON.stringify(value));
     assert.deepEqual(decoded, value);
     assert.ok(Object.isFrozen(decoded.properties.items[1]));
+    assert.ok(Object.isFrozen(decoded.context.extra[0]));
+    assert.throws(() => codecs.encodeJsonText('app.Event', { ...value, context: { source: 1 } }), { code: 'PULSE_SCHEMA_ENCODE' });
+    assert.throws(() => codecs.decodeJsonText('app.Event', JSON.stringify(value).replace('"source":"cli"', '"source":"cli","source":"duplicate"')));
   }
   fs.writeFileSync(schemaFile, schemaSource.replace('maxDepth: 8', 'maxDepth: 0'));
   const invalid = parseNonzeroJson(run(['doctor', '--profile', 'node', '--json'], projectRoot), 3, 'stderr');

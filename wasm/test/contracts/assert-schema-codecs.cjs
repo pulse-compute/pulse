@@ -15,6 +15,7 @@ const {
   await require('../support/schema-optional-properties.cjs').assertSchemaOptionalProperties();
   await require('../support/schema-scalar-records.cjs').assertSchemaScalarRecords();
   await require('../support/schema-nested-json.cjs').assertSchemaNestedJson();
+  await require('../support/schema-nested-json.cjs').assertSchemaNestedJson(true);
   assert.equal(proof.version, SCHEMA_CODEC_PROOF_VERSION);
   assert.equal(proof.authority.registry, 'pulse.schema');
   assert.equal(proof.authority.fullCodecRealization, true);

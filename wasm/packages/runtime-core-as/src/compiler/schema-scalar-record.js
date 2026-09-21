@@ -64,6 +64,8 @@ function generateScalarRecordTextValidation(root, schemaIndex) {
       const record = node.kind === 'scalar-record';
       const fields = record ? [] : node.fields.filter(field => schemaHasScalarRecord(field.value) || schemaHasNestedJson(field.value)).map(field => ({ ...field, fn: emit(field.value) }));
       lines.push('  if (source.text.charCodeAt(start) != 123) return;');
+      if (node.additionalProperties) lines.push('  if (duplicates.includes(start)) abort("Duplicate OpenObject key", "pulse-schema-codecs", 0, 0);');
+      const extra = node.additionalProperties ? emit(node.additionalProperties) : undefined;
       if (record) lines.push('  const names = new Set<string>();');
       fields.forEach((_, index) => lines.push(`  let at_${index}: i32 = -1;`));
       lines.push('  let i = source.space(start + 1);', '  while (i < source.text.length && source.text.charCodeAt(i) != 125) {');
@@ -72,6 +74,10 @@ function generateScalarRecordTextValidation(root, schemaIndex) {
         lines.push('    if (names.has(key)) abort("Duplicate ScalarRecord key", "pulse-schema-codecs", 0, 0);', '    names.add(key);');
         lines.push(`    if (names.size > ${node.limits.maxKeys}) abort("Too many ScalarRecord keys", "pulse-schema-codecs", 0, 0);`);
       } else fields.forEach((field, index) => lines.push(`    if (key == ${JSON.stringify(field.name)}) at_${index} = i;`));
+      if (extra) {
+        const unknown = node.fields.map(field => `key != ${JSON.stringify(field.name)}`).join(' && ') || 'true';
+        lines.push(`    if (${unknown}) ${extra}(source, i${argument});`);
+      }
       lines.push('    i = source.space(source.end(i));', '    if (source.text.charCodeAt(i) != 44) break;', '    i = source.space(i + 1);', '  }');
       fields.forEach((field, index) => lines.push(`  if (at_${index} >= 0) ${field.fn}(source, at_${index}${argument});`));
     }

@@ -15,11 +15,11 @@ const {
   semanticValueDigest
 } = require('@pulse-compute/wasm-contracts/schema-json/semantic-trace');
 
-const CANONICAL_SCHEMA_BUNDLE_VERSION = 'pulse.canonical-schema-bundle.v3';
-const CANONICAL_SCHEMA_REGISTRY_VERSION = 'pulse.canonical-schema-registry.v3';
-const CANONICAL_SCHEMA_CODECS_VERSION = 'pulse.canonical-schema-codecs.v3';
-const JAVASCRIPT_SCHEMA_CODEC_VERSION = 'pulse.javascript-schema-codec.v3';
-const NATIVE_SCHEMA_CODEC_VERSION = 'pulse.native-json-as-schema-codec.v3';
+const CANONICAL_SCHEMA_BUNDLE_VERSION = 'pulse.canonical-schema-bundle.v4';
+const CANONICAL_SCHEMA_REGISTRY_VERSION = 'pulse.canonical-schema-registry.v4';
+const CANONICAL_SCHEMA_CODECS_VERSION = 'pulse.canonical-schema-codecs.v4';
+const JAVASCRIPT_SCHEMA_CODEC_VERSION = 'pulse.javascript-schema-codec.v4';
+const NATIVE_SCHEMA_CODEC_VERSION = 'pulse.native-json-as-schema-codec.v4';
 
 function stableObject(value) {
   if (Array.isArray(value)) return value.map(stableObject);
@@ -256,6 +256,10 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push('      const fieldPath = __pulse_schema_pointer(path, field.name);');
   lines.push('      const fieldValue = __pulse_schema_data_value(value, field.name, mode, schemaId, fieldPath, source);');
   lines.push('      Object.defineProperty(output, field.name, { enumerable: true, configurable: false, writable: false, value: __pulse_schema_apply_node(field.value, fieldValue, mode, schemaId, fieldPath, source) });');
+  lines.push('    }');
+  lines.push('    if (node.additionalProperties) for (const key of Object.keys(value)) {');
+  lines.push('      if (node.fields.some(field => field.name === key)) continue;');
+  lines.push('      Object.defineProperty(output, key, { enumerable: true, value: value[key] });');
   lines.push('    }');
   lines.push('    return Object.freeze(output);');
   lines.push('  }');

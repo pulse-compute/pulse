@@ -1,6 +1,6 @@
 'use strict';
 
-const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v2';
+const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v3';
 const SCHEMA_DECLARATION_BRAND = Symbol.for('pulse.schema-declaration.v1');
 const RESPONSE_CASE_DECLARATION_BRAND = Symbol.for('pulse.response-case-declaration.v1');
 const SCHEMA_REGISTRY_BRAND = Symbol.for('pulse.schema-registry.v1');
