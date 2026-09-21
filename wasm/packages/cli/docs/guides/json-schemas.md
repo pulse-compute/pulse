@@ -38,7 +38,7 @@ The schema subset is intentionally portable:
 
 - an object root with required or question-mark optional property signatures;
 - `string`, `boolean`, and finite JSON `number`;
-- `Int32`, `Uint32`, and bounded `ScalarRecord` marker types imported with `import type`;
+- `Int32`, `Uint32`, `ScalarRecord`, `JsonValue`, and `JsonObject` marker types imported with `import type`;
 - nested object types and arrays;
 - string-literal enums such as `'admin' | 'member'`;
 - one supported type unioned with `null`.
@@ -71,9 +71,10 @@ than silently omitted. Inherited properties do not supply schema data, and
 accessors are rejected without invoking their getters. Required properties retain
 their existing validation. Decoded values remain deeply immutable.
 
-Schema registry IR and codec inputs use v3 to record requiredness and bounded
-scalar records. Pulse generates Native value projections for schemas containing
-optional fields or `ScalarRecord`, using its internal `json-as` backend. Other
+Schema registry IR and codec inputs use v4 to record requiredness, scalar records,
+nested JSON and effective JSON limits. Pulse generates Native value projections
+for schemas containing optional fields, dynamic JSON or explicit JSON limits,
+using its internal `json-as` backend. Other
 required-only schemas retain their struct codec.
 There is no application decorator, serializer hook, or JavaScript fallback.
 The existing semantic cross-target and encoded-byte-bound contracts apply.
@@ -135,6 +136,95 @@ have deterministic encoding for a fixed target, but key order and number spellin
 are not a portable byte-canonicalization contract. Construct a new record when
 editing decoded values. TypeScript checks scalar value types and readonly access;
 the compiled codecs enforce the numeric and size constraints at runtime.
+
+## Configurable nested JSON
+
+`JsonValue` admits strings, finite numbers, booleans, null, arrays and objects
+recursively. `JsonObject` requires an object at that field's root. Both preserve
+admitted nested members and are immutable TypeScript types:
+
+```ts
+import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
+import type { JsonObject, JsonValue } from '@pulse-compute/pulse/schema'
+
+interface Event {
+  event: string
+  context: { source: string }
+  properties: JsonObject
+  data?: JsonValue
+}
+
+export default defineSchemaRegistry({ schemas: {
+  'app.Event': schema<Event>({ json: { maxDepth: 64, maxNodes: 8192 } }),
+} })
+```
+
+The enclosing schema still has a declared object root. Its known fields retain
+their validators, requiredness and optionality; undeclared fields in `context`
+are dropped. `properties` can contain arbitrary admitted nesting. This does not
+add typed open objects, arbitrary recursive TypeScript types, or an interpretation
+of `unknown`. `ScalarRecord` keeps its existing fixed limits.
+
+Import aliases, local type aliases and relative type-only re-exports preserve
+marker identity. Options and the nested `json` object must be literal objects;
+each supplied limit must be a positive integer literal that fits i32. Spreads,
+computed names, getters, variables, calls, unknown settings and overflowing
+values are rejected during extraction. The compiler does not execute options.
+
+A schema containing either JSON marker uses these defaults. Passing options to
+a schema without a marker explicitly selects the same whole-document admission
+policy. A schema without markers or options retains its prior admission policy.
+Overrides replace individual defaults and become part of schema/codec identity.
+
+| Setting | Default | Meaning |
+|---|---:|---|
+| `maxTextBytes` | 65,536 | Original input and encoded output UTF-8 bytes, including input whitespace. |
+| `maxDepth` | 32 | Container depth across the entire document; its object root has depth one. |
+| `maxNodes` | 4,096 | Containers and scalar values across the entire document; keys are not nodes. |
+| `maxObjectMembers` | 256 | Members in each object. |
+| `maxArrayItems` | 1,024 | Items in each array. |
+| `maxKeyLength` | 256 | Decoded UTF-16 code units in each key. |
+| `maxStringLength` | 16,384 | Decoded UTF-16 code units in each string value. |
+| `maxJsonBytes` | 65,536 | Conservative JSON budget, independently of original text bytes. |
+
+The effective text bound is the smaller of `maxTextBytes` and the profile's
+existing `schemas.maxBytes`. Raise both when a larger body is intended. Native
+currently supports `maxDepth` through 128 and rejects a larger setting during
+compilation with `PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED`. Fastly generates parser
+and serializer capacity to accommodate the selected policy, including depths
+above its former 64-level implementation limit. Settings are never silently
+clamped. An explicitly selected JavaScript target does not use that Native ceiling.
+
+Admission scans complete text before eager parsing or Fastly value-handle
+creation. Discarded fields and overwritten values still consume depth, node,
+member, string and byte budgets. The conservative budget includes punctuation
+and escaping, reserves 24 bytes per finite number and six per control code unit,
+and uses UTF-8 size for other characters with surrogate escaping. It can reject
+text whose actual wire encoding is smaller. Whitespace consumes `maxTextBytes`
+but not `maxJsonBytes`.
+
+Duplicate names are compared after JSON unescaping. Dynamic JSON rejects
+duplicates at every nested depth. Declared objects retain last-member-wins:
+only their selected final field values undergo the dynamic duplicate policy,
+while every original occurrence consumes admission budget. JSON already parsed
+by application code cannot reveal lost duplicates; use original text with
+`ctx.decodeJson` when this matters. Keys such as `__proto__`, `constructor`, empty
+strings and numeric-looking names remain ordinary JSON data.
+
+The policy applies to request JSON, fetched JSON, application text decode,
+responses, application text encode and outbound fetch JSON. JavaScript encode
+accepts enumerable own data properties of plain/null-prototype objects and
+dense ordinary arrays. It rejects cycles, present undefined, non-finite numbers,
+accessors, serialization hooks, symbol keys and custom prototypes without
+invoking getters or hooks. It returns detached, deeply frozen projections and
+counts a shared reference at each occurrence. As with ordinary JavaScript,
+own-key enumeration and arbitrary Proxy traps are not a VM allocation sandbox.
+
+Invalid outbound JSON fails before a send on every supported lane. Node uses
+the existing malformed-JSON, schema encode/decode and body-too-large error
+categories; Fastly retains its JSON/schema error categories and stage details.
+Native guest codec exports trap on invalid input. Field order, whitespace and
+number spelling are not a portable byte-canonicalization contract.
 
 ## Add semantic response cases
 
@@ -309,7 +399,7 @@ same as other schema boundaries.
 
 JSON member names are unescaped before matching. In ordinary declared objects,
 the last occurrence of a duplicate member wins before schema validation.
-`ScalarRecord` members instead reject duplicate keys after unescaping. This API
+`ScalarRecord` and nested dynamic JSON instead reject duplicate keys after unescaping. This API
 does not normalize Unicode for a command fingerprint. Malformed JSON fails with
 `PULSE_SCHEMA_JSON_MALFORMED`, invalid values with `PULSE_SCHEMA_DECODE`, and
 oversized input with `PULSE_BODY_TOO_LARGE` on Node. Node semantic traces use
@@ -349,7 +439,7 @@ provider JSON object:
   request after decode;
 - repeated request reads of the same schema reuse the request-local decoded
   value;
-- unknown fields of declared objects are removed recursively; `ScalarRecord` preserves valid dynamic keys;
+- unknown fields of declared objects are removed recursively; `ScalarRecord`, `JsonObject` and `JsonValue` preserve their admitted dynamic keys;
 - declared fields are required unless marked optional with `?`;
 - response and fetch encoding emits declared object fields in declaration order;
 - numeric values must be finite JSON numbers;

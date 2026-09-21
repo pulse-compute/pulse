@@ -13,6 +13,9 @@ const {
   SCHEMA_REGISTRY_IR_VERSION,
   SCHEMA_CODEC_INPUTS_VERSION,
   SCALAR_RECORD_LIMITS,
+  JSON_SCHEMA_DEFAULT_LIMITS,
+  normalizeJsonSchemaLimits,
+  normalizeSchemaRegistry,
   normalizeSchemaNode,
   defaultSchemaBoundaryPolicy,
   defaultSchemaRegistryContract
@@ -75,7 +78,7 @@ function expectExtractionCode(registryText, code, modelsText) {
 const first = extractSchemaRegistry(schemaFile, { projectRoot: fixtureRoot });
 const second = extractSchemaRegistry(schemaFile, { projectRoot: fixtureRoot });
 assert.deepEqual(second, first, 'static registry extraction must be deterministic');
-assert.equal(first.version, 'pulse.schema-registry-extractor.v1');
+assert.equal(first.version, 'pulse.schema-registry-extractor.v2');
 assert.equal(first.registry.version, SCHEMA_REGISTRY_IR_VERSION);
 assert.equal(first.codecInputs.version, SCHEMA_CODEC_INPUTS_VERSION);
 assert.equal(first.registry.schemas.length, 3);
@@ -259,10 +262,66 @@ for (const [model, code] of [
 ]) expectExtractionCode(`${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`, code, model);
 
 const registryContract = defaultSchemaRegistryContract();
+const nestedRoot = path.join(repoRoot, 'wasm/test/fixtures/projects/schema-nested-json');
+const nested = extractSchemaRegistry(path.join(nestedRoot, 'src/schemas.ts'), { projectRoot: nestedRoot });
+assert.deepEqual(nested.registry.schemas[0].jsonLimits, JSON_SCHEMA_DEFAULT_LIMITS);
+assert.equal(nested.registry.schemas[0].root.fields[1].value.kind, 'json-object');
+assert.equal(nested.registry.schemas[0].root.fields[3].value.kind, 'json-value');
+assert.equal(nested.registry.schemas[1].jsonLimits.maxDepth, 128);
+assert.equal(nested.codecInputs.native.schemas[0].representation, 'schema-projected-json-value');
+const { canonicalRegistry } = require('../../packages/schema-json/src/compiler/canonical-schema-codecs.js');
+const baselineJson = canonicalRegistry(nested.registry);
+for (const key of Object.keys(JSON_SCHEMA_DEFAULT_LIMITS)) {
+  const changed = normalizeSchemaRegistry({ ...nested.registry, schemas: nested.registry.schemas.map((schema, index) => index ? schema : {
+    ...schema, jsonLimits: { ...schema.jsonLimits, [key]: schema.jsonLimits[key] + 1 }
+  }) });
+  assert.notEqual(changed.registryHash, nested.registry.registryHash, key);
+  assert.notEqual(canonicalRegistry(changed).codecTableHash, baselineJson.codecTableHash, key);
+  for (const value of [0, -1, 1.5, 2147483648, NaN, Infinity, '32']) {
+    assert.throws(() => normalizeJsonSchemaLimits({ [key]: value }), { code: 'PULSE_SCHEMA_JSON_LIMITS_INVALID' });
+  }
+}
+for (const [argument, code] of [
+  ['undefined', 'PULSE_SCHEMA_REGISTRY_OBJECT_LITERAL_REQUIRED'],
+  ['{ json: { maxDepth: 0 } }', 'PULSE_SCHEMA_JSON_LIMITS_INVALID'],
+  ['{ json: { maxDepth: 2147483648 } }', 'PULSE_SCHEMA_JSON_LIMITS_INVALID'],
+  ['{ json: { maxDepth: 1.5 } }', 'PULSE_SCHEMA_JSON_LIMITS_INVALID'],
+  ['{ json: { maxDepth: -1 } }', 'PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED'],
+  ['{ json: { maxDepth: Number(32) } }', 'PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED'],
+  ['{ json: { maxDepth: "32" } }', 'PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED'],
+  ['{ json: { maxDepth: limit } }', 'PULSE_SCHEMA_JSON_LIMIT_LITERAL_REQUIRED'],
+  ['{ json: { ...limits } }', 'PULSE_SCHEMA_REGISTRY_STATIC_PROPERTY_REQUIRED'],
+  ['{ json: { get maxDepth() { throw new Error("must not execute") } } }', 'PULSE_SCHEMA_REGISTRY_STATIC_PROPERTY_REQUIRED'],
+  ['{ json: { maxDepth: 32, maxDepth: 64 } }', 'PULSE_SCHEMA_REGISTRY_PROPERTY_DUPLICATE'],
+  ['{ json: { maxKeys: 32 } }', 'PULSE_SCHEMA_REGISTRY_PROPERTY_UNSUPPORTED'],
+  ['{ json: { __proto__: 1 } }', 'PULSE_SCHEMA_REGISTRY_PROPERTY_UNSUPPORTED'],
+  ['{ other: {} }', 'PULSE_SCHEMA_REGISTRY_PROPERTY_UNSUPPORTED'],
+  ['{}, {}', 'PULSE_SCHEMA_DECLARATION_SIGNATURE_INVALID']
+]) expectExtractionCode(`${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>(${argument}) } })`, code);
+for (const [model, code] of [
+  ["import { JsonValue } from '@pulse-compute/pulse/schema'; export interface Value { data: JsonValue }", 'PULSE_SCHEMA_MARKER_TYPE_IMPORT_REQUIRED'],
+  ["import type { JsonValue } from '@pulse-compute/pulse/schema'; export interface Value { data: JsonValue<string> }", 'PULSE_SCHEMA_MARKER_GENERIC_UNSUPPORTED'],
+  ["import type { JsonObject } from '@pulse-compute/pulse/schema'; export type Value = JsonObject", 'PULSE_SCHEMA_ROOT_OBJECT_REQUIRED']
+]) expectExtractionCode(`${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`, code, model);
+const aliasRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-schema-json-alias-'));
+try {
+  const file = writeCase(aliasRoot, `import { schema, defineSchemaRegistry } from '@pulse-compute/pulse/schema';
+    import type { Dynamic } from './models.js'; type Alias = Dynamic;
+    export default defineSchemaRegistry({ schemas: { 'app.value': schema<{ data: Alias }>({ json: { maxDepth: 64 } }) } })`,
+    "export type { JsonObject as Dynamic } from '@pulse-compute/pulse/schema';");
+  const alias = extractSchemaRegistry(file, { projectRoot: aliasRoot });
+  assert.equal(alias.registry.schemas[0].root.fields[0].value.kind, 'json-object');
+  assert.equal(alias.registry.schemas[0].jsonLimits.maxDepth, 64);
+} finally { fs.rmSync(aliasRoot, { recursive: true, force: true }); }
+const { generateSchemaJsonPolicy } = require('../../packages/runtime-core-as/src/compiler/schema-admission.js');
+assert.throws(() => generateSchemaJsonPolicy({ id: 'app.deep', jsonLimits: { ...JSON_SCHEMA_DEFAULT_LIMITS, maxDepth: 129 } }, 0, 65536),
+  { code: 'PULSE_SCHEMA_JSON_DEPTH_UNSUPPORTED' });
 assert.equal(registryContract.policies.canonicalEntrypoint, 'pulse.schema');
 assert.equal(registryContract.policies.oldSchemasJsonSupported, false);
 assert.equal(registryContract.policies.optionalPropertiesSupported, true);
 assert.equal(registryContract.policies.scalarRecordsSupported, true);
+assert.equal(registryContract.policies.nestedJsonSupported, true);
+assert.equal(registryContract.policies.staticJsonLimitsSupported, true);
 assert.equal(registryContract.policies.publicJsonAsImportsSupported, false);
 assert.equal(registryContract.policies.automaticFallback, false);
 assert.deepEqual(registryContract.boundaryPolicy, defaultSchemaBoundaryPolicy());
@@ -338,6 +397,11 @@ const registryDeclaration = pulseSchemaRuntime.defineSchemaRegistry({
 });
 assert.equal(Object.isFrozen(registryDeclaration), true);
 assert.equal(responseCase.schemaId, 'app.user');
-assert.equal(pulseSchemaRuntime.SCHEMA_AUTHORING_VERSION, 'pulse.schema-authoring.v1');
+assert.equal(pulseSchemaRuntime.SCHEMA_AUTHORING_VERSION, 'pulse.schema-authoring.v2');
+const jsonOptions = { json: { maxDepth: 64 } };
+const configuredDeclaration = pulseSchemaRuntime.schema(jsonOptions);
+jsonOptions.json.maxDepth = 32;
+assert.equal(configuredDeclaration.options.json.maxDepth, 64);
+assert.equal(Object.isFrozen(configuredDeclaration.options.json), true);
 
 console.log('ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts');

@@ -1,6 +1,6 @@
 'use strict';
 
-const { schemaHasScalarRecord, scalarRecordStringBytes } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { schemaHasScalarRecord, schemaHasNestedJson, scalarRecordStringBytes } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
 function scalarRecordRuntimeSource() {
   return scalarRecordStringBytes.toString().replace('function scalarRecordStringBytes(text)', 'function __pulse_scalar_record_string_bytes(text: string): i32') + `
@@ -44,19 +44,25 @@ class __PulseSchemaTextCursor {
 
 function generateScalarRecordTextValidation(root, schemaIndex) {
   const declarations = [];
+  const nested = schemaHasNestedJson(root);
+  const parameter = nested ? ', duplicates: Array<i32>' : '';
+  const argument = nested ? ', duplicates' : '';
   let next = 0;
   function emit(node) {
     if (node.kind === 'nullable') return emit(node.value);
     const name = `__pulse_schema_record_text_${schemaIndex}_${next++}`;
-    const lines = [`function ${name}(source: __PulseSchemaTextCursor, start: i32): void {`, '  start = source.space(start);'];
-    if (node.kind === 'array') {
+    const lines = [`function ${name}(source: __PulseSchemaTextCursor, start: i32${parameter}): void {`, '  start = source.space(start);'];
+    if (node.kind === 'json-value' || node.kind === 'json-object') {
+      lines.push('  const stop = source.end(start);', '  for (let i = 0; i < duplicates.length; i++) {',
+        '    if (duplicates[i] >= start && duplicates[i] < stop) abort("Duplicate nested JSON key", "pulse-schema-codecs", 0, 0);', '  }');
+    } else if (node.kind === 'array') {
       const child = emit(node.element);
       lines.push('  if (source.text.charCodeAt(start) != 91) return;', '  let i = source.space(start + 1);');
-      lines.push('  while (i < source.text.length && source.text.charCodeAt(i) != 93) {', `    ${child}(source, i);`);
+      lines.push('  while (i < source.text.length && source.text.charCodeAt(i) != 93) {', `    ${child}(source, i${argument});`);
       lines.push('    i = source.space(source.end(i));', '    if (source.text.charCodeAt(i) != 44) break;', '    i = source.space(i + 1);', '  }');
     } else {
       const record = node.kind === 'scalar-record';
-      const fields = record ? [] : node.fields.filter(field => schemaHasScalarRecord(field.value)).map(field => ({ ...field, fn: emit(field.value) }));
+      const fields = record ? [] : node.fields.filter(field => schemaHasScalarRecord(field.value) || schemaHasNestedJson(field.value)).map(field => ({ ...field, fn: emit(field.value) }));
       lines.push('  if (source.text.charCodeAt(start) != 123) return;');
       if (record) lines.push('  const names = new Set<string>();');
       fields.forEach((_, index) => lines.push(`  let at_${index}: i32 = -1;`));
@@ -67,7 +73,7 @@ function generateScalarRecordTextValidation(root, schemaIndex) {
         lines.push(`    if (names.size > ${node.limits.maxKeys}) abort("Too many ScalarRecord keys", "pulse-schema-codecs", 0, 0);`);
       } else fields.forEach((field, index) => lines.push(`    if (key == ${JSON.stringify(field.name)}) at_${index} = i;`));
       lines.push('    i = source.space(source.end(i));', '    if (source.text.charCodeAt(i) != 44) break;', '    i = source.space(i + 1);', '  }');
-      fields.forEach((field, index) => lines.push(`  if (at_${index} >= 0) ${field.fn}(source, at_${index});`));
+      fields.forEach((field, index) => lines.push(`  if (at_${index} >= 0) ${field.fn}(source, at_${index}${argument});`));
     }
     lines.push('}', '');
     declarations.push(...lines);

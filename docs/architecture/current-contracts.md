@@ -190,13 +190,13 @@ no application code resumes after the transfer. Normal exhaustion produces
 404, error exhaustion produces 500, and effects keep the identity of the route
 or middleware entry that owns them.
 
-Schema registry IR v3 records object-property requiredness and the bounded
-`scalar-record` node. A
+Schema registry IR v4 records object-property requiredness, bounded scalar
+records, nested JSON markers and normalized per-schema JSON limits. A
 question-mark property preserves absence through encode/decode, including nested
 objects and array elements; a present value must satisfy its type. Nullability
 is independent, present undefined is invalid, and optional fields receive no
 default. Codecs project own data properties in declaration order. Native schemas
-containing optional fields or scalar records use schema-generated projections
+containing optional fields, scalar records, nested JSON or explicit JSON limits use schema-generated projections
 over `json-as` values; other required-only schemas retain generated struct codecs.
 Provider and host preflight preserve the same rules. This extends schema
 semantics without widening effect authority or selecting a target fallback.
@@ -215,12 +215,19 @@ records are rejected after unescaping; ordinary declared objects retain last win
 JavaScript codecs, direct Native guest codecs and both Fastly Native preflight
 paths enforce these rules. See [bounded scalar records](../guides/json-schemas.md#bounded-scalar-records).
 
-The internal `pulse.json-admission.v1` foundation provides normalized resource
-limits and pre-materialization helpers for future schema capabilities. Existing
-registries do not select these helpers: public schema syntax, ScalarRecord
-limits, duplicate behavior and emitted application artifacts remain unchanged.
-All eight limits are explicit positive i32 values with a deterministic identity;
-this foundation defines no application defaults. They bound original UTF-8 text,
+The type-only `JsonValue` and `JsonObject` markers select bounded recursive JSON
+inside an otherwise declared object schema. `JsonObject` requires an object at
+its field root; `JsonValue` also admits arrays, scalars and null. Known enclosing
+fields keep their validators and unknown-field projection. Typed open objects
+and arbitrary recursive TypeScript types remain unsupported. Static
+`schema<T>({ json: { ... } })` options select per-schema limits. Registry IR and
+codec inputs use v4; authoring uses v2 and canonical codecs use v3. Effective
+limits and the profile text bound contribute to codec identity.
+
+The `pulse.json-admission.v1` machinery enforces the policy before parsing or
+serialization. Schemas without markers or options retain prior admission;
+ScalarRecord's fixed per-record limits remain unchanged. Normalized limits are
+positive i32 values. They bound original UTF-8 text,
 container depth, total value nodes, members per object, items per array, decoded
 UTF-16 key/string lengths and a conservative JSON byte budget. Root containers
 have depth one; scalar roots have depth zero. Every syntactic value counts,
@@ -234,20 +241,32 @@ semantics. It checks complete JSON syntax without building a JSON value tree,
 and can allow, reject or report duplicate names after unescaping. Reports retain
 the containing object's text offset and both key offsets for subsequent
 schema-owned policy; admission itself does not project fields. Native composition
-helpers precede parsing, and Fastly's internal helpers precede provider handle
-creation or serialization. A selected Fastly parser capacity must accommodate the
-requested depth; unsupported combinations are rejected rather than clamped.
-The shared corpus executes these seams with the real guest and provider parsers.
+helpers precede parsing, and Fastly's helpers precede provider handle creation
+or serialization. Defaults are 65,536 text bytes, depth 32, 4,096 nodes, 256
+members per object, 1,024 items per array, 256 key units, 16,384 string units and
+65,536 conservative JSON bytes. The existing profile `schemas.maxBytes` also
+bounds full input/output. Native supports configured depth through 128; larger
+settings fail compilation. Fastly parser/serializer capacity follows admitted
+schema depth instead of retaining a hidden 64-level ceiling.
+
+All six JSON boundaries select these codecs. Dynamic duplicate keys are rejected
+after unescaping; ordinary declared fields retain last-member-wins, including
+selection of their final dynamic subtree. Both Fastly realizations apply the
+selected schema to outbound `json` before creating/sending the request. The
+shared corpus executes these paths with the real guest and provider parsers.
 
 In-memory JavaScript and Fastly handle admission use explicit traversal stacks,
 reject cycles and non-JSON values, and count shared references per occurrence.
 JavaScript accepts enumerable own data properties of plain/null-prototype objects
 and dense ordinary arrays; getters and serialization hooks are not invoked.
-Admission neither mutates nor freezes input. JavaScript own-key reflection
+Projection copies and deeply freezes output without mutating or freezing input.
+JavaScript own-key reflection
 enumerates the already-created input before its key count can be checked, so the
 value helper is not a bound on VM reflection allocation or arbitrary Proxy traps.
-Text admission is the resource gate before eager parsing. Wiring this foundation
-into public schema declarations, policies and error mappings is separate work.
+Text admission is the resource gate before eager parsing. Node retains its
+schema encode/decode, malformed-JSON and body-size error categories; Fastly
+retains schema/JSON errors and stages. See
+[configurable nested JSON](../guides/json-schemas.md#configurable-nested-json).
 
 `ctx.encodeJson(value, 'schema.id')` is a synchronous shared-context operation
 that returns application-owned text through the existing compiled schema codec.

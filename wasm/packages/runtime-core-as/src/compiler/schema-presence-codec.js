@@ -22,6 +22,9 @@ function generateSchemaPresenceCodec(root, schemaIndex) {
         lines.push(`  if (field_${index} !== null) output.set<JSON.Value>(${quote(field.name)}, ${child}(field_${index}!))`);
       });
       lines.push('  return JSON.Value.from<JSON.Obj>(output)');
+    } else if (node.kind === 'json-value' || node.kind === 'json-object') {
+      if (node.kind === 'json-object') check('value.type == JSON.Types.Object');
+      lines.push('  return __pulse_json_copy(value)');
     } else if (node.kind === 'scalar-record') {
       const limits = node.limits;
       check('value.type == JSON.Types.Object');

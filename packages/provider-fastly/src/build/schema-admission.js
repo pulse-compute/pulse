@@ -2,23 +2,8 @@
 
 const { schemaAdmission } = require('@pulse-compute/wasm-runtime-core-as/compiler');
 
-// Internal opt-in composition seam. Existing emitted programs do not include
-// this source. Schema policy integration must select it at each boundary.
-function generateFastlyJsonAdmission(limits, parserMaxDepth = 64) {
-  const generated = schemaAdmission.generateJsonAdmission(limits);
-  if (!Number.isInteger(parserMaxDepth) || parserMaxDepth < 1 || parserMaxDepth > 0x7fffffff
-    || generated.identity.limits.maxDepth > parserMaxDepth) {
-    throw new TypeError('JSON admission depth exceeds the selected Fastly parser capacity.');
-  }
-  return Object.freeze({ identity: generated.identity, source: `${generated.source}
-function __pulse_fastly_admitted_json(text: string, duplicateMode: i32 = 0): i32 {
-  const admission = __pulse_json_admit(text, duplicateMode)
-  if (admission.failure != 0) {
-    __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 57, -1)
-    return 0
-  }
-  return __pulse_fastly_parse_json(text)
-}
+function fastlyJsonValueAdmissionSource() {
+  return `
 class __PulseFastlyAdmissionFrame {
   index: i32 = 0
   constructor(public handle: i32) {}
@@ -44,8 +29,8 @@ function __pulse_fastly_admission_enter(handle: i32, budget: __PulseJsonAdmissio
   stack.push(new __PulseFastlyAdmissionFrame(handle))
   return true
 }
-function __pulse_fastly_admit_value(handle: i32): __PulseJsonAdmissionBudget {
-  const budget = new __PulseJsonAdmissionBudget(__pulse_json_limits())
+function __pulse_fastly_admit_bounded_value(handle: i32, limits: __PulseJsonAdmissionLimits): __PulseJsonAdmissionBudget {
+  const budget = new __PulseJsonAdmissionBudget(limits)
   const stack = new Array<__PulseFastlyAdmissionFrame>()
   const active = new Set<i32>()
   if (!__pulse_fastly_admission_enter(handle, budget, stack, active)) return budget
@@ -62,6 +47,26 @@ function __pulse_fastly_admit_value(handle: i32): __PulseJsonAdmissionBudget {
   }
   return budget
 }
+`;
+}
+
+// Standalone composition used by focused admission fixtures.
+function generateFastlyJsonAdmission(limits, parserMaxDepth = 64) {
+  const generated = schemaAdmission.generateJsonAdmission(limits);
+  if (!Number.isInteger(parserMaxDepth) || parserMaxDepth < 1 || parserMaxDepth > 0x7fffffff
+    || generated.identity.limits.maxDepth > parserMaxDepth) {
+    throw new TypeError('JSON admission depth exceeds the selected Fastly parser capacity.');
+  }
+  return Object.freeze({ identity: generated.identity, source: `${generated.source}
+${fastlyJsonValueAdmissionSource()}
+function __pulse_fastly_admit_value(handle: i32): __PulseJsonAdmissionBudget {
+  return __pulse_fastly_admit_bounded_value(handle, __pulse_json_limits())
+}
+function __pulse_fastly_admitted_json(text: string, duplicateMode: i32 = 0): i32 {
+  const admission = __pulse_json_admit(text, duplicateMode)
+  if (admission.failure != 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 57, -1); return 0 }
+  return __pulse_fastly_parse_json(text)
+}
 function __pulse_fastly_admitted_json_text(handle: i32): string {
   const admission = __pulse_fastly_admit_value(handle)
   if (admission.failure != 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 57, -1); return '' }
@@ -75,4 +80,4 @@ function __pulse_fastly_admitted_json_text(handle: i32): string {
 ` });
 }
 
-module.exports = { generateFastlyJsonAdmission };
+module.exports = { generateFastlyJsonAdmission, fastlyJsonValueAdmissionSource };

@@ -80,6 +80,7 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
   const bodies = new Map();
   const responses = new Map();
   const pending = new Map();
+  const outboundRequests = [];
   const downstreamRequestHandle = 1;
   const downstreamBodyHandle = 2;
   requests.set(downstreamRequestHandle, { method, url, headers: requestHeaders.map((entry) => [...entry]) });
@@ -230,7 +231,9 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
           return FASTLY_STATUS_ERROR;
         }
         const pendingHandle = alloc('pending');
-        pending.set(pendingHandle, { request: { ...request, headers: request.headers.map((entry) => [...entry]), body: bodyBytes(bodyHandle) }, backend, fixture });
+        const outbound = { ...request, headers: request.headers.map((entry) => [...entry]), body: bodyBytes(bodyHandle) };
+        outboundRequests.push(outbound);
+        pending.set(pendingHandle, { request: outbound, backend, fixture });
         writeU32(pendingOut, pendingHandle);
         trace.push({ module: 'fastly_http_req', name: 'send_async', handle: Number(handle), bodyHandle: Number(bodyHandle), pendingHandle, backend, method: request.method, url: request.url });
         return FASTLY_STATUS_OK;
@@ -373,6 +376,7 @@ function executeFastlyNativeHttpEffects(input, options = {}) {
       bodyHandle: downstream.bodyHandle
     }),
     trace: Object.freeze(trace.map((entry) => Object.freeze({ ...entry }))),
+    outboundRequests: Object.freeze(outboundRequests.map(entry => Object.freeze(entry))),
     instance
   });
 }

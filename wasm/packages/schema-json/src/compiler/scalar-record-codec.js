@@ -37,7 +37,7 @@ function projectScalarRecord(value, limits, fail) {
 
 // JSON.parse still owns syntax. Scan only schema-selected records in valid
 // JSON before exposing values; ordinary object fields keep last-member-wins.
-function validateScalarRecordText(text, root, fail) {
+function validateScalarRecordText(text, root, fail, duplicateObjects = []) {
   function space(i) { while (i < text.length && text.charCodeAt(i) <= 32) i++; return i; }
   function stringEnd(i) {
     for (i++; i < text.length; i++) {
@@ -65,6 +65,11 @@ function validateScalarRecordText(text, root, fail) {
   }
   function visit(node, start, path) {
     start = space(start);
+    if (node.kind === 'json-value' || node.kind === 'json-object') {
+      const stop = end(start);
+      if (duplicateObjects.some(offset => offset >= start && offset < stop)) fail(path, 'unique-keys', 'duplicate-key');
+      return;
+    }
     if (node.kind === 'nullable') { visit(node.value, start, path); return; }
     if (node.kind === 'array' && text[start] === '[') {
       let i = space(start + 1), index = 0;
