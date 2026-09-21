@@ -8,6 +8,7 @@ const {
 } = require('../support/schema-codecs.cjs');
 
 (async () => {
+  await require('../support/schema-admission.cjs').assertSchemaAdmission();
   const proof = await buildSchemaCodecProof();
   await require('../support/schema-value-encoding.cjs').assertSchemaValueEncoding();
   await require('../support/schema-text-decoding.cjs').assertSchemaTextDecoding();

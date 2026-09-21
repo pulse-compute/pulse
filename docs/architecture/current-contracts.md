@@ -215,6 +215,40 @@ records are rejected after unescaping; ordinary declared objects retain last win
 JavaScript codecs, direct Native guest codecs and both Fastly Native preflight
 paths enforce these rules. See [bounded scalar records](../guides/json-schemas.md#bounded-scalar-records).
 
+The internal `pulse.json-admission.v1` foundation provides normalized resource
+limits and pre-materialization helpers for future schema capabilities. Existing
+registries do not select these helpers: public schema syntax, ScalarRecord
+limits, duplicate behavior and emitted application artifacts remain unchanged.
+All eight limits are explicit positive i32 values with a deterministic identity;
+this foundation defines no application defaults. They bound original UTF-8 text,
+container depth, total value nodes, members per object, items per array, decoded
+UTF-16 key/string lengths and a conservative JSON byte budget. Root containers
+have depth one; scalar roots have depth zero. Every syntactic value counts,
+including overwritten and unknown members. Keys do not count as value nodes.
+Whitespace counts toward original text bytes, not the conservative budget;
+numbers reserve 24 bytes and strings follow the existing scalar-record escaping
+budget. Additions check remaining capacity before incrementing i32 counters.
+
+One iterative reference scanner supplies JavaScript and generated AssemblyScript
+semantics. It checks complete JSON syntax without building a JSON value tree,
+and can allow, reject or report duplicate names after unescaping. Reports retain
+the containing object's text offset and both key offsets for subsequent
+schema-owned policy; admission itself does not project fields. Native composition
+helpers precede parsing, and Fastly's internal helpers precede provider handle
+creation or serialization. A selected Fastly parser capacity must accommodate the
+requested depth; unsupported combinations are rejected rather than clamped.
+The shared corpus executes these seams with the real guest and provider parsers.
+
+In-memory JavaScript and Fastly handle admission use explicit traversal stacks,
+reject cycles and non-JSON values, and count shared references per occurrence.
+JavaScript accepts enumerable own data properties of plain/null-prototype objects
+and dense ordinary arrays; getters and serialization hooks are not invoked.
+Admission neither mutates nor freezes input. JavaScript own-key reflection
+enumerates the already-created input before its key count can be checked, so the
+value helper is not a bound on VM reflection allocation or arbitrary Proxy traps.
+Text admission is the resource gate before eager parsing. Wiring this foundation
+into public schema declarations, policies and error mappings is separate work.
+
 `ctx.encodeJson(value, 'schema.id')` is a synchronous shared-context operation
 that returns application-owned text through the existing compiled schema codec.
 The compiler requires a literal registered ID in both strict and non-strict

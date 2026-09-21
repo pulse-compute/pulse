@@ -13,8 +13,10 @@ const schemaDecodeResult = require('./schema-decode-result.js');
 const schemaResponseCodec = require('./schema-response-codec.js');
 const backendJsonRequestBody = require('./backend-json-request-body.js');
 const canonicalNative = require('./canonical-native.js');
+const schemaAdmission = require('./schema-admission.js');
 
 module.exports = {
+  schemaAdmission,
   assemblyscriptCore,
   assemblyscriptShape,
   assemblyscriptWasmSmoke,
