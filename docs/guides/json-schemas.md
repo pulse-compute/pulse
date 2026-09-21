@@ -38,12 +38,12 @@ The schema subset is intentionally portable:
 
 - an object root with required or question-mark optional property signatures;
 - `string`, `boolean`, and finite JSON `number`;
-- `Int32`, `Uint32`, `ScalarRecord`, `JsonValue`, and `JsonObject` marker types imported with `import type`;
+- `Int32`, `Uint32`, `ScalarRecord`, `JsonValue`, `JsonObject`, and `OpenObject<T>` marker types imported with `import type`;
 - nested object types and arrays;
 - string-literal enums such as `'admin' | 'member'`;
 - one supported type unioned with `null`.
 
-Explicit `undefined` types/unions, recursive or generic types, interface inheritance,
+Explicit `undefined` types/unions, recursive or user-defined generic types, interface inheritance,
 arbitrary unions, computed registry keys, runtime registry code, and public
 `json-as` decorators or imports are not supported. Relative type-only imports
 and re-exports can organize the type graph inside the project.
@@ -71,8 +71,8 @@ than silently omitted. Inherited properties do not supply schema data, and
 accessors are rejected without invoking their getters. Required properties retain
 their existing validation. Decoded values remain deeply immutable.
 
-Schema registry IR and codec inputs use v4 to record requiredness, scalar records,
-nested JSON and effective JSON limits. Pulse generates Native value projections
+Schema registry IR and codec inputs use v5 to record requiredness, scalar records,
+nested JSON, typed open objects and effective JSON limits. Pulse generates Native value projections
 for schemas containing optional fields, dynamic JSON or explicit JSON limits,
 using its internal `json-as` backend. Other
 required-only schemas retain their struct codec.
@@ -137,6 +137,52 @@ are not a portable byte-canonicalization contract. Construct a new record when
 editing decoded values. TypeScript checks scalar value types and readonly access;
 the compiled codecs enforce the numeric and size constraints at runtime.
 
+## Typed open objects
+
+Use `OpenObject<T>` to retain declared fields while admitting bounded extension
+properties at the same object level:
+
+```ts
+import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema'
+import type { OpenObject, JsonObject } from '@pulse-compute/pulse/schema'
+
+type Event = OpenObject<{
+  event: string
+  properties: JsonObject
+  context: OpenObject<{ source: string; note?: string | null }>
+  filters?: OpenObject<{ field: string; op: 'eq' | 'in' }>[]
+}>
+
+export default defineSchemaRegistry({ schemas: {
+  'app.Event': schema<Event>(),
+} })
+```
+
+The type argument must resolve to a finite declared object. Import aliases,
+non-generic local aliases and relative type-only re-exports are supported.
+Arrays, primitives, `JsonObject`, `ScalarRecord`, arbitrary index signatures and
+recursive types are not valid type arguments. An open object may be the schema
+root, a nested field, an array element, or the non-null part of a nullable field.
+`OpenObject<{}>` admits an object containing only bounded extension properties.
+
+Declared names always select their declared validators. A missing required
+field, an invalid known value or a present `undefined` fails validation; none
+can be reclassified as an extension. Optional absence, null and empty values
+remain distinct. Extra keys carry `JsonValue`, including objects inside arrays,
+and survive decode and encode. Values are detached and deeply immutable. Names
+such as `__proto__`, `constructor`, the empty string and numeric-looking keys
+are data. Closed nested objects still drop their own undeclared members.
+
+Every name at an open object level must be unique after JSON unescaping,
+including declared names and escaped aliases. Dynamic extension subtrees also
+reject duplicates. Ordinary closed objects retain last-member-wins. Whole-input
+admission counts all occurrences, including overwritten and discarded members,
+before schema projection. Open objects use the same defaults, configurable
+limits and Native depth ceiling as nested JSON below.
+
+Declared properties are projected first and extras afterward. Cross-target
+parity is semantic; property byte order is not a portability guarantee.
+
 ## Configurable nested JSON
 
 `JsonValue` admits strings, finite numbers, booleans, null, arrays and objects
@@ -161,9 +207,9 @@ export default defineSchemaRegistry({ schemas: {
 
 The enclosing schema still has a declared object root. Its known fields retain
 their validators, requiredness and optionality; undeclared fields in `context`
-are dropped. `properties` can contain arbitrary admitted nesting. This does not
-add typed open objects, arbitrary recursive TypeScript types, or an interpretation
-of `unknown`. `ScalarRecord` keeps its existing fixed limits.
+are dropped. `properties` can contain arbitrary admitted nesting. Arbitrary
+recursive TypeScript types and `unknown` are unsupported. `ScalarRecord` keeps
+its existing fixed limits.
 
 Import aliases, local type aliases and relative type-only re-exports preserve
 marker identity. Options and the nested `json` object must be literal objects;
@@ -171,7 +217,7 @@ each supplied limit must be a positive integer literal that fits i32. Spreads,
 computed names, getters, variables, calls, unknown settings and overflowing
 values are rejected during extraction. The compiler does not execute options.
 
-A schema containing either JSON marker uses these defaults. Passing options to
+A schema containing `JsonValue`, `JsonObject` or `OpenObject<T>` uses these defaults. Passing options to
 a schema without a marker explicitly selects the same whole-document admission
 policy. A schema without markers or options retains its prior admission policy.
 Overrides replace individual defaults and become part of schema/codec identity.
@@ -204,7 +250,8 @@ text whose actual wire encoding is smaller. Whitespace consumes `maxTextBytes`
 but not `maxJsonBytes`.
 
 Duplicate names are compared after JSON unescaping. Dynamic JSON rejects
-duplicates at every nested depth. Declared objects retain last-member-wins:
+duplicates at every nested depth. Open objects reject all duplicate names at
+their own level. Closed declared objects retain last-member-wins:
 only their selected final field values undergo the dynamic duplicate policy,
 while every original occurrence consumes admission budget. JSON already parsed
 by application code cannot reveal lost duplicates; use original text with
@@ -439,9 +486,9 @@ provider JSON object:
   request after decode;
 - repeated request reads of the same schema reuse the request-local decoded
   value;
-- unknown fields of declared objects are removed recursively; `ScalarRecord`, `JsonObject` and `JsonValue` preserve their admitted dynamic keys;
+- unknown fields of closed declared objects are removed recursively; `OpenObject<T>`, `ScalarRecord`, `JsonObject` and `JsonValue` preserve their admitted dynamic keys;
 - declared fields are required unless marked optional with `?`;
-- response and fetch encoding emits declared object fields in declaration order;
+- response and fetch encoding projects declared object fields in declaration order, followed by admitted open-object extras;
 - numeric values must be finite JSON numbers;
 - JavaScript and Native use the same registry contract and semantic trace.
 

@@ -9,10 +9,10 @@ const {
   normalizeJsonSchemaLimits
 } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
-const SCHEMA_REGISTRY_EXTRACTOR_VERSION = 'pulse.schema-registry-extractor.v2';
+const SCHEMA_REGISTRY_EXTRACTOR_VERSION = 'pulse.schema-registry-extractor.v3';
 const AUTHORING_MODULE = '@pulse-compute/pulse/schema';
 const HELPER_EXPORTS = new Set(['defineSchemaRegistry', 'schema', 'response']);
-const MARKER_EXPORTS = new Map([['Int32', 'i32'], ['Uint32', 'u32'], ['ScalarRecord', 'scalar-record'], ['JsonValue', 'json-value'], ['JsonObject', 'json-object']]);
+const MARKER_EXPORTS = new Map([['Int32', 'i32'], ['Uint32', 'u32'], ['ScalarRecord', 'scalar-record'], ['JsonValue', 'json-value'], ['JsonObject', 'json-object'], ['OpenObject', 'open-object']]);
 
 class SchemaRegistryExtractionError extends Error {
   constructor(code, message, detail = {}) {
@@ -381,7 +381,18 @@ function classifyType(graph, record, typeNode, state) {
       }
       return Object.freeze({ kind: 'array', element: classifyType(graph, record, typeNode.typeArguments[0], state) });
     }
-    const marker = record.markers.get(name);
+    const resolved = record.markers.has(name) ? undefined : graph.resolve(record, name);
+    const marker = record.markers.get(name) || (resolved && resolved.marker);
+    if (marker === 'open-object') {
+      if (!typeNode.typeArguments || typeNode.typeArguments.length !== 1) {
+        fail('PULSE_SCHEMA_MARKER_GENERIC_UNSUPPORTED', `${name} requires exactly one declared object type.`, typeNode, record);
+      }
+      const object = classifyType(graph, record, typeNode.typeArguments[0], state);
+      if (object.kind !== 'object') {
+        fail('PULSE_SCHEMA_TYPE_UNSUPPORTED', `${name} requires a declared object type.`, typeNode, record);
+      }
+      return Object.freeze({ ...object, additionalProperties: Object.freeze({ kind: 'json-value' }) });
+    }
     if (marker) {
       if (typeNode.typeArguments && typeNode.typeArguments.length > 0) {
         fail('PULSE_SCHEMA_MARKER_GENERIC_UNSUPPORTED', `${name} does not accept type arguments.`, typeNode, record);
@@ -393,11 +404,9 @@ function classifyType(graph, record, typeNode, state) {
         typeName: name
       });
     }
-    const resolved = graph.resolve(record, name);
     if (!resolved) {
       fail('PULSE_SCHEMA_TYPE_NOT_FOUND', `Could not resolve schema type ${name}.`, typeNode, record, { typeName: name });
     }
-    if (resolved.marker) return Object.freeze({ kind: resolved.marker });
     const key = `${resolved.record.file}#${resolved.declaration.name.text}`;
     if (state.stack.has(key)) {
       fail('PULSE_SCHEMA_RECURSIVE_TYPE_RESERVED', `Recursive schema type ${name} is reserved beyond IR v1.`, typeNode, record, {

@@ -87,9 +87,10 @@ export function probe_cycle(): i32 {
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 
-async function assertSchemaNestedJson() {
+async function assertSchemaNestedJson(open = false) {
   const repoRoot = path.resolve(__dirname, '../../..');
-  const fixture = path.join(repoRoot, 'wasm/test/fixtures/projects/schema-nested-json');
+  const fixtureName = open ? 'schema-open-objects' : 'schema-nested-json';
+  const fixture = path.join(repoRoot, 'wasm/test/fixtures/projects', fixtureName);
   const source = fs.readFileSync(path.join(fixture, 'src/index.ts'), 'utf8');
   const handler = Function('"use strict"; ' + source.replace('export default ', '') + '\nreturn handler')();
   const extracted = extractSchemaRegistry(path.join(fixture, 'src/schemas.ts'), { projectRoot: fixture });
@@ -104,10 +105,41 @@ async function assertSchemaNestedJson() {
     { ...rich, samples: [null, [false, 0], { a: [] }] }];
   const duplicate = '{"event":"view","context":{"source":"test"},"properties":{"a":{"x":1,"\\u0078":2}}}';
   const duplicateArray = '{"event":"view","context":{"source":"test"},"properties":{},"data":[{"x":1,"x":2}]}';
-  const lastOrdinary = '{"event":"old","event":"view","context":{"source":"test"},"properties":{"x":1,"x":2},"properties":{}}';
+  const lastOrdinary = open ? '{"event":"view","context":{"source":"test"},"properties":{},"closed":{"known":"old","known":"final"}}' : '{"event":"old","event":"view","context":{"source":"test"},"properties":{"x":1,"x":2},"properties":{}}';
+  const lastExpected = open ? { ...event({}), closed: { known: 'final' } } : event({});
   const invalid = [event([]), event(null), { ...rich, context: {} }, { ...rich, data: { text: 'x'.repeat(16385) } }];
   const invalidText = [...invalid.map(JSON.stringify), duplicate, duplicateArray,
     JSON.stringify(rich).slice(0, -1), '{"event":"view","context":{"source":"test"},"properties":{"n":1e999}}'];
+  if (open) {
+    const extras = JSON.parse('{"__proto__":{"constructor":[{"":false}]},"10":{"2":null},"":true}');
+    valid.push({ ...rich, ...extras, context: { source: 'test', ...extras }, filters: [
+      { field: 'age', op: 'eq', values: [0, null, { enabled: true }] },
+      { field: 'name', op: 'in', ...extras }
+    ] }, { ...rich, context: { source: 'test', note: null } },
+    { ...rich, context: { source: 'test', note: '' } }, { ...rich, optionalContext: null },
+    { ...rich, optionalContext: { source: 'nested', extension: [{ active: true }] } });
+    const badValues = [{ ...rich, event: 1 }, { ...rich, context: { source: 1 } },
+      { ...rich, context: { note: 'missing source' } }, { ...rich, context: { source: 'test', note: false } },
+      { ...rich, filters: [{ field: 'age', op: 'bad', extra: true }] },
+      { ...rich, filters: [{ op: 'eq' }] }, { ...rich, optionalContext: { source: false } }];
+    invalidText.push(...badValues.map(JSON.stringify),
+      '{"event":"view","event":"view","properties":{},"context":{"source":"test"}}',
+      '{"event":"view","properties":{},"context":{"source":"test","\\u0073ource":"test"}}',
+      '{"event":"view","properties":{},"context":{"source":"test"},"filters":[{"field":"a","op":"eq","x":1,"\\u0078":2}]}',
+      '{"event":"view","properties":{},"context":{"source":"test"},"extra":[{"x":1,"x":2}]}',
+      '{"event":false,"properties":{},"context":{"source":"test"},"event":"view"}');
+    for (const value of [...badValues, { ...rich, filters: undefined }, { ...rich, context: { source: 'test', note: undefined } }]) {
+      assert.throws(() => codecs.encodeJsonText(id, value), { code: 'PULSE_SCHEMA_ENCODE' });
+    }
+    const input = { ...rich, extension: { array: [{ active: true }] } };
+    const detached = codecs.encode(id, input);
+    input.extension.array[0].active = false;
+    assert.equal(detached.extension.array[0].active, true);
+    assert.ok(!Object.isFrozen(input.extension.array[0]));
+    assert.deepEqual(codecs.decodeJsonText('app.Empty', JSON.stringify(extras)), extras);
+    assert.deepEqual(codecs.decodeJsonText(id, JSON.stringify({ ...rich, closed: { known: 'yes', dropped: 1 } })),
+      { ...rich, closed: { known: 'yes' } });
+  }
   const exactBudget = { data: { a: '\n'.repeat(16), b: '\n'.repeat(16), c: '\n'.repeat(5) + 'xxx' } };
   const small = [
     ['text', ' '.repeat(499) + '{"data":null}', ' '.repeat(500) + '{"data":null}'],
@@ -143,19 +175,22 @@ async function assertSchemaNestedJson() {
     cyclic, arrayCycle, accessor, { toJSON() { invoked = true; return {}; } }, { [Symbol()]: true },
     new Array(1), Object.assign([], { extra: true }), Object.create({ inherited: true })]) {
     assert.throws(() => codecs.encodeJsonText(id, { ...rich, data }), { code: 'PULSE_SCHEMA_ENCODE' });
+    if (open) assert.throws(() => codecs.encodeJsonText(id, { ...rich, extension: data }), { code: 'PULSE_SCHEMA_ENCODE' });
   }
   assert.equal(invoked, false);
-  assert.deepEqual(codecs.decodeJsonText(id, lastOrdinary), event({}));
+  assert.deepEqual(codecs.decodeJsonText(id, lastOrdinary), lastExpected);
   for (const text of invalidText) assert.throws(() => codecs.decodeJsonText(id, text));
   for (const [name, exact, over] of small) {
     assert.deepEqual(codecs.decodeJsonText('app.Small', exact), JSON.parse(exact), name);
     assert.throws(() => codecs.decodeJsonText('app.Small', over), undefined, name);
   }
   assert.throws(() => codecs.decodeJsonText('app.Small', '{"data":null,"ignored":[[[[null]]]]}'));
-  const maximumNodes = event(Object.fromEntries([1024,1024,1024,1015].map((count, index) => ['array' + index, Array(count).fill(null)])));
+  const arrays = Object.fromEntries([1024,1024,1024,1015].map((count, index) => ['array' + index, Array(count).fill(null)]));
+  const maximumNodes = open ? { ...event({}), ...arrays } : event(arrays);
   const { admitJsonValue } = require('../../packages/schema-json/src/compiler/json-admission.js');
   assert.equal(admitJsonValue(maximumNodes, extracted.registry.schemas[0].jsonLimits).nodes, 4096);
-  const overNodes = event({ ...maximumNodes.properties, array3: [...maximumNodes.properties.array3, null] });
+  const overArrays = { ...arrays, array3: [...arrays.array3, null] };
+  const overNodes = open ? { ...event({}), ...overArrays } : event(overArrays);
   assert.throws(() => codecs.encodeJsonText(id, overNodes), { code: 'PULSE_SCHEMA_ENCODE' });
   valid.push(maximumNodes);
   const compile = target => compileCanonicalSource(source, { fileName:'schema-nested-json.ts',schemaBundle:bundle,requireAsync:true,target,strict:true });
@@ -211,9 +246,10 @@ async function assertSchemaNestedJson() {
     } catch(error) {return {error:error.code||error.name,message:error.message,detail:error.detail,trace:error.detail?.trace||[],sent};}
   }
   let executions = 0;
+  const maximumAdmissionLatencyMs = {};
   for (const encode of [false, true]) {
     for (const value of valid) assert.deepEqual(JSON.parse(guest(JSON.stringify(value), encode)), value);
-    assert.deepEqual(JSON.parse(guest(lastOrdinary, encode)), event({}));
+    assert.deepEqual(JSON.parse(guest(lastOrdinary, encode)), lastExpected);
     for (const text of invalidText) assert.throws(() => guest(text, encode));
     for (const [name, exact, over] of small) {
       assert.deepEqual(JSON.parse(guest(exact, encode, 2)), JSON.parse(exact), 'guest/' + name);
@@ -225,13 +261,36 @@ async function assertSchemaNestedJson() {
   const tooDeep = event({ chain: [chain] });
   assert.deepEqual(JSON.parse(guest(JSON.stringify(deep), false, 1)), deep);
   assert.throws(() => guest(JSON.stringify(tooDeep), false, 1));
+  if (open) {
+    for (const value of [{}, JSON.parse('{"__proto__":{"constructor":[]},"":null,"1":[{}]}')]) {
+      for (const encode of [false, true]) assert.deepEqual(JSON.parse(guest(JSON.stringify(value), encode, 3)), value);
+    }
+    for (const text of ['[]', 'null', '{"x":1,"x":2}']) assert.throws(() => guest(text, false, 3));
+  }
   for (const lane of ['javascript','native','fastly-http','fastly-platform']) {
+    if (open) {
+      const cases = [
+        ['empty', '{"__proto__":{"constructor":[{}]},"":null,"1":[{}]}', JSON.parse('{"__proto__":{"constructor":[{}]},"":null,"1":[{}]}')],
+        ['closed', '{"context":{"source":"ignored","extra":{"x":1,"x":2}},"context":{"source":"final","extra":[]}}', { context: { source: 'final', extra: [] } }],
+        ['', JSON.stringify({ ...rich, closed: { known: 'yes', discarded: { nested: true } } }), { ...rich, closed: { known: 'yes' } }]
+      ];
+      for (const [mode,text,expected] of cases) {
+        const result = await execute(lane,text,mode); executions++;
+        assert.ok(!result.error,lane+'/'+mode+': '+JSON.stringify(result));
+        assert.deepEqual(JSON.parse(result.text),expected,lane+'/'+mode);
+      }
+      const overwritten = '{"context":{"source":"ignored","extra":[' + Array(13).fill('null').join(',') + ']},"context":{"source":"final"}}';
+      const rejected = await execute(lane,overwritten,'closed'); executions++;
+      assert.ok(rejected.error,lane+' counts overwritten open objects before projection');
+    }
     for (const value of valid) {
+      const started = performance.now();
       const result = await execute(lane, JSON.stringify(value)); executions++;
+      if (value === maximumNodes) maximumAdmissionLatencyMs[lane] = Number((performance.now() - started).toFixed(3));
       assert.ok(!result.error, lane + ': ' + JSON.stringify(result));
       assert.deepEqual(JSON.parse(result.text), value, lane);
     }
-    for (const [mode, text, expected] of [['',lastOrdinary,event({})], ['construct','',rich],
+    for (const [mode, text, expected] of [['',lastOrdinary,lastExpected], ['construct','',rich],
       ['edit',JSON.stringify(rich),event({...rich.properties,edited:{active:true}})], ['deep',JSON.stringify(deep),deep]]) {
       const result = await execute(lane,text,mode); executions++;
       assert.ok(!result.error, lane+'/'+mode+': '+JSON.stringify(result));
@@ -249,7 +308,16 @@ async function assertSchemaNestedJson() {
       assert.equal(result.sent.length,0,lane);
       assert.ok(!(result.trace||[]).some(entry=>entry.name==='send_async'),lane);
     }
-    for (const mode of ['request','fetched']) assert.ok((await execute(lane,duplicate,mode)).error,lane+'/'+mode);
+    for (const mode of ['request','fetched']) for (const text of open ? invalidText : [duplicate]) {
+      const result = await execute(lane,text,mode); executions++;
+      assert.ok(result.error,lane+'/'+mode); assert.equal(result.sent.length,0,lane);
+      assert.ok(!(result.trace||[]).some(entry=>entry.name==='send_async' && entry.url?.endsWith('/events')),lane);
+    }
+    if (open) for (const mode of ['invalid-known-outbound','invalid-extra-outbound','invalid-known-response','invalid-extra-response']) {
+      const result = await execute(lane,'',mode); executions++;
+      assert.ok(result.error,lane+'/'+mode); assert.equal(result.sent.length,0,lane);
+      assert.ok(!(result.trace||[]).some(entry=>entry.name==='send_async'),lane);
+    }
     for (const mode of ['invalid-encode','invalid-outbound','cyclic-outbound']) {
       const result=await execute(lane,'',mode); executions++;
       assert.ok(result.error,lane+'/'+mode); assert.equal(result.sent.length,0,lane);
@@ -267,14 +335,14 @@ async function assertSchemaNestedJson() {
     assert.equal(outbound.sent.length,1,lane);
     assert.deepEqual(JSON.parse(Buffer.from(outbound.sent[0]).toString()),rich,lane);
   }
-  console.log(JSON.stringify({ fixture: 'schema-nested-json', profile: 'default', maxAdmittedNodes: 4096,
+  console.log(JSON.stringify({ fixture: fixtureName, maximumAdmissionLatencyMs, latencyIncludesFreshExecution: true, profile: 'default', maxAdmittedNodes: 4096,
     guestLinearMemoryBytesAtReturn: guestMemoryBytes,
     artifacts: [native,fastlyHttp,fastlyPlatform].map((artifact,index) => ({
       target: ['node-native','fastly-http','fastly-platform'][index], rawBytes: artifact.wasm.length,
       gzipBytes: gzipSync(artifact.wasm).length, compileMs: Math.round(compileMs[index])
     })), providerReality: false }));
-  console.log(`ok - configurable nested JSON: ${executions} cross-target executions, all eight exact/over limits, depth 128, immutable detached values, duplicate policy, and zero sends after rejection`);
+  console.log(`ok - ${fixtureName}: ${executions} cross-target executions, all eight exact/over limits, depth 128, immutable detached values, duplicate policy, and zero sends after rejection`);
 }
 
 module.exports = { assertSchemaNestedJson };
-if (require.main === module) assertSchemaNestedJson().catch(error => { console.error(error); process.exitCode=1; });
+if (require.main === module) assertSchemaNestedJson(process.argv.includes('--open')).catch(error => { console.error(error); process.exitCode=1; });

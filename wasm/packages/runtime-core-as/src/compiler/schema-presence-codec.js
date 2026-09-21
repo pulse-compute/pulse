@@ -1,6 +1,6 @@
 'use strict';
 
-// Generate one closed projection from schema IR. json-as owns parsing and
+// Generate one projection from schema IR. json-as owns parsing and
 // serialization; Pulse owns requiredness, presence, validation and field order.
 // JSON.Obj.get distinguishes a missing key (null reference) from JSON null
 // (a non-null JSON.Value whose kind is Null).
@@ -21,6 +21,11 @@ function generateSchemaPresenceCodec(root, schemaIndex) {
         if (field.required) check(`field_${index} !== null`);
         lines.push(`  if (field_${index} !== null) output.set<JSON.Value>(${quote(field.name)}, ${child}(field_${index}!))`);
       });
+      if (node.additionalProperties) {
+        lines.push('  const keys = input.keys()', '  for (let i = 0; i < keys.length; i++) {', '    const key = keys[i]');
+        if (node.fields.length) lines.push(`    if (${node.fields.map(field => `key == ${quote(field.name)}`).join(' || ')}) continue`);
+        lines.push('    output.set<JSON.Value>(key, __pulse_json_copy(input.get(key)!))', '  }');
+      }
       lines.push('  return JSON.Value.from<JSON.Obj>(output)');
     } else if (node.kind === 'json-value' || node.kind === 'json-object') {
       if (node.kind === 'json-object') check('value.type == JSON.Types.Object');

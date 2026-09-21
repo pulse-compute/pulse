@@ -3,9 +3,9 @@
 const { sha256Hex, stableStringify } = require('../stable-id.js');
 const { JSON_LIMIT_FIELDS, normalizeJsonAdmissionLimits } = require('./admission.js');
 
-const SCHEMA_REGISTRY_IR_VERSION = 'pulse.schema-registry-ir.v4';
-const SCHEMA_CODEC_INPUTS_VERSION = 'pulse.schema-codec-inputs.v4';
-const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v2';
+const SCHEMA_REGISTRY_IR_VERSION = 'pulse.schema-registry-ir.v5';
+const SCHEMA_CODEC_INPUTS_VERSION = 'pulse.schema-codec-inputs.v5';
+const SCHEMA_AUTHORING_VERSION = 'pulse.schema-authoring.v3';
 const SCHEMA_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*(?:\.[A-Za-z][A-Za-z0-9_-]*)+$/;
 const RESPONSE_CASE_ID_PATTERN = SCHEMA_ID_PATTERN;
 const SCALAR_KINDS = Object.freeze(['string', 'boolean', 'i32', 'u32', 'f64']);
@@ -162,7 +162,13 @@ function normalizeSchemaNode(input, field = 'schema.root', stack = []) {
       source: entry.source ? normalizeSource(entry.source, `${field}.fields[${index}].source`) : undefined
     });
   });
-  return Object.freeze({ kind, fields: Object.freeze(fields) });
+  if (input.additionalProperties !== undefined
+    && (!plainObject(input.additionalProperties) || input.additionalProperties.kind !== 'json-value'
+      || Object.keys(input.additionalProperties).length !== 1)) {
+    throw schemaContractError('PULSE_SCHEMA_IR_NODE_KIND_UNSUPPORTED', `${field}.additionalProperties must be a JSON value policy.`, { field, kind });
+  }
+  return Object.freeze({ kind, fields: Object.freeze(fields),
+    ...(input.additionalProperties === undefined ? {} : { additionalProperties: Object.freeze({ kind: 'json-value' }) }) });
 }
 
 function normalizeSchema(input, index) {
@@ -241,13 +247,15 @@ function normalizeSchemaRegistry(input) {
       requiredFieldsOnly: false,
       optionalFields: 'omit-absent-own-properties',
       presentUndefined: 'reject',
-      unknownInputFields: 'drop',
-      outputFields: 'declared-only',
+      unknownInputFields: 'drop-unless-open',
+      outputFields: 'declared-and-admitted-open-properties',
       outputFieldOrder: 'declaration',
       scalarRecords: 'bounded-own-scalar-properties',
       scalarRecordDuplicateKeys: 'reject-after-unescaping',
       nestedJson: 'bounded-recursive-json-values',
       nestedJsonDuplicateKeys: 'reject-after-unescaping',
+      openObjects: 'known-fields-first-then-bounded-json-extras',
+      openObjectDuplicateKeys: 'reject-all-names-after-unescaping',
       jsonAdmission: 'whole-document-before-materialization',
       numericPolicy: 'finite-rfc-json',
       parity: 'semantic',
@@ -329,7 +337,7 @@ function schemaHasNestedJson(node) {
   if (node.kind === 'json-value' || node.kind === 'json-object') return true;
   if (node.kind === 'nullable') return schemaHasNestedJson(node.value);
   if (node.kind === 'array') return schemaHasNestedJson(node.element);
-  return node.kind === 'object' && node.fields.some(field => schemaHasNestedJson(field.value));
+  return node.kind === 'object' && (Boolean(node.additionalProperties) || node.fields.some(field => schemaHasNestedJson(field.value)));
 }
 
 function codecInputsForRegistry(registryInput) {
@@ -404,7 +412,7 @@ function defaultSchemaRegistryContract() {
     scalarKinds: SCALAR_KINDS,
     nodeKinds: NODE_KINDS,
     helpers: ['defineSchemaRegistry', 'schema', 'response'],
-    markerTypes: ['Int32', 'Uint32', 'ScalarRecord', 'JsonValue', 'JsonObject'],
+    markerTypes: ['Int32', 'Uint32', 'ScalarRecord', 'JsonValue', 'JsonObject', 'OpenObject'],
     scalarRecordLimits: SCALAR_RECORD_LIMITS,
     jsonDefaultLimits: JSON_SCHEMA_DEFAULT_LIMITS,
     policies: {
@@ -417,6 +425,7 @@ function defaultSchemaRegistryContract() {
       optionalPropertiesSupported: true,
       scalarRecordsSupported: true,
       nestedJsonSupported: true,
+      typedOpenObjectsSupported: true,
       staticJsonLimitsSupported: true,
       recursiveSchemasSupported: false,
       publicJsonAsImportsSupported: false,

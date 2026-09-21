@@ -12,6 +12,11 @@ export type ScalarRecord = Readonly<Record<string, string | number | boolean | n
 export type JsonValue = string | number | boolean | null | readonly JsonValue[] | JsonObject;
 /** Dynamic own string keys whose values are bounded, recursively nested JSON. */
 export interface JsonObject { readonly [key: string]: JsonValue }
+/**
+ * Declared object fields keep their types and optionality; additional own keys
+ * carry bounded JSON. All names at this object level must be unique in text.
+ */
+export type OpenObject<Type extends object> = Readonly<Type> & JsonObject;
 
 export interface JsonLimits {
   readonly maxTextBytes: number;
@@ -78,4 +83,4 @@ export declare function defineSchemaRegistry<
   readonly responses?: Responses;
 }): SchemaRegistryDeclaration<Schemas, Responses>;
 
-export declare const SCHEMA_AUTHORING_VERSION: 'pulse.schema-authoring.v2';
+export declare const SCHEMA_AUTHORING_VERSION: 'pulse.schema-authoring.v3';

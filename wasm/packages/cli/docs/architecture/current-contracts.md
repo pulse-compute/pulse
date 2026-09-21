@@ -190,8 +190,8 @@ no application code resumes after the transfer. Normal exhaustion produces
 404, error exhaustion produces 500, and effects keep the identity of the route
 or middleware entry that owns them.
 
-Schema registry IR v4 records object-property requiredness, bounded scalar
-records, nested JSON markers and normalized per-schema JSON limits. A
+Schema registry IR v5 records object-property requiredness, bounded scalar
+records, nested JSON markers, typed open objects and normalized per-schema JSON limits. A
 question-mark property preserves absence through encode/decode, including nested
 objects and array elements; a present value must satisfy its type. Nullability
 is independent, present undefined is invalid, and optional fields receive no
@@ -218,11 +218,24 @@ paths enforce these rules. See [bounded scalar records](../guides/json-schemas.m
 The type-only `JsonValue` and `JsonObject` markers select bounded recursive JSON
 inside an otherwise declared object schema. `JsonObject` requires an object at
 its field root; `JsonValue` also admits arrays, scalars and null. Known enclosing
-fields keep their validators and unknown-field projection. Typed open objects
-and arbitrary recursive TypeScript types remain unsupported. Static
+fields keep their validators and unknown-field projection. Arbitrary recursive
+TypeScript types remain unsupported. Static
 `schema<T>({ json: { ... } })` options select per-schema limits. Registry IR and
-codec inputs use v4; authoring uses v2 and canonical codecs use v3. Effective
+codec inputs use v5; authoring uses v3 and canonical codecs use v4. Effective
 limits and the profile text bound contribute to codec identity.
+
+The type-only `OpenObject<T>` marker wraps a finite declared object at the root,
+a nested field or an array element. Its object IR carries
+`additionalProperties: { kind: 'json-value' }`; this policy contributes to
+registry and codec hashes and selects bounded admission and Native value
+projection even without another dynamic marker. Known fields retain their
+validators, presence and nullability; invalid known data never becomes an extra.
+Other own string keys carry bounded JSON and survive projection as detached,
+immutable values. All names at each open level are unique after unescaping;
+closed nested objects retain their existing projection and duplicate policies.
+Empty, numeric-looking, `__proto__` and `constructor` extension names are data.
+JavaScript, direct Native guest codecs and both Fastly Native preflight paths
+share these semantics. See [typed open objects](../guides/json-schemas.md#typed-open-objects).
 
 The `pulse.json-admission.v1` machinery enforces the policy before parsing or
 serialization. Schemas without markers or options retain prior admission;
@@ -250,7 +263,7 @@ settings fail compilation. Fastly parser/serializer capacity follows admitted
 schema depth instead of retaining a hidden 64-level ceiling.
 
 All six JSON boundaries select these codecs. Dynamic duplicate keys are rejected
-after unescaping; ordinary declared fields retain last-member-wins, including
+after unescaping; ordinary closed object fields retain last-member-wins, including
 selection of their final dynamic subtree. Both Fastly realizations apply the
 selected schema to outbound `json` before creating/sending the request. The
 shared corpus executes these paths with the real guest and provider parsers.

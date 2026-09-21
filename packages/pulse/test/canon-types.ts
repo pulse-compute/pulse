@@ -15,10 +15,16 @@ import {
   type RouterNext,
 } from '../src/index.js'
 import { Router, type Handler as RuntimeHandler } from '@pulse-compute/runtime'
-import { schema, type ScalarRecord, type JsonObject, type JsonValue } from '../src/schema.js'
+import { schema, type ScalarRecord, type JsonObject, type JsonValue, type OpenObject } from '../src/schema.js'
 
 const attributes: ScalarRecord = { page: 'overview', duration: 2.5, enabled: false, empty: null }
 void attributes
+const open: OpenObject<{ source: string; note?: string | null }> = { source: 'test', extra: [{ active: true }] }
+const openSource: string = open.source
+const openNote: string | null | undefined = open.note
+const openExtra: JsonValue = open.extra
+const openSchema = schema<OpenObject<{ source: string }>>()
+void [openSource, openNote, openExtra, openSchema]
 const properties: JsonObject = { nested: { values: [null, false, 0, 'é😀'] } }
 const dynamic: JsonValue = [properties, null]
 const nestedSchema = schema<{ properties: JsonObject; data?: JsonValue }>({ json: { maxDepth: 64, maxNodes: 8192 } })

@@ -80,6 +80,7 @@ function validateScalarRecordText(text, root, fail, duplicateObjects = []) {
         i = space(i + 1);
       }
     } else if ((node.kind === 'object' || node.kind === 'scalar-record') && text[start] === '{') {
+      if (node.additionalProperties && duplicateObjects.includes(start)) fail(path, 'unique-keys', 'duplicate-key');
       const names = new Set(), fields = new Map();
       let i = space(start + 1);
       while (i < text.length && text[i] !== '}') {
@@ -92,6 +93,7 @@ function validateScalarRecordText(text, root, fail, duplicateObjects = []) {
         } else {
           const field = node.fields.find(field => field.name === key);
           if (field) fields.set(key, { node: field.value, start: i });
+          else if (node.additionalProperties) fields.set(key, { node: node.additionalProperties, start: i });
         }
         i = space(end(i));
         if (text[i] !== ',') break;

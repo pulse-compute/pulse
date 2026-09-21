@@ -78,7 +78,7 @@ function expectExtractionCode(registryText, code, modelsText) {
 const first = extractSchemaRegistry(schemaFile, { projectRoot: fixtureRoot });
 const second = extractSchemaRegistry(schemaFile, { projectRoot: fixtureRoot });
 assert.deepEqual(second, first, 'static registry extraction must be deterministic');
-assert.equal(first.version, 'pulse.schema-registry-extractor.v2');
+assert.equal(first.version, 'pulse.schema-registry-extractor.v3');
 assert.equal(first.registry.version, SCHEMA_REGISTRY_IR_VERSION);
 assert.equal(first.codecInputs.version, SCHEMA_CODEC_INPUTS_VERSION);
 assert.equal(first.registry.schemas.length, 3);
@@ -261,7 +261,43 @@ for (const [model, code] of [
   ["import type { ScalarRecord } from 'other-schema'; export interface Value { properties: ScalarRecord }", 'PULSE_SCHEMA_TYPE_IMPORT_NONRELATIVE']
 ]) expectExtractionCode(`${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`, code, model);
 
+const openRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-schema-open-'));
+try {
+  const text = `${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`;
+  const file = writeCase(openRoot, text, `
+    import type { OpenObject as Open } from './markers.js'
+    type Declared = { id: string; note?: string | null; children: Open<{ active: boolean }>[] }
+    export type Value = Open<Declared>
+  `);
+  fs.writeFileSync(path.join(openRoot, 'src/markers.ts'), "export type { OpenObject } from '@pulse-compute/pulse/schema'");
+  const open = extractSchemaRegistry(file, { projectRoot: openRoot });
+  assert.deepEqual(open.registry.schemas[0].root.additionalProperties, { kind: 'json-value' });
+  assert.deepEqual(open.registry.schemas[0].jsonLimits, JSON_SCHEMA_DEFAULT_LIMITS);
+  assert.deepEqual(fieldByName(open.registry.schemas[0], 'children').value.element.additionalProperties, { kind: 'json-value' });
+  assert.equal(fieldByName(open.registry.schemas[0], 'note').required, false);
+  assert.equal(open.codecInputs.native.schemas[0].representation, 'schema-projected-json-value');
+  assert.equal(open.registry.policies.openObjectDuplicateKeys, 'reject-all-names-after-unescaping');
+  const closed = normalizeSchemaRegistry({ ...open.registry, schemas: open.registry.schemas.map(schema => ({ ...schema,
+    root: { ...schema.root, additionalProperties: undefined }
+  })) });
+  assert.notEqual(open.registry.registryHash, closed.registryHash);
+  const { canonicalRegistry } = require('../../packages/schema-json/src/compiler/canonical-schema-codecs.js');
+  assert.notEqual(canonicalRegistry(open.registry).codecTableHash, canonicalRegistry(closed).codecTableHash);
+  for (const additionalProperties of [true, false, {}, { kind: 'string' }, { kind: 'json-value', arbitrary: true }]) {
+    assert.throws(() => normalizeSchemaNode({ kind: 'object', fields: [], additionalProperties }), { code: 'PULSE_SCHEMA_IR_NODE_KIND_UNSUPPORTED' });
+  }
+} finally { fs.rmSync(openRoot, { recursive: true, force: true }); }
+for (const [type, code] of [
+  ['OpenObject', 'PULSE_SCHEMA_MARKER_GENERIC_UNSUPPORTED'],
+  ['OpenObject<{}, {}>', 'PULSE_SCHEMA_MARKER_GENERIC_UNSUPPORTED'],
+  ...['string', 'JsonObject', 'ScalarRecord', 'string[]', '{ x: string } | null'].map(type => [`OpenObject<${type}>`, 'PULSE_SCHEMA_TYPE_UNSUPPORTED']),
+  ['OpenObject<{ self: Value }>', 'PULSE_SCHEMA_RECURSIVE_TYPE_RESERVED']
+]) expectExtractionCode(`${sharedPrefix} export default defineSchemaRegistry({ schemas: { 'app.value': schema<Value>() } })`, code,
+  `import type { OpenObject, JsonObject, ScalarRecord } from '@pulse-compute/pulse/schema'; export type Value = ${type}`);
+
 const registryContract = defaultSchemaRegistryContract();
+assert.equal(registryContract.policies.typedOpenObjectsSupported, true);
+assert.ok(registryContract.markerTypes.includes('OpenObject'));
 const nestedRoot = path.join(repoRoot, 'wasm/test/fixtures/projects/schema-nested-json');
 const nested = extractSchemaRegistry(path.join(nestedRoot, 'src/schemas.ts'), { projectRoot: nestedRoot });
 assert.deepEqual(nested.registry.schemas[0].jsonLimits, JSON_SCHEMA_DEFAULT_LIMITS);
@@ -397,7 +433,7 @@ const registryDeclaration = pulseSchemaRuntime.defineSchemaRegistry({
 });
 assert.equal(Object.isFrozen(registryDeclaration), true);
 assert.equal(responseCase.schemaId, 'app.user');
-assert.equal(pulseSchemaRuntime.SCHEMA_AUTHORING_VERSION, 'pulse.schema-authoring.v2');
+assert.equal(pulseSchemaRuntime.SCHEMA_AUTHORING_VERSION, 'pulse.schema-authoring.v3');
 const jsonOptions = { json: { maxDepth: 64 } };
 const configuredDeclaration = pulseSchemaRuntime.schema(jsonOptions);
 jsonOptions.json.maxDepth = 32;
