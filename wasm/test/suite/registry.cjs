@@ -450,7 +450,7 @@ const tasks = Object.freeze({
   'bounded-read-loops': nodeTask('test/lowering/assert-bounded-read-loops.cjs', {
     evidence: 'conformance',
     timeoutMs: 180000,
-    description: 'bounded sequential read loop admission, plan validation, control flow and Native/JavaScript parity'
+    description: 'bounded read loop admission, target parity, invocation lifecycle, cumulative effect limits and deadlines'
   }),
   'logging-lowering': nodeTask('test/lowering/assert-logging-lowering.cjs', {
     evidence: 'native',

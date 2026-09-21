@@ -109,9 +109,8 @@ async function main() {
   } } };
   const result = await nativeHost.executeCanonicalNativeModule(native, opts);
   assert.equal(result.response.body, '3:');assert.deepEqual(requests, ['p1','p2','p3']);
-  // Selected JavaScript execution uses authored source, not this internal
-  // normalized generator. Its legacy registry's static site identity belongs
-  // to the separate invocation-lifecycle work; verify emission here only.
+  // The lifecycle suite below executes repeated sites in the internal generator
+  // as well as the selected original-source JavaScript and Native hosts.
   assert.ok(loadCanonicalModule(compiled));
 
   // Source JavaScript and Native exercise continue before/after suspension,
@@ -169,6 +168,7 @@ async function main() {
       assert.equal(nr.effectCount,nodeCalls.length*2);
     }
   } finally {fs.rmSync(cwd,{recursive:true,force:true});}
-  console.log(JSON.stringify({status:'passed',negativeSources:negatives.length*2+6,planMutations:invalidPlans.length+3,storageVectors:7,targets:['node-javascript','node-native','fastly-native-fixture'],providerReality:false}));
+  await require('../runtime/bounded-read-loop-lifecycle.cjs').main();
+  console.log(JSON.stringify({status:'passed',negativeSources:negatives.length*2+6,planMutations:invalidPlans.length+3,storageVectors:7,lifecycle:'PS2',targets:['node-javascript','node-native','internal-generator','fastly-native-fixture'],providerReality:false}));
 }
 main().catch(error=>{console.error(error.stack);console.error(JSON.stringify(error.diagnostics||error.detail||{}));process.exitCode=1});

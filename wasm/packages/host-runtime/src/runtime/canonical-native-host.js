@@ -1,5 +1,6 @@
 'use strict';
 const portableKv = require('@pulse-compute/runtime/host');
+const { createEffectInvocations, normalizeMaxEffects } = require('./effect-invocations.js');
 
 const crypto = require('node:crypto');
 const {
@@ -45,7 +46,6 @@ const canonicalRuntime = loadCanonicalRuntime();
 const schemaCodecTools = loadSchemaCodecTools();
 const eventContract = loadEventContract();
 let executionSequence = 0;
-const DEFAULT_MAX_EFFECTS = 1024;
 
 class CanonicalNativeHostError extends Error {
   constructor(message, code = 'PULSE_CANONICAL_NATIVE_HOST_FAILED', detail = {}) {
@@ -58,14 +58,6 @@ class CanonicalNativeHostError extends Error {
 
 function sha256(value) {
   return crypto.createHash('sha256').update(value).digest('hex');
-}
-
-function normalizeMaxEffects(value) {
-  const maxEffects = value === undefined ? DEFAULT_MAX_EFFECTS : Number(value);
-  if (!Number.isSafeInteger(maxEffects) || maxEffects <= 0) {
-    throw new TypeError('Pulse maxEffects must be a positive safe integer.');
-  }
-  return maxEffects;
 }
 
 function staticDecoderArgument(expression, effect) {
@@ -373,6 +365,23 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
   const heap = new ValueHeap();
   const pending = [];
+  const invocations = createEffectInvocations(() => {
+    options.requestBudget?.check();
+    if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
+  });
+  function close() {
+    invocations.close();
+    pending.length = 0;
+    options.signal?.removeEventListener('abort', close);
+  }
+  function run(operation) {
+    try {
+      invocations.assertOpen();
+      const status = operation();
+      if (status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE || status === runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED) close();
+      return status;
+    } catch (error) { close(); throw error; }
+  }
   const trace = [];
   const sensitiveValues = new Set();
   const configuredSecrets = options.secrets && typeof options.secrets === 'object' ? options.secrets : {};
@@ -743,7 +752,8 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const payload = value(payloadHandle);
       const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
       if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
-      pending.push(Object.freeze({ index, effect, payload, ...(kvAdmission ? { kvAdmission } : {}) }));
+      const ticket = invocations.open(index, effect.id);
+      pending.push(Object.freeze({ index, effect, payload, ticket, ...(kvAdmission ? { kvAdmission } : {}) }));
     }
   };
 
@@ -857,13 +867,16 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     return result;
   }
 
-  function setEffectResult(index, result) {
-    const handle = put(result);
-    const accepted = instance.exports.pulse_set_effect_result(Number(index), handle);
-    if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
-      throw new CanonicalNativeHostError(`Native module rejected effect result index ${index}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: Number(index), errorCode: instance.exports.pulse_last_error_code() });
-    }
-    return handle;
+  function setEffectResult(ticket, result) {
+    return invocations.settle(ticket, () => {
+      const handle = put(result);
+      const accepted = instance.exports.pulse_set_effect_result(ticket.slot, handle);
+      if (accepted !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+        close();
+        throw new CanonicalNativeHostError('Native module rejected an invocation result.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: ticket.slot, errorCode: instance.exports.pulse_last_error_code() });
+      }
+      return handle;
+    });
   }
 
   function resultValue() {
@@ -903,9 +916,11 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       schemaId: selected.schemaId,
       payloadHandle
     });
-    return instance.exports.pulse_event_start(selected.runtimeId, payloadHandle);
+    return run(() => instance.exports.pulse_event_start(selected.runtimeId, payloadHandle));
   }
 
+  options.signal?.addEventListener('abort', close, { once: true });
+  if (options.signal?.aborted) close();
   return Object.freeze({
     version: runtimeContract.CANONICAL_NATIVE_HOST_VERSION,
     plan,
@@ -922,10 +937,12 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     cryptoVerifier: nativeCrypto.verifier,
     cryptoRealization: nativeCrypto.realization,
     executionPlane,
-    start() { requireExecutionPlane('http'); return instance.exports.pulse_start(); },
+    start() { requireExecutionPlane('http'); return run(() => instance.exports.pulse_start()); },
     startEvent,
     eventSelection() { return activeEvent; },
-    resume() { return instance.exports.pulse_resume(); },
+    resume() { return run(() => instance.exports.pulse_resume()); },
+    close,
+    assertPendingEffect: invocations.assertPending,
     pendingEffects: takePending,
     prepareEffectResult,
     captureApplicationError,
@@ -1020,6 +1037,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       }
       activeContinuation = {
         id: continuation.id,
+        invocationId: `continuation-${pending[0].ticket.invocationId}`,
         kind: continuation.kind,
         effectIds: Object.freeze([...pendingEffectIds]),
         stateIndex: continuationState,
@@ -1027,7 +1045,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         states: ['created', 'waiting']
       };
       continuations.push(activeContinuation);
-      controller.trace.push(Object.freeze(redactValue({ type: 'native-continuation-waiting', executionId, continuationId: continuation.id, continuationState, effectIds: Object.freeze([...pendingEffectIds]) }, controller.sensitiveValues)));
+      controller.trace.push(Object.freeze(redactValue({ type: 'native-continuation-waiting', executionId, continuationId: continuation.id, invocationId: activeContinuation.invocationId, continuationState, effectIds: Object.freeze([...pendingEffectIds]) }, controller.sensitiveValues)));
       if (effectCount + pending.length > maxEffects) {
         throw new CanonicalNativeHostError(
           eventMode
@@ -1058,10 +1076,12 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           target: 'native',
           provider: adapter.id
         });
-        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: privateEffect ? '<redacted>' : entry.payload }, controller.sensitiveValues)));
+        controller.assertPendingEffect(entry.ticket);
+        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-start', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, payload: privateEffect ? '<redacted>' : entry.payload }, controller.sensitiveValues)));
         const effectExecution = {
           ...options,
           executionId,
+          invocationId: entry.ticket.invocationId,
           metadata: compiled && compiled.plan ? compiled.plan.canonical : controller.plan.canonical,
           plan: controller.plan,
           packageArtifacts,
@@ -1080,8 +1100,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
               { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
           : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
         options.requestBudget?.check();
+        controller.assertPendingEffect(entry.ticket);
         const result = controller.prepareEffectResult(entry.index, rawResult);
-        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
+        controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
         resolutionOrder.push(entry.effect.id);
         return { entry, result };
       })), options.signal, eventMode);
@@ -1097,7 +1118,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         || !controller.captureApplicationError(failed.reason))) {
         throw canonicalRuntime.redactRuntimeError(failed.reason, controller.sensitiveValues);
       }
-      settled.forEach((item, index) => controller.setEffectResult(pending[index].index,
+      settled.forEach((item, index) => controller.setEffectResult(pending[index].ticket,
         item.status === 'fulfilled' ? item.value.result : undefined));
       const previousPc = controller.programCounter();
       activeContinuation.state = 'resumed';
@@ -1108,7 +1129,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       }
       activeContinuation.state = failed ? 'failed' : 'completed';
       activeContinuation.states.push(activeContinuation.state);
-      controller.trace.push(Object.freeze(redactValue({ type: 'native-continuation-resumed', executionId, continuationId: continuation.id, continuationState }, controller.sensitiveValues)));
+      controller.trace.push(Object.freeze(redactValue({ type: 'native-continuation-resumed', executionId, continuationId: continuation.id, invocationId: activeContinuation.invocationId, continuationState }, controller.sensitiveValues)));
       activeContinuation = undefined;
     }
 
@@ -1175,6 +1196,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     }) });
     throw executionFailure;
   } finally {
+    controller.close();
     try { adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure })); }
     catch (_) { /* provider cleanup must not mask execution */ }
   }

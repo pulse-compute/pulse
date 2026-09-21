@@ -295,7 +295,8 @@ async function main() {
   assert.equal(controller.start(), runtimeContract.CANONICAL_NATIVE_RUN_STATUS.SUSPENDED);
   const suspendedPc = controller.programCounter();
   const suspendedState = controller.continuationState();
-  assert.equal(controller.pendingEffects().length, 1);
+  const manualPending = controller.pendingEffects();
+  assert.equal(manualPending.length, 1);
   assert.equal(controller.resume(), runtimeContract.CANONICAL_NATIVE_RUN_STATUS.INVALID_RESUME);
   assert.equal(controller.lastErrorCode(), runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INCOMPLETE_RESUME);
   assert.equal(controller.programCounter(), suspendedPc, 'incomplete resume must not advance the program counter');
@@ -308,7 +309,7 @@ async function main() {
     body: JSON.stringify({ id: 123, name: 'Ada' })
   }, 'fetch-1', 'manual', controller.schemaCodecs);
   assert.deepEqual(lowLevel.plan.effects[0].result.decoder, { kind: 'json', arguments: [] });
-  controller.setEffectResult(0, controller.prepareEffectResult(0, manualResponse));
+  controller.setEffectResult(manualPending[0].ticket, controller.prepareEffectResult(0, manualResponse));
   assert.equal(controller.exports.pulse_set_effect_result(0, 1), runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED, 'duplicate effect results must be rejected');
   assert.equal(controller.resume(), runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE);
   assert.equal(controller.lastErrorCode(), runtimeContract.CANONICAL_NATIVE_ERROR_CODES.NONE);

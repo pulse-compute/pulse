@@ -58,10 +58,16 @@ helpers and counter mutation. The source fixture at
 `wasm/test/fixtures/projects/bounded-read-loops/src/index.ts` exercises a
 read/digest/decode traversal and inner pure collection processing.
 
-A bound limits iteration count, not retained memory. PS2 invocation-lifecycle
-work, PS3 memory containment and PS4 production qualification remain separate
-gates. Do not treat PS1's compiler and fixture parity as production acceptance,
-or a chain that reaches its cap as a complete search.
+Each visit has a distinct execution-owned invocation, even though Native reuses
+the same static effect slot. Managed hosts reject stale or duplicate settlement
+and invalidate pending work at termination. The cumulative effect limit defaults
+to 1,024; canonical Fastly Native fixes that ceiling at 1,024. An inherited request
+deadline covers the whole traversal. See the
+[PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2).
+
+A bound limits iteration count, not retained memory. PS3 memory containment and
+PS4 production qualification remain open. Compiler and fixture parity do not
+constitute production acceptance, and a chain that reaches its cap is incomplete.
 
 ## Bounded HTTP deadline work
 

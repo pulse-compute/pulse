@@ -1,4 +1,5 @@
 'use strict';
+const { createEffectInvocations, normalizeMaxEffects } = require('./effect-invocations.js');
 const portableKv = require('@pulse-compute/runtime/host');
 
 
@@ -1367,6 +1368,9 @@ function createCanonicalHostRuntime(options = {}) {
     const metadata = assertCanonicalProgramCompatibility(programModule);
     executionSequence += 1;
     const executionId = String(executionOptions.executionId || `canonical-${adapter.id}-${executionSequence}`);
+    const maxEffects = normalizeMaxEffects(executionOptions.maxEffects ?? options.maxEffects);
+    const invocations = createEffectInvocations(() => executionOptions.requestBudget.check());
+    const continuationIds = [];
     const sensitiveValues = initialSensitiveValues({ ...options, ...executionOptions });
     let executionStatus = 'failed';
     let executionFailure;
@@ -1419,23 +1423,24 @@ function createCanonicalHostRuntime(options = {}) {
     let dispatchedEffects = 0;
 
     function executionContinuations() {
-      const prefix = `${executionId}:`;
-      return registry.list().filter((entry) => entry.id.startsWith(prefix));
+      return continuationIds.map(id => registry.get(id));
     }
 
     async function dispatchOne(effect) {
       executionOptions.requestBudget.check();
+      const ticket = invocations.open(effect.id, effect.id);
       const normalized = normalizeProviderEffect(effect, schemaCodecs, runtimeOptions);
       const conditional = portableKv.isConditionalKv(normalized.kind);
       if (conditional) portableKv.registerKvRedactions(normalized, (value) => sensitiveValues.add(value));
-      recordTrace(effectTraceStart(adapter.id, executionId, normalized, sensitiveValues));
+      recordTrace({ ...effectTraceStart(adapter.id, executionId, normalized, sensitiveValues), invocationId: ticket.invocationId });
       dispatchedEffects += 1;
       try {
-        const effectExecution = { ...options, ...executionOptions, metadata, executionId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
+        const effectExecution = { ...options, ...executionOptions, metadata, executionId, invocationId: ticket.invocationId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
         let snapshot = conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)), effectExecution, runtimeOptions)
           : await executionOptions.requestBudget.race(adapter.dispatchEffect(normalized, effectExecution));
         executionOptions.requestBudget.check();
+        invocations.assertPending(ticket);
         if (normalized.kind === 'config.get' || normalized.kind === 'secret.get') {
           if (snapshot !== undefined && typeof snapshot !== 'string') {
             throw new CanonicalRuntimeError(
@@ -1483,9 +1488,13 @@ function createCanonicalHostRuntime(options = {}) {
             })
           : snapshot;
         resolutionOrder.push(effect.id);
-        recordTrace(effectTraceResolved(adapter.id, executionId, normalized, value));
-        return value;
+        recordTrace({ ...effectTraceResolved(adapter.id, executionId, normalized, value), invocationId: ticket.invocationId });
+        return invocations.settle(ticket, () => value);
       } catch (error) {
+        // A request deadline outranks a capability's concurrent abort result.
+        try { executionOptions.requestBudget.check(); } catch (failure) {
+          if (typeof failure.code === 'string' && failure.code.startsWith('PULSE_REQUEST_')) error = failure;
+        }
         recordTrace(Object.freeze({ type: 'effect-failed', provider: adapter.id, executionId, effectId: effect.id, kind: normalized.kind, error: error.name || 'Error', code: error.code }));
         throw redactRuntimeError(error, sensitiveValues);
       }
@@ -1536,12 +1545,18 @@ function createCanonicalHostRuntime(options = {}) {
       const marker = step.value;
       if (!marker || marker.protocol !== canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION || !canonicalRuntimeContract.CANONICAL_EFFECT_MARKER_KINDS.includes(marker.kind)) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical handler yielded an unsupported runtime marker.', { marker });
       const effects = marker.kind === 'group' ? marker.effects : [marker.effect];
-      const continuationId = `${executionId}:${marker.continuationId}`;
+      const continuationId = `${executionId}:${invocations.execution}:${marker.continuationId}:${continuationIds.length + 1}`;
       registry.create({ id: continuationId, branchPoint: marker.continuationId, effectIds: effects.map((effect) => effect.id), ttlMs: executionOptions.continuationTtlMs || options.continuationTtlMs });
+      continuationIds.push(continuationId);
       registry.wait(continuationId);
       recordTrace(Object.freeze({ type: 'continuation-waiting', provider: adapter.id, executionId, continuationId, effectIds: effects.map((effect) => effect.id) }));
       let value;
       try {
+        if (dispatchedEffects + effects.length > maxEffects) {
+          throw new CanonicalRuntimeError('EffectLimitError', 'PULSE_RUNTIME_EFFECT_LIMIT_EXCEEDED',
+            `Pulse request exceeded the maximum of ${maxEffects} request-owned effects.`,
+            { effectCount: dispatchedEffects, pendingEffects: effects.length, maxEffects });
+        }
         value = marker.kind === 'group' ? await dispatchGroup(effects) : await dispatchOne(effects[0]);
         executionOptions.requestBudget.check();
         registry.resume(continuationId);
@@ -1587,6 +1602,7 @@ function createCanonicalHostRuntime(options = {}) {
       executionFailure = redactRuntimeError(error, sensitiveValues);
       throw executionFailure;
     } finally {
+      invocations.close();
       try { adapter.disposeExecution(Object.freeze({ executionId, metadata, status: executionStatus, error: executionFailure })); }
       catch (_) { /* provider cleanup must not mask execution results */ }
     }

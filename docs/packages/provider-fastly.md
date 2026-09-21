@@ -129,6 +129,16 @@ pulse build ./my-app
 hostcalls directly. It contains no JavaScript runtime image or `pulse_host`.
 Clock-dependent capabilities import only WASI `clock_time_get`.
 
+The canonical Native platform driver caps each invocation at 1,024 cumulative
+effect requests, including repeated loop visits and all requested group members.
+The next request fails before dispatch (state error 1007, stage 170); this is a
+fixed runtime policy, not a provider configuration field. Per-visit tickets fence
+result injection, and terminal driver return invalidates pending work. The
+artifact records `pulse.effect-invocation.v1` in `effectInvocations`. Existing
+monotonic request deadlines span the whole invocation. See the
+[PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2)
+for the managed-host boundary and the remaining PS3/PS4 production gates.
+
 Conditional KV (`getVersioned`, `insertIfAbsent`, `compareAndSwap`) uses this
 Native path and the existing logical KV bindings. It preserves generation tokens
 without numeric narrowing, stages a bounded Pulse JSON envelope, and distinguishes

@@ -67,14 +67,15 @@ export default function handler(ctx: PulseContext) {
   }
   const controller = nativeHost.instantiateCanonicalNativeModule(native, { request: { method: 'GET', path: '/' }, providerAdapter: adapter });
   assert.equal(controller.start(), 1);
+  const pending = controller.pendingEffects();
   const pc = controller.programCounter(), continuation = controller.continuationState();
   assert.equal(controller.resume(), -2);
   assert.equal(controller.programCounter(), pc);
   assert.equal(controller.continuationState(), continuation);
-  controller.setEffectResult(0, controller.prepareEffectResult(0, 'A'));
+  controller.setEffectResult(pending[0].ticket, controller.prepareEffectResult(0, 'A'));
   assert.equal(controller.exports.pulse_set_effect_result(0, 1), 0, 'duplicate result rejected');
   assert.equal(controller.resume(), -2, 'partial grouped results cannot resume');
-  controller.setEffectResult(1, controller.prepareEffectResult(1, 'B'));
+  controller.setEffectResult(pending[1].ticket, controller.prepareEffectResult(1, 'B'));
   assert.equal(controller.resume(), 0);
   assert.equal(controller.response().body, '2001AB');
   console.log('ok - bounded Native dispatcher preserves branches, pure-loop control, grouped effects, resume validation and deterministic small functions');

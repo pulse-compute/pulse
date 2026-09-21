@@ -3,6 +3,7 @@
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
 const applicationErrors = require('./native-application-errors.js');
+const effectInvocations = require('./effect-invocations.js');
 
 const crypto = require('node:crypto');
 const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
@@ -1831,6 +1832,12 @@ export function pulse_fastly_jwt_crypto_calls(): i32 { return __pulse_fastly_jwt
 export function pulse_fastly_jwt_clock_calls(): i32 { return __pulse_fastly_jwt_clock_calls }
 export function pulse_fastly_jwt_schema_calls(): i32 { return __pulse_fastly_jwt_schema_calls }
 export function ${entryName}(): void {
+  if (__pulse_invocation_started) { __pulse_fastly_fail(PULSE_ERROR_STATE, 171, -1); return }
+  __pulse_invocation_started = true
+  __pulse_fastly_run_invocation()
+  __pulse_invocation_close()
+}
+function __pulse_fastly_run_invocation(): void {
   __pulse_fastly_last_error = fastly_abi_init(PULSE_FASTLY_EFFECTS_ABI_VERSION)
   if (__pulse_fastly_last_error != FASTLY_STATUS_OK) { __pulse_fastly_jwt_send_error(); return }
   const handles = new StaticArray<i32>(2)
@@ -1847,9 +1854,10 @@ export function ${entryName}(): void {
 ${applicationErrors.enabled(plan) ? applicationErrors.driverLoop(plan) : `  while (runStatus == 1 && __pulse_fastly_last_error == 0) {
     for (let effectIndex = 0; effectIndex < PULSE_FASTLY_EFFECT_COUNT; effectIndex += 1) {
       if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_NONE) continue
+      const invocation = unchecked(__pulse_invocation_tickets[effectIndex])
       const result = __pulse_fastly_resolve_effect(effectIndex)
       if (result <= 0 || __pulse_fastly_last_error != 0) { __pulse_fastly_jwt_send_error(); return }
-      if (pulse_set_effect_result(effectIndex, result) != 1) { __pulse_fastly_fail(PULSE_ERROR_STATE, 101, effectIndex); __pulse_fastly_jwt_send_error(); return }
+      if (__pulse_invocation_settle(effectIndex, invocation, result) != 1) { __pulse_fastly_fail(PULSE_ERROR_STATE, 101, effectIndex); __pulse_fastly_jwt_send_error(); return }
     }
     runStatus = pulse_resume()
   }`}
@@ -1946,6 +1954,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource() : '',
+    effectInvocations.runtimeSource(),
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
@@ -1953,6 +1962,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   if (applicationErrors.enabled(plan)) source = applicationErrors.instrument(source);
   source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
+  source = effectInvocations.instrument(source);
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
@@ -1999,6 +2009,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
         })
       : Object.freeze({ status: 'inactive' }),
     effectCount: (plan.effects || []).length,
+    effectInvocations: effectInvocations.policy,
     effectKinds,
     continuationCount: (plan.continuations || []).length,
     groupedContinuationCount: (plan.continuations || []).filter((entry) => (entry.effectIds || []).length > 1).length,
