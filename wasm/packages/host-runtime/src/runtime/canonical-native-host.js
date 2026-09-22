@@ -116,7 +116,8 @@ class ValueHeap {
     this.next = 1;
     // Immutable scalars have value semantics. Reuse common handles rather than
     // retaining a new boxed value for every literal/property read in a loop.
-    // Bound the index itself; uncached values still use normal charged handles.
+    // Bound the index itself and rotate its oldest mapping as the working set
+    // changes. Eviction never releases a handle or refunds its cumulative charge.
     this.scalars = budget ? new Map() : undefined;
     this.negativeZero = Symbol('negative-zero');
   }
@@ -126,12 +127,15 @@ class ValueHeap {
     const scalar = value === null || type === 'undefined' || type === 'boolean' || type === 'number' || type === 'string';
     const key = Object.is(value, -0) ? this.negativeZero : value;
     if (scalar && this.scalars?.has(key)) return this.scalars.get(key);
-    const cache = scalar && this.scalars && this.scalars.size < 8192;
+    const cache = scalar && this.scalars;
     if (cache) this.budget.charge(1, this.budget.policy.edgeBytes * 2);
     this.budget?.retain(value);
     const handle = this.next++;
     this.values.set(handle, value);
-    if (cache) this.scalars.set(key, handle);
+    if (cache) {
+      if (this.scalars.size === 8192) this.scalars.delete(this.scalars.keys().next().value);
+      this.scalars.set(key, handle);
+    }
     return handle;
   }
   has(handle) { return this.values.has(Number(handle)); }

@@ -242,7 +242,12 @@ authoring or provider configuration surface:
 Accounting charges a 32-byte base per retained value, UTF-16 text bytes, and
 container growth (at least eight bytes per edge). Node Native also accounts for
 trace entries, visits each object graph once, and charges guest mutations before
-changing the container. Fastly accounts for retained handles, text assignments,
+changing the container. Its request-local index reuses up to 8,192 immutable
+scalar handles, including strings, with one charged index unit and 16 bytes per entry.
+Positive and negative zero remain distinct. Once the index is full, each new
+mapping replaces its oldest mapping and is still cumulatively charged. Previously
+allocated handles remain valid and retained; no charge is refunded. Cached reads
+still check latched terminal failure. No mutable object is interned. Fastly accounts for retained handles, text assignments,
 container/header appends and a rope's eventual flat size. Cached values and
 object representations differ between hosts, so the counters are conservative
 runtime accounting rather than a portable measure of live heap bytes. They do
