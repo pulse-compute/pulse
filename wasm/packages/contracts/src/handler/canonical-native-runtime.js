@@ -6,6 +6,28 @@ const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generat
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
 const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v4';
 
+// Execution-wide containment for plans with bounded storage-read loops. These
+// are accounting limits, not a JavaScript process/RSS limit. Native providers
+// retain handles until completion; no iteration reset may refund this budget.
+const CANONICAL_NATIVE_READ_LOOP_MEMORY = Object.freeze({
+  version: 'pulse.native-read-loop-memory.v1',
+  maxBytes: 64 * 1024 * 1024,
+  maxValues: 1024 * 1024,
+  valueBytes: 32,
+  edgeBytes: 8,
+  maximumMemoryPages: 4096,
+  lifetime: 'execution',
+  reclamation: 'retain-until-terminal'
+});
+
+function hasBoundedReadLoop(plan) {
+  function visit(node) {
+    if (!node || typeof node !== 'object') return false;
+    return node.kind === 'read-loop' || Object.values(node).some(visit);
+  }
+  return visit(plan && plan.entry);
+}
+
 const CANONICAL_NATIVE_RUN_STATUS = Object.freeze({
   COMPLETE: 0,
   SUSPENDED: 1,
@@ -170,6 +192,8 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CANONICAL_NATIVE_COMPILER_VERSION,
   CANONICAL_NATIVE_HOST_VERSION,
+  CANONICAL_NATIVE_READ_LOOP_MEMORY,
+  hasBoundedReadLoop,
   CANONICAL_NATIVE_RUN_STATUS,
   CANONICAL_NATIVE_RESULT_STATUS,
   CANONICAL_NATIVE_ERROR_CODES,

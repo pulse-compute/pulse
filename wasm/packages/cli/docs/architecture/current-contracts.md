@@ -181,8 +181,8 @@ unrolled entry per iteration. Original-source JavaScript retains its authored
 loop; its target is selected explicitly and is never a Native fallback.
 
 PS1 is the compiler foundation. PS2 supplies the invocation lifecycle below;
-PS3 owns retained-value memory containment and PS4 owns packed/provider/application
-qualification. Neither PS1 nor PS2 releases retained values per iteration.
+PS3 supplies Native retained-value memory containment below and PS4 owns
+packed/provider/application qualification. Values remain retained for the execution.
 Production qualification remains open. Applications must handle a continuing
 chain at the cap as incomplete rather than conclude that the searched value is
 absent.
@@ -225,6 +225,48 @@ Counts span loop visits, sequential loops, groups and error handling rather than
 counting static table entries. An inherited monotonic request deadline is never
 restarted on a loop visit; dispatch, settlement and resume remain fenced by it.
 Late asynchronous success or failure cannot continue a cancelled execution.
+
+### Native read-loop memory containment (PS3)
+
+Plans containing a bounded read loop activate `pulse.native-read-loop-memory.v1`
+for the entire Native execution, including work before and after the loop. The
+artifact records this in `policy.readLoopMemory`. These fixed limits add no
+authoring or provider configuration surface:
+
+| Limit | Ceiling |
+|---|---:|
+| Cumulative accounted retention | 64 MiB |
+| Cumulative value/edge units | 1,048,576 |
+| Complete unlinked Wasm linear memory | 4,096 pages (256 MiB) |
+
+Accounting charges a 32-byte base per retained value, UTF-16 text bytes, and
+container growth (at least eight bytes per edge). Node Native also accounts for
+trace entries, visits each object graph once, and charges guest mutations before
+changing the container. Fastly accounts for retained handles, text assignments,
+container/header appends and a rope's eventual flat size. Cached values and
+object representations differ between hosts, so the counters are conservative
+runtime accounting rather than a portable measure of live heap bytes. They do
+not bound Node process RSS, trusted provider implementation internals, or ordinary
+original-source JavaScript. Existing structured input limits remain in force.
+
+The budget never resets or refunds on iteration, suspension, sequential loops,
+or Router error handling. Node rejects excess retention with
+`PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED` and invalidates pending tickets before
+inserting the rejected handle. Fastly records terminal memory error 1010 (stage
+172 for bytes or 173 for value units), invalidates pending work, and traps. These
+failures cannot enter an application error handler or dispatch a subsequent
+read. The allocator can also trap at the Wasm memory ceiling, which covers
+temporary codec, parser, crypto and container allocations beyond the accounting
+model. Linked guests retain their separately owned, smaller fixed-memory ABI.
+
+This is request-lifetime retention, without iteration-temporary reclamation or
+a collector/guest ABI change. Carried aliases, pending effect payloads, decoded
+schema values and response roots therefore remain valid. The executable
+`bounded-read-loops` task exercises the Catalog receipt-page shape at 64 pages
+of 57,344 bytes, with two awaits per page, nested pure loops and a carried schema
+alias. It also checks exact budget boundaries, terminal limit failures and the
+encoded linear-memory ceiling of complete target artifacts. PS4 still owns
+packed-consumer, provider-engine and adopted application qualification.
 
 ## Execution ownership
 

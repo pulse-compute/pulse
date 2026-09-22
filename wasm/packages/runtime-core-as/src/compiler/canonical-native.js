@@ -1085,7 +1085,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     requiredExports: eventReachable
       ? Object.freeze([...runtimeContract.CANONICAL_NATIVE_EXPORTS, ...eventContract.EVENT_NATIVE_ABI_EXTENSION.exports])
       : runtimeContract.CANONICAL_NATIVE_EXPORTS,
-    policy: runtimeContract.CANONICAL_NATIVE_POLICY
+    policy: Object.freeze({ ...runtimeContract.CANONICAL_NATIVE_POLICY,
+      ...(runtimeContract.hasBoundedReadLoop(plan) ? { readLoopMemory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY } : {}) })
   });
 
   return Object.freeze({
