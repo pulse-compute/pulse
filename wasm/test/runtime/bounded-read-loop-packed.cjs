@@ -22,6 +22,9 @@ async function main(packedRoot) {
     source = source.replace('export default app', `app.get('/kv',async(ctx)=>{let key=ctx.req.header('x-start')||'';let count=0;
       for(let i=0;i<64&&key!=='';i++){const row=await ctx.kv<{next:string}>('pages').getVersioned(key);if(row.status!=='found')return ctx.text('unavailable',{status:503});key=row.value.next;count++}
       if(key!=='')return ctx.text('incomplete',{status:409});return ctx.text(''+count)});\nexport default app`);
+    source=source.replace('export default app',`app.post('/copy',async(ctx)=>{const input=await ctx.req.text();let output='';
+      for(let chunk=0;chunk<512;chunk++){let part='';for(let slot=0;slot<64;slot++){const i=chunk*64+slot;if(i>0&&i+1<input.length)part+=input[i]}output+=part}
+      return ctx.text(output)});\nexport default app`);
     fs.writeFileSync(entry, source);
     const config = path.join(cwd, '.pulse/config.ts');
     fs.writeFileSync(config, fs.readFileSync(config,'utf8').replace("secretStore: 'app_secrets',", "secretStore: 'app_secrets', kv: { pages: 'pages' },"));
@@ -71,6 +74,16 @@ async function main(packedRoot) {
         assert.equal(response.status,count===65?409:200);assert.equal(response.body,count===65?'incomplete':String(count));checks.push({target,name:'kv-'+count,status:'passed'});
       }
     }
+    // A valid escaped field must coexist with a read-loop route. Copying bounded
+    // chunks preserves its exact bytes without quadratic full-output prefixes.
+    for(const target of ['node','javascript','fastly']) {
+      const body=JSON.stringify({reason:'\u0001'.repeat(4000)});
+      const request={method:'POST',path:'/copy',url:'https://app.example.invalid/copy',headers:[],body};let response;
+      if(target==='node')response=(await tc.executeCanonicalNativeModule(native.native,tc.driver.executionOptions(projects.node.providerConfig,{request,strict:false}))).response;
+      if(target==='javascript'){const r=await tc.executeNodeJavascriptApplication(js.loaded.application,new Request(request.url,{method:'POST',body}),{strict:false});response={status:r.status,body:await r.text()};}
+      if(target==='fastly')response=tc.executeFastlyNativePlatformCapabilities(fastly,{request}).response;
+      assert.equal(response.status,200);assert.equal(response.body,body.slice(1,-1));checks.push({target,name:'bounded-escaped-field-copy',status:'passed'});
+    }
     for(const target of ['node','javascript']) {
       const request={method:'GET',path:'/pages',url:'https://app.example.invalid/pages',headers:[['x-start','p1']],body:''};
       const run=(fetchImplementation,options)=>target==='node'?tc.executeCanonicalNativeModule(native.native,tc.driver.executionOptions({...projects.node.providerConfig,maxDurationMs:options?.maxDurationMs},{request,strict:false,secrets,fetchImplementation,...options})):tc.executeNodeJavascriptApplication(js.loaded.application,new Request(request.url,{headers:request.headers}),{strict:false,schemaCodecs:codecs,secrets,s3:projects.javascript.providerConfig.bindings.s3,fetchImplementation,...options});
@@ -88,7 +101,7 @@ async function main(packedRoot) {
         const rejected=assert.rejects(pending,e=>/CANCELLED|ABORTED/.test(e.code)||e.name==='AbortError');await admitted;abort.abort();await rejected;settle();await new Promise(resolve=>setImmediate(resolve));assert.equal(calls,2);checks.push({target,name:'cancel-late-'+lateFailure,status:'passed'});
       }
     }
-    assert.equal(checks.length,50);
+    assert.equal(checks.length,53);
     return {status:'passed',checks,providerReality:false,artifacts:{node:hash(native.native.wasm),fastly:hash(fastly.wasm)}};
   } finally {fs.rmSync(cwd,{recursive:true,force:true});}
 }
