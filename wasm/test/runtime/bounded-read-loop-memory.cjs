@@ -39,6 +39,21 @@ function budgetBoundaries() {
   b.write(carried.values, '2', 3); carried.values.push(3);
   for (let i = 0; i < 64; i++) heap.put({ text: 'temporary' });
   assert.equal(heap.get(first), heap.get(alias)); assert.deepEqual(heap.get(first).values, [1, 2, 3]);
+  const scalarBudget = new NativeValueBudget(policy), scalars = new host.ValueHeap(scalarBudget);
+  for (const value of [undefined, null, true, false, 0, -0, NaN, Infinity, '0', '\ud800', 'literal']) {
+    const handle = scalars.put(value), before = scalarBudget.snapshot();
+    for (let i = 0; i < 10000; i++) assert.equal(scalars.put(value), handle);
+    assert.deepEqual(scalarBudget.snapshot(), before);
+    assert.ok(Object.is(scalars.get(handle), value));
+  }
+  assert.notEqual(scalars.put(0), scalars.put(-0));
+  assert.notEqual(scalars.put(0), scalars.put('0'));
+  for (let i = 0; i < 10000; i++) scalars.put(i);
+  assert.equal(scalars.scalars.size, 8192, 'scalar index is bounded');
+  const uncached = scalars.put('after-cache-capacity');
+  assert.notEqual(scalars.put('after-cache-capacity'), uncached);
+  assert.throws(() => scalarBudget.charge(policy.maxValues, 0), limited);
+  assert.throws(() => scalars.put(0), limited, 'cached handles preserve terminal failure');
   const small = new NativeValueBudget({ ...policy, maxBytes: 128 });
   const target = [];
   assert.throws(() => small.write(target, '1000000000', 1), limited);

@@ -114,11 +114,24 @@ class ValueHeap {
     this.budget = budget;
     this.values = new Map();
     this.next = 1;
+    // Immutable scalars have value semantics. Reuse common handles rather than
+    // retaining a new boxed value for every literal/property read in a loop.
+    // Bound the index itself; uncached values still use normal charged handles.
+    this.scalars = budget ? new Map() : undefined;
+    this.negativeZero = Symbol('negative-zero');
   }
   put(value) {
+    this.budget?.charge(0, 0); // Cached reads cannot recover a latched failure.
+    const type = typeof value;
+    const scalar = value === null || type === 'undefined' || type === 'boolean' || type === 'number' || type === 'string';
+    const key = Object.is(value, -0) ? this.negativeZero : value;
+    if (scalar && this.scalars?.has(key)) return this.scalars.get(key);
+    const cache = scalar && this.scalars && this.scalars.size < 8192;
+    if (cache) this.budget.charge(1, this.budget.policy.edgeBytes * 2);
     this.budget?.retain(value);
     const handle = this.next++;
     this.values.set(handle, value);
+    if (cache) this.scalars.set(key, handle);
     return handle;
   }
   has(handle) { return this.values.has(Number(handle)); }
