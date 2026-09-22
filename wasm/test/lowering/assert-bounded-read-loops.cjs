@@ -169,6 +169,7 @@ async function main() {
     }
   } finally {fs.rmSync(cwd,{recursive:true,force:true});}
   await require('../runtime/bounded-read-loop-lifecycle.cjs').main();
-  console.log(JSON.stringify({status:'passed',negativeSources:negatives.length*2+6,planMutations:invalidPlans.length+3,storageVectors:7,lifecycle:'PS2',targets:['node-javascript','node-native','internal-generator','fastly-native-fixture'],providerReality:false}));
+  await require('../runtime/bounded-read-loop-memory.cjs').main();
+  console.log(JSON.stringify({status:'passed',negativeSources:negatives.length*2+6,planMutations:invalidPlans.length+3,storageVectors:7,lifecycle:'PS2',memory:'PS3',targets:['node-javascript','node-native','internal-generator','fastly-native-fixture'],providerReality:false}));
 }
 main().catch(error=>{console.error(error.stack);console.error(JSON.stringify(error.diagnostics||error.detail||{}));process.exitCode=1});

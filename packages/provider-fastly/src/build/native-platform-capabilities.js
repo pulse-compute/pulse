@@ -4,6 +4,7 @@ const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
+const nativeValueBudget = require('./native-value-budget.js');
 
 const crypto = require('node:crypto');
 const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
@@ -1964,6 +1965,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
   source = effectInvocations.instrument(source);
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
+  source = nativeValueBudget.instrument(source, plan);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;
@@ -2028,6 +2030,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       ...(bindings.maxDurationMs === undefined ? [] : ['pulse_fastly_request_expired'])
     ]),
     policy: Object.freeze({
+      ...(nativeValueBudget.hasBoundedReadLoop(plan) ? { readLoopMemory: nativeValueBudget.policy } : {}),
       nativeFastly: true,
       provider: 'fastly',
       providerNeutralInput: true,
@@ -2173,8 +2176,8 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     ];
     if (emitWat) args.push('--textFile', assemblyScriptWatFile);
     const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization);
-    if (!guestLinked && plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.'))) {
-      args.push('--maximumMemory', '4096');
+    if (!guestLinked && (nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+      args.push('--maximumMemory', String(nativeValueBudget.policy.maximumMemoryPages));
     }
     if (generated.guestUnits.length > 0) {
       args.push(

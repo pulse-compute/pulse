@@ -1,6 +1,7 @@
 'use strict';
 const portableKv = require('@pulse-compute/runtime/host');
 const { createEffectInvocations, normalizeMaxEffects } = require('./effect-invocations.js');
+const { NativeValueBudget } = require('./native-value-budget.js');
 
 const crypto = require('node:crypto');
 const {
@@ -109,11 +110,13 @@ function createSchemaCodecs(registryInput = {}) {
 }
 
 class ValueHeap {
-  constructor() {
+  constructor(budget) {
+    this.budget = budget;
     this.values = new Map();
     this.next = 1;
   }
   put(value) {
+    this.budget?.retain(value);
     const handle = this.next++;
     this.values.set(handle, value);
     return handle;
@@ -363,7 +366,9 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const moduleShape = validateNativeModule(module, plan);
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
-  const heap = new ValueHeap();
+  const memoryBudget = runtimeContract.hasBoundedReadLoop(plan)
+    ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
+  const heap = new ValueHeap(memoryBudget);
   const pending = [];
   const invocations = createEffectInvocations(() => {
     options.requestBudget?.check();
@@ -383,6 +388,10 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     } catch (error) { close(); throw error; }
   }
   const trace = [];
+  if (memoryBudget) Object.defineProperty(trace, 'push', { value(...entries) {
+    for (const entry of entries) memoryBudget.retain(entry);
+    return Array.prototype.push.apply(this, entries);
+  } });
   const sensitiveValues = new Set();
   const configuredSecrets = options.secrets && typeof options.secrets === 'object' ? options.secrets : {};
   for (const value of Object.values(configuredSecrets)) if (typeof value === 'string' && value.length > 0) sensitiveValues.add(value);
@@ -587,26 +596,43 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     value_array_push(arrayHandle, valueHandle) {
       const target = value(arrayHandle);
       if (!Array.isArray(target)) throw new CanonicalNativeHostError('value_array_push target is not an array.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE', { arrayHandle });
+      memoryBudget?.write(target, String(target.length), value(valueHandle));
       target.push(value(valueHandle));
     },
     value_array_spread(arrayHandle, valueHandle) {
       const target = value(arrayHandle);
       const source = value(valueHandle);
       if (!Array.isArray(target) || !source || typeof source[Symbol.iterator] !== 'function') throw new CanonicalNativeHostError('value_array_spread requires iterable input.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE');
-      target.push(...source);
+      const append = item => {
+        memoryBudget?.write(target, String(target.length), item);
+        target.push(item);
+      };
+      if (Array.isArray(source)) {
+        const length = source.length;
+        for (let index = 0; index < length; index++) append(source[index]);
+      } else for (const item of source) append(item);
     },
     value_object() { return put({}); },
     value_object_set(objectHandle, keyHandle, valueHandle) {
       const target = value(objectHandle);
       if (!target || typeof target !== 'object') throw new CanonicalNativeHostError('value_object_set target is not an object.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE', { objectHandle });
-      target[String(value(keyHandle))] = value(valueHandle);
+      const key = String(value(keyHandle));
+      memoryBudget?.write(target, key, value(valueHandle));
+      target[key] = value(valueHandle);
     },
     value_object_spread(objectHandle, valueHandle) {
       const target = value(objectHandle);
       const source = value(valueHandle);
       if (!target || typeof target !== 'object') throw new CanonicalNativeHostError('value_object_spread target is not an object.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE');
       if (source === null || source === undefined) return;
-      Object.assign(target, source);
+      // String spreading materializes one property per UTF-16 code unit.
+      // Reserve that capacity before asking the engine to enumerate its keys.
+      if (typeof source === 'string') memoryBudget?.charge(source.length,
+        source.length * (runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY.valueBytes + runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY.edgeBytes));
+      for (const key of Object.keys(source)) {
+        memoryBudget?.write(target, key, source[key]);
+        target[key] = source[key];
+      }
     },
     value_property(objectHandle, keyHandle) {
       const target = value(objectHandle);
@@ -617,6 +643,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const target = value(objectHandle);
       if (target === null || target === undefined) throw new CanonicalNativeHostError('Cannot write a property on null or undefined.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE', { objectHandle });
       const assigned = value(valueHandle);
+      memoryBudget?.write(target, String(value(keyHandle)), assigned);
       target[String(value(keyHandle))] = assigned;
       return valueHandle;
     },
@@ -629,6 +656,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const target = value(objectHandle);
       if (target === null || target === undefined) throw new CanonicalNativeHostError('Cannot write an element on null or undefined.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE', { objectHandle });
       const assigned = value(valueHandle);
+      memoryBudget?.write(target, value(keyHandle), assigned);
       target[value(keyHandle)] = assigned;
       return valueHandle;
     },
@@ -1157,7 +1185,8 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         resolutionOrder: Object.freeze([...resolutionOrder]),
         continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
         trace: Object.freeze([...controller.trace]),
-        valueHandleCount: controller.heap.size()
+        valueHandleCount: controller.heap.size(),
+        ...(controller.heap.budget ? { memory: controller.heap.budget.snapshot() } : {})
       });
     }
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
@@ -1179,7 +1208,8 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
       trace: Object.freeze([...controller.trace]),
-      valueHandleCount: controller.heap.size()
+      valueHandleCount: controller.heap.size(),
+      ...(controller.heap.budget ? { memory: controller.heap.budget.snapshot() } : {})
     });
   } catch (error) {
     executionFailure = canonicalRuntime.redactRuntimeError(error, controller.sensitiveValues);

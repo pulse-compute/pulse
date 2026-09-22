@@ -665,7 +665,16 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     throw new FastlyNativePlatformCapabilitiesMockError('Pass98 native module is missing _start.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_START_MISSING');
   }
   if (options.conditionalKv && options.conditionalKv.deadlineNs !== undefined) instance.exports.pulse_fastly_kv_request_deadline(BigInt(options.conditionalKv.deadlineNs));
-  instance.exports._start();
+  try { instance.exports._start(); }
+  catch (error) {
+    if (Number(instance.exports.pulse_fastly_last_error?.()) !== 1010) throw error;
+    throw new FastlyNativePlatformCapabilitiesMockError('Native retained-value budget exceeded.',
+      'PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED', {
+        lastError: 1010, errorStage: Number(instance.exports.pulse_fastly_error_stage()), trace,
+        bytes: Number(instance.exports.pulse_fastly_memory_bytes()),
+        values: Number(instance.exports.pulse_fastly_memory_values())
+      });
+  }
   for (const entry of trace) if (entry.url && privateUrls.has(entry.url)) entry.url = '[REDACTED]';
   const lastError = typeof instance.exports.pulse_fastly_last_error === 'function'
     ? Number(instance.exports.pulse_fastly_last_error())

@@ -137,7 +137,12 @@ result injection, and terminal driver return invalidates pending work. The
 artifact records `pulse.effect-invocation.v1` in `effectInvocations`. Existing
 monotonic request deadlines span the whole invocation. See the
 [PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2)
-for the managed-host boundary and the remaining PS3/PS4 production gates.
+for the managed-host boundary. Plans with bounded read loops also enable the
+[PS3 memory policy](../architecture/current-contracts.md#native-read-loop-memory-containment-ps3):
+64 MiB of cumulative accounted retention, 1,048,576 value/edge units, and a
+256 MiB ceiling on unlinked Wasm linear memory. Exceeding the accounting budget
+closes the invocation and traps with memory error 1010; values remain valid for
+the request lifetime. PS4 provider and application qualification remains open.
 
 Conditional KV (`getVersioned`, `insertIfAbsent`, `compareAndSwap`) uses this
 Native path and the existing logical KV bindings. It preserves generation tokens
