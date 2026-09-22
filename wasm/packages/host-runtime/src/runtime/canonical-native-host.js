@@ -114,11 +114,36 @@ class ValueHeap {
     this.budget = budget;
     this.values = new Map();
     this.next = 1;
+    // Immutable scalars have value semantics. Reuse common handles rather than
+    // retaining a new boxed value for every literal/property read in a loop.
+    // Bound the index itself and rotate its oldest mapping as the working set
+    // changes. Eviction never releases a handle or refunds its cumulative charge.
+    this.scalars = budget ? new Map() : undefined;
+    this.identities = budget ? new WeakMap() : undefined;
+    this.identityCount = 0;
+    this.negativeZero = Symbol('negative-zero');
   }
   put(value) {
+    this.budget?.charge(0, 0); // Cached reads cannot recover a latched failure.
+    const type = typeof value;
+    const scalar = value === null || type === 'undefined' || type === 'boolean' || type === 'number' || type === 'string';
+    const object = value !== null && type === 'object';
+    if (object && this.identities?.has(value)) return this.identities.get(value);
+    const key = Object.is(value, -0) ? this.negativeZero : value;
+    if (scalar && this.scalars?.has(key)) return this.scalars.get(key);
+    const cache = scalar && this.scalars;
+    const cacheIdentity = object && this.identities && this.identityCount < 8192;
+    // Charge index growth once. Replacing a scalar mapping reuses its bounded
+    // capacity; every new value handle below remains cumulatively charged.
+    if ((cache && this.scalars.size < 8192) || cacheIdentity) this.budget.charge(1, this.budget.policy.edgeBytes * 2);
     this.budget?.retain(value);
     const handle = this.next++;
     this.values.set(handle, value);
+    if (cache) {
+      if (this.scalars.size === 8192) this.scalars.delete(this.scalars.keys().next().value);
+      this.scalars.set(key, handle);
+    }
+    if (cacheIdentity) { this.identities.set(value, handle); this.identityCount++; }
     return handle;
   }
   has(handle) { return this.values.has(Number(handle)); }

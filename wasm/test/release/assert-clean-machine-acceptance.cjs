@@ -813,6 +813,26 @@ async function main() {
     fs.writeFileSync(path.join(testRoot, 'http-input-packed-acceptance.json'), `${JSON.stringify(httpInput, null, 2)}\n`);
     console.log(JSON.stringify(httpInput));
 
+    console.log('acceptance - replay bounded read loops from exact installed tarballs');
+    const readLoops = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-read-loop-packages.cjs'), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000,
+    }));
+    assert.equal(readLoops.status, 'passed');
+    assert.equal(readLoops.installedBytesUnchanged, true);
+    assert.equal(readLoops.workspaceProductModules, 0);
+    assert.equal(readLoops.checks.length, 53);
+    fs.writeFileSync(path.join(testRoot, 'read-loop-packed-acceptance.json'), `${JSON.stringify(readLoops, null, 2)}\n`);
+    console.log(JSON.stringify(readLoops));
+
+    const readLoopAdoption = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/runtime/reproduce-read-loop-adoption.cjs'), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000,
+    }));
+    assert.equal(readLoopAdoption.status, 'passed');
+    assert.equal(readLoopAdoption.installedBytesUnchanged, true);
+    assert.equal(readLoopAdoption.rows.length, 4);
+    assert.ok(readLoopAdoption.rows.every(row => row.status === 'passed'));
+    fs.writeFileSync(path.join(testRoot, 'read-loop-adoption.json'), `${JSON.stringify(readLoopAdoption, null, 2)}\n`);
+
     console.log('acceptance - replay conditional KV from exact installed tarballs');
     const kv = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/kv/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
       cwd: toolRoot, timeoutMs: 600000,
