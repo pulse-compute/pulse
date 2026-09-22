@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "pulse.read-loop-adoption-reproduction.v1",
+  "status": "blocked",
+  "rows": [
+    {
+      "target": "node",
+      "withReadLoop": false,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "withReadLoop": false,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "withReadLoop": true,
+      "status": "failed",
+      "code": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED",
+      "message": "Native read-loop execution exceeded its retained-value budget.",
+      "detail": {
+        "bytes": 33358498,
+        "values": 1048576,
+        "maxBytes": 67108864,
+        "maxValues": 1048576
+      }
+    },
+    {
+      "target": "fastly",
+      "withReadLoop": true,
+      "status": "passed"
+    }
+  ],
+  "installedBytesUnchanged": true,
+  "providerReality": false
+}
