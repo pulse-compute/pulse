@@ -19,6 +19,10 @@ shared-function-plan attachment were not present in this checkout. This record
 uses only the P01/P02/P03/R01 task packet supplied for this run and repository
 sources. It does not claim to have inspected those missing inputs.
 
+P02 was explicitly authorized after P01 merged. That authorization supersedes
+the historical P01 instruction not to dispatch P02, but it does not waive the
+portable-baseline prerequisite or authorize P03, R01, G0, or optional work.
+
 ## Classification and source identity
 
 - **Entry point:** `documentation-current`.
@@ -78,6 +82,78 @@ Two valid but different evidence lanes are documented in this repository:
 Neither binary is available in this cloud environment. Consequently P01 makes
 no local-engine or deployed-runtime claim, and it does not reinterpret PS4's
 preserved 0.21.0 evidence as a 0.20.1 run.
+
+## P02 prerequisite replay and environment handoff
+
+P02 is classified **evidence / evidence-only**. No named implementation Entry
+Point exactly matches an evidence harness with no production mutation, so this
+attempt follows the ordinary instruction chain and the explicit P02 write
+allowance. The canonical documentation update uses `documentation-current`;
+it does not combine that documentation Entry Point with a product Entry Point.
+
+P02 selected branch `work` at
+`30bc530750d46804f1be399ecffa731afb104067`, the expected `latest` baseline
+(`P01: record compiler-efficiency baseline and next packets (#69)`). The tree
+was clean before replay (`git status --short --branch` printed only `## work`),
+and the lockfile SHA-256 remained
+`4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8`.
+This is newer than P01's tested `caec37a...` source only because it includes
+the merged P01 evidence commit; it is exactly the expected P02 source, so there
+is no unexplained baseline delta. Node 24.18.0 was selected from the installed
+nvm toolchain, and the repository wrapper selected pnpm 12.4.2. Dependencies
+were already restored from the lockfile with lifecycle scripts disabled; no
+network bootstrap was attempted.
+
+The required pre-edit replay produced these wall-clock observations:
+
+| Command | Exit | Duration | Result |
+| --- | ---: | ---: | --- |
+| `npm run maintainer:check` | 0 | 2 s | Passed: 7 classes, 11 protected boundaries, 9 instruction files, 52 documented commands, 8 workflows, 11 deployment objects, and 17 scope cases. |
+| `node scripts/pnpm-toolchain.cjs -- --version` | 0 | 1 s | Printed `12.4.2`. |
+| `node scripts/pnpm-toolchain.cjs -- run build` | 0 | 4 s | TypeScript build passed. |
+| `node scripts/pnpm-toolchain.cjs -- run test` | 0 | 16 s | 27 files and 239 tests passed; Vitest reported 14.96 s. |
+| Four-profile runner command below | 1 | 7.70 s | Terminal report `failed`; 97 selected and 2 completed: `suite-shape` passed in 181 ms and `test-orchestration` failed in 7.507 s. The remaining 95 tasks did not run. |
+
+The aggregate command was:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs \
+  --profile unit --profile native --profile javascript --profile conformance \
+  --report .test-results/compiler-efficiency/p02/baseline-portable.json
+```
+
+The ignored report is
+`wasm/.test-results/compiler-efficiency/p02/baseline-portable.json`, with run
+ID `2026-09-23T00-58-53-745Z--5817`. It records source identity
+`30bc530750d46804f1be399ecffa731afb104067`, terminal status `failed`, all 97
+selected task IDs, two completed results, and the task-owned logs. The failure
+is identical to P01: after the timeout fixture terminates its process group,
+child PID 5869 is adopted by PID 1 and remains in zombie state `Z`; the exact
+cleanup assertion at `wasm/test/suite/assert-test-orchestration.cjs:122`
+therefore fails. This is the required assertion working as designed, not a
+product failure to suppress.
+
+Separate CI evidence supplied with the P02 authorization remains useful but
+does not repair this container: [Repository validation run 35800677301,
+portable job 106990062409](https://github.com/pulse-compute/pulse/actions/runs/35800677301/job/106990062409)
+succeeded on PR test-merge `7ca69c38a5e99dc2419236bf48a2b0b7adb31922`
+with Node 24.20.0. Its separate profile invocations covered 34 unit, 28 native,
+7 JavaScript, and 28 conformance tasks (97 unique passing tasks, including
+`test-orchestration`). Successful JSON reports were not retrieved, so this is
+not the requested aggregate report and does not prove that the Node 24.18.0
+cloud environment now reaps adopted children.
+
+Per the P02 stop condition, no synthetic fixture, measurement harness, cold
+compile, or warm execution was started. There are consequently no P02 metric
+tables, artifact hashes, or conclusions about retained bytes, cumulative
+charges, handles, Wasm capacity, RSS, or shared-function behavior. The concrete
+handoff is to replay the unchanged aggregate in a Node 24.18.0 container whose
+PID 1 reaps adopted children, confirm 97 selected and completed passing tasks
+and every result, and only then implement the measurement packet serially.
+Changing the orchestration assertion or treating CI as a waiver is outside P02.
+The prescribed post-edit `unit` profile check also stopped after the same two
+tasks (of 34 selected), with `suite-shape` passing and `test-orchestration`
+failing on an adopted zombie; it supplies no additional profile coverage.
 
 ## Clean-baseline replay
 
@@ -181,7 +257,7 @@ Exact current owners and locks are:
   demonstrates that function values are introduced there and a separately
   declared implementation task authorizes that protected boundary.
 
-## P02 packet — measurement and traces (do not dispatch)
+## P02 packet — measurement and traces (authorized; prerequisite blocked)
 
 **Purpose.** Establish repeatable measurements before any reclamation or
 indexing change. Report separate quantities; never infer one from another:
