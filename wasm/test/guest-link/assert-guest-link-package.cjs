@@ -8,6 +8,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const guestLink = require('../../packages/wasm-guest-link/src/index.js');
+const { optimizationArguments } = require('../../packages/wasm-guest-link/src/contracts.js');
 
 const evidenceVersion = 'pulse.guest-link-package-evidence.v1';
 const expected = Object.freeze({
@@ -24,8 +25,8 @@ const expected = Object.freeze({
     sha256: '26af409614f556104522d4d6859237908703bf044fb3e230dc53426d6736ccc0'
   }),
   final: Object.freeze({
-    bytes: 1461,
-    sha256: 'c9f3fbcdb0cd2ffe3a6d9cc7446802ab2a99cd3b65120c4fcf8482f15544dc1d'
+    bytes: 1310,
+    sha256: 'c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879'
   })
 });
 
@@ -332,6 +333,9 @@ async function main() {
     assert.equal(first.report.finalArtifact.sha256, expected.final.sha256);
     assert.equal(first.audit.artifact.sha256, expected.final.sha256);
     assert.equal(first.audit.providerPackaging.auditArtifactSha256MatchesInput, true);
+    assert.equal(first.audit.layout.staticSegmentsPreserved, true);
+    assert.equal(optimizationArguments('native-default').includes('--skip-pass=memory-packing'), true);
+    assert.equal(optimizationArguments('native-default').includes('--merge-similar-functions'), true);
     assert.deepEqual(first.report.evidenceClassification.unresolvedAssumptions, []);
     const runtime = await assertRuntime(first.files.final);
 
@@ -459,7 +463,7 @@ async function main() {
         'complete-final-binary-audit',
         'normalized-redacted-diagnostics',
         'deterministic-provenance-reporting',
-        'exact-a3-proof-artifact-reproduction'
+        'exact-audited-final-artifact-reproduction'
       ].map((id) => ({ id, status: 'passed' })),
       boundary: {
         compilerIntegration: 'deferred-to-b2',

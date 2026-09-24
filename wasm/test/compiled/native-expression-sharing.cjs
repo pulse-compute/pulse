@@ -42,7 +42,13 @@ export function lookup(index: i32): i32 { return load<i32>(mapping + <usize>((in
     for (const retained of [false, true]) {
       const args = [asc.script, 'canonical-native.as.ts', '--outFile', 'module.wasm', '--textFile', 'module.wat',
         '--runtime', 'stub', '--noAssert', '--optimize'];
-      if (retained) appendAssemblyScriptOptimizationArgs(args);
+      if (retained) {
+        appendAssemblyScriptOptimizationArgs(args);
+        assert.deepEqual(args.slice(-2), ['--runPasses', 'merge-similar-functions']);
+        const guestArgs = [];
+        appendAssemblyScriptOptimizationArgs(guestArgs, undefined, { guestLinked: true });
+        assert.equal(guestArgs.includes('--runPasses'), false, 'guest input waits for audited post-link merging');
+      }
       const result = spawnSync(asc.executable, args, { cwd: work, encoding: 'utf8', timeout: 30000 });
       assert.equal(result.status, 0, result.stderr);
       const wat = fs.readFileSync(path.join(work, 'module.wat'), 'utf8');
@@ -94,6 +100,15 @@ async function main() {
     const fastlyResult = executeFastlyNativePlatformCapabilities(fastly.wasm);
     assert.equal(fastlyResult.response.body, '256:101:false:true');
   }
+  const repeated = `export default async function handler(ctx){let value=0;${'value=value+1;'.repeat(2000)}return ctx.text(''+value)}`;
+  const repeatedPlan = buildCanonicalNativePlan(compileCanonicalSource(repeated, {
+    fileName: 'shared-repeat.ts', strict: false, requireAsync: true
+  }));
+  const merged = compileCanonicalNativePlan(repeatedPlan, { cwd: root });
+  assert.ok(merged.wasm.length <= 12000, 'the ordinary Native build must retain the bounded merge win');
+  const repeatedResult = await executeCanonicalNativeModule(merged);
+  assert.equal(repeatedResult.response.body, '2000');
+  assert.equal(repeatedResult.valueHandleCount, 4005, 'merging preserves allocated handle accounting');
   console.log('ok - real Binaryen retention preserves shared calls, distinct bindings, fresh allocations, live tables and mappings on both Native targets');
 }
 

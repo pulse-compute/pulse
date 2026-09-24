@@ -142,6 +142,13 @@ no-inline flags before optimization; AssemblyScript alone ignores `@noinline`.
 Small leaves remain eligible for inlining. This is internal direct-call sharing
 with no public function-value syntax, effect or ABI change.
 
+For modules without guests, AssemblyScript runs Binaryen's similar-function
+merge after its normal optimization. Guest-linked modules instead merge after
+composition in the guest-link stage. In both cases the pass reuses function
+bodies; it does not create a dynamic function table or change the value heap's
+retention or accounting rules. The merge and inlining settings are heuristics,
+not a hard limit on the number of parameters or on the size of every function.
+
 ## Bounded pure control flow
 
 Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by
@@ -759,8 +766,13 @@ explicit no-fallback disposition. The compiler integration module only
 projects and rejoins those exact values.
 
 Guest linking runs after the primary AssemblyScript module is compiled and
-before the exact audited artifact enters provider packaging. The initial
-contract is deliberately closed: one package-prebuilt unit, one fixed
+before the exact audited artifact enters provider packaging. Its pinned final
+Binaryen invocation runs size optimization and bounded similar-function
+merging without memory packing. The final audit still requires every validated
+static data segment, fixed-memory layout, feature restriction, and public
+signature; packaging binds the bytes produced by that invocation to its new
+receipt. The pinned recipe for the reviewed guest prebuilt remains separate.
+The initial contract is deliberately closed: one package-prebuilt unit, one fixed
 link-stage-owned memory, borrowed bounded input, MVP features, no start
 function, no allocation or pointer retention, no undeclared imports, and no
 fallback. `.pulse/guests/` is generated, content-addressed,

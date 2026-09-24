@@ -31,11 +31,14 @@ function resolveNativeOptimization(value) {
   throw new TypeError(`Unsupported Pulse Native optimization mode ${String(value && value.mode || value)}.`);
 }
 
-function appendAssemblyScriptOptimizationArgs(args, value) {
+function appendAssemblyScriptOptimizationArgs(args, value, options = {}) {
   if (!Array.isArray(args)) throw new TypeError('AssemblyScript optimization arguments require a mutable argument array.');
   // AssemblyScript ignores custom @noinline annotations. Apply Pulse's generated
   // annotations to Binaryen IR before its default passes in every profile.
   args.push('--transform', path.join(__dirname, 'native-retention-transform.cjs'));
+  // Run merging after asc's optimizer has honored retained helper boundaries.
+  // Guest inputs are merged once, with the other units, by the guest-link owner.
+  if (!options.guestLinked) args.push('--runPasses', 'merge-similar-functions');
   const optimization = resolveNativeOptimization(value);
   if (!optimization) return undefined;
   args.push(

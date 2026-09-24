@@ -232,7 +232,9 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       '--optimize'
     ];
     if (emitWat) args.push('--textFile', watFile);
-    const optimization = appendAssemblyScriptOptimizationArgs(args, options.nativeOptimization);
+    const optimization = appendAssemblyScriptOptimizationArgs(args, options.nativeOptimization, {
+      guestLinked: guestUnits.length > 0
+    });
     // The text capacity profile bounds each Native module to 256 MiB.
     // Linked guests retain their separately owned fixed-memory ABI.
     if (guestUnits.length === 0 && (runtimeContract.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {

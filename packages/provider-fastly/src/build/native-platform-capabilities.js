@@ -2175,7 +2175,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       '--optimize'
     ];
     if (emitWat) args.push('--textFile', assemblyScriptWatFile);
-    const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization);
+    const optimization = appendAssemblyScriptOptimizationArgs(args, nativeOptimization, { guestLinked });
     if (!guestLinked && (nativeValueBudget.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(nativeValueBudget.policy.maximumMemoryPages));
     }

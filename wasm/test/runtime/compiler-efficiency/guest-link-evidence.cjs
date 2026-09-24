@@ -31,8 +31,13 @@ function build(job) {
   write(job.file + '.original-audit.json', artifact.guestLink.audit);
   assertFinalArtifactIdentity(baseline + '.wasm', artifact.guestLink.audit);
   runTool('wasm-opt', [baseline + '.wasm', ...proof.featureFlags(job), ...candidateFlags, '-o', merged + '.wasm']);
-  assert.throws(() => assertFinalArtifactIdentity(merged + '.wasm', artifact.guestLink.audit),
-    { code: 'PULSE_GUEST_FINAL_AUDIT_FAILED' }, 'changed bytes must not reuse the original receipt');
+  const changed = !fs.readFileSync(baseline + '.wasm').equals(fs.readFileSync(merged + '.wasm'));
+  if (changed) {
+    assert.throws(() => assertFinalArtifactIdentity(merged + '.wasm', artifact.guestLink.audit),
+      { code: 'PULSE_GUEST_FINAL_AUDIT_FAILED' }, 'changed bytes must not reuse the original receipt');
+  } else {
+    assertFinalArtifactIdentity(merged + '.wasm', artifact.guestLink.audit);
+  }
   for (const file of [baseline, merged]) {
     write(file + '.plan.json', artifact.plan);
     write(file + '.artifacts.json', artifact.realizationArtifacts);
@@ -63,8 +68,8 @@ function build(job) {
   assert.ok(configuredPasses.length, 'the pinned tool must expose the pass trace');
   write(job.file + '.build.json', { baseline: baselineShape, merged: mergedShape,
     inspections, layoutProofs, configuredPasses, configuredArguments: optimizationPostures[posture],
-    structuralAuditPassed: true, originalAuditAccepted: true, staleCandidateAuditRejected: true,
-    candidateProductionAudit: 'not-issued; requires integration before the owned final audit' });
+    structuralAuditPassed: true, originalAuditAccepted: true, staleCandidateAuditRejected: changed,
+    candidateProductionAudit: 'production baseline is already audited; extra postpass copy is evidence only' });
 }
 
 async function probe(job) {
@@ -116,7 +121,7 @@ function main() {
     harnessSha256: hash(fs.readFileSync(__filename)), sharedHarnessSha256: hash(fs.readFileSync(require.resolve('./bounded-merging.cjs'))),
     lockfileSha256: hash(fs.readFileSync(path.join(root, 'pnpm-lock.yaml'))),
     node: process.version, binaryen: binaryenIdentity(), flags: candidateFlags, cells: [],
-    limitations: ['Postpass copies, not integrated production artifacts.', 'Fresh Node/V8 processes; Fastly ABI harness, not Viceroy.',
+    limitations: ['Additional postpass copies of already audited production artifacts; no receipt issued for changed copies.', 'Fresh Node/V8 processes; Fastly ABI harness, not Viceroy.',
       'First request follows module construction; no isolated JIT-tier measurement.',
       'RSS includes the whole harness and dependencies; not guest-only or JIT memory.',
       'One fresh build per cell; compilation performance comes from the prior bounded-merging proof.'] };
