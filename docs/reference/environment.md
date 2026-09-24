@@ -12,6 +12,7 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 |---|---|---|
 | [`PULSE_B02_BASELINE_ROOT`](#pulse-b02-baseline-root) | Contributor and test-only configuration | Contributor/test-only; outside the application compatibility contract. |
 | [`PULSE_B02_USAGE_DIR`](#pulse-b02-usage-dir) | Contributor and test-only configuration | Harness-internal test control; not a user or application setting. |
+| [`PULSE_B03_USAGE_DIR`](#pulse-b03-usage-dir) | Contributor and test-only configuration | Harness-internal test control; not a user or application setting. |
 | [`PULSE_FASTLY_BIN`](#pulse-fastly-bin) | Supported tooling configuration | Supported Beta tooling override. |
 | [`PULSE_VICEROY_BIN`](#pulse-viceroy-bin) | Supported tooling configuration | Supported Beta tooling override. |
 | [`PULSE_PROFILE`](#pulse-profile) | Supported tooling configuration | Supported project-selection input. |
@@ -119,6 +120,22 @@ Passes the isolated measurement directory to the temporary compiler preload coll
 | Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
 | Stability | Harness-internal test control; not a user or application setting. |
 | Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
+
+<a id="pulse-b03-usage-dir"></a>
+
+### `PULSE_B03_USAGE_DIR`
+
+Keeps compiler-process RSS separate from the planning worker and cold execution measurements.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Created separately for each sample by the B03 benchmark harness. |
+| Precedence | The harness supplies and overrides this value in each compiler child process. |
+| Consumer | B03 AssemblyScript child-process RSS collector. |
+| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
+| Stability | Harness-internal test control; not a user or application setting. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b03-handler-functions.cjs` |
 
 <a id="pulse-release-ref"></a>
 

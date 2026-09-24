@@ -56,6 +56,7 @@ const externalTasks = new Set([
   'compiler-efficiency-p03',
   'compiler-handler-boundary-b01',
   'compiler-handler-cost-b02',
+  'compiler-handler-functions-b03',
   'compiler-retention-cost-t01',
   'compiler-bounded-merging',
   'compiler-guest-link-evidence',
@@ -130,6 +131,7 @@ for (const profile of ['unit', 'native', 'javascript', 'conformance', 'providers
 assert.equal(release.includes('compiler-bounded-merging'), false);
 assert.equal(release.includes('compiler-handler-boundary-b01'), false);
 assert.equal(release.includes('compiler-handler-cost-b02'), false);
+assert.equal(release.includes('compiler-handler-functions-b03'), false);
 assert.equal(release.includes('compiler-retention-cost-t01'), false);
 assert.equal(release.includes('compiler-guest-link-evidence'), false);
 assert.equal(release.includes('provider-fastly-compute-reality'), false);

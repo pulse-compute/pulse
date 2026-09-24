@@ -472,6 +472,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'B02 paired terminal-route structure, compile cost and exact execution/budget evidence against a restored base checkout'
   }),
+  'compiler-handler-functions-b03': nodeTask('test/runtime/compiler-efficiency/b03-handler-functions.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'B03 final-Wasm handler ownership, 1/8/32 scaling, serial compile and isolated cold-load proof under default and bounded-size modes'
+  }),
   'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
     evidence: 'external',
     timeoutMs: 300000,

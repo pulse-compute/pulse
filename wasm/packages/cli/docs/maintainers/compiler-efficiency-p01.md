@@ -1304,3 +1304,102 @@ passed on the corrected sources. Earlier interrupted runners and the failed old
 size assertion remain separate attempts; the successful recovery is not a
 single uninterrupted release replay. Repository portable CI and Node 22 CI
 also passed at the final measured PR head.
+
+## B03: final bounded handler functions (24 September 2026)
+
+Human direction selected B03 after B02 was squash-merged as `e2a289b`. B02
+already emits the selected terminal HTTP bodies as retained guest functions.
+B03 therefore qualifies that implementation without another emitter change.
+No single named Entry Point covers this cross-target evidence pass; the root,
+Wasm and documentation instructions apply to its test/documentation owners.
+This is evidence-only work with no new protected-contract decision.
+
+`compiler-handler-functions-b03` scales the B02 fixture to 1, 8 and 32 terminal
+routes, each with 16 mutations, a fetch and a response, plus one middleware and
+one error handler. It compares the existing default and
+`experimental-native-bounded-size` modes on Node and Fastly Native. Three serial
+pairs per target/count alternate mode order: 12 mode cells and 36 production builds. Each
+sample runs in a fresh process. No schema or linked crypto guest is present;
+those shapes retain their separate qualification requirements.
+
+Timed builds emit normal production bytes without debug or text output. A
+separate companion build adds function names. Every non-custom binary section
+must match the production artifact byte for byte before any names are used.
+The inspector verifies binary function-index attribution, export reachability,
+direct calls, handler ownership and largest function bodies. It includes
+unnamed optimizer-created functions in call-closure measurements. This avoids
+treating source annotations or a text roundtrip as final-Wasm evidence.
+
+Every selected body survives final optimization in both modes, with no
+cross-handler call, indirect call or function table. The dispatcher has 3/17/65
+chunks and 47/215/791 charged states; the plan retains 9/30/102 local slots.
+All routes execute against hand-authored response/effect expectations. Early
+middleware termination, exact 404 responses, continuation lifecycle and the
+Node effect-limit boundary also pass. Last-route Node handle counts are
+84/161/425 in either mode.
+
+The following pairs are **default → bounded-size**, not before/after B03:
+
+| Target / terminal routes | Wasm B | gzip-9 B | Largest handler root B | Largest function anywhere B |
+| --- | ---: | ---: | ---: | ---: |
+| Node / 1 | 5,083 → 4,854 | 2,057 → 2,021 | 1,220 → 1,139 | 1,229 → 1,139 |
+| Node / 8 | 16,223 → 15,387 | 4,234 → 4,119 | 1,242 → 1,161 | 1,242 → 1,161 |
+| Node / 32 | 53,832 → 50,989 | 10,742 → 10,465 | 1,247 → 1,166 | 1,247 → 1,166 |
+| Fastly / 1 | 41,062 → 35,421 | 19,035 → 17,534 | 1,272 → 1,147 | 1,474 → 1,428 |
+| Fastly / 8 | 55,137 → 47,381 | 21,597 → 20,026 | 1,290 → 1,169 | 3,739 → 1,776 |
+| Fastly / 32 | 102,623 → 87,500 | 29,261 → 27,446 | 1,294 → 1,173 | 11,788 → 5,313 |
+
+The 32-route dispatcher selector is 768/772 bytes on Node and 832/832 on Fastly.
+The largest function reachable *from a handler*, including runtime helpers,
+stays at most 1,247/1,166 bytes on Node and 1,452/1,428 on Fastly.
+The selected body family has not reformed a monolith.
+
+The full-artifact qualification exposes a separate scaling boundary:
+Fastly's `__pulse_fastly_run_invocation` is the largest function at 8 and 32
+routes. `native-application-errors.js` emits one pending-effect settlement/error
+branch per static effect site directly into that driver. At 32 routes the final
+driver contains 33 resolver calls and 33 settlement calls; the resolver remains
+a separate function. Terminal-body retention does not bound that caller. The
+32-route default artifact is byte-identical to the B02 proof, so this is an
+existing provider-side limit exposed by inspection, not a new cost introduced
+by B03. The next candidate is one bounded Fastly application-error driver pass,
+with unchanged invocation, error and budget behavior. B03 stops before that
+second family; it does not establish that every generated function is bounded.
+
+32-route medians, again default → bounded-size:
+
+| Target | Full build ms | Compiler worker peak MiB | AssemblyScript peak MiB | Cold module ms | Cold request ms | Warm request ms |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Node | 3,060.21 → 2,964.92 | 204.75 → 202.70 | 298.56 → 315.04 | 0.430 → 0.418 | 12.74 → 13.41 | 2.579 → 2.317 |
+| Fastly | 4,730.14 → 4,065.57 | 208.23 → 209.79 | 316.43 → 329.29 | 0.548 → 0.488 | 6.78 → 5.45 | 1.205 → 1.214 |
+
+Cold module construction and cold request execution use separate fresh
+processes, with no earlier compilation of those bytes. Warm samples average
+ten requests with fresh instances and ordinary engine cache behavior. Fastly
+uses the injected ABI host, not a deployed cold start. Worker and compiler RSS
+are separate process maxima; neither measures live guest values or reclamation.
+
+Timings do not justify a blanket default change. At one route, bounded-size
+cold-request medians increase from 10.30 to 11.42 ms on Node and 4.62 to 7.99 ms
+on Fastly. The Fastly size-mode samples span 5.12–8.99 ms; several larger cells
+also have overlapping timing ranges. These exceed the proposed 5% investigation
+trigger and are recorded as a small-workload tradeoff/uncertainty, not hidden by
+the size win. At 32 routes, bounded-size reduces raw bytes by 5.3%/14.7% and gzip
+bytes by 2.6%/6.2%, while AssemblyScript peak RSS rises on both targets. No general
+memory or cold-load improvement is claimed, and production defaults are unchanged.
+
+Reproduce with
+`node wasm/scripts/run-wasm-tests.cjs --task compiler-handler-functions-b03`.
+The accepted run completed in 137.31 seconds at clean proof commit `416ea9e`,
+against the unchanged merged B02 production code. The committed
+`wasm/test/runtime/compiler-efficiency/handler-functions-evidence.json` preserves
+all 36 paired samples, artifact/source/tool hashes, shape and semantic summaries.
+The terminal runner report is
+`wasm/.test-results/compiler-efficiency/b03/qualification-final.json` (1/1 passed).
+The unit profile plus B01 controls also passed (35/35).
+
+Earlier attempts remain separate: text roundtrips reordered type indices or
+re-stackified locals; the initial call scanner expected folded rather than flat
+instructions; the named inspector needed escaped identifiers and unnamed
+function ordinals. These were proof-harness failures, not product failures.
+The final run retains exact binary-section equality and all semantic assertions.

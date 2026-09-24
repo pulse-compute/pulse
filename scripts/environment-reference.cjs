@@ -45,6 +45,18 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
     sourceFiles: ['wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs']
   }),
   entry({
+    name: 'PULSE_B03_USAGE_DIR',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Created separately for each sample by the B03 benchmark harness.',
+    precedence: 'The harness supplies and overrides this value in each compiler child process.',
+    consumer: 'B03 AssemblyScript child-process RSS collector.',
+    secretSafety: 'Not a secret. Contains temporary process IDs and peak RSS measurements.',
+    stability: 'Harness-internal test control; not a user or application setting.',
+    description: 'Keeps compiler-process RSS separate from the planning worker and cold execution measurements.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/b03-handler-functions.cjs']
+  }),
+  entry({
     name: 'PULSE_FASTLY_BIN',
     category: 'tooling',
     value: 'Absolute or relative executable path',
