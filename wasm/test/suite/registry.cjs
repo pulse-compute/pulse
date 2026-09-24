@@ -465,7 +465,12 @@ const tasks = Object.freeze({
   'compiler-handler-boundary-b01': nodeTask('test/runtime/compiler-efficiency/b01-handler-boundary.cjs', {
     evidence: 'external',
     timeoutMs: 120000,
-    description: 'B01 current Router-to-Native ownership and 1/8/32-handler flattening controls'
+    description: 'B01/B02 Router-to-Native ownership and 1/8/32-handler boundary controls'
+  }),
+  'compiler-handler-cost-b02': nodeTask('test/runtime/compiler-efficiency/b02-handler-cost.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'B02 paired terminal-route structure, compile cost and exact execution/budget evidence against a restored base checkout'
   }),
   'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
     evidence: 'external',

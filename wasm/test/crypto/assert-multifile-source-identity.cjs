@@ -56,6 +56,19 @@ function assertSourceIndexes() {
   const linked = build(files[0], { packageIntrinsics: intrinsics, packageIntrinsicForCall: call => call === callFor(files[0]) ? intrinsics[1] : undefined });
   assert.deepEqual(linked.diagnostics, []);
   assert.equal(linked.ir.packageIntrinsics[0].loc.file, 'src/other.ts', 'Generated-call rebasing retains original source ownership');
+  const returnedCall = handlerFor(files[0]).body.statements[1].expression;
+  const generatedMiss = build(files[0], {
+    internalGeneratedHandler: true,
+    packageEffects: effects,
+    packageIntrinsics: intrinsics,
+    packageResultAdapters: [{ range: { start: returnedCall.getStart(files[0]), end: returnedCall.getEnd() } }],
+    packageEffectForCall: () => undefined,
+    packageIntrinsicForCall: () => undefined,
+    packageResultAdapterForCall: () => undefined
+  });
+  assert.equal(generatedMiss.ir.effectSites.length, 0, 'Generated mapping misses cannot recognize an authored offset');
+  assert.equal(generatedMiss.ir.packageIntrinsics.length, 0);
+  assert.equal(generatedMiss.ir.summary.operationKinds['package-result-adapter'], undefined);
 }
 
 async function main(options = {}) {
@@ -134,6 +147,12 @@ async function main(options = {}) {
       const sites = node.compiled.metadata.effectSites.filter(site => site.kind === 'crypto.digestText');
       assert.equal(sites.length, 2);
       assert.deepEqual(sites.map(site => site.position.file).sort(), ['src/first.ts', 'src/other.ts']);
+      for (const site of sites) {
+        const body = node.plan.handlers.find(handler => handler.id === site.routerEntryStableId);
+        assert.ok(body, 'Imported package effects retain the owning private Router body');
+        assert.equal(body.source.file, site.position.file);
+        assert.ok(site.generatedPosition && Number.isInteger(site.generatedPosition.offset));
+      }
       for (const name of ['first', 'other']) {
         const body = 'exact\u0000é😀';
         const request = { method: 'POST', path: `/${name}`, url: `https://identity.test/${name}`, headers: [], body };

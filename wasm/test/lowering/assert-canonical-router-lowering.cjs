@@ -140,6 +140,17 @@ async function main() {
     const planA = buildCanonicalNativePlan(copyA);
     const planB = buildCanonicalNativePlan(copyB);
     assert.equal(planA.entry.kind, 'router');
+    assert.equal(planA.version, 'pulse.canonical-native-plan.v3');
+    assert.ok(planA.handlers.length > 0);
+    assert.deepEqual(planA.handlers.map(handler => handler.id), planA.routing.entries
+      .filter(entry => entry.nativeBody).map(entry => entry.stableId));
+    for (const handler of planA.handlers) {
+      assert.equal(handler.version, 'pulse.canonical-native-handler-body.v1');
+      assert.equal(handler.family, 'terminal-route');
+      assert.ok(handler.source.file && handler.source.start.line > 0);
+      assert.deepEqual(handler.localIds, planA.locals.filter(local => local.routerEntryStableId === handler.id).map(local => local.id));
+      assert.ok(handler.localIds.every(id => id.startsWith(`local:${handler.id}:`)));
+    }
     assert.equal(planA.planHash, planB.planHash, 'route-aware native plan hash must be checkout-independent');
     assert.equal(stableStringify(planA), stableStringify(planB), 'route-aware native plan JSON must be deterministic');
     assert.equal(planA.routing.routes.length, 8);
@@ -157,7 +168,13 @@ async function main() {
       assert.equal(record.routePath, '/api/users/:id');
     }
 
-    const nativeA = compileCanonicalNativePlan(planA, { cwd: repoRoot });
+    const nativeA = compileCanonicalNativePlan(planA, { cwd: repoRoot, emitWat: true });
+    assert.equal(nativeA.manifest.handlerBodies.length, planA.handlers.length);
+    for (const body of nativeA.manifest.handlerBodies) {
+      assert.ok(body.chunks.length > 0 && body.stateCount > 0);
+      assert.ok(body.chunks.some(index => nativeA.wat.includes(`/__pulse_chunk_${index} `)
+        || nativeA.wat.includes(`/__pulse_chunk_${index}\n`)), 'optimized Wasm retains a body chunk');
+    }
     await assertMutationRoutes((request) => nativeHost.executeCanonicalNativeModule(nativeA, {
       request, providerAdapter: createNodeProviderAdapter()
     }));

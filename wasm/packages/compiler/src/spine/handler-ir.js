@@ -42,7 +42,9 @@ const HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'opaque-fetch-return'
 ]);
 const HANDLER_IR_EXTENSION_OPERATION_KINDS = Object.freeze([
-  'parallel-group'
+  'parallel-group',
+  'router-body',
+  'router-body-call'
 ]);
 const ROUTER_HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'router-transfer',
@@ -161,7 +163,7 @@ function summarizeHandlerOperation(body) {
       if (entry.elseOperation) countOperation(entry.elseOperation);
     }
     if (entry.kind === 'router-guard') countOperation(entry.body);
-    if (entry.kind === 'read-loop') countOperation(entry.body);
+    if (entry.kind === 'read-loop' || entry.kind === 'router-body') countOperation(entry.body);
   }
   countOperation(body);
   return Object.freeze({
@@ -188,6 +190,8 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const continuationSites = [];
   const effectCounters = new Map();
   let continuationIndex = 0;
+  const routerBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.entries || [])
+    .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
   // Offsets belong to a source file. Project-wide contributions can share an
   // offset; only duplicate ranges within the same owning source are invalid.
   const sourceKey = (file, start) => `${String(file).replace(/\\/g, '/')}\u0000${start}`;
@@ -234,6 +238,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
         linkPackageIntrinsicsWithin(call);
         return linked;
       }
+      // Generated Router offsets belong to a different source tree. A miss in
+      // its explicit mapping must not fall back to authored-source offsets.
+      if (options.internalGeneratedHandler) return undefined;
     }
     const effect = packageEffectsBySource.get(callKey(call));
     if (effect) linkPackageIntrinsicsWithin(call);
@@ -256,6 +263,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
         }
         return linked;
       }
+      if (options.internalGeneratedHandler) return undefined;
     }
     const key = callKey(call);
     const intrinsic = packageIntrinsicsBySource.get(key);
@@ -280,6 +288,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
     if (typeof options.packageResultAdapterForCall === 'function') {
       const linked = options.packageResultAdapterForCall(call);
       if (linked) return linked;
+      if (options.internalGeneratedHandler) return undefined;
     }
     return packageResultAdaptersByStart.get(call.getStart(sourceFile));
   }
@@ -362,7 +371,8 @@ function buildPlainHandlerIr(frontend, options = {}) {
       payload: Object.freeze({ ...(effect.payload || {}) }),
       result: String(effect.result || 'value'),
       resource: effect.resource || Object.freeze({ kind: 'none' }),
-      position: packageEffectPosition(effect, call)
+      position: packageEffectPosition(effect, call),
+      ...(options.internalGeneratedHandler ? { generatedPosition: positionFor(sourceFile, call) } : {})
     });
     effectSites.push(site);
     return site;
@@ -603,6 +613,13 @@ function buildPlainHandlerIr(frontend, options = {}) {
   }
 
   function buildStatement(statement, aliases, fromList = false) {
+    if (ts.isFunctionDeclaration(statement) && routerBodies.has(statement.name?.text)) {
+      return createHandlerOperation('router-body', { statement, body: buildStatement(statement.body, new Map()) });
+    }
+    if (ts.isReturnStatement(statement) && statement.expression && ts.isCallExpression(statement.expression)
+      && ts.isIdentifier(statement.expression.expression) && routerBodies.has(statement.expression.expression.text)) {
+      return createHandlerOperation('router-body-call', { statement });
+    }
     if (!fromList && (ts.isExpressionStatement(statement) || ts.isVariableStatement(statement))) {
       const statements = buildStatementList([statement], aliases);
       return statements.length === 1 ? statements[0] : createHandlerOperation('block', { statement: ts.factory.createBlock([statement], true), statements });
@@ -709,6 +726,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
     const aliases = new Map(inheritedAliases);
     for (let index = 0; index < statements.length; index += 1) {
       const statement = statements[index];
+      if (ts.isFunctionDeclaration(statement) && routerBodies.has(statement.name?.text)) {
+        scanOriginalStatements(statement.body.statements); continue;
+      }
       const namespace = extractKvNamespaceDeclaration(statement, ctxName);
       if (namespace) { aliases.set(namespace.variableName, namespace.store); continue; }
       if (parallelInvocationStatement(statement, ctxName)) continue;

@@ -140,6 +140,9 @@ async function main() {
     fs.mkdirSync(path.join(cwd,'node_modules/@pulse-compute'),{recursive:true});
     for(const name of ['pulse','s3','crypto'])fs.symlinkSync(path.join(repoRoot,'packages',name),path.join(cwd,'node_modules/@pulse-compute',name),'dir');
     const np=resolveProject({cwd,profile:'node'}), prepared=execution.compileNativeProjectInMemory(np);
+    assert.ok(prepared.plan.handlers.length > 0, 'the routed read loop retains a private body');
+    assert.equal(require('../../packages/contracts/src/handler/canonical-native-runtime').hasBoundedReadLoop({ ...prepared.plan, entry: { body: [] } }), true,
+      'memory containment must discover read loops owned by private bodies');
     const jp=resolveProject({cwd,profile:'javascript'}), js=execution.prepareJavascriptApplication(jp);
     const fp=resolveProject({cwd,profile:'fastly'}), fastly=platform.compileFastlyNativePlatformCapabilitiesPlan(prepared.plan,{cwd,bindings:fp.providerConfig.bindings,canonicalBuild:true});
     const schemaCodecs=createCanonicalSchemaCodecs(prepared.plan.schemas.registry);

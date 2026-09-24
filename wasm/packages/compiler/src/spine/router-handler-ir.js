@@ -142,10 +142,23 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   const topology = prepared.topology;
   const operationByEntry = new Map();
   const emittedByEntry = new Map();
+  const bodyByEntry = new Map();
+  const authoredHandlers = new Map(topology.handlerTable.handlers.map(handler => [handler.id, handler]));
   for (const handler of prepared.handlers) {
     const operationIr = buildRouterHandlerIr(handler);
     operationByEntry.set(handler.entry.stableId, operationIr);
     emittedByEntry.set(handler.entry.stableId, emitCanonicalRouterHandlerBody(operationIr));
+    // The first private body family is a terminal HTTP route. Transfer-capable
+    // handlers retain the existing cursor/mode lowering until their own pass.
+    if (handler.entry.kind === 'route' && !operationIr.summary.operationKinds['router-transfer']) {
+      const authored = authoredHandlers.get(handler.entry.handlerId);
+      bodyByEntry.set(handler.entry.stableId, Object.freeze({
+        version: 'pulse.router-native-body.v1',
+        family: 'terminal-route',
+        name: `__pulse_body_${handler.entry.stableId}`,
+        source: authored && authored.loc
+      }));
+    }
   }
 
   const header = topology.retainedDeclarations;
@@ -213,10 +226,13 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
       }
       if (entry.kind === 'route') matchCondition += ` && ctx.req.method === ${JSON.stringify(entry.method)} && __pulse_router_match(ctx.req.path, ${JSON.stringify(entry.path)})`;
       synthetic += `    if (${matchCondition}) {\n`;
+      const nativeBody = bodyByEntry.get(entry.stableId);
+      if (nativeBody) synthetic += `      function ${nativeBody.name}() {\n`;
       const start = synthetic.length;
-      synthetic += `${indent(emitted.sourceText, 6)}\n`;
+      synthetic += `${indent(emitted.sourceText, nativeBody ? 8 : 6)}\n`;
       const end = synthetic.length;
       generatedRange = Object.freeze({ start, end });
+      if (nativeBody) synthetic += `      }\n      return ${nativeBody.name}();\n`;
       synthetic += '    } else {\n';
       synthetic += `      ${CURSOR} = ${entry.nextIndex};\n`;
       synthetic += '    }\n';
@@ -227,6 +243,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
 
     const record = Object.freeze({
       ...entry,
+      ...(bodyByEntry.has(entry.stableId) ? { nativeBody: bodyByEntry.get(entry.stableId) } : {}),
       ...(eventReachable ? { plane: 'http' } : {}),
       generatedRange,
       generatedBlockRange: Object.freeze({ start: openingStart, end: synthetic.length })

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// B01 evidence: observe the existing Router-to-Native seam without changing it.
+// The B01 1/8/32 controls now track the B02 terminal-route boundary.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -71,7 +71,13 @@ function inspect(count, temporaryRoot) {
   }
   const declarations = ts.createSourceFile('generated.ts', router.sourceText, ts.ScriptTarget.ES2022, true)
     .statements.filter(ts.isFunctionDeclaration).map((statement) => statement.name && statement.name.text);
-  assert.deepEqual(declarations, ['__pulse_router_entry'], 'all handlers are currently flattened into one function');
+  assert.deepEqual(declarations, ['__pulse_router_entry'], 'the dispatcher remains the single public entry');
+  let privateBodies = 0;
+  function countBodies(node) {
+    if (ts.isFunctionDeclaration(node) && node.name?.text.startsWith('__pulse_body_')) privateBodies++;
+    ts.forEachChild(node, countBodies);
+  }
+  countBodies(ts.createSourceFile('generated.ts', router.sourceText, ts.ScriptTarget.ES2022, true));
 
   const project = compileCanonicalProject(entryFile, { rootDir: projectRoot, workspaceRoot: root });
   assert.equal(project.ok, true);
@@ -88,12 +94,16 @@ function inspect(count, temporaryRoot) {
     assert.equal(plan.continuations.find((site) => site.id === effect.continuationId).routerEntryStableId, effect.routerEntryStableId);
   }
   const localOwned = plan.locals.filter((local) => Object.hasOwn(local, 'routerEntryStableId')).length;
-  assert.equal(localOwned, 0, 'current plan locals have no explicit handler identity');
+  assert.equal(plan.handlers.length, routes - (count > 1 ? 1 : 0));
+  assert.equal(privateBodies, plan.handlers.length);
+  assert.equal(localOwned, plan.handlers.reduce((sum, handler) => sum + handler.localIds.length, 0));
+  assert.ok(localOwned > 0, 'terminal route locals retain explicit handler identity');
   return {
     handlers: count, middleware, routes, errors,
     syntheticSourceBytes: Buffer.byteLength(router.sourceText),
     generatedHandlerBodyBytes: ranges.reduce((sum, range) => sum + Buffer.byteLength(router.sourceText.slice(range.start, range.end)), 0),
     syntheticTopLevelFunctions: declarations.length,
+    privateHandlerFunctions: privateBodies,
     planEntryKind: plan.entry.kind,
     nativePlanLocals: plan.locals.length,
     nativePlanLocalsWithEntryId: localOwned,
@@ -107,7 +117,7 @@ function main() {
   const temporaryRoot = fs.mkdtempSync(path.join(process.env.PULSEWASM_TEST_TMP_ROOT || os.tmpdir(), 'pulse-b01-'));
   try {
     const rows = [1, 8, 32].map((count) => inspect(count, temporaryRoot));
-    console.log(JSON.stringify({ source: 'B01 current-lowering controls', rows }, null, 2));
+    console.log(JSON.stringify({ source: 'B01 controls after B02 terminal-route separation', rows }, null, 2));
   } finally {
     fs.rmSync(temporaryRoot, { recursive: true, force: true });
   }

@@ -1181,3 +1181,126 @@ Focused real-Wasm checks cover both Native targets and all three optimization
 modes, retained shared calls, unannotated prefix collisions, distinct bindings,
 fresh allocations, live tables and mappings. Deterministic generated name sets
 also verify exact retention membership and option restoration after failure.
+
+## B02: terminal HTTP route bodies (24 September 2026)
+
+Human direction to implement B02 after B01 and T01 selects one bounded family:
+terminal HTTP routes with no `next()`/`next(error)` operation. Effectful routes
+are included. Middleware, transfer-capable routes, error handlers and event
+handlers retain their existing lowering. This is an internal architecture
+change under the root/Wasm/compiler instructions; no named Entry Point covers
+the full change. The Native plan and continuation boundaries receive human
+review in the implementation PR. No new public function syntax is admitted.
+
+The Router frontend emits each selected body once as a private function and
+places a terminal call in its dispatch branch. Handler IR retains those
+declarations and calls; Native plan v3 stores the bodies separately from
+`entry.body`, under `pulse.canonical-native-handler-body.v1`. Stable Router
+entry IDs own bodies and local namespaces, while the original handler ID and
+source span remain recorded. A body's statement/expression tree lives only in
+that owner. Plan validation rejects cross-owner local access, recursive or
+duplicate calls, and mismatched effect/continuation ownership.
+
+The private protocol covers response completion, suspension, application-error
+transfer and terminal failure. A call lowers directly to the body's first
+state, adding no state or budget charge. Suspension resumes through the same
+continuation/program-counter mechanism, without a live Native call stack.
+The generator partitions at body boundaries as well as its existing 64-state
+and 24,000-character limits, and T01 retains the resulting chunks. Plan and
+generator versions change; host ABI v2 does not. Read-loop memory detection,
+Fastly value-failure guards and fetched-body import analysis inspect the new
+body table as well as the dispatcher.
+
+Broader package controls exposed two source-mapping assumptions: generated-call
+lookup misses could reuse unrelated authored offsets, and imported package
+effects had diagnostic locations but lacked generated positions for Router
+ownership. Generated lookups now remain authoritative on a miss. Imported
+package effects retain both positions, preserving original diagnostics while
+assigning the correct body owner. Collision and multi-file routing controls
+cover this separation. A bare-return detector regression was also corrected.
+
+The B01 controls now report the selected ownership explicitly:
+
+| Total Router entries | Private terminal bodies | Locals / explicitly body-owned | Effects / continuations / states |
+| ---: | ---: | ---: | ---: |
+| 1 | 1 | 4 / 1 | 0 / 0 / 1 |
+| 8 | 3 | 14 / 3 | 3 / 3 / 4 |
+| 32 | 15 | 50 / 15 | 15 / 15 / 16 |
+
+The paired cost proof uses a separate source with 32 terminal routes, one fetch
+middleware and one error handler. Each route has 16 mutations followed by a
+fetch and a response. Three serial fresh-process pairs per target alternate
+baseline/candidate ordering. Baseline is merged T01 `9f2c369`; Node is 24.19.0,
+AssemblyScript 0.28.18 and Binaryen 129.0.0-nightly.20260428. Medians:
+
+| Target | Full build ms, before → after | Wasm B | Compiler worker peak MiB | AssemblyScript peak MiB |
+| --- | ---: | ---: | ---: | ---: |
+| Node Native | 3,248.99 → 3,089.48 | 58,215 → 53,832 | 195.11 → 202.57 | 316.37 → 310.24 |
+| Fastly Native | 4,739.99 → 4,753.28 | 107,330 → 102,623 | 208.04 → 210.95 | 314.91 → 327.48 |
+
+Both targets preserve 791 charged execution states and 102 local slots; 96
+locals now belong to the 32 private bodies. Retained chunks increase from 29
+to 65. Generated AssemblyScript grows from 759,597 to 767,671 bytes on Node
+and 908,487 to 916,561 bytes on Fastly. Wasm decreases by 7.5% and 4.4%
+respectively. This is structural evidence with a size benefit on this fixture,
+not a general build-time or memory improvement claim.
+
+The canonical examples also receive exact-size refreshes from both default and
+experimental-size builds. Eight small application guests grow by 104–530 bytes;
+the JWT linked artifact is unchanged. Their bodies are now retained separately,
+so the structural boundary has a fixed cost on small programs. This is a real
+tradeoff, not a universal size reduction. Default application guest bytes:
+
+| Example | Before | B02 |
+| --- | ---: | ---: |
+| 01-hello-json | 2,140 | 2,353 |
+| 02-request-schema | 40,981 | 41,086 |
+| 03-fetch-composition | 5,039 | 5,272 |
+| 05-fastly-capabilities | 5,397 | 5,695 |
+| 07-opaque-proxy | 2,200 | 2,304 |
+| 09-router-lowering | 9,232 | 9,762 |
+| 11-events | 40,546 | 40,667 |
+| 12-mcp-proxy | 2,589 | 2,694 |
+| 13-jwt-es256 | 36,100 | 36,100 |
+
+The Fastly capability and opaque provider artifacts grow by 280 and 106 bytes
+respectively. Exact size assertions remain enabled against these measured
+values; normal executable example workflows must still pass.
+
+Every pair checks exact response, effect order, site/entry identity and state
+count. Node also checks continuation lifecycle, 425 allocated handles, and
+failure before the second dispatch at `maxEffects: 1`. Fastly uses injected
+host fixtures, not deployed acceptance. The harness records first execution
+after compilation/auditing; that timing is not an independent cold-load proof.
+Worker RSS is captured before execution. AssemblyScript peak RSS is collected
+separately by PID, including its launcher/child processes without overwriting
+the compiler measurement. These maxima are not aggregate concurrent RSS.
+
+Reproduce with a dependency-restored pre-B02 checkout:
+`PULSE_B02_BASELINE_ROOT=/path/to/base node wasm/scripts/run-wasm-tests.cjs --task compiler-handler-cost-b02`.
+The final implementation report is
+`wasm/.test-results/compiler-efficiency/b02/cost-corrected.json` (one
+selected/completed task, passed). It measures the bare-return and package
+source-mapping fixes after restoring both pinned worktrees. Every sample records
+source hashes; the final candidate compiler-source aggregate is
+`bb13db5cd27555434aced6deb5c2beb50f4c5daa24459de17529e01187ab5e01`
+and the baseline aggregate is
+`b46be54690070c37db8161f429d779aaf2f37f6a3fd6b5c8b4ce9d22d9de6f23`.
+The optimized Wasm hashes match the initial report for both targets; the
+measurement repeats the same structural/size outcome on the corrected sources.
+The initial three attempts failed while correcting the proof's Node fetch
+fixture fields and trace projection; they establish no performance evidence.
+An intermediate successful run and the initial pinned run before the later
+source-mapping fixes remain separate from this final-source repeat. Runtime,
+source-mapping, mounted-route,
+error, event, read-loop and budget checks remain the implementation gates.
+
+The final-source nine-example size measurement completed before the outage.
+The restored PR-head checkout then passed a TypeScript build, 239 package tests,
+maintenance, documentation and documentation-release checks. An uninterrupted
+25/25 remaining CLI/provider/boundary run passed with the updated exact-size
+fixtures; all three final focused regressions passed. The paired timing proof
+passed on the corrected sources. Earlier interrupted runners and the failed old
+size assertion remain separate attempts; the successful recovery is not a
+single uninterrupted release replay. Repository portable CI and Node 22 CI
+also passed at the final measured PR head.

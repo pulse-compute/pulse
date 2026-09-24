@@ -2,6 +2,7 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
@@ -76,7 +77,7 @@ function input(effectRecord, name) {
 
 assert.equal(CANONICAL_NATIVE_PLAN_VERSION, nativePlanContract.CANONICAL_NATIVE_PLAN_VERSION);
 assert.equal(CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION, nativePlanContract.CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION);
-assert.equal(CANONICAL_NATIVE_PLAN_COMPILER_VERSION, 'pulse.canonical-native-plan-compiler.v2');
+assert.equal(CANONICAL_NATIVE_PLAN_COMPILER_VERSION, 'pulse.canonical-native-plan-compiler.v3');
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.providerNeutral, true);
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.javascriptRuntime, false);
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.promiseSemantics, false);
@@ -142,6 +143,7 @@ assert.ok(fetchComposition.locals.some((entry) => entry.id === singleFetch.resul
 assert.equal(fetchComposition.summary.effectGroupCount, 2);
 const groupStatements = [];
 walkStatements(fetchComposition.entry.body, (statement) => { if (statement.kind === 'effect-group') groupStatements.push(statement); });
+for (const handler of fetchComposition.handlers) walkStatements(handler.body, (statement) => { if (statement.kind === 'effect-group') groupStatements.push(statement); });
 assert.equal(groupStatements.length, 2);
 assert.deepEqual(groupStatements.map((statement) => statement.effectIds), [
   ['fetch-2', 'fetch-3', 'fetch-4'],
@@ -152,6 +154,21 @@ assert.deepEqual(fetchComposition.continuations.map((entry) => [entry.kind, entr
   ['fetch-group', ['fetch-2', 'fetch-3', 'fetch-4']],
   ['parallel-group', ['fetch-5', 'fetch-6', 'fetch-7']]
 ]);
+
+function rejectOwnedPlan(mutate, message) {
+  const plan = JSON.parse(stableStringify(fetchComposition));
+  mutate(plan);
+  delete plan.planHash;
+  plan.planHash = crypto.createHash('sha256').update(stableStringify(plan)).digest('hex');
+  assert.throws(() => validateCanonicalNativePlan(plan), error => error instanceof CanonicalNativePlanError
+    && error.diagnostics.some(item => message.test(item.message)));
+}
+rejectOwnedPlan(plan => { plan.handlers[0].body.push({ kind: 'handler-call', handlerId: plan.handlers[0].id }); }, /originate in the dispatcher/);
+rejectOwnedPlan(plan => { plan.handlers[0].body.push({ kind: 'expression', expression: { kind: 'local', id: plan.locals[0].id, valueKind: 'number' } }); }, /crosses a lexical boundary/);
+rejectOwnedPlan(plan => { plan.entry.body.push({ kind: 'handler-call', handlerId: plan.handlers[0].id }); }, /exactly one static call/);
+rejectOwnedPlan(plan => { plan.effects[0].routerEntryStableId = plan.handlers[1].id; }, /effect ownership mismatch/);
+rejectOwnedPlan(plan => { plan.continuations[0].routerEntryStableId = plan.handlers[1].id; }, /resume in its effect owner/);
+rejectOwnedPlan(plan => { plan.handlers[0].source.file = 'another.ts'; }, /original source/);
 
 const fastlyCapabilities = plans.get('fastlyCapabilities');
 assert.deepEqual(fastlyCapabilities.effects.map((entry) => entry.kind), [

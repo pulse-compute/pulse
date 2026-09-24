@@ -20,33 +20,33 @@ const examples = Object.freeze([
   Object.freeze({
     id: '01-hello-json',
     provider: 'node',
-    guestWasmBytes: 2140,
-    optimizedGuestWasmBytes: 2058,
+    guestWasmBytes: 2353,
+    optimizedGuestWasmBytes: 2270,
     capabilities: ['response.json', 'response.text']
   }),
   Object.freeze({
     id: '02-request-schema',
     provider: 'node',
-    guestWasmBytes: 40981,
-    optimizedGuestWasmBytes: 32604,
+    guestWasmBytes: 41086,
+    optimizedGuestWasmBytes: 32708,
     capabilities: ['request.json', 'response.json'],
     schemas: ['app.CreateUserInput', 'app.CreateUserOutput']
   }),
   Object.freeze({
     id: '03-fetch-composition',
     provider: 'node',
-    guestWasmBytes: 5039,
-    optimizedGuestWasmBytes: 4349,
+    guestWasmBytes: 5272,
+    optimizedGuestWasmBytes: 4570,
     capabilities: ['fetch', 'response.json'],
     grouped: true
   }),
   Object.freeze({
     id: '05-fastly-capabilities',
     provider: 'fastly',
-    guestWasmBytes: 5397,
-    optimizedGuestWasmBytes: 4888,
-    providerWasmBytes: 46855,
-    optimizedProviderWasmBytes: 38949,
+    guestWasmBytes: 5695,
+    optimizedGuestWasmBytes: 5181,
+    providerWasmBytes: 47135,
+    optimizedProviderWasmBytes: 39250,
     capabilities: [
       'config.get',
       'secret.get',
@@ -60,18 +60,18 @@ const examples = Object.freeze([
   Object.freeze({
     id: '07-opaque-proxy',
     provider: 'fastly',
-    guestWasmBytes: 2200,
-    optimizedGuestWasmBytes: 2101,
-    providerWasmBytes: 34612,
-    optimizedProviderWasmBytes: 29886,
+    guestWasmBytes: 2304,
+    optimizedGuestWasmBytes: 2205,
+    providerWasmBytes: 34718,
+    optimizedProviderWasmBytes: 29992,
     capabilities: ['fetch'],
     opaque: true
   }),
   Object.freeze({
     id: '09-router-lowering',
     provider: 'node',
-    guestWasmBytes: 9232,
-    optimizedGuestWasmBytes: 8625,
+    guestWasmBytes: 9762,
+    optimizedGuestWasmBytes: 9355,
     capabilities: ['fetch', 'response.json', 'response.text'],
     routes: 7
   }),
@@ -88,8 +88,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '11-events',
     provider: 'node',
-    guestWasmBytes: 40546,
-    optimizedGuestWasmBytes: 32339,
+    guestWasmBytes: 40667,
+    optimizedGuestWasmBytes: 32460,
     capabilities: ['event.emit', 'logging', 'response.text'],
     schemas: ['events.DeviceReading', 'events.DeviceReadingAccepted'],
     events: Object.freeze({
@@ -106,8 +106,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '12-mcp-proxy',
     provider: 'node',
-    guestWasmBytes: 2589,
-    optimizedGuestWasmBytes: 2418,
+    guestWasmBytes: 2694,
+    optimizedGuestWasmBytes: 2523,
     capabilities: ['fetch', 'request.text'],
     opaque: true
   }),

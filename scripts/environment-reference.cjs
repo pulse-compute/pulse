@@ -21,6 +21,30 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_B02_BASELINE_ROOT',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Unset; the manual B02 benchmark requires an explicit baseline checkout.',
+    precedence: 'Selects the baseline; the candidate is the checkout containing the harness.',
+    consumer: 'Manual B02 terminal Router body cost proof.',
+    secretSafety: 'Not a secret. The harness executes compiler code from this checkout; use trusted source.',
+    stability: 'Contributor/test-only; outside the application compatibility contract.',
+    description: 'Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs']
+  }),
+  entry({
+    name: 'PULSE_B02_USAGE_DIR',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Created separately for each sample by the B02 benchmark harness.',
+    precedence: 'The harness supplies and overrides this value in each child process.',
+    consumer: 'B02 AssemblyScript child-process RSS collector.',
+    secretSafety: 'Not a secret. Contains temporary process IDs and peak RSS measurements.',
+    stability: 'Harness-internal test control; not a user or application setting.',
+    description: 'Passes the isolated measurement directory to the temporary compiler preload collector.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs']
+  }),
+  entry({
     name: 'PULSE_FASTLY_BIN',
     category: 'tooling',
     value: 'Absolute or relative executable path',

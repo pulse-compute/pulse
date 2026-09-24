@@ -149,6 +149,36 @@ bodies; it does not create a dynamic function table or change the value heap's
 retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
+## Native terminal Router bodies
+
+Generated Router package-call mappings are authoritative: an unmapped generated
+call cannot fall back to an authored-source offset. Imported package effects
+retain their authored diagnostic positions; a separate generated position
+determines Router entry ownership without reinterpreting those source offsets.
+
+Native plan v3 preserves terminal HTTP route handlers as separately owned bodies
+(`pulse.canonical-native-handler-body.v1`). A terminal route has no `next()` or
+`next(error)` transfer. Its stable Router entry ID owns the body, original source
+span, statements, expressions and local namespace. The dispatcher contains one
+private tail-call reference. Nested or recursive body calls and access to another
+body's locals are rejected. Middleware, transfer-capable routes, error handlers
+and inbound event handlers retain their current lowering in this bounded pass.
+
+The private call completes a response, suspends for a recognized effect,
+transfers a normalized application error to the existing error lane, or fails.
+Native execution resumes at the owning body's program counter and requires no
+live call stack. Local slots remain available across suspension. Generation
+keeps body states in separate retained chunks, subject to the existing state and
+source-character budgets. Call references introduce no charged state; effect
+IDs, continuation IDs, allocation behavior and request budgets retain their
+existing semantics. Read-loop memory containment and Fastly value/body analyses
+inspect both the dispatcher and private bodies.
+
+Plan and generator identities change; the host ABI remains v2. This is an
+internal Router representation, with no public callable-function syntax or
+change to JavaScript's original-source execution. See the
+[B02 evidence](../maintainers/compiler-efficiency-p01.md#b02-terminal-http-route-bodies-24-september-2026).
+
 ## Bounded pure control flow
 
 Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by

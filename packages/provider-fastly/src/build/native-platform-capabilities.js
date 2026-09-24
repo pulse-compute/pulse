@@ -958,7 +958,7 @@ function planRequiresFetchBodyRead(plan) {
     if (Array.isArray(value)) return value.some(visit);
     return Object.values(value).some(visit);
   }
-  return visit(plan.entry);
+  return visit(plan.entry) || visit(plan.handlers);
 }
 
 function requiredImportsForPlan(plan, bindings) {

@@ -2,7 +2,7 @@
 
 const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
-const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v4';
+const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v5';
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
 const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v4';
 
@@ -25,7 +25,7 @@ function hasBoundedReadLoop(plan) {
     if (!node || typeof node !== 'object') return false;
     return node.kind === 'read-loop' || Object.values(node).some(visit);
   }
-  return visit(plan && plan.entry);
+  return visit(plan && plan.entry) || visit(plan && plan.handlers);
 }
 
 const CANONICAL_NATIVE_RUN_STATUS = Object.freeze({

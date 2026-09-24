@@ -56,7 +56,7 @@ const contract = loadNativePlanContract();
 const loggingContract = loadLoggingContract();
 const cryptoContract = loadCryptoContract();
 const eventContract = loadEventContract();
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v2';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v3';
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
 
@@ -259,6 +259,8 @@ class NativePlanBuilder {
     this.diagnostics = [];
     this.effects = [];
     this.locals = [];
+    this.handlers = [];
+    this.handlerLocalIndex = 0;
     this.effectOccurrences = new Map();
     this.continuationOccurrences = new Map();
     this.localIndex = 0;
@@ -335,6 +337,9 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    this.routerBodies = new Map((this.metadata.router?.entries || [])
+      .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
+    this.bodyNodes = new Map();
     this.generatedFile = `${this.metadata.file || 'app.ts'}.canonical.generated.js`;
     this.sourceFile = ts.createSourceFile(
       this.generatedFile,
@@ -354,6 +359,14 @@ class NativePlanBuilder {
     this.ctxName = this.handler && this.handler.parameters[0] && ts.isIdentifier(this.handler.parameters[0].name)
       ? this.handler.parameters[0].name.text
       : String(this.metadata.ctxParameter || 'ctx');
+    const collectBodies = node => {
+      if (ts.isFunctionDeclaration(node) && this.routerBodies.has(node.name?.text)) {
+        if (this.bodyNodes.has(node.name.text)) this.fail(node, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Duplicate private Router body.');
+        this.bodyNodes.set(node.name.text, node);
+      }
+      ts.forEachChild(node, collectBodies);
+    };
+    if (this.handler) collectBodies(this.handler);
     this.effectSites = new Map((this.metadata.effectSites || []).map((site) => [String(site.id), site]));
     this.continuationSites = new Map((this.metadata.continuationSites || []).map((site) => [String(site.id), site]));
     this.compilerOwnedCalls = new Set((this.metadata.compilerOwnedCalls || []).map(String));
@@ -630,7 +643,9 @@ class NativePlanBuilder {
   allocateLocal(name, valueKind, statementPath, declaration) {
     this.localIndex += 1;
     const local = Object.freeze({
-      id: `local-${this.localIndex}`,
+      id: this.activeHandler ? `local:${this.activeHandler.stableId}:${++this.handlerLocalIndex}` : `local-${this.localIndex}`,
+      scopeId: this.activeHandler ? this.activeHandler.stableId : 'entry',
+      ...(this.activeHandler ? { routerEntryStableId: this.activeHandler.stableId } : {}),
       name: String(name),
       valueKind: contract.CANONICAL_NATIVE_VALUE_KINDS.includes(valueKind) ? valueKind : 'unknown',
       declaration,
@@ -913,6 +928,11 @@ class NativePlanBuilder {
   }
 
   statement(statement, scope, pathParts, depth) {
+    if (ts.isFunctionDeclaration(statement) && this.routerBodies.has(statement.name?.text)) return [];
+    if (ts.isReturnStatement(statement)) {
+      const call = this.lowerHandlerCall(statement);
+      if (call) return call;
+    }
     const statementPath = formatStatementPath(pathParts);
     this.summary.maxStatementDepth = Math.max(this.summary.maxStatementDepth, depth);
 
@@ -1013,6 +1033,35 @@ class NativePlanBuilder {
     return out;
   }
 
+  lowerHandlerCall(statement) {
+    const yielded = unwrap(statement.expression);
+    if (!yielded || !ts.isYieldExpression(yielded) || !yielded.asteriskToken) return undefined;
+    const call = unwrap(yielded.expression);
+    const entry = call && ts.isCallExpression(call) && ts.isIdentifier(call.expression)
+      && this.routerBodies.get(call.expression.text);
+    if (!entry) return undefined;
+    const node = this.bodyNodes.get(entry.nativeBody.name);
+    if (this.activeHandler || !node?.body || call.arguments.length || this.handlers.some(handler => handler.id === entry.stableId)) {
+      this.fail(statement, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Private Router bodies require one non-recursive terminal call.');
+      return [];
+    }
+    const localStart = this.locals.length;
+    this.activeHandler = entry;
+    this.handlerLocalIndex = 0;
+    const body = this.statementList(node.body.statements, new Map(), ['handlers', entry.stableId, 'body'], 0);
+    this.activeHandler = undefined;
+    this.handlers.push(Object.freeze({
+      version: contract.CANONICAL_NATIVE_HANDLER_BODY_VERSION,
+      id: entry.stableId,
+      handlerId: entry.handlerId,
+      family: 'terminal-route',
+      source: deepFreeze(cloneJson(entry.nativeBody.source)),
+      localIds: Object.freeze(this.locals.slice(localStart).map(local => local.id)),
+      body: Object.freeze(body)
+    }));
+    return [Object.freeze({ kind: 'handler-call', handlerId: entry.stableId })];
+  }
+
   reconcile() {
     const expectedEffectIds = (this.metadata.effectSites || []).map((site) => String(site.id));
     const actualEffectIds = this.effects.map((site) => site.id);
@@ -1061,7 +1110,7 @@ class NativePlanBuilder {
     }));
     const states = [Object.freeze({ id: 'entry', kind: 'entry', stateIndex: 0 })]
       .concat(continuations.map((site) => Object.freeze({ id: site.id, kind: 'continuation', continuationKind: site.kind, effectIds: site.effectIds, stateIndex: site.stateIndex })));
-    this.summary = summarizeNativePlan(body, this.locals, this.effects, continuations);
+    this.summary = summarizeNativePlan(body, this.locals, this.effects, continuations, this.handlers);
     const hasInboundEvents = Number(this.metadata.events && this.metadata.events.count || 0) > 0;
 
     const unsigned = {
@@ -1123,6 +1172,7 @@ class NativePlanBuilder {
         body: Object.freeze(body)
       }),
       locals: Object.freeze(this.locals),
+      handlers: Object.freeze(this.handlers),
       effects: Object.freeze(this.effects),
       continuations: Object.freeze(continuations),
       states: Object.freeze(states),
@@ -1236,7 +1286,7 @@ function countExpression(expression) {
   return count;
 }
 
-function summarizeNativePlan(body, locals, effects, continuations) {
+function summarizeNativePlan(body, locals, effects, continuations, handlers = []) {
   const summary = {
     statementCount: 0,
     expressionCount: 0,
@@ -1277,6 +1327,7 @@ function summarizeNativePlan(body, locals, effects, continuations) {
   }
 
   visitStatements(body, 0);
+  for (const handler of handlers) visitStatements(handler.body, 0);
   for (const effect of effects) {
     for (const input of effect.inputs || []) summary.expressionCount += countExpression(input.value);
     const decoder = effect.result && effect.result.decoder;
@@ -1378,7 +1429,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
     });
   }
-  validateLoops(plan.entry && plan.entry.body);
+  for (const body of [plan.entry && plan.entry.body, ...(plan.handlers || []).map(handler => handler.body)]) validateLoops(body);
   const visitor = (statement) => {
     if (!contract.CANONICAL_NATIVE_STATEMENT_KINDS.includes(statement.kind)) fail('statement kind is unknown', { kind: statement.kind });
     if (statement.kind === 'local' && !localIds.has(statement.localId)) fail('local statement references unknown local', { localId: statement.localId });
@@ -1395,6 +1446,71 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   };
   visitor.expression = (expression) => validateExpression(expression, fail, localIds);
   walkStatements(plan.entry && plan.entry.body, visitor);
+  for (const handler of plan.handlers || []) walkStatements(handler.body, visitor);
+}
+
+function validateHandlerBodies(plan, fail) {
+  const handlers = new Map();
+  const entries = new Map((plan.routing?.entries || []).map(entry => [entry.stableId, entry]));
+  const locals = Array.isArray(plan.locals) ? plan.locals : [];
+  const localsByOwner = new Map();
+  for (const local of locals) {
+    if (!localsByOwner.has(local.scopeId)) localsByOwner.set(local.scopeId, []);
+    localsByOwner.get(local.scopeId).push(local);
+  }
+  const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
+  const calls = new Map();
+  for (const handler of plan.handlers || []) {
+    const entry = handler && entries.get(handler.id);
+    if (!handler || handlers.has(handler.id) || handler.version !== contract.CANONICAL_NATIVE_HANDLER_BODY_VERSION
+      || handler.family !== 'terminal-route' || entry?.kind !== 'route' || entry.nativeBody?.version !== 'pulse.router-native-body.v1'
+      || handler.handlerId !== entry.handlerId || !Array.isArray(handler.body)
+      || stableStringify(handler.source) !== stableStringify(entry.nativeBody.source)) {
+      fail('private handler body must have a unique terminal route identity and original source');
+      continue;
+    }
+    handlers.set(handler.id, handler);
+    const owned = localsByOwner.get(handler.id) || [];
+    if (stableStringify(handler.localIds) !== stableStringify(owned.map(local => local.id))) fail('private handler local namespace mismatch', { handlerId: handler.id });
+    if (owned.some(local => local.routerEntryStableId !== handler.id)) fail('private handler local ownership mismatch', { handlerId: handler.id });
+  }
+  for (const local of locals) {
+    if (local.scopeId !== 'entry' && !handlers.has(local.scopeId)) fail('local requires an existing lexical owner', { localId: local.id });
+    if (local.scopeId === 'entry' && local.routerEntryStableId !== undefined) fail('dispatcher local cannot claim private handler ownership', { localId: local.id });
+  }
+  function validateBody(body, owner) {
+    const owned = new Set((localsByOwner.get(owner) || []).map(local => local.id));
+    const checkEffect = id => {
+      const effect = effects.get(id);
+      if (owner !== 'entry' && effect?.routerEntryStableId !== owner) fail('private handler effect ownership mismatch', { effectId: id, owner });
+      for (const input of effect?.inputs || []) walkExpression(input.value, visitor.expression);
+      for (const arg of effect?.result?.decoder?.arguments || []) walkExpression(arg, visitor.expression);
+      if (effect?.result?.localId && !owned.has(effect.result.localId)) fail('effect result crosses a lexical boundary', { effectId: id });
+    };
+    const visitor = statement => {
+      if (statement.localId && !owned.has(statement.localId)) fail('statement crosses a lexical boundary', { localId: statement.localId });
+      if (statement.kind === 'handler-call') {
+        if (owner !== 'entry' || !handlers.has(statement.handlerId)) fail('private handler call must originate in the dispatcher and select an existing body');
+        calls.set(statement.handlerId, (calls.get(statement.handlerId) || 0) + 1);
+      }
+      if (statement.kind === 'effect') checkEffect(statement.effectId);
+      if (statement.kind === 'effect-group') for (const id of statement.effectIds || []) checkEffect(id);
+    };
+    visitor.expression = expression => {
+      if (expression.kind === 'local' && !owned.has(expression.id)) fail('expression crosses a lexical boundary', { localId: expression.id, owner });
+    };
+    walkStatements(body, visitor);
+  }
+  validateBody(plan.entry?.body, 'entry');
+  for (const handler of handlers.values()) {
+    validateBody(handler.body, handler.id);
+    if (calls.get(handler.id) !== 1) fail('private handler requires exactly one static call', { handlerId: handler.id });
+  }
+  for (const continuation of plan.continuations || []) {
+    for (const effectId of continuation.effectIds || []) {
+      if (effects.get(effectId)?.routerEntryStableId !== continuation.routerEntryStableId) fail('continuation must resume in its effect owner', { effectId });
+    }
+  }
 }
 
 function assertCanonicalNativePlan(plan) {
@@ -1437,6 +1553,7 @@ function assertCanonicalNativePlan(plan) {
       }
     }
     if (!Array.isArray(plan.locals)) fail('plan locals must be an array');
+    if (!Array.isArray(plan.handlers)) fail('plan handlers must be an array');
     if (!Array.isArray(plan.effects)) fail('plan effects must be an array');
     if (!Array.isArray(plan.continuations)) fail('plan continuations must be an array');
     if (!Array.isArray(plan.states)) fail('plan states must be an array');
@@ -1538,6 +1655,7 @@ function assertCanonicalNativePlan(plan) {
     }
 
     if (plan.entry && Array.isArray(plan.entry.body)) validatePlanTree(plan, fail, localIds, effectIds, continuationIds);
+    if (Array.isArray(plan.handlers)) validateHandlerBodies(plan, fail);
 
     const states = Array.isArray(plan.states) ? plan.states : [];
     if (states.length !== continuations.length + 1) fail('state table must contain entry plus one state per continuation', { expected: continuations.length + 1, actual: states.length });
@@ -1566,10 +1684,11 @@ function assertCanonicalNativePlan(plan) {
     };
     statementVisitor.expression = () => {};
     if (plan.entry && Array.isArray(plan.entry.body)) walkStatements(plan.entry.body, statementVisitor);
+    for (const handler of plan.handlers || []) walkStatements(handler.body, statementVisitor);
 
     if (!plan.summary || typeof plan.summary !== 'object') fail('plan summary is required');
     else {
-      const expectedSummary = summarizeNativePlan(plan.entry && plan.entry.body, locals, effects, continuations);
+      const expectedSummary = summarizeNativePlan(plan.entry && plan.entry.body, locals, effects, continuations, plan.handlers);
       for (const [key, expected] of Object.entries(expectedSummary)) {
         if (plan.summary[key] !== expected) fail(`summary ${key} mismatch`, { expected, actual: plan.summary[key] });
       }
