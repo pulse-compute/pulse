@@ -578,7 +578,7 @@ report alone is acceptance evidence for the corrected corpus. G0 remains a
 **human** decision after S02 review. Neither S03 nor R01 is authorized by this
 evidence-only PR.
 
-## S03 addendum: leaf expression-helper sharing screen (24 September 2026)
+## S03 addendum: source sharing and the optimized-Wasm boundary (24 September 2026)
 
 S02 was merged into `latest` at
 `44f13cde69b63b6849975cd8c9ea20ca08d67bc5`. S03 tested a bounded
@@ -630,14 +630,37 @@ sampled compiler descendant RSS moved **277,856,256 to 275,410,944 B**
 reliable memory saving. The fixture tests source duplication pressure, not a
 representative application mix.
 
+The 256-repetition fixture also received a separate **diagnostic** compile
+with the pinned AssemblyScript 0.28.18 and the production runtime/no-assert
+settings, but without `--optimize`. That intermediate Wasm shrank from
+**20,074 to 13,690 B** (32%). Its named expression functions fell from
+**1,029 to 518**. Production compilation then generated **identical**
+188,989-byte WAT on both sides, as well as the identical optimized Wasm
+above. The final WAT contained **14 functions**, none named as expression
+helpers, with **no function table or indirect calls**. This is direct
+structural evidence that the source-level aliases do not survive as shared
+functions in the optimized module. The optimizer removes or folds these
+helper boundaries before the final binary; the artifact alone does not
+distinguish every inlining decision from other simplifications. A shared
+runtime helper could use ordinary direct Wasm calls, without function
+pointers or a table, if a sufficiently substantial body survives
+optimization. A separate `@noinline` probe on these small leaf and binary
+helpers also yielded the same optimized Wasm hash; a decorator alone did
+not establish final sharing in this fixture.
+
 The S03 proposed go criterion required at least 15% fewer declarations **and**
 at least 10% lower compiler peak RSS or median compile time beyond measured
-spread; optimized Wasm delta was to be reported separately. Declaration
-counts passed the first condition, but both the ordinary and duplicate-heavy
-fixtures missed the second, and the final Wasm files were unchanged. The
-candidate compiler and test edits were therefore removed. **No S03 production
-change is proposed.** This negative result closes the leaf-helper family
-screen without authorizing a broader family, public syntax change or R01 work.
+spread; optimized Wasm delta was to be reported separately. Declaration and
+unoptimized-intermediate reductions are real. This **specific leaf-alias
+implementation** missed the compiler gate and never changed the final
+module. The candidate compiler and test edits were therefore removed; **no
+S03 production change is proposed by this evidence PR**. S03 remains an open
+design question, not a negative conclusion about sharing generally. A next
+bounded proof would need an equivalent repeated body that remains a distinct
+function in optimized WAT, multiple calls to that retained body, unchanged
+evaluation and budget behavior, and a measured final Wasm and compiler delta.
+That proof requires separate review before expanding the family. This packet
+does not authorize public syntax changes or R01 work.
 
 The selected local evidence commands were:
 
@@ -648,8 +671,9 @@ node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p03 --report .te
 ```
 
 The P02 task was repeated for the three valid baseline and three candidate
-samples. Its detailed reports and the one-off stress-driver samples are local
-ignored evidence; they are not checked-in benchmark infrastructure. The
+samples. Its detailed reports, the one-off stress-driver samples and the
+unoptimized/WAT diagnostic artifacts are local ignored evidence; they are not
+checked-in benchmark infrastructure. The
 passing candidate test and P03 task prove selected semantics for the screened
 patch, not a new binary, RSS or request-memory benefit. Human review retains
 the G0 and future-work decisions.
