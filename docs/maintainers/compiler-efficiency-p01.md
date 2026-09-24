@@ -1113,3 +1113,71 @@ peak RSS, Wasm bytes and cold loads with matched source/settings. Inbound event
 ownership and mounted Router branches were not exercised by this B01 control;
 they remain explicit gates for implementation. The larger consumer is a final
 validation point, not a B01 performance claim.
+
+## T01: batch the existing retention policy (24 September 2026)
+
+Human direction selected a retention-cost proof after B01, before changing
+handler structure. This hardening pass changes only build support's retention
+transform and its evidence. No named implementation Entry Point matches this
+internal toolchain stage; the ordinary root/Wasm instructions apply. The
+generated hint policy, function names, plan, optimizer settings, dependencies,
+effects and host ABI remain unchanged.
+
+The pinned Binaryen `no-inline` pass accepts one wildcard and scans every
+function in the module. Its JavaScript API exposes no function retention setter;
+the function-only pass runner requires a function-parallel pass, which
+`no-inline` is not. See the pinned upstream
+[NoInline pass](https://github.com/WebAssembly/binaryen/blob/version_129/src/passes/NoInline.cpp),
+[wildcard matcher](https://github.com/WebAssembly/binaryen/blob/version_129/src/support/string.cpp)
+and [pass runner](https://github.com/WebAssembly/binaryen/blob/version_129/src/passes/pass.cpp).
+
+`native-retention-transform.cjs` now reads the emitted function names once,
+sorts them, and identifies contiguous runs of already-selected names. The
+nearest unselected neighbors bound the shortest safe prefix for each selected
+name. Duplicate prefixes become one pass; if an unselected name extends the
+entire selected name (such as `expr_1` and `expr_10`), the selected name remains
+an exact match. Prefixes stay within the existing generated namespace. All
+module functions, including imports and unannotated leaves, participate in the
+exclusion check. Absent declarations need no policy; zero/one selected functions
+avoid the sort. Each pass still runs before optimization and the previous
+Binaryen pass argument is restored on success or failure.
+
+The proof uses AssemblyScript 0.28.18 and its own Binaryen
+129.0.0-nightly.20260428 under Node 24.19.0. Each source has 64-operation chunks,
+dynamic imported calls, and either all expression helpers retained or only
+every eighth helper retained. All chunks remain selected. Three serial pairs
+per source alternate old/new ordering in fresh compiler processes. The old
+per-name loop exists only in the measurement comparator. Peak RSS comes from
+the same PID that runs the transform, verified by the harness; it is compiler
+RSS, not guest memory. These are the medians:
+
+| Expressions / selected stride | Module passes, before → after | Retention ms | Full compile ms | Compiler peak RSS MiB | Wasm B, unchanged |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 512 / every helper | 520 → 1 | 53.74 → 7.34 | 1,173.98 → 1,219.97 | 216.94 → 215.99 | 11,147 |
+| 4,096 / every helper | 4,160 → 1 | 2,587.25 → 30.17 | 5,445.97 → 2,786.77 | 294.29 → 297.70 | 90,557 |
+| 4,096 / every eighth | 576 → 513 | 350.69 → 334.94 | 2,633.09 → 2,733.73 | 311.11 → 309.55 | 44,339 |
+
+All nine pairs produce byte-identical optimized Wasm and the same exact
+imported-call order and result. The dense large control improves full compile
+time by 48.8%. Small and sparse controls have overlapping timing ranges and
+approximately 3.9% higher observed medians; they establish no general speedup.
+RSS ranges overlap in every case, so there is no compiler-memory improvement
+claim. The batching benefit depends on the distribution of retained names;
+sparse expression families may still need one pass per retained expression.
+This proof does not forecast a large application's savings.
+
+Reproduce with `node wasm/scripts/run-wasm-tests.cjs --task compiler-retention-cost-t01`.
+The accepted local run is `wasm/.test-results/compiler-efficiency/t01/cost-final.json`
+(one selected/completed task, passed); its task log holds every sample, source
+and Wasm hash. Base is `0cd6c4b`; the measured transform SHA-256 is
+`d392b69ccfabce70e3b71b47c9b7bdc84369a66960f543c58703b500d1edcc4d`.
+The first attempt in `cost.json` failed on an unbounded 4,096-operation fixture
+in Binaryen emission. It also exposed an RSS collector bug: asc's launcher
+overwrote the child compiler's report. The final harness uses bounded chunks,
+starts asc with its normal source-map flag to avoid the launcher, and checks
+PID identity. The initial attempt supplies no accepted performance evidence.
+
+Focused real-Wasm checks cover both Native targets and all three optimization
+modes, retained shared calls, unannotated prefix collisions, distinct bindings,
+fresh allocations, live tables and mappings. Deterministic generated name sets
+also verify exact retention membership and option restoration after failure.
