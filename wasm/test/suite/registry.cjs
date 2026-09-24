@@ -467,6 +467,11 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'B01 current Router-to-Native ownership and 1/8/32-handler flattening controls'
   }),
+  'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'T01 serial retention batching cost and byte-exact optimized Wasm comparisons'
+  }),
   'compiler-guest-link-evidence': nodeTask('test/runtime/compiler-efficiency/guest-link-evidence.cjs', {
     evidence: 'external', timeoutMs: 300000,
     description: 'opt-in guest-linked JWT startup, execution, memory observations and audit identity evidence'
