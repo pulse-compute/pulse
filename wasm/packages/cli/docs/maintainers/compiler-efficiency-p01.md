@@ -22,6 +22,8 @@ sources. It does not claim to have inspected those missing inputs.
 P02 was explicitly authorized after P01 merged. That authorization supersedes
 the historical P01 instruction not to dispatch P02, but it does not waive the
 portable-baseline prerequisite or authorize P03, R01, G0, or optional work.
+The sections before the S01 addendum retain their original chronological
+meaning; the addendum records the later portable replay and measurement work.
 
 ## Classification and source identity
 
@@ -400,3 +402,106 @@ No individual assignee is inferred. Optional R10, R11, R12, W03, I05, and C01
 remain unselected. The next action is to correct the PID-1 reaping environment
 and replay the unchanged four-profile baseline; only then should the coordinator
 consider dispatching P02 and P03 in sequence for review before human G0.
+
+## S01 addendum: portable replay and synthetic measurement (24 September 2026)
+
+This addendum supersedes the historical next action above. Human direction
+selected S01, consisting of P02 and W01. The earlier P01 documentation and
+blocked P02 replay remain intact. This evidence-only PR adds a synthetic fixture,
+one registered measurement task and source/Wasm attribution. It changes no
+compiler, runtime, provider, ABI, product fixture or dependency lockfile.
+
+**Source and runner.** The selected `latest` base is
+`6eb85b29d0d87916c34038ae2f83eb31c7a6d4e1`, with unchanged lockfile
+SHA-256 `4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8`.
+Node 24.19.0 and the lockfile-pinned AssemblyScript 0.28.18 were used.
+The previously failing `test-orchestration` task passed unchanged on this
+runner. The four-profile aggregate returned terminal `passed`: **97 selected,
+97 completed, 97 passed**, in 902.90 seconds. Its ignored report is
+`wasm/.test-results/compiler-efficiency/s01/baseline-portable.json`; the
+pre-edit command was:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --report .test-results/compiler-efficiency/s01/baseline-portable.json
+```
+
+The dependency graph was restored from an earlier checkout with this exact
+lockfile hash. A pnpm invocation attempted to insert a placeholder `allowBuilds`
+line into `pnpm-workspace.yaml`; it was restored while the aggregate was running.
+No compiler, runtime, test assertion or lockfile content changed. The aggregate
+therefore proves the unchanged tests pass on this runner, but is **not described
+as a continuously clean-tree replay**. The pinned TypeScript build and all 239
+package tests passed via their installed executables. The pnpm wrapper attempted
+dependency validation and rejected ignored build scripts; no bypass or policy
+change is part of S01. The focused task's first attempt failed during project
+planning because its synthetic S3 profile omitted `HMAC-SHA256`; the fixture
+declares the required algorithm and the complete retry passed. Preserve both
+failed and passing task reports when comparing local attempts.
+
+**Repeatable measurement.** Run the selected task on a runner with the restored
+dependency graph:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p02 --report .test-results/compiler-efficiency/s01/p02-task.json
+node wasm/scripts/run-wasm-tests.cjs --task bounded-read-loops --report .test-results/compiler-efficiency/s01/bounded-read-loops.json
+```
+
+`compiler-efficiency-p02` compiles each target in an isolated cold worker and
+loads the identified Wasm for warm execution on fresh runtime instances. The
+0/1/16/64-page cases have fixed 4,096-byte deterministic pages (seed
+`s01-page-body-v1`), two ordered
+effects per page, exact response assertions, distinct Node Native and Fastly
+ABI hosts, and SHA-256 identities. The ignored detailed report is
+`wasm/.test-results/compiler-efficiency/s01/measurements.json`. The passing
+task report at this checkpoint is
+`wasm/.test-results/compiler-efficiency/s01/p02-task-final.json` (one selected,
+one completed). It includes effects, per-kind allocated Node handles, bounded
+index entries, cumulative charges, and selected effect checkpoints.
+
+| Pages | Node charged bytes / values | Node handles | Node rooted host-value estimate | Fastly charged bytes / values | Fastly final Wasm pages |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 2,480 / 85 | 17 | 942 B | 896 / 24 | 110 |
+| 1 | 53,070 / 346 | 48 | 43,870 B | 28,652 / 135 | 110 |
+| 16 | 700,600 / 3,793 | 279 | 580,030 B | 435,058 / 1,578 | 110 |
+| 64 | 2,694,224 / 14,783 | 998 | 2,217,182 B | 1,735,058 / 6,185 | 220 |
+
+The rooted estimate walks the **actual Node host handle map** and weighs
+reachable values with the current policy. It omits guest linear memory, provider
+fixture bodies, traces and JavaScript object overhead; it is not an
+authoritative live-heap figure. Fastly exports cumulative charges and final
+linear-memory capacity, not Node handle kinds or guest-root liveness. The Node
+host exposes fresh-instance initial linear capacity (3,538,944 bytes) but no
+post-execution capacity through this result. Execution process RSS was sampled
+before/after each serial case and includes the harness and previously loaded
+artifacts; the detailed report gives the raw samples. It is not a per-request
+peak or a cross-target memory comparison.
+
+**Compiler and size pressure.** In one cold run per target, the generated Node
+AssemblyScript was 38,342 bytes and the normally optimized Wasm 44,296 bytes;
+the Fastly ABI source was 170,611 bytes and final Wasm 115,568 bytes. Their
+Wasm hashes were respectively
+`28336dc67330626b2c20b22c945ddb0318c87d57b1f974259c962906f96b0657`
+and `91ad1af978c52fa1b34b7bce1c09a00770b988785bc9ea9456e730bc92bddf51`.
+Each source contained 131 expression declarations, of which 35 repeated an
+exact declaration after normalizing only the declared function number (2,267
+source bytes). These are lexical candidates, not proven mergeable functions.
+
+At 10 ms sampling intervals, the isolated Node and Fastly compile workers had
+peak RSS of 139,350,016 and 117,989,376 bytes; their largest observed compiler
+descendants had peak RSS of 308,920,320 and 292,794,368 bytes, respectively.
+These are sampled individual-process peaks, not simultaneous tree totals or a
+benchmark comparison. Separate Node controls varied one, eight and 32 repeated
+expression sites independently from leaf/nested complexity; the resulting
+source bytes, declaration counts, exact repetitions and final Wasm sizes are
+recorded in the report. The optimizer changed some final Wasm sizes in the
+opposite direction of generated-source growth, so S03 needs a measured binary
+result and compiler RSS/time proof rather than a source-size extrapolation.
+
+Fixture SHA-256 is
+`9b7fc1bb75638e14d0b8b7031d9daeb85f05a1fb3ceaa6ef2ff8e23d1c6ec367`.
+Generated Node/Fastly source hashes are
+`0966b5226b0a1eb474cc4e3aa9a8d1774a0371d6c9427fe9c4a46b1a5d504503`
+and `a2f054649bf793c1d4127df5b4d968a1d1cacf2681520fc5646adcb9b8765dd1`.
+This is a single baseline observation per artifact. Neither source duplication
+nor Wasm capacity establishes a memory saving. S02 semantic oracles and human
+G0 acceptance are the next gates before any internal helper-sharing change.
