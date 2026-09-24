@@ -777,3 +777,14 @@ qualification nor a change to public authoring or runtime-budget semantics.
 Guest-linked modules also pass through a separate post-link whole-module
 optimizer. The size measurements here use handlers without guest units;
 stable helper boundaries through that later stage require their own proof.
+
+Refreshing the executable documentation's exact byte baselines found modest
+default-build savings outside the stress fixture: hello JSON 2,212 → 2,140 B,
+fetch composition 5,117 → 5,039 B, Fastly capabilities application 5,454 →
+5,397 B / provider 46,934 → 46,922 B, and Router lowering 9,407 → 9,232 B.
+The size-optimized Router grew 8,619 → 8,625 B; the other measured optimized
+examples were unchanged. Schema, opaque proxy, events, MCP proxy and the
+guest-linked JWT example retained their default sizes. The first CLI replay
+stopped at the stale hello-JSON size assertion; the exact assertions and
+documentation were refreshed from independent default/size builds for all
+nine Native examples before replaying the complete CLI profile.
