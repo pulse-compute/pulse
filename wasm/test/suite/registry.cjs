@@ -462,6 +462,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'S02 frozen synthetic results, effect order, continuation and budget oracles across Native targets'
   }),
+  'compiler-bounded-merging': nodeTask('test/runtime/compiler-efficiency/bounded-merging.cjs', {
+    evidence: 'external',
+    timeoutMs: 600000,
+    description: 'opt-in bounded Binaryen merging proof: serial cold builds, function shape, exact semantic parity and execution costs'
+  }),
   'logging-lowering': nodeTask('test/lowering/assert-logging-lowering.cjs', {
     evidence: 'native',
     timeoutMs: 120000,
