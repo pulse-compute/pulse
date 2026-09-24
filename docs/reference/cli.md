@@ -309,7 +309,7 @@ Compile the canonical project into provider-neutral Pulse-owned WebAssembly.
 Syntax:
 
 ```text
-pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]
+pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]
 ```
 
 ### Positionals
@@ -322,6 +322,7 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 |---|---|
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
+| `--experimental-native-bounded-size` | Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag. |
 | `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <dir>` | Override the project-relative artifact output directory. |
@@ -332,6 +333,7 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 pulse compile ./my-pulse-app
 pulse compile ./edge-app --out ./dist --json
 pulse compile ./edge-app --experimental-native-size
+pulse compile ./edge-app --experimental-native-bounded-size
 ```
 
 
@@ -366,7 +368,7 @@ Compile the canonical project and realize the deployment provider selected by th
 Syntax:
 
 ```text
-pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]
+pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]
 ```
 
 ### Positionals
@@ -379,6 +381,7 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 |---|---|
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
+| `--experimental-native-bounded-size` | Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag. |
 | `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
 | `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
 | `--out <dir>` | Override the project-relative artifact output directory. |
@@ -389,6 +392,7 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 pulse build ./my-pulse-app
 pulse build ./edge-app --out ./dist --json
 pulse build ./edge-app --experimental-native-size
+pulse build ./edge-app --experimental-native-bounded-size
 ```
 
 

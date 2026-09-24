@@ -39,6 +39,8 @@ pulse build
 - `compile` writes deterministic provider-neutral Pulse Wasm plus its native plan, generated AssemblyScript, WAT, and manifests.
 - `build` writes the configured target realization: Native profiles emit provider Wasm, while JavaScript profiles emit deterministic source packages. Eligible event projects also emit `event-catalog.json` and `event-inspection.json` beside the target output. Fastly JavaScript packages carry exact downstream compiler pins and deployment-candidate metadata.
 
+For Native builds, `--experimental-native-bounded-size` selects AssemblyScript O3/shrink2 without convergence. The existing `--experimental-native-size` flag retains O3/shrink2 with convergence. Both are opt-in and mutually exclusive; build manifests record the chosen recipe.
+
 See the generated [CLI reference](../reference/cli.md) for every option, positional form, output, side effect, and exit behavior.
 
 ## Project configuration

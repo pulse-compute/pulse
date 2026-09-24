@@ -85,6 +85,7 @@ case $words[2] in
       '--clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
       '--no-clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
       '--emit-wat[Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.]' \
+      '--experimental-native-bounded-size[Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.]' \
       '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[Override the project-relative artifact output directory.]:directory:_directories'
@@ -98,6 +99,7 @@ case $words[2] in
       '--clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
       '--no-clean[Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default.]' \
       '--emit-wat[Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity.]' \
+      '--experimental-native-bounded-size[Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.]' \
       '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[Override the project-relative artifact output directory.]:directory:_directories'

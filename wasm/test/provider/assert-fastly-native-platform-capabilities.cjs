@@ -125,6 +125,11 @@ try {
     bindings: configBindings,
     experimentalNativeSize: true
   });
+  const configBounded = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, {
+    cwd: repoRoot,
+    bindings: configBindings,
+    nativeOptimization: 'experimental-native-bounded-size'
+  });
   assertNativePlatformModule('fastly-capabilities', configFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
   assertNativePlatformModule('fastly-capabilities-experimental-size', configExperimentalFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
   assert.deepEqual(configFirst.wasm, configSecond.wasm, 'config/secret module must be byte deterministic across cwd');
@@ -136,6 +141,11 @@ try {
   assert.deepEqual(configExperimentalFirst.inspection.imports, configFirst.inspection.imports, 'experimental size optimization must preserve the Fastly host import surface');
   assert.deepEqual(configExperimentalFirst.inspection.exports, configFirst.inspection.exports, 'experimental size optimization must preserve the required export surface');
   assert.deepEqual(configExperimentalFirst.manifest.optimization, platform.FASTLY_NATIVE_SIZE_OPTIMIZATION);
+  assertNativePlatformModule('fastly-capabilities-bounded-size', configBounded, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
+  assert.deepEqual(configBounded.inspection.imports, configFirst.inspection.imports);
+  assert.deepEqual(configBounded.inspection.exports, configFirst.inspection.exports);
+  assert.equal(configBounded.manifest.optimization.mode, 'experimental-native-bounded-size');
+  assert.equal(configBounded.manifest.optimization.assemblyScript.converge, false);
   assert.equal(configFirst.manifest.optimization, undefined, 'default Fastly Native artifacts must not opt into experimental optimization');
 
   const secretValue = 'platform-capability-secret';

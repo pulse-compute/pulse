@@ -89,7 +89,7 @@ const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'pub
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
 assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build']);
-assert.equal(publicOptions.length, 17, 'the CLI must expose exactly 17 documented option contracts');
+assert.equal(publicOptions.length, 18, 'the CLI must expose exactly 18 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
 for (const command of PUBLIC_COMMAND_ORDER) {
@@ -164,8 +164,11 @@ assert.equal(parseCommandRequest(['inspect', 'build/pulse-build.json']).director
 assert.equal(parseCommandRequest(['inspect', 'examples/hello']).directory, 'examples/hello');
 assert.equal(parseCommandRequest(['build', 'examples/hello']).directory, 'examples/hello');
 assert.equal(parseCommandRequest(['build', '--experimental-native-size']).experimentalNativeSize, true);
+assert.equal(parseCommandRequest(['build', '--experimental-native-bounded-size']).experimentalNativeBoundedSize, true);
+assert.throws(() => parseCommandRequest(['build', '--experimental-native-size', '--experimental-native-bounded-size']), error => error instanceof PulseProjectError && error.code === 'PULSE_ARGUMENT_UNEXPECTED');
 assert.equal(parseCommandRequest(['compile', 'examples/hello']).directory, 'examples/hello');
 assert.equal(parseCommandRequest(['compile', '--experimental-native-size']).experimentalNativeSize, true);
+assert.equal(parseCommandRequest(['compile', '--experimental-native-bounded-size']).experimentalNativeBoundedSize, true);
 assert.equal(parseCommandRequest(['test', '--profile=local']).profile, 'local');
 
 for (const removed of ['--project', '--workspace', '--entry', '--config', '--fixture', '--suite-profile', '--suite-task', '--report', '--no-report']) {
