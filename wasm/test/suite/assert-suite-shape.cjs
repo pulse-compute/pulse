@@ -55,6 +55,7 @@ const externalTasks = new Set([
   'compiler-efficiency-p02',
   'compiler-efficiency-p03',
   'compiler-bounded-merging',
+  'compiler-guest-link-evidence',
   'guest-link-final-reality',
   'guest-link-memory-matrix',
   'guest-link-feasibility-decision',
@@ -124,6 +125,7 @@ for (const profile of ['unit', 'native', 'javascript', 'conformance', 'providers
   }
 }
 assert.equal(release.includes('compiler-bounded-merging'), false);
+assert.equal(release.includes('compiler-guest-link-evidence'), false);
 assert.equal(release.includes('provider-fastly-compute-reality'), false);
 assert.equal(release.includes('guest-link-scalar-control'), false);
 assert.equal(release.includes('guest-link-memory-matrix'), false);

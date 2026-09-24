@@ -462,6 +462,10 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'S02 frozen synthetic results, effect order, continuation and budget oracles across Native targets'
   }),
+  'compiler-guest-link-evidence': nodeTask('test/runtime/compiler-efficiency/guest-link-evidence.cjs', {
+    evidence: 'external', timeoutMs: 300000,
+    description: 'opt-in guest-linked JWT startup, execution, memory observations and audit identity evidence'
+  }),
   'compiler-bounded-merging': nodeTask('test/runtime/compiler-efficiency/bounded-merging.cjs', {
     evidence: 'external',
     timeoutMs: 600000,
