@@ -318,4 +318,7 @@ async function main() {
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 }
 
-main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });
+// Reuse the frozen expectations in opt-in optimizer proofs without changing
+// normal P03 compilation or teaching the production compiler about experiments.
+module.exports = { corpus, pages, nodeCase, fastlyCase, cancellation };
+if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });

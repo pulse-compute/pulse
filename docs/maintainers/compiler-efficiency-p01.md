@@ -788,3 +788,178 @@ guest-linked JWT example retained their default sizes. The first CLI replay
 stopped at the stale hello-JSON size assertion; the exact assertions and
 documentation were refreshed from independent default/size builds for all
 nine Native examples before replaying the complete CLI profile.
+
+## Bounded merging proof after S03
+
+The follow-up authorized after PR #73 is **evidence / evidence-only**. It adds
+one opt-in test task and shares the existing frozen P03 oracle helpers. No
+named implementation Entry Point matches this internal experiment; it follows
+the ordinary instruction chain. Production optimization, feature policies,
+guest-link receipts and public support are unchanged.
+
+The proof applies these pinned Binaryen options to copies of final Wasm:
+
+```text
+--merge-similar-functions
+--one-caller-inline-max-function-size=64
+--flexible-inline-max-function-size=0
+--inline-max-combined-binary-size=1024
+-Oz
+```
+
+The 64 limit concerns the inliner's function-size heuristic, not parameters.
+The 1,024 limit bounds estimated combined inlining size, not all Wasm functions.
+Neither is a global hard function-body cap. The proof separately checks that
+no candidate's largest body exceeds `max(1024, baseline largest body)` and no
+maximum parameter count exceeds `max(64, baseline maximum parameters)`.
+Existing larger functions may remain. All twelve measured cells meet these
+shape gates; that is a fixture result, not an arbitrary-program guarantee.
+
+Non-guest modules keep within asc's existing mutable-global, sign-extension,
+nontrapping-float-to-int and bulk-memory policy. Guest-linked modules are
+validated with `--mvp-features`. The proof does not enable reference types or
+GC to obtain more merging opportunities.
+
+### Workloads and outcome
+
+`repeat` is the exact 2,000-update source described above, compiled as
+`bounded-merge-repeat.ts`. `oracle` is the frozen P03 schema/read-loop/effect
+project. `jwt` is example 13 with the real
+`pulse.crypto.es256.rustcrypto-p256.v1` guest linked on each target, including
+its key artifacts and target policy. JWT execution uses the fixed clock
+2,000,000,000 seconds. `size` means the existing experimental Native size
+profile, before the proposed postpass.
+
+| Workload / target / profile | Wasm B, before → after | Reduction | Largest body B, before → after | Maximum parameters, before → after |
+| --- | ---: | ---: | ---: | ---: |
+| repeat / node / default | 28,122 → 9,787 | 65.20% | 858 → 856 | 3 → 64 |
+| repeat / node / size | 9,798 → 9,798 | 0.00% | 856 → 856 | 64 → 64 |
+| repeat / fastly / default | 55,920 → 37,436 | 33.05% | 1,452 → 1,439 | 5 → 64 |
+| repeat / fastly / size | 33,706 → 33,687 | 0.06% | 1,428 → 1,428 | 64 → 64 |
+| oracle / node / default | 44,772 → 44,494 | 0.62% | 4,010 → 4,007 | 6 → 6 |
+| oracle / node / size | 35,923 → 35,921 | 0.01% | 4,156 → 4,156 | 6 → 6 |
+| oracle / fastly / default | 116,077 → 115,224 | 0.73% | 4,198 → 4,195 | 10 → 10 |
+| oracle / fastly / size | 91,314 → 91,259 | 0.06% | 4,158 → 4,158 | 10 → 10 |
+| jwt / node / default | 39,354 → 35,673 | 9.35% | 3,299 → 3,024 | 7 → 7 |
+| jwt / node / size | 39,151 → 35,499 | 9.33% | 3,299 → 3,024 | 7 → 7 |
+| jwt / fastly / default | 113,006 → 104,784 | 7.28% | 4,546 → 4,530 | 7 → 7 |
+| jwt / fastly / size | 94,784 → 87,446 | 7.74% | 3,383 → 3,140 | 7 → 7 |
+
+The repeated-code default builds show the largest win. Guest-linked JWT
+also benefits in both profiles. The schema/effect cases and already-size-optimized
+repeated cases show much smaller gains, so these results do not justify adding
+the postpass to every build. The existing size profile already captures almost
+all of the repeated Node fixture's reduction.
+
+The unbounded control uses the same input and features with
+`--merge-similar-functions -Oz`, omitting the three inlining limits:
+
+| Target | Bounded / unbounded Wasm B | Bounded / unbounded largest body B |
+| --- | ---: | ---: |
+| node | 9,787 / 9,571 | 856 / 7,973 |
+| fastly | 37,436 / 37,163 | 1,439 / 10,352 |
+
+Both controls still return `2000`. Paying a few hundred bytes for the bounded
+variant avoids rebuilding a large dispatcher function. The merged repeated
+helper has 64 parameters: retaining small bodies does not eliminate the need
+to evaluate calling cost. There are no added Wasm tables or indirect calls in
+any measured candidate, and imported/exported function signatures, memory
+limits and start presence match the baseline.
+
+Each candidate passes the independent frozen expectations and exact paired
+semantic projections. The oracle checks response/error outcomes, ordered
+effects, continuations, cancellation, value handles, charged bytes/values and
+Fastly linear-memory pages where exposed. JWT checks the valid ES256 response,
+wrong-signature rejection and disallowed-algorithm rejection; Fastly must
+report the package-owned JWT failure stages 217 and 212. The repeated Node
+fixture still allocates exactly 4,005 value handles. These are preserved-cost
+observations, not a request-memory reduction.
+
+### Compile and execution costs
+
+Three serial cold processes per variant, alternating order, produce 72 full
+compilations. Each JWT sample starts with an empty materialized-guest cache.
+Inputs and each variant's outputs must be byte-deterministic across all three
+runs. The following values are medians; MB means decimal megabytes. Cold
+worker time includes startup, compilation and, for the candidate, postprocessing.
+
+| Workload / target / profile | Cold worker ms, before → after | Added postprocess ms | Compiler descendant RSS MB, before → after | Process-tree RSS MB, before → after |
+| --- | ---: | ---: | ---: | ---: |
+| repeat / node / default | 2,012.4 → 2,519.4 | 421.5 | 283.4 → 286.2 | 521.5 → 527.0 |
+| repeat / node / size | 2,119.7 → 2,557.3 | 373.8 | 284.0 → 285.5 | 523.7 → 526.2 |
+| repeat / fastly / default | 2,826.2 → 3,495.3 | 512.2 | 300.6 → 282.1 | 546.1 → 526.1 |
+| repeat / fastly / size | 3,507.0 → 4,284.0 | 522.3 | 298.8 → 310.1 | 542.0 → 554.0 |
+| oracle / node / default | 2,448.4 → 2,950.1 | 517.6 | 343.6 → 333.6 | 525.6 → 516.0 |
+| oracle / node / size | 2,775.8 → 3,524.5 | 549.6 | 339.0 → 316.9 | 521.1 → 498.8 |
+| oracle / fastly / default | 4,284.8 → 5,415.3 | 945.7 | 342.0 → 322.0 | 527.3 → 504.8 |
+| oracle / fastly / size | 4,985.0 → 5,825.7 | 811.2 | 325.8 → 337.6 | 510.8 → 522.0 |
+| jwt / node / default | 4,568.3 → 5,241.7 | 716.1 | 270.6 → 271.4 | 438.8 → 441.1 |
+| jwt / node / size | 4,627.4 → 5,389.0 | 703.4 | 271.2 → 270.3 | 440.6 → 437.9 |
+| jwt / fastly / default | 7,308.9 → 8,428.6 | 1,048.0 | 279.0 → 299.1 | 449.3 → 469.4 |
+| jwt / fastly / size | 8,155.3 → 8,936.4 | 953.3 | 271.1 → 293.0 | 440.4 → 464.5 |
+
+RSS is sampled every 10 ms from Linux procfs. Descendant RSS is the largest
+individual compiler/tool process; tree RSS sums simultaneous processes and
+can double-count shared pages. Short peaks may be missed. This postpass runs
+after the normal compiler, so it cannot remove that compiler's already-incurred
+peak. The measurements establish no compiler-memory win. Any integration must
+account for the extra optimization time rather than presenting smaller Wasm
+as free compilation savings.
+
+Fresh-process runtime samples cover the default repeated fixture on both
+targets. Each process measures its first module construction and first request,
+warms 50 requests, then measures 200 fresh-instance requests. Three alternating
+samples per variant are shown as median (minimum–maximum):
+
+| Target / variant | First module ms | First request ms | 200 warm requests ms |
+| --- | ---: | ---: | ---: |
+| node / baseline | 0.47 (0.40–0.50) | 11.16 (9.60–11.85) | 508.62 (504.89–525.33) |
+| node / merged | 0.41 (0.37–0.56) | 10.48 (9.14–11.60) | 486.68 (474.14–519.69) |
+| fastly / baseline | 0.60 (0.47–0.63) | 4.15 (4.00–4.45) | 197.60 (187.40–207.57) |
+| fastly / merged | 0.50 (0.39–0.62) | 3.61 (3.27–3.93) | 193.10 (174.20–194.52) |
+
+These are Node/V8 host-harness measurements, including the Fastly ABI fixture.
+They do not isolate JIT tiers or measure JIT memory, and do not qualify Viceroy
+or deployed execution. Three short samples are insufficient for a general
+runtime-performance claim.
+
+### Reproduction and evidence identity
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task compiler-bounded-merging --report .test-results/compiler-efficiency/bounded-merging/proof.json
+```
+
+The task is external/opt-in and does not join normal release-profile membership.
+It retains structured measurements, paired Wasm/WAT, plans and package artifacts
+under `wasm/.test-results/compiler-efficiency/bounded-merging/`. These are ignored
+local evidence. Do not package the optimized copies with unchanged production
+manifest hashes or guest-link receipts.
+
+The complete local run used clean code revision `b3b90e0880dfceac0a4c5af6f625c3f7e4581d80`
+on Node **v24.19.0**, AssemblyScript **0.28.18**, and direct Binaryen
+**129.0.0-nightly.20260428**. The proof script SHA-256 is
+`d9e0efd9420aebf34143d46bf5d86aaf3d45b9d12b0a194ae8a26dfbb126cb5a`; the lockfile SHA-256 is
+`4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8`. The report also records the frozen corpus and oracle
+harness hashes, tool executable hashes, input/output Wasm hashes and all raw
+samples. Later changes document and mirror the result and register its opt-in
+status in the suite contract; the measured proof script and production code
+remain unchanged.
+
+The terminal runner report is `attempt-04.json`. Earlier attempts remain
+separately recorded: attempt 01 omitted Fastly's existing bulk-memory feature
+flags; attempt 02 compared semantic runs in one process, so identifier lengths
+crossing a decimal digit changed legitimate charged bytes; attempt 03 omitted
+the Node JWT key-artifact sidecar. The unchanged baseline independently
+reproduced 2,598 → 2,600 charged bytes at request 10. Fresh-process parity fixes
+the experimental setup without normalizing or weakening budget assertions.
+Focused JWT setup checks then added the Fastly guest-link target policy and
+synchronized package facts before the complete replay.
+
+The next safe integration proof should first investigate the existing guest-link
+optimizer, where merging may fit without adding a second tool invocation, and
+measure JWT execution costs on the intended engine. Repeated dispatcher groups
+are the other candidate, with the 64-parameter calling cost explicitly measured.
+Keep the existing size mode as a comparator. Integration must regenerate final
+artifact audits/receipts and replay the required semantic and provider gates
+before any default changes. This experiment alone makes no global-default or
+deployment decision.
