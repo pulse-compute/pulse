@@ -84,7 +84,7 @@ async function main() {
   }`;
   const plan = buildCanonicalNativePlan(compileCanonicalSource(source, { fileName: 'shared-expressions.ts', strict: false }));
   let nodeHandles;
-  for (const nativeOptimization of [undefined, 'experimental-native-size']) {
+  for (const nativeOptimization of [undefined, 'experimental-native-size', 'experimental-native-bounded-size']) {
     const native = compileCanonicalNativePlan(plan, { cwd: root, emitWat: true, nativeOptimization });
     const declarations = [...native.source.matchAll(/^function __pulse_expr_\d+\(/gm)].length;
     assert.ok(declarations < native.manifest.expressionCount / 2, 'equivalent source bodies share declarations');

@@ -396,7 +396,7 @@
       "name": "compile",
       "summary": "Compile the canonical project into provider-neutral Pulse-owned WebAssembly.",
       "usage": [
-        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]"
+        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]"
       ],
       "positionals": [
         {
@@ -432,6 +432,17 @@
           ],
           "kind": "boolean",
           "description": "Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity."
+        },
+        {
+          "id": "experimental-native-bounded-size",
+          "key": "experimentalNativeBoundedSize",
+          "flags": [
+            {
+              "name": "--experimental-native-bounded-size"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag."
         },
         {
           "id": "experimental-native-size",
@@ -472,7 +483,8 @@
       "examples": [
         "pulse compile ./my-pulse-app",
         "pulse compile ./edge-app --out ./dist --json",
-        "pulse compile ./edge-app --experimental-native-size"
+        "pulse compile ./edge-app --experimental-native-size",
+        "pulse compile ./edge-app --experimental-native-bounded-size"
       ],
       "diagnostics": [
         "PULSE_BUILD_OUT_UNSAFE",
@@ -496,7 +508,7 @@
       "name": "build",
       "summary": "Compile the canonical project and realize the deployment provider selected by the active project profile.",
       "usage": [
-        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size] [--emit-wat]"
+        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]"
       ],
       "positionals": [
         {
@@ -532,6 +544,17 @@
           ],
           "kind": "boolean",
           "description": "Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity."
+        },
+        {
+          "id": "experimental-native-bounded-size",
+          "key": "experimentalNativeBoundedSize",
+          "flags": [
+            {
+              "name": "--experimental-native-bounded-size"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag."
         },
         {
           "id": "experimental-native-size",
@@ -572,7 +595,8 @@
       "examples": [
         "pulse build ./my-pulse-app",
         "pulse build ./edge-app --out ./dist --json",
-        "pulse build ./edge-app --experimental-native-size"
+        "pulse build ./edge-app --experimental-native-size",
+        "pulse build ./edge-app --experimental-native-bounded-size"
       ],
       "diagnostics": [
         "PULSE_BUILD_OUT_UNSAFE",

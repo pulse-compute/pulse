@@ -109,6 +109,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
         clean: request.clean,
         outDir: request.outDir,
         experimentalNativeSize: request.experimentalNativeSize,
+        experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
         emitWat: request.emitWat
       })
     };
@@ -120,6 +121,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
         clean: request.clean,
         outDir: request.outDir,
         experimentalNativeSize: request.experimentalNativeSize,
+        experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
         emitWat: request.emitWat
       })
     };

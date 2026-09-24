@@ -1017,3 +1017,25 @@ zero-cost or across-the-board cold-build claim follows. The bounded settings
 are heuristics, not hard limits on all function bodies or parameters. This
 integration does not establish Viceroy or deployed Fastly execution, JIT
 memory, host-heap retention, or publication approval.
+
+
+## Bounded Native size recipe (24 September 2026)
+
+The separate `--experimental-native-bounded-size` mode selects AssemblyScript
+O3/shrink2 without convergence. The existing `--experimental-native-size`
+mode retains convergence. Both are optional, and the default recipe remains
+unchanged. The bound is on optimizer work observed in the large consumer proof,
+not a compiler time limit. Portable and provider manifests identify the selected
+mode and settings; the guest-link stage retains its default optimization posture
+for the new mode. This preserves the existing size mode and its guest-link audit
+recipe.
+
+In a single large Fastly consumer diagnostic using identical generated source,
+O3/shrink2 without convergence finished AssemblyScript in 363.263 seconds and
+produced 3,738,372 Wasm bytes; the default O3/shrink0 compile took 518.203
+seconds and produced 4,182,729 bytes. The full convergent size mode exceeded
+the 600-second compiler gate. The 14-check, 86-request capture corpus passed
+with the diagnostic artifact. Gzip sizes were essentially flat, and Wasm
+memory remained 48,234,496 bytes. These single-run results justify an opt-in
+recipe and further cross-application measurement, not a default or release
+performance claim.

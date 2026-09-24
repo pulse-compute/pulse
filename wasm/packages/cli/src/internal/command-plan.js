@@ -12,8 +12,18 @@ const EXPERIMENTAL_NATIVE_SIZE_PLAN = Object.freeze({
   owner: 'native-compiler'
 });
 
+const EXPERIMENTAL_NATIVE_BOUNDED_SIZE_PLAN = Object.freeze({
+  mode: 'experimental-native-bounded-size',
+  experimental: true,
+  goal: 'size',
+  owner: 'native-compiler'
+});
+
 function createCommandPlan(requestValue, options = {}) {
   const request = normalizeCommandRequest(requestValue);
+  if (request.experimentalNativeSize === true && request.experimentalNativeBoundedSize === true) {
+    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'Select only one experimental Native size mode.', { flags: ['--experimental-native-size', '--experimental-native-bounded-size'] });
+  }
   const cwd = path.resolve(options.cwd || process.cwd());
   const version = String(options.version || require('../../package.json').version);
 
@@ -38,10 +48,10 @@ function createCommandPlan(requestValue, options = {}) {
   if (request.emitWat === true && request.command === 'build' && projectContext.target !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: projectContext.target });
   }
-  if (request.experimentalNativeSize === true && request.command === 'build' && projectContext.target !== 'native') {
+  if ((request.experimentalNativeSize === true || request.experimentalNativeBoundedSize === true) && request.command === 'build' && projectContext.target !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
-      'The --experimental-native-size flag is available only for Native compilation.',
+      'Experimental Native size flags are available only for Native compilation.',
       {
         target: projectContext.target,
         required: Object.freeze({ target: 'native' })
@@ -61,7 +71,9 @@ function createCommandPlan(requestValue, options = {}) {
           ? ((projectContext.target || project.target || 'native') === 'javascript' ? 'javascript-source-package' : 'native-provider')
           : undefined),
     ...(request.command === 'compile' || request.command === 'build' ? { textArtifacts: { wat: request.emitWat === true } } : {}),
-    optimization: request.experimentalNativeSize === true ? EXPERIMENTAL_NATIVE_SIZE_PLAN : undefined,
+    optimization: request.experimentalNativeBoundedSize === true
+      ? EXPERIMENTAL_NATIVE_BOUNDED_SIZE_PLAN
+      : request.experimentalNativeSize === true ? EXPERIMENTAL_NATIVE_SIZE_PLAN : undefined,
     backgroundWork: false,
     foregroundServer: request.command === 'dev'
   });

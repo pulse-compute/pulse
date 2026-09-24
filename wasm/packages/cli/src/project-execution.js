@@ -352,9 +352,11 @@ function compileNativeProjectInMemory(project, options = {}) {
     synchronizedPackages: releaseCatalog.packages.map(({ name, version }) => Object.freeze({ name, version })),
     timeoutMs: options.timeoutMs,
     emitWat: options.emitWat,
-    nativeOptimization: options.experimentalNativeSize === true
-      ? 'experimental-native-size'
-      : options.nativeOptimization
+    nativeOptimization: options.experimentalNativeBoundedSize === true
+      ? 'experimental-native-bounded-size'
+      : options.experimentalNativeSize === true
+        ? 'experimental-native-size'
+        : options.nativeOptimization
   });
   return Object.freeze({ compiled, plan, native });
 }
@@ -682,10 +684,10 @@ function buildProject(project, options = {}) {
   if (options.emitWat === true && (project.target || 'native') !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: project.target || 'native' });
   }
-  if (options.experimentalNativeSize === true && (project.target || 'native') !== 'native') {
+  if ((options.experimentalNativeSize === true || options.experimentalNativeBoundedSize === true) && (project.target || 'native') !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
-      'The --experimental-native-size flag is available only for Native compilation.',
+      'Experimental Native size flags are available only for Native compilation.',
       {
         target: project.target || 'native',
         required: Object.freeze({ target: 'native' })
