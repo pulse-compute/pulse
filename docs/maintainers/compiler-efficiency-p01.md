@@ -1235,8 +1235,8 @@ AssemblyScript 0.28.18 and Binaryen 129.0.0-nightly.20260428. Medians:
 
 | Target | Full build ms, before → after | Wasm B | Compiler worker peak MiB | AssemblyScript peak MiB |
 | --- | ---: | ---: | ---: | ---: |
-| Node Native | 2,993.02 → 3,009.44 | 58,215 → 53,832 | 195.23 → 203.18 | 309.65 → 315.77 |
-| Fastly Native | 4,874.03 → 4,751.68 | 107,330 → 102,623 | 207.05 → 210.20 | 327.84 → 319.13 |
+| Node Native | 3,248.99 → 3,089.48 | 58,215 → 53,832 | 195.11 → 202.57 | 316.37 → 310.24 |
+| Fastly Native | 4,739.99 → 4,753.28 | 107,330 → 102,623 | 208.04 → 210.95 | 314.91 → 327.48 |
 
 Both targets preserve 791 charged execution states and 102 local slots; 96
 locals now belong to the 32 private bodies. Retained chunks increase from 29
@@ -1278,24 +1278,29 @@ the compiler measurement. These maxima are not aggregate concurrent RSS.
 
 Reproduce with a dependency-restored pre-B02 checkout:
 `PULSE_B02_BASELINE_ROOT=/path/to/base node wasm/scripts/run-wasm-tests.cjs --task compiler-handler-cost-b02`.
-The accepted initial implementation report is
-`wasm/.test-results/compiler-efficiency/b02/cost-pinned.json` (one selected/completed
-task, passed). It predates the later bare-return and package source-mapping fixes;
-a repeat against those final sources remains pending after the execution
-environment went offline. Every sample records source hashes; the measured
-initial candidate compiler-source aggregate is
-`a846fb72d45d2aa91db7cadb0dd647ccf52fd0aaba376aa9f1dfb867dbd9d9d1`.
+The final implementation report is
+`wasm/.test-results/compiler-efficiency/b02/cost-corrected.json` (one
+selected/completed task, passed). It measures the bare-return and package
+source-mapping fixes after restoring both pinned worktrees. Every sample records
+source hashes; the final candidate compiler-source aggregate is
+`bb13db5cd27555434aced6deb5c2beb50f4c5daa24459de17529e01187ab5e01`
+and the baseline aggregate is
+`b46be54690070c37db8161f429d779aaf2f37f6a3fd6b5c8b4ce9d22d9de6f23`.
+The optimized Wasm hashes match the initial report for both targets; the
+measurement repeats the same structural/size outcome on the corrected sources.
 The initial three attempts failed while correcting the proof's Node fetch
 fixture fields and trace projection; they establish no performance evidence.
-An intermediate successful run is retained separately from the final pinned
-run after ownership-lookup cleanup. Runtime, source-mapping, mounted-route,
+An intermediate successful run and the initial pinned run before the later
+source-mapping fixes remain separate from this final-source repeat. Runtime,
+source-mapping, mounted-route,
 error, event, read-loop and budget checks remain the implementation gates.
 
 The final-source nine-example size measurement completed before the outage.
-Local validation includes 239 passing package tests, build and documentation
-checks, source-mapping regressions, and extensive completed portable tasks.
-Two later runners were interrupted after 70/71 and 23/57 tasks. Recovery completed
-nine additional tasks before the old hello size expectation stopped the run.
-The updated exact-size fixtures, remaining CLI/provider tasks, final focused
-regressions and repeat paired timing proof still require completion. The PR
-records these limits; these results are not an uninterrupted release replay.
+The restored PR-head checkout then passed a TypeScript build, 239 package tests,
+maintenance, documentation and documentation-release checks. An uninterrupted
+25/25 remaining CLI/provider/boundary run passed with the updated exact-size
+fixtures; all three final focused regressions passed. The paired timing proof
+passed on the corrected sources. Earlier interrupted runners and the failed old
+size assertion remain separate attempts; the successful recovery is not a
+single uninterrupted release replay. Repository portable CI and Node 22 CI
+also passed at the final measured PR head.
