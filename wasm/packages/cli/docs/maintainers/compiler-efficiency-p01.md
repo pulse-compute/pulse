@@ -577,3 +577,79 @@ attempts are retained in ignored local runner reports; the successful terminal
 report alone is acceptance evidence for the corrected corpus. G0 remains a
 **human** decision after S02 review. Neither S03 nor R01 is authorized by this
 evidence-only PR.
+
+## S03 addendum: leaf expression-helper sharing screen (24 September 2026)
+
+S02 was merged into `latest` at
+`44f13cde69b63b6849975cd8c9ea20ca08d67bc5`. S03 tested a bounded
+change in `wasm/packages/runtime-core-as/src/compiler/canonical-native.js`:
+reuse the first generated helper for byte-identical `literal`, `undefined`,
+`local` or `context-read` bodies. Each expression site still invoked its
+helper. Distinct local slots and request fields retained separate helpers;
+there was no value caching or change to call order. A focused Native fixture
+checked identical literals, distinct local bindings and request fields,
+and an executed response. It passed; the same task also checked deterministic
+generation for its existing canonical plans. The S02 P03
+semantic oracle task also passed on the candidate: ten Node Native cases, ten
+Fastly ABI cases and one JavaScript case. The 0/1/16/64-page P02 cases kept
+identical responses, charges, handle counts and observed Fastly memory pages.
+
+The unchanged baseline and candidate each had three **valid serial cold
+runs** with the same fixture and pinned AssemblyScript 0.28.18. P02 sampled
+each compiler descendant's RSS at 10 ms intervals; the table reports the
+largest observed descendant, not combined process-tree memory. Time is the
+isolated compile worker wall time. Two baseline checkout runs resolved
+workspace package links through the candidate checkout; those samples were
+discarded and the links corrected before the valid baseline reruns.
+
+| Target | Expression declarations | Generated source | Optimized Wasm | Compiler descendant RSS, three runs (MiB) | Compile wall, three runs (ms) |
+| --- | ---: | ---: | ---: | --- | --- |
+| Node baseline | 131 | 38,342 B | 44,296 B | 320, 323, 338 | 2,445, 2,804, 2,423 |
+| Node candidate | 97 | 36,116 B | 44,296 B | 328, 321, 322 | 2,458, 2,438, 2,484 |
+| Fastly baseline | 131 | 170,611 B | 115,568 B | 300, 303, 279 | 4,139, 4,198, 4,053 |
+| Fastly candidate | 97 | 168,385 B | 115,568 B | 291, 308, 320 | 4,038, 4,006, 4,224 |
+
+The declaration reduction was 34/131 (26%). The Node and Fastly optimized
+Wasm hashes were unchanged respectively:
+`28336dc67330626b2c20b22c945ddb0318c87d57b1f974259c962906f96b0657`
+and `91ad1af978c52fa1b34b7bce1c09a00770b988785bc9ea9456e730bc92bddf51`.
+The six separate 1/8/32-call P02 source-shape controls also had zero final
+Wasm byte delta. Median Node compile time moved from 2,445 to 2,458 ms;
+Fastly from 4,139 to 4,038 ms (about 2.4% less, within the observed spread).
+Sampled RSS had no consistent decrease across targets.
+
+A further 256-repetition leaf fixture used
+`let value=0;` followed by 256 `value=value+1;` statements and
+`return ctx.text(''+value)`. Three cold runs per checkout reduced generated
+declarations **1,285 to 518 (60%)** and source **135,661 to 85,624 B**;
+optimized Wasm remained **8,657 B** with identical SHA-256
+`61f0305ca323132fc678fd91a8bfc26b093a0b50d25f1fe94cfb4adc72dc8ed9`.
+Median isolated compile wall time moved **1,445 to 1,467 ms**, while median
+sampled compiler descendant RSS moved **277,856,256 to 275,410,944 B**
+(about 0.9% less). These three runs establish neither a speedup nor a
+reliable memory saving. The fixture tests source duplication pressure, not a
+representative application mix.
+
+The S03 proposed go criterion required at least 15% fewer declarations **and**
+at least 10% lower compiler peak RSS or median compile time beyond measured
+spread; optimized Wasm delta was to be reported separately. Declaration
+counts passed the first condition, but both the ordinary and duplicate-heavy
+fixtures missed the second, and the final Wasm files were unchanged. The
+candidate compiler and test edits were therefore removed. **No S03 production
+change is proposed.** This negative result closes the leaf-helper family
+screen without authorizing a broader family, public syntax change or R01 work.
+
+The selected local evidence commands were:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task canonical-native-wasm --report .test-results/compiler-efficiency/s03/canonical-native-wasm-attempt-01.json
+node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p02 --report .test-results/compiler-efficiency/s03/after-task-attempt-01.json
+node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p03 --report .test-results/compiler-efficiency/s03/p03-parity.json
+```
+
+The P02 task was repeated for the three valid baseline and three candidate
+samples. Its detailed reports and the one-off stress-driver samples are local
+ignored evidence; they are not checked-in benchmark infrastructure. The
+passing candidate test and P03 task prove selected semantics for the screened
+patch, not a new binary, RSS or request-memory benefit. Human review retains
+the G0 and future-work decisions.
