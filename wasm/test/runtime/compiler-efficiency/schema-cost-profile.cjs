@@ -69,7 +69,8 @@ function attribute(source, registry, target) {
     }
     const row = owner === undefined ? shared : entries[owner];
     assert.ok(row, `unknown schema owner for ${name}`);
-    family ||= /(?:schema_apply|pulse_schema_(?:encode|decode))$/.test(name) ? 'dispatch' : 'shared-runtime';
+    family ||= /^__pulse_fastly_schema_scalar_\d+$/.test(name) ? 'scalar-projector'
+      : /(?:schema_apply|pulse_schema_(?:encode|decode))$/.test(name) ? 'dispatch' : 'shared-runtime';
     row.bytes += bytes(text); row.declarations++;
     row.families[family] = (row.families[family] || 0) + bytes(text);
   }

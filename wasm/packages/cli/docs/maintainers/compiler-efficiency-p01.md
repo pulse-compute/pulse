@@ -1522,3 +1522,91 @@ modules solely in attribution workers. All 18 artifact hashes are unchanged;
 only the isolated-worker measurements are accepted above. The complete unit
 retry passed 34/34, CLI passed 21/21, and the final attribution task passed 1/1;
 TypeScript build, maintenance policy and documentation checks passed.
+
+## SC02 — share exact Fastly scalar projectors
+
+SC02 implements SC01's selected follow-up in the Fastly provider. A map local to
+one generation shares only the exact emitted bodies of string, boolean, i32,
+u32, f64 and string-enum validators. The comparison excludes only the function
+name and includes enum values/order, numeric bounds and error stages. Every
+original call remains. Object, array, nullable, scalar-record and generic JSON
+projectors retain their existing ownership and allocation behavior. Registry
+IDs, portable codecs, dispatch, policies and the serialize/codec/parse path are
+unchanged. This applies automatically with the existing optimization settings.
+
+The bounded pass is implementation plus paired evidence and regression controls;
+there is no new configuration or public compatibility surface. Planning labels:
+`engine:gpt-6-astra`, `effort:high`. Do not fold registry pruning, structural
+interning, materialization removal or retention tuning into this pass.
+
+### Paired production evidence
+
+The committed raw samples are in
+`wasm/test/runtime/compiler-efficiency/scalar-sharing-evidence.json`. Baseline is
+the merged SC01 tree `797e5d8d092525140875b18930d6e0133feb6189` (`30f57a5`);
+the restored baseline checkout has the identical pre-merge PR tree. Candidate
+production bytes are identified by their SHA-256 in the report. Measurements
+were taken with an uncommitted development diff; they are paired development
+evidence, not a clean release seal. The only production change is the Fastly
+source owner. Node v24.19.0, AssemblyScript 0.28.18, json-as 1.5.0 and Binaryen
+129.0.0-nightly.20260428 are fixed across both variants, as is the lockfile.
+
+Three isolated samples per variant and size ran serially with alternating order,
+using SC01's unchanged production compile and runtime workers. Attribution runs
+in separate workers and cannot inflate measured compiler RSS. The fixture keeps
+all repeated-shape schema IDs, including unreferenced IDs. Build time includes
+extraction and planning. No concurrent validation ran during measurement.
+
+| Schemas | Full generated AS, before → after (B) | Source reduction | Build median [range], before → after (ms) | Final Wasm / gzip (B), both |
+| --- | --- | --- | --- | --- |
+| 1 | 120,761 → 119,773 | 0.82% | 3,542 [3,478–3,573] → 3,485 [3,452–3,651] | 102,197 / 41,100 |
+| 32 | 504,230 → 446,192 | 11.51% | 3,725 [3,668–4,105] → 3,765 [3,722–3,841] | 105,691 / 42,024 |
+| 128 | 1,700,774 → 1,464,416 | 13.90% | 5,096 [5,037–5,159] → 5,007 [5,002–5,272] | 116,696 / 44,403 |
+
+At 128 schemas, 896 scalar declarations become three. The Fastly-only schema
+fragment falls from 918,542 to 682,184 bytes (25.73%); portable schema source is
+byte-identical. The source profiler charges shared validators to a shared
+`scalar-projector` bucket rather than the first schema's per-ID bucket.
+
+| Schemas | Worker peak RSS median [range], before → after (MiB) | AS peak RSS median [range], before → after (MiB) |
+| --- | --- | --- |
+| 1 | 111.91 [110.57–112.01] → 112.18 [111.59–118.10] | 307.27 [306.58–326.59] → 325.63 [314.54–342.38] |
+| 32 | 158.31 [157.51–159.78] → 157.91 [155.73–158.23] | 334.86 [321.00–349.42] → 324.22 [316.30–336.88] |
+| 128 | 297.02 [296.79–298.11] → 293.46 [292.96–294.87] | 451.09 [422.48–460.64] → 428.58 [412.92–439.93] |
+
+The reliable result is less generated/compiler input with unchanged optimized
+execution. The 128-schema build median is 1.76% lower and AS RSS median 4.99%
+lower, but their ranges overlap; neither is an established performance gain.
+The small-case AS RSS median increases 5.98%, also with overlapping ranges.
+Do not describe this as a uniform compile-memory improvement.
+
+All six final artifacts per size are byte-for-byte identical across variants,
+including code and data; imports and exports also match. Cold-request medians
+are 6.78 → 5.76, 5.91 → 6.19 and 7.15 → 6.30 ms. These single-request timings
+vary despite identical binaries and do not support a runtime-speed claim.
+Post-codec-probe memory capacity is unchanged: 2.5 MiB at 1/32 schemas and 5 MiB
+at 128. Capacity is neither live memory nor request-peak memory. This proof uses
+the injected Fastly ABI host, not Viceroy, deployed Fastly or a linked guest.
+
+### Controls and reproduction
+
+Every registered portable codec remains callable for encode and decode in the
+optimized guest, including all 127 compiler-unreferenced IDs at the largest
+size. Request/response projection, unknown-field dropping, optional absence,
+invalid values and invalid indices are checked. The focused Fastly control
+covers all scalar kinds, signed/unsigned boundaries, fractions, distinct and
+reordered enums, Unicode, nested arrays/objects, nullable and optional fields,
+error codes/stages, generation isolation and retained structural declarations.
+The existing schema-allocation control retains escaped-byte, independent
+collection and bounded-capacity checks. No new release task or shard is added;
+the focused control runs in `fastly-native-platform-capabilities`.
+
+```sh
+node wasm/test/runtime/compiler-efficiency/sc02-scalar-sharing.cjs /path/to/restored-sc01-checkout
+node wasm/scripts/run-wasm-tests.cjs --task schema-registry --task fastly-native-platform-capabilities
+```
+
+The initial focused-control attempt used an incorrect expected schema error
+constant (1008); the production contract is 1005. The control was corrected to
+1005, preserving stages 52/53/54, and its retry passed. Production error behavior
+was not changed.

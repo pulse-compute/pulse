@@ -33,6 +33,7 @@ assert.ok(profile.portable.entries[0].families['typed-class'] > 0);
 assert.ok(profile.fastly.entries.every(entry => entry.families['value-projection'] > 0));
 assert.ok(profile.portable.shared.families.dispatch > 0);
 assert.ok(profile.fastly.shared.families.dispatch > 0);
+assert.ok(profile.fastly.shared.families['scalar-projector'] > 0, 'shared validators are not charged to the first schema ID');
 for (const target of [profile.portable, profile.fastly]) assert.equal(target.bytes, target.shared.bytes + target.entries.reduce((sum, entry) => sum + entry.bytes, 0));
 assert.equal(shape(roots[0]).rootShapeSha256, shape({ ...roots[0], source }).rootShapeSha256, 'locations do not change structural grouping');
 assert.notEqual(shape(roots[0]).rootShapeSha256, shape(object([...roots[0].fields].reverse())).rootShapeSha256, 'field order remains semantic');

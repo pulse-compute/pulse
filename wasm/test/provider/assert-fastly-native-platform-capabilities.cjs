@@ -46,6 +46,7 @@ try {
   require('./assert-fastly-request-budget.cjs');
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
+  require('./assert-fastly-scalar-sharing.cjs').main();
   require('./assert-fastly-native-value-parity.cjs').main('platform');
   const zeroEffectPlan = planForExample('hello');
   assert.equal(zeroEffectPlan.effects.length, 0, 'hello plan must exercise the zero-effect provider path');

@@ -1018,6 +1018,7 @@ function generateSchemaRuntime(plan) {
   const registry = plan.schemas && plan.schemas.registry ? plan.schemas.registry : { schemas: [], maxBytes: FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES, contentTypePolicy: 'accept-json-or-missing' };
   const schemas = registry.schemas || [];
   const nodeLines = [];
+  const scalarProjectors = new Map();
   let nodeIndex = 0;
 
   function emitNode(schemaIndex, node) {
@@ -1092,6 +1093,19 @@ function generateSchemaRuntime(plan) {
       throw new TypeError(`Unsupported Fastly native schema node ${String(node.kind)}.`);
     }
     body.push('}', '');
+    // Only scalar validators preserve the original handle without allocating or
+    // calling child projectors. Compare the exact emitted body, including enum
+    // values/order and error stages; never intern structural projections.
+    if (['string', 'boolean', 'i32', 'u32', 'f64', 'string-enum'].includes(node.kind)) {
+      const key = body.slice(1).join('\n');
+      const existing = scalarProjectors.get(key);
+      if (existing) return existing;
+      const sharedName = `__pulse_fastly_schema_scalar_${scalarProjectors.size}`;
+      scalarProjectors.set(key, sharedName);
+      body[0] = `function ${sharedName}(valueHandle: i32, checkDuplicates: bool): i32 {`;
+      nodeLines.push(...body);
+      return sharedName;
+    }
     nodeLines.push(...body);
     return functionName;
   }
