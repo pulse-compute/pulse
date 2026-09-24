@@ -577,3 +577,214 @@ attempts are retained in ignored local runner reports; the successful terminal
 report alone is acceptance evidence for the corrected corpus. G0 remains a
 **human** decision after S02 review. Neither S03 nor R01 is authorized by this
 evidence-only PR.
+
+## S03 addendum: source sharing and the optimized-Wasm boundary (24 September 2026)
+
+S02 was merged into `latest` at
+`44f13cde69b63b6849975cd8c9ea20ca08d67bc5`. S03 tested a bounded
+change in `wasm/packages/runtime-core-as/src/compiler/canonical-native.js`:
+reuse the first generated helper for byte-identical `literal`, `undefined`,
+`local` or `context-read` bodies. Each expression site still invoked its
+helper. Distinct local slots and request fields retained separate helpers;
+there was no value caching or change to call order. A focused Native fixture
+checked identical literals, distinct local bindings and request fields,
+and an executed response. It passed; the same task also checked deterministic
+generation for its existing canonical plans. The S02 P03
+semantic oracle task also passed on the candidate: ten Node Native cases, ten
+Fastly ABI cases and one JavaScript case. The 0/1/16/64-page P02 cases kept
+identical responses, charges, handle counts and observed Fastly memory pages.
+
+The unchanged baseline and candidate each had three **valid serial cold
+runs** with the same fixture and pinned AssemblyScript 0.28.18. P02 sampled
+each compiler descendant's RSS at 10 ms intervals; the table reports the
+largest observed descendant, not combined process-tree memory. Time is the
+isolated compile worker wall time. Two baseline checkout runs resolved
+workspace package links through the candidate checkout; those samples were
+discarded and the links corrected before the valid baseline reruns.
+
+| Target | Expression declarations | Generated source | Optimized Wasm | Compiler descendant RSS, three runs (MiB) | Compile wall, three runs (ms) |
+| --- | ---: | ---: | ---: | --- | --- |
+| Node baseline | 131 | 38,342 B | 44,296 B | 320, 323, 338 | 2,445, 2,804, 2,423 |
+| Node candidate | 97 | 36,116 B | 44,296 B | 328, 321, 322 | 2,458, 2,438, 2,484 |
+| Fastly baseline | 131 | 170,611 B | 115,568 B | 300, 303, 279 | 4,139, 4,198, 4,053 |
+| Fastly candidate | 97 | 168,385 B | 115,568 B | 291, 308, 320 | 4,038, 4,006, 4,224 |
+
+The declaration reduction was 34/131 (26%). The Node and Fastly optimized
+Wasm hashes were unchanged respectively:
+`28336dc67330626b2c20b22c945ddb0318c87d57b1f974259c962906f96b0657`
+and `91ad1af978c52fa1b34b7bce1c09a00770b988785bc9ea9456e730bc92bddf51`.
+The six separate 1/8/32-call P02 source-shape controls also had zero final
+Wasm byte delta. Median Node compile time moved from 2,445 to 2,458 ms;
+Fastly from 4,139 to 4,038 ms (about 2.4% less, within the observed spread).
+Sampled RSS had no consistent decrease across targets.
+
+A further 256-repetition leaf fixture used
+`let value=0;` followed by 256 `value=value+1;` statements and
+`return ctx.text(''+value)`. Three cold runs per checkout reduced generated
+declarations **1,285 to 518 (60%)** and source **135,661 to 85,624 B**;
+optimized Wasm remained **8,657 B** with identical SHA-256
+`61f0305ca323132fc678fd91a8bfc26b093a0b50d25f1fe94cfb4adc72dc8ed9`.
+Median isolated compile wall time moved **1,445 to 1,467 ms**, while median
+sampled compiler descendant RSS moved **277,856,256 to 275,410,944 B**
+(about 0.9% less). These three runs establish neither a speedup nor a
+reliable memory saving. The fixture tests source duplication pressure, not a
+representative application mix.
+
+The 256-repetition fixture also received a separate **diagnostic** compile
+with the pinned AssemblyScript 0.28.18 and the production runtime/no-assert
+settings, but without `--optimize`. That intermediate Wasm shrank from
+**20,074 to 13,690 B** (32%). Its named expression functions fell from
+**1,029 to 518**. Production compilation then generated **identical**
+188,989-byte WAT on both sides, as well as the identical optimized Wasm
+above. The final WAT contained **14 functions**, none named as expression
+helpers, with **no function table or indirect calls**. This is direct
+structural evidence that the source-level aliases do not survive as shared
+functions in the optimized module. The optimizer removes or folds these
+helper boundaries before the final binary; the artifact alone does not
+distinguish every inlining decision from other simplifications. A shared
+runtime helper could use ordinary direct Wasm calls, without function
+pointers or a table, if a sufficiently substantial body survives
+optimization. A separate `@noinline` probe on these small leaf and binary
+helpers also yielded the same optimized Wasm hash. The follow-up below found
+that AssemblyScript ignored this unsupported annotation: the probe had never
+applied Binaryen's actual retention flags.
+
+The S03 proposed go criterion required at least 15% fewer declarations **and**
+at least 10% lower compiler peak RSS or median compile time beyond measured
+spread; optimized Wasm delta was to be reported separately. Declaration and
+unoptimized-intermediate reductions are real. This **specific leaf-alias
+implementation** missed the compiler gate and never changed the final
+module. That initial candidate compiler and test patch was removed. The
+retained-helper implementation below supersedes this initial disposition and
+supplies the missing optimized-Wasm proof. Public syntax changes and R01 work
+remain outside this pass.
+
+The selected local evidence commands were:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task canonical-native-wasm --report .test-results/compiler-efficiency/s03/canonical-native-wasm-attempt-01.json
+node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p02 --report .test-results/compiler-efficiency/s03/after-task-attempt-01.json
+node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p03 --report .test-results/compiler-efficiency/s03/p03-parity.json
+```
+
+The P02 task was repeated for the three valid baseline and three candidate
+samples. Its detailed reports, the one-off stress-driver samples and the
+unoptimized/WAT diagnostic artifacts are local ignored evidence; they are not
+checked-in benchmark infrastructure. The
+passing candidate test and P03 task prove selected semantics for the screened
+patch, not a new binary, RSS or request-memory benefit. Human review retains
+the G0 and future-work decisions.
+
+## S03 implementation: retain shared bodies before Binaryen optimization
+
+Investigation of PR #73 found a missing toolchain connection. The pinned
+AssemblyScript **0.28.18** does not implement `@noinline`. Its
+[annotation contract](https://www.assemblyscript.org/concepts.html#code-annotations)
+allows custom decorators but ignores them unless a transform interprets them.
+That includes the annotations already emitted for Pulse dispatcher partitions.
+The pinned Binaryen **129.0.0-nightly.20260428** does support function retention:
+its [`no-inline` pass](https://github.com/WebAssembly/binaryen/blob/version_129/src/passes/NoInline.cpp)
+sets full/partial inlining flags for matching functions. It must run before
+optimization. The installed asc source confirms that `afterCompile` precedes
+optimization; [`--runPasses`](https://www.assemblyscript.org/compiler.html#binaryen)
+runs afterward and is too late to protect functions already inlined.
+
+The old generator's alias `Map` was a JavaScript compile-time data structure;
+it never emitted a Wasm function table. A live dynamic-selector control using
+an AssemblyScript function array retains its table and `call_indirect` under
+default optimization, and a memory mapping retains both selected values.
+Sharing these Pulse helpers uses direct calls and does not require pointers.
+
+The implementation now canonicalizes byte-identical emitted expression bodies
+after child aliases and local slots have been resolved. It marks repeated
+multi-statement bodies for retention and keeps small leaves eligible for
+inlining. Build support supplies an asc transform that applies Binaryen's
+real flags to annotated generated helpers and dispatcher partitions before
+optimization, using asc's own Binaryen instance. The same path serves Node
+Native and Fastly Native, including the existing size profile. There is no
+new dependency, public setting, value cache or function-value syntax. Each
+call still performs its original operations and allocations.
+
+Blanket retention was rejected: retaining all expression helpers increased
+the P02 Node module by 463 B and Fastly by 590 B. Selected shared-body
+retention produced these results against the S02 baseline:
+
+| Fixture | Declarations, before → after | Generated source, before → after | Optimized Wasm, before → after |
+| --- | ---: | ---: | ---: |
+| 256 repeated updates, Node | 1,285 → 8 | 135,661 → 33,752 B | 8,657 → 4,336 B |
+| 2,000 repeated updates, Node | 10,005 → 8 | 1,027,801 → 216,085 B | 62,089 → 28,122 B |
+| P02 page workload, Node | 131 → 90 | 38,342 → 35,303 B | 44,296 → 44,277 B |
+| P02 page workload, Fastly | 131 → 90 | 170,611 → 167,572 B | 115,568 → 115,553 B |
+
+The larger fixture is exactly `let value=0;`, 2,000 repetitions of
+`value=value+1;`, and `return ctx.text(''+value)` in the canonical async handler,
+compiled as `s03-leaf-stress.ts` with `strict:false` and `requireAsync:true`.
+Three serial cold runs per version recorded:
+
+| Metric | Baseline samples | Retained-sharing samples | Median change |
+| --- | --- | --- | ---: |
+| Isolated compile wall (ms) | 2,682 / 2,621 / 2,635 | 1,930 / 1,955 / 1,896 | −26.8% |
+| Largest sampled compiler descendant RSS (B) | 332,566,528 / 347,873,280 / 347,971,584 | 265,428,992 / 287,612,928 / 288,067,584 | −17.3% |
+
+The ranges do not overlap. This clears the original declaration-plus-compiler
+threshold on the repeated-body stress fixture. RSS is sampled at 10 ms and is
+the largest individual compiler descendant, not total process-tree memory.
+The worker RSS stayed near 191–193 MB. Final Wasm fell **54.7%**; its baseline
+and candidate SHA-256 values are respectively
+`cd2fddfbc36f4551f62c636d2251a76713ccf9e8b2a674a0dde862f2ad675e79`
+and `d89cfae128cb3bb16f95f2719bd6cb66a0fb4145154826fc0df167e17b2769c7`.
+These measurements used a detached prototype with equivalent generator and
+retention behavior; the final implementation restricts annotation recognition
+to Pulse's two generated source entries and reproduces the same final Wasm hash.
+This is a synthetic duplication win;
+the P02 workload shows only small binary savings. It is not a general
+application-memory or JIT-memory claim.
+
+A runtime screen warmed each 2,000-update module for 100 requests, then ran
+three alternating batches of 1,000 fresh requests. Baseline times were
+2,483 / 2,343 / 2,223 ms; retained sharing was 2,222 / 2,271 / 2,214 ms.
+The ranges overlap, so this does not establish a runtime speedup. Both returned
+`2000` with exactly 4,005 value handles per request. P02's 0/1/16/64-page cases
+preserved responses, budget charges, handles and observed Fastly memory pages.
+P03 retained exact semantic-oracle parity across ten Node Native cases, ten
+Fastly ABI cases and one JavaScript case.
+
+Configuration is also material. Default asc optimization is O3/shrink0.
+On the 256-update fixture O2/shrink0 and shrink1 did not preserve meaningful
+sharing; shrink2 did. The existing `--experimental-native-size` setting
+(O3/shrink2/converge) reduced the baseline fixture to 3,868 B without the new
+generator. On P02 it produced 35,422 B Node / 90,799 B Fastly, about 20% / 21%
+below default. Single-sample compile times increased and RSS did not improve
+consistently, so changing the global default is outside this proof.
+
+The `canonical-native-wasm` task now includes a focused regression that proves
+the annotation is ineffective without the transform and effective with it;
+live dynamic tables and mappings remain executable; shared bodies retain
+multiple direct call sites; and distinct bindings, repeated mutations and
+fresh object identity survive on both Native targets in both optimization
+profiles. Existing semantic and portable gates remain required:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task canonical-native-wasm --task compiler-efficiency-p03 --report .test-results/compiler-efficiency/s03/retained-focused.json
+node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --report .test-results/compiler-efficiency/s03/retained-portable.json
+```
+
+Detailed measurements and diagnostic Wasm/WAT remain local ignored evidence
+under `wasm/.test-results/compiler-efficiency/s03/toolchain/`; validation
+completion and tested source identity belong in the PR record. Human review
+retains the G0 and merge decisions. This pass claims neither Viceroy/deployed
+qualification nor a change to public authoring or runtime-budget semantics.
+Guest-linked modules also pass through a separate post-link whole-module
+optimizer. The size measurements here use handlers without guest units;
+stable helper boundaries through that later stage require their own proof.
+
+Refreshing the executable documentation's exact byte baselines found modest
+default-build savings outside the stress fixture: hello JSON 2,212 → 2,140 B,
+fetch composition 5,117 → 5,039 B, Fastly capabilities application 5,454 →
+5,397 B / provider 46,934 → 46,922 B, and Router lowering 9,407 → 9,232 B.
+The size-optimized Router grew 8,619 → 8,625 B; the other measured optimized
+examples were unchanged. Schema, opaque proxy, events, MCP proxy and the
+guest-linked JWT example retained their default sizes. The first CLI replay
+stopped at the stale hello-JSON size assertion; the exact assertions and
+documentation were refreshed from independent default/size builds for all
+nine Native examples before replaying the complete CLI profile.

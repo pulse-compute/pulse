@@ -20,7 +20,7 @@ const examples = Object.freeze([
   Object.freeze({
     id: '01-hello-json',
     provider: 'node',
-    guestWasmBytes: 2212,
+    guestWasmBytes: 2140,
     optimizedGuestWasmBytes: 2058,
     capabilities: ['response.json', 'response.text']
   }),
@@ -35,7 +35,7 @@ const examples = Object.freeze([
   Object.freeze({
     id: '03-fetch-composition',
     provider: 'node',
-    guestWasmBytes: 5117,
+    guestWasmBytes: 5039,
     optimizedGuestWasmBytes: 4349,
     capabilities: ['fetch', 'response.json'],
     grouped: true
@@ -43,9 +43,9 @@ const examples = Object.freeze([
   Object.freeze({
     id: '05-fastly-capabilities',
     provider: 'fastly',
-    guestWasmBytes: 5454,
+    guestWasmBytes: 5397,
     optimizedGuestWasmBytes: 4888,
-    providerWasmBytes: 46934,
+    providerWasmBytes: 46922,
     optimizedProviderWasmBytes: 38949,
     capabilities: [
       'config.get',
@@ -70,8 +70,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '09-router-lowering',
     provider: 'node',
-    guestWasmBytes: 9407,
-    optimizedGuestWasmBytes: 8619,
+    guestWasmBytes: 9232,
+    optimizedGuestWasmBytes: 8625,
     capabilities: ['fetch', 'response.json', 'response.text'],
     routes: 7
   }),

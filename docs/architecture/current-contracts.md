@@ -131,6 +131,17 @@ on reuse. Required guest-link disassembly audits remain mandatory. This changes
 artifact policy, not handler admission, the effect ABI, optimizer posture, or
 provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
 
+## Native internal helper sharing
+
+Native generation may share byte-identical internal expression-helper bodies
+after resolving child helpers and local slots. Every original call still
+executes, including allocations, mutations, short-circuiting and budget charges.
+Repeated multi-statement helpers and dispatcher partitions use compiler-owned
+retention annotations. The build-support transform maps these to Binaryen's
+no-inline flags before optimization; AssemblyScript alone ignores `@noinline`.
+Small leaves remain eligible for inlining. This is internal direct-call sharing
+with no public function-value syntax, effect or ABI change.
+
 ## Bounded pure control flow
 
 Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by

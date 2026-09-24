@@ -334,6 +334,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const continuationIndex = new Map((plan.continuations || []).map((continuation) => [String(continuation.id), Number(continuation.stateIndex)]));
   const expressions = collectExpressions(plan);
   const expressionIndex = new Map(expressions.map((expression, index) => [expression, index]));
+  const expressionAlias = new Map();
+  const retainedExpressions = new Set();
   const stateEnabled = expressions.some((expression) => expression && expression.kind === 'intrinsic' && ['state.get', 'state.set'].includes(expression.name));
   const binaryIndex = new Map(runtimeContract.CANONICAL_NATIVE_BINARY_OPERATORS.map((operator, index) => [operator, index]));
   const unaryIndex = new Map(runtimeContract.CANONICAL_NATIVE_UNARY_OPERATORS.map((operator, index) => [operator, index]));
@@ -376,7 +378,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   function exprName(expression) {
     const index = expressionIndex.get(expression);
     if (!Number.isInteger(index)) fail('Expression was not registered for native AssemblyScript generation.', { expression });
-    return `__pulse_expr_${index}`;
+    return `__pulse_expr_${expressionAlias.get(index) ?? index}`;
   }
 
   function localName(localId) {
@@ -606,7 +608,30 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       default:
         fail(`Unsupported native expression kind ${String(expression.kind)}.`, { kind: expression.kind });
     }
-    return `function ${exprName(expression)}(): i32 {\n${lines.join('\n')}\n}`;
+    const retained = retainedExpressions.has(expressionIndex.get(expression)) ? '@noinline\n' : '';
+    return `${retained}function ${exprName(expression)}(): i32 {\n${lines.join('\n')}\n}`;
+  }
+
+  // Canonicalize identical emitted bodies after their child references. Resolved
+  // local slots and host operations remain in the key; sharing a declaration
+  // preserves each call, allocation, mutation, and evaluation order.
+  const expressionBodies = new Map();
+  const sharedBodies = new Map();
+  for (let index = expressions.length - 1; index >= 0; index--) {
+    const declaration = renderExpression(expressions[index]);
+    const body = declaration.slice(declaration.indexOf('{\n') + 2);
+    const representative = expressionBodies.get(body);
+    if (representative === undefined) expressionBodies.set(body, index);
+    else {
+      expressionAlias.set(index, representative);
+      sharedBodies.set(representative, body);
+    }
+  }
+  for (const [index, body] of sharedBodies) {
+    // Keep repeated multi-statement bodies as actual shared Wasm functions.
+    // Small leaves remain eligible for inlining. Pulse's asc transform gives
+    // this annotation meaning before Binaryen's optimizer runs.
+    if (body.split('\n').length > 2) retainedExpressions.add(index);
   }
 
   const blocks = [];
@@ -828,7 +853,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     if (chunk.length) chunks.push(chunk);
   }
   const invalidProgramCounter = `__pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_PROGRAM_COUNTER}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`;
-  // @noinline prevents optimization from rebuilding the monolithic function.
+  // Pulse's @noinline transform prevents rebuilding the monolithic function.
   const dispatcherFunctions = chunks.flatMap((chunk, index) => [
     '@noinline',
     `function __pulse_chunk_${index}(): i32 {`,
@@ -949,7 +974,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     ] : []),
     ...nativeSchemaCodecs.declarations,
     ...(nativeCrypto.active ? [nativeCrypto.source] : []),
-    ...expressions.map(renderExpression),
+    ...expressions.filter((_, index) => !expressionAlias.has(index)).map(renderExpression),
     '',
     'function __pulse_ready_for_resume(): bool {',
     '  switch (__pulse_pc) {',

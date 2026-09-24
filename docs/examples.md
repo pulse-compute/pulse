@@ -29,16 +29,16 @@ sizes; each example page includes exact byte counts.
 
 | Example | Default Native Wasm | Size-optimized Native Wasm | Reduction | Deployable Fastly module |
 |---|---:|---:|---:|---:|
-| `01-hello-json` | 2.2 KiB | 2.0 KiB | 7.0% | — |
-| `02-request-schema` | 38.9 KiB | 30.8 KiB | 20.6% | — |
-| `03-fetch-composition` | 5.0 KiB | 4.2 KiB | 15.0% | — |
-| `05-fastly-capabilities` | 5.3 KiB | 4.8 KiB | 10.4% | 40.4 → 33.7 KiB |
-| `07-opaque-proxy` | 2.1 KiB | 2.1 KiB | 4.5% | 28.9 → 25.3 KiB |
-| `09-router-lowering` | 9.2 KiB | 8.4 KiB | 8.4% | — |
+| `01-hello-json` | 2.1 KiB | 2.0 KiB | 3.8% | — |
+| `02-request-schema` | 40.0 KiB | 31.8 KiB | 20.4% | — |
+| `03-fetch-composition` | 4.9 KiB | 4.2 KiB | 13.7% | — |
+| `05-fastly-capabilities` | 5.3 KiB | 4.8 KiB | 9.4% | 45.8 → 38.0 KiB |
+| `07-opaque-proxy` | 2.1 KiB | 2.1 KiB | 4.5% | 33.9 → 29.2 KiB |
+| `09-router-lowering` | 9.0 KiB | 8.4 KiB | 6.6% | — |
 | `10-entities-tools` | — | — | Not applicable | JavaScript-first candidate |
-| `11-events` | 38.4 KiB | 30.6 KiB | 20.4% | — |
+| `11-events` | 39.6 KiB | 31.6 KiB | 20.2% | — |
 | `12-mcp-proxy` | 2.5 KiB | 2.4 KiB | 6.6% | — |
-| `13-jwt-es256` | 23.1 KiB | 22.9 KiB | 0.8% | — |
+| `13-jwt-es256` | 38.4 KiB | 38.2 KiB | 0.5% | — |
 
 Run the normal workflow from any example directory:
 
