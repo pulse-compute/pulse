@@ -1403,3 +1403,122 @@ re-stackified locals; the initial call scanner expected folded rather than flat
 instructions; the named inspector needed escaped identifiers and unnamed
 function ordinals. These were proof-harness failures, not product failures.
 The final run retains exact binary-section equality and all semantic assertions.
+
+
+## SC01: schema cost and registry scope (24 September 2026)
+
+SC01 is a bounded evidence pass after merged B03 (`896289c`). It attributes
+schema source by registry entry and generator stage, measures final artifacts,
+and checks whether an ID absent from handler references remains callable.
+Planning route: `engine:gpt-6-astra`, `effort:high`; one evidence PR with human
+review. Production schema generators, IDs, validation and defaults are unchanged.
+
+The reusable diagnostic lives in
+`wasm/test/runtime/compiler-efficiency/schema-cost-profile.cjs`. It separately
+measures registry normalization/identity, JavaScript declaration emission,
+portable schema emission, and Fastly schema emission. Generated source bytes
+are partitioned into per-ID families and shared runtime/dispatch. Every byte
+must be accounted for once. Stage timings exclude module loading, attribution
+and verification and are diagnostic timings, not additive end-to-end costs.
+Per-ID bytes are **source attribution**, not per-ID Wasm size or memory savings.
+
+The diagnostic loads the unchanged private generator bodies in separate Node
+modules and exposes only the selected stage to the proof. It verifies those
+fragments byte-for-byte against complete production generation. It adds no
+production hook, supported API or optimizer mode. The normal `schema-registry`
+unit task checks typed, optional, scalar-record, nested/open JSON, response-only
+roots, Unicode byte accounting, field order and presence. Root-shape grouping
+excludes source locations; the separate validation-shape identity includes JSON
+limits and the registry byte bound. Neither grouping permits automatic removal.
+
+### Registry scaling proof
+
+`compiler-schema-cost-sc01` uses one fixed request/response handler and 1, 8 or
+32 registered IDs of the same nested optional shape. Only `proof.Record0` is
+referenced by the handler. All other IDs still have to encode and decode through
+the optimized guest exports. The proof checks every ID on Node Native and the
+injected Fastly ABI host, with independent expectations for field projection,
+optional absence, invalid values and invalid indices.
+
+Three serial samples per target/count alternate target order: six cells and
+18 production builds. Each compile has a fresh worker and a separate
+AssemblyScript peak-RSS collector. Runtime probes use a different fresh worker.
+No inspection or execution is included in compiler-worker RSS. Normal default
+optimization, pinned json-as 1.5.0 strict/NAIVE policy and incremental schema
+runtime are used throughout. There is no candidate/baseline mode comparison.
+
+| Target | IDs | Generated AS bytes | Wasm bytes | gzip-9 bytes | Median build ms | Worker peak MiB | AS peak MiB |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Node | 1 | 13,189 | 61,340 | 28,151 | 2,431.19 | 107.55 | 321.11 |
+| Node | 8 | 49,876 | 61,505 | 28,182 | 2,502.00 | 117.38 | 326.07 |
+| Node | 32 | 176,298 | 61,961 | 28,264 | 2,695.74 | 151.83 | 322.37 |
+| Fastly | 1 | 120,761 | 102,197 | 41,100 | 3,474.21 | 111.00 | 324.89 |
+| Fastly | 8 | 206,609 | 102,974 | 41,330 | 3,648.92 | 119.44 | 315.70 |
+| Fastly | 32 | 504,230 | 105,691 | 42,024 | 3,820.69 | 158.12 | 340.59 |
+
+RSS columns are medians of per-process high-water marks, not aggregate process
+memory or guest live heap. All sample values, including spread and cold request
+measurements, are committed in
+`wasm/test/runtime/compiler-efficiency/schema-cost-evidence.json`. The largest
+final body stays at 5,050 bytes on Node and 4,010 on Fastly across these counts;
+these are whole-module maxima, not attributed schema functions.
+
+| IDs | Portable schema source bytes | Additional Fastly schema source bytes | Registry identity ms | Portable emission ms | Fastly emission ms |
+|---|---:|---:|---:|---:|---:|
+| 1 | 5,968 | 8,370 | 0.418 | 0.667 | 0.439 |
+| 8 | 42,655 | 57,531 | 2.274 | 1.039 | 0.754 |
+| 32 | 169,077 | 228,730 | 6.035 | 2.046 | 1.342 |
+
+Times in this second table are medians of three separate attribution workers.
+The Fastly column is its additional projection/dispatch stage, not the complete
+Fastly program. Shared runtime and dispatch remain explicit buckets.
+
+At 32 IDs, all 31 compiler-unreferenced entries remain callable through both
+encode and decode exports on both targets. The small Wasm delta therefore does
+not show missing IDs: repeated shapes compact effectively downstream while
+registry dispatch remains. Source sharing may still reduce compiler input and
+worker pressure; this proof does not measure such a candidate. It also does not
+show that distinct schema shapes have similarly small final costs.
+
+### Selected follow-up and limits
+
+The next bounded schema candidate is **Fastly scalar projection helper sharing**
+in `packages/provider-fastly/src/build/native-platform-capabilities.js`:
+keep the registry, per-ID dispatch, field order, validation, error behavior and
+allocation observations intact, and share only demonstrably identical scalar
+projector bodies. Compare three isolated paired builds and final Wasm; a source
+reduction is not itself a binary or runtime-memory win. Do not bundle registry
+pruning, optionality changes or general structural-object interning into it.
+
+The provider's schema path also projects handles, serializes, invokes the
+portable text codec and parses again. That is a separate materialization/ownership
+proof before a runtime-memory change; SC01 does not claim its copies are removable.
+No schemas or response cases are retired by compiler-reference absence.
+
+Reproduce:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task compiler-schema-cost-sc01
+node wasm/test/runtime/compiler-efficiency/sc01-schema-cost.cjs --audit '{"project":"/path/to/project","profile":"fastly"}' > schema-cost.json
+```
+
+The audit command uses the normal project configuration and compiler for schema
+references, policies and profile selection. Use one dependency-restored source
+workspace; conflicting installed/source package catalogs fail explicitly. It
+reports all registered IDs and response-case roots and does not prune or modify
+application code. Full application compilation, deployed Fastly cold starts,
+linked guests and runtime live-set attribution remain separate evidence.
+
+The accepted benchmark ran on clean local proof commit
+`cbf4fc7dbdc426b578dde52f8b3108df6b9910fd` against production base `896289c`.
+It passed all six cells / 18 samples in 70.34 seconds. Initial development probes
+corrected an unsupported fixture spelling and profiler input/attribution setup;
+no production defect was patched. The first unit replay caught an unmapped new
+release task; the cheap attribution assertions now run inside the existing
+schema-registry task, keeping release shard ownership unchanged. The failed
+attempt is retained alongside the complete unit retry. The first successful
+benchmark replay is superseded by the final replay, which loads diagnostic-only
+modules solely in attribution workers. All 18 artifact hashes are unchanged;
+only the isolated-worker measurements are accepted above. The complete unit
+retry passed 34/34, CLI passed 21/21, and the final attribution task passed 1/1;
+TypeScript build, maintenance policy and documentation checks passed.

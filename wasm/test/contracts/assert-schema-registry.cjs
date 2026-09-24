@@ -441,3 +441,5 @@ assert.equal(configuredDeclaration.options.json.maxDepth, 64);
 assert.equal(Object.isFrozen(configuredDeclaration.options.json), true);
 
 console.log('ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts');
+
+require('../runtime/compiler-efficiency/assert-schema-cost-profile.cjs');
