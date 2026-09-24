@@ -1211,6 +1211,14 @@ generator versions change; host ABI v2 does not. Read-loop memory detection,
 Fastly value-failure guards and fetched-body import analysis inspect the new
 body table as well as the dispatcher.
 
+Broader package controls exposed two source-mapping assumptions: generated-call
+lookup misses could reuse unrelated authored offsets, and imported package
+effects had diagnostic locations but lacked generated positions for Router
+ownership. Generated lookups now remain authoritative on a miss. Imported
+package effects retain both positions, preserving original diagnostics while
+assigning the correct body owner. Collision and multi-file routing controls
+cover this separation. A bare-return detector regression was also corrected.
+
 The B01 controls now report the selected ownership explicitly:
 
 | Total Router entries | Private terminal bodies | Locals / explicitly body-owned | Effects / continuations / states |
@@ -1237,6 +1245,28 @@ and 908,487 to 916,561 bytes on Fastly. Wasm decreases by 7.5% and 4.4%
 respectively. This is structural evidence with a size benefit on this fixture,
 not a general build-time or memory improvement claim.
 
+The canonical examples also receive exact-size refreshes from both default and
+experimental-size builds. Eight small application guests grow by 104–530 bytes;
+the JWT linked artifact is unchanged. Their bodies are now retained separately,
+so the structural boundary has a fixed cost on small programs. This is a real
+tradeoff, not a universal size reduction. Default application guest bytes:
+
+| Example | Before | B02 |
+| --- | ---: | ---: |
+| 01-hello-json | 2,140 | 2,353 |
+| 02-request-schema | 40,981 | 41,086 |
+| 03-fetch-composition | 5,039 | 5,272 |
+| 05-fastly-capabilities | 5,397 | 5,695 |
+| 07-opaque-proxy | 2,200 | 2,304 |
+| 09-router-lowering | 9,232 | 9,762 |
+| 11-events | 40,546 | 40,667 |
+| 12-mcp-proxy | 2,589 | 2,694 |
+| 13-jwt-es256 | 36,100 | 36,100 |
+
+The Fastly capability and opaque provider artifacts grow by 280 and 106 bytes
+respectively. Exact size assertions remain enabled against these measured
+values; normal executable example workflows must still pass.
+
 Every pair checks exact response, effect order, site/entry identity and state
 count. Node also checks continuation lifecycle, 425 allocated handles, and
 failure before the second dispatch at `maxEffects: 1`. Fastly uses injected
@@ -1248,12 +1278,24 @@ the compiler measurement. These maxima are not aggregate concurrent RSS.
 
 Reproduce with a dependency-restored pre-B02 checkout:
 `PULSE_B02_BASELINE_ROOT=/path/to/base node wasm/scripts/run-wasm-tests.cjs --task compiler-handler-cost-b02`.
-The accepted report is `wasm/.test-results/compiler-efficiency/b02/cost-pinned.json`
-(one selected/completed task, passed). Every sample records source hashes;
-the measured candidate compiler-source aggregate is
+The accepted initial implementation report is
+`wasm/.test-results/compiler-efficiency/b02/cost-pinned.json` (one selected/completed
+task, passed). It predates the later bare-return and package source-mapping fixes;
+a repeat against those final sources remains pending after the execution
+environment went offline. Every sample records source hashes; the measured
+initial candidate compiler-source aggregate is
 `a846fb72d45d2aa91db7cadb0dd647ccf52fd0aaba376aa9f1dfb867dbd9d9d1`.
 The initial three attempts failed while correcting the proof's Node fetch
 fixture fields and trace projection; they establish no performance evidence.
 An intermediate successful run is retained separately from the final pinned
 run after ownership-lookup cleanup. Runtime, source-mapping, mounted-route,
 error, event, read-loop and budget checks remain the implementation gates.
+
+The final-source nine-example size measurement completed before the outage.
+Local validation includes 239 passing package tests, build and documentation
+checks, source-mapping regressions, and extensive completed portable tasks.
+Two later runners were interrupted after 70/71 and 23/57 tasks. Recovery completed
+nine additional tasks before the old hello size expectation stopped the run.
+The updated exact-size fixtures, remaining CLI/provider tasks, final focused
+regressions and repeat paired timing proof still require completion. The PR
+records these limits; these results are not an uninterrupted release replay.

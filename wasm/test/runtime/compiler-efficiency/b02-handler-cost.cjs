@@ -29,6 +29,7 @@ async function worker(repository, projectRoot, target, count) {
     'wasm/packages/compiler/src/spine/router-handler-ir.js',
     'wasm/packages/compiler/src/spine/handler-ir.js',
     'wasm/packages/compiler/src/spine/handler-ir-emitter.js',
+    'wasm/packages/compiler/src/spine/canonical-handler-ir.js',
     'wasm/packages/compiler/src/canonical-native-plan.js',
     'wasm/packages/contracts/src/handler/canonical-native-plan.js',
     'wasm/packages/contracts/src/handler/canonical-native-runtime.js',

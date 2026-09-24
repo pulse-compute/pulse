@@ -238,6 +238,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
         linkPackageIntrinsicsWithin(call);
         return linked;
       }
+      // Generated Router offsets belong to a different source tree. A miss in
+      // its explicit mapping must not fall back to authored-source offsets.
+      if (options.internalGeneratedHandler) return undefined;
     }
     const effect = packageEffectsBySource.get(callKey(call));
     if (effect) linkPackageIntrinsicsWithin(call);
@@ -260,6 +263,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
         }
         return linked;
       }
+      if (options.internalGeneratedHandler) return undefined;
     }
     const key = callKey(call);
     const intrinsic = packageIntrinsicsBySource.get(key);
@@ -284,6 +288,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
     if (typeof options.packageResultAdapterForCall === 'function') {
       const linked = options.packageResultAdapterForCall(call);
       if (linked) return linked;
+      if (options.internalGeneratedHandler) return undefined;
     }
     return packageResultAdaptersByStart.get(call.getStart(sourceFile));
   }
@@ -366,7 +371,8 @@ function buildPlainHandlerIr(frontend, options = {}) {
       payload: Object.freeze({ ...(effect.payload || {}) }),
       result: String(effect.result || 'value'),
       resource: effect.resource || Object.freeze({ kind: 'none' }),
-      position: packageEffectPosition(effect, call)
+      position: packageEffectPosition(effect, call),
+      ...(options.internalGeneratedHandler ? { generatedPosition: positionFor(sourceFile, call) } : {})
     });
     effectSites.push(site);
     return site;

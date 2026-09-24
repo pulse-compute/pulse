@@ -151,6 +151,11 @@ not a hard limit on the number of parameters or on the size of every function.
 
 ## Native terminal Router bodies
 
+Generated Router package-call mappings are authoritative: an unmapped generated
+call cannot fall back to an authored-source offset. Imported package effects
+retain their authored diagnostic positions; a separate generated position
+determines Router entry ownership without reinterpreting those source offsets.
+
 Native plan v3 preserves terminal HTTP route handlers as separately owned bodies
 (`pulse.canonical-native-handler-body.v1`). A terminal route has no `next()` or
 `next(error)` transfer. Its stable Router entry ID owns the body, original source
