@@ -8,7 +8,7 @@ const {
   memoryAbiV2,
   es256FrameV2,
   es256GuestUnit,
-  optimizationPostures
+  finalOptimizationPostures
 } = require('./constants.js');
 const { fail } = require('./errors.js');
 const { assertRelativePath } = require('./files.js');
@@ -1122,7 +1122,7 @@ function assertPlanMatchesManifest(plan, manifest) {
 }
 
 function optimizationArguments(posture) {
-  const args = optimizationPostures[posture];
+  const args = finalOptimizationPostures[posture];
   if (!args) fail(diagnosticCodes.optimizationFailed, `Unsupported guest-link optimization posture ${posture}.`);
   return args;
 }

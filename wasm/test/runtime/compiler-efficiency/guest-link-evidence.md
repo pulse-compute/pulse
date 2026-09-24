@@ -120,3 +120,9 @@ Harness SHA-256: `4923f0667da7bf14a54f17a14a1c0df564ff79f9291476706b3dff22f1bc58
 Node: `v24.19.0`. Binaryen: `129.0.0-nightly.20260428`.
 The result JSON records the shared harness, lockfile and tool hashes. Subsequent
 committed changes only add this evidence record and its compact raw samples.
+
+The later production integration preserves this captured result as the
+pre-integration comparison. A new run of the opt-in harness starts from an
+already optimized and audited production artifact; it checks an additional
+copy-only pass and accepts an identical copy under the existing receipt.
+Changed copies still require a new audit before packaging.

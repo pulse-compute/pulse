@@ -963,3 +963,57 @@ Keep the existing size mode as a comparator. Integration must regenerate final
 artifact audits/receipts and replay the required semantic and provider gates
 before any default changes. This experiment alone makes no global-default or
 deployment decision.
+
+## Production integration after the bounded and guest-link proofs (24 September 2026)
+
+Human direction selected implementation of the compiler and optimizer findings
+after the separate PR #74 and PR #75 proofs. No named implementation Entry
+Point matches this internal optimizer work; the ordinary instruction chain
+applies. The Fastly Native realization call site and generated documentation
+are included explicitly in this pass. No public API, host authority, feature
+policy, guest-prebuilt recipe, or final-audit requirement changes.
+
+For modules without guests, the existing AssemblyScript invocation now runs
+`merge-similar-functions` **after** its normal optimization, in the same
+compiler process. This keeps the existing default and experimental size
+settings and the pre-optimization `no-inline` transform. Guest inputs wait
+until composition, then the existing pinned `wasm-opt` invocation schedules
+`-Oz` and bounded merging while skipping `memory-packing`. The original
+postures used to reproduce the reviewed ES256 prebuilt remain unchanged.
+The existing final inspection and audit issue new receipts for the exact
+optimized bytes, with the same MVP, fixed-memory, ABI, and exact static-data
+checks. There is no second optimizer process in either production path.
+
+Single-build reproductions of the frozen repeated-body and ES256 fixtures
+show these uncompressed production artifacts. The earlier evidence-only copies
+remain historical controls; these measurements use the normal compilation
+paths and, for JWT, the resulting final receipts.
+
+| Fixture / target / profile | Before → integrated Wasm B | Change |
+| --- | ---: | ---: |
+| 2,000 updates / Node / default | 28,122 → 9,787 | −65.2% |
+| 2,000 updates / Fastly / default | 55,920 → 37,518 | −32.9% |
+| 2,000 updates / Node / size | 9,798 → 9,798 | 0% |
+| 2,000 updates / Fastly / size | 33,706 → 33,706 | 0% |
+| ES256 / Node / default | 39,354 → 36,100 | −8.27% |
+| ES256 / Node / size | 39,151 → 35,926 | −8.24% |
+| ES256 / Fastly / default | 113,006 → 108,804 | −3.72% |
+| ES256 / Fastly / size | 94,784 → 91,447 | −3.52% |
+
+Both repeated-body targets still return `2000`; Node still allocates and
+charges 4,005 value handles. Its largest function remains 856 B on Node and
+1,452 B on Fastly default; the maximum is 64 parameters. All four real
+guest-linked ES256 artifacts accept their new final receipt and preserve exact
+validated static segments. Valid bearer, wrong signature, and disallowed
+algorithm outcomes match on both targets and profiles, including Fastly's
+package-owned rejection stages. Ordinary executable examples mostly retain
+their previous size; two default Fastly provider bundles shrink by 67 and 69 B.
+
+These are fixture sizes, not a general memory or compile-time saving.
+AssemblyScript's in-process merge avoids the separate postpass process measured
+in PR #74. Guest-link optimization now runs actual passes inside its existing
+invocation; the prior serial proof measured an extra postpass cost, so no
+zero-cost or across-the-board cold-build claim follows. The bounded settings
+are heuristics, not hard limits on all function bodies or parameters. This
+integration does not establish Viceroy or deployed Fastly execution, JIT
+memory, host-heap retention, or publication approval.

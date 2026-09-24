@@ -186,7 +186,7 @@ function main() {
     assert.equal(first.audit.providerPackaging.authorized, true);
     assert.equal(first.audit.artifact.sha256, sha256(first.wasm));
     assert.deepEqual(first.wasm, second.wasm);
-    assert.equal(sha256(first.wasm), 'c9f3fbcdb0cd2ffe3a6d9cc7446802ab2a99cd3b65120c4fcf8482f15544dc1d');
+    assert.equal(sha256(first.wasm), 'c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879');
     const finalModule = new WebAssembly.Module(first.wasm);
     const providerInput = Object.freeze({
       ...first,

@@ -148,6 +148,31 @@ const optimizationPostures = Object.freeze({
   ])
 });
 
+// Keep the pinned prebuilt recipe above unchanged. Composed final modules use
+// these bounded, layout-preserving passes before the existing final audit.
+const finalOptimizationPostures = Object.freeze({
+  'native-default': Object.freeze([
+    '--mvp-features',
+    '--merge-similar-functions',
+    '--one-caller-inline-max-function-size=64',
+    '--flexible-inline-max-function-size=0',
+    '--inline-max-combined-binary-size=1024',
+    '-Oz',
+    '--skip-pass=memory-packing',
+    '--strip-debug'
+  ]),
+  'native-size': Object.freeze([
+    '--mvp-features',
+    '--merge-similar-functions',
+    '--one-caller-inline-max-function-size=64',
+    '--flexible-inline-max-function-size=0',
+    '--inline-max-combined-binary-size=1024',
+    '-Oz',
+    '--skip-pass=memory-packing',
+    '--strip-debug'
+  ])
+});
+
 module.exports = Object.freeze({
   versions,
   binaryenVersion,
@@ -156,5 +181,6 @@ module.exports = Object.freeze({
   memoryAbiV2,
   es256FrameV2,
   es256GuestUnit,
-  optimizationPostures
+  optimizationPostures,
+  finalOptimizationPostures
 });

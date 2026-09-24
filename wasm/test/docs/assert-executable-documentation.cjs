@@ -45,7 +45,7 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 5397,
     optimizedGuestWasmBytes: 4888,
-    providerWasmBytes: 46922,
+    providerWasmBytes: 46855,
     optimizedProviderWasmBytes: 38949,
     capabilities: [
       'config.get',
@@ -62,7 +62,7 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 2200,
     optimizedGuestWasmBytes: 2101,
-    providerWasmBytes: 34681,
+    providerWasmBytes: 34612,
     optimizedProviderWasmBytes: 29886,
     capabilities: ['fetch'],
     opaque: true
@@ -114,8 +114,8 @@ const examples = Object.freeze([
   Object.freeze({
     id: '13-jwt-es256',
     provider: 'node',
-    guestWasmBytes: 39354,
-    optimizedGuestWasmBytes: 39151,
+    guestWasmBytes: 36100,
+    optimizedGuestWasmBytes: 35926,
     applicationInputBytes: 3030,
     optimizedApplicationInputBytes: 2848,
     linkedGuestInputBytes: 36378,
