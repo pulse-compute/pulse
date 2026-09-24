@@ -505,3 +505,75 @@ and `a2f054649bf793c1d4127df5b4d968a1d1cacf2681520fc5646adcb9b8765dd1`.
 This is a single baseline observation per artifact. Neither source duplication
 nor Wasm capacity establishes a memory saving. S02 semantic oracles and human
 G0 acceptance are the next gates before any internal helper-sharing change.
+
+## S02 addendum: hand-authored semantic oracles (24 September 2026)
+
+S01 was accepted into `latest` at `acc4348f55cb434362be4b7b90ff6dc79e74b36d`.
+Human direction selected S02/P03. Its separate synthetic fixture and
+`wasm/test/fixtures/conformance/compiler-efficiency-parity.json` freeze expected
+responses, effect counts, failures and boundary charges independently of runtime
+output. No compiler, runtime, provider, ABI or production application source
+changed. Run the manually selected task:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task compiler-efficiency-p03 --report .test-results/compiler-efficiency/p03/p03.json
+node wasm/scripts/run-wasm-tests.cjs --task bounded-read-loops --no-report
+```
+
+The focused P03 task reached terminal `passed` with one selected and one
+completed passing task; it ran ten fixture cases on Node Native and the Fastly
+ABI fixture, plus one separate eligible Node JavaScript case. The ignored
+detailed trace is `wasm/.test-results/compiler-efficiency/p03/semantic-oracles.json`.
+The corpus includes 0, 1, 16 and 64 fixed 4,096-byte pages; a 64-page cap
+followed by `incomplete` (409); a p1/p2 cycle rejected when p1 is read a second
+time with the wrong index; early and late S3 misses (503); malformed JSON after
+S3 and digest effects; and a source-level same-object/distinct-object alias
+case. One page has two ordered effects (`s3.getText`, `crypto.digestText`) and
+two completed continuation lifecycles. Every admitted Node Native case checks
+the exact effect sequence and completed/failed continuation states. The ABI
+fixture checks outbound request order and send/wait order; it does not expose
+the same Node continuation trace. Malformed JSON is an error on both targets:
+Node reports `PULSE_SCHEMA_JSON_MALFORMED`; the Fastly ABI fixture reports
+`PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED` with last
+error 1004 and stage 3. Node cancellation at the second effect reports
+`PULSE_RUNTIME_EFFECT_ABORTED`, with a completed first continuation and a
+failed second one; the Fastly ABI fixture provides no equivalent cancellation
+hook in this task.
+
+The direct host-value probes fix same-object aliasing, distinct equal-looking
+objects, a self-cycle and a two-object cycle. These are host `ValueHeap` tests,
+not claims that self-referential source was compiled. A shared function inserted
+directly into the heap gets two handles on repeated insertion, because function
+identity is not currently indexed. That direct probe does not establish
+reachability from accepted Native source. All ten observed Native fixture cases
+put **zero** function values into `ValueHeap`. A repeated shared-function call
+with order `1:2:3` and identity `true:false` runs as a separately selected
+JavaScript project case; its runtime-value import is rejected for Native with
+`PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED`. A plain Native handler with
+local function values also fails native-plan admission with
+`PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED`. R01 therefore has no admitted
+Native function-value reproducer in this corpus; do not implement function
+indexing from the direct heap probe alone.
+
+The 64 MiB/1,048,576-value request policy is unchanged. Each admitted Node
+request records cumulative-charge checkpoints; both charges are asserted
+nondecreasing. Separate tiny-limit boundary instances on the Node host budget
+and the generated Fastly guest counter admit **2 values / 64 bytes** and reject
+the first additional value (Fastly stage 173) or byte (stage 172), latch the
+failure, and keep the last admitted charge. Those tiny-limit probes prove the
+first accounting boundary, not an observed 64 MiB failure during the page
+workload. The 64-page case succeeds; exceeding the bounded loop returns 409.
+Do not equate cumulative charges with live host roots, process RSS or guest
+linear-memory capacity. No Viceroy or deployed Fastly run is claimed.
+
+Corpus SHA-256 `8fea7d5a34fa1bda0697d5c7598a0989340f9e8909c0d442349e8ddcbc130a1a`,
+fixture-source SHA-256 `b9f3aec10b578483cd6e3cbd695e4cd6f1b64e2c92c0120a6fce334e2d9937f2`
+and Node/Fastly Wasm SHA-256
+`65607307019443f101b5059dfeef1e3acd32b6a285fa02b0ba6f1139e04319e3` /
+`172412e7d0b017868ebba20842c9d90629e11b61e64f35d20a4a27df60ccf6d3`
+identify this checkpoint. The report records the
+input and artifact hashes and per-target case counts. Failed development
+attempts are retained in ignored local runner reports; the successful terminal
+report alone is acceptance evidence for the corrected corpus. G0 remains a
+**human** decision after S02 review. Neither S03 nor R01 is authorized by this
+evidence-only PR.
