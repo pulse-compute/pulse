@@ -452,6 +452,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'bounded read loop admission, target parity, invocation lifecycle, cumulative budgets and Native memory containment'
   }),
+  'compiler-efficiency-p02': nodeTask('test/runtime/compiler-efficiency/p02-memory-trace.cjs', {
+    evidence: 'native',
+    timeoutMs: 300000,
+    description: 'S01 synthetic request memory, isolated compiler RSS, generated-source and optimized-Wasm attribution'
+  }),
   'logging-lowering': nodeTask('test/lowering/assert-logging-lowering.cjs', {
     evidence: 'native',
     timeoutMs: 120000,
