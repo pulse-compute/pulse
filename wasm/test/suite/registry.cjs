@@ -477,6 +477,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'B03 final-Wasm handler ownership, 1/8/32 scaling, serial compile and isolated cold-load proof under default and bounded-size modes'
   }),
+  'compiler-schema-cost-sc01': nodeTask('test/runtime/compiler-efficiency/sc01-schema-cost.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'SC01 serial 1/8/32-schema compile costs, stage attribution and optimized unreferenced-ID dispatch proof'
+  }),
   'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
     evidence: 'external',
     timeoutMs: 300000,
