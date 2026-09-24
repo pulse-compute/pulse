@@ -1039,3 +1039,77 @@ with the diagnostic artifact. Gzip sizes were essentially flat, and Wasm
 memory remained 48,234,496 bytes. These single-run results justify an opt-in
 recipe and further cross-application measurement, not a default or release
 performance claim.
+
+## B01: internal Router handler boundary, contract and controls (24 September 2026)
+
+Human direction selected B01 as a bounded compiler design and evidence pass
+after the size-recipe integration. This section describes a **candidate internal
+boundary for the next implementation pass**. It does not alter accepted
+syntax, the Native plan, execution, public imported functions, or the host ABI.
+The source of truth for current behavior remains the Router and Native
+contracts. The B01 runner is `compiler-handler-boundary-b01` in
+`wasm/test/suite/registry.cjs`.
+
+### Current handoff and loss of function ownership
+
+`spine/router-handler-ir.js` builds an operation IR and a canonical IR for each
+entry. Before Native planning it appends each emitted handler body into the
+single `__pulse_router_entry(ctx)` function, wrapped by ordered cursor, mode,
+match, and mount decisions. `canonical-project-compiler.js` passes that
+synthetic source to the shared canonical compiler; `canonical-native-plan.js`
+produces one `plan.entry.body`, one flat `plan.locals` table and one program
+counter with a state for each continuation. Native's existing state chunks
+(up to 64 states or 24,000 rendered characters) split the *dispatcher*, not
+the original handler bodies. The optimizer therefore still sees bodies in a
+shared function/plan before emission.
+
+This is a precise ownership gap, not wholesale metadata loss. The Router's
+`handlerTable`, route plan and routing entries preserve stable IDs, order,
+kind, source ownership and generated body ranges. Effects and continuations
+in the Native plan carry `routerEntryStableId` and `applicationEntryStableId`.
+Plan locals have a flat `localId` and `statementPath` but no explicit
+`routerEntryStableId`; arbitrary nested expression objects also have no
+function owner. A generated range can be used to infer some ownership while
+the synthetic text exists, but it is not a function or a complete call graph.
+
+The manually selected evidence task builds three generated project sources,
+uses real Router compilation and Native **planning** (no AssemblyScript or
+Wasm build), checks deterministic entry IDs, disjoint body ranges and effect/
+continuation ownership, and parses the emitted TypeScript function declarations.
+Each middleware performs one recognized fetch before a terminal `next()`.
+The 8/32 cases also include a route with error transfer and an error handler.
+The result on `latest` `71a6f03` was:
+
+| Entries (use / route / error) | Synthetic source B | Body ranges B | Top-level functions | Plan locals / with entry ID | Effects / continuations / states |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 1 (0 / 1 / 0) | 589 | 82 | 1 | 4 / 0 | 0 / 0 / 1 |
+| 8 (3 / 4 / 1) | 3,236 | 1,585 | 1 | 14 / 0 | 3 / 3 / 4 |
+| 32 (15 / 16 / 1) | 11,950 | 6,192 | 1 | 50 / 0 | 15 / 15 / 16 |
+
+These are source and plan shapes for small synthetic controls, not predicted
+Wasm, memory, or cold-build improvements in Catalog. Reproduce with
+`node wasm/scripts/run-wasm-tests.cjs --task compiler-handler-boundary-b01`.
+
+### Candidate internal boundary for a subsequent implementation pass
+
+| Concern | Existing source to preserve | Required candidate shape / proof |
+| --- | --- | --- |
+| Identity and dispatch | Ordered `metadata.entries`, stable entry and handler IDs, normal/error/event lanes, mounts and route match | Keep a dispatcher with existing ordering, predicates, cursor/mode/error state and 404/500 exhaustion. Map each body to its entry stable ID and original source span; do not use function ordinal as identity. |
+| Values and locals | `handlerRecords` and the single Native `plan.locals` table | Give each handler a lexical local namespace and explicit ownership for its statements/expressions, with deterministic mapping for values live across suspension. Keep dispatcher locals distinct. |
+| Effects and resumption | Effect and continuation IDs, site-to-entry ownership and shared pending-result checks | A suspended site resumes in its owning body under the same request lifecycle. Preserve effect ordering, grouping, site IDs and error normalization; never rely on a live call stack across suspension. |
+| Control transfer | `return next()` and `return next(error)` set cursor/mode/error and terminate the current handler; ordinary returns complete the response | Define a *private* call result with response, normal transfer, error transfer, suspension and failure cases. Dispatcher consumes the result, advances the same cursor and checks the same pending result. No onion-style unwinding. A body may need multiple internal functions across suspension; one source handler does not imply one Wasm function. |
+| Bounds and artifacts | One shared guard per original state, existing Native chunks, plan hashes and final audits | Charge the same original state once even if new call boundaries are introduced; preserve request/effect limits. Distinguish changed plan/generator/artifact identity from unchanged host ABI; run final inspection on the final bytes. |
+
+The likely cut is **after** Router topology and per-entry handler IR formation,
+**before** rendering a synthetic single function for Native planning. The
+JavaScript original-source path and public imported-function syntax remain
+outside this proposal. This cut is a proposed implementation location, not an
+approved Native plan schema or runtime ABI. The next pass must first choose a
+versioned plan representation and internal call/continuation protocol, with
+human review of those protected contract changes. It should then show that
+1/8/32 controls and existing middleware, error and event corpora retain
+semantics and budgets on Node and Fastly Native, before assessing compile time,
+peak RSS, Wasm bytes and cold loads with matched source/settings. Inbound event
+ownership and mounted Router branches were not exercised by this B01 control;
+they remain explicit gates for implementation. The larger consumer is a final
+validation point, not a B01 performance claim.

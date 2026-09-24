@@ -54,6 +54,7 @@ const externalTasks = new Set([
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',
   'compiler-efficiency-p03',
+  'compiler-handler-boundary-b01',
   'compiler-bounded-merging',
   'compiler-guest-link-evidence',
   'guest-link-final-reality',
@@ -125,6 +126,7 @@ for (const profile of ['unit', 'native', 'javascript', 'conformance', 'providers
   }
 }
 assert.equal(release.includes('compiler-bounded-merging'), false);
+assert.equal(release.includes('compiler-handler-boundary-b01'), false);
 assert.equal(release.includes('compiler-guest-link-evidence'), false);
 assert.equal(release.includes('provider-fastly-compute-reality'), false);
 assert.equal(release.includes('guest-link-scalar-control'), false);
