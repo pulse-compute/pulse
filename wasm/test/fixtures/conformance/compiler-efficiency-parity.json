@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "pulse.compiler-efficiency-parity.v1",
+  "pageBytes": 4096,
+  "seed": "s02-page-body-v1",
+  "cases": [
+    { "id": "empty", "pages": 0, "response": { "status": 200, "body": "0:-1" }, "effectPairs": 0, "firstFailure": null },
+    { "id": "one", "pages": 1, "response": { "status": 200, "body": "1:0" }, "effectPairs": 1, "firstFailure": null },
+    { "id": "sixteen", "pages": 16, "response": { "status": 200, "body": "16:15" }, "effectPairs": 16, "firstFailure": null },
+    { "id": "sixty-four", "pages": 64, "response": { "status": 200, "body": "64:63" }, "effectPairs": 64, "firstFailure": null },
+    { "id": "over-bound", "pages": 64, "tail": "p65", "response": { "status": 409, "body": "incomplete" }, "effectPairs": 64, "firstFailure": "loop-bound" },
+    { "id": "two-object-cycle", "pages": 2, "tail": "p1", "response": { "status": 503, "body": "invalid" }, "effectPairs": 3, "firstFailure": "index-mismatch-at-third-read" },
+    { "id": "provider-miss", "pages": 1, "missingPage": 1, "response": { "status": 503, "body": "unavailable" }, "effectPairs": 0, "firstFailure": "s3-not-found" },
+    { "id": "late-provider-miss", "pages": 2, "missingPage": 2, "response": { "status": 503, "body": "unavailable" }, "effectPairs": 1, "firstFailure": "s3-not-found-at-second-read" },
+    { "id": "malformed-json", "pages": 1, "invalidBody": "{\"index\":", "response": null, "effectPairs": 1, "firstFailure": "schema-json-malformed", "nodeError": "PULSE_SCHEMA_JSON_MALFORMED", "fastlyError": { "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED", "lastError": 1004, "errorStage": 3 } },
+    { "id": "distinct-alias", "mode": "alias", "pages": 0, "response": { "status": 200, "body": "true:false:2:1" }, "effectPairs": 0, "firstFailure": null }
+  ],
+  "javascriptFunctionCase": { "id": "shared-function-calls", "response": { "status": 200, "body": "true:false:1:2:3" }, "effects": [], "nativeAdmissionCode": "PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED", "nativeProjectAdmissionCode": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED", "firstFailure": null },
+  "nodeCancellation": { "id": "cancel-at-second-effect", "effects": ["s3.getText", "crypto.digestText"], "errorCode": "PULSE_RUNTIME_EFFECT_ABORTED", "continuations": [["created", "waiting", "resumed", "completed"], ["created", "waiting", "failed"]] },
+  "hostValueCases": [
+    { "id": "same-object", "expected": "same-handle" },
+    { "id": "equal-looking-objects", "expected": "distinct-handles" },
+    { "id": "self-cycle", "expected": "stable-alias" },
+    { "id": "two-object-cycle", "expected": "stable-alias" }
+  ],
+  "budgetBoundary": {
+    "maxValues": 2, "maxBytes": 64,
+    "admitted": { "values": 2, "bytes": 64 },
+    "firstRejectedCharges": [{ "values": 1, "bytes": 0, "fastlyStage": 173 }, { "values": 0, "bytes": 1, "fastlyStage": 172 }],
+    "errorCode": "PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED"
+  }
+}

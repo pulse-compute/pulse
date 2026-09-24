@@ -53,6 +53,7 @@ const externalTasks = new Set([
   // The S01 measurement task is a manually selected benchmark with sampled
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',
+  'compiler-efficiency-p03',
   'guest-link-final-reality',
   'guest-link-memory-matrix',
   'guest-link-feasibility-decision',
