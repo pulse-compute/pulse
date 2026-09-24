@@ -1,6 +1,7 @@
 'use strict';
 
-const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v2';
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v3';
+const CANONICAL_NATIVE_HANDLER_BODY_VERSION = 'pulse.canonical-native-handler-body.v1';
 const CANONICAL_NATIVE_PLAN_HASH_ALGORITHM = 'sha256';
 const CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION = 'pulse.canonical-native-ownership.v1';
 const CANONICAL_PURE_LOOP_LIMITS = Object.freeze({ maxIterations: 1024, maxNestedIterations: 65536 });
@@ -25,6 +26,7 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'break',
   'continue',
   'return',
+  'handler-call',
   'expression'
 ]);
 
@@ -136,6 +138,14 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
   promiseSemantics: false,
   asyncify: false,
   controlFlow: 'structured statements, if/else, literal-capped pure for loops and non-nested bounded sequential read loops',
+  handlerBodies: Object.freeze({
+    version: CANONICAL_NATIVE_HANDLER_BODY_VERSION,
+    family: 'terminal HTTP route bodies without next transfer',
+    calls: 'one static tail call from the dispatcher; no recursion or captured locals',
+    outcomes: 'response, suspension, normalized application-error transfer, terminal failure',
+    suspension: 'resume the owning body by program counter; no live call stack',
+    budget: 'one charge per original state; the call reference adds no state'
+  }),
   suspension: 'explicit effect and effect-group statements with stable continuation IDs',
   values: 'versioned JSON expression tree with stable local identities',
   logging: 'compile-time threshold pruning plus synchronous provider-adapter emission',
@@ -146,6 +156,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 
 module.exports = Object.freeze({
   CANONICAL_NATIVE_PLAN_VERSION,
+  CANONICAL_NATIVE_HANDLER_BODY_VERSION,
   CANONICAL_PURE_LOOP_LIMITS,
   CANONICAL_READ_LOOP_CONTRACT,
   CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,

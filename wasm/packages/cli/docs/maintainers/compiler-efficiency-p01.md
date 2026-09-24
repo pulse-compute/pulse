@@ -1181,3 +1181,79 @@ Focused real-Wasm checks cover both Native targets and all three optimization
 modes, retained shared calls, unannotated prefix collisions, distinct bindings,
 fresh allocations, live tables and mappings. Deterministic generated name sets
 also verify exact retention membership and option restoration after failure.
+
+## B02: terminal HTTP route bodies (24 September 2026)
+
+Human direction to implement B02 after B01 and T01 selects one bounded family:
+terminal HTTP routes with no `next()`/`next(error)` operation. Effectful routes
+are included. Middleware, transfer-capable routes, error handlers and event
+handlers retain their existing lowering. This is an internal architecture
+change under the root/Wasm/compiler instructions; no named Entry Point covers
+the full change. The Native plan and continuation boundaries receive human
+review in the implementation PR. No new public function syntax is admitted.
+
+The Router frontend emits each selected body once as a private function and
+places a terminal call in its dispatch branch. Handler IR retains those
+declarations and calls; Native plan v3 stores the bodies separately from
+`entry.body`, under `pulse.canonical-native-handler-body.v1`. Stable Router
+entry IDs own bodies and local namespaces, while the original handler ID and
+source span remain recorded. A body's statement/expression tree lives only in
+that owner. Plan validation rejects cross-owner local access, recursive or
+duplicate calls, and mismatched effect/continuation ownership.
+
+The private protocol covers response completion, suspension, application-error
+transfer and terminal failure. A call lowers directly to the body's first
+state, adding no state or budget charge. Suspension resumes through the same
+continuation/program-counter mechanism, without a live Native call stack.
+The generator partitions at body boundaries as well as its existing 64-state
+and 24,000-character limits, and T01 retains the resulting chunks. Plan and
+generator versions change; host ABI v2 does not. Read-loop memory detection,
+Fastly value-failure guards and fetched-body import analysis inspect the new
+body table as well as the dispatcher.
+
+The B01 controls now report the selected ownership explicitly:
+
+| Total Router entries | Private terminal bodies | Locals / explicitly body-owned | Effects / continuations / states |
+| ---: | ---: | ---: | ---: |
+| 1 | 1 | 4 / 1 | 0 / 0 / 1 |
+| 8 | 3 | 14 / 3 | 3 / 3 / 4 |
+| 32 | 15 | 50 / 15 | 15 / 15 / 16 |
+
+The paired cost proof uses a separate source with 32 terminal routes, one fetch
+middleware and one error handler. Each route has 16 mutations followed by a
+fetch and a response. Three serial fresh-process pairs per target alternate
+baseline/candidate ordering. Baseline is merged T01 `9f2c369`; Node is 24.19.0,
+AssemblyScript 0.28.18 and Binaryen 129.0.0-nightly.20260428. Medians:
+
+| Target | Full build ms, before → after | Wasm B | Compiler worker peak MiB | AssemblyScript peak MiB |
+| --- | ---: | ---: | ---: | ---: |
+| Node Native | 2,993.02 → 3,009.44 | 58,215 → 53,832 | 195.23 → 203.18 | 309.65 → 315.77 |
+| Fastly Native | 4,874.03 → 4,751.68 | 107,330 → 102,623 | 207.05 → 210.20 | 327.84 → 319.13 |
+
+Both targets preserve 791 charged execution states and 102 local slots; 96
+locals now belong to the 32 private bodies. Retained chunks increase from 29
+to 65. Generated AssemblyScript grows from 759,597 to 767,671 bytes on Node
+and 908,487 to 916,561 bytes on Fastly. Wasm decreases by 7.5% and 4.4%
+respectively. This is structural evidence with a size benefit on this fixture,
+not a general build-time or memory improvement claim.
+
+Every pair checks exact response, effect order, site/entry identity and state
+count. Node also checks continuation lifecycle, 425 allocated handles, and
+failure before the second dispatch at `maxEffects: 1`. Fastly uses injected
+host fixtures, not deployed acceptance. The harness records first execution
+after compilation/auditing; that timing is not an independent cold-load proof.
+Worker RSS is captured before execution. AssemblyScript peak RSS is collected
+separately by PID, including its launcher/child processes without overwriting
+the compiler measurement. These maxima are not aggregate concurrent RSS.
+
+Reproduce with a dependency-restored pre-B02 checkout:
+`PULSE_B02_BASELINE_ROOT=/path/to/base node wasm/scripts/run-wasm-tests.cjs --task compiler-handler-cost-b02`.
+The accepted report is `wasm/.test-results/compiler-efficiency/b02/cost-pinned.json`
+(one selected/completed task, passed). Every sample records source hashes;
+the measured candidate compiler-source aggregate is
+`a846fb72d45d2aa91db7cadb0dd647ccf52fd0aaba376aa9f1dfb867dbd9d9d1`.
+The initial three attempts failed while correcting the proof's Node fetch
+fixture fields and trace projection; they establish no performance evidence.
+An intermediate successful run is retained separately from the final pinned
+run after ownership-lookup cleanup. Runtime, source-mapping, mounted-route,
+error, event, read-loop and budget checks remain the implementation gates.

@@ -319,6 +319,7 @@ function collectExpressions(plan) {
   }
 
   walkStatements(plan.entry && plan.entry.body);
+  for (const handler of plan.handlers || []) walkStatements(handler.body);
   for (const effect of plan.effects || []) {
     for (const input of effect.inputs || []) add(input.value);
     const decoder = effect.result && effect.result.decoder;
@@ -636,13 +637,15 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
 
   const blocks = [];
   const applicationErrors = (plan.routing?.entries || []).some(entry => entry.kind === 'error');
+  const handlers = new Map((plan.handlers || []).map(handler => [handler.id, handler]));
   const routerLocal = name => (plan.locals || []).find(local => local.name === `__pulse_router_${name}`)?.id;
   const routerCursor = routerLocal('cursor');
   const protectedEntries = new Set();
   let activeBoundary;
+  let activeHandler;
   function block(kind, data = {}) {
     const id = blocks.length;
-    blocks.push({ id, kind, boundary: activeBoundary, ...data });
+    blocks.push({ id, kind, boundary: activeBoundary, handlerId: activeHandler, ...data });
     return id;
   }
 
@@ -726,7 +729,13 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     let next = nextBlock;
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];
-      if (statement.kind === 'local') {
+      if (statement.kind === 'handler-call') {
+        const handler = handlers.get(statement.handlerId);
+        if (!handler || activeHandler) fail('Private Router call must select one terminal body.', { handlerId: statement.handlerId });
+        activeHandler = handler.id;
+        next = compileSequence(handler.body, next, boundary, loopTargets);
+        activeHandler = undefined;
+      } else if (statement.kind === 'local') {
         next = block('action', { lines: [`${localName(statement.localId)} = ${exprName(statement.value)}()`], next });
       } else if (statement.kind === 'expression') {
         next = block('action', { lines: [`__pulse_drop(${exprName(statement.expression)}())`], next });
@@ -835,19 +844,19 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const maxChunkStates = 64;
   const maxChunkCharacters = 24000;
   const renderedBlocks = blocks.map(item => ({ item, source: renderBlock(item) }));
-  const partitioned = blocks.length > maxChunkStates
+  const partitioned = handlers.size > 0 || blocks.length > maxChunkStates
     || renderedBlocks.reduce((size, block) => size + block.source.length, 0) > maxChunkCharacters;
   const chunks = [];
   if (partitioned) {
     let chunk = [], characters = 0;
     for (const { item } of renderedBlocks) {
       const rendered = renderBlock(item, true);
-      if (chunk.length && (chunk.length >= maxChunkStates || characters + rendered.length > maxChunkCharacters)) {
+      if (chunk.length && (chunk[0].handlerId !== item.handlerId || chunk.length >= maxChunkStates || characters + rendered.length > maxChunkCharacters)) {
         chunks.push(chunk);
         chunk = [];
         characters = 0;
       }
-      chunk.push({ id: item.id, source: rendered });
+      chunk.push({ id: item.id, source: rendered, handlerId: item.handlerId });
       characters += rendered.length;
     }
     if (chunk.length) chunks.push(chunk);
@@ -1063,6 +1072,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       guard: 'shared-once-per-state',
       chunkInlining: partitioned ? 'disabled' : 'not-applicable'
     }),
+    handlerBodies: Object.freeze([...handlers.values()].map(handler => Object.freeze({
+      id: handler.id,
+      handlerId: handler.handlerId,
+      chunks: Object.freeze(chunks.flatMap((chunk, index) => chunk[0].handlerId === handler.id ? [index] : [])),
+      stateCount: blocks.filter(block => block.handlerId === handler.id).length
+    }))),
     expressionCount: expressions.length,
     localCount: (plan.locals || []).length,
     schemaCodecs: Object.freeze({

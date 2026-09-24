@@ -107,7 +107,7 @@ function needsNativeValueFailureGuard(plan) {
     if (node.kind === 'pure-loop' || (node.kind === 'method-call' && node.method === 'string.trim')) return true;
     return Object.values(node).some(containsValueOperation);
   }
-  return containsValueOperation(plan.entry?.body) || containsValueOperation(plan.effects);
+  return containsValueOperation(plan.entry?.body) || containsValueOperation(plan.handlers) || containsValueOperation(plan.effects);
 }
 
 module.exports = { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard };
