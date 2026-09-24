@@ -325,6 +325,9 @@ async function main() {
   } finally { fs.rmSync(work, { recursive: true, force: true }); }
 }
 
+module.exports = { compile, prepareProject, shape, semantics, featureFlags, flags };
+
+if (require.main === module) {
 if (process.argv[2] === '--compile') compileWorker(readJson(process.argv[3]));
 else if (process.argv[2] === '--semantics') {
   const job = readJson(process.argv[3]);
@@ -332,3 +335,4 @@ else if (process.argv[2] === '--semantics') {
 }
 else if (process.argv[2] === '--runtime') runtimeWorker(readJson(process.argv[3])).catch(error => { console.error(error); process.exitCode = 1; });
 else main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });
+}

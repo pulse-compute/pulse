@@ -1,0 +1,513 @@
+{
+  "version": "pulse.guest-link-evidence.v1",
+  "sourceRevision": "ac183a2b4289f9cd1cc9594a07f94d797b95cd55",
+  "workingTree": "",
+  "harnessSha256": "4923f0667da7bf14a54f17a14a1c0df564ff79f9291476706b3dff22f1bc5868",
+  "sharedHarnessSha256": "a0430b208720122b3f7dd289b8570d9508a8732dde7bd056e1739596917c1751",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "node": "v24.19.0",
+  "binaryen": {
+    "name": "binaryen",
+    "version": "129.0.0-nightly.20260428",
+    "tools": [
+      {
+        "name": "wasm-as",
+        "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+      },
+      {
+        "name": "wasm-dis",
+        "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+      },
+      {
+        "name": "wasm-merge",
+        "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+      },
+      {
+        "name": "wasm-opt",
+        "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+      }
+    ]
+  },
+  "flags": [
+    "--merge-similar-functions",
+    "--one-caller-inline-max-function-size=64",
+    "--flexible-inline-max-function-size=0",
+    "--inline-max-combined-binary-size=1024",
+    "-Oz",
+    "--skip-pass=memory-packing"
+  ],
+  "limitations": [
+    "Postpass copies, not integrated production artifacts.",
+    "Fresh Node/V8 processes; Fastly ABI harness, not Viceroy.",
+    "First request follows module construction; no isolated JIT-tier measurement.",
+    "RSS includes the whole harness and dependencies; not guest-only or JIT memory.",
+    "One fresh build per cell; compilation performance comes from the prior bounded-merging proof."
+  ],
+  "status": "passed",
+  "cells": [
+    {
+      "id": "node-default",
+      "configuredPasses": [
+        "strip-debug"
+      ],
+      "configuredArguments": [
+        "--mvp-features",
+        "--optimize-level",
+        "2",
+        "--shrink-level",
+        "0",
+        "--strip-debug"
+      ],
+      "structuralAuditPassed": true,
+      "originalAuditAccepted": true,
+      "staleCandidateAuditRejected": true,
+      "candidateProductionAudit": "not-issued; requires integration before the owned final audit",
+      "baseline": {
+        "bytes": 39354,
+        "sha256": "2f068b1f851b099cb338bc8fafa30acf2ae3bdf5a1c4f0a5cfb1e09ad45b1d0e",
+        "functions": 137,
+        "largestFunctionBytes": 3299,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "merged": {
+        "bytes": 36100,
+        "sha256": "645f9695c55bc94c38059d57ff4df5147ad794963dd0dda5da990d258d997d96",
+        "functions": 127,
+        "largestFunctionBytes": 3024,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "memoryObservation": {
+        "handles": 37,
+        "effects": 1,
+        "budget": null
+      },
+      "semantics": {
+        "cases": [
+          {
+            "name": "valid ES256 bearer",
+            "status": 200,
+            "body": "g3-sensitive-subject:ES256"
+          },
+          {
+            "name": "wrong ES256 signature",
+            "error": "PULSE_JWT_SIGNATURE_INVALID"
+          },
+          {
+            "name": "disallowed algorithm",
+            "error": "PULSE_JWT_ALGORITHM_NOT_ALLOWED"
+          }
+        ]
+      },
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "firstModuleMs": 0.46860599999996566,
+          "firstRequestMs": 24.791954999999973,
+          "warmBatchMs": 269.194445,
+          "warmRequests": 100,
+          "processPeakRssBytes": 137129984
+        },
+        {
+          "round": 0,
+          "variant": "merged",
+          "firstModuleMs": 0.5094789999999989,
+          "firstRequestMs": 24.575369000000023,
+          "warmBatchMs": 247.91343099999995,
+          "warmRequests": 100,
+          "processPeakRssBytes": 136777728
+        },
+        {
+          "round": 1,
+          "variant": "merged",
+          "firstModuleMs": 0.38344799999998713,
+          "firstRequestMs": 25.34686000000005,
+          "warmBatchMs": 261.6509269999999,
+          "warmRequests": 100,
+          "processPeakRssBytes": 138313728
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "firstModuleMs": 0.5453919999999925,
+          "firstRequestMs": 25.99386499999997,
+          "warmBatchMs": 265.350545,
+          "warmRequests": 100,
+          "processPeakRssBytes": 139329536
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "firstModuleMs": 0.500314000000003,
+          "firstRequestMs": 26.084410000000048,
+          "warmBatchMs": 271.555962,
+          "warmRequests": 100,
+          "processPeakRssBytes": 137027584
+        },
+        {
+          "round": 2,
+          "variant": "merged",
+          "firstModuleMs": 0.4295579999999859,
+          "firstRequestMs": 24.233409999999992,
+          "warmBatchMs": 259.988695,
+          "warmRequests": 100,
+          "processPeakRssBytes": 137187328
+        }
+      ]
+    },
+    {
+      "id": "node-size",
+      "configuredPasses": [
+        "strip-debug",
+        "strip-debug"
+      ],
+      "configuredArguments": [
+        "--mvp-features",
+        "--optimize-level",
+        "3",
+        "--shrink-level",
+        "2",
+        "--converge",
+        "--strip-debug"
+      ],
+      "structuralAuditPassed": true,
+      "originalAuditAccepted": true,
+      "staleCandidateAuditRejected": true,
+      "candidateProductionAudit": "not-issued; requires integration before the owned final audit",
+      "baseline": {
+        "bytes": 39151,
+        "sha256": "f750c010a7b6257b312c026ca60b92b57b7a4a68dea6df93e69a4ebc35a0d20f",
+        "functions": 139,
+        "largestFunctionBytes": 3299,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "merged": {
+        "bytes": 35926,
+        "sha256": "1bf6fc0e5a727ca89084725d57e460fb7a95a19a12416de0fde728d15921ff6d",
+        "functions": 129,
+        "largestFunctionBytes": 3024,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "memoryObservation": {
+        "handles": 37,
+        "effects": 1,
+        "budget": null
+      },
+      "semantics": {
+        "cases": [
+          {
+            "name": "valid ES256 bearer",
+            "status": 200,
+            "body": "g3-sensitive-subject:ES256"
+          },
+          {
+            "name": "wrong ES256 signature",
+            "error": "PULSE_JWT_SIGNATURE_INVALID"
+          },
+          {
+            "name": "disallowed algorithm",
+            "error": "PULSE_JWT_ALGORITHM_NOT_ALLOWED"
+          }
+        ]
+      },
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "firstModuleMs": 0.5008550000000014,
+          "firstRequestMs": 28.577836999999988,
+          "warmBatchMs": 279.0138850000001,
+          "warmRequests": 100,
+          "processPeakRssBytes": 139612160
+        },
+        {
+          "round": 0,
+          "variant": "merged",
+          "firstModuleMs": 0.44817599999998947,
+          "firstRequestMs": 23.98362000000003,
+          "warmBatchMs": 254.02968599999997,
+          "warmRequests": 100,
+          "processPeakRssBytes": 137146368
+        },
+        {
+          "round": 1,
+          "variant": "merged",
+          "firstModuleMs": 0.4083660000000009,
+          "firstRequestMs": 24.58793099999997,
+          "warmBatchMs": 266.91245000000004,
+          "warmRequests": 100,
+          "processPeakRssBytes": 137506816
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "firstModuleMs": 0.618411999999978,
+          "firstRequestMs": 27.255724000000043,
+          "warmBatchMs": 266.971989,
+          "warmRequests": 100,
+          "processPeakRssBytes": 138375168
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "firstModuleMs": 0.47287299999999277,
+          "firstRequestMs": 23.932434,
+          "warmBatchMs": 288.44584999999995,
+          "warmRequests": 100,
+          "processPeakRssBytes": 140300288
+        },
+        {
+          "round": 2,
+          "variant": "merged",
+          "firstModuleMs": 0.5690680000000157,
+          "firstRequestMs": 24.921956000000023,
+          "warmBatchMs": 265.015409,
+          "warmRequests": 100,
+          "processPeakRssBytes": 137834496
+        }
+      ]
+    },
+    {
+      "id": "fastly-default",
+      "configuredPasses": [
+        "strip-debug"
+      ],
+      "configuredArguments": [
+        "--mvp-features",
+        "--optimize-level",
+        "2",
+        "--shrink-level",
+        "0",
+        "--strip-debug"
+      ],
+      "structuralAuditPassed": true,
+      "originalAuditAccepted": true,
+      "staleCandidateAuditRejected": true,
+      "candidateProductionAudit": "not-issued; requires integration before the owned final audit",
+      "baseline": {
+        "bytes": 113006,
+        "sha256": "b3d0be492be20beee4e51f57fb2be5e3bc2c5024911857e189eb919d5ef8bcc7",
+        "functions": 265,
+        "largestFunctionBytes": 4546,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "merged": {
+        "bytes": 108804,
+        "sha256": "8da522c362845edf4c78e87487b3b2e87c0943574197b8314b944f19fa6a6bcf",
+        "functions": 256,
+        "largestFunctionBytes": 4530,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "memoryObservation": {
+        "linearMemoryPages": 32
+      },
+      "semantics": {
+        "cases": [
+          {
+            "name": "valid ES256 bearer",
+            "status": 200,
+            "body": "g3-sensitive-subject:ES256"
+          },
+          {
+            "name": "wrong ES256 signature",
+            "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "stage": 217,
+            "lastError": 1008
+          },
+          {
+            "name": "disallowed algorithm",
+            "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "stage": 212,
+            "lastError": 1008
+          }
+        ]
+      },
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "firstModuleMs": 0.550249000000008,
+          "firstRequestMs": 7.899336000000005,
+          "warmBatchMs": 282.138418,
+          "warmRequests": 100,
+          "processPeakRssBytes": 182730752
+        },
+        {
+          "round": 0,
+          "variant": "merged",
+          "firstModuleMs": 0.5783409999999662,
+          "firstRequestMs": 7.933488000000011,
+          "warmBatchMs": 273.534174,
+          "warmRequests": 100,
+          "processPeakRssBytes": 184156160
+        },
+        {
+          "round": 1,
+          "variant": "merged",
+          "firstModuleMs": 0.5985919999999965,
+          "firstRequestMs": 9.885069999999985,
+          "warmBatchMs": 297.18517299999996,
+          "warmRequests": 100,
+          "processPeakRssBytes": 182857728
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "firstModuleMs": 0.5569700000000353,
+          "firstRequestMs": 7.601407999999992,
+          "warmBatchMs": 252.07588100000004,
+          "warmRequests": 100,
+          "processPeakRssBytes": 183717888
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "firstModuleMs": 0.5158980000000497,
+          "firstRequestMs": 8.126567999999963,
+          "warmBatchMs": 266.33224399999995,
+          "warmRequests": 100,
+          "processPeakRssBytes": 182489088
+        },
+        {
+          "round": 2,
+          "variant": "merged",
+          "firstModuleMs": 0.5970800000000054,
+          "firstRequestMs": 7.601816999999983,
+          "warmBatchMs": 268.2197970000001,
+          "warmRequests": 100,
+          "processPeakRssBytes": 182919168
+        }
+      ]
+    },
+    {
+      "id": "fastly-size",
+      "configuredPasses": [
+        "strip-debug",
+        "strip-debug"
+      ],
+      "configuredArguments": [
+        "--mvp-features",
+        "--optimize-level",
+        "3",
+        "--shrink-level",
+        "2",
+        "--converge",
+        "--strip-debug"
+      ],
+      "structuralAuditPassed": true,
+      "originalAuditAccepted": true,
+      "staleCandidateAuditRejected": true,
+      "candidateProductionAudit": "not-issued; requires integration before the owned final audit",
+      "baseline": {
+        "bytes": 94784,
+        "sha256": "a0423add6952ff665a0b12ba5acb995a8fe1c24e4edb5a24950d65827a3a0264",
+        "functions": 313,
+        "largestFunctionBytes": 3383,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "merged": {
+        "bytes": 91447,
+        "sha256": "1794bb73d78c43e61a6236084bca1f79a967b27f6a43b65ae025e8ac60666f03",
+        "functions": 303,
+        "largestFunctionBytes": 3140,
+        "maxParameters": 7,
+        "tables": 0,
+        "indirectCalls": 0
+      },
+      "memoryObservation": {
+        "linearMemoryPages": 32
+      },
+      "semantics": {
+        "cases": [
+          {
+            "name": "valid ES256 bearer",
+            "status": 200,
+            "body": "g3-sensitive-subject:ES256"
+          },
+          {
+            "name": "wrong ES256 signature",
+            "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "stage": 217,
+            "lastError": 1008
+          },
+          {
+            "name": "disallowed algorithm",
+            "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "stage": 212,
+            "lastError": 1008
+          }
+        ]
+      },
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "firstModuleMs": 0.5350369999999884,
+          "firstRequestMs": 8.562047000000007,
+          "warmBatchMs": 284.922336,
+          "warmRequests": 100,
+          "processPeakRssBytes": 152788992
+        },
+        {
+          "round": 0,
+          "variant": "merged",
+          "firstModuleMs": 0.5958780000000274,
+          "firstRequestMs": 8.300081999999975,
+          "warmBatchMs": 275.597723,
+          "warmRequests": 100,
+          "processPeakRssBytes": 180568064
+        },
+        {
+          "round": 1,
+          "variant": "merged",
+          "firstModuleMs": 0.5581609999999841,
+          "firstRequestMs": 8.499792999999954,
+          "warmBatchMs": 271.74084500000004,
+          "warmRequests": 100,
+          "processPeakRssBytes": 182702080
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "firstModuleMs": 0.5696889999999826,
+          "firstRequestMs": 8.636044000000027,
+          "warmBatchMs": 257.109018,
+          "warmRequests": 100,
+          "processPeakRssBytes": 182071296
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "firstModuleMs": 0.5346260000000029,
+          "firstRequestMs": 8.988099000000034,
+          "warmBatchMs": 280.9012140000001,
+          "warmRequests": 100,
+          "processPeakRssBytes": 153116672
+        },
+        {
+          "round": 2,
+          "variant": "merged",
+          "firstModuleMs": 0.5767390000000319,
+          "firstRequestMs": 8.83381700000001,
+          "warmBatchMs": 268.409633,
+          "warmRequests": 100,
+          "processPeakRssBytes": 176828416
+        }
+      ]
+    }
+  ]
+}
