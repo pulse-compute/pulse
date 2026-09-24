@@ -144,4 +144,5 @@ async function main() {
   } finally { fs.rmSync(temporaryRoot, { recursive: true, force: true }); }
 }
 
-main().catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { sourceFor };
+if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
