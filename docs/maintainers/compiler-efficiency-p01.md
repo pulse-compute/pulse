@@ -645,22 +645,19 @@ distinguish every inlining decision from other simplifications. A shared
 runtime helper could use ordinary direct Wasm calls, without function
 pointers or a table, if a sufficiently substantial body survives
 optimization. A separate `@noinline` probe on these small leaf and binary
-helpers also yielded the same optimized Wasm hash; a decorator alone did
-not establish final sharing in this fixture.
+helpers also yielded the same optimized Wasm hash. The follow-up below found
+that AssemblyScript ignored this unsupported annotation: the probe had never
+applied Binaryen's actual retention flags.
 
 The S03 proposed go criterion required at least 15% fewer declarations **and**
 at least 10% lower compiler peak RSS or median compile time beyond measured
 spread; optimized Wasm delta was to be reported separately. Declaration and
 unoptimized-intermediate reductions are real. This **specific leaf-alias
 implementation** missed the compiler gate and never changed the final
-module. The candidate compiler and test edits were therefore removed; **no
-S03 production change is proposed by this evidence PR**. S03 remains an open
-design question, not a negative conclusion about sharing generally. A next
-bounded proof would need an equivalent repeated body that remains a distinct
-function in optimized WAT, multiple calls to that retained body, unchanged
-evaluation and budget behavior, and a measured final Wasm and compiler delta.
-That proof requires separate review before expanding the family. This packet
-does not authorize public syntax changes or R01 work.
+module. That initial candidate compiler and test patch was removed. The
+retained-helper implementation below supersedes this initial disposition and
+supplies the missing optimized-Wasm proof. Public syntax changes and R01 work
+remain outside this pass.
 
 The selected local evidence commands were:
 
@@ -677,3 +674,106 @@ checked-in benchmark infrastructure. The
 passing candidate test and P03 task prove selected semantics for the screened
 patch, not a new binary, RSS or request-memory benefit. Human review retains
 the G0 and future-work decisions.
+
+## S03 implementation: retain shared bodies before Binaryen optimization
+
+Investigation of PR #73 found a missing toolchain connection. The pinned
+AssemblyScript **0.28.18** does not implement `@noinline`. Its
+[annotation contract](https://www.assemblyscript.org/concepts.html#code-annotations)
+allows custom decorators but ignores them unless a transform interprets them.
+That includes the annotations already emitted for Pulse dispatcher partitions.
+The pinned Binaryen **129.0.0-nightly.20260428** does support function retention:
+its [`no-inline` pass](https://github.com/WebAssembly/binaryen/blob/version_129/src/passes/NoInline.cpp)
+sets full/partial inlining flags for matching functions. It must run before
+optimization. The installed asc source confirms that `afterCompile` precedes
+optimization; [`--runPasses`](https://www.assemblyscript.org/compiler.html#binaryen)
+runs afterward and is too late to protect functions already inlined.
+
+The old generator's alias `Map` was a JavaScript compile-time data structure;
+it never emitted a Wasm function table. A live dynamic-selector control using
+an AssemblyScript function array retains its table and `call_indirect` under
+default optimization, and a memory mapping retains both selected values.
+Sharing these Pulse helpers uses direct calls and does not require pointers.
+
+The implementation now canonicalizes byte-identical emitted expression bodies
+after child aliases and local slots have been resolved. It marks repeated
+multi-statement bodies for retention and keeps small leaves eligible for
+inlining. Build support supplies an asc transform that applies Binaryen's
+real flags to annotated generated helpers and dispatcher partitions before
+optimization, using asc's own Binaryen instance. The same path serves Node
+Native and Fastly Native, including the existing size profile. There is no
+new dependency, public setting, value cache or function-value syntax. Each
+call still performs its original operations and allocations.
+
+Blanket retention was rejected: retaining all expression helpers increased
+the P02 Node module by 463 B and Fastly by 590 B. Selected shared-body
+retention produced these results against the S02 baseline:
+
+| Fixture | Declarations, before → after | Generated source, before → after | Optimized Wasm, before → after |
+| --- | ---: | ---: | ---: |
+| 256 repeated updates, Node | 1,285 → 8 | 135,661 → 33,752 B | 8,657 → 4,336 B |
+| 2,000 repeated updates, Node | 10,005 → 8 | 1,027,801 → 216,085 B | 62,089 → 28,122 B |
+| P02 page workload, Node | 131 → 90 | 38,342 → 35,303 B | 44,296 → 44,277 B |
+| P02 page workload, Fastly | 131 → 90 | 170,611 → 167,572 B | 115,568 → 115,553 B |
+
+The larger fixture is exactly `let value=0;`, 2,000 repetitions of
+`value=value+1;`, and `return ctx.text(''+value)` in the canonical async handler,
+compiled as `s03-leaf-stress.ts` with `strict:false` and `requireAsync:true`.
+Three serial cold runs per version recorded:
+
+| Metric | Baseline samples | Retained-sharing samples | Median change |
+| --- | --- | --- | ---: |
+| Isolated compile wall (ms) | 2,682 / 2,621 / 2,635 | 1,930 / 1,955 / 1,896 | −26.8% |
+| Largest sampled compiler descendant RSS (B) | 332,566,528 / 347,873,280 / 347,971,584 | 265,428,992 / 287,612,928 / 288,067,584 | −17.3% |
+
+The ranges do not overlap. This clears the original declaration-plus-compiler
+threshold on the repeated-body stress fixture. RSS is sampled at 10 ms and is
+the largest individual compiler descendant, not total process-tree memory.
+The worker RSS stayed near 191–193 MB. Final Wasm fell **54.7%**; its baseline
+and candidate SHA-256 values are respectively
+`cd2fddfbc36f4551f62c636d2251a76713ccf9e8b2a674a0dde862f2ad675e79`
+and `d89cfae128cb3bb16f95f2719bd6cb66a0fb4145154826fc0df167e17b2769c7`.
+These measurements used a detached prototype with equivalent generator and
+retention behavior; the final implementation restricts annotation recognition
+to Pulse's two generated source entries and reproduces the same final Wasm hash.
+This is a synthetic duplication win;
+the P02 workload shows only small binary savings. It is not a general
+application-memory or JIT-memory claim.
+
+A runtime screen warmed each 2,000-update module for 100 requests, then ran
+three alternating batches of 1,000 fresh requests. Baseline times were
+2,483 / 2,343 / 2,223 ms; retained sharing was 2,222 / 2,271 / 2,214 ms.
+The ranges overlap, so this does not establish a runtime speedup. Both returned
+`2000` with exactly 4,005 value handles per request. P02's 0/1/16/64-page cases
+preserved responses, budget charges, handles and observed Fastly memory pages.
+P03 retained exact semantic-oracle parity across ten Node Native cases, ten
+Fastly ABI cases and one JavaScript case.
+
+Configuration is also material. Default asc optimization is O3/shrink0.
+On the 256-update fixture O2/shrink0 and shrink1 did not preserve meaningful
+sharing; shrink2 did. The existing `--experimental-native-size` setting
+(O3/shrink2/converge) reduced the baseline fixture to 3,868 B without the new
+generator. On P02 it produced 35,422 B Node / 90,799 B Fastly, about 20% / 21%
+below default. Single-sample compile times increased and RSS did not improve
+consistently, so changing the global default is outside this proof.
+
+The `canonical-native-wasm` task now includes a focused regression that proves
+the annotation is ineffective without the transform and effective with it;
+live dynamic tables and mappings remain executable; shared bodies retain
+multiple direct call sites; and distinct bindings, repeated mutations and
+fresh object identity survive on both Native targets in both optimization
+profiles. Existing semantic and portable gates remain required:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task canonical-native-wasm --task compiler-efficiency-p03 --report .test-results/compiler-efficiency/s03/retained-focused.json
+node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --report .test-results/compiler-efficiency/s03/retained-portable.json
+```
+
+Detailed measurements and diagnostic Wasm/WAT remain local ignored evidence
+under `wasm/.test-results/compiler-efficiency/s03/toolchain/`; validation
+completion and tested source identity belong in the PR record. Human review
+retains the G0 and merge decisions. This pass claims neither Viceroy/deployed
+qualification nor a change to public authoring or runtime-budget semantics.
+Guest-linked modules also pass through a separate post-link whole-module
+optimizer. The size measurements here use handlers without guest units;
+stable helper boundaries through that later stage require their own proof.

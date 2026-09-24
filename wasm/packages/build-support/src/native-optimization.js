@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('node:path');
+
 const {
   NATIVE_OPTIMIZATION_VERSION,
   EXPERIMENTAL_NATIVE_SIZE_MODE
@@ -31,6 +33,9 @@ function resolveNativeOptimization(value) {
 
 function appendAssemblyScriptOptimizationArgs(args, value) {
   if (!Array.isArray(args)) throw new TypeError('AssemblyScript optimization arguments require a mutable argument array.');
+  // AssemblyScript ignores custom @noinline annotations. Apply Pulse's generated
+  // annotations to Binaryen IR before its default passes in every profile.
+  args.push('--transform', path.join(__dirname, 'native-retention-transform.cjs'));
   const optimization = resolveNativeOptimization(value);
   if (!optimization) return undefined;
   args.push(
