@@ -462,6 +462,11 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'MEM02 effect and continuation retention, weak reachability, lifecycle and request-disposal evidence'
   }),
+  'temporary-value-lifetime-mem05': nodeTask('test/runtime/compiler-efficiency/mem05-temporary-lifetime.cjs', {
+    evidence: 'external',
+    timeoutMs: 120000,
+    description: 'MEM05 conditional-read envelope lifetime proposal, alias exclusions and diagnostic release oracle'
+  }),
   'compiler-efficiency-p03': nodeTask('test/runtime/compiler-efficiency/p03-parity-stress.cjs', {
     evidence: 'conformance',
     timeoutMs: 300000,

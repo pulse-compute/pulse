@@ -54,6 +54,7 @@ const externalTasks = new Set([
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',
   'effect-retention-mem02',
+  'temporary-value-lifetime-mem05',
   'compiler-efficiency-p03',
   'compiler-handler-boundary-b01',
   'compiler-handler-cost-b02',
