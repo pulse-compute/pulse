@@ -487,6 +487,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'SC01 serial 1/8/32-schema compile costs, stage attribution and optimized unreferenced-ID dispatch proof'
   }),
+  'compiler-generated-census-gen01': nodeTask('test/runtime/compiler-efficiency/gen01-census.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'GEN01 complete generated-source partition and isolated Fastly compiler/Wasm costs across independent schema, route and effect axes'
+  }),
   'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
     evidence: 'external',
     timeoutMs: 300000,
