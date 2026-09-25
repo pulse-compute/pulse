@@ -44,7 +44,7 @@ function instrument(source) {
     'export function mem01_key_count(h: i32): i32 { return unchecked(__pulse_fastly_values[h - 1]).mem01_key_count() }',
     'export function mem01_key(h: i32, i: i32): usize { return unchecked(__pulse_fastly_values[h - 1]).mem01_key(i) }'
   ].join('\n') + '\n';
-  const entry = 'function __pulse_fastly_schema_apply(schemaId: string, valueHandle: i32, encode: bool): i32 {';
+  const entry = source.match(/function __pulse_fastly_schema_apply\(schemaId: string, valueHandle: i32, encode: bool(?:, textResult: bool = false)?\): i32 \{/)[0];
   source = replaceExact(source, entry, entry + '\n  mem01_checkpoint(0, encode, valueHandle, 0)');
   source = replaceExact(source, '    if (projected <= 0) return 0',
     '    if (projected <= 0) return 0\n    mem01_checkpoint(1, encode, projected, 0)');
@@ -61,12 +61,13 @@ function instrument(source) {
   }
   source = replaceExact(source, '  __pulse_fastly_deep_freeze(decoded)',
     '  __pulse_fastly_deep_freeze(decoded)\n  mem01_checkpoint(5, false, decoded, 0)');
-  source = replaceExact(source, '  const text = __pulse_fastly_json(projected, 0)',
-    '  const text = __pulse_fastly_json(projected, 0)\n  mem01_checkpoint(6, true, projected, changetype<usize>(text))');
+  const encodedText = source.match(/^  const text = (?:textResult \? __pulse_fastly_string\(projected\) : )?__pulse_fastly_json\(projected, 0\)$/m)[0];
+  source = replaceExact(source, encodedText,
+    encodedText + '\n  mem01_checkpoint(6, true, projected, changetype<usize>(text))');
   return source;
 }
 
-function planFor(family) {
+function planFor(family, handlerOverride) {
   const source = { file: 'mem01.ts', line: 1, column: 1 };
   const field = (name, value, required = true) => ({ name, value, required });
   const object = fields => ({ kind: 'object', fields });
@@ -80,7 +81,7 @@ function planFor(family) {
   if (bounded) shape.additionalProperties = { kind: 'json-value' };
   const registry = normalizeSchemaRegistry({ source, schemas: [{ id: 'proof.Value', typeName: 'Value', source, root: shape,
     ...(bounded ? { jsonLimits: { maxTextBytes: 65536, maxJsonBytes: 65536, maxStringLength: 60000 } } : {}) }] });
-  const handler = "export default async function handler(ctx) { const text = await ctx.req.text(); const value = ctx.decodeJson(text, 'proof.Value'); const encoded = ctx.encodeJson(value, 'proof.Value'); return ctx.text(encoded); }";
+  const handler = handlerOverride || "export default async function handler(ctx) { const text = await ctx.req.text(); const value = ctx.decodeJson(text, 'proof.Value'); const encoded = ctx.encodeJson(value, 'proof.Value'); return ctx.text(encoded); }";
   return buildCanonicalNativePlan(compileCanonicalSource(handler, { fileName: source.file,
     schemaBundle: buildCanonicalSchemaBundle(registry, { maxBytes: 65536 }), strict: true, target: 'native', requireAsync: true }));
 }
@@ -209,7 +210,7 @@ function ownership(raw) {
   for (const encode of [false, true]) {
     const at = name => raw.find(row => row.encode === encode && row.stage === name);
     const entry = at('entry'), projected = at('projection'), parsed = at('reparsed');
-    const a = graph(entry), b = graph(projected), c = graph(parsed);
+    const a = graph(entry), b = graph(projected), c = parsed ? graph(parsed) : [];
     const containers = values => values.filter(v => v.kind === 5 || v.kind === 6).map(v => v.handle);
     const inputContainers = new Set(containers(a)), projectedContainers = new Set(containers(b));
     assert.ok(containers(b).every(h => !inputContainers.has(h)), 'projection owns fresh containers');
@@ -220,8 +221,8 @@ function ownership(raw) {
     assert.ok((encode ? graph(entry) : graph(at('decode-frozen'))).every(v => v.frozen), 'decode graph remains deeply frozen through encode');
     results.push({ encode, inputGraphHandles: a.length, projectedGraphHandles: b.length, reparsedGraphHandles: c.length,
       sharedInputProjectionScalars: sharedScalars, freshProjectionContainers: containers(b).length, freshReparseContainers: containers(c).length,
-      handlesAddedByReparse: parsed.handles - at('codec').handles,
-      tableTextBytesAddedByReparse: parsed.tableUniqueTextBytes - at('codec').tableUniqueTextBytes });
+      handlesAddedByReparse: parsed ? parsed.handles - at('codec').handles : 0,
+      tableTextBytesAddedByReparse: parsed ? parsed.tableUniqueTextBytes - at('codec').tableUniqueTextBytes : 0 });
   }
   const normalized = raw.find(row => row.encode && row.stage === 'codec').text, encoded = raw.find(row => row.stage === 'encode-text').text;
   return { graphs: results, encodeNormalizedTextEqualsFinalText: normalized === encoded,
@@ -312,4 +313,4 @@ function run(output) {
 }
 if (require.main === module) run(process.argv[2] ? path.resolve(process.argv[2]) :
   path.join(root, 'wasm/.test-results/compiler-efficiency/mem01', new Date().toISOString().replace(/[:.]/g, '-')));
-module.exports = { instrument, replaceExact, observer, planFor, corpus, run };
+module.exports = { instrument, replaceExact, observer, planFor, corpus, run, diagnosticCompile, diagnosticHost, outcome, ownership };

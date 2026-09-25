@@ -32,6 +32,7 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 | [`PULSE_ES256_REPRODUCTION_ARCHIVE`](#pulse-es256-reproduction-archive) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
 | [`PULSE_RUST_CARGO`](#pulse-rust-cargo) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
 | [`PULSE_RUSTC`](#pulse-rustc) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
+| [`PULSEWASM_MEM03_BASE`](#pulsewasm-mem03-base) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
 
 ## Supported tooling configuration
 
@@ -392,6 +393,22 @@ Selects the Rust compiler used to reproduce the sealed first-party Rust guest pr
 | Secret safety | Not a secret. Do not point it at an untrusted executable. |
 | Stability | Contributor/test-only proof reproduction control. |
 | Source owners | `wasm/test/guest-link/assert-scalar-link-control.cjs`, `wasm/test/guest-link/assert-memory-matrix.cjs`, `wasm/test/guest-link/assert-final-artifact-reality.cjs` |
+
+<a id="pulsewasm-mem03-base"></a>
+
+### `PULSEWASM_MEM03_BASE`
+
+Selects an explicit baseline generator revision for paired semantic and allocator measurements.
+
+| Property | Contract |
+|---|---|
+| Value | Git commit or ref |
+| Default | Merged GEN01 commit `8a6f2ff`. |
+| Precedence | When set, selects the baseline generator source loaded from git; all other dependencies come from the candidate checkout. |
+| Consumer | Manual MEM03 Fastly schema encode materialization proof. |
+| Secret safety | Not a secret. Use only a trusted baseline generator revision for the proof. |
+| Stability | Contributor/test-only proof reproduction control. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.cjs` |
 
 ## Standard process variables
 
