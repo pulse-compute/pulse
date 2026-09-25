@@ -295,6 +295,18 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
       'wasm/test/guest-link/assert-memory-matrix.cjs',
       'wasm/test/guest-link/assert-final-artifact-reality.cjs'
     ]
+  }),
+  entry({
+    name: 'PULSEWASM_MEM03_BASE',
+    category: 'contributor',
+    value: 'Git commit or ref',
+    default: 'Merged GEN01 commit `8a6f2ff`.',
+    precedence: 'When set, selects the baseline generator source loaded from git; all other dependencies come from the candidate checkout.',
+    consumer: 'Manual MEM03 Fastly schema encode materialization proof.',
+    secretSafety: 'Not a secret. Use only a trusted baseline generator revision for the proof.',
+    stability: 'Contributor/test-only proof reproduction control.',
+    description: 'Selects an explicit baseline generator revision for paired semantic and allocator measurements.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.cjs']
   })
 ]);
 
