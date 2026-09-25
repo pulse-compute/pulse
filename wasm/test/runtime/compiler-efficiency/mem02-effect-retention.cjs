@@ -154,7 +154,7 @@ async function javascriptBodies(count, size) {
   },dispose(){disposals++;}}});
   assert.equal(await result.text(),'done'); assert.equal(disposals,1);
   await collect(); const effectClosed={liveResponses:live(refs),listeners:listeners(budget.signal),timers:c.pending()};
-  assert.equal(effectClosed.liveResponses,count); assert.equal(effectClosed.listeners,count);
+  assert.equal(effectClosed.liveResponses,0); assert.equal(effectClosed.listeners,0);
   budget.close(); await collect();
   const budgetClosed={liveResponses:live(refs),listeners:listeners(budget.signal),timers:c.pending()};
   assert.deepEqual(budgetClosed,{liveResponses:0,listeners:0,timers:0});
@@ -175,7 +175,7 @@ async function unsubscribeControl() {
   const budget=createRequestBudget();let callback=()=>{},remove=budget.onAbort(callback);
   const weak=new WeakRef(callback);callback=null;remove();remove=null;
   await collect();const removed={listeners:listeners(budget.signal),liveCallback:Number(weak.deref()!==undefined)};
-  assert.deepEqual(removed,{listeners:0,liveCallback:1});
+  assert.deepEqual(removed,{listeners:0,liveCallback:0});
   budget.close();await collect();assert.equal(weak.deref(),undefined);
   return {removed,afterBudgetClose:{listeners:listeners(budget.signal),liveCallback:0}};
 }

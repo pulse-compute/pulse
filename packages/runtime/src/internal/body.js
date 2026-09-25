@@ -200,7 +200,10 @@ function createStructuredBodyReader(owner, options = {}) {
 
   function bytes() {
     assertInspectable();
-    if (!bytesPromise) bytesPromise = readBodyBytes(owner, maxBytes, label, signal);
+    if (!bytesPromise) {
+      bytesPromise = readBodyBytes(owner, maxBytes, label, signal);
+      if (options.onReadSettled) bytesPromise = bytesPromise.finally(options.onReadSettled);
+    }
     return bytesPromise;
   }
 

@@ -83,6 +83,69 @@ describe('provider-owned request budget', () => {
     await ready; c.advance(10); await rejected; expect(cancelled).toBe(true)
   })
 
+  it('releases consumed fetch cancellation roots while an inherited budget stays open', async () => {
+    const b = host.createRequestBudget(); let calls = 0
+    const seen: Array<{ text: string, listeners: number }> = []
+    const response = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => {
+      for (let i = 0; i < 8; i++) {
+        const fetched = ctx.fetch('https://origin.test/' + i)
+        const text = await fetched.text()
+        const again = await fetched.text()
+        seen.push({text: text + ':' + again, listeners: getEventListeners(b.signal, 'abort').length})
+      }
+      return ctx.text('done')
+    }, new Request('http://deadline.test'), {requestBudget: b, effectAdapter: {
+      id: 'consumed-fetch-root', dispatch() { return new Response('body-' + calls++, {headers: {'content-type': 'text/plain'}}) }
+    }})
+    expect(await response.text()).toBe('done')
+    expect(seen.map(row => row.text)).toEqual(Array.from({length: 8}, (_, i) => `body-${i}:body-${i}`))
+    expect(seen.map(row => row.listeners)).toEqual(Array(8).fill(seen[0].listeners))
+    b.close()
+  })
+
+  it('retains cancellation for unread pass-through and releases failed consumed reads', async () => {
+    const b = host.createRequestBudget(); let cancelled = 0
+    const passed = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => ctx.fetch('https://origin.test/'),
+      new Request('http://deadline.test'), {requestBudget: b, effectAdapter: {id: 'unread-fetch-root', dispatch() {
+        return new Response(new ReadableStream({start(controller) { controller.enqueue(new TextEncoder().encode('stream')); controller.close() },
+          cancel() { cancelled++ }}), {headers: {'content-type': 'application/octet-stream'}})
+      }}})
+    const beforeClose = getEventListeners(b.signal, 'abort').length
+    b.close()
+    expect(getEventListeners(b.signal, 'abort').length).toBe(beforeClose - 1)
+    expect(await passed.text()).toBe('stream')
+    expect(cancelled).toBe(0)
+
+    const failedBudget = host.createRequestBudget(); const failedListeners: number[] = []
+    const failed = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => {
+      for (let i = 0; i < 4; i++) {
+        try { await ctx.fetch('https://origin.test/').text() }
+        catch (error: any) { expect(error.code).toBe('PULSE_BODY_TOO_LARGE') }
+        failedListeners.push(getEventListeners(failedBudget.signal, 'abort').length)
+      }
+      return ctx.text('handled')
+    }, new Request('http://deadline.test'), {requestBudget: failedBudget, maxFetchBodyBytes: 4,
+      effectAdapter: {id: 'failed-fetch-root', dispatch() { return new Response('more than four bytes') }}})
+    expect(await failed.text()).toBe('handled')
+    expect(failedListeners).toEqual(Array(4).fill(failedListeners[0]))
+    failedBudget.close()
+
+    const source = new AbortController(), unreadBudget = host.createRequestBudget({signal: source.signal}); let unreadCancelled = 0
+    const rejectedBeforeRead = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => {
+      try { await ctx.fetch('https://origin.test/').text() }
+      catch (error: any) { expect(error.code).toBe('PULSE_BODY_TOO_LARGE') }
+      return ctx.text('admission rejected')
+    }, new Request('http://deadline.test'), {requestBudget: unreadBudget, maxFetchBodyBytes: 4,
+      effectAdapter: {id: 'unread-after-admission', dispatch() { return new Response(new ReadableStream({
+        cancel() { unreadCancelled++ }
+      }), {headers: {'content-type': 'text/plain', 'content-length': '100'}}) }}})
+    expect(await rejectedBeforeRead.text()).toBe('admission rejected')
+    source.abort()
+    await Promise.resolve()
+    expect(unreadCancelled).toBe(1)
+    unreadBudget.close()
+  })
+
   it('removes onAbort hooks at normal close without cancelling transferred bodies', async () => {
     const c = clock(), b = host.createRequestBudget({maxDurationMs: 10, requestClock: c}); let cancelled = 0
     const remove = b.onAbort(() => { cancelled++ })

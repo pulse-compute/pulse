@@ -1,0 +1,144 @@
+{
+  "version": "pulse.mem04.effect-cleanup.v1",
+  "status": "passed",
+  "baseline": {
+    "revision": "adb32f41c678596951c627cff6e6854939a0ab4b",
+    "evidenceSha256": "89690c8be19ae1f9343e45900bccfae83e248c0155419fc4ac3905f7b69a7c06",
+    "sourceHashes": {
+      "packages/runtime/src/internal/effect-adapter.js": "0883362dae1523350ab9265f239802a9d1b05aa72d2b96c602ac7e3a05d3fba4",
+      "packages/runtime/src/internal/request-budget.js": "32ec152a27c912da41ca04fef46e90cf623272dce1e8dc08423a2ccbac97ca8f",
+      "packages/runtime/src/internal/body.js": "4d60efb2b32b53e4135c2d0c5b2ee67c723e95c0f2bfaa78859e642d8d4b0a79",
+      "packages/runtime/src/internal/response.js": "dca0f349efeab26677b18b6c3c541245cb8e9e12789d98cb0f73d721308bf1ff",
+      "packages/runtime/src/internal/router.js": "f42ff7002b29f4df6fe5b3ed1b100f63ddbf41e4ae8dbbf0f8dc89381a6646e1"
+    }
+  },
+  "candidate": {
+    "revisionAtRun": "a0105747a937430141d7e91213544b0a11bac76d",
+    "workingTreeAtRun": "M packages/runtime/src/internal/body.js\n M packages/runtime/src/internal/effect-adapter.js\n M packages/runtime/src/internal/request-budget.js\n M packages/runtime/src/internal/response.js\n M packages/runtime/test/request-budget.test.ts\n M wasm/test/runtime/compiler-efficiency/mem02-effect-retention.cjs",
+    "fullReportSha256": "8eed6d562cdcbf845e353ea4766fae0964644ab952a8ae8fe28ec9558afa6bda",
+    "fullReportRelativePath": "wasm/.test-results/compiler-efficiency/mem02/2026-09-25T04-38-51-577Z/measurements.json",
+    "harnessSha256": "43ff8cffce63d5f32ce489235cf0ca1fa751af84d2884c088193fa478fff6d3d",
+    "sourceHashes": {
+      "packages/runtime/src/internal/effect-adapter.js": "d74b27b31936503c23ad20615ebf7865d44580b40066a69a89691d7b7d9c6af7",
+      "packages/runtime/src/internal/request-budget.js": "1d99b43fe45a0a74255e6e398f0bfdeaea3677ad0b663502fbef370ec8440e70",
+      "packages/runtime/src/internal/body.js": "4d24dea172711c444d656b5d71c76a94558afd6865281a4d6dfaf998cb6b4f79",
+      "packages/runtime/src/internal/response.js": "dae4d4837ca4d9efe5f4eb7fe13421788d5f8c83b7994a9e42e60cc4fdcadff6",
+      "packages/runtime/src/internal/router.js": "f42ff7002b29f4df6fe5b3ed1b100f63ddbf41e4ae8dbbf0f8dc89381a6646e1"
+    }
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "assemblyScript": {
+      "package": "assemblyscript",
+      "version": "0.28.18"
+    }
+  },
+  "rows": [
+    {
+      "reads": 1,
+      "baseline": {
+        "responsesAfterExecutionDisposed": 1,
+        "budgetListenersAfterExecutionDisposed": 1
+      },
+      "candidate": {
+        "responsesAfterExecutionDisposed": 0,
+        "budgetListenersAfterExecutionDisposed": 0
+      },
+      "deadlineTimerUntilBudgetClose": 1,
+      "afterBudgetClose": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    },
+    {
+      "reads": 8,
+      "baseline": {
+        "responsesAfterExecutionDisposed": 8,
+        "budgetListenersAfterExecutionDisposed": 8
+      },
+      "candidate": {
+        "responsesAfterExecutionDisposed": 0,
+        "budgetListenersAfterExecutionDisposed": 0
+      },
+      "deadlineTimerUntilBudgetClose": 1,
+      "afterBudgetClose": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    },
+    {
+      "reads": 32,
+      "baseline": {
+        "responsesAfterExecutionDisposed": 32,
+        "budgetListenersAfterExecutionDisposed": 32
+      },
+      "candidate": {
+        "responsesAfterExecutionDisposed": 0,
+        "budgetListenersAfterExecutionDisposed": 0
+      },
+      "deadlineTimerUntilBudgetClose": 1,
+      "afterBudgetClose": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    },
+    {
+      "reads": 64,
+      "baseline": {
+        "responsesAfterExecutionDisposed": 64,
+        "budgetListenersAfterExecutionDisposed": 64
+      },
+      "candidate": {
+        "responsesAfterExecutionDisposed": 0,
+        "budgetListenersAfterExecutionDisposed": 0
+      },
+      "deadlineTimerUntilBudgetClose": 1,
+      "afterBudgetClose": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    }
+  ],
+  "unsubscribe": {
+    "baselineCallbackRootedAfterUnsubscribe": 1,
+    "candidateCallbackRootedAfterUnsubscribe": 0,
+    "listenersAfterUnsubscribe": 0
+  },
+  "parity": {
+    "nativeAndParallelWasmIdentical": true,
+    "managedLifecycleCasesIdentical": 16,
+    "registryHistoryIdentical": true,
+    "sharedGeneratorHistoryIdentical": true,
+    "directAdapterBodyControlsIdentical": true,
+    "nativeHandleAndAccountingTotalsIdentical": true,
+    "repeatedCompletedRequestsIdentical": true
+  },
+  "repeatedCompletedRequests": [
+    {
+      "completedRequests": 1,
+      "createdResponses": 4,
+      "survivingResponses": 0
+    },
+    {
+      "completedRequests": 4,
+      "createdResponses": 16,
+      "survivingResponses": 0
+    },
+    {
+      "completedRequests": 16,
+      "createdResponses": 64,
+      "survivingResponses": 0
+    }
+  ],
+  "limits": [
+    "WeakRef/explicit GC measures tracked-object reachability; no V8 live-byte or RSS saving is claimed.",
+    "The remaining deadline timer is owned by the inherited request budget until close.",
+    "Direct low-level adapter projection still retains its raw response until budget close; MEM04 changes only the ctx.fetch structured path.",
+    "Injected Node adapters and no deployed transport or Fastly acceptance."
+  ]
+}

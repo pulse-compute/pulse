@@ -15,6 +15,7 @@ const { fetchRequestInitForHost } = require('./fetch.js');
 const { createRedactionState } = require('./redaction.js');
 const { validateSchemaValue } = require('./schema.js');
 const { EVENT_EMIT_CODES } = require('./event-emission.js');
+const { retainFetchResponseForBudget } = require('./response.js');
 
 const JAVASCRIPT_EFFECT_PROTOCOL_VERSION = 'pulse.javascript-effect.v1';
 const JAVASCRIPT_EFFECT_ADAPTER_VERSION = 'pulse.javascript-effect-adapter.v1';
@@ -609,11 +610,7 @@ function createJavascriptEffectExecution(options = {}) {
           adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
           { ...operationExecution, onKvObservation: observe }, limits);
         return Promise.resolve(adapter.dispatch(descriptor, operationExecution)).then(value => {
-          if (value instanceof Response && value.body && options.requestBudget) {
-            options.requestBudget.onAbort(() => {
-              if (!value.body.locked) void value.body.cancel(options.requestBudget.signal.reason).catch(() => {});
-            });
-          }
+          retainFetchResponseForBudget(value, options.requestBudget);
           return value;
         });
       }), operationSignal.signal).then(
