@@ -54,6 +54,38 @@ try {
   assert.equal(zeroEffectPlan.effects.length, 0, 'hello plan must exercise the zero-effect provider path');
   const zeroEffectCompiled = platform.compileFastlyNativePlatformCapabilitiesPlan(zeroEffectPlan, { cwd: repoRoot, bindings: {}, requirePlatformCapability: false, canonicalBuild: true });
   assertNativePlatformModule('zero-effect-http', zeroEffectCompiled, ['fastly_abi', 'fastly_http_req', 'fastly_http_resp', 'fastly_http_body'], ['fastly_config_store', 'fastly_secret_store', 'fastly_kv_store'], { platformCapabilities: false });
+  const assetFamily = [
+    '__pulse_fastly_assets_payload', '__pulse_fastly_assets_begin',
+    '__pulse_fastly_asset_content_type', '__pulse_fastly_asset_text', '__pulse_fastly_wait_assets'
+  ];
+  for (const name of assetFamily) assert.doesNotMatch(zeroEffectCompiled.source, new RegExp(`^function ${name}\\(`, 'm'));
+  assert.equal(platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(zeroEffectPlan,
+    { bindings: {}, requirePlatformCapability: false, canonicalBuild: true }).source, zeroEffectCompiled.source,
+    'source-only and compiled zero-effect entries select the same support');
+
+  const assetRoot = path.join(repoRoot, 'wasm/test/fixtures/projects/package-root');
+  const { resolveProject } = require('../../packages/cli/src/project-config.js');
+  const { compileProject } = require('../../packages/cli/src/project-execution.js');
+  const assetPlan = buildCanonicalNativePlan(compileProject(resolveProject({ cwd: assetRoot, env: { PULSE_PROFILE: 'native' } })));
+  assert.deepEqual(assetPlan.effects.map(effect => effect.kind), ['assets.lookup', 'assets.lookup', 'assets.lookup']);
+  const assetOptions = { canonicalBuild: true, bindings: { kv: { public: 'public_assets' } } };
+  const assetSource = platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(assetPlan, assetOptions).source;
+  const assetCompiled = platform.compileFastlyNativePlatformCapabilitiesPlan(assetPlan, { ...assetOptions, emitWat: false });
+  assert.equal(assetSource, assetCompiled.source, 'source-only and compiled Assets entries retain the complete support family');
+  assertNativePlatformModule('assets', assetCompiled, ['fastly_kv_store', 'fastly_http_body']);
+  for (const name of assetFamily) assert.equal([...assetSource.matchAll(new RegExp(`^function ${name}\\(`, 'gm'))].length, 1);
+  for (const [route, body, calls] of [
+    ['/asset', 'console.log(1)', ['open', 'lookup', 'lookup_wait_v2']],
+    ['/parallel', 'first', ['open', 'lookup', 'open', 'lookup', 'lookup_wait_v2', 'lookup_wait_v2']]
+  ]) {
+    const observed = mock.executeFastlyNativePlatformCapabilities(assetCompiled, {
+      request: { method: 'GET', path: route },
+      kvStores: { public_assets: { '/app.js': 'console.log(1)', '/first.js': 'first', '/second.js': 'second' } }
+    });
+    assert.equal(observed.response.status, 200);
+    assert.equal(observed.response.body, body);
+    assert.deepEqual(observed.trace.filter(entry => entry.module === 'fastly_kv_store').map(entry => entry.name), calls);
+  }
   assert.doesNotMatch(zeroEffectCompiled.source, /^\s*else __pulse_fastly_fail\(PULSE_ERROR_UNSUPPORTED/m, 'zero-effect dispatch must not emit a dangling else');
   // A custom section changes module size without changing executable behavior.
   // Exercise the former ceiling, the inclusive new boundary, and rejection.
@@ -134,6 +166,7 @@ try {
     nativeOptimization: 'experimental-native-bounded-size'
   });
   assertNativePlatformModule('fastly-capabilities', configFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
+  for (const name of assetFamily) assert.doesNotMatch(configFirst.source, new RegExp(`^function ${name}\\(`, 'm'));
   assertNativePlatformModule('fastly-capabilities-experimental-size', configExperimentalFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
   assert.deepEqual(configFirst.wasm, configSecond.wasm, 'config/secret module must be byte deterministic across cwd');
   assert.equal(configFirst.source, configSecond.source, 'config/secret AssemblyScript must be deterministic across cwd');
