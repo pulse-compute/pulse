@@ -1610,3 +1610,132 @@ The initial focused-control attempt used an incorrect expected schema error
 constant (1008); the production contract is 1005. The control was corrected to
 1005, preserving stages 52/53/54, and its retry passed. Production error behavior
 was not changed.
+
+## MEM01 — Fastly schema materialization and ownership (25 September 2026)
+
+Entry point: `provider-fastly`; class: **evidence**; base: merged SC02
+`70f4914cb14e61623b56f8a58b8d1fedf46ac6bf`. The authorized MEM01 pass also owns
+its diagnostic harness/evidence under `wasm/test/runtime/compiler-efficiency/`
+and this maintainer record. Production generators, codecs, imports, exports,
+defaults, lifecycle rules and ABI are unchanged. This is an injected-ABI proof,
+not Viceroy or deployed Fastly acceptance.
+
+The result supports one **conditional MEM03 candidate**: avoid the final handle
+reparse/serialization in explicit `ctx.encodeJson` for statically closed schemas
+containing only the tested string/boolean, object/array, optional and nullable
+shapes. Keep the initial projection and portable codec validation. Numeric,
+dynamic/open JSON and other unproved shapes retain the existing path. This is a
+candidate boundary, not an implementation or a claimed memory saving.
+
+Generic forwarding of codec text is a **no-go**: for `1e20`, the codec emits
+`100000000000000000000`, while today's final encode emits
+`100000000000000000000.0`. Both numeric-bearing fixtures retain this exact-byte
+counterexample. All seven successful text-only controls have identical
+codec-normalized and final encode bytes.
+
+### Measurement and controls
+
+The harness builds closed optional, bounded-open and closed text-only schemas.
+Each fixture exercises request-text → `decodeJson` → `encodeJson` → text-response.
+The 42 cases cover small and near-bound payloads, escaped Unicode/control
+characters, optional absence/presence, nullable values, nested collections,
+unknown fields, duplicate names after unescaping, numeric formatting, malformed
+input, missing/wrong fields and byte/string limits. An over-byte request returns
+HTTP 413; malformed closed JSON reports 1004, while bounded admission reports
+schema error 1005.
+
+Each case runs four ways (168 requests):
+
+1. Unmodified production Wasm with the existing injected Fastly ABI host.
+2. The same generated source with AssemblyScript allocator tracing.
+3. Tracing plus nonallocating stage/value-table readers.
+4. The staged module with diagnostic collection at each checkpoint.
+
+An additional no-op diagnostic compile must be **byte-identical** to production
+Wasm for each fixture. The recipe preserves incremental GC, default optimization,
+retention/bounded merging and json-as 1.5.0 strict/NAIVE policy. Only temporary
+instrumented source receives private imports/exports; the production ABI
+allowlist is never weakened. Initialization is deferred until the diagnostic
+host can read exported memory.
+
+The observer uses AssemblyScript 0.28.18 TLSF allocation, resize and free events.
+It records cumulative allocated/freed bytes, peak outstanding block bytes,
+terminal outstanding bytes and outstanding bytes after collection. Block sizes
+include allocator/GC alignment and overhead. Static data, shadow stack,
+allocator metadata and unused/reserved pages are excluded. Outstanding blocks
+before collection include garbage awaiting collection. Failure-path collection
+may retain conservative stack roots. None of these counters is Node RSS.
+
+Stage readers avoid lazy collection and rope getters and assert no guest
+allocation/free/resize while observing. Graph snapshots record container identity,
+scalar sharing and frozen state. Text counts deduplicate value-table string/key
+pointers, excluding container backing stores; they are not total heap bytes.
+Forced collection changes GC scheduling and examines retention only.
+
+Every diagnostic variant must match production response bytes or error
+category/code/stage/effect. Successful hostcall traces also match. For every case,
+staged and trace-only allocation totals, peak, terminal and post-collection
+metrics match exactly. Forced-stage collection preserves ownership facts.
+Independent value expectations verify projection and acceptance/rejection.
+
+### Ownership result
+
+| Stage | Observed owner/identity | Decision |
+|---|---|---|
+| Request text and initial graph | Request state/value table; graph remains rooted | Not selected |
+| Projection | Fresh containers; typed scalar fields reuse input handles | Keep validation/projection |
+| Serialized projected text | Temporary input to the portable codec | Keep portable boundary |
+| Portable output | Normalized text; codec temporaries can be collected | Candidate encode result only where exact bytes are proved |
+| Reparsed graph | Fresh containers/strings in request-lifetime value table | Keep for decode; candidate to avoid in eligible explicit encode |
+| Decoded value | Deeply frozen graph, valid through encode | Preserve aliases/lifetime |
+| Final encode text | Serializes the reparsed graph again and becomes the result | Candidate round trip, subject to byte/failure controls |
+
+Decode and encode each create separate projected and reparsed containers.
+Collection cannot remove value-table entries, including otherwise obsolete
+intermediate graphs. Scalar sharing during projection does not prevent reparse
+from creating another long string.
+
+| Near-bound fixture | Request UTF-8 bytes | Trace-only peak outstanding bytes | Post-collection outstanding bytes | Final encode reparse adds handles | Reparse adds distinct UTF-16 text bytes |
+|---|---:|---:|---:|---:|---:|
+| Closed optional | 59,094 | 3,844,416 | 2,296,080 | 15 | 118,084 |
+| Bounded open | 59,094 | 3,741,872 | 2,296,080 | 15 | 118,084 |
+| Closed text-only | 59,081 | 3,841,200 | 2,295,184 | 13 | 118,074 |
+
+Uninstrumented and traced linear-memory capacity is 5,242,880 bytes for these
+cases; capacity is not the live set. With forced collection, text-only encode
+has 2,292,400 outstanding bytes at the codec checkpoint and 2,412,720 after
+reparse. These ownership observations cannot be converted directly into an
+end-to-end saving percentage.
+
+MEM03 must still establish comprehensive byte/failure parity for its selected
+family, including PS3 accounting/error implications. Do not refund cumulative
+budgets or change decoded graph ownership. This proof does not authorize general
+object interning, handle reclamation, response-path rewriting or a schema
+interpreter. Effect/continuation analysis remains MEM02; reclamation is MEM05+.
+
+### Reproduction and evidence limits
+
+```sh
+node wasm/test/runtime/compiler-efficiency/mem01-schema-materialization.cjs
+node wasm/scripts/run-wasm-tests.cjs --task fastly-native-platform-capabilities
+```
+
+Full `measurements.json`, temporary generated sources/Wasm and compact
+`evidence.json` are written below
+`wasm/.test-results/compiler-efficiency/mem01/<run>/`. The committed compact
+report is `wasm/test/runtime/compiler-efficiency/schema-materialization-evidence.json`.
+It retains all case outcomes, ownership facts and allocator totals, plus
+near-bound stage snapshots. Identity includes working-tree state, harness,
+lockfile, production-owner and traced runtime-source hashes.
+
+Instrumentation/accounting guards run inside the existing Fastly platform task;
+no release task/shard is added. Initial development corrected a missing
+pointer-preserving rtrace store hook and mistaken HTTP 413/malformed-input test
+expectations, without production changes. An environment replacement then
+removed the unpublished checkout and interrupted CLI validation. The harness
+was reconstructed and the evidence replayed; only the recovered complete proof
+is committed. Earlier local reports and the interrupted CLI run are not
+acceptance evidence. The PR records validation of the recovered checkout.
+
+This pass does not measure a candidate implementation, compiler performance,
+whole-application memory, PS3 budgets, linked guests or deployed behavior.
