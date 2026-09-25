@@ -12,6 +12,7 @@ const {
 
 const RESULT_DATA = new WeakMap();
 const FETCH_RESPONSE_DATA = new WeakMap();
+const FETCH_RESPONSE_CANCELLATIONS = new WeakMap();
 const RESPONSE_HEADER_DATA = new WeakMap();
 const RESPONSE_BODY_CLASS_DATA = new WeakMap();
 const RESULT_BRAND = Symbol('pulse.runtime.result');
@@ -180,6 +181,26 @@ function claimFetchResponse(data, mode) {
   data.ownershipMode = mode;
 }
 
+function retainFetchResponseForBudget(response, budget) {
+  if (!(response instanceof Response) || !response.body || !budget) return;
+  const remove = budget.onAbort(() => {
+    if (!response.body.locked) void response.body.cancel(budget.signal.reason).catch(() => {});
+  });
+  let registrations = FETCH_RESPONSE_CANCELLATIONS.get(response);
+  if (!registrations) {
+    registrations = new Set();
+    FETCH_RESPONSE_CANCELLATIONS.set(response, registrations);
+  }
+  registrations.add(remove);
+}
+
+function releaseFetchResponseCancellation(response) {
+  const registrations = FETCH_RESPONSE_CANCELLATIONS.get(response);
+  if (!registrations) return;
+  FETCH_RESPONSE_CANCELLATIONS.delete(response);
+  for (const remove of registrations) remove();
+}
+
 function readerForFetchData(data, options = {}) {
   claimFetchResponse(data, 'structured-projection');
   if (data.bodyReader) return data.bodyReader;
@@ -191,7 +212,10 @@ function readerForFetchData(data, options = {}) {
     label: 'fetched response',
     maxBytes: options.maxBodyBytes === undefined ? data.maxBodyBytes : options.maxBodyBytes,
     forceStructured: true,
-    signal: options.signal || data.signal
+    signal: options.signal || data.signal,
+    onReadSettled: () => {
+      if (data.response.bodyUsed && !data.response.body?.locked) releaseFetchResponseCancellation(data.response);
+    }
   });
   return data.bodyReader;
 }
@@ -403,6 +427,7 @@ module.exports = Object.freeze({
   isPulseResult,
   markOpaqueResponse,
   normalizeFetchResponse,
+  retainFetchResponseForBudget,
   normalizeHeaders,
   projectFetchResponse,
   responseAllowsBody,
