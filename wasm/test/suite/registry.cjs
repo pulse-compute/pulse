@@ -462,6 +462,11 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'MEM02 effect and continuation retention, weak reachability, lifecycle and request-disposal evidence'
   }),
+  'payload-retention-mem08': nodeTask('test/runtime/compiler-efficiency/mem08-payload-retention.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'MEM08 Node payload heap snapshots and Fastly allocator/root retention evidence'
+  }),
   'compiler-efficiency-p03': nodeTask('test/runtime/compiler-efficiency/p03-parity-stress.cjs', {
     evidence: 'conformance',
     timeoutMs: 300000,
