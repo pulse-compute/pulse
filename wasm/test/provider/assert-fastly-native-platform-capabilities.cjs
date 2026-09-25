@@ -43,6 +43,7 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-platform-capabilities-'));
 try {
+  require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
@@ -167,6 +168,8 @@ try {
     nativeOptimization: 'experimental-native-bounded-size'
   });
   assertNativePlatformModule('fastly-capabilities', configFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
+  assert.doesNotMatch(configFirst.source, /function __pulse_fastly_resolve_config_get\(/,
+    'a single config site keeps the original direct handoff');
   for (const name of assetFamily) assert.doesNotMatch(configFirst.source, new RegExp(`^function ${name}\\(`, 'm'));
   assertNativePlatformModule('fastly-capabilities-experimental-size', configExperimentalFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
   assert.deepEqual(configFirst.wasm, configSecond.wasm, 'config/secret module must be byte deterministic across cwd');

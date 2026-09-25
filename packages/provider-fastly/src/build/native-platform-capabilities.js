@@ -1206,9 +1206,28 @@ function effectResultSource(plan, bindings) {
   for (const binding of bindings.grip.publish) lines.push(`    case ${binding.index}: return ${quote(binding.authSecretRef || '')}`);
   lines.push('    default: return ""', '  }', '}', '');
 
+  // A config lookup has the same ready-result handoff at every static site.
+  // Keep the site indices in the switch; pass the active index through so the
+  // pending slot and any state error still belong to the original invocation.
+  const configSites = (plan.effects || []).flatMap((effect, index) => effect.kind === 'config.get' ? [index] : []);
+  if (configSites.length > 1) {
+    lines.push('function __pulse_fastly_resolve_config_get(effectIndex: i32): i32 {');
+    lines.push('  const response = __pulse_fastly_wait_ready(effectIndex)');
+    lines.push('  if (response <= 0) return 0');
+    lines.push('  return response');
+    lines.push('}', '');
+  }
+
   lines.push('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {');
   lines.push('  switch (effectIndex) {');
   for (const [index, effect] of (plan.effects || []).entries()) {
+    if (effect.kind === 'config.get' && configSites.length > 1) {
+      if (index === configSites[0]) {
+        for (const site of configSites) lines.push(`    case ${site}:`);
+        lines.push('      return __pulse_fastly_resolve_config_get(effectIndex)');
+      }
+      continue;
+    }
     const result = effect.result || {};
     const decoder = result.decoder;
     const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
