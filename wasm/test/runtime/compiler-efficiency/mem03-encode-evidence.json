@@ -1,0 +1,3309 @@
+{
+  "version": "pulse.mem03.encode-materialization.v1",
+  "status": "passed",
+  "baselineRevision": "8a6f2ff45baf3d60b7819f0788d8ad6ab6331204",
+  "sourceRevision": "8a6f2ff45baf3d60b7819f0788d8ad6ab6331204",
+  "workingTree": "M packages/provider-fastly/src/build/native-platform-capabilities.js\n M wasm/test/provider/assert-fastly-native-platform-capabilities.cjs\n M wasm/test/runtime/compiler-efficiency/mem01-schema-materialization.cjs\n?? wasm/test/provider/assert-fastly-schema-encode-text.cjs\n?? wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.cjs",
+  "node": "v24.19.0",
+  "harnessSha256": "a94430d03af820619fd12fc9b8f9e1fd7856489ccdf9311844197d14b21cf2e2",
+  "observerSha256": "2705f8f6ec5c01f53b1a3f0488aec54fa75f9c1053eca7ad79f974804dd2767d",
+  "semanticHarnessSha256": "e4810d83d0a0fdf0a85af2559187a0ce86abf6820a0b7647946567b2dfd7a18d",
+  "baselineOwnerSha256": "e1a3eac04c6e15d57d30e2587b76d0adb19f9deed6904bb300124b27bdbd02a3",
+  "candidateOwnerSha256": "423dcace4d09bc96c1ddead94630b77604677a04169ddf7a99a08bc08179780e",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "semanticCases": [
+    {
+      "fixture": "text-only",
+      "case": "small",
+      "inputSha256": "d6361c9e154f9e5851ad316e77615d371925cba112468aef4712f136174477a2",
+      "bytes": 94,
+      "outcomeSha256": "dedfbd7b6fa52018e850cc96b7266d49773432f5baaa45a86d5c51f8cf983f29",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "optional-absent",
+      "inputSha256": "425ddfb5c3c1fb9bb62700945fd0b1c256b23f5137a43f84235cdc81aea210a2",
+      "bytes": 82,
+      "outcomeSha256": "9875b5d3fdc7b1062ee5f88bf289ca325763875260b3b423f92fd9760c21f667",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "optional-present",
+      "inputSha256": "b02a3c3ddedfc78f6aaaf9a1361483ea1eb3999045689047f7a9a62889c9513d",
+      "bytes": 99,
+      "outcomeSha256": "7a31f6df98a6ca7e5dbc545249576d77c24751043bf3d03a2c13be11d91741d8",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "near-bound-ascii",
+      "inputSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66",
+      "bytes": 59081,
+      "outcomeSha256": "0754f1930a568d99ac9912df36f9cf841800f2ac31a27a929887a9c2d4bb2e58",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "escaped-unicode",
+      "inputSha256": "0da5674ff3515c5e9a096c496de1d47a8aaa70083c9812ee13f29bd7aeda4aaa",
+      "bytes": 41881,
+      "outcomeSha256": "4daebc72d9fd750f2b848ae1c2f19162ff91de8cf9d5aea892377d644e4a4bfe",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "unknown-field",
+      "inputSha256": "decf7494f6831f9169873f8b72e0ad5d7b9011667f4cb9db4886b16f0eab7e00",
+      "bytes": 125,
+      "outcomeSha256": "2b600f96e8f1daea4eedc2a009bc02c29aad9ccf46b8436dbbccd292f919733e",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "closed-duplicate-last-wins",
+      "inputSha256": "120f701dd4096dd97a68a5d3026d19fa70e488069b3e4db02b4ce546f727b62a",
+      "bytes": 114,
+      "outcomeSha256": "dd1560d062aa29631dac87f57f3461c92297ffbe9d3c0d11b65f146574be4aa7",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "invalid-type",
+      "inputSha256": "7b405e8bfad65c0cfdd21ecc1766b66168646a2ddfd85b1e426926fc45d95b34",
+      "bytes": 84,
+      "outcomeSha256": "1e4d8403abdee57dbb297feb2c4438051a980684f6b6aaa82e01786278d27fd5",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "missing-required",
+      "inputSha256": "d10044ff8a12693a7e8976d537797771dcb9880466fa1e48b20377a5cfd2f3c1",
+      "bytes": 21,
+      "outcomeSha256": "d24469026921ffbba25d8808ca924a929dd5f732d7f15336c9a738d89645da1f",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "malformed",
+      "inputSha256": "f4ce36781e107c15736ef985f18475028d963eac3602f3b9bcb11f621fe38cdf",
+      "bytes": 8,
+      "outcomeSha256": "bdc4be85eacdd2a42b74191f5276e5ceb2163c22d20b5bba3f1358e9acfadc4b",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "over-byte-bound",
+      "inputSha256": "0dd2fe899310300cbf06a5437d5eb14600cc3af19439f4130dad5379d16826b5",
+      "bytes": 66081,
+      "outcomeSha256": "4d6ca7af200c6eddb83d1a0c88394146d12bb82712e0837bf8e523b88bb5cbc6",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "controls-0",
+      "inputSha256": "836a3c804286585a5f0ba03d1266576a035e56e717e00ccdd91660cee2064942",
+      "bytes": 253,
+      "outcomeSha256": "43e76371e7933ebcd61e63c94d07210defa684192eeea7a6798d1567f2963fe1",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "slash-0",
+      "inputSha256": "c8e0adfd11b96f470080fbaad87d79589d2d122afef257146f6b3f30d73e8db0",
+      "bytes": 84,
+      "outcomeSha256": "703ed3b961ba01cde85c5ea6b9e4b5172f86b7c45c1999f4ae17f0196af06efd",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "surrogates-0",
+      "inputSha256": "9b8c45257caa61efa09a6575d0012e2efa6eca41715ba78f7f024c7784551b28",
+      "bytes": 94,
+      "outcomeSha256": "92ba9f53138631ddfab5b8fb14e90c4ad126b7c9517ae71fb689a194aafc47b7",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "backslashes-0",
+      "inputSha256": "2617e430632b9fed5b577424e7a6fd52f04ff1a673d2cdeacc4ef4eef5472f71",
+      "bytes": 92,
+      "outcomeSha256": "1e14a6e85dd55a419a16fb7c3b99520537996e751b880627e34d622164239638",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "separators-0",
+      "inputSha256": "e8fde7aa4484948dd9671916211cd7630ed846b2a82cfd9658495b112bd529f3",
+      "bytes": 90,
+      "outcomeSha256": "80002b1caf1a3b5106f33419703ded4d6375f274365198170f22314411994e1f",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-0",
+      "inputSha256": "dc1724f900cf651f7fb5866d918af8ef5d23d8d94167ece34d42bbc9ad4e7721",
+      "bytes": 10047,
+      "outcomeSha256": "65c750d4be6cb935d998bcf01276e0a1d6de6963a4e1e476eaaef43ebf0b5c95",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-4000",
+      "inputSha256": "bff0f894104015cb8ba5dd3a58aa378999e0559ab589d88d6ab632db5e90bdd2",
+      "bytes": 12081,
+      "outcomeSha256": "67d96ab8a3c11480e4f663f3126d8d03ea1551edfe65c0795905b98dadea2b93",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-8000",
+      "inputSha256": "b354befb1e9187b3468bcf1fc1d261f47d704c36d8d700beb9185a942807e604",
+      "bytes": 12081,
+      "outcomeSha256": "745332dd89aa43204883db2796a32b6d3582520ae00e590fae5f864aa21e9f16",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-12000",
+      "inputSha256": "43db45d208ec35442c11f52117f4a72c0b4e96e0131850c6ae0efc82644c77ff",
+      "bytes": 12081,
+      "outcomeSha256": "b0a3b88bd3032299cd5bf9c05db54553e2627af8f95768e895a221693cbb6f8d",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-16000",
+      "inputSha256": "3585186b25bc57118b251af3040c0418a9883ce2328785867f230e1020870cea",
+      "bytes": 12081,
+      "outcomeSha256": "54d0ef1bc70dc7695cd291c3ff18e6fff4e2eb571db07ca89d1d2a63af4baf52",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-20000",
+      "inputSha256": "c9b7597caacb92acfb303f8dd93a052ec19171a7546008a455b6efd2ad3988fe",
+      "bytes": 12081,
+      "outcomeSha256": "8d4fb24c796aba2d5819a01148af57acd4567ddd1f2084fd21b73732484a0305",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-24000",
+      "inputSha256": "59e33ef8c3c1ad07bd856a9ba09d0ffdd1e7b3b5e1c479eed8540abbeb537f65",
+      "bytes": 12081,
+      "outcomeSha256": "7659def95a4f5d59ddb97aaf8a9f811d3fc0da87c50e320c0ba5ab6502a1ae8a",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-28000",
+      "inputSha256": "3a34dc62c1fdfa0d90c4716db4898f26d5fa9d4246524ba899723936d3d669c2",
+      "bytes": 12081,
+      "outcomeSha256": "13020299ad3153a528f341a601c856220f09afa76aee41a07bc175022f7f1f9d",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-32000",
+      "inputSha256": "7cf0b4ee595d0d5a1afb6143aa3cffc5005b1ca03da14b9d6a5995b85a88770c",
+      "bytes": 12081,
+      "outcomeSha256": "60f37889d35c9ee52a1bb6f75bdc9efb9c390cb0a5683a5da624e00469249392",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-36000",
+      "inputSha256": "af030c6a31b26de192f129dc05e38a1117d36cbc12af7621c20e70af702a6c3b",
+      "bytes": 12081,
+      "outcomeSha256": "c3673d3262340ff62a54034aa7d3ee028df969686724b0fbbf4d1a58a262798a",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-40000",
+      "inputSha256": "f4edeef219688c535f0161bee1cc19acf54542ccf1146e71551108c02292762d",
+      "bytes": 12081,
+      "outcomeSha256": "54e8926d53bb885f7a3d5280d8a2637b16564afe4e2648034c414104e4dd1905",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-44000",
+      "inputSha256": "08e921c05c01a0520cc66dca959d994d16c28e16069e7017503c7fbcd69dbf39",
+      "bytes": 12081,
+      "outcomeSha256": "23425dc0fc6d85ef263232943da5864f85647f7e14164a729cd92e446b63175f",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-48000",
+      "inputSha256": "18badcb62352f582fd3ce16bb79100d814bf2752529fdb260904420751daf607",
+      "bytes": 12081,
+      "outcomeSha256": "83c434517751db347390d2abf4e217db8e60c4959231be76c0d4db46fa944092",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-52000",
+      "inputSha256": "b6baa4168a02483a86610c5dcf24dca5bc73b84fda66a31acf64c5b65262017a",
+      "bytes": 14193,
+      "outcomeSha256": "2552c9ec0018932543f2bea5940c9440d4fe0fe5d8231472e92c646ebe72d6b4",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-56000",
+      "inputSha256": "1bef0dd093de3380ebd9d4fb3b7133a32c6763e19a8b53ba80f7ddd06b4870fd",
+      "bytes": 16105,
+      "outcomeSha256": "189612312fea6fb138a86a5cb7f3ebead1805b1a747a61bcd9331a6290cfcc94",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-60000",
+      "inputSha256": "c7dd60743fd0a5cc831fcc9efe4934270d7d3aacd3eee1a411491dd4b32b63db",
+      "bytes": 12081,
+      "outcomeSha256": "f06a9d8bd342caeb29995232d86e6da91bb6b160e6664c83a167c7d900161001",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "allBmp-64000",
+      "inputSha256": "f33fec5ddc714a885676767574ac6fcc0ad4b0b375e22490220f3d29a6c7dd64",
+      "bytes": 4689,
+      "outcomeSha256": "3feeb4dacbd648b030244897c5f58a4b218313430c5eb3919468897147288afe",
+      "status": "passed"
+    },
+    {
+      "fixture": "text-only",
+      "case": "empty-containers",
+      "inputSha256": "e1cf431773bffa157b1408868a02232c6245c77f927af8934b93bb324f6319f6",
+      "bytes": 36,
+      "outcomeSha256": "a3bd811d8da80807273c02dc086d024f099473585f14bd878c86a414669b4695",
+      "status": "passed"
+    },
+    {
+      "fixture": "nested-text",
+      "case": "nullable-array-and-escaped-key",
+      "inputSha256": "b9283c2002b6021a092204856d1a4d4ec58cd3ca5eca7c2f5c11f091855165c4",
+      "bytes": 91,
+      "outcomeSha256": "c95dffee328ff29c42c06969bceefde4a59112f68884ee0939f9660a7e3a3dd2",
+      "status": "passed"
+    },
+    {
+      "fixture": "nested-text",
+      "case": "nullable-object-and-absent-field",
+      "inputSha256": "1c9b892ee665f7d19991d42e03fd10e651acec645f75546366ed1f241153e7bf",
+      "bytes": 26,
+      "outcomeSha256": "00579b55c60f5ab09e1498b2018845d291026879f340a749a4b1d7dd6afee64b",
+      "status": "passed"
+    },
+    {
+      "fixture": "codec-failure",
+      "case": "preserve-existing-escaped-key-codec-trap",
+      "inputSha256": "641569074a408bb5e53c0510e4df186a409db50205856e3b20c68c48c482bd0c",
+      "bytes": 22,
+      "outcomeSha256": "bbf97a4168e23d68929881e84fa2e7516fd675dfe439e5dc9cdcdc20d7a81b27",
+      "status": "passed"
+    },
+    {
+      "fixture": "mutable-alias",
+      "case": "detached-text-and-mutable-input",
+      "inputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "outcomeSha256": "a0f0e559af523ee5636d6676134937d425796309f9a5f90b644c2dbf1bdce3d8",
+      "status": "passed"
+    },
+    {
+      "fixture": "encode-admission",
+      "case": "valid-then-effect",
+      "inputSha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+      "bytes": 2,
+      "outcomeSha256": "0798a3234e2fb490aed6ab7c1e4c0c494e311236e796eac78ec2b92b1bcb8152",
+      "status": "passed"
+    },
+    {
+      "fixture": "encode-admission",
+      "case": "encode-byte-limit",
+      "inputSha256": "9b0a19e6c5ff0d1aea6f8b70fd0e623e992b0f968f48c49b813714a02f34c493",
+      "bytes": 33000,
+      "outcomeSha256": "77b147c749bf3248d5e9231510cadb0949db2dcd06557dca2b26fc7d2717d979",
+      "status": "passed"
+    },
+    {
+      "fixture": "encode-invalid",
+      "case": "invalid-before-effect",
+      "inputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "outcomeSha256": "0861c0f93146fb02cb350de573abd1dc54d4bec43c7e07486452ae93635c50fe",
+      "status": "passed"
+    }
+  ],
+  "memory": [
+    {
+      "family": "text-only",
+      "artifacts": [
+        {
+          "sourceSha256": "f5619a7cf6dc455d047680b8acd72cdccade134eb04ceda4a0badf75f96a9c1f",
+          "wasmSha256": "ebf3ad9db04b9ae31841c90e8a4039eb6ca7b24bb212b5e99530b252b7dee131",
+          "sourceBytes": 117093,
+          "wasmBytes": 102478,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          }
+        },
+        {
+          "sourceSha256": "bda8b2c7b8c44ab41f026eb544ed378703e44faebc22abc02bf0bb85b7cea126",
+          "wasmSha256": "0fd1fad204b44f198b7c8267b20f544a8f3fb251dc290f4ac9df390051a21339",
+          "sourceBytes": 117327,
+          "wasmBytes": 102560,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          }
+        }
+      ],
+      "cases": [
+        {
+          "name": "small",
+          "inputUtf8Bytes": 94,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1864944,
+                "peakOutstandingBytes": 1864944,
+                "uncollectedTerminalBytes": 1864944,
+                "postCollectOutstandingBytes": 1587264,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 13
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1859728,
+                "peakOutstandingBytes": 1859728,
+                "uncollectedTerminalBytes": 1859728,
+                "postCollectOutstandingBytes": 1584672,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 0
+            }
+          ]
+        },
+        {
+          "name": "optional-absent",
+          "inputUtf8Bytes": 82,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1862752,
+                "peakOutstandingBytes": 1862752,
+                "uncollectedTerminalBytes": 1862752,
+                "postCollectOutstandingBytes": 1586480,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 12
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1858496,
+                "peakOutstandingBytes": 1858496,
+                "uncollectedTerminalBytes": 1858496,
+                "postCollectOutstandingBytes": 1584272,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 0
+            }
+          ]
+        },
+        {
+          "name": "optional-present",
+          "inputUtf8Bytes": 99,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1865872,
+                "peakOutstandingBytes": 1865872,
+                "uncollectedTerminalBytes": 1865872,
+                "postCollectOutstandingBytes": 1587632,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1860384,
+                "peakOutstandingBytes": 1860384,
+                "uncollectedTerminalBytes": 1860384,
+                "postCollectOutstandingBytes": 1584896,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 0
+            }
+          ]
+        },
+        {
+          "name": "near-bound-ascii",
+          "inputUtf8Bytes": 59081,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 4461616,
+                "peakOutstandingBytes": 3841200,
+                "uncollectedTerminalBytes": 2592048,
+                "postCollectOutstandingBytes": 2295184,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageCollected": {
+                "allocatedBytes": 4461616,
+                "peakOutstandingBytes": 2768240,
+                "uncollectedTerminalBytes": 2354784,
+                "postCollectOutstandingBytes": 2295184,
+                "memoryCapacityBytes": 5242880
+              },
+              "ownership": {
+                "graphs": [
+                  {
+                    "encode": false,
+                    "inputGraphHandles": 9,
+                    "projectedGraphHandles": 9,
+                    "reparsedGraphHandles": 9,
+                    "sharedInputProjectionScalars": 5,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 13,
+                    "tableTextBytesAddedByReparse": 118074
+                  },
+                  {
+                    "encode": true,
+                    "inputGraphHandles": 9,
+                    "projectedGraphHandles": 9,
+                    "reparsedGraphHandles": 9,
+                    "sharedInputProjectionScalars": 5,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 13,
+                    "tableTextBytesAddedByReparse": 118074
+                  }
+                ],
+                "encodeNormalizedTextEqualsFinalText": true,
+                "encodeNormalizedUtf8Bytes": 59081,
+                "finalEncodeUtf8Bytes": 59081
+              },
+              "stages": [
+                {
+                  "stage": "entry",
+                  "encode": false,
+                  "handle": 3,
+                  "allocatedBytes": 2254800,
+                  "freedBytes": 440720,
+                  "outstandingBytes": 1814080,
+                  "peakOutstandingBytes": 2133680,
+                  "outstandingBlocks": 68,
+                  "allocatorEvents": 152,
+                  "collections": 1,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 17,
+                  "tableUniqueTextBytes": 236258,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 1932928
+                },
+                {
+                  "stage": "projection",
+                  "encode": false,
+                  "handle": 18,
+                  "allocatedBytes": 2256544,
+                  "freedBytes": 440720,
+                  "outstandingBytes": 1815824,
+                  "peakOutstandingBytes": 2133680,
+                  "outstandingBlocks": 92,
+                  "allocatorEvents": 176,
+                  "collections": 2,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 27,
+                  "tableUniqueTextBytes": 236302,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 1815824
+                },
+                {
+                  "stage": "serialized",
+                  "encode": false,
+                  "handle": 18,
+                  "allocatedBytes": 2612064,
+                  "freedBytes": 678048,
+                  "outstandingBytes": 1934016,
+                  "peakOutstandingBytes": 2171344,
+                  "outstandingBlocks": 93,
+                  "allocatorEvents": 239,
+                  "collections": 3,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 27,
+                  "tableUniqueTextBytes": 236302,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 2171344,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "codec",
+                  "encode": false,
+                  "handle": 18,
+                  "allocatedBytes": 2970624,
+                  "freedBytes": 800416,
+                  "outstandingBytes": 2170208,
+                  "peakOutstandingBytes": 2291536,
+                  "outstandingBlocks": 94,
+                  "allocatorEvents": 374,
+                  "collections": 4,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 27,
+                  "tableUniqueTextBytes": 236302,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 2291536,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": false,
+                  "handle": 28,
+                  "allocatedBytes": 3209984,
+                  "freedBytes": 919328,
+                  "outstandingBytes": 2290656,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 130,
+                  "allocatorEvents": 458,
+                  "collections": 5,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 40,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2409568
+                },
+                {
+                  "stage": "decode-frozen",
+                  "encode": false,
+                  "handle": 28,
+                  "allocatedBytes": 3209984,
+                  "freedBytes": 1155712,
+                  "outstandingBytes": 2054272,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 128,
+                  "allocatorEvents": 460,
+                  "collections": 6,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 40,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2290656
+                },
+                {
+                  "stage": "entry",
+                  "encode": true,
+                  "handle": 28,
+                  "allocatedBytes": 3209984,
+                  "freedBytes": 1155712,
+                  "outstandingBytes": 2054272,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 128,
+                  "allocatorEvents": 460,
+                  "collections": 7,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 40,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2054272
+                },
+                {
+                  "stage": "projection",
+                  "encode": true,
+                  "handle": 41,
+                  "allocatedBytes": 3211728,
+                  "freedBytes": 1155712,
+                  "outstandingBytes": 2056016,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 152,
+                  "allocatorEvents": 484,
+                  "collections": 8,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 50,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2056016
+                },
+                {
+                  "stage": "serialized",
+                  "encode": true,
+                  "handle": 41,
+                  "allocatedBytes": 3567248,
+                  "freedBytes": 1393040,
+                  "outstandingBytes": 2174208,
+                  "peakOutstandingBytes": 2411536,
+                  "outstandingBlocks": 153,
+                  "allocatorEvents": 547,
+                  "collections": 9,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 50,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2411536,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "codec",
+                  "encode": true,
+                  "handle": 41,
+                  "allocatedBytes": 3806768,
+                  "freedBytes": 1514368,
+                  "outstandingBytes": 2292400,
+                  "peakOutstandingBytes": 2413728,
+                  "outstandingBlocks": 154,
+                  "allocatorEvents": 680,
+                  "collections": 10,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 50,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2413728,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": true,
+                  "handle": 51,
+                  "allocatedBytes": 4045840,
+                  "freedBytes": 1633120,
+                  "outstandingBytes": 2412720,
+                  "peakOutstandingBytes": 2531472,
+                  "outstandingBlocks": 190,
+                  "allocatorEvents": 762,
+                  "collections": 11,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 63,
+                  "tableUniqueTextBytes": 472450,
+                  "tableManagedStringBlockBytes": 473056,
+                  "preCollectOutstandingBytes": 2531472
+                },
+                {
+                  "stage": "encode-text",
+                  "encode": true,
+                  "handle": 51,
+                  "allocatedBytes": 4401360,
+                  "freedBytes": 2106832,
+                  "outstandingBytes": 2294528,
+                  "peakOutstandingBytes": 2768240,
+                  "outstandingBlocks": 189,
+                  "allocatorEvents": 827,
+                  "collections": 12,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 63,
+                  "tableUniqueTextBytes": 472450,
+                  "tableManagedStringBlockBytes": 473056,
+                  "preCollectOutstandingBytes": 2768240,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                }
+              ],
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 3866480,
+                "peakOutstandingBytes": 3543568,
+                "uncollectedTerminalBytes": 3543568,
+                "postCollectOutstandingBytes": 2174608,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageCollected": {
+                "allocatedBytes": 3866480,
+                "peakOutstandingBytes": 2413728,
+                "uncollectedTerminalBytes": 2233920,
+                "postCollectOutstandingBytes": 2174608,
+                "memoryCapacityBytes": 5242880
+              },
+              "ownership": {
+                "graphs": [
+                  {
+                    "encode": false,
+                    "inputGraphHandles": 9,
+                    "projectedGraphHandles": 9,
+                    "reparsedGraphHandles": 9,
+                    "sharedInputProjectionScalars": 5,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 13,
+                    "tableTextBytesAddedByReparse": 118074
+                  },
+                  {
+                    "encode": true,
+                    "inputGraphHandles": 9,
+                    "projectedGraphHandles": 9,
+                    "reparsedGraphHandles": 0,
+                    "sharedInputProjectionScalars": 5,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 0,
+                    "handlesAddedByReparse": 0,
+                    "tableTextBytesAddedByReparse": 0
+                  }
+                ],
+                "encodeNormalizedTextEqualsFinalText": true,
+                "encodeNormalizedUtf8Bytes": 59081,
+                "finalEncodeUtf8Bytes": 59081
+              },
+              "stages": [
+                {
+                  "stage": "entry",
+                  "encode": false,
+                  "handle": 3,
+                  "allocatedBytes": 2254800,
+                  "freedBytes": 440720,
+                  "outstandingBytes": 1814080,
+                  "peakOutstandingBytes": 2133680,
+                  "outstandingBlocks": 68,
+                  "allocatorEvents": 152,
+                  "collections": 1,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 17,
+                  "tableUniqueTextBytes": 236258,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 1932928
+                },
+                {
+                  "stage": "projection",
+                  "encode": false,
+                  "handle": 18,
+                  "allocatedBytes": 2256544,
+                  "freedBytes": 440720,
+                  "outstandingBytes": 1815824,
+                  "peakOutstandingBytes": 2133680,
+                  "outstandingBlocks": 92,
+                  "allocatorEvents": 176,
+                  "collections": 2,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 27,
+                  "tableUniqueTextBytes": 236302,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 1815824
+                },
+                {
+                  "stage": "serialized",
+                  "encode": false,
+                  "handle": 18,
+                  "allocatedBytes": 2612064,
+                  "freedBytes": 678048,
+                  "outstandingBytes": 1934016,
+                  "peakOutstandingBytes": 2171344,
+                  "outstandingBlocks": 93,
+                  "allocatorEvents": 239,
+                  "collections": 3,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 27,
+                  "tableUniqueTextBytes": 236302,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 2171344,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "codec",
+                  "encode": false,
+                  "handle": 18,
+                  "allocatedBytes": 2970624,
+                  "freedBytes": 800416,
+                  "outstandingBytes": 2170208,
+                  "peakOutstandingBytes": 2291536,
+                  "outstandingBlocks": 94,
+                  "allocatorEvents": 374,
+                  "collections": 4,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 27,
+                  "tableUniqueTextBytes": 236302,
+                  "tableManagedStringBlockBytes": 236480,
+                  "preCollectOutstandingBytes": 2291536,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": false,
+                  "handle": 28,
+                  "allocatedBytes": 3209984,
+                  "freedBytes": 919328,
+                  "outstandingBytes": 2290656,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 130,
+                  "allocatorEvents": 458,
+                  "collections": 5,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 40,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2409568
+                },
+                {
+                  "stage": "decode-frozen",
+                  "encode": false,
+                  "handle": 28,
+                  "allocatedBytes": 3209984,
+                  "freedBytes": 1155712,
+                  "outstandingBytes": 2054272,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 128,
+                  "allocatorEvents": 460,
+                  "collections": 6,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 40,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2290656
+                },
+                {
+                  "stage": "entry",
+                  "encode": true,
+                  "handle": 28,
+                  "allocatedBytes": 3209984,
+                  "freedBytes": 1155712,
+                  "outstandingBytes": 2054272,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 128,
+                  "allocatorEvents": 460,
+                  "collections": 7,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 40,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2054272
+                },
+                {
+                  "stage": "projection",
+                  "encode": true,
+                  "handle": 41,
+                  "allocatedBytes": 3211728,
+                  "freedBytes": 1155712,
+                  "outstandingBytes": 2056016,
+                  "peakOutstandingBytes": 2409568,
+                  "outstandingBlocks": 152,
+                  "allocatorEvents": 484,
+                  "collections": 8,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 50,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2056016
+                },
+                {
+                  "stage": "serialized",
+                  "encode": true,
+                  "handle": 41,
+                  "allocatedBytes": 3567248,
+                  "freedBytes": 1393040,
+                  "outstandingBytes": 2174208,
+                  "peakOutstandingBytes": 2411536,
+                  "outstandingBlocks": 153,
+                  "allocatorEvents": 547,
+                  "collections": 9,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 50,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2411536,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "codec",
+                  "encode": true,
+                  "handle": 41,
+                  "allocatedBytes": 3806768,
+                  "freedBytes": 1514368,
+                  "outstandingBytes": 2292400,
+                  "peakOutstandingBytes": 2413728,
+                  "outstandingBlocks": 154,
+                  "allocatorEvents": 680,
+                  "collections": 10,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 50,
+                  "tableUniqueTextBytes": 354376,
+                  "tableManagedStringBlockBytes": 354768,
+                  "preCollectOutstandingBytes": 2413728,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                },
+                {
+                  "stage": "encode-text",
+                  "encode": true,
+                  "handle": 51,
+                  "allocatedBytes": 3806864,
+                  "freedBytes": 1632560,
+                  "outstandingBytes": 2174304,
+                  "peakOutstandingBytes": 2413728,
+                  "outstandingBlocks": 154,
+                  "allocatorEvents": 682,
+                  "collections": 11,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 51,
+                  "tableUniqueTextBytes": 472538,
+                  "tableManagedStringBlockBytes": 472960,
+                  "preCollectOutstandingBytes": 2292496,
+                  "textUtf16Bytes": 118162,
+                  "textUtf8Bytes": 59081,
+                  "textSha256": "620793f1a3a69b574a5bf2891a49aa36645a7c323420f11057c69f502fab5e66"
+                }
+              ],
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "escaped-unicode",
+          "inputUtf8Bytes": 41881,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 3176816,
+                "peakOutstandingBytes": 2804192,
+                "uncollectedTerminalBytes": 2804192,
+                "postCollectOutstandingBytes": 1895184,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 13
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 2876880,
+                "peakOutstandingBytes": 2504256,
+                "uncollectedTerminalBytes": 2504256,
+                "postCollectOutstandingBytes": 1861808,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 0
+            }
+          ]
+        },
+        {
+          "name": "unknown-field",
+          "inputUtf8Bytes": 125,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1866304,
+                "peakOutstandingBytes": 1866304,
+                "uncollectedTerminalBytes": 1866304,
+                "postCollectOutstandingBytes": 1588208,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 13
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1861088,
+                "peakOutstandingBytes": 1861088,
+                "uncollectedTerminalBytes": 1861088,
+                "postCollectOutstandingBytes": 1585616,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 0
+            }
+          ]
+        },
+        {
+          "name": "closed-duplicate-last-wins",
+          "inputUtf8Bytes": 114,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1865376,
+                "peakOutstandingBytes": 1865376,
+                "uncollectedTerminalBytes": 1865376,
+                "postCollectOutstandingBytes": 1587536,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 13
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1860160,
+                "peakOutstandingBytes": 1860160,
+                "uncollectedTerminalBytes": 1860160,
+                "postCollectOutstandingBytes": 1584944,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 0
+            }
+          ]
+        },
+        {
+          "name": "invalid-type",
+          "inputUtf8Bytes": 84,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1842496,
+                "peakOutstandingBytes": 1842496,
+                "uncollectedTerminalBytes": 1842496,
+                "postCollectOutstandingBytes": 1578544,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1842496,
+                "peakOutstandingBytes": 1842496,
+                "uncollectedTerminalBytes": 1842496,
+                "postCollectOutstandingBytes": 1578544,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "missing-required",
+          "inputUtf8Bytes": 21,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839984,
+                "peakOutstandingBytes": 1839984,
+                "uncollectedTerminalBytes": 1839984,
+                "postCollectOutstandingBytes": 1576640,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839984,
+                "peakOutstandingBytes": 1839984,
+                "uncollectedTerminalBytes": 1839984,
+                "postCollectOutstandingBytes": 1576640,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "malformed",
+          "inputUtf8Bytes": 8,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839152,
+                "peakOutstandingBytes": 1839152,
+                "uncollectedTerminalBytes": 1839152,
+                "postCollectOutstandingBytes": 1576080,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839152,
+                "peakOutstandingBytes": 1839152,
+                "uncollectedTerminalBytes": 1839152,
+                "postCollectOutstandingBytes": 1576080,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "over-byte-bound",
+          "inputUtf8Bytes": 66081,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1838224,
+                "peakOutstandingBytes": 1838224,
+                "uncollectedTerminalBytes": 1838224,
+                "postCollectOutstandingBytes": 1575296,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1838224,
+                "peakOutstandingBytes": 1838224,
+                "uncollectedTerminalBytes": 1838224,
+                "postCollectOutstandingBytes": 1575296,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        }
+      ],
+      "nearBoundSamples": [
+        [
+          {
+            "allocatedBytes": 4461616,
+            "peakOutstandingBytes": 3841200,
+            "uncollectedTerminalBytes": 2592048,
+            "postCollectOutstandingBytes": 2295184,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4461616,
+            "peakOutstandingBytes": 3841200,
+            "uncollectedTerminalBytes": 2592048,
+            "postCollectOutstandingBytes": 2295184,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4461616,
+            "peakOutstandingBytes": 3841200,
+            "uncollectedTerminalBytes": 2592048,
+            "postCollectOutstandingBytes": 2295184,
+            "memoryCapacityBytes": 5242880
+          }
+        ],
+        [
+          {
+            "allocatedBytes": 3866480,
+            "peakOutstandingBytes": 3543568,
+            "uncollectedTerminalBytes": 3543568,
+            "postCollectOutstandingBytes": 2174608,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 3866480,
+            "peakOutstandingBytes": 3543568,
+            "uncollectedTerminalBytes": 3543568,
+            "postCollectOutstandingBytes": 2174608,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 3866480,
+            "peakOutstandingBytes": 3543568,
+            "uncollectedTerminalBytes": 3543568,
+            "postCollectOutstandingBytes": 2174608,
+            "memoryCapacityBytes": 5242880
+          }
+        ]
+      ]
+    },
+    {
+      "family": "closed-optional",
+      "artifacts": [
+        {
+          "sourceSha256": "eb68aaad12e024ec0ba9014750e2c0277e764199f80409aa854dc6cac76d7953",
+          "wasmSha256": "4dab6840ae0da7d3c01edc4391004fdfd9a2e857eb63cddef24e168b2834e4f3",
+          "sourceBytes": 118371,
+          "wasmBytes": 102859,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          }
+        },
+        {
+          "sourceSha256": "eb68aaad12e024ec0ba9014750e2c0277e764199f80409aa854dc6cac76d7953",
+          "wasmSha256": "4dab6840ae0da7d3c01edc4391004fdfd9a2e857eb63cddef24e168b2834e4f3",
+          "sourceBytes": 118371,
+          "wasmBytes": 102859,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          }
+        }
+      ],
+      "cases": [
+        {
+          "name": "small",
+          "inputUtf8Bytes": 107,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868176,
+                "peakOutstandingBytes": 1868176,
+                "uncollectedTerminalBytes": 1868176,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868176,
+                "peakOutstandingBytes": 1868176,
+                "uncollectedTerminalBytes": 1868176,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "optional-absent",
+          "inputUtf8Bytes": 95,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1865696,
+                "peakOutstandingBytes": 1865696,
+                "uncollectedTerminalBytes": 1865696,
+                "postCollectOutstandingBytes": 1587664,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1865696,
+                "peakOutstandingBytes": 1865696,
+                "uncollectedTerminalBytes": 1865696,
+                "postCollectOutstandingBytes": 1587664,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            }
+          ]
+        },
+        {
+          "name": "optional-present",
+          "inputUtf8Bytes": 112,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1869056,
+                "peakOutstandingBytes": 1869056,
+                "uncollectedTerminalBytes": 1869056,
+                "postCollectOutstandingBytes": 1588544,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 16
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1869056,
+                "peakOutstandingBytes": 1869056,
+                "uncollectedTerminalBytes": 1869056,
+                "postCollectOutstandingBytes": 1588544,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 16
+            }
+          ]
+        },
+        {
+          "name": "near-bound-ascii",
+          "inputUtf8Bytes": 59094,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 4464784,
+                "peakOutstandingBytes": 3844416,
+                "uncollectedTerminalBytes": 2593120,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageCollected": {
+                "allocatedBytes": 4464784,
+                "peakOutstandingBytes": 2769872,
+                "uncollectedTerminalBytes": 2355408,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "ownership": {
+                "graphs": [
+                  {
+                    "encode": false,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  },
+                  {
+                    "encode": true,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  }
+                ],
+                "encodeNormalizedTextEqualsFinalText": true,
+                "encodeNormalizedUtf8Bytes": 59094,
+                "finalEncodeUtf8Bytes": 59094
+              },
+              "stages": [
+                {
+                  "stage": "entry",
+                  "encode": false,
+                  "handle": 3,
+                  "allocatedBytes": 2255248,
+                  "freedBytes": 440928,
+                  "outstandingBytes": 1814320,
+                  "peakOutstandingBytes": 2133712,
+                  "outstandingBlocks": 71,
+                  "allocatorEvents": 167,
+                  "collections": 1,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 19,
+                  "tableUniqueTextBytes": 236294,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1933360
+                },
+                {
+                  "stage": "projection",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2257088,
+                  "freedBytes": 440928,
+                  "outstandingBytes": 1816160,
+                  "peakOutstandingBytes": 2133712,
+                  "outstandingBlocks": 96,
+                  "allocatorEvents": 192,
+                  "collections": 2,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1816160
+                },
+                {
+                  "stage": "serialized",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2613072,
+                  "freedBytes": 678704,
+                  "outstandingBytes": 1934368,
+                  "peakOutstandingBytes": 2172144,
+                  "outstandingBlocks": 97,
+                  "allocatorEvents": 265,
+                  "collections": 3,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2172144,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2971776,
+                  "freedBytes": 801200,
+                  "outstandingBytes": 2170576,
+                  "peakOutstandingBytes": 2292032,
+                  "outstandingBlocks": 98,
+                  "allocatorEvents": 408,
+                  "collections": 4,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2292032,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3211552,
+                  "freedBytes": 920304,
+                  "outstandingBytes": 2291248,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 137,
+                  "allocatorEvents": 507,
+                  "collections": 5,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2410352
+                },
+                {
+                  "stage": "decode-frozen",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3211552,
+                  "freedBytes": 1156720,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 509,
+                  "collections": 6,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2291248
+                },
+                {
+                  "stage": "entry",
+                  "encode": true,
+                  "handle": 31,
+                  "allocatedBytes": 3211552,
+                  "freedBytes": 1156720,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 509,
+                  "collections": 7,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2054832
+                },
+                {
+                  "stage": "projection",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3213392,
+                  "freedBytes": 1156720,
+                  "outstandingBytes": 2056672,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 160,
+                  "allocatorEvents": 534,
+                  "collections": 8,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2056672
+                },
+                {
+                  "stage": "serialized",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3569376,
+                  "freedBytes": 1394496,
+                  "outstandingBytes": 2174880,
+                  "peakOutstandingBytes": 2412656,
+                  "outstandingBlocks": 161,
+                  "allocatorEvents": 607,
+                  "collections": 9,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2412656,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3809040,
+                  "freedBytes": 1515952,
+                  "outstandingBytes": 2293088,
+                  "peakOutstandingBytes": 2414544,
+                  "outstandingBlocks": 162,
+                  "allocatorEvents": 748,
+                  "collections": 10,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2414544,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4049072,
+                  "freedBytes": 1635184,
+                  "outstandingBytes": 2413888,
+                  "peakOutstandingBytes": 2533120,
+                  "outstandingBlocks": 201,
+                  "allocatorEvents": 847,
+                  "collections": 11,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2533120
+                },
+                {
+                  "stage": "encode-text",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4405056,
+                  "freedBytes": 2109376,
+                  "outstandingBytes": 2295680,
+                  "peakOutstandingBytes": 2769872,
+                  "outstandingBlocks": 200,
+                  "allocatorEvents": 922,
+                  "collections": 12,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2769872,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                }
+              ],
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 4464784,
+                "peakOutstandingBytes": 3844416,
+                "uncollectedTerminalBytes": 2593120,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageCollected": {
+                "allocatedBytes": 4464784,
+                "peakOutstandingBytes": 2769872,
+                "uncollectedTerminalBytes": 2355408,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "ownership": {
+                "graphs": [
+                  {
+                    "encode": false,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  },
+                  {
+                    "encode": true,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  }
+                ],
+                "encodeNormalizedTextEqualsFinalText": true,
+                "encodeNormalizedUtf8Bytes": 59094,
+                "finalEncodeUtf8Bytes": 59094
+              },
+              "stages": [
+                {
+                  "stage": "entry",
+                  "encode": false,
+                  "handle": 3,
+                  "allocatedBytes": 2255248,
+                  "freedBytes": 440928,
+                  "outstandingBytes": 1814320,
+                  "peakOutstandingBytes": 2133712,
+                  "outstandingBlocks": 71,
+                  "allocatorEvents": 167,
+                  "collections": 1,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 19,
+                  "tableUniqueTextBytes": 236294,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1933360
+                },
+                {
+                  "stage": "projection",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2257088,
+                  "freedBytes": 440928,
+                  "outstandingBytes": 1816160,
+                  "peakOutstandingBytes": 2133712,
+                  "outstandingBlocks": 96,
+                  "allocatorEvents": 192,
+                  "collections": 2,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1816160
+                },
+                {
+                  "stage": "serialized",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2613072,
+                  "freedBytes": 678704,
+                  "outstandingBytes": 1934368,
+                  "peakOutstandingBytes": 2172144,
+                  "outstandingBlocks": 97,
+                  "allocatorEvents": 265,
+                  "collections": 3,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2172144,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2971776,
+                  "freedBytes": 801200,
+                  "outstandingBytes": 2170576,
+                  "peakOutstandingBytes": 2292032,
+                  "outstandingBlocks": 98,
+                  "allocatorEvents": 408,
+                  "collections": 4,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2292032,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3211552,
+                  "freedBytes": 920304,
+                  "outstandingBytes": 2291248,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 137,
+                  "allocatorEvents": 507,
+                  "collections": 5,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2410352
+                },
+                {
+                  "stage": "decode-frozen",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3211552,
+                  "freedBytes": 1156720,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 509,
+                  "collections": 6,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2291248
+                },
+                {
+                  "stage": "entry",
+                  "encode": true,
+                  "handle": 31,
+                  "allocatedBytes": 3211552,
+                  "freedBytes": 1156720,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 509,
+                  "collections": 7,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2054832
+                },
+                {
+                  "stage": "projection",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3213392,
+                  "freedBytes": 1156720,
+                  "outstandingBytes": 2056672,
+                  "peakOutstandingBytes": 2410352,
+                  "outstandingBlocks": 160,
+                  "allocatorEvents": 534,
+                  "collections": 8,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2056672
+                },
+                {
+                  "stage": "serialized",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3569376,
+                  "freedBytes": 1394496,
+                  "outstandingBytes": 2174880,
+                  "peakOutstandingBytes": 2412656,
+                  "outstandingBlocks": 161,
+                  "allocatorEvents": 607,
+                  "collections": 9,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2412656,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3809040,
+                  "freedBytes": 1515952,
+                  "outstandingBytes": 2293088,
+                  "peakOutstandingBytes": 2414544,
+                  "outstandingBlocks": 162,
+                  "allocatorEvents": 748,
+                  "collections": 10,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2414544,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4049072,
+                  "freedBytes": 1635184,
+                  "outstandingBytes": 2413888,
+                  "peakOutstandingBytes": 2533120,
+                  "outstandingBlocks": 201,
+                  "allocatorEvents": 847,
+                  "collections": 11,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2533120
+                },
+                {
+                  "stage": "encode-text",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4405056,
+                  "freedBytes": 2109376,
+                  "outstandingBytes": 2295680,
+                  "peakOutstandingBytes": 2769872,
+                  "outstandingBlocks": 200,
+                  "allocatorEvents": 922,
+                  "collections": 12,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2769872,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                }
+              ],
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "escaped-unicode",
+          "inputUtf8Bytes": 41894,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 3179984,
+                "peakOutstandingBytes": 2807152,
+                "uncollectedTerminalBytes": 2807152,
+                "postCollectOutstandingBytes": 1896080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 3179984,
+                "peakOutstandingBytes": 2807152,
+                "uncollectedTerminalBytes": 2807152,
+                "postCollectOutstandingBytes": 1896080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "unknown-field",
+          "inputUtf8Bytes": 138,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1869536,
+                "peakOutstandingBytes": 1869536,
+                "uncollectedTerminalBytes": 1869536,
+                "postCollectOutstandingBytes": 1589136,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1869536,
+                "peakOutstandingBytes": 1869536,
+                "uncollectedTerminalBytes": 1869536,
+                "postCollectOutstandingBytes": 1589136,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "number--0",
+          "inputUtf8Bytes": 104,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1867808,
+                "peakOutstandingBytes": 1867808,
+                "uncollectedTerminalBytes": 1867808,
+                "postCollectOutstandingBytes": 1587984,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1867808,
+                "peakOutstandingBytes": 1867808,
+                "uncollectedTerminalBytes": 1867808,
+                "postCollectOutstandingBytes": 1587984,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            }
+          ]
+        },
+        {
+          "name": "number-100000000000000000000",
+          "inputUtf8Bytes": 124,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868752,
+                "peakOutstandingBytes": 1868752,
+                "uncollectedTerminalBytes": 1868752,
+                "postCollectOutstandingBytes": 1588256,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868752,
+                "peakOutstandingBytes": 1868752,
+                "uncollectedTerminalBytes": 1868752,
+                "postCollectOutstandingBytes": 1588256,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "number-1e-7",
+          "inputUtf8Bytes": 107,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868176,
+                "peakOutstandingBytes": 1868176,
+                "uncollectedTerminalBytes": 1868176,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868176,
+                "peakOutstandingBytes": 1868176,
+                "uncollectedTerminalBytes": 1868176,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "number-9007199254740991",
+          "inputUtf8Bytes": 119,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868576,
+                "peakOutstandingBytes": 1868576,
+                "uncollectedTerminalBytes": 1868576,
+                "postCollectOutstandingBytes": 1588240,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868576,
+                "peakOutstandingBytes": 1868576,
+                "uncollectedTerminalBytes": 1868576,
+                "postCollectOutstandingBytes": 1588240,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "closed-duplicate-last-wins",
+          "inputUtf8Bytes": 127,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868624,
+                "peakOutstandingBytes": 1868624,
+                "uncollectedTerminalBytes": 1868624,
+                "postCollectOutstandingBytes": 1588464,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1868624,
+                "peakOutstandingBytes": 1868624,
+                "uncollectedTerminalBytes": 1868624,
+                "postCollectOutstandingBytes": 1588464,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "invalid-type",
+          "inputUtf8Bytes": 97,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1842960,
+                "peakOutstandingBytes": 1842960,
+                "uncollectedTerminalBytes": 1842960,
+                "postCollectOutstandingBytes": 1578800,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1842960,
+                "peakOutstandingBytes": 1842960,
+                "uncollectedTerminalBytes": 1842960,
+                "postCollectOutstandingBytes": 1578800,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "missing-required",
+          "inputUtf8Bytes": 21,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839984,
+                "peakOutstandingBytes": 1839984,
+                "uncollectedTerminalBytes": 1839984,
+                "postCollectOutstandingBytes": 1576640,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839984,
+                "peakOutstandingBytes": 1839984,
+                "uncollectedTerminalBytes": 1839984,
+                "postCollectOutstandingBytes": 1576640,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "malformed",
+          "inputUtf8Bytes": 8,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839152,
+                "peakOutstandingBytes": 1839152,
+                "uncollectedTerminalBytes": 1839152,
+                "postCollectOutstandingBytes": 1576080,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839152,
+                "peakOutstandingBytes": 1839152,
+                "uncollectedTerminalBytes": 1839152,
+                "postCollectOutstandingBytes": 1576080,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "over-byte-bound",
+          "inputUtf8Bytes": 66094,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1838224,
+                "peakOutstandingBytes": 1838224,
+                "uncollectedTerminalBytes": 1838224,
+                "postCollectOutstandingBytes": 1575296,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1838224,
+                "peakOutstandingBytes": 1838224,
+                "uncollectedTerminalBytes": 1838224,
+                "postCollectOutstandingBytes": 1575296,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        }
+      ],
+      "nearBoundSamples": [
+        [
+          {
+            "allocatedBytes": 4464784,
+            "peakOutstandingBytes": 3844416,
+            "uncollectedTerminalBytes": 2593120,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4464784,
+            "peakOutstandingBytes": 3844416,
+            "uncollectedTerminalBytes": 2593120,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4464784,
+            "peakOutstandingBytes": 3844416,
+            "uncollectedTerminalBytes": 2593120,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          }
+        ],
+        [
+          {
+            "allocatedBytes": 4464784,
+            "peakOutstandingBytes": 3844416,
+            "uncollectedTerminalBytes": 2593120,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4464784,
+            "peakOutstandingBytes": 3844416,
+            "uncollectedTerminalBytes": 2593120,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4464784,
+            "peakOutstandingBytes": 3844416,
+            "uncollectedTerminalBytes": 2593120,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          }
+        ]
+      ]
+    },
+    {
+      "family": "bounded-open",
+      "artifacts": [
+        {
+          "sourceSha256": "20b5875160c8c431fd6b7b9c03e399d479bf640a6e4962f61464a0233b3bcf48",
+          "wasmSha256": "d696c5c0cc3d5c5b089e6d44a77a2285d403742b56b35b2ca1082a9e6a29e4e6",
+          "sourceBytes": 139520,
+          "wasmBytes": 124592,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          }
+        },
+        {
+          "sourceSha256": "20b5875160c8c431fd6b7b9c03e399d479bf640a6e4962f61464a0233b3bcf48",
+          "wasmSha256": "d696c5c0cc3d5c5b089e6d44a77a2285d403742b56b35b2ca1082a9e6a29e4e6",
+          "sourceBytes": 139520,
+          "wasmBytes": 124592,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          }
+        }
+      ],
+      "cases": [
+        {
+          "name": "small",
+          "inputUtf8Bytes": 107,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886112,
+                "peakOutstandingBytes": 1886112,
+                "uncollectedTerminalBytes": 1886112,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886112,
+                "peakOutstandingBytes": 1886112,
+                "uncollectedTerminalBytes": 1886112,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "optional-absent",
+          "inputUtf8Bytes": 95,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1881760,
+                "peakOutstandingBytes": 1881760,
+                "uncollectedTerminalBytes": 1881760,
+                "postCollectOutstandingBytes": 1587664,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1881760,
+                "peakOutstandingBytes": 1881760,
+                "uncollectedTerminalBytes": 1881760,
+                "postCollectOutstandingBytes": 1587664,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            }
+          ]
+        },
+        {
+          "name": "optional-present",
+          "inputUtf8Bytes": 112,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1887232,
+                "peakOutstandingBytes": 1887232,
+                "uncollectedTerminalBytes": 1887232,
+                "postCollectOutstandingBytes": 1588544,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 16
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1887232,
+                "peakOutstandingBytes": 1887232,
+                "uncollectedTerminalBytes": 1887232,
+                "postCollectOutstandingBytes": 1588544,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 16
+            }
+          ]
+        },
+        {
+          "name": "near-bound-ascii",
+          "inputUtf8Bytes": 59094,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 4482720,
+                "peakOutstandingBytes": 3741872,
+                "uncollectedTerminalBytes": 2593184,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageCollected": {
+                "allocatedBytes": 4482720,
+                "peakOutstandingBytes": 2769936,
+                "uncollectedTerminalBytes": 2355408,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "ownership": {
+                "graphs": [
+                  {
+                    "encode": false,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  },
+                  {
+                    "encode": true,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  }
+                ],
+                "encodeNormalizedTextEqualsFinalText": true,
+                "encodeNormalizedUtf8Bytes": 59094,
+                "finalEncodeUtf8Bytes": 59094
+              },
+              "stages": [
+                {
+                  "stage": "entry",
+                  "encode": false,
+                  "handle": 3,
+                  "allocatedBytes": 2257568,
+                  "freedBytes": 443248,
+                  "outstandingBytes": 1814320,
+                  "peakOutstandingBytes": 2136144,
+                  "outstandingBlocks": 71,
+                  "allocatorEvents": 267,
+                  "collections": 1,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 19,
+                  "tableUniqueTextBytes": 236294,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1933360
+                },
+                {
+                  "stage": "projection",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2259920,
+                  "freedBytes": 443648,
+                  "outstandingBytes": 1816272,
+                  "peakOutstandingBytes": 2136144,
+                  "outstandingBlocks": 98,
+                  "allocatorEvents": 312,
+                  "collections": 2,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1816672
+                },
+                {
+                  "stage": "serialized",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2615904,
+                  "freedBytes": 681424,
+                  "outstandingBytes": 1934480,
+                  "peakOutstandingBytes": 2172256,
+                  "outstandingBlocks": 99,
+                  "allocatorEvents": 385,
+                  "collections": 3,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2172256,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2981904,
+                  "freedBytes": 811264,
+                  "outstandingBytes": 2170640,
+                  "peakOutstandingBytes": 2299440,
+                  "outstandingBlocks": 99,
+                  "allocatorEvents": 859,
+                  "collections": 4,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2299440,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3221680,
+                  "freedBytes": 930368,
+                  "outstandingBytes": 2291312,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 138,
+                  "allocatorEvents": 958,
+                  "collections": 5,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2410416
+                },
+                {
+                  "stage": "decode-frozen",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3221680,
+                  "freedBytes": 1166848,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 961,
+                  "collections": 6,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2291312
+                },
+                {
+                  "stage": "entry",
+                  "encode": true,
+                  "handle": 31,
+                  "allocatedBytes": 3221680,
+                  "freedBytes": 1166848,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 961,
+                  "collections": 7,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2054832
+                },
+                {
+                  "stage": "projection",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3224032,
+                  "freedBytes": 1167248,
+                  "outstandingBytes": 2056784,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 162,
+                  "allocatorEvents": 1006,
+                  "collections": 8,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2057184
+                },
+                {
+                  "stage": "serialized",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3580016,
+                  "freedBytes": 1405024,
+                  "outstandingBytes": 2174992,
+                  "peakOutstandingBytes": 2412768,
+                  "outstandingBlocks": 163,
+                  "allocatorEvents": 1079,
+                  "collections": 9,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2412768,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3826976,
+                  "freedBytes": 1533824,
+                  "outstandingBytes": 2293152,
+                  "peakOutstandingBytes": 2421952,
+                  "outstandingBlocks": 163,
+                  "allocatorEvents": 1551,
+                  "collections": 10,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2421952,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4067008,
+                  "freedBytes": 1653056,
+                  "outstandingBytes": 2413952,
+                  "peakOutstandingBytes": 2533184,
+                  "outstandingBlocks": 202,
+                  "allocatorEvents": 1650,
+                  "collections": 11,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2533184
+                },
+                {
+                  "stage": "encode-text",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4422992,
+                  "freedBytes": 2127312,
+                  "outstandingBytes": 2295680,
+                  "peakOutstandingBytes": 2769936,
+                  "outstandingBlocks": 200,
+                  "allocatorEvents": 1726,
+                  "collections": 12,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2769936,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                }
+              ],
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 4482720,
+                "peakOutstandingBytes": 3741872,
+                "uncollectedTerminalBytes": 2593184,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageCollected": {
+                "allocatedBytes": 4482720,
+                "peakOutstandingBytes": 2769936,
+                "uncollectedTerminalBytes": 2355408,
+                "postCollectOutstandingBytes": 2296080,
+                "memoryCapacityBytes": 5242880
+              },
+              "ownership": {
+                "graphs": [
+                  {
+                    "encode": false,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  },
+                  {
+                    "encode": true,
+                    "inputGraphHandles": 10,
+                    "projectedGraphHandles": 10,
+                    "reparsedGraphHandles": 10,
+                    "sharedInputProjectionScalars": 6,
+                    "freshProjectionContainers": 4,
+                    "freshReparseContainers": 4,
+                    "handlesAddedByReparse": 15,
+                    "tableTextBytesAddedByReparse": 118084
+                  }
+                ],
+                "encodeNormalizedTextEqualsFinalText": true,
+                "encodeNormalizedUtf8Bytes": 59094,
+                "finalEncodeUtf8Bytes": 59094
+              },
+              "stages": [
+                {
+                  "stage": "entry",
+                  "encode": false,
+                  "handle": 3,
+                  "allocatedBytes": 2257568,
+                  "freedBytes": 443248,
+                  "outstandingBytes": 1814320,
+                  "peakOutstandingBytes": 2136144,
+                  "outstandingBlocks": 71,
+                  "allocatorEvents": 267,
+                  "collections": 1,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 19,
+                  "tableUniqueTextBytes": 236294,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1933360
+                },
+                {
+                  "stage": "projection",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2259920,
+                  "freedBytes": 443648,
+                  "outstandingBytes": 1816272,
+                  "peakOutstandingBytes": 2136144,
+                  "outstandingBlocks": 98,
+                  "allocatorEvents": 312,
+                  "collections": 2,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 1816672
+                },
+                {
+                  "stage": "serialized",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2615904,
+                  "freedBytes": 681424,
+                  "outstandingBytes": 1934480,
+                  "peakOutstandingBytes": 2172256,
+                  "outstandingBlocks": 99,
+                  "allocatorEvents": 385,
+                  "collections": 3,
+                  "memoryCapacityBytes": 2621440,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2172256,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": false,
+                  "handle": 20,
+                  "allocatedBytes": 2981904,
+                  "freedBytes": 811264,
+                  "outstandingBytes": 2170640,
+                  "peakOutstandingBytes": 2299440,
+                  "outstandingBlocks": 99,
+                  "allocatorEvents": 859,
+                  "collections": 4,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 30,
+                  "tableUniqueTextBytes": 236348,
+                  "tableManagedStringBlockBytes": 236528,
+                  "preCollectOutstandingBytes": 2299440,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3221680,
+                  "freedBytes": 930368,
+                  "outstandingBytes": 2291312,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 138,
+                  "allocatorEvents": 958,
+                  "collections": 5,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2410416
+                },
+                {
+                  "stage": "decode-frozen",
+                  "encode": false,
+                  "handle": 31,
+                  "allocatedBytes": 3221680,
+                  "freedBytes": 1166848,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 961,
+                  "collections": 6,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2291312
+                },
+                {
+                  "stage": "entry",
+                  "encode": true,
+                  "handle": 31,
+                  "allocatedBytes": 3221680,
+                  "freedBytes": 1166848,
+                  "outstandingBytes": 2054832,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 135,
+                  "allocatorEvents": 961,
+                  "collections": 7,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 45,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2054832
+                },
+                {
+                  "stage": "projection",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3224032,
+                  "freedBytes": 1167248,
+                  "outstandingBytes": 2056784,
+                  "peakOutstandingBytes": 2410416,
+                  "outstandingBlocks": 162,
+                  "allocatorEvents": 1006,
+                  "collections": 8,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2057184
+                },
+                {
+                  "stage": "serialized",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3580016,
+                  "freedBytes": 1405024,
+                  "outstandingBytes": 2174992,
+                  "peakOutstandingBytes": 2412768,
+                  "outstandingBlocks": 163,
+                  "allocatorEvents": 1079,
+                  "collections": 9,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2412768,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "codec",
+                  "encode": true,
+                  "handle": 46,
+                  "allocatedBytes": 3826976,
+                  "freedBytes": 1533824,
+                  "outstandingBytes": 2293152,
+                  "peakOutstandingBytes": 2421952,
+                  "outstandingBlocks": 163,
+                  "allocatorEvents": 1551,
+                  "collections": 10,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 56,
+                  "tableUniqueTextBytes": 354432,
+                  "tableManagedStringBlockBytes": 354848,
+                  "preCollectOutstandingBytes": 2421952,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                },
+                {
+                  "stage": "reparsed",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4067008,
+                  "freedBytes": 1653056,
+                  "outstandingBytes": 2413952,
+                  "peakOutstandingBytes": 2533184,
+                  "outstandingBlocks": 202,
+                  "allocatorEvents": 1650,
+                  "collections": 11,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2533184
+                },
+                {
+                  "stage": "encode-text",
+                  "encode": true,
+                  "handle": 57,
+                  "allocatedBytes": 4422992,
+                  "freedBytes": 2127312,
+                  "outstandingBytes": 2295680,
+                  "peakOutstandingBytes": 2769936,
+                  "outstandingBlocks": 200,
+                  "allocatorEvents": 1726,
+                  "collections": 12,
+                  "memoryCapacityBytes": 5242880,
+                  "handles": 71,
+                  "tableUniqueTextBytes": 472516,
+                  "tableManagedStringBlockBytes": 473168,
+                  "preCollectOutstandingBytes": 2769936,
+                  "textUtf16Bytes": 118188,
+                  "textUtf8Bytes": 59094,
+                  "textSha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67"
+                }
+              ],
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "escaped-unicode",
+          "inputUtf8Bytes": 41894,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 3197920,
+                "peakOutstandingBytes": 2822368,
+                "uncollectedTerminalBytes": 2822368,
+                "postCollectOutstandingBytes": 1896080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 3197920,
+                "peakOutstandingBytes": 2822368,
+                "uncollectedTerminalBytes": 2822368,
+                "postCollectOutstandingBytes": 1896080,
+                "memoryCapacityBytes": 5242880
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "unknown-field",
+          "inputUtf8Bytes": 138,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1902272,
+                "peakOutstandingBytes": 1902272,
+                "uncollectedTerminalBytes": 1902272,
+                "postCollectOutstandingBytes": 1592192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 19
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1902272,
+                "peakOutstandingBytes": 1902272,
+                "uncollectedTerminalBytes": 1902272,
+                "postCollectOutstandingBytes": 1592192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 19
+            }
+          ]
+        },
+        {
+          "name": "number--0",
+          "inputUtf8Bytes": 104,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1885744,
+                "peakOutstandingBytes": 1885744,
+                "uncollectedTerminalBytes": 1885744,
+                "postCollectOutstandingBytes": 1587984,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1885744,
+                "peakOutstandingBytes": 1885744,
+                "uncollectedTerminalBytes": 1885744,
+                "postCollectOutstandingBytes": 1587984,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 14
+            }
+          ]
+        },
+        {
+          "name": "number-100000000000000000000",
+          "inputUtf8Bytes": 124,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886880,
+                "peakOutstandingBytes": 1886880,
+                "uncollectedTerminalBytes": 1886880,
+                "postCollectOutstandingBytes": 1588256,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886880,
+                "peakOutstandingBytes": 1886880,
+                "uncollectedTerminalBytes": 1886880,
+                "postCollectOutstandingBytes": 1588256,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "number-1e-7",
+          "inputUtf8Bytes": 107,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886112,
+                "peakOutstandingBytes": 1886112,
+                "uncollectedTerminalBytes": 1886112,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886112,
+                "peakOutstandingBytes": 1886112,
+                "uncollectedTerminalBytes": 1886112,
+                "postCollectOutstandingBytes": 1588192,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "number-9007199254740991",
+          "inputUtf8Bytes": 119,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886672,
+                "peakOutstandingBytes": 1886672,
+                "uncollectedTerminalBytes": 1886672,
+                "postCollectOutstandingBytes": 1588240,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1886672,
+                "peakOutstandingBytes": 1886672,
+                "uncollectedTerminalBytes": 1886672,
+                "postCollectOutstandingBytes": 1588240,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true,
+              "encodeReparseHandles": 15
+            }
+          ]
+        },
+        {
+          "name": "closed-duplicate-last-wins",
+          "inputUtf8Bytes": 127,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1846528,
+                "peakOutstandingBytes": 1846528,
+                "uncollectedTerminalBytes": 1846528,
+                "postCollectOutstandingBytes": 1578944,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1846528,
+                "peakOutstandingBytes": 1846528,
+                "uncollectedTerminalBytes": 1846528,
+                "postCollectOutstandingBytes": 1578944,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "invalid-type",
+          "inputUtf8Bytes": 97,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1846032,
+                "peakOutstandingBytes": 1846032,
+                "uncollectedTerminalBytes": 1846032,
+                "postCollectOutstandingBytes": 1578800,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1846032,
+                "peakOutstandingBytes": 1846032,
+                "uncollectedTerminalBytes": 1846032,
+                "postCollectOutstandingBytes": 1578800,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "missing-required",
+          "inputUtf8Bytes": 21,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1842000,
+                "peakOutstandingBytes": 1842000,
+                "uncollectedTerminalBytes": 1842000,
+                "postCollectOutstandingBytes": 1576752,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1842000,
+                "peakOutstandingBytes": 1842000,
+                "uncollectedTerminalBytes": 1842000,
+                "postCollectOutstandingBytes": 1576752,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "malformed",
+          "inputUtf8Bytes": 8,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839712,
+                "peakOutstandingBytes": 1839712,
+                "uncollectedTerminalBytes": 1839712,
+                "postCollectOutstandingBytes": 1575632,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1839712,
+                "peakOutstandingBytes": 1839712,
+                "uncollectedTerminalBytes": 1839712,
+                "postCollectOutstandingBytes": 1575632,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "over-byte-bound",
+          "inputUtf8Bytes": 66094,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 1838224,
+                "peakOutstandingBytes": 1838224,
+                "uncollectedTerminalBytes": 1838224,
+                "postCollectOutstandingBytes": 1575296,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 1838224,
+                "peakOutstandingBytes": 1838224,
+                "uncollectedTerminalBytes": 1838224,
+                "postCollectOutstandingBytes": 1575296,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        },
+        {
+          "name": "over-string-bound",
+          "inputUtf8Bytes": 60095,
+          "variants": [
+            {
+              "traceOnly": {
+                "allocatedBytes": 2020064,
+                "peakOutstandingBytes": 2020064,
+                "uncollectedTerminalBytes": 2020064,
+                "postCollectOutstandingBytes": 1695808,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            },
+            {
+              "traceOnly": {
+                "allocatedBytes": 2020064,
+                "peakOutstandingBytes": 2020064,
+                "uncollectedTerminalBytes": 2020064,
+                "postCollectOutstandingBytes": 1695808,
+                "memoryCapacityBytes": 2621440
+              },
+              "stageObserverMetricsMatchTrace": true
+            }
+          ]
+        }
+      ],
+      "nearBoundSamples": [
+        [
+          {
+            "allocatedBytes": 4482720,
+            "peakOutstandingBytes": 3741872,
+            "uncollectedTerminalBytes": 2593184,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4482720,
+            "peakOutstandingBytes": 3741872,
+            "uncollectedTerminalBytes": 2593184,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4482720,
+            "peakOutstandingBytes": 3741872,
+            "uncollectedTerminalBytes": 2593184,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          }
+        ],
+        [
+          {
+            "allocatedBytes": 4482720,
+            "peakOutstandingBytes": 3741872,
+            "uncollectedTerminalBytes": 2593184,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4482720,
+            "peakOutstandingBytes": 3741872,
+            "uncollectedTerminalBytes": 2593184,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          },
+          {
+            "allocatedBytes": 4482720,
+            "peakOutstandingBytes": 3741872,
+            "uncollectedTerminalBytes": 2593184,
+            "postCollectOutstandingBytes": 2296080,
+            "memoryCapacityBytes": 5242880
+          }
+        ]
+      ]
+    }
+  ],
+  "limitations": [
+    "Injected Fastly ABI execution; no deployed or Viceroy claim.",
+    "TLSF outstanding blocks exclude static data, shadow stack, allocator metadata and spare pages; post-collection blocks are retained allocation, not RSS.",
+    "No new lifetime or cumulative budget policy; bounded-read-loop plans retain the original path.",
+    "Baseline owner is loaded unmodified from git; all other production dependencies are identical to the candidate checkout."
+  ],
+  "ps3": {
+    "sourceByteIdentical": true,
+    "wasmByteIdentical": true,
+    "sourceSha256": "d60f2c8e00ad411d67673e58670cf597a49f94e284dfd31f99f0181bc06a78db",
+    "wasmSha256": "e2ab735d40bc3e15f79d9f327195eea925876d78c1a60062f83bfe8fedfc70af",
+    "accounting": [
+      {
+        "bytes": 6398,
+        "values": 225
+      },
+      {
+        "bytes": 6398,
+        "values": 225
+      }
+    ]
+  },
+  "fullReportSha256": "53c801c1d346d85b86235839cc78c4c9e2c3e866ae16a22f8008f8338ccd8519"
+}

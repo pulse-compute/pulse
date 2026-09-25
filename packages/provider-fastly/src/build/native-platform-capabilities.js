@@ -5,6 +5,7 @@ const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonPro
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
 const nativeValueBudget = require('./native-value-budget.js');
+const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
 const crypto = require('node:crypto');
 const { nativeStringFields, nativeStringConcat, nativeStringTrim, nativeStringIndex, needsNativeValueFailureGuard } = require('./native-string-values.js');
@@ -1014,9 +1015,27 @@ function stripPulseHostImports(source) {
     .join('\n');
 }
 
+function schemaTextEncodeIds(plan) {
+  // Keep the PS3 accounting/failure boundary and all unproved codec families.
+  if (nativeValueBudget.hasBoundedReadLoop(plan)) return [];
+  function closedText(node, depth = 0) {
+    if (depth > 16) return false;
+    if (node.kind === 'string' || node.kind === 'boolean') return true;
+    if (node.kind === 'nullable') return closedText(node.value, depth);
+    if (node.kind === 'array') return closedText(node.element, depth + 1);
+    return node.kind === 'object' && !node.additionalProperties
+      && node.fields.every(field => closedText(field.value, depth + 1));
+  }
+  return ((plan.schemas && plan.schemas.registry && plan.schemas.registry.schemas) || [])
+    .filter(schema => !schema.jsonLimits && schema.root.kind === 'object'
+      && schemaNeedsValueProjection(schema.root) && closedText(schema.root))
+    .map(schema => schema.id);
+}
+
 function generateSchemaRuntime(plan) {
   const registry = plan.schemas && plan.schemas.registry ? plan.schemas.registry : { schemas: [], maxBytes: FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES, contentTypePolicy: 'accept-json-or-missing' };
   const schemas = registry.schemas || [];
+  const textEncodeIds = new Set(schemaTextEncodeIds(plan));
   const nodeLines = [];
   const scalarProjectors = new Map();
   let nodeIndex = 0;
@@ -1118,7 +1137,7 @@ function generateSchemaRuntime(plan) {
     schemaJsonAdmissionSource(plan),
     schemaFetchJsonSource(),
     ...nodeLines,
-    'function __pulse_fastly_schema_apply(schemaId: string, valueHandle: i32, encode: bool): i32 {',
+    `function __pulse_fastly_schema_apply(schemaId: string, valueHandle: i32, encode: bool${textEncodeIds.size ? ', textResult: bool = false' : ''}): i32 {`,
     '  if (schemaId.length == 0) return valueHandle'
   ];
   for (const [schemaIndex, schema] of schemas.entries()) {
@@ -1128,6 +1147,7 @@ function generateSchemaRuntime(plan) {
     lines.push('    if (projected <= 0) return 0');
     lines.push('    const input = __pulse_fastly_json(projected, 0)');
     lines.push(`    const normalized = encode ? __pulse_schema_encode_${schemaIndex}(input) : __pulse_schema_decode_${schemaIndex}(input)`);
+    if (textEncodeIds.has(schema.id)) lines.push('    if (textResult && encode) return __pulse_fastly_string_value(normalized)');
     if (schema.jsonLimits) lines.push('    const output = __pulse_fastly_parse_json(normalized)', '    if (output > 0) __pulse_fastly_deep_freeze(output)', '    return output');
     else lines.push('    return __pulse_fastly_parse_json(normalized)');
     lines.push('  }');
@@ -1251,6 +1271,7 @@ function effectDispatchSource(plan) {
 }
 
 function fastlyRuntimeSource(plan, bindings, options = {}) {
+  const textEncodeIds = schemaTextEncodeIds(plan);
   const effectCount = (plan.effects || []).length;
   const jwtCrypto = options.jwtCrypto || selectedJwtCrypto(plan);
   const es256KeyRecords = options.es256KeyRecords || Object.freeze([]);
@@ -1761,11 +1782,12 @@ function host_schema_decode(text: i32, schema: i32): i32 {
 function host_schema_encode(value: i32, schema: i32): i32 {
   const id = __pulse_fastly_value(schema)
   if (id.kind != PULSE_VALUE_STRING || id.text.length == 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 55, -1); return 0 }
-  const projected = __pulse_fastly_schema_apply(id.text, value, true)
+  ${textEncodeIds.length ? `const textResult = ${textEncodeIds.map(id => `id.text == ${quote(id)}`).join(' || ')}
+  const projected = __pulse_fastly_schema_apply(id.text, value, true, textResult)` : 'const projected = __pulse_fastly_schema_apply(id.text, value, true)'}
   if (projected <= 0) return 0
-  const text = __pulse_fastly_json(projected, 0)
+  const text = ${textEncodeIds.length ? 'textResult ? __pulse_fastly_string(projected) : ' : ''}__pulse_fastly_json(projected, 0)
   if (String.UTF8.byteLength(text) > __PULSE_SCHEMA_MAX_BYTES) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 21, -1); return 0 }
-  return __pulse_fastly_string_value(text)
+  return ${textEncodeIds.length ? 'textResult ? projected : ' : ''}__pulse_fastly_string_value(text)
 }
 function host_response_text(value: i32, options: i32): i32 { return __pulse_fastly_response(value, options, false) }
 function host_response_custom(specHandle: i32): i32 { const spec = __pulse_fastly_value(specHandle); if (spec.kind != PULSE_VALUE_OBJECT) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 40, -1); return 0 } const output = new __PulseFastlyValue(); output.kind = PULSE_VALUE_RESPONSE; output.status = 200; const statusIndex = __pulse_fastly_find(spec, "status"); if (statusIndex >= 0) output.status = i32(__pulse_fastly_number(unchecked(spec.values[statusIndex]))); const bodyIndex = __pulse_fastly_find(spec, "body"); if (bodyIndex >= 0) output.text = __pulse_fastly_string(unchecked(spec.values[bodyIndex])); __pulse_fastly_headers_from_options(spec, output); return __pulse_fastly_put(output) }
