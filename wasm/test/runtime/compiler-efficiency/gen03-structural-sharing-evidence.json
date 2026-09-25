@@ -1,0 +1,3547 @@
+{
+  "version": "pulse.gen03.structural-sharing.v1",
+  "status": "passed",
+  "node": "v24.19.0",
+  "identities": {
+    "baseline": {
+      "revision": "07b5670e45d30cd493a04eb364b2372371625ea7",
+      "tree": "8004d2aaa6593653e4445ccfbe762b7522d27cb6",
+      "workingTree": "",
+      "files": {
+        "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+        "wasm/test/runtime/compiler-efficiency/gen01-census.cjs": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+        "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+        "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+        "packages/provider-fastly/src/build/native-platform-capabilities.js": "31e1a8d5e47a5f40856c00d36e3622f20d36a9f5f5d18fda499d0f6a1cd3b741"
+      }
+    },
+    "candidate": {
+      "revision": "08f7521e4250065d9725119372282fe2d6085533",
+      "tree": "8004d2aaa6593653e4445ccfbe762b7522d27cb6",
+      "workingTree": "M packages/provider-fastly/src/build/native-platform-capabilities.js\n M wasm/test/provider/assert-fastly-native-platform-capabilities.cjs\n M wasm/test/provider/assert-fastly-scalar-sharing.cjs\n M wasm/test/runtime/compiler-efficiency/assert-schema-cost-profile.cjs\n M wasm/test/runtime/compiler-efficiency/schema-cost-profile.cjs\n?? wasm/test/provider/assert-fastly-structural-sharing.cjs\n?? wasm/test/runtime/compiler-efficiency/gen03-structural-sharing.cjs",
+      "files": {
+        "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+        "wasm/test/runtime/compiler-efficiency/gen01-census.cjs": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+        "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+        "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+        "packages/provider-fastly/src/build/native-platform-capabilities.js": "4fa46ce0c5486547f2d9e31a4685d6bc4feb0bc3809926b5891013b5feffb971"
+      }
+    }
+  },
+  "harnessSha256": "6a546d84cc9c5cfb2530f7d683560a668a7e774241ec04ac36001df0b10b1564",
+  "controlsSha256": "403e56db3345c70243eef157638aead2580cf17a004fe32db6be9e1ea5420a5b",
+  "samples": 3,
+  "cells": [
+    {
+      "cell": {
+        "id": "schema-1",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureHashes": {
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567",
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456"
+      },
+      "analysis": {
+        "baseline": {
+          "partition": {
+            "bytes": 111524,
+            "categories": {
+              "portable codecs": {
+                "bytes": 1340,
+                "declarations": 7,
+                "largest": [
+                  {
+                    "name": "pulse_schema_encode",
+                    "bytes": 369
+                  },
+                  {
+                    "name": "pulse_schema_decode",
+                    "bytes": 366
+                  },
+                  {
+                    "name": "__pulse_schema_encode_0",
+                    "bytes": 192
+                  },
+                  {
+                    "name": "__pulse_schema_decode_0",
+                    "bytes": 191
+                  },
+                  {
+                    "name": "__Pulse_gen_R0_0",
+                    "bytes": 111
+                  }
+                ]
+              },
+              "provider projections": {
+                "bytes": 3173,
+                "declarations": 7,
+                "largest": [
+                  {
+                    "name": "__pulse_fastly_schema_0_0",
+                    "bytes": 1130
+                  },
+                  {
+                    "name": "__pulse_fastly_fetch_json_headers",
+                    "bytes": 578
+                  },
+                  {
+                    "name": "__pulse_fastly_fetch_json_body",
+                    "bytes": 567
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_apply",
+                    "bytes": 539
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_scalar_0",
+                    "bytes": 264
+                  }
+                ]
+              },
+              "runtime support": {
+                "bytes": 94653,
+                "declarations": 207,
+                "largest": [
+                  {
+                    "name": "__PulseJsonParser",
+                    "bytes": 6512
+                  },
+                  {
+                    "name": "__pulse_fastly_abort",
+                    "bytes": 5044
+                  },
+                  {
+                    "name": "host_value_binary",
+                    "bytes": 2884
+                  },
+                  {
+                    "name": "__pulse_fastly_start_request",
+                    "bytes": 2508
+                  },
+                  {
+                    "name": "__pulse_fastly_run_invocation",
+                    "bytes": 2346
+                  }
+                ]
+              },
+              "dispatcher/handlers": {
+                "bytes": 8614,
+                "declarations": 76,
+                "largest": [
+                  {
+                    "name": "__pulse_chunk_1",
+                    "bytes": 940
+                  },
+                  {
+                    "name": "__pulse_chunk_2",
+                    "bytes": 778
+                  },
+                  {
+                    "name": "__pulse_chunk_0",
+                    "bytes": 514
+                  },
+                  {
+                    "name": "pulse_set_effect_result",
+                    "bytes": 392
+                  },
+                  {
+                    "name": "pulse_start",
+                    "bytes": 258
+                  }
+                ]
+              },
+              "package/effect adapters": {
+                "bytes": 3744,
+                "declarations": 19,
+                "largest": [
+                  {
+                    "name": "host_effect_begin",
+                    "bytes": 894
+                  },
+                  {
+                    "name": "__pulse_invocation_begin",
+                    "bytes": 605
+                  },
+                  {
+                    "name": "__pulse_invocation_settle",
+                    "bytes": 436
+                  },
+                  {
+                    "name": "__pulse_fastly_resolve_effect",
+                    "bytes": 320
+                  },
+                  {
+                    "name": "__pulse_invocation_close",
+                    "bytes": 284
+                  }
+                ]
+              }
+            },
+            "exactRepeatedFunctionBodies": {
+              "groups": 3,
+              "redundantBytes": 367,
+              "largest": [
+                {
+                  "names": [
+                    "__pulse_fastly_backend",
+                    "__pulse_fastly_jwt_secret_binding",
+                    "__pulse_fastly_kv_store",
+                    "__pulse_fastly_grip_publish_url",
+                    "__pulse_fastly_grip_auth_ref"
+                  ],
+                  "bodyBytes": 55
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_0",
+                    "__pulse_schema_encode_0"
+                  ],
+                  "bodyBytes": 134
+                },
+                {
+                  "names": [
+                    "__pulse_fastly_jwt_case_id",
+                    "__pulse_fastly_secret_store"
+                  ],
+                  "bodyBytes": 13
+                }
+              ]
+            },
+            "stageFragmentsByteExact": true,
+            "namedDeclarationCoverage": 109,
+            "totalDeclarations": 316
+          },
+          "plan": {
+            "effects": 1,
+            "routes": 1,
+            "schemaIds": 1,
+            "locals": 6
+          },
+          "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+          "sourceOwnerSha256": {
+            "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+            "packages/provider-fastly/src/build/native-platform-capabilities.js": "31e1a8d5e47a5f40856c00d36e3622f20d36a9f5f5d18fda499d0f6a1cd3b741",
+            "packages/provider-fastly/src/build/s3-native.js": "b296fc98ff7557857eaac240d93165a42a2492ebe8bcae50f0188674619df75b",
+            "packages/provider-fastly/src/build/time-native.js": "fd8931a6622bc01e4e66fb293e77ba28050dfdd78a04c1f05801c6b544731412",
+            "packages/provider-fastly/src/build/digest-native.js": "baaf291fca21bca109ad114eb0a9c72c91d83a3b1b3ff881e62bb9525a3dd745",
+            "packages/provider-fastly/src/build/kv-native.js": "1b25b96f4748317ed9a3bcab19afbbea83224bcaecbf612b2feec5cc60bbf4a4",
+            "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3"
+          }
+        },
+        "candidate": {
+          "partition": {
+            "bytes": 111598,
+            "categories": {
+              "portable codecs": {
+                "bytes": 1340,
+                "declarations": 7,
+                "largest": [
+                  {
+                    "name": "pulse_schema_encode",
+                    "bytes": 369
+                  },
+                  {
+                    "name": "pulse_schema_decode",
+                    "bytes": 366
+                  },
+                  {
+                    "name": "__pulse_schema_encode_0",
+                    "bytes": 192
+                  },
+                  {
+                    "name": "__pulse_schema_decode_0",
+                    "bytes": 191
+                  },
+                  {
+                    "name": "__Pulse_gen_R0_0",
+                    "bytes": 111
+                  }
+                ]
+              },
+              "provider projections": {
+                "bytes": 3247,
+                "declarations": 7,
+                "largest": [
+                  {
+                    "name": "__pulse_fastly_schema_flat_object_0",
+                    "bytes": 1194
+                  },
+                  {
+                    "name": "__pulse_fastly_fetch_json_headers",
+                    "bytes": 578
+                  },
+                  {
+                    "name": "__pulse_fastly_fetch_json_body",
+                    "bytes": 567
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_apply",
+                    "bytes": 549
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_scalar_0",
+                    "bytes": 264
+                  }
+                ]
+              },
+              "runtime support": {
+                "bytes": 94653,
+                "declarations": 207,
+                "largest": [
+                  {
+                    "name": "__PulseJsonParser",
+                    "bytes": 6512
+                  },
+                  {
+                    "name": "__pulse_fastly_abort",
+                    "bytes": 5044
+                  },
+                  {
+                    "name": "host_value_binary",
+                    "bytes": 2884
+                  },
+                  {
+                    "name": "__pulse_fastly_start_request",
+                    "bytes": 2508
+                  },
+                  {
+                    "name": "__pulse_fastly_run_invocation",
+                    "bytes": 2346
+                  }
+                ]
+              },
+              "dispatcher/handlers": {
+                "bytes": 8614,
+                "declarations": 76,
+                "largest": [
+                  {
+                    "name": "__pulse_chunk_1",
+                    "bytes": 940
+                  },
+                  {
+                    "name": "__pulse_chunk_2",
+                    "bytes": 778
+                  },
+                  {
+                    "name": "__pulse_chunk_0",
+                    "bytes": 514
+                  },
+                  {
+                    "name": "pulse_set_effect_result",
+                    "bytes": 392
+                  },
+                  {
+                    "name": "pulse_start",
+                    "bytes": 258
+                  }
+                ]
+              },
+              "package/effect adapters": {
+                "bytes": 3744,
+                "declarations": 19,
+                "largest": [
+                  {
+                    "name": "host_effect_begin",
+                    "bytes": 894
+                  },
+                  {
+                    "name": "__pulse_invocation_begin",
+                    "bytes": 605
+                  },
+                  {
+                    "name": "__pulse_invocation_settle",
+                    "bytes": 436
+                  },
+                  {
+                    "name": "__pulse_fastly_resolve_effect",
+                    "bytes": 320
+                  },
+                  {
+                    "name": "__pulse_invocation_close",
+                    "bytes": 284
+                  }
+                ]
+              }
+            },
+            "exactRepeatedFunctionBodies": {
+              "groups": 3,
+              "redundantBytes": 367,
+              "largest": [
+                {
+                  "names": [
+                    "__pulse_fastly_backend",
+                    "__pulse_fastly_jwt_secret_binding",
+                    "__pulse_fastly_kv_store",
+                    "__pulse_fastly_grip_publish_url",
+                    "__pulse_fastly_grip_auth_ref"
+                  ],
+                  "bodyBytes": 55
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_0",
+                    "__pulse_schema_encode_0"
+                  ],
+                  "bodyBytes": 134
+                },
+                {
+                  "names": [
+                    "__pulse_fastly_jwt_case_id",
+                    "__pulse_fastly_secret_store"
+                  ],
+                  "bodyBytes": 13
+                }
+              ]
+            },
+            "stageFragmentsByteExact": true,
+            "namedDeclarationCoverage": 109,
+            "totalDeclarations": 316
+          },
+          "plan": {
+            "effects": 1,
+            "routes": 1,
+            "schemaIds": 1,
+            "locals": 6
+          },
+          "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+          "sourceOwnerSha256": {
+            "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+            "packages/provider-fastly/src/build/native-platform-capabilities.js": "4fa46ce0c5486547f2d9e31a4685d6bc4feb0bc3809926b5891013b5feffb971",
+            "packages/provider-fastly/src/build/s3-native.js": "b296fc98ff7557857eaac240d93165a42a2492ebe8bcae50f0188674619df75b",
+            "packages/provider-fastly/src/build/time-native.js": "fd8931a6622bc01e4e66fb293e77ba28050dfdd78a04c1f05801c6b544731412",
+            "packages/provider-fastly/src/build/digest-native.js": "baaf291fca21bca109ad114eb0a9c72c91d83a3b1b3ff881e62bb9525a3dd745",
+            "packages/provider-fastly/src/build/kv-native.js": "1b25b96f4748317ed9a3bcab19afbbea83224bcaecbf612b2feec5cc60bbf4a4",
+            "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3"
+          }
+        }
+      },
+      "samples": [
+        {
+          "variant": "baseline",
+          "sample": 0,
+          "extractionMs": 12.883812000000034,
+          "planningMs": 165.87748900000003,
+          "assemblyScriptMs": 2593,
+          "buildMs": 2772.3096339999997,
+          "compilerWorkerPeakRssBytes": 123510784,
+          "sourceBytes": 111524,
+          "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+          "wasmBytes": 66135,
+          "wasmGzipBytes": 24808,
+          "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+          "functionCount": 140,
+          "codeBodyBytes": 47518,
+          "largestBodies": [
+            {
+              "ordinal": 136,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 132,
+              "bytes": 2067
+            },
+            {
+              "ordinal": 88,
+              "bytes": 1999
+            },
+            {
+              "ordinal": 28,
+              "bytes": 1934
+            },
+            {
+              "ordinal": 97,
+              "bytes": 1507
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 332746752
+        },
+        {
+          "variant": "candidate",
+          "sample": 0,
+          "extractionMs": 10.293033999999977,
+          "planningMs": 161.67245099999997,
+          "assemblyScriptMs": 2531,
+          "buildMs": 2704.193446,
+          "compilerWorkerPeakRssBytes": 122163200,
+          "sourceBytes": 111598,
+          "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+          "wasmBytes": 66135,
+          "wasmGzipBytes": 24808,
+          "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+          "functionCount": 140,
+          "codeBodyBytes": 47518,
+          "largestBodies": [
+            {
+              "ordinal": 136,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 132,
+              "bytes": 2067
+            },
+            {
+              "ordinal": 88,
+              "bytes": 1999
+            },
+            {
+              "ordinal": 28,
+              "bytes": 1934
+            },
+            {
+              "ordinal": 97,
+              "bytes": 1507
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 329895936
+        },
+        {
+          "variant": "candidate",
+          "sample": 1,
+          "extractionMs": 9.652738999999997,
+          "planningMs": 129.708936,
+          "assemblyScriptMs": 2477,
+          "buildMs": 2617.871875,
+          "compilerWorkerPeakRssBytes": 124141568,
+          "sourceBytes": 111598,
+          "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+          "wasmBytes": 66135,
+          "wasmGzipBytes": 24808,
+          "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+          "functionCount": 140,
+          "codeBodyBytes": 47518,
+          "largestBodies": [
+            {
+              "ordinal": 136,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 132,
+              "bytes": 2067
+            },
+            {
+              "ordinal": 88,
+              "bytes": 1999
+            },
+            {
+              "ordinal": 28,
+              "bytes": 1934
+            },
+            {
+              "ordinal": 97,
+              "bytes": 1507
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 336769024
+        },
+        {
+          "variant": "baseline",
+          "sample": 1,
+          "extractionMs": 10.28923900000001,
+          "planningMs": 150.182249,
+          "assemblyScriptMs": 2509,
+          "buildMs": 2671.9837549999997,
+          "compilerWorkerPeakRssBytes": 120561664,
+          "sourceBytes": 111524,
+          "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+          "wasmBytes": 66135,
+          "wasmGzipBytes": 24808,
+          "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+          "functionCount": 140,
+          "codeBodyBytes": 47518,
+          "largestBodies": [
+            {
+              "ordinal": 136,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 132,
+              "bytes": 2067
+            },
+            {
+              "ordinal": 88,
+              "bytes": 1999
+            },
+            {
+              "ordinal": 28,
+              "bytes": 1934
+            },
+            {
+              "ordinal": 97,
+              "bytes": 1507
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 347451392
+        },
+        {
+          "variant": "baseline",
+          "sample": 2,
+          "extractionMs": 10.475099,
+          "planningMs": 138.631277,
+          "assemblyScriptMs": 2621,
+          "buildMs": 2771.6207550000004,
+          "compilerWorkerPeakRssBytes": 123371520,
+          "sourceBytes": 111524,
+          "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+          "wasmBytes": 66135,
+          "wasmGzipBytes": 24808,
+          "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+          "functionCount": 140,
+          "codeBodyBytes": 47518,
+          "largestBodies": [
+            {
+              "ordinal": 136,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 132,
+              "bytes": 2067
+            },
+            {
+              "ordinal": 88,
+              "bytes": 1999
+            },
+            {
+              "ordinal": 28,
+              "bytes": 1934
+            },
+            {
+              "ordinal": 97,
+              "bytes": 1507
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 335765504
+        },
+        {
+          "variant": "candidate",
+          "sample": 2,
+          "extractionMs": 9.587329000000011,
+          "planningMs": 142.486396,
+          "assemblyScriptMs": 2537,
+          "buildMs": 2691.131857,
+          "compilerWorkerPeakRssBytes": 122859520,
+          "sourceBytes": 111598,
+          "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+          "wasmBytes": 66135,
+          "wasmGzipBytes": 24808,
+          "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+          "functionCount": 140,
+          "codeBodyBytes": 47518,
+          "largestBodies": [
+            {
+              "ordinal": 136,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 132,
+              "bytes": 2067
+            },
+            {
+              "ordinal": 88,
+              "bytes": 1999
+            },
+            {
+              "ordinal": 28,
+              "bytes": 1934
+            },
+            {
+              "ordinal": 97,
+              "bytes": 1507
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 307650560
+        }
+      ]
+    },
+    {
+      "cell": {
+        "id": "schema-32-repeat",
+        "schemas": 32,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureHashes": {
+        "schema": "f868de7ac6ed15d75912bcb746466f015b165d29bf5ee684552703d7d187ed88",
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456"
+      },
+      "analysis": {
+        "baseline": {
+          "partition": {
+            "bytes": 177987,
+            "categories": {
+              "portable codecs": {
+                "bytes": 21594,
+                "declarations": 100,
+                "largest": [
+                  {
+                    "name": "pulse_schema_encode",
+                    "bytes": 2707
+                  },
+                  {
+                    "name": "pulse_schema_decode",
+                    "bytes": 2704
+                  },
+                  {
+                    "name": "__pulse_schema_encode_10",
+                    "bytes": 197
+                  },
+                  {
+                    "name": "__pulse_schema_encode_11",
+                    "bytes": 197
+                  },
+                  {
+                    "name": "__pulse_schema_encode_12",
+                    "bytes": 197
+                  }
+                ]
+              },
+              "provider projections": {
+                "bytes": 49382,
+                "declarations": 38,
+                "largest": [
+                  {
+                    "name": "__pulse_fastly_schema_apply",
+                    "bytes": 11164
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_10_30",
+                    "bytes": 1150
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_11_33",
+                    "bytes": 1150
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_12_36",
+                    "bytes": 1150
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_13_39",
+                    "bytes": 1150
+                  }
+                ]
+              },
+              "runtime support": {
+                "bytes": 94653,
+                "declarations": 207,
+                "largest": [
+                  {
+                    "name": "__PulseJsonParser",
+                    "bytes": 6512
+                  },
+                  {
+                    "name": "__pulse_fastly_abort",
+                    "bytes": 5044
+                  },
+                  {
+                    "name": "host_value_binary",
+                    "bytes": 2884
+                  },
+                  {
+                    "name": "__pulse_fastly_start_request",
+                    "bytes": 2508
+                  },
+                  {
+                    "name": "__pulse_fastly_run_invocation",
+                    "bytes": 2346
+                  }
+                ]
+              },
+              "dispatcher/handlers": {
+                "bytes": 8614,
+                "declarations": 76,
+                "largest": [
+                  {
+                    "name": "__pulse_chunk_1",
+                    "bytes": 940
+                  },
+                  {
+                    "name": "__pulse_chunk_2",
+                    "bytes": 778
+                  },
+                  {
+                    "name": "__pulse_chunk_0",
+                    "bytes": 514
+                  },
+                  {
+                    "name": "pulse_set_effect_result",
+                    "bytes": 392
+                  },
+                  {
+                    "name": "pulse_start",
+                    "bytes": 258
+                  }
+                ]
+              },
+              "package/effect adapters": {
+                "bytes": 3744,
+                "declarations": 19,
+                "largest": [
+                  {
+                    "name": "host_effect_begin",
+                    "bytes": 894
+                  },
+                  {
+                    "name": "__pulse_invocation_begin",
+                    "bytes": 605
+                  },
+                  {
+                    "name": "__pulse_invocation_settle",
+                    "bytes": 436
+                  },
+                  {
+                    "name": "__pulse_fastly_resolve_effect",
+                    "bytes": 320
+                  },
+                  {
+                    "name": "__pulse_invocation_close",
+                    "bytes": 284
+                  }
+                ]
+              }
+            },
+            "exactRepeatedFunctionBodies": {
+              "groups": 34,
+              "redundantBytes": 4609,
+              "largest": [
+                {
+                  "names": [
+                    "__pulse_fastly_backend",
+                    "__pulse_fastly_jwt_secret_binding",
+                    "__pulse_fastly_kv_store",
+                    "__pulse_fastly_grip_publish_url",
+                    "__pulse_fastly_grip_auth_ref"
+                  ],
+                  "bodyBytes": 55
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_10",
+                    "__pulse_schema_encode_10"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_11",
+                    "__pulse_schema_encode_11"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_12",
+                    "__pulse_schema_encode_12"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_13",
+                    "__pulse_schema_encode_13"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_14",
+                    "__pulse_schema_encode_14"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_15",
+                    "__pulse_schema_encode_15"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_16",
+                    "__pulse_schema_encode_16"
+                  ],
+                  "bodyBytes": 138
+                }
+              ]
+            },
+            "stageFragmentsByteExact": true,
+            "namedDeclarationCoverage": 233,
+            "totalDeclarations": 440
+          },
+          "plan": {
+            "effects": 1,
+            "routes": 1,
+            "schemaIds": 32,
+            "locals": 6
+          },
+          "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+          "sourceOwnerSha256": {
+            "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+            "packages/provider-fastly/src/build/native-platform-capabilities.js": "31e1a8d5e47a5f40856c00d36e3622f20d36a9f5f5d18fda499d0f6a1cd3b741",
+            "packages/provider-fastly/src/build/s3-native.js": "b296fc98ff7557857eaac240d93165a42a2492ebe8bcae50f0188674619df75b",
+            "packages/provider-fastly/src/build/time-native.js": "fd8931a6622bc01e4e66fb293e77ba28050dfdd78a04c1f05801c6b544731412",
+            "packages/provider-fastly/src/build/digest-native.js": "baaf291fca21bca109ad114eb0a9c72c91d83a3b1b3ff881e62bb9525a3dd745",
+            "packages/provider-fastly/src/build/kv-native.js": "1b25b96f4748317ed9a3bcab19afbbea83224bcaecbf612b2feec5cc60bbf4a4",
+            "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3"
+          }
+        },
+        "candidate": {
+          "partition": {
+            "bytes": 142737,
+            "categories": {
+              "portable codecs": {
+                "bytes": 21594,
+                "declarations": 100,
+                "largest": [
+                  {
+                    "name": "pulse_schema_encode",
+                    "bytes": 2707
+                  },
+                  {
+                    "name": "pulse_schema_decode",
+                    "bytes": 2704
+                  },
+                  {
+                    "name": "__pulse_schema_encode_10",
+                    "bytes": 197
+                  },
+                  {
+                    "name": "__pulse_schema_encode_11",
+                    "bytes": 197
+                  },
+                  {
+                    "name": "__pulse_schema_encode_12",
+                    "bytes": 197
+                  }
+                ]
+              },
+              "provider projections": {
+                "bytes": 14132,
+                "declarations": 7,
+                "largest": [
+                  {
+                    "name": "__pulse_fastly_schema_apply",
+                    "bytes": 11434
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_flat_object_0",
+                    "bytes": 1194
+                  },
+                  {
+                    "name": "__pulse_fastly_fetch_json_headers",
+                    "bytes": 578
+                  },
+                  {
+                    "name": "__pulse_fastly_fetch_json_body",
+                    "bytes": 567
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_scalar_0",
+                    "bytes": 264
+                  }
+                ]
+              },
+              "runtime support": {
+                "bytes": 94653,
+                "declarations": 207,
+                "largest": [
+                  {
+                    "name": "__PulseJsonParser",
+                    "bytes": 6512
+                  },
+                  {
+                    "name": "__pulse_fastly_abort",
+                    "bytes": 5044
+                  },
+                  {
+                    "name": "host_value_binary",
+                    "bytes": 2884
+                  },
+                  {
+                    "name": "__pulse_fastly_start_request",
+                    "bytes": 2508
+                  },
+                  {
+                    "name": "__pulse_fastly_run_invocation",
+                    "bytes": 2346
+                  }
+                ]
+              },
+              "dispatcher/handlers": {
+                "bytes": 8614,
+                "declarations": 76,
+                "largest": [
+                  {
+                    "name": "__pulse_chunk_1",
+                    "bytes": 940
+                  },
+                  {
+                    "name": "__pulse_chunk_2",
+                    "bytes": 778
+                  },
+                  {
+                    "name": "__pulse_chunk_0",
+                    "bytes": 514
+                  },
+                  {
+                    "name": "pulse_set_effect_result",
+                    "bytes": 392
+                  },
+                  {
+                    "name": "pulse_start",
+                    "bytes": 258
+                  }
+                ]
+              },
+              "package/effect adapters": {
+                "bytes": 3744,
+                "declarations": 19,
+                "largest": [
+                  {
+                    "name": "host_effect_begin",
+                    "bytes": 894
+                  },
+                  {
+                    "name": "__pulse_invocation_begin",
+                    "bytes": 605
+                  },
+                  {
+                    "name": "__pulse_invocation_settle",
+                    "bytes": 436
+                  },
+                  {
+                    "name": "__pulse_fastly_resolve_effect",
+                    "bytes": 320
+                  },
+                  {
+                    "name": "__pulse_invocation_close",
+                    "bytes": 284
+                  }
+                ]
+              }
+            },
+            "exactRepeatedFunctionBodies": {
+              "groups": 34,
+              "redundantBytes": 4609,
+              "largest": [
+                {
+                  "names": [
+                    "__pulse_fastly_backend",
+                    "__pulse_fastly_jwt_secret_binding",
+                    "__pulse_fastly_kv_store",
+                    "__pulse_fastly_grip_publish_url",
+                    "__pulse_fastly_grip_auth_ref"
+                  ],
+                  "bodyBytes": 55
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_10",
+                    "__pulse_schema_encode_10"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_11",
+                    "__pulse_schema_encode_11"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_12",
+                    "__pulse_schema_encode_12"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_13",
+                    "__pulse_schema_encode_13"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_14",
+                    "__pulse_schema_encode_14"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_15",
+                    "__pulse_schema_encode_15"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_16",
+                    "__pulse_schema_encode_16"
+                  ],
+                  "bodyBytes": 138
+                }
+              ]
+            },
+            "stageFragmentsByteExact": true,
+            "namedDeclarationCoverage": 202,
+            "totalDeclarations": 409
+          },
+          "plan": {
+            "effects": 1,
+            "routes": 1,
+            "schemaIds": 32,
+            "locals": 6
+          },
+          "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+          "sourceOwnerSha256": {
+            "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+            "packages/provider-fastly/src/build/native-platform-capabilities.js": "4fa46ce0c5486547f2d9e31a4685d6bc4feb0bc3809926b5891013b5feffb971",
+            "packages/provider-fastly/src/build/s3-native.js": "b296fc98ff7557857eaac240d93165a42a2492ebe8bcae50f0188674619df75b",
+            "packages/provider-fastly/src/build/time-native.js": "fd8931a6622bc01e4e66fb293e77ba28050dfdd78a04c1f05801c6b544731412",
+            "packages/provider-fastly/src/build/digest-native.js": "baaf291fca21bca109ad114eb0a9c72c91d83a3b1b3ff881e62bb9525a3dd745",
+            "packages/provider-fastly/src/build/kv-native.js": "1b25b96f4748317ed9a3bcab19afbbea83224bcaecbf612b2feec5cc60bbf4a4",
+            "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3"
+          }
+        }
+      },
+      "samples": [
+        {
+          "variant": "baseline",
+          "sample": 0,
+          "extractionMs": 19.64258799999999,
+          "planningMs": 218.22090500000002,
+          "assemblyScriptMs": 3239,
+          "buildMs": 3472.351706,
+          "compilerWorkerPeakRssBytes": 157110272,
+          "sourceBytes": 177987,
+          "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+          "wasmBytes": 70206,
+          "wasmGzipBytes": 26101,
+          "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+          "functionCount": 174,
+          "codeBodyBytes": 50411,
+          "largestBodies": [
+            {
+              "ordinal": 169,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 120,
+              "bytes": 2107
+            },
+            {
+              "ordinal": 166,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 123,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 33,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 331526144
+        },
+        {
+          "variant": "candidate",
+          "sample": 0,
+          "extractionMs": 19.37362200000001,
+          "planningMs": 203.28148099999999,
+          "assemblyScriptMs": 3200,
+          "buildMs": 3420.872461,
+          "compilerWorkerPeakRssBytes": 152363008,
+          "sourceBytes": 142737,
+          "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+          "wasmBytes": 70206,
+          "wasmGzipBytes": 26101,
+          "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+          "functionCount": 174,
+          "codeBodyBytes": 50411,
+          "largestBodies": [
+            {
+              "ordinal": 169,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 120,
+              "bytes": 2107
+            },
+            {
+              "ordinal": 166,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 123,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 33,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 340594688
+        },
+        {
+          "variant": "candidate",
+          "sample": 1,
+          "extractionMs": 19.231221000000005,
+          "planningMs": 235.331005,
+          "assemblyScriptMs": 3199,
+          "buildMs": 3448.163994,
+          "compilerWorkerPeakRssBytes": 153264128,
+          "sourceBytes": 142737,
+          "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+          "wasmBytes": 70206,
+          "wasmGzipBytes": 26101,
+          "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+          "functionCount": 174,
+          "codeBodyBytes": 50411,
+          "largestBodies": [
+            {
+              "ordinal": 169,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 120,
+              "bytes": 2107
+            },
+            {
+              "ordinal": 166,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 123,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 33,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 341327872
+        },
+        {
+          "variant": "baseline",
+          "sample": 1,
+          "extractionMs": 19.100979999999993,
+          "planningMs": 212.327837,
+          "assemblyScriptMs": 3345,
+          "buildMs": 3571.658469,
+          "compilerWorkerPeakRssBytes": 154853376,
+          "sourceBytes": 177987,
+          "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+          "wasmBytes": 70206,
+          "wasmGzipBytes": 26101,
+          "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+          "functionCount": 174,
+          "codeBodyBytes": 50411,
+          "largestBodies": [
+            {
+              "ordinal": 169,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 120,
+              "bytes": 2107
+            },
+            {
+              "ordinal": 166,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 123,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 33,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 316469248
+        },
+        {
+          "variant": "baseline",
+          "sample": 2,
+          "extractionMs": 20.54301799999996,
+          "planningMs": 250.308564,
+          "assemblyScriptMs": 3166,
+          "buildMs": 3430.8178239999997,
+          "compilerWorkerPeakRssBytes": 155418624,
+          "sourceBytes": 177987,
+          "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+          "wasmBytes": 70206,
+          "wasmGzipBytes": 26101,
+          "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+          "functionCount": 174,
+          "codeBodyBytes": 50411,
+          "largestBodies": [
+            {
+              "ordinal": 169,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 120,
+              "bytes": 2107
+            },
+            {
+              "ordinal": 166,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 123,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 33,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 340283392
+        },
+        {
+          "variant": "candidate",
+          "sample": 2,
+          "extractionMs": 18.359444999999994,
+          "planningMs": 197.39054299999998,
+          "assemblyScriptMs": 3162,
+          "buildMs": 3372.56656,
+          "compilerWorkerPeakRssBytes": 154464256,
+          "sourceBytes": 142737,
+          "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+          "wasmBytes": 70206,
+          "wasmGzipBytes": 26101,
+          "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+          "functionCount": 174,
+          "codeBodyBytes": 50411,
+          "largestBodies": [
+            {
+              "ordinal": 169,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 120,
+              "bytes": 2107
+            },
+            {
+              "ordinal": 166,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 123,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 33,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 358006784
+        }
+      ]
+    },
+    {
+      "cell": {
+        "id": "schema-16-diverse",
+        "schemas": 16,
+        "diverse": true,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureHashes": {
+        "schema": "15da1b4840a7585e730bc70b7e7357ab8049bff906999a701eec7030bdfa20c0",
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456"
+      },
+      "analysis": {
+        "baseline": {
+          "partition": {
+            "bytes": 174201,
+            "categories": {
+              "portable codecs": {
+                "bytes": 14797,
+                "declarations": 67,
+                "largest": [
+                  {
+                    "name": "pulse_schema_encode",
+                    "bytes": 1491
+                  },
+                  {
+                    "name": "pulse_schema_decode",
+                    "bytes": 1488
+                  },
+                  {
+                    "name": "__Pulse_gen_R12_12",
+                    "bytes": 290
+                  },
+                  {
+                    "name": "__Pulse_gen_R15_15",
+                    "bytes": 290
+                  },
+                  {
+                    "name": "__Pulse_gen_R3_3",
+                    "bytes": 283
+                  }
+                ]
+              },
+              "provider projections": {
+                "bytes": 52393,
+                "declarations": 44,
+                "largest": [
+                  {
+                    "name": "__pulse_fastly_schema_apply",
+                    "bytes": 5661
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_11_66",
+                    "bytes": 2014
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_13_79",
+                    "bytes": 2014
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_14_85",
+                    "bytes": 2014
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_10_60",
+                    "bytes": 2013
+                  }
+                ]
+              },
+              "runtime support": {
+                "bytes": 94653,
+                "declarations": 207,
+                "largest": [
+                  {
+                    "name": "__PulseJsonParser",
+                    "bytes": 6512
+                  },
+                  {
+                    "name": "__pulse_fastly_abort",
+                    "bytes": 5044
+                  },
+                  {
+                    "name": "host_value_binary",
+                    "bytes": 2884
+                  },
+                  {
+                    "name": "__pulse_fastly_start_request",
+                    "bytes": 2508
+                  },
+                  {
+                    "name": "__pulse_fastly_run_invocation",
+                    "bytes": 2346
+                  }
+                ]
+              },
+              "dispatcher/handlers": {
+                "bytes": 8614,
+                "declarations": 76,
+                "largest": [
+                  {
+                    "name": "__pulse_chunk_1",
+                    "bytes": 940
+                  },
+                  {
+                    "name": "__pulse_chunk_2",
+                    "bytes": 778
+                  },
+                  {
+                    "name": "__pulse_chunk_0",
+                    "bytes": 514
+                  },
+                  {
+                    "name": "pulse_set_effect_result",
+                    "bytes": 392
+                  },
+                  {
+                    "name": "pulse_start",
+                    "bytes": 258
+                  }
+                ]
+              },
+              "package/effect adapters": {
+                "bytes": 3744,
+                "declarations": 19,
+                "largest": [
+                  {
+                    "name": "host_effect_begin",
+                    "bytes": 894
+                  },
+                  {
+                    "name": "__pulse_invocation_begin",
+                    "bytes": 605
+                  },
+                  {
+                    "name": "__pulse_invocation_settle",
+                    "bytes": 436
+                  },
+                  {
+                    "name": "__pulse_fastly_resolve_effect",
+                    "bytes": 320
+                  },
+                  {
+                    "name": "__pulse_invocation_close",
+                    "bytes": 284
+                  }
+                ]
+              }
+            },
+            "exactRepeatedFunctionBodies": {
+              "groups": 19,
+              "redundantBytes": 4161,
+              "largest": [
+                {
+                  "names": [
+                    "__pulse_fastly_schema_3_18",
+                    "__pulse_fastly_schema_6_37",
+                    "__pulse_fastly_schema_9_56",
+                    "__pulse_fastly_schema_12_75",
+                    "__pulse_fastly_schema_15_94"
+                  ],
+                  "bodyBytes": 440
+                },
+                {
+                  "names": [
+                    "__pulse_fastly_backend",
+                    "__pulse_fastly_jwt_secret_binding",
+                    "__pulse_fastly_kv_store",
+                    "__pulse_fastly_grip_publish_url",
+                    "__pulse_fastly_grip_auth_ref"
+                  ],
+                  "bodyBytes": 55
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_10",
+                    "__pulse_schema_encode_10"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_11",
+                    "__pulse_schema_encode_11"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_12",
+                    "__pulse_schema_encode_12"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_13",
+                    "__pulse_schema_encode_13"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_14",
+                    "__pulse_schema_encode_14"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_15",
+                    "__pulse_schema_encode_15"
+                  ],
+                  "bodyBytes": 138
+                }
+              ]
+            },
+            "stageFragmentsByteExact": true,
+            "namedDeclarationCoverage": 206,
+            "totalDeclarations": 413
+          },
+          "plan": {
+            "effects": 1,
+            "routes": 1,
+            "schemaIds": 16,
+            "locals": 6
+          },
+          "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+          "sourceOwnerSha256": {
+            "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+            "packages/provider-fastly/src/build/native-platform-capabilities.js": "31e1a8d5e47a5f40856c00d36e3622f20d36a9f5f5d18fda499d0f6a1cd3b741",
+            "packages/provider-fastly/src/build/s3-native.js": "b296fc98ff7557857eaac240d93165a42a2492ebe8bcae50f0188674619df75b",
+            "packages/provider-fastly/src/build/time-native.js": "fd8931a6622bc01e4e66fb293e77ba28050dfdd78a04c1f05801c6b544731412",
+            "packages/provider-fastly/src/build/digest-native.js": "baaf291fca21bca109ad114eb0a9c72c91d83a3b1b3ff881e62bb9525a3dd745",
+            "packages/provider-fastly/src/build/kv-native.js": "1b25b96f4748317ed9a3bcab19afbbea83224bcaecbf612b2feec5cc60bbf4a4",
+            "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3"
+          }
+        },
+        "candidate": {
+          "partition": {
+            "bytes": 174826,
+            "categories": {
+              "portable codecs": {
+                "bytes": 14797,
+                "declarations": 67,
+                "largest": [
+                  {
+                    "name": "pulse_schema_encode",
+                    "bytes": 1491
+                  },
+                  {
+                    "name": "pulse_schema_decode",
+                    "bytes": 1488
+                  },
+                  {
+                    "name": "__Pulse_gen_R12_12",
+                    "bytes": 290
+                  },
+                  {
+                    "name": "__Pulse_gen_R15_15",
+                    "bytes": 290
+                  },
+                  {
+                    "name": "__Pulse_gen_R3_3",
+                    "bytes": 283
+                  }
+                ]
+              },
+              "provider projections": {
+                "bytes": 53018,
+                "declarations": 44,
+                "largest": [
+                  {
+                    "name": "__pulse_fastly_schema_apply",
+                    "bytes": 5671
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_11_66",
+                    "bytes": 2023
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_13_79",
+                    "bytes": 2023
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_14_85",
+                    "bytes": 2023
+                  },
+                  {
+                    "name": "__pulse_fastly_schema_10_60",
+                    "bytes": 2022
+                  }
+                ]
+              },
+              "runtime support": {
+                "bytes": 94653,
+                "declarations": 207,
+                "largest": [
+                  {
+                    "name": "__PulseJsonParser",
+                    "bytes": 6512
+                  },
+                  {
+                    "name": "__pulse_fastly_abort",
+                    "bytes": 5044
+                  },
+                  {
+                    "name": "host_value_binary",
+                    "bytes": 2884
+                  },
+                  {
+                    "name": "__pulse_fastly_start_request",
+                    "bytes": 2508
+                  },
+                  {
+                    "name": "__pulse_fastly_run_invocation",
+                    "bytes": 2346
+                  }
+                ]
+              },
+              "dispatcher/handlers": {
+                "bytes": 8614,
+                "declarations": 76,
+                "largest": [
+                  {
+                    "name": "__pulse_chunk_1",
+                    "bytes": 940
+                  },
+                  {
+                    "name": "__pulse_chunk_2",
+                    "bytes": 778
+                  },
+                  {
+                    "name": "__pulse_chunk_0",
+                    "bytes": 514
+                  },
+                  {
+                    "name": "pulse_set_effect_result",
+                    "bytes": 392
+                  },
+                  {
+                    "name": "pulse_start",
+                    "bytes": 258
+                  }
+                ]
+              },
+              "package/effect adapters": {
+                "bytes": 3744,
+                "declarations": 19,
+                "largest": [
+                  {
+                    "name": "host_effect_begin",
+                    "bytes": 894
+                  },
+                  {
+                    "name": "__pulse_invocation_begin",
+                    "bytes": 605
+                  },
+                  {
+                    "name": "__pulse_invocation_settle",
+                    "bytes": 436
+                  },
+                  {
+                    "name": "__pulse_fastly_resolve_effect",
+                    "bytes": 320
+                  },
+                  {
+                    "name": "__pulse_invocation_close",
+                    "bytes": 284
+                  }
+                ]
+              }
+            },
+            "exactRepeatedFunctionBodies": {
+              "groups": 19,
+              "redundantBytes": 4161,
+              "largest": [
+                {
+                  "names": [
+                    "__pulse_fastly_schema_3_18",
+                    "__pulse_fastly_schema_6_37",
+                    "__pulse_fastly_schema_9_56",
+                    "__pulse_fastly_schema_12_75",
+                    "__pulse_fastly_schema_15_94"
+                  ],
+                  "bodyBytes": 440
+                },
+                {
+                  "names": [
+                    "__pulse_fastly_backend",
+                    "__pulse_fastly_jwt_secret_binding",
+                    "__pulse_fastly_kv_store",
+                    "__pulse_fastly_grip_publish_url",
+                    "__pulse_fastly_grip_auth_ref"
+                  ],
+                  "bodyBytes": 55
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_10",
+                    "__pulse_schema_encode_10"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_11",
+                    "__pulse_schema_encode_11"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_12",
+                    "__pulse_schema_encode_12"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_13",
+                    "__pulse_schema_encode_13"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_14",
+                    "__pulse_schema_encode_14"
+                  ],
+                  "bodyBytes": 138
+                },
+                {
+                  "names": [
+                    "__pulse_schema_decode_15",
+                    "__pulse_schema_encode_15"
+                  ],
+                  "bodyBytes": 138
+                }
+              ]
+            },
+            "stageFragmentsByteExact": true,
+            "namedDeclarationCoverage": 206,
+            "totalDeclarations": 413
+          },
+          "plan": {
+            "effects": 1,
+            "routes": 1,
+            "schemaIds": 16,
+            "locals": 6
+          },
+          "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+          "sourceOwnerSha256": {
+            "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+            "packages/provider-fastly/src/build/native-platform-capabilities.js": "4fa46ce0c5486547f2d9e31a4685d6bc4feb0bc3809926b5891013b5feffb971",
+            "packages/provider-fastly/src/build/s3-native.js": "b296fc98ff7557857eaac240d93165a42a2492ebe8bcae50f0188674619df75b",
+            "packages/provider-fastly/src/build/time-native.js": "fd8931a6622bc01e4e66fb293e77ba28050dfdd78a04c1f05801c6b544731412",
+            "packages/provider-fastly/src/build/digest-native.js": "baaf291fca21bca109ad114eb0a9c72c91d83a3b1b3ff881e62bb9525a3dd745",
+            "packages/provider-fastly/src/build/kv-native.js": "1b25b96f4748317ed9a3bcab19afbbea83224bcaecbf612b2feec5cc60bbf4a4",
+            "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3"
+          }
+        }
+      },
+      "samples": [
+        {
+          "variant": "baseline",
+          "sample": 0,
+          "extractionMs": 21.254760000000033,
+          "planningMs": 231.87881200000004,
+          "assemblyScriptMs": 5682,
+          "buildMs": 5928.746134999999,
+          "compilerWorkerPeakRssBytes": 146427904,
+          "sourceBytes": 174201,
+          "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+          "wasmBytes": 123327,
+          "wasmGzipBytes": 41079,
+          "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+          "functionCount": 239,
+          "codeBodyBytes": 91384,
+          "largestBodies": [
+            {
+              "ordinal": 143,
+              "bytes": 4010
+            },
+            {
+              "ordinal": 224,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 195,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 119,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 39,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 342396928
+        },
+        {
+          "variant": "candidate",
+          "sample": 0,
+          "extractionMs": 20.76128299999999,
+          "planningMs": 193.10352999999998,
+          "assemblyScriptMs": 5642,
+          "buildMs": 5849.025527,
+          "compilerWorkerPeakRssBytes": 149737472,
+          "sourceBytes": 174826,
+          "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+          "wasmBytes": 123327,
+          "wasmGzipBytes": 41079,
+          "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+          "functionCount": 239,
+          "codeBodyBytes": 91384,
+          "largestBodies": [
+            {
+              "ordinal": 143,
+              "bytes": 4010
+            },
+            {
+              "ordinal": 224,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 195,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 119,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 39,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 330162176
+        },
+        {
+          "variant": "candidate",
+          "sample": 1,
+          "extractionMs": 18.096384,
+          "planningMs": 186.42516799999999,
+          "assemblyScriptMs": 5641,
+          "buildMs": 5842.321074,
+          "compilerWorkerPeakRssBytes": 145408000,
+          "sourceBytes": 174826,
+          "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+          "wasmBytes": 123327,
+          "wasmGzipBytes": 41079,
+          "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+          "functionCount": 239,
+          "codeBodyBytes": 91384,
+          "largestBodies": [
+            {
+              "ordinal": 143,
+              "bytes": 4010
+            },
+            {
+              "ordinal": 224,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 195,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 119,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 39,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 363839488
+        },
+        {
+          "variant": "baseline",
+          "sample": 1,
+          "extractionMs": 18.635117999999977,
+          "planningMs": 191.456657,
+          "assemblyScriptMs": 5950,
+          "buildMs": 6159.277616,
+          "compilerWorkerPeakRssBytes": 151375872,
+          "sourceBytes": 174201,
+          "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+          "wasmBytes": 123327,
+          "wasmGzipBytes": 41079,
+          "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+          "functionCount": 239,
+          "codeBodyBytes": 91384,
+          "largestBodies": [
+            {
+              "ordinal": 143,
+              "bytes": 4010
+            },
+            {
+              "ordinal": 224,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 195,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 119,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 39,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 347688960
+        },
+        {
+          "variant": "baseline",
+          "sample": 2,
+          "extractionMs": 20.38661000000002,
+          "planningMs": 219.01863400000002,
+          "assemblyScriptMs": 6095,
+          "buildMs": 6327.774174,
+          "compilerWorkerPeakRssBytes": 146104320,
+          "sourceBytes": 174201,
+          "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+          "wasmBytes": 123327,
+          "wasmGzipBytes": 41079,
+          "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+          "functionCount": 239,
+          "codeBodyBytes": 91384,
+          "largestBodies": [
+            {
+              "ordinal": 143,
+              "bytes": 4010
+            },
+            {
+              "ordinal": 224,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 195,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 119,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 39,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 327675904
+        },
+        {
+          "variant": "candidate",
+          "sample": 2,
+          "extractionMs": 20.60717299999999,
+          "planningMs": 226.551224,
+          "assemblyScriptMs": 5853,
+          "buildMs": 6093.346666,
+          "compilerWorkerPeakRssBytes": 143847424,
+          "sourceBytes": 174826,
+          "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+          "wasmBytes": 123327,
+          "wasmGzipBytes": 41079,
+          "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+          "functionCount": 239,
+          "codeBodyBytes": 91384,
+          "largestBodies": [
+            {
+              "ordinal": 143,
+              "bytes": 4010
+            },
+            {
+              "ordinal": 224,
+              "bytes": 2263
+            },
+            {
+              "ordinal": 195,
+              "bytes": 2073
+            },
+            {
+              "ordinal": 119,
+              "bytes": 2001
+            },
+            {
+              "ordinal": 39,
+              "bytes": 1934
+            }
+          ],
+          "assemblyScriptPeakRssBytes": 327286784
+        }
+      ]
+    }
+  ],
+  "semantic": {
+    "baseline": {
+      "sourceBytes": 224767,
+      "sourceSha256": "39b88528596b6823afbe47ac225217f5175c81c1472776ba4f0fb55b51b8731c",
+      "wasmBytes": 138218,
+      "wasmSha256": "e21f66c145643814c17e4b0731a1e36e2e157680e4c7fc2cd4a82260412d0f4a",
+      "repeatedRequestMs": [
+        2.5669330000000627,
+        1.3112579999997251,
+        1.3217939999994996,
+        1.3496759999998176,
+        1.3520599999992555
+      ],
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        }
+      ],
+      "exports": [
+        {
+          "name": "pulse_abi_version",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_plan_hash_ptr",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_plan_hash_length",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_start",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_resume",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_set_effect_result",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_result_handle",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_program_counter",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_continuation_state",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_last_error_code",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_pending_count",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_schema_string_id",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_schema_decode",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_schema_encode",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_last_error",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_error_stage",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_error_effect",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_error",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_secret_calls",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_crypto_calls",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_clock_calls",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_schema_calls",
+          "kind": "function"
+        },
+        {
+          "name": "_start",
+          "kind": "function"
+        },
+        {
+          "name": "__new",
+          "kind": "function"
+        },
+        {
+          "name": "__pin",
+          "kind": "function"
+        },
+        {
+          "name": "__unpin",
+          "kind": "function"
+        },
+        {
+          "name": "__collect",
+          "kind": "function"
+        },
+        {
+          "name": "__rtti_base",
+          "kind": "global"
+        },
+        {
+          "name": "memory",
+          "kind": "memory"
+        },
+        {
+          "name": "__setArgumentsLength",
+          "kind": "function"
+        },
+        {
+          "name": "__pulse_fastly_abort",
+          "kind": "function"
+        }
+      ],
+      "cases": 86,
+      "response": {
+        "status": 200,
+        "headers": [
+          [
+            "content-type",
+            "text/plain; charset=utf-8"
+          ]
+        ],
+        "body": "{\"name\":\"\u96ea\ud83d\ude00\",\"count\":-7,\"active\":true,\"tag\":\"b\"}",
+        "bodyBytes": {
+          "type": "Buffer",
+          "data": [
+            123,
+            34,
+            110,
+            97,
+            109,
+            101,
+            34,
+            58,
+            34,
+            233,
+            155,
+            170,
+            240,
+            159,
+            152,
+            128,
+            34,
+            44,
+            34,
+            99,
+            111,
+            117,
+            110,
+            116,
+            34,
+            58,
+            45,
+            55,
+            44,
+            34,
+            97,
+            99,
+            116,
+            105,
+            118,
+            101,
+            34,
+            58,
+            116,
+            114,
+            117,
+            101,
+            44,
+            34,
+            116,
+            97,
+            103,
+            34,
+            58,
+            34,
+            98,
+            34,
+            125
+          ]
+        },
+        "sent": true,
+        "streaming": 0,
+        "origin": false,
+        "responseHandle": 10,
+        "bodyHandle": 11
+      },
+      "trace": [
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "version": "1"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "handle": 1
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "handle": 1
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "handle": 2,
+          "bytes": 65
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "handle": 2,
+          "bytes": 0
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "handle": 10
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "handle": 11
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "handle": 10,
+          "status": 200
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "handle": 10,
+          "header": [
+            "content-type",
+            "text/plain; charset=utf-8"
+          ]
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "handle": 11,
+          "bytes": 53,
+          "end": 0
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "handle": 10,
+          "bodyHandle": 11,
+          "streaming": 0,
+          "origin": false
+        }
+      ],
+      "freshContainers": true,
+      "aliasedInputsDetached": true,
+      "decodedResultsFrozen": true,
+      "controlByteIdentical": true,
+      "outcomeSha256": "1fbdd50fcda7bd435b34c8bd2552af792398812fbabfdbb9a40a5d8dc119fc09"
+    },
+    "candidate": {
+      "sourceBytes": 210679,
+      "sourceSha256": "1d22e32f1e7ffe780ebbb027ad9b449d17c456e484f2018f4654509fd54d1b0a",
+      "wasmBytes": 138218,
+      "wasmSha256": "4b19f0247b773438e78fae2efc16972ed9483a79bbab40009efc2a8eea4615a0",
+      "repeatedRequestMs": [
+        1.5617359999996552,
+        1.2414630000002944,
+        1.2481019999995624,
+        1.150415999998586,
+        1.2034249999996973
+      ],
+      "imports": [
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "kind": "function"
+        },
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "kind": "function"
+        }
+      ],
+      "exports": [
+        {
+          "name": "pulse_abi_version",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_plan_hash_ptr",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_plan_hash_length",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_start",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_resume",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_set_effect_result",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_result_handle",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_program_counter",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_continuation_state",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_last_error_code",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_pending_count",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_schema_string_id",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_schema_decode",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_schema_encode",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_last_error",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_error_stage",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_error_effect",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_error",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_secret_calls",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_crypto_calls",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_clock_calls",
+          "kind": "function"
+        },
+        {
+          "name": "pulse_fastly_jwt_schema_calls",
+          "kind": "function"
+        },
+        {
+          "name": "_start",
+          "kind": "function"
+        },
+        {
+          "name": "__new",
+          "kind": "function"
+        },
+        {
+          "name": "__pin",
+          "kind": "function"
+        },
+        {
+          "name": "__unpin",
+          "kind": "function"
+        },
+        {
+          "name": "__collect",
+          "kind": "function"
+        },
+        {
+          "name": "__rtti_base",
+          "kind": "global"
+        },
+        {
+          "name": "memory",
+          "kind": "memory"
+        },
+        {
+          "name": "__setArgumentsLength",
+          "kind": "function"
+        },
+        {
+          "name": "__pulse_fastly_abort",
+          "kind": "function"
+        }
+      ],
+      "cases": 86,
+      "response": {
+        "status": 200,
+        "headers": [
+          [
+            "content-type",
+            "text/plain; charset=utf-8"
+          ]
+        ],
+        "body": "{\"name\":\"\u96ea\ud83d\ude00\",\"count\":-7,\"active\":true,\"tag\":\"b\"}",
+        "bodyBytes": {
+          "type": "Buffer",
+          "data": [
+            123,
+            34,
+            110,
+            97,
+            109,
+            101,
+            34,
+            58,
+            34,
+            233,
+            155,
+            170,
+            240,
+            159,
+            152,
+            128,
+            34,
+            44,
+            34,
+            99,
+            111,
+            117,
+            110,
+            116,
+            34,
+            58,
+            45,
+            55,
+            44,
+            34,
+            97,
+            99,
+            116,
+            105,
+            118,
+            101,
+            34,
+            58,
+            116,
+            114,
+            117,
+            101,
+            44,
+            34,
+            116,
+            97,
+            103,
+            34,
+            58,
+            34,
+            98,
+            34,
+            125
+          ]
+        },
+        "sent": true,
+        "streaming": 0,
+        "origin": false,
+        "responseHandle": 10,
+        "bodyHandle": 11
+      },
+      "trace": [
+        {
+          "module": "fastly_abi",
+          "name": "init",
+          "version": "1"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "body_downstream_get"
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "method_get",
+          "handle": 1
+        },
+        {
+          "module": "fastly_http_req",
+          "name": "uri_get",
+          "handle": 1
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "handle": 2,
+          "bytes": 65
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "read",
+          "handle": 2,
+          "bytes": 0
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "new",
+          "handle": 10
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "new",
+          "handle": 11
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "status_set",
+          "handle": 10,
+          "status": 200
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "header_append",
+          "handle": 10,
+          "header": [
+            "content-type",
+            "text/plain; charset=utf-8"
+          ]
+        },
+        {
+          "module": "fastly_http_body",
+          "name": "write",
+          "handle": 11,
+          "bytes": 53,
+          "end": 0
+        },
+        {
+          "module": "fastly_http_resp",
+          "name": "send_downstream",
+          "handle": 10,
+          "bodyHandle": 11,
+          "streaming": 0,
+          "origin": false
+        }
+      ],
+      "freshContainers": true,
+      "aliasedInputsDetached": true,
+      "decodedResultsFrozen": true,
+      "controlByteIdentical": true,
+      "outcomeSha256": "1fbdd50fcda7bd435b34c8bd2552af792398812fbabfdbb9a40a5d8dc119fc09"
+    }
+  },
+  "limitations": [
+    "Synthetic Fastly Native fixtures; injected ABI execution is not deployed acceptance.",
+    "Source bytes, final Wasm bytes, compiler RSS, and runtime duration are separate metrics; no live-memory claim.",
+    "Three paired compiler samples are an initial screen; overlapping ranges are inconclusive.",
+    "Runtime samples include module creation and request execution on the semantic fixture, not the scaling cells.",
+    "The runtime process has already executed the module; engine compilation may be cached. These are not cold-start samples."
+  ],
+  "priorCompilerScreen": {
+    "identities": {
+      "baseline": {
+        "revision": "07b5670e45d30cd493a04eb364b2372371625ea7",
+        "tree": "8004d2aaa6593653e4445ccfbe762b7522d27cb6",
+        "workingTree": "",
+        "files": {
+          "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+          "wasm/test/runtime/compiler-efficiency/gen01-census.cjs": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+          "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+          "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+          "packages/provider-fastly/src/build/native-platform-capabilities.js": "31e1a8d5e47a5f40856c00d36e3622f20d36a9f5f5d18fda499d0f6a1cd3b741"
+        }
+      },
+      "candidate": {
+        "revision": "08f7521e4250065d9725119372282fe2d6085533",
+        "tree": "8004d2aaa6593653e4445ccfbe762b7522d27cb6",
+        "workingTree": "M packages/provider-fastly/src/build/native-platform-capabilities.js\n M wasm/test/provider/assert-fastly-native-platform-capabilities.cjs\n M wasm/test/provider/assert-fastly-scalar-sharing.cjs\n M wasm/test/runtime/compiler-efficiency/assert-schema-cost-profile.cjs\n M wasm/test/runtime/compiler-efficiency/schema-cost-profile.cjs\n?? wasm/test/provider/assert-fastly-structural-sharing.cjs\n?? wasm/test/runtime/compiler-efficiency/gen03-structural-sharing.cjs",
+        "files": {
+          "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+          "wasm/test/runtime/compiler-efficiency/gen01-census.cjs": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+          "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+          "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+          "packages/provider-fastly/src/build/native-platform-capabilities.js": "4fa46ce0c5486547f2d9e31a4685d6bc4feb0bc3809926b5891013b5feffb971"
+        }
+      }
+    },
+    "harnessSha256": "4bf11aebc8d9bf620dbf2aa12bb2a739d7d6e47f83e692bfcfd8ff6aacebbcec",
+    "samples": 3,
+    "note": "Initial compiler screen retained to disclose the RSS signal that motivated confirmation. The driver changed only runtime timing labels and explanatory text before confirmation; measured compile worker and production owners are identical.",
+    "rawReportSha256": "76dddfc6625e202df6144243001939a6866627632151601ce7b0dcb7cc11fa93",
+    "cells": [
+      {
+        "cell": {
+          "id": "schema-1",
+          "schemas": 1,
+          "diverse": false,
+          "routes": 1,
+          "effects": 1
+        },
+        "fixtureHashes": {
+          "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567",
+          "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456"
+        },
+        "samples": [
+          {
+            "variant": "baseline",
+            "sample": 0,
+            "extractionMs": 10.396969000000013,
+            "planningMs": 170.212112,
+            "assemblyScriptMs": 2793,
+            "buildMs": 2977.0712799999997,
+            "compilerWorkerPeakRssBytes": 122638336,
+            "sourceBytes": 111524,
+            "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+            "wasmBytes": 66135,
+            "wasmGzipBytes": 24808,
+            "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+            "functionCount": 140,
+            "codeBodyBytes": 47518,
+            "largestBodies": [
+              {
+                "ordinal": 136,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 132,
+                "bytes": 2067
+              },
+              {
+                "ordinal": 88,
+                "bytes": 1999
+              },
+              {
+                "ordinal": 28,
+                "bytes": 1934
+              },
+              {
+                "ordinal": 97,
+                "bytes": 1507
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 332800000
+          },
+          {
+            "variant": "candidate",
+            "sample": 0,
+            "extractionMs": 10.620787000000007,
+            "planningMs": 143.451863,
+            "assemblyScriptMs": 2462,
+            "buildMs": 2620.69945,
+            "compilerWorkerPeakRssBytes": 123043840,
+            "sourceBytes": 111598,
+            "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+            "wasmBytes": 66135,
+            "wasmGzipBytes": 24808,
+            "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+            "functionCount": 140,
+            "codeBodyBytes": 47518,
+            "largestBodies": [
+              {
+                "ordinal": 136,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 132,
+                "bytes": 2067
+              },
+              {
+                "ordinal": 88,
+                "bytes": 1999
+              },
+              {
+                "ordinal": 28,
+                "bytes": 1934
+              },
+              {
+                "ordinal": 97,
+                "bytes": 1507
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 313851904
+          },
+          {
+            "variant": "candidate",
+            "sample": 1,
+            "extractionMs": 10.079731000000038,
+            "planningMs": 137.957693,
+            "assemblyScriptMs": 2519,
+            "buildMs": 2669.419732,
+            "compilerWorkerPeakRssBytes": 126582784,
+            "sourceBytes": 111598,
+            "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+            "wasmBytes": 66135,
+            "wasmGzipBytes": 24808,
+            "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+            "functionCount": 140,
+            "codeBodyBytes": 47518,
+            "largestBodies": [
+              {
+                "ordinal": 136,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 132,
+                "bytes": 2067
+              },
+              {
+                "ordinal": 88,
+                "bytes": 1999
+              },
+              {
+                "ordinal": 28,
+                "bytes": 1934
+              },
+              {
+                "ordinal": 97,
+                "bytes": 1507
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 330842112
+          },
+          {
+            "variant": "baseline",
+            "sample": 1,
+            "extractionMs": 10.41977300000002,
+            "planningMs": 124.65289200000001,
+            "assemblyScriptMs": 2516,
+            "buildMs": 2652.2526430000003,
+            "compilerWorkerPeakRssBytes": 121135104,
+            "sourceBytes": 111524,
+            "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+            "wasmBytes": 66135,
+            "wasmGzipBytes": 24808,
+            "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+            "functionCount": 140,
+            "codeBodyBytes": 47518,
+            "largestBodies": [
+              {
+                "ordinal": 136,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 132,
+                "bytes": 2067
+              },
+              {
+                "ordinal": 88,
+                "bytes": 1999
+              },
+              {
+                "ordinal": 28,
+                "bytes": 1934
+              },
+              {
+                "ordinal": 97,
+                "bytes": 1507
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 335331328
+          },
+          {
+            "variant": "baseline",
+            "sample": 2,
+            "extractionMs": 9.622310000000027,
+            "planningMs": 129.51269100000002,
+            "assemblyScriptMs": 2538,
+            "buildMs": 2678.858306,
+            "compilerWorkerPeakRssBytes": 124764160,
+            "sourceBytes": 111524,
+            "sourceSha256": "15a62b5055536fde1351979c8ba8904fba06d35ed24fa946ca4b100627cfaa3b",
+            "wasmBytes": 66135,
+            "wasmGzipBytes": 24808,
+            "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+            "functionCount": 140,
+            "codeBodyBytes": 47518,
+            "largestBodies": [
+              {
+                "ordinal": 136,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 132,
+                "bytes": 2067
+              },
+              {
+                "ordinal": 88,
+                "bytes": 1999
+              },
+              {
+                "ordinal": 28,
+                "bytes": 1934
+              },
+              {
+                "ordinal": 97,
+                "bytes": 1507
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 333312000
+          },
+          {
+            "variant": "candidate",
+            "sample": 2,
+            "extractionMs": 10.596149000000025,
+            "planningMs": 129.478139,
+            "assemblyScriptMs": 2660,
+            "buildMs": 2800.9386900000004,
+            "compilerWorkerPeakRssBytes": 125607936,
+            "sourceBytes": 111598,
+            "sourceSha256": "440098c9c9ec8a5f4b7c34f2bc75e314d89b59e2d793d4f8c1ced5ab5c4375a9",
+            "wasmBytes": 66135,
+            "wasmGzipBytes": 24808,
+            "wasmSha256": "d7259a7d1301b76dde83970eecb8974a9c8a141b4d284b8608ed7b21833c0194",
+            "functionCount": 140,
+            "codeBodyBytes": 47518,
+            "largestBodies": [
+              {
+                "ordinal": 136,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 132,
+                "bytes": 2067
+              },
+              {
+                "ordinal": 88,
+                "bytes": 1999
+              },
+              {
+                "ordinal": 28,
+                "bytes": 1934
+              },
+              {
+                "ordinal": 97,
+                "bytes": 1507
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 347930624
+          }
+        ]
+      },
+      {
+        "cell": {
+          "id": "schema-32-repeat",
+          "schemas": 32,
+          "diverse": false,
+          "routes": 1,
+          "effects": 1
+        },
+        "fixtureHashes": {
+          "schema": "f868de7ac6ed15d75912bcb746466f015b165d29bf5ee684552703d7d187ed88",
+          "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456"
+        },
+        "samples": [
+          {
+            "variant": "baseline",
+            "sample": 0,
+            "extractionMs": 20.657532000000003,
+            "planningMs": 236.05651199999994,
+            "assemblyScriptMs": 3559,
+            "buildMs": 3809.714931,
+            "compilerWorkerPeakRssBytes": 150917120,
+            "sourceBytes": 177987,
+            "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+            "wasmBytes": 70206,
+            "wasmGzipBytes": 26101,
+            "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+            "functionCount": 174,
+            "codeBodyBytes": 50411,
+            "largestBodies": [
+              {
+                "ordinal": 169,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 120,
+                "bytes": 2107
+              },
+              {
+                "ordinal": 166,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 123,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 33,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 331689984
+          },
+          {
+            "variant": "candidate",
+            "sample": 0,
+            "extractionMs": 30.447411999999986,
+            "planningMs": 261.70073,
+            "assemblyScriptMs": 3474,
+            "buildMs": 3751.0400759999998,
+            "compilerWorkerPeakRssBytes": 155156480,
+            "sourceBytes": 142737,
+            "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+            "wasmBytes": 70206,
+            "wasmGzipBytes": 26101,
+            "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+            "functionCount": 174,
+            "codeBodyBytes": 50411,
+            "largestBodies": [
+              {
+                "ordinal": 169,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 120,
+                "bytes": 2107
+              },
+              {
+                "ordinal": 166,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 123,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 33,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 357457920
+          },
+          {
+            "variant": "candidate",
+            "sample": 1,
+            "extractionMs": 21.19598499999995,
+            "planningMs": 248.595164,
+            "assemblyScriptMs": 3294,
+            "buildMs": 3556.5658670000003,
+            "compilerWorkerPeakRssBytes": 152584192,
+            "sourceBytes": 142737,
+            "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+            "wasmBytes": 70206,
+            "wasmGzipBytes": 26101,
+            "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+            "functionCount": 174,
+            "codeBodyBytes": 50411,
+            "largestBodies": [
+              {
+                "ordinal": 169,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 120,
+                "bytes": 2107
+              },
+              {
+                "ordinal": 166,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 123,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 33,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 358981632
+          },
+          {
+            "variant": "baseline",
+            "sample": 1,
+            "extractionMs": 19.72368399999999,
+            "planningMs": 224.854762,
+            "assemblyScriptMs": 3395,
+            "buildMs": 3633.796547,
+            "compilerWorkerPeakRssBytes": 155758592,
+            "sourceBytes": 177987,
+            "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+            "wasmBytes": 70206,
+            "wasmGzipBytes": 26101,
+            "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+            "functionCount": 174,
+            "codeBodyBytes": 50411,
+            "largestBodies": [
+              {
+                "ordinal": 169,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 120,
+                "bytes": 2107
+              },
+              {
+                "ordinal": 166,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 123,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 33,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 311771136
+          },
+          {
+            "variant": "baseline",
+            "sample": 2,
+            "extractionMs": 18.728835000000004,
+            "planningMs": 212.33160800000002,
+            "assemblyScriptMs": 3364,
+            "buildMs": 3589.074688,
+            "compilerWorkerPeakRssBytes": 152412160,
+            "sourceBytes": 177987,
+            "sourceSha256": "135f7b5adf2e2eb832300a70a9f3de3ec2916070561b693815e1d8e68b364202",
+            "wasmBytes": 70206,
+            "wasmGzipBytes": 26101,
+            "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+            "functionCount": 174,
+            "codeBodyBytes": 50411,
+            "largestBodies": [
+              {
+                "ordinal": 169,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 120,
+                "bytes": 2107
+              },
+              {
+                "ordinal": 166,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 123,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 33,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 320262144
+          },
+          {
+            "variant": "candidate",
+            "sample": 2,
+            "extractionMs": 19.823699999999974,
+            "planningMs": 228.495926,
+            "assemblyScriptMs": 3163,
+            "buildMs": 3410.107804,
+            "compilerWorkerPeakRssBytes": 150593536,
+            "sourceBytes": 142737,
+            "sourceSha256": "ac6476f11e6f5f26a0bf448962c903162311d693eb623a82515fb70cb19ff047",
+            "wasmBytes": 70206,
+            "wasmGzipBytes": 26101,
+            "wasmSha256": "ad59a9265d9cfd71c92b59911be73f2e9a3a890d9fc97e031a9eeae1cbb49783",
+            "functionCount": 174,
+            "codeBodyBytes": 50411,
+            "largestBodies": [
+              {
+                "ordinal": 169,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 120,
+                "bytes": 2107
+              },
+              {
+                "ordinal": 166,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 123,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 33,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 339705856
+          }
+        ]
+      },
+      {
+        "cell": {
+          "id": "schema-16-diverse",
+          "schemas": 16,
+          "diverse": true,
+          "routes": 1,
+          "effects": 1
+        },
+        "fixtureHashes": {
+          "schema": "15da1b4840a7585e730bc70b7e7357ab8049bff906999a701eec7030bdfa20c0",
+          "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456"
+        },
+        "samples": [
+          {
+            "variant": "baseline",
+            "sample": 0,
+            "extractionMs": 21.63104500000003,
+            "planningMs": 218.67744699999997,
+            "assemblyScriptMs": 5712,
+            "buildMs": 5945.446137,
+            "compilerWorkerPeakRssBytes": 146436096,
+            "sourceBytes": 174201,
+            "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+            "wasmBytes": 123327,
+            "wasmGzipBytes": 41079,
+            "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+            "functionCount": 239,
+            "codeBodyBytes": 91384,
+            "largestBodies": [
+              {
+                "ordinal": 143,
+                "bytes": 4010
+              },
+              {
+                "ordinal": 224,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 195,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 119,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 39,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 334757888
+          },
+          {
+            "variant": "candidate",
+            "sample": 0,
+            "extractionMs": 20.143721000000028,
+            "planningMs": 199.785372,
+            "assemblyScriptMs": 5977,
+            "buildMs": 6195.855339,
+            "compilerWorkerPeakRssBytes": 149442560,
+            "sourceBytes": 174826,
+            "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+            "wasmBytes": 123327,
+            "wasmGzipBytes": 41079,
+            "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+            "functionCount": 239,
+            "codeBodyBytes": 91384,
+            "largestBodies": [
+              {
+                "ordinal": 143,
+                "bytes": 4010
+              },
+              {
+                "ordinal": 224,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 195,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 119,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 39,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 339468288
+          },
+          {
+            "variant": "candidate",
+            "sample": 1,
+            "extractionMs": 19.208068000000026,
+            "planningMs": 219.859392,
+            "assemblyScriptMs": 5803,
+            "buildMs": 6040.727382,
+            "compilerWorkerPeakRssBytes": 156278784,
+            "sourceBytes": 174826,
+            "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+            "wasmBytes": 123327,
+            "wasmGzipBytes": 41079,
+            "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+            "functionCount": 239,
+            "codeBodyBytes": 91384,
+            "largestBodies": [
+              {
+                "ordinal": 143,
+                "bytes": 4010
+              },
+              {
+                "ordinal": 224,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 195,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 119,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 39,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 324141056
+          },
+          {
+            "variant": "baseline",
+            "sample": 1,
+            "extractionMs": 19.972391000000016,
+            "planningMs": 190.035844,
+            "assemblyScriptMs": 5962,
+            "buildMs": 6167.354472,
+            "compilerWorkerPeakRssBytes": 148336640,
+            "sourceBytes": 174201,
+            "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+            "wasmBytes": 123327,
+            "wasmGzipBytes": 41079,
+            "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+            "functionCount": 239,
+            "codeBodyBytes": 91384,
+            "largestBodies": [
+              {
+                "ordinal": 143,
+                "bytes": 4010
+              },
+              {
+                "ordinal": 224,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 195,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 119,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 39,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 351498240
+          },
+          {
+            "variant": "baseline",
+            "sample": 2,
+            "extractionMs": 19.434168999999997,
+            "planningMs": 198.70593300000002,
+            "assemblyScriptMs": 5646,
+            "buildMs": 5858.685581,
+            "compilerWorkerPeakRssBytes": 148516864,
+            "sourceBytes": 174201,
+            "sourceSha256": "d0a1e292cefab6442e389d171697dd151317da57bf8d7918eeebf6c1f4ce677f",
+            "wasmBytes": 123327,
+            "wasmGzipBytes": 41079,
+            "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+            "functionCount": 239,
+            "codeBodyBytes": 91384,
+            "largestBodies": [
+              {
+                "ordinal": 143,
+                "bytes": 4010
+              },
+              {
+                "ordinal": 224,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 195,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 119,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 39,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 372224000
+          },
+          {
+            "variant": "candidate",
+            "sample": 2,
+            "extractionMs": 23.593230000000005,
+            "planningMs": 209.35798699999998,
+            "assemblyScriptMs": 5780,
+            "buildMs": 6003.455419,
+            "compilerWorkerPeakRssBytes": 146575360,
+            "sourceBytes": 174826,
+            "sourceSha256": "36990bfe1ac05892b7406c19e7b385d4f5f212f74c5815450cdc04594701a05f",
+            "wasmBytes": 123327,
+            "wasmGzipBytes": 41079,
+            "wasmSha256": "26dee854c15a7f7d20545eae4d8cda850e461581c57342f9e04e970b2e241975",
+            "functionCount": 239,
+            "codeBodyBytes": 91384,
+            "largestBodies": [
+              {
+                "ordinal": 143,
+                "bytes": 4010
+              },
+              {
+                "ordinal": 224,
+                "bytes": 2263
+              },
+              {
+                "ordinal": 195,
+                "bytes": 2073
+              },
+              {
+                "ordinal": 119,
+                "bytes": 2001
+              },
+              {
+                "ordinal": 39,
+                "bytes": 1934
+              }
+            ],
+            "assemblyScriptPeakRssBytes": 336130048
+          }
+        ]
+      }
+    ]
+  }
+}

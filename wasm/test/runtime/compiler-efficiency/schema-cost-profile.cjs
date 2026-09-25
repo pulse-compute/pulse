@@ -70,12 +70,20 @@ function attribute(source, registry, target) {
     const row = owner === undefined ? shared : entries[owner];
     assert.ok(row, `unknown schema owner for ${name}`);
     family ||= /^__pulse_fastly_schema_scalar_\d+$/.test(name) ? 'scalar-projector'
+      : /^__pulse_fastly_schema_flat_object_\d+$/.test(name) ? 'flat-object-projector'
       : /(?:schema_apply|pulse_schema_(?:encode|decode))$/.test(name) ? 'dispatch' : 'shared-runtime';
     row.bytes += bytes(text); row.declarations++;
     row.families[family] = (row.families[family] || 0) + bytes(text);
   }
   assert.equal(shared.bytes + entries.reduce((sum, item) => sum + item.bytes, 0), bytes(source), 'every source byte has exactly one bucket');
-  for (const row of entries) assert.ok(row.bytes > 0, `missing attribution for ${row.id}`);
+  // Fastly schemas may consist entirely of shared helpers; their IDs and
+  // dispatch stay in the shared bucket even when per-ID source is zero.
+  for (const row of entries) if (row.bytes === 0) {
+    assert.equal(target, 'fastly', `missing attribution for ${row.id}`);
+    const branch = source.split(`schemaId == ${JSON.stringify(row.id)}) {`)[1]?.split('\n  }')[0];
+    assert.match(branch || '', /const projected = __pulse_fastly_schema_flat_object_\d+\(/,
+      `zero per-ID bytes require an explicit shared root for ${row.id}`);
+  }
   return { bytes: bytes(source), sha256: hash(source), entries, shared };
 }
 
