@@ -47,6 +47,7 @@ try {
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
   require('./assert-fastly-scalar-sharing.cjs').main();
+  require('./assert-fastly-structural-sharing.cjs').main();
   require('./assert-fastly-schema-materialization.cjs').main();
   require('./assert-fastly-schema-encode-text.cjs').main();
   require('./assert-fastly-native-value-parity.cjs').main('platform');

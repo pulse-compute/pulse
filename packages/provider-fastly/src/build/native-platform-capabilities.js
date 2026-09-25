@@ -1038,11 +1038,17 @@ function generateSchemaRuntime(plan) {
   const textEncodeIds = new Set(schemaTextEncodeIds(plan));
   const nodeLines = [];
   const scalarProjectors = new Map();
+  const flatObjectProjectors = new Map();
+  const scalarKinds = ['string', 'boolean', 'i32', 'u32', 'f64', 'string-enum'];
   let nodeIndex = 0;
 
   function emitNode(schemaIndex, node) {
     const currentIndex = nodeIndex++;
     const functionName = `__pulse_fastly_schema_${schemaIndex}_${currentIndex}`;
+    const flatObject = node.kind === 'object' && !node.additionalProperties
+      && node.fields.every(field => scalarKinds.includes(field.value.kind));
+    // Locals belong to this function, so equivalent flat bodies need no node ID.
+    const localIndex = flatObject ? 'flat' : currentIndex;
     const child = node.kind === 'nullable'
       ? emitNode(schemaIndex, node.value)
       : node.kind === 'array'
@@ -1073,13 +1079,13 @@ function generateSchemaRuntime(plan) {
       if (node.additionalProperties) body.push('  if (checkDuplicates && input.duplicateJsonKeys) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 57, -1); return 0 }');
       body.push('  const output = host_value_object()');
       fields.forEach(({ field, apply }, fieldIndex) => {
-        body.push(`  const key_${currentIndex}_${fieldIndex} = __pulse_fastly_string_value(${quote(field.name)})`);
+        body.push(`  const key_${localIndex}_${fieldIndex} = __pulse_fastly_string_value(${quote(field.name)})`);
         if (!field.required) body.push(`  if (__pulse_fastly_find(input, ${quote(field.name)}) >= 0) {`);
-        body.push(`  const field_${currentIndex}_${fieldIndex} = host_value_property(valueHandle, key_${currentIndex}_${fieldIndex})`);
-        body.push(`  if (__pulse_fastly_value(field_${currentIndex}_${fieldIndex}).kind == PULSE_VALUE_UNDEFINED) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 51, -1); return 0 }`);
-        body.push(`  const projected_${currentIndex}_${fieldIndex} = ${apply}(field_${currentIndex}_${fieldIndex}, checkDuplicates)`);
-        body.push(`  if (projected_${currentIndex}_${fieldIndex} <= 0) return 0`);
-        body.push(`  host_value_object_set(output, key_${currentIndex}_${fieldIndex}, projected_${currentIndex}_${fieldIndex})`);
+        body.push(`  const field_${localIndex}_${fieldIndex} = host_value_property(valueHandle, key_${localIndex}_${fieldIndex})`);
+        body.push(`  if (__pulse_fastly_value(field_${localIndex}_${fieldIndex}).kind == PULSE_VALUE_UNDEFINED) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 51, -1); return 0 }`);
+        body.push(`  const projected_${localIndex}_${fieldIndex} = ${apply}(field_${localIndex}_${fieldIndex}, checkDuplicates)`);
+        body.push(`  if (projected_${localIndex}_${fieldIndex} <= 0) return 0`);
+        body.push(`  host_value_object_set(output, key_${localIndex}_${fieldIndex}, projected_${localIndex}_${fieldIndex})`);
         if (!field.required) body.push('  }');
       });
       if (node.additionalProperties) {
@@ -1114,13 +1120,26 @@ function generateSchemaRuntime(plan) {
     body.push('}', '');
     // Only scalar validators preserve the original handle without allocating or
     // calling child projectors. Compare the exact emitted body, including enum
-    // values/order and error stages; never intern structural projections.
-    if (['string', 'boolean', 'i32', 'u32', 'f64', 'string-enum'].includes(node.kind)) {
+    // values/order and error stages.
+    if (scalarKinds.includes(node.kind)) {
       const key = body.slice(1).join('\n');
       const existing = scalarProjectors.get(key);
       if (existing) return existing;
       const sharedName = `__pulse_fastly_schema_scalar_${scalarProjectors.size}`;
       scalarProjectors.set(key, sharedName);
+      body[0] = `function ${sharedName}(valueHandle: i32, checkDuplicates: bool): i32 {`;
+      nodeLines.push(...body);
+      return sharedName;
+    }
+    // Share code only after child scalar identities are resolved. Exact bodies
+    // retain field order, presence checks, validation and errors. Each call still
+    // allocates its own output; open/nested/nullable/array bodies remain separate.
+    if (flatObject) {
+      const key = body.slice(1).join('\n');
+      const existing = flatObjectProjectors.get(key);
+      if (existing) return existing;
+      const sharedName = `__pulse_fastly_schema_flat_object_${flatObjectProjectors.size}`;
+      flatObjectProjectors.set(key, sharedName);
       body[0] = `function ${sharedName}(valueHandle: i32, checkDuplicates: bool): i32 {`;
       nodeLines.push(...body);
       return sharedName;

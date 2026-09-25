@@ -30,7 +30,8 @@ function main() {
   assert.equal(JSON.stringify(registry), before);
   const declarations = [...artifact.source.matchAll(/^function (__pulse_fastly_schema_scalar_\d+)\(/gm)];
   assert.equal(declarations.length, 8, 'five scalar kinds and three exact enum bodies');
-  assert.equal([...artifact.source.matchAll(/^function __pulse_fastly_schema_\d+_\d+\(/gm)].length, 12, 'each root, nested object, array and nullable keeps its own projector');
+  assert.equal([...artifact.source.matchAll(/^function __pulse_fastly_schema_\d+_\d+\(/gm)].length, 9, 'each non-flat root, array and nullable keeps its own projector');
+  assert.equal([...artifact.source.matchAll(/^function __pulse_fastly_schema_flat_object_\d+\(/gm)].length, 1, 'the three identical flat nested projectors share code');
   for (const id of ['Input', 'Output', 'Unused']) assert.ok(artifact.source.includes(`schemaId == "proof.${id}"`));
   assert.equal(platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, { canonicalBuild: true, requirePlatformCapability: false }).source, artifact.source, 'sharing state is local to generation');
   const value = { string: '雪😀', boolean: true, i32: -2147483648, u32: 4294967295, f64: 1.25, enum: 'b', otherEnum: 'c', reverseEnum: 'a', nested: { string: 'nested' }, items: ['x', 'y'], note: null };
