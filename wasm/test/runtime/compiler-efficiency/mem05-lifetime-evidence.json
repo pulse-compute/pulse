@@ -1,0 +1,476 @@
+{
+  "version": "pulse.mem05-temporary-lifetime.v1",
+  "status": "passed",
+  "source": {
+    "base": "b1049ca685bef684a032506096f35066db799bec",
+    "workingTree": "M wasm/test/suite/assert-suite-shape.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/mem05-temporary-lifetime.cjs\n?? wasm/test/runtime/compiler-efficiency/mem05-temporary-lifetime.md",
+    "harnessSha256": "9d94cb4013ba77466214761e7963b9b9df4dfec541e7486e9f5ad8e0174ed1c8",
+    "fixtureSha256": "4628dfbf8070cb95757a590ac1ce1cb49bbad06939fb9228ab9539ed20b59a83",
+    "owners": {
+      "wasm/packages/host-runtime/src/runtime/canonical-native-host.js": "c154d5692a12cfc025ef848e5677e244aca1a6a7da2f6aae1a49275b53c92e04",
+      "wasm/packages/host-runtime/src/runtime/effect-invocations.js": "0b08cf4249a08856fafffb37eba9e7d050c0eb3a3c55287c06fdcf944e26135f",
+      "wasm/packages/host-runtime/src/runtime/native-value-budget.js": "c7066afdbf070942c331433b14eb40195a4f7ef397b0a33d1256061aea8b0411",
+      "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+      "wasm/packages/contracts/src/handler/canonical-native-runtime.js": "08d403a1b370a115dd0362ac26e29e8bfc9e747d1dcbddeeaee1e834e65bb87f",
+      "packages/runtime/src/internal/conditional-kv.js": "2dd64be69b070c0750fc60183c61ae1f48ba63454c8146024168efd555ef6214",
+      "packages/runtime/src/internal/request-budget.js": "1d99b43fe45a0a74255e6e398f0bfdeaea3677ad0b663502fbef370ec8440e70",
+      "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8"
+    }
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "assemblyScript": {
+      "package": "assemblyscript",
+      "version": "0.28.18"
+    }
+  },
+  "artifact": {
+    "planHash": "5bce28c86e95100fd6b1cd088f3b4fc9ea149a74dd57a2be9c56071aae151a5b",
+    "wasmSha256": "2ef5a0a7333caa710f18c3c79993d1a5724c2af3a4e43ae7f3cdbd6ba2006545",
+    "abi": 2
+  },
+  "certificate": {
+    "eligible": true,
+    "planHash": "5bce28c86e95100fd6b1cd088f3b4fc9ea149a74dd57a2be9c56071aae151a5b",
+    "effectId": "kv-getVersioned-1",
+    "slot": 0,
+    "localId": "local-7",
+    "continuationState": 1
+  },
+  "cases": [
+    {
+      "before": {
+        "count": 1,
+        "mode": "retain",
+        "outcome": "success",
+        "visits": 1,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "1:1:row-0"
+        },
+        "allocatedHandles": 29,
+        "liveHandles": 29,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 11418,
+          "values": 116
+        },
+        "retired": 0,
+        "liveEnvelopes": 1,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 1,
+          "sha256": "79a7f612f99f06572724d020320d15a351a9aa2cf65ceb78abca6f0f6ce095a7"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      },
+      "after": {
+        "count": 1,
+        "mode": "release",
+        "outcome": "success",
+        "visits": 1,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "1:1:row-0"
+        },
+        "allocatedHandles": 29,
+        "liveHandles": 29,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 11418,
+          "values": 116
+        },
+        "retired": 0,
+        "liveEnvelopes": 1,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 1,
+          "sha256": "79a7f612f99f06572724d020320d15a351a9aa2cf65ceb78abca6f0f6ce095a7"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      }
+    },
+    {
+      "before": {
+        "count": 8,
+        "mode": "retain",
+        "outcome": "success",
+        "visits": 8,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "8:8:row-0"
+        },
+        "allocatedHandles": 64,
+        "liveHandles": 64,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 73928,
+          "values": 312
+        },
+        "retired": 0,
+        "liveEnvelopes": 8,
+        "livePayloads": 8,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 8,
+          "sha256": "971b95df1394d50e987c7beb05af3ac7d33eda7155fea4bcc1cedf6488398ebf"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      },
+      "after": {
+        "count": 8,
+        "mode": "release",
+        "outcome": "success",
+        "visits": 8,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "8:8:row-0"
+        },
+        "allocatedHandles": 64,
+        "liveHandles": 57,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 73928,
+          "values": 312
+        },
+        "retired": 7,
+        "liveEnvelopes": 1,
+        "livePayloads": 8,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 8,
+          "sha256": "971b95df1394d50e987c7beb05af3ac7d33eda7155fea4bcc1cedf6488398ebf"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      }
+    },
+    {
+      "before": {
+        "count": 64,
+        "mode": "retain",
+        "outcome": "success",
+        "visits": 64,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "64:64:row-0"
+        },
+        "allocatedHandles": 343,
+        "liveHandles": 343,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 574518,
+          "values": 1878
+        },
+        "retired": 0,
+        "liveEnvelopes": 64,
+        "livePayloads": 64,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 64,
+          "sha256": "854202fc785d2fe20b037a0ccbb94fdc7041c2c28709f198009b129806f001d6"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      },
+      "after": {
+        "count": 64,
+        "mode": "release",
+        "outcome": "success",
+        "visits": 64,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "64:64:row-0"
+        },
+        "allocatedHandles": 343,
+        "liveHandles": 280,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 574518,
+          "values": 1878
+        },
+        "retired": 63,
+        "liveEnvelopes": 1,
+        "livePayloads": 64,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 64,
+          "sha256": "854202fc785d2fe20b037a0ccbb94fdc7041c2c28709f198009b129806f001d6"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      }
+    },
+    {
+      "before": {
+        "count": 8,
+        "mode": "retain",
+        "outcome": "failure",
+        "visits": 2,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "unavailable"
+        },
+        "allocatedHandles": 27,
+        "liveHandles": 27,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 11562,
+          "values": 120
+        },
+        "retired": 0,
+        "liveEnvelopes": 2,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 2,
+          "sha256": "b3bc19ab9456ad349cef9755a069efc7b2cab93b502472b6cab480b2206d0b8c"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      },
+      "after": {
+        "count": 8,
+        "mode": "release",
+        "outcome": "failure",
+        "visits": 2,
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "unavailable"
+        },
+        "allocatedHandles": 27,
+        "liveHandles": 26,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 11562,
+          "values": 120
+        },
+        "retired": 1,
+        "liveEnvelopes": 1,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 2,
+          "sha256": "b3bc19ab9456ad349cef9755a069efc7b2cab93b502472b6cab480b2206d0b8c"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      }
+    },
+    {
+      "before": {
+        "count": 8,
+        "mode": "retain",
+        "outcome": "cancel",
+        "visits": 1,
+        "response": null,
+        "allocatedHandles": 22,
+        "liveHandles": 22,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 10496,
+          "values": 83
+        },
+        "retired": 0,
+        "liveEnvelopes": 1,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 2,
+          "sha256": "b3bc19ab9456ad349cef9755a069efc7b2cab93b502472b6cab480b2206d0b8c"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      },
+      "after": {
+        "count": 8,
+        "mode": "release",
+        "outcome": "cancel",
+        "visits": 1,
+        "response": null,
+        "allocatedHandles": 22,
+        "liveHandles": 21,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 10496,
+          "values": 83
+        },
+        "retired": 1,
+        "liveEnvelopes": 0,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 2,
+          "sha256": "b3bc19ab9456ad349cef9755a069efc7b2cab93b502472b6cab480b2206d0b8c"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      }
+    },
+    {
+      "before": {
+        "count": 8,
+        "mode": "retain",
+        "outcome": "timeout",
+        "visits": 1,
+        "response": null,
+        "allocatedHandles": 22,
+        "liveHandles": 22,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 10496,
+          "values": 83
+        },
+        "retired": 0,
+        "liveEnvelopes": 1,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 2,
+          "sha256": "b3bc19ab9456ad349cef9755a069efc7b2cab93b502472b6cab480b2206d0b8c"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      },
+      "after": {
+        "count": 8,
+        "mode": "release",
+        "outcome": "timeout",
+        "visits": 1,
+        "response": null,
+        "allocatedHandles": 22,
+        "liveHandles": 21,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 10496,
+          "values": 83
+        },
+        "retired": 1,
+        "liveEnvelopes": 0,
+        "livePayloads": 1,
+        "linearMemoryCapacity": 65536,
+        "events": {
+          "count": 2,
+          "sha256": "b3bc19ab9456ad349cef9755a069efc7b2cab93b502472b6cab480b2206d0b8c"
+        },
+        "trace": {
+          "count": 1,
+          "sha256": "35293ecfe1fcff8dc1360d6765be56b1d3ecdfbcfceaf8ea4d64f376c65078b4"
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Diagnostic mutation of exposed test-controller storage only; production retains all handles.",
+    "One outer conditional-read envelope; child handles, redaction strings and trace history are excluded.",
+    "WeakRef survival is tracked-object reachability under explicit GC, not heap bytes or RSS.",
+    "Controller stepping excludes managed-driver settled arrays; those can delay collection until the next loop turn.",
+    "The miniature recognizer is a proposal oracle, not a shipped compiler certificate or public ABI guarantee."
+  ],
+  "negativeControls": [
+    "carried envelope local",
+    "container envelope alias",
+    "response envelope",
+    "pending-payload",
+    "pending-result",
+    "schema-cache",
+    "diagnostics",
+    "request-state",
+    "multiple effects or group",
+    "settlement is too early",
+    "identity cache eviction and monotonic handle IDs",
+    "no accounting refund or recovery from terminal failure"
+  ]
+}
