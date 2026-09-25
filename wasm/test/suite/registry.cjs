@@ -457,6 +457,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'S01 synthetic request memory, isolated compiler RSS, generated-source and optimized-Wasm attribution'
   }),
+  'effect-retention-mem02': nodeTask('test/runtime/compiler-efficiency/mem02-effect-retention.cjs', {
+    evidence: 'external',
+    timeoutMs: 120000,
+    description: 'MEM02 effect and continuation retention, weak reachability, lifecycle and request-disposal evidence'
+  }),
   'compiler-efficiency-p03': nodeTask('test/runtime/compiler-efficiency/p03-parity-stress.cjs', {
     evidence: 'conformance',
     timeoutMs: 300000,

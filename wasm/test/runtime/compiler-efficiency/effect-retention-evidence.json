@@ -1,0 +1,1403 @@
+{
+  "version": "pulse.mem02-effect-retention.v1",
+  "status": "passed",
+  "source": {
+    "base": "adb32f41c678596951c627cff6e6854939a0ab4b",
+    "workingTree": "M wasm/test/suite/assert-suite-shape.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/mem02-effect-retention.cjs",
+    "harnessSha256": "f4aa5b39466e0c595b47e95fcb7ec412c0e34f8c304d495f63a86f4b2f45a376",
+    "productionHashes": {
+      "packages/runtime/src/internal/effect-adapter.js": "0883362dae1523350ab9265f239802a9d1b05aa72d2b96c602ac7e3a05d3fba4",
+      "packages/runtime/src/internal/request-budget.js": "32ec152a27c912da41ca04fef46e90cf623272dce1e8dc08423a2ccbac97ca8f",
+      "packages/runtime/src/internal/body.js": "4d60efb2b32b53e4135c2d0c5b2ee67c723e95c0f2bfaa78859e642d8d4b0a79",
+      "packages/runtime/src/internal/response.js": "dca0f349efeab26677b18b6c3c541245cb8e9e12789d98cb0f73d721308bf1ff",
+      "packages/runtime/src/internal/router.js": "f42ff7002b29f4df6fe5b3ed1b100f63ddbf41e4ae8dbbf0f8dc89381a6646e1",
+      "wasm/packages/host-runtime/src/runtime/canonical-native-host.js": "c154d5692a12cfc025ef848e5677e244aca1a6a7da2f6aae1a49275b53c92e04",
+      "wasm/packages/host-runtime/src/runtime/canonical-api-runtime.js": "618ac061bf87e81dc5d3b77c8c06049d14f61490807f1b873e953efdc18a0e2b",
+      "wasm/packages/host-runtime/src/runtime/continuation-registry.js": "32c912a885e897af5ac56595656053f586cdb54292803848a3a7e8f77c34a8ba",
+      "wasm/packages/host-runtime/src/runtime/effect-invocations.js": "0b08cf4249a08856fafffb37eba9e7d050c0eb3a3c55287c06fdcf944e26135f",
+      "wasm/packages/host-runtime/src/runtime/native-value-budget.js": "c7066afdbf070942c331433b14eb40195a4f7ef397b0a33d1256061aea8b0411",
+      "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8"
+    },
+    "fixtureSha256": "4628dfbf8070cb95757a590ac1ce1cb49bbad06939fb9228ab9539ed20b59a83",
+    "parallelFixtureSha256": "0eb15cd8c7391a1a8251e902c41ec5ba3975e7b9ac842c6c2eb3d1c3c2e11696"
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "assemblyScript": {
+      "package": "assemblyscript",
+      "version": "0.28.18"
+    }
+  },
+  "artifacts": {
+    "sequential": "983f9f0851853bbef94a94e7c2aae9f8d312de5854dbbc3b6a6afa84a60e96d8",
+    "parallel": "77d9a3698a84e9ddc2b8ce9a7624bb41c5399140a2c8eb947d786ab32adce7f8"
+  },
+  "limits": [
+    "Injected providers; no network, listener integration, Fastly execution or deployed proof.",
+    "Logical payload UTF-16 and JSON sizes are representation counts, not allocated heap bytes.",
+    "PS3 counters are cumulative charges; Wasm capacity and process RSS are not live sets.",
+    "Explicit GC and stage readers perturb timing. WeakRef survival proves reachability only for tracked objects.",
+    "Controller stepping measures guest/value retention; managed controls separately measure full driver trace and continuation counts."
+  ],
+  "native": [
+    {
+      "count": 1,
+      "payloadBytes": 256,
+      "stages": [
+        {
+          "stage": "admission",
+          "iteration": 0,
+          "handles": 0,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 506,
+            "values": 15
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 0,
+          "handles": 12,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 1286,
+            "values": 45
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 1,
+          "handles": 13,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 512,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 2174,
+            "values": 59
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 1,
+          "handles": 29,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 512,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 3738,
+            "values": 116
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        }
+      ],
+      "terminal": {
+        "stage": "response-handoff",
+        "iteration": 1,
+        "handles": 29,
+        "payloadGraphs": 1,
+        "logicalPayloadUtf16Bytes": 512,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 3738,
+          "values": 116
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "closed": {
+        "stage": "closed-controller-still-owned",
+        "iteration": 1,
+        "handles": 29,
+        "payloadGraphs": 1,
+        "logicalPayloadUtf16Bytes": 512,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 3738,
+          "values": 116
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "rootedAfterGc": 1,
+      "afterOwnerRelease": {
+        "controllers": 0,
+        "payloadGraphs": 0
+      },
+      "managed": {
+        "handles": 29,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 6914,
+          "values": 195
+        },
+        "continuations": 1,
+        "traceEntries": 7,
+        "traceJsonBytes": 1135,
+        "disposalCalls": 1
+      }
+    },
+    {
+      "count": 8,
+      "payloadBytes": 256,
+      "stages": [
+        {
+          "stage": "admission",
+          "iteration": 0,
+          "handles": 0,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 506,
+            "values": 15
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 0,
+          "handles": 12,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 1286,
+            "values": 45
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 1,
+          "handles": 13,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 512,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 2178,
+            "values": 59
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 1,
+          "handles": 22,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 512,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 2816,
+            "values": 83
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 1,
+          "handles": 22,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 512,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 2816,
+            "values": 83
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 8,
+          "handles": 53,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 4096,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 11204,
+            "values": 265
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 8,
+          "handles": 64,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 4096,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 12488,
+            "values": 312
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        }
+      ],
+      "terminal": {
+        "stage": "response-handoff",
+        "iteration": 8,
+        "handles": 64,
+        "payloadGraphs": 8,
+        "logicalPayloadUtf16Bytes": 4096,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 12488,
+          "values": 312
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "closed": {
+        "stage": "closed-controller-still-owned",
+        "iteration": 8,
+        "handles": 64,
+        "payloadGraphs": 8,
+        "logicalPayloadUtf16Bytes": 4096,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 12488,
+          "values": 312
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "rootedAfterGc": 8,
+      "afterOwnerRelease": {
+        "controllers": 0,
+        "payloadGraphs": 0
+      },
+      "managed": {
+        "handles": 64,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 35012,
+          "values": 867
+        },
+        "continuations": 8,
+        "traceEntries": 42,
+        "traceJsonBytes": 7239,
+        "disposalCalls": 1
+      }
+    },
+    {
+      "count": 32,
+      "payloadBytes": 4096,
+      "stages": [
+        {
+          "stage": "admission",
+          "iteration": 0,
+          "handles": 0,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 506,
+            "values": 15
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 0,
+          "handles": 12,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 1286,
+            "values": 45
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 1,
+          "handles": 13,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 8192,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 9858,
+            "values": 59
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 1,
+          "handles": 22,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 8192,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 10496,
+            "values": 83
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 1,
+          "handles": 22,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 8192,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 10496,
+            "values": 83
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 8,
+          "handles": 53,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 65536,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 72648,
+            "values": 265
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 8,
+          "handles": 57,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 65536,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 73006,
+            "values": 279
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 8,
+          "handles": 57,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 65536,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 73006,
+            "values": 279
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 32,
+          "handles": 173,
+          "payloadGraphs": 32,
+          "logicalPayloadUtf16Bytes": 262144,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 287184,
+            "values": 937
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 32,
+          "handles": 184,
+          "payloadGraphs": 32,
+          "logicalPayloadUtf16Bytes": 262144,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 288486,
+            "values": 984
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        }
+      ],
+      "terminal": {
+        "stage": "response-handoff",
+        "iteration": 32,
+        "handles": 184,
+        "payloadGraphs": 32,
+        "logicalPayloadUtf16Bytes": 262144,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 288486,
+          "values": 984
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "closed": {
+        "stage": "closed-controller-still-owned",
+        "iteration": 32,
+        "handles": 184,
+        "payloadGraphs": 32,
+        "logicalPayloadUtf16Bytes": 262144,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 288486,
+          "values": 984
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "rootedAfterGc": 32,
+      "afterOwnerRelease": {
+        "controllers": 0,
+        "payloadGraphs": 0
+      },
+      "managed": {
+        "handles": 184,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 377530,
+          "values": 3171
+        },
+        "continuations": 32,
+        "traceEntries": 162,
+        "traceJsonBytes": 28259,
+        "disposalCalls": 1
+      }
+    },
+    {
+      "count": 64,
+      "payloadBytes": 4096,
+      "stages": [
+        {
+          "stage": "admission",
+          "iteration": 0,
+          "handles": 0,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 506,
+            "values": 15
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 0,
+          "handles": 12,
+          "payloadGraphs": 0,
+          "logicalPayloadUtf16Bytes": 0,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 1286,
+            "values": 45
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 1,
+          "handles": 13,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 8192,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 9858,
+            "values": 59
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 1,
+          "handles": 22,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 8192,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 10496,
+            "values": 83
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 1,
+          "handles": 22,
+          "payloadGraphs": 1,
+          "logicalPayloadUtf16Bytes": 8192,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 10496,
+            "values": 83
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 8,
+          "handles": 53,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 65536,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 72648,
+            "values": 265
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 8,
+          "handles": 57,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 65536,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 73006,
+            "values": 279
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 8,
+          "handles": 57,
+          "payloadGraphs": 8,
+          "logicalPayloadUtf16Bytes": 65536,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 73006,
+            "values": 279
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 32,
+          "handles": 173,
+          "payloadGraphs": 32,
+          "logicalPayloadUtf16Bytes": 262144,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 287190,
+            "values": 937
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 32,
+          "handles": 177,
+          "payloadGraphs": 32,
+          "logicalPayloadUtf16Bytes": 262144,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 287552,
+            "values": 951
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "suspended",
+          "iteration": 32,
+          "handles": 177,
+          "payloadGraphs": 32,
+          "logicalPayloadUtf16Bytes": 262144,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 287552,
+            "values": 951
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "settled",
+          "iteration": 64,
+          "handles": 333,
+          "payloadGraphs": 64,
+          "logicalPayloadUtf16Bytes": 524288,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 573264,
+            "values": 1833
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        },
+        {
+          "stage": "resumed",
+          "iteration": 64,
+          "handles": 343,
+          "payloadGraphs": 64,
+          "logicalPayloadUtf16Bytes": 524288,
+          "accounted": {
+            "version": "pulse.native-read-loop-memory.v1",
+            "bytes": 574518,
+            "values": 1878
+          },
+          "traceEntries": 1,
+          "traceJsonBytes": 140,
+          "linearMemoryCapacity": 65536
+        }
+      ],
+      "terminal": {
+        "stage": "response-handoff",
+        "iteration": 64,
+        "handles": 343,
+        "payloadGraphs": 64,
+        "logicalPayloadUtf16Bytes": 524288,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 574518,
+          "values": 1878
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "closed": {
+        "stage": "closed-controller-still-owned",
+        "iteration": 64,
+        "handles": 343,
+        "payloadGraphs": 64,
+        "logicalPayloadUtf16Bytes": 524288,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 574518,
+          "values": 1878
+        },
+        "traceEntries": 1,
+        "traceJsonBytes": 140,
+        "linearMemoryCapacity": 65536
+      },
+      "rootedAfterGc": 64,
+      "afterOwnerRelease": {
+        "controllers": 0,
+        "payloadGraphs": 0
+      },
+      "managed": {
+        "handles": 343,
+        "accounted": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 752266,
+          "values": 6241
+        },
+        "continuations": 64,
+        "traceEntries": 322,
+        "traceJsonBytes": 56291,
+        "disposalCalls": 1
+      }
+    }
+  ],
+  "repeatedNative": [
+    {
+      "completedRequests": 1,
+      "survivingResultEnvelopes": 0,
+      "process": {
+        "rss": 143900672,
+        "heapTotal": 69906432,
+        "heapUsed": 32727488,
+        "external": 4009358,
+        "arrayBuffers": 212095
+      }
+    },
+    {
+      "completedRequests": 4,
+      "survivingResultEnvelopes": 0,
+      "process": {
+        "rss": 143900672,
+        "heapTotal": 69906432,
+        "heapUsed": 32764056,
+        "external": 4009398,
+        "arrayBuffers": 212095
+      }
+    },
+    {
+      "completedRequests": 16,
+      "survivingResultEnvelopes": 0,
+      "process": {
+        "rss": 143900672,
+        "heapTotal": 69906432,
+        "heapUsed": 32788432,
+        "external": 4009398,
+        "arrayBuffers": 212095
+      }
+    }
+  ],
+  "sharedGenerator": [
+    {
+      "completedRequests": 1,
+      "registryRecords": 4,
+      "registryTransitions": 16,
+      "runtimeTraceEntries": 22,
+      "diagnosticJsonBytes": 7744
+    },
+    {
+      "completedRequests": 4,
+      "registryRecords": 16,
+      "registryTransitions": 64,
+      "runtimeTraceEntries": 88,
+      "diagnosticJsonBytes": 30886
+    },
+    {
+      "completedRequests": 16,
+      "registryRecords": 64,
+      "registryTransitions": 256,
+      "runtimeTraceEntries": 352,
+      "diagnosticJsonBytes": 123926
+    }
+  ],
+  "javascriptBodies": [
+    {
+      "count": 1,
+      "payloadBytes": 256,
+      "stages": [
+        {
+          "stage": "admission",
+          "listeners": 2,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 1,
+          "listeners": 4,
+          "timers": 1
+        },
+        {
+          "stage": "before-handler-return",
+          "liveResponses": 1,
+          "listeners": 4
+        }
+      ],
+      "effectClosed": {
+        "liveResponses": 1,
+        "listeners": 1,
+        "timers": 1
+      },
+      "budgetClosed": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    },
+    {
+      "count": 8,
+      "payloadBytes": 256,
+      "stages": [
+        {
+          "stage": "admission",
+          "listeners": 2,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 1,
+          "listeners": 4,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 8,
+          "listeners": 11,
+          "timers": 1
+        },
+        {
+          "stage": "before-handler-return",
+          "liveResponses": 8,
+          "listeners": 11
+        }
+      ],
+      "effectClosed": {
+        "liveResponses": 8,
+        "listeners": 8,
+        "timers": 1
+      },
+      "budgetClosed": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    },
+    {
+      "count": 32,
+      "payloadBytes": 4096,
+      "stages": [
+        {
+          "stage": "admission",
+          "listeners": 2,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 1,
+          "listeners": 4,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 8,
+          "listeners": 11,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 32,
+          "listeners": 35,
+          "timers": 1
+        },
+        {
+          "stage": "before-handler-return",
+          "liveResponses": 32,
+          "listeners": 35
+        }
+      ],
+      "effectClosed": {
+        "liveResponses": 32,
+        "listeners": 32,
+        "timers": 1
+      },
+      "budgetClosed": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    },
+    {
+      "count": 64,
+      "payloadBytes": 4096,
+      "stages": [
+        {
+          "stage": "admission",
+          "listeners": 2,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 1,
+          "listeners": 4,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 8,
+          "listeners": 11,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 32,
+          "listeners": 35,
+          "timers": 1
+        },
+        {
+          "stage": "projection-settled",
+          "iteration": 64,
+          "listeners": 67,
+          "timers": 1
+        },
+        {
+          "stage": "before-handler-return",
+          "liveResponses": 64,
+          "listeners": 67
+        }
+      ],
+      "effectClosed": {
+        "liveResponses": 64,
+        "listeners": 64,
+        "timers": 1
+      },
+      "budgetClosed": {
+        "liveResponses": 0,
+        "listeners": 0,
+        "timers": 0
+      }
+    }
+  ],
+  "bodyControls": [
+    {
+      "withBudget": false,
+      "settledResponses": 0,
+      "projectionRetention": {
+        "readers": 0,
+        "buffers": 0
+      },
+      "afterClose": 0
+    },
+    {
+      "withBudget": true,
+      "settledResponses": 4,
+      "projectionRetention": {
+        "readers": 0,
+        "buffers": 0
+      },
+      "afterClose": 0
+    }
+  ],
+  "unsubscribeControl": {
+    "removed": {
+      "listeners": 0,
+      "liveCallback": 1
+    },
+    "afterBudgetClose": {
+      "listeners": 0,
+      "liveCallback": 0
+    }
+  },
+  "repeatedJavascript": [
+    {
+      "completedRequests": 1,
+      "createdResponses": 4,
+      "survivingResponses": 0
+    },
+    {
+      "completedRequests": 4,
+      "createdResponses": 16,
+      "survivingResponses": 0
+    },
+    {
+      "completedRequests": 16,
+      "createdResponses": 64,
+      "survivingResponses": 0
+    }
+  ],
+  "lifecycle": [
+    {
+      "target": "native",
+      "parallel": false,
+      "mode": "success",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": null,
+      "errorName": null,
+      "states": [
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ],
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": false,
+      "mode": "effect-failure",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": null,
+      "errorName": null,
+      "states": [
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ],
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": false,
+      "mode": "timeout",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+      "errorName": "PulseRuntimeContractError",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ],
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": false,
+      "mode": "cancel-late-success",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": "PULSE_RUNTIME_EFFECT_ABORTED",
+      "errorName": "PulseRuntimeContractError",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ],
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": false,
+      "mode": "cancel-late-failure",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": "PULSE_RUNTIME_EFFECT_ABORTED",
+      "errorName": "PulseRuntimeContractError",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ],
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": true,
+      "mode": "success",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": null,
+      "errorName": null,
+      "states": [
+        [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": true,
+      "mode": "effect-failure",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": null,
+      "errorName": "Error",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": true,
+      "mode": "timeout",
+      "calls": 1,
+      "disposals": 1,
+      "timers": 0,
+      "code": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+      "errorName": "PulseRuntimeContractError",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": true,
+      "mode": "cancel-late-success",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": "PULSE_RUNTIME_EFFECT_ABORTED",
+      "errorName": "PulseRuntimeContractError",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "native",
+      "parallel": true,
+      "mode": "cancel-late-failure",
+      "calls": 2,
+      "disposals": 1,
+      "timers": 0,
+      "code": "PULSE_RUNTIME_EFFECT_ABORTED",
+      "errorName": "PulseRuntimeContractError",
+      "states": [
+        [
+          "created",
+          "waiting",
+          "failed"
+        ]
+      ]
+    },
+    {
+      "target": "javascript",
+      "mode": "parallel-success",
+      "calls": 2,
+      "disposals": 1,
+      "cancels": 0,
+      "code": null,
+      "summary": {
+        "effects": 2,
+        "parallel": 1,
+        "closed": true
+      },
+      "timers": 0,
+      "listeners": 0
+    },
+    {
+      "target": "javascript",
+      "mode": "parallel-failure",
+      "calls": 2,
+      "disposals": 1,
+      "cancels": 0,
+      "code": null,
+      "summary": {
+        "effects": 2,
+        "parallel": 1,
+        "closed": true
+      },
+      "timers": 0,
+      "listeners": 0
+    },
+    {
+      "target": "javascript",
+      "mode": "timeout",
+      "calls": 1,
+      "disposals": 1,
+      "cancels": 1,
+      "code": "PULSE_REQUEST_DEADLINE_EXCEEDED",
+      "summary": {
+        "effects": 1,
+        "parallel": 0,
+        "closed": true
+      },
+      "timers": 0,
+      "listeners": 0
+    },
+    {
+      "target": "javascript",
+      "mode": "cancel-late-success",
+      "calls": 1,
+      "disposals": 1,
+      "cancels": 1,
+      "code": 20,
+      "summary": {
+        "effects": 1,
+        "parallel": 0,
+        "closed": true
+      },
+      "timers": 0,
+      "listeners": 0
+    },
+    {
+      "target": "javascript",
+      "mode": "cancel-late-failure",
+      "calls": 1,
+      "disposals": 1,
+      "cancels": 0,
+      "code": 20,
+      "summary": {
+        "effects": 1,
+        "parallel": 0,
+        "closed": true
+      },
+      "timers": 0,
+      "listeners": 0
+    },
+    {
+      "target": "javascript",
+      "mode": "opaque-handoff",
+      "calls": 1,
+      "disposals": 1,
+      "cancels": 1,
+      "code": null,
+      "summary": {
+        "effects": 1,
+        "parallel": 0,
+        "closed": true
+      },
+      "timers": 0,
+      "listeners": 0
+    }
+  ],
+  "registry": {
+    "records": [
+      {
+        "id": "completed",
+        "branchPoint": "completed",
+        "effectIds": [],
+        "state": "completed",
+        "states": [
+          "created",
+          "waiting",
+          "resumed",
+          "completed"
+        ],
+        "createdAt": 0,
+        "expiresAt": 10,
+        "resumedAt": 0,
+        "completedAt": 0,
+        "resumeCount": 1
+      },
+      {
+        "id": "failed",
+        "branchPoint": "failed",
+        "effectIds": [],
+        "state": "failed",
+        "states": [
+          "created",
+          "waiting",
+          "failed"
+        ],
+        "createdAt": 0,
+        "expiresAt": 10,
+        "failedAt": 0,
+        "resumeCount": 0,
+        "error": "Error"
+      },
+      {
+        "id": "expired",
+        "branchPoint": "expired",
+        "effectIds": [],
+        "state": "expired",
+        "states": [
+          "created",
+          "waiting",
+          "expired"
+        ],
+        "createdAt": 0,
+        "expiresAt": 10,
+        "expiredAt": 11,
+        "resumeCount": 0
+      },
+      {
+        "id": "cancelled",
+        "branchPoint": "cancelled",
+        "effectIds": [],
+        "state": "cancelled",
+        "states": [
+          "created",
+          "waiting",
+          "cancelled"
+        ],
+        "createdAt": 11,
+        "expiresAt": 21,
+        "cancelledAt": 11,
+        "resumeCount": 0
+      }
+    ],
+    "transitions": 13
+  },
+  "fullReport": "wasm/.test-results/compiler-efficiency/mem02/2026-09-25T02-19-57-889Z/measurements.json",
+  "stageSampling": "admission and iteration 0/1/8/32/64; full report retains every stage"
+}
