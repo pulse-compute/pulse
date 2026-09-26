@@ -258,3 +258,13 @@ base commit alone. The unit run predates the evidence-only fixture clock fix;
 the final full evidence replay covers that fix. Subsequent edits only add this
 results narrative and copy the measured report. No deployment or external Fastly
 reality lane was run.
+
+## MEM09 replay update
+
+After MEM09, the production Node driver performs one normalization. The replay
+now records version `pulse.mem08-payload-retention.v2`: `node` measures production
+and `legacy` reconstructs the old double-normalization handoff in memory. The
+same exact trace, continuation, budget and lifecycle comparisons apply; the
+text-64 assertion now requires 64 strings in production and 128 in the legacy
+comparison. The committed v1 evidence above remains the historical MEM08 run.
+See `mem09-normalization-reuse.md` for implementation validation.
