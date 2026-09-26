@@ -1154,7 +1154,10 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
           : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
         options.requestBudget?.check();
         controller.assertPendingEffect(entry.ticket);
-        const result = controller.prepareEffectResult(entry.index, rawResult);
+        // executeConditionalKv already validates, detaches, freezes and registers
+        // redactions using these execution limits. Reuse only that internal
+        // result; raw controller callers still use prepareEffectResult.
+        const result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);
         controller.trace.push(Object.freeze(redactValue({ type: 'native-effect-resolved', executionId, invocationId: entry.ticket.invocationId, provider: adapter.id, effectId: normalized.id, kind: normalized.kind, result: privateEffect || entry.effect.kind === 'secret.get' ? '<redacted>' : result && typeof result.toJSON === 'function' ? result.toJSON() : result }, controller.sensitiveValues)));
         resolutionOrder.push(entry.effect.id);
         return { entry, result };

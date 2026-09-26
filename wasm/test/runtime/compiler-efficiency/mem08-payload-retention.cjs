@@ -50,11 +50,14 @@ function payload(index, test) {
   return value;
 }
 const expected = test => `${test.count}:${test.count * (test.count + 1) / 2}:${test.count}:row-0`;
-function observedHost(reuseNormalized = false) {
+function observedHost(duplicateNormalization = false) {
   const anchor = "  const controller = instantiateCanonicalNativeModule(compiled, { ...options, executionPlane: eventMode ? 'event' : 'http' });";
   let source = replaceExact(fs.readFileSync(hostPath, 'utf8'), anchor, anchor + '\n  options.mem08Observe?.(controller);');
-  if (reuseNormalized) source = replaceExact(source, '        const result = controller.prepareEffectResult(entry.index, rawResult);',
-    '        const result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);');
+  // MEM09: production reuses the normalized result. Reconstruct the former
+  // double-normalization path only in the diagnostic comparison.
+  if (duplicateNormalization) source = replaceExact(source,
+    '        const result = conditional ? rawResult : controller.prepareEffectResult(entry.index, rawResult);',
+    '        const result = controller.prepareEffectResult(entry.index, rawResult);');
   const loaded = new Module(hostPath, module); loaded.filename = hostPath;
   loaded.paths = Module._nodeModulePaths(path.dirname(hostPath)); loaded._compile(source, hostPath);
   return loaded.exports;
@@ -87,7 +90,7 @@ function checkRedaction(controller) {
 async function nodeWorker(directory, test, mode) {
   const observed = mode !== 'control';
   const compiled = { wasm: fs.readFileSync(path.join(directory, 'node.wasm')), plan: JSON.parse(fs.readFileSync(path.join(directory, 'plan.json'))) };
-  const snapshots = [], runtime = observed ? observedHost(mode === 'reuse') : host;
+  const snapshots = [], runtime = observed ? observedHost(mode === 'legacy') : host;
   let calls = 0, disposals = 0;
   async function capture(stage) {
     await collect();
@@ -129,14 +132,14 @@ async function nodeWorker(directory, test, mode) {
   write(path.join(directory, `${test.name}-${mode}.json`), { outcome, snapshots });
 }
 
-async function lifecycleControls(compiled, reuse = false) {
+async function lifecycleControls(compiled, legacy = false) {
   const outcomes = [];
   for (const mode of ['failure', 'cancel', 'timeout']) {
     const signal = new AbortController(), refs = [], timerHandles = new Set(); let now = 0, calls = 0, disposed = 0, late;
     const budget = require('../../../../packages/runtime/src/internal/request-budget').createRequestBudget({ maxDurationMs: 10, signal: signal.signal,
       requestClock: { now: () => now, setTimeout(fn) { timerHandles.add(fn); return fn; }, clearTimeout(fn) { timerHandles.delete(fn); } } });
     let controllerRef;
-    const execution = observedHost(reuse).executeCanonicalNativeModule(compiled, { strict: false, executionId: 'mem08-' + mode,
+    const execution = observedHost(legacy).executeCanonicalNativeModule(compiled, { strict: false, executionId: 'mem08-' + mode,
       requestBudget: budget, signal: mode === 'timeout' ? budget.signal : signal.signal,
       mem08Observe(c) { controllerRef = new WeakRef(c); }, providerAdapter: { id: 'mem08',
         dispatchEffect() {
@@ -184,9 +187,9 @@ async function repeatedNode(compiled) {
   return samples;
 }
 
-async function candidateControl(compiled, kind, reuse) {
+async function legacyControl(compiled, kind, legacy) {
       let calls = 0, getterCalls = 0, raw;
-      const result = await observedHost(reuse).executeCanonicalNativeModule(compiled, { strict: false, executionId: 'mem08-' + kind,
+      const result = await observedHost(legacy).executeCanonicalNativeModule(compiled, { strict: false, executionId: 'mem08-' + kind,
         ...(kind === 'oversize' ? { maxKvValueBytes: 64 } : {}),
         mem08Observe(c) { globalThis.__mem08Control = c; }, providerAdapter: { id: 'mem08', dispatchEffect(effect) {
           if (effect.kind === 'config.get') { raw.tag = 'mutated'; raw.cells[0].n = -1; return 'ready'; }
@@ -206,16 +209,16 @@ async function candidateControl(compiled, kind, reuse) {
       delete globalThis.__mem08Control;
       return summary(result);
 }
-function candidateControls(directory) {
+function legacyControls(directory) {
   const rows = [];
   for (const kind of ['detached-frozen', 'accessor', 'oversize']) {
     // Fresh processes give identical execution ordinals, including any redacted
     // IDs and their byte charges. Do not normalize away observable differences.
-    const variants = [false, true].map(reuse => {
-      const child = spawnSync(process.execPath, [__filename, '--control', directory, kind, String(reuse)],
+    const variants = [false, true].map(legacy => {
+      const child = spawnSync(process.execPath, [__filename, '--control', directory, kind, String(legacy)],
         { cwd: root, encoding: 'utf8', timeout: 30000 });
       assert.equal(child.status, 0, child.error?.message || child.stderr);
-      return JSON.parse(fs.readFileSync(path.join(directory, `${kind}-${reuse}.json`)));
+      return JSON.parse(fs.readFileSync(path.join(directory, `${kind}-${legacy}.json`)));
     });
     assert.deepEqual(variants[0], variants[1]); rows.push({ kind, parity: true, outcome: variants[0] });
   }
@@ -235,13 +238,13 @@ async function run(directory) {
     'packages/provider-fastly/src/build/kv-native.as.ts', 'packages/provider-fastly/src/build/effect-invocations.js',
     'packages/provider-fastly/src/testing/conditional-kv-host.js', 'packages/provider-fastly/src/testing/native-platform-capabilities-host.js',
     'wasm/test/runtime/compiler-efficiency/mem01-schema-materialization.cjs'];
-  const report = { version: 'pulse.mem08-payload-retention.v1', status: 'running',
+  const report = { version: 'pulse.mem08-payload-retention.v2', comparison: 'MEM09 production versus diagnostic legacy double normalization', status: 'running',
     source: { revision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
       workingTree: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(), fixtureSha256: sha(source),
       harness: Object.fromEntries(owned.map(file => [file, sha(fs.readFileSync(path.join(__dirname, file)))])),
       owners: Object.fromEntries(sourceOwners.map(file => [file, sha(fs.readFileSync(path.join(root, file)))])),
       lockSha256: sha(fs.readFileSync(path.join(root, 'pnpm-lock.yaml'))) },
-    toolchain: { node: process.version, v8: process.versions.v8 }, node: [], candidate: [], fastly: [],
+    toolchain: { node: process.version, v8: process.versions.v8 }, node: [], legacy: [], fastly: [],
     limits: ['Terminal root ablation establishes ownership, not safe mid-execution reclamation.',
       'V8 snapshot object/string self sizes are measured allocations; the selected payload closure is not total process memory or a dominator retained-size calculation.',
       'Fastly production uses the stub allocator for this schema-free fixture; traced incremental GC is a diagnostic recipe, not the production default.',
@@ -263,7 +266,7 @@ async function run(directory) {
     report.artifact = { planHash: plan.planHash, nodeWasmSha256: sha(compiled.wasm) };
     const { analyze } = require('./mem08-v8-snapshot.cjs');
     for (const test of cases) {
-      for (const mode of ['control', 'observed', ...(test.count === 64 ? ['reuse'] : [])]) {
+      for (const mode of ['control', 'observed', ...(test.count === 64 ? ['legacy'] : [])]) {
         const child = spawnSync(process.execPath, ['--expose-gc', __filename, '--node', directory, JSON.stringify(test), mode],
           { cwd: root, encoding: 'utf8', timeout: 120000, maxBuffer: 4 * 1024 * 1024 });
         assert.equal(child.status, 0, child.error?.message || child.stderr);
@@ -280,25 +283,25 @@ async function run(directory) {
       assert.equal(byStage['owner-released-result-retained'].heap.payloadStrings, 0);
       report.node.push({ ...test, parity: true, outcome: observed.outcome, snapshots }); write(reportFile, report);
       if (test.count === 64) {
-        const reuse = JSON.parse(fs.readFileSync(path.join(directory, test.name + '-reuse.json')));
-        assert.deepEqual(reuse.outcome, control.outcome, 'one normalization preserves managed semantics and cumulative PS3');
-        const snapshots = reuse.snapshots.map(row => ({ ...row, heap: analyze(path.join(directory, row.file)) }));
+        const legacy = JSON.parse(fs.readFileSync(path.join(directory, test.name + '-legacy.json')));
+        assert.deepEqual(legacy.outcome, control.outcome, 'production reuse preserves legacy managed semantics and cumulative PS3');
+        const snapshots = legacy.snapshots.map(row => ({ ...row, heap: analyze(path.join(directory, row.file)) }));
         const closed = snapshots.find(row => row.stage === 'closed');
         assert.equal(closed.heap.payloads, test.count);
         if (test.shape === 'text') {
-          assert.equal(byStage.closed.heap.payloadStrings, test.count * 2);
-          assert.equal(closed.heap.payloadStrings, test.count);
-          assert.equal(closed.heap.payloadStringSelfBytes * 2, byStage.closed.heap.payloadStringSelfBytes);
+          assert.equal(byStage.closed.heap.payloadStrings, test.count);
+          assert.equal(closed.heap.payloadStrings, test.count * 2);
+          assert.equal(byStage.closed.heap.payloadStringSelfBytes * 2, closed.heap.payloadStringSelfBytes);
         }
-        report.candidate.push({ ...test, parity: true, outcome: reuse.outcome, snapshots }); write(reportFile, report);
+        report.legacy.push({ ...test, parity: true, outcome: legacy.outcome, snapshots }); write(reportFile, report);
       }
       console.log(JSON.stringify({ target: 'node', case: test.name, status: 'passed' }));
     }
     report.lifecycle = await lifecycleControls(compiled);
-    report.candidateLifecycle = await lifecycleControls(compiled, true);
-    assert.deepEqual(report.candidateLifecycle, report.lifecycle);
+    report.legacyLifecycle = await lifecycleControls(compiled, true);
+    assert.deepEqual(report.legacyLifecycle, report.lifecycle);
     report.repeatedNode = await repeatedNode(compiled);
-    report.candidateControls = candidateControls(directory);
+    report.legacyControls = legacyControls(directory);
     report.fastly = await require('./mem08-fastly-retention.cjs').run(plan, cases, directory, payload, expected);
     report.status = 'passed'; write(reportFile, report);
     // Raw snapshots remain local; committed evidence contains measurements only.
@@ -313,13 +316,13 @@ async function run(directory) {
 if (require.main === module) {
   if (process.argv[2] === '--node') nodeWorker(process.argv[3], JSON.parse(process.argv[4]), process.argv[5]).catch(e => { console.error(e); process.exitCode = 1; });
   else if (process.argv[2] === '--control') {
-    const directory = process.argv[3], kind = process.argv[4], reuse = process.argv[5] === 'true';
+    const directory = process.argv[3], kind = process.argv[4], legacy = process.argv[5] === 'true';
     const compiled = { plan: JSON.parse(fs.readFileSync(path.join(directory, 'plan.json'))), wasm: fs.readFileSync(path.join(directory, 'node.wasm')) };
-    candidateControl(compiled, kind, reuse).then(result => write(path.join(directory, `${kind}-${reuse}.json`), result), e => { console.error(e); process.exitCode = 1; });
+    legacyControl(compiled, kind, legacy).then(result => write(path.join(directory, `${kind}-${legacy}.json`), result), e => { console.error(e); process.exitCode = 1; });
   }
   else if (!global.gc) {
     const child = spawnSync(process.execPath, ['--expose-gc', __filename, ...process.argv.slice(2)], { stdio: 'inherit' });
     if (child.error) throw child.error; process.exitCode = child.status ?? 1;
   } else run(path.resolve(process.argv[2] || path.join(root, 'wasm/.test-results/compiler-efficiency/mem08', new Date().toISOString().replace(/[:.]/g, '-')))).catch(e => { console.error(e); process.exitCode = 1; });
 }
-module.exports = { source, cases, payload, expected, run, lifecycleControls, repeatedNode, candidateControls, observedHost };
+module.exports = { source, cases, payload, expected, run, lifecycleControls, repeatedNode, legacyControls, observedHost };

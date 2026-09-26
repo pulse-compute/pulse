@@ -1,0 +1,3656 @@
+{
+  "version": "pulse.mem09-normalization-reuse.v1",
+  "status": "passed",
+  "comparison": "MEM09 production versus diagnostic legacy double normalization",
+  "source": {
+    "revision": "fa5036322949183ae2c2f61b3b9e9d12bab1ac93",
+    "workingTree": "M wasm/packages/host-runtime/src/runtime/canonical-native-host.js\n M wasm/test/runtime/compiler-efficiency/mem08-payload-retention.cjs\n M wasm/test/runtime/compiler-efficiency/mem08-payload-retention.md\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/conditional-kv-normalization.cjs",
+    "fixtureSha256": "95aae877d06851d8243651b0d5e35e15935e123dff44a1475e9c7a372d1ccd8c",
+    "harness": {
+      "mem08-payload-retention.cjs": "cf2055928585a64d6fe1f18c3f0d1b55c4978635247e050ffd7f0fcbdd0fdba1",
+      "mem08-v8-snapshot.cjs": "7b6d7636d452eb06ecf22f9dacad0ce247ca875f568907b56f09e0f718b3ecfc",
+      "mem08-fastly-retention.cjs": "f6314d00787063bd1bd86d273ff541cc7effee214f07a2f74ab8228ffa15594b"
+    },
+    "owners": {
+      "wasm/packages/host-runtime/src/runtime/canonical-native-host.js": "1884b8ecf688428e67bdb28c7e88ee4677832c5846360dbeb95f30cf62d7c793",
+      "wasm/packages/host-runtime/src/runtime/native-value-budget.js": "c7066afdbf070942c331433b14eb40195a4f7ef397b0a33d1256061aea8b0411",
+      "wasm/packages/host-runtime/src/runtime/effect-invocations.js": "0b08cf4249a08856fafffb37eba9e7d050c0eb3a3c55287c06fdcf944e26135f",
+      "wasm/packages/host-runtime/src/runtime/canonical-api-runtime.js": "618ac061bf87e81dc5d3b77c8c06049d14f61490807f1b873e953efdc18a0e2b",
+      "wasm/packages/contracts/src/handler/canonical-native-runtime.js": "08d403a1b370a115dd0362ac26e29e8bfc9e747d1dcbddeeaee1e834e65bb87f",
+      "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+      "packages/runtime/src/internal/bindings.js": "89994ef95d150f013d1f8175e9b94f4a3bf5edb39f2ab8d68c43fd0082739836",
+      "packages/runtime/src/internal/request-budget.js": "1d99b43fe45a0a74255e6e398f0bfdeaea3677ad0b663502fbef370ec8440e70",
+      "packages/runtime/src/internal/conditional-kv.js": "2dd64be69b070c0750fc60183c61ae1f48ba63454c8146024168efd555ef6214",
+      "packages/provider-fastly/src/build/native-platform-capabilities.js": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645",
+      "packages/provider-fastly/src/build/native-string-values.js": "2599bbd9961f57a584f855ded5352c02f0e50aa6d99f984dacfc2f3387e024e1",
+      "packages/provider-fastly/src/build/native-value-budget.js": "9fd831672b693016a32a024b0e39616a445d99ee16514a01ee4494ec5cbec762",
+      "packages/provider-fastly/src/build/kv-native.as.ts": "e9dc26034ad019192638b8e9f1dfe581e37dd001f234e8d3b787fd1977367467",
+      "packages/provider-fastly/src/build/effect-invocations.js": "a8a4869e3ede4daa14cc2bad848a77367ada33b84b7197152753b4fabea37dc3",
+      "packages/provider-fastly/src/testing/conditional-kv-host.js": "d4c032e7dfa5828cdb1b99e9b9656bb982ff223f299ec178992adce908096fbf",
+      "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+      "wasm/test/runtime/compiler-efficiency/mem01-schema-materialization.cjs": "2705f8f6ec5c01f53b1a3f0488aec54fa75f9c1053eca7ad79f974804dd2767d"
+    },
+    "lockSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8"
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51"
+  },
+  "artifact": {
+    "planHash": "075274d812f8591172743991aaedaa5d96d8b4290052e6bce77e88459c70268d",
+    "nodeWasmSha256": "c02c0639c14f81dc827181cdc97b8ae8e16fb38e9edab194dff194394d4e7249"
+  },
+  "node": [
+    {
+      "name": "text-1-small",
+      "shape": "text",
+      "count": 1,
+      "size": 256,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "1:1:1:row-0"
+        },
+        "handles": 36,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 9672,
+          "values": 274
+        },
+        "traceSha256": "679756bc2e556613907fa07186d7fe12d63ad97c943cef4ef6358d81cfde74ad",
+        "traceEntries": 11,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 2
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 1,
+            "payloadClosureNodes": 4,
+            "payloadClosureSelfBytes": 352,
+            "payloadClosureBytesByType": {
+              "object": 56,
+              "string": 296
+            },
+            "payloadStrings": 1,
+            "payloadStringSelfBytes": 272,
+            "totalSnapshotSelfBytes": 30131958
+          },
+          "facts": {
+            "handles": 24,
+            "scalarIndex": 19,
+            "directPayloads": 1,
+            "envelopes": 1,
+            "redactionStrings": 9,
+            "redactionPayloadStrings": 1,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 6918,
+              "values": 190
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 1,
+            "payloadClosureNodes": 4,
+            "payloadClosureSelfBytes": 352,
+            "payloadClosureBytesByType": {
+              "object": 56,
+              "string": 296
+            },
+            "payloadStrings": 1,
+            "payloadStringSelfBytes": 272,
+            "totalSnapshotSelfBytes": 30168134
+          },
+          "facts": {
+            "handles": 36,
+            "scalarIndex": 30,
+            "directPayloads": 1,
+            "envelopes": 1,
+            "redactionStrings": 9,
+            "redactionPayloadStrings": 1,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 9672,
+              "values": 274
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 1,
+            "payloadStringSelfBytes": 272,
+            "totalSnapshotSelfBytes": 30230118
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 9,
+            "redactionPayloadStrings": 1,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 9672,
+              "values": 274
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30230030
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 9672,
+              "values": 274
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30103162
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "text-1",
+      "shape": "text",
+      "count": 1,
+      "size": 16384,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "1:1:1:row-0"
+        },
+        "handles": 36,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 41928,
+          "values": 274
+        },
+        "traceSha256": "679756bc2e556613907fa07186d7fe12d63ad97c943cef4ef6358d81cfde74ad",
+        "traceEntries": 11,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 2
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 1,
+            "payloadClosureNodes": 4,
+            "payloadClosureSelfBytes": 16480,
+            "payloadClosureBytesByType": {
+              "object": 56,
+              "string": 16424
+            },
+            "payloadStrings": 1,
+            "payloadStringSelfBytes": 16400,
+            "totalSnapshotSelfBytes": 30160406
+          },
+          "facts": {
+            "handles": 24,
+            "scalarIndex": 19,
+            "directPayloads": 1,
+            "envelopes": 1,
+            "redactionStrings": 9,
+            "redactionPayloadStrings": 1,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 39174,
+              "values": 190
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 1,
+            "payloadClosureNodes": 4,
+            "payloadClosureSelfBytes": 16480,
+            "payloadClosureBytesByType": {
+              "object": 56,
+              "string": 16424
+            },
+            "payloadStrings": 1,
+            "payloadStringSelfBytes": 16400,
+            "totalSnapshotSelfBytes": 30197510
+          },
+          "facts": {
+            "handles": 36,
+            "scalarIndex": 30,
+            "directPayloads": 1,
+            "envelopes": 1,
+            "redactionStrings": 9,
+            "redactionPayloadStrings": 1,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 41928,
+              "values": 274
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 1,
+            "payloadStringSelfBytes": 16400,
+            "totalSnapshotSelfBytes": 30261198
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 9,
+            "redactionPayloadStrings": 1,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 41928,
+              "values": 274
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30244982
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 41928,
+              "values": 274
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30118106
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "text-8",
+      "shape": "text",
+      "count": 8,
+      "size": 16384,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "8:36:8:row-0"
+        },
+        "handles": 76,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 296574,
+          "values": 984
+        },
+        "traceSha256": "b3b5e283ac97eaffb5836bdbf68a4c52c2e2995e2f3a82e80357306b2c9f3c52",
+        "traceEntries": 46,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 9
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 8,
+            "payloadClosureNodes": 32,
+            "payloadClosureSelfBytes": 132008,
+            "payloadClosureBytesByType": {
+              "object": 448,
+              "string": 131560
+            },
+            "payloadStrings": 8,
+            "payloadStringSelfBytes": 131200,
+            "totalSnapshotSelfBytes": 30414686
+          },
+          "facts": {
+            "handles": 64,
+            "scalarIndex": 38,
+            "directPayloads": 8,
+            "envelopes": 8,
+            "redactionStrings": 37,
+            "redactionPayloadStrings": 8,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 293808,
+              "values": 900
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 8,
+            "payloadClosureNodes": 32,
+            "payloadClosureSelfBytes": 132008,
+            "payloadClosureBytesByType": {
+              "object": 448,
+              "string": 131560
+            },
+            "payloadStrings": 8,
+            "payloadStringSelfBytes": 131200,
+            "totalSnapshotSelfBytes": 30464742
+          },
+          "facts": {
+            "handles": 76,
+            "scalarIndex": 49,
+            "directPayloads": 8,
+            "envelopes": 8,
+            "redactionStrings": 37,
+            "redactionPayloadStrings": 8,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 296574,
+              "values": 984
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 8,
+            "payloadStringSelfBytes": 131200,
+            "totalSnapshotSelfBytes": 30516782
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 37,
+            "redactionPayloadStrings": 8,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 296574,
+              "values": 984
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30384166
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 296574,
+              "values": 984
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30251418
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "text-64",
+      "shape": "text",
+      "count": 64,
+      "size": 16384,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "64:2080:64:row-0"
+        },
+        "handles": 404,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 2334956,
+          "values": 6680
+        },
+        "traceSha256": "6bf0dd821b7a501a5795774b2c86ef4e0237a74b41a25466f82286c475541e48",
+        "traceEntries": 326,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 65
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 256,
+            "payloadClosureSelfBytes": 1056232,
+            "payloadClosureBytesByType": {
+              "object": 3584,
+              "string": 1052648
+            },
+            "payloadStrings": 64,
+            "payloadStringSelfBytes": 1049600,
+            "totalSnapshotSelfBytes": 31651726
+          },
+          "facts": {
+            "handles": 392,
+            "scalarIndex": 198,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 261,
+            "redactionPayloadStrings": 64,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2332140,
+              "values": 6596
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 256,
+            "payloadClosureSelfBytes": 1056232,
+            "payloadClosureBytesByType": {
+              "object": 3584,
+              "string": 1052648
+            },
+            "payloadStrings": 64,
+            "payloadStringSelfBytes": 1049600,
+            "totalSnapshotSelfBytes": 31670894
+          },
+          "facts": {
+            "handles": 404,
+            "scalarIndex": 209,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 261,
+            "redactionPayloadStrings": 64,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2334956,
+              "values": 6680
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 64,
+            "payloadStringSelfBytes": 1049600,
+            "totalSnapshotSelfBytes": 31695758
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 261,
+            "redactionPayloadStrings": 64,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2334956,
+              "values": 6680
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30630406
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2334956,
+              "values": 6680
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30444834
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "objects-1",
+      "shape": "objects",
+      "count": 1,
+      "size": 128,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "1:1:1:row-0"
+        },
+        "handles": 36,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 37304,
+          "values": 1426
+        },
+        "traceSha256": "62be814db20ae2f86fbfb0bde620d615343dced40cba7e538ed43ad00ab04093",
+        "traceEntries": 11,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 2
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 1,
+            "payloadClosureNodes": 135,
+            "payloadClosureSelfBytes": 13632,
+            "payloadClosureBytesByType": {
+              "object": 7256,
+              "array": 6352,
+              "string": 24
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30182318
+          },
+          "facts": {
+            "handles": 24,
+            "scalarIndex": 19,
+            "directPayloads": 1,
+            "envelopes": 1,
+            "redactionStrings": 139,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 33740,
+              "values": 1342
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 1,
+            "payloadClosureNodes": 135,
+            "payloadClosureSelfBytes": 13632,
+            "payloadClosureBytesByType": {
+              "object": 7256,
+              "array": 6352,
+              "string": 24
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30218782
+          },
+          "facts": {
+            "handles": 36,
+            "scalarIndex": 30,
+            "directPayloads": 1,
+            "envelopes": 1,
+            "redactionStrings": 139,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 37304,
+              "values": 1426
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30268142
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 139,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 37304,
+              "values": 1426
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30260678
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 37304,
+              "values": 1426
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30128690
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "objects-8",
+      "shape": "objects",
+      "count": 8,
+      "size": 128,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "8:36:8:row-0"
+        },
+        "handles": 76,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 253786,
+          "values": 10200
+        },
+        "traceSha256": "007f4db53f639cabf3245119f9087444f2aa43e6808f9bbaec219a4b9d9aa5ae",
+        "traceEntries": 46,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 9
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 8,
+            "payloadClosureNodes": 1073,
+            "payloadClosureSelfBytes": 109224,
+            "payloadClosureBytesByType": {
+              "object": 58048,
+              "array": 50816,
+              "string": 360
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30453982
+          },
+          "facts": {
+            "handles": 64,
+            "scalarIndex": 38,
+            "directPayloads": 8,
+            "envelopes": 8,
+            "redactionStrings": 160,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 250210,
+              "values": 10116
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 8,
+            "payloadClosureNodes": 1073,
+            "payloadClosureSelfBytes": 109224,
+            "payloadClosureBytesByType": {
+              "object": 58048,
+              "array": 50816,
+              "string": 360
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30501430
+          },
+          "facts": {
+            "handles": 76,
+            "scalarIndex": 49,
+            "directPayloads": 8,
+            "envelopes": 8,
+            "redactionStrings": 160,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 253786,
+              "values": 10200
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30444118
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 160,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 253786,
+              "values": 10200
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30435982
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 253786,
+              "values": 10200
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30274450
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "objects-64",
+      "shape": "objects",
+      "count": 64,
+      "size": 128,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "64:2080:64:row-0"
+        },
+        "handles": 404,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 1986408,
+          "values": 80408
+        },
+        "traceSha256": "1a2435486055fd85404d6ee563ca16573f849b4a7ed0e01ac67aa43971641483",
+        "traceEntries": 326,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 65
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 8577,
+            "payloadClosureSelfBytes": 873960,
+            "payloadClosureBytesByType": {
+              "object": 464384,
+              "array": 406528,
+              "string": 3048
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 31789422
+          },
+          "facts": {
+            "handles": 392,
+            "scalarIndex": 198,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 328,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1982786,
+              "values": 80324
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 8577,
+            "payloadClosureSelfBytes": 873960,
+            "payloadClosureBytesByType": {
+              "object": 464384,
+              "array": 406528,
+              "string": 3048
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 31811958
+          },
+          "facts": {
+            "handles": 404,
+            "scalarIndex": 209,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 328,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1986408,
+              "values": 80408
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30971198
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 328,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1986408,
+              "values": 80408
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30952534
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1986408,
+              "values": 80408
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30521042
+          },
+          "facts": null
+        }
+      ]
+    }
+  ],
+  "legacy": [
+    {
+      "name": "text-64",
+      "shape": "text",
+      "count": 64,
+      "size": 16384,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "64:2080:64:row-0"
+        },
+        "handles": 404,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 2334956,
+          "values": 6680
+        },
+        "traceSha256": "6bf0dd821b7a501a5795774b2c86ef4e0237a74b41a25466f82286c475541e48",
+        "traceEntries": 326,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 65
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 256,
+            "payloadClosureSelfBytes": 1056232,
+            "payloadClosureBytesByType": {
+              "object": 3584,
+              "string": 1052648
+            },
+            "payloadStrings": 128,
+            "payloadStringSelfBytes": 2099200,
+            "totalSnapshotSelfBytes": 32724462
+          },
+          "facts": {
+            "handles": 392,
+            "scalarIndex": 198,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 261,
+            "redactionPayloadStrings": 64,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2332140,
+              "values": 6596
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 256,
+            "payloadClosureSelfBytes": 1056232,
+            "payloadClosureBytesByType": {
+              "object": 3584,
+              "string": 1052648
+            },
+            "payloadStrings": 128,
+            "payloadStringSelfBytes": 2099200,
+            "totalSnapshotSelfBytes": 32741126
+          },
+          "facts": {
+            "handles": 404,
+            "scalarIndex": 209,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 261,
+            "redactionPayloadStrings": 64,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2334956,
+              "values": 6680
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 64,
+            "payloadStringSelfBytes": 1049600,
+            "totalSnapshotSelfBytes": 31716390
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 261,
+            "redactionPayloadStrings": 64,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2334956,
+              "values": 6680
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30650934
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2334956,
+              "values": 6680
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30465402
+          },
+          "facts": null
+        }
+      ]
+    },
+    {
+      "name": "objects-64",
+      "shape": "objects",
+      "count": 64,
+      "size": 128,
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "64:2080:64:row-0"
+        },
+        "handles": 404,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 1986408,
+          "values": 80408
+        },
+        "traceSha256": "1a2435486055fd85404d6ee563ca16573f849b4a7ed0e01ac67aa43971641483",
+        "traceEntries": 326,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 65
+      },
+      "snapshots": [
+        {
+          "stage": "suspended",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 8577,
+            "payloadClosureSelfBytes": 873960,
+            "payloadClosureBytesByType": {
+              "object": 464384,
+              "array": 406528,
+              "string": 3048
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 31807742
+          },
+          "facts": {
+            "handles": 392,
+            "scalarIndex": 198,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 328,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1982786,
+              "values": 80324
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "closed",
+          "heap": {
+            "payloads": 64,
+            "payloadClosureNodes": 8577,
+            "payloadClosureSelfBytes": 873960,
+            "payloadClosureBytesByType": {
+              "object": 464384,
+              "array": 406528,
+              "string": 3048
+            },
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 31820486
+          },
+          "facts": {
+            "handles": 404,
+            "scalarIndex": 209,
+            "directPayloads": 64,
+            "envelopes": 64,
+            "redactionStrings": 328,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1986408,
+              "values": 80408
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-table",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30979726
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 328,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1986408,
+              "values": 80408
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "without-redactions",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30961030
+          },
+          "facts": {
+            "handles": 0,
+            "scalarIndex": 0,
+            "directPayloads": 0,
+            "envelopes": 0,
+            "redactionStrings": 0,
+            "redactionPayloadStrings": 0,
+            "accounted": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1986408,
+              "values": 80408
+            },
+            "wasmCapacityBytes": 65536
+          }
+        },
+        {
+          "stage": "owner-released-result-retained",
+          "heap": {
+            "payloads": 0,
+            "payloadClosureNodes": 0,
+            "payloadClosureSelfBytes": 0,
+            "payloadClosureBytesByType": {},
+            "payloadStrings": 0,
+            "payloadStringSelfBytes": 0,
+            "totalSnapshotSelfBytes": 30529530
+          },
+          "facts": null
+        }
+      ]
+    }
+  ],
+  "lifecycle": [
+    {
+      "mode": "failure",
+      "calls": 2,
+      "disposed": 1,
+      "timers": 0,
+      "controllerCollected": true,
+      "rawPayloadsCollected": true
+    },
+    {
+      "mode": "cancel",
+      "calls": 2,
+      "disposed": 1,
+      "timers": 0,
+      "controllerCollected": true,
+      "rawPayloadsCollected": true
+    },
+    {
+      "mode": "timeout",
+      "calls": 2,
+      "disposed": 1,
+      "timers": 0,
+      "controllerCollected": true,
+      "rawPayloadsCollected": true
+    }
+  ],
+  "legacyLifecycle": [
+    {
+      "mode": "failure",
+      "calls": 2,
+      "disposed": 1,
+      "timers": 0,
+      "controllerCollected": true,
+      "rawPayloadsCollected": true
+    },
+    {
+      "mode": "cancel",
+      "calls": 2,
+      "disposed": 1,
+      "timers": 0,
+      "controllerCollected": true,
+      "rawPayloadsCollected": true
+    },
+    {
+      "mode": "timeout",
+      "calls": 2,
+      "disposed": 1,
+      "timers": 0,
+      "controllerCollected": true,
+      "rawPayloadsCollected": true
+    }
+  ],
+  "repeatedNode": [
+    {
+      "requests": 1,
+      "callerRetainedResults": 1,
+      "survivingControllers": 0,
+      "survivingPayloadGraphs": 0,
+      "callerTraceJsonBytes": 4731
+    },
+    {
+      "requests": 4,
+      "callerRetainedResults": 4,
+      "survivingControllers": 0,
+      "survivingPayloadGraphs": 0,
+      "callerTraceJsonBytes": 18941
+    },
+    {
+      "requests": 16,
+      "callerRetainedResults": 16,
+      "survivingControllers": 0,
+      "survivingPayloadGraphs": 0,
+      "callerTraceJsonBytes": 75941
+    }
+  ],
+  "legacyControls": [
+    {
+      "kind": "detached-frozen",
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "1:1:1:row-0"
+        },
+        "handles": 36,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 12044,
+          "values": 292
+        },
+        "traceSha256": "5b7e04ae0bb04300b8ad9815d90ea272b75c52425883058227c63bf1e53a00a4",
+        "traceEntries": 11,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ],
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 2
+      }
+    },
+    {
+      "kind": "accessor",
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "unavailable"
+        },
+        "handles": 19,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 5602,
+          "values": 165
+        },
+        "traceSha256": "c3091ca80398185a53f4a4774be505f5ff229aa5cc0e96d7c4ab74f46d18daea",
+        "traceEntries": 7,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 1
+      }
+    },
+    {
+      "kind": "oversize",
+      "parity": true,
+      "outcome": {
+        "response": {
+          "status": 200,
+          "kind": "text",
+          "bodyClass": "structured",
+          "headers": [
+            [
+              "content-type",
+              "text/plain; charset=utf-8"
+            ]
+          ],
+          "body": "unavailable"
+        },
+        "handles": 19,
+        "memory": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 5604,
+          "values": 165
+        },
+        "traceSha256": "74f3007080145e3e8d9bf688f75a249076ca5863efcd6a89add34ac907f1a6e5",
+        "traceEntries": 7,
+        "continuationStates": [
+          [
+            "created",
+            "waiting",
+            "resumed",
+            "completed"
+          ]
+        ],
+        "continuations": 1
+      }
+    }
+  ],
+  "fastly": {
+    "productionRuntime": "stub",
+    "cases": [
+      {
+        "name": "text-1-small",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "1:1:1:row-0",
+          "traceSha256": "681bbe32c287ff74450a0e762053faee7afc73468995a9fd70ee42568f092af6",
+          "traceEntries": 44,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 3076,
+            "values": 80
+          }
+        }
+      },
+      {
+        "name": "text-1",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "1:1:1:row-0",
+          "traceSha256": "8984ac8ab9ce7dc1b0e8498719f0562aae8d99a15b833989d70a6a15b84590b9",
+          "traceEntries": 44,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 35332,
+            "values": 80
+          }
+        }
+      },
+      {
+        "name": "text-8",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "8:36:8:row-0",
+          "traceSha256": "323b2e46ba3b75f1a18a4ee10b87714f4aca49fb875629f405da1a2d6f25dcd2",
+          "traceEntries": 268,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 273302,
+            "values": 394
+          }
+        }
+      },
+      {
+        "name": "text-64",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "64:2080:64:row-0",
+          "traceSha256": "3b01267d3ef999fb44318c05897701aca39aa38ba88717f4f9259b18b49ceb46",
+          "traceEntries": 2060,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 2177238,
+            "values": 2907
+          }
+        }
+      },
+      {
+        "name": "objects-1",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "1:1:1:row-0",
+          "traceSha256": "8efde1b9981b3e241923444b0bb1647b06ee13b3f21a214a136c4e6a2f39f4cd",
+          "traceEntries": 44,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 33482,
+            "values": 1486
+          }
+        }
+      },
+      {
+        "name": "objects-8",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "8:36:8:row-0",
+          "traceSha256": "1bc80f030a80d8e7791637c629e7c1e0e15b5d1614ca16104e33d63c8deab188",
+          "traceEntries": 268,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 258552,
+            "values": 11644
+          }
+        }
+      },
+      {
+        "name": "objects-64",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "64:2080:64:row-0",
+          "traceSha256": "d53d819e7687d9171af288c92bc33ef02541abc8c889a87aea3a669e32e2ef62",
+          "traceEntries": 2060,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 2059032,
+            "values": 92901
+          }
+        }
+      }
+    ],
+    "lifecycle": [
+      {
+        "mode": "failure",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "unavailable",
+          "traceSha256": "2536c6bb9e5825c297c8dfbd0ab4f52368a923ce3401d9f75794da461ecb0b73",
+          "traceEntries": 50,
+          "pendingHostLookups": 0,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 10652,
+            "values": 81
+          }
+        }
+      },
+      {
+        "mode": "timeout",
+        "parity": true,
+        "outcome": {
+          "status": 200,
+          "body": "unavailable",
+          "traceSha256": "7d95e40ab00d4ab67e3dbf3a45e5b3dfde12e64da7118a568409f462a22a06e9",
+          "traceEntries": 55,
+          "pendingHostLookups": 1,
+          "acquiredReadBodies": 0,
+          "accounted": {
+            "bytes": 10648,
+            "values": 81
+          }
+        }
+      },
+      {
+        "mode": "cancel",
+        "parity": true,
+        "outcome": {
+          "cancelled": true,
+          "lookups": 2
+        }
+      }
+    ],
+    "repeated": [
+      {
+        "requests": 1,
+        "survivingInstancesAndBuffers": 0
+      },
+      {
+        "requests": 4,
+        "survivingInstancesAndBuffers": 0
+      },
+      {
+        "requests": 16,
+        "survivingInstancesAndBuffers": 0
+      }
+    ]
+  },
+  "limits": [
+    "Terminal root ablation establishes ownership, not safe mid-execution reclamation.",
+    "V8 snapshot object/string self sizes are measured allocations; the selected payload closure is not total process memory or a dominator retained-size calculation.",
+    "Fastly production uses the stub allocator for this schema-free fixture; traced incremental GC is a diagnostic recipe, not the production default.",
+    "Fastly allocator tracing uses injected ABI hostcalls and explicit collection, not Viceroy or deployed execution.",
+    "PS3 cumulative accounting, live allocations and linear-memory capacity are distinct metrics."
+  ],
+  "validation": {
+    "status": "passed",
+    "profiles": [
+      "unit",
+      "native",
+      "javascript",
+      "conformance"
+    ],
+    "completedTasks": 97,
+    "selectedTasks": [
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-runtime-policy",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo",
+      "kv-native-abi-feasibility",
+      "s3-native-read",
+      "s3-node-transport",
+      "canonical-api-lowering",
+      "canonical-native-plan",
+      "bounded-app-logic",
+      "bounded-read-loops",
+      "logging-lowering",
+      "canonical-router-lowering",
+      "canonical-router-terminal-middleware",
+      "json-as-compatibility",
+      "entities-envelope-feasibility",
+      "entities-managed-handler",
+      "entities-managed-handler-effects",
+      "entities-native-runtime",
+      "crypto-native-guest-source",
+      "guest-link-package",
+      "guest-link-materialization-stage",
+      "guest-link-audit-diagnostics",
+      "assets-lowering-plan",
+      "assets-package-owned-lowering",
+      "grip-package-owned-lowering",
+      "jwt-package-owned-lowering",
+      "canonical-api-runtime",
+      "canonical-opaque-node-emission",
+      "grip-package-runtime",
+      "package-root-native",
+      "canonical-native-wasm",
+      "cli-javascript-target-compilation",
+      "target-support",
+      "jwt-javascript-admission",
+      "crypto-runtime-builtin",
+      "javascript-effect-adapter",
+      "logging-runtime",
+      "assets-javascript-runtime",
+      "jwt-signing",
+      "jwt-es256-signing",
+      "jwt-rs256",
+      "s3-write-conformance",
+      "crypto-cross-target-conformance",
+      "crypto-digest-text-conformance",
+      "crypto-digest-storage-conformance",
+      "multifile-source-identity",
+      "text-capacity-conformance",
+      "events-conformance",
+      "node-router-context-parity",
+      "catalog-router-parity",
+      "fetch-projections-request-bodies",
+      "config-secrets-kv-redaction",
+      "kv-conditional-conformance",
+      "kv-conditional-adversarial",
+      "fastly-conditional-kv",
+      "schema-codecs",
+      "schema-kv-parity",
+      "time-conformance",
+      "time-consumer",
+      "request-budget-transport",
+      "http-input-outcomes",
+      "application-errors",
+      "application-error-boundaries",
+      "node-cross-target-conformance",
+      "grip-cross-target-conformance",
+      "four-mode-conformance"
+    ],
+    "runId": "2026-09-26T18-11-20-380Z--56",
+    "sourceSha256": {
+      "wasm/packages/host-runtime/src/runtime/canonical-native-host.js": "1884b8ecf688428e67bdb28c7e88ee4677832c5846360dbeb95f30cf62d7c793",
+      "wasm/test/compiled/assert-canonical-native-wasm.cjs": "9d50ba5276521f0bf643a1b151486759fd0e4b597283716932cc303eaf89b4f8",
+      "wasm/test/runtime/conditional-kv-normalization.cjs": "767cb669b502eb0f91da33ee2aca64c6221f3b46a5fdd3e2ca3fd96dfa3241b4",
+      "wasm/test/runtime/compiler-efficiency/mem08-payload-retention.cjs": "cf2055928585a64d6fe1f18c3f0d1b55c4978635247e050ffd7f0fcbdd0fdba1"
+    }
+  }
+}
