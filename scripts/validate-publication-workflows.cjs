@@ -41,6 +41,7 @@ const {
   verifyStorage,
   verifyNpmPromotionEvidence,
   assertProductionDeploymentEnvironment,
+  filesystemAdapter,
   awsAdapter
 } = require('./documentation-deployment.cjs');
 const { validatePreflight } = require('./release-preflight.cjs');
@@ -664,6 +665,9 @@ function validatePublicationBundle() {
 
 function writeSyntheticSite(siteDir) {
   const files = {
+    'v0.0.0-history/index.html': 'historical preview bytes\n',
+    'v0.0.0-history/assets/site.css': 'historical preview styles\n',
+    [`${DOCUMENTATION.version}-preview/index.html`]: 'another version with the current version as a prefix\n',
     '.nojekyll': '',
     'index.html': '<!doctype html><title>Pulse</title><h1>Pulse</h1>\n',
     '404.html': '<!doctype html><title>Not found</title><h1>Not found</h1>\n',
@@ -810,6 +814,20 @@ function validateDocumentationBundle() {
     fs.writeFileSync(unsealedCandidateFile, 'must be rejected\n');
     expectFailure(() => verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true }), undefined, 'unsealed documentation candidate file');
     fs.rmSync(unsealedCandidateFile, { force: true });
+    const unexpectedSiteFile = path.join(siteDir, 'unexpected.txt');
+    fs.writeFileSync(unexpectedSiteFile, 'must be rejected\n');
+    expectFailure(() => sealDocumentationCandidate({ repoRoot, siteDir, outDir: path.join(temp, 'unexpected-candidate'), ...source }),
+      'PULSE_DOCUMENTATION_DEPLOYMENT_INVALID', 'unexpected documentation path during sealing');
+    fs.rmSync(unexpectedSiteFile);
+    const historical = verified.manifest.objects.filter((entry) => entry.phase === 'immutable'
+      && !entry.relativePath.startsWith(`${DOCUMENTATION.version}/`) && entry.relativePath !== loaded.config.deployment.receiptPath);
+    if (historical.length !== 3) fail('historical documentation fixtures are missing from the sealed candidate');
+    const historicalCandidateFile = path.join(candidateDir, 'site', historical[0].relativePath);
+    const historicalCandidateBytes = fs.readFileSync(historicalCandidateFile);
+    fs.appendFileSync(historicalCandidateFile, 'tamper');
+    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, adapter: { head() { fail('tampered candidate reached storage'); } }, phase: 'immutable' }),
+      'PULSE_DOCUMENTATION_DEPLOYMENT_INVALID', 'historical candidate integrity before storage selection');
+    fs.writeFileSync(historicalCandidateFile, historicalCandidateBytes);
     verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true });
     const awsChecksumCalls = validateAwsChecksumEnvironment(temp, loaded, path.join(siteDir, 'index.html'));
 
@@ -870,40 +888,83 @@ function validateDocumentationBundle() {
     ensureDirectory(bucketA);
     const first = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
     const retry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    if (first.uploaded !== verified.immutableCount || retry.alreadyPresent !== verified.immutableCount) fail('immutable documentation deployment is not idempotent');
+    const immutableStorage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
+    const currentImmutableCount = verified.receipt.exactVersionObjectCount + 1;
+    if (first.uploaded !== currentImmutableCount || retry.alreadyPresent !== currentImmutableCount || immutableStorage.objectCount !== currentImmutableCount) fail('current immutable documentation deployment is not idempotent');
+    for (const entry of historical) {
+      if (fs.existsSync(path.join(bucketA, entry.objectKey))) fail('historical preview object was uploaded to an empty bucket');
+    }
     const exact = verified.manifest.objects.find((entry) => entry.phase === 'immutable' && entry.relativePath.startsWith(`${DOCUMENTATION.version}/`));
     fs.appendFileSync(path.join(bucketA, ...exact.objectKey.split('/')), 'tamper');
     expectFailure(
-      () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+      () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'all', npmVerification: npmFile }),
       'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT',
       'immutable documentation overwrite'
     );
+    if (fs.existsSync(path.join(bucketA, loaded.config.objectPrefix, 'index.html'))) fail('immutable conflict allowed alias promotion');
+    fs.copyFileSync(path.join(candidateDir, 'site', exact.relativePath), path.join(bucketA, exact.objectKey));
+    const metadataFile = path.join(bucketA, '.pulse-object-metadata', `${exact.objectKey}.json`);
+    const exactMetadata = fs.readFileSync(metadataFile);
+    const alteredMetadata = JSON.parse(exactMetadata);
+    alteredMetadata.cacheControl = 'no-store';
+    fs.writeFileSync(metadataFile, stableJson(alteredMetadata));
+    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current exact-version metadata conflict');
+    fs.writeFileSync(metadataFile, exactMetadata);
+    fs.appendFileSync(path.join(bucketA, loaded.config.objectPrefix, loaded.config.deployment.receiptPath), 'tamper');
+    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current deployment receipt conflict');
 
     const bucketB = path.join(temp, 'bucket-b');
     ensureDirectory(bucketB);
     fs.writeFileSync(path.join(bucketB, 'unrelated-object.txt'), 'retain me\n');
-    deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'immutable' });
+    const historySource = path.join(temp, 'stored-history.txt');
+    fs.writeFileSync(historySource, 'original published historical bytes\n');
+    const filesystem = filesystemAdapter({ bucketDir: bucketB });
+    const historicalKeys = new Set(historical.map((entry) => entry.objectKey));
+    for (const key of historicalKeys) filesystem.put(key, historySource, { contentType: 'text/plain', cacheControl: 'no-store' });
+    const historicalMetadata = [...historicalKeys].map((key) => fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8'));
+    const adapter = { kind: filesystem.kind };
+    for (const operation of ['head', 'read', 'put']) {
+      adapter[operation] = (key, ...args) => {
+        if (historicalKeys.has(key)) fail(`deployment attempted ${operation} on historical storage`);
+        return filesystem[operation](key, ...args);
+      };
+    }
+    deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'immutable' });
     expectFailure(
       () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable' }),
       'PULSE_DOCUMENTATION_NPM_VERIFICATION_REQUIRED',
       'ungated documentation promotion'
     );
-    const promotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable', npmVerification: npmFile });
-    const repeatPromotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable', npmVerification: npmFile });
-    const storage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'all' });
+    const promotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
+    const repeatPromotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
+    const allRetry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all', npmVerification: npmFile });
+    const storage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all' });
+    if (allRetry.alreadyPresent !== currentImmutableCount + verified.mutableCount || storage.objectCount !== allRetry.objectCount || allRetry.deleted !== 0) fail('all-phase storage selection includes historical objects or deletes');
+    [...historicalKeys].forEach((key, index) => {
+      if (!filesystem.read(key).equals(fs.readFileSync(historySource))
+        || fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8') !== historicalMetadata[index]) fail('historical storage bytes or metadata changed');
+    });
     if (promotion.uploaded !== verified.mutableCount || repeatPromotion.alreadyPresent !== verified.mutableCount || !fs.existsSync(path.join(bucketB, 'unrelated-object.txt'))) fail('mutable documentation promotion is not idempotent or retained unrelated data');
     const promotionTail = promotion.objects.slice(-loaded.config.deployment.promotionCommitObjects.length).map((entry) => entry.key.replace(`${loaded.config.objectPrefix}/`, ''));
     if (JSON.stringify(promotionTail) !== JSON.stringify(loaded.config.deployment.promotionCommitObjects)) fail('documentation promotion commit objects were not uploaded last in release-owned order');
     return Object.freeze({
       objectCount: verified.objectCount,
       immutableObjects: verified.immutableCount,
+      currentImmutableObjects: currentImmutableCount,
+      historicalPreviewObjects: historical.length,
+      historicalStorageUntouched: true,
+      historicalCandidateIntegrityChecked: true,
+      unexpectedSitePathRejected: true,
       mutableObjects: verified.mutableCount,
       exactVersionReceiptObjects: verified.receipt.exactVersionObjectCount,
       verifiedStorageObjects: storage.objectCount,
       immutableRetryObjects: retry.alreadyPresent,
       mutableRetryObjects: repeatPromotion.alreadyPresent,
       immutabilityConflictRejected: true,
+      immutableMetadataConflictRejected: true,
+      immutableReceiptConflictRejected: true,
       unsealedCandidateFileRejected: true,
       npmPromotionGate: true,
       incompleteNpmEvidenceRejected: true,

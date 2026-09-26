@@ -692,6 +692,10 @@ function selectedObjects(manifest, phase, loaded = loadDeploymentConfig()) {
   const normalized = normalizePhase(phase);
   const commitOrder = new Map(loaded.config.deployment.promotionCommitObjects.map((relative, index) => [relative, index]));
   return manifest.objects
+    // Historical trees remain sealed preview inputs, never storage operations for this release.
+    .filter((entry) => entry.phase === 'mutable'
+      || entry.relativePath.startsWith(`${loaded.config.deployment.currentVersionDirectory}/`)
+      || entry.relativePath === loaded.config.deployment.receiptPath)
     .filter((entry) => normalized === 'all' || entry.phase === normalized)
     .sort((left, right) => {
       const leftPhase = left.phase === 'immutable' ? 0 : commitOrder.has(left.relativePath) ? 2 : 1;
