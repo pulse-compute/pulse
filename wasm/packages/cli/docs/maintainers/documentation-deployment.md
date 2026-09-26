@@ -47,7 +47,9 @@ The `1.0.0-beta.5` layout is:
 
 The exact-version tree is the archival release. Root and `latest` are convenience surfaces promoted only after exact-version verification and matching npm package verification.
 
-The deployment workflow and script never delete objects. Historical versions and unrelated bucket content are not candidates for synchronization. For an immutable key:
+Upload and storage verification select only the current exact-version tree, its deployment receipt, and the configured mutable routes. Historical version trees may remain in the sealed candidate for local preview; a later release never uploads, reads, or verifies those historical storage keys. Candidate counts include those preview files, while deployment and storage-verification reports count only selected objects.
+
+The deployment workflow and script never delete objects. Historical versions and unrelated bucket content are not candidates for synchronization. For a selected immutable key:
 
 ```text
 missing
@@ -72,13 +74,14 @@ npm run docs:deployment:prepare
 npm run docs:deployment:verify
 ```
 
-`.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.5.json`. Candidate verification rejects any root or site file outside that sealed inventory.
+`.pulse-documentation-deployment/documentation-deployment-manifest.json` records every object key, local source, byte length, SHA-256, content type, cache class, mutability, source commit, public documentation route, and independent storage prefix. Its deterministic deployment receipt records the complete generated-site digest and the exact-version object inventory and tree digest for `deployments/v1.0.0-beta.5.json`. Candidate verification checks the full sealed inventory, including historical preview files, before any storage operation and rejects any root or site file outside that inventory. Sealing also rejects paths outside the approved object classes.
 
 A local adapter exercised by `npm run publication:check` proves:
 
-- first immutable upload;
-- idempotent retry;
-- rejection of an altered immutable object;
+- upload and idempotent retry of only the current exact-version tree and receipt;
+- preservation of historical storage bytes and metadata, even when preview copies differ;
+- rejection of altered historical candidate files and unexpected paths;
+- rejection of current immutable object, metadata, and receipt conflicts;
 - npm-gated mutable promotion; and
 - preservation of unrelated objects without any delete operation.
 
@@ -133,7 +136,7 @@ The checked-in snippets contain protected credential placeholders and are not ac
 The production workflow performs these steps in order:
 
 1. verify the downloaded documentation candidate and its exact release-tag identity;
-2. upload or verify every immutable exact-version object and immutable release receipt;
+2. upload or verify only the current release's immutable exact-version objects and deployment receipt;
 3. query npm for all 18 matching package versions and configured dist-tags;
 4. upload mutable manifests, error pages, and alias payloads using that npm verification report, then write `latest/index.html` and root `index.html` last as the release-owned publication points;
 5. verify the mutable objects directly in Object Storage;
