@@ -181,4 +181,5 @@ async function run() {
   console.log(`MEM10 passed: ${report.builds.length} build cells, ${report.cases.length} request cases; ${path.join(directory, 'evidence.json')}`);
 }
 if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });
-module.exports = { run };
+// Shared corpus/measurement helpers; importing does not run the benchmark.
+module.exports = { run, cases, injected, local, stats, hostOptions };

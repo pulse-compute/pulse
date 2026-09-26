@@ -462,6 +462,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'MEM02 effect and continuation retention, weak reachability, lifecycle and request-disposal evidence'
   }),
+  'fastly-read-temporaries-mem11': nodeTask('test/provider/assert-fastly-read-temporaries-mem11.cjs', {
+    evidence: 'external', timeoutMs: 1200000,
+    description: 'MEM11 paired Fastly read allocation attribution and direct Viceroy regression evidence'
+  }),
   'fastly-allocator-mem10': nodeTask('test/provider/assert-fastly-allocator-mem10.cjs', {
     evidence: 'external',
     timeoutMs: 1200000,
