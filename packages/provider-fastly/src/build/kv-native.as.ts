@@ -80,10 +80,13 @@ function __kv_number(value: f64): string {
   // Count the portable serialized value budget, including this boundary case.
   return text.endsWith('.0') ? text.substring(0, text.length - 2) : text;
 }
-function __kv_private(text: string): void {
+// Return the same quoted form registered for redaction so validation and writes
+// do not allocate and scan a second representation of each string or key.
+function __kv_private(text: string): string {
   __pulse_fastly_remember_secret(text);
   const encoded = __pulse_fastly_quote(text);
   __pulse_fastly_remember_secret(encoded.substring(1, encoded.length - 1));
+  return encoded;
 }
 class __KvEncoder {
   reason: string = ''; entries: i32 = 0; bytes: i32 = 0;
@@ -97,14 +100,14 @@ class __KvEncoder {
     const value = __pulse_fastly_value(handle);
     if (value.kind == PULSE_VALUE_NULL) this.add('null');
     else if (value.kind == PULSE_VALUE_BOOLEAN) this.add(value.boolean ? 'true' : 'false');
-    else if (value.kind == PULSE_VALUE_STRING) { __kv_private(value.text); this.add(__pulse_fastly_quote(value.text)); }
+    else if (value.kind == PULSE_VALUE_STRING) this.add(__kv_private(value.text));
     else if (value.kind == PULSE_VALUE_NUMBER) { if (!isFinite(value.number)) this.reason = 'invalid-value'; else this.add(value.number == 0 ? '0' : __kv_number(value.number)); }
     else if (value.kind == PULSE_VALUE_ARRAY || value.kind == PULSE_VALUE_OBJECT) {
       if (this.seen.has(handle)) { this.reason = 'invalid-value'; return; } this.seen.add(handle);
       const object = value.kind == PULSE_VALUE_OBJECT; this.add(object ? '{' : '[');
       for (let i = 0; i < value.values.length && !this.reason.length; i++) {
         if (i) this.add(',');
-        if (object) { __kv_private(value.keys[i]); this.add(__pulse_fastly_quote(value.keys[i]) + ':'); }
+        if (object) this.add(__kv_private(value.keys[i]) + ':');
         this.visit(value.values[i], depth + 1);
       }
       this.add(object ? '}' : ']');

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
-// Opt-in paired evidence. Reverse only MEM11's two edits to reproduce MEM10.
+// Opt-in paired evidence. MEM11 remains a historical replay; --quote-reuse
+// compares current MEM12 production with the exact MEM11 production baseline.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -22,6 +23,7 @@ const { replaceExact, planFor } = require('../runtime/compiler-efficiency/mem01-
 const loop = require('../runtime/compiler-efficiency/mem08-payload-retention.cjs');
 const { cases, injected, local, stats, hostOptions } = require('./assert-fastly-allocator-mem10.cjs');
 const mem10 = require('./mem10-allocator-evidence.json');
+const mem11 = require('./mem11-read-temporaries-evidence.json');
 const hash = x => crypto.createHash('sha256').update(x).digest('hex');
 const write = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 const options = { cwd: root, bindings: { configStore: 'app_config', kv: { pages: 'pages' } }, canonicalBuild: true, requirePlatformCapability: false, emitWat: false };
@@ -31,8 +33,33 @@ const scratchDeclaration = `// Each read is synchronous through owned-string dec
 // scratch buffer. Only the written prefix is inspected, including after errors.
 @lazy let __kv_read_buffer: Uint8Array | null = null;
 `;
-function variantSource(mode) {
+const quoteComment = `// Return the same quoted form registered for redaction so validation and writes
+// do not allocate and scan a second representation of each string or key.
+`;
+function restoreQuoteBaseline(source) {
+  if (!source.includes('function __kv_private(text: string): string {')) return source;
+  source = replaceExact(source, quoteComment, '');
+  source = replaceExact(source, 'function __kv_private(text: string): string {', 'function __kv_private(text: string): void {');
+  source = replaceExact(source, '  return encoded;\n}', '}');
+  source = replaceExact(source, 'else if (value.kind == PULSE_VALUE_STRING) this.add(__kv_private(value.text));',
+    'else if (value.kind == PULSE_VALUE_STRING) { __kv_private(value.text); this.add(__pulse_fastly_quote(value.text)); }');
+  return replaceExact(source, "if (object) this.add(__kv_private(value.keys[i]) + ':');",
+    "if (object) { __kv_private(value.keys[i]); this.add(__pulse_fastly_quote(value.keys[i]) + ':'); }");
+}
+function variantSource(mode, quoteReuse = false) {
   let source = fs.readFileSync(kvPath, 'utf8');
+  if (quoteReuse) {
+    assert.ok(['baseline', 'values-only', 'keys-only', 'candidate'].includes(mode));
+    assert.ok(source.includes('function __kv_private(text: string): string {'), 'MEM12 implementation required');
+    if (mode === 'baseline') return restoreQuoteBaseline(source);
+    if (mode === 'values-only') return replaceExact(source, "if (object) this.add(__kv_private(value.keys[i]) + ':');",
+      "if (object) { __kv_private(value.keys[i]); this.add(__pulse_fastly_quote(value.keys[i]) + ':'); }");
+    if (mode === 'keys-only') return replaceExact(source, 'else if (value.kind == PULSE_VALUE_STRING) this.add(__kv_private(value.text));',
+      'else if (value.kind == PULSE_VALUE_STRING) { __kv_private(value.text); this.add(__pulse_fastly_quote(value.text)); }');
+    return source;
+  }
+  // Preserve the historical MEM11 ablations after MEM12 changes production.
+  source = restoreQuoteBaseline(source);
   if (mode === 'baseline' || mode === 'validation-only') {
     source = replaceExact(source, scratchDeclaration, '');
     source = replaceExact(source, '  if (__kv_read_buffer === null) __kv_read_buffer = new Uint8Array(__KV_wireBytes + 1);\n', '');
@@ -66,11 +93,11 @@ export function mem11_validation(): u64 { return __mem11_validation }
 export function mem11_arena(): usize { return __mem11_stub_used() }
 `;
 }
-function compiler(mode, runtime) {
+function compiler(mode, runtime, quoteReuse = false) {
   const loaded = new Module(platformPath, module); loaded.filename = platformPath;
   loaded.paths = Module._nodeModulePaths(path.dirname(platformPath));
   const original = loaded.require.bind(loaded), current = fs.readFileSync(kvPath, 'utf8');
-  const replacement = runtime ? instrument(variantSource(mode)) : variantSource(mode);
+  const replacement = runtime ? instrument(variantSource(mode, quoteReuse)) : variantSource(mode, quoteReuse);
   loaded.require = id => id === './kv-native.js' ? { ...kv, kvNativeSource(nativePlan) {
     const source = kv.kvNativeSource(nativePlan);
     return source ? replaceExact(source, current, replacement) : source;
@@ -79,38 +106,47 @@ function compiler(mode, runtime) {
   if (runtime) source = replaceExact(source, "(schemaCodecsActive ? 'incremental' : 'stub')", JSON.stringify(runtime));
   loaded._compile(source, platformPath); return loaded.exports;
 }
-async function run() {
-  const out = path.resolve(process.env.MEM11_OUT || path.join(root, 'wasm/.test-results/mem11-evidence'));
+async function run({ quoteReuse = false } = {}) {
+  const ticket = quoteReuse ? 'MEM12' : 'MEM11';
+  const out = path.resolve(process.env[ticket + '_OUT'] || path.join(root, 'wasm/.test-results/' + ticket.toLowerCase() + '-evidence'));
   fs.mkdirSync(out, { recursive: true });
   const launcher = cli.inspectFastlyComputeLauncher({ launcherKind: 'viceroy-direct' });
   const samples = 20, localRounds = 2, buildRounds = 3, names = ['baseline', 'candidate'];
   const order = round => round % 2 ? [...names].reverse() : names;
-  const report = { version: 'pulse.mem11.read-temporaries.v1', recordedAt: new Date().toISOString(),
+  const report = { version: quoteReuse ? 'pulse.mem12.quote-reuse.v1' : 'pulse.mem11.read-temporaries.v1', recordedAt: new Date().toISOString(),
     baseCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
-    sourceIdentity: { kvSourceSha256: hash(fs.readFileSync(kvPath)), baselineKvSourceSha256: hash(variantSource('baseline')),
+    sourceIdentity: { kvSourceSha256: hash(fs.readFileSync(kvPath)), baselineKvSourceSha256: hash(variantSource('baseline', quoteReuse)),
       workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), harnessSha256: hash(fs.readFileSync(__filename)) },
     environment: { node: process.version, platform: process.platform, arch: process.arch, kernel: os.release(), cpu: os.cpus()[0]?.model,
       viceroy: { version: launcher.inspection.version, binarySha256: hash(fs.readFileSync(launcher.inspection.binary)) } },
     method: { samples, localRounds, buildRounds, warmups: 3, order: 'baseline first round 0; candidate first round 1',
-      production: 'unchanged allocator/optimizer; no guest instrumentation or forced collection',
+      production: (quoteReuse ? 'current MEM12' : 'historical MEM11') + ' source; unchanged allocator/optimizer; no guest instrumentation or forced collection',
       diagnostic: 'separate stub arena accessors and integer counters; same allocation implementation; never used for timing',
       scope: 'injected host and direct Viceroy; capacity is not live bytes or RSS; no deployed or CAS acceptance claim' },
     builds: [], attribution: [], cases: [] };
   const plans = { small: plan("export default async function handler(ctx) { const value = await ctx.config.get('BARRIER'); return ctx.text(value); }"),
     loop: plan(loop.source), schema: planFor('bounded-open') }, artifacts = {};
-  const baseline = compiler('baseline');
+  const baseline = compiler('baseline', undefined, quoteReuse), candidate = compiler('candidate', undefined, quoteReuse);
   for (const [family, nativePlan] of Object.entries(plans)) {
     const times = { baseline: [], candidate: [] };
     for (let round = 0; round < buildRounds; round++) for (const name of order(round)) {
-      console.log(`MEM11 build ${family}/${name} ${round + 1}/${buildRounds}`);
-      const compiled = (name === 'baseline' ? baseline : platform).compileFastlyNativePlatformCapabilitiesPlan(nativePlan, options);
+      console.log(`${ticket} build ${family}/${name} ${round + 1}/${buildRounds}`);
+      const compiled = (name === 'baseline' ? baseline : candidate).compileFastlyNativePlatformCapabilitiesPlan(nativePlan, options);
       const key = family + '/' + name;
       if (artifacts[key]) assert.deepEqual(compiled.wasm, artifacts[key].wasm, 'deterministic artifact');
       else artifacts[key] = compiled;
       times[name].push(compiled.durationMs);
     }
-    const previous = mem10.builds.find(x => x.family === family && x.runtime === x.defaultRuntime);
-    assert.equal(hash(artifacts[family + '/baseline'].wasm), previous.wasmSha256, 'exact MEM10 production baseline');
+    const previous = quoteReuse ? mem11.builds.find(x => x.family === family && x.name === 'candidate')
+      : mem10.builds.find(x => x.family === family && x.runtime === x.defaultRuntime);
+    assert.equal(hash(artifacts[family + '/baseline'].wasm), previous.wasmSha256, 'exact preceding production baseline');
+    if (quoteReuse) {
+      const control = platform.compileFastlyNativePlatformCapabilitiesPlan(nativePlan, options);
+      assert.deepEqual(artifacts[family + '/candidate'].wasm, control.wasm, 'exact current production artifact');
+    } else {
+      const historical = mem11.builds.find(x => x.family === family && x.name === 'candidate');
+      assert.equal(hash(artifacts[family + '/candidate'].wasm), historical.wasmSha256, 'exact historical MEM11 candidate');
+    }
     if (family !== 'loop') assert.deepEqual(artifacts[family + '/candidate'].wasm, artifacts[family + '/baseline'].wasm, 'non-KV byte identity');
     for (const name of names) {
       const compiled = artifacts[family + '/' + name];
@@ -121,14 +157,23 @@ async function run() {
     }
   }
   write(path.join(out, 'evidence.json'), report);
-  for (const test of [...cases(), { name: 'missing-first-row', family: 'loop', count: 0, expected: 'unavailable' }]) {
+  const quoted = { name: 'quoted-64', family: 'loop', shape: 'text', size: 8192, count: 64 };
+  quoted.expected = loop.expected(quoted);
+  quoted.payload = index => {
+    const row = loop.payload(index, quoted);
+    row.text = ('MEM12-' + index + '-雪😀\"\\\n\u0001').repeat(400);
+    row['key-\"\\\n-' + index] = row.text;
+    return row;
+  };
+  const corpus = [...cases(), { name: 'missing-first-row', family: 'loop', count: 0, expected: 'unavailable' }, ...(quoteReuse ? [quoted] : [])];
+  for (const test of corpus) {
     const row = { name: test.name, family: test.family, recipes: {} };
     for (const name of names) row.recipes[name] = { injected: injected(artifacts[test.family + '/' + name].wasm, test, samples), local: [] };
     const a = row.recipes.baseline.injected, b = row.recipes.candidate.injected;
     for (const key of ['status', 'bodySha256', 'traceSha256', 'traceEntries', 'accounted', 'pendingLookups', 'acquiredReadBodies']) assert.deepEqual(a[key], b[key], test.name + '/' + key);
     assert.ok(b.memoryCapacityBytes <= a.memoryCapacityBytes, 'capacity must not regress');
     for (let round = 0; round < localRounds; round++) for (const name of order(round)) {
-      console.log(`MEM11 Viceroy ${test.name}/${name} ${round + 1}/${localRounds}`);
+      console.log(`${ticket} Viceroy ${test.name}/${name} ${round + 1}/${localRounds}`);
       const result = await local(artifacts[test.family + '/' + name].wasm, test, launcher, path.join(out, test.name, name), samples);
       assert.equal(result.bodySha256, row.recipes[name].injected.bodySha256);
       row.recipes[name].local.push(result);
@@ -142,14 +187,14 @@ async function run() {
   report.stubSourceSha256 = hash(stub);
   stub = stub.replace('from "./common"', 'from "~lib/rt/common"').replace('from "../util/error"', 'from "~lib/util/error"');
   stub += '\n@global export function __mem11_stub_used(): usize { return offset - startOffset }\n';
-  const runtime = path.join(out, 'mem11-stub'); fs.writeFileSync(runtime + '.ts', stub);
-  for (const name of ['baseline', 'buffer-only', 'validation-only', 'candidate']) {
-    console.log(`MEM11 allocation attribution ${name}`);
+  const runtime = path.join(out, ticket.toLowerCase() + '-stub'); fs.writeFileSync(runtime + '.ts', stub);
+  for (const name of quoteReuse ? ['baseline', 'values-only', 'keys-only', 'candidate'] : ['baseline', 'buffer-only', 'validation-only', 'candidate']) {
+    console.log(`${ticket} allocation attribution ${name}`);
     const production = name === 'baseline' || name === 'candidate' ? artifacts['loop/' + name]
-      : compiler(name).compileFastlyNativePlatformCapabilitiesPlan(plans.loop, options);
-    const diagnostic = compiler(name, runtime).compileFastlyNativePlatformCapabilitiesPlan(plans.loop, options);
+      : compiler(name, undefined, quoteReuse).compileFastlyNativePlatformCapabilitiesPlan(plans.loop, options);
+    const diagnostic = compiler(name, runtime, quoteReuse).compileFastlyNativePlatformCapabilitiesPlan(plans.loop, options);
     const rows = [];
-    for (const test of loop.cases) {
+    for (const test of [...loop.cases, ...(quoteReuse ? [quoted] : [])]) {
       const plain = injected(production.wasm, { ...test, family: 'loop', expected: loop.expected(test) }, 1);
       const result = execute(diagnostic, hostOptions({ ...test, family: 'loop' })), e = result.instance.exports;
       assert.equal(hash(result.response.body), plain.bodySha256);
@@ -165,7 +210,7 @@ async function run() {
     write(path.join(out, 'evidence.json'), report);
   }
   report.complete = true; write(path.join(out, 'evidence.json'), report);
-  console.log(`MEM11 passed: ${report.cases.length} cases, ${report.attribution.length} allocation variants; ${out}/evidence.json`);
+  console.log(`${ticket} passed: ${report.cases.length} cases, ${report.attribution.length} allocation variants; ${out}/evidence.json`);
 }
-if (require.main === module) run().catch(error => { console.error(error); process.exitCode = 1; });
-module.exports = { run, variantSource };
+if (require.main === module) run({ quoteReuse: process.argv.includes('--quote-reuse') }).catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { run, variantSource, compiler };
