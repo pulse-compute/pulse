@@ -55,6 +55,7 @@ const externalTasks = new Set([
   'compiler-efficiency-p02',
   'effect-retention-mem02',
   'payload-retention-mem08',
+  'fastly-allocator-mem10',
   'compiler-efficiency-p03',
   'compiler-handler-boundary-b01',
   'compiler-handler-cost-b02',
