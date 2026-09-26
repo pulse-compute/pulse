@@ -56,7 +56,7 @@ function hostOptions(test) {
   if (test.body) options.request = { method: 'POST', body: test.body };
   if (test.family === 'loop') {
     const authority = createConditionalKvAuthority(); authority.stores.set('pages', new Map());
-    for (let i = 0; i < test.count; i++) authority.seed('pages', 'p' + i, encodeConditionalKvValue(loop.payload(i, test)), BigInt(i + 1));
+    for (let i = 0; i < test.count; i++) authority.seed('pages', 'p' + i, encodeConditionalKvValue(test.payload ? test.payload(i) : loop.payload(i, test)), BigInt(i + 1));
     options.conditionalKv = { authority };
   }
   return options;
@@ -95,7 +95,7 @@ async function local(wasm, test, launcher, directory, samples) {
   fs.mkdirSync(directory, { recursive: true });
   const wasmFile = path.join(directory, 'main.wasm'); fs.writeFileSync(wasmFile, wasm);
   const pages = {};
-  if (test.family === 'loop') for (let i = 0; i < test.count; i++) pages['p' + i] = loop.payload(i, test);
+  if (test.family === 'loop') for (let i = 0; i < test.count; i++) pages['p' + i] = test.payload ? test.payload(i) : loop.payload(i, test);
   fs.writeFileSync(path.join(directory, 'fastly.toml'), cli.renderFastlyLocalConfig({ name: 'mem10', configStores,
     ...(test.family === 'loop' ? { kvStores: { pages } } : {}) }));
   const started = performance.now();

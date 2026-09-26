@@ -145,6 +145,11 @@ Only `complete: true` is a finished replay. The committed JSON is an unedited
 copy from the final run. It records the source/harness hashes and working-diff
 hash because the production change was uncommitted at measurement time.
 
+After MEM12, this command remains a historical MEM11 replay: the harness first
+restores duplicate quoting in memory and verifies both historical artifact
+identities. The separate `fastly-kv-quote-reuse-mem12` task compares MEM11 with
+the current quote-reuse implementation; it does not overwrite this evidence.
+
 The existing conformance task carries the regression tests into the normal
 suite; the external benchmark does not substitute for those gates.
 

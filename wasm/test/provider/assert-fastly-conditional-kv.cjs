@@ -115,6 +115,22 @@ const numericStore=authority();
 assert.deepEqual(run(create('numeric-budget',numericBudget),numericStore).body,{status:'stored'});
 assert.deepEqual(run(get('numeric-budget'),numericStore).body.value,numericBudget);
 assert.deepEqual(run(create('numeric-over-budget',{...numericBudget,padding:numericBudget.padding+'x'})).body,{status:'not-stored',reason:'too-large'});
+// MEM12: reused quoted keys and values must retain exact escaping and UTF-8
+// accounting, including surrogate escapes and the serialized-value byte limit.
+const quotedKey='private-key-"\\\n\u0001-雪😀-\ud800', quotedValue='private-value-"\\\n\u0001-雪😀-\udfff';
+const quotedBudget={[quotedKey]:quotedValue,nested:{[quotedKey]:quotedValue},padding:''};
+quotedBudget.padding='x'.repeat(65536-Buffer.byteLength(JSON.stringify(quotedBudget)));
+assert.equal(Buffer.byteLength(JSON.stringify(quotedBudget)),65536);
+const quotedStore=authority();
+assert.deepEqual(run(create('quoted-budget',quotedBudget),quotedStore).body,{status:'stored'});
+assert.deepEqual(Buffer.from(quotedStore.get('catalog','quoted-budget').wire),Buffer.from(codec.encodeConditionalKvValue(quotedBudget)));
+assert.deepEqual(run(get('quoted-budget'),quotedStore).body.value,quotedBudget);
+const quotedOver={...quotedBudget,padding:quotedBudget.padding+'x'};
+const overWrite=run(create('quoted-over-budget',quotedOver));
+assert.deepEqual(overWrite.body,{status:'not-stored',reason:'too-large'});
+assert.equal(overWrite.calls.some(x=>x.stage==='open'||x.stage==='insert'),false);
+quotedStore.seed('catalog','quoted-over-budget','{"__pulseKv":1,"value":'+JSON.stringify(quotedOver)+'}',1n);
+assert.deepEqual(run(get('quoted-over-budget'),quotedStore).body,{status:'failed',reason:'too-large'});
 // Exact value depth/entry limits include transport wrappers without charging
 // those wrappers to the application's KV value budget.
 let deep=0; for(let i=0;i<64;i++) deep=[deep];
@@ -216,17 +232,35 @@ const logging=compile(`export default async function handler(ctx) {
   ctx.log.error('observed: '+found);
   return ctx.json(stored);
 }`, 'kv-private-logs.ts');
-const privateValue={text:'private\\nvalue',quote:'private"value',slash:'private\\\\value'};
+const privateValue={text:'private\\nvalue',quote:'private"value',slash:'private\\\\value',[quotedKey]:quotedValue};
 privateValue.newline='private'+String.fromCharCode(10)+'value';
 const logged=run(create('private-log-key',privateValue),authority(),{},logging);
 assert.ok(logged.result.logs.length>0);
 const logText=logged.result.logs.map(x=>x.message).join('');
 assert.ok(logText.includes('<redacted>'));
-for(const value of Object.values(privateValue)) {
+for(const value of [...Object.keys(privateValue),...Object.values(privateValue)]) {
   assert.equal(logText.includes(value),false);
   assert.equal(logText.includes(JSON.stringify(value).slice(1,-1)),false);
 }
 assert.equal(logText.includes('fastly-kv-v1:'),false);
+// A read alone must register both forms; a preceding write must not mask a
+// regression in the validation-only encoder's redaction walk.
+const readLogging=compile(`export default async function handler(ctx) {
+  const found=await ctx.kv('catalog').getVersioned('private-read-key');
+  ctx.log.error('observed: '+found);
+  return ctx.json(found);
+}`, 'kv-private-read-logs.ts');
+const readPrivateStore=authority();
+readPrivateStore.seed('catalog','private-read-key',codec.encodeConditionalKvValue(privateValue),99n);
+const readLogged=run({},readPrivateStore,{},readLogging);
+assert.deepEqual(readLogged.body.value,privateValue);
+const readLogText=readLogged.result.logs.map(x=>x.message).join('');
+assert.ok(readLogText.includes('<redacted>'));
+for(const value of [...Object.keys(privateValue),...Object.values(privateValue)]) {
+  assert.equal(readLogText.includes(value),false);
+  assert.equal(readLogText.includes(JSON.stringify(value).slice(1,-1)),false);
+}
+assert.equal(readLogText.includes('fastly-kv-v1:'),false);
 // MEM11: scratch reuse must not retain a previous body's tail, corrupt an
 // earlier value/alias, skip read validation, or forget redaction after reuse.
 const reusedReads=compile(`export default async function handler(ctx) {
