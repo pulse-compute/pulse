@@ -1,0 +1,151 @@
+{
+  "schemaVersion": "pulse.compiler-optimization-o01-baseline.v1",
+  "classification": "evidence-only",
+  "baseline": {
+    "branch": "latest",
+    "revision": "0a8233317bdbd4ece266daa0946d129ce03ce89b",
+    "tree": "95f11662df214f887aad6dc4da18075bba66b027",
+    "workingTreeAtRun": "clean before O-01 evidence files"
+  },
+  "closure": {
+    "lockfile": {
+      "path": "pnpm-lock.yaml",
+      "sha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8"
+    },
+    "fixture": {
+      "path": "wasm/test/fixtures/projects/compiler-efficiency-memory",
+      "combinedSha256": "9b7fc1bb75638e14d0b8b7031d9daeb85f05a1fb3ceaa6ef2ff8e23d1c6ec367",
+      "files": [
+        {
+          "path": ".pulse/config.ts",
+          "sha256": "760eee9157bea9657042977c5b5ec770de0ac7189a5ff90aec8457e411294653"
+        },
+        {
+          "path": "src/index.ts",
+          "sha256": "486c3d192b46d3acdd91fe1730dcba52ea932ea5d3a3dca06d953aa048b5c04f"
+        },
+        {
+          "path": "src/schemas.ts",
+          "sha256": "ed7dcb67aa3fb2968a13c8334ebb5e498e07a92148d9ad97b1262e80b50dd0d0"
+        },
+        {
+          "path": "src/types.ts",
+          "sha256": "e214d159d9df150b4ece8cd174c9e743e5ca7932bbd647568d2419a0a7d083c6"
+        }
+      ]
+    },
+    "runner": {
+      "path": "wasm/test/runtime/compiler-efficiency/p02-memory-trace.cjs",
+      "sha256": "ce2f217d5c1502d0fab5da0576b7a50ce4fe7c68a345a82fa0eccf7110819f8f"
+    }
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux-x64",
+    "assemblyScript": "0.28.18",
+    "dependencyInstallation": "corepack pnpm 12.6.0 offline installed packages but reported ignored esbuild build scripts; direct P02 run passed. Not a clean install/seal claim."
+  },
+  "recipe": {
+    "targets": [
+      "node-native",
+      "fastly-native-injected-ABI"
+    ],
+    "guestLinked": false,
+    "allocator": "incremental for schema-enabled Node and Fastly; infer from compiler branch, not from P02 manifest",
+    "optimization": "default ASC --optimize (O3/shrink0); retention transform before optimization and merge-similar-functions afterward",
+    "commonCompilerFlags": [
+      "--noAssert",
+      "--optimize",
+      "--runtime incremental",
+      "--transform native-retention-transform.cjs",
+      "--runPasses merge-similar-functions"
+    ],
+    "sourceOfFlags": [
+      "wasm/packages/compiler/src/canonical-native-compiler.js",
+      "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "wasm/packages/build-support/src/native-optimization.js"
+    ],
+    "flagEvidence": "static source inspection; exact subprocess argv not captured in P02 report"
+  },
+  "fixtureCases": {
+    "pageCounts": [
+      0,
+      1,
+      16,
+      64
+    ],
+    "pageBytes": 4096,
+    "seed": "s01-page-body-v1",
+    "requestExpectations": [
+      {
+        "pages": 0,
+        "fixtureSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "response": "0:-1"
+      },
+      {
+        "pages": 1,
+        "fixtureSha256": "8207e20037e2183a580261f0a6a406246e6f56220dafee6936c679c498520f0e",
+        "response": "1:0"
+      },
+      {
+        "pages": 16,
+        "fixtureSha256": "e173b2e9dba329677f12d5ca9dc30a8778cc0161cb0de2b4ec0ac3674fd7746b",
+        "response": "16:15"
+      },
+      {
+        "pages": 64,
+        "fixtureSha256": "732fe0e751701439c4c812a6c25fb756adc4a9d8f762efe70cd9b38ed8d29f86",
+        "response": "64:63"
+      }
+    ]
+  },
+  "baselineArtifacts": {
+    "node": {
+      "generatedAssemblyScript": {
+        "bytes": 35864,
+        "sha256": "6dcdc86d587ee803f6001b7168f30c0c107a768fce6cbcb554559ea1ef7f05ae"
+      },
+      "finalWasm": {
+        "bytes": 44172,
+        "sha256": "b5f017abf04be4d51401a38699389430fdbd1e46a7b211247cad2d14fe1bdf28"
+      },
+      "assemblyScriptTimeMsSingleRun": 1873
+    },
+    "fastly": {
+      "generatedAssemblyScript": {
+        "bytes": 162506,
+        "sha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c"
+      },
+      "finalWasm": {
+        "bytes": 115076,
+        "sha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26"
+      },
+      "assemblyScriptTimeMsSingleRun": 3701
+    }
+  },
+  "currentEvidence": {
+    "reportPath": "wasm/.test-results/compiler-efficiency/s01/measurements.json",
+    "reportSha256": "0d7bcfcb36d3001e069d582d3e3ebce5b32af915b2066167d67615b5158e7aaf",
+    "runCount": 1,
+    "compilerRss": "unavailable: procfs sampler returned zero bytes and no descendant samples",
+    "guestMemory": "P02 charges/estimated roots and Fastly final capacity are case-local observations; not cumulative allocation or authoritative live heap"
+  },
+  "futureSampling": {
+    "buildsPerMode": 3,
+    "requestProcessesPerMode": 5,
+    "ordering": "serial alternating baseline/candidate in fresh processes, same machine and flags",
+    "repeatCountRationale": "planning floor; increase when measured noise obscures threshold"
+  },
+  "proposedGates": {
+    "memory": "predeclare one primary cumulative-allocation, retained-root or compiler-peak metric; seek >=10% reduction, report capacity and RSS separately",
+    "wasmSize": "seek >=5% raw Wasm reduction and report gzip independently",
+    "runtime": "no >5% median regression beyond baseline variance in the same harness",
+    "correctness": "all exact response/effect and error/continuation assertions pass"
+  },
+  "limits": [
+    "No O-02 guest cumulative-allocation/liveness trace yet.",
+    "No O-03 compiler phase/RSS trace yet.",
+    "One direct P02 run is an identity baseline, not performance acceptance.",
+    "Injected Fastly ABI host is not Viceroy or deployed Fastly."
+  ]
+}
