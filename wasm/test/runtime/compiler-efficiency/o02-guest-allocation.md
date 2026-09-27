@@ -1,0 +1,16 @@
+# O-02 — Guest allocation trace
+
+Evidence only, September 27, 2026. Run `node wasm/test/runtime/compiler-efficiency/o02-guest-allocation.cjs` from the repository root. The runner writes the full raw report to ignored `.test-results/compiler-efficiency/o02/measurements.json`; the observed run is preserved in [`o02-evidence.json`](./o02-evidence.json). This follows the [O-01 fixture and baseline](./o01-baseline.md) on `latest` at `fd9907cd138e84c8a66ae516b282fbaa43f67a19`.
+
+The runner compiles the existing generic schema/effect fixture for Fastly Native, then checks that a separately compiled uninstrumented control is **byte identical** to the product Wasm. It builds a diagnostic version with AssemblyScript `rtrace` allocator callbacks and generated-source checkpoints at request start, suspension/resumption, schema entry/completion, and response readiness. Each fixture size and build mode runs in a fresh Node process with a fixed clock input. All four diagnostic cases match production response, complete hostcall trace, outbound request count, and cumulative policy charges. The injected host is the repository's Fastly ABI test host.
+
+| Pages × 4 KiB | Cumulative guest allocation | Peak outstanding | Terminal outstanding | After forced collection | Guest capacity, production | Production RSS change |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0 | 3,914,656 B | 3,914,320 B | 3,914,320 B | 3,716,384 B | 110 pages | +5,373,952 B |
+| 1 | 4,166,416 B | 4,165,040 B | 4,165,040 B | 3,759,040 B | 110 pages | +6,422,528 B |
+| 16 | 7,775,648 B | 6,393,824 B | 5,449,472 B | 4,246,944 B | 110 pages | +10,747,904 B |
+| 64 | 19,327,168 B | 9,384,832 B | 9,301,872 B | 5,807,424 B | 220 pages | +16,515,072 B |
+
+The 64-page run makes 64 schema calls and 64 outbound S3 requests. The entry-to-completion schema intervals account for 3,868,064 B of cumulative allocation in that case (about 60 KiB per page, with a 76,448 B largest interval). Those intervals include projection, JSON serialization, codec work, and reparse; they are not an exclusive codec cost. The peak outstanding allocation is reached near the final effect resume. At terminal, forced collection reclaims 3,494,448 B; the 5,807,424 B remainder includes runtime initialization and retained value-table roots. Relative to the zero-page control, that remainder grows by 2,091,040 B. The raw report includes all 259 checkpoints for the 64-page request, block/event counts, pages, capacity, cumulative allocation, collection count, and RSS at each checkpoint.
+
+**Metric boundaries:** Cumulative allocation is the sum of allocator block sizes, including allocator overhead; it is distinct from the cumulative policy charge. Outstanding bytes include uncollected garbage. A terminal forced collection estimates retention under the diagnostic runtime, but does not prove individual object reachability. Capacity is reserved Wasm memory, not live bytes. RSS is process-wide and includes V8, fixture data, the host, and Wasm. Instrumentation changes code generation and garbage-collection behavior, so production RSS and diagnostic allocation cannot be combined into a production live-heap claim. Node Native guest allocation, Viceroy, deployed Compute, and compiler RSS are outside this trace. No product optimization or speedup is claimed.
