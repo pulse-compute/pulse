@@ -1,0 +1,1792 @@
+{
+  "schemaVersion": "pulse.memory-qualification-o06.v1",
+  "status": "qualified",
+  "sourceRevision": "4860ad767a55f29d97f770f19ce0b9fd7c7bfdcb",
+  "workingTree": "M wasm/test/suite/assert-suite-shape.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/o06-memory-qualification.cjs",
+  "baselineRevision": "5bdc28aafab76c87abea4320154768e6277fbea9",
+  "sourceHashes": {
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "f7c0dda619c98c7db1d211079552071a050a7a2840cef0461b08d7fad2539a25",
+    "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+    "wasm/test/runtime/compiler-efficiency/o06-memory-qualification.cjs": "cb885ff443e325469bf6d49a26a891eb11ab40c2bb18de192d584e90d15eead7",
+    "wasm/test/runtime/compiler-efficiency/o04-copy-chain.cjs": "983c26c9c768e5db56a6216e018251a9d3c38e58e33b305de8a68288bbc0a88c",
+    "wasm/test/runtime/compiler-efficiency/p02-memory-trace.cjs": "fb5b45e37e0fc55fcc3548c6d5e1bcb5594d535051a425843c7b2926173f1f4f",
+    "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/src/index.ts": "486c3d192b46d3acdd91fe1730dcba52ea932ea5d3a3dca06d953aa048b5c04f",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/src/types.ts": "e214d159d9df150b4ece8cd174c9e743e5ca7932bbd647568d2419a0a7d083c6",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/src/schemas.ts": "ed7dcb67aa3fb2968a13c8334ebb5e498e07a92148d9ad97b1262e80b50dd0d0",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/.pulse/config.ts": "760eee9157bea9657042977c5b5ec770de0ac7189a5ff90aec8457e411294653"
+  },
+  "protocol": {
+    "buildPairs": 3,
+    "pages": 64,
+    "initialAlternatingProcessPairsPerBuild": 5,
+    "maximumAlternatingProcessPairsPerBuild": 10,
+    "primaryReductionMinimum": 0.1,
+    "maximumMedianRuntimeRatio": 1.05,
+    "bootstrapResamples": 4000,
+    "runtimeTiming": "hrtime around injected Fastly ABI execution, including Wasm instantiation and host callbacks; excludes process startup and fixture preparation",
+    "rss": "fresh host process current RSS before/after invocation, plus Linux lifetime high-water from process.resourceUsage; includes module loading",
+    "peak": "rtrace TLSF outstanding block peak in a staged diagnostic module, not guest capacity or RSS"
+  },
+  "builds": [
+    {
+      "index": 0,
+      "modes": {
+        "baseline": {
+          "build": {
+            "name": "baseline",
+            "sourceSha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c",
+            "wasmSha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+            "stagedSha256": "cc14a0605eb87cb72bb0c35a2076e5acd8f5aec161ab41ea2fdf446a9b013e42",
+            "wasmBytes": 115076,
+            "assemblyScript": {
+              "package": "assemblyscript",
+              "version": "0.28.18"
+            },
+            "jsonAs": {
+              "package": "json-as",
+              "version": "1.5.0",
+              "transform": true,
+              "strict": true,
+              "mode": "NAIVE",
+              "fastPath": false
+            },
+            "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645"
+          },
+          "guest": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920,
+            "terminal": {
+              "allocatedBytes": 19327168,
+              "freedBytes": 10025296,
+              "outstandingBytes": 9301872,
+              "peakOutstandingBytes": 9384832,
+              "outstandingBlocks": 23428,
+              "allocatorEvents": 121440,
+              "collections": 0,
+              "memoryCapacityBytes": 14417920
+            },
+            "postCollect": {
+              "allocatedBytes": 19327168,
+              "freedBytes": 13519744,
+              "outstandingBytes": 5807424,
+              "peakOutstandingBytes": 9384832,
+              "outstandingBlocks": 6614,
+              "allocatorEvents": 138254,
+              "collections": 1,
+              "memoryCapacityBytes": 14417920
+            },
+            "copies": [
+              {
+                "phase": "decode-input",
+                "kind": "parser-string",
+                "calls": 320,
+                "scratchCapacityBytes": 521876,
+                "scratchAllocationBytes": 540672,
+                "scratchBackingBlockBytes": 530432,
+                "outputUtf16Bytes": 521876,
+                "outputAllocationBytes": 530432
+              },
+              {
+                "phase": "serialization",
+                "kind": "quote-string",
+                "calls": 320,
+                "scratchCapacityBytes": 523156,
+                "scratchAllocationBytes": 541712,
+                "scratchBackingBlockBytes": 531472,
+                "outputUtf16Bytes": 523156,
+                "outputAllocationBytes": 531472
+              },
+              {
+                "phase": "reparse",
+                "kind": "parser-string",
+                "calls": 320,
+                "scratchCapacityBytes": 521876,
+                "scratchAllocationBytes": 540672,
+                "scratchBackingBlockBytes": 530432,
+                "outputUtf16Bytes": 521876,
+                "outputAllocationBytes": 530432
+              }
+            ],
+            "decode": {
+              "calls": 64,
+              "allocatedBytes": 5001536
+            },
+            "schema": {
+              "calls": 64,
+              "projection": 38912,
+              "serialization": 1614848,
+              "codec": 1063872,
+              "reparse": 1150432
+            }
+          }
+        },
+        "candidate": {
+          "build": {
+            "name": "candidate",
+            "sourceSha256": "a3672842cb6df878d7d0312d71cdd216d673c13a95b59c4e5218c277ab235795",
+            "wasmSha256": "e974c4a1804cd1c55a97f2dfdacf575fbd46dd43d2233db6f957b6805c360023",
+            "stagedSha256": "c79555d34a404c45202e6ca4d570b73bb7ffbf4d84c7db7e10ce7d1bc95ee8e0",
+            "wasmBytes": 115161,
+            "assemblyScript": {
+              "package": "assemblyscript",
+              "version": "0.28.18"
+            },
+            "jsonAs": {
+              "package": "json-as",
+              "version": "1.5.0",
+              "transform": true,
+              "strict": true,
+              "mode": "NAIVE",
+              "fastPath": false
+            },
+            "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645"
+          },
+          "guest": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920,
+            "terminal": {
+              "allocatedBytes": 18245760,
+              "freedBytes": 9929424,
+              "outstandingBytes": 8316336,
+              "peakOutstandingBytes": 9523008,
+              "outstandingBlocks": 19741,
+              "allocatorEvents": 122563,
+              "collections": 0,
+              "memoryCapacityBytes": 14417920
+            },
+            "postCollect": {
+              "allocatedBytes": 18245760,
+              "freedBytes": 12438336,
+              "outstandingBytes": 5807424,
+              "peakOutstandingBytes": 9523008,
+              "outstandingBlocks": 6614,
+              "allocatorEvents": 135690,
+              "collections": 1,
+              "memoryCapacityBytes": 14417920
+            },
+            "copies": [
+              {
+                "phase": "serialization",
+                "kind": "quote-string",
+                "calls": 320,
+                "scratchCapacityBytes": 523156,
+                "scratchAllocationBytes": 541712,
+                "scratchBackingBlockBytes": 531472,
+                "outputUtf16Bytes": 523156,
+                "outputAllocationBytes": 531472
+              }
+            ],
+            "decode": {
+              "calls": 64,
+              "allocatedBytes": 3920128
+            },
+            "schema": {
+              "calls": 64,
+              "projection": 38912,
+              "serialization": 1614848,
+              "codec": 1063872,
+              "reparse": 609728
+            }
+          }
+        }
+      },
+      "primaryReduction": 0.21621517869710427
+    },
+    {
+      "index": 1,
+      "modes": {
+        "baseline": {
+          "build": {
+            "name": "baseline",
+            "sourceSha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c",
+            "wasmSha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+            "stagedSha256": "cc14a0605eb87cb72bb0c35a2076e5acd8f5aec161ab41ea2fdf446a9b013e42",
+            "wasmBytes": 115076,
+            "assemblyScript": {
+              "package": "assemblyscript",
+              "version": "0.28.18"
+            },
+            "jsonAs": {
+              "package": "json-as",
+              "version": "1.5.0",
+              "transform": true,
+              "strict": true,
+              "mode": "NAIVE",
+              "fastPath": false
+            },
+            "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645"
+          },
+          "guest": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920,
+            "terminal": {
+              "allocatedBytes": 19327168,
+              "freedBytes": 10025296,
+              "outstandingBytes": 9301872,
+              "peakOutstandingBytes": 9384832,
+              "outstandingBlocks": 23428,
+              "allocatorEvents": 121440,
+              "collections": 0,
+              "memoryCapacityBytes": 14417920
+            },
+            "postCollect": {
+              "allocatedBytes": 19327168,
+              "freedBytes": 13519744,
+              "outstandingBytes": 5807424,
+              "peakOutstandingBytes": 9384832,
+              "outstandingBlocks": 6614,
+              "allocatorEvents": 138254,
+              "collections": 1,
+              "memoryCapacityBytes": 14417920
+            },
+            "copies": [
+              {
+                "phase": "decode-input",
+                "kind": "parser-string",
+                "calls": 320,
+                "scratchCapacityBytes": 521876,
+                "scratchAllocationBytes": 540672,
+                "scratchBackingBlockBytes": 530432,
+                "outputUtf16Bytes": 521876,
+                "outputAllocationBytes": 530432
+              },
+              {
+                "phase": "serialization",
+                "kind": "quote-string",
+                "calls": 320,
+                "scratchCapacityBytes": 523156,
+                "scratchAllocationBytes": 541712,
+                "scratchBackingBlockBytes": 531472,
+                "outputUtf16Bytes": 523156,
+                "outputAllocationBytes": 531472
+              },
+              {
+                "phase": "reparse",
+                "kind": "parser-string",
+                "calls": 320,
+                "scratchCapacityBytes": 521876,
+                "scratchAllocationBytes": 540672,
+                "scratchBackingBlockBytes": 530432,
+                "outputUtf16Bytes": 521876,
+                "outputAllocationBytes": 530432
+              }
+            ],
+            "decode": {
+              "calls": 64,
+              "allocatedBytes": 5001536
+            },
+            "schema": {
+              "calls": 64,
+              "projection": 38912,
+              "serialization": 1614848,
+              "codec": 1063872,
+              "reparse": 1150432
+            }
+          }
+        },
+        "candidate": {
+          "build": {
+            "name": "candidate",
+            "sourceSha256": "a3672842cb6df878d7d0312d71cdd216d673c13a95b59c4e5218c277ab235795",
+            "wasmSha256": "e974c4a1804cd1c55a97f2dfdacf575fbd46dd43d2233db6f957b6805c360023",
+            "stagedSha256": "c79555d34a404c45202e6ca4d570b73bb7ffbf4d84c7db7e10ce7d1bc95ee8e0",
+            "wasmBytes": 115161,
+            "assemblyScript": {
+              "package": "assemblyscript",
+              "version": "0.28.18"
+            },
+            "jsonAs": {
+              "package": "json-as",
+              "version": "1.5.0",
+              "transform": true,
+              "strict": true,
+              "mode": "NAIVE",
+              "fastPath": false
+            },
+            "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645"
+          },
+          "guest": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920,
+            "terminal": {
+              "allocatedBytes": 18245760,
+              "freedBytes": 9929424,
+              "outstandingBytes": 8316336,
+              "peakOutstandingBytes": 9523008,
+              "outstandingBlocks": 19741,
+              "allocatorEvents": 122563,
+              "collections": 0,
+              "memoryCapacityBytes": 14417920
+            },
+            "postCollect": {
+              "allocatedBytes": 18245760,
+              "freedBytes": 12438336,
+              "outstandingBytes": 5807424,
+              "peakOutstandingBytes": 9523008,
+              "outstandingBlocks": 6614,
+              "allocatorEvents": 135690,
+              "collections": 1,
+              "memoryCapacityBytes": 14417920
+            },
+            "copies": [
+              {
+                "phase": "serialization",
+                "kind": "quote-string",
+                "calls": 320,
+                "scratchCapacityBytes": 523156,
+                "scratchAllocationBytes": 541712,
+                "scratchBackingBlockBytes": 531472,
+                "outputUtf16Bytes": 523156,
+                "outputAllocationBytes": 531472
+              }
+            ],
+            "decode": {
+              "calls": 64,
+              "allocatedBytes": 3920128
+            },
+            "schema": {
+              "calls": 64,
+              "projection": 38912,
+              "serialization": 1614848,
+              "codec": 1063872,
+              "reparse": 609728
+            }
+          }
+        }
+      },
+      "primaryReduction": 0.21621517869710427
+    },
+    {
+      "index": 2,
+      "modes": {
+        "baseline": {
+          "build": {
+            "name": "baseline",
+            "sourceSha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c",
+            "wasmSha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+            "stagedSha256": "cc14a0605eb87cb72bb0c35a2076e5acd8f5aec161ab41ea2fdf446a9b013e42",
+            "wasmBytes": 115076,
+            "assemblyScript": {
+              "package": "assemblyscript",
+              "version": "0.28.18"
+            },
+            "jsonAs": {
+              "package": "json-as",
+              "version": "1.5.0",
+              "transform": true,
+              "strict": true,
+              "mode": "NAIVE",
+              "fastPath": false
+            },
+            "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645"
+          },
+          "guest": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920,
+            "terminal": {
+              "allocatedBytes": 19327168,
+              "freedBytes": 10025296,
+              "outstandingBytes": 9301872,
+              "peakOutstandingBytes": 9384832,
+              "outstandingBlocks": 23428,
+              "allocatorEvents": 121440,
+              "collections": 0,
+              "memoryCapacityBytes": 14417920
+            },
+            "postCollect": {
+              "allocatedBytes": 19327168,
+              "freedBytes": 13519744,
+              "outstandingBytes": 5807424,
+              "peakOutstandingBytes": 9384832,
+              "outstandingBlocks": 6614,
+              "allocatorEvents": 138254,
+              "collections": 1,
+              "memoryCapacityBytes": 14417920
+            },
+            "copies": [
+              {
+                "phase": "decode-input",
+                "kind": "parser-string",
+                "calls": 320,
+                "scratchCapacityBytes": 521876,
+                "scratchAllocationBytes": 540672,
+                "scratchBackingBlockBytes": 530432,
+                "outputUtf16Bytes": 521876,
+                "outputAllocationBytes": 530432
+              },
+              {
+                "phase": "serialization",
+                "kind": "quote-string",
+                "calls": 320,
+                "scratchCapacityBytes": 523156,
+                "scratchAllocationBytes": 541712,
+                "scratchBackingBlockBytes": 531472,
+                "outputUtf16Bytes": 523156,
+                "outputAllocationBytes": 531472
+              },
+              {
+                "phase": "reparse",
+                "kind": "parser-string",
+                "calls": 320,
+                "scratchCapacityBytes": 521876,
+                "scratchAllocationBytes": 540672,
+                "scratchBackingBlockBytes": 530432,
+                "outputUtf16Bytes": 521876,
+                "outputAllocationBytes": 530432
+              }
+            ],
+            "decode": {
+              "calls": 64,
+              "allocatedBytes": 5001536
+            },
+            "schema": {
+              "calls": 64,
+              "projection": 38912,
+              "serialization": 1614848,
+              "codec": 1063872,
+              "reparse": 1150432
+            }
+          }
+        },
+        "candidate": {
+          "build": {
+            "name": "candidate",
+            "sourceSha256": "a3672842cb6df878d7d0312d71cdd216d673c13a95b59c4e5218c277ab235795",
+            "wasmSha256": "e974c4a1804cd1c55a97f2dfdacf575fbd46dd43d2233db6f957b6805c360023",
+            "stagedSha256": "c79555d34a404c45202e6ca4d570b73bb7ffbf4d84c7db7e10ce7d1bc95ee8e0",
+            "wasmBytes": 115161,
+            "assemblyScript": {
+              "package": "assemblyscript",
+              "version": "0.28.18"
+            },
+            "jsonAs": {
+              "package": "json-as",
+              "version": "1.5.0",
+              "transform": true,
+              "strict": true,
+              "mode": "NAIVE",
+              "fastPath": false
+            },
+            "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645"
+          },
+          "guest": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920,
+            "terminal": {
+              "allocatedBytes": 18245760,
+              "freedBytes": 9929424,
+              "outstandingBytes": 8316336,
+              "peakOutstandingBytes": 9523008,
+              "outstandingBlocks": 19741,
+              "allocatorEvents": 122563,
+              "collections": 0,
+              "memoryCapacityBytes": 14417920
+            },
+            "postCollect": {
+              "allocatedBytes": 18245760,
+              "freedBytes": 12438336,
+              "outstandingBytes": 5807424,
+              "peakOutstandingBytes": 9523008,
+              "outstandingBlocks": 6614,
+              "allocatorEvents": 135690,
+              "collections": 1,
+              "memoryCapacityBytes": 14417920
+            },
+            "copies": [
+              {
+                "phase": "serialization",
+                "kind": "quote-string",
+                "calls": 320,
+                "scratchCapacityBytes": 523156,
+                "scratchAllocationBytes": 541712,
+                "scratchBackingBlockBytes": 531472,
+                "outputUtf16Bytes": 523156,
+                "outputAllocationBytes": 531472
+              }
+            ],
+            "decode": {
+              "calls": 64,
+              "allocatedBytes": 3920128
+            },
+            "schema": {
+              "calls": 64,
+              "projection": 38912,
+              "serialization": 1614848,
+              "codec": 1063872,
+              "reparse": 609728
+            }
+          }
+        }
+      },
+      "primaryReduction": 0.21621517869710427
+    }
+  ],
+  "controls": [
+    {
+      "build": 0,
+      "kind": "malformed",
+      "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+      "lastError": 1004,
+      "errorStage": 3,
+      "errorEffect": -1,
+      "traceSha256": "cc62b09a07098ed1b9bd0f9c90d02a5344ad9d96a150df238dabe07aca0d6e59"
+    },
+    {
+      "build": 0,
+      "kind": "transport",
+      "response": "unavailable",
+      "status": 503,
+      "traceSha256": "50f3161cdabe6537a74a7410be19c1f8195b7658004e3ddbc9df7cb4c2071917",
+      "outboundRequests": 1,
+      "chargeBytes": 1852,
+      "chargeValues": 58,
+      "capacityBytes": 7208960
+    },
+    {
+      "build": 1,
+      "kind": "malformed",
+      "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+      "lastError": 1004,
+      "errorStage": 3,
+      "errorEffect": -1,
+      "traceSha256": "cc62b09a07098ed1b9bd0f9c90d02a5344ad9d96a150df238dabe07aca0d6e59"
+    },
+    {
+      "build": 1,
+      "kind": "transport",
+      "response": "unavailable",
+      "status": 503,
+      "traceSha256": "50f3161cdabe6537a74a7410be19c1f8195b7658004e3ddbc9df7cb4c2071917",
+      "outboundRequests": 1,
+      "chargeBytes": 1852,
+      "chargeValues": 58,
+      "capacityBytes": 7208960
+    },
+    {
+      "build": 2,
+      "kind": "malformed",
+      "error": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+      "lastError": 1004,
+      "errorStage": 3,
+      "errorEffect": -1,
+      "traceSha256": "cc62b09a07098ed1b9bd0f9c90d02a5344ad9d96a150df238dabe07aca0d6e59"
+    },
+    {
+      "build": 2,
+      "kind": "transport",
+      "response": "unavailable",
+      "status": 503,
+      "traceSha256": "50f3161cdabe6537a74a7410be19c1f8195b7658004e3ddbc9df7cb4c2071917",
+      "outboundRequests": 1,
+      "chargeBytes": 1852,
+      "chargeValues": 58,
+      "capacityBytes": 7208960
+    }
+  ],
+  "samples": [
+    {
+      "build": 0,
+      "sample": 0,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 78.069046,
+        "rssBeforeBytes": 97423360,
+        "rssAfterBytes": 113938432,
+        "processPeakRssBytes": 113938432,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 66.717349,
+        "rssBeforeBytes": 97411072,
+        "rssAfterBytes": 114188288,
+        "processPeakRssBytes": 114188288,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 0,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 67.469316,
+        "rssBeforeBytes": 97046528,
+        "rssAfterBytes": 114348032,
+        "processPeakRssBytes": 114348032,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 75.583451,
+        "rssBeforeBytes": 97439744,
+        "rssAfterBytes": 113692672,
+        "processPeakRssBytes": 113692672,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 0,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 84.559204,
+        "rssBeforeBytes": 97402880,
+        "rssAfterBytes": 113131520,
+        "processPeakRssBytes": 113131520,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 70.40828,
+        "rssBeforeBytes": 97222656,
+        "rssAfterBytes": 113213440,
+        "processPeakRssBytes": 113213440,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 74.665224,
+        "rssBeforeBytes": 97468416,
+        "rssAfterBytes": 113459200,
+        "processPeakRssBytes": 113459200,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 71.777717,
+        "rssBeforeBytes": 97406976,
+        "rssAfterBytes": 114184192,
+        "processPeakRssBytes": 114184192,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 1,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 80.319944,
+        "rssBeforeBytes": 97243136,
+        "rssAfterBytes": 113889280,
+        "processPeakRssBytes": 113889280,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 71.311124,
+        "rssBeforeBytes": 97443840,
+        "rssAfterBytes": 113434624,
+        "processPeakRssBytes": 113434624,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 73.938908,
+        "rssBeforeBytes": 97357824,
+        "rssAfterBytes": 114003968,
+        "processPeakRssBytes": 114003968,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 69.452853,
+        "rssBeforeBytes": 97243136,
+        "rssAfterBytes": 114544640,
+        "processPeakRssBytes": 114544640,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 2,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 69.666769,
+        "rssBeforeBytes": 97591296,
+        "rssAfterBytes": 114499584,
+        "processPeakRssBytes": 114499584,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 69.659075,
+        "rssBeforeBytes": 97460224,
+        "rssAfterBytes": 114106368,
+        "processPeakRssBytes": 114106368,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 2,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 73.51434,
+        "rssBeforeBytes": 97607680,
+        "rssAfterBytes": 113074176,
+        "processPeakRssBytes": 113074176,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 176.758155,
+        "rssBeforeBytes": 97513472,
+        "rssAfterBytes": 113635328,
+        "processPeakRssBytes": 113635328,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 2,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 70.729087,
+        "rssBeforeBytes": 97357824,
+        "rssAfterBytes": 114003968,
+        "processPeakRssBytes": 114003968,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 74.274669,
+        "rssBeforeBytes": 97611776,
+        "rssAfterBytes": 113995776,
+        "processPeakRssBytes": 113995776,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 3,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 84.985935,
+        "rssBeforeBytes": 97464320,
+        "rssAfterBytes": 113848320,
+        "processPeakRssBytes": 113848320,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 104.553572,
+        "rssBeforeBytes": 97353728,
+        "rssAfterBytes": 113606656,
+        "processPeakRssBytes": 113606656,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 3,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 97.038294,
+        "rssBeforeBytes": 97447936,
+        "rssAfterBytes": 113963008,
+        "processPeakRssBytes": 113963008,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 88.75259,
+        "rssBeforeBytes": 97824768,
+        "rssAfterBytes": 114208768,
+        "processPeakRssBytes": 114208768,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 3,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 101.865549,
+        "rssBeforeBytes": 97243136,
+        "rssAfterBytes": 114282496,
+        "processPeakRssBytes": 114282496,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 108.611181,
+        "rssBeforeBytes": 97378304,
+        "rssAfterBytes": 113631232,
+        "processPeakRssBytes": 113631232,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 4,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 75.490426,
+        "rssBeforeBytes": 97087488,
+        "rssAfterBytes": 113864704,
+        "processPeakRssBytes": 113864704,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 84.642413,
+        "rssBeforeBytes": 97492992,
+        "rssAfterBytes": 113876992,
+        "processPeakRssBytes": 113876992,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 4,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 103.650486,
+        "rssBeforeBytes": 97075200,
+        "rssAfterBytes": 113328128,
+        "processPeakRssBytes": 113328128,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 74.491921,
+        "rssBeforeBytes": 97390592,
+        "rssAfterBytes": 113774592,
+        "processPeakRssBytes": 113774592,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 4,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 80.878531,
+        "rssBeforeBytes": 97492992,
+        "rssAfterBytes": 114139136,
+        "processPeakRssBytes": 114139136,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 78.810633,
+        "rssBeforeBytes": 97542144,
+        "rssAfterBytes": 113926144,
+        "processPeakRssBytes": 113926144,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 5,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 90.907102,
+        "rssBeforeBytes": 97447936,
+        "rssAfterBytes": 113700864,
+        "processPeakRssBytes": 113700864,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 99.822833,
+        "rssBeforeBytes": 97316864,
+        "rssAfterBytes": 113831936,
+        "processPeakRssBytes": 113831936,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 5,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 67.310886,
+        "rssBeforeBytes": 97406976,
+        "rssAfterBytes": 114577408,
+        "processPeakRssBytes": 114577408,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 189.426345,
+        "rssBeforeBytes": 97382400,
+        "rssAfterBytes": 113504256,
+        "processPeakRssBytes": 113504256,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 5,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 92.49101,
+        "rssBeforeBytes": 97009664,
+        "rssAfterBytes": 113786880,
+        "processPeakRssBytes": 113786880,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 114.793697,
+        "rssBeforeBytes": 97239040,
+        "rssAfterBytes": 113229824,
+        "processPeakRssBytes": 113229824,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 6,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 70.816439,
+        "rssBeforeBytes": 97574912,
+        "rssAfterBytes": 114614272,
+        "processPeakRssBytes": 114614272,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 65.150046,
+        "rssBeforeBytes": 96960512,
+        "rssAfterBytes": 113213440,
+        "processPeakRssBytes": 113213440,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 6,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 69.562917,
+        "rssBeforeBytes": 97402880,
+        "rssAfterBytes": 113655808,
+        "processPeakRssBytes": 113655808,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 67.151548,
+        "rssBeforeBytes": 97329152,
+        "rssAfterBytes": 113713152,
+        "processPeakRssBytes": 113713152,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 6,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 79.46138,
+        "rssBeforeBytes": 97787904,
+        "rssAfterBytes": 114171904,
+        "processPeakRssBytes": 114171904,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 66.843312,
+        "rssBeforeBytes": 97177600,
+        "rssAfterBytes": 113954816,
+        "processPeakRssBytes": 113954816,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 7,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 74.789807,
+        "rssBeforeBytes": 96817152,
+        "rssAfterBytes": 113463296,
+        "processPeakRssBytes": 113463296,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 68.351211,
+        "rssBeforeBytes": 97234944,
+        "rssAfterBytes": 114012160,
+        "processPeakRssBytes": 114012160,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 7,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 69.98325,
+        "rssBeforeBytes": 97255424,
+        "rssAfterBytes": 114163712,
+        "processPeakRssBytes": 114163712,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 93.227032,
+        "rssBeforeBytes": 97181696,
+        "rssAfterBytes": 113565696,
+        "processPeakRssBytes": 113565696,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 7,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 76.496696,
+        "rssBeforeBytes": 97320960,
+        "rssAfterBytes": 113573888,
+        "processPeakRssBytes": 113573888,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 77.10349,
+        "rssBeforeBytes": 97505280,
+        "rssAfterBytes": 114282496,
+        "processPeakRssBytes": 114282496,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 8,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 75.761633,
+        "rssBeforeBytes": 97136640,
+        "rssAfterBytes": 114044928,
+        "processPeakRssBytes": 114044928,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 73.482865,
+        "rssBeforeBytes": 97517568,
+        "rssAfterBytes": 113377280,
+        "processPeakRssBytes": 113377280,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 8,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 69.1098,
+        "rssBeforeBytes": 97824768,
+        "rssAfterBytes": 114208768,
+        "processPeakRssBytes": 114208768,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 67.870237,
+        "rssBeforeBytes": 97427456,
+        "rssAfterBytes": 113942528,
+        "processPeakRssBytes": 113942528,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 8,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 67.735415,
+        "rssBeforeBytes": 97214464,
+        "rssAfterBytes": 114253824,
+        "processPeakRssBytes": 114253824,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 65.376059,
+        "rssBeforeBytes": 97222656,
+        "rssAfterBytes": 113737728,
+        "processPeakRssBytes": 113737728,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 0,
+      "sample": 9,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 73.296509,
+        "rssBeforeBytes": 97148928,
+        "rssAfterBytes": 113926144,
+        "processPeakRssBytes": 113926144,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 88.540121,
+        "rssBeforeBytes": 97169408,
+        "rssAfterBytes": 113946624,
+        "processPeakRssBytes": 113946624,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 1,
+      "sample": 9,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 72.983543,
+        "rssBeforeBytes": 97136640,
+        "rssAfterBytes": 113913856,
+        "processPeakRssBytes": 113913856,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 77.63242,
+        "rssBeforeBytes": 97443840,
+        "rssAfterBytes": 114352128,
+        "processPeakRssBytes": 114352128,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    },
+    {
+      "build": 2,
+      "sample": 9,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "baseline": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 84.439166,
+        "rssBeforeBytes": 97558528,
+        "rssAfterBytes": 113942528,
+        "processPeakRssBytes": 113942528,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      },
+      "candidate": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "durationMs": 79.804783,
+        "rssBeforeBytes": 96993280,
+        "rssAfterBytes": 114163712,
+        "processPeakRssBytes": 114163712,
+        "pendingSends": 64,
+        "pendingWaits": 64
+      }
+    }
+  ],
+  "qualification": {
+    "pairs": 30,
+    "baselineMedianMs": 76.1291645,
+    "candidateMedianMs": 73.233204,
+    "ratio": 0.9619599069683734,
+    "pairedRatioMedian": 0.9721769630892533,
+    "pairedRatioBootstrap95": [
+      0.9397221776855844,
+      1.0430192046018827
+    ],
+    "baselineMadMs": 5.356401499999997,
+    "candidateMadMs": 5.843102999999999,
+    "decision": "pass",
+    "primaryReduction": 0.21621517869710427,
+    "hostRss": {
+      "baseline": {
+        "beforeMedianBytes": 97413120,
+        "afterMedianBytes": 113895424,
+        "processPeakMedianBytes": 113895424
+      },
+      "candidate": {
+        "beforeMedianBytes": 97335296,
+        "afterMedianBytes": 113936384,
+        "processPeakMedianBytes": 113936384
+      }
+    }
+  },
+  "limitations": [
+    "Injected Fastly ABI, not Viceroy or deployed performance.",
+    "RSS includes host/module setup and V8 collection noise. Fresh-process timings include host callbacks.",
+    "Guest peak/retained figures are instrumented allocator blocks, not operating-system RSS.",
+    "Fixed 64-page workload; no broad workload or generic speedup claim."
+  ]
+}
