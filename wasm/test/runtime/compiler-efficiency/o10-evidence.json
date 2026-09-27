@@ -1,0 +1,398 @@
+{
+  "version": "pulse.o10.driver-factoring.v1",
+  "status": "passed",
+  "sourceRevision": "5142725930ef8c481ad16b5b7ca2e8ebaab4ee6f",
+  "workingTree": "M  packages/provider-fastly/src/build/native-application-errors.js\nM  packages/provider-fastly/src/build/native-platform-capabilities.js\nM  wasm/test/provider/assert-fastly-request-budget.cjs\nAM wasm/test/runtime/compiler-efficiency/o10-driver-factoring.cjs\nAM wasm/test/runtime/compiler-efficiency/o10-driver-factoring.md\nA  wasm/test/runtime/compiler-efficiency/o10-evidence.json\nM  wasm/test/suite/assert-suite-shape.cjs\nM  wasm/test/suite/registry.cjs",
+  "node": "v24.19.0",
+  "sourceSha256": {
+    "wasm/test/runtime/compiler-efficiency/o08-wasm-census.cjs": "72e83ebd51d9734ab00979a42ba2641addf0cce71740dbd27f9ad5a934833109",
+    "wasm/test/runtime/compiler-efficiency/gen01-census.cjs": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+    "wasm/test/runtime/compiler-efficiency/o07-evidence.json": "a0f560d0e90333e7072231aa6c032b11f1a99f9d1b2c87507fda9b0cf0871d1c",
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "8208ec50b4879d8d2ace90f624b9ef9142ac42bee0a6e4a9f47980706702454a",
+    "packages/provider-fastly/src/build/native-application-errors.js": "78f1a3fbc6980a374935f3343e32225f394c2351febaabffcd590aba3610f1f7",
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+    "wasm/packages/build-support/src/native-optimization.js": "f21423427df332f0311a23076546a3b9175f5059e363ba3fe5be643961925d68",
+    "wasm/packages/build-support/src/native-retention-transform.cjs": "d392b69ccfabce70e3b71b47c9b7bdc84369a66960f543c58703b500d1edcc4d",
+    "wasm/test/runtime/compiler-efficiency/o10-driver-factoring.cjs": "23aaa002b2ba169348a7e07990fb0c5ab75b4256b7d0db40d047e122e8f14310",
+    "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8"
+  },
+  "baselineRevision": "6ebf044f4d3469d6d3f583605e34a1da410b02d0",
+  "preFactoringRevision": "5142725930ef8c481ad16b5b7ca2e8ebaab4ee6f",
+  "profile": "default",
+  "cells": [
+    {
+      "id": "sites-1-error-route",
+      "effects": 1,
+      "errorRoute": true,
+      "fixtureSha256": {
+        "router": "84e091d2e101ca0ae8367397fa5883f7ad3d1ee79860ef96ab7b543889c97f49",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "8544a3be8d7d3cbaa8d9d9d59ede21e4e8b9f44859dc0ddd018d2589c7fdd849",
+      "wasmSha256": "bda26d946905656c861dd1ac6dfef99725fdb2176a94724706308c3eecf3944a",
+      "namedWasmSha256": "de2a82d8dcc832ffe81c1bcda3a8af0058d6c04948c98471c4caa3dff302c167",
+      "namedCompanionSectionsByteExact": true,
+      "before": {
+        "sourceBytes": 126217,
+        "rawBytes": 69121,
+        "gzipBytes": 25367,
+        "driverBytes": 1612
+      },
+      "after": {
+        "sourceBytes": 126497,
+        "rawBytes": 69201,
+        "gzipBytes": 25393,
+        "driverBytes": 669,
+        "helperBytes": 775
+      },
+      "driverCalls": [
+        {
+          "callee": "fimport$12",
+          "sites": 1
+        },
+        {
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 1
+        },
+        {
+          "callee": "fimport$7",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+          "sites": 2
+        },
+        {
+          "callee": "~lib/string/String#indexOf",
+          "sites": 4
+        },
+        {
+          "callee": "~lib/string/String#substring",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_start",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_application_settle_effect",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_jwt_send_error",
+          "sites": 1
+        }
+      ],
+      "helper": {
+        "index": 149,
+        "name": "fastly-native-platform-capabilities.as/__pulse_application_settle_effect",
+        "family": "application error support",
+        "bytes": 775,
+        "calls": [
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_jwt_send_error",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "cbddd778b6cc9d49ccd91dc7b575e7ec164e01d545aa758116028759a44ab51a"
+    },
+    {
+      "id": "sites-8-error-route",
+      "effects": 8,
+      "errorRoute": true,
+      "fixtureSha256": {
+        "router": "b84622f3dd72f7c6722058027b9ca4abc749837f04f3692a6b224c49e299aa12",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "52fb057657c499f8e6bfbbeb16114b9d01b2519f130d281aa2c5c9c1b30f164a",
+      "wasmSha256": "0519f7241beffb86fef6a4ddebadc5da3b44abbfab031ae555b40660de2fc16b",
+      "namedWasmSha256": "8db11e97c68dd2fbf3662deab6e098e25deafcd1184a0a06199fec2c3cd47f05",
+      "namedCompanionSectionsByteExact": true,
+      "before": {
+        "sourceBytes": 152610,
+        "rawBytes": 73695,
+        "gzipBytes": 26294,
+        "driverBytes": 3825
+      },
+      "after": {
+        "sourceBytes": 146093,
+        "rawBytes": 71407,
+        "gzipBytes": 26068,
+        "driverBytes": 845,
+        "helperBytes": 845
+      },
+      "driverCalls": [
+        {
+          "callee": "fimport$12",
+          "sites": 1
+        },
+        {
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 1
+        },
+        {
+          "callee": "fimport$7",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+          "sites": 2
+        },
+        {
+          "callee": "~lib/string/String#indexOf",
+          "sites": 4
+        },
+        {
+          "callee": "~lib/string/String#substring",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_start",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_application_settle_effect",
+          "sites": 8
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_jwt_send_error",
+          "sites": 1
+        }
+      ],
+      "helper": {
+        "index": 40,
+        "name": "fastly-native-platform-capabilities.as/__pulse_application_settle_effect",
+        "family": "application error support",
+        "bytes": 845,
+        "calls": [
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_jwt_send_error",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "71120fe1958cfcac35b7fa754835115cdf0a3ce9dbafe3942b90e101c2677c64"
+    },
+    {
+      "id": "sites-32-error-route",
+      "effects": 32,
+      "errorRoute": true,
+      "fixtureSha256": {
+        "router": "92806fd4466abb57b0fdfaa27656b3d7c4272948ad98dcc34d75f69d0ccd3d45",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "d35328b1f108bd7f84633b883d1a2e3476a97d993eed6c217f5e70b90578a90d",
+      "wasmSha256": "2ec0a047d971d0ca08f2f68269d4cd51c7c7bb1c1cb80ffa6fbef142c1520087",
+      "namedWasmSha256": "2f30de76c2e4e27d051aad3db436e5ee7176a53eb574d46f5f7205910c56c76f",
+      "namedCompanionSectionsByteExact": true,
+      "before": {
+        "sourceBytes": 244047,
+        "rawBytes": 88732,
+        "gzipBytes": 29032,
+        "driverBytes": 12519
+      },
+      "after": {
+        "sourceBytes": 214094,
+        "rawBytes": 78350,
+        "gzipBytes": 28225,
+        "driverBytes": 1445,
+        "helperBytes": 870
+      },
+      "driverCalls": [
+        {
+          "callee": "fimport$12",
+          "sites": 1
+        },
+        {
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 1
+        },
+        {
+          "callee": "fimport$7",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+          "sites": 2
+        },
+        {
+          "callee": "~lib/string/String#indexOf",
+          "sites": 4
+        },
+        {
+          "callee": "~lib/string/String#substring",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_start",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_application_settle_effect",
+          "sites": 32
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_jwt_send_error",
+          "sites": 1
+        }
+      ],
+      "helper": {
+        "index": 23,
+        "name": "fastly-native-platform-capabilities.as/__pulse_application_settle_effect",
+        "family": "application error support",
+        "bytes": 870,
+        "calls": [
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_jwt_send_error",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "7e8fcd6317e453296e65933951a80240a80d45153677102df850513a59ca94fe"
+    },
+    {
+      "id": "sites-32",
+      "effects": 32,
+      "errorRoute": false,
+      "fixtureSha256": {
+        "router": "cd4d8db625f31b301516aae9c150cfa48d6acb21f2c62b451598eee7ece6bc9c",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "8a300201827922cf8e0e1b06ece40a448cec8719c67c67a9148fdbede03c307b",
+      "wasmSha256": "8ce7614a3b5fbedf0a39825acc925860aa3ed8aca19fd652a4fe2e3782f7d6bf",
+      "namedWasmSha256": "eb37779fb63eba3e6e5c6ae9e2b8e387e811ee7e26653fa37ece0ec5fab76262",
+      "namedCompanionSectionsByteExact": true,
+      "before": {
+        "sourceBytes": 157878,
+        "rawBytes": 72829,
+        "gzipBytes": 26729,
+        "driverBytes": 1225
+      },
+      "after": {
+        "sourceBytes": 157878,
+        "rawBytes": 72829,
+        "gzipBytes": 26729,
+        "driverBytes": 1225,
+        "helperBytes": 0
+      },
+      "driverCalls": [
+        {
+          "callee": "fimport$12",
+          "sites": 1
+        },
+        {
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 1
+        },
+        {
+          "callee": "fimport$7",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+          "sites": 2
+        },
+        {
+          "callee": "~lib/string/String#indexOf",
+          "sites": 4
+        },
+        {
+          "callee": "~lib/string/String#substring",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_start",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+          "sites": 2
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+          "sites": 1
+        },
+        {
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 1
+        },
+        {
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+          "sites": 1
+        }
+      ],
+      "helper": null,
+      "fullGraphSha256": "3efeb04e69b572d8b9b0271d37b18efc9bdd1f4e5b2195c8441566d9163e6bd7"
+    }
+  ],
+  "limitations": [
+    "Synthetic config.get controls reused unchanged from O-08.",
+    "One production and one names-only build per cell; no time, RSS, memory or execution-performance claims.",
+    "O-09 behavior is a separate required gate; O-11 owns full paired qualification."
+  ]
+}
