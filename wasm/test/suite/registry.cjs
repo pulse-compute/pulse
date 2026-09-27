@@ -535,6 +535,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'O-07 current generated-source owner, declaration, family and effect-site census without an optimizer compile'
   }),
+  'fastly-driver-behavior-o09': nodeTask('test/runtime/compiler-efficiency/o09-driver-behavior.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'O09 Fastly error driver settlement, ticket freshness and error-priority fixture'
+  }),
   'optimized-wasm-census-o08': nodeTask('test/runtime/compiler-efficiency/o08-wasm-census.cjs', {
     evidence: 'external',
     timeoutMs: 300000,
@@ -1032,6 +1036,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',
     's3-node-transport',
