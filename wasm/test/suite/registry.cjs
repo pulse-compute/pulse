@@ -467,6 +467,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'O-04 schema copy-chain allocation attribution and owned-string parser reproducer'
   }),
+  'parser-copy-o05': nodeTask('test/runtime/compiler-efficiency/o05-parser-copy.cjs', {
+    evidence: 'external',
+    timeoutMs: 600000,
+    description: 'O-05 paired parser, schema, ownership, charge and copy-removal evidence'
+  }),
   'effect-retention-mem02': nodeTask('test/runtime/compiler-efficiency/mem02-effect-retention.cjs', {
     evidence: 'external',
     timeoutMs: 120000,

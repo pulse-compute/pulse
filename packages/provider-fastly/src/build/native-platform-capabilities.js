@@ -1524,14 +1524,18 @@ class __PulseJsonParser {
   string(): string {
     // Find a bounded span, then decode each UTF-16 unit once. Concatenating one
     // character at a time exhausts stub/fixed memory on a valid maximum KV value.
-    const start = this.index + 1; let end = start;
+    const start = this.index + 1; let end = start; let plain = true;
     while (end < this.source.length) {
       const c = this.source.charCodeAt(end);
       if (c == 34) break;
-      if (c == 92) end += 1;
+      if (c == 92) { plain = false; end += 1; }
+      else if (c < 32) plain = false;
       end += 1;
     }
     if (end >= this.source.length) { this.failed = true; return "" }
+    // A validated span needs one owned string, without a temporary UTF-16 array.
+    // Keep escaped and malformed spans on the existing decoder path.
+    if (plain) { this.index = end + 1; return this.source.substring(start, end); }
     const output = new Uint16Array(end - start); let count = 0; this.index = start;
     while (this.index < end) {
       let c = this.source.charCodeAt(this.index++);

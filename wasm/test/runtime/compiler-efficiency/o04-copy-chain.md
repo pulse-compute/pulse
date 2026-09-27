@@ -11,6 +11,12 @@ none, ordinary root/Wasm evidence chain. Additional owners are the test registry
 and suite-shape exclusion list. The provider and schema sources were read only.
 Base is `latest` at `254e89f222892a66c46c24285302953f1f536780`.
 
+After O-05, `copy-chain-o04` remains a historical replay: it loads the original
+provider owner from O-04's merge `5bdc28aafab76c87abea4320154768e6277fbea9`
+and uses the checkout's other dependencies. Git history containing that commit
+is required. Reports record both the checkout hashes and the baseline owner
+hash; the checked-in O-04 evidence remains unchanged.
+
 ## Trace from O-02 to the owner
 
 The O-02 fixture performs bounded S3 reads, verifies the digest, and explicitly
