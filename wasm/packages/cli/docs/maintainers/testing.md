@@ -282,6 +282,21 @@ anything.
 
 ## Runner evidence
 
+For pull requests into non-`main` branches, `Repository validation` also pilots
+an additive `fast selection` check. It compares the exact tested merge against
+the event's base and head SHAs and reads path rules from the base commit's
+maintenance policy. Known unprotected paths select a fixed cross-target core
+(`package-exports`, `api-surface`, `target-support`,
+`node-cross-target-conformance`) plus focused registry tasks for the changed
+owners. Direct test-file changes select their registry task. Unknown paths,
+protected boundaries, and tests without a direct registry task report
+`requires-full`; the `fast portable` job is then skipped. The selection artifact
+lists the paths, rules, blockers, selected tasks, exclusions and tested SHA.
+For selected changes, `fast portable` builds and runs the tasks with a terminal
+runner report and verifies its tested SHA and completed coverage. Neither check
+replaces the existing required full jobs. Routing and required-status changes
+belong to a later, separately reviewed change.
+
 The runner writes `wasm/.test-results/last-run.json` atomically after every task and stores one log per task. When a task fails, task-owned `*.log` files such as npm debug logs are copied into that run's durable diagnostics directory before the temporary root is removed. On timeout it captures a Node diagnostic report, terminates the entire task process group, and reports any surviving descendants. The directory is ephemeral and should contain only evidence produced from the current tree.
 
 Before reporting a run as passed, verify process exit, terminal report status,

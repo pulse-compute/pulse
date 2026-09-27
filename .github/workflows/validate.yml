@@ -15,6 +15,85 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  fast-selection:
+    name: fast selection
+    if: github.event_name == 'pull_request' && github.base_ref != 'main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      status: ${{ steps.select.outputs.status }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.x'
+      - name: Check fast selection contract
+        run: node wasm/test/ci/assert-fast-validation.cjs
+      - name: Select trusted-base fast tasks
+        id: select
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          TESTED_SHA: ${{ github.sha }}
+        run: node scripts/maintainer-fast-validation.cjs --base "$PR_BASE_SHA" --head "$PR_HEAD_SHA" --tested "$TESTED_SHA" --report wasm/.test-results/fast-selection.json
+      - name: Upload selection evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-fast-selection-${{ github.run_id }}-${{ github.run_attempt }}
+          path: wasm/.test-results/fast-selection.json
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
+
+  fast-portable:
+    name: fast portable
+    needs: fast-selection
+    if: needs.fast-selection.outputs.status == 'selected'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.x'
+      - name: Install lockfile-pinned workspace dependencies
+        shell: bash
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
+          pnpm install --frozen-lockfile --ignore-scripts
+      - name: Build workspace outputs
+        run: pnpm run build
+      - name: Run selected fast tasks at tested merge
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          TESTED_SHA: ${{ github.sha }}
+        run: node scripts/maintainer-fast-validation.cjs --base "$PR_BASE_SHA" --head "$PR_HEAD_SHA" --tested "$TESTED_SHA" --report wasm/.test-results/fast-run.json --run
+      - name: Upload fast run evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-fast-portable-${{ github.run_id }}-${{ github.run_attempt }}
+          path: wasm/.test-results
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
+
   maintenance:
     name: maintenance
     runs-on: ubuntu-latest
