@@ -88,6 +88,9 @@ function parseArgs(argv) {
     else if (token === '--replace-unpublished') {
       if (options.historyMode) fail('choose exactly one of --replace-unpublished or --archive-current');
       options.historyMode = 'replace-unpublished';
+    } else if (token === '--replace-unpublished-docs') {
+      if (options.historyMode) fail('choose exactly one documentation history mode');
+      options.historyMode = 'replace-unpublished-docs';
     } else if (token === '--archive-current') {
       if (options.historyMode) fail('choose exactly one of --replace-unpublished or --archive-current');
       options.historyMode = 'archive-current';
@@ -103,10 +106,11 @@ function parseArgs(argv) {
 function usage() {
   return [
     'Usage:',
-    '  pnpm release:prepare -- <version> --channel <name> <--replace-unpublished|--archive-current> [options]',
+    '  pnpm release:prepare -- <version> --channel <name> <--replace-unpublished|--replace-unpublished-docs|--archive-current> [options]',
     '',
     'History mode:',
     '  --replace-unpublished  Replace the current candidate without creating release history',
+    '  --replace-unpublished-docs  Omit only reviewed unpublished hosted docs; preserve npm history and changelog',
     '  --archive-current      Require a committed documentation snapshot and archive the current release',
     '',
     'Options:',
@@ -233,6 +237,8 @@ function documentationOwners(policy) {
   const accepted = new Set(policy.replaceUnpublishedDocumentationClasses);
   return classifyDocumentation(inventory, repoRoot).entries
     .filter((entry) => accepted.has(entry.classification))
+    // Release evidence records observed artifact identities, never the next candidate.
+    .filter((entry) => !entry.path.startsWith('wasm/test/release/'))
     .map((entry) => path.join(repoRoot, entry.path));
 }
 
@@ -262,6 +268,10 @@ function updatePulseDependencies(manifest, oldVersion, nextVersion) {
 function planRelease(releaseManifest, documentationVersions, options, state) {
   const { currentVersion, currentEntry, policy } = state;
   const nextVersion = options.version;
+  const unpublished = require('./release-pr-check.cjs').unpublishedDocumentationReleases(releaseManifest)
+    .find((entry) => entry.version === currentVersion);
+  if (options.historyMode === 'replace-unpublished-docs' && !unpublished) fail(`no reviewed unpublished-docs decision for ${currentVersion}`);
+  if (options.historyMode === 'replace-unpublished' && unpublished) fail(`${currentVersion} shipped on npm; use --replace-unpublished-docs to preserve its history`);
   const channel = options.channel || releaseManifest.channel;
   if (channel !== releaseManifest.channel) fail(`channel transition ${releaseManifest.channel} -> ${channel} requires an explicit release-policy update before release preparation`);
   if (documentationVersions.versions.some((entry) => entry.version === nextVersion && entry.version !== currentVersion)) fail(`documentation versions already contains ${nextVersion}`);
@@ -280,7 +290,7 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
   putJson(releaseManifestFile, nextRelease);
 
   let nextDocumentationVersions;
-  if (options.historyMode === 'replace-unpublished') {
+  if (['replace-unpublished', 'replace-unpublished-docs'].includes(options.historyMode)) {
     nextDocumentationVersions = {
       ...documentationVersions,
       latest: nextVersion,
@@ -383,7 +393,7 @@ function planRelease(releaseManifest, documentationVersions, options, state) {
 
   for (const file of documentationOwners(policy)) {
     const source = writes.get(file) || fs.readFileSync(file, 'utf8');
-    const replaced = options.historyMode === 'archive-current' && relative(file) === 'CHANGELOG.md'
+    const replaced = options.historyMode !== 'replace-unpublished' && relative(file) === 'CHANGELOG.md'
       ? prepareChangelog(source, nextVersion, releaseManifest.display.candidateLabel, options.releasedAt)
       : replaceCandidateText(source, releaseManifest, nextVersion, options.releasedAt);
     if (replaced !== source) putText(file, replaced);
@@ -403,10 +413,12 @@ function synchronize(plan, options) {
   if (options.noSync || options.dryRun) return [];
   const pnpm = require('./pnpm-toolchain.cjs').pnpmInvocation(repoRoot, plan.nextRelease.publication.pnpmVersion);
   const commands = [
-    ['install', '--lockfile-only', '--ignore-scripts'],
-    ['run', '-s', 'maintainer:sync'],
-    ['run', '-s', 'docs:sync']
-  ].map((args) => [pnpm.command, [...pnpm.prefix, ...args]]);
+    [pnpm.command, [...pnpm.prefix, 'install', '--lockfile-only', '--ignore-scripts']],
+    // Invoke the named generators directly: pnpm run can auto-install after a
+    // lockfile-only update and request dependency lifecycle approvals.
+    [process.execPath, ['scripts/maintenance-policy.cjs', '--write']],
+    [process.execPath, ['wasm/scripts/sync-doc-snippets.cjs', '--write']]
+  ];
   for (const [command, args] of commands) run(command, args);
   return commands.map(([command, args]) => `${command} ${args.join(' ')}`);
 }

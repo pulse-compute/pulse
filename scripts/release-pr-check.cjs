@@ -35,7 +35,26 @@ function requiresVersionChange(file) {
   return true;
 }
 
+// Reviewed exceptions describe npm releases whose hosted docs are not a recovery
+// target. Keep them separate from the hosted version list and its archive inputs.
+function unpublishedDocumentationReleases(manifest) {
+  const entries = manifest.readiness?.versionPreparation?.unpublishedDocumentationReleases || [];
+  if (!Array.isArray(entries)) fail('unpublished documentation releases must be an array');
+  const seen = new Set();
+  for (const entry of entries) {
+    versionParts(entry.version);
+    if (seen.has(entry.version) || entry.sourceTag !== `v${entry.version}`
+      || !/^[a-f0-9]{40}$/.test(entry.sourceCommit || '') || entry.npmPublished !== true
+      || entry.exactLinkPolicy !== 'preserve-exact-no-redirect'
+      || !/^wasm\/test\/release\/[a-z0-9-]+\.md$/.test(entry.evidence || '')
+      || typeof entry.reason !== 'string' || !entry.reason.trim()) fail('invalid unpublished documentation release decision');
+    seen.add(entry.version);
+  }
+  return entries;
+}
+
 function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead }) {
+  const unpublishedReleases = unpublishedDocumentationReleases(headManifest);
   const previous = baseManifest.releaseVersion, next = headManifest.releaseVersion;
   const order = compareVersions(next, previous);
   const productChanged = changedFiles.some(requiresVersionChange);
@@ -53,9 +72,15 @@ function checkReleasePr({ baseManifest, headManifest, changedFiles, readHead }) 
   }
   if (order > 0) {
     const archive = versions.versions.find((entry) => entry.version === previous && entry.status === 'archived');
-    if (!archive || archive.sourceManifest !== `release/documentation-site-archives/v${previous}/release-manifest.json`) fail(`previous release ${previous} must remain archived`);
-    const archived = JSON.parse(readHead(archive.sourceManifest));
-    if (archived.releaseVersion !== previous) fail('archived release identity is stale');
+    const unpublished = unpublishedReleases.find((entry) => entry.version === previous);
+    if (archive) {
+      if (archive.sourceManifest !== `release/documentation-site-archives/v${previous}/release-manifest.json`) fail('invalid previous documentation archive');
+      const archived = JSON.parse(readHead(archive.sourceManifest));
+      if (archived.releaseVersion !== previous) fail('archived release identity is stale');
+    } else {
+      if (!unpublished || versions.versions.some((entry) => entry.version === previous)) fail(`previous release ${previous} must remain archived or have a reviewed unpublished-docs decision`);
+      if (!readHead(unpublished.evidence).includes(unpublished.sourceCommit)) fail('unpublished documentation evidence does not identify its source');
+    }
     if (!readHead('CHANGELOG.md').includes(`\n## ${next} — `)) fail(`CHANGELOG.md needs a release section for ${next}`);
   }
   return { status: 'passed', previousVersion: previous, version: next, productChanged, preparedRelease: order > 0, sealed: false };
@@ -77,7 +102,7 @@ function main(argv = process.argv.slice(2)) {
   process.stdout.write(`${JSON.stringify({ ...report, base, head }, null, 2)}\n`);
 }
 
-module.exports = { versionParts, compareVersions, requiresVersionChange, checkReleasePr, main };
+module.exports = { versionParts, compareVersions, requiresVersionChange, unpublishedDocumentationReleases, checkReleasePr, main };
 if (require.main === module) {
   try { main(); } catch (error) { process.stderr.write(`${error.message}\n`); process.exitCode = 1; }
 }

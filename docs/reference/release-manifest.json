@@ -93,7 +93,18 @@
         "wasm/packages/cli/CHANGELOG.md",
         "pnpm-lock.yaml"
       ],
-      "gitTagging": "separate-human-action-before-publication-seal"
+      "gitTagging": "separate-human-action-before-publication-seal",
+      "unpublishedDocumentationReleases": [
+        {
+          "version": "1.0.0-beta.5",
+          "sourceTag": "v1.0.0-beta.5",
+          "sourceCommit": "91cc3145e7ad4bec5d94c228d95016b0f77d04fd",
+          "npmPublished": true,
+          "exactLinkPolicy": "preserve-exact-no-redirect",
+          "evidence": "wasm/test/release/documentation-hosted-history-d01-2026-09-25.md",
+          "reason": "Recorded docs deployment stopped before the beta.5 exact tree; beta.5 is not a docs recovery target. Direct storage absence was not established. Preserve npm/Git history and use installed CLI docs or tagged source for unavailable exact links."
+        }
+      ]
     }
   },
   "publication": {

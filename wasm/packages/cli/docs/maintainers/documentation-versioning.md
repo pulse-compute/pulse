@@ -47,7 +47,7 @@ Every published release has its own generated `search-index.json`. Navigation gr
 
 ## Adding a documentation version
 
-The **Release preparation** workflow rebuilds and snapshots the previous
+The **Release preparation** workflow defaults to `documentation_history=archive-current`: it rebuilds and snapshots the previous
 version from its exact release tag before changing the release manifest. This
 prevents newer integration-branch documentation from being archived as an old
 release. For manual preparation, run the following in a checkout of the
@@ -69,3 +69,37 @@ that directory unchanged into the preparation branch and commit it. Then use
 The builder copies every non-current version from `release/documentation-site-archives/` and validates its version manifest, release manifest, public-site manifest, search index, pages, and versioned assets before deployment. The moving root homepage is regenerated for the current release; the archived exact subtree preserves the old release’s presentation and routes. A version bump therefore fails rather than silently dropping or rebuilding an older exact release. Existing archive directories are never overwritten unless the snapshot command is given `--force` deliberately.
 
 The release gate also rejects a current release that is missing from the versions manifest or whose version segment does not match the release manifest.
+
+## Unpublished hosted docs after npm publication
+
+A Git/npm release does not prove that its exact documentation tree was hosted.
+The release manifest's `readiness.versionPreparation.unpublishedDocumentationReleases`
+records narrowly reviewed exceptions, the unchanged source tag/commit, npm
+publication, evidence, and the exact-link policy. The repository evidence ledger
+`wasm/test/release/documentation-hosted-history-d01-2026-09-25.md` and package-link
+audit `wasm/test/release/documentation-package-links-d03-2026-09-26.md` explain the
+current decision and its limits.
+
+For that explicit exception, select `replace-unpublished-docs` in the preparation
+workflow, or use the local command:
+
+```bash
+node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --replace-unpublished-docs
+```
+
+This replaces the current hosted-docs entry without building or committing its
+archive. It preserves the npm release record, source tag, published changelog,
+and all other archived docs. It is distinct from `--replace-unpublished`, which
+replaces an entirely unpublished candidate and is rejected for the reviewed
+npm-published exception. The next release gets a new exact documentation tree
+and receipt; D02 limits production operations to that tree and its mutable routes.
+
+Already-published packages keep their original exact-version homepage, README,
+and diagnostic links. This choice does not repair those links, redirect them to
+`latest`, or publish a compatibility tree. An absent object continues to produce
+the site's not-found response; any object already stored remains untouched.
+The recorded deployment failure does not prove present storage absence.
+Use the matching installed `@pulse-compute/cli` Markdown under `docs/` or the
+unchanged Git tag's source documentation when an exact hosted link is unavailable.
+The hosted version selector will omit this release after the next promotion,
+while npm preflight still recognizes its published version.

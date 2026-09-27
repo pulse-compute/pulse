@@ -352,6 +352,7 @@ function validateWorkflowSecurity() {
   includes(preparation, 'workflow_dispatch:', 'release preparation workflow');
   includes(preparation, "if: github.ref == 'refs/heads/main'", 'release preparation workflow');
   includes(preparation, 'node scripts/release-prepare-pr.cjs "$RELEASE_VERSION"', 'release preparation workflow');
+  for (const needle of ['documentation_history:', 'default: archive-current', 'replace-unpublished-docs', 'DOCUMENTATION_HISTORY: ${{ inputs.documentation_history }}', '--documentation-history "$DOCUMENTATION_HISTORY"']) includes(preparation, needle, 'explicit documentation history selection');
   includes(preparation, 'needs: prepare', 'release preparation writer isolation');
   const writer = preparation.indexOf('\n  open-pr:');
   if (writer < 0 || /(?:contents|pull-requests): write/.test(preparation.slice(0, writer))) fail('preparation must run before and outside the write-token job');

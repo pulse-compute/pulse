@@ -3,6 +3,11 @@
 const assert = require('node:assert/strict');
 const { checkReleasePr, compareVersions, requiresVersionChange } = require('../../../scripts/release-pr-check.cjs');
 const { prepareChangelog } = require('../../../scripts/release-prepare.cjs');
+const { parseArgs, preparePreviousDocumentation } = require('../../../scripts/release-prepare-pr.cjs');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const previous = '1.0.0-beta.3', next = '1.0.0-beta.4';
 function fixture(version = next) {
@@ -20,6 +25,48 @@ function fixture(version = next) {
 }
 
 assert.equal(checkReleasePr(fixture()).preparedRelease, true);
+const decision = { version: previous, sourceTag: `v${previous}`, sourceCommit: 'a'.repeat(40), npmPublished: true,
+  exactLinkPolicy: 'preserve-exact-no-redirect', evidence: 'wasm/test/release/hosted-history.md', reason: 'Reviewed unpublished hosted docs; retain npm history.' };
+function unpublishedFixture() {
+  const f = fixture();
+  f.headManifest.readiness = { versionPreparation: { unpublishedDocumentationReleases: [structuredClone(decision)] } };
+  const versions = JSON.parse(f.files['release/documentation-versions.json']);
+  versions.versions.pop();
+  f.files['release/documentation-versions.json'] = JSON.stringify(versions);
+  delete f.files[`release/documentation-site-archives/v${previous}/release-manifest.json`];
+  f.files[decision.evidence] = `Reviewed source ${decision.sourceCommit}`;
+  return f;
+}
+assert.equal(checkReleasePr(unpublishedFixture()).preparedRelease, true);
+for (const mutate of [
+  f => { delete f.headManifest.readiness; },
+  f => { f.headManifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].version = next; },
+  f => { f.headManifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].npmPublished = false; },
+  f => { f.headManifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].exactLinkPolicy = 'redirect-to-latest'; },
+  f => { f.files[decision.evidence] = 'unbound evidence'; }
+]) { const f = unpublishedFixture(); mutate(f); assert.throws(() => checkReleasePr(f)); }
+assert.deepEqual(parseArgs([next]), { version: next, mode: 'archive-current' });
+assert.deepEqual(parseArgs([next, '--documentation-history', 'replace-unpublished-docs']), { version: next, mode: 'replace-unpublished-docs' });
+for (const args of [[next, '--documentation-history', 'replace-unpublished'], [next, '--documentation-history', 'unknown'], [next, '--documentation-history']]) assert.throws(() => parseArgs(args));
+const root = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-docs-history-'));
+try {
+  const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: 'pipe' }).trim();
+  git(['init']); git(['config', 'user.name', 'Test']); git(['config', 'user.email', 'test@example.invalid']);
+  fs.writeFileSync(path.join(root, 'source.txt'), 'published source\n');
+  git(['add', '.']); git(['commit', '-m', 'published']); git(['tag', decision.sourceTag]);
+  const manifest = unpublishedFixture().headManifest;
+  manifest.releaseVersion = previous;
+  manifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].sourceCommit = git(['rev-parse', 'HEAD']);
+  const before = git(['show-ref', '--tags']);
+  const result = preparePreviousDocumentation(root, manifest, 'replace-unpublished-docs');
+  assert.equal(result.archive, null);
+  assert.equal(fs.existsSync(path.join(root, 'release/documentation-site-archives')), false);
+  assert.equal(git(['show-ref', '--tags']), before);
+  assert.equal(git(['status', '--porcelain']), '');
+  manifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].sourceCommit = 'b'.repeat(40);
+  assert.throws(() => preparePreviousDocumentation(root, manifest, 'replace-unpublished-docs'), /source identity differs/);
+  assert.throws(() => preparePreviousDocumentation(root, { releaseVersion: next }, 'replace-unpublished-docs'), /no reviewed/);
+} finally { fs.rmSync(root, { recursive: true, force: true }); }
 assert.throws(() => checkReleasePr(fixture(previous)), /version remains/);
 assert.throws(() => checkReleasePr(fixture('1.0.0-beta.2')), /backwards/);
 const docsOnly = fixture(previous); docsOnly.changedFiles = ['docs/guides/json-schemas.md', 'packages/runtime/README.md', '.github/workflows/validate.yml'];
