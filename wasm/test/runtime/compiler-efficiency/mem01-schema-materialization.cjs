@@ -86,7 +86,7 @@ function planFor(family, handlerOverride) {
     schemaBundle: buildCanonicalSchemaBundle(registry, { maxBytes: 65536 }), strict: true, target: 'native', requireAsync: true }));
 }
 
-function diagnosticCompile(source, mode, directory) {
+function diagnosticCompile(source, mode, directory, options = {}) {
   const cwd = path.join(directory, mode); fs.mkdirSync(cwd, { recursive: true });
   const fallback = path.join(root, 'wasm/packages/compiler'), asc = resolveAsc(fallback);
   assert.equal(require(path.join(asc.packageRoot, 'package.json')).version, '0.28.18', 'review tracer layout when upgrading AssemblyScript');
@@ -96,6 +96,7 @@ function diagnosticCompile(source, mode, directory) {
   fs.writeFileSync(path.join(cwd, name), source);
   const args = [asc.script, name, '--outFile', output, '--runtime', 'incremental', '--noAssert', '--optimize'];
   appendAssemblyScriptOptimizationArgs(args, undefined, { guestLinked: false });
+  if (options.maximumMemoryPages) args.push('--maximumMemory', String(options.maximumMemoryPages));
   args.push('--use', 'abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort', '--exportRuntime',
     '--transform', transform, '--path', path.join(fallback, 'node_modules'), '--path', path.dirname(jsonRoot));
   if (mode !== 'control') args.push('--use', 'ASC_RTRACE=1', '--exportStart', '__mem01_initialize');

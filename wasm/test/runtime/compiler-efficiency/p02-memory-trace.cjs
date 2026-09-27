@@ -291,9 +291,11 @@ async function main() {
   } finally { fs.rmSync(work, { recursive: true, force: true }); }
 }
 
-if (process.argv[2] === '--compile') {
+if (require.main === module && process.argv[2] === '--compile') {
   try { compileWorker(process.argv[3], process.argv[4], process.argv[5]); }
   catch (error) { console.error(error.stack || error); process.exitCode = 1; }
-} else {
+} else if (require.main === module) {
   main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });
 }
+
+module.exports = { prepareFixture, pageBodies, compileWorker, secrets, PAGE_BYTES, PAGE_SEED };
