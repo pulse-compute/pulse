@@ -93,6 +93,54 @@ protected publishing approval. A local seal is useful development evidence but
 is not a prerequisite that must be committed before tagging. Reconcile `main`
 back into `latest` after the release so development starts from the new version.
 
+## Release handoff record
+
+Copy this compact record for each exact tag. Fill the status and evidence link
+for every row; use `pending`, `passed`, `failed`, or `blocked`. Record the
+tested commit and terminal report, not merely a dispatched run. Keep a failed
+attempt visible when retrying. `promote_latest=false` deliberately stops after
+immutable verification; the npm gate and alias steps remain `blocked` until a
+separate, approved promotion run.
+
+```text
+Tag: v<version>    Tag commit: <40-character SHA>    Release PR: <URL>
+Step                  Status     Evidence / run, report, or blocker
+PR checks             ____       <full main PR checks at merge SHA>
+Release seal          ____       <npm candidate run / terminal seal report>
+npm publish           ____       <protected publish run / exact package receipts>
+Docs candidate        ____       <tagged docs candidate / manifest digest>
+Immutable upload      ____       <deploy + verify-storage reports / object count>
+npm gate              ____       <registry-catalog verification / package count>
+Alias promotion       ____       <root/latest deployment + storage verification>
+Public verification   ____       <Fastly route report / exact and moving URLs>
+Last failure: <step, code, object key or none, mismatch class, run attempt>
+Human release owner: <name>    Next action: <one concrete action>
+```
+
+After the human has reviewed and pushed the annotated tag, select that **tag**
+as the workflow dispatch ref and supply the identical `release_tag` input:
+
+```bash
+RELEASE_TAG=v<version>
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=audit
+# After audit and protected approval, the release owner may use operation=publish.
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish
+gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=false
+# After matching npm verification and protected approval, the release owner may use promote_latest=true.
+gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=true
+```
+
+The tagged workflow's candidate job has no production credentials; its protected
+publish/deploy jobs still require human approval. An immutable documentation
+failure never authorizes replacing an existing key. Inspect
+`documentation-immutable-deployment.json` (or the corresponding verification
+report) for `failure.code`, `failure.objectKey`, and `failure.mismatch` before
+choosing a remedy. `bytes`, `content-type`, and `cache-control` distinguish
+the conflict classes. If failure occurs before an object is selected,
+`objectKey` is `null`. Failed reports are retained by the workflow's evidence
+upload on tags that contain this reporting change. Do not combine artifacts
+from different tags or run attempts into one passing record.
+
 For local preparation, the underlying command remains available:
 
 ```bash

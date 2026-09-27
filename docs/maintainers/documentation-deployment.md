@@ -23,7 +23,7 @@ The machine-readable deployment contract is `release/documentation-deployment.js
 
 ## Validation and production are separate
 
-The **Documentation** workflow runs for pull requests and `main`. It validates generated documentation, builds the exact-version site, seals a preview object manifest, and uploads a short-lived Actions artifact. It has no storage secret and no deployment job.
+The **Documentation** workflow runs for pull requests and branch pushes. It validates generated documentation, builds the exact-version site, seals a preview object manifest, and uploads a short-lived Actions artifact. It has no storage secret and no deployment job.
 
 The **Documentation deployment** workflow is dispatched **from the exact release tag**, and its `release_tag` input must name the same tag. A branch-dispatched run fails before candidate construction. The candidate job builds and seals the site without credentials. Its `deploy` job is attached to the protected `documentation-production` environment, reuses the same tagged tooling and source identity, and receives credentials only after a human release/infrastructure authority approves the environment.
 
@@ -148,3 +148,11 @@ Public verification checks that the moving routes and `site-manifest.json` expos
 No bucket-wide synchronization or delete operation is used. Mutable promotion is resumable and idempotent, but it is not presented as a cross-object atomic transaction. Writing the two publication points last minimizes partially visible promotions; a failed run is rerun against the same sealed candidate.
 
 Codex may diagnose a failed deployment and prepare a patch. It may not approve `documentation-production`, supply credentials, alter the public origin, activate VCL, or promote documentation independently of human release authority.
+
+Use the [release handoff record](npm-publishing.md#release-handoff-record) to
+track candidate, immutable storage, npm gate, alias promotion, and public-route
+evidence separately. Deployment and storage-verification failures with
+`--json-out` retain a failed report containing a failure code and the selected
+object key. Immutable conflicts also name whether bytes, content type, or cache
+policy differed. The workflow uploads these reports even when a deployment step
+fails; only a terminal passing report at the exact tag establishes that stage.
