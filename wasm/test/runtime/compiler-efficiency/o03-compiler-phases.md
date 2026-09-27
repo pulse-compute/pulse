@@ -10,6 +10,8 @@ node wasm/scripts/run-wasm-tests.cjs --task compiler-phases-o03 --report .test-r
 
 The task writes `wasm/.test-results/compiler-efficiency/o03/measurements.json` with portable command paths, plus `measurements.raw.json` with the exact local paths. Production compiler argv and the three json-as environment flags are captured from the real compile call, not reconstructed from presumed defaults. The ledger pins source/fixture/lockfile/probe/ASC hashes, source revision, working-tree state, compiler PID, and artifact identities. The recorded run is development evidence identified by those script hashes.
 
+The preserved ledger uses the harness in PR revision `82bd9ffa71ea7c60a923a633ef1590b9043bd7de`. A subsequent documentation-gate fix embeds the temporary usage-report path directly in its generated hook, removing an unnecessary environment variable. The historical measurements remain intact; the corrected harness is verified by rerunning the registered task.
+
 The fixture still generates 35,864 B of Node AS / 44,172 B Wasm and 162,506 B of Fastly AS / 115,076 B Wasm. Both use the default optimization recipe and incremental runtime, with a 4,096-page maximum. Dependency installation populated the frozen offline graph but reported ignored esbuild build scripts; the focused task and required checks passed with that installed graph.
 
 ## Findings

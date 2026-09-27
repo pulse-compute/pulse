@@ -143,7 +143,7 @@ async function main() {
     // The CLI normally respawns for source maps. Enable them explicitly so this
     // preload belongs to the actual compiler, with no launcher overwrite.
     const usageHook = path.join(directory, 'usage.cjs');
-    fs.writeFileSync(usageHook, `const p=require(${JSON.stringify(probePath)});const start=p.snapshot();process.once('exit',code=>require('node:fs').writeFileSync(process.env.PULSE_O03_USAGE_FILE,JSON.stringify({pid:process.pid,argv:process.argv,exitCode:code,total:p.interval(start)})));\n`);
+    fs.writeFileSync(usageHook, `const p=require(${JSON.stringify(probePath)});const start=p.snapshot();process.once('exit',code=>require('node:fs').writeFileSync(${JSON.stringify(path.join(directory, 'control.json'))},JSON.stringify({pid:process.pid,argv:process.argv,exitCode:code,total:p.interval(start)})));\n`);
     const samples = [];
     for (let repeat = 0; repeat < 3; repeat++) for (const target of ['node', 'fastly']) {
       const recipe = recipes[target], targetDir = path.join(directory, target);
@@ -153,7 +153,7 @@ async function main() {
       for (const mode of repeat % 2 ? ['profile', 'control'] : ['control', 'profile']) {
         const output = path.join(directory, mode + '.json');
         const started = performance.now();
-        const env = { ...process.env, ...recipe.env, PULSE_O03_USAGE_FILE: output };
+        const env = { ...process.env, ...recipe.env };
         if (mode === 'control') run(['--enable-source-maps', '--require', usageHook, recipe.script, ...recipe.args], { cwd: targetDir, env });
         else run(['--enable-source-maps', __filename, '--profile', directory, target, output], { env });
         sample[mode] = { ...read(output), parentWallMs: performance.now() - started };
