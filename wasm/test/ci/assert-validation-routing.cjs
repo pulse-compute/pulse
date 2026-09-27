@@ -62,6 +62,7 @@ for (const mutation of [
   source.replace('reopened, edited, ready_for_review', 'reopened, ready_for_review'),
   source.replace("if: always() && (github.event_name", "if: success() && (github.event_name"),
   source.replace('node-floor, fast-selection, fast-portable, full-portable]', 'node-floor, fast-selection, fast-portable]'),
+  source.replace("github.ref == 'refs/heads/main' || ", ''),
   source.replace('VALIDATION_NEEDS: ${{ toJSON(needs) }}', 'VALIDATION_NEEDS: {}'),
   source.replace("needs.route.outputs.tier == 'full'", "needs.route.outputs.tier == 'fast'")
 ]) assert.throws(() => validateWorkflow(mutation));

@@ -254,7 +254,7 @@ jobs:
   portable:
     name: portable
     needs: [route, maintenance, node-floor, fast-selection, fast-portable, full-portable]
-    if: always() && (github.event_name != 'push' || needs.route.outputs.run != 'false')
+    if: always() && (github.event_name != 'push' || github.ref == 'refs/heads/main' || needs.route.outputs.run != 'false')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
