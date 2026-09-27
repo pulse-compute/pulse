@@ -108,6 +108,8 @@ jobs:
           node-version: '24.x'
       - name: Validate maintainer control plane
         run: npm run maintainer:check
+      - name: Validate portable aggregate contract
+        run: node wasm/test/ci/assert-portable-validation.cjs
       - name: Check release preparation before main
         if: github.event_name == 'pull_request' && github.base_ref == 'main'
         env:
@@ -151,13 +153,19 @@ jobs:
           if-no-files-found: warn
           retention-days: 14
 
-  portable:
-    name: portable
+  portable-shards:
+    name: portable / ${{ matrix.shard }}
+    needs: maintenance
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [unit, native, javascript, conformance-rsa, conformance-schema, conformance-rest]
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
@@ -175,20 +183,50 @@ jobs:
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Build workspace outputs used by portable profiles
         run: pnpm run build
-      - name: Run portable repository truth profiles
-        shell: bash
-        run: |
-          set -euo pipefail
-          node wasm/scripts/run-wasm-tests.cjs --profile unit --report .test-results/unit.json
-          node wasm/scripts/run-wasm-tests.cjs --profile native --report .test-results/native.json
-          node wasm/scripts/run-wasm-tests.cjs --profile javascript --report .test-results/javascript.json
-          node wasm/scripts/run-wasm-tests.cjs --profile conformance --report .test-results/conformance.json
-      - name: Upload portable failure evidence
-        if: failure()
+      - name: Run registered portable shard
+        env:
+          PORTABLE_SHARD: ${{ matrix.shard }}
+        run: node scripts/maintainer-portable-validation.cjs run "$PORTABLE_SHARD"
+      - name: Upload portable failure evidence and success reports
+        if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: pulse-portable-failure-${{ github.run_id }}-${{ github.run_attempt }}
-          path: wasm/.test-results
+          name: pulse-portable-shard-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.shard }}
+          path: wasm/.test-results/portable/${{ matrix.shard }}
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
+
+  portable:
+    name: portable
+    needs: portable-shards
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.x'
+      - name: Download portable shard reports and failure evidence
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: pulse-portable-shard-${{ github.run_id }}-*
+          path: .portable-artifacts
+      - name: Require complete passing portable coverage
+        if: always()
+        env:
+          PORTABLE_SHARDS_RESULT: ${{ needs.portable-shards.result }}
+        run: node scripts/maintainer-portable-validation.cjs aggregate .portable-artifacts
+      - name: Upload portable aggregate evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-portable-aggregate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: wasm/.test-results/portable-aggregate.json
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14

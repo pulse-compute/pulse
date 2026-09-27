@@ -17,6 +17,7 @@ const {
 } = require('./maintainer-scope.cjs');
 const { RELEASE_VERSION } = require('./package-support.cjs');
 const { validatePublicationControlPlane } = require('./validate-publication-workflows.cjs');
+const { validateWorkflow: validatePortableWorkflow } = require('./maintainer-portable-validation.cjs');
 
 const CONTROL_PLANE_SCHEMA = 'pulse.maintainer-control-plane-validation.v1';
 const repoRoot = path.resolve(__dirname, '..');
@@ -331,11 +332,9 @@ function validateWorkflowSecurity() {
   includes(validation, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'repository validation workflow');
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
   includes(validation, 'pnpm run build', 'repository validation workflow');
-  for (const profile of ['unit', 'native', 'javascript', 'conformance']) {
-    includes(validation, `--profile ${profile} --report .test-results/${profile}.json`, 'repository validation workflow');
-  }
+  validatePortableWorkflow(validation);
   includes(validation, 'Upload Node 22 failure evidence', 'repository validation workflow');
-  includes(validation, 'Upload portable failure evidence', 'repository validation workflow');
+  includes(validation, 'Upload portable failure evidence and success reports', 'repository validation workflow');
   includes(validation, 'path: wasm/.test-results', 'repository validation workflow');
   includes(validation, 'include-hidden-files: true', 'repository validation workflow');
   if (/pull_request:[\s\S]{0,300}\n\s+paths:/u.test(validation)) fail('required repository validation must not use pull-request path filtering');

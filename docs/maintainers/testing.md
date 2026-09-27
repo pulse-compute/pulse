@@ -282,6 +282,34 @@ anything.
 
 ## Runner evidence
 
+The full `Repository validation / portable` gate aggregates six independent
+jobs: `unit`, `native`, `javascript`, `conformance-rsa`, `conformance-schema`,
+and `conformance-rest`. The plan in
+`scripts/maintainer-portable-validation.cjs` expands the four existing portable
+profiles from the task registry. RSA isolates `jwt-rs256`; schema isolates
+`schema-codecs` and `schema-kv-parity`; the remaining conformance tasks stay in
+registry order. Every registered portable task occurs exactly once.
+
+After maintenance validates the plan and aggregate contract, each shard
+installs pinned dependencies, builds in its own checkout at the tested
+SHA, and uploads its terminal report and task logs even on failure. The stable
+`portable` aggregate runs after failed or skipped jobs as well as successful
+ones. It requires successful shard jobs and complete passing reports for the
+same tested SHA and workflow run. Missing, failed, cancelled, incomplete,
+duplicate or mismatched evidence fails the gate. On a job retry it selects the
+latest attempt for each shard in that run; a newer failed attempt cannot fall
+back to an older passing report. The aggregate artifact records task counts,
+attempts, durations and tested SHA. This remains portable CI evidence; the
+separate release seal still requires its complete candidate replay.
+
+W01 measured 16–21 minute full runs, dominated by conformance. The parallel
+layout is intended to reduce that wait without removing tasks. Compare three
+completed PR runs before assigning a new latency target. Queue time and total
+runner usage are separate from task duration. Install/build occupied only 6–8
+seconds in W01, so this change adds no dependency cache. C03 owns the later
+branch-tier routing; the existing triggers and required status names still
+apply during this rollout.
+
 For pull requests into non-`main` branches, `Repository validation` also pilots
 an additive `fast selection` check. It compares the exact tested merge against
 the event's base and head SHAs and reads path rules from the base commit's
