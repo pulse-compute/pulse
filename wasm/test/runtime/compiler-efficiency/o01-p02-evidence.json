@@ -1,0 +1,476 @@
+{
+  "schemaVersion": "pulse.compiler-efficiency-s01.v1",
+  "status": "passed",
+  "fixtureSeed": "s01-page-body-v1",
+  "pageBytes": 4096,
+  "sourceRevision": "0a8233317bdbd4ece266daa0946d129ce03ce89b",
+  "fixtureSourceSha256": "9b7fc1bb75638e14d0b8b7031d9daeb85f05a1fb3ceaa6ef2ff8e23d1c6ec367",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "node": {
+    "source": {
+      "sourceBytes": 35864,
+      "sourceSha256": "6dcdc86d587ee803f6001b7168f30c0c107a768fce6cbcb554559ea1ef7f05ae",
+      "expressionDeclarations": 90,
+      "exactRepeatedDeclarations": 0,
+      "exactRepeatedSourceBytes": 0,
+      "attribution": "full declaration after normalizing only the declared expression number"
+    },
+    "finalWasmBytes": 44172,
+    "finalWasmSha256": "b5f017abf04be4d51401a38699389430fdbd1e46a7b211247cad2d14fe1bdf28",
+    "assemblyScriptDurationMs": 1873,
+    "assemblyScriptVersion": "0.28.18",
+    "isolatedCompile": {
+      "wallMs": 2555.285461,
+      "workerPeakRssBytes": 0,
+      "compilerDescendantPeakRssBytes": null,
+      "sampledCompilerDescendants": 0,
+      "rssMethod": "10ms /proc process samples; descendant maximum is a sampled peak, not a combined tree RSS"
+    }
+  },
+  "fastly": {
+    "source": {
+      "sourceBytes": 162506,
+      "sourceSha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c",
+      "expressionDeclarations": 90,
+      "exactRepeatedDeclarations": 0,
+      "exactRepeatedSourceBytes": 0,
+      "attribution": "full declaration after normalizing only the declared expression number"
+    },
+    "finalWasmBytes": 115076,
+    "finalWasmSha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+    "assemblyScriptDurationMs": 3701,
+    "assemblyScriptVersion": "0.28.18",
+    "isolatedCompile": {
+      "wallMs": 4075.101441,
+      "workerPeakRssBytes": 0,
+      "compilerDescendantPeakRssBytes": null,
+      "sampledCompilerDescendants": 0,
+      "rssMethod": "10ms /proc process samples; descendant maximum is a sampled peak, not a combined tree RSS"
+    }
+  },
+  "controls": {
+    "cases": [
+      {
+        "calls": 1,
+        "complexity": "leaf",
+        "fixtureSourceSha256": "ec75a7a986c120566288f0b23f9479cca50ca34afcf19d82b1de8849dc893d2f",
+        "source": {
+          "sourceBytes": 7433,
+          "sourceSha256": "d7c21d6b9c89a2c799f6c35cbc4176e0751596ac4afa401aea079cf301404009",
+          "expressionDeclarations": 8,
+          "exactRepeatedDeclarations": 0,
+          "exactRepeatedSourceBytes": 0,
+          "attribution": "full declaration after normalizing only the declared expression number"
+        },
+        "finalWasmBytes": 886,
+        "finalWasmSha256": "b4342d12a6c24090cc2da6b7afda1b55fe359306b24755c67d6d766405821acd",
+        "assemblyScriptDurationMs": 707,
+        "assemblyScriptVersion": "0.28.18"
+      },
+      {
+        "calls": 8,
+        "complexity": "leaf",
+        "fixtureSourceSha256": "04ce4d4720dd60d14c164a6c087fd4a14afd1b9477c258d7de7d464ca956e09f",
+        "source": {
+          "sourceBytes": 8118,
+          "sourceSha256": "d2d09ce9b276bd9a78ed6241f362cbbf0f9d7963ada11910dd5e80f903a2c66f",
+          "expressionDeclarations": 8,
+          "exactRepeatedDeclarations": 0,
+          "exactRepeatedSourceBytes": 0,
+          "attribution": "full declaration after normalizing only the declared expression number"
+        },
+        "finalWasmBytes": 979,
+        "finalWasmSha256": "90a8cc7fc4d7f2d286970f0ac8e5b4c36468cf1512a57ab5a4a7407e0f844ae0",
+        "assemblyScriptDurationMs": 708,
+        "assemblyScriptVersion": "0.28.18"
+      },
+      {
+        "calls": 32,
+        "complexity": "leaf",
+        "fixtureSourceSha256": "b4f761ec284f4a844efca8cfacfaf87d24c9991377beac623924bd23c5680923",
+        "source": {
+          "sourceBytes": 10469,
+          "sourceSha256": "cfa97fc9e3b84e6ddb3a424c9a6814f839723a19a0a1edaa70b193cf7bf008f3",
+          "expressionDeclarations": 8,
+          "exactRepeatedDeclarations": 0,
+          "exactRepeatedSourceBytes": 0,
+          "attribution": "full declaration after normalizing only the declared expression number"
+        },
+        "finalWasmBytes": 1267,
+        "finalWasmSha256": "52c57ec5629ad7ff9e233d494ee0f0d377ade1c3ab4666290a7f4d4f194b529f",
+        "assemblyScriptDurationMs": 706,
+        "assemblyScriptVersion": "0.28.18"
+      },
+      {
+        "calls": 1,
+        "complexity": "nested",
+        "fixtureSourceSha256": "debdeeb79c34578e85d8e320c55b30bcc320dbc82c0a3b806150d32f33a307cb",
+        "source": {
+          "sourceBytes": 7945,
+          "sourceSha256": "d84667bdd5269614fa22e4b696e756fe216be4e7977ca80311e82178f04f2f36",
+          "expressionDeclarations": 14,
+          "exactRepeatedDeclarations": 0,
+          "exactRepeatedSourceBytes": 0,
+          "attribution": "full declaration after normalizing only the declared expression number"
+        },
+        "finalWasmBytes": 931,
+        "finalWasmSha256": "379c20c6830c761dbac656e1702db1c62b946a5a89e124993878875a1d081b15",
+        "assemblyScriptDurationMs": 655,
+        "assemblyScriptVersion": "0.28.18"
+      },
+      {
+        "calls": 8,
+        "complexity": "nested",
+        "fixtureSourceSha256": "e70b6fd7eb3f2b3cee7451be4b65bdfa41cee93965b1ee1f566d54eaa28abf28",
+        "source": {
+          "sourceBytes": 8629,
+          "sourceSha256": "1550d727a5934d669f1934d09944ffebf569707e5ee6a5232bf59ed20bb123b3",
+          "expressionDeclarations": 14,
+          "exactRepeatedDeclarations": 0,
+          "exactRepeatedSourceBytes": 0,
+          "attribution": "full declaration after normalizing only the declared expression number"
+        },
+        "finalWasmBytes": 1024,
+        "finalWasmSha256": "827a57063e0496a48c02d4c92a63833db182a9de6c5bc3c4dabc17834191317e",
+        "assemblyScriptDurationMs": 687,
+        "assemblyScriptVersion": "0.28.18"
+      },
+      {
+        "calls": 32,
+        "complexity": "nested",
+        "fixtureSourceSha256": "368dc5fca9f6a4fd10c2acb93bf1a744631d746a7e307050d34ca0de83275ab3",
+        "source": {
+          "sourceBytes": 10992,
+          "sourceSha256": "70ac125ad0f8e552a9ea589dd39bdbb95533c5171ae3dfd63287565ece7f855a",
+          "expressionDeclarations": 14,
+          "exactRepeatedDeclarations": 0,
+          "exactRepeatedSourceBytes": 0,
+          "attribution": "full declaration after normalizing only the declared expression number"
+        },
+        "finalWasmBytes": 1312,
+        "finalWasmSha256": "2725118de175cd0bad8f70fcc043ae4caa59fd951ae112a2fcb4f325bc05e64a",
+        "assemblyScriptDurationMs": 711,
+        "assemblyScriptVersion": "0.28.18"
+      }
+    ],
+    "isolatedCompile": {
+      "wallMs": 4747.426477,
+      "workerPeakRssBytes": 0,
+      "compilerDescendantPeakRssBytes": null,
+      "sampledCompilerDescendants": 0,
+      "rssMethod": "10ms /proc process samples; descendant maximum is a sampled peak, not a combined tree RSS"
+    }
+  },
+  "requestCases": [
+    {
+      "pages": 0,
+      "fixtureBytes": 0,
+      "fixtureSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "0:-1",
+      "node": {
+        "response": "0:-1",
+        "effectCount": 0,
+        "charges": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 2480,
+          "values": 85
+        },
+        "allocatedHandles": 17,
+        "allocatedHandlesByKind": {
+          "undefined": 1,
+          "null": 0,
+          "boolean": 2,
+          "number": 4,
+          "string": 8,
+          "object": 2,
+          "array": 0,
+          "function": 0
+        },
+        "scalarIndexEntries": 15,
+        "objectIndexEntries": 2,
+        "estimatedRootedHostValueBytes": 942,
+        "initialLinearMemoryBytes": 3538944,
+        "afterExecutionLinearMemoryBytes": null,
+        "processRssBeforeBytes": 118624256,
+        "processRssAfterBytes": 121901056,
+        "checkpoints": []
+      },
+      "fastly": {
+        "response": "0:-1",
+        "outboundRequests": 0,
+        "charges": {
+          "bytes": 896,
+          "values": 24
+        },
+        "finalLinearMemoryBytes": 7208960,
+        "finalLinearMemoryPages": 110,
+        "processRssBeforeBytes": 121901056,
+        "processRssAfterBytes": 126095360
+      }
+    },
+    {
+      "pages": 1,
+      "fixtureBytes": 4096,
+      "fixtureSha256": "8207e20037e2183a580261f0a6a406246e6f56220dafee6936c679c498520f0e",
+      "expected": "1:0",
+      "node": {
+        "response": "1:0",
+        "effectCount": 2,
+        "charges": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 53070,
+          "values": 346
+        },
+        "allocatedHandles": 48,
+        "allocatedHandlesByKind": {
+          "undefined": 1,
+          "null": 0,
+          "boolean": 2,
+          "number": 5,
+          "string": 27,
+          "object": 13,
+          "array": 0,
+          "function": 0
+        },
+        "scalarIndexEntries": 35,
+        "objectIndexEntries": 13,
+        "estimatedRootedHostValueBytes": 43870,
+        "initialLinearMemoryBytes": 3538944,
+        "afterExecutionLinearMemoryBytes": null,
+        "processRssBeforeBytes": 131076096,
+        "processRssAfterBytes": 136187904,
+        "checkpoints": [
+          {
+            "effect": 1,
+            "kind": "s3.getText",
+            "handles": 24,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 3412,
+              "values": 108
+            },
+            "estimatedRootedHostValueBytes": 1084,
+            "scalarIndexEntries": 19,
+            "objectIndexEntries": 5
+          },
+          {
+            "effect": 2,
+            "kind": "crypto.digestText",
+            "handles": 33,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 31486,
+              "values": 201
+            },
+            "estimatedRootedHostValueBytes": 26352,
+            "scalarIndexEntries": 23,
+            "objectIndexEntries": 10
+          }
+        ]
+      },
+      "fastly": {
+        "response": "1:0",
+        "outboundRequests": 1,
+        "charges": {
+          "bytes": 28652,
+          "values": 135
+        },
+        "finalLinearMemoryBytes": 7208960,
+        "finalLinearMemoryPages": 110,
+        "processRssBeforeBytes": 136187904,
+        "processRssAfterBytes": 141299712
+      }
+    },
+    {
+      "pages": 16,
+      "fixtureBytes": 65536,
+      "fixtureSha256": "e173b2e9dba329677f12d5ca9dc30a8778cc0161cb0de2b4ec0ac3674fd7746b",
+      "expected": "16:15",
+      "node": {
+        "response": "16:15",
+        "effectCount": 32,
+        "charges": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 700600,
+          "values": 3793
+        },
+        "allocatedHandles": 279,
+        "allocatedHandlesByKind": {
+          "undefined": 1,
+          "null": 0,
+          "boolean": 2,
+          "number": 23,
+          "string": 75,
+          "object": 178,
+          "array": 0,
+          "function": 0
+        },
+        "scalarIndexEntries": 101,
+        "objectIndexEntries": 178,
+        "estimatedRootedHostValueBytes": 580030,
+        "initialLinearMemoryBytes": 3538944,
+        "afterExecutionLinearMemoryBytes": null,
+        "processRssBeforeBytes": 147722240,
+        "processRssAfterBytes": 162795520,
+        "checkpoints": [
+          {
+            "effect": 1,
+            "kind": "s3.getText",
+            "handles": 24,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 3412,
+              "values": 108
+            },
+            "estimatedRootedHostValueBytes": 1084,
+            "scalarIndexEntries": 19,
+            "objectIndexEntries": 5
+          },
+          {
+            "effect": 32,
+            "kind": "crypto.digestText",
+            "handles": 269,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 679322,
+              "values": 3658
+            },
+            "estimatedRootedHostValueBytes": 562742,
+            "scalarIndexEntries": 94,
+            "objectIndexEntries": 175
+          }
+        ]
+      },
+      "fastly": {
+        "response": "16:15",
+        "outboundRequests": 16,
+        "charges": {
+          "bytes": 435058,
+          "values": 1578
+        },
+        "finalLinearMemoryBytes": 7208960,
+        "finalLinearMemoryPages": 110,
+        "processRssBeforeBytes": 162795520,
+        "processRssAfterBytes": 170004480
+      }
+    },
+    {
+      "pages": 64,
+      "fixtureBytes": 262144,
+      "fixtureSha256": "732fe0e751701439c4c812a6c25fb756adc4a9d8f762efe70cd9b38ed8d29f86",
+      "expected": "64:63",
+      "node": {
+        "response": "64:63",
+        "effectCount": 128,
+        "charges": {
+          "version": "pulse.native-read-loop-memory.v1",
+          "bytes": 2694224,
+          "values": 14783
+        },
+        "allocatedHandles": 998,
+        "allocatedHandlesByKind": {
+          "undefined": 1,
+          "null": 0,
+          "boolean": 2,
+          "number": 70,
+          "string": 219,
+          "object": 706,
+          "array": 0,
+          "function": 0
+        },
+        "scalarIndexEntries": 292,
+        "objectIndexEntries": 706,
+        "estimatedRootedHostValueBytes": 2217182,
+        "initialLinearMemoryBytes": 3538944,
+        "afterExecutionLinearMemoryBytes": null,
+        "processRssBeforeBytes": 176820224,
+        "processRssAfterBytes": 186695680,
+        "checkpoints": [
+          {
+            "effect": 1,
+            "kind": "s3.getText",
+            "handles": 24,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 3412,
+              "values": 108
+            },
+            "estimatedRootedHostValueBytes": 1084,
+            "scalarIndexEntries": 19,
+            "objectIndexEntries": 5
+          },
+          {
+            "effect": 32,
+            "kind": "crypto.digestText",
+            "handles": 269,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 679322,
+              "values": 3658
+            },
+            "estimatedRootedHostValueBytes": 562742,
+            "scalarIndexEntries": 94,
+            "objectIndexEntries": 175
+          },
+          {
+            "effect": 64,
+            "kind": "crypto.digestText",
+            "handles": 509,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 1343802,
+              "values": 7322
+            },
+            "estimatedRootedHostValueBytes": 1108470,
+            "scalarIndexEntries": 158,
+            "objectIndexEntries": 351
+          },
+          {
+            "effect": 96,
+            "kind": "crypto.digestText",
+            "handles": 749,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2008282,
+              "values": 10986
+            },
+            "estimatedRootedHostValueBytes": 1654198,
+            "scalarIndexEntries": 222,
+            "objectIndexEntries": 527
+          },
+          {
+            "effect": 128,
+            "kind": "crypto.digestText",
+            "handles": 989,
+            "charged": {
+              "version": "pulse.native-read-loop-memory.v1",
+              "bytes": 2672990,
+              "values": 14650
+            },
+            "estimatedRootedHostValueBytes": 2199926,
+            "scalarIndexEntries": 286,
+            "objectIndexEntries": 703
+          }
+        ]
+      },
+      "fastly": {
+        "response": "64:63",
+        "outboundRequests": 64,
+        "charges": {
+          "bytes": 1735058,
+          "values": 6185
+        },
+        "finalLinearMemoryBytes": 14417920,
+        "finalLinearMemoryPages": 220,
+        "processRssBeforeBytes": 186695680,
+        "processRssAfterBytes": 158703616
+      }
+    }
+  ],
+  "limitations": [
+    "Node rooted bytes estimate covers the actual host ValueHeap handle-map graph with policy weights; excludes guest linear memory, provider fixtures, trace and JS object overhead. It is not an authoritative live-heap or RSS measurement.",
+    "Node end-of-request linear capacity is not exposed by the execution result; only fresh-instance initial capacity is recorded.",
+    "Fastly ABI fixture is not Viceroy or deployed Compute. Fastly does not expose Node handle kinds or request liveness.",
+    "RSS is process-wide at named checkpoints; compiler child peak is sampled, not a sum; control variants are a source-shape screen, not a speedup benchmark."
+  ]
+}
