@@ -27,18 +27,27 @@ The machine-readable publication contract is the `publication` object in `releas
 ## Prepare release identity
 
 Run **Release preparation** from `main` with the next version (without `v`).
-It starts from `latest`, reconciles `main`, rebuilds the previous documentation
-snapshot from its exact release tag, prepares the version metadata, validates
+It starts from `latest`, reconciles `main`, applies the explicit documentation
+history choice, prepares the version metadata, validates
 the result, and opens a draft release PR into `main`.
 
 ```bash
-gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION"
+gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION" -f documentation_history=archive-current
 ```
 
 Set `NEXT_VERSION` to the release you intend to prepare and write its notes in
 `CHANGELOG.md` under `Unreleased` first. Preparation moves those notes into the
 new version section and preserves published changelog history. Existing
 archives are compared with the tagged source and never silently overwritten.
+
+The default `archive-current` rebuilds the previous documentation snapshot from
+its exact tag. For the reviewed npm-published release whose hosted docs are not
+a recovery target, deliberately select `documentation_history=replace-unpublished-docs`.
+That choice skips snapshot construction and checks the preserved tag commit
+against `readiness.versionPreparation.unpublishedDocumentationReleases` in the
+release manifest. Unlisted versions fail closed. It removes only the old current
+entry from the next hosted docs list; npm artifacts, Git tags, and published
+changelog sections remain intact. The draft PR records the choice and evidence.
 
 Preparation runs with read-only repository permissions. A separate job pushes
 the prepared Git bundle to a new branch and creates a draft PR; it does not
@@ -52,7 +61,8 @@ does not trigger those workflows for PR creation using `GITHUB_TOKEN`; the
 human ready-for-review event starts them without another credential. Existing
 checks include release preparation inside `Repository validation / maintenance`:
 publishable code changes into `main` require a newer, synchronized version,
-archived previous documentation, and a changelog section. Documentation and
+archived previous documentation (or its reviewed unpublished-docs exception),
+and a changelog section. Documentation and
 workflow-only changes can retain the version. The check is preparation evidence,
 not a release seal or permission to publish.
 
@@ -91,6 +101,10 @@ node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --archive-curren
 
 `--archive-current` requires the committed immutable documentation snapshot.
 Use `--replace-unpublished` only when replacing a candidate that has not shipped.
+For the reviewed hosted-docs exception, use `--replace-unpublished-docs` instead:
+the old release shipped on npm and its changelog must be preserved. See
+[documentation versioning](documentation-versioning.md#unpublished-hosted-docs-after-npm-publication)
+for exact-link behavior and the audit evidence.
 The command updates catalogued metadata and current documentation, runs named
 generators, rejects newly changed paths outside its allowlist, and writes an
 ignored stale-version-token report. Neither preparation route creates or moves
@@ -163,7 +177,7 @@ An npm trusted publisher can be configured only after the package name exists un
 npm run release:audit-npm
 ```
 
-The command derives every package name from the release manifest and writes a timestamped, manifest-digest-bound report to `.pulse-release-preflight/npm-catalog-audit.json`. That report is ignored source evidence: it never rewrites the canonical preflight policy and it performs no registry mutation. Every name must exist with the inert `0.0.0` version and `bootstrap` tag. The `latest` tag may be absent, point to that placeholder, or point to a version both present in the registry and listed in `release/documentation-versions.json`. This preserves existing releases during the next bootstrap audit. Missing versions and unknown release targets remain blocking; any remediation is an explicit human registry action.
+The command derives every package name from the release manifest and writes a timestamped, manifest-digest-bound report to `.pulse-release-preflight/npm-catalog-audit.json`. That report is ignored source evidence: it never rewrites the canonical preflight policy and it performs no registry mutation. Every name must exist with the inert `0.0.0` version and `bootstrap` tag. The `latest` tag may be absent, point to that placeholder, or point to a version both present in the registry and listed in `release/documentation-versions.json` or in the release manifest’s reviewed `unpublishedDocumentationReleases` decisions. This preserves existing releases during the next bootstrap audit. Missing versions and unknown release targets remain blocking; any remediation is an explicit human registry action.
 
 Any missing package name requires a one-time human, 2FA-protected bootstrap publication through `scripts/npm_bootstrap.sh <package-name>`. After all names exist:
 

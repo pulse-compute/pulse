@@ -80,7 +80,11 @@ function stringArray(value, context, options = {}) {
 }
 
 function documentedReleaseVersions(root) {
-  return new Set(readJson('release/documentation-versions.json', root).versions.map((entry) => entry.version));
+  const { unpublishedDocumentationReleases } = require('./release-pr-check.cjs');
+  return new Set([
+    ...readJson('release/documentation-versions.json', root).versions.map((entry) => entry.version),
+    ...unpublishedDocumentationReleases(readJson('release/pulse-release-manifest.json', root)).map((entry) => entry.version)
+  ]);
 }
 
 function bootstrapEntryCompliant(entry, releaseVersions) {
@@ -520,6 +524,7 @@ function validatePreflight(options = {}) {
   const root = path.resolve(options.repoRoot || repoRoot);
   const preflight = options.preflight || readJson(PREFLIGHT_FILE, root);
   const inventory = options.inventory || readJson(INVENTORY_FILE, root);
+  require('./release-pr-check.cjs').unpublishedDocumentationReleases(readJson('release/pulse-release-manifest.json', root));
   if (preflight.schemaVersion !== PREFLIGHT_SCHEMA) fail(`unsupported release preflight schema ${preflight.schemaVersion}`);
   if (preflight.checkpoint !== 'sprint-7a-release-preflight' || preflight.baselineCheckpoint !== '2d8468f') fail('release preflight checkpoint identity is invalid');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(preflight.reviewedAt)) fail('release preflight reviewedAt must use YYYY-MM-DD');

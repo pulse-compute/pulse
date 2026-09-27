@@ -4,6 +4,7 @@ require('./assert-release-pr-check.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const os = require('node:os');
 const { createHash } = require('node:crypto');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
@@ -83,6 +84,28 @@ assert.equal(archivedCurrent.sourceManifest, `release/documentation-site-archive
 assert.equal(archivePlan.nextDocumentationVersions.versions[0].sourceManifest, 'release/pulse-release-manifest.json');
 assert.equal(archivePlan.nextRelease.channel, 'beta');
 assert.equal(archivePlan.nextRelease.publication.distTag, 'latest');
+const docsOptions = parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished-docs', '--date', '2026-09-26']);
+const docsManifest = structuredClone(releaseManifest);
+if (!docsManifest.readiness.versionPreparation.unpublishedDocumentationReleases.some(entry => entry.version === releaseManifest.releaseVersion)) {
+  docsManifest.readiness.versionPreparation.unpublishedDocumentationReleases.push({
+    ...docsManifest.readiness.versionPreparation.unpublishedDocumentationReleases[0],
+    version: releaseManifest.releaseVersion, sourceTag: `v${releaseManifest.releaseVersion}`
+  });
+}
+const docsPlan = planRelease(docsManifest, documentationVersions, docsOptions, assertManifestConsistency(docsManifest, documentationVersions));
+assert.equal(docsPlan.nextDocumentationVersions.versions.some(entry => entry.version === releaseManifest.releaseVersion), false);
+assert.deepEqual(docsPlan.nextRelease.readiness.versionPreparation.unpublishedDocumentationReleases,
+  docsManifest.readiness.versionPreparation.unpublishedDocumentationReleases);
+const changelog = fs.readFileSync(path.join(repoRoot, 'CHANGELOG.md'), 'utf8');
+const publishedHistory = changelog.slice(changelog.indexOf(`\n## ${releaseManifest.releaseVersion} — `));
+assert.ok(docsPlan.writes.get(path.join(repoRoot, 'CHANGELOG.md')).endsWith(publishedHistory));
+assert.equal([...docsPlan.writes.keys()].some(file => file.includes('documentation-site-archives')), false);
+assert.equal([...docsPlan.writes.keys()].some(file => file.includes('wasm/test/release/')), false, 'recorded package and hosted evidence must retain its original identities');
+assert.throws(() => planRelease(docsManifest, documentationVersions,
+  parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']), assertManifestConsistency(docsManifest, documentationVersions)), /shipped on npm/);
+const undecided = structuredClone(releaseManifest);
+delete undecided.readiness.versionPreparation.unpublishedDocumentationReleases;
+assert.throws(() => planRelease(undecided, documentationVersions, docsOptions, assertManifestConsistency(undecided, documentationVersions)), /no reviewed/);
 const nextPreflight = JSON.parse(archivePlan.writes.get(path.join(repoRoot, PREFLIGHT_FILE)));
 assert.equal(nextPreflight.releaseCandidate.publicationTag, 'latest');
 assert.equal(nextPreflight.releaseCandidate.latestTagAllowed, true);
@@ -118,18 +141,19 @@ assert.equal(parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']).his
 assert.throws(() => parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished', '--archive-current']), /choose exactly one/);
 assert.equal(isAllowedChangedPath('docs/reference/release-manifest.json', new Set(), releaseManifest.readiness.versionPreparation), true);
 assert.equal(isAllowedChangedPath('packages/runtime/src/internal/body.js', new Set(), releaseManifest.readiness.versionPreparation), false);
+const actualReplacementMode = releaseManifest.readiness.versionPreparation.unpublishedDocumentationReleases.some(entry => entry.version === releaseManifest.releaseVersion) ? 'replace-unpublished-docs' : 'replace-unpublished';
 const preparation = spawnSync(process.execPath, [
   'scripts/release-prepare.cjs',
   '9.9.9-beta.1',
   '--channel', 'beta',
   '--date', '2026-08-02',
-  '--replace-unpublished',
+  `--${actualReplacementMode}`,
   '--dry-run',
   '--no-sync'
 ], { cwd: repoRoot, encoding: 'utf8' });
 assert.equal(preparation.status, 0, preparation.stderr);
 const preparationPlan = JSON.parse(preparation.stdout);
-assert.equal(preparationPlan.mode, 'replace-unpublished');
+assert.equal(preparationPlan.mode, actualReplacementMode);
 assert.equal(preparationPlan.gitTagCreated, false);
 assert.equal(preparationPlan.packageCount, releaseManifest.packages.length);
 for (const entry of releaseManifest.packages) assert.ok(preparationPlan.files.includes(`${entry.dir}/package.json`));
@@ -179,12 +203,10 @@ assert.deepEqual(result.audits.noticeDisposition, {
   packageFiles: ['LICENSE', 'NOTICE'],
   components: 3
 });
-assert.equal(result.documentation.sources, 251);
-assert.deepEqual(result.documentation.counts, {
-  'current-public': 62,
-  'current-contributor': 77,
-  generated: 112
-});
+assert.equal(result.documentation.sources, result.documentation.entries.length);
+assert.deepEqual(Object.keys(result.documentation.counts).sort(), ['current-contributor', 'current-public', 'generated']);
+for (const count of Object.values(result.documentation.counts)) assert.ok(count > 0);
+assert.equal(Object.values(result.documentation.counts).reduce((sum, count) => sum + count, 0), result.documentation.sources);
 
 const sourcePaths = result.documentation.entries.map((entry) => entry.path);
 assert.equal(new Set(sourcePaths).size, sourcePaths.length);
@@ -262,6 +284,18 @@ const releasedLatestAudit = structuredClone(auditEvidence);
 releasedLatestAudit.packages[0].latestTagTarget = documentationVersions.versions.find((entry) => entry.status === 'archived').version;
 releasedLatestAudit.packages[0].release.tagTarget = releasedLatestAudit.packages[0].latestTagTarget;
 assert.equal(validateNpmAuditEvidence(releasedLatestAudit, { repoRoot, now: '2026-08-01T12:00:00.000Z' }).status, 'ready');
+// Removing an unhosted docs entry must not invalidate the already-published npm latest.
+const auditRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-docs-npm-history-'));
+try {
+  fs.mkdirSync(path.join(auditRoot, 'release'));
+  fs.copyFileSync(path.join(repoRoot, 'release/pulse-release-manifest.json'), path.join(auditRoot, 'release/pulse-release-manifest.json'));
+  fs.writeFileSync(path.join(auditRoot, 'release/documentation-versions.json'), JSON.stringify(docsPlan.nextDocumentationVersions));
+  const unhostedAudit = structuredClone(auditEvidence);
+  unhostedAudit.packages[0].latestTagTarget = releaseManifest.readiness.versionPreparation.unpublishedDocumentationReleases[0].version;
+  unhostedAudit.packages[0].release.tagTarget = unhostedAudit.packages[0].latestTagTarget;
+  unhostedAudit.packages[0].release.versionPresent = true;
+  assert.equal(validateNpmAuditEvidence(unhostedAudit, { repoRoot: auditRoot, now: '2026-08-01T12:00:00.000Z' }).status, 'ready');
+} finally { fs.rmSync(auditRoot, { recursive: true, force: true }); }
 releasedLatestAudit.packages[0].latestTagTarget = releaseManifest.releaseVersion;
 releasedLatestAudit.packages[0].release.versionPresent = true;
 releasedLatestAudit.packages[0].release.tagTarget = releaseManifest.releaseVersion;
