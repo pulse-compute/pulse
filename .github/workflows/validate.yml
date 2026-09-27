@@ -194,7 +194,7 @@ jobs:
           name: pulse-portable-shard-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.shard }}
           path: wasm/.test-results/portable/${{ matrix.shard }}
           include-hidden-files: true
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14
 
   portable:
@@ -228,5 +228,5 @@ jobs:
           name: pulse-portable-aggregate-${{ github.run_id }}-${{ github.run_attempt }}
           path: wasm/.test-results/portable-aggregate.json
           include-hidden-files: true
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 14

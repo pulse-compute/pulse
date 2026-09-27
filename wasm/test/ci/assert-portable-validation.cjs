@@ -69,7 +69,10 @@ for (const changed of [
 ]) assert.throws(() => validateWorkflow(changed));
 
 const root = path.resolve(__dirname, '../../..');
-const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-portable-aggregate-'));
+const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-portable-aggregate-'));
+const fixture = path.join(temporary, 'artifacts');
+const output = path.join(temporary, 'aggregate.json');
+fs.mkdirSync(fixture);
 try {
   for (const candidate of reports) {
     const directory = path.join(fixture, `pulse-portable-shard-123-1-${candidate.metadata.shard}`);
@@ -77,19 +80,18 @@ try {
     fs.writeFileSync(path.join(directory, 'identity.json'), JSON.stringify(candidate.metadata));
     fs.writeFileSync(path.join(directory, 'report.json'), JSON.stringify(candidate.report));
   }
-  const run = () => spawnSync(process.execPath, ['scripts/maintainer-portable-validation.cjs', 'aggregate', fixture], {
+  const run = () => spawnSync(process.execPath, ['scripts/maintainer-portable-validation.cjs', 'aggregate', fixture, output], {
     cwd: root, encoding: 'utf8',
     env: { ...process.env, GITHUB_SHA: expected.testedSha, GITHUB_RUN_ID: '123', GITHUB_RUN_ATTEMPT: '2', PORTABLE_SHARDS_RESULT: 'success', GITHUB_STEP_SUMMARY: '' }
   });
   const passed = run();
   assert.equal(passed.status, 0, passed.stderr);
-  const output = path.join(root, 'wasm/.test-results/portable-aggregate.json');
   assert.equal(JSON.parse(fs.readFileSync(output)).status, 'passed');
   fs.rmSync(path.join(fixture, 'pulse-portable-shard-123-1-unit'), { recursive: true });
   assert.notEqual(run().status, 0, 'Missing artifact must fail the aggregate CLI');
   const failed = JSON.parse(fs.readFileSync(output));
   assert.equal(failed.status, 'failed');
   assert.match(failed.error, /Missing shard: unit/);
-} finally { fs.rmSync(fixture, { recursive: true, force: true }); }
+} finally { fs.rmSync(temporary, { recursive: true, force: true }); }
 
 console.log(`ok - ${Object.keys(plan).length} portable shards cover ${Object.values(plan).flat().length} registered tasks; missing/failed/stale coverage fails closed`);

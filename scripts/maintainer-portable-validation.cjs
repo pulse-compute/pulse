@@ -142,8 +142,7 @@ function runShard(shard, expected) {
   process.exitCode = metadata.exitCode;
 }
 
-function aggregateArtifacts(directory, expected, jobsResult) {
-  const output = path.join(ROOT, 'wasm', '.test-results', 'portable-aggregate.json');
+function aggregateArtifacts(directory, expected, jobsResult, output = path.join(ROOT, 'wasm', '.test-results', 'portable-aggregate.json')) {
   try {
     const candidates = fs.readdirSync(directory, { withFileTypes: true }).map((entry) => {
       assert(entry.isDirectory(), `Unexpected artifact entry: ${entry.name}`);
@@ -165,13 +164,13 @@ function aggregateArtifacts(directory, expected, jobsResult) {
 }
 
 function main() {
-  const [command, argument, ...extra] = process.argv.slice(2);
+  const [command, argument, reportPath, ...extra] = process.argv.slice(2);
   assert.equal(extra.length, 0, 'Unexpected portable validation arguments');
-  if (command === 'plan' && !argument) { console.log(JSON.stringify(shardPlan(), null, 2)); return; }
+  if (command === 'plan' && !argument && !reportPath) { console.log(JSON.stringify(shardPlan(), null, 2)); return; }
   const expected = identity();
-  if (command === 'run' && argument) runShard(argument, expected);
-  else if (command === 'aggregate' && argument) aggregateArtifacts(path.resolve(argument), expected, process.env.PORTABLE_SHARDS_RESULT);
-  else throw new Error('Usage: maintainer-portable-validation.cjs plan | run <shard> | aggregate <artifact-directory>');
+  if (command === 'run' && argument && !reportPath) runShard(argument, expected);
+  else if (command === 'aggregate' && argument) aggregateArtifacts(path.resolve(argument), expected, process.env.PORTABLE_SHARDS_RESULT, reportPath ? path.resolve(reportPath) : undefined);
+  else throw new Error('Usage: maintainer-portable-validation.cjs plan | run <shard> | aggregate <artifact-directory> [report-file]');
 }
 
 module.exports = { PROFILES, shardPlan, validateWorkflow, validateReport, aggregate, aggregateArtifacts, identity };
