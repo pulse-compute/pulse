@@ -535,6 +535,11 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'O-07 current generated-source owner, declaration, family and effect-site census without an optimizer compile'
   }),
+  'optimized-wasm-census-o08': nodeTask('test/runtime/compiler-efficiency/o08-wasm-census.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'O-08 optimized code/data, function and direct-call census with byte-exact names companions and matched Fastly error-driver controls'
+  }),
   'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
     evidence: 'external',
     timeoutMs: 300000,
