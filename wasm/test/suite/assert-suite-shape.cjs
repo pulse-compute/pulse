@@ -56,6 +56,7 @@ const externalTasks = new Set([
   'compiler-phases-o03',
   'copy-chain-o04',
   'parser-copy-o05',
+  'memory-qualification-o06',
   'effect-retention-mem02',
   'payload-retention-mem08',
   'fastly-allocator-mem10',

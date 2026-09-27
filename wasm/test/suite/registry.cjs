@@ -472,6 +472,11 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'O-05 paired parser, schema, ownership, charge and copy-removal evidence'
   }),
+  'memory-qualification-o06': nodeTask('test/runtime/compiler-efficiency/o06-memory-qualification.cjs', {
+    evidence: 'external',
+    timeoutMs: 1200000,
+    description: 'O-06 independent builds and alternating fresh-process memory/runtime qualification'
+  }),
   'effect-retention-mem02': nodeTask('test/runtime/compiler-efficiency/mem02-effect-retention.cjs', {
     evidence: 'external',
     timeoutMs: 120000,
