@@ -1,0 +1,2181 @@
+{
+  "schemaVersion": "pulse.o09-driver-behavior.v1",
+  "status": "passed",
+  "source": {
+    "commit": "0a5100a7a697171e50a840c6048763c8158f8474",
+    "worktree": "M scripts/release-evidence-bundle.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/o09-driver-behavior.cjs\n?? wasm/test/runtime/compiler-efficiency/o09-driver-behavior.md\n?? wasm/test/runtime/compiler-efficiency/o09-driver-fixture.cjs",
+    "testSha256": {
+      "o09-driver-behavior.cjs": "87e85852919db5424f06302c0f523bf2fe0c911434723056ecf2aa23d0e3f4e8",
+      "o09-driver-fixture.cjs": "19eb5f281681c8a5ca3241077c9e6d4b54950f6841ebecda77eb130065f00d66"
+    }
+  },
+  "node": "v24.19.0",
+  "fixtures": [
+    {
+      "count": 1,
+      "topology": "parallel",
+      "fixtureSha256": {
+        "router": "16b70220e708272b00ffa30736bef956507fbb21c88196f52df158419d1ef7b4",
+        "schema": "f72099f4c6b4492d92d4522ce14bb0447e6656afa940161a038c33394e860586"
+      },
+      "sourceSha256": "d872053c9fbd4dd29a577f403dd01ccdf6c0d45e68b592a0a73b1199cf974693",
+      "diagnosticSourceSha256": "3e5359b916cbbc0627290acc4c984b28ceea7a0d7621a9f9559e7d6a5450a0df",
+      "productionWasmSha256": "649a3ad3c72c7ba7e6591d337eac4ec16308178addfecae8caafa8484535c999",
+      "diagnosticWasmSha256": "21ceaba37f7170b5a7a6333e46e7eb35aa7575d181b17a704a588c8cc0d5d74f",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "cases": [
+        {
+          "name": "success-a",
+          "response": {
+            "status": 200,
+            "body": "A0",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "515889825ad4d456d181011d28a3e87370829a4c746eed421176982869d8ae2c",
+          "eventsSha256": "8fb03d561df406af3fdbdc74044c7b38b1f5c924a8c67ab503c33f3937501544",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        },
+        {
+          "name": "success-b",
+          "response": {
+            "status": 200,
+            "body": "B0",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "515889825ad4d456d181011d28a3e87370829a4c746eed421176982869d8ae2c",
+          "eventsSha256": "8fb03d561df406af3fdbdc74044c7b38b1f5c924a8c67ab503c33f3937501544",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        },
+        {
+          "name": "zero-pending-handle",
+          "response": {
+            "status": 200,
+            "body": "A0",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "20b318339ea8f13d949d4464780f013536d713d2d26facade9a0cb11a54bacc0",
+          "eventsSha256": "8fb03d561df406af3fdbdc74044c7b38b1f5c924a8c67ab503c33f3937501544",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        },
+        {
+          "name": "malformed-json",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "b7662c63a947576fb6115f5f1d5bb33f10a19dd1efe627c2524f6c34ad174854",
+          "eventsSha256": "0f746e5609aa90669d53cf3f87efb5aa408afc68787f90672e46667ea226d953",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        },
+        {
+          "name": "wrong-schema",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "822ff23afeaeeaa4d87402d7ecd38e661f24758e52c4d40e4e7234eff3261518",
+          "eventsSha256": "8d61cdd3a64028a87cb7e5124aa0e2400de88416886d29f4352961e9fca9f245",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        },
+        {
+          "name": "transport-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "1465a571efd16459a2a2e320544567b65de7d0c7b5be0168bfe429ee65a4c6b2",
+          "eventsSha256": "822af04eb947fe771091a3a92683262f1639123666da1d75c847f84c927c2fa1",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        },
+        {
+          "name": "send-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 77,
+            "effect": 0
+          },
+          "traceSha256": "f8e0e0714992acb81a7a03f55b5f14b186442146f6b1d038872e4c5c3a106fa2",
+          "eventsSha256": "b88dbe3228c45fe24a763ff82d95da7ada25d70f93d5af83b480c56a334f556d",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 0,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 77,
+            "effect": 0,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0
+            ]
+          }
+        }
+      ],
+      "tickets": {
+        "rejected": 9,
+        "accepted": 2,
+        "eventsSha256": "89e83e87e72f8799e59e8594aceb15fe0ab005a839c3e5f50044001beb92254f"
+      },
+      "priorityProbes": [
+        {
+          "name": "json-first",
+          "expected": [
+            1004,
+            3,
+            -1
+          ],
+          "settlements": 1,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "fdce656fb252c89d1a886393ccd450880ca9a42c193697a291ee73d920caa348"
+        },
+        {
+          "name": "schema-first",
+          "expected": [
+            1005,
+            52,
+            -1
+          ],
+          "settlements": 1,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "93876ce020c1914909c82c3d72a2fb3e79b8de0e18776d2084146336b3b82015"
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "topology": "parallel",
+      "fixtureSha256": {
+        "router": "6441cac76036d05f99156eda4e7d31ea37e1462c80f77930b857d421eb98d3eb",
+        "schema": "f72099f4c6b4492d92d4522ce14bb0447e6656afa940161a038c33394e860586"
+      },
+      "sourceSha256": "524d45571290804a652d9815d44a722e81494c1ad30152c83d2700677226aa78",
+      "diagnosticSourceSha256": "ce9adee5fcb068bce4e9fb03fa7a9ed4a1a89b90cf6a645a8eada151872e6674",
+      "productionWasmSha256": "4313b977cfa3b68f5fe4afd5ba883b030a101509115d052489b5b8281e9e0b7c",
+      "diagnosticWasmSha256": "e851061fe6bfcd325e3855c119c356c684fce7d677383ad036194456fc41c4b0",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "cases": [
+        {
+          "name": "success-a",
+          "response": {
+            "status": 200,
+            "body": "A0|A1|A2|A3|A4|A5|A6|A7",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "7c8cf3d4c17558ad7619fe86b3d70332994cd24b28b79ea08740f6f72a0d2223",
+          "eventsSha256": "7953ac06dc4a3148a0d3f914766ac1bb4dc77c5bfac5ffe6997861f4631ca021",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "success-b",
+          "response": {
+            "status": 200,
+            "body": "B0|B1|B2|B3|B4|B5|B6|B7",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "7c8cf3d4c17558ad7619fe86b3d70332994cd24b28b79ea08740f6f72a0d2223",
+          "eventsSha256": "7953ac06dc4a3148a0d3f914766ac1bb4dc77c5bfac5ffe6997861f4631ca021",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "zero-pending-handle",
+          "response": {
+            "status": 200,
+            "body": "A0|A1|A2|A3|A4|A5|A6|A7",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "08c2087b93e642eb7cbeb4958b602e794b5f9e084440d4f1d1395e97db3a609f",
+          "eventsSha256": "7953ac06dc4a3148a0d3f914766ac1bb4dc77c5bfac5ffe6997861f4631ca021",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "malformed-json",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "7501a8da65d79201399cd6a50dc94f0e2fb76421927185a0653ec38b4049415e",
+          "eventsSha256": "269748e7263a4adf447fcd7cb8d431116312a1a9a4508e7bbbfacc7ec7f39867",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "wrong-schema",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "36d8feaa80d6a55cb81b33a541426474906e86083cfffdb9b34433444bc3b712",
+          "eventsSha256": "499b8cd80aee8dd732d070b2072360b2c9423a3ce8f6da74171ce39e43a5e930",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "transport-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "8bf73e799aa741e7f0c5a7e49d518aa6502eba4f6b3a295fde53053f91f9bfec",
+          "eventsSha256": "5d5ea8b7133e53641d714051c9859cb7b5669c05fef85578c6a2210f89846066",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "send-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 77,
+            "effect": 0
+          },
+          "traceSha256": "f8e0e0714992acb81a7a03f55b5f14b186442146f6b1d038872e4c5c3a106fa2",
+          "eventsSha256": "70185ef954e3c41127a8bfe99b27a7b6e32c6c153f15e38f30df2729b0f92d92",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 0,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 77,
+            "effect": 0,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "missing-config",
+          "response": {
+            "status": 200,
+            "body": "A0|missing|A2|A3|missing|A5|A6|missing",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "c75b333578ef29b4187bab7dbfd6704ab54ab23821fb08d965f53eaf1f2576cf",
+          "eventsSha256": "5a413da424cd781791c8bb550c52545514b83e8b62a37baf480d65af975d14ac",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "malformed-body-and-later-transport",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 2
+          },
+          "traceSha256": "8bf73e799aa741e7f0c5a7e49d518aa6502eba4f6b3a295fde53053f91f9bfec",
+          "eventsSha256": "f8430adef6431e8fb14781f70cd0294dab0d00b384310d81bbd1ec1b091079b5",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 2,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "transport-and-later-malformed-body",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "8bf73e799aa741e7f0c5a7e49d518aa6502eba4f6b3a295fde53053f91f9bfec",
+          "eventsSha256": "5d5ea8b7133e53641d714051c9859cb7b5669c05fef85578c6a2210f89846066",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "two-fatal",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "8bf73e799aa741e7f0c5a7e49d518aa6502eba4f6b3a295fde53053f91f9bfec",
+          "eventsSha256": "b093abe6184680e380c212867010bea9108be0dae0912bcdd59143fd6d1dcfd4",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "json-then-schema",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "7501a8da65d79201399cd6a50dc94f0e2fb76421927185a0653ec38b4049415e",
+          "eventsSha256": "269748e7263a4adf447fcd7cb8d431116312a1a9a4508e7bbbfacc7ec7f39867",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "schema-then-json",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "36d8feaa80d6a55cb81b33a541426474906e86083cfffdb9b34433444bc3b712",
+          "eventsSha256": "499b8cd80aee8dd732d070b2072360b2c9423a3ce8f6da74171ce39e43a5e930",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "tickets": {
+        "rejected": 11,
+        "accepted": 3,
+        "eventsSha256": "c46d5da901956cb60e5916ac8dabf9d63256cec9fff9cccda3d879f77efdd8d8"
+      },
+      "priorityProbes": [
+        {
+          "name": "json-first",
+          "expected": [
+            1004,
+            3,
+            -1
+          ],
+          "settlements": 8,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "8b06a7693493dd4d95ed06b8443722fb71bae6065b397424bc50acd4371d79db"
+        },
+        {
+          "name": "schema-first",
+          "expected": [
+            1005,
+            52,
+            -1
+          ],
+          "settlements": 8,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "eb58150faa345503c0bfee6cc8ef137cece306ad29d11f2ac55b419f7896b9fe"
+        },
+        {
+          "name": "json-then-schema",
+          "expected": [
+            1004,
+            3,
+            -1
+          ],
+          "settlements": 8,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "7d76f670c3f23dd35f34b62bf9f9afe5acf56c090398b321cabf0a74f5f49b55"
+        },
+        {
+          "name": "schema-then-json",
+          "expected": [
+            1005,
+            52,
+            -1
+          ],
+          "settlements": 8,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "f13a3f872552d54868bc5f18c5d8cf9bde514bb4d75ef2be3456c2acf420f0a5"
+        },
+        {
+          "name": "recoverable-then-fatal",
+          "expected": [
+            1006,
+            81,
+            2
+          ],
+          "settlements": 8,
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 2
+          },
+          "eventsSha256": "6519df1f59ae748d19b003a8ca3608f9476e449f806170e52c8634df296b6963"
+        },
+        {
+          "name": "fatal-then-recoverable",
+          "expected": [
+            1006,
+            81,
+            0
+          ],
+          "settlements": 8,
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "eventsSha256": "c329d1791001f2567ca5ddf5f41494ada69bb3d9c782c976ff02c9bc1be0572c"
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "topology": "parallel",
+      "fixtureSha256": {
+        "router": "3492e6cc03a292f9f173a7c95d8aa7dfdbe28be62033dd676a9b46a084727db2",
+        "schema": "f72099f4c6b4492d92d4522ce14bb0447e6656afa940161a038c33394e860586"
+      },
+      "sourceSha256": "52b7e1a50e55c207f22668db720f65f05083fed99f01c38e6135a3ea270e2209",
+      "diagnosticSourceSha256": "aaa8689fed932ed02984078d6e9df4a43281d7c2ab8987f6c0033115eb27a108",
+      "productionWasmSha256": "ba9891853cd59f55fc9949269b9d075947819ca675f1bdb36fb07ec171432db9",
+      "diagnosticWasmSha256": "ed5b0a70aa7ccb2830c5a768495e1740bc793d735be450b75bb80d5e6c8f3280",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "cases": [
+        {
+          "name": "success-a",
+          "response": {
+            "status": 200,
+            "body": "A0|A1|A2|A3|A4|A5|A6|A7|A8|A9|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A21|A22|A23|A24|A25|A26|A27|A28|A29|A30|A31",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "d967385248c76e80b0c153b7f8d7c748c2dbda2affed7d00a44d66ee78c7a73b",
+          "eventsSha256": "523dadab822434933ed0ec2b7a06ae27fe85eb1bca3adba18a37d79b7a2c9513",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "success-b",
+          "response": {
+            "status": 200,
+            "body": "B0|B1|B2|B3|B4|B5|B6|B7|B8|B9|B10|B11|B12|B13|B14|B15|B16|B17|B18|B19|B20|B21|B22|B23|B24|B25|B26|B27|B28|B29|B30|B31",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "d967385248c76e80b0c153b7f8d7c748c2dbda2affed7d00a44d66ee78c7a73b",
+          "eventsSha256": "523dadab822434933ed0ec2b7a06ae27fe85eb1bca3adba18a37d79b7a2c9513",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "zero-pending-handle",
+          "response": {
+            "status": 200,
+            "body": "A0|A1|A2|A3|A4|A5|A6|A7|A8|A9|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A21|A22|A23|A24|A25|A26|A27|A28|A29|A30|A31",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "7ae55c24f42b5885f54b7f56f7c5a8a87383c117a8429f2e559a702ae1d1350b",
+          "eventsSha256": "523dadab822434933ed0ec2b7a06ae27fe85eb1bca3adba18a37d79b7a2c9513",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "malformed-json",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "43a8802d8d0186155c5a3199127a1786f51d038807f39f1692341d4b9be21f65",
+          "eventsSha256": "734e57cb1a065d167cd5ee4f52b318b0cd86869e3d505647a4938cae2e482686",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "wrong-schema",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "c6b38ca864b6c1c56645adc135baebe3b4f5247bea297a438e891dd30385f552",
+          "eventsSha256": "8f8c6c2443b9bd86ad560efc94999c08bfe5da714cfeb82d5b3ab6eb02720991",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "transport-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "ac9709ad277c018e8343eaff1e48137db4acaf35f1ae5820684c4a217905b075",
+          "eventsSha256": "5a270ce25c0326bb07f102835d3460d0ee600a80e7e17bdacab541e5007aaa1f",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "send-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 77,
+            "effect": 0
+          },
+          "traceSha256": "f8e0e0714992acb81a7a03f55b5f14b186442146f6b1d038872e4c5c3a106fa2",
+          "eventsSha256": "dd727e7eaa56f0356b868fbbc95089be5a0e45046273a21ab46f1ce1a3038d47",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 0,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 77,
+            "effect": 0,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "missing-config",
+          "response": {
+            "status": 200,
+            "body": "A0|missing|A2|A3|missing|A5|A6|missing|A8|A9|missing|A11|A12|missing|A14|A15|missing|A17|A18|missing|A20|A21|missing|A23|A24|missing|A26|A27|missing|A29|A30|missing",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "9740c31d61b43ad4552e0fcffaa2de37fb5b7b900fee3801df7f49ea4401e8ff",
+          "eventsSha256": "1d7669e071c8015725cf691dfd799dc0b40357b57910f27a8cf60548346a0e68",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "malformed-body-and-later-transport",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 2
+          },
+          "traceSha256": "ac9709ad277c018e8343eaff1e48137db4acaf35f1ae5820684c4a217905b075",
+          "eventsSha256": "70e944ce8eed28966cbf38dcdbcf773bc4079841571821f18b6f93bbc68bcd75",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 2,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "transport-and-later-malformed-body",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "ac9709ad277c018e8343eaff1e48137db4acaf35f1ae5820684c4a217905b075",
+          "eventsSha256": "5a270ce25c0326bb07f102835d3460d0ee600a80e7e17bdacab541e5007aaa1f",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "two-fatal",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "ac9709ad277c018e8343eaff1e48137db4acaf35f1ae5820684c4a217905b075",
+          "eventsSha256": "62291a32d3b0401fa8f9d434865cf314926e7740e613fdc3f44ee29a4869d3aa",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "json-then-schema",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "43a8802d8d0186155c5a3199127a1786f51d038807f39f1692341d4b9be21f65",
+          "eventsSha256": "734e57cb1a065d167cd5ee4f52b318b0cd86869e3d505647a4938cae2e482686",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "schema-then-json",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "c6b38ca864b6c1c56645adc135baebe3b4f5247bea297a438e891dd30385f552",
+          "eventsSha256": "8f8c6c2443b9bd86ad560efc94999c08bfe5da714cfeb82d5b3ab6eb02720991",
+          "admitted": 32,
+          "settled": 32,
+          "resolved": 32,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 32,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "tickets": {
+        "rejected": 11,
+        "accepted": 3,
+        "eventsSha256": "96e85e5858fd7ae72fbb991eef6bceb5a0b0fe0e06528d5b129650066929fdc6"
+      },
+      "priorityProbes": [
+        {
+          "name": "json-first",
+          "expected": [
+            1004,
+            3,
+            -1
+          ],
+          "settlements": 32,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "422a377e07c7fc5ee9fd132c36046a1b3cfde49226dd8b848da057e26279247e"
+        },
+        {
+          "name": "schema-first",
+          "expected": [
+            1005,
+            52,
+            -1
+          ],
+          "settlements": 32,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "99045fba95c5eb9e5548309feaf16ae28c40eadebd6438ebd5829f28871fbe70"
+        },
+        {
+          "name": "json-then-schema",
+          "expected": [
+            1004,
+            3,
+            -1
+          ],
+          "settlements": 32,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "5d1e8a22205dd59d7ab2abe3318733502d53f4575ebf61526b7ac30650dac17a"
+        },
+        {
+          "name": "schema-then-json",
+          "expected": [
+            1005,
+            52,
+            -1
+          ],
+          "settlements": 32,
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "eventsSha256": "30977929e7cb0d2ab14975745e0da45a1b87cf1e33536bdf6d420b223ce8b9ba"
+        },
+        {
+          "name": "recoverable-then-fatal",
+          "expected": [
+            1006,
+            81,
+            2
+          ],
+          "settlements": 32,
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 2
+          },
+          "eventsSha256": "30d25b8685ff0577fc05d8725fbdbb1d58bd877157e59592f8b72277c94029ab"
+        },
+        {
+          "name": "fatal-then-recoverable",
+          "expected": [
+            1006,
+            81,
+            0
+          ],
+          "settlements": 32,
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "eventsSha256": "45c4639f538501fa89481ba76112051e0c389470e5880983a12f108ecb9cd9c7"
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "topology": "sequential",
+      "fixtureSha256": {
+        "router": "b7e8e82bc7fa1f2dc6f018bf4a793b73ca9a6ae405c7e7e4167adff8451f9305",
+        "schema": "f72099f4c6b4492d92d4522ce14bb0447e6656afa940161a038c33394e860586"
+      },
+      "sourceSha256": "540c92cb9990146018ecf5d3b376c458611bb5b686a599c6098b79bfdedda334",
+      "diagnosticSourceSha256": "7ddd28e8494256e395320ef1b0dda80d306a94f9502a3d3ea2420e00139439cf",
+      "productionWasmSha256": "4ad0455fa9ddccfca75bda94bea48dc770fec723dc17a767fc9748b4142d83ac",
+      "diagnosticWasmSha256": "1cc6af260ba9f40ec05833c6997e289949f8008771e0d2b3ed2a7352afaf0522",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "cases": [
+        {
+          "name": "success-a",
+          "response": {
+            "status": 200,
+            "body": "A0|A1|A2|A3|A4|A5|A6|A7",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "949fcf1dbd6a19c893261af1cf76547c01030eba8a95212c74d89197b903d7ad",
+          "eventsSha256": "5082a768b5e7396bd2db327028b82fe1fe77392073323f5d7cdb8c97e7162a8d",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 8,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "success-b",
+          "response": {
+            "status": 200,
+            "body": "B0|B1|B2|B3|B4|B5|B6|B7",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "949fcf1dbd6a19c893261af1cf76547c01030eba8a95212c74d89197b903d7ad",
+          "eventsSha256": "5082a768b5e7396bd2db327028b82fe1fe77392073323f5d7cdb8c97e7162a8d",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 8,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "zero-pending-handle",
+          "response": {
+            "status": 200,
+            "body": "A0|A1|A2|A3|A4|A5|A6|A7",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "34792b43d54ea86e953e02c8f47c0d0c51fe4e2b24a570945d3121959dc33f89",
+          "eventsSha256": "5082a768b5e7396bd2db327028b82fe1fe77392073323f5d7cdb8c97e7162a8d",
+          "admitted": 8,
+          "settled": 8,
+          "resolved": 8,
+          "resumes": 8,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 8,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "malformed-json",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_JSON_MALFORMED",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "b7662c63a947576fb6115f5f1d5bb33f10a19dd1efe627c2524f6c34ad174854",
+          "eventsSha256": "59803c8cc83d647c36bb3049a1181bd2de1af4091659dcca40de9ab59c94f393",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "wrong-schema",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "822ff23afeaeeaa4d87402d7ecd38e661f24758e52c4d40e4e7234eff3261518",
+          "eventsSha256": "f0dedaf19417ff8899bb8cd1ee0ca431730af5fe1d37dfcb8d950d604ef59bee",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 1,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "transport-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 0
+          },
+          "traceSha256": "1465a571efd16459a2a2e320544567b65de7d0c7b5be0168bfe429ee65a4c6b2",
+          "eventsSha256": "822af04eb947fe771091a3a92683262f1639123666da1d75c847f84c927c2fa1",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 1,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 0,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "send-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 77,
+            "effect": 0
+          },
+          "traceSha256": "f8e0e0714992acb81a7a03f55b5f14b186442146f6b1d038872e4c5c3a106fa2",
+          "eventsSha256": "b88dbe3228c45fe24a763ff82d95da7ada25d70f93d5af83b480c56a334f556d",
+          "admitted": 1,
+          "settled": 1,
+          "resolved": 0,
+          "resumes": 0,
+          "final": {
+            "error": 1006,
+            "stage": 77,
+            "effect": 0,
+            "count": 1,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "later-schema-failure",
+          "response": {
+            "status": 422,
+            "body": "PULSE_SCHEMA_DECODE",
+            "headers": [
+              [
+                "content-type",
+                "text/plain; charset=utf-8"
+              ]
+            ]
+          },
+          "failure": null,
+          "traceSha256": "4435d5e7ba401122e398c0e276a88af306618e37bb25537400bebdf24f98d7af",
+          "eventsSha256": "1c8feb4f713dd8dd9e0df90ae8e8af5f4ac34613c8a90340b42e1db971c15b39",
+          "admitted": 4,
+          "settled": 4,
+          "resolved": 4,
+          "resumes": 4,
+          "final": {
+            "error": 0,
+            "stage": 0,
+            "effect": -1,
+            "count": 4,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "name": "later-transport-failure",
+          "response": null,
+          "failure": {
+            "code": "PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED",
+            "error": 1006,
+            "stage": 81,
+            "effect": 3
+          },
+          "traceSha256": "6317e6c3c7e495c8e8ca7957f932bfcfb82b88f089ea5dba8a2ad04e8bf0655d",
+          "eventsSha256": "f2104a88bb214d9905f8f49ea6fc2aa0af6f5b69c8ee22d588cb58cb6f5a63d1",
+          "admitted": 4,
+          "settled": 4,
+          "resolved": 4,
+          "resumes": 3,
+          "final": {
+            "error": 1006,
+            "stage": 81,
+            "effect": 3,
+            "count": 4,
+            "closed": true,
+            "tickets": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "tickets": {
+        "rejected": 11,
+        "accepted": 3,
+        "eventsSha256": "c46d5da901956cb60e5916ac8dabf9d63256cec9fff9cccda3d879f77efdd8d8"
+      },
+      "priorityProbes": []
+    }
+  ]
+}
