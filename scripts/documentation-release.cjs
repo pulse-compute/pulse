@@ -984,7 +984,7 @@ function validateDocumentationLayers(repoRoot) {
   const workflowRequirements = [
     'workflow_dispatch:',
     'pull_request:',
-    'branches: [main]',
+    "branches: ['**']",
     workflowAction('actions/checkout'),
     workflowAction('actions/setup-node'),
     workflowAction('actions/upload-artifact'),

@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 9,
+  "policyVersion": 10,
   "releaseVersion": "1.0.0-beta.5",
-  "reviewedAt": "2026-09-16",
+  "reviewedAt": "2026-09-27",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -82,6 +82,20 @@
           "FASTLY_OBJECT_STORAGE_ENDPOINT",
           "PULSE_DOCUMENTATION_ORIGIN",
           "PULSE_DOCUMENTATION_BASE_PATH"
+        ]
+      }
+    },
+    "validationTiers": {
+      "main": {
+        "tier": "full",
+        "additionalRequiredStatusChecks": [
+          "Repository validation / full portable"
+        ]
+      },
+      "nonMain": {
+        "tier": "fast",
+        "additionalRequiredStatusChecks": [
+          "Repository validation / fast portable"
         ]
       }
     }

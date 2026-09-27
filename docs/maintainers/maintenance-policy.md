@@ -5,9 +5,9 @@
 Pulse uses a machine-readable maintenance policy so repository automation and Codex receive the same scope boundaries. The policy is advisory about product direction and mandatory about process: Codex may analyze, review, and prepare bounded patches, while a human retains architecture, merge, repository-setting, and release authority.
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
-- **Policy version:** `9`
+- **Policy version:** `10`
 - **Release:** `1.0.0-beta.5`
-- **Reviewed:** `2026-09-16`
+- **Reviewed:** `2026-09-27`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only
 - **Release authority:** human-only
@@ -74,6 +74,17 @@ Path classification is intentionally conservative. Touching a protected path doe
 | `release` | Dependency-bound | `npm run release:seal` |
 
 Portable checks use the normal lockfile-pinned workspace installation and do not require the release-only dependency bundle or external provider credentials. Dependency-bound checks remain required before publication when their affected paths are touched.
+
+## Branch validation requirements
+
+Common required checks: `Maintainer scope / scope`, `Repository validation / maintenance`, `Repository validation / node-floor`, `Repository validation / portable`, `Documentation / build`.
+
+| PR target / branch push | Tier | Additional required check |
+|---|---|---|
+| main | full | `Repository validation / full portable` |
+| Every non-main branch | fast | `Repository validation / fast portable` |
+
+The common portable gate independently verifies that the event's required tier succeeded. Human-owned rulesets retain the common checks and add the appropriate tier check; see repository setup for the rollout order. Fast success is development evidence, not full portable or release coverage.
 
 ## Reviewed GitHub Actions
 

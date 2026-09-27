@@ -48,15 +48,15 @@ function validateWorkflow(source) {
     return source.slice(jobs[index].index, jobs[index + 1]?.index || source.length);
   };
   const shards = job('portable-shards');
-  const gate = job('portable');
+  const gate = job('full-portable');
   const matrix = shards.match(/^        shard: \[([^\]]+)\]$/m);
   assert(matrix, 'Missing portable shard matrix');
   assert.deepEqual(matrix[1].split(',').map((id) => id.trim()), Object.keys(shardPlan()), 'Workflow matrix differs from portable plan');
   assert(shards.includes('      fail-fast: false'), 'A failed shard must not cancel sibling evidence');
-  assert(shards.includes('    needs: maintenance'), 'Validate the portable contract before running shards');
+  assert(shards.includes('    needs: [route, maintenance]'), 'Validate the portable contract before running shards');
   assert(shards.includes('node scripts/maintainer-portable-validation.cjs run "$PORTABLE_SHARD"'), 'Workflow must run registered shards');
   assert(shards.includes('      - name: Upload portable failure evidence and success reports\n        if: always()'), 'Shard evidence must survive failures');
-  assert(gate.includes('    name: portable\n    needs: portable-shards\n    if: always()'), 'Portable gate must evaluate failed, cancelled, or skipped shards');
+  assert(gate.includes("    name: full portable\n    needs: [route, portable-shards]\n    if: always() && needs.route.outputs.run == 'true' && needs.route.outputs.tier == 'full'"), 'Portable gate must evaluate failed, cancelled, or skipped shards');
   assert(gate.includes('PORTABLE_SHARDS_RESULT: ${{ needs.portable-shards.result }}'), 'Gate needs the shard job result');
   assert(gate.includes('node scripts/maintainer-portable-validation.cjs aggregate .portable-artifacts'), 'Missing portable coverage aggregate');
   assert(!/continue-on-error:/u.test(shards + gate), 'Portable failures must not be ignored');
