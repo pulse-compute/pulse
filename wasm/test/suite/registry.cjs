@@ -457,6 +457,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'S01 synthetic request memory, isolated compiler RSS, generated-source and optimized-Wasm attribution'
   }),
+  'compiler-phases-o03': nodeTask('test/runtime/compiler-efficiency/o03-compiler-phases.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'O-03 serial compiler phase CPU/wall/RSS attribution with exact production Wasm parity'
+  }),
   'effect-retention-mem02': nodeTask('test/runtime/compiler-efficiency/mem02-effect-retention.cjs', {
     evidence: 'external',
     timeoutMs: 120000,
