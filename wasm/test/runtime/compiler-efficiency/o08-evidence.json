@@ -1,0 +1,4949 @@
+{
+  "version": "pulse.o08.optimized-wasm-census.v1",
+  "status": "passed",
+  "sourceRevision": "6ebf044f4d3469d6d3f583605e34a1da410b02d0",
+  "workingTree": "M wasm/test/suite/assert-suite-shape.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/o08-evidence.json\n?? wasm/test/runtime/compiler-efficiency/o08-wasm-census.cjs\n?? wasm/test/runtime/compiler-efficiency/o08-wasm-census.md",
+  "node": "v24.19.0",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "sourceSha256": {
+    "wasm/test/runtime/compiler-efficiency/o08-wasm-census.cjs": "72e83ebd51d9734ab00979a42ba2641addf0cce71740dbd27f9ad5a934833109",
+    "wasm/test/runtime/compiler-efficiency/gen01-census.cjs": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+    "wasm/test/runtime/compiler-efficiency/o07-evidence.json": "a0f560d0e90333e7072231aa6c032b11f1a99f9d1b2c87507fda9b0cf0871d1c",
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "f7c0dda619c98c7db1d211079552071a050a7a2840cef0461b08d7fad2539a25",
+    "packages/provider-fastly/src/build/native-application-errors.js": "57d2d7aa8d90ca4874922d20bb55bd1c4626ca21a20e61c4da67141e5011b3d6",
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+    "wasm/packages/build-support/src/native-optimization.js": "f21423427df332f0311a23076546a3b9175f5059e363ba3fe5be643961925d68",
+    "wasm/packages/build-support/src/native-retention-transform.cjs": "d392b69ccfabce70e3b71b47c9b7bdc84369a66960f543c58703b500d1edcc4d"
+  },
+  "binaryen": {
+    "name": "binaryen",
+    "version": "129.0.0-nightly.20260428",
+    "tools": [
+      {
+        "name": "wasm-as",
+        "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+      },
+      {
+        "name": "wasm-dis",
+        "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+      },
+      {
+        "name": "wasm-merge",
+        "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+      },
+      {
+        "name": "wasm-opt",
+        "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+      }
+    ]
+  },
+  "gzip": "gzip 1.12",
+  "profile": "default",
+  "cells": [
+    {
+      "cell": {
+        "id": "sites-1",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "70af33ccbc1ace2a9a2a1fd1055769bfdc99b4d50f7bf75c86a1bb1804a32277",
+      "sourceBytes": 111906,
+      "wasmSha256": "b0d476e12e05618c2854fc5cd0d917c40d7260b9916723a5354be92d9afa1c18",
+      "rawBytes": 66216,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 24434,
+      "gzipSha256": "8be52460b29d7e7d07de5dbb468ac07d6e2f8d0c472ea629373ab47c48ed09c8",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "72b34204cbc8a5343a8bfd0aad08e85fff2a68e752033e7e491246fb4c4ade2b",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "94e08e894816fdef34efed1cabf31943b8cda57cf945f0ba4691d490d7ed2f30"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 145,
+          "payloadBytes": 142,
+          "sha256": "6f5bdf91a1dd5cea2a65c800ef6c6237d98e94bc1b46b6e747759cf6d7067297"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 344,
+          "payloadBytes": 341,
+          "sha256": "0ae2d413ef63a9939c9215f3bb15c241a9c9db064dcc44b89657dffa749ddc3a"
+        },
+        {
+          "id": 7,
+          "bytes": 679,
+          "payloadBytes": 676,
+          "sha256": "4e1a858601625977e434d4febc079363a65cdfb2009fb12c27c2052db87f573f"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "942d1e3468dd704275026302ac0baec5e11df58b2bd896b8530086cfdae22a20"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "86bcb99dd4402af7299edbdd6a1e7494359ab081fb8a18937e64157abda3f4d4"
+        },
+        {
+          "id": 10,
+          "bytes": 47838,
+          "payloadBytes": 47834,
+          "sha256": "7ee075a78a63c8f667b2480445ef219a1cf5d6f10ec4d8656639bc3792fa2671"
+        },
+        {
+          "id": 11,
+          "bytes": 16710,
+          "payloadBytes": 16706,
+          "sha256": "798069457ef7bd3d0b7b510d846165b85eceda5605f230211d56b21f8ba23330"
+        }
+      ],
+      "codeSectionBytes": 47838,
+      "codeBodyBytes": 47603,
+      "dataSectionBytes": 16710,
+      "dataSegments": 321,
+      "dataPayloadBytes": 14511,
+      "functions": 140,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 140,
+      "directCallSites": 681,
+      "uniqueCallEdges": 363,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15339,
+          "exportOrStartReachableFunctions": 60
+        },
+        "other generated Fastly and portable support": {
+          "functions": 56,
+          "bytes": 23645,
+          "exportOrStartReachableFunctions": 56
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3217,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 228,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 493,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1240,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 2703,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 1,
+          "bytes": 206,
+          "exportOrStartReachableFunctions": 1
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 149,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 145,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 2067,
+          "family": "handler chunks",
+          "directCallSites": 43,
+          "uniqueCallees": 24,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 101,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 41,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 6,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 110,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 116,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 143,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 142,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1240,
+          "family": "Fastly invocation driver",
+          "directCallSites": 20,
+          "uniqueCallees": 15,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 107,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 148,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 141,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 64,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 911,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 147,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 124,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 66,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#value",
+          "bytes": 815,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 15,
+          "uniqueCallees": 10,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        },
+        {
+          "caller": "~start",
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_value",
+          "sites": 7
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 6
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 6
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+          "callee": "~lib/rt/itcms/__link",
+          "sites": 6
+        },
+        {
+          "caller": "~lib/string/String#split",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 5
+        },
+        {
+          "caller": "~lib/string/String#split",
+          "callee": "~lib/rt/__newArray",
+          "sites": 5
+        }
+      ],
+      "driver": {
+        "index": 142,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1240,
+        "family": "Fastly invocation driver",
+        "directCallSites": 20,
+        "uniqueCallees": 15,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 8,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "5a61638c855d8278914d82d3d0d5933ccc8a2c31089c59e2b60457dfeec8049c"
+    },
+    {
+      "cell": {
+        "id": "sites-8",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 8
+      },
+      "fixtureSha256": {
+        "router": "16d2de95434b3287d42f1d5abbbc2e1b9024f9fc71a4bf4707f2f407ee5e8975",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "dfed5d0d43134d822da4828455918413a057a3e631c9fcc6eeb78672c566a00e",
+      "sourceBytes": 122161,
+      "wasmSha256": "26ffc4106f6391d611ee1126fb365846d2d33e886f20215676d39712d0bb2000",
+      "rawBytes": 67832,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 25034,
+      "gzipSha256": "af67f2dc0139660959fec1f8ed4dbe89d556518e8bc0a1644d9c669be7428c6e",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "c9753edfeff020f126c7e88ff6f91fd57623756c31d7ce7185e6f5751e97c91d",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "1cb8faa45fff87bb23777be4518b654e9c25461d15a02dabe4921593405829f7"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 148,
+          "payloadBytes": 145,
+          "sha256": "502db915f31413d8c85eceff38c09f8e31a53cf6756427483cf7f9444352b9c5"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 484,
+          "payloadBytes": 481,
+          "sha256": "0ef07686610ae033696221962a11e725fa430ac27edfd3804fc4cdb48e195843"
+        },
+        {
+          "id": 7,
+          "bytes": 680,
+          "payloadBytes": 677,
+          "sha256": "d2ef7f35718d2c40d60b53c67cbac6f2982c57ca0894254be0c87487a80d3980"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "d3954792cbf45d9f2ceca780c55e48b5673f9cebf2d5cdf024d925845f77a158"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "284f304d7276f6764c62274e87cb9e94ec2cee81c710c2ba9bbb525266674202"
+        },
+        {
+          "id": 10,
+          "bytes": 49100,
+          "payloadBytes": 49096,
+          "sha256": "3bd8293e5ac709cc1733995deae3569a3359fa223b0640d2a555e44fab145107"
+        },
+        {
+          "id": 11,
+          "bytes": 16920,
+          "payloadBytes": 16916,
+          "sha256": "8c33653614a43f4a63e7384d20494e263a18ece7c08b2307c4345de1531c651b"
+        }
+      ],
+      "codeSectionBytes": 49100,
+      "codeBodyBytes": 48857,
+      "dataSectionBytes": 16920,
+      "dataSegments": 335,
+      "dataPayloadBytes": 14623,
+      "functions": 143,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 143,
+      "directCallSites": 741,
+      "uniqueCallEdges": 374,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15339,
+          "exportOrStartReachableFunctions": 60
+        },
+        "other generated Fastly and portable support": {
+          "functions": 58,
+          "bytes": 24858,
+          "exportOrStartReachableFunctions": 58
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3217,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 639,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 493,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1200,
+          "exportOrStartReachableFunctions": 1
+        },
+        "expression helpers": {
+          "functions": 1,
+          "bytes": 588,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 1785,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 1,
+          "bytes": 206,
+          "exportOrStartReachableFunctions": 1
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 152,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 103,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 28,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 13,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 112,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 118,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 144,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 109,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 143,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1200,
+          "family": "Fastly invocation driver",
+          "directCallSites": 21,
+          "uniqueCallees": 16,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 148,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 1149,
+          "family": "handler chunks",
+          "directCallSites": 55,
+          "uniqueCallees": 13,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 151,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 142,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 65,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 911,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 150,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 126,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 67,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#value",
+          "bytes": 815,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 15,
+          "uniqueCallees": 10,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 18
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_expr_38",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        },
+        {
+          "caller": "~start",
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_effect_begin",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_object",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_object_set",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_expr_38",
+          "callee": "fastly-native-platform-capabilities.as/host_value_binary",
+          "sites": 8
+        }
+      ],
+      "driver": {
+        "index": 143,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1200,
+        "family": "Fastly invocation driver",
+        "directCallSites": 21,
+        "uniqueCallees": 16,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 8,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "81acce6b1d5e988c83b9ce1464ae81e4988665f343ecfe86dccf244bb509ad82"
+    },
+    {
+      "cell": {
+        "id": "sites-32",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 32
+      },
+      "fixtureSha256": {
+        "router": "cd4d8db625f31b301516aae9c150cfa48d6acb21f2c62b451598eee7ece6bc9c",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "8a300201827922cf8e0e1b06ece40a448cec8719c67c67a9148fdbede03c307b",
+      "sourceBytes": 157878,
+      "wasmSha256": "8ce7614a3b5fbedf0a39825acc925860aa3ed8aca19fd652a4fe2e3782f7d6bf",
+      "rawBytes": 72829,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 26729,
+      "gzipSha256": "9e93734adf03172ebd59e60e1980dd492e4bdaca02caa81758ca6e1e5ee35131",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "eb37779fb63eba3e6e5c6ae9e2b8e387e811ee7e26653fa37ece0ec5fab76262",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "1cb8faa45fff87bb23777be4518b654e9c25461d15a02dabe4921593405829f7"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 149,
+          "payloadBytes": 146,
+          "sha256": "1a20473baca670e3b5e73ee1ad1951e1f8be52a0333afb8c28942fba4cfc5429"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 965,
+          "payloadBytes": 962,
+          "sha256": "3e313b3a1975de0d4f8ee7c162a8af8b46b22d80245f04022c07e7c496b12e91"
+        },
+        {
+          "id": 7,
+          "bytes": 681,
+          "payloadBytes": 678,
+          "sha256": "e6a2408d84c89f531ba08f79a9a3c236d614cb6de281d320f3e266169ec11e5c"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "d3954792cbf45d9f2ceca780c55e48b5673f9cebf2d5cdf024d925845f77a158"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "f0e99cbec4ae23f8f9f90bdb3c85323d482fab97d24368e35c119206f60467e9"
+        },
+        {
+          "id": 10,
+          "bytes": 52850,
+          "payloadBytes": 52846,
+          "sha256": "58fed35920a4f7fb8e97184c545cfd86e612072428de64fe8892cbf5d4766793"
+        },
+        {
+          "id": 11,
+          "bytes": 17684,
+          "payloadBytes": 17680,
+          "sha256": "847df15abb0c0f4c4d5f84ea9b50068e3586c63afab6bbda81256626800552f6"
+        }
+      ],
+      "codeSectionBytes": 52850,
+      "codeBodyBytes": 52606,
+      "dataSectionBytes": 17684,
+      "dataSegments": 383,
+      "dataPayloadBytes": 15051,
+      "functions": 144,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 144,
+      "directCallSites": 934,
+      "uniqueCallEdges": 381,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "other generated Fastly and portable support": {
+          "functions": 58,
+          "bytes": 24836,
+          "exportOrStartReachableFunctions": 58
+        },
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15357,
+          "exportOrStartReachableFunctions": 60
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3219,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 1997,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 493,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 538,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1225,
+          "exportOrStartReachableFunctions": 1
+        },
+        "expression helpers": {
+          "functions": 1,
+          "bytes": 597,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 4,
+          "bytes": 4138,
+          "exportOrStartReachableFunctions": 4
+        },
+        "optimizer-created or unnamed": {
+          "functions": 1,
+          "bytes": 206,
+          "exportOrStartReachableFunctions": 1
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 149,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 3375,
+          "family": "handler chunks",
+          "directCallSites": 241,
+          "uniqueCallees": 14,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 153,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 103,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 19,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 37,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 112,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 118,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 144,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 143,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1225,
+          "family": "Fastly invocation driver",
+          "directCallSites": 21,
+          "uniqueCallees": 16,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 109,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 152,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 142,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 91,
+          "name": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+          "bytes": 937,
+          "family": "portable dispatcher",
+          "directCallSites": 0,
+          "uniqueCallees": 0,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 93,
+          "name": "fastly-native-platform-capabilities.as/pulse_resume",
+          "bytes": 927,
+          "family": "portable dispatcher",
+          "directCallSites": 1,
+          "uniqueCallees": 1,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 65,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 911,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 151,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 88
+        },
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_effect_begin",
+          "sites": 31
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_object",
+          "sites": 31
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_object_set",
+          "sites": 31
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_binary",
+          "sites": 24
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_truthy",
+          "sites": 24
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_expr_62",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        }
+      ],
+      "driver": {
+        "index": 143,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1225,
+        "family": "Fastly invocation driver",
+        "directCallSites": 21,
+        "uniqueCallees": 16,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 8,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "3efeb04e69b572d8b9b0271d37b18efc9bdd1f4e5b2195c8441566d9163e6bd7"
+    },
+    {
+      "cell": {
+        "id": "routes-8-sites-3",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 8,
+        "effects": 3
+      },
+      "fixtureSha256": {
+        "router": "e19e4850fe3ed252a18179dfc4af3108efdfd80035a7f029f88c27a4d4c5fc6b",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "cd8c3fc521ad8445435d3bce871dd9c6bd9016085364863dd4660791dd2d9b6b",
+      "sourceBytes": 158705,
+      "wasmSha256": "5db10f89af5699af4a8cb396d5e90aca1464bbf036176c533700f24c2b592761",
+      "rawBytes": 72602,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 26362,
+      "gzipSha256": "80b2c70b47cc8684928ad515f710819aaa76720ad19fdedaeb305e6f9a318e8f",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "0c1257f131a8fe6c53009293707fee04085c2ddc5934df4ae501477a74e790af",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 124,
+          "payloadBytes": 122,
+          "sha256": "fbc1313c5005a326cc02f9a63e23c8c9f7045f82fde8dd7486b56531d203ce22"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "398a62af00cb093904d054e8e9121ecde0a551e2e26d751fdcbf41bfe06ed900"
+        },
+        {
+          "id": 3,
+          "bytes": 169,
+          "payloadBytes": 166,
+          "sha256": "cac677c83059be9a0ce892c9f98ff5cd8ef8b501b64270b1a28ae914579425cc"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 840,
+          "payloadBytes": 837,
+          "sha256": "2f7ee28b65e0a43deca0763e4b3ec6137c3f0ccc3adce51b86b6375d26f447f7"
+        },
+        {
+          "id": 7,
+          "bytes": 684,
+          "payloadBytes": 681,
+          "sha256": "2ee8a4ae2a07c9399205bef096e749bdf072cbf906eeab3b855f46bffbd33dbc"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "9ac4350e8b4b2b47efe427ad3e2ac011bf8e498300cc9d75928d969cc389bf11"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "cad1ef5fa8b9c5bb7e8d0997461d55ed84421fac0db458fe7a6aa8535f441a5a"
+        },
+        {
+          "id": 10,
+          "bytes": 53432,
+          "payloadBytes": 53428,
+          "sha256": "b2d168d996f9098ecebd701af457d3d84ee84df911a4a9fdb78f6f9b1d83b8c7"
+        },
+        {
+          "id": 11,
+          "bytes": 16966,
+          "payloadBytes": 16962,
+          "sha256": "8a3f2ae762b655c063ea40ce72c22c49164622cba93fcf1f3f3aad46ddd51ac1"
+        }
+      ],
+      "codeSectionBytes": 53432,
+      "codeBodyBytes": 53158,
+      "dataSectionBytes": 16966,
+      "dataSegments": 339,
+      "dataPayloadBytes": 14641,
+      "functions": 164,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 164,
+      "directCallSites": 962,
+      "uniqueCallEdges": 489,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "other generated Fastly and portable support": {
+          "functions": 63,
+          "bytes": 26768,
+          "exportOrStartReachableFunctions": 63
+        },
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15347,
+          "exportOrStartReachableFunctions": 60
+        },
+        "expression helpers": {
+          "functions": 2,
+          "bytes": 174,
+          "exportOrStartReachableFunctions": 2
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3219,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 1028,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 493,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1216,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 17,
+          "bytes": 4075,
+          "exportOrStartReachableFunctions": 17
+        },
+        "optimizer-created or unnamed": {
+          "functions": 2,
+          "bytes": 306,
+          "exportOrStartReachableFunctions": 2
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 172,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 108,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 18,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 30,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 117,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 123,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 150,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 149,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1216,
+          "family": "Fastly invocation driver",
+          "directCallSites": 21,
+          "uniqueCallees": 16,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 114,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 171,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 147,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 71,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 911,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 170,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 131,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 73,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#value",
+          "bytes": 815,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 15,
+          "uniqueCallees": 10,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 173,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#array",
+          "bytes": 791,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 8,
+          "uniqueCallees": 7,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_11",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_13",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_15",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_3",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_5",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_7",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_9",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 12
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        }
+      ],
+      "driver": {
+        "index": 149,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1216,
+        "family": "Fastly invocation driver",
+        "directCallSites": 21,
+        "uniqueCallees": 16,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 7,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "8a33c9ff49b84895f450314d317b413053993532507d61eaa0a0c8c2a96c903a"
+    },
+    {
+      "cell": {
+        "id": "schemas-16-repeat",
+        "schemas": 16,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "dc86844feea62ec278742ae86520e56a166b4f4818b98e55ea608e4191422adc"
+      },
+      "sourceSha256": "04ba6cb04807d96245219ef4e7bcc82597f226056c69176187739d7986688425",
+      "sourceBytes": 126885,
+      "wasmSha256": "7709b2f2c61bb7be7750cde7fbeca37be42d2d0ded3b95763a0fc5ed47fe151f",
+      "rawBytes": 68176,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 25076,
+      "gzipSha256": "872a49eaee122f67eb3e8b0a2cb1856226abdf6ffe2bb07513405e270224b4d7",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "31c2925111c8a71b2feeca7122b30a07f5614cb552ba71962b4b085f8c88a030",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "94e08e894816fdef34efed1cabf31943b8cda57cf945f0ba4691d490d7ed2f30"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 163,
+          "payloadBytes": 160,
+          "sha256": "20ee560823fc90e9cfee623ab0ac696f0ea7cb98c662950185097a2dfadabb13"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 344,
+          "payloadBytes": 341,
+          "sha256": "c7e86461701b8cd1a66c0ed5e89aabb303040131c4b2e4f64d07b8ac83b7bd11"
+        },
+        {
+          "id": 7,
+          "bytes": 687,
+          "payloadBytes": 684,
+          "sha256": "5244a9cb75ffb2ee798e07c82fe83b02ba05020ecf116e13e1e58e1c9b3869a9"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "e2cf8924da0de81518934af4694c758ffdfb2a42145367593e770c35919da780"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "047c15962ccefdd35567cb08500d0627d24e966e48ffb185939e61fced2eee2f"
+        },
+        {
+          "id": 10,
+          "bytes": 49250,
+          "payloadBytes": 49246,
+          "sha256": "f3afc2c02b3523f5b7dcb13d56ac79e2eeec89f23a9b6f89f5359996fe3b6b08"
+        },
+        {
+          "id": 11,
+          "bytes": 17232,
+          "payloadBytes": 17228,
+          "sha256": "0005f33325886f9b7cc9cf9a5b395928e581184930c3cfcb8ac3890ef7f8a5b7"
+        }
+      ],
+      "codeSectionBytes": 49250,
+      "codeBodyBytes": 48994,
+      "dataSectionBytes": 17232,
+      "dataSegments": 351,
+      "dataPayloadBytes": 14823,
+      "functions": 158,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 158,
+      "directCallSites": 774,
+      "uniqueCallEdges": 412,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15358,
+          "exportOrStartReachableFunctions": 60
+        },
+        "other generated Fastly and portable support": {
+          "functions": 56,
+          "bytes": 23650,
+          "exportOrStartReachableFunctions": 56
+        },
+        "schema codecs and json-as": {
+          "functions": 25,
+          "bytes": 3210,
+          "exportOrStartReachableFunctions": 25
+        },
+        "provider schema projectors": {
+          "functions": 3,
+          "bytes": 1410,
+          "exportOrStartReachableFunctions": 3
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 228,
+          "exportOrStartReachableFunctions": 5
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1240,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 2703,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 2,
+          "bytes": 663,
+          "exportOrStartReachableFunctions": 2
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 166,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 163,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 2067,
+          "family": "handler chunks",
+          "directCallSites": 43,
+          "uniqueCallees": 24,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 120,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 46,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 6,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 129,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 135,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 161,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 160,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1240,
+          "family": "Fastly invocation driver",
+          "directCallSites": 20,
+          "uniqueCallees": 15,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 126,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 165,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 117,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "bytes": 1097,
+          "family": "provider schema projectors",
+          "directCallSites": 65,
+          "uniqueCallees": 20,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 159,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 69,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 911,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 28,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 142,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "~lib/string/String.__eq",
+          "sites": 16
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_json",
+          "sites": 16
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_flat_object_0",
+          "sites": 16
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        },
+        {
+          "caller": "~start",
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_value",
+          "sites": 7
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 6
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 6
+        }
+      ],
+      "driver": {
+        "index": 160,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1240,
+        "family": "Fastly invocation driver",
+        "directCallSites": 20,
+        "uniqueCallees": 15,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 8,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "36edfe8ebdb706ea66354ac7746a62e20d40cf6406d485b9114bcb1ddbcb82be"
+    },
+    {
+      "cell": {
+        "id": "schemas-16-diverse",
+        "schemas": 16,
+        "diverse": true,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "15da1b4840a7585e730bc70b7e7357ab8049bff906999a701eec7030bdfa20c0"
+      },
+      "sourceSha256": "29e864bde546fc77193c0f26419dd2a39a3798f8706fd2aee9037d5188a0c54c",
+      "sourceBytes": 175134,
+      "wasmSha256": "294a49854ad3c8f11e400aaab2d09442873379f75f53200d24d0af31d2cdd414",
+      "rawBytes": 123408,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 40737,
+      "gzipSha256": "9b083d5f09510a9447bfe10d2673a2215b6823bbc464bd432be315c38448548c",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "017ade935530c68fd5bc8201ca84e965a9d69e0d6f36b1e6222999f4c4eef7f5",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 138,
+          "payloadBytes": 135,
+          "sha256": "aa7c00ae841d1f9cb23083ac7bb8adcecbb10b796579b6254ff364a294be6a90"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "ac7e6cab6293debec0c14aea833aa1abb7635f5c8254d830751ea399cb9566a5"
+        },
+        {
+          "id": 3,
+          "bytes": 244,
+          "payloadBytes": 241,
+          "sha256": "8df9e89ace8e4d215d971267f0686699b4cc21fa7f04880c4815574d1cb80ba9"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "60c5ae17debdcd22d2fc9663907c6dec39d5f046ddc46bf4e536403d90fd68ca"
+        },
+        {
+          "id": 6,
+          "bytes": 399,
+          "payloadBytes": 396,
+          "sha256": "6f7b618886ac976f1f06a5fbeff4d7bac728a8f4680422391cff44309a1c02c4"
+        },
+        {
+          "id": 7,
+          "bytes": 687,
+          "payloadBytes": 684,
+          "sha256": "2f1856ebf70b156d26c31c3e95e1213e72e9569ebc79e62be81324fec9e93514"
+        },
+        {
+          "id": 8,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "c199a65156f357f494612031e352bc6c86f6344ceb95aa41e34a4331aeb6fa24"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "f0258f9f176481a5ccdd9506ff2afd8ea43f193f67f1898e4820b7f3b6886a93"
+        },
+        {
+          "id": 10,
+          "bytes": 91844,
+          "payloadBytes": 91840,
+          "sha256": "66f76a47fc477eb747eaf2c86d3520f4c5377af989ca11241ec4afcd8cde6df5"
+        },
+        {
+          "id": 11,
+          "bytes": 29708,
+          "payloadBytes": 29704,
+          "sha256": "2d1c8ef1600c2401cf01f3ce517e56b03238dcbece5293e943fc4115f16c3541"
+        }
+      ],
+      "codeSectionBytes": 91844,
+      "codeBodyBytes": 91469,
+      "dataSectionBytes": 29708,
+      "dataSegments": 473,
+      "dataPayloadBytes": 26443,
+      "functions": 239,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 239,
+      "directCallSites": 1415,
+      "uniqueCallEdges": 711,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 62,
+          "bytes": 19539,
+          "exportOrStartReachableFunctions": 62
+        },
+        "other generated Fastly and portable support": {
+          "functions": 58,
+          "bytes": 23483,
+          "exportOrStartReachableFunctions": 58
+        },
+        "provider schema projectors": {
+          "functions": 20,
+          "bytes": 1988,
+          "exportOrStartReachableFunctions": 20
+        },
+        "schema codecs and json-as": {
+          "functions": 75,
+          "bytes": 35793,
+          "exportOrStartReachableFunctions": 75
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 228,
+          "exportOrStartReachableFunctions": 5
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1244,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 2710,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 12,
+          "bytes": 5952,
+          "exportOrStartReachableFunctions": 12
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 156,
+          "name": "~lib/xjb-as/assembly/dtoa/dtoa_buffered",
+          "bytes": 4010,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 0,
+          "uniqueCallees": 0,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 237,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 208,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 2073,
+          "family": "handler chunks",
+          "directCallSites": 43,
+          "uniqueCallees": 24,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 132,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 2001,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 52,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 6,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 84,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 213,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R8_8#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R8_8>",
+          "bytes": 1462,
+          "family": "schema codecs and json-as",
+          "directCallSites": 23,
+          "uniqueCallees": 5,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 219,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R5_5#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R5_5>",
+          "bytes": 1462,
+          "family": "schema codecs and json-as",
+          "directCallSites": 23,
+          "uniqueCallees": 5,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 225,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R2_2#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R2_2>",
+          "bytes": 1462,
+          "family": "schema codecs and json-as",
+          "directCallSites": 23,
+          "uniqueCallees": 5,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 241,
+          "name": "228",
+          "bytes": 1461,
+          "family": "optimizer-created or unnamed",
+          "directCallSites": 23,
+          "uniqueCallees": 5,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 211,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R9_9#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R9_9>",
+          "bytes": 1432,
+          "family": "schema codecs and json-as",
+          "directCallSites": 21,
+          "uniqueCallees": 6,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 217,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R6_6#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R6_6>",
+          "bytes": 1432,
+          "family": "schema codecs and json-as",
+          "directCallSites": 21,
+          "uniqueCallees": 6,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 223,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R3_3#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R3_3>",
+          "bytes": 1432,
+          "family": "schema codecs and json-as",
+          "directCallSites": 21,
+          "uniqueCallees": 6,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 242,
+          "name": "229",
+          "bytes": 1431,
+          "family": "optimizer-created or unnamed",
+          "directCallSites": 21,
+          "uniqueCallees": 6,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 215,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R7_7#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R7_7>",
+          "bytes": 1383,
+          "family": "schema codecs and json-as",
+          "directCallSites": 21,
+          "uniqueCallees": 6,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 24
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "~lib/string/String.__eq",
+          "sites": 16
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_json",
+          "sites": 16
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "228",
+          "callee": "~lib/string/String.__concat",
+          "sites": 11
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R2_2#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R2_2>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 11
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R5_5#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R5_5>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 11
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R8_8#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R8_8>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 11
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "227",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "229",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        }
+      ],
+      "driver": {
+        "index": 205,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1244,
+        "family": "Fastly invocation driver",
+        "directCallSites": 20,
+        "uniqueCallees": 15,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 23,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "8cff6c9713797c61b0aa51fc6dfe75980cb69a1e883102434592ceb7512a9085"
+    },
+    {
+      "cell": {
+        "id": "schemas-32-repeat",
+        "schemas": 32,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "f868de7ac6ed15d75912bcb746466f015b165d29bf5ee684552703d7d187ed88"
+      },
+      "sourceSha256": "5c06d934c1b257eb0bc9859118065621b6eb2c554d21dd4a7b21e702eafcecef",
+      "sourceBytes": 143045,
+      "wasmSha256": "dc3ff16ac38dd59a11f207e93d2546b5c97283259d90cf6fe2911ebc3d75d67f",
+      "rawBytes": 70287,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 25651,
+      "gzipSha256": "98fd23f7f2697961cd5d2afd8a1a1d45ee85348d3c83ed3603d45222d52a09b7",
+      "o07SourceMatches": true,
+      "namedWasmSha256": "dbcbb01dd6287441bc4b600ec89b7170c7f42325319082c4032ff509c535ca43",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "94e08e894816fdef34efed1cabf31943b8cda57cf945f0ba4691d490d7ed2f30"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 179,
+          "payloadBytes": 176,
+          "sha256": "3a67662323bd2e41f2ef326aa69f5ed1c0a4443477e35e64db083052e918af20"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 344,
+          "payloadBytes": 341,
+          "sha256": "9b0400a8f7640bcad7d24b4429b982259172a05a9aa45ad59a6ad9dbff259bf1"
+        },
+        {
+          "id": 7,
+          "bytes": 687,
+          "payloadBytes": 684,
+          "sha256": "c5f39cb2b283373b78bec8290c066a39f17dea12876fdd196482093d579539e1"
+        },
+        {
+          "id": 8,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "e0ebed2f7650219d08f0ff2161c84c77d1c0eda30822fdc25328684862e2f88c"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "f0e99cbec4ae23f8f9f90bdb3c85323d482fab97d24368e35c119206f60467e9"
+        },
+        {
+          "id": 10,
+          "bytes": 50768,
+          "payloadBytes": 50764,
+          "sha256": "9d3f58134f07b00dee34ca138f48bb1bf54c52a29d15f27554b70ff74acfd17a"
+        },
+        {
+          "id": 11,
+          "bytes": 17808,
+          "payloadBytes": 17804,
+          "sha256": "07f8261e6e2431f0bf75592628151b292eb15f027552682803f8395824e3d4f5"
+        }
+      ],
+      "codeSectionBytes": 50768,
+      "codeBodyBytes": 50496,
+      "dataSectionBytes": 17808,
+      "dataSegments": 383,
+      "dataPayloadBytes": 15175,
+      "functions": 174,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 174,
+      "directCallSites": 870,
+      "uniqueCallEdges": 460,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15374,
+          "exportOrStartReachableFunctions": 60
+        },
+        "other generated Fastly and portable support": {
+          "functions": 56,
+          "bytes": 23662,
+          "exportOrStartReachableFunctions": 56
+        },
+        "schema codecs and json-as": {
+          "functions": 41,
+          "bytes": 3659,
+          "exportOrStartReachableFunctions": 41
+        },
+        "provider schema projectors": {
+          "functions": 3,
+          "bytes": 2422,
+          "exportOrStartReachableFunctions": 3
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 230,
+          "exportOrStartReachableFunctions": 5
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1244,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 2710,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 2,
+          "bytes": 663,
+          "exportOrStartReachableFunctions": 2
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 182,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 133,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "bytes": 2107,
+          "family": "provider schema projectors",
+          "directCallSites": 129,
+          "uniqueCallees": 36,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 179,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 2073,
+          "family": "handler chunks",
+          "directCallSites": 43,
+          "uniqueCallees": 24,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 136,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 2001,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 46,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 6,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 145,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 151,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 177,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 176,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1244,
+          "family": "Fastly invocation driver",
+          "directCallSites": 20,
+          "uniqueCallees": 15,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 142,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 181,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1102,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 175,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1051,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 69,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 914,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 21,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 158,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "~lib/string/String.__eq",
+          "sites": 32
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_json",
+          "sites": 32
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_apply",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_schema_flat_object_0",
+          "sites": 32
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        },
+        {
+          "caller": "~start",
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_value",
+          "sites": 7
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 6
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 6
+        }
+      ],
+      "driver": {
+        "index": 176,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1244,
+        "family": "Fastly invocation driver",
+        "directCallSites": 20,
+        "uniqueCallees": 15,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 9,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "7a33766e0a0954eaf75184724fe10d6201b32f403b3b0cffe164c3209f4a5675"
+    },
+    {
+      "cell": {
+        "id": "sites-1-error-route",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1,
+        "errorRoute": true
+      },
+      "fixtureSha256": {
+        "router": "84e091d2e101ca0ae8367397fa5883f7ad3d1ee79860ef96ab7b543889c97f49",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "e185c3dc81817b09ace8d0a90b345df5c2e501ecff481ed2105faf4f81171dd6",
+      "sourceBytes": 126217,
+      "wasmSha256": "bddd179b50a79e8fd8386481292c7a749b488ac4e8facd11867a19f54d5b0d90",
+      "rawBytes": 69121,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 25367,
+      "gzipSha256": "2ba239444e89eb8fd86bba83c0abe9e1dd0ce92f7077a0c9073f13e2157c5094",
+      "o07SourceMatches": null,
+      "namedWasmSha256": "797ad6fae618757491421e8531d36349bc832840198ed091d631b32fb0a45cd6",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "1e14f47a54847c9f595a7c959f17519091f60dfa3b8cb6d0558c61a1ad16a57d"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 146,
+          "payloadBytes": 143,
+          "sha256": "8207e4701a550939e67623a078afcfce25305419656fa3bca4b1e292703ed972"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 359,
+          "payloadBytes": 356,
+          "sha256": "8d5c95927e59a1ad1a82b012f5fcf68ffe97bd78a9cb672dc769da56e8c653fe"
+        },
+        {
+          "id": 7,
+          "bytes": 680,
+          "payloadBytes": 677,
+          "sha256": "0bb2ceb328f2f3511253194d012f23979572ea8cd02984e30ccd3bb656c6ed49"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "79fb3df73246faa2ff6019f64c6e1005a5e5aa00a95b16847751ba304412a39f"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "dd33def97c88ae3d0a3d4d3991f7f9e66d2a781d967eb5332034a804406bd7e0"
+        },
+        {
+          "id": 10,
+          "bytes": 49362,
+          "payloadBytes": 49358,
+          "sha256": "0cdf5d617f3a9f12deb6ff9c907b1c3ed496e9c8b47ffd119264678cd09c5c68"
+        },
+        {
+          "id": 11,
+          "bytes": 18074,
+          "payloadBytes": 18070,
+          "sha256": "90d01a760391a7fc9d6db8d54b30f273d518aa001b2dc379286e19c4d997d25b"
+        }
+      ],
+      "codeSectionBytes": 49362,
+      "codeBodyBytes": 49125,
+      "dataSectionBytes": 18074,
+      "dataSegments": 361,
+      "dataPayloadBytes": 15595,
+      "functions": 141,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 141,
+      "directCallSites": 736,
+      "uniqueCallEdges": 373,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15339,
+          "exportOrStartReachableFunctions": 60
+        },
+        "other generated Fastly and portable support": {
+          "functions": 56,
+          "bytes": 23634,
+          "exportOrStartReachableFunctions": 56
+        },
+        "application error support": {
+          "functions": 1,
+          "bytes": 340,
+          "exportOrStartReachableFunctions": 1
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3217,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 228,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 569,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 1612,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 3448,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 1,
+          "bytes": 206,
+          "exportOrStartReachableFunctions": 1
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 146,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 2331,
+          "family": "handler chunks",
+          "directCallSites": 54,
+          "uniqueCallees": 26,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 150,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 102,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 36,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 8,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 143,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1612,
+          "family": "Fastly invocation driver",
+          "directCallSites": 22,
+          "uniqueCallees": 16,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 111,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 117,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 144,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 108,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 149,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 142,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 67,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 915,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 148,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 125,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 69,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#value",
+          "bytes": 811,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 15,
+          "uniqueCallees": 10,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_0",
+          "callee": "fastly-native-platform-capabilities.as/host_value_number",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        },
+        {
+          "caller": "~start",
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_0",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "callee": "fastly-native-platform-capabilities.as/host_value_number",
+          "sites": 7
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_value",
+          "sites": 7
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_0",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 6
+        }
+      ],
+      "driver": {
+        "index": 143,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 1612,
+        "family": "Fastly invocation driver",
+        "directCallSites": 22,
+        "uniqueCallees": 16,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 5,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "aa844fefbc26a712fa8ff1330ce4b99b812fb68a4fd8699c312bcbe62c49f91f"
+    },
+    {
+      "cell": {
+        "id": "sites-8-error-route",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 8,
+        "errorRoute": true
+      },
+      "fixtureSha256": {
+        "router": "b84622f3dd72f7c6722058027b9ca4abc749837f04f3692a6b224c49e299aa12",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "f496a99c7c2df02073705f4fbfadf59c68bcdca1d65ed6109185192ca3be07f7",
+      "sourceBytes": 152610,
+      "wasmSha256": "f4d919a99a14fdeb93ea40110d82915f2fb1045e40f414a41075035221e85376",
+      "rawBytes": 73695,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 26294,
+      "gzipSha256": "d7d057f920e38d548dac353a5b6308eff514dcaa9a8e60114e62d501e8553d1b",
+      "o07SourceMatches": null,
+      "namedWasmSha256": "8deb75bc49fc59de817dc357f087956e5c2003084756cc4a1394be02181bb45f",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "c910cbd4ba814f417f2b9250aa00ebea8a88b0e94cc3dbccd58d161358811adf"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "9bfa0fca1c2b4d0848760d29aeb89415eae6040a9b7ec85a03c6b1c96620b1f4"
+        },
+        {
+          "id": 3,
+          "bytes": 151,
+          "payloadBytes": 148,
+          "sha256": "de10babc2f265789186787451b920781e9954ddbe203bd7eaa705da64d1d7bc9"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 499,
+          "payloadBytes": 496,
+          "sha256": "f6a4b22735c5ec9c9cbfd0d11559e1d8f8e17314b5c9277f47c1030701742e9f"
+        },
+        {
+          "id": 7,
+          "bytes": 682,
+          "payloadBytes": 679,
+          "sha256": "dd5b69bad13a40641212a9a6da8d22046a4d1c9242ce965074fb3c9c0b390a89"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "0860aca0e32c2f43b965ad9116a74ad7e19ca4b47698a0cfdbb933c5bd1ae2e4"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "1a192794e2d2f8bc3ac329837bd9b343f7408a304ca982a4d12a11d4725db949"
+        },
+        {
+          "id": 10,
+          "bytes": 53579,
+          "payloadBytes": 53575,
+          "sha256": "de90c0946f5887d7f77f54c0eceebe2fe5e48824599a3ebb24bc40ca184e2f74"
+        },
+        {
+          "id": 11,
+          "bytes": 18284,
+          "payloadBytes": 18280,
+          "sha256": "0c24932a3b67f3e2cef3b4888cd4648c0d01d21f8df46c7b15e426f625160a8b"
+        }
+      ],
+      "codeSectionBytes": 53579,
+      "codeBodyBytes": 53330,
+      "dataSectionBytes": 18284,
+      "dataSegments": 375,
+      "dataPayloadBytes": 15707,
+      "functions": 146,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 146,
+      "directCallSites": 847,
+      "uniqueCallEdges": 386,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15339,
+          "exportOrStartReachableFunctions": 60
+        },
+        "application error support": {
+          "functions": 1,
+          "bytes": 340,
+          "exportOrStartReachableFunctions": 1
+        },
+        "other generated Fastly and portable support": {
+          "functions": 58,
+          "bytes": 24859,
+          "exportOrStartReachableFunctions": 58
+        },
+        "effect settlement and resolution": {
+          "functions": 2,
+          "bytes": 393,
+          "exportOrStartReachableFunctions": 2
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3219,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 639,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 569,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 532,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 3825,
+          "exportOrStartReachableFunctions": 1
+        },
+        "expression helpers": {
+          "functions": 1,
+          "bytes": 602,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 3,
+          "bytes": 2807,
+          "exportOrStartReachableFunctions": 3
+        },
+        "optimizer-created or unnamed": {
+          "functions": 1,
+          "bytes": 206,
+          "exportOrStartReachableFunctions": 1
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 146,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 3825,
+          "family": "Fastly invocation driver",
+          "directCallSites": 52,
+          "uniqueCallees": 18,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 155,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 106,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 29,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 15,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 151,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 1690,
+          "family": "handler chunks",
+          "directCallSites": 87,
+          "uniqueCallees": 15,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 115,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 121,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 147,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 112,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 154,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 145,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 70,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 915,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 153,
+          "name": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "bytes": 824,
+          "family": "schema codecs and json-as",
+          "directCallSites": 18,
+          "uniqueCallees": 4,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 129,
+          "name": "~lib/json-as/assembly/deserialize/naive/string/deserializeString_NAIVE",
+          "bytes": 819,
+          "family": "schema codecs and json-as",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 72,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#value",
+          "bytes": 811,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 15,
+          "uniqueCallees": 10,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 30
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 18
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+          "sites": 16
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+          "sites": 13
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+          "sites": 10
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_0",
+          "callee": "fastly-native-platform-capabilities.as/host_value_number",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_expr_54",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__Pulse_gen_R0_0#__DESERIALIZE_SLOW<fastly-native-platform-capabilities.as/__Pulse_gen_R0_0>",
+          "callee": "~lib/string/String.__concat",
+          "sites": 9
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/host_value_boolean",
+          "sites": 9
+        },
+        {
+          "caller": "~start",
+          "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+          "sites": 8
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_0",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 8
+        }
+      ],
+      "driver": {
+        "index": 146,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 3825,
+        "family": "Fastly invocation driver",
+        "directCallSites": 52,
+        "uniqueCallees": 18,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 1,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "sites": 16
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_resolve_effect",
+            "sites": 8
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_invocation_settle",
+            "sites": 8
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "d0c19633c44257e94b2c5b7ab146bb36438fa2a9dd3e17fd26c446bdcfa57fad"
+    },
+    {
+      "cell": {
+        "id": "sites-32-error-route",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 32,
+        "errorRoute": true
+      },
+      "fixtureSha256": {
+        "router": "92806fd4466abb57b0fdfaa27656b3d7c4272948ad98dcc34d75f69d0ccd3d45",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "sourceSha256": "a68df15487db62416156a9babe0d840c035d7090769b89c4ac47c7a1c7827f7a",
+      "sourceBytes": 244047,
+      "wasmSha256": "451662e8134868a6b4e6f08467b5b601cf36db06ce6de36696771ced2008a385",
+      "rawBytes": 88732,
+      "recipe": [
+        "fastly-native-platform-capabilities.as.ts",
+        "--outFile",
+        "<temporary>/fastly-native-platform-capabilities.wasm",
+        "--runtime",
+        "incremental",
+        "--noAssert",
+        "--optimize",
+        "--transform",
+        "wasm/packages/build-support/src/native-retention-transform.cjs",
+        "--runPasses",
+        "merge-similar-functions",
+        "--use",
+        "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort",
+        "--exportRuntime",
+        "--transform",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js",
+        "--path",
+        "wasm/packages/compiler/node_modules",
+        "--path",
+        "node_modules/.pnpm/json-as@1.5.0/node_modules"
+      ],
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "gzipBytes": 29032,
+      "gzipSha256": "e8b2461f797b2e0499ee6e478a1223b672f840310518f7b3eaaac13c316e2a09",
+      "o07SourceMatches": null,
+      "namedWasmSha256": "2d6ebf2ecc3abb2f870c3509a58ae10ce76981597d13e57a239b89a23e305e2d",
+      "namedCompanionSectionsByteExact": true,
+      "sections": [
+        {
+          "id": 1,
+          "bytes": 113,
+          "payloadBytes": 111,
+          "sha256": "d2769d3043b950bcacd464343aa18af18c8f1aec4c8b06f8a842ed46fc88ce29"
+        },
+        {
+          "id": 2,
+          "bytes": 367,
+          "payloadBytes": 364,
+          "sha256": "e7f23dcaae5f782eecc0c54e79bb6e0ce67c82a5a65e3a18e18137e1fca78332"
+        },
+        {
+          "id": 3,
+          "bytes": 153,
+          "payloadBytes": 150,
+          "sha256": "fb61bf2db17a177e345c2cffd0b8f87174c144aba9eb3c44aa45bcac4b245d74"
+        },
+        {
+          "id": 5,
+          "bytes": 5,
+          "payloadBytes": 3,
+          "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+        },
+        {
+          "id": 6,
+          "bytes": 980,
+          "payloadBytes": 977,
+          "sha256": "79064c8312e28692dbe0caf2fda5787b0cde44085caf4b4076dad2a902827f51"
+        },
+        {
+          "id": 7,
+          "bytes": 683,
+          "payloadBytes": 680,
+          "sha256": "3203353b653cb28496e7b3afae97a0f49d8496be4bf6c436ee3e79597174f41e"
+        },
+        {
+          "id": 8,
+          "bytes": 3,
+          "payloadBytes": 1,
+          "sha256": "0860aca0e32c2f43b965ad9116a74ad7e19ca4b47698a0cfdbb933c5bd1ae2e4"
+        },
+        {
+          "id": 12,
+          "bytes": 4,
+          "payloadBytes": 2,
+          "sha256": "e66186d306f49f37a2d3a59323a157e779e30eb5f913b4d3eeab34204e66730c"
+        },
+        {
+          "id": 10,
+          "bytes": 67368,
+          "payloadBytes": 67364,
+          "sha256": "9072c06ad884926d855dc867f14f2e82ae3b71bc85d1f6245315e268c1a4fd86"
+        },
+        {
+          "id": 11,
+          "bytes": 19048,
+          "payloadBytes": 19044,
+          "sha256": "9287792e67797d71e7513837b88c21dedb18a2e5184cff7adefbd75a8342063e"
+        }
+      ],
+      "codeSectionBytes": 67368,
+      "codeBodyBytes": 67115,
+      "dataSectionBytes": 19048,
+      "dataSegments": 423,
+      "dataPayloadBytes": 16135,
+      "functions": 148,
+      "importedFunctions": 13,
+      "exportOrStartReachableFunctions": 148,
+      "directCallSites": 1213,
+      "uniqueCallEdges": 402,
+      "indirectCallSites": 0,
+      "tables": 0,
+      "families": {
+        "application error support": {
+          "functions": 1,
+          "bytes": 340,
+          "exportOrStartReachableFunctions": 1
+        },
+        "other generated Fastly and portable support": {
+          "functions": 58,
+          "bytes": 24837,
+          "exportOrStartReachableFunctions": 58
+        },
+        "AssemblyScript runtime and standard library": {
+          "functions": 60,
+          "bytes": 15357,
+          "exportOrStartReachableFunctions": 60
+        },
+        "effect settlement and resolution": {
+          "functions": 2,
+          "bytes": 418,
+          "exportOrStartReachableFunctions": 2
+        },
+        "schema codecs and json-as": {
+          "functions": 9,
+          "bytes": 3221,
+          "exportOrStartReachableFunctions": 9
+        },
+        "portable dispatcher": {
+          "functions": 5,
+          "bytes": 2004,
+          "exportOrStartReachableFunctions": 5
+        },
+        "provider schema projectors": {
+          "functions": 2,
+          "bytes": 569,
+          "exportOrStartReachableFunctions": 2
+        },
+        "other named functions": {
+          "functions": 3,
+          "bytes": 538,
+          "exportOrStartReachableFunctions": 3
+        },
+        "Fastly invocation driver": {
+          "functions": 1,
+          "bytes": 12519,
+          "exportOrStartReachableFunctions": 1
+        },
+        "expression helpers": {
+          "functions": 1,
+          "bytes": 611,
+          "exportOrStartReachableFunctions": 1
+        },
+        "handler chunks": {
+          "functions": 5,
+          "bytes": 6495,
+          "exportOrStartReachableFunctions": 5
+        },
+        "optimizer-created or unnamed": {
+          "functions": 1,
+          "bytes": 206,
+          "exportOrStartReachableFunctions": 1
+        }
+      },
+      "largestFunctions": [
+        {
+          "index": 146,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 12519,
+          "family": "Fastly invocation driver",
+          "directCallSites": 148,
+          "uniqueCallees": 18,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 153,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "bytes": 2811,
+          "family": "handler chunks",
+          "directCallSites": 196,
+          "uniqueCallees": 16,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 157,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#numberValue",
+          "bytes": 2263,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 106,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+          "bytes": 1999,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 21,
+          "name": "fastly-native-platform-capabilities.as/host_value_binary",
+          "bytes": 1934,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 66,
+          "uniqueCallees": 15,
+          "incomingCallSites": 39,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 152,
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "bytes": 1800,
+          "family": "handler chunks",
+          "directCallSites": 114,
+          "uniqueCallees": 6,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 115,
+          "name": "~lib/util/string/strtod",
+          "bytes": 1507,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 121,
+          "name": "~lib/string/String#toLowerCase",
+          "bytes": 1279,
+          "family": "AssemblyScript runtime and standard library",
+          "directCallSites": 2,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 147,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+          "bytes": 1267,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 29,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 112,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#string",
+          "bytes": 1214,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 3,
+          "uniqueCallees": 3,
+          "incomingCallSites": 2,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 156,
+          "name": "fastly-native-platform-capabilities.as/__PulseJsonParser#object",
+          "bytes": 1101,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 11,
+          "uniqueCallees": 8,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 145,
+          "name": "fastly-native-platform-capabilities.as/__pulse_router_match_text",
+          "bytes": 1049,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 4,
+          "uniqueCallees": 2,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 96,
+          "name": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+          "bytes": 940,
+          "family": "portable dispatcher",
+          "directCallSites": 0,
+          "uniqueCallees": 0,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 98,
+          "name": "fastly-native-platform-capabilities.as/pulse_resume",
+          "bytes": 919,
+          "family": "portable dispatcher",
+          "directCallSites": 1,
+          "uniqueCallees": 1,
+          "incomingCallSites": 1,
+          "exportOrStartReachable": true
+        },
+        {
+          "index": 70,
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+          "bytes": 915,
+          "family": "other generated Fastly and portable support",
+          "directCallSites": 25,
+          "uniqueCallees": 8,
+          "incomingCallSites": 3,
+          "exportOrStartReachable": true
+        }
+      ],
+      "mostRepeatedCallEdges": [
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+          "sites": 64
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 52
+        },
+        {
+          "caller": "~lib/rt/itcms/visitRoots",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 45
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 43
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 42
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_resolve_effect",
+          "sites": 32
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_invocation_settle",
+          "sites": 32
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_string",
+          "sites": 28
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_binary",
+          "sites": 24
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+          "callee": "fastly-native-platform-capabilities.as/host_value_truthy",
+          "sites": 24
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/host_value_binary",
+          "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+          "sites": 18
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_3",
+          "callee": "fastly-native-platform-capabilities.as/host_router_error_take",
+          "sites": 17
+        },
+        {
+          "caller": "~lib/rt/__visit_members",
+          "callee": "~lib/rt/itcms/__visit",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "callee": "fastly-native-platform-capabilities.as/host_effect_begin",
+          "sites": 14
+        },
+        {
+          "caller": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "callee": "fastly-native-platform-capabilities.as/host_value_object",
+          "sites": 14
+        }
+      ],
+      "driver": {
+        "index": 146,
+        "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+        "bytes": 12519,
+        "family": "Fastly invocation driver",
+        "directCallSites": 148,
+        "uniqueCallees": 18,
+        "incomingCallSites": 1,
+        "exportOrStartReachable": true,
+        "bodyRank": 1,
+        "calls": [
+          {
+            "callee": "fimport$12",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/staticarray/StaticArray<i32>#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fimport$7",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "sites": 2
+          },
+          {
+            "callee": "~lib/string/String#indexOf",
+            "sites": 4
+          },
+          {
+            "callee": "~lib/string/String#substring",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_start",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "sites": 64
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_resolve_effect",
+            "sites": 32
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_invocation_settle",
+            "sites": 32
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/pulse_resume",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "sites": 2
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#set:text",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__PulseFastlyHeader#constructor",
+            "sites": 1
+          },
+          {
+            "callee": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "sites": 1
+          },
+          {
+            "callee": "fastly-native-platform-capabilities.as/__pulse_fastly_put",
+            "sites": 1
+          }
+        ]
+      },
+      "fullGraphSha256": "186098deb9daddeba77159218062668ab683d749d4750746e3db493a309b0115"
+    }
+  ],
+  "limitations": [
+    "Synthetic Fastly Native config.get fixtures; seven O-07 cells and three matched application-error-handler controls.",
+    "One production and one names-only compile per cell; no timing, memory or performance improvement inferred.",
+    "Family attribution follows surviving function names; inlined code is charged to its surviving caller and shared optimizer helpers have no inferred source owner.",
+    "Call sites are static direct instructions, not execution counts; reachability starts at every function export and the start function.",
+    "Code body bytes include local declarations; section bytes include headers; data payload bytes exclude segment and section framing.",
+    "No linked guests, indirect calls, tables, deployed execution, optimizer-profile comparison or O-09 behavioral qualification."
+  ],
+  "identityGateControls": {
+    "changedDataRejected": true,
+    "extraCustomSectionAccepted": true
+  }
+}
