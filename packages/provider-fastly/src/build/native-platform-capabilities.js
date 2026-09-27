@@ -2035,7 +2035,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     conditionalKv.kvNativeSource(plan),
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
-    applicationErrors.enabled(plan) ? applicationErrors.runtimeSource() : '',
+    applicationErrors.enabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource(),
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
