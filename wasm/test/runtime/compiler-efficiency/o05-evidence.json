@@ -1,0 +1,514 @@
+{
+  "schemaVersion": "pulse.parser-copy-o05.summary.v1",
+  "status": "passed",
+  "baselineRevision": "5bdc28aafab76c87abea4320154768e6277fbea9",
+  "baselineOwnerSha256": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645",
+  "sourceRevision": "5bdc28aafab76c87abea4320154768e6277fbea9",
+  "sourceState": "Uncommitted O-05 candidate; exact source hashes below identify tested bytes.",
+  "sourceHashes": {
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "f7c0dda619c98c7db1d211079552071a050a7a2840cef0461b08d7fad2539a25",
+    "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+    "wasm/test/provider/assert-fastly-json-parser.cjs": "dabca76eb6f1d3fc2419db08c87216664f4bee43a056ac3394db759eea0c9d5e",
+    "wasm/test/provider/assert-fastly-schema-encode-text.cjs": "e4810d83d0a0fdf0a85af2559187a0ce86abf6820a0b7647946567b2dfd7a18d",
+    "wasm/test/runtime/compiler-efficiency/o05-parser-copy.cjs": "a1c8dd3c8587f54202a58754367ecadcf707af39e70e935d7a49a7a7f4d35c08",
+    "wasm/test/runtime/compiler-efficiency/o04-copy-chain.cjs": "983c26c9c768e5db56a6216e018251a9d3c38e58e33b305de8a68288bbc0a88c",
+    "wasm/test/runtime/compiler-efficiency/mem01-schema-materialization.cjs": "c8150bdf585fb5344daf6a5bba7579451e784001fab34f888e3cc3401778d101",
+    "wasm/test/runtime/compiler-efficiency/p02-memory-trace.cjs": "fb5b45e37e0fc55fcc3548c6d5e1bcb5594d535051a425843c7b2926173f1f4f"
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "allocator": "incremental",
+    "maximumMemoryPages": 4096
+  },
+  "fullReportSha256": "93e2e4691aab0de62d1bd205730f37c2332a35ddfa9447c632beb31cb8b0701f",
+  "variants": [
+    {
+      "name": "baseline",
+      "sourceSha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c",
+      "wasmSha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+      "wasmBytes": 115076,
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "parserCases": 101,
+      "parserOutcomesSha256": "f2c4ed7d6a22704e96e4715acc092cd8ed90cd87104aaa67aa408bf456aa732e",
+      "cases": [
+        {
+          "pages": 0,
+          "production": {
+            "response": "0:-1",
+            "status": 200,
+            "traceSha256": "f8adf82c0b17a5489302c6900d74eb73b200e5a5ea220df855ceeec7950f8151",
+            "outboundRequests": 0,
+            "chargeBytes": 896,
+            "chargeValues": 24,
+            "capacityBytes": 7208960
+          },
+          "decode": {
+            "calls": 0,
+            "allocatedBytes": 0
+          },
+          "terminal": {
+            "allocatedBytes": 3914656,
+            "freedBytes": 336,
+            "outstandingBytes": 3914320,
+            "peakOutstandingBytes": 3914320,
+            "outstandingBlocks": 97,
+            "allocatorEvents": 101,
+            "collections": 0,
+            "memoryCapacityBytes": 7208960
+          },
+          "postCollect": {
+            "allocatedBytes": 3914656,
+            "freedBytes": 198272,
+            "outstandingBytes": 3716384,
+            "peakOutstandingBytes": 3914320,
+            "outstandingBlocks": 65,
+            "allocatorEvents": 133,
+            "collections": 1,
+            "memoryCapacityBytes": 7208960
+          },
+          "parserScratchCalls": 0,
+          "parserScratchAllocationBytes": 0
+        },
+        {
+          "pages": 1,
+          "production": {
+            "response": "1:0",
+            "status": 200,
+            "traceSha256": "8d86b7bbf718a826bb79fa7a181f124a391ec6fbea2a6ae006ae52b53c8ab1d2",
+            "outboundRequests": 1,
+            "chargeBytes": 28652,
+            "chargeValues": 135,
+            "capacityBytes": 7208960
+          },
+          "decode": {
+            "calls": 1,
+            "allocatedBytes": 87248
+          },
+          "terminal": {
+            "allocatedBytes": 4166416,
+            "freedBytes": 1376,
+            "outstandingBytes": 4165040,
+            "peakOutstandingBytes": 4165040,
+            "outstandingBlocks": 1243,
+            "allocatorEvents": 1249,
+            "collections": 0,
+            "memoryCapacityBytes": 7208960
+          },
+          "postCollect": {
+            "allocatedBytes": 4166416,
+            "freedBytes": 407376,
+            "outstandingBytes": 3759040,
+            "peakOutstandingBytes": 4165040,
+            "outstandingBlocks": 184,
+            "allocatorEvents": 2308,
+            "collections": 1,
+            "memoryCapacityBytes": 7208960
+          },
+          "parserScratchCalls": 10,
+          "parserScratchAllocationBytes": 16896
+        },
+        {
+          "pages": 16,
+          "production": {
+            "response": "16:15",
+            "status": 200,
+            "traceSha256": "bae5f1b94f1726ca13e91ccafa7fe5bf76c3d3aa8a1ffd28b5b164e74891f0a6",
+            "outboundRequests": 16,
+            "chargeBytes": 435058,
+            "chargeValues": 1578,
+            "capacityBytes": 7208960
+          },
+          "decode": {
+            "calls": 16,
+            "allocatedBytes": 1253408
+          },
+          "terminal": {
+            "allocatedBytes": 7775648,
+            "freedBytes": 2326176,
+            "outstandingBytes": 5449472,
+            "peakOutstandingBytes": 6393824,
+            "outstandingBlocks": 7253,
+            "allocatorEvents": 29129,
+            "collections": 0,
+            "memoryCapacityBytes": 7208960
+          },
+          "postCollect": {
+            "allocatedBytes": 7775648,
+            "freedBytes": 3528704,
+            "outstandingBytes": 4246944,
+            "peakOutstandingBytes": 6393824,
+            "outstandingBlocks": 1719,
+            "allocatorEvents": 34663,
+            "collections": 1,
+            "memoryCapacityBytes": 7208960
+          },
+          "parserScratchCalls": 160,
+          "parserScratchAllocationBytes": 270336
+        },
+        {
+          "pages": 64,
+          "production": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920
+          },
+          "decode": {
+            "calls": 64,
+            "allocatedBytes": 5001536
+          },
+          "terminal": {
+            "allocatedBytes": 19327168,
+            "freedBytes": 10025296,
+            "outstandingBytes": 9301872,
+            "peakOutstandingBytes": 9384832,
+            "outstandingBlocks": 23428,
+            "allocatorEvents": 121440,
+            "collections": 0,
+            "memoryCapacityBytes": 14417920
+          },
+          "postCollect": {
+            "allocatedBytes": 19327168,
+            "freedBytes": 13519744,
+            "outstandingBytes": 5807424,
+            "peakOutstandingBytes": 9384832,
+            "outstandingBlocks": 6614,
+            "allocatorEvents": 138254,
+            "collections": 1,
+            "memoryCapacityBytes": 14417920
+          },
+          "parserScratchCalls": 640,
+          "parserScratchAllocationBytes": 1081344
+        }
+      ]
+    },
+    {
+      "name": "candidate",
+      "sourceSha256": "a3672842cb6df878d7d0312d71cdd216d673c13a95b59c4e5218c277ab235795",
+      "wasmSha256": "e974c4a1804cd1c55a97f2dfdacf575fbd46dd43d2233db6f957b6805c360023",
+      "wasmBytes": 115161,
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      },
+      "jsonAs": {
+        "package": "json-as",
+        "version": "1.5.0",
+        "transform": true,
+        "strict": true,
+        "mode": "NAIVE",
+        "fastPath": false
+      },
+      "parserCases": 101,
+      "parserOutcomesSha256": "f2c4ed7d6a22704e96e4715acc092cd8ed90cd87104aaa67aa408bf456aa732e",
+      "cases": [
+        {
+          "pages": 0,
+          "production": {
+            "response": "0:-1",
+            "status": 200,
+            "traceSha256": "f8adf82c0b17a5489302c6900d74eb73b200e5a5ea220df855ceeec7950f8151",
+            "outboundRequests": 0,
+            "chargeBytes": 896,
+            "chargeValues": 24,
+            "capacityBytes": 7208960
+          },
+          "decode": {
+            "calls": 0,
+            "allocatedBytes": 0
+          },
+          "terminal": {
+            "allocatedBytes": 3914656,
+            "freedBytes": 336,
+            "outstandingBytes": 3914320,
+            "peakOutstandingBytes": 3914320,
+            "outstandingBlocks": 97,
+            "allocatorEvents": 101,
+            "collections": 0,
+            "memoryCapacityBytes": 7208960
+          },
+          "postCollect": {
+            "allocatedBytes": 3914656,
+            "freedBytes": 198272,
+            "outstandingBytes": 3716384,
+            "peakOutstandingBytes": 3914320,
+            "outstandingBlocks": 65,
+            "allocatorEvents": 133,
+            "collections": 1,
+            "memoryCapacityBytes": 7208960
+          },
+          "parserScratchCalls": 0,
+          "parserScratchAllocationBytes": 0
+        },
+        {
+          "pages": 1,
+          "production": {
+            "response": "1:0",
+            "status": 200,
+            "traceSha256": "8d86b7bbf718a826bb79fa7a181f124a391ec6fbea2a6ae006ae52b53c8ab1d2",
+            "outboundRequests": 1,
+            "chargeBytes": 28652,
+            "chargeValues": 135,
+            "capacityBytes": 7208960
+          },
+          "decode": {
+            "calls": 1,
+            "allocatedBytes": 70288
+          },
+          "terminal": {
+            "allocatedBytes": 4149456,
+            "freedBytes": 1376,
+            "outstandingBytes": 4148080,
+            "peakOutstandingBytes": 4148080,
+            "outstandingBlocks": 1221,
+            "allocatorEvents": 1227,
+            "collections": 0,
+            "memoryCapacityBytes": 7208960
+          },
+          "postCollect": {
+            "allocatedBytes": 4149456,
+            "freedBytes": 390416,
+            "outstandingBytes": 3759040,
+            "peakOutstandingBytes": 4148080,
+            "outstandingBlocks": 184,
+            "allocatorEvents": 2264,
+            "collections": 1,
+            "memoryCapacityBytes": 7208960
+          },
+          "parserScratchCalls": 0,
+          "parserScratchAllocationBytes": 0
+        },
+        {
+          "pages": 16,
+          "production": {
+            "response": "16:15",
+            "status": 200,
+            "traceSha256": "bae5f1b94f1726ca13e91ccafa7fe5bf76c3d3aa8a1ffd28b5b164e74891f0a6",
+            "outboundRequests": 16,
+            "chargeBytes": 435058,
+            "chargeValues": 1578,
+            "capacityBytes": 7208960
+          },
+          "decode": {
+            "calls": 16,
+            "allocatedBytes": 983008
+          },
+          "terminal": {
+            "allocatedBytes": 7505248,
+            "freedBytes": 2301200,
+            "outstandingBytes": 5204048,
+            "peakOutstandingBytes": 6388384,
+            "outstandingBlocks": 6760,
+            "allocatorEvents": 28978,
+            "collections": 0,
+            "memoryCapacityBytes": 7208960
+          },
+          "postCollect": {
+            "allocatedBytes": 7505248,
+            "freedBytes": 3258304,
+            "outstandingBytes": 4246944,
+            "peakOutstandingBytes": 6388384,
+            "outstandingBlocks": 1719,
+            "allocatorEvents": 34019,
+            "collections": 1,
+            "memoryCapacityBytes": 7208960
+          },
+          "parserScratchCalls": 0,
+          "parserScratchAllocationBytes": 0
+        },
+        {
+          "pages": 64,
+          "production": {
+            "response": "64:63",
+            "status": 200,
+            "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+            "outboundRequests": 64,
+            "chargeBytes": 1735058,
+            "chargeValues": 6185,
+            "capacityBytes": 14417920
+          },
+          "decode": {
+            "calls": 64,
+            "allocatedBytes": 3920128
+          },
+          "terminal": {
+            "allocatedBytes": 18245760,
+            "freedBytes": 9929424,
+            "outstandingBytes": 8316336,
+            "peakOutstandingBytes": 9523008,
+            "outstandingBlocks": 19741,
+            "allocatorEvents": 122563,
+            "collections": 0,
+            "memoryCapacityBytes": 14417920
+          },
+          "postCollect": {
+            "allocatedBytes": 18245760,
+            "freedBytes": 12438336,
+            "outstandingBytes": 5807424,
+            "peakOutstandingBytes": 9523008,
+            "outstandingBlocks": 6614,
+            "allocatorEvents": 135690,
+            "collections": 1,
+            "memoryCapacityBytes": 14417920
+          },
+          "parserScratchCalls": 0,
+          "parserScratchAllocationBytes": 0
+        }
+      ]
+    }
+  ],
+  "schemaCases": 72,
+  "schemaOutcomesSha256": "b97dd71db9b5b613f02f15fd3833cf748bbe0a616fe9c5e3693a34ba9b7cecf1",
+  "schemaFixtures": [
+    {
+      "fixture": "text-only",
+      "cases": 34
+    },
+    {
+      "fixture": "nested-text",
+      "cases": 2
+    },
+    {
+      "fixture": "codec-failure",
+      "cases": 1
+    },
+    {
+      "fixture": "mutable-alias",
+      "cases": 1
+    },
+    {
+      "fixture": "encode-admission",
+      "cases": 2
+    },
+    {
+      "fixture": "encode-invalid",
+      "cases": 1
+    },
+    {
+      "fixture": "closed-optional",
+      "cases": 15
+    },
+    {
+      "fixture": "bounded-open",
+      "cases": 16
+    }
+  ],
+  "ownership": [
+    {
+      "family": "text-only",
+      "facts": {
+        "graphs": [
+          {
+            "encode": false,
+            "inputGraphHandles": 9,
+            "projectedGraphHandles": 9,
+            "reparsedGraphHandles": 9,
+            "sharedInputProjectionScalars": 5,
+            "freshProjectionContainers": 4,
+            "freshReparseContainers": 4,
+            "handlesAddedByReparse": 13,
+            "tableTextBytesAddedByReparse": 92
+          },
+          {
+            "encode": true,
+            "inputGraphHandles": 9,
+            "projectedGraphHandles": 9,
+            "reparsedGraphHandles": 0,
+            "sharedInputProjectionScalars": 5,
+            "freshProjectionContainers": 4,
+            "freshReparseContainers": 0,
+            "handlesAddedByReparse": 0,
+            "tableTextBytesAddedByReparse": 0
+          }
+        ],
+        "encodeNormalizedTextEqualsFinalText": true,
+        "encodeNormalizedUtf8Bytes": 94,
+        "finalEncodeUtf8Bytes": 94
+      }
+    },
+    {
+      "family": "closed-optional",
+      "facts": {
+        "graphs": [
+          {
+            "encode": false,
+            "inputGraphHandles": 10,
+            "projectedGraphHandles": 10,
+            "reparsedGraphHandles": 10,
+            "sharedInputProjectionScalars": 6,
+            "freshProjectionContainers": 4,
+            "freshReparseContainers": 4,
+            "handlesAddedByReparse": 15,
+            "tableTextBytesAddedByReparse": 102
+          },
+          {
+            "encode": true,
+            "inputGraphHandles": 10,
+            "projectedGraphHandles": 10,
+            "reparsedGraphHandles": 10,
+            "sharedInputProjectionScalars": 6,
+            "freshProjectionContainers": 4,
+            "freshReparseContainers": 4,
+            "handlesAddedByReparse": 15,
+            "tableTextBytesAddedByReparse": 102
+          }
+        ],
+        "encodeNormalizedTextEqualsFinalText": true,
+        "encodeNormalizedUtf8Bytes": 107,
+        "finalEncodeUtf8Bytes": 107
+      }
+    },
+    {
+      "family": "bounded-open",
+      "facts": {
+        "graphs": [
+          {
+            "encode": false,
+            "inputGraphHandles": 10,
+            "projectedGraphHandles": 10,
+            "reparsedGraphHandles": 10,
+            "sharedInputProjectionScalars": 6,
+            "freshProjectionContainers": 4,
+            "freshReparseContainers": 4,
+            "handlesAddedByReparse": 15,
+            "tableTextBytesAddedByReparse": 102
+          },
+          {
+            "encode": true,
+            "inputGraphHandles": 10,
+            "projectedGraphHandles": 10,
+            "reparsedGraphHandles": 10,
+            "sharedInputProjectionScalars": 6,
+            "freshProjectionContainers": 4,
+            "freshReparseContainers": 4,
+            "handlesAddedByReparse": 15,
+            "tableTextBytesAddedByReparse": 102
+          }
+        ],
+        "encodeNormalizedTextEqualsFinalText": true,
+        "encodeNormalizedUtf8Bytes": 107,
+        "finalEncodeUtf8Bytes": 107
+      }
+    }
+  ],
+  "limitations": [
+    "Single build pair and one fresh request process per case/mode; O-06 repetition and runtime/noise gates remain outstanding.",
+    "Injected Fastly ABI only; no Viceroy or deployed acceptance claim.",
+    "Baseline loads the unmodified O-04 provider owner with the same checkout dependencies.",
+    "Direct parser cases bypass public schema/body admission; allocation is TLSF block volume, not RSS or capacity."
+  ]
+}

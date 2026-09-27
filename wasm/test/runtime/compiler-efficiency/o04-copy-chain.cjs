@@ -6,17 +6,28 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const Module = require('node:module');
 const { execFileSync, spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../../../..');
 const p02 = require('./p02-memory-trace.cjs');
 const mem = require('./mem01-schema-materialization.cjs');
-const platform = require('../../../../packages/provider-fastly/src/build/native-platform-capabilities');
 const host = require('../../../../packages/provider-fastly/src/testing/native-platform-capabilities-host');
 const { policy } = require('../../../../packages/provider-fastly/src/build/native-value-budget');
 const sha = data => crypto.createHash('sha256').update(data).digest('hex');
 const json = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const write = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 2) + '\n');
 const owner = 'packages/provider-fastly/src/build/native-platform-capabilities.js';
+const baselineRevision = '5bdc28aafab76c87abea4320154768e6277fbea9';
+
+// O-04 is historical attribution. Later parser optimizations must not silently
+// replace its selected baseline. Load only the original owner; keep dependencies pinned.
+function loadBaseline() {
+  const filename = path.join(root, owner);
+  const source = execFileSync('git', ['show', `${baselineRevision}:${owner}`], { cwd: root, encoding: 'utf8' });
+  const loaded = new Module(filename, module); loaded.filename = filename;
+  loaded.paths = Module._nodeModulePaths(path.dirname(filename)); loaded._compile(source, filename);
+  return { compiler: loaded.exports, sourceSha256: sha(source), revision: baselineRevision };
+}
 
 function instrument(source) {
   const replace = (a, b) => { source = mem.replaceExact(source, a, b); };
@@ -204,6 +215,9 @@ function main() {
     cases: [] };
   const reportFile = path.join(output, 'measurements.json'); write(reportFile, report);
   try {
+    const baseline = loadBaseline(), platform = baseline.compiler;
+    report.baselineRevision = baseline.revision;
+    report.baselineOwnerSha256 = baseline.sourceSha256;
     const project = path.join(dir, 'project'); fs.mkdirSync(project); p02.prepareFixture(project);
     p02.compileWorker('node', project, dir);
     const plan = json(path.join(dir, 'plan.json'));
@@ -256,7 +270,7 @@ function main() {
       'Schema phase rows and primitive copy groups overlap; do not sum both as independent allocations.',
       'The direct parser reproducer bypasses schema/body byte admission and does not establish a new public limit.',
       'Post-collection memory is a diagnostic retained estimate; capacity and RSS are not allocation volume.',
-      'The proposed copy removal has not been implemented or benchmarked; removable scratch is an upper bound, not an observed saving.',
+      'Historical baseline attribution only; removable scratch is an upper bound, not an observed saving in the current provider.',
       'O-02 does not attribute every temporary allocation. S3 header/body buffers, crypto and codec internals remain outside this bounded selection.'
     ];
     report.status = 'passed'; write(reportFile, report);
@@ -268,4 +282,4 @@ if (require.main === module) {
   try { if (process.argv[2] === '--case') console.log(JSON.stringify(runCase(process.argv[3], process.argv[4], Number(process.argv[5])))); else main(); }
   catch (error) { console.error(error.stack || error); process.exitCode = 1; }
 }
-module.exports = { instrument, observer, tokens, reproduce };
+module.exports = { instrument, observer, tokens, reproduce, loadBaseline, runCase };
