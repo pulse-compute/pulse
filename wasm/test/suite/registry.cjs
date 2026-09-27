@@ -462,6 +462,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'O-03 serial compiler phase CPU/wall/RSS attribution with exact production Wasm parity'
   }),
+  'copy-chain-o04': nodeTask('test/runtime/compiler-efficiency/o04-copy-chain.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'O-04 schema copy-chain allocation attribution and owned-string parser reproducer'
+  }),
   'effect-retention-mem02': nodeTask('test/runtime/compiler-efficiency/mem02-effect-retention.cjs', {
     evidence: 'external',
     timeoutMs: 120000,

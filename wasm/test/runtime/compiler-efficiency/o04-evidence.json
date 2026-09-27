@@ -1,0 +1,876 @@
+{
+  "schemaVersion": "pulse.copy-chain-o04.v1",
+  "status": "passed",
+  "sourceRevision": "254e89f222892a66c46c24285302953f1f536780",
+  "workingTree": "M wasm/test/suite/assert-suite-shape.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/o04-copy-chain.cjs",
+  "sourceHashes": {
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "02a0434c4b2fecc6b17f6d230a00aa17608efad56c8fa5639c0d01a747b8e645",
+    "wasm/test/runtime/compiler-efficiency/o04-copy-chain.cjs": "efd3ab70767dd77a6b0a2e9a2354b102bb447b082b570602376189ab4e9abfd9",
+    "wasm/test/runtime/compiler-efficiency/mem01-schema-materialization.cjs": "c8150bdf585fb5344daf6a5bba7579451e784001fab34f888e3cc3401778d101",
+    "wasm/test/runtime/compiler-efficiency/p02-memory-trace.cjs": "fb5b45e37e0fc55fcc3548c6d5e1bcb5594d535051a425843c7b2926173f1f4f",
+    "packages/provider-fastly/src/testing/native-platform-capabilities-host.js": "a00bdaf2050d6a4afe8cc8dbc56710f1df1b1d50a72a2764c87f69cb260e69ff",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/src/index.ts": "486c3d192b46d3acdd91fe1730dcba52ea932ea5d3a3dca06d953aa048b5c04f",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/src/types.ts": "e214d159d9df150b4ece8cd174c9e743e5ca7932bbd647568d2419a0a7d083c6",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/src/schemas.ts": "ed7dcb67aa3fb2968a13c8334ebb5e498e07a92148d9ad97b1262e80b50dd0d0",
+    "wasm/test/fixtures/projects/compiler-efficiency-memory/.pulse/config.ts": "760eee9157bea9657042977c5b5ec770de0ac7189a5ff90aec8457e411294653",
+    "pnpm-lock.yaml": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8"
+  },
+  "cases": [
+    {
+      "pages": 0,
+      "fixtureSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "production": {
+        "response": "0:-1",
+        "status": 200,
+        "traceSha256": "f8adf82c0b17a5489302c6900d74eb73b200e5a5ea220df855ceeec7950f8151",
+        "outboundRequests": 0,
+        "chargeBytes": 896,
+        "chargeValues": 24,
+        "capacityBytes": 7208960
+      },
+      "traced": {
+        "response": "0:-1",
+        "status": 200,
+        "traceSha256": "f8adf82c0b17a5489302c6900d74eb73b200e5a5ea220df855ceeec7950f8151",
+        "outboundRequests": 0,
+        "chargeBytes": 896,
+        "chargeValues": 24,
+        "capacityBytes": 7208960,
+        "terminal": {
+          "allocatedBytes": 3914656,
+          "freedBytes": 336,
+          "outstandingBytes": 3914320,
+          "peakOutstandingBytes": 3914320,
+          "outstandingBlocks": 97,
+          "allocatorEvents": 101,
+          "collections": 0,
+          "memoryCapacityBytes": 7208960
+        },
+        "postCollect": {
+          "allocatedBytes": 3914656,
+          "freedBytes": 198272,
+          "outstandingBytes": 3716384,
+          "peakOutstandingBytes": 3914320,
+          "outstandingBlocks": 65,
+          "allocatorEvents": 133,
+          "collections": 1,
+          "memoryCapacityBytes": 7208960
+        },
+        "copies": [],
+        "decode": {
+          "calls": 0,
+          "allocatedBytes": 0
+        },
+        "schema": {
+          "calls": 0,
+          "projection": 0,
+          "serialization": 0,
+          "codec": 0,
+          "reparse": 0
+        }
+      },
+      "staged": {
+        "response": "0:-1",
+        "status": 200,
+        "traceSha256": "f8adf82c0b17a5489302c6900d74eb73b200e5a5ea220df855ceeec7950f8151",
+        "outboundRequests": 0,
+        "chargeBytes": 896,
+        "chargeValues": 24,
+        "capacityBytes": 7208960,
+        "terminal": {
+          "allocatedBytes": 3914656,
+          "freedBytes": 336,
+          "outstandingBytes": 3914320,
+          "peakOutstandingBytes": 3914320,
+          "outstandingBlocks": 97,
+          "allocatorEvents": 101,
+          "collections": 0,
+          "memoryCapacityBytes": 7208960
+        },
+        "postCollect": {
+          "allocatedBytes": 3914656,
+          "freedBytes": 198272,
+          "outstandingBytes": 3716384,
+          "peakOutstandingBytes": 3914320,
+          "outstandingBlocks": 65,
+          "allocatorEvents": 133,
+          "collections": 1,
+          "memoryCapacityBytes": 7208960
+        },
+        "copies": [],
+        "decode": {
+          "calls": 0,
+          "allocatedBytes": 0
+        },
+        "schema": {
+          "calls": 0,
+          "projection": 0,
+          "serialization": 0,
+          "codec": 0,
+          "reparse": 0
+        }
+      }
+    },
+    {
+      "pages": 1,
+      "fixtureSha256": "8207e20037e2183a580261f0a6a406246e6f56220dafee6936c679c498520f0e",
+      "production": {
+        "response": "1:0",
+        "status": 200,
+        "traceSha256": "8d86b7bbf718a826bb79fa7a181f124a391ec6fbea2a6ae006ae52b53c8ab1d2",
+        "outboundRequests": 1,
+        "chargeBytes": 28652,
+        "chargeValues": 135,
+        "capacityBytes": 7208960
+      },
+      "traced": {
+        "response": "1:0",
+        "status": 200,
+        "traceSha256": "8d86b7bbf718a826bb79fa7a181f124a391ec6fbea2a6ae006ae52b53c8ab1d2",
+        "outboundRequests": 1,
+        "chargeBytes": 28652,
+        "chargeValues": 135,
+        "capacityBytes": 7208960,
+        "terminal": {
+          "allocatedBytes": 4166416,
+          "freedBytes": 1376,
+          "outstandingBytes": 4165040,
+          "peakOutstandingBytes": 4165040,
+          "outstandingBlocks": 1243,
+          "allocatorEvents": 1249,
+          "collections": 0,
+          "memoryCapacityBytes": 7208960
+        },
+        "postCollect": {
+          "allocatedBytes": 4166416,
+          "freedBytes": 407376,
+          "outstandingBytes": 3759040,
+          "peakOutstandingBytes": 4165040,
+          "outstandingBlocks": 184,
+          "allocatorEvents": 2308,
+          "collections": 1,
+          "memoryCapacityBytes": 7208960
+        },
+        "copies": [],
+        "decode": {
+          "calls": 0,
+          "allocatedBytes": 0
+        },
+        "schema": {
+          "calls": 0,
+          "projection": 0,
+          "serialization": 0,
+          "codec": 0,
+          "reparse": 0
+        }
+      },
+      "staged": {
+        "response": "1:0",
+        "status": 200,
+        "traceSha256": "8d86b7bbf718a826bb79fa7a181f124a391ec6fbea2a6ae006ae52b53c8ab1d2",
+        "outboundRequests": 1,
+        "chargeBytes": 28652,
+        "chargeValues": 135,
+        "capacityBytes": 7208960,
+        "terminal": {
+          "allocatedBytes": 4166416,
+          "freedBytes": 1376,
+          "outstandingBytes": 4165040,
+          "peakOutstandingBytes": 4165040,
+          "outstandingBlocks": 1243,
+          "allocatorEvents": 1249,
+          "collections": 0,
+          "memoryCapacityBytes": 7208960
+        },
+        "postCollect": {
+          "allocatedBytes": 4166416,
+          "freedBytes": 407376,
+          "outstandingBytes": 3759040,
+          "peakOutstandingBytes": 4165040,
+          "outstandingBlocks": 184,
+          "allocatorEvents": 2308,
+          "collections": 1,
+          "memoryCapacityBytes": 7208960
+        },
+        "copies": [
+          {
+            "phase": "decode-input",
+            "kind": "parser-string",
+            "calls": 5,
+            "scratchCapacityBytes": 8156,
+            "scratchAllocationBytes": 8448,
+            "scratchBackingBlockBytes": 8288,
+            "outputUtf16Bytes": 8156,
+            "outputAllocationBytes": 8288
+          },
+          {
+            "phase": "serialization",
+            "kind": "quote-string",
+            "calls": 5,
+            "scratchCapacityBytes": 8176,
+            "scratchAllocationBytes": 8480,
+            "scratchBackingBlockBytes": 8320,
+            "outputUtf16Bytes": 8176,
+            "outputAllocationBytes": 8320
+          },
+          {
+            "phase": "reparse",
+            "kind": "parser-string",
+            "calls": 5,
+            "scratchCapacityBytes": 8156,
+            "scratchAllocationBytes": 8448,
+            "scratchBackingBlockBytes": 8288,
+            "outputUtf16Bytes": 8156,
+            "outputAllocationBytes": 8288
+          }
+        ],
+        "decode": {
+          "calls": 1,
+          "allocatedBytes": 87248
+        },
+        "schema": {
+          "calls": 1,
+          "projection": 608,
+          "serialization": 25232,
+          "codec": 25632,
+          "reparse": 18160
+        }
+      }
+    },
+    {
+      "pages": 16,
+      "fixtureSha256": "e173b2e9dba329677f12d5ca9dc30a8778cc0161cb0de2b4ec0ac3674fd7746b",
+      "production": {
+        "response": "16:15",
+        "status": 200,
+        "traceSha256": "bae5f1b94f1726ca13e91ccafa7fe5bf76c3d3aa8a1ffd28b5b164e74891f0a6",
+        "outboundRequests": 16,
+        "chargeBytes": 435058,
+        "chargeValues": 1578,
+        "capacityBytes": 7208960
+      },
+      "traced": {
+        "response": "16:15",
+        "status": 200,
+        "traceSha256": "bae5f1b94f1726ca13e91ccafa7fe5bf76c3d3aa8a1ffd28b5b164e74891f0a6",
+        "outboundRequests": 16,
+        "chargeBytes": 435058,
+        "chargeValues": 1578,
+        "capacityBytes": 7208960,
+        "terminal": {
+          "allocatedBytes": 7775648,
+          "freedBytes": 2326176,
+          "outstandingBytes": 5449472,
+          "peakOutstandingBytes": 6393824,
+          "outstandingBlocks": 7253,
+          "allocatorEvents": 29129,
+          "collections": 0,
+          "memoryCapacityBytes": 7208960
+        },
+        "postCollect": {
+          "allocatedBytes": 7775648,
+          "freedBytes": 3528704,
+          "outstandingBytes": 4246944,
+          "peakOutstandingBytes": 6393824,
+          "outstandingBlocks": 1719,
+          "allocatorEvents": 34663,
+          "collections": 1,
+          "memoryCapacityBytes": 7208960
+        },
+        "copies": [],
+        "decode": {
+          "calls": 0,
+          "allocatedBytes": 0
+        },
+        "schema": {
+          "calls": 0,
+          "projection": 0,
+          "serialization": 0,
+          "codec": 0,
+          "reparse": 0
+        }
+      },
+      "staged": {
+        "response": "16:15",
+        "status": 200,
+        "traceSha256": "bae5f1b94f1726ca13e91ccafa7fe5bf76c3d3aa8a1ffd28b5b164e74891f0a6",
+        "outboundRequests": 16,
+        "chargeBytes": 435058,
+        "chargeValues": 1578,
+        "capacityBytes": 7208960,
+        "terminal": {
+          "allocatedBytes": 7775648,
+          "freedBytes": 2326176,
+          "outstandingBytes": 5449472,
+          "peakOutstandingBytes": 6393824,
+          "outstandingBlocks": 7253,
+          "allocatorEvents": 29129,
+          "collections": 0,
+          "memoryCapacityBytes": 7208960
+        },
+        "postCollect": {
+          "allocatedBytes": 7775648,
+          "freedBytes": 3528704,
+          "outstandingBytes": 4246944,
+          "peakOutstandingBytes": 6393824,
+          "outstandingBlocks": 1719,
+          "allocatorEvents": 34663,
+          "collections": 1,
+          "memoryCapacityBytes": 7208960
+        },
+        "copies": [
+          {
+            "phase": "decode-input",
+            "kind": "parser-string",
+            "calls": 80,
+            "scratchCapacityBytes": 130484,
+            "scratchAllocationBytes": 135168,
+            "scratchBackingBlockBytes": 132608,
+            "outputUtf16Bytes": 130484,
+            "outputAllocationBytes": 132608
+          },
+          {
+            "phase": "serialization",
+            "kind": "quote-string",
+            "calls": 80,
+            "scratchCapacityBytes": 130804,
+            "scratchAllocationBytes": 135440,
+            "scratchBackingBlockBytes": 132880,
+            "outputUtf16Bytes": 130804,
+            "outputAllocationBytes": 132880
+          },
+          {
+            "phase": "reparse",
+            "kind": "parser-string",
+            "calls": 80,
+            "scratchCapacityBytes": 130484,
+            "scratchAllocationBytes": 135168,
+            "scratchBackingBlockBytes": 132608,
+            "outputUtf16Bytes": 130484,
+            "outputAllocationBytes": 132608
+          }
+        ],
+        "decode": {
+          "calls": 16,
+          "allocatedBytes": 1253408
+        },
+        "schema": {
+          "calls": 16,
+          "projection": 9728,
+          "serialization": 403712,
+          "codec": 272832,
+          "reparse": 283840
+        }
+      }
+    },
+    {
+      "pages": 64,
+      "fixtureSha256": "732fe0e751701439c4c812a6c25fb756adc4a9d8f762efe70cd9b38ed8d29f86",
+      "production": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920
+      },
+      "traced": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "terminal": {
+          "allocatedBytes": 19327168,
+          "freedBytes": 10025296,
+          "outstandingBytes": 9301872,
+          "peakOutstandingBytes": 9384832,
+          "outstandingBlocks": 23428,
+          "allocatorEvents": 121440,
+          "collections": 0,
+          "memoryCapacityBytes": 14417920
+        },
+        "postCollect": {
+          "allocatedBytes": 19327168,
+          "freedBytes": 13519744,
+          "outstandingBytes": 5807424,
+          "peakOutstandingBytes": 9384832,
+          "outstandingBlocks": 6614,
+          "allocatorEvents": 138254,
+          "collections": 1,
+          "memoryCapacityBytes": 14417920
+        },
+        "copies": [],
+        "decode": {
+          "calls": 0,
+          "allocatedBytes": 0
+        },
+        "schema": {
+          "calls": 0,
+          "projection": 0,
+          "serialization": 0,
+          "codec": 0,
+          "reparse": 0
+        }
+      },
+      "staged": {
+        "response": "64:63",
+        "status": 200,
+        "traceSha256": "cce04990fba4ad37d3e9c80ead0534e7f3f8d9d2cefc1c06f55c5c48336156d2",
+        "outboundRequests": 64,
+        "chargeBytes": 1735058,
+        "chargeValues": 6185,
+        "capacityBytes": 14417920,
+        "terminal": {
+          "allocatedBytes": 19327168,
+          "freedBytes": 10025296,
+          "outstandingBytes": 9301872,
+          "peakOutstandingBytes": 9384832,
+          "outstandingBlocks": 23428,
+          "allocatorEvents": 121440,
+          "collections": 0,
+          "memoryCapacityBytes": 14417920
+        },
+        "postCollect": {
+          "allocatedBytes": 19327168,
+          "freedBytes": 13519744,
+          "outstandingBytes": 5807424,
+          "peakOutstandingBytes": 9384832,
+          "outstandingBlocks": 6614,
+          "allocatorEvents": 138254,
+          "collections": 1,
+          "memoryCapacityBytes": 14417920
+        },
+        "copies": [
+          {
+            "phase": "decode-input",
+            "kind": "parser-string",
+            "calls": 320,
+            "scratchCapacityBytes": 521876,
+            "scratchAllocationBytes": 540672,
+            "scratchBackingBlockBytes": 530432,
+            "outputUtf16Bytes": 521876,
+            "outputAllocationBytes": 530432
+          },
+          {
+            "phase": "serialization",
+            "kind": "quote-string",
+            "calls": 320,
+            "scratchCapacityBytes": 523156,
+            "scratchAllocationBytes": 541712,
+            "scratchBackingBlockBytes": 531472,
+            "outputUtf16Bytes": 523156,
+            "outputAllocationBytes": 531472
+          },
+          {
+            "phase": "reparse",
+            "kind": "parser-string",
+            "calls": 320,
+            "scratchCapacityBytes": 521876,
+            "scratchAllocationBytes": 540672,
+            "scratchBackingBlockBytes": 530432,
+            "outputUtf16Bytes": 521876,
+            "outputAllocationBytes": 530432
+          }
+        ],
+        "decode": {
+          "calls": 64,
+          "allocatedBytes": 5001536
+        },
+        "schema": {
+          "calls": 64,
+          "projection": 38912,
+          "serialization": 1614848,
+          "codec": 1063872,
+          "reparse": 1150432
+        }
+      }
+    }
+  ],
+  "toolchain": {
+    "node": "v24.19.0",
+    "assemblyScript": "0.28.18",
+    "allocator": "incremental",
+    "maximumMemoryPages": 4096
+  },
+  "artifacts": {
+    "generatedSourceSha256": "5faee9ca4a9955dbe0dfe9141c92fe0addd468648f4f5b4f80125a272ba44c8c",
+    "productionWasmSha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+    "uninstrumentedControlByteIdentical": true,
+    "production": {
+      "sha256": "fa695a33be62922960d5179ed17e9429c46a0c895ed239613c1c0a28277a1c26",
+      "bytes": 115076
+    },
+    "traced": {
+      "sha256": "3ebe91cacc85a406f32080fa40eb8c1a75d49fdede5e3658a524b07326933193",
+      "bytes": 125793
+    },
+    "staged": {
+      "sha256": "cc14a0605eb87cb72bb0c35a2076e5acd8f5aec161ab41ea2fdf446a9b013e42",
+      "bytes": 126102
+    },
+    "minimal": {
+      "sha256": "adfa45ffa9207fe50e7c6b1cae8703138f769a959400d16c21398711166462eb",
+      "bytes": 126271
+    },
+    "minimalTrace": {
+      "sha256": "856f4c305cdd11736b725bf0a68c6c9aaef9ab078e6132bb976aa8f60b461bc8",
+      "bytes": 125962
+    }
+  },
+  "reproducer": [
+    {
+      "name": "empty",
+      "tokenSha256": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "inputUtf16Bytes": 4,
+      "expected": {
+        "textSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 0,
+          "scratchAllocationBytes": 64,
+          "scratchBackingBlockBytes": 32,
+          "outputUtf16Bytes": 0,
+          "outputAllocationBytes": 32
+        }
+      ]
+    },
+    {
+      "name": "ascii-small",
+      "tokenSha256": "efaa9d1b2193174ba24d21a8594b9f7a3fac82944b6327067cc1003b6d101e0b",
+      "inputUtf16Bytes": 16,
+      "expected": {
+        "textSha256": "38fe21adf75ac38016116f2bb485510c0e568a7ad84631c659938c6c1981177e",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 12,
+          "scratchAllocationBytes": 64,
+          "scratchBackingBlockBytes": 32,
+          "outputUtf16Bytes": 12,
+          "outputAllocationBytes": 32
+        }
+      ]
+    },
+    {
+      "name": "ascii-4096",
+      "tokenSha256": "7f7531f0adf93194f8cc5ae6be03bfb000b4621fb0bebaa53cecfb1e48a68bcd",
+      "inputUtf16Bytes": 8196,
+      "expected": {
+        "textSha256": "9a0a1f067a43b0585fde0cd29e8be0dcf7d8ec98c0f2055cdc7b16c549843023",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 16624,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 8192,
+          "scratchAllocationBytes": 8256,
+          "scratchBackingBlockBytes": 8224,
+          "outputUtf16Bytes": 8192,
+          "outputAllocationBytes": 8224
+        }
+      ]
+    },
+    {
+      "name": "ascii-59000",
+      "tokenSha256": "eddc7a60366ef9b3e8f6d351398753f9f0099dd79f4131915b01e130c7d6e37e",
+      "inputUtf16Bytes": 118004,
+      "expected": {
+        "textSha256": "ef82d524198c60f224a22069ff028854f98d1154b8f03ff032b93392778a1951",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 236240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 118000,
+          "scratchAllocationBytes": 118064,
+          "scratchBackingBlockBytes": 118032,
+          "outputUtf16Bytes": 118000,
+          "outputAllocationBytes": 118032
+        }
+      ]
+    },
+    {
+      "name": "escapes",
+      "tokenSha256": "c5b64de3af33da6a91c5637925ef228492bc3a984f636ce99bc0e6621107f0f6",
+      "inputUtf16Bytes": 58,
+      "expected": {
+        "textSha256": "99f031ff0a0e83213a314a71a260b287607824dbf68a7d0e34f0633fc371d59a",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 304,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 54,
+          "scratchAllocationBytes": 112,
+          "scratchBackingBlockBytes": 80,
+          "outputUtf16Bytes": 20,
+          "outputAllocationBytes": 48
+        }
+      ]
+    },
+    {
+      "name": "unicode",
+      "tokenSha256": "4706907f24e5d9e1ce2464e61e992cded976f9383bd8bde6ea5ce8e5b757cf9a",
+      "inputUtf16Bytes": 10,
+      "expected": {
+        "textSha256": "f3213eea56681c5e39f3f336c87132a753288746682d8fd2ade4e93c443a12d8",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 6,
+          "scratchAllocationBytes": 64,
+          "scratchBackingBlockBytes": 32,
+          "outputUtf16Bytes": 6,
+          "outputAllocationBytes": 32
+        }
+      ]
+    },
+    {
+      "name": "lone-high",
+      "tokenSha256": "8c0c59dd0d275aadcd462a5fe12eb352cbdfeaf961eae4f85a4660521df7d2f5",
+      "inputUtf16Bytes": 16,
+      "expected": {
+        "textSha256": "205022e3428b7c8276cf247b36e4e512db5651e5cb3472c253d9ee893a8ac750",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 12,
+          "scratchAllocationBytes": 64,
+          "scratchBackingBlockBytes": 32,
+          "outputUtf16Bytes": 2,
+          "outputAllocationBytes": 32
+        }
+      ]
+    },
+    {
+      "name": "lone-low",
+      "tokenSha256": "aa68369aff102de57c3da5ad0dd5c24149f811b4afcd13c55f2da895bd15c782",
+      "inputUtf16Bytes": 16,
+      "expected": {
+        "textSha256": "a8a5f90979d76e4fc63744c5592e5f6ce41a8cd4bb849de08f409bba305a49cd",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 12,
+          "scratchAllocationBytes": 64,
+          "scratchBackingBlockBytes": 32,
+          "outputUtf16Bytes": 2,
+          "outputAllocationBytes": 32
+        }
+      ]
+    },
+    {
+      "name": "escape-dense",
+      "tokenSha256": "fd063d0b6c5d354ddf3f4c47e1861b0077fdadcdadcfdca81a1a003ffa190266",
+      "inputUtf16Bytes": 16388,
+      "expected": {
+        "textSha256": "565749d7dbdea749d85cadcf6f34d90f70d678987ab295c6a10137909facce0c",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 24816,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 16384,
+          "scratchAllocationBytes": 16448,
+          "scratchBackingBlockBytes": 16416,
+          "outputUtf16Bytes": 8192,
+          "outputAllocationBytes": 8224
+        }
+      ]
+    },
+    {
+      "name": "unicode-large",
+      "tokenSha256": "5c6e88afaa878370f25b920bae8a8df4c81cd490469825f28f71cdf1bb2f09d6",
+      "inputUtf16Bytes": 6004,
+      "expected": {
+        "textSha256": "e0ed46b48b475a24473e8297057ad1b494a2fbef7da8d111b9a6e2abbfc9f7b2",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 12240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 6000,
+          "scratchAllocationBytes": 6064,
+          "scratchBackingBlockBytes": 6032,
+          "outputUtf16Bytes": 6000,
+          "outputAllocationBytes": 6032
+        }
+      ]
+    },
+    {
+      "name": "escaped-spelling",
+      "tokenSha256": "373afe0c2ba460087d2d2524dd5bbce93ef0ec646e2e0b9f76156cfce491c316",
+      "inputUtf16Bytes": 46,
+      "expected": {
+        "textSha256": "5ae953145db0ae832f9f5b95d50ee832c0edc70669f81fd58b3cce33daa441f8",
+        "detachedAfterInputMutationAndCollection": true
+      },
+      "allocatedBytes": 272,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 42,
+          "scratchAllocationBytes": 96,
+          "scratchBackingBlockBytes": 64,
+          "outputUtf16Bytes": 10,
+          "outputAllocationBytes": 32
+        }
+      ]
+    },
+    {
+      "name": "unterminated",
+      "tokenSha256": "aa885fb27a812abedb8978a3bb3218cbb01a22d270469b74f23995140175c462",
+      "inputUtf16Bytes": 8,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 144,
+      "copies": []
+    },
+    {
+      "name": "trailing-backslash",
+      "tokenSha256": "d09c091bb109fc110932b2b1e8f346f2db41d0a376b8b35f157d66dc88a9ba9a",
+      "inputUtf16Bytes": 10,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 144,
+      "copies": []
+    },
+    {
+      "name": "invalid-escape",
+      "tokenSha256": "722cd80a90dd9305fea073dd4dfeeace433b327fccf462fcf466cd13551c6aa9",
+      "inputUtf16Bytes": 8,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 208,
+      "copies": []
+    },
+    {
+      "name": "short-hex",
+      "tokenSha256": "e852f77d9390b36c6f983e361227ec4153db76189481cab7d6b371c108113d1f",
+      "inputUtf16Bytes": 12,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 208,
+      "copies": []
+    },
+    {
+      "name": "bad-hex",
+      "tokenSha256": "715db9828cef050c17bc65bba006f2768d9321785daec39597cae68f87db8dc4",
+      "inputUtf16Bytes": 16,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 208,
+      "copies": []
+    },
+    {
+      "name": "raw-control",
+      "tokenSha256": "71f6bb6ee37cb1df013db8d8a675a947b8b5253d571b6533a30671ddd37243fc",
+      "inputUtf16Bytes": 6,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 208,
+      "copies": []
+    },
+    {
+      "name": "trailing-token",
+      "tokenSha256": "99f706221d915f501307f492b17c3087b372b55cfa9ce57ef4aba021b0ba226a",
+      "inputUtf16Bytes": 16,
+      "expected": {
+        "error": 1004,
+        "stage": 3
+      },
+      "allocatedBytes": 240,
+      "copies": [
+        {
+          "phase": "outside-schema",
+          "kind": "parser-string",
+          "calls": 1,
+          "scratchCapacityBytes": 2,
+          "scratchAllocationBytes": 64,
+          "scratchBackingBlockBytes": 32,
+          "outputUtf16Bytes": 2,
+          "outputAllocationBytes": 32
+        }
+      ]
+    }
+  ],
+  "reproducerTraceParity": true,
+  "selection": {
+    "owner": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+    "function": "__PulseJsonParser.string",
+    "scope": "unescaped string tokens only; preserve the existing escape decoder",
+    "chain": "source span -> Uint16Array backing allocation -> String.UTF16.decodeUnsafe owned string",
+    "proposedChange": "copy an already scanned unescaped span directly into an owned string, retaining all syntax/control validation and fresh handle behavior",
+    "primaryMetric": "cumulative guest allocation inside host_schema_decode on the 64-page O-02 control",
+    "gate": "at least 10% less primary allocation; exact semantic/charge/trace parity; at most 5% median runtime regression beyond noise",
+    "qualification": "O-05 implements; O-06 uses at least 3 independent builds and 5 alternating fresh request processes per mode; this report is baseline attribution only"
+  },
+  "limitations": [
+    "Injected Fastly ABI host and a pinned incremental AS runtime only; no Node Native guest, Viceroy or deployed acceptance.",
+    "Scratch block attribution includes allocator overhead. All copy groups are completed calls; malformed tokens can abandon scratch before conversion.",
+    "Schema phase rows and primitive copy groups overlap; do not sum both as independent allocations.",
+    "The direct parser reproducer bypasses schema/body byte admission and does not establish a new public limit.",
+    "Post-collection memory is a diagnostic retained estimate; capacity and RSS are not allocation volume.",
+    "The proposed copy removal has not been implemented or benchmarked; removable scratch is an upper bound, not an observed saving.",
+    "O-02 does not attribute every temporary allocation. S3 header/body buffers, crypto and codec internals remain outside this bounded selection."
+  ]
+}
