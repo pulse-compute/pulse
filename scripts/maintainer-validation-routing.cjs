@@ -71,7 +71,7 @@ function validateWorkflow(source, kind = 'validation') {
   assert(source.includes("require('./scripts/maintainer-validation-routing.cjs').route({ github, context, core })"), 'Workflow must share event routing');
   if (kind !== 'validation') return;
   assert(source.includes("needs: [route, maintenance, node-floor, fast-selection, fast-portable, full-portable]"), 'Portable gate must wait for both tiers and common checks');
-  assert(source.includes("if: always() && (github.event_name != 'push' || needs.route.outputs.run != 'false')"), 'Required gate must evaluate failures, including routing failures');
+  assert(source.includes("if: always() && (github.event_name != 'push' || github.ref == 'refs/heads/main' || needs.route.outputs.run != 'false')"), 'Required gate must evaluate failures, including routing failures');
   assert(source.includes('VALIDATION_NEEDS: ${{ toJSON(needs) }}'), 'Gate requires actual job conclusions');
   assert(source.includes('node scripts/maintainer-validation-routing.cjs gate'), 'Missing event-aware required gate');
   for (const [job, tier] of [['fast-selection', 'fast'], ['portable-shards', 'full']]) {
