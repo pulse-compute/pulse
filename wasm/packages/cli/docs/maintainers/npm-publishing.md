@@ -123,10 +123,17 @@ as the workflow dispatch ref and supply the identical `release_tag` input:
 ```bash
 RELEASE_TAG=v<version>
 gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=audit
-# After audit and protected approval, the release owner may use operation=publish.
-gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish
 gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=false
-# After matching npm verification and protected approval, the release owner may use promote_latest=true.
+```
+
+Stop and inspect the candidate, seal, and exact-version results. Only after
+the audit passes and the human release owner authorizes publication, dispatch
+the protected publish job. After npm verification and the human deployment
+approval, dispatch promotion from the same tag:
+
+```bash
+RELEASE_TAG=v<version>
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish
 gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=true
 ```
 
