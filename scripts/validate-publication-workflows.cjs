@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const {
   RELEASE_MANIFEST,
   RELEASE_VERSION,
@@ -896,11 +897,29 @@ function validateDocumentationBundle() {
     }
     const exact = verified.manifest.objects.find((entry) => entry.phase === 'immutable' && entry.relativePath.startsWith(`${DOCUMENTATION.version}/`));
     fs.appendFileSync(path.join(bucketA, ...exact.objectKey.split('/')), 'tamper');
-    expectFailure(
+    const bytesConflict = expectFailure(
       () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'all', npmVerification: npmFile }),
       'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT',
       'immutable documentation overwrite'
     );
+    if (bytesConflict.objectKey !== exact.objectKey || JSON.stringify(bytesConflict.details?.mismatch) !== '["bytes"]') fail('immutable conflict must identify its key and differing bytes');
+    const failureFile = path.join(temp, 'immutable-deployment-failure.json');
+    const runFailure = (command, jsonFile) => {
+      const result = spawnSync(process.execPath, [
+        'scripts/documentation-deployment.cjs', command, '--candidate-dir', candidateDir,
+        '--driver', 'filesystem', '--bucket-dir', bucketA, '--phase', 'immutable', '--json-out', jsonFile
+      ], { cwd: repoRoot, encoding: 'utf8' });
+      if (result.status !== 1) fail(`${command} conflict did not fail`);
+      return JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
+    };
+    const failedDeploy = runFailure('deploy', failureFile);
+    if (failedDeploy.status !== 'failed' || failedDeploy.operation !== 'deploy'
+      || failedDeploy.failure.code !== 'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT'
+      || failedDeploy.failure.objectKey !== exact.objectKey
+      || JSON.stringify(failedDeploy.failure.mismatch) !== '["bytes"]') fail('immutable deployment failure evidence lacks the conflict identity');
+    const failedVerification = runFailure('verify-storage', path.join(temp, 'immutable-verification-failure.json'));
+    if (failedVerification.status !== 'failed' || failedVerification.operation !== 'verify-storage'
+      || failedVerification.failure.objectKey !== exact.objectKey || !failedVerification.failure.code) fail('storage verification failure evidence lacks the object identity');
     if (fs.existsSync(path.join(bucketA, loaded.config.objectPrefix, 'index.html'))) fail('immutable conflict allowed alias promotion');
     fs.copyFileSync(path.join(candidateDir, 'site', exact.relativePath), path.join(bucketA, exact.objectKey));
     const metadataFile = path.join(bucketA, '.pulse-object-metadata', `${exact.objectKey}.json`);
@@ -908,8 +927,12 @@ function validateDocumentationBundle() {
     const alteredMetadata = JSON.parse(exactMetadata);
     alteredMetadata.cacheControl = 'no-store';
     fs.writeFileSync(metadataFile, stableJson(alteredMetadata));
-    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+    const metadataConflict = expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
       'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current exact-version metadata conflict');
+    if (metadataConflict.objectKey !== exact.objectKey || JSON.stringify(metadataConflict.details?.mismatch) !== '["cache-control"]') fail('immutable metadata conflict must identify its key and differing metadata');
+    const failedMetadata = runFailure('deploy', failureFile);
+    if (failedMetadata.failure.objectKey !== exact.objectKey
+      || JSON.stringify(failedMetadata.failure.mismatch) !== '["cache-control"]') fail('metadata conflict report must replace earlier failure evidence with the current mismatch');
     fs.writeFileSync(metadataFile, exactMetadata);
     fs.appendFileSync(path.join(bucketA, loaded.config.objectPrefix, loaded.config.deployment.receiptPath), 'tamper');
     expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
