@@ -64,7 +64,7 @@ validateWorkflow(workflow);
 for (const changed of [
   workflow.replace('conformance-schema, conformance-rest]', 'conformance-schema]'),
   workflow.replace('fail-fast: false', 'fail-fast: true'),
-  workflow.replace('needs: portable-shards\n    if: always()', 'needs: portable-shards\n    if: success()'),
+  workflow.replace('needs: [route, portable-shards]\n    if: always()', 'needs: [route, portable-shards]\n    if: success()'),
   workflow.replace('PORTABLE_SHARDS_RESULT: ${{ needs.portable-shards.result }}', "PORTABLE_SHARDS_RESULT: 'success'")
 ]) assert.throws(() => validateWorkflow(changed));
 

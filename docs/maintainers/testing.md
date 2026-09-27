@@ -282,7 +282,7 @@ anything.
 
 ## Runner evidence
 
-The full `Repository validation / portable` gate aggregates six independent
+The full `Repository validation / full portable` gate aggregates six independent
 jobs: `unit`, `native`, `javascript`, `conformance-rsa`, `conformance-schema`,
 and `conformance-rest`. The plan in
 `scripts/maintainer-portable-validation.cjs` expands the four existing portable
@@ -292,8 +292,8 @@ registry order. Every registered portable task occurs exactly once.
 
 After maintenance validates the plan and aggregate contract, each shard
 installs pinned dependencies, builds in its own checkout at the tested
-SHA, and uploads its terminal report and task logs even on failure. The stable
-`portable` aggregate runs after failed or skipped jobs as well as successful
+SHA, and uploads its terminal report and task logs even on failure. The
+`full portable` aggregate runs after failed or skipped jobs as well as successful
 ones. It requires successful shard jobs and complete passing reports for the
 same tested SHA and workflow run. Missing, failed, cancelled, incomplete,
 duplicate or mismatched evidence fails the gate. On a job retry it selects the
@@ -302,28 +302,56 @@ back to an older passing report. The aggregate artifact records task counts,
 attempts, durations and tested SHA. This remains portable CI evidence; the
 separate release seal still requires its complete candidate replay.
 
-W01 measured 16–21 minute full runs, dominated by conformance. The parallel
-layout is intended to reduce that wait without removing tasks. Compare three
-completed PR runs before assigning a new latency target. Queue time and total
-runner usage are separate from task duration. Install/build occupied only 6–8
-seconds in W01, so this change adds no dependency cache. C03 owns the later
-branch-tier routing; the existing triggers and required status names still
-apply during this rollout.
+C02's three hosted PR samples completed in 7m59s, 7m58s and 7m37s,
+compared with W01's 20m15s serial run. Queue time and total runner usage
+are separate from task duration. Each shard still builds its own pinned
+workspace; there is no dependency cache.
 
-For pull requests into non-`main` branches, `Repository validation` also pilots
-an additive `fast selection` check. It compares the exact tested merge against
-the event's base and head SHAs and reads path rules from the base commit's
-maintenance policy. Known unprotected paths select a fixed cross-target core
-(`package-exports`, `api-surface`, `target-support`,
-`node-cross-target-conformance`) plus focused registry tasks for the changed
-owners. Direct test-file changes select their registry task. Unknown paths,
-protected boundaries, and tests without a direct registry task report
-`requires-full`; the `fast portable` job is then skipped. The selection artifact
-lists the paths, rules, blockers, selected tasks, exclusions and tested SHA.
-For selected changes, `fast portable` builds and runs the tasks with a terminal
-runner report and verifies its tested SHA and completed coverage. Neither check
-replaces the existing required full jobs. Routing and required-status changes
-belong to a later, separately reviewed change.
+## Branch validation tiers
+
+| Event target | Required validation |
+| --- | --- |
+| PR into any non-`main` branch | Scope declaration, documentation, maintenance, Node 22 smoke, fast portable |
+| Push to any non-`main` branch | Advisory scope classification, documentation, maintenance, Node 22 smoke, fast portable |
+| PR into `main` | Scope declaration, documentation, maintenance and release preparation, Node 22 support floor, all four portable profiles |
+| Push to `main` | Advisory scope classification, documentation, maintenance, Node 22 support floor, all four portable profiles |
+| Manual branch dispatch | The same tier as a push to that branch |
+
+PRs always test the merge of the event's exact base and head, including after
+retargeting. Branch pushes test the pushed commit. A non-main push is suppressed
+only if an open PR already represents the exact same repository and head SHA;
+its PR merge validation still runs. If the read-only API lookup fails, the push
+runs too. A push immediately followed by PR creation can produce two runs;
+correct merge-ref evidence takes priority over eliminating that race. Main
+pushes always run full validation. Tags do not trigger these workflows.
+
+The stable `Repository validation / portable` check waits for maintenance,
+Node 22 and the required portable tier. It independently derives that tier from
+the event and rejects missing, skipped, cancelled or failed required jobs,
+including routing and fast selection. The distinct `fast portable` and
+`full portable` checks support branch-specific rules. Keep the common gate
+required during and after the human-owned ruleset migration in repository setup.
+
+Fast selection executes the base commit's path matcher and policy. PR selection
+compares base to tested merge; a branch push compares its previous commit to
+the pushed commit. New branches and manual dispatch compare the tested commit's
+first parent. Missing base objects or malformed identities fail validation.
+Known unprotected owners select a fixed cross-target core (`package-exports`,
+`api-surface`, `target-support`, `node-cross-target-conformance`) plus focused
+tasks from an explicit bounded allowlist. Direct test-file changes select their
+task only when it is in that allowlist.
+
+Protected boundaries, unknown paths, unmapped tests and empty diffs run the
+entire conservative fast set: the core plus CLI command/guard, canonical API
+lowering, JavaScript effect adapter, schema registry/codecs and continuation
+registry checks. They never produce an empty successful selection or force a
+full non-main run. The selection artifact explains each path, rule, boundary,
+selection reason, task, exclusion and source identity. It explicitly defers
+full coverage to main. Fast runs require a terminal passing report with the
+exact requested, selected and completed task identities at the tested SHA.
+The Node 22 smoke remains a separate build and `cli-init-workflow` run in both
+tiers. Fast evidence does not replace full validation before a human merges
+into main, or the separate candidate replay before publication.
 
 The runner writes `wasm/.test-results/last-run.json` atomically after every task and stores one log per task. When a task fails, task-owned `*.log` files such as npm debug logs are copied into that run's durable diagnostics directory before the temporary root is removed. On timeout it captures a Node diagnostic report, terminates the entire task process group, and reports any surviving descendants. The directory is ephemeral and should contain only evidence produced from the current tree.
 

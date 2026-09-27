@@ -333,6 +333,10 @@ function validateWorkflowSecurity() {
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
   includes(validation, 'pnpm run build', 'repository validation workflow');
   validatePortableWorkflow(validation);
+  const { validateWorkflow: validateRoutingWorkflow } = require('./maintainer-validation-routing.cjs');
+  validateRoutingWorkflow(validation);
+  validateRoutingWorkflow(scope, 'scope');
+  validateRoutingWorkflow(read('.github/workflows/documentation.yml'), 'documentation');
   includes(validation, 'Upload Node 22 failure evidence', 'repository validation workflow');
   includes(validation, 'Upload portable failure evidence and success reports', 'repository validation workflow');
   includes(validation, 'path: wasm/.test-results', 'repository validation workflow');

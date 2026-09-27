@@ -34,9 +34,9 @@ merges one. Preparation runs without a write token, followed by a separate
 branch/PR writer job. A human marks the draft ready for review to start normal
 checks. No new secret or required status-check name is needed.
 
-## 3. Create a branch ruleset for `main`
+## 3. Configure branch validation rulesets
 
-Create a ruleset targeting the default branch and require pull requests. Recommended settings are:
+Create a ruleset targeting `main` and a separate ruleset for maintained non-main branches such as `latest`. Require pull requests. Recommended settings are:
 
 - at least one approving review;
 - approval from code owners;
@@ -44,7 +44,8 @@ Create a ruleset targeting the default branch and require pull requests. Recomme
 - conversation resolution;
 - blocked force pushes and deletion;
 - no Codex, Actions-token, or automation-account bypass; and
-- these exact status checks from `release/maintenance-policy.json`:
+- branches to be up to date before merging; and
+- these common status checks from `release/maintenance-policy.json`:
   - `Maintainer scope / scope`
   - `Repository validation / maintenance`
   - `Repository validation / node-floor`
@@ -53,7 +54,20 @@ Create a ruleset targeting the default branch and require pull requests. Recomme
 
 Keep workflow, CODEOWNERS, `AGENTS.md`, release-policy, and governance changes under CODEOWNER review. The deterministic scope workflow executes the classifier from an archive of the pull request's trusted base commit rather than running the proposed classifier.
 
-The portable validation job installs the lockfile-pinned workspace graph with lifecycle scripts disabled, builds the workspace outputs needed by tests, and runs the unit, native, JavaScript, and conformance profiles. It does not replace provider, CLI, package, clean-consumer, or external-host evidence in the aggregate release seal.
+Add the tier check listed in `github.validationTiers` as well:
+
+| Ruleset target | Additional required check |
+| --- | --- |
+| `main` | `Repository validation / full portable` |
+| Maintained non-main branches, including `latest` | `Repository validation / fast portable` |
+
+Human-owned rollout order:
+
+1. Land the C03 workflows and policy together, retaining the five common checks above. The existing `portable` context now independently enforces the event's tier, so main requires full coverage even before its additional context is selected in settings.
+2. Observe the appropriate tier context on each target, then add it to that target's ruleset. Do not require `full portable` on non-main branches or `fast portable` on main. Keep the common `portable` gate: a skipped tier job alone is not proof of coverage.
+3. Confirm a non-main PR runs fast, a main PR runs full, and retargeting reruns validation. A missing or skipped required tier must fail `portable`. Main pushes always run full. Keep main protected throughout the transition; repository settings are a human action.
+
+The fast tier runs bounded cross-target smoke with focused selection, or a conservative smoke set when classification cannot narrow it safely. The full tier installs the lockfile-pinned workspace graph with lifecycle scripts disabled, builds outputs, and aggregates every unit, native, JavaScript and conformance task across six shards. Both tiers run documentation, maintenance and Node 22 checks. Scope declarations remain mandatory for PRs; branch pushes receive advisory classification from the previous commit's policy. Duplicate non-main push work is suppressed only when an open PR has the same head SHA, preserving PR merge-ref validation. Neither tier replaces provider, CLI, package, clean-consumer or external-host evidence in the aggregate release seal.
 
 The existing `Repository validation / maintenance` check also rejects PRs into
 `main` that change publishable code without preparing a newer release version.

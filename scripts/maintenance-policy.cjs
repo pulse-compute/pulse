@@ -94,6 +94,12 @@ function validateMaintenancePolicy(value) {
   nonEmpty(github.codexEnvironment, 'github.codexEnvironment');
   if (!/^[A-Za-z0-9_.-]+$/.test(github.codexEnvironment)) fail('github.codexEnvironment must be a GitHub environment name');
   stringArray(github.requiredStatusChecks, 'github.requiredStatusChecks');
+  for (const [branch, tier] of [['main', 'full'], ['nonMain', 'fast']]) {
+    const entry = github.validationTiers?.[branch];
+    if (entry?.tier !== tier) fail(`github.validationTiers.${branch} must use ${tier} validation`);
+    const checks = stringArray(entry.additionalRequiredStatusChecks, `github.validationTiers.${branch}.additionalRequiredStatusChecks`);
+    if (checks.length !== 1 || checks[0] !== `Repository validation / ${tier} portable`) fail(`github.validationTiers.${branch} must require its stable portable tier check`);
+  }
   nonEmpty(github.codexMode, 'github.codexMode');
   if (!github.protectedEnvironments || typeof github.protectedEnvironments !== 'object' || Array.isArray(github.protectedEnvironments) || Object.keys(github.protectedEnvironments).length === 0) fail('github.protectedEnvironments must be a non-empty object');
   for (const [environment, contract] of Object.entries(github.protectedEnvironments)) {
@@ -424,6 +430,16 @@ Path classification is intentionally conservative. Touching a protected path doe
 ${checkRows.join('\n')}
 
 Portable checks use the normal lockfile-pinned workspace installation and do not require the release-only dependency bundle or external provider credentials. Dependency-bound checks remain required before publication when their affected paths are touched.
+
+## Branch validation requirements
+
+Common required checks: ${policy.github.requiredStatusChecks.map((check) => `\`${check}\``).join(', ')}.
+
+| PR target / branch push | Tier | Additional required check |
+|---|---|---|
+${Object.entries(policy.github.validationTiers).map(([branch, entry]) => `| ${branch === 'main' ? 'main' : 'Every non-main branch'} | ${entry.tier} | ${entry.additionalRequiredStatusChecks.map((check) => `\`${check}\``).join(', ')} |`).join('\n')}
+
+The common portable gate independently verifies that the event's required tier succeeded. Human-owned rulesets retain the common checks and add the appropriate tier check; see repository setup for the rollout order. Fast success is development evidence, not full portable or release coverage.
 
 ## Reviewed GitHub Actions
 

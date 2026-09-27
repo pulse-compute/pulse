@@ -195,7 +195,7 @@ function validateWorkflows() {
   const docs = read(required[0]);
   includes(docs, 'name: Documentation', 'documentation validation workflow');
   includes(docs, 'pull_request:', 'documentation validation workflow');
-  includes(docs, 'branches: [main]', 'documentation validation workflow');
+  includes(docs, "branches: ['**']", 'documentation validation workflow');
   includes(docs, 'Upload generated preview', 'documentation validation workflow');
   includes(docs, 'documentation-deployment.cjs seal', 'documentation validation workflow');
   includes(docs, 'include-hidden-files: true', 'documentation validation workflow');
