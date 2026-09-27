@@ -530,6 +530,11 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'GEN01 complete generated-source partition and isolated Fastly compiler/Wasm costs across independent schema, route and effect axes'
   }),
+  'generated-source-census-o07': nodeTask('test/runtime/compiler-efficiency/o07-generated-source.cjs', {
+    evidence: 'external',
+    timeoutMs: 120000,
+    description: 'O-07 current generated-source owner, declaration, family and effect-site census without an optimizer compile'
+  }),
   'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
     evidence: 'external',
     timeoutMs: 300000,
