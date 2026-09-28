@@ -11,7 +11,7 @@ const { validateReport } = require('./maintainer-portable-validation.cjs');
 const { tasks } = require('../wasm/test/suite/registry.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
-const CORE = Object.freeze(['package-exports', 'api-surface', 'target-support', 'node-cross-target-conformance']);
+const CORE = Object.freeze(['package-exports', 'api-surface', 'target-support', 'node-cross-target-conformance', 'schema-codecs-smoke']);
 const FOCUSED = Object.freeze({
   'cli-and-diagnostics': ['cli-command-spec', 'cli-project-guards'],
   'compiler-default': ['canonical-api-lowering', 'javascript-effect-adapter'],
@@ -19,7 +19,26 @@ const FOCUSED = Object.freeze({
   'tests-and-evidence': []
 });
 
-const FAST_TASKS = Object.freeze([...new Set([...CORE, ...Object.values(FOCUSED).flat(), 'schema-registry', 'schema-codecs', 'continuation-registry'])].sort());
+const FAST_TASKS = Object.freeze([...new Set([...CORE, ...Object.values(FOCUSED).flat(), 'schema-registry', 'continuation-registry'])].sort());
+const ALLOWED_FAST_TASKS = new Set([...FAST_TASKS, 'schema-codecs']);
+
+function fullSchemaReason(file, rules, match) {
+  if (rules.length === 0) return `${file}: unknown schema impact`;
+  // Documentation synchronization mirrors maintainer pages into the CLI package;
+  // those copies are documentation, not CLI execution dependencies.
+  if (match(file, 'wasm/packages/cli/docs/**') &&
+      rules.every((rule) => ['documentation', 'cli-and-diagnostics'].includes(rule.id))) return null;
+  // Only these known owners can use the subset. Compiler/runtime/provider,
+  // dependency and configuration changes keep the full corpus, even when the
+  // filename does not contain "schema". Use the trusted base's classifications.
+  const sharedOwners = rules.filter((rule) => !['documentation', 'maintainer-control-plane', 'tests-and-evidence'].includes(rule.id));
+  if (sharedOwners.length) return `${file}: shared schema dependency (${sharedOwners.map((rule) => rule.id).join(', ')})`;
+  if (rules.some((rule) => rule.id === 'tests-and-evidence') &&
+      (/schema|json/i.test(file) || ['wasm/test/support/**', 'wasm/test/fixtures/**', 'wasm/test/suite/**'].some((pattern) => match(file, pattern)))) {
+    return `${file}: schema proof or shared test input`;
+  }
+  return null;
+}
 
 function git(args, encoding = 'utf8') {
   return execFileSync('git', args, { cwd: ROOT, encoding, maxBuffer: 10 * 1024 * 1024 });
@@ -46,10 +65,13 @@ function select(policy, files, registry = tasks, match = matchesPattern) {
   const chosen = new Set(CORE);
   const decisions = [];
   const blockers = [];
+  const fullSchemaReasons = [];
   for (const file of [...new Set(files)].sort()) {
     if (!file || file.startsWith('/') || file.split('/').includes('..')) throw new Error(`Invalid changed path: ${file}`);
     const rules = policy.pathRules.filter((rule) => rule.patterns.some((pattern) => match(file, pattern)));
     const boundaries = [...new Set(rules.flatMap((rule) => rule.boundaries))].sort();
+    const schemaReason = fullSchemaReason(file, rules, match);
+    if (schemaReason) fullSchemaReasons.push(schemaReason);
     const focused = new Set();
     if (rules.length === 0) blockers.push(`${file}: unknown path`);
     if (boundaries.length) blockers.push(`${file}: protected ${boundaries.join(', ')}`);
@@ -63,7 +85,7 @@ function select(policy, files, registry = tasks, match = matchesPattern) {
       }).map(([id]) => id);
       if (matching.length === 0) blockers.push(`${file}: no direct registry task`);
       for (const id of matching) {
-        if (FAST_TASKS.includes(id)) focused.add(id);
+        if (ALLOWED_FAST_TASKS.has(id)) focused.add(id);
         else blockers.push(`${file}: ${id} belongs to full validation`);
       }
     }
@@ -76,11 +98,27 @@ function select(policy, files, registry = tasks, match = matchesPattern) {
     for (const id of focused) chosen.add(id);
     decisions.push({ file, rules: rules.map((rule) => rule.id), boundaries, tasks: [...focused].sort() });
   }
-  if (files.length === 0) blockers.push('No changed paths');
+  if (files.length === 0) {
+    blockers.push('No changed paths');
+    fullSchemaReasons.push('No changed paths: unknown schema impact');
+  }
   if (blockers.length) for (const id of FAST_TASKS) chosen.add(id);
+  if (fullSchemaReasons.length || chosen.has('schema-codecs')) {
+    chosen.delete('schema-codecs-smoke');
+    chosen.add('schema-registry');
+    chosen.add('schema-codecs');
+  }
   const selectedTasks = [...chosen].sort();
   for (const id of selectedTasks) if (!registry[id]) throw new Error(`Selected task missing from registry: ${id}`);
-  return { status: 'selected', selectionMode: blockers.length ? 'conservative' : 'focused', selectedTasks, decisions, blockers, fullCoverage: 'deferred-to-main' };
+  return {
+    status: 'selected', selectionMode: blockers.length ? 'conservative' : 'focused', selectedTasks, decisions, blockers,
+    schemaCoverage: {
+      task: chosen.has('schema-codecs') ? 'schema-codecs' : 'schema-codecs-smoke',
+      fullReasons: fullSchemaReasons,
+      extendedCoverage: chosen.has('schema-codecs') ? 'included' : 'deferred-to-main-and-release'
+    },
+    fullCoverage: 'deferred-to-main'
+  };
 }
 
 // Execute path matching from the trusted base, including its policy dependencies.
@@ -136,6 +174,8 @@ function main() {
   if (options.run && report.status !== 'selected') throw new Error(`Fast run requires full validation: ${report.blockers.join('; ')}`);
   console.log(`Fast validation ${report.status}; tested ${report.tested}; base ${report.base}; head ${report.head}`);
   console.log(`Selected tasks: ${report.selectedTasks.join(', ') || '(none)'}`);
+  console.log(`Schema coverage: ${report.schemaCoverage.task}; extended corpus ${report.schemaCoverage.extendedCoverage}`);
+  for (const reason of report.schemaCoverage.fullReasons) console.log(`Full schema coverage: ${reason}`);
   for (const decision of report.decisions) console.log(`${decision.file}: ${decision.rules.join(', ') || 'unknown'} -> ${decision.tasks.join(', ') || '(none)'}`);
   for (const blocker of report.blockers) console.log(`Conservative smoke; full coverage deferred to main: ${blocker}`);
   if (process.env.GITHUB_OUTPUT) fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=${report.status}\n`);

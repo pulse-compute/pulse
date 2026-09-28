@@ -337,15 +337,41 @@ compares base to tested merge; a branch push compares its previous commit to
 the pushed commit. New branches and manual dispatch compare the tested commit's
 first parent. Missing base objects or malformed identities fail validation.
 Known unprotected owners select a fixed cross-target core (`package-exports`,
-`api-surface`, `target-support`, `node-cross-target-conformance`) plus focused
+`api-surface`, `target-support`, `node-cross-target-conformance`) plus a schema
+check and focused
 tasks from an explicit bounded allowlist. Direct test-file changes select their
 task only when it is in that allowlist.
 
 Protected boundaries, unknown paths, unmapped tests and empty diffs run the
 entire conservative fast set: the core plus CLI command/guard, canonical API
-lowering, JavaScript effect adapter, schema registry/codecs and continuation
+lowering, JavaScript effect adapter, schema registry and continuation
 registry checks. They never produce an empty successful selection or force a
-full non-main run. The selection artifact explains each path, rule, boundary,
+full non-main run.
+
+Fast selection always includes exactly one schema codec task. Known unrelated
+documentation, maintenance and test changes use `schema-codecs-smoke`. It runs
+the existing base proof and the same proof assertions as `schema-codecs`: one
+real Native compilation, JavaScript/Native semantic and trace parity, strict
+positive/negative JSON boundaries, malformed-input rejection before dispatch,
+body/cache ownership and JavaScript package output. It is not full conformance.
+
+Schema/JSON tests, shared test support, fixtures and suite selection keep
+`schema-codecs`. Compiler, runtime, provider, CLI, configuration, dependency and
+other owners outside that unrelated set also keep the full corpus, even when
+their filenames do not mention schemas. Unknown paths and empty diffs keep it
+too. A mixed change uses full coverage if any path requires it. Full coverage
+replaces the smoke; it does not run both.
+
+The smoke defers the extended admission, value/text encoding, optional-field,
+scalar-record and nested/open JSON corpus to schema-sensitive changes and
+main/release. The conformance profile, schema shard and release profile still
+run the complete `schema-codecs` task; the smoke adds no duplicate compile to
+those profiles. This reduces unrelated branch feedback time, not application
+build time or Wasm size. It adds a real schema smoke to focused selections that
+previously ran only the cross-target core.
+
+The selection artifact records `schemaCoverage`, including the selected task,
+full-coverage reasons and whether extended coverage is deferred. It also explains each path, rule, boundary,
 selection reason, task, exclusion and source identity. It explicitly defers
 full coverage to main. Fast runs require a terminal passing report with the
 exact requested, selected and completed task identities at the tested SHA.
