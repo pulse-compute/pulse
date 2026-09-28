@@ -3,7 +3,10 @@
 // asc injects its own pinned Binaryen instance into transform constructors.
 // No additional optimizer instance, public decorator or dependency is needed.
 const generatedEntries = new Set(['canonical-native.as', 'fastly-native-platform-capabilities.as']);
-const generatedFunction = /^__pulse_(?:expr_\d+|chunk_\d+|step)$/;
+// Legacy numeric names remain supported for captured sources and fixtures.
+// The private retained prefix is only a batching aid: it grants no retention
+// without the existing compiler-owned source and @noinline annotation.
+const generatedFunction = /^__pulse_(?:(?:expr|keep)_\d+|chunk_\d+|step)$/;
 
 function commonPrefixLength(left, right) {
   let length = 0;

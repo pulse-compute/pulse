@@ -142,6 +142,13 @@ no-inline flags before optimization; AssemblyScript alone ignores `@noinline`.
 Small leaves remain eligible for inlining. This is internal direct-call sharing
 with no public function-value syntax, effect or ABI change.
 
+Already-retained expressions use the private `__pulse_keep_` name family so
+exact-prefix retention batching also works for sparse helper IDs. The name
+alone grants no retention: the compiler-owned source and annotation checks
+still apply, with unannotated functions and imports included in collision
+checks. The prefix has the same length as `__pulse_expr_` to preserve dispatcher character budgets.
+Legacy numeric expression names remain supported by the transform.
+
 For modules without guests, AssemblyScript runs Binaryen's similar-function
 merge after its normal optimization. Guest-linked modules instead merge after
 composition in the guest-link stage. In both cases the pass reuses function
