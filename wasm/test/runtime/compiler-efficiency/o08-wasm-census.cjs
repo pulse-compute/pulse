@@ -82,7 +82,7 @@ function functionNames(bytes) {
 function family(name) {
   if (name.startsWith('byn$mgfn-shared$') || /^\d+$/.test(name)) return 'optimizer-created or unnamed';
   if (/\/__pulse_fastly_run_invocation$/.test(name)) return 'Fastly invocation driver';
-  if (/\/__pulse_expr_\d+$/.test(name)) return 'expression helpers';
+  if (/\/__pulse_(?:expr|keep)_\d+$/.test(name)) return 'expression helpers';
   if (/\/__pulse_chunk_\d+$/.test(name)) return 'handler chunks';
   if (/\/__pulse_fastly_schema_/.test(name)) return 'provider schema projectors';
   if (/__Pulse_gen_|\/__pulse_schema_|\/pulse_schema_|~lib\/json-as\//.test(name)) return 'schema codecs and json-as';
