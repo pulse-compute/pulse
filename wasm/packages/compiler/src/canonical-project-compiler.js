@@ -588,12 +588,14 @@ function routerGeneratedPackageEffectLookup(router, recognition, options = {}) {
     }
   }
 
-  if (generatedByStart.size !== effects.length) {
-    const linked = new Set([...generatedByStart.values()]);
-    const missing = effects.filter((effect) => !linked.has(effect));
-    const first = missing[0];
+  // A handler can be registered more than once. Each entry must link all of its
+  // generated calls above, while coverage here is over authored source effects.
+  // Counting generated sites would reject valid one-to-many source mappings.
+  const linked = new Set(generatedByStart.values());
+  const missing = effects.filter((effect) => !linked.has(effect));
+  if (missing.length > 0) {
     throw new CanonicalProjectCompileError(
-      `Generated Router source linked ${generatedByStart.size} of ${effects.length} reachable package effect(s).`,
+      `Generated Router source linked ${linked.size} of ${effects.length} reachable package effect(s).`,
       missing.map((effect) => sourceDiagnosticForPackageEffect(effect, `Reachable package effect ${effect.kind} was not linked into generated Router source.`, {
         contractId: effect.contractId
       })),
@@ -728,11 +730,12 @@ function routerGeneratedPackageIntrinsicLookup(router, recognition, options = {}
     }
   }
 
-  if (generatedByStart.size !== intrinsics.length) {
-    const linked = new Set([...generatedByStart.values()]);
-    const missing = intrinsics.filter((intrinsic) => !linked.has(intrinsic));
+  // Intrinsic calls share the same source-to-registration multiplicity as effects.
+  const linked = new Set(generatedByStart.values());
+  const missing = intrinsics.filter((intrinsic) => !linked.has(intrinsic));
+  if (missing.length > 0) {
     throw new CanonicalProjectCompileError(
-      `Generated Router source linked ${generatedByStart.size} of ${intrinsics.length} reachable package intrinsic(s).`,
+      `Generated Router source linked ${linked.size} of ${intrinsics.length} reachable package intrinsic(s).`,
       missing.map((intrinsic) => sourceDiagnosticForPackageEffect(
         intrinsic,
         `Reachable package intrinsic ${intrinsic.kind} was not linked into generated Router source.`,

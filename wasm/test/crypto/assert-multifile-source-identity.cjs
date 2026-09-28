@@ -73,6 +73,7 @@ function assertSourceIndexes() {
 
 async function main(options = {}) {
   if (!options.packedRoot) assertSourceIndexes();
+  const sharedHandlers = await require('./shared-handler-effects.cjs').main(options);
   const tc = acceptanceToolchain(options.packedRoot);
   const root = path.resolve(__dirname, '../../..');
   const cwd = fs.mkdtempSync(path.join(options.packedRoot || __dirname, '.multifile-'));
@@ -171,7 +172,7 @@ async function main(options = {}) {
         }
       }
     }
-    const result = { status: 'passed', executions, sourceOrders: 2, artifacts, providerReality: false };
+    const result = { status: 'passed', executions, sourceOrders: 2, sharedHandlers, artifacts, providerReality: false };
     if (!options.quiet) console.log(JSON.stringify(result));
     return result;
   } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
