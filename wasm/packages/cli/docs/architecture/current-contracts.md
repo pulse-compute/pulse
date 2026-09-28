@@ -174,6 +174,13 @@ call cannot fall back to an authored-source offset. Imported package effects
 retain their authored diagnostic positions; a separate generated position
 determines Router entry ownership without reinterpreting those source offsets.
 
+Registering one handler at multiple Router entries creates separate generated
+effect sites and continuations for those entries. Each site retains its original
+source attribution. Package effects and intrinsics require complete coverage of
+authored calls and a match for every call in each registration; source-call counts
+need not equal generated-site counts. Reuse does not skip effect execution or
+share request state across invocations.
+
 Native plan v3 preserves terminal HTTP route handlers as separately owned bodies
 (`pulse.canonical-native-handler-body.v1`). A terminal route has no `next()` or
 `next(error)` transfer. Its stable Router entry ID owns the body, original source
