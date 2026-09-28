@@ -80,7 +80,7 @@ function bodies(wasm) {
   throw Error('missing optimized Wasm code section');
 }
 
-const declaration = /^(?:@[^\n]+\n)*(?:export )?(?:function|class|const|let) (\w+)/gm;
+const declaration = /^(?:@[^\n]+\n)*(?:export )?(?:function|class|const|let) ([\w$]+)/gm;
 const declarations = source => [...source.matchAll(declaration)];
 function diagnosticStage(file, name) {
   const filename = path.join(root, file), source = fs.readFileSync(filename, 'utf8');

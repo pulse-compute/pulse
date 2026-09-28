@@ -35,8 +35,11 @@ function assertRetentionPatterns() {
     };
     transform.afterCompile(module);
     assert.equal(argument, 'previous-policy', 'the transform restores Binaryen global options');
-    const actual = names.filter(name => patterns.some(pattern => pattern.endsWith('*')
-      ? name.startsWith(pattern.slice(0, -1)) : name === pattern));
+    const actual = names.filter(name => patterns.some(pattern => {
+      const star = pattern.indexOf('*');
+      return star < 0 ? name === pattern
+        : name.startsWith(pattern.slice(0, star)) && name.endsWith(pattern.slice(star + 1));
+    }));
     assert.deepEqual(actual.sort(), names.filter(name => selected.includes(name)).sort(),
       'batched matches must equal precisely the emitted annotated set');
     assert.ok(patterns.length <= new Set(selected.filter(name => names.includes(name))).size);
@@ -57,12 +60,17 @@ function assertRetentionPatterns() {
     check(names, selected);
   }
   const sparse = Array.from({ length: 4096 }, (_, index) =>
-    `canonical-native.as/__pulse_${index % 8 === 0 ? 'keep' : 'expr'}_${index}`);
-  const retained = sparse.filter(name => name.includes('/__pulse_keep_'));
+    `canonical-native.as/__pulse_ex_${index}$${index % 8 === 0 ? 'k' : 'i'}`);
+  const retained = sparse.filter(name => name.endsWith('$k'));
   assert.equal(check(sparse, retained).patterns.length, 1,
-    'sparse retained expressions occupy one safe private prefix');
-  check([...sparse, 'canonical-native.as/__pulse_keep_0~overload'],
-    retained.filter(name => name !== 'canonical-native.as/__pulse_keep_80'));
+    'sparse retained expressions occupy one checked private suffix pattern');
+  check([...sparse, 'canonical-native.as/__pulse_ex_collision$k'],
+    retained.filter(name => name !== 'canonical-native.as/__pulse_ex_80$k'));
+  const legacy = sparse.map(name => name.replace(/__pulse_ex_(\d+)\$[ik]$/, '__pulse_expr_$1'));
+  assert.deepEqual([...sparse].sort().map(name => name.replace(/__pulse_ex_(\d+)\$[ik]$/, '__pulse_expr_$1')),
+    [...legacy].sort(), 'private helper names preserve lexical ordering, including numeric prefixes');
+  assert.deepEqual(sparse.map(name => name.length), legacy.map(name => name.length),
+    'private helper names preserve dispatcher source-character budgets');
   const chunks = Array.from({ length: 512 }, (_, index) => `canonical-native.as/__pulse_chunk_${index}`);
   const { transform, module, patterns, argument } = check([...chunks, `${prefix}0`], chunks);
   assert.equal(patterns.length, 1, 'a fully selected dispatcher family takes one module pass');
@@ -73,19 +81,19 @@ function assertRetentionPatterns() {
   const declaration = name => ({ name: { text: name }, decorators: [{ name: { text: 'noinline' } }] });
   const guarded = new NativeRetentionTransform();
   guarded.afterParse({ sources: [
-    { internalPath: 'ordinary', statements: [declaration('__pulse_expr_0'), declaration('__pulse_keep_0')] },
+    { internalPath: 'ordinary', statements: [declaration('__pulse_expr_0'), declaration('__pulse_ex_0$k')] },
     { internalPath: 'canonical-native.as', statements: [declaration('ordinary'), declaration('__pulse_expr_0'),
-      declaration('__pulse_keep_2'), { name: { text: '__pulse_keep_3' } }] },
+      declaration('__pulse_ex_2$k'), { name: { text: '__pulse_ex_3$k' } }] },
     { internalPath: 'fastly-native-platform-capabilities.as', statements: [declaration('__pulse_chunk_0')] }
   ] });
   assert.deepEqual(guarded.retainedNames, [
-    'canonical-native.as/__pulse_expr_0', 'canonical-native.as/__pulse_keep_2',
+    'canonical-native.as/__pulse_expr_0', 'canonical-native.as/__pulse_ex_2$k',
     'fastly-native-platform-capabilities.as/__pulse_chunk_0'
   ], 'only existing compiler-owned annotation names grant retention');
 }
 
 function assertSharedCalls(wat) {
-  const helpers = [...wat.matchAll(/^ \(func \$([^\s]*\/__pulse_(?:expr|keep)_\d+)\b/gm)].map(match => match[1]);
+  const helpers = [...wat.matchAll(/^ \(func \$([^\s]*\/__pulse_(?:expr_\d+|ex_\d+\$[ik]))\b/gm)].map(match => match[1]);
   assert.ok(helpers.length > 0, 'optimized Wasm must retain a shared expression body');
   assert.ok(helpers.some(name => wat.split(`call $${name}\n`).length > 2),
     'a retained body must have multiple direct call sites');
@@ -153,9 +161,10 @@ export function lookup(index: i32): i32 { return load<i32>(mapping + <usize>((in
         const before = fs.readFileSync(path.join(work, 'module.wasm'));
         const sourceFile = path.join(work, 'canonical-native.as.ts');
         const source = fs.readFileSync(sourceFile, 'utf8');
-        // Only rename the four annotated fixture identifiers; numeric-prefix
-        // collisions, table targets, imports and data remain unchanged.
-        fs.writeFileSync(sourceFile, source.replace(/\b__pulse_expr_(0|1|20|21)\b/g, '__pulse_keep_$1'));
+        // Rename every expression while preserving length and lexical order;
+        // only the four annotated identifiers receive the retained suffix.
+        fs.writeFileSync(sourceFile, source.replace(/\b__pulse_expr_(\d+)\b/g,
+          (_, id) => `__pulse_ex_${id}$${['0', '1', '20', '21'].includes(id) ? 'k' : 'i'}`));
         const renamed = spawnSync(asc.executable, args, { cwd: work, encoding: 'utf8', timeout: 30000 });
         assert.equal(renamed.status, 0, renamed.error?.message || renamed.stderr);
         assert.deepEqual(fs.readFileSync(path.join(work, 'module.wasm')), before,
@@ -179,9 +188,9 @@ async function main() {
   let nodeHandles;
   for (const nativeOptimization of [undefined, 'experimental-native-size', 'experimental-native-bounded-size']) {
     const native = compileCanonicalNativePlan(plan, { cwd: root, emitWat: true, nativeOptimization });
-    const declarations = [...native.source.matchAll(/^function __pulse_(?:expr|keep)_\d+\(/gm)].length;
-    assert.match(native.source, /@noinline\nfunction __pulse_keep_\d+\(/,
-      'the emitter gives selected expressions the private batching prefix');
+    const declarations = [...native.source.matchAll(/^function __pulse_(?:expr_\d+|ex_\d+\$[ik])\(/gm)].length;
+    assert.match(native.source, /@noinline\nfunction __pulse_ex_\d+\$k\(/,
+      'the emitter gives selected expressions the private batching suffix');
     assert.ok(declarations < native.manifest.expressionCount / 2, 'equivalent source bodies share declarations');
     assertSharedCalls(native.wat);
     const result = await executeCanonicalNativeModule(native);

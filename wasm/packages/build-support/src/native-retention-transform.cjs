@@ -4,9 +4,9 @@
 // No additional optimizer instance, public decorator or dependency is needed.
 const generatedEntries = new Set(['canonical-native.as', 'fastly-native-platform-capabilities.as']);
 // Legacy numeric names remain supported for captured sources and fixtures.
-// The private retained prefix is only a batching aid: it grants no retention
+// The private retained suffix is only a batching aid: it grants no retention
 // without the existing compiler-owned source and @noinline annotation.
-const generatedFunction = /^__pulse_(?:(?:expr|keep)_\d+|chunk_\d+|step)$/;
+const generatedFunction = /^__pulse_(?:expr_\d+|ex_\d+\$[ik]|chunk_\d+|step)$/;
 
 function commonPrefixLength(left, right) {
   let length = 0;
@@ -21,8 +21,18 @@ function retentionPatterns(module, binaryen, retainedNames) {
   for (let index = 0; index < module.getNumFunctions(); index++) {
     names.push(binaryen.Function.getName(module.getFunctionByIndex(index)));
   }
-  names.sort();
   const patterns = new Set();
+  for (const entry of generatedEntries) {
+    const prefix = `${entry}/__pulse_ex_`, suffix = '$k';
+    const matches = names.filter(name => name.startsWith(prefix) && name.endsWith(suffix));
+    // Check every actual wildcard match, including unannotated functions and
+    // imports. A private-looking name never grants retention on its own.
+    if (matches.length > 1 && matches.every(name => selected.has(name))) {
+      patterns.add(`${prefix}*${suffix}`);
+      for (const name of matches) selected.delete(name);
+    }
+  }
+  names.sort();
   for (let start = 0; start < names.length;) {
     if (!selected.has(names[start])) { start++; continue; }
     let end = start + 1;
@@ -67,7 +77,7 @@ module.exports = class NativeRetentionTransform {
     const previous = this.binaryen.getPassArgument('no-inline');
     try {
       // Binaryen's no-inline pass scans the whole module for one wildcard.
-      // Batch only prefixes whose existing matches are all already selected.
+      // Batch only patterns whose existing matches are all already selected.
       for (const pattern of retentionPatterns(module, this.binaryen, this.retainedNames)) {
         this.binaryen.setPassArgument('no-inline', pattern);
         module.runPasses(['no-inline']);
