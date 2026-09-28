@@ -158,9 +158,14 @@ assert.equal(release.includes('guest-link-feasibility-decision'), false);
 assert.equal(release.includes('guest-link-contract-design'), false);
 assert.equal(release.includes('guest-link-b-seal'), false);
 assert.ok(release.includes('clean-machine-acceptance'));
+// The fast subset must not add a second copy of its proof to full/release lanes.
+for (const profile of Object.keys(profiles)) {
+  assert.equal(expandProfile(profile).includes('schema-codecs-smoke'), false);
+}
+assert.ok(expandProfile('conformance').includes('schema-codecs'));
 const releaseSet = new Set(release);
 for (const taskName of Object.keys(tasks)) {
-  if (externalTasks.has(taskName)) continue;
+  if (externalTasks.has(taskName) || taskName === 'schema-codecs-smoke') continue;
   assert.ok(releaseSet.has(taskName), `release must include current task ${taskName}`);
 }
 

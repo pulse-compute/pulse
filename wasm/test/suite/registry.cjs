@@ -377,6 +377,12 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'pulse.schema registry and semantic trace contracts'
   }),
+  // Fast selection only; full profiles already exercise this proof in schema-codecs.
+  'schema-codecs-smoke': nodeTask('test/contracts/assert-schema-codecs-smoke.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 60000,
+    description: 'one-compile schema smoke with strict boundaries and cross-target parity'
+  }),
   'schema-codecs': nodeTask('test/contracts/assert-schema-codecs.cjs', {
     evidence: 'conformance',
     timeoutMs: 180000,
