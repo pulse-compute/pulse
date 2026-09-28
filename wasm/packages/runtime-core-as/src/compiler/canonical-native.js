@@ -786,7 +786,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   for (const item of blocks) if (item.kind === 'resume' || item.kind === 'resume-return') resumeRequirements.set(item.id, item.required);
 
   // Resolve Router locals through this plan, never fixed slots. The private
-  // result is 0 = no error, 1 = routed, -1 = terminal host failure.
+  // result is 0 = no error, 2 = routed, -1 = terminal host failure.
   const routeErrorLines = (nextIndex) => [
     `${localName(routerLocal('error'))} = failure`,
     `${localName(routerLocal('mode'))} = host_value_number(1.0)`,
@@ -797,11 +797,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '@noinline',
     'function __pulse_route_error(nextIndex: f64, nextBlock: i32): i32 {',
     '  const failure = host_router_error_take()',
-    '  if (failure == 0) return 0',
     `  if (failure < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return -1 }`,
-    ...routeErrorLines('nextIndex').map(line => `  ${line}`),
-    '  __pulse_pc = nextBlock',
-    '  return 1',
+    '  if (failure > 0) {',
+    ...routeErrorLines('nextIndex').map(line => `    ${line}`),
+    '    __pulse_pc = nextBlock; return 2',
+    '  }',
+    '  return 0',
     '}'
   ] : [];
 
@@ -826,10 +827,18 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     const emit = (line) => lines.push(`      ${line}`);
     const checkError = () => {
       if (!item.boundary) return;
+      // Chunks propagate the existing routed status directly; decoding and
+      // re-encoding it here repeats branches at every guard site.
       const guard = [
         `{ const routed = __pulse_route_error(${item.boundary.nextIndex}.0, ${item.boundary.nextBlock})`,
-        `  if (routed < 0) return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`,
-        `  if (routed > 0) { ${advance} } }`
+        ...(partitioned ? [
+          '  if (routed != 0) return routed',
+          '}'
+        ] : [
+          '  if (routed < 0) return routed',
+          '  if (routed > 0) continue',
+          '}'
+        ])
       ];
       partitionAdjustment += errorGuardPartitionSize(item.boundary, advance)
         - guard.map(line => `      ${line}`).join('\n').length;
