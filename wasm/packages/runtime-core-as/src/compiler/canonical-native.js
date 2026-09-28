@@ -785,33 +785,55 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const resumeRequirements = new Map();
   for (const item of blocks) if (item.kind === 'resume' || item.kind === 'resume-return') resumeRequirements.set(item.id, item.required);
 
-  // Keep the no-error check at each original site; only the cold routing body
-  // is shared. Resolve Router locals through this plan, never fixed slots.
-  // Private results: 1 = routed, -1 = terminal host failure.
+  // Resolve Router locals through this plan, never fixed slots. The private
+  // result is 0 = no error, 1 = routed, -1 = terminal host failure.
+  const routeErrorLines = (nextIndex) => [
+    `${localName(routerLocal('error'))} = failure`,
+    `${localName(routerLocal('mode'))} = host_value_number(1.0)`,
+    `${localName(routerCursor)} = host_value_number(${nextIndex})`,
+    '__pulse_pending = 0; __pulse_state = 0; __pulse_result = 0'
+  ];
   const errorGuard = applicationErrors ? [
     '@noinline',
-    'function __pulse_route_error(failure: i32, nextIndex: f64, nextBlock: i32): i32 {',
+    'function __pulse_route_error(nextIndex: f64, nextBlock: i32): i32 {',
+    '  const failure = host_router_error_take()',
+    '  if (failure == 0) return 0',
     `  if (failure < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return -1 }`,
-    `  ${localName(routerLocal('error'))} = failure`,
-    `  ${localName(routerLocal('mode'))} = host_value_number(1.0)`,
-    `  ${localName(routerCursor)} = host_value_number(nextIndex)`,
-    '  __pulse_pending = 0; __pulse_state = 0; __pulse_result = 0',
+    ...routeErrorLines('nextIndex').map(line => `  ${line}`),
     '  __pulse_pc = nextBlock',
     '  return 1',
     '}'
   ] : [];
 
+  // Charge the pre-sharing guard footprint to the partition budget. Shrinking
+  // guards must not pack more states into each optimizer unit as a side effect.
+  // These lines are measured only; the shared helper is the emitted code.
+  function errorGuardPartitionSize(boundary, advance) {
+    return [
+      '{ const failure = host_router_error_take()',
+      `  if (failure < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return -1 }`,
+      '  if (failure > 0) {',
+      ...routeErrorLines(`${boundary.nextIndex}.0`).map(line => `    ${line}`),
+      `    __pulse_pc = ${boundary.nextBlock}; ${advance}`,
+      '  } }'
+    ].map(line => `      ${line}`).join('\n').length;
+  }
+
   function renderBlock(item, partitioned = false) {
     const advance = partitioned ? 'return 2' : 'continue';
     const lines = [`    case ${item.id}: {`];
+    let partitionAdjustment = 0;
     const emit = (line) => lines.push(`      ${line}`);
     const checkError = () => {
       if (!item.boundary) return;
-      emit('{ const failure = host_router_error_take()');
-      emit('  if (failure != 0) {');
-      emit(`    if (__pulse_route_error(failure, ${item.boundary.nextIndex}.0, ${item.boundary.nextBlock}) < 0) return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`);
-      emit(`    ${advance}`);
-      emit('  } }');
+      const guard = [
+        `{ const routed = __pulse_route_error(${item.boundary.nextIndex}.0, ${item.boundary.nextBlock})`,
+        `  if (routed < 0) return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`,
+        `  if (routed > 0) { ${advance} } }`
+      ];
+      partitionAdjustment += errorGuardPartitionSize(item.boundary, advance)
+        - guard.map(line => `      ${line}`).join('\n').length;
+      guard.forEach(emit);
     };
     checkError();
     if (item.kind === 'action') {
@@ -851,7 +873,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`);
     } else fail(`Unknown native block kind ${item.kind}.`, { block: item });
     lines.push('    }');
-    return lines.join('\n');
+    const source = lines.join('\n');
+    return { source, partitionCharacters: source.length + partitionAdjustment };
   }
 
   // Bound optimizer work per dispatcher function without changing plan state IDs.
@@ -859,21 +882,21 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   // absolute source/Wasm size limit on arbitrary authored expressions or loops.
   const maxChunkStates = 64;
   const maxChunkCharacters = 24000;
-  const renderedBlocks = blocks.map(item => ({ item, source: renderBlock(item) }));
+  const renderedBlocks = blocks.map(item => ({ item, ...renderBlock(item) }));
   const partitioned = handlers.size > 0 || blocks.length > maxChunkStates
-    || renderedBlocks.reduce((size, block) => size + block.source.length, 0) > maxChunkCharacters;
+    || renderedBlocks.reduce((size, block) => size + block.partitionCharacters, 0) > maxChunkCharacters;
   const chunks = [];
   if (partitioned) {
     let chunk = [], characters = 0;
     for (const { item } of renderedBlocks) {
       const rendered = renderBlock(item, true);
-      if (chunk.length && (chunk[0].handlerId !== item.handlerId || chunk.length >= maxChunkStates || characters + rendered.length > maxChunkCharacters)) {
+      if (chunk.length && (chunk[0].handlerId !== item.handlerId || chunk.length >= maxChunkStates || characters + rendered.partitionCharacters > maxChunkCharacters)) {
         chunks.push(chunk);
         chunk = [];
         characters = 0;
       }
-      chunk.push({ id: item.id, source: rendered, handlerId: item.handlerId });
-      characters += rendered.length;
+      chunk.push({ id: item.id, ...rendered, handlerId: item.handlerId });
+      characters += rendered.partitionCharacters;
     }
     if (chunk.length) chunks.push(chunk);
   }
