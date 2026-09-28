@@ -6,7 +6,7 @@ const generatedEntries = new Set(['canonical-native.as', 'fastly-native-platform
 // Legacy numeric names remain supported for captured sources and fixtures.
 // The private retained suffix is only a batching aid: it grants no retention
 // without the existing compiler-owned source and @noinline annotation.
-const generatedFunction = /^__pulse_(?:expr_\d+|ex_\d+\$[ik]|chunk_\d+|step)$/;
+const generatedFunction = /^__pulse_(?:expr_\d+|ex_\d+\$[ik]|chunk_\d+|step|route_error)$/;
 
 function commonPrefixLength(left, right) {
   let length = 0;

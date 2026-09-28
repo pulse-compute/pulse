@@ -150,6 +150,15 @@ including imports, checked before batching. Names preserve the length and
 lexical ordering of `__pulse_expr_<id>` for dispatcher character budgets and
 Binaryen function-ordering ties. Legacy names remain supported by the transform.
 
+Routers with application-error handlers share one retained error-routing body.
+Each original guard site still consumes the pending error once; the no-error
+path makes no additional helper call. Only a nonzero error enters the helper. It
+resolves the current plan's Router slots and preserves error-handle, mode,
+cursor, pending, continuation, result and program-counter updates. Its caller
+keeps the existing state-loop or chunk-return transfer and fatal status; sharing
+adds no effect, continuation, allocation or charged dispatcher state. Routers
+without application-error handlers do not emit the helper.
+
 For modules without guests, AssemblyScript runs Binaryen's similar-function
 merge after its normal optimization. Guest-linked modules instead merge after
 composition in the guest-link stage. In both cases the pass reuses function

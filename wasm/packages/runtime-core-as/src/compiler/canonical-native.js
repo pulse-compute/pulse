@@ -785,6 +785,22 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const resumeRequirements = new Map();
   for (const item of blocks) if (item.kind === 'resume' || item.kind === 'resume-return') resumeRequirements.set(item.id, item.required);
 
+  // Keep the no-error check at each original site; only the cold routing body
+  // is shared. Resolve Router locals through this plan, never fixed slots.
+  // Private results: 1 = routed, -1 = terminal host failure.
+  const errorGuard = applicationErrors ? [
+    '@noinline',
+    'function __pulse_route_error(failure: i32, nextIndex: f64, nextBlock: i32): i32 {',
+    `  if (failure < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return -1 }`,
+    `  ${localName(routerLocal('error'))} = failure`,
+    `  ${localName(routerLocal('mode'))} = host_value_number(1.0)`,
+    `  ${localName(routerCursor)} = host_value_number(nextIndex)`,
+    '  __pulse_pending = 0; __pulse_state = 0; __pulse_result = 0',
+    '  __pulse_pc = nextBlock',
+    '  return 1',
+    '}'
+  ] : [];
+
   function renderBlock(item, partitioned = false) {
     const advance = partitioned ? 'return 2' : 'continue';
     const lines = [`    case ${item.id}: {`];
@@ -792,13 +808,9 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     const checkError = () => {
       if (!item.boundary) return;
       emit('{ const failure = host_router_error_take()');
-      emit(`  if (failure < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.HOST_FAILURE}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`);
-      emit('  if (failure > 0) {');
-      emit(`    ${localName(routerLocal('error'))} = failure`);
-      emit(`    ${localName(routerLocal('mode'))} = host_value_number(1.0)`);
-      emit(`    ${localName(routerCursor)} = host_value_number(${item.boundary.nextIndex}.0)`);
-      emit('    __pulse_pending = 0; __pulse_state = 0; __pulse_result = 0');
-      emit(`    __pulse_pc = ${item.boundary.nextBlock}; ${advance}`);
+      emit('  if (failure != 0) {');
+      emit(`    if (__pulse_route_error(failure, ${item.boundary.nextIndex}.0, ${item.boundary.nextBlock}) < 0) return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`);
+      emit(`    ${advance}`);
       emit('  } }');
     };
     checkError();
@@ -1001,6 +1013,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '    default: return',
     '  }',
     '}',
+    ...errorGuard,
     ...dispatcherFunctions,
     'function __pulse_run(): i32 {',
     `  let guard: i32 = ${Math.max(64, blocks.length * 8)}`,
