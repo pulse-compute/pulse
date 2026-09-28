@@ -88,6 +88,10 @@ child.get('/encode', async (ctx) => {
   return ctx.text(encoded + forbidden);
 });
 child.get('/response', async (ctx) => ctx.json({ id: 'r1', version: 'wrong' }, { schema: 'app.Input' }));
+child.get('/prepare', async (ctx) => {
+  const late = await ctx.config.get(ctx.encodeJson({ id: 'r1', version: 'wrong' }, 'app.Input'));
+  return ctx.text(late);
+});
 child.get('/jwt', async (ctx) => {
   const verified = await jwt.verify(ctx, jwt.bearer(ctx.req), {
     algorithms: ['HS256'], key: { type: 'secret', binding: 'JWT_KEY' }
@@ -144,6 +148,7 @@ export default app;`);
     errorCase('text JSON', 'decode', 'PULSE_SCHEMA_JSON_MALFORMED', { 'x-input': 'bad' }),
     errorCase('encode before effect', 'encode', 'PULSE_SCHEMA_ENCODE'),
     errorCase('response encoding', 'response', 'PULSE_SCHEMA_ENCODE'),
+    errorCase('payload encoding before effect', 'prepare', 'PULSE_SCHEMA_ENCODE'),
     errorCase('JWT missing', 'jwt', 'PULSE_JWT_TOKEN_REQUIRED'),
     errorCase('JWT bearer', 'jwt', 'PULSE_JWT_BEARER_INVALID', { authorization: 'Basic invalid' }),
     errorCase('JWT malformed', 'jwt', 'PULSE_JWT_MALFORMED', { authorization: 'Bearer abc.def.ghi' }),
