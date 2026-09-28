@@ -19,11 +19,11 @@ const PAGE_BYTES = 4096;
 const COUNTS = [0, 1, 16, 64];
 
 function attribution(source) {
-  const matches = [...source.matchAll(/^function __pulse_(?:expr|keep)_\d+\([^\n]*\n[\s\S]*?^\}/gm)];
+  const matches = [...source.matchAll(/^function __pulse_(?:expr_\d+|ex_\d+\$[ik])\([^\n]*\n[\s\S]*?^\}/gm)];
   const seen = new Set();
   let repeated = 0, repeatedBytes = 0;
   for (const match of matches) {
-    const declaration = match[0], key = declaration.replace(/__pulse_(?:expr|keep)_\d+/, '__pulse_expr_');
+    const declaration = match[0], key = declaration.replace(/__pulse_(?:expr_\d+|ex_\d+\$[ik])/, '__pulse_expr_');
     if (seen.has(key)) { repeated++; repeatedBytes += Buffer.byteLength(declaration); }
     else seen.add(key);
   }

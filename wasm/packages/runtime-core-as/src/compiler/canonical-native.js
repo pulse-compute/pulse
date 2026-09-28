@@ -380,11 +380,10 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     const index = expressionIndex.get(expression);
     if (!Number.isInteger(index)) fail('Expression was not registered for native AssemblyScript generation.', { expression });
     const representative = expressionAlias.get(index) ?? index;
-    // Keep the existing retention decision, but give its selected expressions
-    // a contiguous private namespace. Sparse numeric IDs otherwise require
-    // thousands of whole-module Binaryen no-inline scans. Equal-length prefixes
-    // preserve the source-character budgets used for dispatcher partitioning.
-    return `__pulse_${retainedExpressions.has(representative) ? 'keep' : 'expr'}_${representative}`;
+    // Encode the existing decision without changing identifier length or
+    // lexical order: chunk budgets count source characters and Binaryen uses
+    // names to break function-ordering ties. '$' sorts before the next digit.
+    return `__pulse_ex_${representative}$${retainedExpressions.has(representative) ? 'k' : 'i'}`;
   }
 
   function localName(localId) {

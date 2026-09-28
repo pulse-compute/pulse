@@ -25,14 +25,14 @@ const cells = [
   { id: 'schemas-16-diverse', schemas: 16, diverse: true, routes: 1, effects: 1 },
   { id: 'schemas-32-repeat', schemas: 32, diverse: false, routes: 1, effects: 1 }
 ];
-const declaration = /^(?:@[^\n]+\n)*(?:export )?(?:function|class|const|let) (\w+)/gm;
+const declaration = /^(?:@[^\n]+\n)*(?:export )?(?:function|class|const|let) ([\w$]+)/gm;
 const bytes = value => Buffer.byteLength(value);
 const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
 const write = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 
 // These buckets are lexical source families, not a claim about retained Wasm.
 function family(name) {
-  if (/^__pulse_(?:expr|keep)_\d+$/.test(name)) return 'expression helpers';
+  if (/^__pulse_(?:expr_\d+|ex_\d+\$[ik])$/.test(name)) return 'expression helpers';
   if (/^(?:__pulse_schema_(?:encode|decode)_\d+|pulse_schema_(?:encode|decode|string_id)|__Pulse_gen_)/.test(name)) return 'portable schema codecs';
   if (/^__pulse_fastly_schema_(?:\d+_\d+|scalar|flat_object|object|array|apply|nullable|enum)/.test(name)) return 'provider schema projectors';
   if (/^__pulse_chunk_\d+$/.test(name)) return 'handler chunks';
