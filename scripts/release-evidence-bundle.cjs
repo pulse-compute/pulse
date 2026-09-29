@@ -35,7 +35,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'reachable-graph',
       'project-modules',
       'entities-contracts',
-      'entities-json-rpc-corpus'
+      'entities-json-rpc-corpus',
+      'mcp-http'
     ])
   }),
   Object.freeze({

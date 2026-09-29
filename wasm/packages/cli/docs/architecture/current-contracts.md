@@ -11,6 +11,14 @@ documentation system.
 
 ## Contract precedence
 
+The private, unreleased `packages/mcp` component owns MCP HTTP admission and
+protocol framing outside Entities. Its MCP-02 shell supports discovery,
+with no optional capabilities, tool executor or remote authentication. It has no
+Pulse runtime/compiler dependency and no direct application-handler seam. The
+external governed HTTP composition selected in MCP-01 remains the planned tools
+boundary. A same-artifact Native binding requires a separate owner review; this
+component does not widen the released package set or the guest authoring API.
+
 When two surfaces appear to disagree, use this order:
 
 1. the public release manifest and its generated package/support policy define
