@@ -83,6 +83,8 @@ async function main() {
   assert.equal(textualPassThrough.response.body, undefined);
   assert.deepEqual(textualPassThrough.response.bodyStream.chunks, ['plain pass-through']);
 
+  await require('./body-stream-feasibility.cjs').main();
+
   console.log('ok - direct fetch responses preserve host-owned binary and textual pass-through, exact bytes, repeated headers, and deny public body inspection');
 }
 
