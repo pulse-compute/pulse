@@ -129,7 +129,7 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
   PULSE_REQUEST_DURATION_UNSUPPORTED: entry('project', { exitCode: 2, remediation: ['Select Fastly Native for a provider-owned request deadline.'] }),
   PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH: entry('project', { exitCode: 2, remediation: ['Rebuild the Fastly Native artifact using the selected profile.'] }),
   PULSE_REQUEST_BODY_OWNERSHIP: entry('request', { exitCode: 4, remediation: ['Read or forward the incoming body once; never combine the two.'] }),
-  PULSE_REQUEST_FORWARDING_UNAVAILABLE: entry('compile', { exitCode: 3, remediation: ['Select Node JavaScript with node.bodyForwarding and node.maxDurationMs.'] }),
+  PULSE_REQUEST_FORWARDING_UNAVAILABLE: entry('compile', { exitCode: 3, remediation: ['Select Node with node.bodyForwarding and node.maxDurationMs.'] }),
   PULSE_REQUEST_FORWARDING_CONFIG_INVALID: entry('config', { exitCode: 2, remediation: ['Set node.bodyForwarding.maxBytes to a positive safe integer and node.maxDurationMs to 1–30000.'] }),
   PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED: entry('compile', { exitCode: 3, remediation: ['Use body: ctx.req.body() directly in a literal outbound POST fetch.'] }),
   PULSE_REQUEST_FORWARDING_HEADERS_INVALID: entry('request', { exitCode: 4, remediation: ['Leave framing and hop-by-hop headers to the provider.'] }),

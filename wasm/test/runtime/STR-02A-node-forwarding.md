@@ -1,5 +1,9 @@
 # STR-02A — Node JavaScript incoming forwarding
 
+This records the STR-02A scope at merge. [STR-02B](STR-02B-node-native-forwarding.md)
+subsequently adds Node Native; the shared installed fixture now admits both
+Node targets and continues to reject Fastly.
+
 Implements the first sequential card in the merged
 [STR-01 design](STR-01-body-stream-ownership.md), on `beta` baseline
 `058e4b62f4cfa906f3b2cbc1daa66920fdd770fc`. Human direction: “Implement STR-02”.

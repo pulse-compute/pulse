@@ -790,11 +790,12 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
   let body;
   let bodyMode = 'none';
   if (hasBody) {
-    if (typeof value.body !== 'string') {
+    const incoming = options.incomingBody && value.body === options.incomingBody.marker();
+    if (typeof value.body !== 'string' && !incoming) {
       throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_BODY_INVALID', 'Canonical fetch body must be a string.', { valueType: typeof value.body });
     }
     body = value.body;
-    bodyMode = 'text';
+    bodyMode = incoming ? 'incoming-request-v1' : 'text';
   } else if (hasJson) {
     if (!headerValue(headers, 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
     if (hasSchema) {

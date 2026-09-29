@@ -4,7 +4,7 @@ declare const pulseEffectBrand: unique symbol;
 declare const pulseParallelEffectBrand: unique symbol;
 declare const incomingBodyBrand: unique symbol;
 
-/** Single-use opaque marker, admitted only inline as a configured Node JavaScript fetch body. */
+/** Single-use opaque marker, admitted only inline as a configured Node fetch body. */
 export interface PulseIncomingBody { readonly [incomingBodyBrand]: true; }
 
 export interface PulseEffect<T> extends Promise<T> {

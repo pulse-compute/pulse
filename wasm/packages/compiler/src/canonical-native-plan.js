@@ -207,6 +207,7 @@ function intrinsicForContextCall(parts) {
   const entries = {
     'req.header': ['request.header', 'string-or-undefined'],
     'req.text': ['request.text', 'string'],
+    'req.body': ['request.body.forward-marker', 'incoming-body-marker'],
     'req.json': ['request.json', 'json'],
     json: ['response.json', 'pulse-result'],
     encodeJson: ['schema.encode.text', 'string'],
@@ -338,6 +339,13 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    if (this.metadata.capabilities?.includes('request.body.forward')
+      && this.metadata.capabilities.some(id => ['request.text', 'request.json'].includes(id))) {
+      throw new CanonicalNativePlanError('Native incoming forwarding cannot be combined with structured request reads.', [
+        diagnostic(undefined, undefined, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED,
+          'Native forwarding applications cannot also project structured request bodies.', { automaticFallback: false })
+      ]);
+    }
     this.packageApplication = terminalPackageNativeForCompiled(compiled);
     this.routerBodies = new Map((this.metadata.router?.entries || [])
       .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));

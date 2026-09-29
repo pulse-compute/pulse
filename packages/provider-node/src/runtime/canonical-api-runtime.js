@@ -488,6 +488,11 @@ function createNodeProviderAdapter(baseOptions = {}) {
   function kvStoresFor(executionOptions) { return kvReferenceFor(executionOptions).legacyStores(); }
 
   async function dispatchFetch(normalized, executionOptions = {}) {
+    if (normalized.init.bodyMode === 'incoming-request-v1') {
+      const response = await portableRuntimeHost.forwardIncomingBody(normalized.init.body, normalized.parts.url, normalized.init, executionOptions);
+      if (response.body) executionOptions.forwardedBodies?.add(response.body);
+      return { status: response.status, kind: 'stream', headers: responseHeaders(response), bodyStream: response.body };
+    }
     const fetchFixtures = normalizeFetchFixtures(executionOptions.fetches || baseOptions.fetches);
     const providerData = buildProviderBackends(fetchFixtures);
     const fixture = providerData.specs.get(`${normalized.init.method} ${normalized.parts.url}`) || providerData.specs.get(normalized.parts.url);

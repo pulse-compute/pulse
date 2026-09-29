@@ -164,6 +164,14 @@ const tasks = Object.freeze({
     timeoutMs: 300000, evidence: 'external',
     description: 'STR-02A exact installed Node JavaScript forwarding workflows and real incremental HTTP'
   }),
+  'str02b-installed': nodeTask('test/runtime/str02-installed.cjs', {
+    args:['--native'], timeoutMs:300000, evidence:'external',
+    description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
+  }),
+  'str02b-node-native': nodeTask('test/runtime/str02b-node-native.cjs', {
+    timeoutMs: 90000, evidence: 'native',
+    description: 'STR-02B compiled Native forwarding, constant guest memory, HTTP cancellation and ticket fencing'
+  }),
   'jwt-es256-signing': nodeTask('test/jwt/assert-jwt-es256-signing.cjs', {
     timeoutMs: 180000, evidence: 'conformance',
     description: 'ES256 private-key signing, independent verification, CLI build and failures on four targets'
@@ -1115,6 +1123,7 @@ const profiles = Object.freeze({
     's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',
+    'str02b-node-native',
     'bounded-app-logic',
     'bounded-read-loops',
     'logging-lowering',

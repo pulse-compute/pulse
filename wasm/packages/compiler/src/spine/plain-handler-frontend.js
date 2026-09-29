@@ -510,6 +510,7 @@ function preparePlainHandlerSource(sourceText, options = {}, recognition) {
       role: 'handler',
       strict: options.strict === true,
       frontend: 'canonical-source',
+      internalGeneratedHandler: options.internalGeneratedHandler === true,
       target: options.target,
       handlerAuthoring: options.handlerAuthoring,
       requireAsync: options.requireAsync === true,

@@ -1,6 +1,7 @@
 'use strict';
 
 const path = require('node:path');
+const { PulseRuntimeContractError: portableForwardingError } = require('@pulse-compute/runtime/host');
 const {
   PROVIDER_DRIVER_VERSION,
   PROVIDER_TARGET_RESULT_VERSION,
@@ -147,7 +148,7 @@ function createDriver() {
     normalizeConfig: genericProviderConfig,
     configReference: Object.freeze({
       sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
-      fields: [{ section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node JavaScript incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native is not admitted.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
+      fields: [{ section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
         description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).',
         security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
     }),
@@ -225,11 +226,14 @@ function createDriver() {
     }),
     execute: nodeRuntime.executeCanonicalProgram,
     prepareNativeExecution(invocation) {
-      const { executeCanonicalNativeModule } = require('@pulse-compute/wasm-host-runtime/runtime/canonical-native-host');
       const native = { ...invocation.nativeArtifact, plan: invocation.applicationPlan };
-      return (options) => executeCanonicalNativeModule(native, options);
+      return (options) => require('./runtime/incoming-body.js').executeNativeWithIncomingBody(native, options);
     },
+    prepareNativeRequest: require('./runtime/incoming-body.js').prepareNativeRequest,
     createLoweringPlan(metadata, config = {}) {
+      if (metadata.capabilities?.includes('request.body.forward')) {
+        if (!config.bodyForwarding) throw new portableForwardingError('PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Configure node.bodyForwarding and node.maxDurationMs.');
+      }
       require('./config/s3.js').validateNodeS3Operations(metadata, config.bindings || {});
       return canonicalProvider.createProviderLoweringPlan(metadata, nodeRuntime.NODE_PROVIDER_DESCRIPTOR, {
         grip: 'node-reference-broadcaster'

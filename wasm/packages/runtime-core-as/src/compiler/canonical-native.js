@@ -528,6 +528,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
           'event.runtime-id': () => 'host_value_number(<f64>__pulse_event_runtime_id)',
           'request.header': () => `host_request_header(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'request.text': () => 'host_request_text()',
+          'request.body.forward-marker': () => 'host_request_body()',
           'request.json': () => `host_request_json(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'response.json': () => `host_response_json(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
           'schema.encode.text': () => `host_schema_encode(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
