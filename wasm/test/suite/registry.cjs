@@ -526,10 +526,14 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'B03 final-Wasm handler ownership, 1/8/32 scaling, serial compile and isolated cold-load proof under default and bounded-size modes'
   }),
+  'shared-stage-o19': nodeTask('test/runtime/compiler-efficiency/o19-production-stage.cjs', {
+    timeoutMs: 180000,
+    description: 'O-19 production stage ownership, fallback, multiple families and cross-target execution'
+  }),
   'reusable-stage-o18': nodeTask('test/runtime/compiler-efficiency/o18-reusable-stage.cjs', {
     evidence: 'external',
     timeoutMs: 360000,
-    description: 'O-18 opt-in paired 1/2/16 shared-stage prototype, final-Wasm attribution, re-entry and runtime semantics'
+    description: 'O-18 paired 1/2/16 production shared-stage, final-Wasm attribution, re-entry and runtime semantics'
   }),
   'compiler-schema-cost-sc01': nodeTask('test/runtime/compiler-efficiency/sc01-schema-cost.cjs', {
     evidence: 'external',
@@ -1061,6 +1065,7 @@ const profiles = Object.freeze({
     's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',
+    'shared-stage-o19',
     'bounded-app-logic',
     'bounded-read-loops',
     'logging-lowering',

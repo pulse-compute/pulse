@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// Opt-in evidence, not a default CI lane or a production sharing transform.
+// Paired O-18 fixture, now exercising O-19 production lowering.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -61,13 +61,12 @@ async function measure(count, shared = false, repeated = false) {
     const { compileProject } = require('../../../packages/cli/src/project-execution');
     const { buildCanonicalNativePlan } = require('../../../packages/compiler/src/canonical-native-plan');
     const compiled = compileProject(project, { target: 'native' });
-    const plan = buildCanonicalNativePlan(compiled);
-    const sharedStageProofHandlerId = shared ? plan.routing.entries[0].handlerId : undefined;
-    const native = require('../../../packages/compiler/src/canonical-native-compiler').compileCanonicalNativePlan(plan, { cwd: root, emitWat: false, sharedStageProofHandlerId });
+    const plan = buildCanonicalNativePlan(compiled, shared ? {} : { sharedStages: false });
+    const native = require('../../../packages/compiler/src/canonical-native-compiler').compileCanonicalNativePlan(plan, { cwd: root, emitWat: false });
     const portableBuildMs = performance.now() - started;
     const fastlyStarted = performance.now();
     const fastly = compileFastlyNativePlatformCapabilitiesPlan(plan, { cwd: root, canonicalBuild: true,
-      requirePlatformCapability: false, emitWat: false, sharedStageProofHandlerId,
+      requirePlatformCapability: false, emitWat: false,
       bindings: { effectBackends: Object.fromEntries(plan.effects.map(effect => [effect.id, 'proof'])) } });
     const fastlyBuildMs = performance.now() - fastlyStarted;
     const js = tc.prepareJavascriptApplication(tc.resolveProject({ cwd, profile: 'js' }));
@@ -80,7 +79,7 @@ async function measure(count, shared = false, repeated = false) {
     assert.equal(new Set(sites.map(effect => effect.id)).size, sites.length);
     assert.equal(new Set(sites.map(effect => effect.continuationId)).size, sites.length);
     const ranges = entries.map(entry => entry.generatedRange);
-    const rejectionChecks = shared && count === 2 && !repeated ? require('./o18-proof-rejections.cjs').check(plan, sharedStageProofHandlerId) + require('./o18-proof-rejections.cjs').settlement(tc, native, plan) : 0;
+    const rejectionChecks = shared && count === 2 && !repeated ? require('./o19-stage-contract.cjs').check(plan) + require('./o18-proof-rejections.cjs').settlement(tc, native, plan) : 0;
     assert.ok(ranges.every(range => range && range.end > range.start));
 
     let requests = 0;
@@ -154,7 +153,7 @@ async function measure(count, shared = false, repeated = false) {
     const artifact = built => ({ sourceSha256: hash(built.source), sourceBytes: Buffer.byteLength(built.source), wasmBytes: built.wasm.length, wasmSha256: hash(built.wasm) });
     return { chains: count, shared, repeated, planHash: plan.planHash, rejectionChecks, finalWasm, ...source, authoredStageBodies: 1, expandedStageRanges: ranges.length,
       expandedStageCharacters: ranges.reduce((sum, range) => sum + range.end - range.start, 0),
-      preservedStageBodies: shared ? native.manifest.handlerBodies.filter(body => body.id === 'o18-shared-stage').length : (plan.handlers || []).filter(handler => stageIds.has(handler.id)).length,
+      preservedStageBodies: shared ? native.manifest.stages.length : (plan.handlers || []).filter(handler => stageIds.has(handler.id)).length,
       stageEffectSites: sites.length, locals: plan.locals.length, blocks: native.manifest.blockCount,
       node: artifact(native), fastly: artifact(fastly), portableBuildMs, fastlyBuildMs,
       semantics: { status: javascriptFailures.length ? 'failed' : 'passed', requests, interleavedNativeRequests: 2,
@@ -180,9 +179,9 @@ async function main() {
   const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
   const report = { version: 2, status: 'running', sharingGate: 'pending', compilerCommit: git(['rev-parse', 'HEAD']),
     toolchain: { node: process.version, assemblyscript: JSON.parse(fs.readFileSync(require.resolve('assemblyscript/package.json', { paths: [path.join(root, 'wasm')] }))).version, profile: 'default O3/shrink0; ordinary retention and merge passes' },
-    sourceIdentities: Object.fromEntries(['wasm/packages/runtime-core-as/src/compiler/canonical-native.js', 'wasm/packages/runtime-core-as/src/compiler/shared-stage-proof.js', 'wasm/test/runtime/compiler-efficiency/o18-reusable-stage.cjs', 'wasm/test/runtime/compiler-efficiency/o18-wasm-proof.cjs', 'wasm/test/runtime/compiler-efficiency/o18-proof-rejections.cjs', 'pnpm-lock.yaml'].map(file => [file, hash(fs.readFileSync(path.join(root, file)))])),
+    sourceIdentities: Object.fromEntries(['wasm/packages/runtime-core-as/src/compiler/canonical-native.js', 'wasm/packages/compiler/src/shared-stage-plan.js', 'wasm/test/runtime/compiler-efficiency/o18-reusable-stage.cjs', 'wasm/test/runtime/compiler-efficiency/o18-wasm-proof.cjs', 'wasm/test/runtime/compiler-efficiency/o18-proof-rejections.cjs', 'pnpm-lock.yaml'].map(file => [file, hash(fs.readFileSync(path.join(root, file)))])),
     worktree: git(['status', '--porcelain']), probeSha256: hash(fs.readFileSync(__filename)),
-    note: 'Serial fresh workers; one timing observation per cell, not a build-time improvement claim. Internal opt-in experiment only; production defaults unchanged.', rows: [] };
+    note: 'Serial fresh workers; one timing observation per cell, not a build-time improvement claim. Production shared-stage lowering versus an internal expanded-plan control.', rows: [] };
   const save = () => { if (output) fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n'); };
   const run = (count, selected, repeated = false) => {
     const row = JSON.parse(execFileSync(process.execPath, [__filename, '--worker', String(count), ...(selected ? ['--shared'] : []), ...(repeated ? ['--repeated'] : [])], { encoding: 'utf8', timeout: 180000, maxBuffer: 1024 * 1024 }));

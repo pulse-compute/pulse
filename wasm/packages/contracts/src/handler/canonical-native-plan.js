@@ -1,7 +1,13 @@
 'use strict';
 
-const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v3';
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v4';
 const CANONICAL_NATIVE_HANDLER_BODY_VERSION = 'pulse.canonical-native-handler-body.v1';
+const CANONICAL_NATIVE_STAGE_CONTRACT = Object.freeze({
+  version: 'pulse.canonical-native-stage.v1',
+  maxEffectSites: 64,
+  outputs: Object.freeze(['response', 'next', 'error', 'suspend', 'failure']),
+  frame: Object.freeze({ lifetime: 'invocation', reset: 'stage-entry', suspension: 'retain', nesting: false })
+});
 const CANONICAL_NATIVE_PLAN_HASH_ALGORITHM = 'sha256';
 const CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION = 'pulse.canonical-native-ownership.v1';
 const CANONICAL_PURE_LOOP_LIMITS = Object.freeze({ maxIterations: 1024, maxNestedIterations: 65536 });
@@ -27,6 +33,7 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'continue',
   'return',
   'handler-call',
+  'stage-call',
   'expression'
 ]);
 
@@ -146,6 +153,14 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
     suspension: 'resume the owning body by program counter; no live call stack',
     budget: 'one charge per original state; the call reference adds no state'
   }),
+  sharedStages: Object.freeze({
+    version: CANONICAL_NATIVE_STAGE_CONTRACT.version,
+    family: 'transfer-capable HTTP routes with 1..64 bound sequential text-fetch sites',
+    inputs: 'request context, stage-owned locals and registration-owned return/effect/continuation bindings',
+    outputs: 'response, next, error, suspension or terminal failure',
+    calls: 'dispatcher admission only; no captures, recursion, groups or loops',
+    suspension: 'one invocation-owned frame; reset locals at entry and retain across suspension'
+  }),
   suspension: 'explicit effect and effect-group statements with stable continuation IDs',
   values: 'versioned JSON expression tree with stable local identities',
   logging: 'compile-time threshold pruning plus synchronous provider-adapter emission',
@@ -157,6 +172,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 module.exports = Object.freeze({
   CANONICAL_NATIVE_PLAN_VERSION,
   CANONICAL_NATIVE_HANDLER_BODY_VERSION,
+  CANONICAL_NATIVE_STAGE_CONTRACT,
   CANONICAL_PURE_LOOP_LIMITS,
   CANONICAL_READ_LOOP_CONTRACT,
   CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,

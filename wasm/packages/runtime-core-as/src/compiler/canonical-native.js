@@ -319,7 +319,7 @@ function collectExpressions(plan) {
   }
 
   walkStatements(plan.entry && plan.entry.body);
-  for (const handler of plan.handlers || []) walkStatements(handler.body);
+  for (const handler of [...(plan.handlers || []), ...(plan.stages || [])]) walkStatements(handler.body);
   for (const effect of plan.effects || []) {
     for (const input of effect.inputs || []) add(input.value);
     const decoder = effect.result && effect.result.decoder;
@@ -330,9 +330,11 @@ function collectExpressions(plan) {
 
 function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   if (!plan || typeof plan !== 'object') throw new TypeError('generateCanonicalNativeAssemblyScript requires a canonical native plan.');
-  const sharedStage = options.sharedStageProofHandlerId
-    ? require('./shared-stage-proof').prepareSharedStageProof(plan, options.sharedStageProofHandlerId) : undefined;
-  if (sharedStage) plan = sharedStage.plan;
+  const stages = new Map((plan.stages || []).map(stage => [stage.id, stage]));
+  const stageBindings = new Map((plan.stages || []).flatMap(stage => stage.registrations.map(row => [row.entryId, row])));
+  const stageEntries = new Map();
+  const stageSites = new Map((plan.effects || []).flatMap((effect, index) => effect.stageId === undefined ? [] : [[index, { site: effect.stageSite }]]));
+  const maxStageSites = Math.max(0, ...(plan.stages || []).map(stage => stage.effectIds.length));
   const localIndex = new Map((plan.locals || []).map((local, index) => [String(local.id), index]));
   const effectIndex = new Map((plan.effects || []).map((effect, index) => [String(effect.id), index]));
   const continuationIndex = new Map((plan.continuations || []).map((continuation) => [String(continuation.id), Number(continuation.stateIndex)]));
@@ -677,7 +679,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     for (const record of resultRecords) {
       const { index, effect } = effectRecord(record.effectId || record.id);
       const result = effect.result || record;
-      const selected = activeHandler === 'o18-shared-stage' && sharedStage.storage.get(index);
+      const selected = stages.has(activeHandler) && stageSites.get(index);
       if (result.mode === 'bind' || record.localId) lines.push(`${localName(result.localId || record.localId)} = ${selected ? `__pulse_stage_result(__pulse_stage_effect_${selected.site})` : `__pulse_effect_result_${index}`}`);
       else if (result.mode === 'return') lines.push(`__pulse_result = __pulse_effect_result_${index}`);
       else lines.push(`__pulse_drop(__pulse_effect_result_${index})`);
@@ -694,7 +696,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     const lines = [];
     const payloadLines = [];
     for (const { index, effect } of effects) {
-      const selected = activeHandler === 'o18-shared-stage' && sharedStage.storage.get(index);
+      const selected = stages.has(activeHandler) && stageSites.get(index);
       if (selected) lines.push(`__pulse_stage_prepare(__pulse_stage_effect_${selected.site})`);
       else {
         lines.push(`__pulse_effect_pending_${index} = 1`);
@@ -709,14 +711,13 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return block('suspend', {
       lines,
       payloadLines,
-      continuationState: activeHandler === 'o18-shared-stage'
-        ? `__pulse_stage_continuation_${sharedStage.storage.get(effects[0].index).site}` : continuationState(continuationId),
+      continuationState: stages.has(activeHandler)
+        ? `__pulse_stage_continuation_${stageSites.get(effects[0].index).site}` : continuationState(continuationId),
       resumeBlock,
       pendingCount: effects.length
     });
   }
 
-  let sharedStageEntry;
   let pureLoopIndex = 0;
   function pureLines(statements) {
     const lines = [];
@@ -744,18 +745,19 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];
       if (statement.kind === 'stage-call') {
-        const row = sharedStage.rows[statement.registration];
+        const stage = stages.get(statement.stageId), row = stageBindings.get(statement.registrationId);
+        if (!stage || !row || activeHandler) fail('Stage call requires a validated dispatcher binding.');
         const lines = [
-          `__pulse_stage_next = ${row.entry.nextIndex}`,
+          `__pulse_stage_next = ${row.nextIndex}`,
           `__pulse_stage_return = ${next}`,
-          `${localName(sharedStage.nextLocal.id)} = host_value_number(${row.entry.nextIndex})`,
-          ...sharedStage.localIds.map(id => `${localName(id)} = 0`),
-          ...row.effects.flatMap((effect, site) => [
-            `__pulse_stage_effect_${site} = ${effectIndex.get(effect.id)}`,
-            `__pulse_stage_continuation_${site} = ${continuationState(effect.continuationId)}`
+          `${localName(stage.inputs.nextCursorLocalId)} = host_value_number(${row.nextIndex})`,
+          ...stage.localIds.map(id => `${localName(id)} = 0`),
+          ...row.effectIds.flatMap((effectId, site) => [
+            `__pulse_stage_effect_${site} = ${effectIndex.get(effectId)}`,
+            `__pulse_stage_continuation_${site} = ${continuationState(row.continuationIds[site])}`
           ])
         ];
-        next = block('action', { lines, next: sharedStageEntry });
+        next = block('action', { lines, next: stageEntries.get(stage.id) });
       } else if (statement.kind === 'handler-call') {
         const handler = handlers.get(statement.handlerId);
         if (!handler || activeHandler) fail('Private Router call must select one terminal body.', { handlerId: statement.handlerId });
@@ -800,12 +802,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return next;
   }
 
-  if (sharedStage) {
-    activeHandler = 'o18-shared-stage';
+  for (const stage of stages.values()) {
+    activeHandler = stage.id;
     const exit = block('stage-exit');
-    sharedStageEntry = compileSequence(sharedStage.body, exit, {
+    stageEntries.set(stage.id, compileSequence(stage.body, exit, applicationErrors ? {
       nextBlock: '__pulse_stage_return', nextIndex: '__pulse_stage_next'
-    });
+    } : undefined));
     activeHandler = undefined;
   }
   const entryBlock = compileSequence(plan.entry.body || [], fallthroughBlock);
@@ -926,7 +928,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const maxChunkStates = 64;
   const maxChunkCharacters = 24000;
   const renderedBlocks = blocks.map(item => ({ item, ...renderBlock(item) }));
-  const partitioned = handlers.size > 0 || blocks.length > maxChunkStates
+  const partitioned = handlers.size > 0 || stages.size > 0 || blocks.length > maxChunkStates
     || renderedBlocks.reduce((size, block) => size + block.partitionCharacters, 0) > maxChunkCharacters;
   const chunks = [];
   if (partitioned) {
@@ -945,7 +947,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   }
   const invalidProgramCounter = `__pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_PROGRAM_COUNTER}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`;
   // Pulse's @noinline transform prevents rebuilding the monolithic function.
-  const stageChunks = chunks.flatMap((chunk, index) => chunk[0].handlerId === 'o18-shared-stage' ? [index] : []);
+  const stageChunks = chunks.flatMap((chunk, index) => stages.has(chunk[0].handlerId) ? [index] : []);
   const chunkName = index => stageChunks.includes(index) ? `__pulse_shared_stage_${stageChunks.indexOf(index)}` : `__pulse_chunk_${index}`;
   const dispatcherFunctions = chunks.flatMap((chunk, index) => [
     '@noinline',
@@ -982,9 +984,9 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return `@external("${runtimeContract.CANONICAL_NATIVE_IMPORT_MODULE}", "${name}") declare function host_${name}(${args}): ${result}`;
   });
 
-  const globals = sharedStage ? [
+  const globals = stages.size ? [
     'let __pulse_stage_next: i32 = 0', 'let __pulse_stage_return: i32 = 0',
-    ...[0, 1].flatMap(site => [`let __pulse_stage_effect_${site}: i32 = -1`, `let __pulse_stage_continuation_${site}: i32 = 0`])
+    ...Array.from({ length: maxStageSites }, (_, site) => site).flatMap(site => [`let __pulse_stage_effect_${site}: i32 = -1`, `let __pulse_stage_continuation_${site}: i32 = 0`])
   ] : [];
   if (eventReachable) {
     globals.push('let __pulse_event_runtime_id: i32 = -1');
@@ -1010,13 +1012,13 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     `      return ${runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED}`
   ].join('\n')).join('\n');
   const readyCases = [...resumeRequirements.entries()].map(([pc, required]) => {
-    const condition = required.length > 0 ? required.map((index) => blocks[pc].handlerId === 'o18-shared-stage'
-      ? `__pulse_stage_ready(__pulse_stage_effect_${sharedStage.storage.get(index).site}) != 0` : `__pulse_effect_ready_${index} != 0`).join(' && ') : 'true';
+    const condition = required.length > 0 ? required.map((index) => stages.has(blocks[pc].handlerId)
+      ? `__pulse_stage_ready(__pulse_stage_effect_${stageSites.get(index).site}) != 0` : `__pulse_effect_ready_${index} != 0`).join(' && ') : 'true';
     return `    case ${pc}: return ${condition}`;
   }).join('\n');
   const clearCases = [...resumeRequirements.entries()].map(([pc, required]) => {
-    const lines = required.flatMap((index) => blocks[pc].handlerId === 'o18-shared-stage'
-      ? [`__pulse_stage_clear(__pulse_stage_effect_${sharedStage.storage.get(index).site})`] : [`__pulse_effect_ready_${index} = 0`, `__pulse_effect_pending_${index} = 0`]).join('; ');
+    const lines = required.flatMap((index) => stages.has(blocks[pc].handlerId)
+      ? [`__pulse_stage_clear(__pulse_stage_effect_${stageSites.get(index).site})`] : [`__pulse_effect_ready_${index} = 0`, `__pulse_effect_pending_${index} = 0`]).join('; ');
     return `    case ${pc}: ${lines}${lines ? '; ' : ''}return`;
   }).join('\n');
   const eventPayloadCases = eventEntries.map((event) => {
@@ -1046,6 +1048,10 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '}'
   ] : [];
 
+  // Sharing cannot reduce the bounded dispatcher allowance for paths that
+  // visit several registrations without suspending between them.
+  const guardStateCount = blocks.length + [...stages.values()].reduce((total, stage) =>
+    total + blocks.filter(block => block.handlerId === stage.id).length * (stage.registrations.length - 1), 0);
   const source = [
     '/* Generated by Pulse canonical native AssemblyScript compiler. */',
     ...nativeSchemaCodecs.imports,
@@ -1062,7 +1068,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     'let __pulse_error: i32 = 0',
     'let __pulse_pending: i32 = 0',
     ...globals,
-    ...(sharedStage ? require('./shared-stage-proof').effectAccessors(sharedStage) : []),
+    ...(stages.size ? require('./shared-stage-accessors').effectAccessors(stageSites) : []),
     '',
     'function __pulse_string(value: string): i32 { return host_value_string(changetype<i32>(value), value.length) }',
     'function __pulse_drop(value: i32): void {}',
@@ -1090,7 +1096,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     ...errorGuard,
     ...dispatcherFunctions,
     'function __pulse_run(): i32 {',
-    `  let guard: i32 = ${Math.max(64, blocks.length * 8)}`,
+    `  let guard: i32 = ${Math.max(64, guardStateCount * 8)}`,
     '  while (guard > 0) {',
     '    guard -= 1',
     ...(partitioned ? [
@@ -1154,6 +1160,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     sourceHash: stableHash(source),
     entryBlock,
     blockCount: blocks.length,
+    guardStateCount,
     dispatcher: Object.freeze({
       strategy: partitioned ? 'bounded-state-chunks' : 'single-function',
       chunkCount: chunks.length,
@@ -1163,7 +1170,11 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       guard: 'shared-once-per-state',
       chunkInlining: partitioned ? 'disabled' : 'not-applicable'
     }),
-    ...(sharedStage ? { sharedStageProof: { handlerId: options.sharedStageProofHandlerId, registrations: sharedStage.rows.length, entryBlock: sharedStageEntry, bodyStates: blocks.filter(block => block.handlerId === 'o18-shared-stage').length } } : {}),
+    stages: Object.freeze([...stages.values()].map(stage => Object.freeze({
+      id: stage.id, handlerId: stage.handlerId, registrations: stage.registrations.length,
+      entryBlock: stageEntries.get(stage.id), bodyStates: blocks.filter(block => block.handlerId === stage.id).length,
+      chunks: Object.freeze(chunks.flatMap((chunk, index) => chunk[0].handlerId === stage.id ? [index] : []))
+    }))),
     handlerBodies: Object.freeze([...handlers.values()].map(handler => Object.freeze({
       id: handler.id,
       handlerId: handler.handlerId,

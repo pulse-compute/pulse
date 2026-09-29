@@ -79,6 +79,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'canonical-api-lowering',
       'canonical-native-plan',
+      'shared-stage-o19',
       'multifile-source-identity',
       'logging-lowering',
       'canonical-router-lowering',
