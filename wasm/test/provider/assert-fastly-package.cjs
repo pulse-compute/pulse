@@ -268,4 +268,5 @@ try {
   fs.rmSync(tmp, { recursive: true, force: true });
 }
 
-console.log('ok - extracted @pulse-compute/provider-fastly emits deterministic compact direct-host-ABI Fastly Wasm without JavaScript runtime ownership or source-only packaging');
+require('./assert-fastly-incoming-body-feasibility.cjs').assertAdmission();
+console.log('ok - extracted @pulse-compute/provider-fastly emits deterministic compact direct-host-ABI Fastly Wasm without JavaScript runtime ownership or source-only packaging; incoming forwarding stays ineligible');
