@@ -564,6 +564,15 @@ suspension group, before any provider dispatch. Native test/dev execute the
 emitted Wasm for this capability. Native forwarding applications reject
 structured request-read surfaces because those host calls remain synchronous.
 
+STR-02C leaves both Fastly targets ineligible. Local Viceroy ABI probes support
+incremental transfer, early origin responses and unsuccessful stream termination,
+but a successful streaming-body close relinquishes the handle and may hand
+queued completion to the host. That is not a drain receipt or retained
+cancellation authority. Fastly incoming forwarding requires a reviewed
+completion/handoff contract and a metered provider pump before admission; raw
+handle transfer alone does not enforce measured byte limits. Fastly JavaScript
+also retains its separate total-request-deadline restriction.
+
 `node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
 this path. Node adapts incoming HTTP lazily and keeps one provider read and one
 source chunk per pump, with a 64 KiB source/backing-allocation ceiling and

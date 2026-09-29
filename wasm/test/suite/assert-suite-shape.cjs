@@ -57,6 +57,7 @@ const externalTasks = new Set([
   'jwt-installed-workflow',
   'str02-installed',
   'str02b-installed',
+  'str02c-fastly-feasibility',
   // Independent SDK installation is explicit external evidence for the private adapter.
   'mcp-http-sdk',
   'mcp-tools-sdk',
