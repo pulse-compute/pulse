@@ -5,7 +5,9 @@ Owner: Pulse MCP adapter lane. PR base: `beta`.
 
 Implementation follow-up: the private [MCP-02 adapter](../../../packages/mcp/README.md)
 now implements the HTTP shell and T01–T06 plus the admission portion of T07.
-Its discovery advertises no optional capabilities until MCP-03 implements tools.
+MCP-03 now adds catalog/schema-backed tools through the governed HTTP boundary;
+discovery advertises tools only when configured. See the adapter README for
+projection limits and measured evidence.
 The reference fixture and original requirement allocation below remain MCP-01
 evidence; they do not substitute for the adapter's own tests.
 
@@ -151,7 +153,7 @@ Case names below are stable names for the owning ticket's future corpus.
 | T06 | `capability-negative`: no legacy lifecycle, sessions, SSE stream, subscription/task/MRTR/resource/prompt methods; removed `ping` is rejected | Implemented MCP-02 shell |
 | T07 | `bounded-lifetime`: body/response/tool-count bounds, deadline, disconnect, cleanup and no duplicate invocation | Planned MCP-02/03; cancellation must not claim rollback of effects |
 | C01 | `catalog-projection`: deterministic full schemas, eligibility, metadata allowlist, duplicate/invalid names, schema rejection and hash invalidation | Planned MCP-03 |
-| C02 | `tool-errors`: unknown tool/invalid arguments/execution failures map to MCP tool errors; transport/envelope failures remain protocol errors | Planned MCP-03 |
+| C02 | `tool-errors`: unknown tools/malformed params are protocol errors; input validation and execution failures are tool errors (corrected against the pinned tools specification) | Planned MCP-03 |
 | C03 | `cache-isolation`: no-store initially; no stale or cross-principal discovery/call state | Planned MCP-03/04 |
 | A01 | `oauth-discovery`: protected-resource and AS metadata, resource parameter, PKCE, challenge handling with independent client | Planned MCP-04 |
 | A02 | `deny-before-effects`: absent/expired/wrong-issuer/wrong-audience token, insufficient scopes, catalog filtering, backend protection | Planned MCP-04 |

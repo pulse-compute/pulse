@@ -59,10 +59,14 @@ a governed adapter boundary, external protocol state stays outside runtime
 core, and MCP behavior never becomes a source of provider or schema authority.
 
 The repository's private `packages/mcp` candidate implements the MCP
-2026-07-28 HTTP protocol shell: bounded admission, discovery and protocol
-errors. It advertises no optional capabilities. Catalog-backed tools and remote
-authorization remain separate work; the candidate does not change the released
-package set, add an Entities adapter, or grant direct handler access.
+2026-07-28 HTTP protocol shell and a catalog-backed tools facade. Tools are
+projected from one explicitly selected emitted router and its schema registry;
+each admitted call makes one request to a fixed governed Entities HTTP endpoint.
+The facade imports no handlers, executable codecs or runtime registry. Discovery
+advertises tools only when that configuration is present. Remote authorization
+remains separate work; the candidate does not change the released package set
+or add an Entities adapter. Backend placement and matching build artifacts remain
+application responsibilities.
 
 ## Future adapters
 

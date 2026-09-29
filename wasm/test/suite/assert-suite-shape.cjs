@@ -54,6 +54,7 @@ const externalTasks = new Set([
   'mcp-wire-proof',
   // Independent SDK installation is explicit external evidence for the private adapter.
   'mcp-http-sdk',
+  'mcp-tools-sdk',
   // The S01 measurement task is a manually selected benchmark with sampled
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',
