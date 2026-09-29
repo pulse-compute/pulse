@@ -45,11 +45,13 @@ function providerResponseSpec(spec = {}) {
       streamRef: spec.streamRef
     };
   }
-  const body = Object.prototype.hasOwnProperty.call(spec, 'body') ? spec.body : JSON.stringify(Object.prototype.hasOwnProperty.call(spec, 'value') ? spec.value : {});
+  const textFixture = Object.prototype.hasOwnProperty.call(spec, 'text') && !Object.prototype.hasOwnProperty.call(spec, 'value');
+  const body = Object.prototype.hasOwnProperty.call(spec, 'body') ? spec.body
+    : textFixture ? String(spec.text) : JSON.stringify(Object.prototype.hasOwnProperty.call(spec, 'value') ? spec.value : {});
   return {
     status: Number(Object.prototype.hasOwnProperty.call(spec, 'status') ? spec.status : 200),
     kind: spec.kind || 'text',
-    headers: normalizeHeaders(spec.headers || [['content-type', 'application/json; charset=utf-8']]),
+    headers: normalizeHeaders(spec.headers || [['content-type', textFixture ? 'text/plain; charset=utf-8' : 'application/json; charset=utf-8']]),
     body: typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body)
   };
 }

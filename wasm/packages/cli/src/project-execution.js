@@ -342,6 +342,16 @@ function compileNativeProjectInMemory(project, options = {}) {
     throw failure;
   }
   const plan = buildCanonicalNativePlan(compiled, { reporting: project.reporting });
+  const application = plan.packages && plan.packages.application;
+  if (application && !(targetDescriptor(project, 'native').realizations || []).some(entry =>
+    entry.kind === 'package-native-application' && entry.contractId === application.contractId
+    && entry.implementation === application.version && entry.implemented === true)) {
+    throw new CanonicalNativePlanError('The selected provider has not integrated this package Native application.', [{
+      code: 'PULSE_CANONICAL_NATIVE_PLAN_FAILED', severity: 'error',
+      message: `Provider ${project.provider} does not implement ${application.contractId} Native application execution.`,
+      detail: { contractId: application.contractId, provider: project.provider, automaticFallback: false }
+    }]);
+  }
   const native = compileCanonicalNativePlan(plan, {
     cwd: project.root,
     projectRoot: project.root,
@@ -513,7 +523,7 @@ function providerExecutionOptions(project, values = {}) {
 function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
-  return algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+  return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
     || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
     || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
 }
@@ -1613,7 +1623,10 @@ async function runProjectTests(project, options = {}) {
         durationMs: Number(process.hrtime.bigint() - started) / 1e6,
         response: Object.freeze({ status: execution.response.status, bodyClass: execution.response.bodyClass, kind: execution.response.kind }),
         effects: execution.effectCount,
-        ...(execution.evidence ? { executionEvidence: execution.evidence } : {}),
+        ...(execution.evidence ? { executionEvidence: execution.evidence } : exactNativeExecution ? { executionEvidence: Object.freeze({
+          mode: 'native-wasm', planHash: execution.planHash, wasmSha256: execution.wasmSha256,
+          automaticFallback: false
+        }) } : {}),
         continuations: execution.continuations.map((entry) => Object.freeze({ id: entry.id, state: entry.state, effectIds: entry.effectIds })),
         resolutionOrder: execution.resolutionOrder
       }));

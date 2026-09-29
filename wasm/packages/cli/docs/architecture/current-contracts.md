@@ -277,6 +277,17 @@ entering the guest. The ticket is consumed before injection. Completion, failure
 explicit close and cancellation invalidate pending tickets. An incomplete resume
 still preserves the current pending result set for a valid retry.
 
+Terminal first-party Native package applications can use the optional
+`pulse_host.value_json(handle)` data-copy import. The canonical Node host checks
+a 1 MiB UTF-8 JSON limit before allocating a guest managed string. This adds no
+effect authority and leaves opaque/streaming bodies outside this bridge. For a
+plan declaring `effectFailure: 'package-completion'`, the host requires
+`pulse_package_set_effect_failure(index)` and settles failures through the same
+single-use ticket boundary. The guest receives failure status only and owns the
+protocol response; cancellation and execution budgets still terminate at the host.
+Node declares this realization for Entities; ordinary Fastly Native integration
+remains unavailable.
+
 Fastly's canonical Native platform driver uses request-instance-owned sequence
 tickets, checks the captured ticket before injecting each result, and closes its
 lifecycle on terminal return. A second entry into the same driver instance is

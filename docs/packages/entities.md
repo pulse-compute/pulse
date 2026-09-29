@@ -98,12 +98,14 @@ direct handler or runtime-registry API.
 |---|---|---|
 | Node JavaScript | Ordinary doctor, inspect, test, dev, and build workflow | Package JavaScript runtime |
 | Fastly JavaScript | Measured with Viceroy 0.20.1 | Provider JavaScript package/runtime |
-| Node Native | Package-owned proof execution | Ordinary project execution/build integration remains incomplete |
+| Node Native | Ordinary doctor, inspect, test, dev, and build workflow | Package-owned guest through the canonical Node host; no JavaScript fallback |
 | Fastly Native | Measured with Viceroy 0.20.1 | Explicit provider-owned adapter; not the ordinary project build path |
 
 The source-checkout task `entities-orchestration-demo` separately exercises the
 tools facade and package-owned Native artifact. That proof does not qualify the
-ordinary Native project workflow.
+ordinary Fastly Native project workflow. The `entities-node-native-workflow`
+gate separately verifies that ordinary Node Native tests execute the same guest
+bytes emitted by build.
 
 Native remains `provider-dependent`, and every target keeps automatic fallback
 disabled. The complete matrix is in [Provider and target compatibility](../reference/compatibility-matrix.md).

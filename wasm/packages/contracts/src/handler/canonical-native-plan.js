@@ -59,6 +59,7 @@ const CANONICAL_NATIVE_CONTEXT_READS = Object.freeze([
 ]);
 
 const CANONICAL_NATIVE_INTRINSICS = Object.freeze([
+  'package.application',
   'request.header',
   'request.text',
   'request.json',

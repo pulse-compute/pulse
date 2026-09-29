@@ -78,7 +78,6 @@ const examples = Object.freeze([
   Object.freeze({
     id: '10-entities-tools',
     runtimePackages: ['entities'],
-    doctorWarnings: ['canonical-native-plan'],
     provider: 'node',
     target: 'javascript',
     noApplicationWasm: true,

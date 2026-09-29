@@ -1134,6 +1134,9 @@ const entitiesLoweringBuilder = Object.freeze({
 
 module.exports = Object.freeze({
   createEntitiesPackageCompilerBuilder,
+  buildEntitiesCanonicalNativeApplication(input) {
+    return require('./pulsewasm.native.cjs').buildEntitiesCanonicalNativeApplication(input);
+  },
   buildEntitiesLoweringPlan: createEntitiesPackageCompilerBuilder,
   entitiesLoweringBuilder,
   ENTITIES_DIAGNOSTIC_CODES: entitiesContracts.ENTITIES_DIAGNOSTIC_CODES

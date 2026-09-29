@@ -90,6 +90,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-managed-handler',
       'entities-managed-handler-effects',
       'entities-native-runtime',
+      'entities-node-native-workflow',
       'crypto-native-guest-source',
       'guest-link-package',
       'guest-link-materialization-stage',

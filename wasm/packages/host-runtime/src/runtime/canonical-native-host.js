@@ -368,6 +368,9 @@ function validateNativeModule(module, plan) {
   const missing = runtimeContract.CANONICAL_NATIVE_EXPORT_NAMES.filter((name) => !exportNames.has(name));
   if (missing.length > 0) throw new CanonicalNativeHostError('Native module is missing required ABI exports.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH', { missing });
   if (!plan || typeof plan !== 'object' || !plan.planHash) throw new TypeError('Native module execution requires its canonical native plan.');
+  if (plan.packages?.application?.effectFailure === 'package-completion' && !exports.some(entry => entry.name === 'pulse_package_set_effect_failure' && entry.kind === 'function')) {
+    throw new CanonicalNativeHostError('Native package application is missing its effect failure ABI.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH');
+  }
   const eventReachable = Boolean(plan.events && plan.events.catalog && plan.events.catalog.events.length > 0);
   const eventExportNames = eventContract.EVENT_NATIVE_ABI_EXTENSION.exports.map((entry) => entry.name);
   const presentEventExports = eventExportNames.filter((name) => exportNames.has(name));
@@ -612,6 +615,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   }
 
   const pulseHost = {
+    value_json(handle) {
+      const text = JSON.stringify(value(handle) ?? null);
+      if (Buffer.byteLength(text, 'utf8') > runtimeContract.CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES) throw new CanonicalNativeHostError('Native value transfer exceeds 1 MiB.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE');
+      const exports = instance.exports;
+      const pointer = exports.__new(text.length * 2, exports.pulse_schema_string_id());
+      const view = new Uint16Array(memory().buffer, pointer, text.length);
+      for (let index = 0; index < text.length; index++) view[index] = text.charCodeAt(index);
+      return pointer;
+    },
     value_undefined() { return put(undefined); },
     value_null() { return put(null); },
     value_boolean(input) { return put(Number(input) !== 0); },
@@ -932,6 +944,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     });
   }
 
+  function setEffectFailure(ticket) {
+    return invocations.settle(ticket, () => {
+      if (instance.exports.pulse_package_set_effect_failure(ticket.slot) !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+        close();
+        throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
+      }
+    });
+  }
+
   function resultValue() {
     const handle = instance.exports.pulse_result_handle();
     return handle === 0 ? undefined : value(handle);
@@ -1000,6 +1021,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     prepareEffectResult,
     captureApplicationError,
     setEffectResult,
+    setEffectFailure,
     resultValue,
     response() { requireHttpSurface('HTTP completion'); return canonicalRuntime.finalResponse(resultValue(), context.ctx.req.method); },
     programCounter() { return instance.exports.pulse_program_counter(); },
@@ -1170,12 +1192,15 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
       const failures = settled.filter(entry => entry.status === 'rejected');
       const failed = failures.find(entry => !portableKv.isApplicationError(entry.reason)) || failures[0];
-      if (failed && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
+      const packageFailure = controller.plan.packages?.application?.effectFailure === 'package-completion';
+      if (failed && !packageFailure && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
         || !controller.captureApplicationError(failed.reason))) {
         throw canonicalRuntime.redactRuntimeError(failed.reason, controller.sensitiveValues);
       }
-      settled.forEach((item, index) => controller.setEffectResult(pending[index].ticket,
-        item.status === 'fulfilled' ? item.value.result : undefined));
+      settled.forEach((item, index) => {
+        if (item.status === 'rejected' && packageFailure) controller.setEffectFailure(pending[index].ticket);
+        else controller.setEffectResult(pending[index].ticket, item.status === 'fulfilled' ? item.value.result : undefined);
+      });
       const previousPc = controller.programCounter();
       activeContinuation.state = 'resumed';
       activeContinuation.states.push('resumed');
