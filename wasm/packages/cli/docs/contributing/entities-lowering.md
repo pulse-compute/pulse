@@ -24,6 +24,7 @@ public extension API.
 | `packages/entities/pulsewasm.compiler.cjs` | Static extraction, plan/catalog/inspection, managed-handler descriptors |
 | `packages/entities/pulsewasm.native.cjs` | Package-owned bounded Native dispatcher source |
 | `packages/entities/as/index.as.ts` | Native source template/contract input |
+| `packages/entities/as/canonical.as.ts` | Package-owned canonical host ABI adapter |
 | `wasm/packages/contracts/src/entities/` | Versioned shared normalization, limits, JSON-RPC, catalog, and plan contracts |
 | `packages/entities/conformance/i9.json` | Shared four-mode corpus/evidence declaration |
 
@@ -67,8 +68,28 @@ invocation, stable failure categories, output validation, JSON-RPC framing, and
 synchronous `204` notification acknowledgement. It may use only the provider
 requirements declared by the package contract.
 
-Native status remains `provider-dependent`. Node Native uses the canonical
-package source. Fastly Native evidence uses an explicit provider-owned adapter
+Native status remains `provider-dependent`. The trusted manifest declares
+`compiler.nativeApplicationExport: 'buildEntitiesCanonicalNativeApplication'`.
+The generic compiler passes only the static entity plan, managed-handler Native
+bundle, and schema bundle. The package returns the versioned source contribution,
+effects, continuations, capabilities, and codec manifest. Source and effect identity
+are bound into the canonical Native plan hash; the ordinary compiler appends that
+hash and validates the resulting Wasm ABI.
+
+Node's explicit `package-native-application` realization enables the ordinary
+build, test, and dev path. Tests report the executed plan/Wasm hashes. The guest
+owns dispatch, selected schema validation, continuations, notification completion,
+and failure framing. The canonical host owns fetch, configuration, secrets, KV,
+and time effects. The current adapter accepts `fetch`, `config.get`, `secret.get`,
+`kv.get`, `kv.put`, and `time.now`; other managed effect kinds fail closed.
+
+The optional `pulse_host.value_json` import copies a host value into a guest
+managed string, with a 1 MiB UTF-8 limit before guest allocation. It grants no
+I/O authority. Effect rejection uses a single-use invocation ticket and the
+conditional `pulse_package_set_effect_failure` export; only failure status
+crosses the boundary. Cancellation and execution budgets remain host failures.
+
+Fastly Native evidence uses an explicit provider-owned adapter
 over the exact package source. Do not wire that adapter into the ordinary
 Fastly project build or change the product status as part of a documentation or
 candidate-seal change. Any such integration is a separately classified product

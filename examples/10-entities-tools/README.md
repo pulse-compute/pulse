@@ -25,8 +25,8 @@ pulse dev
 pulse build
 ```
 
-`pulse doctor` exits successfully with an advisory warning about the separate
-Native plan. The selected JavaScript target is checked independently.
+`pulse doctor` checks the selected JavaScript target and reports Native
+eligibility separately.
 `pulse inspect` reports the static entity catalog, declared schemas, handler
 effects, and target evidence. `pulse test` invokes both operations through the
 Node JavaScript request boundary. The lookup fixture supplies plain text because
@@ -48,8 +48,27 @@ This example disables development network fetches by default. Stop the dev
 server before continuing to `pulse build`.
 
 The JavaScript build emits the source package, catalog, and inspection
-artifacts. Ordinary Native execution remains a separate integration gap and
-never falls back to JavaScript.
+artifacts.
+
+## Node Native workflow
+
+Select the existing `node-native` profile to compile and execute the package-owned
+dispatcher through the ordinary CLI:
+
+```bash
+pulse doctor --profile node-native
+pulse inspect --profile node-native
+pulse test --profile node-native
+pulse dev --profile node-native
+pulse build --profile node-native
+```
+
+The build emits `dist-node-native/canonical-native.wasm` and its Native plan,
+catalog, and inspection artifacts. Tests and development execute this generated
+guest through the canonical Node host. The guest selects the operation, validates
+its schemas, suspends for governed effects, and frames the response. Test JSON
+records the plan hash and executed Wasm hash. Native never falls back to
+JavaScript. Ordinary Fastly Native integration remains separate.
 
 Maintainers can also run the package-owned orchestration proof from this
 source checkout:
@@ -60,16 +79,14 @@ node ../../wasm/scripts/run-wasm-tests.cjs --task entities-orchestration-demo --
 
 That proof consumes the catalog through the tools facade and compiles/inspects
 the package-owned Native artifact. It supplements the ordinary JavaScript
-workflow above.
+workflow above; ordinary Node Native execution has its own lifecycle gate.
 
 ## Wasm size
 
 The default `node-javascript` profile emits **no application Wasm artifact**.
-The ordinary `node-native` build currently fails closed at the unadopted
-Entities intrinsic. The focused gate's package-owned Native artifact exercises
-a different boundary and is not comparable to an emitted application guest.
-Consequently, `--experimental-native-size` has no application artifact to
-optimize for this example.
+Select `node-native` to emit an application guest. `--experimental-native-size`
+is meaningful only on that Native profile; the default JavaScript build has
+no application guest to optimize.
 
 ## Entity application
 

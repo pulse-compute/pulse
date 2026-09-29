@@ -28,6 +28,9 @@ function hasBoundedReadLoop(plan) {
   return visit(plan && plan.entry) || visit(plan && plan.handlers);
 }
 
+// Optional data-only host-to-guest JSON copy. UTF-8 accounting precedes guest allocation.
+const CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES = 1024 * 1024;
+
 const CANONICAL_NATIVE_RUN_STATUS = Object.freeze({
   COMPLETE: 0,
   SUSPENDED: 1,
@@ -66,6 +69,8 @@ const CANONICAL_NATIVE_ASSIGNMENT_OPERATORS = Object.freeze([
 const CANONICAL_NATIVE_IMPORT_MODULE = 'pulse_host';
 const CANONICAL_NATIVE_ALLOWED_ENV_IMPORTS = Object.freeze(['abort', 'seed']);
 const CANONICAL_NATIVE_IMPORTS = Object.freeze([
+  // Optional, bounded JSON transfer into a managed guest string; no host authority.
+  ['value_json', ['i32'], ['i32']],
   ['value_undefined', [], ['i32']],
   ['value_null', [], ['i32']],
   ['value_boolean', ['i32'], ['i32']],
@@ -193,6 +198,7 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_COMPILER_VERSION,
   CANONICAL_NATIVE_HOST_VERSION,
   CANONICAL_NATIVE_READ_LOOP_MEMORY,
+  CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES,
   hasBoundedReadLoop,
   CANONICAL_NATIVE_RUN_STATUS,
   CANONICAL_NATIVE_RESULT_STATUS,

@@ -182,7 +182,13 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
   const compilerPackageRoot = path.resolve(__dirname, '..');
   const asc = resolveAsc(cwd) || resolveAsc(compilerPackageRoot);
   if (!asc) throw new CanonicalNativeCompileError('AssemblyScript compiler dependency was not found.', { cwd, remediation: 'Install the lockfile-pinned AssemblyScript dependency before compiling native Wasm.' });
-  const generated = runtimeCore.generateCanonicalNativeAssemblyScript(plan, options);
+  const application = plan.packages && plan.packages.application;
+  const source = application && application.source + `\nconst __pulse_application_plan_hash: string = ${JSON.stringify(plan.planHash)}\n`;
+  const generated = application ? Object.freeze({
+    source, sourceHash: sha256(source), manifest: Object.freeze({
+      ...application.manifest, planVersion: plan.version, planHash: plan.planHash, sourceHash: sha256(source)
+    })
+  }) : runtimeCore.generateCanonicalNativeAssemblyScript(plan, options);
   const schemaCodecsActive = generated.manifest.schemaCodecs && generated.manifest.schemaCodecs.active === true;
   let jsonAs;
   if (schemaCodecsActive) {

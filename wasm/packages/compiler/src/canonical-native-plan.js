@@ -1,6 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { terminalPackageNativeForCompiled } = require('./spine/terminal-package-native.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
@@ -337,6 +338,7 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    this.packageApplication = terminalPackageNativeForCompiled(compiled);
     this.routerBodies = new Map((this.metadata.router?.entries || [])
       .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
     this.bodyNodes = new Map();
@@ -598,6 +600,9 @@ class NativePlanBuilder {
 
     if (ts.isIdentifier(target) && this.compilerOwnedCalls.has(target.text) && this.compilerOwnedIntrinsics.has(target.text)) {
       const intrinsic = this.compilerOwnedIntrinsics.get(target.text);
+      if (this.packageApplication?.intrinsic === intrinsic[0]) return Object.freeze({
+        kind: 'intrinsic', name: 'package.application', arguments: Object.freeze([]), valueKind: 'response'
+      });
       return Object.freeze({
         kind: 'intrinsic',
         name: intrinsic[0],
@@ -1084,7 +1089,7 @@ class NativePlanBuilder {
     this.reconcile();
     if (this.diagnostics.length > 0) throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
 
-    const continuations = (this.metadata.continuationSites || []).map((site, index) => Object.freeze({
+    const continuations = this.packageApplication ? this.packageApplication.continuations : (this.metadata.continuationSites || []).map((site, index) => Object.freeze({
       id: String(site.id),
       kind: String(site.kind),
       effectIds: Object.freeze(site.effectIds.map(String)),
@@ -1108,6 +1113,7 @@ class NativePlanBuilder {
       eventType: site.eventType ? String(site.eventType) : undefined,
       eventSchemaId: site.eventSchemaId !== undefined ? site.eventSchemaId : undefined
     }));
+    if (this.packageApplication) this.effects = [...this.packageApplication.effects];
     const states = [Object.freeze({ id: 'entry', kind: 'entry', stateIndex: 0 })]
       .concat(continuations.map((site) => Object.freeze({ id: site.id, kind: 'continuation', continuationKind: site.kind, effectIds: site.effectIds, stateIndex: site.stateIndex })));
     this.summary = summarizeNativePlan(body, this.locals, this.effects, continuations, this.handlers);
@@ -1176,7 +1182,7 @@ class NativePlanBuilder {
       effects: Object.freeze(this.effects),
       continuations: Object.freeze(continuations),
       states: Object.freeze(states),
-      capabilities: Object.freeze([...(this.metadata.capabilities || [])].map(String).sort()),
+      capabilities: Object.freeze([...new Set([...(this.metadata.capabilities || []), ...(this.packageApplication?.capabilities || [])])].map(String).sort()),
       schemas: Object.freeze({
         sourceHash: this.metadata.schemaSourceHash,
         ids: Object.freeze([...(this.metadata.schemaIds || [])].map(String)),
@@ -1190,7 +1196,8 @@ class NativePlanBuilder {
       ...(this.compiled.cryptoRealizationPlan && this.compiled.cryptoRealizationPlan.target === 'native' ? {
         crypto: deepFreeze(cloneJson(this.compiled.cryptoRealizationPlan))
       } : {}),
-      packages: Object.freeze({ effects: deepFreeze(cloneJson(this.metadata.packageEffects || [])) }),
+      packages: Object.freeze({ effects: deepFreeze(cloneJson(this.metadata.packageEffects || [])),
+        ...(this.packageApplication ? { application: this.packageApplication } : {}) }),
       summary: Object.freeze({ ...this.summary })
     };
     const planHash = stableHash(stableStringify(unsigned));
@@ -1618,6 +1625,28 @@ function assertCanonicalNativePlan(plan) {
     const expectedHash = stableHash(stableStringify(unsigned));
     if (plan.planHash !== expectedHash) fail('plan hash mismatch', { expectedHash, actual: plan.planHash });
 
+    const application = plan.packages && plan.packages.application;
+    let packageCalls = 0;
+    const packageVisitor = () => {};
+    packageVisitor.expression = expression => { if (expression.kind === 'intrinsic' && expression.name === 'package.application') packageCalls++; };
+    walkStatements(plan.entry && plan.entry.body, packageVisitor);
+    for (const handler of plan.handlers || []) walkStatements(handler.body, packageVisitor);
+    if (application) {
+      const terminal = plan.entry?.body?.[0];
+      if (application.version !== 'pulse.package-native-application.v1' || application.automaticFallback !== false
+        || typeof application.contractId !== 'string' || !application.contractId
+        || typeof application.package !== 'string' || !application.package
+        || typeof application.intrinsic !== 'string' || !application.intrinsic
+        || typeof application.source !== 'string' || stableHash(application.source) !== application.sourceHash
+        || application.effectFailure !== 'package-completion'
+        || stableStringify(application.effects) !== stableStringify(plan.effects)
+        || stableStringify(application.continuations) !== stableStringify(plan.continuations)
+        || packageCalls !== 1 || plan.entry.kind !== 'handler' || plan.entry.body.length !== 1
+        || terminal.kind !== 'return' || terminal.value?.name !== 'package.application'
+        || terminal.value.arguments?.length !== 0 || plan.handlers?.length !== 0) {
+        fail('terminal package Native application does not match its source, entry, or effect plan');
+      }
+    } else if (packageCalls) fail('package application intrinsic requires a trusted Native source contribution');
     const locals = Array.isArray(plan.locals) ? plan.locals : [];
     const effects = Array.isArray(plan.effects) ? plan.effects : [];
     const continuations = Array.isArray(plan.continuations) ? plan.continuations : [];
