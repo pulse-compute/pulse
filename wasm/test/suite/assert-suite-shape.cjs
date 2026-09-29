@@ -58,6 +58,7 @@ const externalTasks = new Set([
   'str02-installed',
   'str02b-installed',
   'str02c-fastly-feasibility',
+  'str03-native-retention',
   // Independent SDK installation is explicit external evidence for the private adapter.
   'mcp-http-sdk',
   'mcp-tools-sdk',
