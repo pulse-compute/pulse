@@ -20,6 +20,10 @@ const {
   projectFetchResponse
 } = require('./response.js');
 
+// Router entries create new contexts but share one effect execution. Keep fetch
+// numbering with that execution, without retaining completed requests.
+const fetchSequences = new WeakMap();
+
 function headersToPairs(headers) {
   const pairs = [];
   for (const [name, value] of headers.entries()) pairs.push(Object.freeze([name, value]));
@@ -145,7 +149,6 @@ function createContext(frame) {
     ...(frame.executionOptions || {}),
     signal: frame.signal
   });
-  let fetchSequence = 0;
   const log = createPulseLogger({
     reporting: options.reporting,
     redact(message) { return effects.redactValue(message); },
@@ -169,7 +172,8 @@ function createContext(frame) {
     state,
     log,
     fetch(url, init) {
-      fetchSequence += 1;
+      const fetchSequence = (fetchSequences.get(effects) || 0) + 1;
+      fetchSequences.set(effects, fetchSequence);
       const effectId = `fetch-${fetchSequence}`;
       const fetchRequest = normalizeFetchRequest(url, init, {
         ...options,
