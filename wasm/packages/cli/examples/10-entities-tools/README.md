@@ -14,15 +14,24 @@ The application contributes:
 
 ## JavaScript workflow
 
-Install the example's declared dependencies, then run the ordinary lifecycle
-from this directory. The default profile is `node-javascript`:
+Install the example's declared dependencies, then run its local CLI scripts.
+The default profile is `node-javascript`:
 
 ```bash
-pulse doctor
-pulse inspect
-pulse test
-pulse dev
-pulse build
+npm install
+```
+
+The acceptance below uses freshly packed candidate packages. It does not mean
+these fixes are available in the already published `1.0.0-beta.5` packages.
+Use the matching reviewed package release when it is published; maintainers can
+run the candidate acceptance gate described below before publication.
+
+```bash
+npm run doctor
+npm run inspect
+npm test
+npm run dev
+npm run build
 ```
 
 `pulse doctor` checks the selected JavaScript target and reports Native
@@ -68,7 +77,7 @@ catalog, and inspection artifacts. Tests and development execute this generated
 guest through the canonical Node host. The guest selects the operation, validates
 its schemas, suspends for governed effects, and frames the response. Test JSON
 records the plan hash and executed Wasm hash. Native never falls back to
-JavaScript. Ordinary Fastly Native integration remains separate.
+JavaScript.
 
 Maintainers can also run the package-owned orchestration proof from this
 source checkout:
@@ -80,6 +89,59 @@ node ../../wasm/scripts/run-wasm-tests.cjs --task entities-orchestration-demo --
 That proof consumes the catalog through the tools facade and compiles/inspects
 the package-owned Native artifact. It supplements the ordinary JavaScript
 workflow above; ordinary Node Native execution has its own lifecycle gate.
+
+## Fastly profiles
+
+The example also declares `fastly-javascript` and `fastly-native`. Both bind the
+directory origin to the explicit `directory_backend` backend, with dynamic
+backends disabled. Select either profile for the same installed lifecycle:
+
+```bash
+npm run doctor -- --profile fastly-native
+npm run inspect -- --profile fastly-native
+npm test -- --profile fastly-native
+npm run dev -- --profile fastly-native
+npm run build -- --profile fastly-native
+npm run inspect -- --artifact dist-fastly-native/pulse-build.json
+```
+
+Stop the foreground dev server before building. Its `system.status` request is:
+
+```bash
+curl -H 'content-type: application/json' --data '{"jsonrpc":"2.0","method":"system.status","id":"smoke"}' http://127.0.0.1:8787/
+```
+
+Use the URL printed by `dev` if the configured port differs. Native builds emit
+`dist-fastly-native/bin/main.wasm`; JavaScript builds emit their source package
+and provider bundle under `dist-fastly-javascript`. Fastly `test` and `dev` use
+the provider's local fixture runtime. They do not constitute Viceroy replay or
+live deployment. Bind the real directory backend separately before deployment.
+
+## Clean installed acceptance
+
+From a source checkout with the pinned workspace dependencies restored:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task cli-entities-installed-workflow
+```
+
+The gate packs the candidate through the release packer, copies this example
+outside the checkout, and installs only its declared dependency graph. A local
+read-only registry serves the exact Pulse candidates; third-party dependencies
+come from npm, with lifecycle scripts disabled. No workspace links or private
+package entry points are injected. It checks package bytes before and after
+execution, and prints the retained structured report path under `wasm/.test-results/`.
+
+| Profile | Measured installed acceptance | Execution boundary |
+|---|---|---|
+| `node-javascript` | doctor, inspect, test, dev request/shutdown, build, artifact inspection | Package JavaScript runtime |
+| `node-native` | Same lifecycle; tested and built Wasm hashes match | Canonical Node host |
+| `fastly-javascript` | Same lifecycle and emitted source package | Local provider fixture runtime |
+| `fastly-native` | Same lifecycle; tested and built Wasm hashes match | Local provider fixture ABI |
+
+This gate is required by the release profile and can be selected directly. It
+supplements the fast non-main workflow without adding package installation to
+every fast PR run. External Viceroy evidence and live deployment remain separate.
 
 ## Wasm size
 
@@ -150,6 +212,30 @@ export default defineConfig((_scope) => ({
     target: 'native',
     outDir: 'dist-node-native',
     dev: { networkFetch: false },
+  },
+  'fastly-javascript': {
+    host: 'fastly',
+    target: 'javascript',
+    outDir: 'dist-fastly-javascript',
+    dev: { networkFetch: false },
+    fastly: {
+      bindings: {
+        backends: { 'https://directory.example.test': 'directory_backend' },
+        dynamicBackends: false,
+      },
+    },
+  },
+  'fastly-native': {
+    host: 'fastly',
+    target: 'native',
+    outDir: 'dist-fastly-native',
+    dev: { networkFetch: false },
+    fastly: {
+      bindings: {
+        backends: { 'https://directory.example.test': 'directory_backend' },
+        dynamicBackends: false,
+      },
+    },
   },
 }))
 ```

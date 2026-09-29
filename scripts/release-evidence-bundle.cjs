@@ -204,7 +204,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'clean-machine-consumers',
     title: 'Clean-machine consumers',
-    tasks: Object.freeze(['clean-machine-acceptance'])
+    tasks: Object.freeze(['clean-machine-acceptance', 'cli-entities-installed-workflow'])
   }),
   Object.freeze({
     id: 'deployment-candidates',

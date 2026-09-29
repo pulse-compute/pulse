@@ -20,4 +20,28 @@ export default defineConfig((_scope) => ({
     outDir: 'dist-node-native',
     dev: { networkFetch: false },
   },
+  'fastly-javascript': {
+    host: 'fastly',
+    target: 'javascript',
+    outDir: 'dist-fastly-javascript',
+    dev: { networkFetch: false },
+    fastly: {
+      bindings: {
+        backends: { 'https://directory.example.test': 'directory_backend' },
+        dynamicBackends: false,
+      },
+    },
+  },
+  'fastly-native': {
+    host: 'fastly',
+    target: 'native',
+    outDir: 'dist-fastly-native',
+    dev: { networkFetch: false },
+    fastly: {
+      bindings: {
+        backends: { 'https://directory.example.test': 'directory_backend' },
+        dynamicBackends: false,
+      },
+    },
+  },
 }))

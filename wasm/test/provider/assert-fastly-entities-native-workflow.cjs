@@ -83,11 +83,11 @@ async function main() {
   try {
     fs.cpSync(example, project, { recursive: true, filter: file => !path.relative(example, file).split(path.sep).some(part => part === 'node_modules' || part.startsWith('dist') || part.startsWith('.pulse-')) });
     const configPath = path.join(project, '.pulse/config.ts');
-    fs.writeFileSync(configPath, fs.readFileSync(configPath, 'utf8').replace("  'node-native': {", `  'fastly-native': {
+    fs.writeFileSync(configPath, fs.readFileSync(configPath, 'utf8').replace(/  'fastly-native': \{[\s\S]*?\n  \},/, `  'fastly-native': {
     host: 'fastly', target: 'native', outDir: 'dist-fastly-native', dev: { networkFetch: false },
     fastly: { maxDurationMs: 10000, bindings: { configStore: 'pulse_config', secretStore: 'pulse_secrets', kv: { catalog: 'pulse_catalog' }, backends: { 'https://directory.example.test': 'directory_backend' }, dynamicBackends: false } },
   },
-  'node-native': {`));
+`));
     const doctor = parseJson(run(['doctor', '--profile', 'fastly-native', '--json'], project));
     assert.equal(doctor.status, 'passed');
     const inspection = parseJson(run(['inspect', '--profile', 'fastly-native', '--json'], project));
@@ -191,7 +191,7 @@ export async function lookupCustomer(ctx: any, input: Readonly<{ email: string }
     assert.deepEqual(JSON.parse(stored.response.body).result, { email: 'ada@example.test', displayName: 'Stored Ada' });
     // Restore the fetch source before testing its required backend binding.
     fs.copyFileSync(path.join(example, 'src/handlers.ts'), path.join(project, 'src/handlers.ts'));
-    const brokenConfig = fs.readFileSync(configPath, 'utf8').replace("'https://directory.example.test': 'directory_backend'", '');
+    const brokenConfig = fs.readFileSync(configPath, 'utf8').replaceAll("'https://directory.example.test': 'directory_backend'", '');
     fs.writeFileSync(configPath, brokenConfig);
     const missingBinding = run(['build', '--profile', 'fastly-native', '--json'], project);
     assert.notEqual(missingBinding.status, 0);

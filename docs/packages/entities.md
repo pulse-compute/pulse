@@ -86,6 +86,14 @@ redacted handler effects, and target evidence. A successful build writes:
 - `entities-inspection.json`: declarations, handler identities/effects, and
   eligibility/measured-execution evidence.
 
+The `cli-entities-installed-workflow` acceptance gate packs the current candidate,
+installs example 10 outside the checkout, and runs doctor, inspect, test, dev
+startup/request/shutdown, build and artifact inspection in all four profiles.
+It checks installed package bytes before/after and matches Native test/build
+artifact hashes. This is candidate-package evidence; it does not retroactively
+change previously published packages. Fastly test/dev evidence uses its local
+fixture runtime, separately from external Viceroy and deployed acceptance.
+
 Both artifacts are static and checkout-independent. They intentionally omit
 request/runtime values, request IDs, raw payloads, resolved secrets, and
 provider objects. Consumers such as a tools facade should project discovery
