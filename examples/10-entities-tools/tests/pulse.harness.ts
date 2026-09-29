@@ -26,7 +26,7 @@ export default { cases: [
       }),
     },
     fetches: {
-      'https://directory.example.test/customers/ada@example.test': { value: 'Ada Lovelace' },
+      'https://directory.example.test/customers/ada@example.test': { text: 'Ada Lovelace' },
     },
     expect: {
       status: 200,
