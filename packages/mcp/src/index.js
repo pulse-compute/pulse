@@ -1,5 +1,8 @@
 'use strict';
 
+const { AdmissionError, checkDepth, readBody } = require('./bounded.js');
+const { createTools } = require('./tools.js');
+
 const PROTOCOL_VERSION = '2026-07-28';
 const META = 'io.modelcontextprotocol/';
 const DEFAULT_LIMITS = Object.freeze({ maxRequestBytes: 65536, maxResponseBytes: 1048576,
@@ -8,10 +11,6 @@ const object = value => value !== null && typeof value === 'object' && !Array.is
 const validId = value => typeof value === 'string' || Number.isSafeInteger(value);
 const own = (value, key) => Object.hasOwn(value, key);
 const encoder = new TextEncoder();
-
-class AdmissionError extends Error {
-  constructor(status, code, message) { super(message); this.status = status; this.code = code; }
-}
 
 function configuration(options) {
   const path = options.path ?? '/mcp';
@@ -60,58 +59,10 @@ function nameHeader(value) {
   return /^[\x20-\x7e\t]*$/.test(value) && value.trim() === value ? value : null;
 }
 
-function checkDepth(text, maxDepth) {
-  let depth = 0, quoted = false, escaped = false;
-  for (const char of text) {
-    if (quoted) {
-      if (escaped) escaped = false;
-      else if (char === '\\') escaped = true;
-      else if (char === '"') quoted = false;
-    } else if (char === '"') quoted = true;
-    else if (char === '{' || char === '[') {
-      if (++depth > maxDepth) throw new AdmissionError(400, -32600, 'Request nesting limit exceeded');
-    } else if (char === '}' || char === ']') depth--;
-  }
-}
-
-async function readBody(request, limits, signal) {
-  if (!request.body) return '';
-  const reader = request.body.getReader();
-  let aborted;
-  const onAbort = () => {
-    aborted = new AdmissionError(408, -32600, 'Request interrupted');
-    // Cancellation may be asynchronous; an uncooperative source must not hold
-    // admission open. Observe its rejection without waiting for its cleanup.
-    void reader.cancel().catch(() => {});
-  };
-  signal.addEventListener('abort', onAbort, { once: true });
-  if (signal.aborted) onAbort();
-  const decoder = new TextDecoder('utf-8', { fatal: true });
-  let bytes = 0, text = '';
-  try {
-    while (true) {
-      const next = await reader.read();
-      if (aborted) throw aborted;
-      if (next.done) break;
-      if (!(next.value instanceof Uint8Array)) throw new AdmissionError(400, -32700, 'Invalid request body');
-      bytes += next.value.byteLength;
-      if (bytes > limits.maxRequestBytes) throw new AdmissionError(413, -32600, 'Request body limit exceeded');
-      text += decoder.decode(next.value, { stream: true });
-    }
-    return text + decoder.decode();
-  } catch (error) {
-    void reader.cancel().catch(() => {});
-    if (error instanceof AdmissionError) throw error;
-    throw new AdmissionError(400, -32700, 'Invalid request body');
-  } finally {
-    signal.removeEventListener('abort', onAbort);
-    reader.releaseLock();
-  }
-}
-
 /** Bounded, stateless HTTP protocol shell. No entity or tool executor is owned here. */
 function createMcpHttpHandler(options = {}) {
   const { path, info, limits, origins } = configuration(options);
+  const tools = options.tools === undefined ? null : createTools(options.tools, limits);
   function response(status, body, headers = {}) {
     return new Response(body, { status, headers: { 'cache-control': 'no-store', ...headers,
       ...(body === null ? {} : { 'content-type': 'application/json' }) } });
@@ -122,7 +73,7 @@ function createMcpHttpHandler(options = {}) {
   }
   const headerError = id => error(400, -32020, 'Missing, malformed or mismatched MCP headers', id, { supported: [PROTOCOL_VERSION] });
   async function fetch(request) {
-    let consumed = false;
+    let consumed = false, responseId;
     const timeout = new AbortController();
     const timer = setTimeout(() => timeout.abort(), limits.deadlineMs);
     const signal = AbortSignal.any([request.signal, timeout.signal]);
@@ -146,6 +97,7 @@ function createMcpHttpHandler(options = {}) {
       try { message = JSON.parse(text); } catch { return error(400, -32700, 'Parse error'); }
       if (!object(message)) return error(400, -32600, 'Invalid request');
       const id = validId(message.id) ? message.id : undefined;
+      responseId = id;
       if (message.jsonrpc !== '2.0' || typeof message.method !== 'string' || !message.method
         || own(message, 'result') || own(message, 'error') || (own(message, 'id') && id === undefined)
         || (own(message, 'params') && !object(message.params))) return error(400, -32600, 'Invalid request', id);
@@ -168,17 +120,27 @@ function createMcpHttpHandler(options = {}) {
       const nameField = message.method === 'resources/read' ? 'uri'
         : ['tools/call', 'prompts/get'].includes(message.method) ? 'name' : undefined;
       if (nameField && (typeof params[nameField] !== 'string' || nameHeader(request.headers.get('mcp-name')) !== params[nameField])) return headerError(id);
-      if (message.method !== 'server/discover') return error(404, -32601, 'Method not found', id);
-      // Discovery takes no application parameters, task options or MRTR input.
-      if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
-      const result = { resultType: 'complete', _meta: { [META + 'serverInfo']: info },
-        supportedVersions: [PROTOCOL_VERSION], capabilities: {}, ttlMs: 0, cacheScope: 'private' };
+      let result;
+      if (message.method === 'server/discover') {
+        if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
+        result = { supportedVersions: [PROTOCOL_VERSION], capabilities: tools ? { tools: { listChanged: false } } : {},
+          ttlMs: 0, cacheScope: 'private' };
+      } else if (tools && message.method === 'tools/list') {
+        if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
+        result = { tools: tools.list, ttlMs: 0, cacheScope: 'private' };
+      } else if (tools && message.method === 'tools/call') {
+        if (Object.keys(params).some(key => !['_meta', 'name', 'arguments'].includes(key))
+          || (own(params, 'arguments') && !object(params.arguments))) return error(400, -32602, 'Invalid params', id);
+        if (!tools.has(params.name)) return error(400, -32602, 'Unknown tool', id);
+        result = await tools.call(params.name, params.arguments ?? {}, signal);
+      } else return error(404, -32601, 'Method not found', id);
+      result = { resultType: 'complete', _meta: { [META + 'serverInfo']: info }, ...result };
       const body = JSON.stringify({ jsonrpc: '2.0', id, result });
       if (encoder.encode(body).length > limits.maxResponseBytes) return error(500, -32603, 'Response body limit exceeded', id);
       return response(200, body);
     } catch (cause) {
-      if (cause instanceof AdmissionError) return error(cause.status, cause.code, cause.message);
-      return error(500, -32603, 'Internal error');
+      if (cause instanceof AdmissionError) return error(cause.status, cause.code, cause.message, responseId);
+      return error(500, -32603, 'Internal error', responseId);
     } finally {
       clearTimeout(timer);
       if (!consumed && request.body && !request.body.locked) void request.body.cancel().catch(() => {});

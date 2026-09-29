@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-// Repository evidence only. The pinned reference facade is never packaged.
+// Shared finite harness: MCP-01 reference facade or MCP-03 actual Pulse adapter.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -13,10 +13,12 @@ const { pnpmInvocation } = require('../../../scripts/pnpm-toolchain.cjs');
 
 const root = path.resolve(__dirname, '../../..');
 const reference = path.join(__dirname, 'reference');
+const actualAdapter = process.argv.includes('--adapter');
+const proofFile = actualAdapter ? 'tools-proof.mjs' : 'proof.mjs';
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-mcp-reference-'));
 const parent = path.join(root, 'wasm/.test-results');
 fs.mkdirSync(parent, { recursive: true });
-const evidence = fs.mkdtempSync(path.join(parent, 'mcp-wire-'));
+const evidence = fs.mkdtempSync(path.join(parent, actualAdapter ? 'mcp-tools-sdk-' : 'mcp-wire-'));
 const project = path.join(evidence, 'application');
 const reportFile = path.join(evidence, 'proof.json');
 const env = { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0', npm_config_fetch_retries: '0' };
@@ -30,9 +32,10 @@ const report = {
   workingTree: git(['status', '--porcelain']),
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   fixtureFiles: Object.fromEntries(['profile.json', 'assert-mcp-wire-proof.cjs',
-    'reference/package.json', 'reference/pnpm-lock.yaml', 'reference/proof.mjs']
+    'reference/package.json', 'reference/pnpm-lock.yaml', `reference/${proofFile}`,
+    ...(actualAdapter ? ['reference/tools-handlers.ts'] : [])]
     .map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))])),
-  productionAdapter: false, installedConsumer: false, authorizationValidated: false,
+  productionAdapter: actualAdapter, installedConsumer: false, authorizationValidated: false,
   target: 'node-javascript', commands: []
 };
 const children = new Set();
@@ -78,7 +81,7 @@ async function main() {
     const pkg = JSON.parse(fs.readFileSync(path.join(reference, 'package.json')));
     assert.equal(pkg.private, true);
     assert.deepEqual(pkg.dependencies, profile.referencePackages);
-    for (const file of ['package.json', 'pnpm-lock.yaml', 'proof.mjs']) {
+    for (const file of ['package.json', 'pnpm-lock.yaml', proofFile]) {
       fs.copyFileSync(path.join(reference, file), path.join(temp, file));
     }
     fs.copyFileSync(path.join(__dirname, 'profile.json'), path.join(temp, 'profile.json'));
@@ -92,6 +95,11 @@ async function main() {
     const example = path.join(root, 'examples/10-entities-tools');
     fs.cpSync(example, project, { recursive: true, filter: file => !path.relative(example, file)
       .split(path.sep).some(part => part === 'node_modules' || part.startsWith('dist') || part.startsWith('.pulse-')) });
+    if (actualAdapter) {
+      fs.copyFileSync(path.join(reference, 'tools-handlers.ts'), path.join(project, 'src/handlers.ts'));
+      report.adapterFiles = Object.fromEntries(['index.js', 'node.js', 'catalog.js', 'tools.js', 'bounded.js']
+        .map(file => [file, hash(fs.readFileSync(path.join(root, 'packages/mcp/src', file)))]));
+    }
     fs.mkdirSync(path.join(project, 'node_modules/@pulse-compute'), { recursive: true });
     fs.symlinkSync(path.join(root, 'packages/entities'), path.join(project, 'node_modules/@pulse-compute/entities'), 'dir');
     const cli = path.join(root, 'wasm/scripts/pulse.cjs');
@@ -118,8 +126,9 @@ async function main() {
       throw result.error || new Error('Pulse dev exited before readiness');
     })]);
     try {
-      await run(process.execPath, [path.join(temp, 'proof.mjs'), url, catalogFile,
-        path.join(evidence, 'wire.json')], temp, { timeout: 30000 });
+      await run(process.execPath, [path.join(temp, proofFile), url, catalogFile,
+        path.join(evidence, 'wire.json'), ...(actualAdapter ? [path.join(root, 'packages/mcp/src/node.js'),
+          path.join(project, 'dist-node-javascript/schema-json-registry.json')] : [])], temp, { timeout: 30000 });
     } catch (error) {
       for (const child of children) {
         try { process.platform === 'win32' ? child.kill('SIGKILL') : process.kill(-child.pid, 'SIGKILL'); } catch {}
@@ -135,7 +144,7 @@ async function main() {
     report.wire = JSON.parse(fs.readFileSync(path.join(evidence, 'wire.json')));
     assert.equal(report.wire.status, 'passed');
     report.status = 'passed';
-    console.log(`ok - MCP-01 reference exchange; evidence ${reportFile}`);
+    console.log(`ok - ${actualAdapter ? 'MCP-03 actual adapter' : 'MCP-01 reference'} exchange; evidence ${reportFile}`);
   } catch (error) {
     report.status = 'failed'; report.error = clean(error.stack || String(error));
     throw error;
