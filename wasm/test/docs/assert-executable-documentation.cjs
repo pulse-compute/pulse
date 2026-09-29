@@ -77,10 +77,11 @@ const examples = Object.freeze([
   }),
   Object.freeze({
     id: '10-entities-tools',
+    runtimePackages: ['entities'],
+    doctorWarnings: ['canonical-native-plan'],
     provider: 'node',
     target: 'javascript',
     noApplicationWasm: true,
-    candidateWorkflow: 'entities-orchestration-demo',
     capabilities: ['schema.decode', 'schema.encode'],
     schemas: ['tools.CustomerLookupInput', 'tools.CustomerLookupOutput'],
     entities: ['customer.lookup', 'system.status']
@@ -322,12 +323,8 @@ function verifyRunBindings(bindings) {
       if (cleanup) cleanup();
     }
   }
-  const lifecycleExamples = examples.filter((entry) => !entry.candidateWorkflow).map((entry) => entry.id).sort();
+  const lifecycleExamples = examples.map((entry) => entry.id).sort();
   assert.deepEqual([...exampleCoverage].sort(), lifecycleExamples, 'every lifecycle example must have a documented executable command/result pair');
-  for (const example of examples.filter((entry) => entry.candidateWorkflow)) {
-    const readme = fs.readFileSync(path.join(repoRoot, 'examples', example.id, 'README.md'), 'utf8');
-    assert.match(readme, new RegExp(`--task ${example.candidateWorkflow}`), `${example.id} must name its separately executable candidate proof`);
-  }
 }
 
 function commandLinesFromMarkdown() {
@@ -431,12 +428,7 @@ function documentedByteCount(bytes) {
 function assertExampleReadme(example, project, syncResult) {
   const readme = path.join(project.root, 'README.md');
   const text = fs.readFileSync(readme, 'utf8');
-  if (example.candidateWorkflow) {
-    assert.match(text, /^pulse inspect$/m, `${example.id} README must document pulse inspect`);
-    assert.match(text, new RegExp(`--task ${example.candidateWorkflow}`), `${example.id} README must document its focused candidate workflow`);
-  } else {
-    for (const command of ['doctor', 'inspect', 'test', 'dev', 'build']) assert.match(text, new RegExp(`^pulse ${command}$`, 'm'), `${example.id} README must document pulse ${command}`);
-  }
+  for (const command of ['doctor', 'inspect', 'test', 'dev', 'build']) assert.match(text, new RegExp(`^pulse ${command}$`, 'm'), `${example.id} README must document pulse ${command}`);
   assert.match(text, /^## Wasm size$/m, `${example.id} README must document its Wasm size baseline`);
   if (example.noApplicationWasm) {
     assert.ok(text.includes('**no application Wasm artifact**'), `${example.id} README must explicitly document that its default profile emits no application Wasm`);
@@ -466,6 +458,7 @@ function assertExampleReadme(example, project, syncResult) {
 }
 
 function verifyOptimizedNativeBuild(example, projectDir, outputs) {
+  if (example.noApplicationWasm) return Object.freeze({ guestWasmBytes: 0, providerWasmBytes: 0 });
   const buildDir = path.join(projectDir, OPTIMIZED_BUILD_DIR);
   fs.rmSync(buildDir, { recursive: true, force: true });
   cleanupPaths.add(buildDir);
@@ -512,6 +505,12 @@ function verifyOptimizedNativeBuild(example, projectDir, outputs) {
 }
 
 function verifyDefaultNativeSizes(example, buildDir, build) {
+  if (example.noApplicationWasm) {
+    for (const file of ['canonical-native.wasm', 'bin/main.wasm']) {
+      assert.equal(fs.existsSync(path.join(buildDir, file)), false, `${example.id} must not emit ${file}`);
+    }
+    return Object.freeze({ guestWasmBytes: 0, wasmBytes: 0 });
+  }
   const guestWasmBytes = inspectGuestWasm(path.join(buildDir, 'canonical-native.wasm'), example.id);
   assert.equal(guestWasmBytes, example.guestWasmBytes, `${example.id} documented application guest Wasm size changed`);
   if (example.linkedGuestInputBytes) {
@@ -575,32 +574,6 @@ function verifyExampleWorkflow(example, syncResult) {
   assert.equal(project.provider, example.provider, `${example.id} provider mismatch`);
   assertExampleReadme(example, project, syncResult);
 
-  if (example.candidateWorkflow) {
-    const inspect = runPulse('inspect', projectDir, [], 180000);
-    assert.equal(inspect.json.status, 'ok', `${example.id} pulse inspect failed`);
-    assert.equal(inspect.json.project.target, example.target, `${example.id} inspect target mismatch`);
-    for (const schemaId of example.schemas) assert.ok(inspect.json.project.schemas.ids.includes(schemaId), `${example.id} inspect output is missing schema ${schemaId}`);
-    const inspection = inspect.json.compiler.packageInspection;
-    assert.equal(inspection.version, 'pulse.canonical-package-inspection.v1');
-    const catalog = inspection.artifacts.find((entry) => entry.id === 'pulse.entities-catalog.v1');
-    assert.ok(catalog, `${example.id} inspect output is missing the Entities catalog`);
-    assert.deepEqual(catalog.data.routers.flatMap((router) => router.entities.map((entity) => entity.name)), example.entities);
-    const evidence = runNode([path.join(wasmRoot, 'test/entities/assert-entities-orchestration-demo.cjs')], {
-      cwd: repoRoot,
-      timeoutMs: 180000
-    });
-    assert.match(evidence.stdout, /ok - I10 projects static catalog metadata through an external tools facade/);
-    return Object.freeze({
-      id: example.id,
-      provider: example.provider,
-      tests: example.entities.length,
-      capabilities: inspection.managedHandlers.summary.capabilities,
-      schemas: inspect.json.project.schemas.count,
-      wasmBytes: 0,
-      candidateWorkflow: example.candidateWorkflow
-    });
-  }
-
   const buildDir = path.join(projectDir, BUILD_DIR);
   fs.rmSync(buildDir, { recursive: true, force: true });
   cleanupPaths.add(buildDir);
@@ -608,7 +581,8 @@ function verifyExampleWorkflow(example, syncResult) {
 
   const doctor = runPulse('doctor', projectDir, [], 180000);
   outputs.push(doctor);
-  assert.equal(doctor.json.status, 'passed', `${example.id} pulse doctor failed`);
+  assert.equal(doctor.json.status, example.doctorWarnings?.length ? 'warning' : 'passed', `${example.id} pulse doctor failed`);
+  assert.deepEqual(doctor.json.checks.filter((entry) => entry.status === 'warning').map((entry) => entry.id), example.doctorWarnings || [], `${example.id} pulse doctor warnings changed`);
   assert.equal(doctor.json.summary.failed, 0, `${example.id} pulse doctor reported failed checks`);
 
   const inspect = runPulse('inspect', projectDir, [], 180000);
@@ -850,6 +824,24 @@ async function verifyDocumentedDevWorkflow() {
   }
 }
 
+// Canonical examples are outside the pnpm workspace. Link only their declared
+// runtime dependencies for source-checkout checks; exercise real public exports.
+function prepareExampleRuntimePackages(example) {
+  for (const name of example.runtimePackages || []) {
+    const scope = path.join(repoRoot, 'examples', example.id, 'node_modules', '@pulse-compute');
+    const destination = path.join(scope, name);
+    if (fs.existsSync(destination)) continue;
+    for (const directory of [path.dirname(scope), scope]) {
+      if (!fs.existsSync(directory)) {
+        fs.mkdirSync(directory);
+        cleanupPaths.add(directory);
+      }
+    }
+    fs.symlinkSync(path.join(repoRoot, 'packages', name), destination, process.platform === 'win32' ? 'junction' : 'dir');
+    cleanupPaths.add(destination);
+  }
+}
+
 function verifySourceContracts() {
   console.log('docs - verify canonical example formatting');
   assertExampleFormatting();
@@ -866,6 +858,7 @@ async function main() {
   if (options.help) { console.log(usage()); return; }
   if (options.list) { console.log(examples.map((entry) => entry.id).join('\n')); return; }
   try {
+    for (const example of examples.filter((entry) => !options.example || entry.id === options.example)) prepareExampleRuntimePackages(example);
     if (options.section === 'sizes') {
       verifyDocumentationSizes();
       return;

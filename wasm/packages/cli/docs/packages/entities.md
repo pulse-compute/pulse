@@ -61,15 +61,23 @@ JSON-RPC failures without application exception details.
 `acceptEmptyObjectForNoInput: true` additionally permits `{}` for an operation
 whose input is `null`. `namedParamsOnly` can only be `true` in this contract.
 
-## Inspect and release evidence
+## JavaScript workflow and inspection
 
-Inspect the static declaration and run the focused candidate proof from this
-source checkout:
+The [Entities tools example](../../examples/10-entities-tools/) defaults to the
+Node JavaScript profile. From that example directory, use the ordinary lifecycle:
 
 ```bash
+pulse doctor
 pulse inspect
-node wasm/scripts/run-wasm-tests.cjs --task entities-orchestration-demo --no-report
+pulse test
+pulse dev
+pulse build
 ```
+
+The two harness cases exercise the no-input operation and a schema-bound lookup
+with a plain-text fetch fixture. Harness fixtures apply to `pulse test`; live
+lookup requests need a configured development fixture or backend. Stop the dev
+server before continuing to the build.
 
 `pulse inspect` reports the entity plan, deterministic catalog, schema linkage,
 redacted handler effects, and target evidence. A successful build writes:
@@ -88,10 +96,14 @@ direct handler or runtime-registry API.
 
 | Mode | Beta evidence | Important boundary |
 |---|---|---|
-| Node JavaScript | Measured execution | Package JavaScript runtime |
+| Node JavaScript | Ordinary doctor, inspect, test, dev, and build workflow | Package JavaScript runtime |
 | Fastly JavaScript | Measured with Viceroy 0.20.1 | Provider JavaScript package/runtime |
-| Node Native | Measured execution | Package-owned Native source |
+| Node Native | Package-owned proof execution | Ordinary project execution/build integration remains incomplete |
 | Fastly Native | Measured with Viceroy 0.20.1 | Explicit provider-owned adapter; not the ordinary project build path |
+
+The source-checkout task `entities-orchestration-demo` separately exercises the
+tools facade and package-owned Native artifact. That proof does not qualify the
+ordinary Native project workflow.
 
 Native remains `provider-dependent`, and every target keeps automatic fallback
 disabled. The complete matrix is in [Provider and target compatibility](../reference/compatibility-matrix.md).

@@ -12,25 +12,55 @@ The application contributes:
 - `customer.lookup`, which validates named input and output and performs one
   governed `ctx.fetch` effect.
 
-## Candidate workflow
+## JavaScript workflow
+
+Install the example's declared dependencies, then run the ordinary lifecycle
+from this directory. The default profile is `node-javascript`:
 
 ```bash
+pulse doctor
 pulse inspect
+pulse test
+pulse dev
+pulse build
+```
+
+`pulse doctor` exits successfully with an advisory warning about the separate
+Native plan. The selected JavaScript target is checked independently.
+`pulse inspect` reports the static entity catalog, declared schemas, handler
+effects, and target evidence. `pulse test` invokes both operations through the
+Node JavaScript request boundary. The lookup fixture supplies plain text because
+its handler consumes `ctx.fetch(...).text()`; a `value` fixture would encode a
+JSON string, including quotes.
+
+<!-- pulse-doc-run {"project":"examples/10-entities-tools","args":["test","--json"]} -->
+```bash
+pulse test --json
+```
+```json
+{"status":"passed","provider":"node","target":"javascript","summary":{"total":2,"passed":2,"failed":0}}
+```
+
+During `pulse dev`, send a JSON-RPC `system.status` request to check the live
+boundary. The harness's lookup fixture applies only to `pulse test`;
+`customer.lookup` needs a configured development fetch fixture or backend.
+This example disables development network fetches by default. Stop the dev
+server before continuing to `pulse build`.
+
+The JavaScript build emits the source package, catalog, and inspection
+artifacts. Ordinary Native execution remains a separate integration gap and
+never falls back to JavaScript.
+
+Maintainers can also run the package-owned orchestration proof from this
+source checkout:
+
+```bash
 node ../../wasm/scripts/run-wasm-tests.cjs --task entities-orchestration-demo --no-report
 ```
 
-`pulse inspect` reports the static entity catalog, declared schemas, handler
-effects, and target evidence. The focused orchestration gate builds and consumes
-the catalog, invokes both operations through the Node JavaScript request
-boundary, validates the governed fetch, and compiles/inspects the package-owned
-Native artifact.
-
-The ordinary JavaScript `test`/`dev` application loader currently requests the
-unexported physical package entry, and ordinary Native builds do not yet adopt
-the Entities intrinsic. I11 records those product-integration blockers instead
-of widening package exports or compiler/provider authority. A JavaScript build
-can still emit the source package, catalog, and inspection artifacts; no command
-may fall back to another target.
+That proof consumes the catalog through the tools facade and compiles/inspects
+the package-owned Native artifact. It supplements the ordinary JavaScript
+workflow above.
 
 ## Wasm size
 
@@ -140,7 +170,7 @@ export default { cases: [
       }),
     },
     fetches: {
-      'https://directory.example.test/customers/ada@example.test': { value: 'Ada Lovelace' },
+      'https://directory.example.test/customers/ada@example.test': { text: 'Ada Lovelace' },
     },
     expect: {
       status: 200,
