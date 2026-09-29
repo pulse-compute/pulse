@@ -149,6 +149,14 @@ pulse inspect examples/07-opaque-proxy --json
 
 Opaque pass-through preserves host ownership. Pulse may carry status and headers needed to complete the response, but application code cannot inspect chunks, decode the body, concatenate it, or retain it beyond the request lifecycle.
 
+The JavaScript runtime cancels fetched bodies left behind when execution ends,
+including successful siblings of a failed effect group and bodies rejected
+before structured reading begins. Only the final returned body transfers to the
+host; normal execution cleanup preserves it. A response arriving after request
+cancellation or an operation timeout is cancelled without resuming application
+work. Body cancellation is best effort: a rejecting or stalled provider cleanup
+callback does not delay completion, including body suppression for `HEAD`.
+
 Attempting to inspect an opaque body fails with [`PULSE_OPAQUE_BODY_INSPECTION`](../reference/diagnostics.md#pulse-opaque-body-inspection). A missing or already-consumed structured body can fail with [`PULSE_BODY_UNAVAILABLE`](../reference/diagnostics.md#pulse-body-unavailable).
 
 ## Why the distinction matters

@@ -15,7 +15,7 @@ const { fetchRequestInitForHost } = require('./fetch.js');
 const { createRedactionState } = require('./redaction.js');
 const { validateSchemaValue } = require('./schema.js');
 const { EVENT_EMIT_CODES } = require('./event-emission.js');
-const { retainFetchResponseForBudget } = require('./response.js');
+const { cancelResponseBody, retainFetchResponseForBudget, releaseFetchResponseCancellation } = require('./response.js');
 
 const JAVASCRIPT_EFFECT_PROTOCOL_VERSION = 'pulse.javascript-effect.v1';
 const JAVASCRIPT_EFFECT_ADAPTER_VERSION = 'pulse.javascript-effect-adapter.v1';
@@ -511,6 +511,7 @@ function createJavascriptEffectExecution(options = {}) {
   const counters = new Map();
   const dispatchedIds = new Set();
   const pendingEffects = new Map();
+  const ownedResponses = new Set();
   const claimedParallelRootIds = new Set();
   const observations = [];
   const resolutionOrder = [];
@@ -610,7 +611,13 @@ function createJavascriptEffectExecution(options = {}) {
           adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
           { ...operationExecution, onKvObservation: observe }, limits);
         return Promise.resolve(adapter.dispatch(descriptor, operationExecution)).then(value => {
-          retainFetchResponseForBudget(value, options.requestBudget);
+          if (value instanceof Response && value.body) {
+            if (closed || operationSignal.signal.aborted) cancelResponseBody(value, operationSignal.signal.reason);
+            else {
+              ownedResponses.add(value);
+              retainFetchResponseForBudget(value, options.requestBudget, () => ownedResponses.delete(value));
+            }
+          }
           return value;
         });
       }), operationSignal.signal).then(
@@ -853,7 +860,7 @@ function createJavascriptEffectExecution(options = {}) {
       });
     },
 
-    async close() {
+    async close(transferredResponse) {
       if (closed) return;
       closed = true;
       if (pendingEffects.size > 0 && !lifecycleController.signal.aborted) {
@@ -866,9 +873,21 @@ function createJavascriptEffectExecution(options = {}) {
       }
       if (pendingEffects.size > 0) await Promise.allSettled(Array.from(pendingEffects.keys()));
       if (removeSourceAbortListener) removeSourceAbortListener();
-      if (adapter.dispose) {
-        try { await adapter.dispose(externalExecution); }
-        catch (error) { throw redaction.redactError(error); }
+      try {
+        if (adapter.dispose) await adapter.dispose(externalExecution);
+      } catch (error) {
+        transferredResponse = undefined;
+        throw redaction.redactError(error);
+      } finally {
+        // Only the final response escapes this execution. Intermediate router
+        // responses and successful siblings of a failed group remain owned.
+        for (const response of ownedResponses) {
+          if (response.body !== transferredResponse?.body) {
+            cancelResponseBody(response, lifecycleController.signal.reason);
+            releaseFetchResponseCancellation(response);
+          }
+        }
+        ownedResponses.clear();
       }
     }
   };
