@@ -52,6 +52,7 @@ const release = expandProfile('release');
 const externalTasks = new Set([
   // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
   'mcp-wire-proof',
+  'mcp-installed',
   // Independent SDK installation is explicit external evidence for the private adapter.
   'mcp-http-sdk',
   'mcp-tools-sdk',

@@ -10,7 +10,9 @@ discovery advertises tools only when configured. See the adapter README for
 projection limits and measured evidence. MCP-04 adds configured OAuth
 introspection, protected-resource metadata/challenges and per-operation scopes,
 qualified with an independent client and controlled issuer. Live issuer and
-backend deployment configuration remain operator responsibilities.
+backend deployment configuration remain operator responsibilities. MCP-05 now
+packages an independent resource-directory app and qualifies Node JavaScript
+through the installed adapter, controlled issuer and pinned official client.
 The reference fixture and original requirement allocation below remain MCP-01
 evidence; they do not substitute for the adapter's own tests.
 
@@ -21,7 +23,8 @@ mode; T06 and the profile below now require a method-not-found response.
 
 This is repository evidence for MCP-01, not a supported Pulse MCP server. The
 production adapter, complete catalog projection, remote authorization and
-independent installed application remain MCP-02, MCP-03, MCP-04 and MCP-05.
+independent installed application have separate MCP-02, MCP-03, MCP-04 and MCP-05
+evidence; this historical reference fixture does not replace those gates.
 No production package gains an SDK dependency from this proof.
 
 ## Pinned choices
@@ -126,7 +129,7 @@ configured production issuer. This proof is deliberately unauthenticated on
 
 | Target | Existing Entities foundation | MCP-01 evidence | Later acceptance |
 |---|---|---|---|
-| Node JavaScript | Governed JSON-RPC application | Real reference SDK → facade → `pulse dev` HTTP exchange | Production adapter + installed app, MCP-02/05 |
+| Node JavaScript | Governed JSON-RPC application | Real reference SDK → facade → `pulse dev` HTTP exchange | MCP-05 installed app passed locally; deployed acceptance remains separate |
 | Node Native | EN-05 installed Entities workflow | Not measured for MCP | Repeat protocol corpus against Native backend; separately prove any same-artifact adapter |
 | Fastly JavaScript | EN-05 local installed workflow | Not measured for MCP | Provider-local adapter acceptance; deployed reality separately |
 | Fastly Native | EN-05 local installed workflow | Not measured for MCP | Native no-fallback proof and provider-local acceptance; deployed reality separately |
@@ -160,7 +163,7 @@ Case names below are stable names for the owning ticket's future corpus.
 | C03 | `cache-isolation`: no-store initially; no stale or cross-principal discovery/call state | Implemented MCP-03/04 snapshots and per-request scope filtering |
 | A01 | `oauth-discovery`: protected-resource and AS metadata, resource parameter, PKCE, challenge handling with independent client | Implemented MCP-04; controlled issuer/client evidence, live deployment unclaimed |
 | A02 | `deny-before-effects`: absent/expired/wrong-issuer/wrong-audience token, insufficient scopes, catalog filtering, backend protection | Implemented MCP-04; controlled issuer/client evidence, live deployment unclaimed |
-| X01 | `independent-installed-app`: production adapter through pinned independent client, all claimed targets and bounded errors | Planned MCP-05 |
+| X01 | `independent-installed-app`: production adapter through pinned independent client, all claimed targets and bounded errors | Implemented MCP-05: `mcp-installed`, Node JavaScript only; controlled issuer/backend, deployment unclaimed |
 
 ## Reproduce and inspect
 

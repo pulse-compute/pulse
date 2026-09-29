@@ -21,6 +21,10 @@ configured external OAuth issuer using bounded token introspection, checks the
 resource audience and scopes, filters tool discovery, and denies unauthorized
 operations before governed dispatch. Backend credentials are distinct from
 client tokens; the deploying application owns TLS and backend protection.
+MCP-05 qualifies the Node JavaScript composition through an independent packaged
+resource-directory consumer and the pinned official client, including controlled
+OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
+acceptance does not establish deployed or Native/Fastly MCP support.
 A same-artifact Native binding requires a separate owner review; this component
 does not widen the released package set or the guest authoring API.
 
