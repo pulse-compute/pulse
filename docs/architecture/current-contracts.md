@@ -549,6 +549,27 @@ bodies remain opaque host-owned handles. An opaque body can be passed through or
 returned by a supported operation, but it cannot be decoded, duplicated, or
 independently consumed by application or package code.
 
+STR-02A adds an opt-in Node JavaScript incoming-body capability
+(`request.body.forward`). A synchronous `ctx.req.body()` marker can occur once,
+inline as a literal POST fetch body. It reserves the request's single consumer
+before provider dispatch and excludes structured reads. The in-process fetch
+descriptor uses `bodyMode: 'incoming-request-v1'`; the marker is held in a runtime
+WeakMap and carries no serializable provider identity or bytes. This does not
+change the Native ABI or admit Native/Fastly forwarding. Their eligibility
+checks reject this capability explicitly.
+
+`node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
+this path. Node adapts incoming HTTP lazily and keeps one provider read and one
+source chunk per pump, with a 64 KiB source/backing-allocation ceiling and
+16 KiB emitted chunks. Upload and response byte limits are independent. Provider
+fetch authority remains injected; transport uses manual redirects and never
+replays input. Upload ownership closes on early response; response ownership
+transfers separately to the completion-aware HTTP writer. The request budget
+and disconnect cancellation remain active through that writer. These bounds do
+not claim total process memory or platform socket-buffer bounds. See
+[incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node-javascript)
+for the public configuration and restrictions.
+
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
 provider's `time.wall-clock` authority. It returns one validated UTC wall-clock
 sample or a bounded unavailable/invalid-clock result. The clock is sampled at

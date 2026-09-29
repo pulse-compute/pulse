@@ -36,7 +36,9 @@ function genericProviderConfig(value) {
   const input = value && typeof value === 'object' ? value : {};
   const bindings = input.bindings || {};
   if (Object.keys(bindings).some((key) => key !== 's3')) throw new TypeError('Unknown Node binding field.');
-  return Object.freeze({ kind: 'node', maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs), bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
+  const maxDurationMs = require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs);
+  const bodyForwarding = require('./javascript/incoming-body.js').normalizeBodyForwarding(input.bodyForwarding, maxDurationMs);
+  return Object.freeze({ kind: 'node', maxDurationMs, ...(bodyForwarding ? { bodyForwarding } : {}), bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
 }
 
 function nodeRealization(nativeArtifact) {
@@ -68,6 +70,7 @@ function nodeRealization(nativeArtifact) {
 function targetSupportContext(_compiled, _project, declaration) {
   const gates = declaration.availability && declaration.availability.gates || [];
   return Object.freeze({
+    bodyForwarding: Boolean(_project?.providerConfig?.bodyForwarding),
     bindingsRedaction: gates.some((entry) => entry.id === 'bindings-redaction' && entry.status === 'satisfied'),
     gripRealized: gates.some((entry) => entry.id === 'grip-readiness' && entry.evidence && entry.evidence.status === 'passed')
   });
@@ -144,7 +147,7 @@ function createDriver() {
     normalizeConfig: genericProviderConfig,
     configReference: Object.freeze({
       sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
-      fields: [{ section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
+      fields: [{ section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node JavaScript incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native is not admitted.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
         description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).',
         security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
     }),
@@ -157,6 +160,7 @@ function createDriver() {
       return Object.freeze({
         ...values,
         maxDurationMs: config.maxDurationMs,
+        bodyForwarding: config.bodyForwarding,
         s3: config.bindings.s3,
         s3FetchImplementation: values.s3FetchImplementation || require('./javascript/fetch-adapter.js').createNodeJavascriptFixtureFetch(
           values.fetches || {}, values.fetchImplementation || (values.liveFetch === true ? globalThis.fetch : undefined),

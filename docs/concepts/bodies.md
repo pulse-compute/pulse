@@ -159,12 +159,48 @@ callback does not delay completion, including body suppression for `HEAD`.
 
 Attempting to inspect an opaque body fails with [`PULSE_OPAQUE_BODY_INSPECTION`](../reference/diagnostics.md#pulse-opaque-body-inspection). A missing or already-consumed structured body can fail with [`PULSE_BODY_UNAVAILABLE`](../reference/diagnostics.md#pulse-body-unavailable).
 
+## Incoming forwarding on Node JavaScript
+
+Node JavaScript can forward one incoming body to one outbound POST without
+materializing it. Opt in with `node.bodyForwarding: { maxBytes: 67108864 }`
+and `node.maxDurationMs: 30000` in the selected project profile:
+
+```ts
+app.post('/upload', async (ctx) => {
+  return ctx.fetch('https://uploads.example.com/receive', {
+    method: 'POST',
+    body: ctx.req.body()
+  });
+});
+```
+
+`ctx.req.body()` is a synchronous opaque marker, usable only inline in this
+literal POST form. It cannot be awaited, stored, duplicated, inspected or
+combined with request text/JSON reads. Ownership is reserved before provider
+dispatch; conflicting claims invalidate queued effects. A handler can reject
+the request before any incoming body read or outbound dispatch.
+
+The provider reads on demand, emits at most 16 KiB per chunk, and retains at
+most one 64 KiB source chunk per direction. A source chunk or backing allocation
+larger than 64 KiB is rejected. These are Pulse pump bounds, not a total RSS or
+OS/socket buffer guarantee. `maxBytes` independently limits upload and response
+bytes, including bodies with unknown lengths. Declared lengths are checked at
+admission; measured bytes remain authoritative. The configured request deadline
+covers admission, forwarding and the Node response writer. A shorter fetch
+`timeoutMs` continues through the local response writer, including after source EOF.
+
+Request headers are not copied implicitly. Caller-supplied framing, host and
+hop-by-hop headers are rejected. Redirects and retries never replay the body.
+An early origin response cancels the unfinished upload; client disconnect or
+deadline expiry cancels active work. A failure after response headers destroys
+the downstream connection. Opted-in POST responses close their HTTP connection
+so abandoned input does not require unbounded draining.
+
 ## Current transport limits
 
-Opaque response pass-through does not provide incoming request streaming.
-The Node JavaScript HTTP adapter and Node Native CLI development server buffer
-incoming bodies within their configured limits before application execution.
-There is no public request-body forwarding marker or chunk API in the Beta.
+Incoming forwarding is currently Node JavaScript only. Node Native and both
+Fastly targets reject this capability. Without the Node opt-in, existing
+bounded request buffering is unchanged. No userland chunk API is provided.
 
 Handler completion, response-header commitment and stream completion are
 different boundaries. The Node JavaScript response writer waits for its local
@@ -172,7 +208,8 @@ pipeline; the Native CLI opaque writer can return after starting a pipe. Neither
 fact alone establishes a portable queue bound, client receipt, or a deadline
 covering post-handoff streaming. The
 [bounded HTTP deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)
-retains its explicit streaming exclusions.
+retains its explicit streaming exclusions for the pre-existing paths. The
+opted-in Node forwarding path above has its own completion-aware deadline.
 
 ## Why the distinction matters
 

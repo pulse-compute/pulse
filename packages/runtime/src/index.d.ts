@@ -2,6 +2,10 @@ export type HeaderPair = readonly [name: string, value: string];
 
 declare const pulseEffectBrand: unique symbol;
 declare const pulseParallelEffectBrand: unique symbol;
+declare const incomingBodyBrand: unique symbol;
+
+/** Single-use opaque marker, admitted only inline as a configured Node JavaScript fetch body. */
+export interface PulseIncomingBody { readonly [incomingBodyBrand]: true; }
 
 export interface PulseEffect<T> extends Promise<T> {
   readonly [pulseEffectBrand]: T;
@@ -23,6 +27,7 @@ export interface PulseRequest {
   readonly path: string;
   readonly headers: readonly HeaderPair[];
   header(name: string): string | undefined;
+  body(): PulseIncomingBody;
   text(): PulseEffect<string>;
   json<T = unknown>(schemaId?: string): PulseEffect<T>;
 }
@@ -35,7 +40,7 @@ export interface PulseFetchInitBase {
 
 export type PulseFetchInit = PulseFetchInitBase & (
   | { readonly body?: never; readonly json?: never; readonly schema?: never }
-  | { readonly body: string; readonly json?: never; readonly schema?: never }
+  | { readonly body: string | PulseIncomingBody; readonly json?: never; readonly schema?: never }
   | { readonly body?: never; readonly json: unknown; readonly schema?: string }
 );
 

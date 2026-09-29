@@ -288,6 +288,18 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.bodyForwarding`
+
+Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native is not admitted.
+
+- **Type:** { maxBytes: number }
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Node JavaScript incoming forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.maxDurationMs`
 
 One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.

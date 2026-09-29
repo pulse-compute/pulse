@@ -2,6 +2,8 @@
 
 const { createStructuredBodyReader, normalizeBodyLimit } = require('./body.js');
 const { normalizeFetchRequest } = require('./fetch.js');
+const { isIncomingBody } = require('./incoming-body.js');
+const { PulseRuntimeContractError } = require('./errors.js');
 const { decodeSchemaText, encodeSchemaValue, requireExplicitSchemaId, strictSchemaPolicy } = require('./schema.js');
 const {
   cloneKvValue,
@@ -35,6 +37,7 @@ function normalizeRequestHeaderPairs(headers, fallback) {
 }
 
 function createRequestView(request, requestHeaders, effectExecution, options = {}) {
+  options.incomingBody?.bindInvalidation(error => effectExecution.invalidateAdmission(error));
   const url = new URL(request.url);
   const headers = normalizeRequestHeaderPairs(requestHeaders, request.headers);
   const body = createStructuredBodyReader(request, {
@@ -52,16 +55,24 @@ function createRequestView(request, requestHeaders, effectExecution, options = {
     url: request.url,
     path: url.pathname || '/',
     headers,
+    body(...args) {
+      if (args.length) throw new TypeError('ctx.req.body takes no arguments.');
+      if (!options.incomingBody) throw new PulseRuntimeContractError(
+        'PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Incoming body forwarding requires the configured Node JavaScript provider.');
+      return options.incomingBody.marker();
+    },
     header(name) {
       const lower = String(name).toLowerCase();
       const match = headers.find(([header]) => header.toLowerCase() === lower);
       return match ? match[1] : undefined;
     },
     text() {
+      options.incomingBody?.structured();
       if (!textEffect) textEffect = effectExecution.local('request.body.text', () => body.text());
       return textEffect;
     },
     json(schemaId) {
+      options.incomingBody?.structured();
       if (schemaId === undefined && !strictSchemaPolicy(options)) {
         if (!jsonEffect) jsonEffect = effectExecution.local('request.body.json', () => body.json());
         return jsonEffect;
@@ -171,11 +182,21 @@ function createContext(frame) {
     fetch(url, init) {
       fetchSequence += 1;
       const effectId = `fetch-${fetchSequence}`;
-      const fetchRequest = normalizeFetchRequest(url, init, {
-        ...options,
-        operationId: `fetch-request:${effectId}`,
-        effectId
-      });
+      let fetchRequest;
+      try {
+        fetchRequest = normalizeFetchRequest(url, init, {
+          ...options,
+          operationId: `fetch-request:${effectId}`,
+          effectId
+        });
+        if (fetchRequest.init.bodyMode === 'incoming-request-v1') {
+          if (!options.incomingBody) throw new PulseRuntimeContractError('PULSE_REQUEST_BODY_OWNERSHIP', 'Incoming body belongs to another execution.');
+          options.incomingBody.claim(fetchRequest.init.body, fetchRequest.init);
+        }
+      } catch (error) {
+        if (isIncomingBody(init?.body)) effects.invalidateAdmission(error);
+        throw error;
+      }
       const fetchEffect = effects.dispatch({
         id: effectId,
         kind: 'fetch',

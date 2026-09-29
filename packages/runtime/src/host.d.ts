@@ -177,6 +177,8 @@ export interface PulseJavascriptEffectSummary {
 
 /** Maintainer bridge used by the managed Router lifecycle and focused adapter tests. */
 export interface PulseJavascriptEffectExecution {
+  /** Host/runtime admission fence; rejects queued provider dispatch after an ownership conflict. */
+  invalidateAdmission(error: unknown): void;
   /** Execution-owned local projection. It participates in lifecycle containment but is not parallel-eligible. */
   local<T = unknown>(
     kind: string,
@@ -223,6 +225,8 @@ export declare function createRequestBudget(options?: {
 }): PulseRequestBudget;
 
 export interface PulseRuntimeExecutionOptions {
+  /** Provider-owned incoming stream controller; never an application capability. */
+  readonly incomingBody?: PulseIncomingBodyOwnership;
   /** Provider-owned total managed request budget, 1..30000 ms. Omitted preserves existing behavior. */
   readonly maxDurationMs?: number;
   /** Shared host budget; nested adapters must not restart or close an inherited budget. */
@@ -454,3 +458,22 @@ export declare function isApplicationError(error: unknown): boolean;
 export declare const WALL_TIME_MAX_MS: 253402300799999;
 export declare function readWallTime(clock?: (() => number) | null): PulseTimeResult;
 export declare function normalizeTimeResult(value: unknown): PulseTimeResult;
+
+/** Host-only lifecycle authority for one incoming request body. */
+export interface PulseIncomingBodyOwnership {
+  marker(): import('./index').PulseIncomingBody;
+  bindInvalidation(callback: (error: unknown) => void): void;
+  structured(): void;
+  claim(marker: unknown, init: unknown): void;
+  forward(url: string, init: unknown, execution: PulseJavascriptEffectHostExecution): Promise<Response>;
+  close(): Promise<void>;
+  readonly failure: unknown;
+  readonly responseSignal?: AbortSignal;
+}
+export declare function createIncomingBodyOwnership(transport: {
+  readonly responseSignal?: AbortSignal;
+  validate(init: unknown): void;
+  forward(url: string, init: unknown, execution: PulseJavascriptEffectHostExecution): Promise<Response>;
+  cancel(reason?: unknown): unknown;
+}): PulseIncomingBodyOwnership;
+export declare function forwardIncomingBody(marker: unknown, url: string, init: unknown, execution: PulseJavascriptEffectHostExecution): Promise<Response>;

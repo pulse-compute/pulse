@@ -280,6 +280,7 @@ function recognizeHandlerSurface(node, options = {}) {
         const method = target.name.text;
         if (namespace === 'req' && method === 'header') return createRecognition('ctx.req.header', current, { arguments: Object.freeze([...current.arguments]) }, options);
         if (namespace === 'req' && method === 'text') return createRecognition('ctx.req.text', current, { arguments: Object.freeze([...current.arguments]) }, options);
+        if (namespace === 'req' && method === 'body') return createRecognition('ctx.req.body', current, { arguments: Object.freeze([...current.arguments]) }, options);
         if (namespace === 'req' && method === 'json') {
           return createRecognition(current.arguments.length === 0 ? 'ctx.req.json.generic' : 'ctx.req.json.schema', current, { arguments: Object.freeze([...current.arguments]) }, options);
         }

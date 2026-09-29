@@ -270,6 +270,17 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     status: 'supported'
   }),
   surface({
+    id: 'ctx.req.body',
+    class: 'sync',
+    canonicalOperation: 'request.body.forward-marker',
+    publicForms: ["ctx.fetch(url, { method: 'POST', body: ctx.req.body() })"],
+    awaitPolicy: 'forbidden',
+    validPositions: ['fetch-body'],
+    targetSupport: { javascript: true, native: false },
+    nativeBehavior: 'reject',
+    status: 'node-javascript-configured-only'
+  }),
+  surface({
     id: 'ctx.req.json.schema',
     class: 'effect',
     canonicalOperation: 'effect.request-body.json.schema',

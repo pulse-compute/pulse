@@ -90,7 +90,7 @@ function normalizeManagedHandler(functionNode, options = {}) {
   const handlerAuthoring = resolveHandlerAuthoringMode(options);
   const requireAsync = handlerAuthoring === HANDLER_AUTHORING_MODES.ASYNC_REQUIRED;
   const requireEffectAwait = options.requireEffectAwait === true;
-  const diagnostics = [];
+  const diagnostics = require('./incoming-body-source.js').validateIncomingBodySource(functionNode, { ...options, ctxName, frontend, sourceFile });
   const warnings = [];
   const changes = [];
   let kvAliases = new Map();

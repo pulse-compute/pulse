@@ -102,10 +102,15 @@ async function nodeRequestToWebRequest(request, options = {}) {
   for (const [name, value] of headerPairs) headers.append(name, value);
   const init = { method, headers };
   if (bodyAllowed(method)) {
-    const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
-    if (body.byteLength > 0) {
-      init.body = body;
+    if (options.bodyForwarding) {
+      init.body = require('./incoming-body.js').nodeIncomingStream(request);
       init.duplex = 'half';
+    } else {
+      const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
+      if (body.byteLength > 0) {
+        init.body = body;
+        init.duplex = 'half';
+      }
     }
   }
   return Object.freeze({
@@ -150,6 +155,7 @@ async function writeWebResponseToNode(response, nodeResponse, options = {}) {
     for (const group of groupHeaderPairs(runtimeHost.responseHeaderPairs(response))) {
       nodeResponse.setHeader(group.name, group.values.length === 1 ? group.values[0] : [...group.values]);
     }
+    if (options.closeConnection) nodeResponse.setHeader('connection', 'close');
 
     const method = String(options.requestMethod || 'GET').toUpperCase();
     if (method === 'HEAD' || !statusAllowsBody(response.status) || response.body == null) {
@@ -201,10 +207,20 @@ function createNodeJavascriptHandler(application, options = {}) {
         maxKvValueEntries: options.maxKvValueEntries
       });
   return async function pulseNodeJavascriptHandler(request, response) {
-    const budget = runtimeHost.createRequestBudget(options);
+    const connection = new AbortController();
+    const aborted = () => connection.abort(new Error('Node request disconnected.'));
+    const closed = () => { if (!response.writableFinished) aborted(); };
+    request.once('aborted', aborted); response.once?.('close', closed);
+    const signal = options.signal ? AbortSignal.any([options.signal, connection.signal]) : connection.signal;
+    const budget = runtimeHost.createRequestBudget({ ...options, signal });
+    let incomingBody, adapted;
     try {
       budget.check();
-      const adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
+      adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
+      if (options.bodyForwarding && bodyAllowed(adapted.method)) response.setHeader('connection', 'close');
+      incomingBody = require('./incoming-body.js').createIncomingBody(adapted.request, {
+        ...options, signal: budget.signal, responseWriterOwnsCompletion: true
+      });
       const requestContext = Object.freeze({
         request,
         response,
@@ -238,6 +254,7 @@ function createNodeJavascriptHandler(application, options = {}) {
         ? runtimeHost.normalizeApplication(options.getApplication())
         : normalizedApplication;
       const webResponse = await executeNodeJavascriptApplication(activeApplication, adapted.request, {
+        incomingBody,
         capabilities,
         effectAdapter,
         config,
@@ -275,7 +292,12 @@ function createNodeJavascriptHandler(application, options = {}) {
         onEffectObservation: options.onEffectObservation,
         onEffectSummary: options.onEffectSummary
       });
-      await writeWebResponseToNode(webResponse, response, { requestMethod: adapted.method, signal: budget.signal, requestBudget: budget });
+      if (incomingBody?.failure) throw incomingBody.failure;
+      await writeWebResponseToNode(webResponse, response, {
+        requestMethod: adapted.method,
+        signal: incomingBody?.responseSignal || budget.signal, requestBudget: budget,
+        closeConnection: Boolean(options.bodyForwarding && bodyAllowed(adapted.method))
+      });
       if (typeof options.onRequest === 'function') {
         options.onRequest(Object.freeze({
           method: adapted.method,
@@ -286,7 +308,14 @@ function createNodeJavascriptHandler(application, options = {}) {
         }));
       }
       return webResponse;
-    } finally { if (!options.requestBudget) budget.close(); }
+    } finally {
+      await incomingBody?.close();
+      if (options.bodyForwarding && !incomingBody && adapted?.request.body && !adapted.request.body.locked) {
+        void adapted.request.body.cancel().catch(() => {});
+      }
+      request.removeListener('aborted', aborted); response.removeListener?.('close', closed);
+      if (!options.requestBudget) budget.close();
+    }
   };
 }
 

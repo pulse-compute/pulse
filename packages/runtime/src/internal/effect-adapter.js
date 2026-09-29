@@ -810,6 +810,11 @@ function createJavascriptEffectExecution(options = {}) {
       );
       return parallelEffect;
     },
+    invalidateAdmission(error) {
+      // A synchronous body-claim conflict must fence every already queued
+      // group member before its provider dispatch microtask can run.
+      if (!lifecycleController.signal.aborted) lifecycleController.abort(error);
+    },
 
     async assertIdle() {
       if (pendingEffects.size === 0) return;
