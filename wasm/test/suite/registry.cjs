@@ -958,6 +958,10 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
+    evidence: 'external', timeoutMs: 300000,
+    description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
+  }),
   'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
     evidence: 'release', timeoutMs: 600000,
     description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
