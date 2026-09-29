@@ -63,9 +63,13 @@ The repository's private `packages/mcp` candidate implements the MCP
 projected from one explicitly selected emitted router and its schema registry;
 each admitted call makes one request to a fixed governed Entities HTTP endpoint.
 The facade imports no handlers, executable codecs or runtime registry. Discovery
-advertises tools only when that configuration is present. Remote authorization
-remains separate work; the candidate does not change the released package set
-or add an Entities adapter. Backend placement and matching build artifacts remain
+advertises tools only when that configuration is present. Optional MCP-04
+authorization uses an explicitly configured external OAuth issuer, resource
+metadata/challenges, bounded introspection and default-deny operation scopes.
+Tool catalogs are filtered per request; unauthorized calls never reach the
+governed endpoint. Separate backend credentials cannot be supplied by the MCP
+client. This candidate does not change the released package set or add an
+Entities adapter. Backend placement and matching build artifacts remain
 application responsibilities.
 
 ## Future adapters

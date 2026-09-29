@@ -42,9 +42,9 @@ function createMcpNodeHandler(options = {}) {
         res.writeHead(400, { 'cache-control': 'no-store', connection: 'close' }).end();
         return;
       }
-      // Fetch forbids TRACE/CONNECT even as inputs. All non-POST methods share
-      // the shell's 405 admission path, so represent those as a bodyless GET.
-      const request = new Request('http://localhost' + req.url, { method: req.method === 'POST' ? 'POST' : 'GET', headers,
+      // Fetch forbids TRACE/CONNECT even as inputs. Preserve metadata GET/HEAD;
+      // other unsupported methods share the shell's bodyless 405 path.
+      const request = new Request('http://localhost' + req.url, { method: req.method === 'POST' ? 'POST' : req.method === 'HEAD' ? 'HEAD' : req.method === 'GET' ? 'GET' : 'DELETE', headers,
         signal: controller.signal, ...(req.method === 'POST' ? { body: requestBody(req), duplex: 'half' } : {}) });
       const response = await handler.fetch(request);
       if (res.destroyed) return;

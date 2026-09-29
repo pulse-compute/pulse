@@ -970,6 +970,14 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures'
   }),
+  'mcp-authorization': nodeTask('test/mcp/assert-mcp-authorization.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-04 resource metadata, token introspection, scoped admission and credential isolation'
+  }),
+  'mcp-authorization-sdk': nodeTask('test/mcp/assert-mcp-http-sdk.cjs', {
+    args: ['--authorization'], evidence: 'external', timeoutMs: 180000,
+    description: 'MCP-04 independent OAuth client with controlled issuer, PKCE and protected backend'
+  }),
   'mcp-tools-sdk': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     args: ['--adapter'], evidence: 'external', timeoutMs: 300000,
     description: 'MCP-03 independent client against the actual adapter and ordinary Pulse HTTP backend'
@@ -1082,6 +1090,7 @@ const profiles = Object.freeze({
     'entities-json-rpc-corpus',
     'mcp-http',
     'mcp-tools',
+    'mcp-authorization',
     'entities-package-owned-lowering',
     'entities-catalog',
     'entities-inspection',

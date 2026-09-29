@@ -16,14 +16,21 @@
     "maxRequestBodyBytes": 65536,
     "requestDeadlineMs": 10000
   },
-  "capabilities": { "tools": { "listChanged": false } },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    }
+  },
   "authorization": {
     "remote": "oauth-2.1-resource-server",
     "authorizationServer": "external-configured-issuer",
     "referenceClientRegistration": "preregistered",
     "resourceMetadata": "RFC9728",
     "operationPolicy": "deny-by-default",
-    "proof": "unauthenticated-loopback-only"
+    "proof": "unauthenticated-loopback-only",
+    "tokenValidation": "RFC7662-introspection-client-secret-basic",
+    "issuerSelection": "explicit-operator-configuration",
+    "backendCredential": "separate-endpoint-scoped-service-bearer"
   },
   "proof": {
     "target": "node-javascript",
