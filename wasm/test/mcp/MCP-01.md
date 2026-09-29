@@ -3,6 +3,17 @@
 Decision date: 2026-09-29. Status: design pinned; reference wire proof available.
 Owner: Pulse MCP adapter lane. PR base: `beta`.
 
+Implementation follow-up: the private [MCP-02 adapter](../../../packages/mcp/README.md)
+now implements the HTTP shell and T01–T06 plus the admission portion of T07.
+Its discovery advertises no optional capabilities until MCP-03 implements tools.
+The reference fixture and original requirement allocation below remain MCP-01
+evidence; they do not substitute for the adapter's own tests.
+
+Correction found during MCP-02 interoperability: this revision removes `ping`
+([changelog](https://modelcontextprotocol.io/specification/2026-07-28/changelog)).
+The original design incorrectly retained it. The pinned SDK rejects it in modern
+mode; T06 and the profile below now require a method-not-found response.
+
 This is repository evidence for MCP-01, not a supported Pulse MCP server. The
 production adapter, complete catalog projection, remote authorization and
 independent installed application remain MCP-02, MCP-03, MCP-04 and MCP-05.
@@ -22,7 +33,7 @@ these choices require updating this document and rerunning the evidence.
 | Dependencies | Private fixture with exact direct versions and pnpm integrity lock; frozen install with lifecycle scripts disabled |
 | Transport | Streamable HTTP, one `/mcp` endpoint, finite JSON responses |
 | Discovery | `server/discover`; advertise only tools, explicitly disabling `listChanged` |
-| Tool methods | `tools/list`, `tools/call`; `ping` remains a core method |
+| Tool methods | `tools/list`, `tools/call`; `ping` is removed in this revision |
 | Deferred capabilities | Resources, prompts, subscriptions, tasks, sampling, elicitation, logging and multi-round interaction |
 | Compatibility | Reject legacy request revisions; no `initialize` handshake, protocol sessions, session DELETE, GET event stream or legacy SSE transport |
 | Reference application | Emitted catalog from example 10; only its no-input/no-output `system.status` operation is exposed in this proof |
@@ -137,7 +148,7 @@ Case names below are stable names for the owning ticket's future corpus.
 | T03 | `envelope-errors`: string/integer IDs, reject null IDs and batches, unreadable ID omitted in errors, unknown method 404/-32601 | Planned MCP-02 |
 | T04 | `notifications`: accepted notification 202 with empty body; never emit a JSON-RPC response to it or invoke a tool lacking a call ID | Planned MCP-02; Entities' notification 204 is not MCP framing |
 | T05 | `name-headers`: body/header agreement and required base64 name-header decoding, including sentinel edge cases | Planned MCP-02 |
-| T06 | `capability-negative`: no legacy lifecycle, sessions, SSE stream, subscription/task/MRTR/resource/prompt methods; core ping succeeds | Planned MCP-02 |
+| T06 | `capability-negative`: no legacy lifecycle, sessions, SSE stream, subscription/task/MRTR/resource/prompt methods; removed `ping` is rejected | Implemented MCP-02 shell |
 | T07 | `bounded-lifetime`: body/response/tool-count bounds, deadline, disconnect, cleanup and no duplicate invocation | Planned MCP-02/03; cancellation must not claim rollback of effects |
 | C01 | `catalog-projection`: deterministic full schemas, eligibility, metadata allowlist, duplicate/invalid names, schema rejection and hash invalidation | Planned MCP-03 |
 | C02 | `tool-errors`: unknown tool/invalid arguments/execution failures map to MCP tool errors; transport/envelope failures remain protocol errors | Planned MCP-03 |

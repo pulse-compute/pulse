@@ -1,0 +1,13 @@
+{
+  "name": "@pulse-compute/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "commonjs",
+  "description": "Unreleased first-party bounded MCP HTTP adapter.",
+  "engines": { "node": "^22.14.0 || ^24.0.0" },
+  "exports": {
+    ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
+    "./node": { "types": "./src/node.d.ts", "default": "./src/node.js" }
+  }
+}

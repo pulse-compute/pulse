@@ -962,6 +962,14 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
   }),
+  'mcp-http': nodeTask('test/mcp/assert-mcp-http.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
+  }),
+  'mcp-http-sdk': nodeTask('test/mcp/assert-mcp-http-sdk.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'MCP-02 real pinned official client against the private first-party HTTP adapter'
+  }),
   'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
     evidence: 'release', timeoutMs: 600000,
     description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
@@ -1064,6 +1072,7 @@ const profiles = Object.freeze({
     'entities-schema-bridge',
     'entities-javascript-runtime',
     'entities-json-rpc-corpus',
+    'mcp-http',
     'entities-package-owned-lowering',
     'entities-catalog',
     'entities-inspection',

@@ -58,6 +58,12 @@ these rules: static discovery comes from an emitted catalog, invocation crosses
 a governed adapter boundary, external protocol state stays outside runtime
 core, and MCP behavior never becomes a source of provider or schema authority.
 
+The repository's private `packages/mcp` candidate implements the MCP
+2026-07-28 HTTP protocol shell: bounded admission, discovery and protocol
+errors. It advertises no optional capabilities. Catalog-backed tools and remote
+authorization remain separate work; the candidate does not change the released
+package set, add an Entities adapter, or grant direct handler access.
+
 ## Future adapters
 
 A Worker, queue, scheduled-event, or other event adapter would be a new
