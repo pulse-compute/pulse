@@ -1,0 +1,14 @@
+{
+  "testedCommit": "8ecaa60b64f1ebff2d27d2a9e51da56436f3d0c0",
+  "testedTree": "96fc77d3821416c00a88bf7b0699db6e078b65db",
+  "sourceState": "clean at proof invocation; reports added afterward; fixture hashes unchanged",
+  "unitTasksPassed": 35,
+  "proofStatus": "blocked",
+  "directProofExitCode": 2,
+  "registeredProofStatus": "failed as expected for an unqualified proof",
+  "workspaceTypeScriptBuild": "passed",
+  "maintainer": "passed",
+  "docs": "passed",
+  "documentationRelease": "passed",
+  "nativeBuilds": 0
+}

@@ -67,6 +67,7 @@ const externalTasks = new Set([
   'compiler-handler-cost-b02',
   'compiler-handler-functions-b03',
   'reusable-stage-o18',
+  'shared-history-helper-o25',
   'compiler-schema-cost-sc01',
   'compiler-generated-census-gen01',
   'generated-source-census-o07',

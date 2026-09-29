@@ -1,0 +1,252 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 207 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 77ms
+
+[pulsewasm:unit] test-orchestration
+[pulsewasm] atomic reports, deterministic slicing, timeouts, and descendant cleanup (timeout 30.00s)
+
+[pulsewasm:unit] orchestration-pass-fixture
+[pulsewasm] orchestration pass fixture (timeout 5.00s)
+fixture-pass
+[pulsewasm] orchestration-pass-fixture: passed in 72ms
+
+[pulsewasm:unit] orchestration-failure-evidence-fixture
+[pulsewasm] orchestration failure evidence fixture (timeout 5.00s)
+[pulsewasm] orchestration-failure-evidence-fixture: copied 1 task-owned failure log(s) into the durable run report
+[pulsewasm] orchestration-failure-evidence-fixture: failed in 91ms
+
+[pulsewasm:unit] orchestration-timeout-fixture
+[pulsewasm] orchestration timeout and descendant cleanup fixture (timeout 1.20s)
+fixture-timeout-ready
+[pulsewasm] orchestration-timeout-fixture: timeout; process group 50 contains 0 process(es)
+
+Writing Node.js report to file: report.20260930.035437.50.0.001.json
+Node.js report completed
+[pulsewasm] orchestration-timeout-fixture: timeout in 6.98s
+ok - test orchestration writes atomic reports, slices profiles deterministically, preserves task and failure logs, captures timeout diagnostics, and terminates descendant process groups
+[pulsewasm] test-orchestration: passed in 7.21s
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 19 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 141ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 333ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 153ms
+
+[pulsewasm:unit] hidden-contracts
+[pulsewasm] hidden contract literal scanner (timeout 30.00s)
+ok - PulseWasm hidden contract scanner classifies non-contract versions and rejects duplicate contract literals
+[pulsewasm] hidden-contracts: passed in 243ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 882ms
+
+[pulsewasm:unit] release-tag
+[pulsewasm] release-owner tagging guards and immutable tag identity (timeout 30.00s)
+ok - release tag requires reviewed remote main, defaults to dry run, preserves tag identity, and never pushes
+[pulsewasm] release-tag: passed in 486ms
+
+[pulsewasm:unit] api-surface
+[pulsewasm] provider-neutral TypeScript API and fixture type surface (timeout 30.00s)
+ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value
+[pulsewasm] api-surface: passed in 861ms
+
+[pulsewasm:unit] logging-contract
+[pulsewasm] logging levels, ABI, reporting resolution, and public surfaces (timeout 30.00s)
+ok - logging levels, synchronous ABI, flat reporting resolution, and handler surfaces are canonical
+[pulsewasm] logging-contract: passed in 89ms
+
+[pulsewasm:unit] s3-design-contract
+[pulsewasm] S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes (timeout 30.00s)
+ok - S3 O1 design: typed subset, canonical input seam, key/body/signing vectors and bounded envelopes; no runtime support claim
+[pulsewasm] s3-design-contract: passed in 1.24s
+
+[pulsewasm:unit] kv-design-contract
+[pulsewasm] K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty (timeout 30.00s)
+{"status":"passed","proof":"K1-executable-specification","tokens":8,"outcomeVectors":31,"readOutcomeVectors":15,"raceSchedules":12,"publicRuntimeSupport":false,"providerReality":false}
+[pulsewasm] kv-design-contract: passed in 1.17s
+
+[pulsewasm:unit] kv-conditional-runtime
+[pulsewasm] K2 production conditional KV types, wire bounds, snapshots and outcome contracts (timeout 30.00s)
+ok - K2 production types, wire/token/bounds corpus, admission snapshot, redaction and explicit failure outcomes
+[pulsewasm] kv-conditional-runtime: passed in 1.20s
+
+[pulsewasm:unit] kv-conditional-gates
+[pulsewasm] K4 executable requirement and deployed evidence identity, location and uncertainty gates (timeout 30.00s)
+ok - K4 rejects missing executables, mixed deployment identities, repeated receipts, same-POP evidence and unknown write acceptance; deployed orchestration tested with a local fixture only
+[pulsewasm] kv-conditional-gates: passed in 438ms
+
+[pulsewasm:unit] s3-read-contract
+[pulsewasm] S3 read binding authority, lowering negatives and bounded result contract (timeout 30.00s)
+ok - S3 read bindings, literal authority, dynamic key seam and result bounds
+[pulsewasm] s3-read-contract: passed in 220ms
+
+[pulsewasm:unit] s3-write-contract
+[pulsewasm] S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle (timeout 30.00s)
+ok - S3 PUT literal lowering, bounded results, explicit Crypto JavaScript vectors, snapshot and wipe
+[pulsewasm] s3-write-contract: passed in 249ms
+
+[pulsewasm:unit] crypto-config-planning
+[pulsewasm] crypto profile replacement, reachable requirements, and deterministic target realization planning (timeout 180.00s)
+ok - crypto configuration replacement, reachable demand, deterministic realization planning, and pre-lowering failure are canonical
+[pulsewasm] crypto-config-planning: passed in 550ms
+
+[pulsewasm:unit] crypto-es256-signing
+[pulsewasm] RFC6979 signing vector, frame rejection and private material cleanup (timeout 180.00s)
+ok - RFC6979 ES256 signing, independent verification, strict frames, key consistency and cleanup
+[pulsewasm] crypto-es256-signing: passed in 87ms
+
+[pulsewasm:unit] crypto-rs256
+[pulsewasm] RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup (timeout 180.00s)
+{"status":"passed","assertions":177,"artifactBytes":36378,"fixedMemoryBytes":2097152,"observedStackBytes":6324,"reservedStackBytes":65536,"timings":[{"bits":2048,"signMedianMs":5.152974,"verifyMedianMs":0.3276519999999721},{"bits":3072,"signMedianMs":16.621058000000062,"verifyMedianMs":0.8566169999999147},{"bits":4096,"signMedianMs":43.98409700000002,"verifyMedianMs":1.5301899999999478}],"timingEnvironment":"local Node Wasm; development evidence, not Fastly measurements","providerReality":false}
+[pulsewasm] crypto-rs256: passed in 1.96s
+
+[pulsewasm:unit] crypto-digest-text-contract
+[pulsewasm] Exact-text digest admission, bounded failures, unavailable providers and cancellation (timeout 30.00s)
+ok - digest vectors, exact import admission, bounded failures, staging wipe, provider unavailability and cancellation
+[pulsewasm] crypto-digest-text-contract: passed in 464ms
+
+[pulsewasm:unit] reachable-graph
+[pulsewasm] deterministic path-independent reachable graph (timeout 120.00s)
+ok - reachable graph locks resolver b67ace60ec94fd12c0c05bf64429b1eae16421da96721205c1983852dd931fc5, graph d8af8e6582ab6d2eca4b67a72be9e5becabe2a1fd6a87742590e8a3542ba9790, and 5 path-independent module identities
+[pulsewasm] reachable-graph: passed in 91ms
+
+[pulsewasm:unit] project-modules
+[pulsewasm] recursive modules, handlers, Routers, cycles, and diagnostics (timeout 180.00s)
+ok - project graph compiles 4 runtime modules through one Handler/Router IR path
+[pulsewasm] project-modules: passed in 978ms
+
+[pulsewasm:unit] package-reachability
+[pulsewasm] graph-selected package operations and native eligibility (timeout 240.00s)
+ok - package reachability selects pulse.grip, owns 2 bindings, and rejects unsupported boundaries without fallback
+[pulsewasm] package-reachability: passed in 1.14s
+
+[pulsewasm:unit] provider-toolchain
+[pulsewasm] exact compiler-to-provider toolchain invocation and result boundary (timeout 30.00s)
+ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed
+[pulsewasm] provider-toolchain: passed in 107ms
+
+[pulsewasm:unit] schema-registry
+[pulsewasm] pulse.schema registry and semantic trace contracts (timeout 120.00s)
+ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts
+ok - schema cost attribution preserves IDs, policies, response roots, Unicode byte accounting and production generation
+[pulsewasm] schema-registry: passed in 1.01s
+
+[pulsewasm:unit] continuation-registry
+[pulsewasm] continuation state, expiry, and resume guards (timeout 30.00s)
+ok - continuation registry enforces waiting/resume/complete, double-resume, expiry, failure, cancellation, and ordered trace transitions
+[pulsewasm] continuation-registry: passed in 66ms
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+{"version":"pulse.entities-contract.v1","registryHash":"46f5c921451588141b5ffadb27fb4e489a1b72aba5a260aa7122ce71c14931f2","planHash":"379b0d182fb4c9e084547918df3c2cb03c8594e01172fcf973a0163b98bddd30","catalogHash":"433f95d1d129fa638b003911653fefd9ae79ec41a51726705bc0da1d85464db9","diagnostics":18,"packageExports":[".","./pulsewasm/manifest","./pulsewasm/compiler","./pulsewasm-native"],"executableLowererInstalled":true,"releaseAssigned":false}
+ok - Entities versions, normalizers, declaration registry, plan/catalog identities, trusted lowerer, and package-owned Native source entry are singular and bounded
+[pulsewasm] entities-contracts: passed in 97ms
+
+[pulsewasm:unit] entities-schema-bridge
+[pulsewasm] I3 request-bound declared-schema codec bridge, immutable values, semantic traces, and negative authority surface (timeout 120.00s)
+{"version":"pulse.first-party-embedded-schema-codec-bridge.v1","declaredSchemas":["app.createInput","app.user"],"bridgeKeys":["decodeEmbeddedJson","encodeEmbeddedJson"],"traceKinds":["json.decode.request","json.encode.response","json.decode.error","json.encode.error"],"deeplyImmutable":true,"encoded":"{\"id\":\"8\",\"name\":\"Grace\",\"score\":42.5,\"active\":true}","schemaBridgePublicExportsAdded":false,"nativeSourceBuilderExportedByI7":true}
+ok - Entities I3 binds only declared generated schema codecs to contained request text and package-owned output text
+[pulsewasm] entities-schema-bridge: passed in 261ms
+
+[pulsewasm:javascript] entities-javascript-runtime
+[pulsewasm] I4 real package dispatch, JSON-RPC framing, redaction, notification acknowledgement, and catalog identity (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/f45f4aee55e6/pulse-o25
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  03:54:58
+   Duration  516ms (transform 107ms, setup 0ms, import 145ms, tests 206ms, environment 0ms)
+
+[pulsewasm] entities-javascript-runtime: passed in 856ms
+
+[pulsewasm:unit] entities-json-rpc-corpus
+[pulsewasm] I4 production scanner parity with the frozen bounded positive and negative envelope corpus (timeout 30.00s)
+{"version":"pulse.entities-envelope-corpus.v1","valid":6,"invalid":17,"productionScanner":"packages/entities/dist/internal/bounded-json-rpc.js"}
+ok - Entities I4 production scanner matches the frozen bounded JSON-RPC corpus
+[pulsewasm] entities-json-rpc-corpus: passed in 94ms
+
+[pulsewasm:unit] entities-package-owned-lowering
+[pulsewasm] I2 first-party static extraction, terminal intrinsic, schema linkage, and fail-closed lowerer boundary (timeout 30.00s)
+{"version":"pulse.entities-lowering-plan.v1","planHash":"e675ab4d16eb0d6d4662528410017fd2d38e1c6b509195c59fec11a3006abed5","catalogHash":"090783f5e4635f713051c93920201c2374b2301d8848981761fa51cd1994036d","entities":2,"schemaReferences":2,"intrinsic":"pulse.entities.handle.v1","targetStatus":"provider-dependent","negativeDiagnostics":12}
+ok - Entities package-owned extraction emits deterministic plan/catalog inspection, managed-handler descriptors, terminal intrinsic, and I9 target truth
+[pulsewasm] entities-package-owned-lowering: passed in 321ms
+
+[pulsewasm:unit] entities-catalog
+[pulsewasm] deterministic entity catalog, eligible-target truth, and current product status (timeout 30.00s)
+{"version":"pulse.entities-catalog.v1","catalogHash":"d603d6f18768c799e50ab926fbb21ee75df18fa12386d69040b924ccbc908c55","entityOrder":["alpha.lookup","beta.notify"],"targetsEligible":4,"releaseAssigned":false}
+ok - Entities catalog remains deterministic, non-sensitive, immutable, and honest about I9 target support without assigning a release
+[pulsewasm] entities-catalog: passed in 311ms
+
+[pulsewasm:unit] entities-inspection
+[pulsewasm] canonical project and pulse inspect declarations, redacted handler effects, I9 target evidence, and deterministic build artifacts (timeout 120.00s)
+{"version":"pulse.canonical-package-inspection.v1","planHash":"2539e18788f3a72b135846cada2d8d2e7dcd589dd8c0a1aed8304c4a5344578a","catalogHash":"b1fa3623b597a773efb01a25b7162206817a45462ae824844da626e6cf265a9e","declaredHandlers":2,"measuredNodeTargets":2,"measuredFastlyTargets":2,"externalFastlyExecutionClaimed":true}
+ok - Entities inspection exposes deterministic declarations, schemas, effects, eligibility, reasons, and build artifacts without runtime or provider data
+[pulsewasm] entities-inspection: passed in 2.23s
+
+[pulsewasm:unit] entities-orchestration-demo
+[pulsewasm] I10 external tools facade over static catalog discovery, governed JSON-RPC calls, backend fetch, and Native artifact inspection (timeout 180.00s)
+{
+  "status": "passed",
+  "tools": 2,
+  "calls": 2,
+  "governedEffects": 3,
+  "nativeBytes": 76817,
+  "report": "wasm/.test-results/entities-i10/entities-tools-orchestration.json",
+  "reportSha256": "63f4385116992a8a0e21849b08706a35d4d621d38e34d801d1d0440a7daa6f50"
+}
+ok - I10 projects static catalog metadata through an external tools facade, invokes governed JSON-RPC entities, and inspects reproducible package-owned Native Wasm without protocol state or fallback
+[pulsewasm] entities-orchestration-demo: passed in 6.88s
+
+[pulsewasm] test summary
+  passed          77ms  suite-shape
+  passed         7.21s  test-orchestration
+  passed         141ms  package-exports
+  passed         333ms  boundaries
+  passed         153ms  workspace-hygiene
+  passed         243ms  hidden-contracts
+  passed         882ms  release-runtime-policy
+  passed         486ms  release-tag
+  passed         861ms  api-surface
+  passed          89ms  logging-contract
+  passed         1.24s  s3-design-contract
+  passed         1.17s  kv-design-contract
+  passed         1.20s  kv-conditional-runtime
+  passed         438ms  kv-conditional-gates
+  passed         220ms  s3-read-contract
+  passed         249ms  s3-write-contract
+  passed         550ms  crypto-config-planning
+  passed          87ms  crypto-es256-signing
+  passed         1.96s  crypto-rs256
+  passed         464ms  crypto-digest-text-contract
+  passed          91ms  reachable-graph
+  passed         978ms  project-modules
+  passed         1.14s  package-reachability
+  passed         107ms  provider-toolchain
+  passed         1.01s  schema-registry
+  passed          66ms  continuation-registry
+  passed          97ms  entities-contracts
+  passed         261ms  entities-schema-bridge
+  passed         856ms  entities-javascript-runtime
+  passed          94ms  entities-json-rpc-corpus
+  passed         321ms  entities-package-owned-lowering
+  passed         311ms  entities-catalog
+  passed         2.23s  entities-inspection
+  passed         6.88s  entities-orchestration-demo
+  total        32.51s
