@@ -37,7 +37,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-contracts',
       'entities-json-rpc-corpus',
       'mcp-http',
-      'mcp-tools'
+      'mcp-tools',
+      'mcp-authorization'
     ])
   }),
   Object.freeze({

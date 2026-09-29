@@ -97,7 +97,7 @@ async function main() {
       .split(path.sep).some(part => part === 'node_modules' || part.startsWith('dist') || part.startsWith('.pulse-')) });
     if (actualAdapter) {
       fs.copyFileSync(path.join(reference, 'tools-handlers.ts'), path.join(project, 'src/handlers.ts'));
-      report.adapterFiles = Object.fromEntries(['index.js', 'node.js', 'catalog.js', 'tools.js', 'bounded.js']
+      report.adapterFiles = Object.fromEntries(['index.js', 'node.js', 'catalog.js', 'tools.js', 'bounded.js', 'authorization.js']
         .map(file => [file, hash(fs.readFileSync(path.join(root, 'packages/mcp/src', file)))]));
     }
     fs.mkdirSync(path.join(project, 'node_modules/@pulse-compute'), { recursive: true });

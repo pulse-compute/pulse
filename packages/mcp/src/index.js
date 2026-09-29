@@ -2,6 +2,7 @@
 
 const { AdmissionError, checkDepth, readBody } = require('./bounded.js');
 const { createTools } = require('./tools.js');
+const { createAuthorization, AuthorizationError } = require('./authorization.js');
 
 const PROTOCOL_VERSION = '2026-07-28';
 const META = 'io.modelcontextprotocol/';
@@ -63,6 +64,9 @@ function nameHeader(value) {
 function createMcpHttpHandler(options = {}) {
   const { path, info, limits, origins } = configuration(options);
   const tools = options.tools === undefined ? null : createTools(options.tools, limits);
+  const authorization = options.authorization === undefined ? null
+    : createAuthorization(options.authorization, path, tools?.list.map(tool => tool.name) ?? []);
+  if (authorization && tools && !options.tools.backendBearerToken) throw new TypeError('MCP authorization requires a separate backend credential');
   function response(status, body, headers = {}) {
     return new Response(body, { status, headers: { 'cache-control': 'no-store', ...headers,
       ...(body === null ? {} : { 'content-type': 'application/json' }) } });
@@ -80,9 +84,16 @@ function createMcpHttpHandler(options = {}) {
     try {
       const origin = request.headers.get('origin');
       if (origin !== null && !origins.has(origin)) return response(403, null);
-      if (new URL(request.url).pathname !== path) return response(404, null);
+      const pathname = new URL(request.url).pathname;
+      if (authorization && pathname === authorization.metadataPath) {
+        if (!['GET', 'HEAD'].includes(request.method)) return response(405, null, { allow: 'GET, HEAD' });
+        return response(200, request.method === 'HEAD' ? null : authorization.metadata, { 'content-type': 'application/json' });
+      }
+      if (pathname !== path) return response(404, null);
       if (request.method !== 'POST') return response(405, null, { allow: 'POST' });
       if (signal.aborted) return error(408, -32600, 'Request interrupted');
+      // Authenticate before parsing or catalog disclosure; HTTP notifications do not bypass admission.
+      const principal = authorization ? await authorization.authenticate(request, signal) : null;
       const type = request.headers.get('content-type') ?? '';
       if (!/^application\/json(?:\s*;\s*charset\s*=\s*(?:utf-8|"utf-8"))?\s*$/i.test(type)) return response(415, null);
       if (!accepts(request.headers.get('accept'), 'application/json') || !accepts(request.headers.get('accept'), 'text/event-stream')) return response(406, null);
@@ -121,16 +132,19 @@ function createMcpHttpHandler(options = {}) {
         : ['tools/call', 'prompts/get'].includes(message.method) ? 'name' : undefined;
       if (nameField && (typeof params[nameField] !== 'string' || nameHeader(request.headers.get('mcp-name')) !== params[nameField])) return headerError(id);
       let result;
+      if (authorization) authorization.fresh(principal);
       if (message.method === 'server/discover') {
         if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
         result = { supportedVersions: [PROTOCOL_VERSION], capabilities: tools ? { tools: { listChanged: false } } : {},
           ttlMs: 0, cacheScope: 'private' };
       } else if (tools && message.method === 'tools/list') {
         if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
-        result = { tools: tools.list, ttlMs: 0, cacheScope: 'private' };
+        result = { tools: authorization ? tools.list.filter(tool => authorization.allowed(principal, tool.name)) : tools.list,
+          ttlMs: 0, cacheScope: 'private' };
       } else if (tools && message.method === 'tools/call') {
         if (Object.keys(params).some(key => !['_meta', 'name', 'arguments'].includes(key))
           || (own(params, 'arguments') && !object(params.arguments))) return error(400, -32602, 'Invalid params', id);
+        if (authorization) authorization.requireOperation(principal, params.name);
         if (!tools.has(params.name)) return error(400, -32602, 'Unknown tool', id);
         result = await tools.call(params.name, params.arguments ?? {}, signal);
       } else return error(404, -32601, 'Method not found', id);
@@ -139,6 +153,8 @@ function createMcpHttpHandler(options = {}) {
       if (encoder.encode(body).length > limits.maxResponseBytes) return error(500, -32603, 'Response body limit exceeded', id);
       return response(200, body);
     } catch (cause) {
+      if (cause instanceof AuthorizationError) return response(cause.status, JSON.stringify({ error: cause.code }),
+        cause.challenge ? { 'www-authenticate': cause.challenge } : {});
       if (cause instanceof AdmissionError) return error(cause.status, cause.code, cause.message, responseId);
       return error(500, -32603, 'Internal error', responseId);
     } finally {

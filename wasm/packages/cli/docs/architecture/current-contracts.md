@@ -16,7 +16,11 @@ protocol framing outside Entities. With emitted catalog/schema artifacts and a
 fixed governed HTTP endpoint configured, its MCP-03 facade supports tools/list
 and tools/call, schema projection and finite tool results. Otherwise discovery
 advertises no optional capabilities. It has no Pulse runtime/compiler dependency
-or direct application-handler seam. Remote authentication remains separate work.
+or direct application-handler seam. MCP-04 optionally authenticates through a
+configured external OAuth issuer using bounded token introspection, checks the
+resource audience and scopes, filters tool discovery, and denies unauthorized
+operations before governed dispatch. Backend credentials are distinct from
+client tokens; the deploying application owns TLS and backend protection.
 A same-artifact Native binding requires a separate owner review; this component
 does not widen the released package set or the guest authoring API.
 
