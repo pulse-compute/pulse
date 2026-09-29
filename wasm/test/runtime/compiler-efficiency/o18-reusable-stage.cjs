@@ -15,7 +15,7 @@ const root = path.resolve(__dirname, '../../../..');
 const hash = value => createHash('sha256').update(value).digest('hex');
 const suffix = Array.from({ length: 16 }, (_, i) => `:${i}`).join('');
 
-function fixture(count, cwd) {
+function fixture(count, cwd, repeated = false) {
   fs.mkdirSync(path.join(cwd, 'src'));
   fs.mkdirSync(path.join(cwd, '.pulse'));
   fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
@@ -34,7 +34,7 @@ function fixture(count, cwd) {
   ctx.state.set('value',value+':'+first+':'+second);
   return next();
 }; export default stage;`;
-  const entry = `import {Pulse} from '@pulse-compute/pulse';
+  let entry = `import {Pulse} from '@pulse-compute/pulse';
 import stage from './stage';
 const app=new Pulse({auto:true});
 ${Array.from({ length: count }, (_, i) => `app.get('/chain/${i}',stage);
@@ -44,6 +44,7 @@ app.get('/chain/${i}',async(ctx)=>{
 });`).join('\n')}
 app.error(async(error,ctx,next)=>ctx.text((error.code==='PULSE_RUNTIME_UNHANDLED_ERROR'?error.cause.message:error.code)+'|'+ctx.state.get('value'),{status:418}));
 export default app;`;
+  if (repeated) entry = entry.replace("app.get('/chain/0',async", "app.get('/unused',async").replace("app.get('/chain/1',stage)", "app.get('/chain/:id',stage)").replace("app.get('/chain/1',async", "app.get('/chain/0',async");
   fs.writeFileSync(path.join(cwd, 'src/stage.ts'), stage);
   fs.writeFileSync(path.join(cwd, 'src/index.ts'), entry);
   fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse';
@@ -51,17 +52,22 @@ export default defineConfig((_scope)=>({pulse:{entry:'src/index.ts',strict:false
   return { sourceSha256: hash(stage + '\n' + entry), stageBytes: Buffer.byteLength(stage) };
 }
 
-async function measure(count) {
+async function measure(count, shared = false, repeated = false) {
   const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-o18-'));
   try {
-    const source = fixture(count, cwd), tc = acceptanceToolchain();
+    const source = fixture(count, cwd, repeated), tc = acceptanceToolchain();
     const started = performance.now();
     const project = tc.resolveProject({ cwd, profile: 'native' });
-    const { compiled, plan, native } = tc.compileNativeProjectInMemory(project, { emitWat: false });
+    const { compileProject } = require('../../../packages/cli/src/project-execution');
+    const { buildCanonicalNativePlan } = require('../../../packages/compiler/src/canonical-native-plan');
+    const compiled = compileProject(project, { target: 'native' });
+    const plan = buildCanonicalNativePlan(compiled);
+    const sharedStageProofHandlerId = shared ? plan.routing.entries[0].handlerId : undefined;
+    const native = require('../../../packages/compiler/src/canonical-native-compiler').compileCanonicalNativePlan(plan, { cwd: root, emitWat: false, sharedStageProofHandlerId });
     const portableBuildMs = performance.now() - started;
     const fastlyStarted = performance.now();
     const fastly = compileFastlyNativePlatformCapabilitiesPlan(plan, { cwd: root, canonicalBuild: true,
-      requirePlatformCapability: false, emitWat: false,
+      requirePlatformCapability: false, emitWat: false, sharedStageProofHandlerId,
       bindings: { effectBackends: Object.fromEntries(plan.effects.map(effect => [effect.id, 'proof'])) } });
     const fastlyBuildMs = performance.now() - fastlyStarted;
     const js = tc.prepareJavascriptApplication(tc.resolveProject({ cwd, profile: 'js' }));
@@ -74,22 +80,25 @@ async function measure(count) {
     assert.equal(new Set(sites.map(effect => effect.id)).size, sites.length);
     assert.equal(new Set(sites.map(effect => effect.continuationId)).size, sites.length);
     const ranges = entries.map(entry => entry.generatedRange);
+    const rejectionChecks = shared && count === 2 && !repeated ? require('./o18-proof-rejections.cjs').check(plan, sharedStageProofHandlerId) + require('./o18-proof-rejections.cjs').settlement(tc, native, plan) : 0;
     assert.ok(ranges.every(range => range && range.end > range.start));
 
     let requests = 0;
     const javascriptFailures = [];
     async function execute(target, index, input, mode = '', pause) {
       const value = input + suffix;
+      const cycles = repeated && !mode ? 2 : 1;
       const expected = mode === 'early' ? [409, 'early:' + input, []]
         : mode === 'stop' ? [409, 'stop:' + value + ':one', ['/first']]
         : mode === 'error' ? [418, 'STAGE_ERROR|' + value, ['/first']]
-        : [200, `${index}|${value}:one:two|done`, ['/first', '/second', '/terminal']];
-      const request = { method: 'GET', path: `/chain/${index}`, url: `https://app.test/chain/${index}`,
+        : [200, `${repeated ? 1 : index}|${value}:one:two|done`, [...Array.from({ length: cycles }, () => ['/first', '/second']).flat(), '/terminal']];
+      const request = { method: 'GET', path: `/chain/${repeated ? 0 : index}`, url: `https://app.test/chain/${repeated ? 0 : index}`,
         headers: [['x-input', input], ['x-mode', mode]] };
       const seen = [], bodies = { '/first': 'one', '/second': 'two', '/terminal': 'done' };
       let response;
+      try {
       if (target === 'node') {
-        const adapter = createNodeProviderAdapter({ fetches: Object.fromEntries(Object.entries(bodies).map(([key, body]) => ['https://proof.test' + key, { body }])) });
+        const adapter = createNodeProviderAdapter({ fetches: Object.fromEntries(Object.entries(bodies).map(([key, body]) => ['https://proof.test' + key, mode === 'network' ? { kind: 'network-error' } : { body }])) });
         const result = await tc.executeCanonicalNativeModule(native, { request, providerAdapter: { ...adapter,
           async dispatchEffect(effect, context) {
             const pathname = new URL(effect.parts.url).pathname; seen.push(pathname);
@@ -103,11 +112,11 @@ async function measure(count) {
           assert.ok(continuation.states.includes('resumed'));
           assert.equal(continuation.states.at(-1), 'completed');
         }
-        const allowed = new Set(plan.effects.filter(effect => [entries[index].stableId, compiled.metadata.router.entries[index * 2 + 1].stableId].includes(effect.routerEntryStableId)).map(effect => effect.id));
+        const allowed = new Set(plan.effects.filter(effect => (repeated ? compiled.metadata.router.entries.map(entry => entry.stableId) : [entries[index].stableId, compiled.metadata.router.entries[index * 2 + 1].stableId]).includes(effect.routerEntryStableId)).map(effect => effect.id));
         for (const event of result.trace.filter(event => event.type === 'native-effect-start')) assert.ok(allowed.has(event.effectId), 'Effect belongs to selected registration');
       } else if (target === 'fastly') {
         ({ response } = tc.executeFastlyNativePlatformCapabilities(fastly, { request,
-          fixtures: { proof: Object.fromEntries(Object.entries(bodies).map(([key, body]) => [key, { status: 200, body }])) },
+          fixtures: { proof: Object.fromEntries(Object.entries(bodies).map(([key, body]) => [key, { status: 200, body, ...(mode === 'network' ? { transportStatus: 1 } : {}) }])) },
           onOutboundRequest(item) { seen.push(new URL(item.url).pathname); } }));
       } else {
         const result = await tc.executeNodeJavascriptApplication(js.loaded.application, new Request(request.url, { headers: request.headers }), {
@@ -115,6 +124,14 @@ async function measure(count) {
         });
         response = { status: result.status, body: await result.text() };
       }
+      } catch (error) {
+        if (mode !== 'network') throw error;
+        if (target === 'node') assert.equal(error.code, 'PULSE_FETCH_NETWORK');
+        else { assert.equal(target, 'fastly'); assert.ok(error.detail.lastError > 0); }
+        assert.deepEqual(seen, ['/first'], 'fatal failure must fence the second and terminal fetch');
+        requests++; return;
+      }
+      assert.notEqual(mode, 'network', 'Native transport failure must terminate');
       requests++;
       const actual = [response.status, response.body, seen];
       if (target === 'javascript' && JSON.stringify(actual) !== JSON.stringify(expected)) {
@@ -123,7 +140,7 @@ async function measure(count) {
     }
     for (const target of ['node', 'fastly', 'javascript']) {
       for (let index = 0; index < count; index++) await execute(target, index, `request-${index}`);
-      for (const mode of ['early', 'stop', 'error', '']) await execute(target, count - 1, 'after-' + mode, mode);
+      for (const mode of ['early', 'stop', 'error', ...(target === 'javascript' ? [] : ['network']), '']) await execute(target, count - 1, 'after-' + mode, mode);
     }
     // Keep A suspended while B completes, then resume A with its original locals.
     let release, arrived;
@@ -133,42 +150,60 @@ async function measure(count) {
     try { await Promise.race([waiting, a.then(() => { throw new Error('A never suspended'); })]);
       await execute('node', count - 1, 'isolated-B');
     } finally { release(); await a; }
-    const artifact = built => ({ sourceBytes: Buffer.byteLength(built.source), wasmBytes: built.wasm.length, wasmSha256: hash(built.wasm) });
-    return { chains: count, ...source, authoredStageBodies: 1, expandedStageRanges: ranges.length,
+    const finalWasm = shared ? require('./o18-wasm-proof.cjs').inspectPair({ native, fastly, directory: cwd }) : undefined;
+    const artifact = built => ({ sourceSha256: hash(built.source), sourceBytes: Buffer.byteLength(built.source), wasmBytes: built.wasm.length, wasmSha256: hash(built.wasm) });
+    return { chains: count, shared, repeated, planHash: plan.planHash, rejectionChecks, finalWasm, ...source, authoredStageBodies: 1, expandedStageRanges: ranges.length,
       expandedStageCharacters: ranges.reduce((sum, range) => sum + range.end - range.start, 0),
-      preservedStageBodies: (plan.handlers || []).filter(handler => stageIds.has(handler.id)).length,
+      preservedStageBodies: shared ? native.manifest.handlerBodies.filter(body => body.id === 'o18-shared-stage').length : (plan.handlers || []).filter(handler => stageIds.has(handler.id)).length,
       stageEffectSites: sites.length, locals: plan.locals.length, blocks: native.manifest.blockCount,
       node: artifact(native), fastly: artifact(fastly), portableBuildMs, fastlyBuildMs,
       semantics: { status: javascriptFailures.length ? 'failed' : 'passed', requests, interleavedNativeRequests: 2,
         native: 'passed', fastly: 'passed', javascriptFailures },
-      sharingGate: { status: 'blocked', reason: 'No verified single retained effectful-stage body; registration-owned ranges are expanded. Source reuse and helper merging are insufficient proof.' } };
+      sharingGate: { status: shared ? 'passed' : 'blocked', reason: shared ? 'One shared stage with retained bounded partitions; registrations select frame-owned effects, continuations and return cursor.' : 'No verified single retained effectful-stage body; registration-owned ranges are expanded. Source reuse and helper merging are insufficient proof.' } };
   } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
 }
 
 async function main() {
   if (process.argv[2] === '--worker') {
     const count = Number(process.argv[3]); assert.ok([1, 2, 16].includes(count));
-    console.log(JSON.stringify(await measure(count))); return;
+    console.log(JSON.stringify(await measure(count, process.argv.includes('--shared'), process.argv.includes('--repeated')))); return;
   }
-  let output, requireSharing = false;
+  let output, requireSharing = false, shared = true, compare = true;
   for (let index = 2; index < process.argv.length; index++) {
     const arg = process.argv[index];
-    if (arg === '--require-sharing') requireSharing = true;
+    if (arg === '--shared') compare = false;
+    else if (arg === '--baseline') { shared = false; compare = false; }
+    else if (arg === '--require-sharing') requireSharing = true;
     else if (arg === '--output') { output = process.argv[++index]; assert.ok(output && path.isAbsolute(output), '--output requires an absolute path'); }
     else throw new Error('Unknown argument: ' + arg);
   }
-  const rows = [];
-  for (const count of [1, 2, 16]) {
-    rows.push(JSON.parse(execFileSync(process.execPath, [__filename, '--worker', String(count)], { encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 })));
-    console.error(`O-18: ${count} chains measured; semantics ${rows.at(-1).semantics.status}; sharing gate blocked`);
-  }
   const git = args => execFileSync('git', args, { cwd: root, encoding: 'utf8' }).trim();
-  const report = { version: 1, status: 'measured', sharingGate: 'blocked', compilerCommit: git(['rev-parse', 'HEAD']),
+  const report = { version: 2, status: 'running', sharingGate: 'pending', compilerCommit: git(['rev-parse', 'HEAD']),
+    toolchain: { node: process.version, assemblyscript: JSON.parse(fs.readFileSync(require.resolve('assemblyscript/package.json', { paths: [path.join(root, 'wasm')] }))).version, profile: 'default O3/shrink0; ordinary retention and merge passes' },
+    sourceIdentities: Object.fromEntries(['wasm/packages/runtime-core-as/src/compiler/canonical-native.js', 'wasm/packages/runtime-core-as/src/compiler/shared-stage-proof.js', 'wasm/test/runtime/compiler-efficiency/o18-reusable-stage.cjs', 'wasm/test/runtime/compiler-efficiency/o18-wasm-proof.cjs', 'wasm/test/runtime/compiler-efficiency/o18-proof-rejections.cjs', 'pnpm-lock.yaml'].map(file => [file, hash(fs.readFileSync(path.join(root, file)))])),
     worktree: git(['status', '--porcelain']), probeSha256: hash(fs.readFileSync(__filename)),
-    note: 'Serial fresh workers; one timing observation per cell, not a build-time improvement claim. No production transform is enabled.', rows };
-  if (output) fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n');
-  console.log(JSON.stringify(report, null, 2));
-  if (requireSharing) process.exitCode = 2;
+    note: 'Serial fresh workers; one timing observation per cell, not a build-time improvement claim. Internal opt-in experiment only; production defaults unchanged.', rows: [] };
+  const save = () => { if (output) fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n'); };
+  const run = (count, selected, repeated = false) => {
+    const row = JSON.parse(execFileSync(process.execPath, [__filename, '--worker', String(count), ...(selected ? ['--shared'] : []), ...(repeated ? ['--repeated'] : [])], { encoding: 'utf8', timeout: 180000, maxBuffer: 1024 * 1024 }));
+    report.rows.push(row); save();
+    assert.equal(row.semantics.status, 'passed');
+    console.error(`O-18: ${count} chains ${repeated ? 're-entry ' : ''}${selected ? 'shared' : 'baseline'}; semantics passed; sharing gate ${row.sharingGate.status}`);
+  };
+  try {
+    for (const count of [1, 2, 16]) { if (compare) run(count, false); run(count, shared); }
+    if (shared) run(2, true, true);
+    if (shared) for (const target of ['node', 'fastly']) {
+      const shapes = report.rows.filter(row => row.shared && !row.repeated).map(row => row.finalWasm[target]);
+      assert.ok(shapes.every(shape => shape.sharedBodyPartitions === shapes[0].sharedBodyPartitions));
+      assert.ok(shapes.every(shape => shape.rootBytes <= shapes[0].rootBytes * 1.1), 'substantial shared roots must not grow per registration');
+    }
+    report.status = 'passed'; report.sharingGate = shared ? 'passed' : 'blocked'; save();
+    console.log(JSON.stringify(report, null, 2));
+    if (requireSharing && !shared) process.exitCode = 2;
+  } catch (error) { report.status = 'failed'; report.error = error.stack || String(error); save(); throw error; }
 }
 
-if (require.main === module) main().catch(error => { console.error(error.stack || error); if (error.diagnostics) console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });
+if (require.main === module) main().catch(error => { console.error(error.stack || error); if (error.detail) console.error(JSON.stringify(error.detail)); if (error.diagnostics) console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });
+
+module.exports = { fixture, measure };

@@ -204,6 +204,33 @@ internal Router representation, with no public callable-function syntax or
 change to JavaScript's original-source execution. See the
 [B02 evidence](../maintainers/compiler-efficiency-p01.md#b02-terminal-http-route-bodies-24-september-2026).
 
+### O-18 internal shared-stage experiment
+
+The opt-in O-18 emitter experiment factors one structurally equivalent,
+transfer-capable HTTP stage across at most 16 registrations. It does not change
+the supported terminal-body contract above, default compilation, public syntax,
+CLI options or provider authority. O-19 owns supported shared-stage lowering.
+
+The selected two-fetch stage uses one instance-owned frame for the registration's
+normal/error return cursor, effect indices and continuation states. Body locals
+are reset on entry and retained across suspension; no live call stack is needed.
+Static effect slots and IDs remain registration-owned, including Fastly's pending
+slot settlement. The shared body accesses them through bounded lookup functions.
+Only one stage invocation is active at a time; transfers remain terminal.
+
+A proof-only preparation pass checks body and effect-input equivalence after local
+renaming, retains the original validated plan for host attribution, and factors
+an emitter-local copy. Nested calls, captures, groups and loops are rejected.
+This prototype still pays for frontend expansion and the temporary plan copy;
+it is not the production analysis/IR design. Its entry and exit each add a
+bounded dispatcher state without adding effects or changing effect budgets.
+
+The [O-18 proof](../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md)
+checks real optimized Wasm, cross-target behavior and registration growth.
+Compiler/host ABI versions and production defaults remain unchanged; opted-in
+artifacts retain their actual source and Wasm hashes. This is local compiler and
+injected-host evidence, not deployed acceptance or an application-size forecast.
+
 ## Bounded pure control flow
 
 Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by
