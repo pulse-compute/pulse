@@ -3,17 +3,16 @@
 // Test-only OAuth issuer and protected HTTP backend. No issuer is hosted by the adapter.
 const http = require('node:http');
 const { createHash, randomBytes } = require('node:crypto');
-const { createMcpNodeHandler } = require('../../../packages/mcp/src/node.js');
 const listen = server => new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const address = server => `http://127.0.0.1:${server.address().port}`;
 const json = (res, status, value) => { res.writeHead(status, { 'content-type': 'application/json' }); res.end(JSON.stringify(value)); };
 const body = async req => { let text = ''; for await (const chunk of req) text += chunk; return text; };
 
-async function fixture() {
+async function fixture({ adapter = require('../../../packages/mcp/src/node.js').createMcpNodeHandler, backendEndpoint } = {}) {
   const tokens = new Map(), codes = new Map();
   const counts = { introspections: 0, tokenRequests: 0, effects: 0, backendAttempts: 0, metadata: 0, grants: 0 };
   const observed = { backendAuthorization: [], tokenResources: [], authorizationResources: [] };
-  let resource, issuer, mode = 'normal', handler;
+  let resource, issuer, mode = 'normal', backendMode = 'normal', handler;
   const backendToken = randomBytes(24).toString('base64url');
   const issue = (overrides = {}) => {
     const token = randomBytes(24).toString('base64url');
@@ -70,6 +69,22 @@ async function fixture() {
     counts.backendAttempts++; observed.backendAuthorization.push(req.headers.authorization);
     if (req.headers.authorization !== 'Bearer ' + backendToken) return json(res, 401, { error: 'unauthorized' });
     const message = JSON.parse(await body(req)); counts.effects++;
+    if (backendMode === 'failure') return json(res, 503, { error: 'private-backend-detail' });
+    if (backendMode === 'stall') {
+      res.once('close', () => { counts.cancelled = (counts.cancelled ?? 0) + 1; });
+      return;
+    }
+    if (backendEndpoint) {
+      const controller = new AbortController();
+      const abort = () => controller.abort(); res.once('close', abort);
+      try {
+        const response = await fetch(backendEndpoint, { method: 'POST', headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(message), signal: AbortSignal.any([controller.signal, AbortSignal.timeout(5000)]) });
+        const bytes = await response.text();
+        if (!res.destroyed) { res.writeHead(response.status, { 'content-type': 'application/json' }); res.end(bytes); }
+      } finally { res.removeListener('close', abort); }
+      return;
+    }
     return json(res, 200, { jsonrpc: '2.0', id: message.id, result: null });
   })().catch(() => json(res, 500, { error: 'fixture_failure' })); });
   const server = http.createServer((req, res) => handler(req, res));
@@ -82,9 +97,9 @@ async function fixture() {
     schemas: { version: 'pulse.canonical-schema-registry.v4', registryIrVersion: 'pulse.schema-registry-ir.v5', registryHash: 'b'.repeat(64), schemas: [] } },
     authorization: { resource, issuer, introspectionEndpoint: issuer + '/introspect', clientId: 'resource-client', clientSecret: 'resource-secret',
       scopes: ['mcp:access'], operations: { status: ['status:read'], write: ['status:write'] }, allowInsecureLoopback: true } };
-  handler = createMcpNodeHandler(options);
+  handler = adapter(options);
   return { options, resource, issuer, backendUrl: address(backend), issue, tokens, counts, observed,
-    mode: value => { mode = value; }, configure: config => { handler = createMcpNodeHandler(config); },
+    backendMode: value => { backendMode = value; }, mode: value => { mode = value; }, configure: config => { handler = adapter(config); },
     close: async () => { await Promise.all([server, backend, authorizationServer].map(item => {
       item.closeAllConnections(); return new Promise(resolve => item.close(resolve));
     })); } };

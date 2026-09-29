@@ -70,7 +70,11 @@ Tool catalogs are filtered per request; unauthorized calls never reach the
 governed endpoint. Separate backend credentials cannot be supplied by the MCP
 client. This candidate does not change the released package set or add an
 Entities adapter. Backend placement and matching build artifacts remain
-application responsibilities.
+application responsibilities. The private MCP resource-directory acceptance app
+packages search, retrieve and propose-update tools and verifies the installed Node
+JavaScript composition with the pinned official OAuth client. It measures real
+local HTTP effects, denials, invalid input, failures, deadlines and cancellation;
+it does not qualify deployment, Native/Fastly MCP or a production Node launcher.
 
 ## Future adapters
 

@@ -257,7 +257,8 @@ performs repeated discovery over TCP against this adapter. The reference server
 SDK is not used. Source/fixture identities, wire records and terminal status are
 saved under `wasm/.test-results/mcp-http-sdk-*`. It remains explicit external
 evidence. Node JavaScript is measured; Native/Fastly MCP and complete
-installed application acceptance remain unclaimed. The MCP-01 reference-server
+live deployed application acceptance remain unclaimed. MCP-05 adds local installed
+Node JavaScript acceptance in the private resource-directory app. The MCP-01 reference-server
 wire proof is separate evidence.
 
 `mcp-tools` covers projection, mutation isolation, metadata filtering, protocol
@@ -269,7 +270,14 @@ typed fixture handler. Emitted catalog and schema files drive discovery and one
 successful invocation; the backend records exactly one request. This is Node
 JavaScript source-workspace evidence, not installed/deployed acceptance. Source,
 fixture and adapter identities plus wire records are retained under
-`wasm/.test-results/mcp-tools-sdk-*`. MCP-05 owns independent installed acceptance.
+`wasm/.test-results/mcp-tools-sdk-*`. MCP-05 adds independent installed acceptance through
+[the resource-directory app](examples/resource-directory/README.md). Run
+`node wasm/scripts/run-wasm-tests.cjs --task mcp-installed` with lifecycle scripts
+disabled (`npm_config_ignore_scripts=true`). It packs the app and private adapter,
+installs exact Pulse candidates outside the checkout, and exercises the pinned
+OAuth client against ordinary `pulse dev` and real local directory HTTP effects.
+The explicit external task does not change the fast beta workflow, release
+package membership, or production-launcher support.
 
 `mcp-authorization` covers metadata/challenges, audience/issuer/expiry/scope
 rejection, deny-before-effects, catalog isolation, revoked tokens, verifier

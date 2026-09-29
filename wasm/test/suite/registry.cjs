@@ -958,6 +958,10 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'
+  }),
   'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
     evidence: 'external', timeoutMs: 300000,
     description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
