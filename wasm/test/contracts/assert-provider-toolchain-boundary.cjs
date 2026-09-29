@@ -61,7 +61,7 @@ const nativeArtifact = contracts.createProviderNativeArtifact(Object.freeze({
 }));
 
 const applicationPlan = Object.freeze({
-  version: 'pulse.canonical-native-plan.v3',
+  version: 'pulse.canonical-native-plan.v4',
   source: Object.freeze({ sourceHash: 'proof', projectSourceHash: 'proof' }),
   packages: Object.freeze({ effects: Object.freeze([]) })
 });

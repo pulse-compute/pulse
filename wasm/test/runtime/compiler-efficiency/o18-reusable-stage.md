@@ -1,10 +1,15 @@
 # O-18: reusable effectful stage proof
 
-**Decision: the bounded prototype qualifies.** One substantial two-fetch stage
+**Historical O-18 decision: the bounded prototype qualifies.** One substantial two-fetch stage
 serves 1, 2 and 16 registrations with one shared body, emitted as two retained
 partitions under the existing chunk limits. O-19 still owns supported production
 lowering. Default builds retain their previous behavior; no generator migration
 or whole-application saving is qualified here.
+
+The measurements below preserve the O-18 prototype result. O-19 replaces the
+private emitter option with production stage records; the same probe now tests
+that default lowering against an internal expanded-plan control. See
+[O-19](./o19-production-stage.md) for the current mechanism and validation.
 
 ## Reproduce
 
@@ -17,12 +22,12 @@ The opt-in task remains outside every default profile. It now checks paired
 baseline/candidate cells, same-request re-entry and final-Wasm attribution. Any
 semantic or structural gate failure exits nonzero. `--shared` skips baseline
 cells; `--baseline --require-sharing` deliberately exits 2 after measuring the
-unchanged expanded lowering. No CLI/project configuration flag enables the
-prototype: only the internal emitter option `sharedStageProofHandlerId` does.
+unchanged expanded lowering. No CLI/project configuration flag is required for production sharing. The
+internal planner option `sharedStages: false` supplies the expanded control.
 
 ## Mechanism and boundaries
 
-`shared-stage-proof.js` checks the selected registrations' statement bodies and
+The historical `shared-stage-proof.js` experiment checked the selected registrations' statement bodies and
 effect inputs for equivalence after renaming local/effect/continuation IDs. It
 rejects captures, nested calls, groups, loops, missing error lanes and differing
 bodies; selection is bounded to 16 transfer-capable HTTP registrations with two

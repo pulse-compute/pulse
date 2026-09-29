@@ -56,7 +56,8 @@ const contract = loadNativePlanContract();
 const loggingContract = loadLoggingContract();
 const cryptoContract = loadCryptoContract();
 const eventContract = loadEventContract();
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v3';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v4';
+const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
 
@@ -1113,7 +1114,7 @@ class NativePlanBuilder {
     this.summary = summarizeNativePlan(body, this.locals, this.effects, continuations, this.handlers);
     const hasInboundEvents = Number(this.metadata.events && this.metadata.events.count || 0) > 0;
 
-    const unsigned = {
+    let unsigned = {
       version: contract.CANONICAL_NATIVE_PLAN_VERSION,
       compilerVersion: CANONICAL_NATIVE_PLAN_COMPILER_VERSION,
       hashAlgorithm: contract.CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
@@ -1193,6 +1194,8 @@ class NativePlanBuilder {
       packages: Object.freeze({ effects: deepFreeze(cloneJson(this.metadata.packageEffects || [])) }),
       summary: Object.freeze({ ...this.summary })
     };
+    if (this.options.sharedStages !== false) unsigned = lowerSharedStages(unsigned);
+    unsigned.summary = summarizeNativePlan(unsigned.entry.body, unsigned.locals, unsigned.effects, continuations, [...unsigned.handlers, ...(unsigned.stages || [])]);
     const planHash = stableHash(stableStringify(unsigned));
     const plan = deepFreeze({ ...unsigned, planHash });
     assertCanonicalNativePlan(plan);
@@ -1429,7 +1432,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
     });
   }
-  for (const body of [plan.entry && plan.entry.body, ...(plan.handlers || []).map(handler => handler.body)]) validateLoops(body);
+  for (const body of [plan.entry && plan.entry.body, ...[...(plan.handlers || []), ...(plan.stages || [])].map(handler => handler.body)]) validateLoops(body);
   const visitor = (statement) => {
     if (!contract.CANONICAL_NATIVE_STATEMENT_KINDS.includes(statement.kind)) fail('statement kind is unknown', { kind: statement.kind });
     if (statement.kind === 'local' && !localIds.has(statement.localId)) fail('local statement references unknown local', { localId: statement.localId });
@@ -1446,11 +1449,12 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   };
   visitor.expression = (expression) => validateExpression(expression, fail, localIds);
   walkStatements(plan.entry && plan.entry.body, visitor);
-  for (const handler of plan.handlers || []) walkStatements(handler.body, visitor);
+  for (const handler of [...(plan.handlers || []), ...(plan.stages || [])]) walkStatements(handler.body, visitor);
 }
 
 function validateHandlerBodies(plan, fail) {
   const handlers = new Map();
+  const stages = new Set((plan.stages || []).map(stage => stage.id));
   const entries = new Map((plan.routing?.entries || []).map(entry => [entry.stableId, entry]));
   const locals = Array.isArray(plan.locals) ? plan.locals : [];
   const localsByOwner = new Map();
@@ -1475,7 +1479,7 @@ function validateHandlerBodies(plan, fail) {
     if (owned.some(local => local.routerEntryStableId !== handler.id)) fail('private handler local ownership mismatch', { handlerId: handler.id });
   }
   for (const local of locals) {
-    if (local.scopeId !== 'entry' && !handlers.has(local.scopeId)) fail('local requires an existing lexical owner', { localId: local.id });
+    if (local.scopeId !== 'entry' && !handlers.has(local.scopeId) && !stages.has(local.scopeId)) fail('local requires an existing lexical owner', { localId: local.id });
     if (local.scopeId === 'entry' && local.routerEntryStableId !== undefined) fail('dispatcher local cannot claim private handler ownership', { localId: local.id });
   }
   function validateBody(body, owner) {
@@ -1489,6 +1493,7 @@ function validateHandlerBodies(plan, fail) {
     };
     const visitor = statement => {
       if (statement.localId && !owned.has(statement.localId)) fail('statement crosses a lexical boundary', { localId: statement.localId });
+      if (statement.kind === 'stage-call' && owner !== 'entry') fail('stage calls cannot nest inside private handlers');
       if (statement.kind === 'handler-call') {
         if (owner !== 'entry' || !handlers.has(statement.handlerId)) fail('private handler call must originate in the dispatcher and select an existing body');
         calls.set(statement.handlerId, (calls.get(statement.handlerId) || 0) + 1);
@@ -1656,6 +1661,7 @@ function assertCanonicalNativePlan(plan) {
 
     if (plan.entry && Array.isArray(plan.entry.body)) validatePlanTree(plan, fail, localIds, effectIds, continuationIds);
     if (Array.isArray(plan.handlers)) validateHandlerBodies(plan, fail);
+    validateSharedStages(plan, fail, walkStatements, walkExpression, stableStringify);
 
     const states = Array.isArray(plan.states) ? plan.states : [];
     if (states.length !== continuations.length + 1) fail('state table must contain entry plus one state per continuation', { expected: continuations.length + 1, actual: states.length });
@@ -1684,11 +1690,11 @@ function assertCanonicalNativePlan(plan) {
     };
     statementVisitor.expression = () => {};
     if (plan.entry && Array.isArray(plan.entry.body)) walkStatements(plan.entry.body, statementVisitor);
-    for (const handler of plan.handlers || []) walkStatements(handler.body, statementVisitor);
+    for (const handler of [...(plan.handlers || []), ...(plan.stages || [])]) walkStatements(handler.body, statementVisitor);
 
     if (!plan.summary || typeof plan.summary !== 'object') fail('plan summary is required');
     else {
-      const expectedSummary = summarizeNativePlan(plan.entry && plan.entry.body, locals, effects, continuations, plan.handlers);
+      const expectedSummary = summarizeNativePlan(plan.entry && plan.entry.body, locals, effects, continuations, [...(plan.handlers || []), ...(plan.stages || [])]);
       for (const [key, expected] of Object.entries(expectedSummary)) {
         if (plan.summary[key] !== expected) fail(`summary ${key} mismatch`, { expected, actual: plan.summary[key] });
       }

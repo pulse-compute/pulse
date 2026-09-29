@@ -204,32 +204,52 @@ internal Router representation, with no public callable-function syntax or
 change to JavaScript's original-source execution. See the
 [B02 evidence](../maintainers/compiler-efficiency-p01.md#b02-terminal-http-route-bodies-24-september-2026).
 
-### O-18 internal shared-stage experiment
+### Shared effectful HTTP stages (O-19)
 
-The opt-in O-18 emitter experiment factors one structurally equivalent,
-transfer-capable HTTP stage across at most 16 registrations. It does not change
-the supported terminal-body contract above, default compilation, public syntax,
-CLI options or provider authority. O-19 owns supported shared-stage lowering.
+Native plan v4 automatically factors structurally equivalent registrations of
+one transfer-capable HTTP route handler into a `pulse.canonical-native-stage.v1`
+body and explicit dispatcher calls. The initial supported family has 1..64
+sequential, bound text-fetch sites, local values, branches, early responses and
+terminal `next()` / `next(error)` transfers. Multiple eligible stage families
+and more than 16 registrations are supported. This introduces no public function
+syntax or configuration switch. JavaScript keeps original-source execution.
 
-The selected two-fetch stage uses one instance-owned frame for the registration's
-normal/error return cursor, effect indices and continuation states. Body locals
-are reset on entry and retained across suspension; no live call stack is needed.
-Static effect slots and IDs remain registration-owned, including Fastly's pending
-slot settlement. The shared body accesses them through bounded lookup functions.
-Only one stage invocation is active at a time; transfers remain terminal.
+Admission checks both statements and effect inputs after renaming local,
+effect and continuation identities. Captured locals, groups, loops, nested calls,
+non-text-fetch effects, middleware, error/event handlers and registration-specific
+body differences retain their existing Native lowering. Ineligibility does not
+reject previously supported source or introduce a JavaScript fallback.
 
-A proof-only preparation pass checks body and effect-input equivalence after local
-renaming, retains the original validated plan for host attribution, and factors
-an emitter-local copy. Nested calls, captures, groups and loops are rejected.
-This prototype still pays for frontend expansion and the temporary plan copy;
-it is not the production analysis/IR design. Its entry and exit each add a
-bounded dispatcher state without adding effects or changing effect budgets.
+Each stage declares its request context, Router inputs, read-only next-cursor
+input, local namespace, effect sites and outputs: response, next, error,
+suspension or terminal failure. Each registration binds its own next cursor,
+effect slots and continuation IDs. Effects and continuations explicitly name
+both the registration and stage site. Plan validation rejects crossed bindings,
+captures, nested calls and calls outside the owning registration's admission
+branch, including after serialization and a recomputed plan hash.
 
-The [O-18 proof](../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md)
-checks real optimized Wasm, cross-target behavior and registration growth.
-Compiler/host ABI versions and production defaults remain unchanged; opted-in
-artifacts retain their actual source and Wasm hashes. This is local compiler and
-injected-host evidence, not deployed acceptance or an application-size forecast.
+One invocation-owned frame selects the return program counter and registration
+bindings. Locals reset on entry and survive suspension; no live call stack is
+required. A stage can run again later in the same request. Terminal transfer
+semantics permit one active stage at a time. Original static effect slots remain
+registration-owned, including Fastly's direct pending-slot settlement. Host
+invocation tickets, effect limits, deadlines and single-use resume rules retain
+their existing authority.
+
+The emitter consumes the validated stage records directly. It emits each body
+once in retained, bounded chunks and adds small entry/exit states and lookup
+wiring. The dispatcher allowance accounts for registration multiplicity so
+sharing cannot shrink the guard for paths with several stage visits. Fastly
+request-body and value-failure analyses inspect stage bodies as well as ordinary
+handlers. Plan and generator versions change; the host ABI remains v2.
+
+The earlier [O-18 proof](../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md)
+is now replayed through production lowering. The
+[O-19 evidence](../../wasm/test/runtime/compiler-efficiency/o19-production-stage.md)
+records its production gates. This removes the proof-only emitter clone and
+redundant plan bodies/locals; frontend source expansion and per-registration
+metadata still cost space and time. Whole-application savings, arbitrary stage
+composition and deployed acceptance remain separate qualifications.
 
 ## Bounded pure control flow
 
