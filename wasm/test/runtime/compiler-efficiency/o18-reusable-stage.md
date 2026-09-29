@@ -1,86 +1,124 @@
-# O-18: reusable effectful stage gate
+# O-18: reusable effectful stage proof
 
-**Decision: blocked.** This implements the bounded measurement and runtime
-probe. It does not implement shared-stage lowering or complete the requested
-single-body proof. Do not migrate generators on the strength of this result.
+**Decision: the bounded prototype qualifies.** One substantial two-fetch stage
+serves 1, 2 and 16 registrations with one shared body, emitted as two retained
+partitions under the existing chunk limits. O-19 still owns supported production
+lowering. Default builds retain their previous behavior; no generator migration
+or whole-application saving is qualified here.
 
 ## Reproduce
 
 ```sh
 node wasm/scripts/run-wasm-tests.cjs --task reusable-stage-o18 --no-report
-```
-
-The task is opt-in and excluded from every default profile, including release.
-Exit zero means measurement completed; inspect `sharingGate` and `semantics`.
-To save the compact report and require the sharing qualification, run:
-
-```sh
 node wasm/test/runtime/compiler-efficiency/o18-reusable-stage.cjs --require-sharing --output /tmp/o18-report.json
 ```
 
-This exits 2 after measurement because the qualification is unmet. No generated
-source or raw logs are tracked.
-The gate deliberately cannot become green from a smaller Wasm byte count alone:
-a future sharing implementation must add retained-body attribution to this probe.
+The opt-in task remains outside every default profile. It now checks paired
+baseline/candidate cells, same-request re-entry and final-Wasm attribution. Any
+semantic or structural gate failure exits nonzero. `--shared` skips baseline
+cells; `--baseline --require-sharing` deliberately exits 2 after measuring the
+unchanged expanded lowering. No CLI/project configuration flag enables the
+prototype: only the internal emitter option `sharedStageProofHandlerId` does.
 
-## Fixture and results
+## Mechanism and boundaries
 
-One imported async stage is registered in 1, 2 and 16 independent route chains.
-It has 16 ordered local transformations, request state, two fetch suspensions,
-early responses, `next(error)` and `next()`. Each chain has its own terminal
-handler with a third fetch. Error handling is shared. This is a synthetic,
-schema-free fixture, not an application-size forecast.
+`shared-stage-proof.js` checks the selected registrations' statement bodies and
+effect inputs for equivalence after renaming local/effect/continuation IDs. It
+rejects captures, nested calls, groups, loops, missing error lanes and differing
+bodies; selection is bounded to 16 transfer-capable HTTP registrations with two
+sequential text-fetch sites. It transforms an emitter-local copy of the validated
+plan. Original plan hashes, static effect identities, source attribution and
+host contracts remain intact; emitted source/Wasm hashes identify the candidate.
 
-Measured against `0ff93f0f423d91b4d56707652e92ed4744e7270a`, with only the
-test-owned probe and registry changes in the worktree, on Node 24.19.0, using
-the default compiler optimization. Each cell runs in a fresh serial worker.
-Timing is one observation per cell and does not establish a performance trend.
+Each registration selects the normal/error return cursor, two effect slots and
+two continuation states in an instance-owned frame. The body's local slots reset
+on entry and survive suspension. Early response completes the request; normal
+and error transfers return to the selected caller's cursor. No live native call
+stack is required. One stage is active at a time, matching terminal `next()`
+semantics. Entry and exit add two bounded dispatcher states, not new effects.
 
-| Chains | Expanded stage characters | Stage effect sites | Preserved stage bodies | Node Wasm bytes | Fastly Wasm bytes |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| 1 | 1,500 | 2 | 0 | 8,911 | 44,388 |
-| 2 | 3,000 | 4 | 0 | 12,907 | 48,631 |
-| 16 | 24,066 | 32 | 0 | 68,890 | 108,507 |
+The original per-registration pending/result slots are retained. In particular,
+Fastly's application-error driver reads these slots directly. Sharing their
+storage initially failed the Fastly probe; the corrected prototype shares body
+code and uses four bounded lookup helpers to access the selected slots. It does
+not change the provider driver or bypass single-use settlement.
 
-Fastly generated AssemblyScript grows from 144,053 to 548,028 bytes. Adding
-15 chains adds 64,119 Wasm bytes, about 4,275 bytes per chain. That includes
-terminal handlers and routing, so it is **not** an attribution of all growth to
-the shared stage. Source ranges prove expansion at lowering; they do not count
-retained final-Wasm functions or rule out downstream helper merging.
+This still incurs frontend expansion and a temporary plan copy. Metadata,
+registration wiring, effect-slot lookup code, routing and terminal handlers grow
+with registrations. O-19 must move the successful separation into owned IR and
+production eligibility rather than treating this experiment as a supported API.
 
-Runtime observations across the matrix:
+## Results
 
-- Node Native: 37/37 requests pass, including three interleaved request pairs.
-  A remains suspended while B completes, then A resumes with its original locals.
-  Effect ownership and completed continuation lifecycles are checked.
-- Fastly Native: 31/31 requests pass in the local provider ABI fixture.
-- JavaScript: 9/31 pass; 22 normal requests fail at the terminal handler because
-  `fetch-1` is already in use. Early return and explicit error transfer pass.
-- Exact response and effect order checks cover no-effect early termination,
-  termination after the first effect, explicit error transfer, normal completion
-  and a subsequent normal request. This is not a deployed Fastly qualification,
-  a cancellation test, or a proof of arbitrary stage composition.
+Merged baseline: `bfcba20` (includes #121 and #123). Node 24.19.0,
+AssemblyScript 0.28.18, default O3/shrink0 with ordinary retention and merging.
+The source fixture is unchanged between paired cells: one imported stage with
+16 local transformations, request state, two fetch suspensions, early responses,
+`next(error)` and `next()`. Every chain has a separate terminal fetch handler.
+The machine-readable report records full source and artifact identities.
 
-## What must change before qualification
+| Chains | Node baseline | Node shared | Fastly baseline | Fastly shared |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 8,911 | 8,946 | 44,388 | 44,390 |
+| 2 | 12,907 | 10,244 | 48,631 | 45,833 |
+| 16 | 68,890 | 27,449 | 108,507 | 65,758 |
 
-The current Native contract preserves only terminal HTTP route bodies. Stages
-that transfer with `next()` remain expanded. Existing package-call source linking
-fixes attribution for repeated registrations; it does not deduplicate bodies.
+All sizes are Wasm bytes. At 16 chains, Node is **60.2% smaller** and Fastly
+**39.4% smaller**. The single-registration frame has a small fixed cost.
+For 1 to 16 chains, Fastly growth falls from 64,119 to 21,368 bytes; remaining
+growth is not attributable solely to registration wiring because routes,
+terminal handlers and effect metadata are also added.
 
-The next lowering experiment must separate **authored body identity** from
-**registration identity**. A request-owned invocation frame needs the caller's
-normal/error cursor, body-local slots and the mapping from relative effect and
-continuation sites to registration-owned IDs. Suspension must retain that frame;
-resumption must not depend on a live call stack. Early response must bypass both
-the remaining body and subsequent handlers. Preserve terminal cursor semantics.
+| Chains | Node AS baseline | Node AS shared | Fastly AS baseline | Fastly AS shared |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 42,514 | 48,012 | 144,053 | 149,551 |
+| 2 | 67,848 | 55,754 | 170,506 | 158,412 |
+| 16 | 429,513 | 165,822 | 548,028 | 284,337 |
 
-Separately, JavaScript currently initializes `fetchSequence` inside each
-`createContext` call (`packages/runtime/src/internal/context.js`), while effect
-ID uniqueness is enforced across the request. Router handlers receive separate
-contexts. Fix that request ownership defect before treating effectful chains as
-cross-target qualified; do not conceal it by removing the terminal effect.
+The frontend still reports 1/2/16 expanded source ranges. That is an explicit
+remaining compiler-cost limitation, not evidence of duplicated final bodies.
 
-O-19 should implement a narrowly scoped Native prototype and add final-Wasm
-body/call-site attribution for these same 1/2/16 cells. Keep stable per-entry
-diagnostics and effect identities; do not infer sharing from authored functions,
-source size, chunk count or a global middleware registration workaround.
+## Final artifact and behavior gates
+
+The named companion must match **every non-custom Wasm section byte-for-byte**
+with the actual optimized artifact before its names are used. Binary function
+indices are checked against the name section. Both body partitions must survive
+exactly once, be reachable from real exports and have direct incoming calls.
+Neither disabled optimization nor dead retained copies can pass this gate.
+
+| Chains | Retained body partitions | Node root bytes | Fastly root bytes |
+| --- | ---: | ---: | ---: |
+| 1 | 2 | 2,576 | 2,661 |
+| 2 | 2 | 2,660 | 2,745 |
+| 16 | 2 | 2,426 | 2,511 |
+
+These are code-body bytes for the two stage roots, not the entire reachable
+helper closure. Slot lookup helpers may grow with registration count. A gate
+limits root growth to 10% above the one-registration cell and holds partition
+count fixed. All selected registrations are exercised with request-derived input.
+
+- **232 requests pass:** 105 baseline, 105 shared and 22 same-request re-entry
+  controls across Node Native, Fastly's local ABI fixture and JavaScript.
+- Exact responses and outbound order cover early return before effects, return
+  after the first effect, explicit error transfer, normal completion and a later
+  fresh request. Fatal Native transport failures fence subsequent effects;
+  JavaScript's failure policy is not redefined to match Native.
+- A Node request stays suspended while a second completes, then resumes with its
+  original locals. The same body can also run twice in one request through two
+  distinct overlapping route patterns, with distinct effect and continuation IDs.
+- Six preparation checks cover mismatched body/input, capture, group, wrong entry
+  kind and immutable input plan. Five raw-ABI checks reject a wrong registration,
+  incomplete resume, duplicate result and stale-site settlement while accepting
+  the correct live result. Existing managed invocation tickets remain authoritative.
+
+Initial development failures included the Fastly slot coupling above, a
+transport-failure expectation corrected to the existing fatal Native contract,
+and a re-entry fixture corrected to distinct overlapping routes (registering the
+same handler twice for the exact same method/path is forbidden). These failures
+were retained during development, not counted as successful runs.
+
+Serial fresh workers provide one build-time observation per cell. This is not a
+runtime latency, peak-memory, cold-load or repeated timing claim. It is not
+Viceroy or deployed Fastly acceptance, a cancellation qualification, or proof of
+arbitrary stage composition. O-19 production work and O-21 application-level
+comparison remain separate gates.

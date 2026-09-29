@@ -529,7 +529,7 @@ const tasks = Object.freeze({
   'reusable-stage-o18': nodeTask('test/runtime/compiler-efficiency/o18-reusable-stage.cjs', {
     evidence: 'external',
     timeoutMs: 360000,
-    description: 'O-18 opt-in 1/2/16 shared-stage expansion measurement, runtime semantics and explicit sharing gate'
+    description: 'O-18 opt-in paired 1/2/16 shared-stage prototype, final-Wasm attribution, re-entry and runtime semantics'
   }),
   'compiler-schema-cost-sc01': nodeTask('test/runtime/compiler-efficiency/sc01-schema-cost.cjs', {
     evidence: 'external',
