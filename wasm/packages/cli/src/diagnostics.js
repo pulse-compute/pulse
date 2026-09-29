@@ -65,6 +65,7 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
   PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED: entry('capability', { exitCode: 2, remediation: ['Select a profile with `target: "native"` or use `pulse compile`.', 'Remove `--experimental-native-size` for JavaScript build output.'] }),
   PULSE_NODE_VERSION_UNSUPPORTED: entry('toolchain', { exitCode: 5, remediation: ['Use a Node.js version matching `^22.14.0 || ^24.0.0` and rerun `pulse doctor`.'] }),
   PULSE_CONFIG_IMPLICIT: entry('project', { exitCode: 2, remediation: ['Run `pulse init` or create `.pulse/config.ts` to make workspace ownership explicit.'] }),
+  PULSE_NATIVE_EXPANSION_REPEATED: entry('compile', { exitCode: 1, remediation: ['Inspect the named owners and registration counts in `pulse doctor --json`.', 'Compare their observed shapes with the current retained HTTP-stage contract before changing generated wiring.', 'Measure a full target build before claiming Wasm savings; preserve explicit inputs, outputs and continuation ownership.'] }),
   PULSE_PROVIDER_COMPILE_ONLY: entry('capability', { exitCode: 2, remediation: ['Select an executable provider before running `pulse dev` or `pulse test`.'] }),
   PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE: entry('toolchain', { exitCode: 5, remediation: ['Use a Node.js version matching `^22.14.0 || ^24.0.0`, or disable live network fetch and configure deterministic fetch fixtures.'] }),
 
@@ -198,6 +199,7 @@ const DIAGNOSTIC_SUMMARIES = Object.freeze({
   PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED: 'The experimental Native size optimizer cannot be used for a JavaScript build target.',
   PULSE_NODE_VERSION_UNSUPPORTED: 'The active Node.js version is outside the supported release range.',
   PULSE_CONFIG_IMPLICIT: 'A command is relying on an implicit project shape instead of an explicit configuration.',
+  PULSE_NATIVE_EXPANSION_REPEATED: 'A repeated HTTP owner has multiple Native plan body instances and at least 1,024 additional lowered-source bytes across registrations.',
   PULSE_PROVIDER_COMPILE_ONLY: 'The none provider cannot execute development-server or project-test behavior.',
   PULSE_FETCH_IMPLEMENTATION_UNAVAILABLE: 'No supported local fetch implementation is available for the requested operation.',
   PULSE_HANDLER_ASYNC_REQUIRED: 'A managed handler in a conventional Pulse project is missing its required async wrapper.',

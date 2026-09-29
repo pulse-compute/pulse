@@ -809,6 +809,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'doctor, test, inspect, compile, and build workflow'
   }),
+  'cli-expansion-doctor': nodeTask('test/cli/assert-cli-expansion-doctor.cjs', {
+    evidence: 'cli',
+    timeoutMs: 60000,
+    description: 'bounded repeated-owner, retained-stage and missed-sharing doctor diagnostics'
+  }),
   'cli-project-guards': nodeTask('test/cli/assert-cli-project-guards.cjs', {
     evidence: 'cli',
     timeoutMs: 180000,
@@ -1133,6 +1138,7 @@ const profiles = Object.freeze({
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',
+    'cli-expansion-doctor',
     'cli-project-guards',
     'cli-dev-workflow',
     'cli-schema-json-workflow',

@@ -165,7 +165,8 @@
         "PULSE_CONFIG_NOT_FOUND",
         "PULSE_PROJECT_COMPILE_FAILED",
         "PULSE_NODE_VERSION_UNSUPPORTED",
-        "PULSE_CANONICAL_NATIVE_COMPILE_FAILED"
+        "PULSE_CANONICAL_NATIVE_COMPILE_FAILED",
+        "PULSE_NATIVE_EXPANSION_REPEATED"
       ],
       "outputs": [
         "Human output prints every check.",
