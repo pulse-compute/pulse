@@ -103,6 +103,23 @@ compares emitted/tested Wasm hashes, and optionally replays that exact
 deployment are distinct evidence levels. The older standalone adapter remains
 bounded proof infrastructure; it is not the ordinary build implementation.
 
+The package schema generator preserves absent optional fields at every typed
+nesting level and enforces `schemas.maxBytes` before decoding input text. Shared
+Entities schema eligibility rejects dynamic JSON nodes, open objects and JSON
+admission policies that this generator cannot realize. Both catalog inspection
+and source generation use that decision; rejection belongs to
+`PULSE_ENTITIES_TARGET_INELIGIBLE`, without data loss or automatic fallback.
+Catalog eligibility covers declared entity input/output schemas; source generation
+also checks reachable managed fetch schemas.
+
+The `entities-hardening` task exercises ordinary tests in all four modes, including
+nested optional/nullable schemas, invalid input/output, selected-only effects,
+notification completion, effect failures and redaction. It also checks byte
+admission using emitted Native artifacts and verifies JavaScript dynamic JSON
+behavior against Native eligibility and diagnostics. Provider request-body
+rejection precedes package envelope handling and can therefore return a provider
+status instead of a JSON-RPC error.
+
 ## Catalog and evidence invariants
 
 - Catalog ordering and hashes are checkout-independent and deterministic.

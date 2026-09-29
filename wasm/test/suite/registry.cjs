@@ -715,6 +715,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 240000,
     description: 'ordinary Fastly Native Entities lifecycle and exact emitted artifact execution; optional explicit Viceroy replay'
   }),
+  'entities-hardening': nodeTask('test/entities/assert-entities-hardening.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'ordinary four-mode Entities nested schemas, failures, selection, completion, bounds, redaction and honest Native eligibility'
+  }),
   'entities-node-native-workflow': nodeTask('test/entities/assert-entities-node-native-workflow.cjs', {
     evidence: 'native', timeoutMs: 180000,
     description: 'ordinary Node Native Entities guest compilation, artifact execution, test and live development lifecycle'
@@ -1074,6 +1078,7 @@ const profiles = Object.freeze({
     'entities-managed-handler',
     'entities-managed-handler-effects',
     'entities-native-runtime',
+    'entities-hardening',
     'entities-node-native-workflow',
     'fastly-entities-native-workflow',
     'crypto-native-guest-source',
