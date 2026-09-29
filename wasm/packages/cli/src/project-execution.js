@@ -50,6 +50,7 @@ const {
 } = require('@pulse-compute/wasm-contracts/provider/toolchain');
 const { loadJavascriptApplication } = require('./typescript-module-loader.js');
 const { writeNodeHttpResponse } = require('./internal/node-http.js');
+const { inspectNativeExpansion } = require('./internal/native-expansion.js');
 const {
   HANDLER_AUTHORING_MODES
 } = require('@pulse-compute/wasm-contracts/handler/surface-contract');
@@ -342,6 +343,7 @@ function compileNativeProjectInMemory(project, options = {}) {
     throw failure;
   }
   const plan = buildCanonicalNativePlan(compiled, { reporting: project.reporting });
+  if (options.onNativePlan) options.onNativePlan({ compiled, plan });
   const native = compileCanonicalNativePlan(plan, {
     cwd: project.root,
     projectRoot: project.root,
@@ -1933,6 +1935,7 @@ function doctorProject(project, options = {}) {
   }
   let compiled;
   let nativePrepared;
+  let nativeInspection;
   let preparedJavascript;
   let targetSupport;
   let eventSupport;
@@ -1986,7 +1989,7 @@ function doctorProject(project, options = {}) {
         : (jsonPolicy.strict ? 'Strict schema-bound JSON policy is active.' : 'Non-strict JSON policy is active, but no schema-less JSON call is reachable.'),
       jsonPolicy
     );
-    nativePrepared = compileNativeProjectInMemory(project, { compiled });
+    nativePrepared = compileNativeProjectInMemory(project, { compiled, onNativePlan: value => { nativeInspection = value; } });
     if (nativePrepared.plan.requestState && nativePrepared.plan.requestState.enabled) {
       check('request-state', 'passed', 'Request-local ctx.state is guest-owned, survives continuations, and resets at pulse_start.', nativePrepared.plan.requestState);
     }
@@ -2039,6 +2042,13 @@ function doctorProject(project, options = {}) {
     }
     const schemaFailure = error.code === 'PULSE_SCHEMA_COMPILE_FAILED' || (error.diagnostics || []).some((entry) => String(entry.code || '').includes('SCHEMA'));
     if (schemaFailure) check('schemas', 'failed', error.message, { code: error.code, diagnostics: error.diagnostics, detail: error.detail });
+  }
+  if (compiled) {
+    const expansion = inspectNativeExpansion(nativeInspection?.compiled || compiled, nativeInspection?.plan);
+    const warning = selectedTarget === 'native' && expansion.summary.expensiveUnsharedOwners > 0;
+    check('native-expansion', warning ? 'warning' : 'passed',
+      `${expansion.summary.repeatedOwners} repeated HTTP owner(s); ${expansion.planStatus === 'unavailable' ? 'Native body sharing is unknown.' : `${expansion.summary.expensiveUnsharedOwners} have substantial per-registration Native bodies.`} ${selectedTarget === 'javascript' ? 'Advisory Native planning only; JavaScript executes the source graph.' : 'Counts describe the plan, not final Wasm savings.'}`,
+      expansion, warning ? 'PULSE_NATIVE_EXPANSION_REPEATED' : undefined);
   }
   if (selectedTarget === 'javascript') {
     try {

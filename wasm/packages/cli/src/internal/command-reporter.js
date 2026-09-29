@@ -54,7 +54,18 @@ function writeHumanResult(stream, command, result) {
     return;
   }
   if (command === 'doctor') {
-    for (const check of result.checks) stream.write(`${check.status.padEnd(7)} ${check.id}: ${check.message}\n`);
+    for (const check of result.checks) {
+      stream.write(`${check.status.padEnd(7)} ${check.id}: ${check.message}\n`);
+      if (check.id === 'native-expansion') {
+        for (const owner of check.detail.owners.slice(0, 5)) {
+          const source = [owner.source.file, owner.source.line, owner.source.column].filter(value => value !== undefined).join(':');
+          stream.write(`  ${source} (${owner.name}): ${owner.registrationCount} registrations, ${owner.nativeBodyInstances ?? 'unknown'} Native plan bodies, ${owner.sharing}; ${owner.loweredSourceBytes ?? 'unknown'} lowered-source bytes\n`);
+          for (const observation of owner.observations) stream.write(`    ${observation}\n`);
+        }
+        const omitted = check.detail.summary.repeatedOwners - Math.min(check.detail.owners.length, 5);
+        if (omitted) stream.write(`  ${omitted} more repeated owner(s); JSON includes up to ${check.detail.maxOwners}.\n`);
+      }
+    }
     for (const entry of result.checks.filter((check) => check.status !== 'passed' && check.remediation)) {
       for (const step of entry.remediation) stream.write(`  help: ${step}\n`);
     }

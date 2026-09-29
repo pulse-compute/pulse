@@ -131,6 +131,7 @@ pulse doctor ./edge-app --strict --json
 - [`PULSE_PROJECT_COMPILE_FAILED`](diagnostics.md#pulse-project-compile-failed) — Whole-project compilation failed and contains one or more nested diagnostics.
 - [`PULSE_NODE_VERSION_UNSUPPORTED`](diagnostics.md#pulse-node-version-unsupported) — The active Node.js version is outside the supported release range.
 - [`PULSE_CANONICAL_NATIVE_COMPILE_FAILED`](diagnostics.md#pulse-canonical-native-compile-failed) — The provider-neutral native plan could not be compiled into Pulse-owned WebAssembly.
+- [`PULSE_NATIVE_EXPANSION_REPEATED`](diagnostics.md#pulse-native-expansion-repeated) — A repeated HTTP owner has multiple Native plan body instances and at least 1,024 additional lowered-source bytes across registrations.
 
 
 ### Output

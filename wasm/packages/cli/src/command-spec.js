@@ -69,7 +69,7 @@ const COMMAND_SPECS = Object.freeze({
     positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
     optionIds: ['profile', 'strict'],
     examples: ['pulse doctor ./my-pulse-app', 'pulse doctor ./edge-app --strict --json'],
-    diagnostics: ['PULSE_CONFIG_NOT_FOUND', 'PULSE_PROJECT_COMPILE_FAILED', 'PULSE_NODE_VERSION_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED'],
+    diagnostics: ['PULSE_CONFIG_NOT_FOUND', 'PULSE_PROJECT_COMPILE_FAILED', 'PULSE_NODE_VERSION_UNSUPPORTED', 'PULSE_CANONICAL_NATIVE_COMPILE_FAILED', 'PULSE_NATIVE_EXPANSION_REPEATED'],
     outputs: ['Human output prints every check.', 'With --json, emits one completed audit object including failed and warning checks.'],
     sideEffects: ['Reads and compiles the project.', 'Does not write the build output.'],
     exit: '0 when the audit passes; 1 when a completed audit contains failed checks; 2–5 only when the audit command itself cannot be completed.'
