@@ -99,13 +99,20 @@ direct handler or runtime-registry API.
 | Node JavaScript | Ordinary doctor, inspect, test, dev, and build workflow | Package JavaScript runtime |
 | Fastly JavaScript | Measured with Viceroy 0.20.1 | Provider JavaScript package/runtime |
 | Node Native | Ordinary doctor, inspect, test, dev, and build workflow | Package-owned guest through the canonical Node host; no JavaScript fallback |
-| Fastly Native | Measured with Viceroy 0.20.1 | Explicit provider-owned adapter; not the ordinary project build path |
+| Fastly Native | Ordinary doctor, inspect, test, dev, and build; emitted artifact replayed with Viceroy 0.20.1 | Provider-owned canonical Fastly runtime; no JavaScript fallback |
 
 The source-checkout task `entities-orchestration-demo` separately exercises the
-tools facade and package-owned Native artifact. That proof does not qualify the
-ordinary Fastly Native project workflow. The `entities-node-native-workflow`
-gate separately verifies that ordinary Node Native tests execute the same guest
-bytes emitted by build.
+tools facade and package-owned Native artifact. The `entities-node-native-workflow` and
+`fastly-entities-native-workflow` gates separately verify that ordinary tests
+execute the same guest bytes emitted by build. Fastly builds write
+`bin/main.wasm` and `src/main.as.ts`. Select `host: 'fastly'`, `target: 'native'`
+and configure the required Fastly backend/store bindings in the profile.
+
+Fastly `pulse test` and `pulse dev` execute the provider artifact against its
+fixture ABI; development fetches require fixtures. Set `PULSE_VICEROY_BIN` when
+running the Fastly workflow gate to replay the emitted Wasm with the explicit
+local engine and local backend/store configuration. Local Viceroy replay is
+separate from live Fastly deployment evidence; no deployment is claimed.
 
 Native remains `provider-dependent`, and every target keeps automatic fallback
 disabled. The complete matrix is in [Provider and target compatibility](../reference/compatibility-matrix.md).

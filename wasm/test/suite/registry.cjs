@@ -711,6 +711,10 @@ const tasks = Object.freeze({
     evidence: 'native',
     description: 'I6 reachable managed-handler effects, package operations, exact provider requirements, and selected Node execution'
   }),
+  'fastly-entities-native-workflow': nodeTask('test/provider/assert-fastly-entities-native-workflow.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'ordinary Fastly Native Entities lifecycle and exact emitted artifact execution; optional explicit Viceroy replay'
+  }),
   'entities-node-native-workflow': nodeTask('test/entities/assert-entities-node-native-workflow.cjs', {
     evidence: 'native', timeoutMs: 180000,
     description: 'ordinary Node Native Entities guest compilation, artifact execution, test and live development lifecycle'
@@ -1071,6 +1075,7 @@ const profiles = Object.freeze({
     'entities-managed-handler-effects',
     'entities-native-runtime',
     'entities-node-native-workflow',
+    'fastly-entities-native-workflow',
     'crypto-native-guest-source',
     'guest-link-package',
     'guest-link-materialization-stage',
@@ -1132,6 +1137,7 @@ const profiles = Object.freeze({
     'cli-dev-workflow',
     'cli-schema-json-workflow',
     'entities-node-native-workflow',
+    'fastly-entities-native-workflow',
     'events-cli-workflow',
     'cli-diagnostics',
     'docs-executable-contracts',

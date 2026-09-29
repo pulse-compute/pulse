@@ -285,8 +285,11 @@ plan declaring `effectFailure: 'package-completion'`, the host requires
 `pulse_package_set_effect_failure(index)` and settles failures through the same
 single-use ticket boundary. The guest receives failure status only and owns the
 protocol response; cancellation and execution budgets still terminate at the host.
-Node declares this realization for Entities; ordinary Fastly Native integration
-remains unavailable.
+Node and Fastly declare this realization for Entities. The Fastly provider
+binds the package application to its canonical platform runtime in ordinary
+builds, preserving provider-owned authority, bounded value transfer and terminal
+request budgets. Its test/dev fixture ABI and exact-artifact Viceroy replay are
+separate evidence levels; neither implies live deployment acceptance.
 
 Fastly's canonical Native platform driver uses request-instance-owned sequence
 tickets, checks the captured ticket before injecting each result, and closes its

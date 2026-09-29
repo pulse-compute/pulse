@@ -89,11 +89,19 @@ I/O authority. Effect rejection uses a single-use invocation ticket and the
 conditional `pulse_package_set_effect_failure` export; only failure status
 crosses the boundary. Cancellation and execution budgets remain host failures.
 
-Fastly Native evidence uses an explicit provider-owned adapter
-over the exact package source. Do not wire that adapter into the ordinary
-Fastly project build or change the product status as part of a documentation or
-candidate-seal change. Any such integration is a separately classified product
-unit with provider ownership and focused tests.
+Fastly Native ordinary builds bind the same package application through
+`provider-fastly`'s canonical platform runtime. The provider maps the canonical
+imports, uses the package's codecs, enforces a 1 MiB UTF-8 value-copy limit,
+and settles operational failures through single-use effect tickets. Grouped
+results drain before the package resumes; request deadlines, body admission
+and invalid lifecycle state remain provider-terminal failures. Binding resolution
+and final Wasm import/export audits use the ordinary build pipeline.
+
+`fastly-entities-native-workflow` checks doctor, inspect, build, test and dev,
+compares emitted/tested Wasm hashes, and optionally replays that exact
+`bin/main.wasm` with `PULSE_VICEROY_BIN`. Fixture ABI, local Viceroy and live
+deployment are distinct evidence levels. The older standalone adapter remains
+bounded proof infrastructure; it is not the ordinary build implementation.
 
 ## Catalog and evidence invariants
 

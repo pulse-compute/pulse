@@ -204,6 +204,15 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       body = JSON.stringify(normalized.json);
       if (!headers.some(([name]) => name.toLowerCase() === 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
     }
+    // Ordinary Pulse harness fixtures use value/text; preserve the ABI fixture
+    // body's explicit precedence and its existing json shorthand.
+    if (body === undefined && Object.prototype.hasOwnProperty.call(normalized, 'value')) {
+      body = JSON.stringify(normalized.value);
+      if (!headers.some(([name]) => name.toLowerCase() === 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
+    } else if (body === undefined && Object.prototype.hasOwnProperty.call(normalized, 'text')) {
+      body = String(normalized.text);
+      if (!headers.some(([name]) => name.toLowerCase() === 'content-type')) headers.push(['content-type', 'text/plain; charset=utf-8']);
+    }
     responses.set(responseHandle, {
       status: Number(normalized.status || 200),
       headers,
