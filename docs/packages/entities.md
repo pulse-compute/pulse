@@ -52,7 +52,7 @@ JSON-RPC failures without application exception details.
 | Input | HTTP result | JSON-RPC result |
 |---|---:|---|
 | Valid request with `id` | `200` | `result` or a stable `error` with the same `id` |
-| Notification without `id` | `204` | Empty body after synchronous completion |
+| Notification without `id` | `204` | Empty body after awaited handler and output completion |
 | Unknown method | `200` | `-32601` / `Method not found` |
 | Invalid params or schema input | `200` | `-32602` / `Invalid params` |
 | Handler or output failure | `200` | `-32603` / `Internal error` |
@@ -116,6 +116,19 @@ separate from live Fastly deployment evidence; no deployment is claimed.
 
 Native remains `provider-dependent`, and every target keeps automatic fallback
 disabled. The complete matrix is in [Provider and target compatibility](../reference/compatibility-matrix.md).
+
+Native Entities projects support closed typed schemas, including optional fields,
+nested objects, arrays and nullable values. Their generated decoder enforces the
+profile's `schemas.maxBytes`; the adapter separately bounds the envelope, params
+and output. A provider may reject an oversized request before JSON-RPC handling.
+
+Dynamic JSON (`OpenObject`, `JsonObject`, `JsonValue`, `ScalarRecord`) and schemas
+with JSON admission options currently require JavaScript for Entities. Native
+builds reject reachable schemas they cannot preserve with
+`PULSE_ENTITIES_TARGET_INELIGIBLE`. Catalog eligibility and inspection report
+this restriction for entity input/output declarations. Unused schema declarations
+do not disqualify an entity. Native also checks schemas used by managed fetch
+projections when generating the application.
 
 ## Diagnostics
 

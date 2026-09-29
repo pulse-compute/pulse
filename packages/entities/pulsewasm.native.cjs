@@ -128,6 +128,10 @@ function normalizeInputs(input) {
   const schemas = [...requiredSchemaIds].sort().map((id) => {
     const schema = available.get(id);
     if (!schema) fail('PULSE_ENTITIES_NATIVE_SCHEMA_MISSING', `Reachable Native schema ${id} is missing.`, { schemaId: id });
+    const issue = entitiesContracts.nativeEntitySchemaIssue(schema);
+    if (issue) fail(entitiesContracts.ENTITIES_DIAGNOSTIC_CODES.TARGET_INELIGIBLE,
+      `Native Entities cannot enforce schema ${id}: ${issue.reason}. Select JavaScript or a closed typed schema without JSON admission options.`,
+      { ...issue, automaticFallback: false });
     return schema;
   });
   return Object.freeze({ plan, nativeBundle, schemaBundle: input.schemaBundle, router, routes: Object.freeze(routes), schemas: Object.freeze(schemas) });
@@ -197,7 +201,9 @@ function renderSchemas(schemas) {
       body.push('  }', '  const source = input.get<JSON.Obj>()', '  const output = new JSON.Obj()');
       for (const [fieldIndex, field] of (node.fields || []).entries()) {
         const child = renderNode(schemaIndex, field.value, [...pathParts, field.name]);
-        body.push(`  const raw_${fieldIndex} = source.get(${quote(field.name)})`, `  if (raw_${fieldIndex} === null) {`, '    __pulse_entities_schema_valid = false', '    return __pulse_entities_null()', '  }', `  const field_${fieldIndex} = ${child}(raw_${fieldIndex}!)`, '  if (!__pulse_entities_schema_valid) return __pulse_entities_null()', `  output.set<JSON.Value>(${quote(field.name)}, field_${fieldIndex})`);
+        body.push(`  const raw_${fieldIndex} = source.get(${quote(field.name)})`);
+        if (field.required) body.push(`  if (raw_${fieldIndex} === null) {`, '    __pulse_entities_schema_valid = false', '    return __pulse_entities_null()', '  }');
+        body.push(`  if (raw_${fieldIndex} !== null) {`, `    const field_${fieldIndex} = ${child}(raw_${fieldIndex}!)`, '    if (!__pulse_entities_schema_valid) return __pulse_entities_null()', `    output.set<JSON.Value>(${quote(field.name)}, field_${fieldIndex})`, '  }');
       }
       body.push('  return JSON.Value.from<JSON.Obj>(output)');
     } else {
@@ -568,7 +574,9 @@ function renderNativeProgram(model, schemaOutput) {
     } else {
       const schema = schemaOutput.roots.get(route.entity.inputSchema);
       lines.push('      if (!__pulse_entities_params_present || __pulse_entities_request.charCodeAt(__pulse_entities_params_start) != 0x7b) return false');
-      lines.push('      const raw = JSON.parse<JSON.Value>(__pulse_entities_request.substring(__pulse_entities_params_start, __pulse_entities_params_end))');
+      lines.push('      const text = __pulse_entities_request.substring(__pulse_entities_params_start, __pulse_entities_params_end)',
+        '      if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES) return false',
+        '      const raw = JSON.parse<JSON.Value>(text)');
       lines.push('      __pulse_entities_schema_valid = true');
       lines.push(`      __pulse_entities_input = ${schema}(raw)`);
       lines.push('      if (!__pulse_entities_schema_valid) return false');
@@ -585,6 +593,7 @@ function renderNativeProgram(model, schemaOutput) {
     '/* Generated reachable Entities Native program. */',
     ...imports,
     '',
+    `const __PULSE_ENTITIES_SCHEMA_MAX_BYTES: i32 = ${Number(model.schemaBundle.registry.maxBytes || 65536)}`,
     `const __PULSE_ENTITIES_ROUTE_COUNT: i32 = ${model.routes.length}`,
     `const __PULSE_ENTITIES_EFFECT_COUNT: i32 = ${effectCount}`,
     `const __PULSE_ENTITIES_LOCAL_COUNT: i32 = ${localCount}`,
@@ -820,7 +829,9 @@ function buildEntitiesCanonicalNativeApplication(input) {
   }).filter(Boolean).join('\n');
   const codecs = `
 export function pulse_schema_decode(index: i32, pointer: i32): i32 {
-  const value = JSON.parse<JSON.Value>(changetype<string>(pointer))
+  const text = changetype<string>(pointer)
+  if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES) abort('Entity schema text too large', 'entities', 0, 0)
+  const value = JSON.parse<JSON.Value>(text)
   __pulse_entities_schema_valid = true
   let result = __pulse_entities_null()
   switch (index) {
