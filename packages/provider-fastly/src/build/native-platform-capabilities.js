@@ -4,6 +4,7 @@ const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
+const packageApplication = require('./package-native-application.js');
 const nativeValueBudget = require('./native-value-budget.js');
 const { schemaNeedsValueProjection } = require('@pulse-compute/wasm-contracts/schema-json/registry');
 
@@ -1933,7 +1934,7 @@ function __pulse_fastly_run_invocation(): void {
   if (__pulse_fastly_last_error != 0) { __pulse_fastly_jwt_send_error(); return }
   __pulse_fastly_request_path = __pulse_fastly_path(__pulse_fastly_request_url)
   let runStatus = pulse_start()
-${applicationErrors.enabled(plan) ? applicationErrors.driverLoop(plan) : `  while (runStatus == 1 && __pulse_fastly_last_error == 0) {
+${packageApplication.enabled(plan) ? packageApplication.driverLoop() : applicationErrors.enabled(plan) ? applicationErrors.driverLoop(plan) : `  while (runStatus == 1 && __pulse_fastly_last_error == 0) {
     for (let effectIndex = 0; effectIndex < PULSE_FASTLY_EFFECT_COUNT; effectIndex += 1) {
       if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_NONE) continue
       const invocation = unchecked(__pulse_invocation_tickets[effectIndex])
@@ -2014,7 +2015,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     );
   }
   const bindings = resolveCapabilityBindings(plan, options);
-  const portable = generateCanonicalNativeAssemblyScript(plan, options);
+  const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, options);
   const portableSource = stripPulseHostImports(portable.source);
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');
   const hasSign = plan.effects.some(effect => effect.kind === 'jwt.sign');
@@ -2036,7 +2037,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource(plan) : '',
-    effectInvocations.runtimeSource(),
+    effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
@@ -2044,6 +2045,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   if (applicationErrors.enabled(plan)) source = applicationErrors.instrument(source);
   source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
+  if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
   source = nativeValueBudget.instrument(source, plan);
