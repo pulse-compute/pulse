@@ -10,6 +10,8 @@ function decision(id, status, reasonId, owner, required = true) {
 
 function classifyNodeJavascriptCapability(id, options = {}) {
   const capability = String(id);
+  if (capability === 'request.body.forward' || capability === 'req.body') return decision(capability,
+    options.bodyForwarding ? 'eligible' : 'blocked', options.bodyForwarding ? 'node-incoming-body-forwarding' : 'node-incoming-body-forwarding-not-configured', 'provider-node');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
   if (['s3.head', 's3.getText', 's3.putText'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (isJavascriptCoreCapability(capability)) {

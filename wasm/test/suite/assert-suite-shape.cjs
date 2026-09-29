@@ -55,6 +55,7 @@ const externalTasks = new Set([
   'mcp-installed',
   // JWT-01 installs candidate packages from a temporary registry for focused qualification.
   'jwt-installed-workflow',
+  'str02-installed',
   // Independent SDK installation is explicit external evidence for the private adapter.
   'mcp-http-sdk',
   'mcp-tools-sdk',

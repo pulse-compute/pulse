@@ -1476,6 +1476,7 @@ async function runJavascriptProjectTests(project, options = {}) {
         ...runtimeOptions,
         bindings: project.providerConfig.bindings,
         maxDurationMs: project.providerConfig.maxDurationMs,
+        bodyForwarding: project.providerConfig.bodyForwarding,
         networkFetch: project.dev.networkFetch
       });
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
@@ -2375,6 +2376,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
   const environment = javascript.createLocalEnvironment({
     bindings: project.providerConfig.bindings,
     maxDurationMs: project.providerConfig.maxDurationMs,
+    bodyForwarding: project.providerConfig.bodyForwarding,
     config: project.dev.config,
     secrets: project.dev.secrets,
     kv: project.dev.kv,
@@ -2481,6 +2483,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
         environment,
         bindings: project.providerConfig.bindings,
         maxDurationMs: project.providerConfig.maxDurationMs,
+        bodyForwarding: project.providerConfig.bodyForwarding,
         application: Object.freeze({
           projectHash: project.projectHash,
           planHash: project.planHash,
@@ -2678,6 +2681,7 @@ async function startJavascriptDevServer(project, options = {}) {
     kv: project.dev.kv,
     bindings: project.providerConfig.bindings,
     maxDurationMs: project.providerConfig.maxDurationMs,
+    bodyForwarding: project.providerConfig.bodyForwarding,
     s3FetchImplementation: javascript.createFixtureFetch(
       project.dev.fetches,
       project.dev.networkFetch ? globalThis.fetch : undefined,

@@ -130,6 +130,7 @@ function analysisForSurfaceFacts(surfaceFacts) {
   const capabilities = new Set();
   let fetchCount = 0;
   for (const fact of facts) {
+    if (fact.surfaceId === 'ctx.req.body') { capabilities.add('request.body.forward'); continue; }
     if (fact.surfaceId.startsWith('ctx.fetch.')) { capabilities.add('fetch'); fetchCount += 1; continue; }
     if (fact.surfaceId.startsWith('ctx.req.')) capabilities.add(fact.surfaceId.slice('ctx.'.length));
     else if (fact.surfaceId.startsWith('ctx.config.')) capabilities.add('config.get');

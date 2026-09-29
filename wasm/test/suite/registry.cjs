@@ -160,6 +160,10 @@ const tasks = Object.freeze({
     timeoutMs: 600000, evidence: 'external',
     description: 'JWT-01 exact installed signing/verification, rotation, cleanup and composition eligibility'
   }),
+  'str02-installed': nodeTask('test/runtime/str02-installed.cjs', {
+    timeoutMs: 300000, evidence: 'external',
+    description: 'STR-02A exact installed Node JavaScript forwarding workflows and real incremental HTTP'
+  }),
   'jwt-es256-signing': nodeTask('test/jwt/assert-jwt-es256-signing.cjs', {
     timeoutMs: 180000, evidence: 'conformance',
     description: 'ES256 private-key signing, independent verification, CLI build and failures on four targets'
