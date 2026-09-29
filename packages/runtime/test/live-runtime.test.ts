@@ -10,6 +10,61 @@ const runtime = require('../src/internal/index.js') as {
 }
 
 describe('@pulse-compute/runtime live JavaScript core', () => {
+  it.each(['normal', 'error', 'early'])('owns fetch IDs across chained contexts and isolated requests: %s', async (mode) => {
+    const app = new Router()
+    const child = new Router()
+    const shared = async (ctx: any, next: any) => {
+      const value = await ctx.fetch('https://origin.test/stage').text()
+      ctx.state.set('value', (ctx.state.get('value') || '') + value)
+      if (mode === 'early') return ctx.text(ctx.state.get('value'))
+      return next()
+    }
+    app.use(shared)
+    child.use(shared)
+    child.get('/item', async (ctx: any, next: any) => {
+      const value = await ctx.fetch('https://origin.test/terminal').text()
+      ctx.state.set('value', ctx.state.get('value') + value)
+      return mode === 'error' ? next(new Error('recover')) : ctx.text(ctx.state.get('value'))
+    })
+    app.mount('/api', child)
+    app.error(async (_error: Error, ctx: any) => {
+      const pair = await ctx.parallel({
+        first: ctx.fetch('https://origin.test/recover-first').text(),
+        second: ctx.fetch('https://origin.test/recover-second').text(),
+      })
+      return ctx.text(ctx.state.get('value') + pair.first + pair.second)
+    })
+
+    const count = mode === 'early' ? 1 : mode === 'error' ? 5 : 3
+    let arrived!: () => void
+    let release!: () => void
+    const waiting = new Promise<void>(resolve => { arrived = resolve })
+    const held = new Promise<void>(resolve => { release = resolve })
+    async function request(name: string, pause = false) {
+      const ids: string[] = []
+      let summary: any
+      const response = await runtime.executeRouter(app, new Request('https://example.test/api/item'), {
+        effectAdapter: { id: 'test.chained-fetch', dispatch: async (effect: any) => {
+          ids.push(effect.id)
+          if (pause && ids.length === 1) { arrived(); await held }
+          return new Response(name)
+        } },
+        onEffectSummary: (value: any) => { summary = value },
+      })
+      expect(response.status).toBe(200)
+      expect(await response.text()).toBe(name.repeat(count))
+      expect(ids).toEqual(Array.from({ length: count }, (_, index) => `fetch-${index + 1}`))
+      expect(summary.effectCount).toBe(count)
+      expect(summary.groups.map((group: any) => group.effectIds)).toEqual(mode === 'error' ? [['fetch-4', 'fetch-5']] : [])
+    }
+    const first = request('A', true)
+    try {
+      await Promise.race([waiting, first.then(() => { throw new Error('First request never suspended') })])
+      await request('B')
+    } finally { release(); await first }
+    await request('C')
+  })
+
   it.each(['put', 'patch', 'delete'] as const)('dispatches %s through mounted routes with terminal fallthrough and request bodies', async (verb) => {
     const app = new Router()
     const child = new Router()
