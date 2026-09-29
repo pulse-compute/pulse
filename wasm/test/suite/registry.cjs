@@ -958,6 +958,10 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
+    evidence: 'release', timeoutMs: 600000,
+    description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
+  }),
   'clean-machine-acceptance': nodeTask('test/release/assert-clean-machine-acceptance.cjs', {
     evidence: 'release',
     timeoutMs: 900000,
@@ -1183,6 +1187,7 @@ const profiles = Object.freeze({
     'release-packages',
     'release-artifact-determinism',
     'clean-machine-acceptance',
+    'cli-entities-installed-workflow',
     'release-evidence-authority',
     'deployment-candidates'
   ])

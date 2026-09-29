@@ -427,7 +427,12 @@ function documentedByteCount(bytes) {
 function assertExampleReadme(example, project, syncResult) {
   const readme = path.join(project.root, 'README.md');
   const text = fs.readFileSync(readme, 'utf8');
-  for (const command of ['doctor', 'inspect', 'test', 'dev', 'build']) assert.match(text, new RegExp(`^pulse ${command}$`, 'm'), `${example.id} README must document pulse ${command}`);
+  for (const command of ['doctor', 'inspect', 'test', 'dev', 'build']) {
+    if (new RegExp(`^pulse ${command}$`, 'm').test(text)) continue;
+    assert.match(text, new RegExp(`^npm (?:run ${command}${command === 'test' ? '|test' : ''})$`, 'm'), `${example.id} README must document pulse ${command} or its installed npm script`);
+    const manifest = JSON.parse(fs.readFileSync(path.join(project.root, 'package.json'), 'utf8'));
+    assert.equal(manifest.scripts[command], `pulse ${command}`, `${example.id} documented script must invoke the ordinary CLI`);
+  }
   assert.match(text, /^## Wasm size$/m, `${example.id} README must document its Wasm size baseline`);
   if (example.noApplicationWasm) {
     assert.ok(text.includes('**no application Wasm artifact**'), `${example.id} README must explicitly document that its default profile emits no application Wasm`);
