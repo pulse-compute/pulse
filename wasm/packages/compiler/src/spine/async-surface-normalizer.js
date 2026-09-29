@@ -90,7 +90,10 @@ function normalizeManagedHandler(functionNode, options = {}) {
   const handlerAuthoring = resolveHandlerAuthoringMode(options);
   const requireAsync = handlerAuthoring === HANDLER_AUTHORING_MODES.ASYNC_REQUIRED;
   const requireEffectAwait = options.requireEffectAwait === true;
-  const diagnostics = require('./incoming-body-source.js').validateIncomingBodySource(functionNode, { ...options, ctxName, frontend, sourceFile });
+  // Router handlers have already been checked individually. The generated
+  // dispatcher can contain markers from several mutually exclusive routes.
+  const diagnostics = options.internalGeneratedHandler === true ? []
+    : require('./incoming-body-source.js').validateIncomingBodySource(functionNode, { ...options, ctxName, frontend, sourceFile });
   const warnings = [];
   const changes = [];
   let kvAliases = new Map();

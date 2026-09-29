@@ -1,4 +1,6 @@
 'use strict';
+const { Readable } = require('node:stream');
+const { pipeline } = require('node:stream/promises');
 
 function normalizeHeaders(headers) {
   if (!headers) return [];
@@ -31,7 +33,14 @@ function writeNodeHttpResponse(response, hostResult, options = {}) {
   for (const group of groupHeaders(result.headers || [])) {
     response.setHeader(group.name, group.values.length === 1 ? group.values[0] : group.values.slice());
   }
+  if (options.closeConnection) response.setHeader('connection', 'close');
   if (result.kind === 'stream' && result.bodyStream) {
+    if (options.awaitCompletion) {
+      const source = typeof result.bodyStream.getReader === 'function' ? Readable.fromWeb(result.bodyStream) : result.bodyStream;
+      return pipeline(source, response, {signal:options.signal}).then(() => {
+        options.requestBudget?.check(); options.signal?.throwIfAborted(); return result;
+      }).catch(error => { options.requestBudget?.check(); options.signal?.throwIfAborted(); throw error; });
+    }
     if (typeof result.bodyStream.pipe === 'function') {
       result.bodyStream.pipe(response);
       return result;

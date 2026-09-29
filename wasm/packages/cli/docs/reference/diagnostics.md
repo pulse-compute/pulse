@@ -1035,7 +1035,7 @@ Incoming forwarding is not enabled on this target.
 
 **Remediation**
 
-1. Select Node JavaScript with node.bodyForwarding and node.maxDurationMs.
+1. Select Node with node.bodyForwarding and node.maxDurationMs.
 
 <a id="pulse-request-forwarding-form-unsupported"></a>
 ### `PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED` — Request Forwarding Form Unsupported

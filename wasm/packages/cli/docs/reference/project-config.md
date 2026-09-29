@@ -290,12 +290,12 @@ Provider-owned Node profile configuration.
 
 ### `node.bodyForwarding`
 
-Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native is not admitted.
+Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.
 
 - **Type:** { maxBytes: number }
 - **Required/default:** Optional; default omitted.
 - **Allowed values or constraints:** —
-- **Scope:** Node JavaScript incoming forwarding
+- **Scope:** Node incoming forwarding
 - **Precedence:** Configuration value.
 - **Security and safety:** No special handling.
 - **Related diagnostics:** None specific.

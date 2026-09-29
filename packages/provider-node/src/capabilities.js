@@ -5,6 +5,7 @@ const NODE_JWT_VERIFY_CAPABILITY = 'jwt.verify';
 const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   's3.head', 's3.getText', 's3.putText',
   'request',
+  'request.body.forward',
   'response.json',
   'response.text',
   'response.custom',
@@ -27,6 +28,7 @@ const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
 
 const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   request: 'node.http.request',
+  'request.body.forward': 'node.http.incoming-request-v1',
   'response.json': 'node.http.response.json',
   'response.text': 'node.http.response.text',
   'response.custom': 'node.http.response.custom',

@@ -81,6 +81,7 @@ function classifyNodeJavascriptCapability(id, options = {}) {
 
 function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, options = {}) {
   const requirement = String(id);
+  if (requirement === 'request.body.forward') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
   if (['s3.head', 's3.getText', 's3.putText'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (requirement === 'request') {

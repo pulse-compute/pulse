@@ -5,6 +5,7 @@ const CANONICAL_PROVIDER_PLAN_VERSION = 'pulse.canonical-provider-plan.v1';
 
 const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'request',
+  'request.body.forward',
   'response.json',
   'response.text',
   'response.custom',

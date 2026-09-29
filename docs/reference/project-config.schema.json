@@ -342,9 +342,9 @@
         "precedence": "Configuration value.",
         "security": "No special handling.",
         "diagnostics": [],
-        "description": "Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native is not admitted.",
+        "description": "Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.",
         "path": "node.bodyForwarding",
-        "scope": "Node JavaScript incoming forwarding",
+        "scope": "Node incoming forwarding",
         "section": "node",
         "type": "{ maxBytes: number }"
       },

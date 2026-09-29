@@ -98,6 +98,9 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['request_headers', [], ['i32']],
   ['request_header', ['i32'], ['i32']],
   ['request_text', [], ['i32']],
+  // Optional incoming-request-v1 extension: execution-local opaque marker,
+  // never a guest byte buffer or an invocation ticket. Older hosts fail import validation.
+  ['request_body', [], ['i32']],
   ['request_json', ['i32'], ['i32']],
   ['router_match', ['i32', 'i32'], ['i32']],
   ['router_param', ['i32', 'i32', 'i32'], ['i32']],

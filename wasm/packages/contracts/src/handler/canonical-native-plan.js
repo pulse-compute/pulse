@@ -62,6 +62,7 @@ const CANONICAL_NATIVE_INTRINSICS = Object.freeze([
   'package.application',
   'request.header',
   'request.text',
+  'request.body.forward-marker',
   'request.json',
   'response.json',
   'schema.encode.text',

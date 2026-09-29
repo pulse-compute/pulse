@@ -159,9 +159,9 @@ callback does not delay completion, including body suppression for `HEAD`.
 
 Attempting to inspect an opaque body fails with [`PULSE_OPAQUE_BODY_INSPECTION`](../reference/diagnostics.md#pulse-opaque-body-inspection). A missing or already-consumed structured body can fail with [`PULSE_BODY_UNAVAILABLE`](../reference/diagnostics.md#pulse-body-unavailable).
 
-## Incoming forwarding on Node JavaScript
+## Incoming forwarding on Node
 
-Node JavaScript can forward one incoming body to one outbound POST without
+Node Native and JavaScript can forward one incoming body to one outbound POST without
 materializing it. Opt in with `node.bodyForwarding: { maxBytes: 67108864 }`
 and `node.maxDurationMs: 30000` in the selected project profile:
 
@@ -198,8 +198,11 @@ so abandoned input does not require unbounded draining.
 
 ## Current transport limits
 
-Incoming forwarding is currently Node JavaScript only. Node Native and both
-Fastly targets reject this capability. Without the Node opt-in, existing
+Both Fastly targets reject incoming forwarding. Node Native forwarding uses
+the emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls
+are synchronous, so a Native forwarding application cannot also declare
+structured request reads; use a separate application for those endpoints.
+JavaScript retains per-request read/forward exclusion. Without the Node opt-in, existing
 bounded request buffering is unchanged. No userland chunk API is provided.
 
 Handler completion, response-header commitment and stream completion are

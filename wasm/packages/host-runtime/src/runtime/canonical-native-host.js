@@ -731,9 +731,19 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const header = context.ctx.req.headers.find(([key]) => String(key).toLowerCase() === name);
       return put(header ? header[1] : undefined);
     },
-    request_text() { requireHttpSurface('ctx.req.text'); return put(context.ctx.req.text()); },
+    request_body() {
+      requireHttpSurface('ctx.req.body');
+      if (!options.incomingBody || adapter.id !== 'node') throw new CanonicalNativeHostError('Incoming forwarding requires an admitted Node request owner.', 'PULSE_REQUEST_FORWARDING_UNAVAILABLE');
+      return put(options.incomingBody.marker());
+    },
+    request_text() {
+      requireHttpSurface('ctx.req.text');
+      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
+      return put(context.ctx.req.text());
+    },
     request_json(schemaHandle) {
       requireHttpSurface('ctx.req.json');
+      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
       const schema = value(schemaHandle);
       return put(schema === undefined ? context.ctx.req.json() : context.ctx.req.json(schema));
     },
@@ -815,6 +825,12 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const effect = plan.effects && plan.effects[index];
       if (!effect) throw new CanonicalNativeHostError(`Native module requested unknown effect index ${index}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: index });
       const payload = value(payloadHandle);
+      // Admission happens while the guest builds its suspension group. A bad
+      // later member throws before the host dispatch loop starts any member.
+      if (effect.kind === 'fetch' && options.incomingBody) {
+        const admitted = canonicalRuntime.normalizeProviderEffect(nativeEffect(effect, payload), schemaCodecs, { ...options, strict, target: 'native', provider: adapter.id });
+        if (admitted.init.bodyMode === 'incoming-request-v1') options.incomingBody.claim(admitted.init.body, admitted.init);
+      }
       const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
       if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
       const ticket = invocations.open(index, effect.id);
@@ -1258,6 +1274,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       wasmSha256: controller.wasmSha256,
       response,
       effectCount,
+      ...(options.incomingBody ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
       trace: Object.freeze([...controller.trace]),

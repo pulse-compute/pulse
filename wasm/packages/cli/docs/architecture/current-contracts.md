@@ -555,8 +555,14 @@ inline as a literal POST fetch body. It reserves the request's single consumer
 before provider dispatch and excludes structured reads. The in-process fetch
 descriptor uses `bodyMode: 'incoming-request-v1'`; the marker is held in a runtime
 WeakMap and carries no serializable provider identity or bytes. This does not
-change the Native ABI or admit Native/Fastly forwarding. Their eligibility
-checks reject this capability explicitly.
+admit Fastly forwarding. STR-02B admits Node Native with the optional
+`pulse_host.request_body() -> i32` import: the result is an execution-local
+value handle to the opaque marker, not a byte pointer or invocation ticket.
+Existing ABI fields retain their meaning; older hosts reject the unknown
+import. Native fetch admission claims ownership while the guest constructs its
+suspension group, before any provider dispatch. Native test/dev execute the
+emitted Wasm for this capability. Native forwarding applications reject
+structured request-read surfaces because those host calls remain synchronous.
 
 `node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
 this path. Node adapts incoming HTTP lazily and keeps one provider read and one
@@ -565,9 +571,12 @@ source chunk per pump, with a 64 KiB source/backing-allocation ceiling and
 fetch authority remains injected; transport uses manual redirects and never
 replays input. Upload ownership closes on early response; response ownership
 transfers separately to the completion-aware HTTP writer. The request budget
-and disconnect cancellation remain active through that writer. These bounds do
+and disconnect cancellation remain active through that writer. The optional
+provider-driver `prepareNativeRequest` hook owns lazy local HTTP admission and
+returns request metadata, execution options, a response signal and a close
+operation; the generic CLI awaits the response pipeline before closing it. These bounds do
 not claim total process memory or platform socket-buffer bounds. See
-[incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node-javascript)
+[incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node)
 for the public configuration and restrictions.
 
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected

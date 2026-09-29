@@ -276,9 +276,9 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     publicForms: ["ctx.fetch(url, { method: 'POST', body: ctx.req.body() })"],
     awaitPolicy: 'forbidden',
     validPositions: ['fetch-body'],
-    targetSupport: { javascript: true, native: false },
-    nativeBehavior: 'reject',
-    status: 'node-javascript-configured-only'
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'host-owned-marker',
+    status: 'node-configured-only'
   }),
   surface({
     id: 'ctx.req.json.schema',

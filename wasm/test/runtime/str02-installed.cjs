@@ -11,6 +11,8 @@ const { packRelease, readTarEntries } = require('../../../scripts/pack-release.c
 const { catalogFromTarballs, createReadOnlyRegistry } = require('../release/read-only-npm-registry.cjs');
 
 const root = path.resolve(__dirname, '../../..');
+const target = process.argv.includes('--native') ? 'native' : 'javascript';
+const selectedProfile = 'node-' + target;
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-str02-installed-'));
 assert.ok(!temporary.startsWith(root + path.sep), 'installed consumer must be outside the checkout');
 const consumer = path.join(temporary, 'consumer');
@@ -35,7 +37,7 @@ const report = { version: 'pulse.str02-installed-acceptance.v1', status: 'runnin
   workingTree: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(),
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
-  node: process.version, fixture: 'str02-installed-workflow', lifecycleScripts: false,
+  node: process.version, fixture: 'str02-installed-workflow', target, lifecycleScripts: false,
   providerRealityValidated: false, results: [] };
 
 function saveReport() {
@@ -131,7 +133,7 @@ app.get('/health',async ctx=>{return ctx.text('healthy')});
 app.post('/forward',async ctx=>{return ctx.fetch('${originUrl}/collect',{method:'POST',body:ctx.req.body()})}); export default app;`;
     for (const name of ['src','.pulse','tests']) fs.mkdirSync(path.join(consumer,name));
     fs.writeFileSync(path.join(consumer,'src/index.ts'),source);
-    const config = {pulse:{entry:'src/index.ts',tests:'tests/pulse.harness.ts',defaultProfile:'node-javascript',strict:false}};
+    const config = {pulse:{entry:'src/index.ts',tests:'tests/pulse.harness.ts',defaultProfile:selectedProfile,strict:false}};
     for (const profile of profiles) {
       const [host,target] = profile.split('-');
       config[profile] = {host,target,outDir:'dist-'+profile,
@@ -147,19 +149,25 @@ app.post('/forward',async ctx=>{return ctx.fetch('${originUrl}/collect',{method:
     report.workflows = [];
     for (const command of ['doctor','inspect','test','build']) {
       console.log(`str02-installed - ${command}`);
-      const value = JSON.parse((await run(process.execPath,[cli,command,'--profile','node-javascript','--json'])).stdout);
+      const value = JSON.parse((await run(process.execPath,[cli,command,'--profile',selectedProfile,'--json'])).stdout);
       if (command === 'doctor') {
         assert.ok(['passed','warning'].includes(value.status));
         assert.equal(value.summary.failed,0);
         report.doctorWarnings = value.checks.filter(check=>check.status==='warning').map(({id,message})=>({id,message}));
       } else assert.equal(value.status,command==='inspect'?'ok':command==='build'?'built':'passed');
+      if (target === 'native' && command === 'test') report.nativeExecutions = value.cases.map(entry=>entry.executionEvidence);
+      if (target === 'native' && command === 'build') {
+        report.nativeWasmSha256 = hash(fs.readFileSync(value.files.nativeWasm));
+        assert.equal(report.nativeWasmSha256,value.native.wasm.sha256);
+        assert.ok(report.nativeExecutions.every(entry=>entry.mode==='native-wasm' && entry.automaticFallback===false && entry.wasmSha256===report.nativeWasmSha256));
+      }
       report.workflows.push({command,status:value.status,...(value.summary?{summary:value.summary}:{})}); saveReport();
     }
     report.rejections = [];
-    for (const profile of profiles.filter(p=>p!=='node-javascript')) {
+    for (const profile of profiles.filter(p=>p.startsWith('fastly'))) {
       const result = await run(process.execPath,[cli,'build','--profile',profile,'--json'],{allowFailure:true});
       assert.notEqual(result.code,0,profile);
-      assert.match(result.stdout+result.stderr,profile==='fastly-javascript'?/fastly-incoming-body-forwarding-unavailable/:/PULSE_REQUEST_FORWARDING_UNAVAILABLE/);
+      assert.match(result.stdout+result.stderr,/fastly-incoming-body-forwarding-unavailable|PULSE_PROVIDER_CAPABILITY_UNSUPPORTED/);
       report.rejections.push(profile);
     }
     const invalidForms = [
@@ -170,21 +178,30 @@ app.post('/forward',async ctx=>{return ctx.fetch('${originUrl}/collect',{method:
     ];
     for (const [replacement, code] of invalidForms) {
       fs.writeFileSync(path.join(consumer,'src/index.ts'), `import {Pulse} from '@pulse-compute/pulse'; const app=new Pulse({auto:true}); app.post('/',async ctx=>{${replacement}}); export default app;`);
-      const result=await run(process.execPath,[cli,'inspect','--profile','node-javascript','--json'],{allowFailure:true});
+      const result=await run(process.execPath,[cli,'inspect','--profile',selectedProfile,'--json'],{allowFailure:true});
       assert.notEqual(result.code,0);assert.ok((result.stdout+result.stderr).includes(code));
     }
+    // Separate routes may read or forward in JavaScript. Native currently
+    // requires application-wide lazy admission, so it must fail explicitly.
+    fs.writeFileSync(path.join(consumer,'src/index.ts'), source.replace('export default app;', "app.post('/read',async ctx=>{return ctx.text(await ctx.req.text())}); export default app;"));
+    const mixed = await run(process.execPath,[cli,'build','--profile',selectedProfile,'--json'],{allowFailure:true});
+    if (target === 'native') {
+      assert.notEqual(mixed.code,0);
+      assert.match(mixed.stdout+mixed.stderr,/Native forwarding applications cannot also project structured request bodies/);
+    } else assert.equal(mixed.code,0,mixed.stdout+mixed.stderr);
     fs.writeFileSync(path.join(consumer,'src/index.ts'),source);
-    delete config['node-javascript'].node.bodyForwarding;
+    delete config[selectedProfile].node.bodyForwarding;
     fs.writeFileSync(path.join(consumer,'.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig((_scope)=>(${JSON.stringify(config)}));`);
-    const disabled = await run(process.execPath,[cli,'build','--profile','node-javascript','--json'],{allowFailure:true});
-    assert.notEqual(disabled.code,0);assert.match(disabled.stdout+disabled.stderr,/node-incoming-body-forwarding-not-configured/);
-    config['node-javascript'].node.bodyForwarding = {maxBytes:67108864};
+    const disabled = await run(process.execPath,[cli,'build','--profile',selectedProfile,'--json'],{allowFailure:true});
+    assert.notEqual(disabled.code,0);assert.match(disabled.stdout+disabled.stderr,/node-incoming-body-forwarding-not-configured|PULSE_REQUEST_FORWARDING_UNAVAILABLE/);
+    config[selectedProfile].node.bodyForwarding = {maxBytes:67108864};
     fs.writeFileSync(path.join(consumer,'.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig((_scope)=>(${JSON.stringify(config)}));`);
     let sent = false, requestResult;
     console.log('str02-installed - real dev HTTP forwarding, 64 MiB');
-    await run(process.execPath,[cli,'dev','--profile','node-javascript','--port','0','--no-watch','--once','--json'],{timeout:60000,onOutput(stdout) {
+    await run(process.execPath,[cli,'dev','--profile',selectedProfile,'--port','0','--no-watch','--once','--json'],{timeout:60000,onOutput(stdout) {
       for(const line of stdout.split('\n')) {
         let event;try{event=JSON.parse(line);}catch{continue;}
+        if (event.event === 'request' && target === 'native') report.devExecution = event.executionEvidence;
         if(sent||event.event!=='ready')continue;sent=true;
         requestResult=(async()=>{
           const result=new Promise((resolve,reject)=>{
@@ -210,8 +227,13 @@ app.post('/forward',async ctx=>{return ctx.fetch('${originUrl}/collect',{method:
     assert.ok(sent);const result=await requestResult;assert.equal(result.status,200,result.text);
     assert.deepEqual(JSON.parse(result.text),{bytes:67108864,hash:report.expectedHash});
     report.dev={status:'passed',bytes:67108864,firstByteBeforeEof:true};
+    if (target === 'native') {
+      assert.equal(report.devExecution?.mode,'native-wasm');
+      assert.equal(report.devExecution.wasmSha256,report.nativeWasmSha256);
+      assert.equal(report.devExecution.guestMemoryBytes,report.nativeExecutions[0].guestMemoryBytes);
+    }
     assert.deepEqual(verifyInstalled(packed.manifest),report.installed);report.installed.unchanged=true;
-    report.status='passed';console.log('ok - installed STR-02A workflows and incremental HTTP forwarding');
+    report.status='passed';console.log(`ok - installed STR-02 ${target} workflows and incremental HTTP forwarding`);
   } catch(error) { report.status='failed';report.error=clean(error.stack||String(error));throw error; }
   finally { saveReport();origin.closeAllConnections();await new Promise(resolve=>origin.close(resolve));fs.rmSync(temporary,{recursive:true,force:true});console.log(`acceptance report - ${reportFile}`); }
 }

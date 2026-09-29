@@ -38,7 +38,6 @@ function validateIncomingBodySource(handler, options) {
         || named('json') || named('schema') || calls > 1) {
         reject(node, 'PULSE_REQUEST_FORWARDING_FORM_UNSUPPORTED', 'Use one ctx.req.body() inline as the body of a literal outbound POST; markers cannot escape, be awaited, or be duplicated.');
       }
-      if (options.target !== 'javascript') reject(node, 'PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Incoming forwarding is currently Node JavaScript only.');
     }
     ts.forEachChild(node, visit);
   }
