@@ -73,6 +73,8 @@ importers:
         specifier: workspace:*
         version: link:../../wasm/packages/contracts
 
+  packages/mcp: {}
+
   packages/provider-fastly:
     dependencies:
       '@pulse-compute/crypto':
