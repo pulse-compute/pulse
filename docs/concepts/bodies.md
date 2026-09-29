@@ -159,6 +159,21 @@ callback does not delay completion, including body suppression for `HEAD`.
 
 Attempting to inspect an opaque body fails with [`PULSE_OPAQUE_BODY_INSPECTION`](../reference/diagnostics.md#pulse-opaque-body-inspection). A missing or already-consumed structured body can fail with [`PULSE_BODY_UNAVAILABLE`](../reference/diagnostics.md#pulse-body-unavailable).
 
+## Current transport limits
+
+Opaque response pass-through does not provide incoming request streaming.
+The Node JavaScript HTTP adapter and Node Native CLI development server buffer
+incoming bodies within their configured limits before application execution.
+There is no public request-body forwarding marker or chunk API in the Beta.
+
+Handler completion, response-header commitment and stream completion are
+different boundaries. The Node JavaScript response writer waits for its local
+pipeline; the Native CLI opaque writer can return after starting a pipe. Neither
+fact alone establishes a portable queue bound, client receipt, or a deadline
+covering post-handoff streaming. The
+[bounded HTTP deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)
+retains its explicit streaming exclusions.
+
 ## Why the distinction matters
 
 The two body classes have different guarantees:
