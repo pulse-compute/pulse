@@ -376,9 +376,9 @@ sharing cannot shrink the guard for paths with several stage visits. Fastly
 request-body and value-failure analyses inspect stage bodies as well as ordinary
 handlers. Plan and generator versions change; the host ABI remains v2.
 
-The earlier [O-18 proof](../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md)
+The earlier [O-18 proof](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md)
 is now replayed through production lowering. The
-[O-19 evidence](../../wasm/test/runtime/compiler-efficiency/o19-production-stage.md)
+[O-19 evidence](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/runtime/compiler-efficiency/o19-production-stage.md)
 records its production gates. This removes the proof-only emitter clone and
 redundant plan bodies/locals; frontend source expansion and per-registration
 metadata still cost space and time. Whole-application savings, arbitrary stage
