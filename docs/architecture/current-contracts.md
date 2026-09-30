@@ -776,6 +776,10 @@ requested in record-only mode.
 JavaScript compilation returns canonical inspection metadata without an
 executable normalized generator. The provider's graph-backed loader and source
 packager execute the original module closure with its JavaScript async semantics.
+Router source linking requires counterparts for package effects and intrinsics
+in normalized handlers. Recognized sites in JavaScript source-runtime helpers
+remain in project package inspection and provider requirements without requiring
+generated counterparts; Native still requires every reachable site to link.
 Inspection describes recognized Pulse effects; it does not infer effects inside
 ordinary dependency implementations or certify their isolation. An ordinary
 JavaScript import gains no compiler/lowerer authority or Native guest sandbox

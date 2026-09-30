@@ -509,6 +509,23 @@ function sourceDiagnosticForPackageEffect(effect, message, detail = {}) {
   });
 }
 
+// Native must lower every reachable package site. JavaScript executes helpers
+// from the original source graph; only sites owned by normalized Router handlers
+// require a generated counterpart. Keep the full recognition bundle for package
+// inspection, validation and provider requirements on both targets.
+function packageSitesRequiringRouterLink(sites, records, options) {
+  if (options.target !== 'javascript') return sites;
+  return sites.filter((site) => records.some((record) => {
+    const ir = record && record.operationIr;
+    if (!ir || !ir.sourceFile || !ir.handler) return false;
+    const start = Number(site && site.range && site.range.start);
+    const end = Number(site && site.range && site.range.end);
+    return sameModulePath(site && site.loc && site.loc.file, ir.sourceFile.fileName || ir.file, options.rootDir)
+      && Number.isSafeInteger(start) && Number.isSafeInteger(end)
+      && start >= ir.handler.getStart(ir.sourceFile) && end <= ir.handler.getEnd();
+  }));
+}
+
 function routerGeneratedPackageEffectLookup(router, recognition, options = {}) {
   const effects = [...(recognition && recognition.operations || [])].map((operation) => operation.canonicalEffect);
   if (!router || effects.length === 0) return undefined;
@@ -592,10 +609,11 @@ function routerGeneratedPackageEffectLookup(router, recognition, options = {}) {
   // generated calls above, while coverage here is over authored source effects.
   // Counting generated sites would reject valid one-to-many source mappings.
   const linked = new Set(generatedByStart.values());
-  const missing = effects.filter((effect) => !linked.has(effect));
+  const required = packageSitesRequiringRouterLink(effects, records, options);
+  const missing = required.filter((effect) => !linked.has(effect));
   if (missing.length > 0) {
     throw new CanonicalProjectCompileError(
-      `Generated Router source linked ${linked.size} of ${effects.length} reachable package effect(s).`,
+      `Generated Router source linked ${linked.size} of ${required.length} required package effect(s).`,
       missing.map((effect) => sourceDiagnosticForPackageEffect(effect, `Reachable package effect ${effect.kind} was not linked into generated Router source.`, {
         contractId: effect.contractId
       })),
@@ -732,10 +750,11 @@ function routerGeneratedPackageIntrinsicLookup(router, recognition, options = {}
 
   // Intrinsic calls share the same source-to-registration multiplicity as effects.
   const linked = new Set(generatedByStart.values());
-  const missing = intrinsics.filter((intrinsic) => !linked.has(intrinsic));
+  const required = packageSitesRequiringRouterLink(intrinsics, records, options);
+  const missing = required.filter((intrinsic) => !linked.has(intrinsic));
   if (missing.length > 0) {
     throw new CanonicalProjectCompileError(
-      `Generated Router source linked ${linked.size} of ${intrinsics.length} reachable package intrinsic(s).`,
+      `Generated Router source linked ${linked.size} of ${required.length} required package intrinsic(s).`,
       missing.map((intrinsic) => sourceDiagnosticForPackageEffect(
         intrinsic,
         `Reachable package intrinsic ${intrinsic.kind} was not linked into generated Router source.`,
@@ -1106,13 +1125,13 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
       ? terminalPackageApplication.sourceText
       : authoringSourceText;
   const generatedPackageEffectForCall = router
-    ? routerGeneratedPackageEffectLookup(router, packageOperationRecognition, { rootDir })
+    ? routerGeneratedPackageEffectLookup(router, packageOperationRecognition, { rootDir, target: options.target })
     : packageEffectLookup(packageOperationRecognition);
   const generatedPackageResultAdapterForCall = router
     ? routerGeneratedPackageResultAdapterLookup(router, packageOperationRecognition, { rootDir })
     : packageResultAdapterLookup(packageOperationRecognition);
   const generatedPackageIntrinsicForCall = router
-    ? routerGeneratedPackageIntrinsicLookup(router, packageOperationRecognition, { rootDir })
+    ? routerGeneratedPackageIntrinsicLookup(router, packageOperationRecognition, { rootDir, target: options.target })
     : packageIntrinsicLookup(packageOperationRecognition);
   const applicationEnvelope = createApplicationEnvelope(router, options.applicationProjectMetadata);
   const compileOptions = {
