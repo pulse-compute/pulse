@@ -624,9 +624,27 @@ The optional provider-driver `createGeneratedOutput` hook gives the generic CLI
 a request-owned writer. HTTP never buffers the entire generated output. The
 explicit CLI test collector may materialize up to the same 1 MiB limit. Current
 evidence covers workspace build/dev, actual Native lowering, real HTTP prefix
-delivery, blocked-writer suspension, cancellation, deadline and bounds. STR-03B
-still owns independent installed-consumer qualification. Fastly output, chunk
-transforms and MCP SSE remain unavailable; this adds no capability to them.
+delivery, blocked-writer suspension, cancellation, deadline and bounds.
+
+STR-03B's external `str03b-installed` task packs exact candidate packages and
+installs them outside the checkout with lifecycle scripts disabled. It verifies
+installed file bytes before and after ordinary CLI doctor/inspect/test/build/dev
+workflows on both Node targets. Real HTTP covers prefix-before-completion,
+1 MiB UTF-8 fidelity with a paused client, disconnect/deadline cleanup, producer
+and post-header failures, limits, HEAD/bodyless/framing rejection and recovery.
+Installed controlled writers separately prove suspension, late-callback fencing
+and deadline coverage through final flush; the paused-client case alone is not
+a deterministic backpressure proof. Native test/dev observations bind execution
+to the emitted Wasm hash with no fallback and report guest-memory bytes. The
+controlled full-output case also records cumulative retained-value accounting.
+Neither counter is process RSS or an arbitrary-JavaScript allocation bound.
+
+Qualification belongs to each terminal acceptance report's source, package,
+fixture and Wasm identities. The artifact's `independentInstalledQualification`
+field stays false: compilation cannot certify a later external test. The surface
+remains experimental and the task is separate from the aggregate release seal.
+Fastly output, chunk transforms and MCP SSE remain unavailable; this adds no
+capability to them.
 
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
 provider's `time.wall-clock` authority. It returns one validated UTC wall-clock

@@ -226,9 +226,12 @@ waits for local writer completion through the provider; the original deadline
 and disconnect handling remain active through finish. Local completion does not
 prove receipt by the client.
 
-This surface remains experimental pending STR-03B's independent installed
-qualification. It provides no input chunk reader, binary transform, arbitrary
-stream/generator object, Fastly output or MCP SSE capability.
+This surface remains experimental. STR-03B provides independent installed Node
+Native/JavaScript qualification for exact candidate bytes, including real HTTP
+failure handling and a separate controlled-writer backpressure check. Passing
+that task does not certify future artifacts or constitute a release seal. It
+provides no input chunk reader, binary transform, arbitrary stream/generator
+object, Fastly output or MCP SSE capability.
 
 ## Current transport limits
 

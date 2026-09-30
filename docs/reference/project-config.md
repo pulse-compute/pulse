@@ -290,7 +290,7 @@ Provider-owned Node profile configuration.
 
 ### `node.generatedOutput`
 
-Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Independent installed qualification remains STR-03B.
+Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Use STR-03B for exact-candidate installed qualification.
 
 - **Type:** boolean
 - **Required/default:** Optional; default omitted.
