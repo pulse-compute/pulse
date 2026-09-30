@@ -1048,6 +1048,19 @@ its digest describes sent bytes, not durability. Request cancellation retains
 existing lifecycle behavior and does not fabricate a typed S3 outcome. Fastly
 pending requests lack a cancel ABI; invocation termination owns their release.
 
+AST-01 consolidates JavaScript SigV4 canonicalization, key derivation and RFC3986
+segment encoding in S3's first-party `./signing` integration export. The existing
+provider signer and Assets compatibility facade both delegate to that owner.
+Assets depends on S3 within the exact release set, retains its public helper
+types/defaults/error wrappers and Web Crypto selection, and continues to own
+lookup, bucket URL policy and HTTP serving. Shared signing accepts resolved
+credentials and explicitly supplied crypto primitives; no ambient secret or
+network authority moves into S3. Direct helper compatibility does not weaken
+portable S3 effect admission or extend Native eligibility. The Native
+AssemblyScript implementation remains in S3; no lowerer or provider changes are
+needed. Exact tarball acceptance checks dependency resolution, unchanged golden
+signatures, public helper imports and installed type declarations.
+
 S3 bindings can explicitly select up to 2 MiB text, retaining the 32 KiB default.
 Only digest/S3 text effects admit the 12,648,448-byte escaped envelope; generic
 package effects keep their existing bounds. Request/schema limits remain

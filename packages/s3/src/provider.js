@@ -3,6 +3,7 @@
 // Trusted provider surface; never an application lowering escape. Protocol
 // composition is S3-owned, while crypto, secrets and I/O are supplied by hosts.
 const { S3_LIMITS } = require('@pulse-compute/wasm-contracts/s3/contracts');
+const { encodeS3Key, createAuthorization } = require('./signing.js');
 const encoder = new TextEncoder();
 const namePattern = /^[A-Za-z][A-Za-z0-9_-]{0,63}$/;
 const bytes = (text) => encoder.encode(text);
@@ -34,9 +35,7 @@ function normalizeBinding(value) {
 function encodeKey(key) {
   if (typeof key !== 'string' || !key.isWellFormed() || !key.length || bytes(key).length > S3_LIMITS.keyBytes
     || /[\u0000-\u001f\u007f-\u009f]/u.test(key) || key.split('/').some((p) => p === '.' || p === '..')) return null;
-  // One-time adaptation of Assets' RFC3986 segment encoder. Deliberately no
-  // AssetBucket normalization, path joining, middleware or cache policy.
-  return key.split('/').map((part) => encodeURIComponent(part).replace(/[!'()*]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`)).join('/');
+  return encodeS3Key(key);
 }
 function credentialsValid(accessId, secret, token) {
   return typeof accessId === 'string' && /^[\x21-\x7e]{1,256}$/.test(accessId)
@@ -59,22 +58,11 @@ async function signRequest(input, crypto) {
   const digest = hex(await crypto.sha256(body));
   const host = new URL(binding.endpoint).host;
   const headers = { ...(contentType === undefined ? {} : { 'content-type': contentType }), host, 'x-amz-content-sha256': digest, 'x-amz-date': date, ...(token === undefined ? {} : { 'x-amz-security-token': token }) };
-  const names = Object.keys(headers).sort();
   const uri = `/${binding.bucket}/${encodedKey}`;
-  const canonical = `${method}\n${uri}\n\n${names.map((name) => `${name}:${headers[name].replace(/ +/g, ' ')}\n`).join('')}\n${names.join(';')}\n${digest}`;
-  const scope = `${date.slice(0, 8)}/${binding.region}/s3/aws4_request`;
-  const toSign = `AWS4-HMAC-SHA256\n${date}\n${scope}\n${hex(await crypto.sha256(bytes(canonical)))}`;
-  let key = bytes(`AWS4${secret}`);
-  try {
-    for (const part of [date.slice(0, 8), binding.region, 's3', 'aws4_request']) {
-      const next = await crypto.hmacSha256(key, bytes(part)); key.fill(0); key = next;
-    }
-    const signature = await crypto.hmacSha256(key, bytes(toSign));
-    headers.authorization = `AWS4-HMAC-SHA256 Credential=${accessId}/${scope}, SignedHeaders=${names.join(';')}, Signature=${hex(signature)}`;
-    signature.fill(0);
-    headers['accept-encoding'] = 'identity';
-    return { method, url: binding.endpoint + uri, headers, ...(method === 'PUT' ? { body } : {}) };
-  } finally { key.fill(0); }
+  headers.authorization = await createAuthorization({ method, uri, query: '', headers, date,
+    region: binding.region, service: 's3', accessId, secret, payloadHash: digest }, crypto);
+  headers['accept-encoding'] = 'identity';
+  return { method, url: binding.endpoint + uri, headers, ...(method === 'PUT' ? { body } : {}) };
 }
 function failure(reason, httpStatus) { return Object.freeze({ status: 'failed', reason, ...(httpStatus === undefined ? {} : { httpStatus }) }); }
 function putFailure(reason, dispatched, httpStatus) {

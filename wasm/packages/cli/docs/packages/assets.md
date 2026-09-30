@@ -46,6 +46,28 @@ import {
 
 `createAssets()` supports local, hosted, and bucket-backed middleware. Hosted and bucket responses adopt upstream Web streams directly, preserving status, headers, and host-owned response-body ownership. Local assets currently follow the restored implementation and materialize the selected file. Broader request/response resource limits belong at a shared core ownership boundary rather than in an Assets-only policy.
 
+## S3 protocol ownership and compatibility
+
+S3 owns shared RFC3986 key encoding and SigV4 canonicalization, signing-key
+derivation and authorization. Assets depends on the matching S3 package and
+adapts its existing `signSigV4` and `encodeS3Key` exports to that implementation.
+Assets retains lookup, path-style/virtual-host bucket URL policy, middleware,
+HTTP conditionals, caching and response-body ownership. Providers retain
+credential resolution and transport for governed operations.
+
+The direct JavaScript helpers retain their existing behavior: string/promise/
+callback credentials, sequential credential resolution, `us-east-1` and `s3`
+defaults, custom service/region, session tokens, `UNSIGNED-PAYLOAD` by default,
+explicit payload hashes, and `AssetBucketSignError` with the original cause.
+The custom bucket signer and injected fetch hooks remain available. These
+compatibility helpers use Web Crypto; they do not grant Native lowering authority
+or inherit the stricter admission rules of bounded S3 effects. `encodeS3Key`
+continues to encode segments without imposing the S3 effect's key restrictions.
+
+The first-party `@pulse-compute/s3/signing` export is a typed integration bridge,
+not an application entry point. No listing, binary-read, embedded-blob or new
+conditional/range capability is introduced by this ownership cleanup.
+
 ## Response ownership
 
 A direct asset response preserves:
