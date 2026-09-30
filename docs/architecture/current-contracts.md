@@ -179,11 +179,30 @@ arguments must have matching proven scalar kinds. JavaScript continues to execut
 the original source graph.
 
 Helpers cannot capture caller or module values, mutate inputs, recurse, nest
-helper calls, accept function values, run under a caller loop, group effects,
+helper calls, accept function values, group effects,
 construct responses or own Router transfers. Ordinary unrecognized calls remain
 ineligible. Helper bodies use the existing bounded value, pure-loop, read-loop,
 schema and trusted Pulse-effect rules. Importing a source function confers no
 package-lowerer trust or host authority.
+
+A directly bound helper may run inside an outer bounded read loop under
+`pulse.bounded-read-loop-helper.v1`. It must contain at least one admitted read
+site, and all its effects must be `s3.getText`, `kv.getVersioned` or
+`crypto.digestText`. It may use schema/value operations and bounded pure loops,
+but cannot hide context authority, an effect loop, another call or an effect
+group. The combined 65,536 iteration-product limit includes pure loops in the
+callee and the enclosing caller loop. Inputs remain proven scalars; neither inputs nor the result binding may
+mutate the caller's counter. Serialized plans tag these calls with `loopContract`
+and independently validate the callee. Ordinary helpers outside loops retain
+their existing effect contract. JavaScript inspection recognizes directly bound
+ctx-first source calls in these bounded loops, while executing the original
+source graph. This does not prove their internals or grant Native eligibility.
+
+The caller owns its loop counter and return continuation. Each visit resets the
+callee frame; suspension preserves that invocation's locals. Early helper return
+resumes the same caller iteration. The finite dispatcher allowance accounts for
+the literal loop cap even when every helper visit returns without suspending.
+Effect, deadline and retained-memory budgets remain cumulative and unchanged.
 
 The linker retains one helper declaration. Handler IR produces one generator
 body; the Native plan retains one body and one set of effect/continuation sites,
@@ -317,7 +336,8 @@ The additional `pulse.bounded-read-loop.v1` contract admits non-nested `for`
 loops whose `let` counter starts at zero, tests a literal cap from 0 through 64
 as the first conjunct, and advances by one. Each loop contains at least one
 directly bound or discarded sequential `s3.getText`, `kv.getVersioned`, or
-`crypto.digestText` site. Dynamic keys and carried values survive suspension.
+`crypto.digestText` site, or a directly bound static helper satisfying the
+read-only helper contract above. Dynamic keys and carried values survive suspension.
 Schema text decoding/encoding and result construction are allowed alongside
 the existing pure value operations. Other context authority is read before the
 loop. Counters, the context parameter and inherited KV namespace aliases cannot

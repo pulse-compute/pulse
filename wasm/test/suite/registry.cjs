@@ -458,6 +458,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'bounded read loop admission, target parity, invocation lifecycle, cumulative budgets and Native memory containment'
   }),
+  'bounded-loop-helpers': nodeTask('test/lowering/assert-loop-helpers.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'read-only shared helpers in bounded loops, frame reset, target parity and continuation isolation'
+  }),
   'compiler-efficiency-p02': nodeTask('test/runtime/compiler-efficiency/p02-memory-trace.cjs', {
     evidence: 'native',
     timeoutMs: 300000,
@@ -1078,6 +1083,7 @@ const profiles = Object.freeze({
     'shared-stage-o19',
     'bounded-app-logic',
     'bounded-read-loops',
+    'bounded-loop-helpers',
     'logging-lowering',
     'canonical-router-lowering',
     'canonical-router-terminal-middleware',

@@ -672,14 +672,19 @@ function buildPlainHandlerIr(frontend, options = {}) {
     }
     if (ts.isForStatement(statement)) {
       const effectForCall = call => extractProviderCall(call, ctxName, aliases) || packageEffectForCall(call);
+      const helperForCall = call => ts.isIdentifier(call.expression) && (
+        helperBodies.get(call.expression.text)
+        // JavaScript inspection retains ordinary ctx-first source calls. The
+        // original graph executes them; this is not Native callee admission.
+        || options.target === 'javascript' && call.arguments.length > 0 && ts.isIdentifier(call.arguments[0]) && call.arguments[0].text === ctxName);
       let hasEffect = false;
       function findEffect(node) {
-        if (ts.isCallExpression(node) && effectForCall(node)) hasEffect = true;
+        if (ts.isCallExpression(node) && (effectForCall(node) || helperForCall(node))) hasEffect = true;
         ts.forEachChild(node, findEffect);
       }
       findEffect(statement);
       if (hasEffect) {
-        const loop = inspectBoundedReadLoop(statement, { ctxName, effectForCall, namespaceAliases: [...aliases.keys()] });
+        const loop = inspectBoundedReadLoop(statement, { ctxName, effectForCall, helperForCall, namespaceAliases: [...aliases.keys()] });
         for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED', error.message));
         if (loop.errors.length) return createHandlerOperation('source-statement', { statement, role: 'read-loop-rejected' });
         return createHandlerOperation('read-loop', { statement, counter: loop.name, maxIterations: loop.maxIterations,

@@ -786,8 +786,8 @@ class NativePlanBuilder {
       const helperCall = helperYield && ts.isYieldExpression(helperYield) && helperYield.asteriskToken && unwrap(helperYield.expression);
       const helper = helperCall && ts.isCallExpression(helperCall) && ts.isIdentifier(helperCall.expression) && this.helperBodies.get(helperCall.expression.text);
       if (helper) {
-        if (this.activeHelper || !ts.isIdentifier(item.name) || this.readLoopDepth || this.pureLoopDepth) {
-          this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Helper calls require a direct binding outside loops and cannot nest.'); continue;
+        if (this.activeHelper || !ts.isIdentifier(item.name) || this.pureLoopDepth) {
+          this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Helper calls require a direct binding outside pure loops and cannot nest.'); continue;
         }
         const args = helperCall.arguments.map(arg => this.expression(arg, scope));
         if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind)) {
@@ -795,7 +795,8 @@ class NativePlanBuilder {
         }
         const local = this.allocateLocal(item.name.text, this.helpers.find(h => h.id === helper.id)?.resultKind || 'unknown', itemPath, declaration);
         scope.set(local.name, local);
-        out.push(Object.freeze({ kind: 'helper-call', helperId: helper.id, callerEntryId: this.activeHandler?.stableId || this.activeEntry?.stableId, arguments: Object.freeze(args), localId: local.id, statementPath: itemPath }));
+        out.push(Object.freeze({ kind: 'helper-call', helperId: helper.id, callerEntryId: this.activeHandler?.stableId || this.activeEntry?.stableId, arguments: Object.freeze(args), localId: local.id, statementPath: itemPath,
+          ...(this.readLoopDepth ? { loopContract: contract.CANONICAL_READ_LOOP_CONTRACT.helperCallVersion } : {}) }));
         continue;
       }
       const yielded = item.initializer ? this.pulseYield(item.initializer) : undefined;
@@ -1414,6 +1415,36 @@ function validateResult(result, fail, localIds, detail = {}) {
 
 function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
+  const helpers = new Map((plan.helpers || []).map(helper => [helper.id, helper]));
+  function validateReadHelper(id, callerProduct) {
+    const helper = helpers.get(id);
+    if (!helper) { fail('read loop helper is unknown'); return; }
+    // A call does not reset the enclosing loop's work bound.
+    const checkProduct = (body, product) => {
+      for (const statement of body || []) {
+        if (statement.kind === 'pure-loop') {
+          const nested = product * Math.max(1, statement.maxIterations);
+          if (!Number.isSafeInteger(nested) || nested > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail('read loop helper exceeds the combined iteration bound');
+          checkProduct(statement.body, nested);
+        } else if (statement.kind === 'if') {
+          checkProduct(statement.then, product); checkProduct(statement.else, product);
+        }
+      }
+    };
+    checkProduct(helper.body, callerProduct);
+    let sites = 0;
+    const visit = statement => {
+      if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
+      if (statement.kind === 'effect') {
+        const effect = effects.get(statement.effectId); sites++;
+        if (!effect || !contract.CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) fail('read loop helper effect kind is not admitted');
+        for (const input of effect?.inputs || []) checkReadExpression(input.value, new Set(), true);
+      }
+    };
+    visit.expression = expression => checkReadExpression(expression, new Set());
+    walkStatements(helper.body, visit);
+    if (!sites) fail('read loop helper requires a sequential read effect site');
+  }
   function validateLoops(statements, counters = new Set(), product = 1, mode = 'outside') {
     for (const statement of statements || []) {
       if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
@@ -1441,7 +1472,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
         if (!Array.isArray(statement.body)) { fail(`${label} body must be an array`); continue; }
         if (readLoop) {
           let sites = 0;
-          const countSites = item => { if (item.kind === 'effect') sites += 1; };
+          const countSites = item => { if (item.kind === 'effect' || item.kind === 'helper-call') sites += 1; };
           countSites.expression = () => {};
           walkStatements(statement.body, countSites);
           if (!sites) fail('read loop requires a sequential effect site');
@@ -1449,7 +1480,15 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
         validateLoops(statement.body, active, product * Math.max(1, limit), readLoop ? 'read' : 'pure');
       } else {
         if (mode === 'pure' && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
-        if (mode === 'read' && !['local', 'expression', 'if', 'break', 'continue', 'return', 'effect'].includes(statement.kind)) fail('read loop contains an unsupported statement', { kind: statement.kind });
+        if (mode === 'read' && !['local', 'expression', 'if', 'break', 'continue', 'return', 'effect', 'helper-call'].includes(statement.kind)) fail('read loop contains an unsupported statement', { kind: statement.kind });
+        if (statement.kind === 'helper-call') {
+          if (mode === 'read') {
+            if (statement.loopContract !== contract.CANONICAL_READ_LOOP_CONTRACT.helperCallVersion) fail('read loop helper contract version is invalid');
+            if (counters.has(statement.localId)) fail('read loop helper result cannot replace the counter');
+            for (const argument of statement.arguments || []) checkReadExpression(argument, counters, true);
+            validateReadHelper(statement.helperId, product);
+          } else if (statement.loopContract !== undefined) fail('loop helper contract requires an enclosing read loop');
+        }
         if (!counters.size && ['break', 'continue'].includes(statement.kind)) fail('loop transfer outside a loop');
         if (counters.size) {
           if (statement.kind === 'local' && counters.has(statement.localId)) fail('pure loop counter cannot be rebound');

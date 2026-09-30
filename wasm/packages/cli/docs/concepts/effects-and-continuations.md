@@ -54,7 +54,10 @@ The literal cap is checked first and cannot exceed 64. `continue` advances the
 counter; `break` exits the nearest loop. Existing bounded pure inner loops are
 allowed, with the combined iteration-product limit still enforced. Read-loop
 diagnostics reject parallel groups, writes, nested effect loops, arbitrary
-helpers and counter mutation. The source fixture at
+helpers and counter mutation. Directly awaited, result-bound static helpers are
+allowed when their bodies contain only these read effects and admitted value
+operations, without nested effect loops or helper calls. Each call resets the
+helper frame while preserving the caller loop across suspension. The source fixture at
 `wasm/test/fixtures/projects/bounded-read-loops/src/index.ts` exercises a
 read/digest/decode traversal and inner pure collection processing.
 
