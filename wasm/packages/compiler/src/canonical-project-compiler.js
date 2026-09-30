@@ -1070,7 +1070,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   let localHelperCall = false;
   if (root?.kind === 'router' && options.target !== 'javascript') {
     const visit = node => {
-      if (ts.isAwaitExpression(node) && ts.isCallExpression(node.expression) && ts.isIdentifier(node.expression.expression)) localHelperCall = true;
+      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) localHelperCall = true;
       ts.forEachChild(node, visit);
     };
     visit(root.module.sourceFile);

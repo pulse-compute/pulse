@@ -567,15 +567,16 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     const byIdentity = new Map();
     for (const module of context.projectModules.values()) {
       function visit(node) {
-        if (ts.isAwaitExpression(node) && ts.isCallExpression(node.expression) && ts.isIdentifier(node.expression.expression)) {
-          const call = node.expression;
+        if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+          const call = node;
+          const awaited = ts.isAwaitExpression(node.parent);
           const target = resolveLocal(context, indexes, module, call.expression.text, [], [], undefined, consumedImports);
           const fn = target?.module && functionForNamedHandler(target.module.sourceFile, target.localName);
-          if (fn && fn.parameters.length > 1) {
+          if (fn && (awaited && fn.parameters.length > 1 || !awaited)) {
             const identity = `${target.module.path}#${target.localName}`;
             let helper = byIdentity.get(identity);
             if (!helper) {
-              helper = { id: `helper:${identity}`, name: `__pulse_helper_${sourceHelpers.length}`, functionNode: fn,
+              helper = { pure: !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword), id: `helper:${identity}`, name: `__pulse_helper_${sourceHelpers.length}`, functionNode: fn,
                 sourceFile: target.module.sourceFile, source: { file: target.module.path, name: target.localName } };
               sourceHelpers.push(helper); byIdentity.set(identity, helper);
             }

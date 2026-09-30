@@ -1,8 +1,8 @@
 {
-  "status": "unsupported-native",
+  "status": "scalar-supported-records-unsupported",
   "scalarImplementation": "PF-02",
   "recordImplementation": "PF-03",
   "callerLoopImplementation": "PF-04",
-  "errorCode": "PULSE_PROJECT_MODULE_LINK_FAILED",
-  "diagnosticCode": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED"
+  "errorCode": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+  "diagnosticCode": "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
 }

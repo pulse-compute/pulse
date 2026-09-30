@@ -264,7 +264,7 @@ function emitCanonicalHandlerGenerator(ir) {
     switch (entry.kind) {
       case 'helper-body':
         return factory.updateFunctionDeclaration(entry.statement, entry.statement.modifiers,
-          factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.name,
+          entry.pure ? undefined : factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.name,
           undefined, entry.statement.parameters, undefined, emitOperation(entry.body));
       case 'helper-call':
         return factory.updateVariableStatement(entry.statement, entry.statement.modifiers,

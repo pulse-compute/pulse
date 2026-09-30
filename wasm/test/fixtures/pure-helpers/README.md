@@ -1,17 +1,16 @@
 # PF-01: bounded synchronous pure-helper contract
 
-Status: contract for implementation and human review, **not current Native
-support**. PF-01 adds executable source oracles and expected Native linker
-failures. PF-02 owns scalar lowering, PF-03 record borrowing, PF-04 caller-loop
-integration, PF-05 installed-package qualification. A passing repro means the
-known rejection was reproduced, not that the feature works. Do not skip these
+Status: PF-02 implements the scalar subset on Native. PF-03 record borrowing,
+PF-04 caller-loop integration and PF-05 installed-package qualification remain
+pending. The scalar fixtures now have positive plan/execution coverage. Record
+fixtures remain expected failures at scalar-signature admission. Do not skip these
 fixtures or convert unexpected compilation success into a pass: replace the
 expected rejection with end-to-end assertions in its implementation ticket.
 
 Run from the repository root:
 
 ```sh
-node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract
+node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers
 ```
 
 ## Minimum language and ownership
@@ -76,14 +75,11 @@ O-25/O-28 effectful eligibility, iteration accounting or suspension contracts.
 
 ## Serialized plan compatibility
 
-PF-01 does not change or emit a new plan. Current Native plan v5 and
-`pulse.canonical-native-helper.v1` remain the effectful contract. Do not reinterpret
-that tag as a synchronous helper or reuse its suspend/continuation semantics.
-PF-02 must introduce an explicitly versioned pure-helper descriptor and bump the
-canonical plan/compiler version at their existing contract owners when adding
-new call/expression semantics. Old plans retain their existing semantics where
-supported; incompatible versions fail closed, never auto-upgrade or silently
-ignore pure descriptors. PF-03 must version structural parameter descriptors;
+PF-02 introduces Native plan/compiler v6, generator v8 and the descriptor
+`pulse.canonical-native-pure-helper.v1`. The existing effectful
+`pulse.canonical-native-helper.v1` retains its suspension semantics. Incompatible
+v5 plans fail closed and must be regenerated from source; the ABI is unchanged.
+There is no automatic upgrade or ignored pure descriptor. PF-03 must version structural parameter descriptors;
 PF-04 must version loop-call accounting if its serialized contract changes.
 
 After JSON round-trip, independently validate identities, parameter/result
@@ -94,18 +90,29 @@ Tamper each descriptor/call/body/ownership/version field in implementation tests
 
 ## Exclusions and diagnostics
 
-Current imported fixtures must fail with outer
-`PULSE_PROJECT_MODULE_LINK_FAILED` containing diagnostic
-`PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED`. This is a linker blocker;
-it does not experimentally establish later structural/loop rejection reasons.
-The runner checks both binding and negated-condition call sites for both fixtures.
-The plain TypeScript oracle is not Pulse JavaScript target qualification.
+PF-01 originally reproduced `PULSE_PROJECT_MODULE_LINK_FAILED` containing
+`PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED`. PF-02 replaces scalar rejection
+with positive coverage. Records now fail with `PULSE_CANONICAL_ROUTER_COMPILE_FAILED`
+and `PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED`; no record lowering is claimed.
+The runner checks both bindings and negated conditions. The separate scalar task
+qualifies Native and original-source JavaScript behavior.
 
-PF-02 must provide specific source-located rejection reasons for captures,
+PF-02 provides specific rejection reasons for captures,
 parameter mutation, async/generator helpers, effects, context/response/Router
 operations, recursion and nested calls, function values/callbacks, dynamic calls,
 and unsupported signatures/operators. PF-03 adds structural shape, alias write
-and escape reasons; PF-04 adds bound/accounting reasons. Allocate codes through
-the existing diagnostic owners in those tickets, rather than promising invented
-codes here. General JavaScript compatibility, closures, optimizer tuning, schemas,
+and escape reasons; PF-04 adds bound/accounting reasons. Record/loop implementation tickets extend diagnostics through the existing owners. General JavaScript compatibility, closures, optimizer tuning, schemas,
 caching and mutable/escaping records remain outside this work.
+
+## PF-02 implementation diagnostics and limits
+
+`PULSE_NATIVE_PURE_HELPER_*_UNSUPPORTED` reasons distinguish SIGNATURE, IDENTITY,
+CAPTURE, LOCAL, VALUE, CONTROL, CALL, MUTATION, ARGUMENT, NESTING and RESULT.
+Malformed serialized contracts use `PULSE_CANONICAL_NATIVE_PLAN_INVALID`.
+General dynamic calls continue to use existing unsupported-expression/import
+rejections. Helper methods and type assertions are excluded. Pure-loop early
+returns retain the existing loop restriction until the loop integration ticket.
+Caller arguments admit scalar expressions and request scalar reads; bind other
+supported computations first. This contract does not imply structured borrowing
+or new exception support. Generated function counts do not establish final-Wasm
+retention; scalar handles retain the existing invocation lifetime/accounting.

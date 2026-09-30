@@ -32,8 +32,11 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'pure-source-helpers': nodeTask('test/lowering/assert-pure-source-helpers.cjs', {
+    evidence: 'native', timeoutMs: 120000, description: 'PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans'
+  }),
   'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
-    description: 'PF-01 pure-helper source oracles and explicit unsupported Native repros'
+    description: 'Pure-helper source oracles, scalar admission and explicit unsupported record repros'
   }),
   'suite-shape': nodeTask('test/suite/assert-suite-shape.cjs', {
     description: 'profile separation, uniqueness, and timeout budgets'
@@ -1078,6 +1081,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'pure-source-helpers',
     'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',

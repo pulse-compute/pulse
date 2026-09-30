@@ -167,17 +167,49 @@ bodies; it does not create a dynamic function table or change the value heap's
 retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
-## Synchronous pure-helper proof (PF-01; not yet supported on Native)
+## Synchronous scalar source helpers (PF-02)
 
-PF-01 freezes a bounded implementation contract and executable fixtures in
-`wasm/test/fixtures/pure-helpers/README.md`. Named synchronous scalar helpers,
-then read-only structural inputs and bounded caller loops, are staged as
-PF-02, PF-03 and PF-04. They must retain ordinary call/condition semantics
-without gaining context, effects or Router authority. The fixtures deliberately
-assert the current Native runtime-import rejection; they do not enable syntax
-or qualify Native execution. Existing serialized helper and plan versions are
-unchanged. Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract`
-for the tracked source oracles and expected failures.
+Native plan v6 adds `pulse.canonical-native-pure-helper.v1` and the
+`pure-helper-call` expression. The project linker resolves named synchronous
+function declarations from the same file or static project imports. Parameters
+and results must explicitly be `string`, `number` or `boolean`; every reachable
+path returns the declared scalar kind. HTTP routes and middleware may call them
+in scalar bindings and expressions, including `if (!validator(value))`, without
+`await` or `ctx`. JavaScript executes the original source graph.
+
+Arguments are evaluated once, left to right. Existing `&&`, `||` and conditional
+branch short circuits select whether a call executes. Calls admit proven scalar
+expressions and request scalar reads; bind other supported computations before
+calling. Caller-local argument updates are ordered; the callee cannot mutate its
+parameters, capture values, access context/effects/Router authority, construct
+responses or accept function values. No async/generator helpers, dynamic calls,
+nested calls (including calls in another helper's arguments), recursion,
+structured values, assertions or exception syntax are admitted. Inside a helper,
+scalar operators, branches, early returns, initialized scalar locals and the
+existing literal-capped pure-loop subset are supported. Calls in caller loops,
+and early returns inside pure loops, remain outside PF-02.
+
+The compiler retains one canonical body and emits one synchronous Native
+function per resolved identity. Invocation-owned scalar slots reset on every
+call; calls neither suspend nor add effects/continuations or JSON serialization.
+Existing value handles/operators preserve scalar runtime behavior and failures.
+This does not claim scalar-handle reclamation, final-Wasm sharing or size savings.
+Structured borrowing and callee/caller loop integration remain PF-03/PF-04.
+
+Serialized plans independently validate the version, scalar grammar and kinds,
+all-path returns, initialized locals, parameter immutability, ownership, call
+arity, non-nesting and bounds after a JSON round-trip and recomputed hash.
+Effectful `pulse.canonical-native-helper.v1` keeps its own suspension semantics;
+pure descriptors cannot be substituted into effectful calls. Plan/compiler v6
+and Native generator v8 reject incompatible cached plans; regenerate v5 plans
+from source. The guest ABI is unchanged.
+
+The staged contract and fixtures live in `wasm/test/fixtures/pure-helpers/README.md`.
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers`
+for scalar execution, 1/2/16-site body retention, JavaScript parity and negative
+source/plan coverage. Record fixtures remain explicitly unsupported, now rejected
+at scalar-signature admission rather than runtime-import linking. These are
+source-tree checks; installed-package qualification remains PF-05.
 
 ## Static effectful source helpers (O-25)
 
