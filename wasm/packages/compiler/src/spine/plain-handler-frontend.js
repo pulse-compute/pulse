@@ -360,6 +360,8 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
           } else if (surface.surfaceId === 'ctx.req.text') {
             capabilities.add('request.text');
             validateDecoderCall(node, 'request-decode');
+          } else if (surface.surfaceId === 'ctx.output.close') {
+            capabilities.add('response.output');
           } else if (surface.surfaceId === 'ctx.req.body') {
             capabilities.add('request.body.forward');
           } else if (surface.surfaceId === 'ctx.state.get' || surface.surfaceId === 'ctx.state.set') {

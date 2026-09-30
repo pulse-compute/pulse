@@ -90,6 +90,7 @@ async function executeNodeJavascriptApplication(application, request, options = 
   const capabilities = nodeJavascriptProviderCapabilities(options);
   const incomingBody = options.incomingBody || require('./incoming-body.js').createIncomingBody(request, options);
   try { return await runtimeHost.executeApplication(assertNodeJavascriptApplication(application), request, {
+    outputExecution: options.outputExecution,
     incomingBody,
     capabilities,
     effectAdapter: options.effectAdapter,

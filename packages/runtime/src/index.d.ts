@@ -171,6 +171,12 @@ export interface PulseExecutionContext {
 
 /** HTTP request execution context. */
 export interface PulseContext extends PulseExecutionContext {
+  /** Experimental Node output: opt-in, finite, request-owned UTF-8 writes. */
+  readonly output: {
+    start(options?: PulseResponseOptions): PulseEffect<void>;
+    write(text: string): PulseEffect<void>;
+    close(): PulseResult;
+  };
   readonly req: PulseRequest;
   json(value: unknown, descriptor?: PulseJsonResponseOptions | string): PulseResult;
   text(value: string, options?: PulseResponseOptions): PulseResult;

@@ -57,6 +57,15 @@ function surface(definition) {
 }
 
 const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
+  ...['start', 'write'].map(operation => surface({
+    id: `ctx.output.${operation}`, class: 'effect', canonicalOperation: `output.${operation}`,
+    publicForms: [`ctx.output.${operation}(...)`], awaitPolicy: 'required-when-consumed',
+    validPositions: ['statement'], targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'request-owned-output-suspension', status: 'experimental'
+  })),
+  surface({ id: 'ctx.output.close', class: 'sync', canonicalOperation: 'response.output.close',
+    publicForms: ['ctx.output.close()'], awaitPolicy: 'forbidden', validPositions: ['return'],
+    targetSupport: { javascript: true, native: true }, nativeBehavior: 'terminal-output-marker', status: 'experimental' }),
   surface({
     id: 'handler.managed-async-wrapper',
     class: 'handler-wrapper',

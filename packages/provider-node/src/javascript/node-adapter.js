@@ -213,7 +213,7 @@ function createNodeJavascriptHandler(application, options = {}) {
     request.once('aborted', aborted); response.once?.('close', closed);
     const signal = options.signal ? AbortSignal.any([options.signal, connection.signal]) : connection.signal;
     const budget = runtimeHost.createRequestBudget({ ...options, signal });
-    let incomingBody, adapted;
+    let incomingBody, adapted, outputExecution;
     try {
       budget.check();
       adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
@@ -253,7 +253,9 @@ function createNodeJavascriptHandler(application, options = {}) {
       const activeApplication = options.getApplication
         ? runtimeHost.normalizeApplication(options.getApplication())
         : normalizedApplication;
+      outputExecution = require('../runtime/generated-output.js').createGeneratedOutput(response, { ...options, requestBudget: budget, requestMethod: adapted.method });
       const webResponse = await executeNodeJavascriptApplication(activeApplication, adapted.request, {
+        outputExecution,
         incomingBody,
         capabilities,
         effectAdapter,
@@ -293,7 +295,8 @@ function createNodeJavascriptHandler(application, options = {}) {
         onEffectSummary: options.onEffectSummary
       });
       if (incomingBody?.failure) throw incomingBody.failure;
-      await writeWebResponseToNode(webResponse, response, {
+      if (outputExecution?.started) await outputExecution.finish();
+      else await writeWebResponseToNode(webResponse, response, {
         requestMethod: adapted.method,
         signal: incomingBody?.responseSignal || budget.signal, requestBudget: budget,
         closeConnection: Boolean(options.bodyForwarding && bodyAllowed(adapted.method))
@@ -309,6 +312,7 @@ function createNodeJavascriptHandler(application, options = {}) {
       }
       return webResponse;
     } finally {
+      outputExecution?.dispose();
       await incomingBody?.close();
       if (options.bodyForwarding && !incomingBody && adapted?.request.body && !adapted.request.body.locked) {
         void adapted.request.body.cancel().catch(() => {});

@@ -208,6 +208,7 @@ function intrinsicForContextCall(parts) {
     'req.header': ['request.header', 'string-or-undefined'],
     'req.text': ['request.text', 'string'],
     'req.body': ['request.body.forward-marker', 'incoming-body-marker'],
+    'output.close': ['response.output.close', 'pulse-result'],
     'req.json': ['request.json', 'json'],
     json: ['response.json', 'pulse-result'],
     encodeJson: ['schema.encode.text', 'string'],

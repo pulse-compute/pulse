@@ -39,7 +39,8 @@ function genericProviderConfig(value) {
   if (Object.keys(bindings).some((key) => key !== 's3')) throw new TypeError('Unknown Node binding field.');
   const maxDurationMs = require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs);
   const bodyForwarding = require('./javascript/incoming-body.js').normalizeBodyForwarding(input.bodyForwarding, maxDurationMs);
-  return Object.freeze({ kind: 'node', maxDurationMs, ...(bodyForwarding ? { bodyForwarding } : {}), bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
+  const generatedOutput = require('./runtime/generated-output.js').normalizeGeneratedOutput(input.generatedOutput, maxDurationMs);
+  return Object.freeze({ kind: 'node', maxDurationMs, ...(generatedOutput ? { generatedOutput } : {}), ...(bodyForwarding ? { bodyForwarding } : {}), bindings: Object.freeze({ s3: require('./config/s3.js').normalizeNodeS3(bindings.s3) }), local: Object.freeze({}) });
 }
 
 function nodeRealization(nativeArtifact) {
@@ -71,6 +72,7 @@ function nodeRealization(nativeArtifact) {
 function targetSupportContext(_compiled, _project, declaration) {
   const gates = declaration.availability && declaration.availability.gates || [];
   return Object.freeze({
+    generatedOutput: Boolean(_project?.providerConfig?.generatedOutput),
     bodyForwarding: Boolean(_project?.providerConfig?.bodyForwarding),
     bindingsRedaction: gates.some((entry) => entry.id === 'bindings-redaction' && entry.status === 'satisfied'),
     gripRealized: gates.some((entry) => entry.id === 'grip-readiness' && entry.evidence && entry.evidence.status === 'passed')
@@ -148,7 +150,7 @@ function createDriver() {
     normalizeConfig: genericProviderConfig,
     configReference: Object.freeze({
       sections: [{ id: 'node', title: 'Node provider options', description: 'Provider-owned Node profile configuration.' }],
-      fields: [{ section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
+      fields: [{ section:'node', path:'node.generatedOutput', type:'boolean', default:'omitted', scope:'Experimental Node generated output', description:'Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Independent installed qualification remains STR-03B.' }, { section:'node', path:'node.bodyForwarding', type:'{ maxBytes: number }', default:'omitted', scope:'Node incoming forwarding', description:'Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.' }, { section:'node', path:'node.maxDurationMs', type:'integer', allowed:'1–30000', default:'omitted', scope:'HTTP request execution', description:'One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.' }, { section: 'node', path: 'node.bindings.s3', type: 'Readonly<Record<string, S3Binding>>', default: '`{}`', scope: 'Node Native and JavaScript S3',
         description: 'Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdSecret, secretAccessKeySecret, optional sessionTokenSecret, maxTextBytes (1–2097152, default 32768) and timeoutMs (1–30000, default 10000).',
         security: 'Only named credential references are configuration. Runtime keys cannot override authority.' }]
     }),
@@ -161,6 +163,7 @@ function createDriver() {
       return Object.freeze({
         ...values,
         maxDurationMs: config.maxDurationMs,
+        generatedOutput: config.generatedOutput,
         bodyForwarding: config.bodyForwarding,
         s3: config.bindings.s3,
         s3FetchImplementation: values.s3FetchImplementation || require('./javascript/fetch-adapter.js').createNodeJavascriptFixtureFetch(
@@ -227,10 +230,12 @@ function createDriver() {
     execute: nodeRuntime.executeCanonicalProgram,
     prepareNativeExecution(invocation) {
       const native = { ...invocation.nativeArtifact, plan: invocation.applicationPlan };
-      return (options) => require('./runtime/incoming-body.js').executeNativeWithIncomingBody(native, options);
+      return (options) => require('./runtime/generated-output-test.js').executeNative(native, options, require('./runtime/incoming-body.js').executeNativeWithIncomingBody);
     },
+    createGeneratedOutput: require('./runtime/generated-output.js').createGeneratedOutput,
     prepareNativeRequest: require('./runtime/incoming-body.js').prepareNativeRequest,
     createLoweringPlan(metadata, config = {}) {
+      if (metadata.capabilities?.includes('response.output') && !config.generatedOutput) throw new portableForwardingError('PULSE_OUTPUT_UNAVAILABLE', 'Configure node.generatedOutput and node.maxDurationMs.');
       if (metadata.capabilities?.includes('request.body.forward')) {
         if (!config.bodyForwarding) throw new portableForwardingError('PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Configure node.bodyForwarding and node.maxDurationMs.');
       }

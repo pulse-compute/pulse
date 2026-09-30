@@ -59,7 +59,7 @@ function inspectBoundedPureLoop(statement, options = {}) {
       const effect = readBody() && options.effectForCall && options.effectForCall(node);
       if (effect) {
         if (!effectRoot || !CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) {
-          fail(node, 'Read loops admit only directly bound or discarded sequential s3.getText, kv.getVersioned and crypto.digestText effects.'); return;
+          fail(node, 'Read loops admit only directly bound or discarded sequential s3.getText, kv.getVersioned, crypto.digestText and output.write effects.'); return;
         }
         effectCount += 1;
         for (const argument of node.arguments) {

@@ -462,6 +462,10 @@ function buildPlainHandlerIr(frontend, options = {}) {
         continue;
       }
       const provider = extractProviderCall(property.initializer, ctxName, aliases, { unwrap: true });
+      if (provider && provider.providerKind === 'output') {
+        diagnostics.push(diagnostic(sourceFile, property.initializer, 'PULSE_OUTPUT_PARALLEL_FORBIDDEN', 'Output operations cannot be members of ctx.parallel.'));
+        continue;
+      }
       if (provider) {
         members.push(Object.freeze({ key, kind: 'provider', property, operation: provider }));
         continue;

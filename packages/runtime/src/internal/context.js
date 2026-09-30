@@ -287,6 +287,26 @@ function createContext(frame) {
   if (eventContext) {
     ctx.event = frame.event;
   } else {
+    const output = () => {
+      if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires configured Node HTTP execution.');
+      return options.outputExecution;
+    };
+    ctx.output = Object.freeze({
+      start(...args) {
+        if (args.length > 1) throw new TypeError('output.start accepts one options object.');
+        output().assertEffect();
+        return effects.dispatch({ kind: 'output.start', providerKind: 'output', operation: 'start', capability: 'response.output', parallelEligible: false, argument0: args[0] });
+      },
+      write(...args) {
+        if (args.length !== 1) throw new TypeError('output.write requires one text chunk.');
+        output().assertEffect();
+        return effects.dispatch({ kind: 'output.write', providerKind: 'output', operation: 'write', capability: 'response.output', parallelEligible: false, argument0: args[0] });
+      },
+      close(...args) {
+        if (args.length) throw new TypeError('output.close accepts no arguments.');
+        return output().close(init => createTextResult('', init));
+      }
+    });
     ctx.json = (value, descriptor) => createJsonResult(value, descriptor, options);
     ctx.text = (value, responseOptions) => createTextResult(value, responseOptions);
     ctx.response = (input) => createResponseResult(input);

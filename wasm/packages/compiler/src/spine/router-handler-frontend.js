@@ -231,7 +231,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     }
     const contextSurface = recognizeHandlerSurface(node, { ctxName, unwrap: true });
     if (contextSurface) {
-      const httpOnly = contextSurface.surfaceId === 'ctx.param'
+      const httpOnly = contextSurface.surfaceId.startsWith('ctx.output.') || contextSurface.surfaceId === 'ctx.param'
         || contextSurface.surfaceId.startsWith('ctx.req.')
         || ['ctx.json', 'ctx.text', 'ctx.response'].includes(contextSurface.surfaceId);
       const eventOnly = contextSurface.surfaceId.startsWith('ctx.event.');
