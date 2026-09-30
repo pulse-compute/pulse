@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "pulse.pure-helper-packed-qualification-attempt.v1",
+  "status": "blocked",
+  "ticket": "PF-05",
+  "attempt": "2026-09-30-official-pack",
+  "source": {
+    "commit": "bba55c662d150ffd87753e972151f91a54f8d0d5",
+    "tree": "4f87ed6de87e0b5275546a75997583e1e78c2546",
+    "trackedWorktreeCleanAtPack": true
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "pnpm": "12.4.2"
+  },
+  "command": "node scripts/pack-release.cjs --out .pulse-release/pf05-initial --json",
+  "pack": {
+    "exitCode": 1,
+    "workspaceBuild": "passed",
+    "individualPackagesVerified": 19,
+    "aggregateDocumentation": "failed",
+    "releaseManifestProduced": false,
+    "firstFailure": "@pulse-compute/cli:package/docs/architecture/current-contracts.md links missing packed path ../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md"
+  },
+  "packages": [
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-assets-1.0.0-beta.5.tgz",
+      "bytes": 57584,
+      "sha256": "981d69f8d14dab8118855482a651da8955659ed4edb414737347ba285f2a8627"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-cli-1.0.0-beta.5.tgz",
+      "bytes": 400129,
+      "sha256": "a81b58a5ec4780f78b9c92db65f2bf839aa9782424526757303213303efea5b6"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-crypto-1.0.0-beta.5.tgz",
+      "bytes": 245263,
+      "sha256": "1b41d023fd54245fde92553bf219794c1886718f627b3dc026779437655d6ac3"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-entities-1.0.0-beta.5.tgz",
+      "bytes": 58718,
+      "sha256": "1217f7c4baa7f98e938f30c731ef981fd220e615b98e45b98763ce2418b264a7"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-grip-1.0.0-beta.5.tgz",
+      "bytes": 35701,
+      "sha256": "8bf4fce2fbcd6984dbe8f90c7c3bf790ab2ee9bd5c71fd2caf5411750377472a"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-jwt-1.0.0-beta.5.tgz",
+      "bytes": 78220,
+      "sha256": "250f2e950a4d8dd643d76f3f4ef8a8ff209dd814d0be4e014f29ece17eeccc4a"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-provider-fastly-1.0.0-beta.5.tgz",
+      "bytes": 222779,
+      "sha256": "477d1ca14e9ab5ce0ebf8fa725321cb801a298bde2454a687a74e4fa1518aa83"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-provider-node-1.0.0-beta.5.tgz",
+      "bytes": 93267,
+      "sha256": "3d6f8c5a8f1c63be4f2529459a55d7d3d942e5bc923a1593b0e4298511942738"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-pulse-1.0.0-beta.5.tgz",
+      "bytes": 15028,
+      "sha256": "6d97de00ef4c9ce7bbee80b00536b95e62ceac4c197c215aafd42bb51c5b3c4b"
+    },
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-runtime-1.0.0-beta.5.tgz",
+      "bytes": 77275,
+      "sha256": "2a85444e8c05e9f1067e30e5781b90a649a4b6d54e8f849a9d5654c3b29d3fdf"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-s3-1.0.0-beta.5.tgz",
+      "bytes": 20707,
+      "sha256": "453d6b91c60fa6ea862ca4a2d19c5ee0140b1da98e386a4994475c5b56b9230a"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-build-support-1.0.0-beta.5.tgz",
+      "bytes": 14093,
+      "sha256": "50b1090702666a6141755b688362a6980ab0601a23c8e25fcc561a1ccbcf303e"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-compiler-1.0.0-beta.5.tgz",
+      "bytes": 289962,
+      "sha256": "a309849d9950b049ef81c59f6e05822da9aad2aba66c6555ce1444a1611a5c88"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-contracts-1.0.0-beta.5.tgz",
+      "bytes": 155975,
+      "sha256": "7ad1921ca2672fae02e8ffef25ef65d4bbdcd5bcad3910cbe576e6919e1eb8e7"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-guest-link-1.0.0-beta.5.tgz",
+      "bytes": 39898,
+      "sha256": "2a7790eca87ebc661155e059b9b3f4a978ba2792533c5733cda7772cf9bcd598"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-host-runtime-1.0.0-beta.5.tgz",
+      "bytes": 90423,
+      "sha256": "99518448eac4e2d708a4a2b19aa5504be9fd1e7d4d02c182847997a501c9a9fa"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-library-kit-1.0.0-beta.5.tgz",
+      "bytes": 24956,
+      "sha256": "c1712acc638ea4a93b302bb085d30d712f077851bfe277ff12930a3d17fc001c"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.5.tgz",
+      "bytes": 105641,
+      "sha256": "699cb19c4c3c45ce191c2ef63b50e79390f511f087f33a75765019bd46372f47"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.5",
+      "tarball": "pulse-compute-wasm-schema-json-1.0.0-beta.5.tgz",
+      "bytes": 61506,
+      "sha256": "ab88e60d2251b72419b70e2b5e2a1329beee05d6fb62d5b2f59eea3550ad9a4a"
+    }
+  ],
+  "missingRelativeTargets": [
+    {
+      "package": "@pulse-compute/cli",
+      "entry": "package/docs/architecture/current-contracts.md",
+      "target": "../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md",
+      "resolved": "package/wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md"
+    },
+    {
+      "package": "@pulse-compute/cli",
+      "entry": "package/docs/architecture/current-contracts.md",
+      "target": "../../wasm/test/runtime/compiler-efficiency/o19-production-stage.md",
+      "resolved": "package/wasm/test/runtime/compiler-efficiency/o19-production-stage.md"
+    }
+  ],
+  "qualification": {
+    "installedConsumer": "not-run",
+    "canonicalHelperCounts": "not-measured",
+    "generatedBodyCounts": "not-measured",
+    "finalWasmAttribution": "not-measured",
+    "nodeNative": "not-run",
+    "fastlyNativeFixture": "not-run",
+    "nodeJavascript": "not-run",
+    "scalarRecordLoopFailures": "not-run",
+    "installedO19O25O28": "not-run",
+    "releaseSeal": false
+  },
+  "followUp": "PF-05A: repair repository-only proof links in installed documentation; regenerate from canonical owners and pass official pack before resuming PF-05"
+}

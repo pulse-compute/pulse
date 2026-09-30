@@ -1,0 +1,52 @@
+[pulse:pack] Checking documentation source
+[pulse:pack] Building workspace
+[pulse:pack] Package 1/19: @pulse-compute/runtime
+[pulse:pack] Verified @pulse-compute/runtime: 77275 bytes
+[pulse:pack] Package 2/19: @pulse-compute/pulse
+[pulse:pack] Verified @pulse-compute/pulse: 15028 bytes
+[pulse:pack] Package 3/19: @pulse-compute/cli
+[pulse:pack] Verified @pulse-compute/cli: 400129 bytes
+[pulse:pack] Package 4/19: @pulse-compute/provider-fastly
+[pulse:pack] Verified @pulse-compute/provider-fastly: 222779 bytes
+[pulse:pack] Package 5/19: @pulse-compute/grip
+[pulse:pack] Verified @pulse-compute/grip: 35701 bytes
+[pulse:pack] Package 6/19: @pulse-compute/assets
+[pulse:pack] Verified @pulse-compute/assets: 57584 bytes
+[pulse:pack] Package 7/19: @pulse-compute/crypto
+[pulse:pack] Verified @pulse-compute/crypto: 245263 bytes
+[pulse:pack] Package 8/19: @pulse-compute/jwt
+[pulse:pack] Verified @pulse-compute/jwt: 78220 bytes
+[pulse:pack] Package 9/19: @pulse-compute/entities
+[pulse:pack] Verified @pulse-compute/entities: 58718 bytes
+[pulse:pack] Package 10/19: @pulse-compute/s3
+[pulse:pack] Verified @pulse-compute/s3: 20707 bytes
+[pulse:pack] Package 11/19: @pulse-compute/wasm-build-support
+[pulse:pack] Verified @pulse-compute/wasm-build-support: 14093 bytes
+[pulse:pack] Package 12/19: @pulse-compute/wasm-compiler
+[pulse:pack] Verified @pulse-compute/wasm-compiler: 289962 bytes
+[pulse:pack] Package 13/19: @pulse-compute/wasm-guest-link
+[pulse:pack] Verified @pulse-compute/wasm-guest-link: 39898 bytes
+[pulse:pack] Package 14/19: @pulse-compute/wasm-contracts
+[pulse:pack] Verified @pulse-compute/wasm-contracts: 155975 bytes
+[pulse:pack] Package 15/19: @pulse-compute/wasm-host-runtime
+[pulse:pack] Verified @pulse-compute/wasm-host-runtime: 90423 bytes
+[pulse:pack] Package 16/19: @pulse-compute/wasm-library-kit
+[pulse:pack] Verified @pulse-compute/wasm-library-kit: 24956 bytes
+[pulse:pack] Package 17/19: @pulse-compute/provider-node
+[pulse:pack] Verified @pulse-compute/provider-node: 93267 bytes
+[pulse:pack] Package 18/19: @pulse-compute/wasm-runtime-core-as
+[pulse:pack] Verified @pulse-compute/wasm-runtime-core-as: 105641 bytes
+[pulse:pack] Package 19/19: @pulse-compute/wasm-schema-json
+[pulse:pack] Verified @pulse-compute/wasm-schema-json: 61506 bytes
+[pulse:pack] Checking packed documentation links
+Error: @pulse-compute/cli:package/docs/architecture/current-contracts.md links missing packed path ../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md
+    at fail ([repo]/scripts/documentation-release.cjs:266:17)
+    at validatePackedDocumentationSet ([repo]/scripts/documentation-release.cjs:1344:61)
+    at packRelease ([repo]/scripts/pack-release.cjs:273:5)
+    at main ([repo]/scripts/pack-release.cjs:328:18)
+    at Object.<anonymous> ([repo]/scripts/pack-release.cjs:350:9)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)

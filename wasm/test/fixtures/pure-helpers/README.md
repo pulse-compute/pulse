@@ -2,7 +2,8 @@
 
 Status: PF-02 scalar helpers, PF-03 structured borrowing and PF-04 caller-loop
 integration are implemented. PF-05 installed-package qualification remains
-pending. Scalar and partition fixtures have positive Native/JavaScript coverage.
+blocked by the official pack gate (see the PF-05 attempt below). Scalar and
+partition fixtures have positive source-tree Native/JavaScript coverage.
 
 Run from the repository root:
 
@@ -124,3 +125,52 @@ Caller arguments admit scalar expressions and request scalar reads; bind other
 supported computations first. Structured callers require a proven literal graph or matching schema boundary;
 caller graph writes are conservatively rejected even after a call. No new exception support. Generated function counts do not establish final-Wasm
 retention; scalar handles retain the existing invocation lifetime/accounting.
+
+
+## PF-05 packed qualification attempt — blocked
+
+The 2026-09-30 attempt used merged PF-04 source
+`bba55c662d150ffd87753e972151f91a54f8d0d5` with a clean tracked worktree,
+Node 24.19.0 and the release packer's pinned pnpm 12.4.2. The official command was:
+
+```sh
+node scripts/pack-release.cjs --out .pulse-release/pf05-initial --json
+```
+
+The workspace build passed. All 19 tarballs passed the packer's individual
+package checks. The aggregate command then exited 1 during packed documentation
+validation and did not produce `pulse-release-manifest.json`. The first failure
+was the CLI's installed `docs/architecture/current-contracts.md` link to
+`../../wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md`.
+A read-only scan using the existing Markdown link parser found the corresponding
+O-19 proof link missing as well. These repository proofs exist in source but are
+not shipped inside the CLI tarball.
+
+The [attempt record](pf05-pack-evidence.json) contains the source/tree identities,
+all 19 tarball hashes, both missing targets and explicit unrun qualification
+gates. The [packer log](pf05-pack.log) preserves the actual failure. Individual
+tarball verification does not satisfy the aggregate packaging gate.
+
+**PF-05 remains incomplete.** No installed consumer was created, and no packed
+helper counts, generated-body counts, Wasm attribution or three-target execution
+result is claimed. Source-tree results from PF-02 through PF-04 cannot substitute
+for those gates.
+
+### Separate dependency: PF-05A — repair installed proof links
+
+Effort: small. Change the O-18 and O-19 proof links in the canonical
+`docs/architecture/current-contracts.md` to repository-qualified proof URLs using
+the existing documentation convention. Regenerate the installed CLI copy with
+`npm run docs:sync`; do not hand-edit that generated copy.
+
+Acceptance: documentation sync/check and documentation-release pass; a fresh
+unmodified official pack verifies all 19 packages, passes packed documentation
+validation and writes its release manifest. Keep this failed attempt intact.
+No package composition, compiler policy or optimization change is needed for
+this repair.
+
+Then resume PF-05 using that exact passing package set: isolated installed
+Node Native, Fastly Native host-fixture and Node JavaScript runs; substantial
+validator calls at 1, 2 and 16 sites; canonical/generated body counts and final
+Wasm attribution; scalar/record/loop rejection cases and installed O-19/O-25/O-28
+regressions. Report downstream inlining separately from compiler duplication.
