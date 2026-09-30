@@ -457,12 +457,16 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'Node/Fastly Native/JavaScript semantic parity and target integrity'
   }),
+  'ast02b-installed': nodeTask('test/assets/ast02b-installed.cjs', {
+    timeoutMs: 180000, evidence: 'external',
+    description: 'Isolated exact-tarball embedded Assets manifest, HTTP and type acceptance'
+  }),
   'ast01-installed': nodeTask('test/assets/ast01-installed.cjs', {
     timeoutMs: 180000, evidence: 'external',
     description: 'AST-01 exact Assets/S3 tarball dependency, public helper and signature compatibility'
   }),
   'assets-javascript-runtime': vitestTask([
-    path.join(wasmRoot, '..', 'packages/assets/test/sigv4.test.ts'),
+    path.join(wasmRoot, '..', 'packages/assets/test/sigv4.test.ts', 'packages/assets/test/embedded.test.ts'),
     path.join(wasmRoot, '..', 'packages/assets/test/javascript-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/provider-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/sign.test.ts'),
