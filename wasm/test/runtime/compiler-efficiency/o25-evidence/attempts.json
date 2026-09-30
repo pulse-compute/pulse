@@ -1,0 +1,361 @@
+{
+  "fixtureSetup": [
+    {
+      "stage": "fixture setup",
+      "code": "PULSE_PROJECT_PULSE_KEY_UNSUPPORTED",
+      "key": "schemas",
+      "resolution": "Moved schemas configuration from reserved pulse block to each explicit profile; no product change."
+    }
+  ],
+  "namedFunctionAdmission": {
+    "profile": "node",
+    "code": "PULSE_PACKAGE_LOWERING_FAILED",
+    "message": "Package-owned canonical lowering failed with 5 diagnostic(s).",
+    "diagnostics": [
+      {
+        "code": "PULSEWASM_CRYPTO_DIGEST_ARGUMENTS",
+        "hint": "Await crypto.digestText(ctx, text) into a local variable or use it as a direct keyed ctx.parallel member.",
+        "loc": {
+          "end": {
+            "column": 77,
+            "line": 7,
+            "offset": 553
+          },
+          "file": "src/lookup.ts",
+          "start": {
+            "column": 23,
+            "line": 7,
+            "offset": 499
+          }
+        },
+        "message": "Digest requires the current handler context and one text input.",
+        "pass": "crypto-lowering",
+        "severity": "error"
+      },
+      {
+        "code": "PULSEWASM_CRYPTO_DIGEST_ARGUMENTS",
+        "hint": "Await crypto.digestText(ctx, text) into a local variable or use it as a direct keyed ctx.parallel member.",
+        "loc": {
+          "end": {
+            "column": 56,
+            "line": 30,
+            "offset": 2354
+          },
+          "file": "src/lookup.ts",
+          "start": {
+            "column": 22,
+            "line": 30,
+            "offset": 2320
+          }
+        },
+        "message": "Digest requires the current handler context and one text input.",
+        "pass": "crypto-lowering",
+        "severity": "error"
+      },
+      {
+        "code": "PULSEWASM_CRYPTO_DIGEST_ARGUMENTS",
+        "hint": "Await crypto.digestText(ctx, text) into a local variable or use it as a direct keyed ctx.parallel member.",
+        "loc": {
+          "end": {
+            "column": 56,
+            "line": 107,
+            "offset": 7211
+          },
+          "file": "src/lookup.ts",
+          "start": {
+            "column": 22,
+            "line": 107,
+            "offset": 7177
+          }
+        },
+        "message": "Digest requires the current handler context and one text input.",
+        "pass": "crypto-lowering",
+        "severity": "error"
+      },
+      {
+        "code": "PULSEWASM_S3_ARGUMENTS_UNSUPPORTED",
+        "hint": "Use a supported s3 call with literal binding/options and runtime key/text in an awaited handler position.",
+        "loc": {
+          "end": {
+            "column": 94,
+            "line": 28,
+            "offset": 2195
+          },
+          "file": "src/lookup.ts",
+          "start": {
+            "column": 22,
+            "line": 28,
+            "offset": 2123
+          }
+        },
+        "message": "S3 requires current handler context, literal binding, runtime key and, for PUT, text with optional literal options.",
+        "pass": "s3-lowering",
+        "severity": "error"
+      },
+      {
+        "code": "PULSEWASM_S3_ARGUMENTS_UNSUPPORTED",
+        "hint": "Use a supported s3 call with literal binding/options and runtime key/text in an awaited handler position.",
+        "loc": {
+          "end": {
+            "column": 94,
+            "line": 105,
+            "offset": 7052
+          },
+          "file": "src/lookup.ts",
+          "start": {
+            "column": 22,
+            "line": 105,
+            "offset": 6980
+          }
+        },
+        "message": "S3 requires current handler context, literal binding, runtime key and, for PUT, text with optional literal options.",
+        "pass": "s3-lowering",
+        "severity": "error"
+      }
+    ],
+    "detail": {
+      "entryFile": "/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/fixtures/projects/shared-history-helper/src/lookup.ts",
+      "contracts": [
+        "pulse.crypto",
+        "pulse.s3"
+      ]
+    }
+  },
+  "javascriptDependencySetup": {
+    "profile": "javascript",
+    "code": "PULSE_JAVASCRIPT_PACKAGE_MODULE_UNAVAILABLE",
+    "message": "Cannot load JavaScript package import @pulse-compute/pulse from src/index.ts.",
+    "detail": {
+      "request": "@pulse-compute/pulse",
+      "packageName": "@pulse-compute/pulse",
+      "source": {
+        "file": "src/index.ts",
+        "line": 1,
+        "column": 21
+      },
+      "causeCode": "MODULE_NOT_FOUND"
+    }
+  },
+  "initialDepthFailure": {
+    "version": "pulse.o25.history-helper-proof.v1",
+    "status": "failed",
+    "startedAt": "2026-09-29T22:23:08.645Z",
+    "sourceCommit": "cd0f20a0e9e7d2de01937ee4f6aba740cd6b7680",
+    "sourceDirty": true,
+    "node": "v24.19.0",
+    "proofInputs": [
+      {
+        "path": "wasm/test/runtime/compiler-efficiency/o25-history-helper.cjs",
+        "sha256": "43789406d8b0411138c5459632c7bc083bd7e37dbfdb6fed849afece7116f6ce"
+      },
+      {
+        "path": "wasm/test/suite/registry.cjs",
+        "sha256": "89f2f140d64af0d3862573ad47e20078713c801bbb15755aca54e6d4cf515196"
+      },
+      {
+        "path": "wasm/test/fixtures/projects/shared-history-helper/src/lookup.ts",
+        "sha256": "66b3a9925e34f56b49f0625bf01013fad93c0209875ae155c76510577b076fe8"
+      },
+      {
+        "path": "wasm/test/fixtures/projects/shared-history-helper/src/index.ts",
+        "sha256": "14b9394b55f73a38bafd1b546c7663c109bdb103e279f3109a40ed2f99127c83"
+      },
+      {
+        "path": "wasm/test/fixtures/projects/shared-history-helper/src/types.ts",
+        "sha256": "74cb03d389081978aa52772a49f48b953be6c08b52e8ac513d9f0365222f1869"
+      },
+      {
+        "path": "wasm/test/fixtures/projects/shared-history-helper/src/schemas.ts",
+        "sha256": "0f55f8b2c7788e1679ede37961bf375fb428bd883873608253af22d9b26da039"
+      },
+      {
+        "path": "wasm/test/fixtures/projects/shared-history-helper/.pulse/config.ts",
+        "sha256": "be78aca16edb03647f1c8b8202b89e79578cf20be9ddb56c8f1c9ebf181e3448"
+      }
+    ],
+    "cells": [
+      {
+        "count": 1,
+        "source": {
+          "entrySha256": "d793d28727f34cba7ca5de5c0150999801fb606c5d775afc05708fcccdbfe52a",
+          "helperSha256": "66b3a9925e34f56b49f0625bf01013fad93c0209875ae155c76510577b076fe8",
+          "helperBytes": 11271
+        },
+        "helper": {
+          "status": "rejected",
+          "code": "PULSE_PROJECT_MODULE_LINK_FAILED",
+          "message": "Project module linking failed with 1 diagnostic(s).",
+          "diagnostics": [
+            {
+              "code": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED",
+              "kind": "RouterModuleLinkDiagnostic",
+              "severity": "error",
+              "message": "Project runtime import lookup from \"./lookup\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.",
+              "file": "src/index.ts",
+              "position": {
+                "line": 2,
+                "column": 22
+              },
+              "detail": {
+                "specifier": "./lookup",
+                "localName": "lookup",
+                "importedName": "lookup",
+                "supportedRoles": [
+                  "application-root",
+                  "router",
+                  "middleware",
+                  "route",
+                  "event",
+                  "error-middleware"
+                ],
+                "automaticFallback": false
+              }
+            }
+          ],
+          "detail": {
+            "entry": "src/index.ts"
+          }
+        },
+        "expanded": {
+          "status": "planned",
+          "planHash": "0a8f7f2c4faec9bdf850df59fc43525dd9047b5ab1534815097b90da3467b98d",
+          "stageBodies": 0,
+          "privateBodies": 1,
+          "registrations": 1,
+          "effects": 5,
+          "continuations": 5,
+          "loweredBodyBytes": 20110,
+          "statements": 294,
+          "wasmBytes": null,
+          "reasonWasmNotMeasured": "Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."
+        }
+      },
+      {
+        "count": 2,
+        "source": {
+          "entrySha256": "22f00f2f9528830143d592b524ec8d9ca8c2dea3be57a9101c4031d5bd247ba5",
+          "helperSha256": "66b3a9925e34f56b49f0625bf01013fad93c0209875ae155c76510577b076fe8",
+          "helperBytes": 11271
+        },
+        "helper": {
+          "status": "rejected",
+          "code": "PULSE_PROJECT_MODULE_LINK_FAILED",
+          "message": "Project module linking failed with 1 diagnostic(s).",
+          "diagnostics": [
+            {
+              "code": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED",
+              "kind": "RouterModuleLinkDiagnostic",
+              "severity": "error",
+              "message": "Project runtime import lookup from \"./lookup\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.",
+              "file": "src/index.ts",
+              "position": {
+                "line": 2,
+                "column": 22
+              },
+              "detail": {
+                "specifier": "./lookup",
+                "localName": "lookup",
+                "importedName": "lookup",
+                "supportedRoles": [
+                  "application-root",
+                  "router",
+                  "middleware",
+                  "route",
+                  "event",
+                  "error-middleware"
+                ],
+                "automaticFallback": false
+              }
+            }
+          ],
+          "detail": {
+            "entry": "src/index.ts"
+          }
+        },
+        "expanded": {
+          "status": "planned",
+          "planHash": "223a7848663a88e6cb0a7c17a348c90be3ea5e9a2ddde7a0be8835c1f7610be9",
+          "stageBodies": 0,
+          "privateBodies": 2,
+          "registrations": 2,
+          "effects": 10,
+          "continuations": 10,
+          "loweredBodyBytes": 40220,
+          "statements": 582,
+          "wasmBytes": null,
+          "reasonWasmNotMeasured": "Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."
+        }
+      },
+      {
+        "count": 16,
+        "source": {
+          "entrySha256": "f2dc6cf741df9354034c80e8104903fe0ed2ce189752c6193a4d72e99a3edf1c",
+          "helperSha256": "66b3a9925e34f56b49f0625bf01013fad93c0209875ae155c76510577b076fe8",
+          "helperBytes": 11271
+        },
+        "helper": {
+          "status": "rejected",
+          "code": "PULSE_PROJECT_MODULE_LINK_FAILED",
+          "message": "Project module linking failed with 1 diagnostic(s).",
+          "diagnostics": [
+            {
+              "code": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED",
+              "kind": "RouterModuleLinkDiagnostic",
+              "severity": "error",
+              "message": "Project runtime import lookup from \"./lookup\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.",
+              "file": "src/index.ts",
+              "position": {
+                "line": 2,
+                "column": 22
+              },
+              "detail": {
+                "specifier": "./lookup",
+                "localName": "lookup",
+                "importedName": "lookup",
+                "supportedRoles": [
+                  "application-root",
+                  "router",
+                  "middleware",
+                  "route",
+                  "event",
+                  "error-middleware"
+                ],
+                "automaticFallback": false
+              }
+            }
+          ],
+          "detail": {
+            "entry": "src/index.ts"
+          }
+        },
+        "expanded": {
+          "status": "planned",
+          "planHash": "85486bf5ba5fea61158cb3b3d2d0ac12a2600d4a558d2d64d9dd91dfcf5ae357",
+          "stageBodies": 0,
+          "privateBodies": 16,
+          "registrations": 16,
+          "effects": 80,
+          "continuations": 80,
+          "loweredBodyBytes": 321766,
+          "statements": 4614,
+          "wasmBytes": null,
+          "reasonWasmNotMeasured": "Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."
+        }
+      }
+    ],
+    "nativeSharingQualified": false,
+    "nativeRuntimeQualified": false,
+    "nativeCompilerInvocations": 0,
+    "failure": {
+      "code": "ERR_ASSERTION",
+      "message": "65-packs-two-rounds\n+ actual - expected\n\n  [\n+   503,\n+   'HISTORY_INDEX_INVALID'\n-   200,\n-   'after:record-A'\n  ]\n"
+    },
+    "completedAt": "2026-09-29T22:23:10.871Z"
+  },
+  "resolutions": [
+    "Used an arrow-function helper to get past the package facade enclosing-function form restriction; Native import and await admission still fail.",
+    "Linked workspace packages into the isolated fixture and built their facades before JavaScript execution.",
+    "Added the opt-in task to the explicit external-task exclusion set; required unit/release tasks remain unchanged.",
+    "The initial deep fixture had a one-child branch, correctly rejected by the real traversal. Added the required second unselected child; the final 65-pack selected-path check passes."
+  ]
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v4';
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v5';
 const CANONICAL_NATIVE_HANDLER_BODY_VERSION = 'pulse.canonical-native-handler-body.v1';
 const CANONICAL_NATIVE_STAGE_CONTRACT = Object.freeze({
   version: 'pulse.canonical-native-stage.v1',
@@ -33,6 +33,7 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'continue',
   'return',
   'handler-call',
+  'helper-call',
   'stage-call',
   'expression'
 ]);

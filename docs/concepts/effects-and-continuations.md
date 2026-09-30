@@ -272,6 +272,8 @@ Project tests can set `continuationTtlMs` in a case inside the dedicated `tests/
 
 Write managed handlers with `async` and await trusted Pulse effects. On Native targets, the compiler erases that notation into effects and continuations. On JavaScript targets, the live runtime executes the same async-shaped handler normally.
 
+Static source helpers can return values across recognized effect suspensions under the bounded [source-helper contract](../architecture/current-contracts.md#static-effectful-source-helpers-o-25). Their caller retains response ownership.
+
 Arbitrary Promise construction, ambient asynchronous APIs, and unrecognized library awaits remain outside Native eligibility. They must not be mistaken for Pulse effects or silently trigger target fallback.
 
 This design keeps:

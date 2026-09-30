@@ -1,0 +1,102 @@
+{
+  "status": "qualified-with-baseline-cli-failures",
+  "sourceCommit": "8c1c8e1ccbe5b094012c6440935bc462e4b34af3",
+  "sourceIdentity": {
+    "proof": "Clean tracked and untracked source state; see proof.json hashes.",
+    "focused": "Committed source with clean tracked tree; concurrent broad tests generated untracked fixtures.",
+    "broad": "Development replay across evolving working tree; not an exact-commit release replay. Final ownership changes rechecked by focused suite and clean proof."
+  },
+  "checks": [
+    {
+      "name": "clean-direct-proof",
+      "status": "passed",
+      "report": "proof.json",
+      "nativePlanBuilds": 5,
+      "additionalNamedCompanionBuilds": 3
+    },
+    {
+      "name": "unit-plus-native-plan-and-o25",
+      "status": "passed",
+      "completedTasks": 37,
+      "log": "helper-final-focused.log",
+      "note": "Nested orchestration-failure fixture intentionally fails; top-level orchestration task and all final summary tasks pass."
+    },
+    {
+      "name": "native-javascript-conformance",
+      "status": "passed",
+      "completedTasks": 65,
+      "log": "helper-portable-2.log"
+    },
+    {
+      "name": "providers",
+      "status": "passed",
+      "completedTasks": 12,
+      "log": "helper-providers.log"
+    },
+    {
+      "name": "cli",
+      "status": "failed",
+      "passedTasks": 20,
+      "failedTasks": 2,
+      "logs": [
+        "helper-cli-providers.log",
+        "helper-cli-resumed.log",
+        "helper-cli-rest.log"
+      ],
+      "note": "Resumed runs provide task coverage; not a complete release replay."
+    },
+    {
+      "name": "maintainer",
+      "status": "passed",
+      "log": "helper-maintainer-final.log"
+    },
+    {
+      "name": "docs",
+      "status": "passed",
+      "log": "helper-docs-final.log"
+    },
+    {
+      "name": "documentation-release",
+      "status": "passed",
+      "log": "helper-doc-release-final.log"
+    },
+    {
+      "name": "typescript-build",
+      "status": "passed",
+      "log": "helper-tsc.log"
+    },
+    {
+      "name": "scope-consistency",
+      "status": "passed",
+      "humanDecision": "required",
+      "log": "helper-scope-final.log"
+    }
+  ],
+  "baselineFailures": [
+    {
+      "task": "docs-example-05-fastly-capabilities",
+      "actual": 47185,
+      "expected": 47135,
+      "baselineLog": "baseline-docs-05.log"
+    },
+    {
+      "task": "docs-example-09-router-lowering",
+      "actual": 9157,
+      "expected": 9762,
+      "baselineLog": "baseline-docs-09.log"
+    }
+  ],
+  "baseline": "Unchanged pulse-o22 checkout source tree previously verified equal to merged latest cd0f20a0e9e7d2de01937ee4f6aba740cd6b7680. Both size mismatches reproduce; goldens unchanged.",
+  "limitations": [
+    "No full release replay or deployed-provider qualification.",
+    "No full-application adoption, bulk schema or whole-application size claim.",
+    "sameFile: planned in proof.json means same-file source successfully lowered to a Native plan; no separate same-file runtime qualification.",
+    "JavaScript subsection pending list is inherited historical scope text; Native qualification is recorded independently by top-level native and middleware sections."
+  ],
+  "publication": {
+    "pr": "https://github.com/pulse-compute/pulse/pull/142",
+    "status": "blocked-awaiting-explicit-approval",
+    "remoteHead": "157ce71ceb6ce3152ce06f1179bdcd0d86f92d6c",
+    "reason": "Automatic approval review rejected remote commit creation because publication of this implementation to a public repository requires explicit approval. No remote commit/ref/PR metadata was updated."
+  }
+}

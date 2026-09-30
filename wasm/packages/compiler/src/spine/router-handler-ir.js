@@ -1,4 +1,7 @@
 'use strict';
+const ts = require('typescript');
+const { normalizeManagedHandler } = require('./async-surface-normalizer');
+const { CanonicalRouterCompileError } = require('./router-topology-frontend');
 
 const {
   buildRouterHandlerIr
@@ -164,6 +167,38 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   const header = topology.retainedDeclarations;
   let synthetic = header ? `${header}\n\n` : '';
   synthetic += 'export default function __pulse_router_entry(ctx) {\n';
+  const helpers = [];
+  const helperRecords = [];
+  const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+  for (const helper of topology.options?.linkedProjectModules?.sourceHelpers || []) {
+    const fn = helper.functionNode;
+    const declaration = fn.parent;
+    const immutable = !ts.isVariableDeclaration(declaration) || Boolean(declaration.parent.flags & ts.NodeFlags.Const);
+    let reassigned = false;
+    const scanAssignments = node => {
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment
+        && ts.isIdentifier(node.left) && node.left.text === helper.source.name) reassigned = true;
+      ts.forEachChild(node, scanAssignments);
+    };
+    scanAssignments(helper.sourceFile);
+    const valid = immutable && !reassigned && ts.isBlock(fn.body) && fn.parameters[0]?.name?.text === 'ctx'
+      && fn.parameters.every((p, i) => ts.isIdentifier(p.name) && !p.initializer && !p.dotDotDotToken && !p.questionToken
+        && (i === 0 || [ts.SyntaxKind.StringKeyword, ts.SyntaxKind.NumberKeyword, ts.SyntaxKind.BooleanKeyword].includes(p.type?.kind)))
+      && new Set(fn.parameters.map(p => p.name.text)).size === fn.parameters.length
+      && fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+    if (!valid) throw new CanonicalRouterCompileError('Unsupported source helper signature.', [{ code: 'PULSE_NATIVE_HELPER_SIGNATURE_UNSUPPORTED', severity: 'error', message: 'Helpers require async block bodies, ctx first and explicit scalar inputs.', file: helper.source.file }]);
+    const normalized = normalizeManagedHandler(fn, { sourceFile: helper.sourceFile, ctxName: 'ctx', frontend: 'canonical-router',
+      target: 'native', requireAsync: true, packageEffectForCall: topology.options.packageEffectForCall });
+    if (normalized.diagnostics.length) throw new CanonicalRouterCompileError('Unsupported source helper body.', normalized.diagnostics);
+    const start = synthetic.length;
+    const parameters = fn.parameters.slice(1).map(p => printer.printNode(ts.EmitHint.Unspecified, p, helper.sourceFile)).join(',');
+    synthetic += `function ${helper.name}(${parameters}) ${printer.printNode(ts.EmitHint.Unspecified, normalized.functionNode.body, helper.sourceFile)}\n`;
+    const generatedRange = { start, end: synthetic.length };
+    helpers.push({ id: helper.id, name: helper.name, source: helper.source,
+      parameters: fn.parameters.slice(1).map(p => ({ name: p.name.text, valueKind: p.type.getText(helper.sourceFile) })), generatedRange });
+    helperRecords.push({ entryStableId: helper.id, operationIr: { sourceFile: helper.sourceFile, handler: fn },
+      canonicalIr: { router: { entry: { generatedRange } } } });
+  }
 
   const eventReachable = Boolean(topology.eventTopology && topology.eventCatalog && topology.eventCatalog.events.length > 0);
   const eventTopology = realizedEventTopology(topology, prepared);
@@ -371,6 +406,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
       }),
       routes: Object.freeze(routeRecords),
       entries: Object.freeze(entryRecords),
+      ...(helpers.length ? { helpers: Object.freeze(helpers) } : {}),
       ...(eventReachable ? { applicationEntries: Object.freeze(entryRecords) } : {})
     }),
     diagnostics: Object.freeze([])
@@ -379,7 +415,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   return Object.freeze({
     version: ROUTER_HANDLER_IR_BUNDLE_VERSION,
     output,
-    handlers: Object.freeze(handlerRecords)
+    handlers: Object.freeze([...helperRecords, ...handlerRecords])
   });
 }
 

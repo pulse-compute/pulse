@@ -1,0 +1,39 @@
+
+[pulsewasm:cli] docs-example-10-entities-tools
+[pulsewasm] documented 10-entities-tools workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 10-entities-tools
+ok - docs example 10-entities-tools: provider=node tests=2 capabilities=3 schemas=2
+[pulsewasm] docs-example-10-entities-tools: passed in 7.61s
+
+[pulsewasm:cli] docs-example-11-events
+[pulsewasm] documented 11-events workflow (timeout 300.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 11-events
+ok - docs example 11-events: provider=node tests=3 capabilities=3 schemas=2
+[pulsewasm] docs-example-11-events: passed in 12.33s
+
+[pulsewasm:cli] docs-example-12-mcp-proxy
+[pulsewasm] documented 12-mcp-proxy workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 12-mcp-proxy
+ok - docs example 12-mcp-proxy: provider=node tests=1 capabilities=3
+[pulsewasm] docs-example-12-mcp-proxy: passed in 6.14s
+
+[pulsewasm:cli] docs-example-13-jwt-es256
+[pulsewasm] documented 13-jwt-es256 workflow (timeout 300.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 13-jwt-es256
+ok - docs example 13-jwt-es256: provider=node tests=3 capabilities=2
+[pulsewasm] docs-example-13-jwt-es256: passed in 23.45s
+
+[pulsewasm] test summary
+  passed         7.61s  docs-example-10-entities-tools
+  passed        12.33s  docs-example-11-events
+  passed         6.14s  docs-example-12-mcp-proxy
+  passed        23.45s  docs-example-13-jwt-es256
+  total        49.53s

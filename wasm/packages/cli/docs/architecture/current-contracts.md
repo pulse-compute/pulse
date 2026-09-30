@@ -167,6 +167,46 @@ bodies; it does not create a dynamic function table or change the value heap's
 retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
+## Static effectful source helpers (O-25)
+
+Native plan v5 adds `pulse.canonical-native-helper.v1`: a separately owned
+source-function body, scalar parameters, a value result and an invocation-owned
+return continuation. Static project imports and same-file helpers are admitted
+only through the resolved source graph. The initial shape is an immutable async
+block function with `ctx` first and explicitly typed string, number or boolean
+inputs. An HTTP route or middleware must bind a direct `await helper(ctx, ...)`;
+arguments must have matching proven scalar kinds. JavaScript continues to execute
+the original source graph.
+
+Helpers cannot capture caller or module values, mutate inputs, recurse, nest
+helper calls, accept function values, run under a caller loop, group effects,
+construct responses or own Router transfers. Ordinary unrecognized calls remain
+ineligible. Helper bodies use the existing bounded value, pure-loop, read-loop,
+schema and trusted Pulse-effect rules. Importing a source function confers no
+package-lowerer trust or host authority.
+
+The linker retains one helper declaration. Handler IR produces one generator
+body; the Native plan retains one body and one set of effect/continuation sites,
+independent of caller count. Helpers own those sites explicitly; the calling
+registration owns its result local and response/failure mapping. Plan validation
+checks parameter/result kinds, local ownership, effect ownership, continuation
+ownership and non-nesting after serialization and a recomputed hash.
+
+One invocation-owned callee frame holds argument handles, local values, the
+selected return program counter and error transfer destination. Entry resets
+callee locals; suspension retains them. A normal return resumes only the selected
+caller. Repeated sequential calls reset the same frame. Normalized application
+errors use the selected caller's error lane; terminal host failures fence further
+execution. Existing effect tickets, cancellation and cumulative read-loop memory
+limits remain authoritative. The host ABI stays v2; the generator is v7.
+
+The O-25 proof covers the retained history body at 1/2/16 callers, byte-matched
+named companions for final-Wasm attribution, early results, corruption/failure,
+65-pack traversal, middleware, re-entry and suspended request isolation. A
+separate reduced-round fixture checks defensive work-limit return parity without
+changing production bounds. These are portable Native/injected-host results,
+not a full application adoption or deployed-provider qualification.
+
 ## Native terminal Router bodies
 
 Generated Router package-call mappings are authoritative: an unmapped generated

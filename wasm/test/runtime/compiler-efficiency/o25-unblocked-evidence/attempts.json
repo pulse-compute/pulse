@@ -1,0 +1,70 @@
+{
+  "scope": "Development attempts retained separately from final committed proof.",
+  "attempts": [
+    {
+      "log": "helper-first.log",
+      "sha256": "2b2c28a08aa1cc643de10265e5406b8bf84f21195954565874ffae4ba602e230",
+      "result": "Native admission succeeds; old runner still correctly reports blocked."
+    },
+    {
+      "log": "helper-build.log",
+      "sha256": "09773c52062b6ab2894e6f7ef559cf802dc4e7fe475361b34aef0436a4b43f83",
+      "result": "Serialized plan loses existing package-operation metadata; retry compiles the live plan."
+    },
+    {
+      "log": "helper-focused.log",
+      "sha256": "bb7ad7d717a98a9f0f0c1da06d9efc9d50144f69e6097c84854073ca45432077",
+      "result": "Test configuration lacked symbolic scope; fixture corrected."
+    },
+    {
+      "log": "helper-focused-2.log",
+      "sha256": "1b472001437a93985a5863593109418e05631f74fa57ea199d1e4c635198343d",
+      "result": "Original-call validator omitted helper effect scan; compiler corrected."
+    },
+    {
+      "log": "helper-focused-3.log",
+      "sha256": "d72d7b89b13181cd28c1baf38199d90b00288241b9ba98569964262c5b8db1a9",
+      "result": "Missing helper result-kind inference; compiler corrected."
+    },
+    {
+      "log": "helper-focused-4.log",
+      "sha256": "9ed7aacf10b0c72b2db01e865f1e11b1914ddd2ed9e50d385b59d043c1a622c9",
+      "result": "Test incorrectly expected fatal host failure to enter application error handler; expectation corrected without changing host semantics."
+    },
+    {
+      "log": "helper-focused-5.log",
+      "sha256": "8d52bca18846efef25d47dece4ead6c24f2ae5a38d6183512cba0465ed5e1ac7",
+      "result": "Initial ownership and lifecycle suite passed."
+    },
+    {
+      "log": "helper-focused-6.log",
+      "sha256": "392800ece50bd5d46c45855df8e4ee70f48a1f55f26c490be49d43e1e6d2fe7d",
+      "result": "Application-error transfer and Fastly parity passed."
+    },
+    {
+      "log": "helper-focused-7.log",
+      "sha256": "fbdf4abc53090696799ce618734b1d8285ab6a57eabc7aec98e3156c1bb82cca",
+      "result": "Caller-entry ownership and moved-call mutation checks passed."
+    },
+    {
+      "log": "helper-portable.log",
+      "sha256": "63548d94355b5f7cd7169f64eed9e699296e9b4a684daabbcc0818d91eddcd3b",
+      "result": "Missing local pinned AssemblyScript link; restored link to existing dependency bundle, then replayed."
+    },
+    {
+      "log": "helper-maintainer.log",
+      "sha256": "f6147436fd87611301ab4e955795c3d45c87e018778f6f889ee407c6a4924d4f",
+      "result": "New task lacked release shard; integrated helper checks into existing mandatory Native plan task."
+    },
+    {
+      "log": "unblocked-first.log",
+      "sha256": "8d5e9d90ec6b59e3b64e27b2cc65b7c54db2e54c91f7200e448677b7c3f09e44",
+      "result": "Sharing and Native/JavaScript checks passed; middleware string coercion needed for state.set fixture."
+    },
+    {
+      "log": "unblocked-second.log",
+      "sha256": "c7fa4ccbd2c7d4223d28d493fd9523fe5afb19ee227c67770686524e05cd4d39",
+      "result": "Full proof passed on working tree; subsequently replayed from clean committed source."
+    }
+  ]
+}

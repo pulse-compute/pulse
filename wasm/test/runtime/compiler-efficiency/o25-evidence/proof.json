@@ -1,0 +1,431 @@
+{
+  "version": "pulse.o25.history-helper-proof.v1",
+  "status": "blocked",
+  "startedAt": "2026-09-29T22:24:36.070Z",
+  "sourceCommit": "8ecaa60b64f1ebff2d27d2a9e51da56436f3d0c0",
+  "sourceDirty": false,
+  "node": "v24.19.0",
+  "proofInputs": [
+    {
+      "path": "wasm/test/runtime/compiler-efficiency/o25-history-helper.cjs",
+      "sha256": "7e25393744fef98b8bc104b0bbe850630c1a9660b171638fca933de69b5d60c3"
+    },
+    {
+      "path": "wasm/test/suite/registry.cjs",
+      "sha256": "89f2f140d64af0d3862573ad47e20078713c801bbb15755aca54e6d4cf515196"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/shared-history-helper/src/lookup.ts",
+      "sha256": "256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/shared-history-helper/src/index.ts",
+      "sha256": "14b9394b55f73a38bafd1b546c7663c109bdb103e279f3109a40ed2f99127c83"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/shared-history-helper/src/types.ts",
+      "sha256": "74cb03d389081978aa52772a49f48b953be6c08b52e8ac513d9f0365222f1869"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/shared-history-helper/src/schemas.ts",
+      "sha256": "0f55f8b2c7788e1679ede37961bf375fb428bd883873608253af22d9b26da039"
+    },
+    {
+      "path": "wasm/test/fixtures/projects/shared-history-helper/.pulse/config.ts",
+      "sha256": "be78aca16edb03647f1c8b8202b89e79578cf20be9ddb56c8f1c9ebf181e3448"
+    }
+  ],
+  "cells": [
+    {
+      "count": 1,
+      "source": {
+        "entrySha256": "d793d28727f34cba7ca5de5c0150999801fb606c5d775afc05708fcccdbfe52a",
+        "helperSha256": "256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8",
+        "helperBytes": 11241
+      },
+      "helper": {
+        "status": "rejected",
+        "code": "PULSE_PROJECT_MODULE_LINK_FAILED",
+        "message": "Project module linking failed with 1 diagnostic(s).",
+        "diagnostics": [
+          {
+            "code": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED",
+            "kind": "RouterModuleLinkDiagnostic",
+            "severity": "error",
+            "message": "Project runtime import lookup from \"./lookup\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.",
+            "file": "src/index.ts",
+            "position": {
+              "line": 2,
+              "column": 22
+            },
+            "detail": {
+              "specifier": "./lookup",
+              "localName": "lookup",
+              "importedName": "lookup",
+              "supportedRoles": [
+                "application-root",
+                "router",
+                "middleware",
+                "route",
+                "event",
+                "error-middleware"
+              ],
+              "automaticFallback": false
+            }
+          }
+        ],
+        "detail": {
+          "entry": "src/index.ts"
+        }
+      },
+      "expanded": {
+        "status": "planned",
+        "planHash": "ea7be46ae3e1c50a255f3b54f65a5aaff5454c5c6058a45d3b55efe4f44c8423",
+        "stageBodies": 0,
+        "privateBodies": 1,
+        "registrations": 1,
+        "effects": 5,
+        "continuations": 5,
+        "loweredBodyBytes": 20110,
+        "statements": 294,
+        "wasmBytes": null,
+        "reasonWasmNotMeasured": "Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."
+      }
+    },
+    {
+      "count": 2,
+      "source": {
+        "entrySha256": "22f00f2f9528830143d592b524ec8d9ca8c2dea3be57a9101c4031d5bd247ba5",
+        "helperSha256": "256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8",
+        "helperBytes": 11241
+      },
+      "helper": {
+        "status": "rejected",
+        "code": "PULSE_PROJECT_MODULE_LINK_FAILED",
+        "message": "Project module linking failed with 1 diagnostic(s).",
+        "diagnostics": [
+          {
+            "code": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED",
+            "kind": "RouterModuleLinkDiagnostic",
+            "severity": "error",
+            "message": "Project runtime import lookup from \"./lookup\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.",
+            "file": "src/index.ts",
+            "position": {
+              "line": 2,
+              "column": 22
+            },
+            "detail": {
+              "specifier": "./lookup",
+              "localName": "lookup",
+              "importedName": "lookup",
+              "supportedRoles": [
+                "application-root",
+                "router",
+                "middleware",
+                "route",
+                "event",
+                "error-middleware"
+              ],
+              "automaticFallback": false
+            }
+          }
+        ],
+        "detail": {
+          "entry": "src/index.ts"
+        }
+      },
+      "expanded": {
+        "status": "planned",
+        "planHash": "e5448f9fc10354981691289d194b14fe8f8768b800e28d3ee074e8d2bb01ca06",
+        "stageBodies": 0,
+        "privateBodies": 2,
+        "registrations": 2,
+        "effects": 10,
+        "continuations": 10,
+        "loweredBodyBytes": 40220,
+        "statements": 582,
+        "wasmBytes": null,
+        "reasonWasmNotMeasured": "Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."
+      }
+    },
+    {
+      "count": 16,
+      "source": {
+        "entrySha256": "f2dc6cf741df9354034c80e8104903fe0ed2ce189752c6193a4d72e99a3edf1c",
+        "helperSha256": "256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8",
+        "helperBytes": 11241
+      },
+      "helper": {
+        "status": "rejected",
+        "code": "PULSE_PROJECT_MODULE_LINK_FAILED",
+        "message": "Project module linking failed with 1 diagnostic(s).",
+        "diagnostics": [
+          {
+            "code": "PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED",
+            "kind": "RouterModuleLinkDiagnostic",
+            "severity": "error",
+            "message": "Project runtime import lookup from \"./lookup\" is not a Router, middleware, route handler, event handler, error handler, mounted Router, or resolved application root.",
+            "file": "src/index.ts",
+            "position": {
+              "line": 2,
+              "column": 22
+            },
+            "detail": {
+              "specifier": "./lookup",
+              "localName": "lookup",
+              "importedName": "lookup",
+              "supportedRoles": [
+                "application-root",
+                "router",
+                "middleware",
+                "route",
+                "event",
+                "error-middleware"
+              ],
+              "automaticFallback": false
+            }
+          }
+        ],
+        "detail": {
+          "entry": "src/index.ts"
+        }
+      },
+      "expanded": {
+        "status": "planned",
+        "planHash": "1e26438ab3549f8ad4d3bb90959dd3d0f1ac07400170e3f68261abdf97a17497",
+        "stageBodies": 0,
+        "privateBodies": 16,
+        "registrations": 16,
+        "effects": 80,
+        "continuations": 80,
+        "loweredBodyBytes": 321766,
+        "statements": 4614,
+        "wasmBytes": null,
+        "reasonWasmNotMeasured": "Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."
+      }
+    }
+  ],
+  "nativeSharingQualified": false,
+  "nativeRuntimeQualified": false,
+  "nativeCompilerInvocations": 0,
+  "javascript": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "found",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      },
+      {
+        "name": "65-packs-two-rounds",
+        "registration": 0,
+        "status": "passed",
+        "reads": 65,
+        "digests": 66,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      },
+      {
+        "name": "not-found",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:"
+        ]
+      },
+      {
+        "name": "malformed-root",
+        "registration": 0,
+        "status": "passed",
+        "reads": 0,
+        "digests": 0,
+        "response": [
+          503,
+          "HISTORY_INDEX_INVALID"
+        ]
+      },
+      {
+        "name": "corrupt-pack",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          503,
+          "HISTORY_INDEX_CORRUPT"
+        ]
+      },
+      {
+        "name": "wrong-owner",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          503,
+          "HISTORY_INDEX_INVALID"
+        ]
+      },
+      {
+        "name": "missing-object",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 1,
+        "response": [
+          503,
+          "HISTORY_INDEX_UNAVAILABLE"
+        ]
+      },
+      {
+        "name": "digest-failure",
+        "registration": 0,
+        "status": "passed",
+        "reads": 0,
+        "digests": 1,
+        "response": [
+          503,
+          "HISTORY_INDEX_UNAVAILABLE"
+        ]
+      },
+      {
+        "name": "caller-bulk-failure",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          207,
+          "bulk:HISTORY_INDEX_INVALID"
+        ]
+      },
+      {
+        "name": "found",
+        "registration": 1,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      },
+      {
+        "name": "found",
+        "registration": 15,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      },
+      {
+        "name": "interleaved-B-storage",
+        "registration": 15,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-B"
+        ]
+      },
+      {
+        "name": "resumed-A-storage",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      },
+      {
+        "name": "interleaved-B-digest",
+        "registration": 15,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-B"
+        ]
+      },
+      {
+        "name": "resumed-A-digest",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      },
+      {
+        "name": "found",
+        "registration": 0,
+        "status": "passed",
+        "reads": 1,
+        "digests": 2,
+        "response": [
+          200,
+          "after:record-A"
+        ]
+      }
+    ],
+    "completedChecks": 16,
+    "scope": "Original source graph on explicit JavaScript target; not Native shared-frame evidence",
+    "pending": [
+      "Native helper suspension/resumption",
+      "Native request-frame isolation",
+      "Native work-limit and caller bulk-result qualification"
+    ]
+  },
+  "sameFile": {
+    "status": "rejected",
+    "code": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+    "message": "Canonical Router lowering failed for src/index.ts.",
+    "diagnostics": [
+      {
+        "code": "PULSE_NATIVE_AWAIT_UNSUPPORTED",
+        "kind": "CanonicalRouterCompileDiagnostic",
+        "severity": "error",
+        "message": "Native Pulse supports await only on trusted Pulse effects; lookup(ctx,ctx.req.header('x-owner')||'owner',ctx.req.header('x-root')||'',0,ctx.req.header('x-key')||'key') is not lowerable.",
+        "file": "src/index.ts",
+        "position": {
+          "line": 182,
+          "column": 47,
+          "offset": 11360
+        },
+        "detail": {
+          "selectedTarget": "native",
+          "automaticFallback": false
+        }
+      }
+    ]
+  },
+  "blocker": "Native has no admitted callable effectful-helper boundary. Imported helpers fail runtime-value linking; same-file awaited helpers are not trusted effect sites. Expanded handlers do not establish helper sharing.",
+  "pendingGates": [
+    "One retained compiled helper body",
+    "1/2/16 binding/frame/continuation growth",
+    "Native behavior parity and work-limit refusal",
+    "Native suspended-frame and request isolation",
+    "Final-Wasm attribution"
+  ],
+  "completedAt": "2026-09-29T22:24:38.655Z"
+}

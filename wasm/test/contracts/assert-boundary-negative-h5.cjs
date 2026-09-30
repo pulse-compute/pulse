@@ -83,7 +83,7 @@ const operation = packageContract.createCanonicalPackageOperation(effect(), auth
 const providerRequirement = {
   version: packageContract.PROVIDER_REQUIREMENT_RECORD_VERSION,
   authorityVersion: 'pulse.provider-requirement-authority.v1',
-  planVersion: 'pulse.canonical-native-plan.v4',
+  planVersion: 'pulse.canonical-native-plan.v5',
   planHash: 'a'.repeat(64),
   providerNeutral: true,
   capabilities: ['example.emit'],

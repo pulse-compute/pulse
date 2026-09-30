@@ -1,0 +1,9 @@
+
+[pulsewasm:external] shared-history-helper-o25
+[pulsewasm] O-25 real bounded history helper: 1/2/16 admission, expanded control and JavaScript semantics; exits nonzero until Native sharing qualifies (timeout 90.00s)
+{"status":"blocked","cells":[{"count":1,"helper":"rejected","expanded":{"status":"planned","planHash":"ea7be46ae3e1c50a255f3b54f65a5aaff5454c5c6058a45d3b55efe4f44c8423","stageBodies":0,"privateBodies":1,"registrations":1,"effects":5,"continuations":5,"loweredBodyBytes":20110,"statements":294,"wasmBytes":null,"reasonWasmNotMeasured":"Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."}},{"count":2,"helper":"rejected","expanded":{"status":"planned","planHash":"e5448f9fc10354981691289d194b14fe8f8768b800e28d3ee074e8d2bb01ca06","stageBodies":0,"privateBodies":2,"registrations":2,"effects":10,"continuations":10,"loweredBodyBytes":40220,"statements":582,"wasmBytes":null,"reasonWasmNotMeasured":"Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."}},{"count":16,"helper":"rejected","expanded":{"status":"planned","planHash":"1e26438ab3549f8ad4d3bb90959dd3d0f1ac07400170e3f68261abdf97a17497","stageBodies":0,"privateBodies":16,"registrations":16,"effects":80,"continuations":80,"loweredBodyBytes":321766,"statements":4614,"wasmBytes":null,"reasonWasmNotMeasured":"Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate."}}],"javascriptChecks":16,"output":null}
+[pulsewasm] shared-history-helper-o25: failed in 2.68s
+
+[pulsewasm] test summary
+  failed         2.68s  shared-history-helper-o25
+  total        2.69s

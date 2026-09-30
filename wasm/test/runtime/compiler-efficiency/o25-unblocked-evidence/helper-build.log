@@ -1,0 +1,18 @@
+generated 135990 undefined
+PackageOperationSeamError: Trusted package pulse.crypto produced an invalid canonical operation.
+    at canonicalPackageOperation (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/package-operation-seam.js:561:11)
+    at /workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/package-operation-seam.js:890:53
+    at Array.map (<anonymous>)
+    at packageOperationRecognitionFromEffects (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/package-operation-seam.js:890:30)
+    at Object.resolveProviderRequirements (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/canonical-native-compiler.js:161:23)
+    at Object.run (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/canonical-native-module.js:19:46)
+    at Object.run (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalNativeModuleSpine (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/canonical-native-module.js:62:48)
+    at Object.compileCanonicalNativePlan (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/canonical-native-compiler.js:364:10)
+    at [stdin]:2:339 {
+  code: 'PULSE_PACKAGE_OPERATION_INVALID',
+  detail: {
+    order: 1,
+    cause: 'Canonical package effect must use pulse.canonical-package-effect.v1.'
+  }
+} undefined

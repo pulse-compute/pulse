@@ -44,7 +44,9 @@ const HANDLER_IR_OPERATION_KINDS = Object.freeze([
 const HANDLER_IR_EXTENSION_OPERATION_KINDS = Object.freeze([
   'parallel-group',
   'router-body',
-  'router-body-call'
+  'router-body-call',
+  'helper-body',
+  'helper-call'
 ]);
 const ROUTER_HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'router-transfer',
@@ -163,7 +165,7 @@ function summarizeHandlerOperation(body) {
       if (entry.elseOperation) countOperation(entry.elseOperation);
     }
     if (entry.kind === 'router-guard') countOperation(entry.body);
-    if (entry.kind === 'read-loop' || entry.kind === 'router-body') countOperation(entry.body);
+    if (entry.kind === 'read-loop' || entry.kind === 'router-body' || entry.kind === 'helper-body') countOperation(entry.body);
   }
   countOperation(body);
   return Object.freeze({
@@ -190,6 +192,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const continuationSites = [];
   const effectCounters = new Map();
   let continuationIndex = 0;
+  const helperBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.helpers || []).map(helper => [helper.name, helper]));
   const routerBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.entries || [])
     .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
   // Offsets belong to a source file. Project-wide contributions can share an
@@ -613,6 +616,14 @@ function buildPlainHandlerIr(frontend, options = {}) {
   }
 
   function buildStatement(statement, aliases, fromList = false) {
+    if (ts.isFunctionDeclaration(statement) && helperBodies.has(statement.name?.text)) {
+      return createHandlerOperation('helper-body', { statement, body: buildStatement(statement.body, new Map()) });
+    }
+    if (ts.isVariableStatement(statement) && statement.declarationList.declarations.length === 1) {
+      const declaration = statement.declarationList.declarations[0], call = declaration.initializer;
+      if (call && ts.isCallExpression(call) && ts.isIdentifier(call.expression) && helperBodies.has(call.expression.text))
+        return createHandlerOperation('helper-call', { statement, declaration, call });
+    }
     if (ts.isFunctionDeclaration(statement) && routerBodies.has(statement.name?.text)) {
       return createHandlerOperation('router-body', { statement, body: buildStatement(statement.body, new Map()) });
     }
@@ -726,7 +737,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
     const aliases = new Map(inheritedAliases);
     for (let index = 0; index < statements.length; index += 1) {
       const statement = statements[index];
-      if (ts.isFunctionDeclaration(statement) && routerBodies.has(statement.name?.text)) {
+      if (ts.isFunctionDeclaration(statement) && (routerBodies.has(statement.name?.text) || helperBodies.has(statement.name?.text))) {
         scanOriginalStatements(statement.body.statements); continue;
       }
       const namespace = extractKvNamespaceDeclaration(statement, ctxName);

@@ -1048,7 +1048,15 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   const terminalPackageApplication = terminalPackageIntrinsicApplication(root, packageOperationRecognition);
 
   let linkedProjectModules;
-  if (multiModule) {
+  let localHelperCall = false;
+  if (root?.kind === 'router' && options.target !== 'javascript') {
+    const visit = node => {
+      if (ts.isAwaitExpression(node) && ts.isCallExpression(node.expression) && ts.isIdentifier(node.expression.expression)) localHelperCall = true;
+      ts.forEachChild(node, visit);
+    };
+    visit(root.module.sourceFile);
+  }
+  if (multiModule || localHelperCall) {
     try {
       linkedProjectModules = root.kind === 'router'
         ? linkProjectRouterModules(graphBuild, { rootDir, target: options.target })

@@ -535,6 +535,11 @@ const tasks = Object.freeze({
     timeoutMs: 360000,
     description: 'O-18 paired 1/2/16 production shared-stage, final-Wasm attribution, re-entry and runtime semantics'
   }),
+  'shared-history-helper-o25': nodeTask('test/runtime/compiler-efficiency/o25-helper-unblocked.cjs', {
+    evidence: 'external',
+    timeoutMs: 180000,
+    description: 'O-25 retained Native history helper at 1/2/16 callers, final-Wasm attribution and Native/JavaScript semantics'
+  }),
   'compiler-schema-cost-sc01': nodeTask('test/runtime/compiler-efficiency/sc01-schema-cost.cjs', {
     evidence: 'external',
     timeoutMs: 300000,

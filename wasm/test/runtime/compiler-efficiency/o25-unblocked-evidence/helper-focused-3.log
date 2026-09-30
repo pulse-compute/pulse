@@ -1,0 +1,34 @@
+CanonicalNativePlanError: Native-plan lowering failed for src/index.ts.
+    at NativePlanBuilder.build (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/canonical-native-plan.js:1123:44)
+    at Object.buildCanonicalNativePlanLegacy [as buildNativePlan] (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/canonical-native-plan.js:1766:51)
+    at Object.run (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/canonical-native-plan.js:28:25)
+    at Object.run (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/pipeline.js:168:23)
+    at executeCanonicalNativePlanSpine (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/spine/canonical-native-plan.js:51:46)
+    at buildCanonicalNativePlan (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/compiler/src/canonical-native-plan.js:1770:10)
+    at compile (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:23:11)
+    at main (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:28:16)
+    at Object.<anonymous> (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:77:1)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14) {
+  code: 'PULSE_CANONICAL_NATIVE_PLAN_FAILED',
+  diagnostics: [
+    {
+      code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+      kind: 'CanonicalNativePlanDiagnostic',
+      severity: 'error',
+      message: 'state.set requires a string value.',
+      file: 'src/index.ts.canonical.generated.js',
+      position: [Object],
+      detail: [Object]
+    }
+  ]
+} [
+  {
+    code: 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED',
+    kind: 'CanonicalNativePlanDiagnostic',
+    severity: 'error',
+    message: 'state.set requires a string value.',
+    file: 'src/index.ts.canonical.generated.js',
+    position: { line: 230, column: 41, offset: 11135 },
+    detail: { intrinsic: 'state.set', argument: 'value', valueKind: 'unknown' }
+  }
+]
