@@ -60,6 +60,7 @@ const externalTasks = new Set([
   'str03b-installed', 'node01-installed', 'arc01-installed',
   'ast01-installed', 'ast02b-installed', 'ast02d-installed',
   'str02c-fastly-feasibility',
+  'str03-native-retention',
   // Independent SDK installation is explicit external evidence for the private adapter.
   'mcp-http-sdk',
   'mcp-tools-sdk',

@@ -172,6 +172,10 @@ const tasks = Object.freeze({
     args:['--native'], timeoutMs:300000, evidence:'external',
     description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
   }),
+  'str03-native-retention': nodeTask('test/runtime/str03-native-retention.cjs', {
+    timeoutMs: 60000, evidence: 'external',
+    description: 'STR-03 pre-implementation Native retained-value evidence; no output API or transport qualification'
+  }),
   'str02c-fastly-feasibility': nodeTask('test/provider/assert-fastly-incoming-body-feasibility.cjs', {
     timeoutMs: 90000, evidence: 'external',
     description: 'STR-02C pinned Viceroy ABI observations; not Pulse forwarding integration or live platform qualification'
