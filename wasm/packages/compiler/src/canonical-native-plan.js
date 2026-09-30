@@ -56,7 +56,7 @@ const contract = loadNativePlanContract();
 const loggingContract = loadLoggingContract();
 const cryptoContract = loadCryptoContract();
 const eventContract = loadEventContract();
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v5';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v6';
 const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
@@ -489,7 +489,7 @@ class NativePlanBuilder {
         this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Prefix operator ${operator} is outside the canonical native value model.`, { operator });
       }
       const value = this.expression(current.operand, scope);
-      return Object.freeze({ kind: 'unary', operator, value, valueKind: operator === '!' ? 'boolean' : (operator === 'typeof' ? 'string' : value.valueKind || 'unknown') });
+      return Object.freeze({ kind: 'unary', operator, value, valueKind: operator === '!' ? 'boolean' : (operator === 'typeof' ? 'string' : 'number') });
     }
 
     if (ts.isPostfixUnaryExpression(current)) {
@@ -571,6 +571,20 @@ class NativePlanBuilder {
   callExpression(call, scope) {
     if (call.questionDotToken) this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Optional calls are outside the canonical native value model.');
     const target = unwrap(call.expression);
+    const helper = ts.isIdentifier(target) && this.helperBodies.get(target.text);
+    if (helper?.pure) {
+      if (this.activeHelper || this.pureCallDepth || this.pureLoopDepth || this.readLoopDepth) {
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_NESTING_UNSUPPORTED', 'Pure helper calls cannot nest in helpers, call arguments or caller loops.');
+      }
+      this.pureCallDepth = (this.pureCallDepth || 0) + 1;
+      const args = call.arguments.map(arg => this.expression(arg, scope));
+      this.pureCallDepth--;
+      if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind)) {
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar kinds.');
+      }
+      return Object.freeze({ kind: 'pure-helper-call', helperId: helper.id,
+        arguments: Object.freeze(args), valueKind: helper.resultKind });
+    }
     const ctxPath = contextPath(target, this.ctxName);
     if (ctxPath) {
       const intrinsic = intrinsicForContextCall(ctxPath);
@@ -964,10 +978,11 @@ class NativePlanBuilder {
       const visitor = s => { if (s.kind === 'return') resultKinds.add(s.value.valueKind); }; visitor.expression = () => {};
       walkStatements(body, visitor);
       const resultKind = resultKinds.size === 1 ? [...resultKinds][0] : 'unknown';
-      this.helpers.push({ resultKind, version: 'pulse.canonical-native-helper.v1', id: helper.id, source: helper.source,
+      if (helper.pure && resultKind !== helper.resultKind) this.fail(statement, 'PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED', 'Pure helper return paths must match the declared scalar result.');
+      this.helpers.push({ resultKind, version: helper.pure ? contract.CANONICAL_NATIVE_PURE_HELPER_VERSION : 'pulse.canonical-native-helper.v1', id: helper.id, source: helper.source,
         parameters, localIds: this.locals.slice(start).map(local => local.id), body,
-        frame: { lifetime: 'invocation', reset: 'call', suspension: 'retain', nesting: false },
-        outputs: ['value', 'suspend', 'failure'] });
+        frame: { lifetime: 'invocation', reset: 'call', suspension: helper.pure ? 'none' : 'retain', nesting: false },
+        outputs: helper.pure ? ['value', 'failure'] : ['value', 'suspend', 'failure'] });
       this.activeHelper = undefined;
       return [];
     }
@@ -1291,6 +1306,7 @@ function walkExpression(expression, visit) {
       walkExpression(expression.object, visit);
       walkExpression(expression.index, visit);
       break;
+    case 'pure-helper-call':
     case 'intrinsic':
       for (const argument of expression.arguments || []) walkExpression(argument, visit);
       break;

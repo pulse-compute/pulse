@@ -266,10 +266,23 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
         const binding = awaited && original.parent.parent;
         let shadowed = false;
         const inspect = item => {
-          if ((ts.isVariableDeclaration(item) || ts.isParameter(item)) && ts.isIdentifier(item.name) && item.name.text === original.expression.text) shadowed = true;
+          if ((ts.isVariableDeclaration(item) || ts.isParameter(item) || ts.isFunctionDeclaration(item)) && ts.isIdentifier(item.name) && item.name.text === original.expression.text) shadowed = true;
           ts.forEachChild(item, inspect);
         };
         inspect(authoredFunctionNode);
+        if (helper.pure) {
+          let inLoop = false;
+          for (let parent = original.parent; parent && parent !== authoredFunctionNode; parent = parent.parent) {
+            if (ts.isForStatement(parent) || ts.isWhileStatement(parent) || ts.isDoStatement(parent)) inLoop = true;
+          }
+          if (awaited || shadowed || inLoop || node.typeArguments?.length || node.questionDotToken
+            || node.arguments.length !== helper.functionNode.parameters.length || !['route', 'middleware'].includes(role)) {
+            diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED',
+              'Pure helpers require a static unshadowed synchronous scalar call outside caller loops in an HTTP handler.'));
+          }
+          return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined,
+            node.arguments.map(arg => ts.visitNode(arg, visit)));
+        }
         if (!binding || !ts.isVariableDeclaration(binding) || !ts.isIdentifier(binding.name)
           || shadowed || node.arguments.length !== helper.functionNode.parameters.length
           || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctxName

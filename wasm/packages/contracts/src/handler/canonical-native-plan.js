@@ -1,6 +1,7 @@
 'use strict';
 
-const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v5';
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v6';
+const CANONICAL_NATIVE_PURE_HELPER_VERSION = 'pulse.canonical-native-pure-helper.v1';
 const CANONICAL_NATIVE_HANDLER_BODY_VERSION = 'pulse.canonical-native-handler-body.v1';
 const CANONICAL_NATIVE_STAGE_CONTRACT = Object.freeze({
   version: 'pulse.canonical-native-stage.v1',
@@ -40,6 +41,7 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
 ]);
 
 const CANONICAL_NATIVE_EXPRESSION_KINDS = Object.freeze([
+  'pure-helper-call',
   'literal',
   'undefined',
   'local',
@@ -172,6 +174,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 });
 
 module.exports = Object.freeze({
+  CANONICAL_NATIVE_PURE_HELPER_VERSION,
   CANONICAL_NATIVE_PLAN_VERSION,
   CANONICAL_NATIVE_HANDLER_BODY_VERSION,
   CANONICAL_NATIVE_STAGE_CONTRACT,

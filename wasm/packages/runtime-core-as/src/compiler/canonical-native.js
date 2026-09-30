@@ -31,6 +31,7 @@ function loadEventContract() {
 }
 
 const runtimeContract = loadRuntimeContract();
+const runtimePlanContract = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
 const eventContract = loadEventContract();
 const CANONICAL_NATIVE_AS_GENERATOR_VERSION = runtimeContract.CANONICAL_NATIVE_AS_GENERATOR_VERSION;
 
@@ -279,6 +280,7 @@ function collectExpressions(plan) {
         add(expression.object);
         add(expression.index);
         break;
+      case 'pure-helper-call':
       case 'intrinsic':
         for (const argument of expression.arguments || []) add(argument);
         break;
@@ -331,6 +333,7 @@ function collectExpressions(plan) {
 
 function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   if (!plan || typeof plan !== 'object') throw new TypeError('generateCanonicalNativeAssemblyScript requires a canonical native plan.');
+  const pureHelpers = new Map((plan.helpers || []).filter(h => h.version === runtimePlanContract.CANONICAL_NATIVE_PURE_HELPER_VERSION).map((h, i) => [h.id, { ...h, nativeName: `__pulse_pure_helper_${i}` }]));
   const stages = new Map((plan.stages || []).map(stage => [stage.id, stage]));
   const stageBindings = new Map((plan.stages || []).flatMap(stage => stage.registrations.map(row => [row.entryId, row])));
   const stageEntries = new Map();
@@ -522,6 +525,13 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       case 'element':
         emit(`return host_value_element(${exprName(expression.object)}(), ${exprName(expression.index)}())`);
         break;
+      case 'pure-helper-call': {
+        const helper = pureHelpers.get(expression.helperId);
+        if (!helper) fail('Unknown pure helper.', { helperId: expression.helperId });
+        for (const [i, arg] of expression.arguments.entries()) emit(`const arg_${i} = ${exprName(arg)}()`);
+        emit(`return ${helper.nativeName}(${expression.arguments.map((_, i) => `arg_${i}`).join(', ')})`);
+        break;
+      }
       case 'intrinsic': {
         const args = expression.arguments || [];
         if (expression.name === 'logging.emit') {
@@ -623,6 +633,33 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return `${retained}function ${exprName(expression)}(): i32 {\n${lines.join('\n')}\n}`;
   }
 
+  // Synchronous bodies share the existing value representation and local
+  // ownership. Nesting is forbidden, so reset-on-call slots cannot overlap.
+  function renderPureHelper(helper) {
+    function body(statements, indent = '  ') {
+      const lines = [];
+      for (const s of statements) {
+        if (s.kind === 'local') lines.push(`${indent}${localName(s.localId)} = ${exprName(s.value)}()`);
+        else if (s.kind === 'expression') lines.push(`${indent}${exprName(s.expression)}()`);
+        else if (s.kind === 'return') lines.push(`${indent}return ${exprName(s.value)}()`);
+        else if (s.kind === 'if') lines.push(`${indent}if (host_value_truthy(${exprName(s.test)}()) != 0) {`, ...body(s.then, indent + '  '), `${indent}} else {`, ...body(s.else, indent + '  '), `${indent}}`);
+        else if (s.kind === 'pure-loop') {
+          const index = `i_${localIndex.get(s.localId)}`;
+          lines.push(`${indent}for (let ${index}: i32 = 0; ${index} < ${s.maxIterations}; ${index}++) {`,
+            `${indent}  ${localName(s.localId)} = host_value_number(<f64>${index})`,
+            `${indent}  if (host_value_truthy(${exprName(s.test)}()) == 0) break`,
+            ...body(s.body, indent + '  '), `${indent}}`);
+        } else if (s.kind === 'break' || s.kind === 'continue') lines.push(`${indent}${s.kind}`);
+        else fail('Non-pure statement in synchronous helper.', { kind: s.kind });
+      }
+      return lines;
+    }
+    return ['@noinline', `function ${helper.nativeName}(${helper.parameters.map((_, i) => `arg_${i}: i32`).join(', ')}): i32 {`,
+      ...helper.localIds.map(id => `  ${localName(id)} = 0`),
+      ...helper.parameters.map((p, i) => `  ${localName(p.localId)} = arg_${i}`),
+      ...body(helper.body), '  return 0', '}'].join('\n');
+  }
+
   // Canonicalize identical emitted bodies after their child references. Resolved
   // local slots and host operations remain in the key; sharing a declaration
   // preserves each call, allocation, mutation, and evaluation order.
@@ -647,7 +684,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
 
   const blocks = [];
   const applicationErrors = (plan.routing?.entries || []).some(entry => entry.kind === 'error');
-  const helpers = new Map((plan.helpers || []).map(helper => [helper.id, helper]));
+  const helpers = new Map((plan.helpers || []).filter(helper => !pureHelpers.has(helper.id)).map(helper => [helper.id, helper]));
   const helperEntries = new Map();
   const handlers = new Map((plan.handlers || []).map(handler => [handler.id, handler]));
   const routerLocal = name => (plan.locals || []).find(local => local.name === `__pulse_router_${name}`)?.id;
@@ -1124,6 +1161,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     ...nativeSchemaCodecs.declarations,
     ...(nativeCrypto.active ? [nativeCrypto.source] : []),
     ...expressions.filter((_, index) => !expressionAlias.has(index)).map(renderExpression),
+    ...[...pureHelpers.values()].map(renderPureHelper),
     '',
     'function __pulse_ready_for_resume(): bool {',
     '  switch (__pulse_pc) {',
@@ -1219,6 +1257,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       entryBlock: stageEntries.get(stage.id), bodyStates: blocks.filter(block => block.handlerId === stage.id).length,
       chunks: Object.freeze(chunks.flatMap((chunk, index) => chunk[0].handlerId === stage.id ? [index] : []))
     }))),
+    pureHelperBodies: Object.freeze([...pureHelpers.values()].map(helper => Object.freeze({ id: helper.id, name: helper.nativeName }))),
     helperBodies: Object.freeze([...helpers.values()].map(helper => Object.freeze({
       id: helper.id, entryBlock: helperEntries.get(helper.id), bodyStates: blocks.filter(b => b.handlerId === helper.id).length,
       chunks: Object.freeze(chunks.flatMap((chunk, i) => chunk[0].handlerId === helper.id ? [i] : []))

@@ -172,6 +172,19 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
   for (const helper of topology.options?.linkedProjectModules?.sourceHelpers || []) {
     const fn = helper.functionNode;
+    if (helper.pure) {
+      const diagnostics = require('./pure-helper-source').validatePureHelperSource(helper);
+      if (diagnostics.length) throw new CanonicalRouterCompileError('Unsupported pure source helper.', diagnostics);
+      const start = synthetic.length;
+      synthetic += `function ${helper.name}(${fn.parameters.map(p => printer.printNode(ts.EmitHint.Unspecified, p, helper.sourceFile)).join(',')}) ${printer.printNode(ts.EmitHint.Unspecified, fn.body, helper.sourceFile)}\n`;
+      const generatedRange = { start, end: synthetic.length };
+      helpers.push({ id: helper.id, name: helper.name, pure: true, source: helper.source,
+        resultKind: fn.type.getText(helper.sourceFile),
+        parameters: fn.parameters.map(p => ({ name: p.name.text, valueKind: p.type.getText(helper.sourceFile) })), generatedRange });
+      helperRecords.push({ entryStableId: helper.id, operationIr: { sourceFile: helper.sourceFile, handler: fn },
+        canonicalIr: { router: { entry: { generatedRange } } } });
+      continue;
+    }
     const declaration = fn.parent;
     const immutable = !ts.isVariableDeclaration(declaration) || Boolean(declaration.parent.flags & ts.NodeFlags.Const);
     let reassigned = false;

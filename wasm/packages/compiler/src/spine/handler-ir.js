@@ -617,11 +617,11 @@ function buildPlainHandlerIr(frontend, options = {}) {
 
   function buildStatement(statement, aliases, fromList = false) {
     if (ts.isFunctionDeclaration(statement) && helperBodies.has(statement.name?.text)) {
-      return createHandlerOperation('helper-body', { statement, body: buildStatement(statement.body, new Map()) });
+      return createHandlerOperation('helper-body', { statement, pure: helperBodies.get(statement.name.text).pure === true, body: buildStatement(statement.body, new Map()) });
     }
     if (ts.isVariableStatement(statement) && statement.declarationList.declarations.length === 1) {
       const declaration = statement.declarationList.declarations[0], call = declaration.initializer;
-      if (call && ts.isCallExpression(call) && ts.isIdentifier(call.expression) && helperBodies.has(call.expression.text))
+      if (call && ts.isCallExpression(call) && ts.isIdentifier(call.expression) && helperBodies.has(call.expression.text) && !helperBodies.get(call.expression.text).pure)
         return createHandlerOperation('helper-call', { statement, declaration, call });
     }
     if (ts.isFunctionDeclaration(statement) && routerBodies.has(statement.name?.text)) {

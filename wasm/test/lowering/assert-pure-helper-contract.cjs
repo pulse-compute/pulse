@@ -10,7 +10,7 @@ const { acceptanceToolchain } = require('../s3/acceptance-toolchain.cjs');
 const root = path.resolve(__dirname, '../../..');
 const fixtures = path.join(__dirname, '../fixtures/pure-helpers');
 const expected = require('../fixtures/pure-helpers/expectations.json');
-assert.equal(expected.status, 'unsupported-native');
+assert.equal(expected.status, 'scalar-supported-records-unsupported');
 const program = ts.createProgram(['scalar.ts', 'partition.ts', 'types.ts'].map(file => path.join(fixtures, file)), {
   strict: true, noEmit: true, skipLibCheck: true, types: [], target: ts.ScriptTarget.ES2022,
 });
@@ -94,6 +94,12 @@ import {${fixture.name}} from './${fixture.module}';
 const app = new Pulse({auto:true});
 app.get('/', async(ctx) => { ${fixture.setup} ${body} return ctx.text('valid'); });
 export default app;`);
+      if (fixture.module === 'scalar') {
+        const compiled = tc.compileProject(tc.resolveProject({ cwd, profile: 'node' }));
+        const plan = require('../../packages/compiler/src/canonical-native-plan').buildCanonicalNativePlan(compiled);
+        assert.equal(plan.helpers.length, 1);
+        continue;
+      }
       assert.throws(() => tc.compileProject(tc.resolveProject({ cwd, profile: 'node' })), error => {
         assert.equal(error.code, expected.errorCode);
         assert.ok(error.diagnostics.some(d => d.code === expected.diagnosticCode), JSON.stringify(error.diagnostics));
@@ -106,4 +112,4 @@ export default app;`);
   fs.rmSync(cwd, { recursive: true, force: true });
 }
 console.log(JSON.stringify({ status: 'passed', nativeSupport: expected.status, scalarOracleCases: 5,
-  recordOracleCases: oracleCases, expectedLinkerRejections: rejections }));
+  recordOracleCases: oracleCases, expectedRecordRejections: rejections }));
