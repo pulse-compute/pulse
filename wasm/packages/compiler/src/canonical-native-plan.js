@@ -57,7 +57,7 @@ const loggingContract = loadLoggingContract();
 const cryptoContract = loadCryptoContract();
 const eventContract = loadEventContract();
 const pureValues = require('./pure-helper-values');
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v7';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v8';
 const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
@@ -575,8 +575,8 @@ class NativePlanBuilder {
     const target = unwrap(call.expression);
     const helper = ts.isIdentifier(target) && this.helperBodies.get(target.text);
     if (helper?.pure) {
-      if (this.activeHelper || this.pureCallDepth || this.pureLoopDepth || this.readLoopDepth) {
-        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_NESTING_UNSUPPORTED', 'Pure helper calls cannot nest in helpers, call arguments or caller loops.');
+      if (this.activeHelper || this.pureCallDepth) {
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_NESTING_UNSUPPORTED', 'Pure helper calls cannot nest in helpers or call arguments.');
       }
       this.pureCallDepth = (this.pureCallDepth || 0) + 1;
       const args = call.arguments.map(arg => this.expression(arg, scope));
@@ -585,6 +585,7 @@ class NativePlanBuilder {
         this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar or borrowed structural kinds.');
       }
       return Object.freeze({ kind: 'pure-helper-call', helperId: helper.id,
+        ...((this.pureLoopDepth || this.readLoopDepth) ? { loopContract: contract.CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION } : {}),
         arguments: Object.freeze(args), valueKind: helper.resultKind });
     }
     const ctxPath = contextPath(target, this.ctxName);
@@ -1008,7 +1009,8 @@ class NativePlanBuilder {
       const readLoop = containsYield(statement);
       const loop = readLoop
         ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
-        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true });
+        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true,
+          pureHelperForCall: call => ts.isIdentifier(call.expression) && this.helperBodies.get(call.expression.text)?.pure });
       for (const error of loop.errors) this.fail(error.node, readLoop ? 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED' : 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
       if (loop.errors.length) return [];
       if (readLoop && (this.readLoopDepth || this.pureLoopDepth)) {
@@ -1438,22 +1440,25 @@ function validateResult(result, fail, localIds, detail = {}) {
 function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
   const helpers = new Map((plan.helpers || []).map(helper => [helper.id, helper]));
-  function validateReadHelper(id, callerProduct) {
-    const helper = helpers.get(id);
-    if (!helper) { fail('read loop helper is unknown'); return; }
-    // A call does not reset the enclosing loop's work bound.
-    const checkProduct = (body, product) => {
+  function validateHelperLoopProduct(helper, callerProduct, label) {
+    // A synchronous call does not reset the enclosing loop's work bound.
+    const check = (body, product) => {
       for (const statement of body || []) {
         if (statement.kind === 'pure-loop') {
           const nested = product * Math.max(1, statement.maxIterations);
-          if (!Number.isSafeInteger(nested) || nested > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail('read loop helper exceeds the combined iteration bound');
-          checkProduct(statement.body, nested);
+          if (!Number.isSafeInteger(nested) || nested > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(`${label} exceeds the combined iteration bound`);
+          check(statement.body, nested);
         } else if (statement.kind === 'if') {
-          checkProduct(statement.then, product); checkProduct(statement.else, product);
+          check(statement.then, product); check(statement.else, product);
         }
       }
     };
-    checkProduct(helper.body, callerProduct);
+    check(helper.body, callerProduct);
+  }
+  function validateReadHelper(id, callerProduct) {
+    const helper = helpers.get(id);
+    if (!helper) { fail('read loop helper is unknown'); return; }
+    validateHelperLoopProduct(helper, callerProduct, 'read loop helper');
     let sites = 0;
     const visit = statement => {
       if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
@@ -1466,6 +1471,22 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     visit.expression = expression => checkReadExpression(expression, new Set());
     walkStatements(helper.body, visit);
     if (!sites) fail('read loop helper requires a sequential read effect site');
+  }
+  function validatePureLoopCalls(expression, counters, product, header = false) {
+    walkExpression(expression, node => {
+      if (node.kind !== 'pure-helper-call') return;
+      if (!counters.size) {
+        if (node.loopContract !== undefined) fail('pure loop call contract requires an enclosing loop');
+        return;
+      }
+      if (header || node.loopContract !== contract.CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION) fail('pure loop call contract or placement is invalid');
+      const helper = helpers.get(node.helperId);
+      if (helper?.version !== contract.CANONICAL_NATIVE_PURE_HELPER_VERSION) { fail('pure loop call requires a pure helper'); return; }
+      for (const argument of node.arguments || []) walkExpression(argument, child => {
+        if (['assignment', 'update'].includes(child.kind)) fail('pure loop call inputs must be read-only');
+      });
+      validateHelperLoopProduct(helper, product, 'pure loop helper');
+    });
   }
   function validateLoops(statements, counters = new Set(), product = 1, mode = 'outside', pureHelper = false) {
     for (const statement of statements || []) {
@@ -1491,6 +1512,9 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
           || bound.right?.kind !== 'literal' || bound.right.value !== limit) fail(`${label} test must start with its declared literal cap`);
         const active = new Set([...counters, statement.localId]);
         checkPureExpression(statement.test, active, true);
+        validatePureLoopCalls(statement.test, active, product, true);
+        validatePureLoopCalls(statement.initial, active, product, true);
+        validatePureLoopCalls(statement.increment, active, product, true);
         if (!Array.isArray(statement.body)) { fail(`${label} body must be an array`); continue; }
         if (readLoop) {
           let sites = 0;
@@ -1501,6 +1525,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
         }
         validateLoops(statement.body, active, product * Math.max(1, limit), readLoop ? 'read' : 'pure', pureHelper);
       } else {
+        validatePureLoopCalls(statement.value || statement.expression || statement.test, counters, product);
         if (mode === 'pure' && !(pureHelper && statement.kind === 'return') && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
         if (mode === 'read' && !['local', 'expression', 'if', 'break', 'continue', 'return', 'effect', 'helper-call'].includes(statement.kind)) fail('read loop contains an unsupported statement', { kind: statement.kind });
         if (statement.kind === 'helper-call') {

@@ -1,6 +1,7 @@
 'use strict';
 
-const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v7';
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v8';
+const CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION = 'pulse.bounded-pure-loop-call.v1';
 const CANONICAL_NATIVE_PURE_BORROW_VERSION = 'pulse.pure-borrow.v1';
 const CANONICAL_NATIVE_PURE_HELPER_VERSION = 'pulse.canonical-native-pure-helper.v2';
 const CANONICAL_NATIVE_HANDLER_BODY_VERSION = 'pulse.canonical-native-handler-body.v1';
@@ -175,6 +176,7 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 });
 
 module.exports = Object.freeze({
+  CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION,
   CANONICAL_NATIVE_PURE_BORROW_VERSION,
   CANONICAL_NATIVE_PURE_HELPER_VERSION,
   CANONICAL_NATIVE_PLAN_VERSION,

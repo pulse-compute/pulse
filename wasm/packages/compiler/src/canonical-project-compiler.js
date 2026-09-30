@@ -1068,9 +1068,14 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
 
   let linkedProjectModules;
   let localHelperCall = false;
-  if (root?.kind === 'router' && options.target !== 'javascript') {
+  if (root?.kind === 'router') {
     const visit = node => {
-      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) localHelperCall = true;
+      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+        if (options.target !== 'javascript') localHelperCall = true;
+        else for (let parent = node.parent; parent && !ts.isFunctionLike(parent); parent = parent.parent) {
+          if (ts.isForStatement(parent)) localHelperCall = true;
+        }
+      }
       ts.forEachChild(node, visit);
     };
     visit(root.module.sourceFile);

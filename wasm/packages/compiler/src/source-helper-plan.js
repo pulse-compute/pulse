@@ -9,7 +9,12 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   const effects = new Map(plan.effects.map(e => [e.id, e]));
   const calls = new Map(), sites = new Map();
   const definitions = new Map(), writes = new Map(), memberWrites = [];
-  const inputVisitor = s => { if (s.kind === 'local') definitions.set(s.localId, s.value); };
+  const inputVisitor = s => {
+    if (s.kind === 'local') definitions.set(s.localId, s.value);
+    // Loop ownership, zero initialization, monotonic steps and immutable active
+    // counters are independently checked by validatePlanTree.
+    if (['pure-loop', 'read-loop'].includes(s.kind)) definitions.set(s.localId, { kind: 'literal', value: 0, valueKind: 'number' });
+  };
   inputVisitor.expression = e => {
     if (['assignment', 'update'].includes(e.kind) && ['property', 'element'].includes(e.target?.kind)) memberWrites.push(e);
     if (['assignment', 'update'].includes(e.kind) && e.target?.kind === 'local') {
@@ -170,9 +175,9 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   }
   for (const effect of plan.effects) rejectCalls(effect);
   for (const h of plan.helpers || []) if (!isPure(h)) rejectCalls(h.body);
-  const loopVisitor = s => { if (['pure-loop', 'read-loop', 'helper-call'].includes(s.kind)) rejectCalls(s); };
-  loopVisitor.expression = () => {};
-  for (const body of [plan.entry.body, ...(plan.handlers || []).map(h => h.body), ...(plan.stages || []).map(h => h.body)]) walkStatements(body, loopVisitor);
+  const effectfulCallVisitor = s => { if (s.kind === 'helper-call') rejectCalls(s); };
+  effectfulCallVisitor.expression = () => {};
+  for (const body of [plan.entry.body, ...(plan.handlers || []).map(h => h.body), ...(plan.stages || []).map(h => h.body)]) walkStatements(body, effectfulCallVisitor);
   for (const helper of helpers.values()) if (!calls.has(helper.id)) fail('helper requires a reachable call');
   for (const effect of plan.effects) if (effect.helperId && (!helpers.has(effect.helperId) || sites.get(effect.id) !== 1)) fail('helper effect requires one owning site');
   for (const c of plan.continuations) for (const id of c.effectIds) if (effects.get(id)?.helperId !== c.helperId) fail('helper continuation ownership mismatch');
