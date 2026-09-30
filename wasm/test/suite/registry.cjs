@@ -139,7 +139,7 @@ const tasks = Object.freeze({
   }),
   's3-body-read': nodeTask('test/s3/assert-body-read.cjs', {
     timeoutMs: 60000,
-    description: 'AST-02A Node Native/JavaScript bounded binary S3 response ownership and HTTP subset'
+    description: 'AST-02A/C Node and Fastly Native bounded binary S3 response ownership and HTTP subset'
   }),
   's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
     timeoutMs: 180000,

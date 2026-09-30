@@ -616,7 +616,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       }
     },
     fastly_http_body: {
-      close(handle) { trace.push({ module: 'fastly_http_body', name: 'close' }); return bodies.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
+      close(handle) { trace.push({ module: 'fastly_http_body', name: 'close', handle: Number(handle) }); if (downstream?.streaming && downstream.bodyHandle === Number(handle)) { downstream.bodyBytes = bodyBytes(handle); downstream.finished = true; } return bodies.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
       new(handleOut) {
         const handle = alloc('body');
         bodies.set(handle, { bytes: Buffer.alloc(0), readOffset: 0, writes: [] });
@@ -641,6 +641,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       write(handle, buffer, bufferLength, end, writtenOut) {
         const body = bodies.get(Number(handle));
         if (!body) return FASTLY_STATUS_BADF;
+        if (downstream?.streaming && Number(handle) === downstream.bodyHandle && options.downstreamBodyWriteStatus) return Number(options.downstreamBodyWriteStatus);
         if (requests.size > 1 && options.outboundBodyWriteStatus) return Number(options.outboundBodyWriteStatus);
         const length = Math.min(Number(bufferLength), Number(options.bodyWriteChunkBytes || bufferLength));
         const bytes = readBytes(buffer, length);
@@ -697,10 +698,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const pulseLastError = typeof instance.exports.pulse_last_error_code === 'function'
     ? Number(instance.exports.pulse_last_error_code())
     : undefined;
+  if (downstream?.streaming && !downstream.finished) { downstream.bodyBytes = bodyBytes(downstream.bodyHandle); downstream.aborted = true; }
   const handledJwtError = options.allowHandledJwtError === true
     && lastError === 1008
     && Boolean(downstream);
-  if (lastError !== FASTLY_STATUS_OK && !handledJwtError) {
+  if (lastError !== FASTLY_STATUS_OK && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {
@@ -717,6 +719,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       bodyBytes: downstream.bodyBytes,
       sent: true,
       streaming: downstream.streaming,
+      aborted: downstream.aborted === true,
       origin: downstream.origin,
       responseHandle: downstream.responseHandle,
       bodyHandle: downstream.bodyHandle

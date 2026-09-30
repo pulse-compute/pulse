@@ -23,7 +23,7 @@ function instrumentRequestBudget(input, duration, plan) {
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {', `function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
   if (!__request_check(effectIndex)) return 0;
   const kind = __pulse_fastly_effect_kind(effectIndex);
-  if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && kind != 12 && kind != 13 && kind != 14 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
+  if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && kind != 12 && kind != 13 && kind != 14 && kind != 21 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
     if (!__request_wait(unchecked(__pulse_fastly_pending[effectIndex]), effectIndex)) return 0;
   }`);
   replace('    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();', '    if (!__request_wait(handle, effectIndex)) return "";\n    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();');

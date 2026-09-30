@@ -21,10 +21,10 @@ function s3NativeSource(plan, bindings) {
   const lines = ['function __pulse_fastly_s3_binding(index: i32): __PulseS3Binding {', 'const value = new __PulseS3Binding();', 'switch (index) {'];
   for (const binding of bindings.s3) {
     lines.push(`case ${binding.index}:`);
-    for (const [field, input] of Object.entries({ contentType: 'contentType', endpoint: 'endpoint', bucket: 'bucket', region: 'region', backend: 'backend', id: 'accessKeyIdSecret', secret: 'secretAccessKeySecret', token: 'sessionTokenSecret' })) lines.push(`value.${field} = ${JSON.stringify(binding[input] || '')};`);
+    for (const [field, input] of Object.entries({ method: 'method', range: 'range', ifNoneMatch: 'ifNoneMatch', contentType: 'contentType', endpoint: 'endpoint', bucket: 'bucket', region: 'region', backend: 'backend', id: 'accessKeyIdSecret', secret: 'secretAccessKeySecret', token: 'sessionTokenSecret' })) lines.push(`value.${field} = ${JSON.stringify(binding[input] || '')};`);
     lines.push(`value.max = ${binding.maxTextBytes}; value.timeout = ${binding.timeoutMs}; break;`);
   }
   lines.push('default: unreachable();', '}', 'return value;', '}');
-  return [contribution.source, fs.readFileSync(path.join(__dirname, 's3-native.as.ts'), 'utf8'), lines.join('\n')].join('\n');
+  return [contribution.source, fs.readFileSync(path.join(__dirname, 's3-native.as.ts'), 'utf8'), fs.readFileSync(path.join(__dirname, 's3-body.as.ts'), 'utf8'), lines.join('\n')].join('\n');
 }
 module.exports = { S3_IMPORTS, s3NativeSource };

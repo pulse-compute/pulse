@@ -1238,3 +1238,15 @@ tracks registered response bodies until return or discard. Body bytes do not
 enter application values or imply whole-object integrity. Fastly body-handle
 integration and embedded assets are separate increments; existing S3 text
 support does not imply support for this operation.
+
+### AST-02C Fastly opaque S3 bodies
+
+The Fastly Native provider realizes the existing `s3.getBody` effect with
+provider-owned origin handles, strict raw metadata admission, and a 16 KiB
+streaming copy. S3 owns Native signing and range interpretation. Literal read
+options remain lowerer-admitted; bindings remain configuration-owned. Each
+response copies its deadline so repeated effect slots cannot extend older body
+ownership. Unselected handles close at invocation exit. The downstream handle
+is finished only after exact-length EOF; an unfinished stream aborts at Compute
+invocation exit. This adds no guest byte value or JavaScript fallback.
+Fastly JavaScript remains blocked by raw-header limitations.

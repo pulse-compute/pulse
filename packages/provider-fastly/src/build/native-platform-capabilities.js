@@ -170,6 +170,7 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KIND = Object.freeze({
   's3.head': 12,
   's3.getText': 13,
   's3.putText': 14,
+  's3.getBody': 21,
   'kv.getVersioned': 15,
   'kv.insertIfAbsent': 16,
   'kv.compareAndSwap': 17,
@@ -199,7 +200,8 @@ const FASTLY_NATIVE_PLATFORM_EFFECT_KINDS = Object.freeze([
   'jwt.sign',
   's3.head',
   's3.getText',
-  's3.putText'
+  's3.putText',
+  's3.getBody'
 ]);
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
@@ -219,7 +221,8 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITY_KINDS = new Set([
   'jwt.sign',
   's3.head',
   's3.getText',
-  's3.putText'
+  's3.putText',
+  's3.getBody'
 ]);
 
 class FastlyNativePlatformCapabilitiesError extends Error {
@@ -689,7 +692,7 @@ function validatePlanBoundary(plan, options = {}) {
       && ['verify', 'sign'].includes(effect.operation)
       && effect.kind === `jwt.${effect.operation}` && effect.capability === effect.kind;
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
-      && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+      && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
     return !grip && !assets && !jwt && !s3 && !digest;
@@ -712,7 +715,7 @@ function validatePlanBoundary(plan, options = {}) {
       && ['verify', 'sign'].includes(effect.operation)
       && effect.kind === `jwt.${effect.operation}` && effect.capability === effect.kind;
     const s3 = effect.package === '@pulse-compute/s3' && effect.contractId === 'pulse.s3'
-      && ['head', 'getText', 'putText'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
+      && ['head', 'getText', 'putText', 'getBody'].includes(effect.operation) && effect.kind === `s3.${effect.operation}` && effect.capability === effect.kind;
     const digest = effect.package === '@pulse-compute/crypto' && effect.contractId === 'pulse.crypto'
       && effect.operation === 'digestText' && effect.kind === 'crypto.digestText' && effect.capability === effect.kind;
     return !grip && !assets && !jwt && !s3 && !digest;
@@ -801,7 +804,7 @@ function resolveCapabilityBindings(plan, options = {}) {
   const effects = plan.effects || [];
   const hasConfig = effects.some((effect) => effect.kind === 'config.get');
   const hasSecret = effects.some((effect) => (
-    effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)
+    effect.kind === 'secret.get' || ['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)
     || (['jwt.verify', 'jwt.sign'].includes(effect.kind) && effect.resource && effect.resource.keyType === 'secret')
   ));
   const hasGripHold = effects.some((effect) => effect.kind === 'grip.hold');
@@ -926,7 +929,7 @@ function resolveCapabilityBindings(plan, options = {}) {
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs),
     configStore,
     secretStore,
-    s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: { contentType: literalObjectField(inputExpression(effect, 'payload'), 'contentType') || undefined } })), source.s3),
+    s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: Object.fromEntries(['contentType', 'method', 'range', 'ifNoneMatch'].map(name => [name, literalObjectField(inputExpression(effect, 'payload'), name) ?? undefined])) })), source.s3),
     kv: Object.freeze(kv),
     fetch: Object.freeze(fetch),
     backends: Object.freeze(backends),
@@ -1005,7 +1008,7 @@ function requiredImportsForPlan(plan, bindings) {
     keys.add('fastly_log:endpoint_get');
     keys.add('fastly_log:write');
   }
-  if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
+  if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   return Object.freeze([...keys].sort());
 }
 
@@ -1231,7 +1234,7 @@ function effectResultSource(plan, bindings) {
     }
     const result = effect.result || {};
     const decoder = result.decoder;
-    const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
+    const waiter = conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind) ? '__pulse_fastly_kv_conditional_wait' : ['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind) ? '__pulse_fastly_s3_wait' : effect.kind === 'fetch'
       ? '__pulse_fastly_wait_fetch'
       : effect.kind === 'grip.publish'
         ? '__pulse_fastly_wait_grip_publish'
@@ -1277,6 +1280,7 @@ function effectDispatchSource(plan) {
     's3.head': '__pulse_fastly_s3_begin',
     's3.getText': '__pulse_fastly_s3_begin',
     's3.putText': '__pulse_fastly_s3_begin',
+    's3.getBody': '__pulse_fastly_s3_begin',
     'kv.get': '__pulse_fastly_kv_get_begin',
     'kv.put': '__pulse_fastly_kv_put_begin',
     ...Object.fromEntries(conditionalKv.KV_CONDITIONAL_KINDS.map(kind => [kind, '__pulse_fastly_kv_conditional_begin'])),
@@ -1488,6 +1492,9 @@ ${nativeStringFields}
   responseHandle: i32 = 0
   bodyHandle: i32 = 0
   bodyLoaded: i32 = 0
+  s3Body: bool = false
+  s3Deadline: i64 = 0
+  s3Length: i32 = 0
   status: i32 = 200
   // Scalar handles do not need collection backing stores.
   private headersStorage: Array<__PulseFastlyHeader> | null = null
@@ -1890,7 +1897,7 @@ function __pulse_fastly_wait_kv_get(effectIndex: i32): i32 { if (unchecked(__pul
 ${assetResultSource}
 function __pulse_fastly_wait_kv_put(effectIndex: i32): i32 { if (unchecked(__pulse_fastly_pending_mode[effectIndex]) != PULSE_FASTLY_PENDING_ASYNC) { __pulse_fastly_fail(PULSE_ERROR_STATE, 126, effectIndex); return 0 } const pending = unchecked(__pulse_fastly_pending[effectIndex]); const kvError = __pulse_fastly_out_i32(); const status = fastly_kv_store_insert_wait(pending, changetype<usize>(kvError)); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_NONE); unchecked(__pulse_fastly_pending[effectIndex] = 0); if (status != FASTLY_STATUS_OK || __pulse_fastly_out_value(kvError) != 1) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 127, effectIndex); return 0 } return host_value_boolean(1) }
 function __pulse_fastly_write_body(bodyHandle: i32, value: string): i32 { const bytes = __pulse_fastly_utf8(value); let offset = 0; while (offset < bytes.byteLength) { const written = __pulse_fastly_out_i32(); const status = fastly_http_body_write(bodyHandle, changetype<usize>(bytes) + offset, bytes.byteLength - offset, 0, changetype<usize>(written)); if (status != FASTLY_STATUS_OK) return status; const count = __pulse_fastly_out_value(written); if (count <= 0) return 1; offset += count } return FASTLY_STATUS_OK }
-function __pulse_fastly_send_result(handle: i32): i32 { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
+function __pulse_fastly_send_result(handle: i32): i32 { const value = __pulse_fastly_value(handle); ${bindings.s3.length ? 'if (value.s3Body) return __s3_send_body(value);' : ''} if (value.kind == PULSE_VALUE_FETCH) return fastly_http_resp_send_downstream(value.responseHandle, value.bodyHandle, 0); if (value.kind != PULSE_VALUE_RESPONSE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 90, -1); return PULSE_ERROR_VALUE } const responseOut = __pulse_fastly_out_i32(); let status = fastly_http_resp_new(changetype<usize>(responseOut)); if (status != FASTLY_STATUS_OK) return status; const responseHandle = __pulse_fastly_out_value(responseOut); const bodyOut = __pulse_fastly_out_i32(); status = fastly_http_body_new(changetype<usize>(bodyOut)); if (status != FASTLY_STATUS_OK) return status; const bodyHandle = __pulse_fastly_out_value(bodyOut); status = fastly_http_resp_status_set(responseHandle, value.status); if (status != FASTLY_STATUS_OK) return status; for (let i = 0; i < value.headers.length; i += 1) { const header = unchecked(value.headers[i]); const nameBytes = __pulse_fastly_utf8(header.name); const valueBytes = __pulse_fastly_utf8(header.value); status = fastly_http_resp_header_append(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(valueBytes), valueBytes.byteLength); if (status != FASTLY_STATUS_OK) return status } status = __pulse_fastly_write_body(bodyHandle, value.text); if (status != FASTLY_STATUS_OK) return status; return fastly_http_resp_send_downstream(responseHandle, bodyHandle, 0) }
 
 ${jwtEvidenceSource}
 ${es256KeyArtifactSource(es256KeyRecords)}
@@ -1918,6 +1925,7 @@ export function ${entryName}(): void {
   if (__pulse_invocation_started) { __pulse_fastly_fail(PULSE_ERROR_STATE, 171, -1); return }
   __pulse_invocation_started = true
   __pulse_fastly_run_invocation()
+  ${plan.effects.some(e => e.kind === 's3.getBody') ? '__s3_close_bodies()' : ''}
   __pulse_invocation_close()
 }
 function __pulse_fastly_run_invocation(): void {
