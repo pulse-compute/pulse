@@ -676,7 +676,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
         helperBodies.get(call.expression.text)
         // JavaScript inspection retains ordinary ctx-first source calls. The
         // original graph executes them; this is not Native callee admission.
-        || options.target === 'javascript' && ts.isIdentifier(call.arguments[0]) && call.arguments[0].text === ctxName);
+        || options.target === 'javascript' && call.arguments.length > 0 && ts.isIdentifier(call.arguments[0]) && call.arguments[0].text === ctxName);
       let hasEffect = false;
       function findEffect(node) {
         if (ts.isCallExpression(node) && (effectForCall(node) || helperForCall(node))) hasEffect = true;

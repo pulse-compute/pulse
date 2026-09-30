@@ -74,6 +74,10 @@ async function main(){
    const changed=JSON.parse(JSON.stringify(plan));mutate(changed);
    assert.throws(()=>validateCanonicalNativePlan(rehash(changed)),e=>e.name==='CanonicalNativePlanError',`plan rejection ${i}`);
   }
+  fs.writeFileSync(cwd+'/src/helper.ts',helper);
+  fs.writeFileSync(cwd+'/src/index.ts',entry("for(let i=0;i<2;i++){const row=await lookup();}"));
+  assert.throws(()=>tc.compileProject(tc.resolveProject({cwd,profile:'javascript'})),
+   error=>error.code==='PULSE_CANONICAL_COMPILE_FAILED','zero-argument source calls produce a diagnostic, not a compiler crash');
   compile(); // Restore the authored graph after negative-source probes.
   if(process.argv.includes('--plan-only')){console.log('loop helper plan passed');return;}
   const native=compileCanonicalNativePlan(plan,{cwd:root,emitWat:false});
