@@ -142,7 +142,7 @@ function inspectBoundedPureLoop(statement, options = {}) {
       if (node.elseStatement) body(node.elseStatement, counters, product); return;
     }
     if (ts.isExpressionStatement(node)) { expression(node.expression, counters, true, readBody()); return; }
-    if (readBody() && ts.isReturnStatement(node)) { expression(node.expression, counters); return; }
+    if ((readBody() || options.pureHelper === true) && ts.isReturnStatement(node)) { expression(node.expression, counters); return; }
     if (ts.isBreakStatement(node) || ts.isContinueStatement(node)) {
       if (node.label) fail(node, 'Pure loop break and continue must be unlabelled.');
       return;

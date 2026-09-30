@@ -180,7 +180,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
       const generatedRange = { start, end: synthetic.length };
       helpers.push({ id: helper.id, name: helper.name, pure: true, source: helper.source,
         resultKind: fn.type.getText(helper.sourceFile),
-        parameters: fn.parameters.map(p => ({ name: p.name.text, valueKind: p.type.getText(helper.sourceFile) })), generatedRange });
+        parameters: fn.parameters.map((p, i) => { const type = helper.parameterTypes[i]; return { name: p.name.text, valueKind: typeof type === 'string' ? type : type.kind === 'record' ? 'object' : 'array', ...(typeof type === 'object' ? { borrow: { version: require('@pulse-compute/wasm-contracts/handler/canonical-native-plan').CANONICAL_NATIVE_PURE_BORROW_VERSION, type } } : {}) }; }), generatedRange });
       helperRecords.push({ entryStableId: helper.id, operationIr: { sourceFile: helper.sourceFile, handler: fn },
         canonicalIr: { router: { entry: { generatedRange } } } });
       continue;

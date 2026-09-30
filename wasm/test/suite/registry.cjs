@@ -32,11 +32,14 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'pure-record-helpers': nodeTask('test/lowering/assert-pure-record-helpers.cjs', {
+    evidence: 'native', description: 'Read-only structural pure helper parity, ownership and allocation proof', timeoutMs: 180000
+  }),
   'pure-source-helpers': nodeTask('test/lowering/assert-pure-source-helpers.cjs', {
     evidence: 'native', timeoutMs: 120000, description: 'PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans'
   }),
   'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
-    description: 'Pure-helper source oracles, scalar admission and explicit unsupported record repros'
+    description: 'Pure-helper source oracles and scalar/record admission'
   }),
   'suite-shape': nodeTask('test/suite/assert-suite-shape.cjs', {
     description: 'profile separation, uniqueness, and timeout budgets'
@@ -1082,6 +1085,7 @@ const profiles = Object.freeze({
   ]),
   native: Object.freeze([
     'pure-source-helpers',
+    'pure-record-helpers',
     'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',

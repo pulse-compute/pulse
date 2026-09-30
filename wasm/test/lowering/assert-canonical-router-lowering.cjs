@@ -140,7 +140,7 @@ async function main() {
     const planA = buildCanonicalNativePlan(copyA);
     const planB = buildCanonicalNativePlan(copyB);
     assert.equal(planA.entry.kind, 'router');
-    assert.equal(planA.version, 'pulse.canonical-native-plan.v6');
+    assert.equal(planA.version, 'pulse.canonical-native-plan.v7');
     assert.ok(planA.handlers.length > 0);
     assert.deepEqual(planA.handlers.map(handler => handler.id), planA.routing.entries
       .filter(entry => entry.nativeBody).map(entry => entry.stableId));

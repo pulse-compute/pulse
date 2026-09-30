@@ -1,5 +1,5 @@
 {
-  "status": "scalar-supported-records-unsupported",
+  "status": "scalar-and-record-supported",
   "scalarImplementation": "PF-02",
   "recordImplementation": "PF-03",
   "callerLoopImplementation": "PF-04",

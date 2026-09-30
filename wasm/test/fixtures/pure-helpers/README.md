@@ -1,16 +1,13 @@
 # PF-01: bounded synchronous pure-helper contract
 
-Status: PF-02 implements the scalar subset on Native. PF-03 record borrowing,
+Status: PF-02 scalar helpers and PF-03 structured borrowing are implemented.
 PF-04 caller-loop integration and PF-05 installed-package qualification remain
-pending. The scalar fixtures now have positive plan/execution coverage. Record
-fixtures remain expected failures at scalar-signature admission. Do not skip these
-fixtures or convert unexpected compilation success into a pass: replace the
-expected rejection with end-to-end assertions in its implementation ticket.
+pending. Scalar and partition fixtures have positive Native/JavaScript coverage.
 
 Run from the repository root:
 
 ```sh
-node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers
+node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers
 ```
 
 ## Minimum language and ownership
@@ -48,7 +45,7 @@ are excluded. The caller retains response construction and Router decisions.
 
 ## Record lifetime and aliases (PF-03)
 
-The exact structural subset is `PartitionHead` in `types.ts`: scalar fields,
+The structural subset is illustrated by `PartitionHead` in `types.ts`: scalar fields,
 one nested `{hash: string, node: number}` record and a `number[]`. Resolve the
 imported type. Mutable source interfaces are allowed; compiler-enforced use in
 the callee is transitively read-only. Missing/wrongly typed fields are outside
@@ -75,11 +72,11 @@ O-25/O-28 effectful eligibility, iteration accounting or suspension contracts.
 
 ## Serialized plan compatibility
 
-PF-02 introduces Native plan/compiler v6, generator v8 and the descriptor
-`pulse.canonical-native-pure-helper.v1`. The existing effectful
+PF-03 uses Native plan/compiler v7, generator v9 and the descriptor
+`pulse.canonical-native-pure-helper.v2`, with `pulse.pure-borrow.v1` for structured parameters. The existing effectful
 `pulse.canonical-native-helper.v1` retains its suspension semantics. Incompatible
-v5 plans fail closed and must be regenerated from source; the ABI is unchanged.
-There is no automatic upgrade or ignored pure descriptor. PF-03 must version structural parameter descriptors;
+older plans fail closed and must be regenerated from source; the ABI is unchanged.
+There is no automatic upgrade or ignored pure descriptor. Structural descriptors are independently validated;
 PF-04 must version loop-call accounting if its serialized contract changes.
 
 After JSON round-trip, independently validate identities, parameter/result
@@ -92,10 +89,11 @@ Tamper each descriptor/call/body/ownership/version field in implementation tests
 
 PF-01 originally reproduced `PULSE_PROJECT_MODULE_LINK_FAILED` containing
 `PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED`. PF-02 replaces scalar rejection
-with positive coverage. Records now fail with `PULSE_CANONICAL_ROUTER_COMPILE_FAILED`
-and `PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED`; no record lowering is claimed.
-The runner checks both bindings and negated conditions. The separate scalar task
-qualifies Native and original-source JavaScript behavior.
+with positive coverage. PF-03 replaces record rejection with Native/JavaScript parity,
+identity and allocation evidence. Unsupported structural signatures retain
+`PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED`; optional reads use SHAPE,
+property/element writes use MUTATION, and unsupported calls/escapes retain CALL,
+VALUE or RESULT. Plan-level alias/shape failures use `PULSE_CANONICAL_NATIVE_PLAN_INVALID`.
 
 PF-02 provides specific rejection reasons for captures,
 parameter mutation, async/generator helpers, effects, context/response/Router
@@ -110,9 +108,9 @@ caching and mutable/escaping records remain outside this work.
 CAPTURE, LOCAL, VALUE, CONTROL, CALL, MUTATION, ARGUMENT, NESTING and RESULT.
 Malformed serialized contracts use `PULSE_CANONICAL_NATIVE_PLAN_INVALID`.
 General dynamic calls continue to use existing unsupported-expression/import
-rejections. Helper methods and type assertions are excluded. Pure-loop early
-returns retain the existing loop restriction until the loop integration ticket.
+rejections. Helper methods and type assertions are excluded. PF-03 admits early scalar returns inside a pure helper loop; ordinary caller
+pure loops retain their existing return restriction.
 Caller arguments admit scalar expressions and request scalar reads; bind other
-supported computations first. This contract does not imply structured borrowing
-or new exception support. Generated function counts do not establish final-Wasm
+supported computations first. Structured callers require a proven literal graph or matching schema boundary;
+caller graph writes are conservatively rejected even after a call. No new exception support. Generated function counts do not establish final-Wasm
 retention; scalar handles retain the existing invocation lifetime/accounting.

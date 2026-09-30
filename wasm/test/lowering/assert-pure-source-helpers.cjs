@@ -97,7 +97,7 @@ const app=new Pulse({auto:true});app.get('/',async(ctx)=>{${body}});export defau
       [scalar.replace('return value > 0','return callback(value)'), normal, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED'],
       [scalar.replace('return value > 0','return value.trim()'), normal, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED'],
       [scalar.replace('return value > 0',"throw 'bad'"), normal, 'PULSE_NATIVE_PURE_HELPER_CONTROL_UNSUPPORTED'],
-      [scalar.replace('value:number','value:{x:number}'), normal, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
+      [scalar.replace('value:number','value:{x?:number}'), normal, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
       [scalar.replace('value:number','value:(n:number)=>boolean'), normal, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
       [scalar.replace('function isPositive','async function isPositive'), normal, 'PULSE_NATIVE_HELPER_CALL_UNSUPPORTED'],
       [scalar.replace('value:number','value:number=1'), normal, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
