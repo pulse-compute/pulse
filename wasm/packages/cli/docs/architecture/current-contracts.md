@@ -1229,6 +1229,20 @@ not an installed qualification claim. Workspace acceptance measures 2× duplicat
 accepts the 4×/256 KiB boundary, rejects over-expansion and validates actual Wasm
 and both Node HTTP targets. See [bounded UTF-8 transforms](../concepts/bodies.md#experimental-bounded-utf-8-transforms-on-node).
 
+### AST-02D Native embedded Assets
+
+The trusted Assets lowerer admits a canonical serialized `embeddedManifest`
+literal on `assets.lookup`. Contracts own manifest validation, deterministic
+identity and the finite embedded HTTP subset; the lowerer owns authoring
+admission and selects the contained literal path. All manifest records are
+validated, including unselected files. The existing opaque package effect
+carries only the selected admitted blob and manifest identity into the Native
+artifact. Node and Fastly retain binary response ownership. The opt-in grants
+no filesystem, store or network authority and adds no binary application ABI.
+Ordinary Native compilation/builds are the supported path. JavaScript retains
+the existing embedded middleware; the Native-only lookup option rejects direct
+JavaScript execution. The older binary-buffer guest ABI remains reserved.
+
 ### AST-02A bounded S3 response ownership
 
 S3 `getBody` is a Node Native/JavaScript opaque package effect. S3 owns signed
