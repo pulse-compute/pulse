@@ -61,9 +61,8 @@ app.use('/static', createAssets({ mode: 'embedded', manifest }))
 This is a direct JavaScript middleware surface, tested through Node Pulse
 execution and isolated installed imports. It does not embed data into Native
 Wasm, add a compiler intrinsic, scan directories or fetch remote files. Supply
-explicit bytes from application code or a build script. Native artifact
-embedding is a separate increment; `assets.lookup` keeps its existing provider
-binding semantics.
+explicit bytes from application code or a build script. The Native opt-in below
+uses the same manifest format through the package-owned lowerer.
 
 `createEmbeddedManifest` returns a JSON-serializable `pulse.embedded-assets.v1`
 manifest with canonical base64 bytes, per-file SHA-256, total length and a
@@ -97,6 +96,49 @@ A partial response's ETag identifies the full representation; it is **not** a
 checksum assertion over the returned slice and cannot establish whole-object
 integrity from that slice. Each response copies only its selected bytes, so
 consumers cannot mutate retained asset content.
+
+
+## Native embedded blobs (AST-02D)
+
+Node Native and Fastly Native accept a literal `embeddedManifest` option on
+`assets.lookup`. Serialize a manifest from `createEmbeddedManifest` with
+`JSON.stringify`, then emit that serialized value as a string literal in your
+application source. For example, a build script can generate a route:
+
+```ts
+const manifestJson = JSON.stringify(manifest)
+const routeSource = `
+app.get('/logo.bin', async ctx => {
+  const blob = await assets.lookup(ctx, 'embedded', '/logo.bin', {
+    embeddedManifest: ${JSON.stringify(manifestJson)}
+  })
+  return blob
+})`
+```
+
+The generated application imports `assets` from `@pulse-compute/assets` and
+uses the ordinary Pulse Native compile/build workflow. Store and key remain
+literal; the store name labels the lookup and needs no provider binding for
+this opt-in. `method: 'HEAD'` is the only additional allowed option. Dynamic
+manifests, extra options and a standalone `payloadMode` selector are rejected.
+`embeddedManifest` is Native-only: direct JavaScript calls reject it; use the
+embedded `createAssets` middleware for JavaScript.
+
+The lowerer verifies all files, canonical base64, lengths, content hashes and
+manifest identity before selecting an entry. It rejects noncanonical JSON,
+duplicate fields and serialized manifests over 2 MiB before embedding. The
+256-file, 256 KiB/file and 1 MiB/manifest decoded limits remain unchanged.
+The selected bytes and manifest identity become constants in the Native
+artifact. No filesystem reads, directory scans, store lookups or origin
+requests occur while serving them. Paths select exact admitted entries;
+there is no path decoding or filesystem resolution in a Native lookup.
+
+Both Native providers preserve the GET/HEAD, ETag, If-None-Match, closed Range
+and If-Range subset above using incoming request headers. Missing entries
+return a bodyless 404. Native responses own binary bytes without decoding to
+text or introducing a guest byte-value ABI. Fastly qualification here uses
+compiled ordinary build artifacts with injected ABI fixtures, not deployed
+Fastly acceptance.
 
 ## S3 protocol ownership and compatibility
 

@@ -136,7 +136,12 @@ function assetContentType(key) {
   })[extension] || 'application/octet-stream';
 }
 
-function assetResponse(payload, stores) {
+function assetResponse(payload, stores, request) {
+  if (payload.embeddedId !== undefined) {
+    const result = require('@pulse-compute/wasm-contracts/assets/contracts').embeddedAssetResponse(payload, request?.headers);
+    const bodyStream = result.bytes === null ? undefined : new ReadableStream({start(controller) { controller.enqueue(result.bytes); controller.close(); }});
+    return {status:result.status,kind:'stream',headers:[...result.headers],...(bodyStream ? {bodyStream} : {})};
+  }
   const storeName = portableRuntimeHost.normalizeKvNamespace(payload.store, {});
   const key = portableRuntimeHost.normalizeKvKey(payload.key, {});
   const store = stores.get(storeName);
@@ -591,7 +596,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
         return eventAdapter.acceptOutbound(effect.frame, executionOptions);
       }
       if (effect.kind === 'assets.lookup') {
-        return assetResponse(effect.payload || {}, kvStoresFor(executionOptions));
+        return assetResponse(effect.payload || {}, kvStoresFor(executionOptions), executionOptions.request);
       }
       throw new hostRuntime.CanonicalRuntimeError('ProviderCapabilityError', 'PULSE_PROVIDER_CAPABILITY_UNSUPPORTED', `Node provider does not implement ${effect.kind}.`, { provider: 'node', kind: effect.kind, effectId: effect.id });
     },

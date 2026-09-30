@@ -166,6 +166,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'jwt-rs256',
       'assets-lowering-plan',
       'assets-package-owned-lowering',
+      'assets-native-embedded',
       'grip-package-owned-lowering',
       'grip-package-runtime',
       'package-root-native',

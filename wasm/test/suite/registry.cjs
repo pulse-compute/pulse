@@ -461,6 +461,8 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'Node/Fastly Native/JavaScript semantic parity and target integrity'
   }),
+  'ast02d-installed': nodeTask('test/assets/ast02d-installed.cjs', { timeoutMs: 300000, description: 'AST-02D isolated installed Native embedded blobs on Node and Fastly ABI fixtures' }),
+  'assets-native-embedded': nodeTask('test/assets/assert-native-embedded.cjs', { timeoutMs: 90000, description: 'AST-02D Native embedded manifest admission and binary HTTP semantics' }),
   'ast02b-installed': nodeTask('test/assets/ast02b-installed.cjs', {
     timeoutMs: 180000, evidence: 'external',
     description: 'Isolated exact-tarball embedded Assets manifest, HTTP and type acceptance'
@@ -1175,6 +1177,7 @@ const profiles = Object.freeze({
     'guest-link-audit-diagnostics',
     'assets-lowering-plan',
     'assets-package-owned-lowering',
+    'assets-native-embedded',
     'grip-package-owned-lowering',
     'jwt-package-owned-lowering',
     'canonical-api-runtime',
