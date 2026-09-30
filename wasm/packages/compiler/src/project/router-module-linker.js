@@ -561,9 +561,30 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     }
   }
 
+  // Only HTTP handler loop calls enter JavaScript's bounded inspection. Never
+  // walk an ordinary dependency function into a new purity requirement.
+  const httpFunctions = new Set();
+  if (options.target === 'javascript') for (const ref of handlerReferences) {
+    if (!['route', 'middleware'].includes(ref.role)) continue;
+    const module = context.projectModules.get(ref.module);
+    if (!module) continue;
+    if (!ref.localName.startsWith('<inline:')) {
+      httpFunctions.add(functionForNamedHandler(module.sourceFile, ref.localName));
+    } else {
+      const visit = node => {
+        if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+          const pos = module.sourceFile.getLineAndCharacterOfPosition(node.getStart(module.sourceFile));
+          if (pos.line + 1 === ref.source.line && pos.character + 1 === ref.source.column) httpFunctions.add(node);
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(module.sourceFile);
+    }
+  }
+
   const sourceHelpers = [];
   const helperCalls = new WeakMap();
-  if (options.target !== 'javascript') {
+  {
     const byIdentity = new Map();
     for (const module of context.projectModules.values()) {
       function visit(node) {
@@ -572,7 +593,15 @@ function linkProjectRouterModules(graphBuild, options = {}) {
           const awaited = ts.isAwaitExpression(node.parent);
           const target = resolveLocal(context, indexes, module, call.expression.text, [], [], undefined, consumedImports);
           const fn = target?.module && functionForNamedHandler(target.module.sourceFile, target.localName);
-          if (fn && (awaited && fn.parameters.length > 1 || !awaited)) {
+          // JavaScript keeps ordinary calls in its original graph. Only bounded
+          // loop calls enter the shared pure-helper inspection contract.
+          let inLoop = false;
+          let owner = call.parent;
+          for (; owner && !ts.isFunctionLike(owner); owner = owner.parent) {
+            if (ts.isForStatement(owner)) inLoop = true;
+          }
+          const inspectPureLoopCall = inLoop && httpFunctions.has(owner) && fn && !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+          if (fn && (options.target !== 'javascript' || inspectPureLoopCall) && (awaited && fn.parameters.length > 1 || !awaited)) {
             const identity = `${target.module.path}#${target.localName}`;
             let helper = byIdentity.get(identity);
             if (!helper) {

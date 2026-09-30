@@ -1,13 +1,13 @@
 # PF-01: bounded synchronous pure-helper contract
 
-Status: PF-02 scalar helpers and PF-03 structured borrowing are implemented.
-PF-04 caller-loop integration and PF-05 installed-package qualification remain
+Status: PF-02 scalar helpers, PF-03 structured borrowing and PF-04 caller-loop
+integration are implemented. PF-05 installed-package qualification remains
 pending. Scalar and partition fixtures have positive Native/JavaScript coverage.
 
 Run from the repository root:
 
 ```sh
-node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers
+node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers
 ```
 
 ## Minimum language and ownership
@@ -70,14 +70,24 @@ state and existing effect ownership. Test first/last iterations, short circuits,
 early returns, repeated calls, at-limit and over-limit products. Do not change
 O-25/O-28 effectful eligibility, iteration accounting or suspension contracts.
 
+The focused `assert-pure-loop-helpers.cjs` test exercises 16 caller partitions,
+10 callee counters, repeated validations, invalid first/last values, early returns,
+interleaved suspensions, short circuits and pure caller loops with no read sites.
+Every caller/callee loop path must stay within 65,536; zero caps retain the
+existing conservative factor of one and sibling loops/calls are not summed.
+Inputs in loop calls are read-only. Calls in headers, nested helper calls and
+recursion remain excluded. JavaScript uses the shared bounded inspection only
+for HTTP handler calls; ordinary dependency functions keep their existing behavior.
+
 ## Serialized plan compatibility
 
-PF-03 uses Native plan/compiler v7, generator v9 and the descriptor
+PF-04 uses Native plan/compiler v8, generator v9 and the descriptor
 `pulse.canonical-native-pure-helper.v2`, with `pulse.pure-borrow.v1` for structured parameters. The existing effectful
 `pulse.canonical-native-helper.v1` retains its suspension semantics. Incompatible
 older plans fail closed and must be regenerated from source; the ABI is unchanged.
 There is no automatic upgrade or ignored pure descriptor. Structural descriptors are independently validated;
-PF-04 must version loop-call accounting if its serialized contract changes.
+PF-04 loop calls carry `pulse.bounded-pure-loop-call.v1`, independently checked
+against their placement and the caller/callee iteration product.
 
 After JSON round-trip, independently validate identities, parameter/result
 kinds, body/local ownership, scalar-only results, call arity, read-only aliases,

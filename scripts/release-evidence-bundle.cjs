@@ -83,6 +83,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'canonical-native-plan',
       'pure-source-helpers',
       'pure-record-helpers',
+      'pure-loop-helpers',
       'shared-stage-o19',
       'multifile-source-identity',
       'logging-lowering',

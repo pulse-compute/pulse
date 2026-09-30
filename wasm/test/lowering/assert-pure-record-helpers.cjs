@@ -83,7 +83,7 @@ async function main() {
       reject(original,`const head=${JSON.stringify(fresh())};${setup}const result=validPartition(head,'item','abc',0);return ctx.text(''+result);`);rejections++;
     }
     reject(original,`const head=ctx.req.json();const result=validPartition(head,'item','abc',0);return ctx.text(''+result);`);rejections++;
-    reject(original,`const head=await ctx.req.json('app.Head');for(let i=0;i<2;i++){const result=validPartition(head,'item','abc',i);}return ctx.text('x');`);rejections++;
+    reject(original,`const head=await ctx.req.json('app.Head');for(let i=0;i<2 && validPartition(head,'item','abc',i);i++){}return ctx.text('x');`);rejections++;
     const find=(v,predicate)=>{if(!v||typeof v!=='object')return;if(predicate(v))return v;for(const child of Object.values(v)){const result=find(child,predicate);if(result)return result;}};
     const mutations=[
       p=>p.helpers[0].parameters[0].borrow.version='old',

@@ -32,6 +32,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'pure-loop-helpers': nodeTask('test/lowering/assert-pure-loop-helpers.cjs', {
+    evidence: 'native', description: 'Pure validators in bounded caller loops, combined limits and invocation isolation', timeoutMs: 180000
+  }),
   'pure-record-helpers': nodeTask('test/lowering/assert-pure-record-helpers.cjs', {
     evidence: 'native', description: 'Read-only structural pure helper parity, ownership and allocation proof', timeoutMs: 180000
   }),
@@ -1086,6 +1089,7 @@ const profiles = Object.freeze({
   native: Object.freeze([
     'pure-source-helpers',
     'pure-record-helpers',
+    'pure-loop-helpers',
     'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',

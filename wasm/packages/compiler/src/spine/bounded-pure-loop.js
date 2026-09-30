@@ -33,6 +33,8 @@ function inspectBoundedPureLoop(statement, options = {}) {
   let loopDepth = 0;
   let effectCount = 0;
   let checkingHeader = false;
+  let activeProduct = 1;
+  let maxIterationProduct = 1;
   const readBody = () => options.readLoop === true && loopDepth === 1 && !checkingHeader;
   const protectedNames = new Set(options.readLoop ? [options.ctxName, ...(options.namespaceAliases || [])] : []);
   function fail(node, message) { errors.push({ node, message }); }
@@ -56,6 +58,13 @@ function inspectBoundedPureLoop(statement, options = {}) {
     }
     if (ts.isCallExpression(node)) {
       const target = unwrap(node.expression);
+      const pure = !checkingHeader && options.pureHelperForCall?.(node);
+      if (pure) {
+        if (activeProduct * (pure.maxIterationProduct || 1) > CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(node, 'Pure helper exceeds the combined caller/callee iteration bound.');
+        if (node.questionDotToken || node.typeArguments?.length) fail(node, 'Pure loop calls require a static synchronous helper.');
+        for (const argument of node.arguments) expression(argument, counters, false);
+        return;
+      }
       const helper = readBody() && options.helperForCall && options.helperForCall(node);
       if (helper) {
         if (!effectRoot) { fail(node, 'Read-loop helpers require a directly bound sequential call.'); return; }
@@ -180,14 +189,18 @@ function inspectBoundedPureLoop(statement, options = {}) {
     checkingHeader = previousHeader;
     if (!options.headerOnly) {
       loopDepth += 1;
-      body(node.statement, counters, product * Math.max(1, maxIterations));
+      const previousProduct = activeProduct;
+      activeProduct = product * Math.max(1, maxIterations);
+      maxIterationProduct = Math.max(maxIterationProduct, activeProduct);
+      body(node.statement, counters, activeProduct);
+      activeProduct = previousProduct;
       loopDepth -= 1;
     }
     return { name, maxIterations };
   }
   const result = loop(statement, new Set(), 1);
   if (options.readLoop && !options.headerOnly && !effectCount) fail(statement, 'A bounded read loop requires at least one admitted sequential effect site.');
-  return { ...result, errors, effectCount };
+  return { ...result, errors, effectCount, maxIterationProduct };
 }
 
 function inspectBoundedReadLoop(statement, options = {}) {

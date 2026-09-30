@@ -105,7 +105,7 @@ const app=new Pulse({auto:true});app.get('/',async(ctx)=>{${body}});export defau
       [scalar.replace('function isPositive(value:number):boolean', 'const isPositive=(value:number):boolean =>'), normal, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
       [scalar, normal.replace('isPositive(1)', "isPositive('x')"), 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED'],
       [scalar, normal.replace('isPositive(1)', 'isPositive(isPositive(1))'), 'PULSE_NATIVE_PURE_HELPER_NESTING_UNSUPPORTED'],
-      [scalar, `for(let i=0;i<2;i++){const a=isPositive(i);}return ctx.text('x');`, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED'],
+      [scalar, `for(let i=0;i<2 && isPositive(i);i++){}return ctx.text('x');`, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED'],
       [scalar, `const isPositive=(n:number)=>false;${normal}`, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED'],
     ];
     for (const args of negatives) reject(...args);

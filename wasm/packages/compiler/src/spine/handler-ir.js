@@ -193,6 +193,21 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const effectCounters = new Map();
   let continuationIndex = 0;
   const helperBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.helpers || []).map(helper => [helper.name, helper]));
+  const pureHelperBounds = new Map();
+  for (const declaration of handler.body.statements || []) {
+    if (!ts.isFunctionDeclaration(declaration) || !helperBodies.get(declaration.name?.text)?.pure) continue;
+    let maxIterationProduct = 1;
+    const visit = node => {
+      if (ts.isForStatement(node)) {
+        const loop = inspectBoundedPureLoop(node, { pureHelper: true });
+        maxIterationProduct = Math.max(maxIterationProduct, loop.maxIterationProduct);
+        return; // The shared inspector includes all nested bounds.
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(declaration.body);
+    pureHelperBounds.set(declaration.name.text, { maxIterationProduct });
+  }
   const routerBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.entries || [])
     .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
   // Offsets belong to a source file. Project-wide contributions can share an
@@ -677,8 +692,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
     }
     if (ts.isForStatement(statement)) {
       const effectForCall = call => extractProviderCall(call, ctxName, aliases) || packageEffectForCall(call);
+      const pureHelperForCall = call => ts.isIdentifier(call.expression) && pureHelperBounds.get(call.expression.text);
       const helperForCall = call => ts.isIdentifier(call.expression) && (
-        helperBodies.get(call.expression.text)
+        (helperBodies.get(call.expression.text)?.pure ? undefined : helperBodies.get(call.expression.text))
         // JavaScript inspection retains ordinary ctx-first source calls. The
         // original graph executes them; this is not Native callee admission.
         || options.target === 'javascript' && call.arguments.length > 0 && ts.isIdentifier(call.arguments[0]) && call.arguments[0].text === ctxName);
@@ -689,14 +705,14 @@ function buildPlainHandlerIr(frontend, options = {}) {
       }
       findEffect(statement);
       if (hasEffect) {
-        const loop = inspectBoundedReadLoop(statement, { ctxName, effectForCall, helperForCall, namespaceAliases: [...aliases.keys()] });
+        const loop = inspectBoundedReadLoop(statement, { ctxName, effectForCall, helperForCall, pureHelperForCall, namespaceAliases: [...aliases.keys()] });
         for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED', error.message));
         if (loop.errors.length) return createHandlerOperation('source-statement', { statement, role: 'read-loop-rejected' });
         return createHandlerOperation('read-loop', { statement, counter: loop.name, maxIterations: loop.maxIterations,
           initializer: statement.initializer, test: statement.condition, increment: statement.incrementor,
           body: buildStatement(statement.statement, new Map(aliases)) });
       }
-      const loop = inspectBoundedPureLoop(statement, { ctxName, pureHelper: activePureHelper });
+      const loop = inspectBoundedPureLoop(statement, { ctxName, pureHelper: activePureHelper, pureHelperForCall });
       for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message));
       return createHandlerOperation('source-statement', { statement, role: 'bounded-pure-loop' });
     }

@@ -10,7 +10,7 @@ const { acceptanceToolchain } = require('../s3/acceptance-toolchain.cjs');
 const root = path.resolve(__dirname, '../../..');
 const fixtures = path.join(__dirname, '../fixtures/pure-helpers');
 const expected = require('../fixtures/pure-helpers/expectations.json');
-assert.equal(expected.status, 'scalar-and-record-supported');
+assert.equal(expected.status, 'scalar-record-and-loop-supported');
 const program = ts.createProgram(['scalar.ts', 'partition.ts', 'types.ts'].map(file => path.join(fixtures, file)), {
   strict: true, noEmit: true, skipLibCheck: true, types: [], target: ts.ScriptTarget.ES2022,
 });

@@ -167,9 +167,9 @@ bodies; it does not create a dynamic function table or change the value heap's
 retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
-## Synchronous pure source helpers (PF-02/PF-03)
+## Synchronous pure source helpers (PF-02/PF-03/PF-04)
 
-Native plan v7 retains one `pulse.canonical-native-pure-helper.v2` body per
+Native plan v8 retains one `pulse.canonical-native-pure-helper.v2` body per
 statically resolved synchronous function declaration. HTTP routes and middleware
 may call it in bindings and expressions, including `if (!validator(value))`,
 without `await` or `ctx`. JavaScript executes the original source graph.
@@ -188,8 +188,20 @@ parameters or derived aliases, return a structured value, capture/retain it, or
 pass it to another helper. Derived record/array locals must be `const`; scalar
 locals may mutate. Field reads, array length/index reads, scalar operators,
 branches and literal-capped loops are admitted. A pure helper can return its
-scalar result early from its own loop. Caller-loop integration remains PF-04;
-effectful helper eligibility and the 65,536 iteration-product bound are unchanged.
+scalar result early from its own loop. PF-04 admits pure calls inside existing
+bounded caller loop bodies, including read loops. A pure callee requires no read
+site. Each loop call carries `pulse.bounded-pure-loop-call.v1`; deserialized plans
+independently multiply every enclosing caller cap by nested callee caps against
+the existing 65,536 iteration-product limit. The existing conservative rule counts
+a zero cap as one for static accounting. Sibling loops/calls are not summed.
+Call inputs within loops are read-only; active caller counters cannot mutate.
+Calls in loop headers remain excluded. Effectful helper eligibility is unchanged.
+
+JavaScript inspects statically resolved pure calls in HTTP handler loops through
+the same bounded source checks, then executes the original source graph. This
+does not inspect ordinary dependency function internals or grant Native eligibility.
+Pure helpers finish and clear their slots before a caller read can suspend; caller
+state alone continues under the existing effect invocation contract.
 
 Structured callers must establish their shape with a literal graph or an existing
 matching schema decode/request-JSON boundary. Bindings and derived caller aliases
@@ -221,11 +233,11 @@ After deserialization, the compiler independently validates descriptors, field
 and index kinds, const aliases, scalar results, body/local ownership, arity,
 non-nesting and loop bounds. A recomputed hash does not establish validity.
 Effectful `pulse.canonical-native-helper.v1` keeps its suspension contract.
-Plan/compiler v7 and generator v9 invalidate older cached plans; regenerate them
-from source. The guest ABI is unchanged.
+Plan/compiler v8 invalidate older cached plans; regenerate them from source.
+Generator v9 and the guest ABI are unchanged.
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers`
-for scalar/record parity, unchanged inputs, allocation evidence and negative
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers`
+for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.
 

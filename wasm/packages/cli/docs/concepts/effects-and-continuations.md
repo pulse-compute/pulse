@@ -57,7 +57,11 @@ diagnostics reject parallel groups, writes, nested effect loops, arbitrary
 helpers and counter mutation. Directly awaited, result-bound static helpers are
 allowed when their bodies contain only these read effects and admitted value
 operations, without nested effect loops or helper calls. Each call resets the
-helper frame while preserving the caller loop across suspension. The source fixture at
+helper frame while preserving the caller loop across suspension.
+Synchronous pure validators can also run in loop bodies without a callee read
+site. Their own bounded loops count toward the same 65,536 combined product;
+call inputs cannot mutate values, and calls in loop headers remain excluded.
+The validator completes before the caller's next read suspends. The source fixture at
 `wasm/test/fixtures/projects/bounded-read-loops/src/index.ts` exercises a
 read/digest/decode traversal and inner pure collection processing.
 
