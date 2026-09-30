@@ -52,7 +52,7 @@ const release = expandProfile('release');
 const externalTasks = new Set([
   // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
   'mcp-wire-proof',
-  'mcp-installed',
+  'mcp-installed', 'ops01-installed',
   // JWT-01 installs candidate packages from a temporary registry for focused qualification.
   'jwt-installed-workflow',
   'str02-installed',
