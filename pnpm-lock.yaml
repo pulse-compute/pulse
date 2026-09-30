@@ -26,6 +26,9 @@ importers:
       '@pulse-compute/runtime':
         specifier: workspace:*
         version: link:../runtime
+      '@pulse-compute/s3':
+        specifier: workspace:*
+        version: link:../s3
       '@pulse-compute/wasm-contracts':
         specifier: workspace:*
         version: link:../../wasm/packages/contracts

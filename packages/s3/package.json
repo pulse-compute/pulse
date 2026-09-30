@@ -18,7 +18,12 @@
     "./provider": "./src/provider.js",
     "./pulsewasm/manifest": "./pulsewasm.manifest.cjs",
     "./pulsewasm/compiler": "./pulsewasm.compiler.cjs",
-    "./pulsewasm-native": "./pulsewasm.native.cjs"
+    "./pulsewasm-native": "./pulsewasm.native.cjs",
+    "./signing": {
+      "types": "./src/signing.d.ts",
+      "require": "./src/signing.js",
+      "default": "./src/signing.js"
+    }
   },
   "files": [
     "src",
