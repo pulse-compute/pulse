@@ -22,15 +22,7 @@ const {
   CanonicalCompileError
 } = require('./spine/plain-handler-frontend.js');
 
-function loadCanonicalRuntimeContract() {
-  try { return require('@pulse-compute/wasm-contracts/handler/canonical-runtime'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../contracts/src/handler/canonical-runtime.js');
-    throw error;
-  }
-}
-
-const canonicalRuntimeContract = loadCanonicalRuntimeContract();
+const canonicalRuntimeContract = require('@pulse-compute/wasm-contracts/handler/canonical-runtime');
 
 const CANONICAL_API_COMPILER_VERSION = 'pulse.canonical-api-compiler.v7';
 

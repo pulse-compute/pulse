@@ -827,13 +827,18 @@ JavaScript target; `pulse compile` still requires a real Native compilation.
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target
 support policy. The compiler owns the neutral bootstrap, contract validation,
-the compile-only `none` driver, and shared evidence composition. The CLI carries
-provider identity as data and does not import or branch on concrete provider
-implementations.
+the compile-only `none` driver, and shared evidence composition. The compiler's
+production dependencies contain no Node or Fastly provider. The CLI distribution
+owns both bundled provider dependencies and binds built-in resolution to its own
+package context; CLI orchestration carries provider identity as data and does not
+import or branch on concrete provider implementations.
 
 Provider bootstrap is exact and fail-closed:
 
 - bare host ID `x` resolves by convention to `@pulse-compute/provider-x`;
+- direct compiler consumers resolve the selected provider from `projectRoot`
+  (the working directory when omitted); the CLI resolves its bundled `node` and
+  `fastly` IDs from the CLI package, without retrying against the project;
 - an exact scoped package name resolves from the project;
 - `none` selects the internal compile-only driver;
 - every package provider must export the versioned `./toolchain` contract.
@@ -842,6 +847,21 @@ Pulse does not scan dependencies, inspect keywords, run self-registration hooks,
 try alternate package names, or substitute another provider or target. A
 selected provider toolchain is trusted build code running in the Pulse process;
 do not run it from an untrusted project tree.
+
+Provider-neutral compiler loading and compilation do not load either provider.
+Legacy proof commands load their selected provider lazily from the caller's
+composition root. Repository proof scripts retain development dependencies only.
+The canonical API compiler, Native plan builder and Native compiler facade use
+declared package imports without checkout-relative recovery for missing or
+unexported dependencies. This is a bounded facade migration, not a claim that all
+historical loaders have been migrated.
+
+`arc01-installed` qualifies exact packed compiler-only, Node-only and Fastly-only
+installs outside the checkout, with the unselected providers physically absent.
+It compiles real Wasm, executes the selected provider driver, verifies unchanged
+installed package bytes, and checks the bundled CLI's doctor/test/build workflow
+on both targets. Fastly Native execution uses its fixture ABI; this evidence does
+not establish Viceroy or deployed service behavior.
 
 The compiler-to-provider seam is exact. A selected package exports one
 versioned toolchain whose zero-argument `createDriver()` returns a versioned

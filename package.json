@@ -55,6 +55,8 @@
     "@types/node": "^24.0.15",
     "@wooorm/starry-night": "3.10.0",
     "typescript": "^5.8.3",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.4",
+    "@pulse-compute/provider-node": "workspace:*",
+    "@pulse-compute/provider-fastly": "workspace:*"
   }
 }
