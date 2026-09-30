@@ -1011,6 +1011,8 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'ops01-exercise': nodeTask('test/ops/assert-exercise.cjs', { description: 'OPS-01 artifact identity, rollback failures and bounded operational evidence' }),
+  'ops01-installed': nodeTask('test/ops/installed.cjs', { evidence: 'external', timeoutMs: 360000, description: 'OPS-01 exact installed production Node launcher upgrade/rollback rehearsal' }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
     description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'
@@ -1145,6 +1147,7 @@ const profiles = Object.freeze({
     'entities-schema-bridge',
     'entities-javascript-runtime',
     'entities-json-rpc-corpus',
+    'ops01-exercise',
     'mcp-http',
     'mcp-tools',
     'mcp-authorization',

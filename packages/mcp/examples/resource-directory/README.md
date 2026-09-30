@@ -107,8 +107,10 @@ Use the adapter README's exact introspection-claim and issuer requirements.
 2. Run the governed Pulse artifact behind a private endpoint that validates the
    separate service credential. Prevent direct public access to the raw Entities
    endpoint. The acceptance proxy demonstrates this boundary locally; it is not
-   deployment middleware. A supported production Node launcher is owned by
-   NODE-01, so this app does not instruct deploying `pulse dev` as production.
+   deployment middleware. The supported production Node launcher is available through
+   `@pulse-compute/provider-node/server`. OPS-01 rehearses this composition with
+   exact installed artifacts; the credential-checking proxy and issuer in that
+   rehearsal are still test fixtures, not production middleware.
 3. Configure the external OAuth issuer, preregistered client, PKCE/resource support,
    confidential introspection client and exact audience. Assign read/propose grants
    deliberately. Do not reuse client access tokens as backend credentials.
@@ -119,3 +121,13 @@ Use the adapter README's exact introspection-claim and issuer requirements.
    the actual URL and record exact artifacts, issuer/client configuration excluding
    secrets, responses, lifecycle failures and rollback evidence. Until then,
    deployment, production issuer and provider-reality acceptance remain unclaimed.
+
+## Operational qualification
+
+Run `ops01-installed` through the repository test runner for the exact-artifact
+Node production-launcher rehearsal alongside example 01 on Native. It preserves
+baseline/candidate/rollback results, full artifact inventories and the pinned
+client replay. The baseline is explicitly synthetic. See the repository's
+`wasm/test/ops/OPS-01.md` for the live driver contract and remaining operator
+inputs. Local passing results do not establish deployed acceptance or a
+production issuer; OPS-01 remains open until that live evidence is recorded.

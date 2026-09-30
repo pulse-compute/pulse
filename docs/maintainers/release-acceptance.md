@@ -169,6 +169,33 @@ the Fastly target satisfies all six support gates, emits source/deployment
 manifests with provider reality and deployment still false, and does not install
 the downstream Fastly compiler into an ordinary Pulse consumer.
 
+## Operational upgrade and rollback acceptance
+
+OPS-01 prepares exact installed Node candidates for the private MCP directory
+(Node JavaScript) and the existing hello consumer (Node Native). Run:
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task ops01-exercise --task ops01-installed --no-report
+```
+
+The rehearsal uses the supported production Node launcher, verifies the complete
+runnable file closure, and exercises predecessor, candidate and rollback through
+the pinned independent MCP client and ordinary HTTP. It retains immutable
+candidate directories, inventories and terminal phase reports. The rehearsal
+predecessor is synthetic; it is not an earlier production release.
+
+The reviewed live driver contract and owner-assigned open items are in
+`wasm/test/ops/OPS-01.md`. Live acceptance requires the selected isolated host,
+actual accepted predecessor, HTTPS endpoints, external issuer/grants, active
+artifact observations, and explicit activation/rollback authorization. Failed
+candidate checks remain failures even when rollback succeeds. Uncertain
+activation blocks automatic rollback until the operator resolves disposition.
+
+Local rehearsal never closes the live gate. The bounded live smoke also does
+not close OPS-01 until external issuer and controlled deployed failure/lifecycle
+observations are complete. This work does not publish the private MCP package,
+activate a service, or replace the aggregate release seal.
+
 ## Offline deployment candidates
 
 ```bash
