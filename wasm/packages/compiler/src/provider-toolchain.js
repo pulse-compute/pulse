@@ -139,7 +139,7 @@ function projectRequire(projectRoot) {
 function resolveToolchainEntry(selector, packageName, options = {}) {
   const request = `${packageName}/toolchain`;
   const builtin = BUILTIN_PROVIDER_IDS.includes(selector);
-  const resolver = builtin ? require : projectRequire(options.projectRoot);
+  const resolver = projectRequire(builtin ? options.builtinRoot || options.projectRoot : options.projectRoot);
   try {
     return resolver.resolve(request);
   } catch (cause) {
@@ -263,13 +263,13 @@ function providerTargetAvailability(provider, options = {}) {
 
 function providerIds(options = {}) {
   return Object.freeze(BUILTIN_PROVIDER_IDS.filter((id) => (
-    options.executable !== true || getProviderDriver(id).executable === true
+    options.executable !== true || getProviderDriver(id, options).executable === true
   )));
 }
 
-function providerConfigReferences() {
+function providerConfigReferences(options = {}) {
   return Object.freeze(BUILTIN_PROVIDER_IDS
-    .map((id) => getProviderDriver(id))
+    .map((id) => getProviderDriver(id, options))
     .filter((driver) => driver.configReference)
     .map((driver) => driver.configReference));
 }
@@ -283,7 +283,7 @@ for (const id of BUILTIN_PROVIDER_IDS) {
 }
 Object.freeze(drivers);
 
-module.exports = Object.freeze({
+const api = Object.freeze({
   PROVIDER_PACKAGE_SCOPE,
   PROVIDER_PACKAGE_PREFIX,
   BUILTIN_PROVIDER_IDS,
@@ -297,3 +297,27 @@ module.exports = Object.freeze({
   providerIds,
   providerConfigReferences
 });
+
+// Bind a composition-owned resolution root without process-global registration.
+// The CLI supplies its own package root for bundled IDs; scoped providers still
+// resolve exactly from the project. A compiler consumer supplies only its project.
+function createProviderResolver(defaults = {}) {
+  const options = Object.freeze({ ...defaults });
+  const resolver = { ...api };
+  for (const name of ['resolveProviderToolchain', 'getProviderDriver', 'providerTargetAvailability']) {
+    resolver[name] = (value, input = {}) => api[name](value, { ...input, ...options });
+  }
+  for (const name of ['getProviderTargetDescriptor', 'getProviderTargetSupportDeclaration']) {
+    resolver[name] = (value, target, input = {}) => api[name](value, target, { ...input, ...options });
+  }
+  resolver.providerIds = (input = {}) => providerIds({ ...input, ...options });
+  resolver.providerConfigReferences = () => providerConfigReferences(options);
+  const boundDrivers = {};
+  for (const id of BUILTIN_PROVIDER_IDS) Object.defineProperty(boundDrivers, id, {
+    enumerable: true, get() { return resolver.getProviderDriver(id); }
+  });
+  resolver.drivers = Object.freeze(boundDrivers);
+  return Object.freeze(resolver);
+}
+
+module.exports = Object.freeze({ ...api, createProviderResolver });

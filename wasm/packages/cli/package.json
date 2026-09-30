@@ -32,7 +32,9 @@
     "@pulse-compute/wasm-contracts": "workspace:*",
     "@pulse-compute/wasm-host-runtime": "workspace:*",
     "@pulse-compute/wasm-schema-json": "workspace:*",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "@pulse-compute/provider-node": "workspace:*",
+    "@pulse-compute/provider-fastly": "workspace:*"
   },
   "bin": {
     "pulsewasm-extract": "./bin/pulsewasm-extract.js",

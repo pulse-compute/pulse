@@ -8,6 +8,12 @@ importers:
 
   .:
     devDependencies:
+      '@pulse-compute/provider-fastly':
+        specifier: workspace:*
+        version: link:packages/provider-fastly
+      '@pulse-compute/provider-node':
+        specifier: workspace:*
+        version: link:packages/provider-node
       '@types/node':
         specifier: ^24.0.15
         version: 24.13.3
@@ -173,6 +179,12 @@ importers:
 
   wasm/packages/cli:
     dependencies:
+      '@pulse-compute/provider-fastly':
+        specifier: workspace:*
+        version: link:../../../packages/provider-fastly
+      '@pulse-compute/provider-node':
+        specifier: workspace:*
+        version: link:../../../packages/provider-node
       '@pulse-compute/wasm-build-support':
         specifier: workspace:*
         version: link:../build-support
@@ -194,12 +206,6 @@ importers:
 
   wasm/packages/compiler:
     dependencies:
-      '@pulse-compute/provider-fastly':
-        specifier: workspace:*
-        version: link:../../../packages/provider-fastly
-      '@pulse-compute/provider-node':
-        specifier: workspace:*
-        version: link:../../../packages/provider-node
       '@pulse-compute/wasm-build-support':
         specifier: workspace:*
         version: link:../build-support
@@ -230,6 +236,13 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+    devDependencies:
+      '@pulse-compute/provider-fastly':
+        specifier: workspace:*
+        version: link:../../../packages/provider-fastly
+      '@pulse-compute/provider-node':
+        specifier: workspace:*
+        version: link:../../../packages/provider-node
 
   wasm/packages/contracts: {}
 

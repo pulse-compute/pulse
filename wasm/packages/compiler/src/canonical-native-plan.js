@@ -13,50 +13,10 @@ function containsYield(node) {
   return Boolean(ts.forEachChild(node, child => containsYield(child) || undefined));
 }
 
-function loadNativePlanContract() {
-  try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-plan'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/handler/canonical-native-plan.js');
-    }
-    throw error;
-  }
-}
-
-function loadLoggingContract() {
-  try { return require('@pulse-compute/wasm-contracts/logging'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/logging.js');
-    }
-    throw error;
-  }
-}
-
-function loadCryptoContract() {
-  try { return require('@pulse-compute/wasm-contracts/crypto/contracts'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/crypto/contracts.js');
-    }
-    throw error;
-  }
-}
-
-function loadEventContract() {
-  try { return require('@pulse-compute/wasm-contracts/events'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/events/contracts.js');
-    }
-    throw error;
-  }
-}
-
-const contract = loadNativePlanContract();
-const loggingContract = loadLoggingContract();
-const cryptoContract = loadCryptoContract();
-const eventContract = loadEventContract();
+const contract = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
+const loggingContract = require('@pulse-compute/wasm-contracts/logging');
+const cryptoContract = require('@pulse-compute/wasm-contracts/crypto/contracts');
+const eventContract = require('@pulse-compute/wasm-contracts/events');
 const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v3';
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';

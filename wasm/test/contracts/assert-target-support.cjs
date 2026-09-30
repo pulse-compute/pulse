@@ -25,6 +25,7 @@ assert.equal(NODE_JAVASCRIPT_TARGET_DESCRIPTOR.automaticFallback, false);
 
 const {
   providerPackageName,
+  createProviderResolver,
   resolveProviderToolchain
 } = require('../../packages/compiler/src/provider-toolchain.js');
 const {
@@ -45,6 +46,21 @@ assert.equal(resolveProviderToolchain('fastly').driver.id, 'fastly');
 
 const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-provider-toolchain-'));
 try {
+  // A compiler consumer chooses its provider root; it cannot borrow the
+  // compiler checkout's providers when that project has no selected package.
+  for (const id of ['node', 'fastly']) assert.throws(
+    () => resolveProviderToolchain(id, { projectRoot: fixtureRoot }),
+    error => error.code === 'PULSE_PROVIDER_PACKAGE_NOT_FOUND'
+  );
+  assert.equal(resolveProviderToolchain('none', { projectRoot: fixtureRoot }).id, 'none');
+  const cliResolver = require('../../packages/cli/src/provider-drivers.js');
+  for (const id of ['node', 'fastly']) assert.equal(
+    cliResolver.getProviderDriver(id, { projectRoot: fixtureRoot, builtinRoot: fixtureRoot }).id, id
+  );
+  assert.deepEqual(cliResolver.providerIds({ executable: true }), ['node', 'fastly']);
+  assert.ok(cliResolver.providerConfigReferences().length > 0);
+  const emptyResolver = createProviderResolver({ projectRoot: fixtureRoot });
+  assert.throws(() => emptyResolver.drivers.node, error => error.code === 'PULSE_PROVIDER_PACKAGE_NOT_FOUND');
   const packageRoot = path.join(fixtureRoot, 'node_modules', '@example', 'pulse-provider-esp32');
   fs.mkdirSync(packageRoot, { recursive: true });
   fs.writeFileSync(path.join(packageRoot, 'package.json'), `${JSON.stringify({
@@ -97,6 +113,17 @@ module.exports = Object.freeze({
   assert.equal(resolution.packageVersion, '1.2.3');
   assert.equal(resolution.entrypoint, './toolchain');
   assert.equal(resolution.official, false);
+  assert.equal(cliResolver.resolveProviderToolchain('@example/pulse-provider-esp32', { projectRoot: fixtureRoot }).driver, resolution.driver);
+  // Cache entries follow resolved package files, never just the selector.
+  const otherProject = path.join(fixtureRoot, 'other');
+  const otherPackage = path.join(otherProject, 'node_modules/@example/pulse-provider-esp32');
+  fs.mkdirSync(path.dirname(otherPackage), { recursive: true });
+  fs.cpSync(packageRoot, otherPackage, { recursive: true });
+  fs.writeFileSync(path.join(otherPackage, 'toolchain.cjs'), fs.readFileSync(path.join(otherPackage, 'toolchain.cjs'), 'utf8').replace("packageVersion: '1.2.3'", "packageVersion: '2.0.0'"));
+  const otherResolution = resolveProviderToolchain('@example/pulse-provider-esp32', { projectRoot: otherProject });
+  assert.equal(otherResolution.packageVersion, '2.0.0');
+  assert.notEqual(otherResolution.driver, resolution.driver);
+  assert.equal(resolveProviderToolchain('@example/pulse-provider-esp32', { projectRoot: fixtureRoot }).driver, resolution.driver);
 
   const project = normalizeProject({
     entry: './src/index.ts',

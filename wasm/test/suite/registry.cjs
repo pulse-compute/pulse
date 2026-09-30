@@ -255,6 +255,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'JWT source admission, provider requirements and HS256/ES256 consumer execution'
   }),
+  'arc01-installed': nodeTask('test/provider/arc01-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external',
+    description: 'ARC-01 exact compiler-only, Node-only, Fastly-only and bundled CLI package isolation'
+  }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
     description: 'exact compiler-to-provider toolchain invocation and result boundary'

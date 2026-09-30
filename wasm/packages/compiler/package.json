@@ -23,9 +23,7 @@
     "@pulse-compute/wasm-library-kit": "workspace:*",
     "@pulse-compute/wasm-host-runtime": "workspace:*",
     "@pulse-compute/wasm-schema-json": "workspace:*",
-    "@pulse-compute/wasm-runtime-core-as": "workspace:*",
-    "@pulse-compute/provider-node": "workspace:*",
-    "@pulse-compute/provider-fastly": "workspace:*"
+    "@pulse-compute/wasm-runtime-core-as": "workspace:*"
   },
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -64,5 +62,9 @@
   "homepage": "https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "devDependencies": {
+    "@pulse-compute/provider-node": "workspace:*",
+    "@pulse-compute/provider-fastly": "workspace:*"
   }
 }

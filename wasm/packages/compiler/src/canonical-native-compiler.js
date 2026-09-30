@@ -17,59 +17,12 @@ const {
   PACKAGE_REALIZATION_ARTIFACT_SET_VERSION
 } = require('@pulse-compute/wasm-contracts/package/package-contract');
 
-function loadNativePlanCompiler() {
-  try { return require('@pulse-compute/wasm-compiler/canonical-native-plan'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('./canonical-native-plan.js');
-    throw error;
-  }
-}
-
-function loadRuntimeCore() {
-  try { return require('@pulse-compute/wasm-runtime-core-as/compiler/canonical-native'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../runtime-core-as/src/compiler/canonical-native.js');
-    throw error;
-  }
-}
-
-function loadRuntimeContract() {
-  try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../contracts/src/handler/canonical-native-runtime.js');
-    throw error;
-  }
-}
-
-function loadEventContract() {
-  try { return require('@pulse-compute/wasm-contracts/events'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../contracts/src/events/contracts.js');
-    throw error;
-  }
-}
-
-function loadBuildSupport() {
-  try { return require('@pulse-compute/wasm-build-support/assemblyscript-compile'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../build-support/src/assemblyscript-compile.js');
-    throw error;
-  }
-}
-
-const nativePlanCompiler = loadNativePlanCompiler();
-const runtimeCore = loadRuntimeCore();
-const runtimeContract = loadRuntimeContract();
-const eventContract = loadEventContract();
-const { resolveAsc } = loadBuildSupport();
-const { memoryAbi } = (() => {
-  try {
-    return require('@pulse-compute/wasm-guest-link');
-  } catch (error) {
-    if (error && error.code === 'MODULE_NOT_FOUND') return require('../../wasm-guest-link/src/index.js');
-    throw error;
-  }
-})();
+const nativePlanCompiler = require('./canonical-native-plan.js');
+const runtimeCore = require('@pulse-compute/wasm-runtime-core-as/compiler/canonical-native');
+const runtimeContract = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
+const eventContract = require('@pulse-compute/wasm-contracts/events');
+const { resolveAsc } = require('@pulse-compute/wasm-build-support/assemblyscript-compile');
+const { memoryAbi } = require('@pulse-compute/wasm-guest-link');
 const {
   appendAssemblyScriptOptimizationArgs,
   resolveNativeOptimization

@@ -46,8 +46,8 @@ assert.ok(NODE_NATIVE_TARGET_CAPABILITIES.includes(NODE_JWT_VERIFY_CAPABILITY), 
 assert.equal(NODE_PROVIDER_DESCRIPTOR.lowering[NODE_JWT_VERIFY_CAPABILITY], 'node.native.jwt.verify');
 
 const compilerPackage = JSON.parse(fs.readFileSync(path.join(repoRoot, 'wasm', 'packages', 'compiler', 'package.json'), 'utf8'));
-assert.ok(compilerPackage.dependencies['@pulse-compute/provider-node'], 'built-in Node toolchain remains an exact package dependency');
-assert.ok(compilerPackage.dependencies['@pulse-compute/provider-fastly'], 'built-in Fastly toolchain remains an exact package dependency');
+assert.equal(compilerPackage.dependencies['@pulse-compute/provider-node'], undefined, 'compiler must not install Node');
+assert.equal(compilerPackage.dependencies['@pulse-compute/provider-fastly'], undefined, 'compiler must not install Fastly');
 
 const composition = fs.readFileSync(path.join(repoRoot, 'wasm', 'packages', 'compiler', 'bin', 'provider-proof-composition.js'), 'utf8');
 assert.match(composition, /@pulse-compute\/provider-node\/compiler/);
