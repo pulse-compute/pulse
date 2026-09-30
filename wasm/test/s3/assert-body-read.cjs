@@ -15,7 +15,7 @@ async function main() {
     for (const name of ['pulse', 's3']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
     const binding = { endpoint: 'https://objects.example.invalid', bucket: 'body-fixture', region: 'us-east-1', accessKeyIdSecret: 'KEY', secretAccessKeySecret: 'SECRET', maxTextBytes: 32768, timeoutMs: 1000 };
     const config = { pulse: { entry: 'src/index.ts', defaultProfile: 'native', strict: false, crypto: ['SHA-256', 'HMAC-SHA256'] }, native: { host: 'node', target: 'native', node: { bindings: { s3: { objects: binding } } } }, javascript: { host: 'node', target: 'javascript', node: { bindings: { s3: { objects: binding } } } } };
-    config.fastly = {host:'fastly',target:'native',fastly:require('./o1/bindings.json').fastly};
+    config.fastly = {host:'fastly',target:'native',fastly:{maxDurationMs:500,bindings:{secretStore:'app_secrets',s3:{objects:{...binding,backend:'object_origin'}}}}};
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import { defineConfig } from '@pulse-compute/pulse'; export default defineConfig((_scope) => (${JSON.stringify(config)}));`);
     fs.writeFileSync(path.join(cwd, 'src/index.ts'), `import { Pulse } from '@pulse-compute/pulse'; import { s3 } from '@pulse-compute/s3';
       const app = new Pulse({auto:true});
@@ -29,7 +29,7 @@ async function main() {
     const project = toolchain.resolveProject({ cwd, profile: 'native' });
     const native = toolchain.compileNativeProjectInMemory(project);
     const js = toolchain.prepareJavascriptApplication(toolchain.resolveProject({ cwd, profile: 'javascript' }));
-    assert.throws(() => toolchain.inspectProject(toolchain.resolveProject({cwd,profile:'fastly'})), error => error.code === 'PULSE_PROVIDER_CAPABILITY_UNSUPPORTED' && error.detail.missing.includes('s3.getBody'));
+    const fastly = toolchain.compileFastly(toolchain.resolveProject({cwd,profile:'fastly'}));
     const bytes = Buffer.from([0, 255, 192, 128, 254, 1]);
     let cases = 0;
     for (const target of ['native', 'javascript']) {
@@ -69,13 +69,14 @@ async function main() {
       r=await run('/body',{pending:true},'image',{signal:aborter.signal}); aborter.abort(); await assert.rejects(r.response.arrayBuffer()); await new Promise(setImmediate); assert.equal(r.cancelled,1); cases++;
       r=await run('/body',{pending:true},'image',{maxDurationMs:80}); await assert.rejects(r.response.arrayBuffer()); await new Promise(setImmediate); assert.equal(r.cancelled,1); cases++;
     }
+    cases += await require('./fastly-body-cases.cjs').run(toolchain, fastly, binding);
     const lower = require('../../../packages/s3/pulsewasm.compiler.cjs').buildS3LoweringPlan;
     for (const expression of ["{range:ctx.req.path}", "{method:'POST'}", "{range:'bytes=0-1',range:'bytes=1-2'}", "{headers:{authorization:'x'}}"]) {
       const sourceText = `import {s3} from '@pulse-compute/s3'; app.get('/',async ctx=>{const r=await s3.getBody(ctx,'objects','image',${expression});return r;});`;
       assert.equal(lower({sourceText}).hasErrors,true);
     }
     for (const options of [{range:'bytes=1-'},{range:'bytes=2-1'},{range:'bytes=0-1,3-4'},{method:'HEAD',range:'bytes=0-1'},{ifNoneMatch:'"one", "two"'},{method:'POST'}]) assert.throws(()=>protocol.normalizeBodyOptions(options));
-    console.log(`ok - AST-02A ${cases} binary/opaque executions on Node Native and JavaScript, bounded metadata, partial ranges, deadline and discard cleanup`);
+    console.log(`ok - AST-02A ${cases} binary/opaque executions on Node Native, Node JavaScript and Fastly Native ABI fixtures, bounded metadata, partial ranges, deadline and discard cleanup`);
   } finally {
     const cleanup = () => fs.rmSync(cwd,{recursive:true,force:true});
     cleanup();
