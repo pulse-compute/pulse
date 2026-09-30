@@ -46,6 +46,58 @@ import {
 
 `createAssets()` supports local, hosted, and bucket-backed middleware. Hosted and bucket responses adopt upstream Web streams directly, preserving status, headers, and host-owned response-body ownership. Local assets currently follow the restored implementation and materialize the selected file. Broader request/response resource limits belong at a shared core ownership boundary rather than in an Assets-only policy.
 
+## Opt-in embedded blobs (AST-02B)
+
+```ts
+import { createAssets, createEmbeddedManifest } from '@pulse-compute/assets'
+
+const manifest = await createEmbeddedManifest([
+  { path: '/logo.bin', bytes: new Uint8Array([0, 255, 1]),
+    contentType: 'application/octet-stream' },
+])
+app.use('/static', createAssets({ mode: 'embedded', manifest }))
+```
+
+This is a direct JavaScript middleware surface, tested through Node Pulse
+execution and isolated installed imports. It does not embed data into Native
+Wasm, add a compiler intrinsic, scan directories or fetch remote files. Supply
+explicit bytes from application code or a build script. Native artifact
+embedding is a separate increment; `assets.lookup` keeps its existing provider
+binding semantics.
+
+`createEmbeddedManifest` returns a JSON-serializable `pulse.embedded-assets.v1`
+manifest with canonical base64 bytes, per-file SHA-256, total length and a
+content identity. Paths are sorted with locale-independent string comparison.
+The identity is SHA-256 of the UTF-8 JSON tuple `[version, records]`, with each
+record `[path, contentType, byteLength, sha256]`. Input order does not affect it;
+changing paths, media types or bytes does. Bytes are copied before hashing;
+constructing middleware snapshots serialized input, then validates all hashes
+and identity before serving any file. This detects corruption; it does not
+authenticate the manifest's author.
+
+Hard inclusive limits are 256 files, 256 KiB per file, 1 MiB total decoded bytes,
+1024 UTF-8 bytes per path and 128 ASCII characters per content type. Empty files
+and empty manifests are allowed. Base64 storage adds its normal encoding
+overhead. Paths must start with `/`; duplicates, empty/dot segments, backslashes,
+percent signs, queries, fragments, controls and malformed Unicode are rejected.
+Requests decode the scoped path once; encoded slashes, backslashes and residual
+percent escapes are rejected. Lookup can access only admitted manifest entries.
+
+GET returns exact bytes and HEAD returns identical representation metadata
+without a body. ETag derives from the full file hash. One If-None-Match tag
+(weak comparison) or `*` can produce 304 before range processing. GET supports
+one closed `bytes=start-end` range, clips the end, and returns 206 or 416 with
+Content-Range. HEAD ignores Range. If-Range permits a range only on an exact
+strong ETag match; other values select the full response. Unsupported/malformed
+range forms and validator lists return 400. Date conditionals and If-Match
+are outside this subset. Missing files and unsupported methods retain the
+existing middleware pass-through policy; cache options still apply.
+
+A partial response's ETag identifies the full representation; it is **not** a
+checksum assertion over the returned slice and cannot establish whole-object
+integrity from that slice. Each response copies only its selected bytes, so
+consumers cannot mutate retained asset content.
+
 ## S3 protocol ownership and compatibility
 
 S3 owns shared RFC3986 key encoding and SigV4 canonicalization, signing-key
