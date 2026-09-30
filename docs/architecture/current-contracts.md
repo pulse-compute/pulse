@@ -167,6 +167,18 @@ bodies; it does not create a dynamic function table or change the value heap's
 retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
+## Synchronous pure-helper proof (PF-01; not yet supported on Native)
+
+PF-01 freezes a bounded implementation contract and executable fixtures in
+`wasm/test/fixtures/pure-helpers/README.md`. Named synchronous scalar helpers,
+then read-only structural inputs and bounded caller loops, are staged as
+PF-02, PF-03 and PF-04. They must retain ordinary call/condition semantics
+without gaining context, effects or Router authority. The fixtures deliberately
+assert the current Native runtime-import rejection; they do not enable syntax
+or qualify Native execution. Existing serialized helper and plan versions are
+unchanged. Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract`
+for the tracked source oracles and expected failures.
+
 ## Static effectful source helpers (O-25)
 
 Native plan v5 adds `pulse.canonical-native-helper.v1`: a separately owned
