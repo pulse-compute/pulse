@@ -137,6 +137,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native'
   }),
+  's3-body-read': nodeTask('test/s3/assert-body-read.cjs', {
+    timeoutMs: 60000,
+    description: 'AST-02A Node Native/JavaScript bounded binary S3 response ownership and HTTP subset'
+  }),
   's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
     timeoutMs: 180000,
     description: 'Exact HEAD/GET failure parity through Node Native/JavaScript and Fastly Native'
@@ -1141,6 +1145,7 @@ const profiles = Object.freeze({
     'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',
+    's3-body-read',
     's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',

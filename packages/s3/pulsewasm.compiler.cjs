@@ -3,7 +3,7 @@ const { normalizeDiagnostic, sourceLoc } = require('@pulse-compute/wasm-contract
 const { CANONICAL_PACKAGE_EFFECT_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-runtime');
 const { PACKAGE_CRYPTO_REQUIREMENT_VERSION } = require('@pulse-compute/wasm-contracts/package/package-contract');
 const { S3_PACKAGE, S3_CONTRACT_ID, S3_OPERATIONS, S3_LOWERING_PLAN_VERSION, S3_CRYPTO_ALGORITHMS } = require('@pulse-compute/wasm-contracts/s3/contracts');
-const { normalizePutOptions } = require('./src/provider.js');
+const { normalizePutOptions, normalizeBodyOptions } = require('./src/provider.js');
 
 function buildS3LoweringPlan(input = {}) {
   const ts = input.typescript || require('typescript');
@@ -35,12 +35,13 @@ function buildS3LoweringPlan(input = {}) {
       && ts.isIdentifier(node.expression.expression) && namespaces.has(node.expression.expression.text)) {
       const method = node.expression.name.text;
       const op = S3_OPERATIONS[method];
-      if (!op) { error(node, 'OPERATION_UNSUPPORTED', 'S3 supports head, getText and putText.'); return; }
+      if (!op) { error(node, 'OPERATION_UNSUPPORTED', 'S3 supports head, getText, getBody and putText.'); return; }
       const put = method === 'putText';
+      const body = method === 'getBody';
       let fn = node.parent;
       while (fn && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) fn = fn.parent;
       const ctx = fn && fn.parameters[0] && fn.parameters[0].name;
-      if (!(put ? [4, 5].includes(node.arguments.length) : node.arguments.length === 3) || !ctx || !ts.isIdentifier(ctx)
+      if (!(put ? [4, 5].includes(node.arguments.length) : body ? [3, 4].includes(node.arguments.length) : node.arguments.length === 3) || !ctx || !ts.isIdentifier(ctx)
         || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctx.text) {
         error(node, 'ARGUMENTS_UNSUPPORTED', 'S3 requires current handler context, literal binding, runtime key and, for PUT, text with optional literal options.'); return;
       }
@@ -62,6 +63,21 @@ function buildS3LoweringPlan(input = {}) {
           }
           options = normalizePutOptions(options);
         } catch { error(nodeOptions || node, 'OPTIONS_UNSUPPORTED', 'PUT options must be a literal object containing only a valid literal contentType.'); return; }
+      }
+      if (body) {
+        const nodeOptions = node.arguments[3];
+        try {
+          if (nodeOptions) {
+            if (!ts.isObjectLiteralExpression(nodeOptions) || nodeOptions.properties.length > 3) throw new TypeError();
+            for (const property of nodeOptions.properties) {
+              if (!ts.isPropertyAssignment(property) || !ts.isIdentifier(property.name) && !ts.isStringLiteralLike(property.name)
+                || !['method', 'range', 'ifNoneMatch'].includes(property.name.text) || Object.hasOwn(options, property.name.text)
+                || !ts.isStringLiteralLike(property.initializer)) throw new TypeError();
+              options[property.name.text] = property.initializer.text;
+            }
+          }
+          options = normalizeBodyOptions(options);
+        } catch { error(nodeOptions || node, 'OPTIONS_UNSUPPORTED', 'Body options require literal method, closed byte range and/or one If-None-Match validator.'); return; }
       }
       let placement = '';
       const parent = node.parent;

@@ -58,6 +58,7 @@ async function signRequest(input, crypto) {
   const digest = hex(await crypto.sha256(body));
   const host = new URL(binding.endpoint).host;
   const headers = { ...(contentType === undefined ? {} : { 'content-type': contentType }), host, 'x-amz-content-sha256': digest, 'x-amz-date': date, ...(token === undefined ? {} : { 'x-amz-security-token': token }) };
+  if (input.readOptions) Object.assign(headers, require('./body.js').bodyRequestHeaders(input.readOptions));
   const uri = `/${binding.bucket}/${encodedKey}`;
   headers.authorization = await createAuthorization({ method, uri, query: '', headers, date,
     region: binding.region, service: 's3', accessId, secret, payloadHash: digest }, crypto);
@@ -121,4 +122,4 @@ function normalizeResult(operation, result) {
   if (bytes(JSON.stringify(result)).length > S3_LIMITS.envelopeBytes) throw new TypeError('S3 result envelope exceeds its bound.');
   return Object.freeze({ ...result });
 }
-module.exports = Object.freeze({ normalizeBinding, namePattern, encodeKey, credentialsValid, normalizePutOptions, signRequest, signRead: signRequest, failure, putFailure, putStatusResult, statusResult, metadataFromHeaders, normalizeResult, hex, bytes });
+module.exports = Object.freeze({ ...require('./body.js'), normalizeBinding, namePattern, encodeKey, credentialsValid, normalizePutOptions, signRequest, signRead: signRequest, failure, putFailure, putStatusResult, statusResult, metadataFromHeaders, normalizeResult, hex, bytes });
