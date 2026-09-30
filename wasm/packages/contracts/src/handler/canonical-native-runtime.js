@@ -110,6 +110,8 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['schema_encode', ['i32', 'i32'], ['i32']],
   ['schema_decode', ['i32', 'i32'], ['i32']],
   ['response_text', ['i32', 'i32'], ['i32']],
+  // Optional output-v1 extension, required only by generated-output artifacts.
+  ['output_close', [], ['i32']],
   ['response_custom', ['i32'], ['i32']],
   ['grip_is_websocket', [], ['i32']],
   ['grip_subscribe', ['i32', 'i32'], ['i32']],

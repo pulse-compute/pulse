@@ -588,6 +588,46 @@ not claim total process memory or platform socket-buffer bounds. See
 [incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node)
 for the public configuration and restrictions.
 
+### Experimental finite generated output
+
+STR-03A adds `response.output` on explicitly configured Node Native and Node
+JavaScript targets. `node.generatedOutput: true` requires `node.maxDurationMs`.
+`await ctx.output.start(options)` commits validated status/headers;
+`await ctx.output.write(text)` suspends the producer until the Node write callback
+and, when required, drain complete. `return ctx.output.close()` creates a
+request-local terminal marker. Successful handler completion must return that
+exact marker; the provider then waits for local writer finish under the same
+deadline. Finish does not prove client receipt. A missing/foreign close result,
+producer error, limit violation, deadline or disconnect fails the response;
+after commitment the transport is destroyed, with no error-handler replacement.
+
+Each write is at most 16 KiB UTF-8; at most 64 writes and 1 MiB total are admitted.
+One write can be outstanding. Framing/hop-by-hop headers, HEAD/bodyless statuses,
+parallel output effects, event use and background production are excluded.
+No provider stream object enters application code and opaque input cannot be
+inspected through this API. Sequential output writes may use the existing
+literal-capped loop form (at most 64 iterations); this does not admit arbitrary
+generators, callbacks or unbounded loops on Native.
+
+Native executes the emitted Wasm and uses ordinary single-use effect tickets for
+`output.start` and `output.write`. The additive optional ABI-v2 import
+`pulse_host.output_close() -> i32` returns an execution-local completion marker;
+older hosts reject artifacts requiring the unknown import. All output plans,
+including those without read loops, activate the existing cumulative 64 MiB
+retained-value accounting and a 4,096-page linear-memory ceiling. Budget charges
+are not refunded after writes, and are not RSS measurements. Linked-guest
+composition needs separate memory qualification and is rejected for output
+artifacts. JavaScript retains its existing unsandboxed source semantics; the
+output caps do not bound arbitrary application allocations or preempt CPU work.
+
+The optional provider-driver `createGeneratedOutput` hook gives the generic CLI
+a request-owned writer. HTTP never buffers the entire generated output. The
+explicit CLI test collector may materialize up to the same 1 MiB limit. Current
+evidence covers workspace build/dev, actual Native lowering, real HTTP prefix
+delivery, blocked-writer suspension, cancellation, deadline and bounds. STR-03B
+still owns independent installed-consumer qualification. Fastly output, chunk
+transforms and MCP SSE remain unavailable; this adds no capability to them.
+
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
 provider's `time.wall-clock` authority. It returns one validated UTC wall-clock
 sample or a bounded unavailable/invalid-clock result. The clock is sampled at

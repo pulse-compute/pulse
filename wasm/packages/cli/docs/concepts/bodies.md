@@ -196,6 +196,40 @@ deadline expiry cancels active work. A failure after response headers destroys
 the downstream connection. Opted-in POST responses close their HTTP connection
 so abandoned input does not require unbounded draining.
 
+## Experimental generated output on Node
+
+For a finite generated text response, opt in with `node.generatedOutput: true`
+and `node.maxDurationMs` in the selected Node profile:
+
+```ts
+app.get('/generated', async (ctx) => {
+  await ctx.output.start({ headers: { 'content-type': 'text/plain' } });
+  await ctx.output.write('first\n');
+  const message = await ctx.config.get('MESSAGE');
+  await ctx.output.write(message || 'done');
+  return ctx.output.close();
+});
+```
+
+Both Native and JavaScript send writes incrementally. Await every start/write
+and return the close result directly. One request owns the output; writes cannot
+run in `ctx.parallel`. Each text chunk is limited to 16 KiB UTF-8, with at most
+64 writes and 1 MiB total. Native also enforces cumulative retained-value and
+linear-memory limits; completing a write does not reclaim all earlier values.
+These limits do not promise constant process memory for arbitrary application
+code. Native output with linked guests remains rejected pending qualification.
+
+Start commits the status and headers. HEAD, bodyless statuses, caller-controlled
+framing and hop-by-hop headers are rejected before commitment. After start, a
+failure destroys the transport rather than sending a second response. Close
+waits for local writer completion through the provider; the original deadline
+and disconnect handling remain active through finish. Local completion does not
+prove receipt by the client.
+
+This surface remains experimental pending STR-03B's independent installed
+qualification. It provides no input chunk reader, binary transform, arbitrary
+stream/generator object, Fastly output or MCP SSE capability.
+
 ## Current transport limits
 
 Both Fastly targets reject incoming forwarding. Node Native forwarding uses
@@ -203,7 +237,8 @@ the emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls
 are synchronous, so a Native forwarding application cannot also declare
 structured request reads; use a separate application for those endpoints.
 JavaScript retains per-request read/forward exclusion. Without the Node opt-in, existing
-bounded request buffering is unchanged. No userland chunk API is provided.
+bounded request buffering is unchanged. Input chunks remain opaque; the separate
+experimental generated-output API above accepts only application-owned text.
 
 Handler completion, response-header commitment and stream completion are
 different boundaries. The Node JavaScript response writer waits for its local
@@ -258,8 +293,8 @@ A package-owned `grip.hold(...)` operation returns an opaque response contract. 
 The public contract does not include:
 
 - arbitrary binary body inspection;
-- userland stream readers or writers;
-- chunk iteration or transforms;
+- arbitrary userland stream readers or writers beyond the experimental finite Node output API;
+- input chunk iteration or transforms;
 - buffering an opaque response into structured memory;
 - provider-specific response objects;
 - background consumption after the request completes.

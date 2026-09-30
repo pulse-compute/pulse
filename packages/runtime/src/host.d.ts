@@ -224,7 +224,20 @@ export declare function createRequestBudget(options?: {
   requestSignal?: AbortSignal;
 }): PulseRequestBudget;
 
+export interface PulseGeneratedOutputExecution {
+  readonly started: boolean;
+  readonly finished: boolean;
+  assertEffect(): void;
+  dispatch(effect: Readonly<Record<string, unknown>>): Promise<void>;
+  close(factory?: (options: import('./index').PulseResponseOptions) => unknown): any;
+  validateResult(result: unknown): void;
+  finish(): Promise<void>;
+  cancel(reason?: unknown): void;
+  dispose(): void;
+}
 export interface PulseRuntimeExecutionOptions {
+  /** Provider-owned output authority; unavailable to application code. */
+  readonly outputExecution?: PulseGeneratedOutputExecution;
   /** Provider-owned incoming stream controller; never an application capability. */
   readonly incomingBody?: PulseIncomingBodyOwnership;
   /** Provider-owned total managed request budget, 1..30000 ms. Omitted preserves existing behavior. */

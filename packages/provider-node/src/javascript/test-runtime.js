@@ -42,7 +42,10 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     options.networkFetch === true ? globalThis.fetch : undefined,
     { rawResponse: true }
   );
+  const collected = options.generatedOutput ? require('../runtime/generated-output-test.js').collector({ ...options, requestMethod: adapted.request.method }) : undefined;
+  try {
   const response = await executeNodeJavascriptApplication(application, adapted.request, {
+    outputExecution: collected?.outputExecution,
     capabilities: options.capabilities,
     effectAdapter: options.effectAdapter,
     fetchImplementation: fixtureFetch,
@@ -60,7 +63,7 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     kv: testCase.kv || {},
     application: options.application,
     requestHeaders: adapted.headerPairs,
-    maxDurationMs: options.maxDurationMs, requestClock: options.requestClock, requestBudget: options.requestBudget, signal: options.signal,
+    maxDurationMs: options.maxDurationMs, requestClock: options.requestClock, requestBudget: collected?.budget || options.requestBudget, signal: options.signal,
     bodyForwarding: options.bodyForwarding,
     maxEffects: options.maxEffects,
     maxRequestBodyBytes: options.maxRequestBodyBytes ?? options.maxBodyBytes ?? testCase.maxBodyBytes,
@@ -87,7 +90,8 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     }
   });
   const method = String(testCase.request && testCase.request.method || 'GET').toUpperCase();
-  const body = method === 'HEAD' ? '' : Buffer.from(await response.arrayBuffer()).toString('utf8');
+  if (collected?.outputExecution.started) await collected.outputExecution.finish();
+  const body = collected?.outputExecution.started ? collected.body() : method === 'HEAD' ? '' : Buffer.from(await response.arrayBuffer()).toString('utf8');
   return Object.freeze({
     version: NODE_JAVASCRIPT_TEST_RUNTIME_VERSION,
     response: Object.freeze({
@@ -108,6 +112,7 @@ async function executeNodeJavascriptTestCase(application, testCase, options = {}
     }))),
     resolutionOrder: effectSummary ? effectSummary.resolutionOrder : Object.freeze([])
   });
+  } finally { collected?.dispose(); }
 }
 
 module.exports = Object.freeze({

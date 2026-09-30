@@ -66,6 +66,8 @@ function providerEffectExpression(factory, sourceFile, site, providerOperation) 
     properties.push(literalProperty(factory, 'key', providerOperation.key));
     if (providerOperation.generation) properties.push(literalProperty(factory, 'generation', providerOperation.generation));
     if (providerOperation.value) properties.push(literalProperty(factory, 'value', providerOperation.value));
+  } else if (providerOperation.providerKind === 'output') {
+    if (providerOperation.args[0]) properties.push(literalProperty(factory, 'argument0', providerOperation.args[0]));
   } else if (providerOperation.kind === 'event.emit') {
     properties.push(literalProperty(factory, 'type', providerOperation.type));
     properties.push(literalProperty(factory, 'emission', providerOperation.emission));

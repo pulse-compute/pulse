@@ -244,6 +244,14 @@ function normalizeManagedHandler(functionNode, options = {}) {
       if (ts.isCallExpression(node)) {
         const surface = surfaceFor(node, directReturnExpression(node) ? 'return' : 'expression');
         if (surface) {
+          if (surface.surfaceId === 'ctx.output.close' && !directReturnExpression(node)) {
+            diagnostics.push(createCanonicalDiagnostic({
+              frontend, sourceFile, node,
+              code: 'PULSE_OUTPUT_CLOSE_TERMINAL',
+              message: 'output.close() is synchronous and must be returned directly.',
+              detail: { surfaceId: surface.surfaceId }
+            }));
+          }
           const awaited = awaitedRoots.has(unwrapExpression(node));
           if (surface.classification && surface.classification.ok === false && !awaited) {
             diagnostics.push(createCanonicalDiagnostic({

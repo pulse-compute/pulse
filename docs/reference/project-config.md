@@ -288,6 +288,18 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.generatedOutput`
+
+Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Independent installed qualification remains STR-03B.
+
+- **Type:** boolean
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Experimental Node generated output
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.bodyForwarding`
 
 Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.

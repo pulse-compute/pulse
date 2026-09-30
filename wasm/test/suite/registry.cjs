@@ -172,6 +172,10 @@ const tasks = Object.freeze({
     timeoutMs: 90000, evidence: 'external',
     description: 'STR-02C pinned Viceroy ABI observations; not Pulse forwarding integration or live platform qualification'
   }),
+  'str03a-generated-output': nodeTask('test/runtime/str03a-generated-output.cjs', {
+    timeoutMs: 120000, evidence: 'native',
+    description: 'STR-03A generated-output Native/JavaScript lowering, demand, cancellation, finite limits and normal build/dev HTTP'
+  }),
   'str02b-node-native': nodeTask('test/runtime/str02b-node-native.cjs', {
     timeoutMs: 90000, evidence: 'native',
     description: 'STR-02B compiled Native forwarding, constant guest memory, HTTP cancellation and ticket fencing'
@@ -1128,6 +1132,7 @@ const profiles = Object.freeze({
     'canonical-api-lowering',
     'canonical-native-plan',
     'str02b-node-native',
+    'str03a-generated-output',
     'bounded-app-logic',
     'bounded-read-loops',
     'logging-lowering',

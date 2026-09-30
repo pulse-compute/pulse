@@ -524,6 +524,7 @@ function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
   return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || compiled.metadata?.capabilities?.includes('response.output')
     || compiled.metadata?.capabilities?.includes('request.body.forward')
     || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
     || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
@@ -1498,6 +1499,7 @@ async function runJavascriptProjectTests(project, options = {}) {
         bindings: project.providerConfig.bindings,
         maxDurationMs: project.providerConfig.maxDurationMs,
         bodyForwarding: project.providerConfig.bodyForwarding,
+        generatedOutput: project.providerConfig.generatedOutput,
         networkFetch: project.dev.networkFetch
       });
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
@@ -1623,6 +1625,7 @@ async function runProjectTests(project, options = {}) {
       const executionOptions = providerExecutionOptions(project, {
         packageArtifacts: packageRealizationArtifactsForCompiled(compiled),
         ...(forwardingBudget ? {requestBudget:forwardingBudget,signal:forwardingBudget.signal} : {}),
+        outputCollect: true,
         request: testCase.request,
         fetches: testCase.fetches,
         config: testCase.config,
@@ -2405,6 +2408,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
     bindings: project.providerConfig.bindings,
     maxDurationMs: project.providerConfig.maxDurationMs,
     bodyForwarding: project.providerConfig.bodyForwarding,
+    generatedOutput: project.providerConfig.generatedOutput,
     config: project.dev.config,
     secrets: project.dev.secrets,
     kv: project.dev.kv,
@@ -2512,6 +2516,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
         bindings: project.providerConfig.bindings,
         maxDurationMs: project.providerConfig.maxDurationMs,
         bodyForwarding: project.providerConfig.bodyForwarding,
+        generatedOutput: project.providerConfig.generatedOutput,
         application: Object.freeze({
           projectHash: project.projectHash,
           planHash: project.planHash,
@@ -2710,6 +2715,7 @@ async function startJavascriptDevServer(project, options = {}) {
     bindings: project.providerConfig.bindings,
     maxDurationMs: project.providerConfig.maxDurationMs,
     bodyForwarding: project.providerConfig.bodyForwarding,
+    generatedOutput: project.providerConfig.generatedOutput,
     s3FetchImplementation: javascript.createFixtureFetch(
       project.dev.fetches,
       project.dev.networkFetch ? globalThis.fetch : undefined,
@@ -2852,7 +2858,7 @@ async function startDevServer(project, options = {}) {
     const closed = () => { if (!res.writableFinished) disconnected(); };
     req.once('aborted', disconnected); res.once('close', closed);
     const budget = require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').createRequestBudget({ ...providerExecutionOptions(project, {}), signal:connection.signal });
-    let ingress;
+    let ingress, outputExecution;
     if (options.once) res.once('finish', () => server.close());
     try {
       if (compileError) throw compileError;
@@ -2874,6 +2880,8 @@ async function startDevServer(project, options = {}) {
         liveFetch: project.dev.networkFetch,
         executionId: `dev:${++handled}`
       });
+      outputExecution = providerDriver(project).createGeneratedOutput?.(res, { ...executionOptions, requestMethod: req.method });
+      executionOptions = { ...executionOptions, outputExecution };
       if (forwarding) {
         res.setHeader('connection','close');
         const prepare = providerDriver(project).prepareNativeRequest;
@@ -2888,7 +2896,8 @@ async function startDevServer(project, options = {}) {
       const execution = exactNativeExecution
         ? await executeNative(executionOptions)
         : await executeCanonicalProgram(program, executionOptions);
-      await writeNodeHttpResponse(res, execution.response, {
+      if (outputExecution?.started) await outputExecution.finish();
+      else await writeNodeHttpResponse(res, execution.response, {
         requestBudget: budget, signal: ingress?.signal || budget.signal,
         awaitCompletion: Boolean(forwarding), closeConnection: Boolean(forwarding)
       });
@@ -2899,6 +2908,7 @@ async function startDevServer(project, options = {}) {
       devErrorResponse(res, error, project.dev.secrets);
       events(Object.freeze({ event: 'request-error', method: req.method || 'GET', path: req.url || '/', error: errorSummary(error, project.dev.secrets) }));
     } finally {
+      outputExecution?.dispose();
       await ingress?.close();
       req.removeListener('aborted',disconnected);res.removeListener('close',closed);budget.close();
     }

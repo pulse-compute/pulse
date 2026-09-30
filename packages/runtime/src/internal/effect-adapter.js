@@ -573,6 +573,7 @@ function createJavascriptEffectExecution(options = {}) {
           limitMessage
         );
       }
+      options.outputExecution?.assertEffect();
       const normalizedInput = normalizeEffectDescriptor(input, limits);
       const kind = String(normalizedInput.kind || 'effect');
       const descriptor = Object.freeze({
@@ -607,6 +608,11 @@ function createJavascriptEffectExecution(options = {}) {
       const raw = raceWithSignal(Promise.resolve().then(() => {
         options.requestBudget?.check();
         if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
+        options.outputExecution?.assertEffect();
+        if (kind === 'output.start' || kind === 'output.write') {
+          if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires a Node HTTP writer.');
+          return options.outputExecution.dispatch(descriptor);
+        }
         if (conditionalKv.isConditionalKv(kind)) return conditionalKv.executeConditionalKv(descriptor,
           adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
           { ...operationExecution, onKvObservation: observe }, limits);
@@ -743,7 +749,12 @@ function createJavascriptEffectExecution(options = {}) {
 
     parallel(record) {
       assertOpen();
-      const entries = validateParallelRecord(record, execution, claimedParallelRootIds);
+      let entries;
+      try { entries = validateParallelRecord(record, execution, claimedParallelRootIds); }
+      catch (error) {
+        if (record && Object.values(Object.getOwnPropertyDescriptors(record)).some(field => dataForEffect(field.value)?.kind?.startsWith('output.'))) execution.invalidateAdmission(error);
+        throw error;
+      }
       for (const entry of entries) claimedParallelRootIds.add(entry.data.rootId);
       parallelCount += 1;
       const id = `parallel-${parallelCount}`;

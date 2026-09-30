@@ -303,10 +303,12 @@ async function runNormalHandler(_router, frame, index, handler, routeContext) {
     if (handlerError === undefined) handlerError = error;
   }
   frame.signal?.throwIfAborted();
+  if (handlerError !== undefined && frame.executionOptions.outputExecution?.started) throw handlerError;
   if (handlerError !== undefined) {
     return Object.freeze({ kind: 'continue', index: index + 1, error: containUnexpected(handlerError, frame), frame });
   }
 
+  frame.executionOptions.outputExecution?.validateResult(output);
   const transfer = transferData(output, transferFactory.token);
   if (transferFactory.wasCalled()) {
     if (!transfer || output !== transferFactory.transfer()) {
@@ -357,10 +359,12 @@ async function runErrorHandler(_router, frame, index, activeError, handler) {
     if (handlerError === undefined) handlerError = error;
   }
   frame.signal?.throwIfAborted();
+  if (handlerError !== undefined && frame.executionOptions.outputExecution?.started) throw handlerError;
   if (handlerError !== undefined) {
     return Object.freeze({ kind: 'continue', index: index + 1, error: containUnexpected(handlerError, frame), frame });
   }
 
+  frame.executionOptions.outputExecution?.validateResult(output);
   const transfer = transferData(output, transferFactory.token);
   if (transferFactory.wasCalled()) {
     if (!transfer || output !== transferFactory.transfer()) {
@@ -422,6 +426,7 @@ async function executeRouter(router, request, options = {}) {
   try {
     budget.check();
     effectExecution = createJavascriptEffectExecution({
+      outputExecution: options.outputExecution,
       effectAdapter: options.effectAdapter,
       capabilities: options.capabilities,
       application: options.application,
