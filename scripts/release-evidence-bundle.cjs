@@ -112,6 +112,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'canonical-opaque-node-emission',
       'str02b-node-native',
       'str03a-generated-output',
+      'str03c-bounded-transforms',
       'javascript-effect-adapter',
       's3-node-transport',
       'node-router-context-parity',

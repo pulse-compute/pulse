@@ -57,6 +57,9 @@ function surface(definition) {
 }
 
 const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
+  surface({ id: 'ctx.req.readTextChunk', class: 'effect', canonicalOperation: 'output.readTextChunk',
+    publicForms: ['ctx.req.readTextChunk()'], awaitPolicy: 'required-when-consumed', validPositions: ['statement'],
+    targetSupport: { javascript: true, native: true }, nativeBehavior: 'request-owned-input-suspension', status: 'experimental' }),
   ...['start', 'write'].map(operation => surface({
     id: `ctx.output.${operation}`, class: 'effect', canonicalOperation: `output.${operation}`,
     publicForms: [`ctx.output.${operation}(...)`], awaitPolicy: 'required-when-consumed',

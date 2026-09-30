@@ -1182,3 +1182,36 @@ sign primitive is added. Native constant-time design assumptions and the
 JavaScript BigInt key-validation timing limitation are documented in the
 Crypto package guide. Existing secret/clock authority, cancellation,
 redaction and application lifetime ownership are retained.
+
+### Experimental bounded request transforms
+
+STR-03C selects strict UTF-8 incoming request chunks, with `request.body.transform`
+and explicit `node.bodyTransform: true` alongside generatedOutput/maxDurationMs.
+The provider-neutral `ctx.req.readTextChunk()` surface lowers to an awaited
+`output.readTextChunk` effect: the existing request-owned output controller owns
+both sides so one reader/write may be outstanding. It uses ordinary single-use
+Native effect tickets, rejects parallel grouping and exposes only `{ done, text }`.
+Native executes the handler's existing pure expressions, including concatenation;
+no callback, binary-view API or new string operation is admitted. Linked guests
+remain excluded pending memory qualification. Fastly explicitly rejects transforms.
+
+The finite contract is 65,536 input bytes, 262,144 output bytes, maximum 4× expansion
+against UTF-8 bytes delivered to the handler, 4,093 raw bytes per fixed input block,
+at most three decoder carry bytes and 4,096 encoded bytes per delivered text chunk.
+BOMs are data; invalid/truncated UTF-8 fails. At most 18 reads include the distinct
+EOF marker; close requires EOF. Existing 16 KiB/write, 64-write, cumulative 64 MiB
+Native accounting, 4,096-page guest limit and shared request deadline still apply.
+Input queue accounting is at most 69,632 bytes, separate from Node transport buffers,
+materialized text, output buffers and retained guest/host values. Input source chunks
+and backing allocations are bounded before retention. No application stream,
+replay, tee, fetched input cursor or allocator reclamation is introduced.
+
+Transform configuration excludes incoming forwarding and reserves structured body
+reads. Native capability composition rejects structured reads; the shared host
+ownership object also fences JavaScript admission conflicts. Reads are lazy and
+writes wait for callback plus drain before the next pull. Errors, disconnect and
+deadline cancel the input owner and fail the writer; post-header failures cannot
+replace the response. The Native manifest records the finite transform policy,
+not an installed qualification claim. Workspace acceptance measures 2× duplication,
+accepts the 4×/256 KiB boundary, rejects over-expansion and validates actual Wasm
+and both Node HTTP targets. See [bounded UTF-8 transforms](../concepts/bodies.md#experimental-bounded-utf-8-transforms-on-node).

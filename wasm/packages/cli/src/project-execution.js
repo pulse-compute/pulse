@@ -526,6 +526,7 @@ function requiresExactNativeExecution(compiled) {
   return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
     || compiled.metadata?.capabilities?.includes('response.output')
     || compiled.metadata?.capabilities?.includes('request.body.forward')
+    || compiled.metadata?.capabilities?.includes('request.body.transform')
     || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
     || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
 }
@@ -1500,6 +1501,7 @@ async function runJavascriptProjectTests(project, options = {}) {
         maxDurationMs: project.providerConfig.maxDurationMs,
         bodyForwarding: project.providerConfig.bodyForwarding,
         generatedOutput: project.providerConfig.generatedOutput,
+        bodyTransform: project.providerConfig.bodyTransform,
         networkFetch: project.dev.networkFetch
       });
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
@@ -2409,6 +2411,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
     maxDurationMs: project.providerConfig.maxDurationMs,
     bodyForwarding: project.providerConfig.bodyForwarding,
     generatedOutput: project.providerConfig.generatedOutput,
+    bodyTransform: project.providerConfig.bodyTransform,
     config: project.dev.config,
     secrets: project.dev.secrets,
     kv: project.dev.kv,
@@ -2517,6 +2520,7 @@ async function startBundledJavascriptDevServer(project, options = {}) {
         maxDurationMs: project.providerConfig.maxDurationMs,
         bodyForwarding: project.providerConfig.bodyForwarding,
         generatedOutput: project.providerConfig.generatedOutput,
+        bodyTransform: project.providerConfig.bodyTransform,
         application: Object.freeze({
           projectHash: project.projectHash,
           planHash: project.planHash,
@@ -2716,6 +2720,7 @@ async function startJavascriptDevServer(project, options = {}) {
     maxDurationMs: project.providerConfig.maxDurationMs,
     bodyForwarding: project.providerConfig.bodyForwarding,
     generatedOutput: project.providerConfig.generatedOutput,
+    bodyTransform: project.providerConfig.bodyTransform,
     s3FetchImplementation: javascript.createFixtureFetch(
       project.dev.fetches,
       project.dev.networkFetch ? globalThis.fetch : undefined,
@@ -2852,7 +2857,7 @@ async function startDevServer(project, options = {}) {
 
   let handled = 0;
   const server = http.createServer(async (req, res) => {
-    const forwarding = compiled.metadata?.capabilities?.includes('request.body.forward');
+    const forwarding = compiled.metadata?.capabilities?.includes('request.body.forward') || Boolean(project.providerConfig.bodyTransform);
     const connection = new AbortController();
     const disconnected = () => connection.abort(new Error('Native HTTP request disconnected.'));
     const closed = () => { if (!res.writableFinished) disconnected(); };

@@ -20,6 +20,7 @@ function createIncomingBodyOwnership(transport) {
       return error;
     },
     structured() {
+      if (transport.readTextChunk) throw owner.fail(conflict());
       if (state !== 'available' && state !== 'structured') throw owner.fail(conflict());
       state = 'structured';
     },
@@ -27,6 +28,11 @@ function createIncomingBodyOwnership(transport) {
       if (owners.get(value) !== owner || state !== 'available') throw owner.fail(conflict());
       transport.validate(init);
       state = 'reserved';
+    },
+    async readTextChunk(budget) {
+      if (!transport.readTextChunk || !['available', 'reading'].includes(state)) throw owner.fail(conflict());
+      state = 'reading';
+      try { return await transport.readTextChunk(budget); } catch (error) { throw owner.fail(error); }
     },
     async forward(url, init, execution) {
       if (state !== 'reserved') throw failure || conflict();

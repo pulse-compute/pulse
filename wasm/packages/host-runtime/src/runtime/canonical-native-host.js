@@ -395,7 +395,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const moduleShape = validateNativeModule(module, plan);
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
-  const memoryBudget = (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output'))
+  const memoryBudget = (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
     ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
   const heap = new ValueHeap(memoryBudget);
   const pending = [];
@@ -739,12 +739,12 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     },
     request_text() {
       requireHttpSurface('ctx.req.text');
-      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
+      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding/transform admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
       return put(context.ctx.req.text());
     },
     request_json(schemaHandle) {
       requireHttpSurface('ctx.req.json');
-      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
+      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding/transform admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
       const schema = value(schemaHandle);
       return put(schema === undefined ? context.ctx.req.json() : context.ctx.req.json(schema));
     },

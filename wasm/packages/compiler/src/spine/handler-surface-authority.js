@@ -174,6 +174,9 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
 
   if (receiver && ts.isPropertyAccessExpression(receiver) && isIdentifierNamed(receiver.expression, ctxName, options)) {
     const namespace = receiver.name.text;
+    if (namespace === 'req' && method === 'readTextChunk' && current.arguments.length === 0) {
+      return Object.freeze({ call: current, surfaceId: 'ctx.req.readTextChunk', kind: 'output.readTextChunk', providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform', args: Object.freeze([]) });
+    }
     if (namespace === 'output' && ((method === 'start' && current.arguments.length <= 1) || (method === 'write' && current.arguments.length === 1))) {
       return Object.freeze({ call: current, surfaceId: `ctx.output.${method}`, kind: `output.${method}`, providerKind: 'output', operation: method, capability: 'response.output', args: Object.freeze([...current.arguments]) });
     }

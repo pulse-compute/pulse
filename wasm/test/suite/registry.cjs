@@ -176,6 +176,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native',
     description: 'STR-03A generated-output Native/JavaScript lowering, demand, cancellation, finite limits and normal build/dev HTTP'
   }),
+  'str03c-bounded-transforms': nodeTask('test/runtime/str03c-bounded-transforms.cjs', {
+    description: 'Finite UTF-8 transform Native/JavaScript ownership, bounds, demand and HTTP qualification',
+    timeoutMs: 120000, evidence: 'native'
+  }),
   'str03b-installed': nodeTask('test/runtime/str03b-installed.cjs', {
     timeoutMs: 360000, evidence: 'external',
     description: 'STR-03B exact installed Node Native/JavaScript output, CLI, real sockets and controlled writer qualification'
@@ -1137,6 +1141,7 @@ const profiles = Object.freeze({
     'canonical-native-plan',
     'str02b-node-native',
     'str03a-generated-output',
+    'str03c-bounded-transforms',
     'bounded-app-logic',
     'bounded-read-loops',
     'logging-lowering',

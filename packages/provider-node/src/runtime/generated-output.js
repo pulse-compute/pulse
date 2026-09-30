@@ -17,6 +17,9 @@ function normalizeGeneratedOutput(value, duration) {
 function createGeneratedOutput(response, options) {
   if (!options.generatedOutput) return undefined;
   normalizeGeneratedOutput(options.generatedOutput, options.maxDurationMs);
+  const transform = require('./body-transform.js');
+  transform.normalizeBodyTransform(options.bodyTransform, options);
+  let input, inputBytes = 0, inputDone = false, readStarted = false;
   const budget = options.requestBudget;
   if (!budget || budget.deadlineMonotonicMs === undefined) throw error('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires a shared request deadline.');
   let phase = 'idle', committed = false, busy = false, bytes = 0, writes = 0, failure, completion;
@@ -39,6 +42,16 @@ function createGeneratedOutput(response, options) {
       assertEffect();
       if (busy) throw error('PULSE_OUTPUT_OWNERSHIP', 'Generated output allows one awaited write at a time.');
       busy = true;
+      if (effect.kind === 'output.readTextChunk') {
+        if (!options.bodyTransform || !input) throw error('PULSE_TRANSFORM_UNAVAILABLE', 'Text chunks require configured Node transform input.');
+        if (inputDone) throw error('PULSE_TRANSFORM_CLOSED', 'Transform input has reached EOF.');
+        readStarted = true;
+        const chunk = await input.readTextChunk(budget);
+        check();
+        inputBytes += Buffer.byteLength(chunk.text);
+        inputDone = chunk.done;
+        return chunk;
+      }
       if (effect.kind === 'output.start') {
         if (phase !== 'idle') throw error('PULSE_OUTPUT_OWNERSHIP', 'Generated output may start once.');
         const init = effect.argument0 || {};
@@ -79,6 +92,9 @@ function createGeneratedOutput(response, options) {
       if (text.length > limits.chunkBytes) throw error('PULSE_OUTPUT_LIMIT_EXCEEDED', 'Generated output chunk exceeds 16 KiB.');
       const length = Buffer.byteLength(text);
       if (length > limits.chunkBytes || writes === limits.writes || length > limits.totalBytes - bytes) throw error('PULSE_OUTPUT_LIMIT_EXCEEDED', 'Generated output exceeded its chunk, write-count or total-byte limit.');
+      if (options.bodyTransform && (bytes + length > transform.limits.outputBytes || bytes + length > inputBytes * transform.limits.expansion)) {
+        throw error('PULSE_TRANSFORM_OUTPUT_LIMIT', 'Transform output exceeds 262144 bytes or four times delivered input bytes.');
+      }
       writes++; bytes += length;
       await waitForWrite(Buffer.from(text));
       check();
@@ -104,12 +120,18 @@ function createGeneratedOutput(response, options) {
   }
   return Object.freeze({
     dispatch, assertEffect, cancel,
+    bindInput(value) {
+      if (!options.bodyTransform) return;
+      if (input && input !== value) throw error('PULSE_REQUEST_BODY_OWNERSHIP', 'Transform input is already bound.');
+      input = value;
+    },
     get started() { return phase !== 'idle'; },
     get finished() { return phase === 'finished'; },
     close(factory) {
       try {
         check();
         if (phase !== 'open' || busy) throw error('PULSE_OUTPUT_OWNERSHIP', 'Return output.close() after all writes settle.');
+        if (options.bodyTransform && !inputDone) throw error('PULSE_TRANSFORM_EOF_REQUIRED', 'Read transform input through EOF before output.close().');
         phase = 'closing';
         completion = factory ? factory({ status, headers }) : Object.freeze({ status, headers, kind: 'text', bodyClass: 'structured', body: '' });
         completions.add(completion);
@@ -118,7 +140,7 @@ function createGeneratedOutput(response, options) {
     },
     validateResult(result) {
       check();
-      if (phase !== 'idle' && (phase !== 'closing' || !completions.has(result))) throw error('PULSE_OUTPUT_CLOSE_REQUIRED', 'A generated-output handler must return its output.close() result.');
+      if ((phase !== 'idle' || readStarted) && (phase !== 'closing' || !completions.has(result))) throw error('PULSE_OUTPUT_CLOSE_REQUIRED', 'A generated-output handler must return its output.close() result.');
     },
     async finish() {
       if (phase === 'idle') return;
@@ -138,7 +160,7 @@ function createGeneratedOutput(response, options) {
       } catch (reason) { cancel(reason); throw failure; }
     },
     dispose() { removeAbort(); if (!['idle', 'finished'].includes(phase)) cancel(); },
-    snapshot() { return Object.freeze({ phase, bytes, writes }); }
+    snapshot() { return Object.freeze({ phase, bytes, writes, ...(options.bodyTransform ? { inputBytes, inputDone, expansionRatio: inputBytes ? bytes / inputBytes : 0 } : {}) }); }
   });
 }
 

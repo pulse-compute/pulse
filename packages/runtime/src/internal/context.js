@@ -61,6 +61,10 @@ function createRequestView(request, requestHeaders, effectExecution, options = {
         'PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Incoming body forwarding requires the configured Node JavaScript provider.');
       return options.incomingBody.marker();
     },
+    readTextChunk(...args) {
+      if (args.length) throw new TypeError('ctx.req.readTextChunk takes no arguments.');
+      return effectExecution.dispatch({ kind: 'output.readTextChunk', providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform', parallelEligible: false });
+    },
     header(name) {
       const lower = String(name).toLowerCase();
       const match = headers.find(([header]) => header.toLowerCase() === lower);

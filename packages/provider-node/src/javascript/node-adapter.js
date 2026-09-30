@@ -102,7 +102,7 @@ async function nodeRequestToWebRequest(request, options = {}) {
   for (const [name, value] of headerPairs) headers.append(name, value);
   const init = { method, headers };
   if (bodyAllowed(method)) {
-    if (options.bodyForwarding) {
+    if (options.bodyForwarding || options.bodyTransform) {
       init.body = require('./incoming-body.js').nodeIncomingStream(request);
       init.duplex = 'half';
     } else {
@@ -217,7 +217,7 @@ function createNodeJavascriptHandler(application, options = {}) {
     try {
       budget.check();
       adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
-      if (options.bodyForwarding && bodyAllowed(adapted.method)) response.setHeader('connection', 'close');
+      if ((options.bodyForwarding || options.bodyTransform) && bodyAllowed(adapted.method)) response.setHeader('connection', 'close');
       incomingBody = require('./incoming-body.js').createIncomingBody(adapted.request, {
         ...options, signal: budget.signal, responseWriterOwnsCompletion: true
       });
@@ -299,7 +299,7 @@ function createNodeJavascriptHandler(application, options = {}) {
       else await writeWebResponseToNode(webResponse, response, {
         requestMethod: adapted.method,
         signal: incomingBody?.responseSignal || budget.signal, requestBudget: budget,
-        closeConnection: Boolean(options.bodyForwarding && bodyAllowed(adapted.method))
+        closeConnection: Boolean((options.bodyForwarding || options.bodyTransform) && bodyAllowed(adapted.method))
       });
       if (typeof options.onRequest === 'function') {
         options.onRequest(Object.freeze({
@@ -314,7 +314,7 @@ function createNodeJavascriptHandler(application, options = {}) {
     } finally {
       outputExecution?.dispose();
       await incomingBody?.close();
-      if (options.bodyForwarding && !incomingBody && adapted?.request.body && !adapted.request.body.locked) {
+      if ((options.bodyForwarding || options.bodyTransform) && !incomingBody && adapted?.request.body && !adapted.request.body.locked) {
         void adapted.request.body.cancel().catch(() => {});
       }
       request.removeListener('aborted', aborted); response.removeListener?.('close', closed);
