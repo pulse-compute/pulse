@@ -206,12 +206,12 @@ function createNodeJavascriptHandler(application, options = {}) {
         maxKvValueDepth: options.maxKvValueDepth,
         maxKvValueEntries: options.maxKvValueEntries
       });
-  return async function pulseNodeJavascriptHandler(request, response) {
+  return async function pulseNodeJavascriptHandler(request, response, requestSignal) {
     const connection = new AbortController();
     const aborted = () => connection.abort(new Error('Node request disconnected.'));
     const closed = () => { if (!response.writableFinished) aborted(); };
     request.once('aborted', aborted); response.once?.('close', closed);
-    const signal = options.signal ? AbortSignal.any([options.signal, connection.signal]) : connection.signal;
+    const signal = AbortSignal.any([options.signal, requestSignal, connection.signal].filter(Boolean));
     const budget = runtimeHost.createRequestBudget({ ...options, signal });
     let incomingBody, adapted, outputExecution;
     try {

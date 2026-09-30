@@ -57,7 +57,7 @@ const externalTasks = new Set([
   'jwt-installed-workflow',
   'str02-installed',
   'str02b-installed',
-  'str03b-installed',
+  'str03b-installed', 'node01-installed',
   'ast01-installed', 'ast02b-installed', 'ast02d-installed',
   'str02c-fastly-feasibility',
   // Independent SDK installation is explicit external evidence for the private adapter.
