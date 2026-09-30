@@ -1,0 +1,34 @@
+
+[pulsewasm:cli] docs-example-07-opaque-proxy
+[pulsewasm] documented 07-opaque-proxy workflow (timeout 360.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 07-opaque-proxy
+ok - docs example 07-opaque-proxy: provider=fastly tests=1 capabilities=2 wasm=34718
+[pulsewasm] docs-example-07-opaque-proxy: passed in 16.21s
+
+[pulsewasm:cli] docs-example-09-router-lowering
+[pulsewasm] documented 09-router-lowering workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 09-router-lowering
+AssertionError [ERR_ASSERTION]: 09-router-lowering documented application guest Wasm size changed
+
+9157 !== 9762
+
+    at verifyDefaultNativeSizes (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/docs/assert-executable-documentation.cjs:516:10)
+    at verifyExampleWorkflow (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/docs/assert-executable-documentation.cjs:716:41)
+    at main (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/docs/assert-executable-documentation.cjs:876:23)
+    at Object.<anonymous> (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/docs/assert-executable-documentation.cjs:925:3)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+[pulsewasm] docs-example-09-router-lowering: failed in 8.77s
+
+[pulsewasm] test summary
+  passed        16.21s  docs-example-07-opaque-proxy
+  failed         8.77s  docs-example-09-router-lowering
+  total        24.98s

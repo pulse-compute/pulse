@@ -1,0 +1,16 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> maintainer:check
+> node scripts/validate-maintainer-control-plane.cjs
+
+Error: Release tasks are not mapped to a shard: source-helper-native
+    at fail (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/release-evidence-bundle.cjs:228:17)
+    at validateShardCoverage (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/release-evidence-bundle.cjs:420:5)
+    at validatePreflight (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/release-preflight.cjs:523:18)
+    at validatePublicationControlPlane (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/validate-publication-workflows.cjs:1099:16)
+    at validateMaintainerControlPlane (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/validate-maintainer-control-plane.cjs:699:18)
+    at main (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/validate-maintainer-control-plane.cjs:721:18)
+    at Object.<anonymous> (/workspace/scratch/f45f4aee55e6/pulse-o25/scripts/validate-maintainer-control-plane.cjs:739:9)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)

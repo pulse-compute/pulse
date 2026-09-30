@@ -1,0 +1,268 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 207 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 106ms
+
+[pulsewasm:unit] test-orchestration
+[pulsewasm] atomic reports, deterministic slicing, timeouts, and descendant cleanup (timeout 30.00s)
+
+[pulsewasm:unit] orchestration-pass-fixture
+[pulsewasm] orchestration pass fixture (timeout 5.00s)
+fixture-pass
+[pulsewasm] orchestration-pass-fixture: passed in 79ms
+
+[pulsewasm:unit] orchestration-failure-evidence-fixture
+[pulsewasm] orchestration failure evidence fixture (timeout 5.00s)
+[pulsewasm] orchestration-failure-evidence-fixture: copied 1 task-owned failure log(s) into the durable run report
+[pulsewasm] orchestration-failure-evidence-fixture: failed in 52ms
+
+[pulsewasm:unit] orchestration-timeout-fixture
+[pulsewasm] orchestration timeout and descendant cleanup fixture (timeout 1.20s)
+fixture-timeout-ready
+[pulsewasm] orchestration-timeout-fixture: timeout; process group 66 contains 0 process(es)
+
+Writing Node.js report to file: report.20260930.042923.66.0.001.json
+Node.js report completed
+[pulsewasm] orchestration-timeout-fixture: timeout in 6.98s
+ok - test orchestration writes atomic reports, slices profiles deterministically, preserves task and failure logs, captures timeout diagnostics, and terminates descendant process groups
+[pulsewasm] test-orchestration: passed in 7.21s
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 19 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 245ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 471ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 247ms
+
+[pulsewasm:unit] hidden-contracts
+[pulsewasm] hidden contract literal scanner (timeout 30.00s)
+ok - PulseWasm hidden contract scanner classifies non-contract versions and rejects duplicate contract literals
+[pulsewasm] hidden-contracts: passed in 288ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 1.11s
+
+[pulsewasm:unit] release-tag
+[pulsewasm] release-owner tagging guards and immutable tag identity (timeout 30.00s)
+ok - release tag requires reviewed remote main, defaults to dry run, preserves tag identity, and never pushes
+[pulsewasm] release-tag: passed in 681ms
+
+[pulsewasm:unit] api-surface
+[pulsewasm] provider-neutral TypeScript API and fixture type surface (timeout 30.00s)
+ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value
+[pulsewasm] api-surface: passed in 1.02s
+
+[pulsewasm:unit] logging-contract
+[pulsewasm] logging levels, ABI, reporting resolution, and public surfaces (timeout 30.00s)
+ok - logging levels, synchronous ABI, flat reporting resolution, and handler surfaces are canonical
+[pulsewasm] logging-contract: passed in 108ms
+
+[pulsewasm:unit] s3-design-contract
+[pulsewasm] S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes (timeout 30.00s)
+ok - S3 O1 design: typed subset, canonical input seam, key/body/signing vectors and bounded envelopes; no runtime support claim
+[pulsewasm] s3-design-contract: passed in 1.41s
+
+[pulsewasm:unit] kv-design-contract
+[pulsewasm] K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty (timeout 30.00s)
+{"status":"passed","proof":"K1-executable-specification","tokens":8,"outcomeVectors":31,"readOutcomeVectors":15,"raceSchedules":12,"publicRuntimeSupport":false,"providerReality":false}
+[pulsewasm] kv-design-contract: passed in 1.52s
+
+[pulsewasm:unit] kv-conditional-runtime
+[pulsewasm] K2 production conditional KV types, wire bounds, snapshots and outcome contracts (timeout 30.00s)
+ok - K2 production types, wire/token/bounds corpus, admission snapshot, redaction and explicit failure outcomes
+[pulsewasm] kv-conditional-runtime: passed in 1.71s
+
+[pulsewasm:unit] kv-conditional-gates
+[pulsewasm] K4 executable requirement and deployed evidence identity, location and uncertainty gates (timeout 30.00s)
+ok - K4 rejects missing executables, mixed deployment identities, repeated receipts, same-POP evidence and unknown write acceptance; deployed orchestration tested with a local fixture only
+[pulsewasm] kv-conditional-gates: passed in 459ms
+
+[pulsewasm:unit] s3-read-contract
+[pulsewasm] S3 read binding authority, lowering negatives and bounded result contract (timeout 30.00s)
+ok - S3 read bindings, literal authority, dynamic key seam and result bounds
+[pulsewasm] s3-read-contract: passed in 239ms
+
+[pulsewasm:unit] s3-write-contract
+[pulsewasm] S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle (timeout 30.00s)
+ok - S3 PUT literal lowering, bounded results, explicit Crypto JavaScript vectors, snapshot and wipe
+[pulsewasm] s3-write-contract: passed in 343ms
+
+[pulsewasm:unit] crypto-config-planning
+[pulsewasm] crypto profile replacement, reachable requirements, and deterministic target realization planning (timeout 180.00s)
+ok - crypto configuration replacement, reachable demand, deterministic realization planning, and pre-lowering failure are canonical
+[pulsewasm] crypto-config-planning: passed in 688ms
+
+[pulsewasm:unit] crypto-es256-signing
+[pulsewasm] RFC6979 signing vector, frame rejection and private material cleanup (timeout 180.00s)
+ok - RFC6979 ES256 signing, independent verification, strict frames, key consistency and cleanup
+[pulsewasm] crypto-es256-signing: passed in 117ms
+
+[pulsewasm:unit] crypto-rs256
+[pulsewasm] RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup (timeout 180.00s)
+{"status":"passed","assertions":177,"artifactBytes":36378,"fixedMemoryBytes":2097152,"observedStackBytes":6324,"reservedStackBytes":65536,"timings":[{"bits":2048,"signMedianMs":5.094434000000007,"verifyMedianMs":0.32096200000000863},{"bits":3072,"signMedianMs":24.587379000000055,"verifyMedianMs":1.3672239999999647},{"bits":4096,"signMedianMs":45.79320800000005,"verifyMedianMs":1.564540000000079}],"timingEnvironment":"local Node Wasm; development evidence, not Fastly measurements","providerReality":false}
+[pulsewasm] crypto-rs256: passed in 1.70s
+
+[pulsewasm:unit] crypto-digest-text-contract
+[pulsewasm] Exact-text digest admission, bounded failures, unavailable providers and cancellation (timeout 30.00s)
+ok - digest vectors, exact import admission, bounded failures, staging wipe, provider unavailability and cancellation
+[pulsewasm] crypto-digest-text-contract: passed in 533ms
+
+[pulsewasm:unit] reachable-graph
+[pulsewasm] deterministic path-independent reachable graph (timeout 120.00s)
+ok - reachable graph locks resolver b67ace60ec94fd12c0c05bf64429b1eae16421da96721205c1983852dd931fc5, graph d8af8e6582ab6d2eca4b67a72be9e5becabe2a1fd6a87742590e8a3542ba9790, and 5 path-independent module identities
+[pulsewasm] reachable-graph: passed in 137ms
+
+[pulsewasm:unit] project-modules
+[pulsewasm] recursive modules, handlers, Routers, cycles, and diagnostics (timeout 180.00s)
+ok - project graph compiles 4 runtime modules through one Handler/Router IR path
+[pulsewasm] project-modules: passed in 1.12s
+
+[pulsewasm:unit] package-reachability
+[pulsewasm] graph-selected package operations and native eligibility (timeout 240.00s)
+ok - package reachability selects pulse.grip, owns 2 bindings, and rejects unsupported boundaries without fallback
+[pulsewasm] package-reachability: passed in 999ms
+
+[pulsewasm:unit] provider-toolchain
+[pulsewasm] exact compiler-to-provider toolchain invocation and result boundary (timeout 30.00s)
+ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed
+[pulsewasm] provider-toolchain: passed in 82ms
+
+[pulsewasm:unit] schema-registry
+[pulsewasm] pulse.schema registry and semantic trace contracts (timeout 120.00s)
+ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts
+ok - schema cost attribution preserves IDs, policies, response roots, Unicode byte accounting and production generation
+[pulsewasm] schema-registry: passed in 1.19s
+
+[pulsewasm:unit] continuation-registry
+[pulsewasm] continuation state, expiry, and resume guards (timeout 30.00s)
+ok - continuation registry enforces waiting/resume/complete, double-resume, expiry, failure, cancellation, and ordered trace transitions
+[pulsewasm] continuation-registry: passed in 123ms
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+{"version":"pulse.entities-contract.v1","registryHash":"46f5c921451588141b5ffadb27fb4e489a1b72aba5a260aa7122ce71c14931f2","planHash":"379b0d182fb4c9e084547918df3c2cb03c8594e01172fcf973a0163b98bddd30","catalogHash":"433f95d1d129fa638b003911653fefd9ae79ec41a51726705bc0da1d85464db9","diagnostics":18,"packageExports":[".","./pulsewasm/manifest","./pulsewasm/compiler","./pulsewasm-native"],"executableLowererInstalled":true,"releaseAssigned":false}
+ok - Entities versions, normalizers, declaration registry, plan/catalog identities, trusted lowerer, and package-owned Native source entry are singular and bounded
+[pulsewasm] entities-contracts: passed in 107ms
+
+[pulsewasm:unit] entities-schema-bridge
+[pulsewasm] I3 request-bound declared-schema codec bridge, immutable values, semantic traces, and negative authority surface (timeout 120.00s)
+{"version":"pulse.first-party-embedded-schema-codec-bridge.v1","declaredSchemas":["app.createInput","app.user"],"bridgeKeys":["decodeEmbeddedJson","encodeEmbeddedJson"],"traceKinds":["json.decode.request","json.encode.response","json.decode.error","json.encode.error"],"deeplyImmutable":true,"encoded":"{\"id\":\"8\",\"name\":\"Grace\",\"score\":42.5,\"active\":true}","schemaBridgePublicExportsAdded":false,"nativeSourceBuilderExportedByI7":true}
+ok - Entities I3 binds only declared generated schema codecs to contained request text and package-owned output text
+[pulsewasm] entities-schema-bridge: passed in 324ms
+
+[pulsewasm:javascript] entities-javascript-runtime
+[pulsewasm] I4 real package dispatch, JSON-RPC framing, redaction, notification acknowledgement, and catalog identity (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/f45f4aee55e6/pulse-o25
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  04:29:47
+   Duration  568ms (transform 105ms, setup 0ms, import 144ms, tests 238ms, environment 0ms)
+
+[pulsewasm] entities-javascript-runtime: passed in 901ms
+
+[pulsewasm:unit] entities-json-rpc-corpus
+[pulsewasm] I4 production scanner parity with the frozen bounded positive and negative envelope corpus (timeout 30.00s)
+{"version":"pulse.entities-envelope-corpus.v1","valid":6,"invalid":17,"productionScanner":"packages/entities/dist/internal/bounded-json-rpc.js"}
+ok - Entities I4 production scanner matches the frozen bounded JSON-RPC corpus
+[pulsewasm] entities-json-rpc-corpus: passed in 71ms
+
+[pulsewasm:unit] entities-package-owned-lowering
+[pulsewasm] I2 first-party static extraction, terminal intrinsic, schema linkage, and fail-closed lowerer boundary (timeout 30.00s)
+{"version":"pulse.entities-lowering-plan.v1","planHash":"e675ab4d16eb0d6d4662528410017fd2d38e1c6b509195c59fec11a3006abed5","catalogHash":"090783f5e4635f713051c93920201c2374b2301d8848981761fa51cd1994036d","entities":2,"schemaReferences":2,"intrinsic":"pulse.entities.handle.v1","targetStatus":"provider-dependent","negativeDiagnostics":12}
+ok - Entities package-owned extraction emits deterministic plan/catalog inspection, managed-handler descriptors, terminal intrinsic, and I9 target truth
+[pulsewasm] entities-package-owned-lowering: passed in 345ms
+
+[pulsewasm:unit] entities-catalog
+[pulsewasm] deterministic entity catalog, eligible-target truth, and current product status (timeout 30.00s)
+{"version":"pulse.entities-catalog.v1","catalogHash":"d603d6f18768c799e50ab926fbb21ee75df18fa12386d69040b924ccbc908c55","entityOrder":["alpha.lookup","beta.notify"],"targetsEligible":4,"releaseAssigned":false}
+ok - Entities catalog remains deterministic, non-sensitive, immutable, and honest about I9 target support without assigning a release
+[pulsewasm] entities-catalog: passed in 295ms
+
+[pulsewasm:unit] entities-inspection
+[pulsewasm] canonical project and pulse inspect declarations, redacted handler effects, I9 target evidence, and deterministic build artifacts (timeout 120.00s)
+{"version":"pulse.canonical-package-inspection.v1","planHash":"2539e18788f3a72b135846cada2d8d2e7dcd589dd8c0a1aed8304c4a5344578a","catalogHash":"b1fa3623b597a773efb01a25b7162206817a45462ae824844da626e6cf265a9e","declaredHandlers":2,"measuredNodeTargets":2,"measuredFastlyTargets":2,"externalFastlyExecutionClaimed":true}
+ok - Entities inspection exposes deterministic declarations, schemas, effects, eligibility, reasons, and build artifacts without runtime or provider data
+[pulsewasm] entities-inspection: passed in 2.28s
+
+[pulsewasm:unit] entities-orchestration-demo
+[pulsewasm] I10 external tools facade over static catalog discovery, governed JSON-RPC calls, backend fetch, and Native artifact inspection (timeout 180.00s)
+{
+  "status": "passed",
+  "tools": 2,
+  "calls": 2,
+  "governedEffects": 3,
+  "nativeBytes": 76817,
+  "report": "wasm/.test-results/entities-i10/entities-tools-orchestration.json",
+  "reportSha256": "63f4385116992a8a0e21849b08706a35d4d621d38e34d801d1d0440a7daa6f50"
+}
+ok - I10 projects static catalog metadata through an external tools facade, invokes governed JSON-RPC entities, and inspects reproducible package-owned Native Wasm without protocol state or fallback
+[pulsewasm] entities-orchestration-demo: passed in 7.58s
+
+[pulsewasm:native] canonical-native-plan
+[pulsewasm] deterministic provider-neutral native plan (timeout 60.00s)
+ok - canonical handler analysis lowers deterministically to a provider-neutral native execution plan across nine public examples and retained control-flow fixtures
+{"status":"passed","sourceRejections":11,"planRejections":12,"nativeChecks":7,"wasmBytes":5736}
+[pulsewasm] canonical-native-plan: passed in 5.44s
+
+[pulsewasm:external] shared-history-helper-o25
+[pulsewasm] O-25 retained Native history helper at 1/2/16 callers, final-Wasm attribution and Native/JavaScript semantics (timeout 180.00s)
+O-25 1 callers: one helper, 63876 Wasm bytes, 2 retained partitions
+O-25 2 callers: one helper, 64758 Wasm bytes, 2 retained partitions
+O-25 16 callers: one helper, 75280 Wasm bytes, 2 retained partitions
+{"version":"pulse.o25.history-helper-proof.v2","status":"passed","sourceCommit":"8c1c8e1ccbe5b094012c6440935bc462e4b34af3","sourceDirty":true,"cells":[{"count":1,"source":{"entrySha256":"d793d28727f34cba7ca5de5c0150999801fb606c5d775afc05708fcccdbfe52a","helperSha256":"256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8","helperBytes":11241},"planHash":"37c37396fefbc1becd9056a5c7d5adc948bd5445142be160583f0d1287c1eef1","helperBodies":1,"helperLocals":88,"effects":5,"continuations":5,"callerLocals":5,"loweredSourceBytes":19743,"generatedSourceBytes":129724,"wasmBytes":63876,"nativeBuildMs":3385.434473,"finalWasm":{"namedCompanionSectionsByteExact":true,"roots":[{"name":"canonical-native.as/__pulse_shared_helper_1","bytes":888,"callers":["canonical-native.as/__pulse_step"]},{"name":"canonical-native.as/__pulse_shared_helper_0","bytes":7244,"callers":["canonical-native.as/__pulse_step"]}],"sharedBodyPartitions":2,"rootBytes":8132,"reachableFunctions":41,"largestReachableBodyBytes":7244},"expanded":{"privateBodies":1,"effects":5,"continuations":5,"loweredSourceBytes":20931}},{"count":2,"source":{"entrySha256":"22f00f2f9528830143d592b524ec8d9ca8c2dea3be57a9101c4031d5bd247ba5","helperSha256":"256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8","helperBytes":11241},"planHash":"60e46d0ded278aa96908431ef6a7dff2df56e6ecbd6b042b22dbc4002ab2b40d","helperBodies":1,"helperLocals":88,"effects":5,"continuations":5,"callerLocals":7,"loweredSourceBytes":20544,"generatedSourceBytes":136023,"wasmBytes":64758,"nativeBuildMs":4028.716026,"finalWasm":{"namedCompanionSectionsByteExact":true,"roots":[{"name":"canonical-native.as/__pulse_shared_helper_1","bytes":888,"callers":["canonical-native.as/__pulse_step"]},{"name":"canonical-native.as/__pulse_shared_helper_0","bytes":7242,"callers":["canonical-native.as/__pulse_step"]}],"sharedBodyPartitions":2,"rootBytes":8130,"reachableFunctions":41,"largestReachableBodyBytes":7242},"expanded":{"privateBodies":2,"effects":10,"continuations":10,"loweredSourceBytes":41395}},{"count":16,"source":{"entrySha256":"f2dc6cf741df9354034c80e8104903fe0ed2ce189752c6193a4d72e99a3edf1c","helperSha256":"256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8","helperBytes":11241},"planHash":"7f7adeebb82d5da5a3bf4331eba25004a389b7490a1093b19fe2e19fd1abf693","helperBodies":1,"helperLocals":88,"effects":5,"continuations":5,"callerLocals":35,"loweredSourceBytes":31783,"generatedSourceBytes":223954,"wasmBytes":75280,"nativeBuildMs":3969.5715069999987,"finalWasm":{"namedCompanionSectionsByteExact":true,"roots":[{"name":"canonical-native.as/__pulse_shared_helper_1","bytes":889,"callers":["canonical-native.as/__pulse_step"]},{"name":"canonical-native.as/__pulse_shared_helper_0","bytes":7246,"callers":["canonical-native.as/__pulse_step"]}],"sharedBodyPartitions":2,"rootBytes":8135,"reachableFunctions":41,"largestReachableBodyBytes":7246},"expanded":{"privateBodies":16,"effects":80,"continuations":80,"loweredSourceBytes":327916}}],"trackedDiffSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","node":"v24.19.0","nativeSharingQualified":true,"nativeRuntimeQualified":true,"nativeCompilerInvocations":5,"native":{"status":"passed","checks":[{"name":"found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"65-packs-two-rounds","registration":0,"status":"passed","reads":65,"digests":66,"response":[200,"after:record-A"]},{"name":"not-found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:"]},{"name":"malformed-root","registration":0,"status":"passed","reads":0,"digests":0,"response":[503,"HISTORY_INDEX_INVALID"]},{"name":"corrupt-pack","registration":0,"status":"passed","reads":1,"digests":2,"response":[503,"HISTORY_INDEX_CORRUPT"]},{"name":"wrong-owner","registration":0,"status":"passed","reads":1,"digests":2,"response":[503,"HISTORY_INDEX_INVALID"]},{"name":"missing-object","registration":0,"status":"passed","reads":1,"digests":1,"response":[503,"HISTORY_INDEX_UNAVAILABLE"]},{"name":"digest-failure","registration":0,"status":"passed","reads":0,"digests":1,"response":[503,"HISTORY_INDEX_UNAVAILABLE"]},{"name":"caller-bulk-failure","registration":0,"status":"passed","reads":1,"digests":2,"response":[207,"bulk:HISTORY_INDEX_INVALID"]},{"name":"found","registration":1,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"found","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"interleaved-B-storage","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-B"]},{"name":"resumed-A-storage","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"interleaved-B-digest","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-B"]},{"name":"resumed-A-digest","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]}],"completedChecks":16,"scope":"Compiled Native helper with injected storage and SHA-256 effects; not deployed provider qualification","pending":["Full application bulk-result qualification"]},"javascript":{"status":"passed","checks":[{"name":"found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"65-packs-two-rounds","registration":0,"status":"passed","reads":65,"digests":66,"response":[200,"after:record-A"]},{"name":"not-found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:"]},{"name":"malformed-root","registration":0,"status":"passed","reads":0,"digests":0,"response":[503,"HISTORY_INDEX_INVALID"]},{"name":"corrupt-pack","registration":0,"status":"passed","reads":1,"digests":2,"response":[503,"HISTORY_INDEX_CORRUPT"]},{"name":"wrong-owner","registration":0,"status":"passed","reads":1,"digests":2,"response":[503,"HISTORY_INDEX_INVALID"]},{"name":"missing-object","registration":0,"status":"passed","reads":1,"digests":1,"response":[503,"HISTORY_INDEX_UNAVAILABLE"]},{"name":"digest-failure","registration":0,"status":"passed","reads":0,"digests":1,"response":[503,"HISTORY_INDEX_UNAVAILABLE"]},{"name":"caller-bulk-failure","registration":0,"status":"passed","reads":1,"digests":2,"response":[207,"bulk:HISTORY_INDEX_INVALID"]},{"name":"found","registration":1,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"found","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"interleaved-B-storage","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-B"]},{"name":"resumed-A-storage","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"interleaved-B-digest","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-B"]},{"name":"resumed-A-digest","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]}],"completedChecks":16,"scope":"Original source graph on explicit JavaScript target; not Native shared-frame evidence","pending":["Native helper suspension/resumption","Native request-frame isolation","Native work-limit and caller bulk-result qualification"]},"middleware":{"status":"passed","checks":[{"name":"found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"65-packs-two-rounds","registration":0,"status":"passed","reads":65,"digests":66,"response":[200,"after:record-A"]},{"name":"not-found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:"]},{"name":"malformed-root","registration":0,"status":"passed","reads":0,"digests":0,"response":[503,"HISTORY_INDEX_INVALID"]},{"name":"corrupt-pack","registration":0,"status":"passed","reads":1,"digests":2,"response":[503,"HISTORY_INDEX_CORRUPT"]},{"name":"wrong-owner","registration":0,"status":"passed","reads":1,"digests":2,"response":[503,"HISTORY_INDEX_INVALID"]},{"name":"missing-object","registration":0,"status":"passed","reads":1,"digests":1,"response":[503,"HISTORY_INDEX_UNAVAILABLE"]},{"name":"digest-failure","registration":0,"status":"passed","reads":0,"digests":1,"response":[503,"HISTORY_INDEX_UNAVAILABLE"]},{"name":"caller-bulk-failure","registration":0,"status":"passed","reads":1,"digests":2,"response":[207,"bulk:HISTORY_INDEX_INVALID"]},{"name":"found","registration":1,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"found","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"interleaved-B-storage","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-B"]},{"name":"resumed-A-storage","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"interleaved-B-digest","registration":15,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-B"]},{"name":"resumed-A-digest","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]},{"name":"found","registration":0,"status":"passed","reads":1,"digests":2,"response":[200,"after:record-A"]}],"completedChecks":16,"scope":"Compiled Native helper with injected storage and SHA-256 effects; not deployed provider qualification","pending":["Full application bulk-result qualification"]},"sameFile":"planned","workLimit":{"status":"passed","nativeAndJavascript":true,"mechanism":"Separate fixture reduces both traversal round caps from 64 to 0; original production bounds remain unchanged.","nativeEffects":1},"scope":"Portable compiled Native helper and injected host semantics. No deployed provider, full application bulk schema, production adoption or whole-application size claim.","completedAt":"2026-09-29T23:00:36.541Z"}
+[pulsewasm] shared-history-helper-o25: passed in 32.95s
+
+[pulsewasm] test summary
+  passed         106ms  suite-shape
+  passed         7.21s  test-orchestration
+  passed         245ms  package-exports
+  passed         471ms  boundaries
+  passed         247ms  workspace-hygiene
+  passed         288ms  hidden-contracts
+  passed         1.11s  release-runtime-policy
+  passed         681ms  release-tag
+  passed         1.02s  api-surface
+  passed         108ms  logging-contract
+  passed         1.41s  s3-design-contract
+  passed         1.52s  kv-design-contract
+  passed         1.71s  kv-conditional-runtime
+  passed         459ms  kv-conditional-gates
+  passed         239ms  s3-read-contract
+  passed         343ms  s3-write-contract
+  passed         688ms  crypto-config-planning
+  passed         117ms  crypto-es256-signing
+  passed         1.70s  crypto-rs256
+  passed         533ms  crypto-digest-text-contract
+  passed         137ms  reachable-graph
+  passed         1.12s  project-modules
+  passed         999ms  package-reachability
+  passed          82ms  provider-toolchain
+  passed         1.19s  schema-registry
+  passed         123ms  continuation-registry
+  passed         107ms  entities-contracts
+  passed         324ms  entities-schema-bridge
+  passed         901ms  entities-javascript-runtime
+  passed          71ms  entities-json-rpc-corpus
+  passed         345ms  entities-package-owned-lowering
+  passed         295ms  entities-catalog
+  passed         2.28s  entities-inspection
+  passed         7.58s  entities-orchestration-demo
+  passed         5.44s  canonical-native-plan
+  passed        32.95s  shared-history-helper-o25
+  total        74.17s

@@ -152,6 +152,11 @@ function normalizeManagedHandler(functionNode, options = {}) {
       if (ts.isAwaitExpression(node)) {
         awaitCount += 1;
         const inner = unwrapExpression(node.expression);
+        const helper = options.helperForCall && options.helperForCall(inner);
+        if (helper) {
+          changes.push(Object.freeze({ kind: 'source-helper-await-erased', helperId: helper.id }));
+          return ts.visitNode(node.expression, visit);
+        }
         const surface = surfaceFor(inner, 'await-expression');
         if (!surface || surface.surfaceId === 'javascript.await' || surface.class === 'javascript-only') {
           // The explicit JavaScript project path uses this normalized tree only

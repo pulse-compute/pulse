@@ -35,7 +35,10 @@ function fixture(cwd, count, mode = 'helper') {
   assert.ok(!body.includes('return {code:'), 'Every helper outcome must map explicitly');
   source = helper.slice(0, helper.indexOf('export const lookup=')) + `\nimport {Pulse} from '@pulse-compute/pulse';\nconst app=new Pulse({auto:true});\nconst stage=async(ctx)=>{const owner=ctx.req.header('x-owner')||'owner',rootHash=ctx.req.header('x-root')||'',rootNode=0,key=ctx.req.header('x-key')||'key';${body}};\n`;
  }
- for (let i = 0; i < count; i++) source += mode === 'expanded' ? `app.get('/lookup/${i}',stage);\n` : `app.get('/lookup/${i}',async(ctx)=>{${caller}});\n`;
+ if (mode === 'middleware') {
+  source += `app.use(async(ctx,next)=>{${caller.replace("return ctx.text('after:'+result.value);", "ctx.state.set('lookup',''+result.value);return next();")}});\n`;
+ }
+ for (let i = 0; i < count; i++) source += mode === 'middleware' ? `app.get('/lookup/${i}',async(ctx)=>ctx.text('after:'+ctx.state.get('lookup')));\n` : mode === 'expanded' ? `app.get('/lookup/${i}',stage);\n` : `app.get('/lookup/${i}',async(ctx)=>{${caller}});\n`;
  source += 'export default app;\n';
  fs.writeFileSync(path.join(cwd, 'src/index.ts'), source);
  return { entrySha256: hash(source), helperSha256: hash(helper), helperBytes: Buffer.byteLength(helper) };
@@ -45,9 +48,9 @@ function errorRecord(error) {
  return { code: error.code, message: error.message, diagnostics: error.diagnostics, detail: error.detail };
 }
 
-async function semantics(tc, cwd, report) {
+async function semantics(tc, cwd, report, native) {
  const project = tc.resolveProject({ cwd, profile: 'javascript' });
- const prepared = tc.prepareJavascriptApplication(project);
+ const prepared = native ? null : tc.prepareJavascriptApplication(project);
  const registry = require('../../../packages/schema-json/src/compiler/schema-registry').extractSchemaRegistry(path.join(cwd, 'src/schemas.ts'), { projectRoot: cwd }).registry;
  const schemaCodecs = createCanonicalSchemaCodecs(registry);
  const secrets = { S3_ID: 'fixture-id', S3_KEY: 'fixture-secret-012345678901234567890123456789' };
@@ -79,7 +82,21 @@ async function semantics(tc, cwd, report) {
  async function execute(row, index = 0, pause) {
   const rootHash = row.root || hash(row.text), key = row.key || 'key'; let reads = 0, digests = 0;
   const subtle = { async digest(...args) { digests++; if (pause?.kind === 'digest') await pause.wait(); if (row.digestFailure) throw Error('fixture digest failure'); return webcrypto.subtle.digest(...args); } };
-  const response = await tc.executeNodeJavascriptApplication(prepared.loaded.application,
+  const executeRequest = native ? async (_application, request, options) => {
+   const result = await tc.executeCanonicalNativeModule(native, { strict: false, schemaCodecs,
+    request: { method: request.method, url: request.url, path: new URL(request.url).pathname, headers: Object.fromEntries(request.headers) },
+    providerAdapter: { id: 'o25-injected-host', async dispatchEffect(effect) {
+     if (effect.kind === 'crypto.digestText') {
+      try { const bytes = new TextEncoder().encode(effect.payload.text); const digest = await subtle.digest('SHA-256', bytes); return { status: 'ok', sha256: Buffer.from(digest).toString('hex'), byteLength: bytes.length }; }
+      catch { return { status: 'unavailable' }; }
+     }
+     assert.equal(effect.kind, 's3.getText');
+     const response = await options.fetchImplementation(new Request('https://objects.test/' + effect.payload.key));
+     return response.status === 404 ? { status: 'not-found' } : { status: 'found', text: await response.text() };
+    } } });
+   return new Response(result.response.body, { status: result.response.status });
+  } : tc.executeNodeJavascriptApplication;
+  const response = await executeRequest(prepared?.loaded.application,
    new Request('https://proof.test/lookup/' + index, { headers: { 'x-root': rootHash, 'x-key': key, 'x-bulk': row.bulk ? '1' : '0' } }),
    { strict: false, schemaCodecs, secrets, digestSubtle: subtle, s3: project.providerConfig.bindings.s3,
     fetchImplementation: async request => {
@@ -107,58 +124,10 @@ async function semantics(tc, cwd, report) {
   checks.push({ ...await first, name: 'resumed-A-' + kind });
  }
  checks.push(await execute(cases[0], 0));
- report.javascript = { status: 'passed', checks, completedChecks: checks.length,
-  scope: 'Original source graph on explicit JavaScript target; not Native shared-frame evidence',
-  pending: ['Native helper suspension/resumption', 'Native request-frame isolation', 'Native work-limit and caller bulk-result qualification'] };
+ report[native ? 'native' : 'javascript'] = { status: 'passed', checks, completedChecks: checks.length,
+  scope: native ? 'Compiled Native helper with injected storage and SHA-256 effects; not deployed provider qualification' : 'Original source graph on explicit JavaScript target; not Native shared-frame evidence',
+  pending: native ? ['Work-limit and caller bulk-result qualification'] : ['Native helper suspension/resumption', 'Native request-frame isolation', 'Native work-limit and caller bulk-result qualification'] };
 }
 
-async function main() {
- const at = process.argv.indexOf('--output'), output = at >= 0 ? path.resolve(process.argv[at + 1]) : null;
- if (output) assert.ok(!fs.existsSync(output), 'Refuse to overwrite evidence');
- const report = { version: 'pulse.o25.history-helper-proof.v1', status: 'running', startedAt: new Date().toISOString(),
-  sourceCommit: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
-  sourceDirty: Boolean(execFileSync('git', ['status', '--porcelain', '--untracked-files=normal'], { cwd: root, encoding: 'utf8' }).trim()),
-  node: process.version,
-  proofInputs: ['wasm/test/runtime/compiler-efficiency/o25-history-helper.cjs', 'wasm/test/suite/registry.cjs',
-   ...['lookup.ts', 'index.ts', 'types.ts', 'schemas.ts'].map(name => 'wasm/test/fixtures/projects/shared-history-helper/src/' + name),
-   'wasm/test/fixtures/projects/shared-history-helper/.pulse/config.ts']
-   .map(file => ({ path: file, sha256: hash(fs.readFileSync(path.join(root, file))) })),
-  cells: [], nativeSharingQualified: false, nativeRuntimeQualified: false, nativeCompilerInvocations: 0 };
- const save = () => { if (output) fs.writeFileSync(output, JSON.stringify(report, null, 2) + '\n'); };
- const tc = acceptanceToolchain(), tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-o25-'));
- try {
-  for (const count of [1, 2, 16]) {
-   const cwd = path.join(tmp, 'helper-' + count); fs.mkdirSync(cwd); const source = fixture(cwd, count);
-   const cell = { count, source, helper: { status: 'pending' }, expanded: { status: 'pending' } }; report.cells.push(cell); save();
-   try { tc.compileProject(tc.resolveProject({ cwd, profile: 'node' })); cell.helper = { status: 'admitted', sharing: 'unmeasured' }; }
-   catch (error) { cell.helper = { status: 'rejected', ...errorRecord(error) }; }
-   const expanded = path.join(tmp, 'expanded-' + count); fs.mkdirSync(expanded); fixture(expanded, count, 'expanded');
-   const compiled = tc.compileProject(tc.resolveProject({ cwd: expanded, profile: 'node' }));
-   const plan = buildCanonicalNativePlan(compiled), entries = compiled.metadata.router.entries.filter(e => e.kind === 'route');
-   assert.equal(entries.length, count); assert.equal(new Set(entries.map(e => e.handlerId)).size, 1);
-   cell.expanded = { status: 'planned', planHash: plan.planHash, stageBodies: plan.stages?.length || 0,
-    privateBodies: plan.handlers?.length || 0, registrations: entries.length, effects: plan.effects.length, continuations: plan.continuations.length,
-    loweredBodyBytes: entries.reduce((sum, e) => sum + Buffer.byteLength(compiled.router.sourceText.slice(e.generatedRange.start, e.generatedRange.end)), 0),
-    statements: plan.summary.statementCount, wasmBytes: null, reasonWasmNotMeasured: 'Helper admission fails before Native planning; do not spend builds measuring an ineligible candidate.' };
-   save();
-   if (count === 16) await semantics(tc, cwd, report);
-  }
-  const same = path.join(tmp, 'same-file'); fs.mkdirSync(same); fixture(same, 1, 'same-file');
-  try { tc.compileProject(tc.resolveProject({ cwd: same, profile: 'node' })); report.sameFile = { status: 'admitted', sharing: 'unmeasured' }; }
-  catch (error) { report.sameFile = { status: 'rejected', ...errorRecord(error) }; }
-  report.status = 'blocked';
-  const expectedBoundary = report.cells.every(c => c.helper.diagnostics?.some(d => d.code === 'PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED'))
-   && report.sameFile.diagnostics?.some(d => d.code === 'PULSE_NATIVE_AWAIT_UNSUPPORTED');
-  report.blocker = expectedBoundary
-   ? 'Native has no admitted callable effectful-helper boundary. Imported helpers fail runtime-value linking; same-file awaited helpers are not trusted effect sites. Expanded handlers do not establish helper sharing.'
-   : 'Native admission changed; inspect recorded outcomes and implement the remaining sharing/Native gates before claiming success.';
-  report.pendingGates = ['One retained compiled helper body', '1/2/16 binding/frame/continuation growth', 'Native behavior parity and work-limit refusal', 'Native suspended-frame and request isolation', 'Final-Wasm attribution'];
-  process.exitCode = 2;
- } catch (error) { report.status = 'failed'; report.failure = errorRecord(error); process.exitCode = 1; }
- finally { report.completedAt = new Date().toISOString(); save(); fs.rmSync(tmp, { recursive: true, force: true }); }
- console.log(JSON.stringify({ status: report.status, cells: report.cells.map(c => ({ count: c.count, helper: c.helper.status, expanded: c.expanded })), javascriptChecks: report.javascript?.completedChecks, failure: report.failure, output }));
-}
-// Standalone awaited effect tests must not disappear with an unresolved Promise.
-// The registered task and documented direct invocation both have a 90s deadline.
-const keepAlive = setInterval(() => {}, 1000);
-main().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => clearInterval(keepAlive));
+module.exports = { fixture, semantics };
+if (require.main === module) require('./o25-helper-unblocked.cjs');

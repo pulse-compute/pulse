@@ -1,117 +1,95 @@
-# O-25: bounded read-only history helper proof
+# O-25: retained effectful history helper
 
-**Blocked at Native helper admission; sharing is not qualified.** This opt-in
-proof supplies the actual bounded traversal selected by O-24, explicit inputs
-and outputs, 1/2/16-call source fixtures, an expanded Native-plan control and
-JavaScript behavioral checks. It makes no compiler or public-support change.
+**Native helper sharing is unblocked.** The compiler now admits the selected
+imported or same-file read-only history function and retains one substantial
+helper body for 1, 2 and 16 callers. The initial contract is deliberately bounded;
+see [the canonical source-helper contract](../../../../docs/architecture/current-contracts.md#static-effectful-source-helpers-o-25).
 
-The imported helper fails with `PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED`.
-Moving the identical helper into its caller's module removes the import boundary
-but fails with `PULSE_NATIVE_AWAIT_UNSUPPORTED`. That second reduction shows that
-module packaging alone cannot resolve this task. No Native helper plan/body or
-resumable call frame is produced, so no candidate Native build is attempted.
+| Callers | Helper bodies | Helper locals | Effect / continuation sites | Caller locals | Total Wasm bytes | Retained helper root bytes |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 1 | 88 | 5 / 5 | 5 | 63,876 | 8,132 |
+| 2 | 1 | 88 | 5 / 5 | 7 | 64,758 | 8,130 |
+| 16 | 1 | 88 | 5 / 5 | 35 | 75,280 | 8,135 |
 
-## Measured boundary
+Each build retains exactly two helper partitions. Named companion builds match
+every production non-custom Wasm section byte for byte before names are used for
+attribution. Each helper partition survives once and is reachable from real
+exports. Its executable body does not grow with callers. Caller bindings,
+response handling and dispatch account for additional code; total source/Wasm
+figures are in the proof. Timings are single observations, not a build-speed claim.
+The expanded control retains 1/2/16 private bodies and 5/10/80 effect sites. It is
+measured at Native-plan/source level; no expanded-control Wasm saving is claimed.
 
-| Registrations | Imported helper | Expanded private bodies | Effects / continuations | Lowered body bytes |
-| --- | --- | ---: | ---: | ---: |
-| 1 | Rejected | 1 | 5 / 5 | 20,110 |
-| 2 | Rejected | 2 | 10 / 10 | 40,220 |
-| 16 | Rejected | 16 | 80 / 80 | 321,766 |
+The fixture preserves the two-round traversal, bounded nested loops, 65-pack
+cache, storage reads, digest verification and schema decoding. Scalar inputs are
+explicit. The helper returns a code/status/value record; callers own failure
+mapping and the success continuation. All five effects remain trusted package
+operations, with their helper and continuation ownership recorded in the plan.
+The original emitter fragment SHA-256 is
+`a9ea5fd5a72f4736405f80a9079669a9f3ef573db47a8dc22b007dc43f7e438d`.
 
-The expanded control registers one authored handler repeatedly, but the Native
-plan retains one private body per registration and no shared stage bodies.
-The bytes measure lowered Router ranges, not AssemblyScript or final Wasm.
-Native compiler invocations: zero. Binding/frame savings, Native semantic parity
-and final-Wasm body attribution remain unmeasured.
+The proof runs 16 checks each on compiled Native and original-source JavaScript:
+found/not-found, 65 packs across both rounds, malformed roots, corrupt/wrong-owner/
+missing packs, digest failure, distinct caller mapping, registrations 0/1/15,
+interleaved requests held at storage and digest, and a subsequent clean request.
+It repeats all 16 Native checks with a middleware caller. A separate fixture
+reduces both round caps to zero to test defensive work-limit return parity on
+Native and JavaScript; the real fixture's bounds are unchanged. This deliberately
+avoids inventing a valid cryptographic hash cycle to exhaust the defensive bound.
 
-Sixteen checks pass on the explicit JavaScript target's original source graph:
-found/not-found; a 65-pack traversal spanning both rounds; malformed root;
-corrupt, wrong-owner and missing packs; digest
-failure; caller-specific failure mapping; first/second/sixteenth registrations;
-and two interleavings that hold A at storage or digest while B completes, then
-resume A and make a subsequent request. Failed lookup results fence the caller's
-success continuation. These are JavaScript checks, not shared Native frame proof.
-The synthetic bulk caller maps an error to 207; it demonstrates ownership of a
-different response and does not qualify any application's full bulk-result schema.
-The synthetic deep chain checks only the selected read path, not writer-produced
-history or recovery-closure validity.
+The plan task adds 11 source rejection cases, 12 rehashed-plan mutation cases,
+and focused Native lifecycle checks: sequential re-entry, middleware, terminal
+host-failure fencing, application-error transfer, stale/foreign tickets and a
+Fastly compiled/injected-host parity check. The history proof uses injected
+storage and SHA-256 host effects; it is not deployed-provider qualification.
 
-## Real shape and preservation
+## Compiler boundary
 
-`wasm/test/fixtures/projects/shared-history-helper/src/lookup.ts` is the selected
-read-only machine inside an ordinary awaited helper. Inputs are current context,
-owner, immutable root hash/node and key. Output is an explicit status/code/value
-record. The caller owns response creation and what executes after success.
-No authority or response object is hidden in a cross-request cache.
+- Project linking resolves the immutable source-function owner. Direct awaited
+  local bindings in HTTP routes or middleware supply the current context and
+  proven scalar inputs. Shadowed bindings and unsupported call forms fail closed.
+- Handler IR emits one helper generator body. Native plan v5 retains its own
+  local namespace, parameters, result kind and effect/continuation sites.
+- Generator v7 stores a return program counter and error destination in one
+  invocation-owned frame. Locals reset on entry, survive effects and return to
+  the selected caller. No live call stack, generic Promise runtime or new host
+  effect/ABI is introduced.
+- Serialization validation rejects crossed locals/sites/continuations, nested
+  calls and calls outside their owning HTTP admission branch. Existing read-loop
+  memory limits and provider value analyses inspect helper bodies too.
 
-The source retains two rounds, bounded outer/pure inner loops, a request-local
-65-pack cache, `s3.getText`, `crypto.digestText`, `history.IndexPack` decoding,
-owner/hash/prefix/shape checks and the existing work-limit branch. Only response
-returns are adapted into result records; storage, digest and schema operations
-stay as ordinary Pulse operations. The selected emitter body's original SHA-256
-was `a9ea5fd5a72f4736405f80a9079669a9f3ef573db47a8dc22b007dc43f7e438d`.
-The generated fixture and proof runner are individually hashed in the report.
+Captures, recursive/nested helpers, function-valued inputs, caller-loop calls,
+effect groups and helper-owned responses/Router transfers remain unsupported.
+The first parameters are `ctx` plus one or more explicitly typed scalar inputs;
+package lowerers retain their existing source-form restrictions. JavaScript keeps
+its original source graph. No package import gains lowerer authority.
 
-The expanded control maps each error record back to a terminal response
-explicitly. It does not pretend that helper return and handler return are the
-same operation. The ordinary imported-helper fixture remains intact for the
-eventual implementation to qualify.
+The synthetic bulk caller's 207 response demonstrates caller ownership, not an
+application's full administrative result schema. The deep fixture qualifies the
+selected read path, not writer/recovery closure correctness. Whole-application
+adoption and comparison remain separate work; earlier read-only specialization
+savings must stay separate from sharing gains.
 
-## Exact next compiler boundary
-
-1. The project linker currently admits imported functions as handlers/topology
-   roles, not as callable effectful helpers. Its source owner is
-   `wasm/packages/compiler/src/project/router-module-linker.js`.
-2. Native await normalization admits trusted Pulse effects, not an awaited
-   source-function call. A callee needs a separately owned result/return boundary,
-   context provenance and explicit caller continuation; declaring it to be a
-   trusted package effect would conflate those owners.
-3. A retained callee frame must carry typed local values, loop counters, pack
-   cache and the selected caller across effect suspension. Sharing cannot simply
-   widen O-19's fetch-stage predicate: O-19 has no nested helper call/return ABI.
-4. After admission and frame lowering exist, rerun this fixture and complete
-   one-body attribution, binding/frame/continuation growth, Native normal/error
-   behavior, work-limit refusal and interleaved request isolation. Include both
-   middleware and terminal callers before claiming the full selected shape.
-
-O-25's successful-sharing gate remains open. Production support and application
-adoption must not be inferred from this evidence PR. Keep earlier read-only
-specialization measurements separate from any future sharing gain.
-
-## Reproduction and evidence rules
-
-Install the lockfile-pinned workspace dependencies with lifecycle scripts
-disabled, then run the TypeScript workspace build to supply package facades.
+## Reproduction and history
 
 ```sh
 node wasm/scripts/run-wasm-tests.cjs --task shared-history-helper-o25 --no-report
-timeout 90s node wasm/test/runtime/compiler-efficiency/o25-history-helper.cjs \
+node wasm/test/runtime/compiler-efficiency/o25-helper-unblocked.cjs \
   --output /fresh/o25-report.json
 ```
 
-The task is external evidence and belongs to no default profile. Expected direct
-exit is **2**, with terminal `status: blocked` and both Native qualification flags
-false. The registered runner correctly reports it as non-passing. Unexpected
-fixture/runtime errors exit 1. No expected-failure flag converts this into a
-successful sharing result. An incomplete report, process timeout or missing
-completed checks is not evidence of completion.
+The opt-in measurement task remains outside default profiles, with a finite
+180-second timeout. It fails if sharing, semantics or final-Wasm attribution
+fails. The mandatory Native plan task runs the smaller ownership/lifecycle suite.
+Reports bind source commit, working-tree state, fixture hashes and plan hashes.
 
-The report binds committed source, dirty state, individual fixture hashes and
-generated call-site hashes. It records failed Native diagnostics separately from
-passing JavaScript checks and preserves the expanded control for comparison.
-Output must be a fresh path. No full application, release or deployment corpus is
-invoked. This experiment neither installs a new dependency nor alters a lowerer,
-continuation contract, provider, compiler admission rule or production stage plan.
+The earlier [blocked proof](./o25-evidence/proof.json) and its failed attempts
+remain historical evidence from the pre-implementation tree. They are not
+reclassified as passing. Follow-up evidence records the successful implementation,
+validation scope, setup failures and development corrections separately.
 
-## Retained result
-
-[`o25-evidence/proof.json`](./o25-evidence/proof.json) records the clean committed
-proof invocation, its explicit blocked outcome and all 16 JavaScript checks.
-The sibling validation record identifies the tested Git tree; per-file hashes
-bind the unchanged fixture and runner after the evidence files are added.
-All 35 unit-profile tasks, maintainer checks, workspace TypeScript build,
-documentation checks and documentation-release validation passed.
-`registered-proof.log` confirms that the opt-in task remains non-passing.
-`attempts.json` and `initial-unit-failure.log` retain the earlier fixture/setup
-failures and their resolutions. No failed sharing gate was reclassified as green.
+The [clean committed proof](./o25-unblocked-evidence/proof.json),
+[validation record](./o25-unblocked-evidence/validation.json) and
+[development attempts](./o25-unblocked-evidence/attempts.json) record the follow-up.
+The CLI profile retains two size-snapshot failures that reproduce on the unchanged
+baseline; its resumed coverage is not a passing release replay.

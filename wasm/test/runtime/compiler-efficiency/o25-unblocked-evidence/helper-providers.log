@@ -1,0 +1,294 @@
+
+[pulsewasm:providers] provider-packages
+[pulsewasm] Node and Fastly driver shape, capability truth, and conformance import ownership (timeout 30.00s)
+ok - Node and Fastly packages expose one exact driver contract, aligned HTTP/event capability truth, and explicitly bounded conformance-only private imports
+[pulsewasm] provider-packages: passed in 432ms
+
+[pulsewasm:providers] provider-fastly-package
+[pulsewasm] Fastly package API and native target (timeout 180.00s)
+ok - extracted @pulse-compute/provider-fastly emits deterministic compact direct-host-ABI Fastly Wasm without JavaScript runtime ownership or source-only packaging
+[pulsewasm] provider-fastly-package: passed in 7.41s
+
+[pulsewasm:providers] provider-fastly-apps
+[pulsewasm] Fastly config, secret, KV, fetch, and redaction (timeout 30.00s)
+ok - documented Fastly examples are the provider conformance oracle for config, secrets, KV, fetch, opaque pass-through, and redaction
+[pulsewasm] provider-fastly-apps: passed in 1.11s
+
+[pulsewasm:providers] canonical-grip-fastly
+[pulsewasm] canonical GRIP Fastly realization (timeout 240.00s)
+ok - the consolidated Fastly example proves package-root GRIP broadcast lowering
+[pulsewasm] canonical-grip-fastly: passed in 10.70s
+
+[pulsewasm:providers] fastly-cli-gate-surface
+[pulsewasm] Fastly CLI discovery and compute delegation (timeout 30.00s)
+ok - Fastly reality tooling records and safely owns either Fastly CLI-managed execution or an explicit direct Viceroy launcher
+[pulsewasm] fastly-cli-gate-surface: passed in 721ms
+
+[pulsewasm:providers] fastly-javascript-packaging
+[pulsewasm] deterministic target-correct Fastly JavaScript source package (timeout 180.00s)
+ok - Fastly JavaScript packaging is deterministic, runtime-ready, target-correct, and generally available
+[pulsewasm] fastly-javascript-packaging: passed in 981ms
+
+[pulsewasm:providers] fastly-javascript-runtime
+[pulsewasm] Fastly JavaScript lifecycle, provider capabilities, package effects, and cleanup (timeout 180.00s)
+{
+  "version": "pulse.fastly-javascript-runtime-evidence.v1",
+  "cases": 27,
+  "matched": 27,
+  "mismatches": 0,
+  "status": "passed",
+  "capabilities": [
+    "request-response-lifecycle",
+    "fetch",
+    "config",
+    "secret",
+    "kv",
+    "parallel",
+    "schema-json",
+    "crypto-runtime-builtin",
+    "assets",
+    "grip-broadcast",
+    "logging-redaction",
+    "request-cleanup"
+  ]
+}
+[pulsewasm] fastly-javascript-runtime: passed in 151ms
+
+[pulsewasm:providers] fastly-javascript-tooling
+[pulsewasm] truthful Fastly JavaScript CLI execution and deployment candidate (timeout 300.00s)
+ok - pulse.fastly-javascript-tooling-evidence.v1 passed 6 truthful Fastly JavaScript CLI cases
+[pulsewasm] fastly-javascript-tooling: passed in 17.50s
+
+[pulsewasm:providers] fastly-native-http-shell
+[pulsewasm] direct Fastly HTTP request and response shell (timeout 180.00s)
+{
+  "version": "pulse.fastly-native-http-shell.v1",
+  "plans": [
+    {
+      "name": "hello",
+      "planHash": "5fb434bd8f1416149aa046bf7a27232e267d06cde15b7432e0d360d9e900c2cc",
+      "bytes": 5345,
+      "sha256": "98b6bc5cee19e4be68ed3bc1c64ec594b078c4dc9e9435b8e87b19a8a6f463c4"
+    },
+    {
+      "name": "request-echo",
+      "planHash": "3ff4c255ce9db943cf3651af0ada2b1cc91417b60b1f398d0990769259275988",
+      "bytes": 5626,
+      "sha256": "21ca538340f2243b22d1aecb8598531324667c2b0a422307ce1df746c90ea662"
+    }
+  ],
+  "imports": [
+    {
+      "module": "fastly_http_resp",
+      "name": "status_set",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "send_downstream",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_resp",
+      "name": "header_append",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "uri_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "method_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "header_value_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_req",
+      "name": "body_downstream_get",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "write",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_http_body",
+      "name": "new",
+      "kind": "function"
+    },
+    {
+      "module": "fastly_abi",
+      "name": "init",
+      "kind": "function"
+    }
+  ],
+  "exports": [
+    {
+      "name": "__pulse_fastly_abort",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_plan_hash_ptr",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_plan_hash_length",
+      "kind": "function"
+    },
+    {
+      "name": "pulse_fastly_last_error",
+      "kind": "function"
+    },
+    {
+      "name": "_start",
+      "kind": "function"
+    },
+    {
+      "name": "memory",
+      "kind": "memory"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "startExport": true,
+    "methodUriHeaderReads": true,
+    "downstreamResponse": true,
+    "repeatedResponseHeaders": true,
+    "deterministic": true,
+    "effectsDeferred": true,
+    "javascriptRuntime": false
+  }
+}
+ok - native Fastly HTTP compiles effect-free native plans into deterministic direct Fastly HTTP Wasm and executes request/response behavior through the controlled ABI host
+[pulsewasm] fastly-native-http-shell: passed in 5.58s
+
+[pulsewasm:providers] fastly-native-http-effects
+[pulsewasm] Fastly outbound HTTP effects and continuations (timeout 300.00s)
+ok - Fastly http D2 value parity: UTF-16 ordering/indexing and exact numeric remainder
+{
+  "version": "pulse.fastly-native-http-effects.v1",
+  "plans": [
+    {
+      "name": "fetch-composition",
+      "planHash": "5d617c99459c160669dc9400f442430075b4292722d01c548b2b31c244384c0d",
+      "bytes": 40779,
+      "sha256": "6b97492ef0aa8a389e1772f282263a3dc2426f506d8a3493c4466e910a4bfd37"
+    },
+    {
+      "name": "dependent-continuation",
+      "planHash": "76bc54fa97ffedec5b28d91ad4651b2ed7217c04f4d524509fdc1a2e88286b44",
+      "bytes": 36335,
+      "sha256": "e5a7bdb5beb0f8dc74d36a3ebc81f4ade3d6f7adec4fd9723e54c97df3a9392e"
+    },
+    {
+      "name": "opaque-pass-through",
+      "planHash": "330d5b5cdb5d2b4e53e3661429b885ce0ad96e162c43c539a03d6ce0e299525b",
+      "bytes": 32412,
+      "sha256": "d32a69faa9c9fb685d7b9e9bf5fa6d213358d543a3888eb7fa363e3bc694f732"
+    },
+    {
+      "name": "schema-fetch",
+      "planHash": "e934f076e6218f53f7950659e6ff847df63b54283dd39a9cdb48d3c03e261eba",
+      "bytes": 77288,
+      "sha256": "1c487bd912771eb36a4825e7a7dfdfa1bf43a846eb090dce55faef73912494c9"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "fetchAsyncWait": true,
+    "groupedStartsBeforeWait": true,
+    "dependentContinuation": true,
+    "originStatusHeadersBody": true,
+    "schemaDecode": true,
+    "strictJsonDecode": true,
+    "opaquePassThrough": true,
+    "transportVsHttpError": true,
+    "deterministic": true,
+    "platformCapabilitiesDeferred": true,
+    "zeroValuedOpaqueHandles": true,
+    "javascriptRuntime": false
+  }
+}
+ok - native Fastly effect realizes consolidated fetch composition, grouped and dependent continuations, schema decode, opaque pass-through, and explicit transport-error behavior
+[pulsewasm] fastly-native-http-effects: passed in 13.62s
+
+[pulsewasm:providers] fastly-native-platform-capabilities
+[pulsewasm] Fastly Config, Secret, KV, and GRIP capabilities (timeout 300.00s)
+ok - repeated config effect handoff preserves site identities, order, missing values, errors, and cancellation
+ok - Fastly Native shares a total request budget across KV operations and blocks the checkpoint
+ok - Fastly deadline preserves remote acceptance uncertainty
+ok - Fastly final response write is fenced; completed handoff is not withdrawn
+ok - Fastly body admission, invalid clocks, stale artifacts and JS rejection are bounded
+ok - Fastly budget starts at request entry, before ABI setup
+ok - Fastly outbound preparation cannot dispatch fetch after expiry
+ok - shared error-driver settlement preserves the fatal-return deadline fence and transport diagnostics
+ok - bounded Fastly concatenation preserves snapshots, UTF-16 and exact digest bytes; memory 8650752
+ok - scalar-heavy Fastly schema encoding preserves exact escaped bytes and independent collections; memory 115343360
+ok - Fastly scalar sharing preserves numeric bounds, distinct enums, nested projections, optionality, errors and generation isolation
+ok - Fastly structural code sharing: 86 semantic controls, fresh projections, alias isolation and frozen decoded values
+ok - MEM01 instrumentation is isolated, anchored and allocator accounting balances
+ok - explicit Fastly text encode preserves exact bytes, Unicode, projection, alias mutation, admission and pre-effect failures
+ok - O-05 101 parser cases preserve text, errors, scalar identity and owned storage
+ok - Fastly platform D2 value parity: UTF-16 ordering/indexing and exact numeric remainder
+{
+  "version": "pulse.fastly-native-platform-capabilities.v1",
+  "plans": [
+    {
+      "name": "fastly-capabilities",
+      "planHash": "59dab3f939dad1950f1ed9bd2490ed2341c8273b915e48f70411fe2bf198edfc",
+      "bytes": 47185,
+      "sha256": "01a4ad3c226515954d56557db195a26895789738353fed86daf623b5ca5e0ed2"
+    }
+  ],
+  "assertions": {
+    "directFastlyImports": true,
+    "configStore": true,
+    "secretStore": true,
+    "secretTraceRedaction": true,
+    "kvGetPutAndMiss": true,
+    "pulseKvEnvelope": true,
+    "gripBroadcast": true,
+    "gripAuthenticationRedaction": true,
+    "structuredPublishReceipt": true,
+    "outboundRequestEvidence": true,
+    "nonSuccessPublisherRejected": true,
+    "deterministic": true,
+    "zeroValuedOpaqueHandles": true,
+    "javascriptRuntime": false,
+    "realFastlyExecution": false
+  }
+}
+ok - the consolidated Fastly capability example realizes native Config Store, Secret Store, KV Store, and authenticated GRIP broadcast without a JavaScript runtime
+[pulsewasm] fastly-native-platform-capabilities: passed in 88.43s
+
+[pulsewasm:providers] fastly-request-headers
+[pulsewasm] Fastly Native bounded request-header snapshots, duplicates and fail-closed enumeration (timeout 180.00s)
+ok - Fastly Native request headers: 68 compiled checks (workspace)
+[pulsewasm] fastly-request-headers: passed in 7.02s
+
+[pulsewasm] test summary
+  passed         432ms  provider-packages
+  passed         7.41s  provider-fastly-package
+  passed         1.11s  provider-fastly-apps
+  passed        10.70s  canonical-grip-fastly
+  passed         721ms  fastly-cli-gate-surface
+  passed         981ms  fastly-javascript-packaging
+  passed         151ms  fastly-javascript-runtime
+  passed        17.50s  fastly-javascript-tooling
+  passed         5.58s  fastly-native-http-shell
+  passed        13.62s  fastly-native-http-effects
+  passed        88.43s  fastly-native-platform-capabilities
+  passed         7.02s  fastly-request-headers
+  total        153.66s

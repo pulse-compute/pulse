@@ -303,7 +303,8 @@ function collectExpressions(plan) {
 
   function walkStatements(statements) {
     for (const statement of statements || []) {
-      if (statement.kind === 'local') add(statement.value);
+      if (statement.kind === 'helper-call') for (const arg of statement.arguments) add(arg);
+      else if (statement.kind === 'local') add(statement.value);
       else if (statement.kind === 'expression') add(statement.expression);
       else if (statement.kind === 'return') add(statement.value);
       else if (statement.kind === 'if') {
@@ -319,7 +320,7 @@ function collectExpressions(plan) {
   }
 
   walkStatements(plan.entry && plan.entry.body);
-  for (const handler of [...(plan.handlers || []), ...(plan.stages || [])]) walkStatements(handler.body);
+  for (const handler of [...(plan.handlers || []), ...(plan.stages || []), ...(plan.helpers || [])]) walkStatements(handler.body);
   for (const effect of plan.effects || []) {
     for (const input of effect.inputs || []) add(input.value);
     const decoder = effect.result && effect.result.decoder;
@@ -646,6 +647,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
 
   const blocks = [];
   const applicationErrors = (plan.routing?.entries || []).some(entry => entry.kind === 'error');
+  const helpers = new Map((plan.helpers || []).map(helper => [helper.id, helper]));
+  const helperEntries = new Map();
   const handlers = new Map((plan.handlers || []).map(handler => [handler.id, handler]));
   const routerLocal = name => (plan.locals || []).find(local => local.name === `__pulse_router_${name}`)?.id;
   const routerCursor = routerLocal('cursor');
@@ -744,7 +747,16 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     let next = nextBlock;
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];
-      if (statement.kind === 'stage-call') {
+      if (statement.kind === 'helper-call') {
+        const helper = helpers.get(statement.helperId);
+        const resume = block('action', { lines: [`${localName(statement.localId)} = __pulse_helper_result`, '__pulse_helper_result = 0'], next });
+        const lines = [`__pulse_helper_return = ${resume}`, '__pulse_helper_result = 0',
+          ...statement.arguments.map((arg, i) => `const helper_arg_${i} = ${exprName(arg)}()`),
+          ...helper.localIds.map(id => `${localName(id)} = 0`),
+          ...helper.parameters.map((parameter, i) => `${localName(parameter.localId)} = helper_arg_${i}`),
+          ...(applicationErrors ? [`__pulse_helper_error_next = ${boundary.nextIndex}`, `__pulse_helper_error_return = ${boundary.nextBlock}`] : [])];
+        next = block('action', { lines, next: helperEntries.get(helper.id) });
+      } else if (statement.kind === 'stage-call') {
         const stage = stages.get(statement.stageId), row = stageBindings.get(statement.registrationId);
         if (!stage || !row || activeHandler) fail('Stage call requires a validated dispatcher binding.');
         const lines = [
@@ -769,7 +781,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       } else if (statement.kind === 'expression') {
         next = block('action', { lines: [`__pulse_drop(${exprName(statement.expression)}())`], next });
       } else if (statement.kind === 'return') {
-        next = block('return', { expression: exprName(statement.value) });
+        next = block(helpers.has(activeHandler) ? 'helper-return' : 'return', { expression: exprName(statement.value) });
       } else if (statement.kind === 'if') {
         const test = statement.test;
         const entry = applicationErrors && !boundary && test.kind === 'binary' && test.operator === '==='
@@ -802,6 +814,13 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     return next;
   }
 
+  for (const helper of helpers.values()) {
+    activeHandler = helper.id;
+    helperEntries.set(helper.id, compileSequence(helper.body, fallthroughBlock, applicationErrors ? {
+      nextBlock: '__pulse_helper_error_return', nextIndex: '__pulse_helper_error_next'
+    } : undefined));
+    activeHandler = undefined;
+  }
   for (const stage of stages.values()) {
     activeHandler = stage.id;
     const exit = block('stage-exit');
@@ -891,6 +910,11 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       checkError();
       emit(`__pulse_pc = matched != 0 ? ${item.thenBlock} : ${item.elseBlock}`);
       emit(advance);
+    } else if (item.kind === 'helper-return') {
+      emit(`__pulse_helper_result = ${item.expression}()`);
+      checkError();
+      emit('__pulse_pc = __pulse_helper_return');
+      emit(advance);
     } else if (item.kind === 'return') {
       emit(`__pulse_result = ${item.expression}()`);
       checkError();
@@ -928,7 +952,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const maxChunkStates = 64;
   const maxChunkCharacters = 24000;
   const renderedBlocks = blocks.map(item => ({ item, ...renderBlock(item) }));
-  const partitioned = handlers.size > 0 || stages.size > 0 || blocks.length > maxChunkStates
+  const partitioned = handlers.size > 0 || stages.size > 0 || helpers.size > 0 || blocks.length > maxChunkStates
     || renderedBlocks.reduce((size, block) => size + block.partitionCharacters, 0) > maxChunkCharacters;
   const chunks = [];
   if (partitioned) {
@@ -948,7 +972,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const invalidProgramCounter = `__pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_PROGRAM_COUNTER}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`;
   // Pulse's @noinline transform prevents rebuilding the monolithic function.
   const stageChunks = chunks.flatMap((chunk, index) => stages.has(chunk[0].handlerId) ? [index] : []);
-  const chunkName = index => stageChunks.includes(index) ? `__pulse_shared_stage_${stageChunks.indexOf(index)}` : `__pulse_chunk_${index}`;
+  const helperChunks = chunks.flatMap((chunk, index) => helpers.has(chunk[0].handlerId) ? [index] : []);
+  const chunkName = index => helperChunks.includes(index) ? `__pulse_shared_helper_${helperChunks.indexOf(index)}` : stageChunks.includes(index) ? `__pulse_shared_stage_${stageChunks.indexOf(index)}` : `__pulse_chunk_${index}`;
   const dispatcherFunctions = chunks.flatMap((chunk, index) => [
     '@noinline',
     `function ${chunkName(index)}(): i32 {`,
@@ -988,6 +1013,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     'let __pulse_stage_next: i32 = 0', 'let __pulse_stage_return: i32 = 0',
     ...Array.from({ length: maxStageSites }, (_, site) => site).flatMap(site => [`let __pulse_stage_effect_${site}: i32 = -1`, `let __pulse_stage_continuation_${site}: i32 = 0`])
   ] : [];
+  if (helpers.size) globals.push('let __pulse_helper_result: i32 = 0', 'let __pulse_helper_return: i32 = 0', 'let __pulse_helper_error_next: i32 = 0', 'let __pulse_helper_error_return: i32 = 0');
   if (eventReachable) {
     globals.push('let __pulse_event_runtime_id: i32 = -1');
     globals.push('let __pulse_event_payload_handle: i32 = 0');
@@ -1048,9 +1074,17 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '}'
   ] : [];
 
+  let helperCallCount = 0;
+  const countHelperCalls = value => {
+    if (!value || typeof value !== 'object') return;
+    if (value.kind === 'helper-call') helperCallCount++;
+    for (const child of Object.values(value)) countHelperCalls(child);
+  };
+  countHelperCalls(plan.entry.body);
+  for (const handler of handlers.values()) countHelperCalls(handler.body);
   // Sharing cannot reduce the bounded dispatcher allowance for paths that
   // visit several registrations without suspending between them.
-  const guardStateCount = blocks.length + [...stages.values()].reduce((total, stage) =>
+  const guardStateCount = blocks.length + blocks.filter(b => helpers.has(b.handlerId)).length * Math.max(0, helperCallCount - 1) + [...stages.values()].reduce((total, stage) =>
     total + blocks.filter(block => block.handlerId === stage.id).length * (stage.registrations.length - 1), 0);
   const source = [
     '/* Generated by Pulse canonical native AssemblyScript compiler. */',
@@ -1174,6 +1208,10 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       id: stage.id, handlerId: stage.handlerId, registrations: stage.registrations.length,
       entryBlock: stageEntries.get(stage.id), bodyStates: blocks.filter(block => block.handlerId === stage.id).length,
       chunks: Object.freeze(chunks.flatMap((chunk, index) => chunk[0].handlerId === stage.id ? [index] : []))
+    }))),
+    helperBodies: Object.freeze([...helpers.values()].map(helper => Object.freeze({
+      id: helper.id, entryBlock: helperEntries.get(helper.id), bodyStates: blocks.filter(b => b.handlerId === helper.id).length,
+      chunks: Object.freeze(chunks.flatMap((chunk, i) => chunk[0].handlerId === helper.id ? [i] : []))
     }))),
     handlerBodies: Object.freeze([...handlers.values()].map(handler => Object.freeze({
       id: handler.id,

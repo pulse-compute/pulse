@@ -77,7 +77,7 @@ function input(effectRecord, name) {
 
 assert.equal(CANONICAL_NATIVE_PLAN_VERSION, nativePlanContract.CANONICAL_NATIVE_PLAN_VERSION);
 assert.equal(CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION, nativePlanContract.CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION);
-assert.equal(CANONICAL_NATIVE_PLAN_COMPILER_VERSION, 'pulse.canonical-native-plan-compiler.v4');
+assert.equal(CANONICAL_NATIVE_PLAN_COMPILER_VERSION, 'pulse.canonical-native-plan-compiler.v5');
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.providerNeutral, true);
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.javascriptRuntime, false);
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.promiseSemantics, false);
@@ -297,3 +297,6 @@ try {
 }
 
 console.log('ok - canonical handler analysis lowers deterministically to a provider-neutral native execution plan across nine public examples and retained control-flow fixtures');
+
+// The plan contract includes source-helper ownership and resumable call frames.
+require('./assert-source-helpers.cjs');

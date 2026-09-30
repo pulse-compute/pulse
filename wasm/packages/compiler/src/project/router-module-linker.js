@@ -561,6 +561,32 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     }
   }
 
+  const sourceHelpers = [];
+  const helperCalls = new WeakMap();
+  if (options.target !== 'javascript') {
+    const byIdentity = new Map();
+    for (const module of context.projectModules.values()) {
+      function visit(node) {
+        if (ts.isAwaitExpression(node) && ts.isCallExpression(node.expression) && ts.isIdentifier(node.expression.expression)) {
+          const call = node.expression;
+          const target = resolveLocal(context, indexes, module, call.expression.text, [], [], undefined, consumedImports);
+          const fn = target?.module && functionForNamedHandler(target.module.sourceFile, target.localName);
+          if (fn && fn.parameters.length > 1) {
+            const identity = `${target.module.path}#${target.localName}`;
+            let helper = byIdentity.get(identity);
+            if (!helper) {
+              helper = { id: `helper:${identity}`, name: `__pulse_helper_${sourceHelpers.length}`, functionNode: fn,
+                sourceFile: target.module.sourceFile, source: { file: target.module.path, name: target.localName } };
+              sourceHelpers.push(helper); byIdentity.set(identity, helper);
+            }
+            helperCalls.set(call, helper);
+          }
+        }
+        ts.forEachChild(node, visit);
+      }
+      visit(module.sourceFile);
+    }
+  }
   const rootGlobalName = routerSymbols.get(`${root.module.path}:${root.localName}`);
   const ordered = orderLinkedRouters(routers, rootGlobalName);
   if (options.target !== 'javascript') validateRuntimeProjectImports(context, consumedImports, diagnostics);
@@ -616,6 +642,8 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     entrySourceFile: entryModule.sourceFile,
     entrySourceText: entryModule.sourceText,
     retainedDeclarations: retained,
+    sourceHelpers,
+    helperForCall: call => helperCalls.get(ts.getOriginalNode(call)),
     functionNodeForHandler,
     sourceFileForPath(file) {
       const module = context.projectModules.get(file);

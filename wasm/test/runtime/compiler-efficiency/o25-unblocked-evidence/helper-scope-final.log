@@ -1,0 +1,23 @@
+# Pulse maintainer scope
+
+**Status:** Human decision required
+
+| Signal | Result |
+|---|---|
+| Declared class | `architecture` |
+| Declared scope | `architecture-change` |
+| Risk | `critical` |
+| Changed files | 29 |
+| Areas | `cli`, `compiler`, `documentation`, `lowering`, `provider`, `runtime`, `testing` |
+| Protected boundaries | `continuation-runtime`, `effect-capability-model`, `lowerer-trust`, `provider-registry`, `runtime-target-fluidity` |
+| Separate human decision | Required |
+| Current contract update | Required for the proposed boundary change |
+| Release authority | Not inferred |
+| Required checks | `build`, `cli`, `conformance`, `documentation`, `javascript`, `maintenance-policy`, `native`, `providers`, `unit` |
+
+A human must explicitly decide the named boundary or scope question; Codex may analyze or prepare a patch only after that direction is clear.
+
+## Warnings
+
+- declaration names protected boundary public-authoring-api, but changed paths did not infer it
+

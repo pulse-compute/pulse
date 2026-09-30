@@ -262,6 +262,15 @@ function emitCanonicalHandlerGenerator(ir) {
 
   function emitOperation(entry) {
     switch (entry.kind) {
+      case 'helper-body':
+        return factory.updateFunctionDeclaration(entry.statement, entry.statement.modifiers,
+          factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.name,
+          undefined, entry.statement.parameters, undefined, emitOperation(entry.body));
+      case 'helper-call':
+        return factory.updateVariableStatement(entry.statement, entry.statement.modifiers,
+          factory.updateVariableDeclarationList(entry.statement.declarationList, [factory.updateVariableDeclaration(
+            entry.declaration, entry.declaration.name, undefined, entry.declaration.type,
+            factory.createYieldExpression(factory.createToken(ts.SyntaxKind.AsteriskToken), entry.call))]));
       case 'router-body':
         return factory.updateFunctionDeclaration(entry.statement, entry.statement.modifiers,
           factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.name,

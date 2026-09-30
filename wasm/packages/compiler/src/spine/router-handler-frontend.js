@@ -197,6 +197,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     handlerAuthoring: topology.options && topology.options.handlerAuthoring,
     requireAsync: topology.options && topology.options.requireAsync === true,
     requireEffectAwait: topology.options && topology.options.requireEffectAwait === true,
+    helperForCall: topology.options?.linkedProjectModules?.helperForCall,
     packageEffectForCall: topology.options && topology.options.packageEffectForCall
       || ((call) => packageEffectsByStart.get(call.getStart(sourceFile)))
   });
@@ -258,6 +259,25 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
 
   const rewriteTransformer = (context) => {
     const visit = (node) => {
+      const helper = ts.isCallExpression(node) && topology.options?.linkedProjectModules?.helperForCall?.(node);
+      if (helper) {
+        const original = ts.getOriginalNode(node);
+        const awaited = original.parent && ts.isAwaitExpression(original.parent);
+        const binding = awaited && original.parent.parent;
+        let shadowed = false;
+        const inspect = item => {
+          if ((ts.isVariableDeclaration(item) || ts.isParameter(item)) && ts.isIdentifier(item.name) && item.name.text === original.expression.text) shadowed = true;
+          ts.forEachChild(item, inspect);
+        };
+        inspect(authoredFunctionNode);
+        if (!binding || !ts.isVariableDeclaration(binding) || !ts.isIdentifier(binding.name)
+          || shadowed || node.arguments.length !== helper.functionNode.parameters.length
+          || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctxName
+          || !['route', 'middleware'].includes(role)) {
+          diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_HELPER_CALL_UNSUPPORTED', 'A source helper requires an unshadowed, directly awaited local binding and the current request context in an HTTP handler.'));
+        }
+        return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined, node.arguments.slice(1));
+      }
       if (errorName && ts.isShorthandPropertyAssignment(node) && node.name.text === errorName) {
         return ts.factory.createPropertyAssignment(ts.factory.createIdentifier(errorName), ts.factory.createIdentifier(ERROR));
       }

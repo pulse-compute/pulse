@@ -1,0 +1,42 @@
+
+[pulsewasm:native] fastly-driver-behavior-o09
+[pulsewasm] O09 Fastly error driver settlement, ticket freshness and error-priority fixture (timeout 240.00s)
+O-09 1 parallel: 7 scenarios + ticket ownership/freshness passed
+O-09 8 parallel: 13 scenarios + ticket ownership/freshness passed
+O-09 32 parallel: 13 scenarios + ticket ownership/freshness passed
+O-09 8 sequential: 9 scenarios + ticket ownership/freshness passed
+O-09 passed: wasm/.test-results/compiler-efficiency/o09-2026-09-29T22-45-36-408Z/report.json
+[pulsewasm] fastly-driver-behavior-o09: passed in 26.09s
+
+[pulsewasm:native] kv-native-abi-feasibility
+[pulsewasm] K1 compiled Wasm ABI probe for exact 64-bit generation and conditional insert options; no provider acceptance (timeout 30.00s)
+node:internal/modules/cjs/loader:1520
+  throw err;
+  ^
+
+Error: Cannot find module 'assemblyscript/bin/asc.js'
+Require stack:
+- /workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/kv/assert-kv-native-abi-feasibility.cjs
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1517:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1071:27)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1122:12)
+    at require.resolve (node:internal/modules/helpers:171:31)
+    at Object.<anonymous> (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/kv/assert-kv-native-abi-feasibility.cjs:13:23)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/kv/assert-kv-native-abi-feasibility.cjs'
+  ]
+}
+
+Node.js v24.19.0
+[pulsewasm] kv-native-abi-feasibility: failed in 57ms
+
+[pulsewasm] test summary
+  passed        26.09s  fastly-driver-behavior-o09
+  failed          57ms  kv-native-abi-feasibility
+  total        26.15s
