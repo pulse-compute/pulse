@@ -228,7 +228,8 @@ export interface PulseGeneratedOutputExecution {
   readonly started: boolean;
   readonly finished: boolean;
   assertEffect(): void;
-  dispatch(effect: Readonly<Record<string, unknown>>): Promise<void>;
+  dispatch(effect: Readonly<Record<string, unknown>>): Promise<unknown>;
+  bindInput(input: PulseIncomingBodyOwnership | undefined): void;
   close(factory?: (options: import('./index').PulseResponseOptions) => unknown): any;
   validateResult(result: unknown): void;
   finish(): Promise<void>;
@@ -477,6 +478,7 @@ export interface PulseIncomingBodyOwnership {
   marker(): import('./index').PulseIncomingBody;
   bindInvalidation(callback: (error: unknown) => void): void;
   structured(): void;
+  readTextChunk(budget: PulseRequestBudget): Promise<{ readonly done: boolean; readonly text: string }>;
   claim(marker: unknown, init: unknown): void;
   forward(url: string, init: unknown, execution: PulseJavascriptEffectHostExecution): Promise<Response>;
   close(): Promise<void>;
@@ -485,6 +487,7 @@ export interface PulseIncomingBodyOwnership {
 }
 export declare function createIncomingBodyOwnership(transport: {
   readonly responseSignal?: AbortSignal;
+  readTextChunk?(budget: PulseRequestBudget): Promise<{ readonly done: boolean; readonly text: string }>;
   validate(init: unknown): void;
   forward(url: string, init: unknown, execution: PulseJavascriptEffectHostExecution): Promise<Response>;
   cancel(reason?: unknown): unknown;

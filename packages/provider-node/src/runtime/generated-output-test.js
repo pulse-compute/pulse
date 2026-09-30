@@ -21,7 +21,7 @@ function collector(options) {
 }
 
 async function executeNative(native, options, execute) {
-  if (!native.plan.capabilities.includes('response.output') || options.outputExecution) return execute(native, options);
+  if (!native.plan.capabilities.some(id => ['response.output', 'request.body.transform'].includes(id)) || options.outputExecution) return execute(native, options);
   if (!options.outputCollect || !options.generatedOutput) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output needs an HTTP writer or an explicit finite test collector.');
   const collected = collector({ ...options, requestMethod: options.request?.method || 'GET' });
   try {

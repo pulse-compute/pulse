@@ -609,7 +609,7 @@ function createJavascriptEffectExecution(options = {}) {
         options.requestBudget?.check();
         if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
         options.outputExecution?.assertEffect();
-        if (kind === 'output.start' || kind === 'output.write') {
+        if (kind.startsWith('output.')) {
           if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires a Node HTTP writer.');
           return options.outputExecution.dispatch(descriptor);
         }

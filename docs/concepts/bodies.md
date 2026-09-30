@@ -230,8 +230,63 @@ This surface remains experimental. STR-03B provides independent installed Node
 Native/JavaScript qualification for exact candidate bytes, including real HTTP
 failure handling and a separate controlled-writer backpressure check. Passing
 that task does not certify future artifacts or constitute a release seal. It
-provides no input chunk reader, binary transform, arbitrary stream/generator
-object, Fastly output or MCP SSE capability.
+does not qualify the separate input transform surface below, binary transforms,
+arbitrary stream/generator objects, Fastly output or MCP SSE.
+
+## Experimental bounded UTF-8 transforms on Node
+
+STR-03C adds `await ctx.req.readTextChunk()` on Native and JavaScript with
+`node: { bodyTransform: true, generatedOutput: true, maxDurationMs: 5000 }`.
+This selects strict UTF-8 text, including a preserved BOM. Malformed or incomplete
+UTF-8 fails; arbitrary binary bodies must use opaque forwarding instead.
+
+```ts
+app.post('/duplicate-blocks', async (ctx) => {
+  await ctx.output.start();
+  for (let i = 0; i < 18; i++) {
+    const chunk = await ctx.req.readTextChunk();
+    if (chunk.done) break;
+    await ctx.output.write(chunk.text + chunk.text);
+  }
+  return ctx.output.close();
+});
+```
+
+The example duplicates each fixed block in Native code and has a measured 2×
+UTF-8 expansion. Identity, concatenation and the existing bounded pure expression
+subset are available; this adds no transformation callbacks or string methods.
+Blocks do not represent lines or records. Pulse collects at most 4,093 raw bytes
+per read, carries up to three incomplete UTF-8 bytes, and delivers at most 4,096
+encoded bytes as text. These boundaries are independent of network fragmentation.
+A partial block waits for more input or EOF under the original request deadline.
+A separate `{ done: true, text: '' }` result marks EOF. Eighteen reads suffice for
+the maximum input including EOF; further reads fail.
+
+Input is capped at 65,536 actual bytes, independently of Content-Length. Output
+is capped at 262,144 bytes and **four times the input bytes delivered so far**.
+Empty input grants no output allowance. The generated writer's 16 KiB/write and
+64-write limits still apply. Read through EOF, then return `ctx.output.close()`.
+No read may overlap a write, and blocked writes prevent subsequent input pulls.
+The shared deadline covers input, transformation effects, output and finish.
+
+`bodyTransform` excludes `bodyForwarding` and structured `req.text()`/`req.json()`
+reads. Native rejects applications combining transform and structured body
+capabilities; JavaScript enforces the ownership conflict at runtime. Denial before
+any read remains lazy. Each request has its own reader, decoder and writer.
+There is no replay, tee, fetched-body cursor or background producer. Failures after
+output starts destroy the response under the generated-output contract.
+
+The source chunk and backing allocation are each limited to 64 KiB. One retained
+source chunk, one 4,093-byte assembly block and at most three decoder carry bytes
+bound the provider input queue to 69,632 bytes; Node transport buffers are separate.
+Native retains its cumulative 64 MiB value-accounting and 4,096-page memory limits;
+completed reads/writes do not refund allocations. These are finite execution and
+queue bounds, not a constant-RSS or arbitrary JavaScript allocation guarantee.
+The `str03c-bounded-transforms` task checks actual Native execution, JavaScript
+parity, UTF-8 fragmentation, limits, cancellation, deterministic writer backpressure
+and real HTTP output before input EOF. It is workspace evidence; installed
+transform qualification and any support promotion remain separate. Fastly rejects
+this capability on both targets.
 
 ## Current transport limits
 

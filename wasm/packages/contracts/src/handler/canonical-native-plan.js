@@ -9,7 +9,7 @@ const CANONICAL_READ_LOOP_CONTRACT = Object.freeze({
   version: 'pulse.bounded-read-loop.v1',
   maxIterations: 64,
   maxNestedIterations: CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations,
-  effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText', 'output.write']),
+  effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText', 'output.write', 'output.readTextChunk']),
   valueIntrinsics: Object.freeze(['schema.decode.text', 'schema.encode.text', 'response.text', 'response.json', 'response.custom']),
   nestedEffects: false,
   continueTarget: 'increment',

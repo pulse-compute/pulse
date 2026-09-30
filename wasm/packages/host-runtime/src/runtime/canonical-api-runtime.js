@@ -941,6 +941,7 @@ function normalizeProviderEffect(effect, schemaCodecs, options = {}) {
   if (effect.kind === 'fetch') return normalizeFetchEffect(effect, schemaCodecs, options);
   const id = String(effect.id || '');
   if (!id) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical provider effect requires an id.', { effect });
+  if (effect.kind === 'output.readTextChunk') return Object.freeze({ id, kind: effect.kind, providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform' });
   if (effect.kind === 'output.start' || effect.kind === 'output.write') return Object.freeze({ id, kind: effect.kind, providerKind: 'output', operation: effect.kind.slice(7), capability: 'response.output', argument0: effect.argument0 });
   if (effect.kind === 'time.now') return Object.freeze({ id, kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock', source: effect.source, ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }) });
   if (effect.kind === 'config.get' || effect.kind === 'secret.get') {

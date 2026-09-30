@@ -1177,6 +1177,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       ? Object.freeze([...runtimeContract.CANONICAL_NATIVE_EXPORTS, ...eventContract.EVENT_NATIVE_ABI_EXTENSION.exports])
       : runtimeContract.CANONICAL_NATIVE_EXPORTS,
     policy: Object.freeze({ ...runtimeContract.CANONICAL_NATIVE_POLICY,
+      ...(plan.capabilities.includes('request.body.transform') ? { bodyTransform: { version: 'pulse.bounded-text-transform.v1', inputBytes: 65536, outputBytes: 262144, maxExpansionRatio: 4, encoding: 'utf-8-fatal', memory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY } } : {}),
       ...(plan.capabilities.includes('response.output') ? { generatedOutput: { version: 'pulse.generated-output.v1', memory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, completion: 'provider-local-finish', independentInstalledQualification: false } } : {}),
       ...(runtimeContract.hasBoundedReadLoop(plan) ? { readLoopMemory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY } : {}) })
   });

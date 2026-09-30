@@ -34,8 +34,8 @@ async function prepareNativeRequest(request, options) {
 
 async function executeNativeWithIncomingBody(native, options) {
   const { executeCanonicalNativeModule } = require('@pulse-compute/wasm-host-runtime/runtime/canonical-native-host');
-  if (!native.plan.capabilities.includes('request.body.forward')) return executeCanonicalNativeModule(native, options);
-  if (!options.bodyForwarding) throw new host.PulseRuntimeContractError('PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Node Native forwarding requires node.bodyForwarding.');
+  if (!options.bodyTransform && !native.plan.capabilities.includes('request.body.forward')) return executeCanonicalNativeModule(native, options);
+  if (!options.bodyForwarding && !options.bodyTransform) throw new host.PulseRuntimeContractError('PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Node Native forwarding requires node.bodyForwarding.');
   const forwardedBodies = new Set();
   let incomingBody = options.incomingBody, result;
   if (!incomingBody) {
@@ -48,6 +48,7 @@ async function executeNativeWithIncomingBody(native, options) {
     incomingBody = createIncomingBody(request, forwardingOptions(options));
   }
   try {
+    options.outputExecution?.bindInput(incomingBody);
     result = await executeCanonicalNativeModule(native, { ...options, incomingBody, forwardedBodies });
     if (incomingBody.failure) throw incomingBody.failure;
     return result;

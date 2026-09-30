@@ -243,10 +243,10 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     });
     // The text capacity profile bounds each Native module to 256 MiB.
     // Linked guests retain their separately owned fixed-memory ABI.
-    if (guestUnits.length === 0 && (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+    if (guestUnits.length === 0 && (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform') || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY.maximumMemoryPages));
     }
-    if (guestUnits.length > 0 && plan.capabilities.includes('response.output')) throw new CanonicalNativeCompileError('Generated output with linked guests requires separate memory qualification.');
+    if (guestUnits.length > 0 && (plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))) throw new CanonicalNativeCompileError('Generated output with linked guests requires separate memory qualification.');
     if (guestUnits.length > 0) {
       args.push(
         '--disable', 'bulk-memory',

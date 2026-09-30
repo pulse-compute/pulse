@@ -71,6 +71,7 @@ function boundedBody(source, maxBytes, signal, observe, onClose) {
 }
 
 function createIncomingBody(request, options) {
+  if (options.bodyTransform !== undefined) return require('../runtime/body-transform.js').createTransformInput(request, options);
   const policy = normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs);
   if (!policy) return undefined;
   let upload, timeoutMs, timer, responseSignal, responseTransferred = false;

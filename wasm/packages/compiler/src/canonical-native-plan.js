@@ -232,6 +232,7 @@ function resultKindForEffect(site, decoder, continuation, resultMode) {
   if (site.result === 'string') return 'string';
   if (site.kind === 'fetch') return 'fetch-response';
   if (site.kind === 'config.get' || site.kind === 'secret.get') return 'string-or-undefined';
+  if (site.kind === 'output.readTextChunk') return 'json';
   if (site.kind === 'time.now') return 'json';
   if (site.kind === 'kv.get') return 'json-or-undefined';
   if (site.kind === 'kv.put') return 'ack';
@@ -340,11 +341,11 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
-    if (this.metadata.capabilities?.includes('request.body.forward')
+    if (this.metadata.capabilities?.some(id => ['request.body.forward', 'request.body.transform'].includes(id))
       && this.metadata.capabilities.some(id => ['request.text', 'request.json'].includes(id))) {
-      throw new CanonicalNativePlanError('Native incoming forwarding cannot be combined with structured request reads.', [
+      throw new CanonicalNativePlanError('Native incoming forwarding/transforms cannot be combined with structured request reads.', [
         diagnostic(undefined, undefined, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED,
-          'Native forwarding applications cannot also project structured request bodies.', { automaticFallback: false })
+          'Native forwarding/transform applications cannot also project structured request bodies.', { automaticFallback: false })
       ]);
     }
     this.packageApplication = terminalPackageNativeForCompiled(compiled);

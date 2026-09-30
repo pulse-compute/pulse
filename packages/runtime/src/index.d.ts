@@ -28,6 +28,8 @@ export interface PulseRequest {
   readonly headers: readonly HeaderPair[];
   header(name: string): string | undefined;
   body(): PulseIncomingBody;
+  /** Experimental finite UTF-8 transform input; Node bodyTransform opt-in required. */
+  readTextChunk(): PulseEffect<{ readonly done: boolean; readonly text: string }>;
   text(): PulseEffect<string>;
   json<T = unknown>(schemaId?: string): PulseEffect<T>;
 }
