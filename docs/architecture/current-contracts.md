@@ -1264,3 +1264,24 @@ ownership. Unselected handles close at invocation exit. The downstream handle
 is finished only after exact-length EOF; an unfinished stream aborts at Compute
 invocation exit. This adds no guest byte value or JavaScript fallback.
 Fastly JavaScript remains blocked by raw-header limitations.
+
+
+## Production Node integration (NODE-01)
+
+`@pulse-compute/provider-node/server` is a supported host integration export.
+`createNodeLauncher` admits only an explicitly selected Node Native or JavaScript
+`pulse build` directory and bounded, host-owned configuration. Native startup
+checks plan/Wasm/package identity and ABI, then executes exact Wasm per request.
+JavaScript loads the packaged application and codecs; neither target recompiles
+or reads development configuration at startup. Builds are trusted executable
+inputs, not a sandbox or an authenticity signature.
+
+The launcher owns readiness, connection/concurrency admission, request budgets,
+bounded drain and restart of the same immutable build. Request cancellation
+remains with the existing runtime budget and provider adapters. Shutdown revokes
+request authority and destroys sockets at the configured deadline; it does not
+promise CPU preemption or rollback. It installs no process handlers and exits no
+process. Deployment owners wire signals and retain supervisor/release authority.
+Reference KV resets for each host generation and is not durable production KV.
+The core finite-response contract is separate from stream/blob launcher extensions.
+See [Node build and execution](../guides/deploying-node.md) for defaults and limits.

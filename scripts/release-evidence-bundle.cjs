@@ -66,6 +66,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'time-conformance',
       'time-consumer',
       'request-budget-transport',
+      'node-launcher',
       'http-input-outcomes',
       'application-errors',
       'application-error-boundaries',

@@ -184,6 +184,8 @@ const tasks = Object.freeze({
     description: 'Finite UTF-8 transform Native/JavaScript ownership, bounds, demand and HTTP qualification',
     timeoutMs: 120000, evidence: 'native'
   }),
+  'node-launcher': nodeTask('test/runtime/assert-node-launcher.cjs', { timeoutMs: 180000, description: 'NODE-01 public Node launcher, budgets, readiness, drain and restart' }),
+  'node01-installed': nodeTask('test/runtime/node01-installed.cjs', { timeoutMs: 300000, description: 'NODE-01 exact installed public launcher acceptance' }),
   'str03b-installed': nodeTask('test/runtime/str03b-installed.cjs', {
     timeoutMs: 360000, evidence: 'external',
     description: 'STR-03B exact installed Node Native/JavaScript output, CLI, real sockets and controlled writer qualification'
@@ -1218,6 +1220,7 @@ const profiles = Object.freeze({
     'time-conformance',
     'time-consumer',
     'request-budget-transport',
+    'node-launcher',
     'http-input-outcomes',
     'application-errors',
     'application-error-boundaries',
