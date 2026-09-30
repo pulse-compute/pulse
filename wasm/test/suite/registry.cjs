@@ -32,6 +32,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
+    description: 'PF-01 pure-helper source oracles and explicit unsupported Native repros'
+  }),
   'suite-shape': nodeTask('test/suite/assert-suite-shape.cjs', {
     description: 'profile separation, uniqueness, and timeout budgets'
   }),
@@ -1038,6 +1041,7 @@ const tasks = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'pure-helper-contract',
     'suite-shape',
     'test-orchestration',
     'package-exports',
