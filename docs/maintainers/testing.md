@@ -44,6 +44,25 @@ instructions, this guide, release acceptance commands and maintenance-policy
 commands are checked against it by `npm run maintainer:check`. Use explicit
 runner commands for named selections so stale references are detectable.
 
+Finite generated output has a separate installed-consumer acceptance task:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task str03b-installed
+```
+
+It needs the lockfile-pinned build/pack dependencies and npm registry access for
+non-Pulse dependencies. All Pulse packages come from exact local candidate
+tarballs served by a read-only loopback registry; lifecycle scripts are disabled.
+The consumer and its copied fixture run outside the checkout without workspace
+package links. Every installed Pulse file is verified against its tarball before
+and after both targets' CLI and wire tests. Atomic acceptance reports under
+`wasm/.test-results/str03b-installed-*/` record terminal status, source/tree/diff,
+package and fixture hashes, installed-file digests, Wasm identities, workflow
+results, cleanup and memory observations. Keep failed attempts distinct from
+final clean-source evidence. This task is explicitly selected, like the STR-02
+installed tasks; it is not implicitly part of the portable or aggregate release
+profiles and does not authorize publication or promote experimental output.
+
 The event mechanism has focused provider-neutral tasks, plus one project-level
 workflow task included in the `cli` and `release` profiles:
 

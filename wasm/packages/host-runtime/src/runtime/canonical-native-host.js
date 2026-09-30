@@ -1286,7 +1286,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       wasmSha256: controller.wasmSha256,
       response,
       effectCount,
-      ...(options.incomingBody ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
+      ...((options.incomingBody || options.outputExecution) ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
       trace: Object.freeze([...controller.trace]),

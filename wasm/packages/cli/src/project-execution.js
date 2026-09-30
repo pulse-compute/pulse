@@ -2902,7 +2902,7 @@ async function startDevServer(project, options = {}) {
         awaitCompletion: Boolean(forwarding), closeConnection: Boolean(forwarding)
       });
       events(Object.freeze({ event: 'request', method: req.method || 'GET', path: url.pathname, status: execution.response.status, effects: execution.effectCount,
-        ...(forwarding ? {executionEvidence:{mode:'native-wasm',wasmSha256:execution.wasmSha256,planHash:execution.planHash,guestMemoryBytes:execution.guestMemoryBytes,automaticFallback:false}} : {})
+        ...((forwarding || (executionOptions.generatedOutput && exactNativeExecution)) ? {executionEvidence:{mode:'native-wasm',wasmSha256:execution.wasmSha256,planHash:execution.planHash,guestMemoryBytes:execution.guestMemoryBytes,automaticFallback:false}} : {})
       }));
     } catch (error) {
       devErrorResponse(res, error, project.dev.secrets);

@@ -176,6 +176,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native',
     description: 'STR-03A generated-output Native/JavaScript lowering, demand, cancellation, finite limits and normal build/dev HTTP'
   }),
+  'str03b-installed': nodeTask('test/runtime/str03b-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external',
+    description: 'STR-03B exact installed Node Native/JavaScript output, CLI, real sockets and controlled writer qualification'
+  }),
   'str02b-node-native': nodeTask('test/runtime/str02b-node-native.cjs', {
     timeoutMs: 90000, evidence: 'native',
     description: 'STR-02B compiled Native forwarding, constant guest memory, HTTP cancellation and ticket fencing'
