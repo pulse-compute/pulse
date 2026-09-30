@@ -1228,3 +1228,13 @@ replace the response. The Native manifest records the finite transform policy,
 not an installed qualification claim. Workspace acceptance measures 2× duplication,
 accepts the 4×/256 KiB boundary, rejects over-expansion and validates actual Wasm
 and both Node HTTP targets. See [bounded UTF-8 transforms](../concepts/bodies.md#experimental-bounded-utf-8-transforms-on-node).
+
+### AST-02A bounded S3 response ownership
+
+S3 `getBody` is a Node Native/JavaScript opaque package effect. S3 owns signed
+GET/HEAD and the narrow conditional/range metadata contract; Node owns origin
+I/O, the existing binding byte limit and transfer deadline. The Native host
+tracks registered response bodies until return or discard. Body bytes do not
+enter application values or imply whole-object integrity. Fastly body-handle
+integration and embedded assets are separate increments; existing S3 text
+support does not imply support for this operation.

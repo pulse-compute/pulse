@@ -1092,6 +1092,13 @@ function raceNativeSignal(value, signal, eventMode = true) {
 }
 
 async function executeCanonicalNativeInvocation(compiled, options = {}, invocation = Object.freeze({ plane: 'http' })) {
+  const ownedResponseBodies = new Set();
+  let responseBodyTransferred, invocationClosed = false;
+  const cancelBody = body => { try { void body.cancel().catch(() => {}); } catch (_) {} };
+  options = { ...options, registerResponseBody(body) {
+    if (invocationClosed) cancelBody(body);
+    else ownedResponseBodies.add(body);
+  } };
   const eventMode = invocation && invocation.plane === 'event';
   const maxEffects = normalizeMaxEffects(options.maxEffects);
   const controller = instantiateCanonicalNativeModule(compiled, { ...options, executionPlane: eventMode ? 'event' : 'http' });
@@ -1273,6 +1280,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     options.requestBudget?.check();
     options.outputExecution?.validateResult(controller.resultValue());
     const response = controller.response();
+    responseBodyTransferred = response.bodyStream;
     controller.trace.push(Object.freeze(redactValue({ type: 'native-execution-completed', executionId, provider: adapter.id, status: response.status, bodyClass: response.bodyClass }, controller.sensitiveValues)));
     return Object.freeze({
       status: 'completed',
@@ -1308,6 +1316,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     }) });
     throw executionFailure;
   } finally {
+    invocationClosed = true;
+    for (const body of ownedResponseBodies) if (body !== responseBodyTransferred) cancelBody(body);
+    ownedResponseBodies.clear();
     controller.close();
     try { adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure })); }
     catch (_) { /* provider cleanup must not mask execution */ }
@@ -1318,7 +1329,7 @@ async function executeCanonicalNativeModule(compiled, options = {}) {
   const budget = portableKv.createRequestBudget(options);
   try {
     budget.check();
-    return await executeCanonicalNativeInvocation(compiled, { ...options, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
+    return await executeCanonicalNativeInvocation(compiled, { ...options, responseSignal: options.signal, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
   } finally { if (!options.requestBudget) budget.close(); }
 }
 

@@ -535,11 +535,14 @@ function createNodeProviderAdapter(baseOptions = {}) {
     async dispatchEffect(effect, executionOptions = {}) {
       if (effect.kind === 'crypto.digestText') return require('@pulse-compute/crypto/provider').executeTextDigest(effect, executionOptions);
       if (effect.kind === 'time.now') return portableRuntimeHost.readWallTime(baseOptions.wallClock === undefined ? () => Date.now() : baseOptions.wallClock);
-      if (['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)) {
-        return require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions,
+      if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)) {
+        const result = await require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions,
           fetchImplementation: executionOptions.s3FetchImplementation || baseOptions.s3FetchImplementation
             || executionOptions.fetchImplementation || baseOptions.fetchImplementation
         }, (name) => bindingValue(executionOptions, 'secrets', name));
+        if (effect.operation !== 'getBody') return result;
+        if (result.body) executionOptions.registerResponseBody?.(result.body);
+        return { status: result.status, kind: 'stream', headers: [...result.headers], bodyStream: result.body || undefined };
       }
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
       if (effect.kind === 'jwt.verify' || effect.kind === 'jwt.sign') return verifyNativeJwt(effect, executionOptions);

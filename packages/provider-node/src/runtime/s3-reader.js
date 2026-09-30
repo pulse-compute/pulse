@@ -38,32 +38,52 @@ function abortable(promise, signal) {
   });
 }
 async function readS3(effect, options, lookup) {
-  const operation = effect.operation, put = operation === 'putText';
+  const operation = effect.operation, put = operation === 'putText', bodyRead = operation === 'getBody';
   const payload = effect.payload || {};
-  if (!['head', 'getText', 'putText'].includes(operation) || effect.kind !== `s3.${operation}` || effect.capability !== effect.kind
+  if (!['head', 'getText', 'putText', 'getBody'].includes(operation) || effect.kind !== `s3.${operation}` || effect.capability !== effect.kind
     || effect.package !== '@pulse-compute/s3' || effect.contractId !== 'pulse.s3' || effect.providerKind !== 's3') throw new TypeError('Invalid S3 package effect authority.');
   let dispatched = false, status;
-  const failure = (reason) => put ? protocol.putFailure(reason, dispatched, status) : protocol.failure(reason, status);
+  const failure = (reason) => bodyRead ? new Response(null, { status: reason === 'timeout' ? 504 : 502, headers: { 'x-pulse-s3-error': reason } }) : put ? protocol.putFailure(reason, dispatched, status) : protocol.failure(reason, status);
   if (options.signal && options.signal.aborted) throw options.signal.reason || new Error('Request cancelled.');
   const configured = typeof payload.binding === 'string' && options.s3 && Object.hasOwn(options.s3, payload.binding) && options.s3[payload.binding];
   let binding;
   try { binding = protocol.normalizeBinding(configured); } catch { return failure('configuration'); }
+  const timeoutMs = Math.min(binding.timeoutMs, options.requestBudget?.remainingMs() ?? Infinity);
   const controller = new AbortController();
   const onAbort = () => controller.abort(options.signal.reason);
   if (options.signal) options.signal.addEventListener('abort', onAbort, { once: true });
+  const bodyAbort = () => controller.abort(options.responseSignal.reason);
+  if (options.responseSignal) {
+    options.responseSignal.addEventListener('abort', bodyAbort, { once: true });
+    if (options.responseSignal.aborted) bodyAbort();
+  }
   let timedOut = false;
-  const deadline = performance.now() + binding.timeoutMs;
+  const deadline = performance.now() + timeoutMs;
   const check = () => {
-    options.requestBudget?.check();
+    if (!transferred) options.requestBudget?.check();
     if (performance.now() >= deadline) { timedOut = true; controller.abort(); }
     if (controller.signal.aborted) throw controller.signal.reason || new Error('S3 deadline expired.');
   };
-  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, binding.timeoutMs);
+  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, timeoutMs);
   const wait = async (value) => { const result = await abortable(Promise.resolve(value), controller.signal); check(); return result; };
-  let response;
+  let response, transferred = false, cleaned = false;
+  const cleanup = () => {
+    if (cleaned) return;
+    cleaned = true;
+    clearTimeout(timer);
+    if (options.signal) options.signal.removeEventListener('abort', onAbort);
+    options.responseSignal?.removeEventListener('abort', bodyAbort);
+    controller.abort();
+    if (response) { try { response.close(); } catch {} }
+  };
   try {
     const key = protocol.encodeKey(payload.key);
     if (key === null) return failure('invalid-key');
+    let readOptions;
+    if (bodyRead) {
+      try { readOptions = protocol.normalizeBodyOptions({ method: payload.method, ...(payload.range === undefined ? {} : { range: payload.range }), ...(payload.ifNoneMatch === undefined ? {} : { ifNoneMatch: payload.ifNoneMatch }) }); }
+      catch { return failure('configuration'); }
+    }
     let body, contentType;
     if (put) {
       if (typeof payload.text !== 'string') return failure('invalid-text');
@@ -88,7 +108,7 @@ async function readS3(effect, options, lookup) {
     if (!crypto || !Array.isArray(algorithms) || ['SHA-256', 'HMAC-SHA256'].some((algorithm) => !algorithms.some((entry) => entry.algorithm === algorithm && entry.available && entry.realization === realization))) return failure('configuration');
     let request;
     try {
-      request = await wait(protocol.signRequest({ binding, method: put ? 'PUT' : operation === 'head' ? 'HEAD' : 'GET', encodedKey: key, accessId, secret, token, now: Date.now(), body, contentType }, crypto));
+      request = await wait(protocol.signRequest({ binding, method: bodyRead ? readOptions.method : put ? 'PUT' : operation === 'head' ? 'HEAD' : 'GET', encodedKey: key, accessId, secret, token, now: Date.now(), body, contentType, readOptions }, crypto));
     } catch (error) { check(); return failure('configuration'); }
     check();
     // The send primitive may have side effects even if it throws synchronously.
@@ -98,6 +118,15 @@ async function readS3(effect, options, lookup) {
       : await originRequest(request, controller.signal);
     status = response.status;
     check();
+    if (bodyRead) {
+      let metadata;
+      try { metadata = protocol.bodyResponseMetadata(status, response.headers, readOptions, binding.maxTextBytes); }
+      catch (error) { return failure(error.message === 'too-large' ? 'too-large' : 'protocol'); }
+      if (!metadata.body) return new Response(null, { status, headers: metadata.headers });
+      const stream = boundedBody(response, metadata.byteLength, binding.maxTextBytes, controller.signal, check, cleanup);
+      transferred = true;
+      return new Response(stream, { status, headers: metadata.headers });
+    }
     const rejected = put ? protocol.putStatusResult(status) : protocol.statusResult(status);
     if (rejected && (!put || rejected.status === 'unknown')) return rejected;
     const metadata = protocol.metadataFromHeaders(response.headers, operation === 'head');
@@ -125,10 +154,42 @@ async function readS3(effect, options, lookup) {
     if (options.signal && options.signal.aborted) throw options.signal.reason || error;
     return failure(timedOut ? 'timeout' : status === undefined ? 'transport' : 'protocol');
   } finally {
-    clearTimeout(timer);
-    if (options.signal) options.signal.removeEventListener('abort', onAbort);
-    controller.abort();
-    if (response) { try { await response.close(); } catch {} }
+    if (!transferred) cleanup();
   }
+}
+function boundedBody(response, expected, maximum, signal, check, cleanup) {
+  const iterator = response.body?.[Symbol.asyncIterator]();
+  let total = 0, ended = false, abort;
+  const finish = () => { ended = true; signal.removeEventListener('abort', abort); cleanup(); };
+  return new ReadableStream({
+    start(controller) {
+      abort = () => {
+        if (ended) return;
+        controller.error(new Error('S3 body transfer aborted.'));
+        finish();
+      };
+      signal.addEventListener('abort', abort, { once: true });
+      if (signal.aborted) abort();
+    },
+    async pull(controller) {
+      try {
+        check();
+        const item = iterator ? await iterator.next() : { done: true };
+        if (ended) return;
+        check();
+        if (item.done) {
+          if (total !== expected) throw new Error('S3 body length mismatch.');
+          controller.close(); finish(); return;
+        }
+        if (!(item.value instanceof Uint8Array)) throw new Error('Invalid S3 body bytes.');
+        total += item.value.byteLength;
+        if (total > maximum || total > expected) throw new Error('S3 body exceeds its bound.');
+        controller.enqueue(item.value);
+      } catch {
+        if (!ended) { controller.error(new Error('S3 body transfer failed.')); finish(); }
+      }
+    },
+    cancel() { finish(); }
+  }, { highWaterMark: 0 });
 }
 module.exports = { readS3, originRequest };
