@@ -278,7 +278,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
           if (awaited || shadowed || inLoop || node.typeArguments?.length || node.questionDotToken
             || node.arguments.length !== helper.functionNode.parameters.length || !['route', 'middleware'].includes(role)) {
             diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED',
-              'Pure helpers require a static unshadowed synchronous scalar call outside caller loops in an HTTP handler.'));
+              'Pure helpers require a static unshadowed synchronous pure call outside caller loops in an HTTP handler.'));
           }
           return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined,
             node.arguments.map(arg => ts.visitNode(arg, visit)));

@@ -641,7 +641,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       for (const s of statements) {
         if (s.kind === 'local') lines.push(`${indent}${localName(s.localId)} = ${exprName(s.value)}()`);
         else if (s.kind === 'expression') lines.push(`${indent}${exprName(s.expression)}()`);
-        else if (s.kind === 'return') lines.push(`${indent}return ${exprName(s.value)}()`);
+        else if (s.kind === 'return') lines.push(`${indent}{`, `${indent}  const result = ${exprName(s.value)}()`, ...helper.localIds.map(id => `${indent}  ${localName(id)} = 0`), `${indent}  return result`, `${indent}}`);
         else if (s.kind === 'if') lines.push(`${indent}if (host_value_truthy(${exprName(s.test)}()) != 0) {`, ...body(s.then, indent + '  '), `${indent}} else {`, ...body(s.else, indent + '  '), `${indent}}`);
         else if (s.kind === 'pure-loop') {
           const index = `i_${localIndex.get(s.localId)}`;

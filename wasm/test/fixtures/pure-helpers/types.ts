@@ -1,4 +1,4 @@
-// Mutable authoring types are intentional: the future callee contract enforces
+// Mutable authoring types are intentional: the callee contract enforces
 // read-only access rather than requiring authors to replace their interfaces.
 export interface PartitionHead {
   subjectKind: string;

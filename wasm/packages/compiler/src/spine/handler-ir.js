@@ -615,9 +615,14 @@ function buildPlainHandlerIr(frontend, options = {}) {
     return Object.freeze(out.flat().filter(Boolean));
   }
 
+  let activePureHelper = false;
   function buildStatement(statement, aliases, fromList = false) {
     if (ts.isFunctionDeclaration(statement) && helperBodies.has(statement.name?.text)) {
-      return createHandlerOperation('helper-body', { statement, pure: helperBodies.get(statement.name.text).pure === true, body: buildStatement(statement.body, new Map()) });
+      const previous = activePureHelper;
+      activePureHelper = helperBodies.get(statement.name.text).pure === true;
+      const body = buildStatement(statement.body, new Map());
+      activePureHelper = previous;
+      return createHandlerOperation('helper-body', { statement, pure: helperBodies.get(statement.name.text).pure === true, body });
     }
     if (ts.isVariableStatement(statement) && statement.declarationList.declarations.length === 1) {
       const declaration = statement.declarationList.declarations[0], call = declaration.initializer;
@@ -691,7 +696,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
           initializer: statement.initializer, test: statement.condition, increment: statement.incrementor,
           body: buildStatement(statement.statement, new Map(aliases)) });
       }
-      const loop = inspectBoundedPureLoop(statement, { ctxName });
+      const loop = inspectBoundedPureLoop(statement, { ctxName, pureHelper: activePureHelper });
       for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message));
       return createHandlerOperation('source-statement', { statement, role: 'bounded-pure-loop' });
     }

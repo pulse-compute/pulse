@@ -577,6 +577,7 @@ function linkProjectRouterModules(graphBuild, options = {}) {
             let helper = byIdentity.get(identity);
             if (!helper) {
               helper = { pure: !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword), id: `helper:${identity}`, name: `__pulse_helper_${sourceHelpers.length}`, functionNode: fn,
+                resolveType: node => require('../spine/pure-helper-source').resolvePureType(context, target.module, node),
                 sourceFile: target.module.sourceFile, source: { file: target.module.path, name: target.localName } };
               sourceHelpers.push(helper); byIdentity.set(identity, helper);
             }

@@ -82,6 +82,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'canonical-api-lowering',
       'canonical-native-plan',
       'pure-source-helpers',
+      'pure-record-helpers',
       'shared-stage-o19',
       'multifile-source-identity',
       'logging-lowering',

@@ -56,7 +56,8 @@ const contract = loadNativePlanContract();
 const loggingContract = loadLoggingContract();
 const cryptoContract = loadCryptoContract();
 const eventContract = loadEventContract();
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v6';
+const pureValues = require('./pure-helper-values');
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v7';
 const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
@@ -534,17 +535,18 @@ class NativePlanBuilder {
         else if (current.name.text === 'headers') valueKind = 'headers';
         else this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Fetch response property .${current.name.text} is outside the canonical native response contract.`, { property: current.name.text });
       }
-      return Object.freeze({ kind: 'property', object, property: current.name.text, valueKind });
+      const property = { kind: 'property', object, property: current.name.text, valueKind };
+      const type = pureValues.readType(property, this.pureTypes);
+      if (type) property.valueKind = pureValues.kind(type);
+      return Object.freeze(property);
     }
 
     if (ts.isElementAccessExpression(current)) {
       if (current.questionDotToken) this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Optional element access is outside the canonical native value model.');
-      return Object.freeze({
-        kind: 'element',
-        object: this.expression(current.expression, scope),
-        index: this.expression(current.argumentExpression, scope),
-        valueKind: 'unknown'
-      });
+      const element = { kind: 'element', object: this.expression(current.expression, scope), index: this.expression(current.argumentExpression, scope), valueKind: 'unknown' };
+      const type = pureValues.readType(element, this.pureTypes);
+      if (type) element.valueKind = pureValues.kind(type);
+      return Object.freeze(element);
     }
 
     if (ts.isTypeOfExpression(current)) {
@@ -579,8 +581,8 @@ class NativePlanBuilder {
       this.pureCallDepth = (this.pureCallDepth || 0) + 1;
       const args = call.arguments.map(arg => this.expression(arg, scope));
       this.pureCallDepth--;
-      if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind)) {
-        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar kinds.');
+      if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind && !(helper.parameters[i]?.borrow && arg.valueKind === 'json'))) {
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar or borrowed structural kinds.');
       }
       return Object.freeze({ kind: 'pure-helper-call', helperId: helper.id,
         arguments: Object.freeze(args), valueKind: helper.resultKind });
@@ -888,6 +890,8 @@ class NativePlanBuilder {
       }
       const value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
       const local = this.allocateLocal(item.name.text, value.valueKind || 'unknown', itemPath, declaration);
+      const type = pureValues.readType(value, this.pureTypes);
+      if (type) this.pureTypes.set(local.id, type);
       scope.set(local.name, local);
       out.push(Object.freeze({ kind: 'local', localId: local.id, name: local.name, declaration, valueKind: local.valueKind, value, statementPath: itemPath }));
     }
@@ -970,6 +974,8 @@ class NativePlanBuilder {
       const start = this.locals.length, helperScope = new Map();
       const parameters = helper.parameters.map(parameter => {
         const local = this.allocateLocal(parameter.name, parameter.valueKind, `helpers.${helper.id}.parameters`, 'const');
+        this.pureTypes ||= new Map();
+        this.pureTypes.set(local.id, parameter.borrow?.type || parameter.valueKind);
         helperScope.set(parameter.name, local);
         return { ...parameter, localId: local.id };
       });
@@ -1002,7 +1008,7 @@ class NativePlanBuilder {
       const readLoop = containsYield(statement);
       const loop = readLoop
         ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
-        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName });
+        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true });
       for (const error of loop.errors) this.fail(error.node, readLoop ? 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED' : 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
       if (loop.errors.length) return [];
       if (readLoop && (this.readLoopDepth || this.pureLoopDepth)) {
@@ -1461,7 +1467,7 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
     walkStatements(helper.body, visit);
     if (!sites) fail('read loop helper requires a sequential read effect site');
   }
-  function validateLoops(statements, counters = new Set(), product = 1, mode = 'outside') {
+  function validateLoops(statements, counters = new Set(), product = 1, mode = 'outside', pureHelper = false) {
     for (const statement of statements || []) {
       if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
         const readLoop = statement.kind === 'read-loop';
@@ -1493,9 +1499,9 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
           walkStatements(statement.body, countSites);
           if (!sites) fail('read loop requires a sequential effect site');
         }
-        validateLoops(statement.body, active, product * Math.max(1, limit), readLoop ? 'read' : 'pure');
+        validateLoops(statement.body, active, product * Math.max(1, limit), readLoop ? 'read' : 'pure', pureHelper);
       } else {
-        if (mode === 'pure' && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
+        if (mode === 'pure' && !(pureHelper && statement.kind === 'return') && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
         if (mode === 'read' && !['local', 'expression', 'if', 'break', 'continue', 'return', 'effect', 'helper-call'].includes(statement.kind)) fail('read loop contains an unsupported statement', { kind: statement.kind });
         if (statement.kind === 'helper-call') {
           if (mode === 'read') {
@@ -1520,8 +1526,8 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
           for (const input of effect?.inputs || []) checkReadExpression(input.value, counters, true);
         }
         if (statement.kind === 'if') {
-          validateLoops(statement.then, counters, product, mode);
-          validateLoops(statement.else, counters, product, mode);
+          validateLoops(statement.then, counters, product, mode, pureHelper);
+          validateLoops(statement.else, counters, product, mode, pureHelper);
         }
       }
     }
@@ -1539,7 +1545,8 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
     });
   }
-  for (const body of [plan.entry && plan.entry.body, ...[...(plan.handlers || []), ...(plan.stages || []), ...(plan.helpers || [])].map(handler => handler.body)]) validateLoops(body);
+  for (const body of [plan.entry && plan.entry.body, ...[...(plan.handlers || []), ...(plan.stages || [])].map(handler => handler.body)]) validateLoops(body);
+  for (const helper of plan.helpers || []) validateLoops(helper.body, new Set(), 1, 'outside', helper.version === contract.CANONICAL_NATIVE_PURE_HELPER_VERSION);
   const visitor = (statement) => {
     if (!contract.CANONICAL_NATIVE_STATEMENT_KINDS.includes(statement.kind)) fail('statement kind is unknown', { kind: statement.kind });
     if (statement.kind === 'local' && !localIds.has(statement.localId)) fail('local statement references unknown local', { localId: statement.localId });
