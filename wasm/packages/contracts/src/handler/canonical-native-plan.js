@@ -18,6 +18,7 @@ const CANONICAL_READ_LOOP_CONTRACT = Object.freeze({
   effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText']),
   valueIntrinsics: Object.freeze(['schema.decode.text', 'schema.encode.text', 'response.text', 'response.json', 'response.custom']),
   nestedEffects: false,
+  helperCallVersion: 'pulse.bounded-read-loop-helper.v1',
   continueTarget: 'increment',
   breakTarget: 'exit'
 });

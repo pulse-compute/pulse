@@ -56,6 +56,16 @@ function inspectBoundedPureLoop(statement, options = {}) {
     }
     if (ts.isCallExpression(node)) {
       const target = unwrap(node.expression);
+      const helper = readBody() && options.helperForCall && options.helperForCall(node);
+      if (helper) {
+        if (!effectRoot) { fail(node, 'Read-loop helpers require a directly bound sequential call.'); return; }
+        effectCount += 1;
+        for (const argument of node.arguments) {
+          // Original-source JavaScript calls retain their explicit context input.
+          if (!named(argument, options.ctxName)) expression(argument, counters, false);
+        }
+        return;
+      }
       const effect = readBody() && options.effectForCall && options.effectForCall(node);
       if (effect) {
         if (!effectRoot || !CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) {
