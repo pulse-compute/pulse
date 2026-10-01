@@ -57,7 +57,7 @@ const loggingContract = loadLoggingContract();
 const cryptoContract = loadCryptoContract();
 const eventContract = loadEventContract();
 const pureValues = require('./pure-helper-values');
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v8';
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v9';
 const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
@@ -340,6 +340,8 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    this.pureTypes = new Map();
+    this.pureTypes.schemas = compiled.metadata.schemaRegistry;
     this.helperBodies = new Map((this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
     this.routerBodies = new Map((this.metadata.router?.entries || [])
       .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
@@ -471,6 +473,11 @@ class NativePlanBuilder {
       if (ASSIGNMENT_OPERATORS.has(operator)) {
         const target = this.assignmentTarget(current.left, scope);
         const value = this.expression(current.right, scope);
+        if (operator === '=' && target.kind === 'local') {
+          const type = pureValues.readType(value, this.pureTypes);
+          if (type) this.pureTypes.set(target.id, type);
+          else this.pureTypes.delete(target.id);
+        }
         return Object.freeze({ kind: 'assignment', operator, target, value, valueKind: value.valueKind || 'unknown' });
       }
       if (!PURE_BINARY_OPERATORS.has(operator)) {
@@ -582,7 +589,7 @@ class NativePlanBuilder {
       const args = call.arguments.map(arg => this.expression(arg, scope));
       this.pureCallDepth--;
       if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind && !(helper.parameters[i]?.borrow && arg.valueKind === 'json'))) {
-        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar or borrowed structural kinds.');
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar or borrowed structural kinds.', { arguments: args.map((arg,i) => ({ index:i, actual:arg.valueKind, expected:helper.parameters[i]?.valueKind })) });
       }
       return Object.freeze({ kind: 'pure-helper-call', helperId: helper.id,
         ...((this.pureLoopDepth || this.readLoopDepth) ? { loopContract: contract.CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION } : {}),
@@ -672,6 +679,7 @@ class NativePlanBuilder {
       statementPath
     });
     this.locals.push(local);
+    if (pureValues.scalar(valueKind)) this.pureTypes.set(local.id, valueKind);
     this.summary.localCount += 1;
     return local;
   }
@@ -756,6 +764,7 @@ class NativePlanBuilder {
       contractId: site && site.contractId ? String(site.contractId) : undefined,
       declaredResult: site && site.result ? String(site.result) : undefined,
       decoder: site && site.decoder ? String(site.decoder) : null,
+      ...(site?.borrowedValue && result?.mode === 'bind' ? { borrowedValue: cloneJson(site.borrowedValue) } : {}),
       continuationId,
       statementPath,
       source: Object.freeze({ file: this.metadata.file, ...(cloneJson(site && site.position) || {}) }),
@@ -880,6 +889,8 @@ class NativePlanBuilder {
         const local = this.allocateLocal(item.name.text, resultKindForEffect(site || {}, decoder), itemPath, declaration);
         const result = Object.freeze({ mode: 'bind', localId: local.id, localName: local.name, valueKind: local.valueKind, decoder });
         const effect = this.prepareEffect(marker, continuationId, scope, itemPath, result);
+        const resultType = pureValues.effectType(effect, this.pureTypes.schemas);
+        if (resultType) this.pureTypes.set(local.id, resultType);
         scope.set(local.name, local);
         out.push(Object.freeze({ kind: 'effect', effectId: effect.id, continuationId, result, statementPath: itemPath }));
         continue;

@@ -27,73 +27,195 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     for (const arg of effect.result?.decoder?.arguments || []) walkExpression(arg, inputVisitor.expression);
   }
   function proveInputs(expression, visiting = new Set()) {
-    walkExpression(expression, e => {
-      if (e.kind !== 'local' || visiting.has(e.id)) return;
-      const next = new Set([...visiting, e.id]);
-      const expected = locals.get(e.id)?.valueKind;
-      const value = definitions.get(e.id);
-      if (value) {
-        const actual = value.kind === 'pure-helper-call' ? helpers.get(value.helperId)?.resultKind : scalarArgumentKind(value, locals, fail, true);
-        if (actual !== expected || value.valueKind !== expected) fail('pure input local initializer kind mismatch');
-        proveInputs(value, next);
-      } else if (![...effects.values()].some(effect => effect.result?.localId === e.id && effect.result.valueKind === expected)) {
-        fail('pure input local requires a proven initializer or effect result');
+    if (!expression || typeof expression !== 'object') return;
+    if (expression.kind === 'local' && expression.valueKind !== locals.get(expression.id)?.valueKind) fail('pure input local tag mismatch');
+    if (['object','array'].includes(expression.kind) && expression.valueKind !== expression.kind) fail('pure input structural tag mismatch');
+    if (expression.kind !== 'local' && values.scalar(inputType(expression))) scalarArgumentKind(expression,locals,fail,true,projectionType);
+    // Schema decoders and typed effect results establish their own boundary;
+    // the encoded input need not itself have the decoded shape.
+    if (expression.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(expression.name)) return;
+    if (expression.kind === 'object') { for (const field of expression.entries) proveInputs(field.value, visiting); return; }
+    if (expression.kind !== 'local') {
+      for (const child of Object.values(expression)) {
+        if (Array.isArray(child)) for (const item of child) proveInputs(item,visiting);
+        else if (child && typeof child === 'object') proveInputs(child,visiting);
       }
-      for (const write of writes.get(e.id) || []) {
-        if (scalarArgumentKind(write, locals, fail) !== expected) fail('pure input local write kind mismatch');
-        proveInputs(write, next);
+      return;
+    }
+    const e=expression;
+    if (visiting.has(e.id)) return;
+    const next = new Set([...visiting,e.id]), expected=locals.get(e.id)?.valueKind;
+    const type=inputType(e), structured=type && !values.scalar(type) && typeof type !== 'string';
+    const value=definitions.get(e.id);
+    if (value) {
+      if (value.valueKind !== expected) fail('pure input initializer tag mismatch');
+      if (!structured) {
+        const actual=value.kind === 'pure-helper-call' ? helpers.get(value.helperId)?.resultKind : scalarArgumentKind(value,locals,fail,true,projectionType);
+        if(actual!==expected || value.valueKind!==expected)fail('pure input local initializer kind mismatch');
       }
-    });
+      proveInputs(value,next);
+    } else if (!resultEffects.has(e.id) || resultEffects.get(e.id).result.valueKind!==expected) fail('pure input local requires a proven initializer or effect result');
+    for(const write of writes.get(e.id)||[]) {
+      if (!structured && scalarArgumentKind(write,locals,fail,false,projectionType)!==expected)fail('pure input local write kind mismatch');
+      proveInputs(write.value,next);
+    }
   }
-  function schemaType(node) {
-    if (['string','boolean'].includes(node?.kind)) return node.kind;
-    if (['i32','u32','f64'].includes(node?.kind)) return 'number';
-    if (node?.kind === 'array' && schemaType(node.element) === 'number') return { kind: 'number-array' };
-    if (node?.kind === 'object' && !node.open && node.fields?.every(f => f.required)) return { kind: 'record', fields: node.fields.map(f => ({ name: f.name, type: schemaType(f.value) })) };
+  // Reconstruct caller provenance from the serialized expression/definition graph.
+  // No expression valueKind or call-site type assertion can create a record proof.
+  const resultEffects = new Map(plan.effects.filter(e => e.result?.localId).map(e => [e.result.localId, e]));
+  for (const effect of plan.effects) if (effect.borrowedValue !== undefined) {
+    const b = effect.borrowedValue;
+    if (effect.kind !== 'kv.getVersioned' || effect.providerKind !== 'kv' || effect.operation !== 'getVersioned'
+      || effect.capability !== 'kv.getVersioned' || effect.result?.mode !== 'bind' || effect.result.valueKind !== 'json'
+      || effect.result.decoder || b?.version !== contract.CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION
+      || Object.keys(b).sort().join() !== 'type,version' || !values.validType(b.type)) fail('invalid typed KV borrow provenance');
   }
-  function schemaMatches(id, expected) {
-    if (id?.kind !== 'literal' || typeof id.value !== 'string') return false;
-    const type = schemaType(plan.schemas?.registry?.schemas?.find(s => s.id === id.value)?.root);
-    return values.validType(type) && values.same(type, expected);
+  // Only an explicit null guard or a definitely non-null assignment removes a
+  // nullable initializer. Facts are attached to each read, including alias initializers.
+  const nonNullAt = new WeakMap();
+  function nullFacts(e, truth, facts) {
+    if(e?.kind!=='binary')return;
+    let mutates=false;walkExpression(e,node=>{if(['assignment','update'].includes(node.kind))mutates=true;});
+    if(mutates)return;
+    if ((e.operator==='&&' && truth) || (e.operator==='||' && !truth)) {
+      nullFacts(e.left,truth,facts);nullFacts(e.right,truth,facts);return;
+    }
+    if(!['===','!=='].includes(e.operator))return;
+    const local=e.left?.kind==='local' && e.right?.kind==='literal' && e.right.value===null ? e.left
+      : e.right?.kind==='local' && e.left?.kind==='literal' && e.left.value===null ? e.right : undefined;
+    if(local && (e.operator==='!==')===truth)facts.add(local.id);
   }
-  function proveBorrow(e, expected, seen = new Set()) {
+  function nonNullValue(e) {
+    return e && (e.kind==='literal' && e.value!==null || ['object','array','template'].includes(e.kind)
+      || e.kind==='intrinsic' && ['request.json','schema.decode.text'].includes(e.name));
+  }
+  function markExpression(e,facts) {
+    if(!e || typeof e!=='object')return;
+    nonNullAt.set(e,new Set(facts));
+    if(e.kind==='conditional' || e.kind==='binary' && ['&&','||','??'].includes(e.operator)) {
+      markExpression(e.test || e.left,facts);
+      const yes=new Set(facts),no=new Set(facts);
+      if(e.kind==='conditional') {
+        nullFacts(e.test,true,yes);nullFacts(e.test,false,no);
+        markExpression(e.whenTrue,yes);markExpression(e.whenFalse,no);
+      } else markExpression(e.right,yes);
+      facts.clear();for(const id of yes)if(no.has(id))facts.add(id);
+      return;
+    }
+    for(const child of Object.values(e)) {
+      if(Array.isArray(child))for(const item of child)markExpression(item,facts);
+      else if(child && typeof child==='object')markExpression(child,facts);
+    }
+    if(e.kind==='assignment' && e.target?.kind==='local') {
+      facts.delete(e.target.id);
+      if(e.operator==='=' && nonNullValue(e.value))facts.add(e.target.id);
+    }
+  }
+  function markBody(body, facts) {
+    for(const s of body||[]) {
+      if(s.kind==='if') {
+        markExpression(s.test,facts);
+        const yes=new Set(facts),no=new Set(facts);nullFacts(s.test,true,yes);nullFacts(s.test,false,no);
+        const yr=markBody(s.then,yes),nr=markBody(s.else,no);
+        if(yr && nr)return true;
+        const merged=yr?no:nr?yes:new Set([...yes].filter(id=>no.has(id)));
+        facts.clear();for(const id of merged)facts.add(id);
+      } else if(['pure-loop','read-loop'].includes(s.kind)) {
+        // A later iteration may observe a write from the previous iteration.
+        // Do not import a pre-loop non-null fact for any loop-carried binding.
+        const inside=new Set(facts);
+        const visit=()=>{};visit.expression=e=>{if(e.kind==='assignment' && e.target?.kind==='local'){facts.delete(e.target.id);inside.delete(e.target.id);}};
+        walkStatements(s.body,visit);
+        markExpression(s.test,inside);markBody(s.body,inside);
+      } else {
+        markExpression(s.value||s.expression,facts);
+        if(s.kind==='local') {facts.delete(s.localId);if(nonNullValue(s.value))facts.add(s.localId);}
+        if(s.kind==='return')return true;
+      }
+    }
+    return false;
+  }
+  for(const body of [plan.entry.body,...(plan.handlers||[]).map(h=>h.body),...(plan.stages||[]).map(h=>h.body)])markBody(body,new Set());
+  const inputTypes = new WeakMap();
+  function inputType(e, seen = new Set()) {
+    if(!e || typeof e!=='object')return;
+    if(inputTypes.has(e))return inputTypes.get(e);
+    const types = {schemas:plan.schemas?.registry, get(id) {
+      if (seen.has(id)) return undefined;
+      const next = new Set([...seen,id]);
+      const value = definitions.get(id), effect = resultEffects.get(id);
+      const candidates=value?[value]:[];
+      for(const write of writes.get(id)||[]) {
+        if(write.kind!=='assignment' || write.operator!=='=') {
+          return values.scalar(inputType(value,next)) ? inputType(value,next) : undefined;
+        }
+        candidates.push(write.value);
+      }
+      const types=candidates.filter(v=>!(v?.kind==='literal' && v.value===null && nonNullAt.get(e)?.has(id))).map(v=>inputType(v,next));
+      if(effect)types.push(values.effectType(effect,plan.schemas?.registry));
+      return types.length && types[0] && types.every(t=>values.same(types[0],t)) ? types[0] : undefined;
+    }};
+    const type=values.readType(e,types);
+    if(type)inputTypes.set(e,type);
+    return type;
+  }
+  const readonlyChecked=new WeakSet();
+  function readonlyInput(e) {
+    if(!e || readonlyChecked.has(e))return;
+    readonlyChecked.add(e);
+    const aliases = new Set(), visited=new Set();
+    const scalarType=t=>typeof t==='string';
+    function collect(value) {
+      if(!value || typeof value!=='object')return;
+      if(value.kind==='intrinsic')return;
+      if(value.kind==='local') {
+        if(visited.has(value.id))return;visited.add(value.id);
+        if(!scalarType(inputType(value)))aliases.add(value.id);
+        collect(definitions.get(value.id));
+        for(const write of writes.get(value.id)||[])collect(write.value);
+        return;
+      }
+      if(value.kind==='object') {
+        for(const field of value.entries||[])if(!scalarType(inputType(field.value)))collect(field.value);
+        return;
+      }
+      for(const child of Object.values(value)) {
+        if(Array.isArray(child))for(const item of child)collect(item);
+        else if(child && typeof child==='object')collect(child);
+      }
+    }
+    collect(e);
+    function references(value) {
+      if(!value || typeof value!=='object')return false;
+      if(value.kind==='local')return aliases.has(value.id);
+      if(['property','element'].includes(value.kind))return !scalarType(inputType(value)) && references(value.object);
+      if(value.kind==='conditional')return references(value.whenTrue)||references(value.whenFalse);
+      if(value.kind==='binary' && ['&&','||','??'].includes(value.operator))return references(value.left)||references(value.right);
+      if(value.kind==='object')return value.entries.some(f=>references(f.value));
+      if(value.kind==='array')return value.items.some(references);
+      return false;
+    }
+    let changed=true;
+    while(changed) {
+      changed=false;
+      const add=(id,value)=>{if(!aliases.has(id) && references(value)){aliases.add(id);changed=true;}};
+      for(const [id,value] of definitions)add(id,value);
+      for(const [id,updates] of writes)for(const update of updates)add(id,update.value);
+    }
+    for(const write of memberWrites)if(references(write.target.object))fail('borrowed caller shape is mutated through an alias');
+  }
+  function projectionType(e) {
+    const type=inputType(e);
+    readonlyInput(e);
+    return type;
+  }
+  function proveBorrow(e, expected) {
     if (!values.validType(expected)) { fail('invalid borrow type'); return false; }
-    if (!e) return false;
-    if (values.scalar(expected)) {
-      proveInputs(e);
-      return scalarArgumentKind(e, locals, fail) === expected;
-    }
-    if (e.kind === 'local') {
-      if (seen.has(e.id) || locals.get(e.id)?.declaration !== 'const' || writes.has(e.id)) { fail('borrowed caller binding must be immutable and initialized'); return false; }
-      // Alias graph rooted at this value must not contain a shape-changing write.
-      const aliases = new Set([e.id]);
-      const referencesAlias = value => {
-        let found = false;
-        walkExpression(value, child => { if (child.kind === 'local' && aliases.has(child.id)) found = true; });
-        return found;
-      };
-      let changed = true;
-      while (changed) {
-        changed = false;
-        const propagate = (id, value) => {
-          if (!aliases.has(id) && referencesAlias(value)) { aliases.add(id); changed = true; }
-        };
-        for (const [id, value] of definitions) propagate(id, value);
-        for (const [id, updates] of writes) for (const update of updates) propagate(id, update.value);
-      }
-      for (const write of memberWrites) if (referencesAlias(write.target)) fail('borrowed caller shape is mutated through an alias');
-      const value = definitions.get(e.id);
-      if (!value) {
-        const result = [...effects.values()].find(effect => effect.result?.localId === e.id)?.result;
-        return result?.valueKind === 'json' && result.decoder?.kind === 'json' && schemaMatches(result.decoder.arguments?.[0], expected);
-      }
-      return proveBorrow(value, expected, new Set([...seen, e.id]));
-    }
-    if (e.kind === 'intrinsic' && ['request.json', 'schema.decode.text'].includes(e.name)) return schemaMatches(e.arguments?.[e.name === 'request.json' ? 0 : 1], expected);
-    if (expected.kind === 'number-array') return e.kind === 'array' && e.items.every(item => proveBorrow(item, 'number', seen));
-    if (e.kind !== 'object' || e.entries.some(entry => entry.kind !== 'property' || entry.key?.kind !== 'literal')
-      || new Set(e.entries.map(entry => entry.key.value)).size !== e.entries.length) return false;
-    return expected.fields.length === e.entries.length && expected.fields.every(field => proveBorrow(e.entries.find(entry => entry.key.value === field.name)?.value, field.type, seen));
+    readonlyInput(e);
+    const actual=inputType(e);
+    // A literal graph also proves all scalar initializer/write chains.
+    proveInputs(e);
+    return values.validType(actual) && values.same(actual,expected);
   }
   const admittedCalls = new Map();
   const admit = (body, owner) => { const visit = s => { if (s.kind === 'helper-call') admittedCalls.set(s, owner); }; visit.expression = e => { if (e.kind === 'pure-helper-call') admittedCalls.set(e, owner); }; walkStatements(body, visit); };
@@ -159,7 +281,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       const helper = helpers.get(e.helperId);
       if (!admittedCalls.has(e) || !isPure(helper) || !Array.isArray(e.arguments)
         || e.arguments.length !== helper.parameters.length || e.valueKind !== helper.resultKind
-        || e.arguments.some((arg, i) => helper.parameters[i]?.borrow ? !proveBorrow(arg, helper.parameters[i].borrow.type) : scalarArgumentKind(arg, locals, fail) !== helper.parameters[i]?.valueKind)) fail('invalid pure helper call');
+        || e.arguments.some((arg, i) => helper.parameters[i]?.borrow ? !proveBorrow(arg, helper.parameters[i].borrow.type) : scalarArgumentKind(arg, locals, fail, false, projectionType) !== helper.parameters[i]?.valueKind)) fail('invalid pure helper call');
       for (const [i, arg] of (e.arguments || []).entries()) { if (!helper?.parameters[i]?.borrow) proveInputs(arg); }
       for (const arg of e.arguments || []) walkExpression(arg, child => {
         if (child.kind === 'pure-helper-call') fail('pure calls cannot nest in arguments');
@@ -274,12 +396,16 @@ function validatePureBody(helper, locals, fail) {
   if (!body(helper.body, initialized)) fail('pure helper must return on every path');
 }
 
-function scalarArgumentKind(e, locals, fail, bound = false) {
+function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   if (!e || typeof e !== 'object') { fail('missing pure call argument'); return 'unknown'; }
-  const child = v => scalarArgumentKind(v, locals, fail, bound);
+  const child = v => scalarArgumentKind(v, locals, fail, bound, projectionType);
   let kind = 'unknown';
   if (e.kind === 'literal' && ['string', 'number', 'boolean'].includes(typeof e.value)) kind = typeof e.value;
   else if (e.kind === 'local') kind = locals.get(e.id)?.valueKind;
+  else if (['property','element'].includes(e.kind) && projectionType) {
+    kind = projectionType(e);
+    if (e.kind === 'element') child(e.index);
+  }
   else if (bound && e.kind === 'intrinsic' && ['schema.encode.text', 'state.get'].includes(e.name)) kind = e.name === 'state.get' ? 'string-or-undefined' : 'string';
   else if (bound && e.kind === 'method-call' && ['string.trim', 'text', 'header'].includes(e.method)) kind = e.method === 'header' ? 'string-or-undefined' : 'string';
   else if (e.kind === 'context-read' && ['req.method', 'req.path', 'req.url'].includes(e.path?.join('.'))) kind = 'string';

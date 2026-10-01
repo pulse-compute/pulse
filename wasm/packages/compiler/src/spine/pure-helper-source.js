@@ -114,4 +114,9 @@ function resolvePureType(context, module, node, seen = new Set(), depth = 0) {
     if (fields.length && fields.length <= 32) return { kind: 'record', fields };
   }
 }
-module.exports = { validatePureHelperSource, resolvePureType };
+function typeNode(type) {
+  if (typeof type === 'string') return ts.factory.createKeywordTypeNode({string:ts.SyntaxKind.StringKeyword,number:ts.SyntaxKind.NumberKeyword,boolean:ts.SyntaxKind.BooleanKeyword}[type]);
+  if (type.kind === 'number-array') return ts.factory.createArrayTypeNode(typeNode('number'));
+  return ts.factory.createTypeLiteralNode(type.fields.map(f => ts.factory.createPropertySignature(undefined, f.name, undefined, typeNode(f.type))));
+}
+module.exports = { validatePureHelperSource, resolvePureType, typeNode };

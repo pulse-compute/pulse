@@ -200,6 +200,7 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
         return Object.freeze({
           call: current,
           surfaceId: `ctx.kv.${method}`,
+          valueTypeNode: method === 'getVersioned' && (ts.isCallExpression(receiver) ? receiver : store.parent)?.typeArguments?.length === 1 ? (ts.isCallExpression(receiver) ? receiver : store.parent).typeArguments[0] : undefined,
           kind: `kv.${method}`,
           providerKind: 'kv',
           operation: method,

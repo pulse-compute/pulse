@@ -167,9 +167,9 @@ bodies; it does not create a dynamic function table or change the value heap's
 retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
-## Synchronous pure source helpers (PF-02/PF-03/PF-04)
+## Synchronous pure source helpers (PF-02/PF-03/PF-04/PF-06)
 
-Native plan v8 retains one `pulse.canonical-native-pure-helper.v2` body per
+Native plan v9 retains one `pulse.canonical-native-pure-helper.v2` body per
 statically resolved synchronous function declaration. HTTP routes and middleware
 may call it in bindings and expressions, including `if (!validator(value))`,
 without `await` or `ctx`. JavaScript executes the original source graph.
@@ -203,13 +203,25 @@ does not inspect ordinary dependency function internals or grant Native eligibil
 Pure helpers finish and clear their slots before a caller read can suspend; caller
 state alone continues under the existing effect invocation contract.
 
-Structured callers must establish their shape with a literal graph or an existing
-matching schema decode/request-JSON boundary. Bindings and derived caller aliases
-are proven independently. The initial admission conservatively rejects writes
-through the borrowed caller graph anywhere in that handler, including writes
-after the call; it does not attempt flow-sensitive shape recovery. Schema-less
-JSON and type assertions do not establish shape. Nested record/array aliases
-inside the callee preserve the original object identity.
+PF-06 propagates caller field/index types from literal graphs, matching schema
+boundaries and explicitly typed `ctx.kv<T>(name).getVersioned(key)` results.
+Direct namespaces and local namespace aliases retain a bounded structural type
+resolved from the contained project graph. `pulse.typed-kv-borrow.v1` belongs to
+the existing KV read result; it adds no effect, decoder or runtime check. The
+`.value` projection borrows the original stored value. The declaration describes
+expected fields, not storage validity: callers still handle found/missing/failed
+outcomes and validate corrupt payloads with their existing value semantics.
+Untyped KV, `unknown`, schema-less JSON and type assertions do not establish shape.
+
+Bindings, record/array aliases, scalar field reads, string length/index reads and
+numeric array reads are proven independently. Optional schema strings require a
+string default. Mutable caller bindings are admitted only when every initializer
+and assignment has the same structural type; nullable schema locals additionally
+need an explicit non-null guard or definite non-null assignment at the read.
+The validator follows aliases and rejects writes through the borrowed graph
+anywhere in the handler, including after a call. Scalar copies do not retain a
+record alias. Nested record/array reads preserve the original object identity.
+There is no flow-sensitive recovery after a shape-changing write.
 
 Arguments evaluate once, left to right; `&&`, `||` and conditional expressions
 preserve skipped calls. Pure helpers cannot capture values, access context,
@@ -233,10 +245,10 @@ After deserialization, the compiler independently validates descriptors, field
 and index kinds, const aliases, scalar results, body/local ownership, arity,
 non-nesting and loop bounds. A recomputed hash does not establish validity.
 Effectful `pulse.canonical-native-helper.v1` keeps its suspension contract.
-Plan/compiler v8 invalidate older cached plans; regenerate them from source.
+Plan/compiler v9 invalidate older cached plans; regenerate them from source.
 Generator v9 and the guest ABI are unchanged.
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers`
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
 for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.

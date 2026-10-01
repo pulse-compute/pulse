@@ -259,6 +259,13 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
 
   const rewriteTransformer = (context) => {
     const visit = (node) => {
+      if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)
+        && ts.isIdentifier(node.expression.expression) && node.expression.expression.text === ctxName
+        && node.expression.name.text === 'kv' && node.typeArguments?.length === 1) {
+        const type = topology.options?.linkedProjectModules?.pureTypeForNode?.(node.typeArguments[0]);
+        if (type) return ts.factory.updateCallExpression(node, node.expression,
+          [require('./pure-helper-source').typeNode(type)], node.arguments.map(arg => ts.visitNode(arg, visit)));
+      }
       const helper = ts.isCallExpression(node) && topology.options?.linkedProjectModules?.helperForCall?.(node);
       if (helper) {
         const original = ts.getOriginalNode(node);

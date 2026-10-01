@@ -1,4 +1,5 @@
 'use strict';
+const { CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
 // These descriptors prove reads of existing handles, never runtime conversions.
 const scalar = type => ['string', 'number', 'boolean'].includes(type);
 const kind = type => typeof type === 'string' ? type : type?.kind === 'record' ? 'object' : type?.kind === 'number-array' ? 'array' : 'unknown';
@@ -13,18 +14,57 @@ function validType(type, depth = 0) {
       && /^[A-Za-z_$][\w$]*$/.test(f.name) && !['__proto__','constructor','prototype'].includes(f.name) && validType(f.type, depth + 1));
 }
 function same(a, b) {
+  if (a === undefined && b === undefined) return true;
   if (typeof a === 'string' || typeof b === 'string') return a === b;
   if (!a || !b || a.kind !== b.kind) return false;
-  return a.kind === 'number-array' || a.fields.length === b.fields.length && a.fields.every(f => same(f.type, b.fields.find(g => g.name === f.name)?.type));
+  return a.kind === 'number-array' || Array.isArray(a.fields) && Array.isArray(b.fields) && a.fields.length === b.fields.length && a.fields.every(f => same(f.type, b.fields.find(g => g.name === f.name)?.type));
 }
 function member(type, property) {
-  if (type?.kind === 'number-array' && property === 'length') return 'number';
+  if ((type === 'string' || type?.kind === 'number-array') && property === 'length') return 'number';
   return type?.kind === 'record' && Array.isArray(type.fields) ? type.fields.find(f => f.name === property)?.type : undefined;
+}
+// Projection types are derived from declarations, literals and schema boundaries.
+// They describe existing dynamic handles; they do not validate external data.
+function schemaType(node) {
+  if (['string','boolean'].includes(node?.kind)) return node.kind;
+  if (['i32','u32','f64'].includes(node?.kind)) return 'number';
+  if (node?.kind === 'array' && schemaType(node.element) === 'number') return {kind:'number-array'};
+  if (node?.kind === 'object') return {kind:'record', ...(node.open || node.additionalProperties ? {open:true} : {}), fields: node.fields.map(f => ({name:f.name,
+    type: f.required ? schemaType(f.value) : schemaType(f.value) === 'string' ? 'string-or-undefined' : undefined}))};
+}
+function schemaRead(id, registry) {
+  return id?.kind === 'literal' && typeof id.value === 'string' ? schemaType(registry?.schemas?.find(s => s.id === id.value)?.root) : undefined;
+}
+function effectType(effect, registry) {
+  if (effect.kind === 'kv.getVersioned' && effect.borrowedValue?.version === CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION
+    && validType(effect.borrowedValue.type)) return {kind:'record', fields:[
+      {name:'status',type:'string'}, {name:'value',type:effect.borrowedValue.type}]};
+  if (effect.result?.decoder?.kind === 'json') return schemaRead(effect.result.decoder.arguments?.[0], registry);
 }
 function readType(e, types) {
   if (!e) return;
+  const read = value => readType(value, types);
   if (e.kind === 'local') return types?.get(e.id);
-  if (e.kind === 'property') return member(readType(e.object, types), e.property);
-  if (e.kind === 'element' && readType(e.object, types)?.kind === 'number-array' && e.index?.valueKind === 'number') return 'number';
+  if (e.kind === 'literal' && scalar(typeof e.value)) return typeof e.value;
+  if (e.kind === 'property') return member(read(e.object), e.property) || (read(e.object) === 'string' && e.property === 'length' ? 'number' : undefined);
+  if (e.kind === 'element') {
+    const object = read(e.object), index = read(e.index);
+    if (index === 'number') return object === 'string' ? 'string' : object?.kind === 'number-array' ? 'number' : undefined;
+    if (e.index?.kind === 'literal' && typeof e.index.value === 'string') return member(object, e.index.value);
+  }
+  if (e.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(e.name)) return schemaRead(e.arguments?.[e.name === 'request.json' ? 0 : 1], types?.schemas);
+  if (e.kind === 'array' && e.items.every(item => read(item) === 'number')) return {kind:'number-array'};
+  if (e.kind === 'object' && e.entries.every(f => f.kind === 'property' && f.key?.kind === 'literal' && typeof f.key.value === 'string')
+    && new Set(e.entries.map(f => f.key.value)).size === e.entries.length) return {kind:'record',fields:e.entries.map(f=>({name:f.key.value,type:read(f.value)}))};
+  if (e.kind === 'conditional') { const a=read(e.whenTrue),b=read(e.whenFalse); if(same(a,b))return a; }
+  if (e.kind === 'binary') {
+    const a=read(e.left),b=read(e.right);
+    if (['||','??'].includes(e.operator) && a === 'string-or-undefined' && b === 'string') return 'string';
+    if (['||','??','&&'].includes(e.operator)) return same(a,b) ? a : undefined;
+    if (['===','!==','==','!=','<','<=','>','>='].includes(e.operator)) return 'boolean';
+    if (scalar(a) && scalar(b)) return e.operator === '+' && (a === 'string' || b === 'string') ? 'string' : 'number';
+  }
+  if (e.kind === 'unary') return e.operator === '!' ? 'boolean' : e.operator === 'typeof' ? 'string' : ['+','-','~'].includes(e.operator) ? 'number' : undefined;
+  if (e.kind === 'template') return 'string';
 }
-module.exports = { scalar, kind, validType, same, member, readType };
+module.exports = { scalar, kind, validType, same, member, readType, schemaType, schemaRead, effectType };

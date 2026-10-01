@@ -1,4 +1,5 @@
 'use strict';
+const { CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
 
 const ts = require('typescript');
 const { inspectBoundedPureLoop, inspectBoundedReadLoop } = require('./bounded-pure-loop.js');
@@ -345,10 +346,13 @@ function buildPlainHandlerIr(frontend, options = {}) {
   }
 
   function nextProviderEffectSite(providerOperation, grouped = false, groupKey) {
-    const prefix = providerOperation.providerKind === 'kv' ? `kv-${providerOperation.operation}` : providerOperation.providerKind;
+    const valueType = providerOperation.valueTypeNode && require('./pure-helper-source').resolvePureType(
+      { projectModules: new Map() }, { sourceFile, path: sourceFile.fileName, imports: [] }, providerOperation.valueTypeNode);
+    const prefix = providerOperation.providerKind === 'kv'  ? `kv-${providerOperation.operation}` : providerOperation.providerKind;
     const site = Object.freeze({
       id: nextEffectId(prefix),
       kind: providerOperation.kind,
+      ...(valueType ? { borrowedValue: { version: CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION, type: valueType } } : {}),
       providerKind: providerOperation.providerKind,
       operation: providerOperation.operation,
       grouped: Boolean(grouped),
