@@ -10,14 +10,14 @@ const { runTool } = require('../../../packages/wasm-guest-link/src/toolchain');
 const root = path.resolve(__dirname, '../../../..');
 const symbol = name => name.replace(/\\([a-f0-9]{2})/gi, (_, byte) => String.fromCharCode(parseInt(byte, 16)));
 
-function inspect(built, target, directory) {
+function inspect(built, target, directory, prefix = '__pulse_shared_helper_', maximumMemory = 4096) {
   const cwd = path.join(directory, target + '-named'); fs.mkdirSync(cwd);
   const entry = target === 'node' ? 'canonical-native.as' : 'fastly-native-platform-capabilities.as';
   fs.writeFileSync(path.join(cwd, entry + '.ts'), built.source);
   const asc = resolveAsc(path.join(root, 'wasm'));
   const args = [asc.script, entry + '.ts', '--outFile', 'named.wasm', '--runtime', built.manifest.schemaCodecs?.active ? 'incremental' : 'stub', '--noAssert', '--optimize', '--debug'];
   appendAssemblyScriptOptimizationArgs(args);
-  args.push('--maximumMemory', '4096');
+  if (maximumMemory !== null) args.push('--maximumMemory', String(maximumMemory));
   if (built.manifest.schemaCodecs?.active) {
     const compiler = path.join(root, 'wasm/packages/compiler');
     const transform = require.resolve('json-as', { paths: [compiler] });
@@ -32,7 +32,7 @@ function inspect(built, target, directory) {
   const wat = fs.readFileSync(path.join(cwd, 'named.wat'), 'utf8');
   const module = new WebAssembly.Module(named), names = functionNames(Buffer.from(WebAssembly.Module.customSections(module, 'name')[0]));
   const imported = WebAssembly.Module.imports(module).filter(item => item.kind === 'function').length;
-  const functions = [...wat.matchAll(/^ \(func \$([^\s(]+)([\s\S]*?)^ \)/gm)].map((match, index) => ({ name: symbol(match[1]), bytes: binary.bodies[index], calls: [...new Set([...match[2].matchAll(/\bcall \$([^\s()]+)/g)].map(item => symbol(item[1])))] }));
+  const functions = [...wat.matchAll(/^ \(func \$([^\s(]+)([\s\S]*?)^ \)/gm)].map((match, index) => ({ name: symbol(match[1]), bytes: binary.bodies[index], callSites: [...match[2].matchAll(/\bcall \$([^\s()]+)/g)].map(item => symbol(item[1])), calls: [...new Set([...match[2].matchAll(/\bcall \$([^\s()]+)/g)].map(item => symbol(item[1])))] }));
   assert.equal(functions.length, binary.bodies.length);
   functions.forEach((fn, index) => assert.equal(fn.name, names.get(imported + index) ?? String(index)));
   const byName = new Map(functions.map(fn => [fn.name, fn]));
@@ -42,13 +42,13 @@ function inspect(built, target, directory) {
     return seen;
   }
   const reachable = closure([...wat.matchAll(/\(export "[^"]+" \(func \$([^\s()]+)/g)].map(match => symbol(match[1])));
-  const roots = functions.filter(fn => /\/__pulse_shared_helper_\d+$/.test(fn.name));
-  const sourceRoots = [...built.source.matchAll(/function (__pulse_shared_helper_\d+)\(/g)].map(match => match[1]);
+  const roots = functions.filter(fn => new RegExp('/' + prefix + '\\d+$').test(fn.name));
+  const sourceRoots = [...built.source.matchAll(new RegExp('function (' + prefix + '\\d+)\\(', 'g'))].map(match => match[1]);
   assert.ok(sourceRoots.length > 0 && sourceRoots.length <= 2, 'bounded helper partition');
   assert.equal(roots.length, sourceRoots.length, 'each shared body partition survives exactly once');
   for (const name of sourceRoots) assert.equal(roots.filter(fn => fn.name.endsWith('/' + name)).length, 1);
   assert.ok(roots.every(fn => reachable.has(fn.name)), 'shared helper is reachable from real exports');
-  const callers = roots.map(fn => ({ name: fn.name, bytes: fn.bytes, callers: functions.filter(caller => caller.calls.includes(fn.name)).map(caller => caller.name) }));
+  const callers = roots.map(fn => ({ name: fn.name, bytes: fn.bytes, directCallSites: functions.reduce((n, caller) => n + caller.callSites.filter(name => name === fn.name).length, 0), callers: functions.filter(caller => caller.calls.includes(fn.name)).map(caller => caller.name) }));
   assert.ok(callers.every(fn => fn.callers.length > 0), 'no dead retained copies');
   const reached = closure(roots.map(fn => fn.name));
   const body = functions.filter(fn => reached.has(fn.name));

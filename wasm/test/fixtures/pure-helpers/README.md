@@ -151,12 +151,11 @@ all 19 tarball hashes, both missing targets and explicit unrun qualification
 gates. The [packer log](pf05-pack.log) preserves the actual failure. Individual
 tarball verification does not satisfy the aggregate packaging gate.
 
-**PF-05 remains incomplete.** No installed consumer was created, and no packed
-helper counts, generated-body counts, Wasm attribution or three-target execution
-result is claimed. Source-tree results from PF-02 through PF-04 cannot substitute
-for those gates.
+**At this initial attempt, PF-05 was incomplete.** No installed consumer was
+created in that attempt, and it supplies no packed qualification claim. The
+subsequent completed replay is recorded below; the original failure stays intact.
 
-### Separate dependency: PF-05A — repair installed proof links
+### Resolved dependency: PF-05A — repair installed proof links
 
 Effort: small. Change the O-18 and O-19 proof links in the canonical
 `docs/architecture/current-contracts.md` to repository-qualified proof URLs using
@@ -174,3 +173,59 @@ Node Native, Fastly Native host-fixture and Node JavaScript runs; substantial
 validator calls at 1, 2 and 16 sites; canonical/generated body counts and final
 Wasm attribution; scalar/record/loop rejection cases and installed O-19/O-25/O-28
 regressions. Report downstream inlining separately from compiler duplication.
+
+
+## PF-05 installed qualification
+
+The official pack on `41b7fdb94caeddce2ec6fa3ccfdf278876fe6522` passes after
+PF-05A. Install all 19 manifest tarballs into an isolated consumer with
+`workspaces: []` using `npm install --ignore-scripts --no-audit --no-fund`.
+Then run the opt-in, dependency-bound qualification:
+
+```sh
+env -u NODE_PATH node wasm/test/release/assert-packed-pure-helpers.cjs /absolute/consumer /absolute/official-pack /absolute/fresh-results
+```
+
+The supervisor verifies archive hashes and every installed Pulse file before and
+after execution. It copies test sources into an isolated mirror, links every
+product directory to the installed package, and audits child module resolution
+for workspace product imports. It does not rewrite installed compiler files.
+The shipped Fastly ABI fixtures come from the same verified install.
+
+Seven complete child tasks pass: scalar, record and loop positives/rejections;
+legacy effectful helpers and O-28 loop helpers; O-19 production stages; and a
+three-target sharing proof including the substantial O-25 history helper.
+The extra proof covers eight record cases at each call-site count and eighteen
+caller-loop cases on Node Native, Fastly Native and Node JavaScript. Prior
+source/plan rejection assertions remain intact.
+
+| Call sites | Canonical / generated / final helper bodies | Node Wasm bytes | Fastly Wasm bytes | Node / Fastly helper body bytes |
+| --- | --- | --- | --- | --- |
+| 1 | 1 / 1 / 1 | 43,547 | 88,506 | 738 / 1,090 |
+| 2 | 1 / 1 / 1 | 43,624 | 88,582 | 741 / 1,090 |
+| 16 | 1 / 1 / 1 | 44,228 | 89,200 | 741 / 1,090 |
+
+Each named companion matches every production non-custom Wasm section exactly.
+The helper remains reachable from exports through direct calls. At repeated
+sites, downstream expression wrappers share the call expression as well; a
+single direct call instruction therefore does not imply a single source call.
+The actual retained Node body grows three bytes, not with caller multiplicity.
+These counts establish retained sharing for this fixture, not an expanded-vs-
+shared performance win, reclamation, RSS, latency or deployed-provider evidence.
+No optimizer settings or product code changed.
+
+`pf05-packed-evidence.json` records package hashes, task identities, resolution
+audits, failures corrected in the proof harness, gzip sizes and full attribution.
+The original failed aggregate packaging attempt remains preserved in PR #162;
+this passing attempt does not rewrite it or establish an aggregate release seal.
+
+### Next argument-provenance boundary (PF-06)
+
+`pf06-argument-boundary.json` retains a minimal generic source probe. A
+schema-decoded record with scalar literal arguments plans successfully. Passing
+an otherwise typed KV result directly, or passing a scalar property read from
+the decoded record, is rejected with
+`PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED`. This is a source/plan proof gap,
+not an observed runtime regression. A follow-up must preserve typed provenance
+and independent plan validation; do not suppress diagnostics or add serialization
+to make calls pass. That extension is not implemented by PF-05.

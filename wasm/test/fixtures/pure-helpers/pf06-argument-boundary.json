@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "name": "schema",
+      "status": "planned",
+      "helpers": 1,
+      "body": "const head=await ctx.req.json('app.Head');const valid=validPartition(head,'item','abc',0);return ctx.text(''+valid);"
+    },
+    {
+      "name": "typedKv",
+      "status": "rejected",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 382,
+            "column": 31,
+            "offset": 17192
+          },
+          "detail": {}
+        }
+      ],
+      "body": "const row=await ctx.kv<PartitionHead>('records').getVersioned('0');if(row.status!=='found')return ctx.text('missing');const head=row.value;const valid=validPartition(head,'item','abc',0);return ctx.text(''+valid);"
+    },
+    {
+      "name": "indexedScalar",
+      "status": "rejected",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 378,
+            "column": 31,
+            "offset": 16889
+          },
+          "detail": {}
+        }
+      ],
+      "body": "const head=await ctx.req.json('app.Head');const valid=validPartition(head,'item','abc',head.partition);return ctx.text(''+valid);"
+    }
+  ],
+  "scope": "Source-only installed package boundary; no compilation or runtime claim."
+}
