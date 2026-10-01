@@ -219,7 +219,7 @@ audits, failures corrected in the proof harness, gzip sizes and full attribution
 The original failed aggregate packaging attempt remains preserved in PR #162;
 this passing attempt does not rewrite it or establish an aggregate release seal.
 
-### Next argument-provenance boundary (PF-06)
+### Historical PF-05 argument-provenance blocker
 
 `pf06-argument-boundary.json` retains a minimal generic source probe. A
 schema-decoded record with scalar literal arguments plans successfully. Passing
@@ -229,3 +229,32 @@ the decoded record, is rejected with
 not an observed runtime regression. A follow-up must preserve typed provenance
 and independent plan validation; do not suppress diagnostics or add serialization
 to make calls pass. That extension is not implemented by PF-05.
+
+
+### PF-06 argument provenance
+
+The historical probe above remains unchanged. PF-06 resolves those source forms
+with plan/compiler v9 and `pulse.typed-kv-borrow.v1`. Run
+`node wasm/scripts/run-wasm-tests.cjs --task pure-argument-helpers` for typed KV
+reads (direct and namespace alias), schema projections, numeric/string indexing,
+nullable guarded schema locals, same-shape caller assignments, and a 16-read loop.
+The test compares original JavaScript and Native responses and retains negative
+source and recomputed-hash plan mutations. Stored records are borrowed without
+encoding or schema decoding; the declaration does not certify payload validity.
+
+The serialized validator reconstructs input provenance from definitions, all
+assignments, schema references, effect result ownership and explicit null guards.
+Unknown origins, changed shapes, mutable borrowed aliases, wrong fields/indexes,
+forged scalar tags and malformed KV descriptors remain rejected. No generic
+caller type assertions, new effects, optimizer flags or runtime conversions are
+introduced. The packed qualification driver includes this new task alongside the
+PF-02 through PF-05 and existing effectful-helper/stage checks.
+
+PF-06's final installed qualification passed all **8 tasks** across **19 official
+package tarballs**, verifying **992 unchanged installed Pulse files** and zero
+workspace product modules in each task's resolution audit. The argument proof
+covers **21 parity cases**, **13 source rejections** and **12 recomputed-hash plan
+rejections**. The existing retained-Wasm proof still observes one substantial
+validator body at 1/2/16 sites. Package identities, audits and attempt boundaries
+are retained in [`pf06-evidence.json`](./pf06-evidence.json). This is development
+qualification, not an aggregate release seal or application adoption result.

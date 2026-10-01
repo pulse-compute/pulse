@@ -676,6 +676,11 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     sourceHelpers,
     helperForCall: call => helperCalls.get(ts.getOriginalNode(call)),
     functionNodeForHandler,
+    pureTypeForNode(node) {
+      const original = ts.getOriginalNode(node);
+      const module = [...context.projectModules.values()].find(m => m.sourceFile === original.getSourceFile());
+      return module && require('../spine/pure-helper-source').resolvePureType(context, module, original);
+    },
     sourceFileForPath(file) {
       const module = context.projectModules.get(file);
       return module && module.sourceFile;
