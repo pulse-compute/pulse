@@ -1,7 +1,7 @@
 {
   "task": "R1-01",
   "class": "behavior-preserving refactor",
-  "status": "baseline-characterized; implementation next",
+  "status": "refactor implemented; bounded output equivalence passed; four-profile replay running",
   "branch": "codex/r1-01-helper-vocabulary",
   "base": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
   "baseTree": "bb79646fe9174d86572b6e37b6b7b1b55be3e7b1",
@@ -14,7 +14,14 @@
   "commands": [
     "node node_modules/typescript/bin/tsc -b tsconfig.workspace.json",
     "node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report <baseline-report.json>",
-    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs"
+    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
+    "node wasm/test/fixtures/pure-helpers/r1-01/compare-inference.cjs",
+    "node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --report <final-report.json>",
+    "npm run maintainer:sync",
+    "npm run docs:sync",
+    "npm run maintainer:check",
+    "npm run docs:check",
+    "node scripts/documentation-release.cjs"
   ],
   "boundary": "no matching named Entry Point; ordinary root/wasm/compiler instruction chain",
   "writeSet": [
@@ -24,9 +31,12 @@
     "wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
     "wasm/test/suite/registry.cjs",
     "docs/architecture/current-contracts.md",
-    "wasm/test/fixtures/pure-helpers/r1-01/*"
+    "wasm/test/fixtures/pure-helpers/r1-01/*",
+    "scripts/release-evidence-bundle.cjs",
+    "wasm/test/assert-hidden-contracts.cjs",
+    "wasm/packages/cli/docs/architecture/current-contracts.md"
   ],
-  "nextAction": "centralize shapes and result inference, preserving producer/provenance differences and independent validation",
+  "nextAction": "verify terminal coverage of all 106 selected tasks, preserve reports, run scope declaration, open unmerged PR",
   "exclusions": [
     "source-helper-plan.js validation policy changes",
     "new syntax or types",
@@ -40,5 +50,28 @@
     "dependencySetup": "copied existing lockfile-pinned workspace; fresh offline pnpm install blocked by absent registry metadata; no dependency-policy bypass",
     "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
     "sandboxAttempt": "unchanged native compiler subprocess returned status 0 with false spawnSync EPERM; same serial runner passed outside sandbox"
-  }
+  },
+  "additionalOwners": {
+    "scripts/release-evidence-bundle.cjs": "One additive registration in the existing lowering shard so release task coverage remains exact. No release/provenance policy changes.",
+    "wasm/test/assert-hidden-contracts.cjs": "Classify four internal inference constants in the existing package-local ledger. The scanner and assertions are unchanged.",
+    "wasm/packages/cli/docs/architecture/current-contracts.md": "Regenerated installed copy from the canonical architecture page."
+  },
+  "checkpointCommit": "cba5c993a745aad1883ec697bd8164733963bf5b",
+  "lastSuccessfulGates": [
+    "seven accepted plan/generated-source hashes and seven diagnostics exactly equal baseline",
+    "representative native source/Wasm bytes and SHA-256 exactly equal baseline",
+    "6391 inference comparisons equal pinned implementation",
+    "maintainer check",
+    "documentation synchronization/site check",
+    "documentation-release check"
+  ],
+  "currentBlocker": null,
+  "testedProductSha256": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e",
+    "wasm/packages/compiler/src/spine/pure-helper-source.js": "43bfd975bf59caafaa85c5d7bf0d6fa586859396c34bea3e9c3ddb4839921b95",
+    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d"
+  },
+  "validatorUnchanged": true,
+  "testedWorkingTree": "uncommitted development diff from the pinned base; exact product file hashes retained"
 }

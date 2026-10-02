@@ -103,6 +103,8 @@ try {
     });
     return diagnostics;
   });
+  assert.ok(rejected[0].some(d => d.message === 'pure element requires a numeric array and index'),
+    'String inference must not silently expand the pure-body indexing policy.');
   const { plan } = compile(...positives[3]);
   const native = compileCanonicalNativePlan(plan, { cwd: root, emitWat: false });
   console.log(JSON.stringify({ status: 'passed', shapeCases: shapes.length, operationCases: operations.length + 10,

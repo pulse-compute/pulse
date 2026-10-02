@@ -1,11 +1,12 @@
 'use strict';
 
 const ts = require('typescript');
+const values = require('../pure-helper-values');
 
 // Admission only; lowering remains in Handler IR and the canonical plan.
 function validatePureHelperSource(helper) {
   const fn = helper.functionNode, source = helper.sourceFile, diagnostics = [];
-  const scalar = node => node && [ts.SyntaxKind.StringKeyword, ts.SyntaxKind.NumberKeyword, ts.SyntaxKind.BooleanKeyword].includes(node.kind);
+  const scalar = node => node && values.scalar(ts.tokenToString(node.kind));
   helper.parameterTypes = fn.parameters.map(p => helper.resolveType?.(p.type) || (scalar(p.type) ? p.type.getText(source) : undefined));
   function fail(node, reason, message) {
     const pos = source.getLineAndCharacterOfPosition(node.getStart(source));
@@ -73,8 +74,8 @@ function validatePureHelperSource(helper) {
 // Resolve only structural declarations in the already contained project graph.
 // No TypeScript checker widening, ambient types, package lookup or runtime import.
 function resolvePureType(context, module, node, seen = new Set(), depth = 0) {
-  if (!node || depth > 2) return;
-  if ([ts.SyntaxKind.StringKeyword, ts.SyntaxKind.NumberKeyword, ts.SyntaxKind.BooleanKeyword].includes(node.kind)) return node.getText(module.sourceFile);
+  if (!node || depth > values.BORROW_LIMITS.recordDepth) return;
+  if (values.scalar(ts.tokenToString(node.kind))) return node.getText(module.sourceFile);
   if (ts.isArrayTypeNode(node) && node.elementType.kind === ts.SyntaxKind.NumberKeyword) return { kind: 'number-array' };
   if (ts.isTypeReferenceNode(node) && ts.isIdentifier(node.typeName) && !node.typeArguments?.length) {
     const name = node.typeName.text, key = module.path + '#' + name;
@@ -101,17 +102,17 @@ function resolvePureType(context, module, node, seen = new Set(), depth = 0) {
     }
     return;
   }
-  if ((ts.isInterfaceDeclaration(node) || ts.isTypeLiteralNode(node)) && depth < 2) {
+  if ((ts.isInterfaceDeclaration(node) || ts.isTypeLiteralNode(node)) && depth < values.BORROW_LIMITS.recordDepth) {
     const fields = [];
     for (const member of node.members) {
       if (!ts.isPropertySignature(member) || !ts.isIdentifier(member.name) || member.questionToken || member.initializer) return;
       const name = member.name.text;
-      if (['__proto__', 'constructor', 'prototype'].includes(name) || fields.some(f => f.name === name)) return;
+      if (values.FORBIDDEN_FIELDS.includes(name) || fields.some(f => f.name === name)) return;
       const type = resolvePureType(context, module, member.type, seen, depth + 1);
       if (!type) return;
       fields.push({ name, type });
     }
-    if (fields.length && fields.length <= 32) return { kind: 'record', fields };
+    if (fields.length && fields.length <= values.BORROW_LIMITS.recordFields) return { kind: 'record', fields };
   }
 }
 function typeNode(type) {

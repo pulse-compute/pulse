@@ -239,21 +239,6 @@ function resultKindForEffect(site, decoder, continuation, resultMode) {
   return 'unknown';
 }
 
-function inferBinaryValueKind(operator, left, right) {
-  if (['===', '!==', '==', '!=', '<', '<=', '>', '>=', 'in'].includes(operator)) return 'boolean';
-  if (['&&', '||', '??'].includes(operator)) {
-    if (left.valueKind === right.valueKind) return left.valueKind;
-    if (['||', '??'].includes(operator)) {
-      const kinds = new Set([left.valueKind, right.valueKind]);
-      if (kinds.has('string') && kinds.has('string-or-undefined')) return 'string';
-    }
-    return 'unknown';
-  }
-  if (operator === '+' && (left.valueKind === 'string' || right.valueKind === 'string')) return 'string';
-  if (['+', '-', '*', '/', '%', '**', '&', '|', '^', '<<', '>>', '>>>'].includes(operator)) return 'number';
-  return 'unknown';
-}
-
 class NativePlanBuilder {
   constructor(compiled, options = {}) {
     this.compiled = compiled;
@@ -485,7 +470,7 @@ class NativePlanBuilder {
       }
       const left = this.expression(current.left, scope);
       const right = this.expression(current.right, scope);
-      return Object.freeze({ kind: 'binary', operator, left, right, valueKind: inferBinaryValueKind(operator, left, right) });
+      return Object.freeze({ kind: 'binary', operator, left, right, valueKind: pureValues.binaryKind(operator, left.valueKind, right.valueKind) });
     }
 
     if (ts.isPrefixUnaryExpression(current)) {
@@ -497,7 +482,7 @@ class NativePlanBuilder {
         this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Prefix operator ${operator} is outside the canonical native value model.`, { operator });
       }
       const value = this.expression(current.operand, scope);
-      return Object.freeze({ kind: 'unary', operator, value, valueKind: operator === '!' ? 'boolean' : (operator === 'typeof' ? 'string' : 'number') });
+      return Object.freeze({ kind: 'unary', operator, value, valueKind: pureValues.unaryKind(operator) });
     }
 
     if (ts.isPostfixUnaryExpression(current)) {

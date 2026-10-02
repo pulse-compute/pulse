@@ -81,6 +81,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'canonical-api-lowering',
       'canonical-native-plan',
+      'pure-helper-vocabulary',
       'pure-source-helpers',
       'pure-record-helpers',
       'pure-argument-helpers',
