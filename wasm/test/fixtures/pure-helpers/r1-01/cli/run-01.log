@@ -1,0 +1,160 @@
+
+[pulsewasm:cli] cli-command-spec
+[pulsewasm] public parser, help, aliases, and positionals (timeout 30.00s)
+ok - CLI parser, help, machine spec, and 3 completions agree on 7 commands and 18 public options with no hidden product controls
+[pulsewasm] cli-command-spec: passed in 57ms
+
+[pulsewasm:cli] cli-init-workflow
+[pulsewasm] deterministic conventional project creation (timeout 300.00s)
+ok - pulse init deterministically creates a conventional async Pulse project and clean Node/Fastly source candidates
+[pulsewasm] cli-init-workflow: passed in 16.90s
+
+[pulsewasm:cli] cli-project-workflow
+[pulsewasm] doctor, test, inspect, compile, and build workflow (timeout 180.00s)
+ok - pulse CLI drives configured Node builds, inspects and tests Fastly lowering parity, keeps compile provider-neutral, and rejects removed provider/source-only flags
+[pulsewasm] cli-project-workflow: passed in 49.24s
+
+[pulsewasm:cli] cli-expansion-doctor
+[pulsewasm] bounded repeated-owner, retained-stage and missed-sharing doctor diagnostics (timeout 60.00s)
+{"status":"passed","checks":12,"heavyEvidenceLaneAdded":false}
+[pulsewasm] cli-expansion-doctor: passed in 6.34s
+
+[pulsewasm:cli] cli-project-guards
+[pulsewasm] output containment, redaction, and provider truth guards (timeout 180.00s)
+ok - pulse CLI guards output containment, secret redaction, init conflicts, and configured native Fastly realization
+[pulsewasm] cli-project-guards: passed in 9.08s
+
+[pulsewasm:cli] cli-dev-workflow
+[pulsewasm] Node and Fastly development lifecycle (timeout 60.00s)
+ok - pulse dev serves generated conventional Node/Fastly projects with live host fetch, wildcard-host reachability, one-request mode, graceful shutdown, and debounced source reload
+[pulsewasm] cli-dev-workflow: passed in 9.93s
+
+[pulsewasm:cli] cli-schema-json-workflow
+[pulsewasm] schema compile, execution, diagnostics, and reload (timeout 180.00s)
+ok - pulse CLI compiles explicit TypeScript JSON schemas, links exact handler references, executes shared Node/Fastly codecs, emits registry/codecs for both targets, rejects invalid references, and reloads schema dependencies
+[pulsewasm] cli-schema-json-workflow: passed in 47.95s
+
+[pulsewasm:external] events-cli-workflow
+[pulsewasm] event-aware project harness, inspection, packaging, Node JavaScript/Native workflow, and exact Fastly fail-closed eligibility (timeout 300.00s)
+{
+  "status": "passed",
+  "version": "pulse.events-cli-workflow.v1",
+  "nodeTargets": [
+    "javascript",
+    "native"
+  ],
+  "eventCases": 2,
+  "httpCases": 2,
+  "packagedCatalogs": 3,
+  "fastlyBlockedCells": 4,
+  "publicEventCommand": false,
+  "automaticFallback": false
+}
+[pulsewasm] events-cli-workflow: passed in 43.56s
+
+[pulsewasm:cli] cli-diagnostics
+[pulsewasm] stable diagnostics, remediation, and exit policy (timeout 120.00s)
+ok - CLI diagnostics align stable codes, categories, exit/HTTP policy, remediation, docs, doctor checks, expected runtime errors, provider bindings, and explicit Fastly CLI/Viceroy launcher failures
+[pulsewasm] cli-diagnostics: passed in 5.39s
+
+[pulsewasm:cli] docs-executable-contracts
+[pulsewasm] source-bound documentation contracts (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify CLI reference and flags
+docs - execute 15 documented command/result bindings
+docs - run docs/concepts/bodies.md: pulse inspect examples/07-opaque-proxy --json
+docs - run docs/concepts/compilation-and-lowering.md: pulse inspect examples/03-fetch-composition --json
+docs - run docs/examples.md: pulse build --out .pulse-docs-build --json
+docs - run docs/getting-started.md: pnpm pulse -- init ./hello-pulse --json
+docs - run docs/reference/diagnostics.md: pulse test examples/02-request-schema --case invalid-user --json
+docs - run examples/01-hello-json/README.md: pulse test --json
+docs - run examples/02-request-schema/README.md: pulse test --json
+docs - run examples/03-fetch-composition/README.md: pulse test --json
+docs - run examples/05-fastly-capabilities/README.md: pulse test --json
+docs - run examples/07-opaque-proxy/README.md: pulse test --json
+docs - run examples/09-router-lowering/README.md: pulse inspect --json
+docs - run examples/09-router-lowering/README.md: pulse test --json
+docs - run examples/11-events/README.md: pulse test --json
+docs - run examples/12-mcp-proxy/README.md: pulse test --json
+docs - run examples/13-jwt-es256/README.md: pulse test --json
+ok - executable documentation contract binds 54 source block(s) and verifies 15 documented result(s)
+[pulsewasm] docs-executable-contracts: passed in 22.84s
+
+[pulsewasm:cli] docs-executable-init-dev
+[pulsewasm] documented init and development lifecycle (timeout 180.00s)
+docs - execute clean init workflow
+docs - execute live dev workflow
+ok - executable documentation init and live dev workflows passed
+[pulsewasm] docs-executable-init-dev: passed in 5.85s
+
+[pulsewasm:cli] docs-migration-schema-lowering
+[pulsewasm] Express migration, schema/body ownership, and package-lowering documentation contracts (timeout 30.00s)
+ok - Express migration, schema boundaries, body ownership, and package-lowering owners match current repository contracts
+[pulsewasm] docs-migration-schema-lowering: passed in 32ms
+
+[pulsewasm:cli] docs-example-01-hello-json
+[pulsewasm] documented 01-hello-json workflow (timeout 180.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 01-hello-json
+ok - docs example 01-hello-json: provider=node tests=3 capabilities=2
+[pulsewasm] docs-example-01-hello-json: passed in 6.29s
+
+[pulsewasm:cli] docs-example-02-request-schema
+[pulsewasm] documented 02-request-schema workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 02-request-schema
+ok - docs example 02-request-schema: provider=node tests=2 capabilities=5 schemas=2
+[pulsewasm] docs-example-02-request-schema: passed in 10.50s
+
+[pulsewasm:cli] docs-example-03-fetch-composition
+[pulsewasm] documented 03-fetch-composition workflow (timeout 180.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 03-fetch-composition
+ok - docs example 03-fetch-composition: provider=node tests=3 capabilities=3
+[pulsewasm] docs-example-03-fetch-composition: passed in 7.03s
+
+[pulsewasm:cli] docs-example-05-fastly-capabilities
+[pulsewasm] documented 05-fastly-capabilities workflow (timeout 360.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 05-fastly-capabilities
+AssertionError [ERR_ASSERTION]: 05-fastly-capabilities documented provider Wasm size changed
+
+47185 !== 47135
+
+    at verifyDefaultNativeSizes (/workspace/scratch/bf0d896ef055/pulse-r101/wasm/test/docs/assert-executable-documentation.cjs:526:12)
+    at verifyExampleWorkflow (/workspace/scratch/bf0d896ef055/pulse-r101/wasm/test/docs/assert-executable-documentation.cjs:716:41)
+    at main (/workspace/scratch/bf0d896ef055/pulse-r101/wasm/test/docs/assert-executable-documentation.cjs:876:23)
+    at Object.<anonymous> (/workspace/scratch/bf0d896ef055/pulse-r101/wasm/test/docs/assert-executable-documentation.cjs:925:3)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+[pulsewasm] docs-example-05-fastly-capabilities: failed in 11.11s
+
+[pulsewasm] test summary
+  passed          57ms  cli-command-spec  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-command-spec.log)
+  passed        16.90s  cli-init-workflow  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-init-workflow.log)
+  passed        49.24s  cli-project-workflow  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-project-workflow.log)
+  passed         6.34s  cli-expansion-doctor  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-expansion-doctor.log)
+  passed         9.08s  cli-project-guards  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-project-guards.log)
+  passed         9.93s  cli-dev-workflow  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-dev-workflow.log)
+  passed        47.95s  cli-schema-json-workflow  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-schema-json-workflow.log)
+  passed        43.56s  events-cli-workflow  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/events-cli-workflow.log)
+  passed         5.39s  cli-diagnostics  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/cli-diagnostics.log)
+  passed        22.84s  docs-executable-contracts  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-executable-contracts.log)
+  passed         5.85s  docs-executable-init-dev  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-executable-init-dev.log)
+  passed          32ms  docs-migration-schema-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-migration-schema-lowering.log)
+  passed         6.29s  docs-example-01-hello-json  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-example-01-hello-json.log)
+  passed        10.50s  docs-example-02-request-schema  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-example-02-request-schema.log)
+  passed         7.03s  docs-example-03-fetch-composition  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-example-03-fetch-composition.log)
+  failed        11.11s  docs-example-05-fastly-capabilities  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939/tasks/docs-example-05-fastly-capabilities.log)
+  report       /workspace/scratch/bf0d896ef055/r101-cli-01-report.json
+  run logs     /workspace/scratch/bf0d896ef055/runs/2026-10-02T18-52-20-995Z--30939
+  total        252.10s

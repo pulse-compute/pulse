@@ -1,0 +1,17 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> docs:check
+> node wasm/scripts/sync-doc-snippets.cjs --check && node scripts/build-docs-site.cjs --check
+
+ok - 228 generated documentation/package file(s), 5 maintenance-policy output(s), 54 source block(s), and 20 owned page(s) are synchronized
+Error: Starry Night highlighting failed: spawnSync /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node EPERM
+    at fail (/workspace/scratch/bf0d896ef055/pulse-r101/scripts/build-docs-site.cjs:117:17)
+    at highlightMarkdownCode (/workspace/scratch/bf0d896ef055/pulse-r101/scripts/build-docs-site.cjs:83:23)
+    at buildDocumentationSite (/workspace/scratch/bf0d896ef055/pulse-r101/scripts/build-docs-site.cjs:990:22)
+    at main (/workspace/scratch/bf0d896ef055/pulse-r101/scripts/build-docs-site.cjs:1284:22)
+    at Object.<anonymous> (/workspace/scratch/bf0d896ef055/pulse-r101/scripts/build-docs-site.cjs:1307:30)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)

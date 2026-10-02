@@ -32,6 +32,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'pure-helper-vocabulary': nodeTask('test/lowering/assert-pure-helper-vocabulary.cjs', {
+    evidence: 'native', description: 'Helper shape/operation characterization and the unchanged string-index validator boundary', timeoutMs: 30000
+  }),
   'pure-argument-helpers': nodeTask('test/lowering/assert-pure-argument-helpers.cjs', {
     evidence: 'native', description: 'Typed KV and scalar projection provenance, parity and independent tamper rejection', timeoutMs: 180000
   }),
@@ -1090,6 +1093,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'pure-helper-vocabulary',
     'pure-source-helpers',
     'pure-record-helpers',
     'pure-argument-helpers',

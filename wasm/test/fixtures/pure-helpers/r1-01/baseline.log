@@ -1,0 +1,35 @@
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 918ms
+
+[pulsewasm:native] pure-source-helpers
+[pulsewasm] PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans (timeout 120.00s)
+{"status":"passed","cells":[{"count":1,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2106},{"count":2,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2237},{"count":16,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":3332}],"sourceRejections":22,"planRejections":19,"scope":"Source-tree scalar proof; no packed consumer or final-Wasm sharing claim."}
+[pulsewasm] pure-source-helpers: passed in 6.96s
+
+[pulsewasm:native] pure-record-helpers
+[pulsewasm] Read-only structural pure helper parity, ownership and allocation proof (timeout 180.00s)
+{"status":"passed","parityCases":59,"sourceRejections":22,"planRejections":16,"costs":[{"calls":0,"handles":19,"structuredHandleInsertions":1,"distinctPayloadObjects":1,"wasmBytes":42286,"linearMemoryBytes":1245184},{"calls":1,"handles":226,"structuredHandleInsertions":16,"distinctPayloadObjects":3,"wasmBytes":43568,"linearMemoryBytes":1245184},{"calls":2,"handles":433,"structuredHandleInsertions":31,"distinctPayloadObjects":3,"wasmBytes":43587,"linearMemoryBytes":1245184},{"calls":16,"handles":3331,"structuredHandleInsertions":241,"distinctPayloadObjects":3,"wasmBytes":43758,"linearMemoryBytes":1245184}],"representation":"Borrowed i32 value handles; no per-call serialization, effects, payload copies or guest heap allocation. Property/operator reads retain existing host-handle costs; no reclamation or RSS claim."}
+[pulsewasm] pure-record-helpers: passed in 14.66s
+
+[pulsewasm:native] pure-loop-helpers
+[pulsewasm] Pure validators in bounded caller loops, combined limits and invocation isolation (timeout 180.00s)
+{"status":"passed","parityCases":19,"sourceRejections":10,"planRejections":12,"readSites":1,"pureHelperReadSites":0,"combinedLimit":65536}
+[pulsewasm] pure-loop-helpers: passed in 5.00s
+
+[pulsewasm:native] pure-argument-helpers
+[pulsewasm] Typed KV and scalar projection provenance, parity and independent tamper rejection (timeout 180.00s)
+{"status":"passed","parityCases":21,"variants":6,"sourceRejections":13,"planRejections":12}
+[pulsewasm] pure-argument-helpers: passed in 17.50s
+
+[pulsewasm] test summary
+  passed         918ms  pure-helper-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-23-57-959Z--12974/tasks/pure-helper-contract.log)
+  passed         6.96s  pure-source-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-23-57-959Z--12974/tasks/pure-source-helpers.log)
+  passed        14.66s  pure-record-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-23-57-959Z--12974/tasks/pure-record-helpers.log)
+  passed         5.00s  pure-loop-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-23-57-959Z--12974/tasks/pure-loop-helpers.log)
+  passed        17.50s  pure-argument-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-23-57-959Z--12974/tasks/pure-argument-helpers.log)
+  report       /workspace/scratch/bf0d896ef055/r101-baseline-qualified.json
+  run logs     /workspace/scratch/bf0d896ef055/runs/2026-10-02T18-23-57-959Z--12974
+  total        45.04s

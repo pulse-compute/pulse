@@ -248,7 +248,27 @@ Effectful `pulse.canonical-native-helper.v1` keeps its suspension contract.
 Plan/compiler v9 invalidate older cached plans; regenerate them from source.
 Generator v9 and the guest ABI are unchanged.
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
+`wasm/packages/compiler/src/pure-helper-values.js` owns the internal bounded
+value vocabulary: scalar kinds, record depth/field limits, prohibited field
+names, structural equality, field/index result facts and operator result facts.
+The source type resolver translates contained TypeScript declarations using
+those limits; the Native plan builder consumes the shared result rules. Neither
+consumer owns a second binary/unary result-rule implementation.
+
+The vocabulary preserves two existing inference boundaries. Dynamic plan kinds
+include symmetric optional-string defaults and `in`; reconstructed type facts
+use structural equality and only a left optional-string default. Inference does
+not establish operation admission. `source-helper-plan.js` remains the independent
+validator, reconstructing caller provenance, helper operands and ownership after
+deserialization. R1-01 changes inference ownership without changing that policy.
+
+String length is admitted in pure callees. Numeric string indexing is inferred
+as `string` and admitted for proven caller projections, but independent pure
+callee-body validation currently rejects it as requiring a numeric array. The
+characterization suite preserves this disagreement; support must be expanded
+deliberately in the later bounded string-index task.
+
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
 for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.

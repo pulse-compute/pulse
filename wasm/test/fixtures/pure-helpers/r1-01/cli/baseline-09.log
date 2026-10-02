@@ -1,0 +1,27 @@
+
+[pulsewasm:cli] docs-example-09-router-lowering
+[pulsewasm] documented 09-router-lowering workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 09-router-lowering
+AssertionError [ERR_ASSERTION]: 09-router-lowering documented application guest Wasm size changed
+
+9157 !== 9762
+
+    at verifyDefaultNativeSizes (/workspace/scratch/bf0d896ef055/pulse-r101-base/wasm/test/docs/assert-executable-documentation.cjs:516:10)
+    at verifyExampleWorkflow (/workspace/scratch/bf0d896ef055/pulse-r101-base/wasm/test/docs/assert-executable-documentation.cjs:716:41)
+    at main (/workspace/scratch/bf0d896ef055/pulse-r101-base/wasm/test/docs/assert-executable-documentation.cjs:876:23)
+    at Object.<anonymous> (/workspace/scratch/bf0d896ef055/pulse-r101-base/wasm/test/docs/assert-executable-documentation.cjs:925:3)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+[pulsewasm] docs-example-09-router-lowering: failed in 7.07s
+
+[pulsewasm] test summary
+  failed         7.07s  docs-example-09-router-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T19-06-20-458Z--36454/tasks/docs-example-09-router-lowering.log)
+  report       /workspace/scratch/bf0d896ef055/r101-cli-baseline-09-report.json
+  run logs     /workspace/scratch/bf0d896ef055/runs/2026-10-02T19-06-20-458Z--36454
+  total        7.07s

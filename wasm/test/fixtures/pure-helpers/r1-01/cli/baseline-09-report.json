@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-02T19-06-20-458Z--36454",
+  "sourceRevision": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+  "sourceIdentity": {
+    "sourceRevision": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-02T19:06:20.463Z",
+  "updatedAt": "2026-10-02T19:06:27.535Z",
+  "finishedAt": "2026-10-02T19:06:27.535Z",
+  "durationMs": 7072,
+  "profiles": [],
+  "requestedTasks": [
+    "docs-example-09-router-lowering"
+  ],
+  "selectedTasks": [
+    "docs-example-09-router-lowering"
+  ],
+  "currentTask": null,
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "docs-example-09-router-lowering",
+      "evidence": "cli",
+      "description": "documented 09-router-lowering workflow",
+      "commandSignature": "a0c3802642f1ea17fd38722fb4e7085aa1f81089436d502e5839af2eb23b173a",
+      "timeoutMs": 240000,
+      "durationMs": 7070,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "logPath": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T19-06-20-458Z--36454/tasks/docs-example-09-router-lowering.log",
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T19-06-20-458Z--36454"
+}
