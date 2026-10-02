@@ -218,6 +218,13 @@ numeric array reads are proven independently. Optional schema strings require a
 string default. Mutable caller bindings are admitted only when every initializer
 and assignment has the same structural type; nullable schema locals additionally
 need an explicit non-null guard or definite non-null assignment at the read.
+S-02 preserves required scalar field facts across a bounded record spread when
+the spread source and resulting record both satisfy the existing field/depth
+limits and every assignment retains the same shape. A self-spread may use the
+proven initializer shape as its recursive seed; all writes must independently
+reconstruct that shape. Unknown spreads, changed or optional field types and
+cyclic alias provenance do not establish a projection. The validator checks
+the serialized definitions and writes rather than trusting producer field tags.
 The validator follows aliases and rejects writes through the borrowed graph
 anywhere in the handler, including after a call. Scalar copies do not retain a
 record alias. Nested record/array reads preserve the original object identity.
@@ -277,7 +284,7 @@ This internal kind does not widen helper signatures or the preexisting caller
 projection policy. No producer tag, serialized hash or signature substitutes
 for independent operand, result and ownership checks.
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-field-projection --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
 for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.

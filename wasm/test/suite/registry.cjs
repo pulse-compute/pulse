@@ -38,6 +38,9 @@ const tasks = Object.freeze({
   'pure-string-index': nodeTask('test/lowering/assert-pure-string-index.cjs', {
     evidence: 'native', description: 'UTF-16 pure-helper indexing across JavaScript and both Native providers', timeoutMs: 180000
   }),
+  'pure-field-projection': nodeTask('test/lowering/assert-pure-field-projection.cjs', {
+    evidence: 'native', description: 'Proven record-spread scalar field facts and independent alias/shape rejection', timeoutMs: 180000
+  }),
   'pure-argument-helpers': nodeTask('test/lowering/assert-pure-argument-helpers.cjs', {
     evidence: 'native', description: 'Typed KV and scalar projection provenance, parity and independent tamper rejection', timeoutMs: 180000
   }),
@@ -1098,6 +1101,7 @@ const profiles = Object.freeze({
   native: Object.freeze([
     'pure-helper-vocabulary',
     'pure-string-index',
+    'pure-field-projection',
     'pure-source-helpers',
     'pure-record-helpers',
     'pure-argument-helpers',

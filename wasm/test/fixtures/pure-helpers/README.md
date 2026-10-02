@@ -53,6 +53,14 @@ out-of-range reads, surrogate boundaries and serialized-plan mutations against
 Node JavaScript, Node Native and the Fastly Native host fixture. It is a small
 generic language proof, not a whole-application size measurement.
 
+S-02 carries required scalar field facts through a bounded record spread with
+same-shape assignments, including a direct self-spread. The independent plan
+validator reconstructs initializer and write types and rejects unknown spreads,
+shape changes, alias writes and cyclic alias provenance. The generic
+`assert-pure-field-projection.cjs` fixture tests source and rehashed-plan
+rejections plus Node JavaScript, Node Native and Fastly Native parity; it makes
+no application-size claim.
+
 ## Record lifetime and aliases (PF-03)
 
 The structural subset is illustrated by `PartitionHead` in `types.ts`: scalar fields,
