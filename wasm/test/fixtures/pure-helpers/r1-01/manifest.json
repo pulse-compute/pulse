@@ -1,0 +1,44 @@
+{
+  "task": "R1-01",
+  "class": "behavior-preserving refactor",
+  "status": "baseline-characterized; implementation next",
+  "branch": "codex/r1-01-helper-vocabulary",
+  "base": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+  "baseTree": "bb79646fe9174d86572b6e37b6b7b1b55be3e7b1",
+  "baselineProductFiles": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "dea8259e9d81127a9fa89afb75deb0e9c2cbefd212e11d59a972db4c275786f6",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "863d478624c83988562e9f717deecf358ab3a666d07492f17d6cfc4dd7daa51c",
+    "wasm/packages/compiler/src/spine/pure-helper-source.js": "bd7066e0b1052d51544494f31aa9153c4ec57f73328a7067234c825e1d6363f8",
+    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d"
+  },
+  "commands": [
+    "node node_modules/typescript/bin/tsc -b tsconfig.workspace.json",
+    "node wasm/scripts/run-wasm-tests.cjs --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report <baseline-report.json>",
+    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs"
+  ],
+  "boundary": "no matching named Entry Point; ordinary root/wasm/compiler instruction chain",
+  "writeSet": [
+    "wasm/packages/compiler/src/pure-helper-values.js",
+    "wasm/packages/compiler/src/canonical-native-plan.js",
+    "wasm/packages/compiler/src/spine/pure-helper-source.js",
+    "wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
+    "wasm/test/suite/registry.cjs",
+    "docs/architecture/current-contracts.md",
+    "wasm/test/fixtures/pure-helpers/r1-01/*"
+  ],
+  "nextAction": "centralize shapes and result inference, preserving producer/provenance differences and independent validation",
+  "exclusions": [
+    "source-helper-plan.js validation policy changes",
+    "new syntax or types",
+    "loop-budget changes",
+    "ABI or optimizer changes",
+    "application extraction",
+    "merge or release"
+  ],
+  "environment": {
+    "node": "24.19.0",
+    "dependencySetup": "copied existing lockfile-pinned workspace; fresh offline pnpm install blocked by absent registry metadata; no dependency-policy bypass",
+    "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+    "sandboxAttempt": "unchanged native compiler subprocess returned status 0 with false spawnSync EPERM; same serial runner passed outside sandbox"
+  }
+}
