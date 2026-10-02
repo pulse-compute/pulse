@@ -44,6 +44,20 @@ const app=new Pulse({auto:true});app.${method}('/',async(ctx)=>{${body}});export
         assert.equal(nr.response.body, await jr.text());
       }
     }
+    function fastlyGuardParity(source, body, expected) {
+      const {plan}=compile(source,`if(ctx.req.header('x-probe')==='fetch'){const unused=await ctx.fetch('https://probe.test').text();}`+body,true,'post');
+      const builds = [
+        [require('../../../packages/provider-fastly/src/build/native-http-effects.js').compileFastlyNativeHttpEffectsPlan, require('../../../packages/provider-fastly/src/testing/native-http-effects-host.js').executeFastlyNativeHttpEffects],
+        [require('../../../packages/provider-fastly/src/build/native-platform-capabilities.js').compileFastlyNativePlatformCapabilitiesPlan, tc.executeFastlyNativePlatformCapabilities]
+      ];
+      for(const [build,execute] of builds){
+        const native=build(plan,{cwd:root,requirePlatformCapability:false,canonicalBuild:true,backends:{'https://probe.test':'probe'}});
+        for(const value of ['', 'abc', '😀', 17, false, null, [], {}, undefined]){
+          const response=execute(native,{request:{method:'POST',path:'/',url:'https://test/',headers:{'content-type':'application/json'},body:JSON.stringify({name:value})}}).response;
+          assert.equal(response.body,expected(value));
+        }
+      }
+    }
     const cells = [];
     let tamperPlan;
     for (const count of [1, 2, 16]) {
@@ -124,12 +138,23 @@ const app=new Pulse({auto:true});app.${method}('/',async(ctx)=>{${body}});export
       guardedBody.replace('const value=', 'let value='),
       guardedBody.replace("input.name=17;", "value=17;")
     ])assert.throws(()=>compile(guardedSource,body));
+    fastlyGuardParity(guardedSource,guardedBody,value=>typeof value==='string'?String(value.length):'invalid');
     const findGuard=value=>{
       if(!value||typeof value!=='object')return;
       if(value.kind==='if' && value.test?.left?.operator==='typeof')return value;
       for(const child of Object.values(value)){const found=findGuard(child);if(found)return found;}
     };
     for(const mutate of [
+      p=>{
+        const guard=findGuard(p.handlers),id=guard.test.left.value.id;
+        guard.then.unshift({kind:'local',localId:id,name:'value',declaration:'const',valueKind:'number',value:{kind:'literal',value:17,valueKind:'number'}});
+        p.summary.statementCount++;p.summary.expressionCount++;
+      },
+      p=>{
+        const guard=findGuard(p.handlers),id=guard.test.left.value.id;
+        guard.then.unshift({kind:'pure-loop',localId:id,name:'value',maxIterations:0,test:{kind:'binary',operator:'<',left:{kind:'local',id,name:'value',valueKind:'number'},right:{kind:'literal',value:0,valueKind:'number'},valueKind:'boolean'},body:[]});
+        p.summary.statementCount++;p.summary.expressionCount+=3;
+      },
       p=>{findGuard(p.handlers).test={kind:'literal',value:true,valueKind:'boolean'};},
       p=>{findGuard(p.handlers).test.operator='!==';},
       p=>{findGuard(p.handlers).test.right.value='number';},
@@ -142,8 +167,10 @@ const app=new Pulse({auto:true});app.${method}('/',async(ctx)=>{${body}});export
     }
 
     for(const kind of ['string','number','boolean']){
-      const cell=compile(`export function isPositive(value:${kind}):${kind} {return value;}`,
-        `const input=await ctx.req.json();const value=input.name;if(typeof value!=='${kind}'){return ctx.text('invalid');}else{return ctx.text(''+isPositive(value));}`,true,'post');
+      const source=`export function isPositive(value:${kind}):${kind} {return value;}`;
+      const body=`const input=await ctx.req.json();const value=input.name;if(typeof value!=='${kind}'){return ctx.text('invalid');}else{return ctx.text(''+isPositive(value));}`;
+      const cell=compile(source,body,true,'post');
+      fastlyGuardParity(source,body,value=>typeof value===kind?String(value):'invalid');
       const native=compileCanonicalNativePlan(cell.plan,{cwd:root,emitWat:false});
       const js=tc.prepareJavascriptApplication(tc.resolveProject({cwd,profile:'js'}));
       for(const value of ['abc',17,false,null,[],{}]){

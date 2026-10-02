@@ -9,11 +9,21 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   const effects = new Map(plan.effects.map(e => [e.id, e]));
   const calls = new Map(), sites = new Map();
   const definitions = new Map(), writes = new Map(), memberWrites = [];
+  const definitionCounts = new Map(), resultBindings = new Set(), constDefinitions = new Set();
   const inputVisitor = s => {
-    if (s.kind === 'local') definitions.set(s.localId, s.value);
+    if (s.kind === 'local') {
+      definitions.set(s.localId, s.value);
+      definitionCounts.set(s.localId, (definitionCounts.get(s.localId) || 0) + 1);
+      if (s.declaration === 'const') constDefinitions.add(s.localId);
+    }
+    if (s.result?.localId) resultBindings.add(s.result.localId);
+    for (const result of s.results || []) if (result.localId) resultBindings.add(result.localId);
     // Loop ownership, zero initialization, monotonic steps and immutable active
     // counters are independently checked by validatePlanTree.
-    if (['pure-loop', 'read-loop'].includes(s.kind)) definitions.set(s.localId, { kind: 'literal', value: 0, valueKind: 'number' });
+    if (['pure-loop', 'read-loop'].includes(s.kind)) {
+      definitions.set(s.localId, { kind: 'literal', value: 0, valueKind: 'number' });
+      resultBindings.add(s.localId);
+    }
   };
   inputVisitor.expression = e => {
     if (['assignment', 'update'].includes(e.kind) && ['property', 'element'].includes(e.target?.kind)) memberWrites.push(e);
@@ -23,6 +33,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   };
   for (const body of [plan.entry.body, ...(plan.handlers || []).map(h => h.body), ...(plan.stages || []).map(h => h.body)]) walkStatements(body, inputVisitor);
   for (const effect of plan.effects) {
+    if (effect.result?.localId) resultBindings.add(effect.result.localId);
     for (const input of effect.inputs || []) walkExpression(input.value, inputVisitor.expression);
     for (const arg of effect.result?.decoder?.arguments || []) walkExpression(arg, inputVisitor.expression);
   }
@@ -82,7 +93,8 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   const scalarAt = new WeakMap();
   const scalarKey = (id, kind) => `scalar:${id}:${kind}`;
   function guardedScalar(e) {
-    if (e?.kind !== 'local' || locals.get(e.id)?.declaration !== 'const' || writes.has(e.id)) return;
+    if (e?.kind !== 'local' || locals.get(e.id)?.declaration !== 'const' || !constDefinitions.has(e.id)
+      || definitionCounts.get(e.id) !== 1 || resultBindings.has(e.id) || writes.has(e.id)) return;
     return ['string', 'number', 'boolean'].find(kind => scalarAt.get(e)?.has(scalarKey(e.id, kind)));
   }
   function nullFacts(e, truth, facts) {

@@ -191,9 +191,13 @@ branches and literal-capped loops are admitted. Caller scalar arguments also adm
 `const` snapshot of a value inside an explicit `typeof snapshot === 'string'`
 (or `number` / `boolean`) branch, or the corresponding `!==` else branch.
 Independent plan validation reconstructs the guard at the call and rejects
-mutable bindings, writes, missing/inverted guards and forged scalar tags.
+mutable bindings, duplicate declarations, loop/effect-result rebinding, writes,
+missing/inverted guards and forged scalar tags. A snapshot must have exactly one
+ordinary local declaration.
 The snapshot does not borrow its initializer's record; later field writes do
 not change the checked primitive. This does not admit an unchecked record.
+Both Fastly Native generators implement `typeof` with the existing value kinds
+and unary-operation ABI; null, arrays and records report `object`.
  A pure helper can return its
 scalar result early from its own loop. PF-04 admits pure calls inside existing
 bounded caller loop bodies, including read loops. A pure callee requires no read
