@@ -153,26 +153,27 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   }
   for(const body of [plan.entry.body,...(plan.handlers||[]).map(h=>h.body),...(plan.stages||[]).map(h=>h.body)])markBody(body,new Set());
   const inputTypes = new WeakMap();
-  function inputType(e, seen = new Set()) {
+  function inputType(e, seen = new Map()) {
     if(!e || typeof e!=='object')return;
-    if(inputTypes.has(e))return inputTypes.get(e);
+    if(!seen.size && inputTypes.has(e))return inputTypes.get(e);
     const types = {schemas:plan.schemas?.registry, get(id) {
-      if (seen.has(id)) return undefined;
-      const next = new Set([...seen,id]);
+      if (seen.has(id)) return seen.get(id);
       const value = definitions.get(id), effect = resultEffects.get(id);
-      const candidates=value?[value]:[];
+      const guardedNull = value?.kind==='literal' && value.value===null && nonNullAt.get(e)?.has(id);
+      const base = value && !guardedNull
+        ? inputType(value,new Map([...seen,[id,undefined]])) : effect ? values.effectType(effect,plan.schemas?.registry) : undefined;
+      const next = new Map([...seen,[id,base]]);
+      const candidates=value && !guardedNull || effect ? [base] : [];
       for(const write of writes.get(id)||[]) {
         if(write.kind!=='assignment' || write.operator!=='=') {
-          return values.scalar(inputType(value,next)) ? inputType(value,next) : undefined;
+          return values.scalar(base) ? base : undefined;
         }
-        candidates.push(write.value);
+        candidates.push(inputType(write.value,next));
       }
-      const types=candidates.filter(v=>!(v?.kind==='literal' && v.value===null && nonNullAt.get(e)?.has(id))).map(v=>inputType(v,next));
-      if(effect)types.push(values.effectType(effect,plan.schemas?.registry));
-      return types.length && types[0] && types.every(t=>values.same(types[0],t)) ? types[0] : undefined;
+      return candidates.length && candidates[0] && candidates.every(t=>values.same(candidates[0],t)) ? candidates[0] : undefined;
     }};
     const type=values.readType(e,types);
-    if(type)inputTypes.set(e,type);
+    if(type && !seen.size)inputTypes.set(e,type);
     return type;
   }
   const readonlyChecked=new WeakSet();
@@ -225,8 +226,21 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     readonlyInput(e);
     return type;
   }
+  function containsRecordSpread(e, seen = new Set()) {
+    if (!e || typeof e !== 'object') return false;
+    if (e.kind === 'object' && e.entries?.some(entry => entry.kind === 'spread')) return true;
+    if (e.kind === 'local') {
+      if (seen.has(e.id)) return false;
+      const next = new Set([...seen,e.id]);
+      return containsRecordSpread(definitions.get(e.id),next)
+        || (writes.get(e.id)||[]).some(write => containsRecordSpread(write.value,next));
+    }
+    return Object.values(e).some(child => Array.isArray(child)
+      ? child.some(item => containsRecordSpread(item,seen)) : containsRecordSpread(child,seen));
+  }
   function proveBorrow(e, expected) {
     if (!values.validType(expected)) { fail('invalid borrow type'); return false; }
+    if (containsRecordSpread(e)) { fail('pure structured borrow cannot derive from a record spread'); return false; }
     readonlyInput(e);
     const actual=inputType(e);
     // A literal graph also proves all scalar initializer/write chains.

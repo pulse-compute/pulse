@@ -83,6 +83,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'canonical-native-plan',
       'pure-helper-vocabulary',
       'pure-string-index',
+      'pure-field-projection',
       'pure-source-helpers',
       'pure-record-helpers',
       'pure-argument-helpers',

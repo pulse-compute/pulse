@@ -104,8 +104,28 @@ function readType(e, types, optionalStringIndex = false) {
   }
   if (e.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(e.name)) return schemaRead(e.arguments?.[e.name === 'request.json' ? 0 : 1], types?.schemas);
   if (e.kind === 'array' && e.items.every(item => read(item) === 'number')) return {kind:'number-array'};
-  if (e.kind === 'object' && e.entries.every(f => f.kind === 'property' && f.key?.kind === 'literal' && typeof f.key.value === 'string')
-    && new Set(e.entries.map(f => f.key.value)).size === e.entries.length) return {kind:'record',fields:e.entries.map(f=>({name:f.key.value,type:read(f.value)}))};
+  if (e.kind === 'object') {
+    if (!e.entries.some(entry => entry.kind === 'spread')) {
+      if (e.entries.every(f => f.kind === 'property' && f.key?.kind === 'literal' && typeof f.key.value === 'string')
+        && new Set(e.entries.map(f => f.key.value)).size === e.entries.length)
+        return {kind:'record',fields:e.entries.map(f=>({name:f.key.value,type:read(f.value)}))};
+      return;
+    }
+    const fields = new Map(), explicit = new Set();
+    for (const entry of e.entries) {
+      if (entry.kind === 'spread') {
+        const spread = read(entry.value);
+        if (spread?.kind !== 'record' || !validType(spread)) return;
+        for (const field of spread.fields) fields.set(field.name, field.type);
+      } else if (entry.kind === 'property' && entry.key?.kind === 'literal' && typeof entry.key.value === 'string'
+        && !explicit.has(entry.key.value)) {
+        explicit.add(entry.key.value);
+        fields.set(entry.key.value, read(entry.value));
+      } else return;
+    }
+    const result = {kind:'record', fields:[...fields].map(([name,type]) => ({name,type}))};
+    if (validType(result)) return result;
+  }
   if (e.kind === 'conditional') { const a=read(e.whenTrue),b=read(e.whenFalse); if(same(a,b))return a; }
   if (e.kind === 'binary') return binaryResult(e.operator, read(e.left), read(e.right), false);
   if (e.kind === 'unary') return unaryType(e.operator);
