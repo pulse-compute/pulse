@@ -5,11 +5,13 @@ const values = require('./pure-helper-values');
 const isPure = helper => helper?.version === contract.CANONICAL_NATIVE_PURE_HELPER_VERSION;
 // Admission belongs to this independent validator, not to inferred result tags.
 // Caller scalars retain their existing coercive rules and optional-string defaults;
-// callee operands must be scalar, arithmetic numeric, and indexes numeric arrays.
+// callee operands must be scalar, arithmetic numeric, and indexes numeric arrays
+// or scalar strings. String index reads may be undefined and cannot escape as a
+// scalar result or be used as an unchecked scalar operand.
 const purePolicy = Object.freeze({
   binary: operator => runtime.CANONICAL_NATIVE_BINARY_OPERATORS.includes(operator) && operator !== 'in',
   unary: operator => runtime.CANONICAL_NATIVE_UNARY_OPERATORS.includes(operator) && operator !== 'void',
-  element: (object, index) => object?.kind === 'number-array' && index === 'number',
+  element: (object, index) => index === 'number' && (object === 'string' || object?.kind === 'number-array'),
   calleeOptionalStringDefault: false
 });
 function binaryResultKind(operator, a, b, optionalStringDefault = true) {
@@ -341,14 +343,15 @@ function validatePureBody(helper, locals, fail) {
     } else if (e.kind === 'element') {
       const object = child(e.object), index = child(e.index);
       const admitted = purePolicy.element(object, index);
-      if (!admitted) fail('pure element requires a numeric array and index');
-      kind = admitted ? values.element(object, index) : 'number';
+      if (!admitted) fail('pure element requires a numeric array or string and numeric index');
+      kind = admitted ? values.element(object, index, undefined, true) : 'number';
     } else if (e.kind === 'binary') {
       const a = child(e.left), b = child(e.right);
-      if (!values.scalar(a) || !values.scalar(b)) fail('pure operators require scalar operands');
+      const rule = values.binaryRule(e.operator);
+      if ((!values.scalar(a) && !(rule === 'comparison' && a === 'string-or-undefined'))
+        || (!values.scalar(b) && !(rule === 'comparison' && b === 'string-or-undefined'))) fail('pure operators require scalar operands');
       if (!purePolicy.binary(e.operator)) fail('unsupported pure binary operator');
       kind = binaryResultKind(e.operator, a, b, purePolicy.calleeOptionalStringDefault);
-      const rule = values.binaryRule(e.operator);
       if ((!rule || rule === 'numeric') && kind !== 'string' && (a !== 'number' || b !== 'number')) fail('pure arithmetic requires numbers');
     } else if (e.kind === 'unary') {
       const value = child(e.value);
@@ -377,7 +380,7 @@ function validatePureBody(helper, locals, fail) {
         kind = 'number';
       }
     } else fail('pure helper expression cannot capture, call, allocate records or access authority');
-    if (!values.validType(kind) || values.kind(kind) !== e.valueKind) fail('pure expression kind mismatch');
+    if ((!values.validType(kind) && kind !== 'string-or-undefined') || values.kind(kind) !== e.valueKind) fail('pure expression kind mismatch');
     return kind;
   }
   function body(statements, available) {

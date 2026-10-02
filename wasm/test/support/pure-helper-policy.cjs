@@ -107,6 +107,7 @@ module.exports = function characterizePolicy(compile) {
   check('body:string-length', true, insert({ kind: 'property', object: local(2), property: 'length', valueKind: 'number' }));
   check('body:record-field', true, insert({ kind: 'property', object: local(5), property: 'name', valueKind: 'string' }));
   check('body:array-index', true, insert({ kind: 'element', object: local(4), index: literal('number'), valueKind: 'number' }));
+  check('body:string-index', true, insert({ kind: 'element', object: local(2), index: literal('number'), valueKind: 'string-or-undefined' }));
   check('caller:string-index', true, argument({ kind: 'element', object: literal('string'), index: literal('number'), valueKind: 'string' }, 'string'));
   check('caller:array-index', true, argument({ kind: 'element', object: { kind: 'array', items: [literal('number')], valueKind: 'array' }, index: literal('number'), valueKind: 'number' }, 'number'));
   const produced = compile(`export function check(n:number,s:string,b:boolean):number {${producerExpressions.map(e => e.source + ';').join('')}return n;}`,

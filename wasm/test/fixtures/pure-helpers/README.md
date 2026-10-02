@@ -44,6 +44,15 @@ Propagate an admitted failure to the existing caller failure mapping, without
 running later arguments/statements. `throw`, `try/catch` and new exception forms
 are excluded. The caller retains response construction and Router decisions.
 
+S-01 admits numeric indexing into a scalar string inside a pure helper. Each
+read follows JavaScript's UTF-16 code-unit indexing and may be `undefined`.
+It can be compared, including for bounded adjacent surrogate-unit checks;
+an unchecked read cannot satisfy a definite scalar return or property use.
+`assert-pure-string-index.cjs` checks empty, fractional, negative and
+out-of-range reads, surrogate boundaries and serialized-plan mutations against
+Node JavaScript, Node Native and the Fastly Native host fixture. It is a small
+generic language proof, not a whole-application size measurement.
+
 ## Record lifetime and aliases (PF-03)
 
 The structural subset is illustrated by `PartitionHead` in `types.ts`: scalar fields,

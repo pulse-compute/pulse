@@ -67,8 +67,11 @@ function unaryType(operator) {
   return Object.hasOwn(UNARY_TYPES, operator) ? UNARY_TYPES[operator] : undefined;
 }
 function unaryKind(operator) { return unaryType(operator) || 'number'; }
-function element(type, indexType, literalIndex) {
-  if (indexType === 'number') return type === 'string' ? 'string' : type?.kind === 'number-array' ? 'number' : undefined;
+function element(type, indexType, literalIndex, optionalStringIndex = false) {
+  if (indexType === 'number') {
+    if (type === 'string') return optionalStringIndex ? 'string-or-undefined' : 'string';
+    if (type?.kind === 'number-array') return 'number';
+  }
   if (typeof literalIndex === 'string') return member(type, literalIndex);
 }
 // Projection types are derived from declarations, literals and schema boundaries.
@@ -89,14 +92,14 @@ function effectType(effect, registry) {
       {name:'status',type:'string'}, {name:'value',type:effect.borrowedValue.type}]};
   if (effect.result?.decoder?.kind === 'json') return schemaRead(effect.result.decoder.arguments?.[0], registry);
 }
-function readType(e, types) {
+function readType(e, types, optionalStringIndex = false) {
   if (!e) return;
-  const read = value => readType(value, types);
+  const read = value => readType(value, types, optionalStringIndex);
   if (e.kind === 'local') return types?.get(e.id);
   if (e.kind === 'literal' && scalar(typeof e.value)) return typeof e.value;
   if (e.kind === 'property') return member(read(e.object), e.property);
   if (e.kind === 'element') {
-    const type = element(read(e.object), read(e.index), e.index?.kind === 'literal' ? e.index.value : undefined);
+    const type = element(read(e.object), read(e.index), e.index?.kind === 'literal' ? e.index.value : undefined, optionalStringIndex);
     if (type) return type;
   }
   if (e.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(e.name)) return schemaRead(e.arguments?.[e.name === 'request.json' ? 0 : 1], types?.schemas);

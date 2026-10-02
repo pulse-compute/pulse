@@ -33,7 +33,10 @@ function vitestTask(files, options = {}) {
 
 const tasks = Object.freeze({
   'pure-helper-vocabulary': nodeTask('test/lowering/assert-pure-helper-vocabulary.cjs', {
-    evidence: 'native', description: 'Helper shape/operation characterization and the unchanged string-index validator boundary', timeoutMs: 30000
+    evidence: 'native', description: 'Helper shape/operation characterization and independent string-index proof', timeoutMs: 30000
+  }),
+  'pure-string-index': nodeTask('test/lowering/assert-pure-string-index.cjs', {
+    evidence: 'native', description: 'UTF-16 pure-helper indexing across JavaScript and both Native providers', timeoutMs: 180000
   }),
   'pure-argument-helpers': nodeTask('test/lowering/assert-pure-argument-helpers.cjs', {
     evidence: 'native', description: 'Typed KV and scalar projection provenance, parity and independent tamper rejection', timeoutMs: 180000
@@ -1094,6 +1097,7 @@ const profiles = Object.freeze({
   ]),
   native: Object.freeze([
     'pure-helper-vocabulary',
+    'pure-string-index',
     'pure-source-helpers',
     'pure-record-helpers',
     'pure-argument-helpers',
