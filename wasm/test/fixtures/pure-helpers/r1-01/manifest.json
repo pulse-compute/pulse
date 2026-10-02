@@ -1,7 +1,7 @@
 {
   "task": "R1-01",
   "class": "behavior-preserving refactor",
-  "status": "refactor implemented; bounded output equivalence passed; four-profile replay running",
+  "status": "refactor complete; characterized output equivalent; ready for review with two pre-existing CLI snapshot failures",
   "branch": "codex/r1-01-helper-vocabulary",
   "base": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
   "baseTree": "bb79646fe9174d86572b6e37b6b7b1b55be3e7b1",
@@ -21,7 +21,13 @@
     "npm run docs:sync",
     "npm run maintainer:check",
     "npm run docs:check",
-    "node scripts/documentation-release.cjs"
+    "node scripts/documentation-release.cjs",
+    "node wasm/scripts/run-wasm-tests.cjs --profile cli --report <cli/report-01.json>",
+    "node wasm/scripts/run-wasm-tests.cjs --profile cli --from docs-example-07-opaque-proxy --report <cli/report-02.json>",
+    "node wasm/scripts/run-wasm-tests.cjs --profile cli --from docs-example-10-entities-tools --report <cli/report-03.json>",
+    "node wasm/scripts/run-wasm-tests.cjs --task docs-example-05-fastly-capabilities --report <baseline-05-report.json> (clean pinned baseline)",
+    "node wasm/scripts/run-wasm-tests.cjs --task docs-example-09-router-lowering --report <baseline-09-report.json> (clean pinned baseline)",
+    "node scripts/maintainer-scope.cjs --base <pinned-base> --head <implementation-head> --declaration-file <pr-body> --check"
   ],
   "boundary": "no matching named Entry Point; ordinary root/wasm/compiler instruction chain",
   "writeSet": [
@@ -36,7 +42,7 @@
     "wasm/test/assert-hidden-contracts.cjs",
     "wasm/packages/cli/docs/architecture/current-contracts.md"
   ],
-  "nextAction": "verify terminal coverage of all 106 selected tasks, preserve reports, run scope declaration, open unmerged PR",
+  "nextAction": "human review of R1-01; R1-02 is the next implementation task; stale CLI byte snapshots require a separate owner follow-up",
   "exclusions": [
     "source-helper-plan.js validation policy changes",
     "new syntax or types",
@@ -63,9 +69,11 @@
     "6391 inference comparisons equal pinned implementation",
     "maintainer check",
     "documentation synchronization/site check",
-    "documentation-release check"
+    "documentation-release check",
+    "unit/native/javascript/conformance: terminal 106/106 task replay",
+    "all 22 CLI tasks covered; 20 pass and two failures exactly reproduce on clean baseline"
   ],
-  "currentBlocker": null,
+  "currentBlocker": "Full CLI gate does not pass: 05/09 byte snapshots fail identically on clean pinned baseline.",
   "testedProductSha256": {
     "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
     "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e",
@@ -73,5 +81,195 @@
     "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d"
   },
   "validatorUnchanged": true,
-  "testedWorkingTree": "uncommitted development diff from the pinned base; exact product file hashes retained"
+  "testedWorkingTree": "uncommitted development diff from the pinned base; exact product file hashes retained",
+  "implementationCommit": "79a6f2b9c57c69c6b9081f27ba92443ff79f5d53",
+  "validation": {
+    "portable": {
+      "status": "passed",
+      "profiles": [
+        "unit",
+        "native",
+        "javascript",
+        "conformance"
+      ],
+      "selected": 106,
+      "completed": 106,
+      "everyTaskPassed": true,
+      "developmentReplay": true
+    },
+    "cli": {
+      "status": "not-passed: two pre-existing byte-snapshot failures",
+      "coverage": "all 22 CLI tasks across three serial development runs; not one passing aggregate",
+      "completed": 22,
+      "passed": 20,
+      "failed": [
+        {
+          "task": "docs-example-05-fastly-capabilities",
+          "baselineActualBytes": 47185,
+          "currentActualBytes": 47185,
+          "documentedExpectedBytes": 47135,
+          "deltaBytes": 0
+        },
+        {
+          "task": "docs-example-09-router-lowering",
+          "baselineActualBytes": 9157,
+          "currentActualBytes": 9157,
+          "documentedExpectedBytes": 9762,
+          "deltaBytes": 0
+        }
+      ],
+      "baselineSource": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+      "baselineTree": "bb79646fe9174d86572b6e37b6b7b1b55be3e7b1",
+      "baselineTrackedTreeClean": true,
+      "goldensChanged": false
+    },
+    "maintainer": "passed",
+    "documentation": "passed",
+    "documentationRelease": "passed",
+    "typeScriptBuild": "passed using lockfile-pinned tsc; fresh pnpm install blocked by offline metadata",
+    "releaseSeal": "not run",
+    "packageActivation": "not performed",
+    "scope": "passed; protected Native target ownership declared; existing user direction covers R1-01; human review still required"
+  },
+  "testedCodeSha256": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e",
+    "wasm/packages/compiler/src/spine/pure-helper-source.js": "43bfd975bf59caafaa85c5d7bf0d6fa586859396c34bea3e9c3ddb4839921b95",
+    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d",
+    "wasm/test/lowering/assert-pure-helper-vocabulary.cjs": "2886007a66ac40cbca7f4e0af008802ab3892608147c8ac82e66abcd33c915cf",
+    "wasm/test/suite/registry.cjs": "c0df34bfa55cf9797e435981af4a50f5c823b9ecb8dc5b1ac13b517676a74565",
+    "wasm/test/assert-hidden-contracts.cjs": "853829c64a141b6aee9d754a95f05b4f31530ffe4f5d72cd84833c42f8c28000",
+    "scripts/release-evidence-bundle.cjs": "c9d4a2a1883254e1b8226d94a0e1452c5464ba0f7c649e73cb3202d1cd72c5a6"
+  },
+  "reportIdentityNote": "Reports retain the pinned base SHA because product/test changes were uncommitted at launch. The implementation commit and exact tested product/test hashes identify those development bytes; no report is relabeled as final-commit CI or a release seal.",
+  "rawArtifacts": {
+    "README.md": {
+      "bytes": 4749,
+      "sha256": "1a9c8ad609b90618abca36aa2335d3442f2bb53e817b6b3a7a9d99e4b44a45d4"
+    },
+    "baseline-report.json": {
+      "bytes": 4402,
+      "sha256": "0a2d4be3e81256685083c76c3b637bea6af044ddf3a39d69755326e49dd692a0"
+    },
+    "before.json": {
+      "bytes": 4819,
+      "sha256": "0798f00fc048d856442632156c193d4da9ffc0bdcc18909734fc10e721c842fa"
+    },
+    "portable-report.json": {
+      "bytes": 79640,
+      "sha256": "ea0f64ac8aea7a2d443015310f3a282c4aa980040c59df193a299fb9a9b14f4e"
+    },
+    "inference-comparison.json": {
+      "bytes": 264,
+      "sha256": "5178826a52a092b53f9c0c2e820898120bf4392875264672459f757cabad7cf5"
+    },
+    "baseline.log": {
+      "bytes": 3475,
+      "sha256": "a54c8fbfe0ee0370f390f6ee5b6d4b38ef96408187d6b91c950a26794a0f7d6f"
+    },
+    "documentation.log": {
+      "bytes": 474,
+      "sha256": "ae3a3d973010b81d70e585a290580032312e0870c75999a662004f03e98e4e5a"
+    },
+    "documentation-release.log": {
+      "bytes": 122557,
+      "sha256": "f3d9772a74192cc8fdb7c37d92dea734e09f061652ca553e6b7e4930de293013"
+    },
+    "compare-inference.cjs": {
+      "bytes": 2952,
+      "sha256": "13670ed079a64f863eff1b6830c2632d068f8c76cf1bd027d54b897e88797f57"
+    },
+    "maintainer.log": {
+      "bytes": 345,
+      "sha256": "6e976f4f9a5ab895ea1adef82f7a6b26039583c1485fc102bbfe002ae947cc7b"
+    },
+    "after.json": {
+      "bytes": 4819,
+      "sha256": "0798f00fc048d856442632156c193d4da9ffc0bdcc18909734fc10e721c842fa"
+    },
+    "scope.json": {
+      "bytes": 7578,
+      "sha256": "61efe75b3b51fd4e9415687db91874cb56b8ebe986c57a4d047f90a3167ac795"
+    },
+    "portable.log": {
+      "bytes": 86980,
+      "sha256": "e297ec4ee8a9e6294ec08d6c66991c88b329a93e44e74ff405d40beef5863c9a"
+    },
+    "cli/baseline-05.log": {
+      "bytes": 1762,
+      "sha256": "278f7ae426166bf6a3b7ddac6c19c46064d6fac8867faee9f866dd5a766851c6"
+    },
+    "cli/run-02.log": {
+      "bytes": 2259,
+      "sha256": "fa90a1b7b9b6f2f5d501809bd8688f9de2abc4241cde46e4ad2958293e06cef0"
+    },
+    "cli/run-03.log": {
+      "bytes": 2291,
+      "sha256": "4c94f595f7e0aa85af6e70a839910571ec7f23827b78b5f4ffd1f29ebe5f08a8"
+    },
+    "cli/baseline-09.log": {
+      "bytes": 1739,
+      "sha256": "718e0064e527b7029d7a0ca24abd6e74479b51cdde40f710a7705460899ae5e0"
+    },
+    "cli/docs-example-05-fastly-capabilities.log": {
+      "bytes": 1160,
+      "sha256": "5349ca77096e4f55b628eb6fcc2ad0b1f9951cf06ab3a1386a9202d1aea831e0"
+    },
+    "cli/baseline-09-report.json": {
+      "bytes": 1466,
+      "sha256": "08d1e25044c9606b2c6523d89d349d5bf95c1eaf16d1dee5d7d427d0ae2ccdd6"
+    },
+    "cli/baseline-05-report.json": {
+      "bytes": 1488,
+      "sha256": "2cba15ee0fa2b8de0687eef5370a7d19b716b9027466d7ee6c1b53297766ca7a"
+    },
+    "cli/summary.json": {
+      "bytes": 801,
+      "sha256": "f7bc6a0f1e04b782a6b159eea2c07767e1716bdbec5377334d53a081eb070236"
+    },
+    "cli/report-01.json": {
+      "bytes": 12789,
+      "sha256": "0e92de57f0815947bd9a7b393b0ec0a3e73e34f80354fe452cdd8ca8e4559e6a"
+    },
+    "cli/run-01.log": {
+      "bytes": 10402,
+      "sha256": "903997af24b77693c698137fa9a7a3bd876db17225b0a67e0df359e186bbf74c"
+    },
+    "cli/report-02.json": {
+      "bytes": 2974,
+      "sha256": "d2b521a5f2c4783714a2d87f6e5b416f684c0142f4a11a12627c2bbc6af993d2"
+    },
+    "cli/report-03.json": {
+      "bytes": 4175,
+      "sha256": "fe363b03265a562133ae05db7196b9819d8951ebf5ae5a76cceccd4a3267d4f0"
+    },
+    "cli/docs-example-09-router-lowering.log": {
+      "bytes": 1159,
+      "sha256": "64811b4c44d6c91a994c8a8373f8f05ddcca1b936f330f6b567d0315816dcf00"
+    },
+    "attempts/unclassified-constant.log": {
+      "bytes": 5538,
+      "sha256": "5eb060cb51ea19cf982397361ca60f955abc75be6081ac5950132981279bb94c"
+    },
+    "attempts/sandbox-baseline-report.json": {
+      "bytes": 2345,
+      "sha256": "bb57bd9b4d66d894dd4df2a3b3a34ecffc649812f67c61b1330be271becdaad6"
+    },
+    "attempts/sandbox-baseline.log": {
+      "bytes": 875,
+      "sha256": "d10f4351ae49f1e8d70f78b3df36bacdf472ff0d84e6b92f641d7bf5c27a6821"
+    },
+    "attempts/unclassified-constant-task.log": {
+      "bytes": 999,
+      "sha256": "a35ef8447b1dec3906b93501b8e827d84892fea1f0d485d870c6b9f93ed1f879"
+    },
+    "attempts/unclassified-constant-report.json": {
+      "bytes": 11456,
+      "sha256": "776b99055b57f85819e6610c54caceef431d5192ce5803cc1ee919efbee22f05"
+    },
+    "attempts/sandbox-documentation.log": {
+      "bytes": 1300,
+      "sha256": "7546649ee8931b67b3b6c76552c62f542d12acbaa48500121b93c5cc0f3c9c7e"
+    }
+  }
 }

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-02T19-06-09-132Z--36272",
+  "sourceRevision": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+  "sourceIdentity": {
+    "sourceRevision": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-02T19:06:09.136Z",
+  "updatedAt": "2026-10-02T19:06:20.411Z",
+  "finishedAt": "2026-10-02T19:06:20.411Z",
+  "durationMs": 11275,
+  "profiles": [],
+  "requestedTasks": [
+    "docs-example-05-fastly-capabilities"
+  ],
+  "selectedTasks": [
+    "docs-example-05-fastly-capabilities"
+  ],
+  "currentTask": null,
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "docs-example-05-fastly-capabilities",
+      "evidence": "cli",
+      "description": "documented 05-fastly-capabilities workflow",
+      "commandSignature": "10a11c39bb7540a370da2ccdd35c6870a41b38f2cc71b3b700e84095d3ed2044",
+      "timeoutMs": 360000,
+      "durationMs": 11273,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "logPath": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T19-06-09-132Z--36272/tasks/docs-example-05-fastly-capabilities.log",
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T19-06-09-132Z--36272"
+}

@@ -1,0 +1,15 @@
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+[pulsewasm] pure-helper-contract: passed in 1.03s
+
+[pulsewasm:native] pure-source-helpers
+[pulsewasm] PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans (timeout 120.00s)
+[pulsewasm] pure-source-helpers: failed in 1.30s
+
+[pulsewasm] test summary
+  passed         1.03s  pure-helper-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-22-33-042Z--12807/tasks/pure-helper-contract.log)
+  failed         1.30s  pure-source-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-22-33-042Z--12807/tasks/pure-source-helpers.log)
+  report       /workspace/scratch/bf0d896ef055/r101-baseline-report.json
+  run logs     /workspace/scratch/bf0d896ef055/runs/2026-10-02T18-22-33-042Z--12807
+  total        2.33s
