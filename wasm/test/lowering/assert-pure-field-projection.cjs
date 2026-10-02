@@ -36,7 +36,7 @@ async function main() {
       "import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>({pulse:{entry:'src/index.ts',strict:false},native:{host:'node',target:'native'},javascript:{host:'node',target:'javascript'}}));");
     fs.writeFileSync(path.join(cwd, 'src/helper.ts'), "export function check(value:string):boolean{return value==='hello';}export function checkRecord(value:{kind:string;owner:string}):boolean{return value.kind==='hello';}");
     const write = body => fs.writeFileSync(path.join(cwd, 'src/index.ts'),
-      "import {Pulse} from '@pulse-compute/pulse';import {" + (body.includes('checkRecord(') ? 'checkRecord' : 'check') + "} from './helper';const app=new Pulse({auto:true});app.get('/',async(ctx)=>{"
+      "import {Pulse} from '@pulse-compute/pulse';import {" + (body.includes('checkRecord(') ? 'checkRecord' : 'check') + "} from './helper';const app=new Pulse({auto:true});app.post('/',async(ctx)=>{"
       + body + "});export default app;");
     const project = profile => tc.resolveProject({ cwd, profile });
     const compile = body => { write(body); return tc.compileNativeProjectInMemory(project('native')); };
@@ -45,22 +45,24 @@ async function main() {
     const wideChecks = Array.from({ length: 7 }, (_, i) => `check(record.f${i})`).join('&&');
     const positives = [
       "let record={kind:'',owner:'known'};record={...record,kind:'hello'};return ctx.text(''+check(record.kind));",
+      "const value=await ctx.req.text();let record={kind:'',owner:'known'};record={...record,kind:value};return ctx.text(''+check(record.kind));",
       "let record={meta:{kind:'hello'},owner:'known'};record={...record,owner:'other'};return ctx.text(''+check(record.meta.kind));",
       `let record={${wideRecord}};${wideUpdates}return ctx.text(''+(${wideChecks}));`
     ];
-    let plan, executions = 0;
-    for (const body of positives) {
+    let plan, dynamicPlan, executions = 0;
+    for (const [index, body] of positives.entries()) {
       const compiled = compile(body);
       plan ||= compiled.plan;
+      if (index === 1) dynamicPlan = compiled.plan;
       validateCanonicalNativePlan(structuredClone(compiled.plan));
       const fastly = compileFastlyNativePlatformCapabilitiesPlan(compiled.plan, {
         cwd: root, canonicalBuild: true, emitWat: false, requirePlatformCapability: false
       });
       const javascript = tc.prepareJavascriptApplication(project('javascript'));
-      const request = { method: 'GET', path: '/', url: 'https://s02.test/', headers: [], body: '' };
+      const request = { method: 'POST', path: '/', url: 'https://s02.test/', headers: [], body: 'hello' };
       const native = await tc.executeCanonicalNativeModule(compiled.native, { request, strict: false });
       const platform = tc.executeFastlyNativePlatformCapabilities(fastly, { request });
-      const js = await tc.executeNodeJavascriptApplication(javascript.loaded.application, new Request(request.url), { strict: false });
+      const js = await tc.executeNodeJavascriptApplication(javascript.loaded.application, new Request(request.url, { method: 'POST', body: 'hello' }), { strict: false });
       assert.equal(native.response.body, 'true');
       assert.equal(platform.response.body, 'true');
       assert.equal(await js.text(), 'true');
@@ -77,6 +79,12 @@ async function main() {
     const spread = find(forgedSpread.handlers, e => e.kind === 'spread');
     spread.value = { kind: 'literal', value: 1, valueKind: 'number' };
     assert.throws(() => validateCanonicalNativePlan(rehash(forgedSpread)), rejectedProjection);
+    const forgedText = structuredClone(dynamicPlan);
+    find(forgedText.handlers, e => e.kind === 'intrinsic' && e.name === 'request.text').arguments = [
+      { kind: 'literal', value: 'unexpected', valueKind: 'string' }
+    ];
+    assert.throws(() => validateCanonicalNativePlan(rehash(forgedText)), error => error.name === 'CanonicalNativePlanError'
+      && !error.diagnostics?.some(d => d.message === 'plan hash mismatch'));
     const negatives = [
       "let record={kind:'hello',owner:'known'};record={...record,kind:3};return ctx.text(''+check(record.kind));",
       "let record={kind:'hello',owner:'known'};const alias=record;record={...alias,owner:'other'};return ctx.text(''+check(record.kind));",
@@ -89,7 +97,7 @@ async function main() {
       assert.throws(() => compile(body), error => Boolean(error.diagnostics?.length), `negative source ${i}`);
     }
     console.log(JSON.stringify({ status: 'passed', positiveVariants: positives.length, executions,
-      sourceRejections: negatives.length, forgedPlans: 2, semantics: 'proven bounded record spread preserves required scalar field facts' }));
+      sourceRejections: negatives.length, forgedPlans: 3, semantics: 'proven bounded record spread preserves required scalar field facts' }));
   } finally {
     fs.rmSync(cwd, { recursive: true, force: true });
   }

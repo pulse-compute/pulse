@@ -225,6 +225,8 @@ proven initializer shape as its recursive seed; all writes must independently
 reconstruct that shape. Unknown spreads, changed or optional field types and
 cyclic alias provenance do not establish a projection. The validator checks
 the serialized definitions and writes rather than trusting producer field tags.
+A zero-argument request text read supplies a definite string replacement in
+this proof; it does not establish a type for schema-less JSON.
 The validator follows aliases and rejects writes through the borrowed graph
 anywhere in the handler, including after a call. Scalar copies do not retain a
 record alias. Nested record/array reads preserve the original object identity.
