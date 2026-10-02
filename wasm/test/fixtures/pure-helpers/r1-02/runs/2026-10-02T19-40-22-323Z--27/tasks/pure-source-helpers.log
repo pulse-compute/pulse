@@ -1,0 +1,1 @@
+{"status":"passed","cells":[{"count":1,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2106},{"count":2,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2237},{"count":16,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":3332}],"sourceRejections":22,"planRejections":19,"scope":"Source-tree scalar proof; no packed consumer or final-Wasm sharing claim."}

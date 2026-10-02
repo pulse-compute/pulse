@@ -1,0 +1,200 @@
+{
+  "schemaVersion": "pulse.maintainer-scope-report.v2",
+  "policyVersion": 10,
+  "releaseVersion": "1.0.0-beta.5",
+  "status": "pass",
+  "pullRequest": null,
+  "range": {
+    "base": null,
+    "head": null
+  },
+  "declaration": {
+    "present": true,
+    "changeClass": "hardening",
+    "scope": "inside-developer-preview",
+    "protectedBoundaries": [],
+    "humanDecision": "not-required"
+  },
+  "inferred": {
+    "changedFiles": 23,
+    "areas": [
+      "cli",
+      "compiler",
+      "documentation",
+      "testing"
+    ],
+    "protectedBoundaries": [],
+    "requiredChecks": [
+      "build",
+      "cli",
+      "conformance",
+      "documentation",
+      "javascript",
+      "maintenance-policy",
+      "native",
+      "unit"
+    ],
+    "matchedRules": [
+      "cli-and-diagnostics",
+      "compiler-default",
+      "documentation",
+      "tests-and-evidence"
+    ],
+    "unmatchedFiles": [],
+    "risk": "high",
+    "humanDecisionRequired": false,
+    "contractUpdateRequired": false,
+    "releaseAuthorityRequired": false,
+    "suggestedChangeClasses": [
+      "defect",
+      "hardening",
+      "documentation",
+      "evidence"
+    ]
+  },
+  "consistency": {
+    "errors": [],
+    "warnings": []
+  },
+  "files": [
+    {
+      "file": "docs/architecture/current-contracts.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "rules": [
+        "cli-and-diagnostics"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/pure-helper-values.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/source-helper-plan.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/README.md",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/after.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/attempts/r102-matrix-attempt.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/baseline-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/baseline.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/before.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/characterize-baseline.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/focused-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/focused.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/manifest.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/hidden-contracts.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-argument-helpers.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-helper-contract.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-helper-vocabulary.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-loop-helpers.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-record-helpers.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-source-helpers.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/support/pure-helper-policy.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    }
+  ],
+  "recommendation": "The resident maintainer may analyze, review, and prepare a minimal patch; human review and merge remain required."
+}

@@ -2,7 +2,7 @@
   "task": "R1-02",
   "taskClass": "behavior-preserving refactor",
   "policyClass": "hardening",
-  "status": "baseline-characterized",
+  "status": "implemented; final portable gates pending",
   "baseCommit": "afce9f129d5c8e80099178261cbce0da6e3bb263",
   "baseTree": "f1df4ae6092102668125e235998ab80fdd2ce2f1",
   "branch": "codex/r1-02-helper-validation",
@@ -23,34 +23,124 @@
     "application changes",
     "merge/release"
   ],
-  "sourceIdentity": "Base product bytes; uncommitted test extension identified by hashes below. Development evidence, not a release seal.",
+  "sourceIdentity": "Final characterization uses uncommitted product/test bytes identified by testedSha256. before.json freezes only the two declared product variables at baseCommit. The original plan validation seam is byte-unchanged. Broad gates will run at the immutable implementation checkpoint.",
   "testedSha256": {
-    "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
-    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d",
+    "wasm/packages/compiler/src/pure-helper-values.js": "1730eb4c18ae37706b7490d563cc98589b669cf1d6f4a4c091856371c6f2f8a6",
+    "wasm/packages/compiler/src/source-helper-plan.js": "cba795c127201da3c26986bd1ead0a477c6383e27aa994c6113aa0a4ccc1ce5b",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e",
     "wasm/test/lowering/assert-pure-helper-vocabulary.cjs": "d1a62591c8eeae6641989f91125ba286caca14524bdb424ec12c692e7bef8cc4",
-    "wasm/test/support/pure-helper-policy.cjs": "dcc9fbecb1ecfc6e0842d62052419f430a9ae86f2b14cf7623d9ab18d2874b65"
+    "wasm/test/support/pure-helper-policy.cjs": "3d8d89236d44708f2e56c84af797b5cdc525b2330f12d42d650077bbd6129d2b"
   },
   "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
   "dependencies": "Lockfile-pinned dependency roots physically copied from R1-01 worktree; no new dependencies or lifecycle installs.",
   "commands": [
     "node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report wasm/test/fixtures/pure-helpers/r1-02/baseline-report.json",
-    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs > wasm/test/fixtures/pure-helpers/r1-02/before.json"
+    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs > wasm/test/fixtures/pure-helpers/r1-02/before.json",
+    "node wasm/test/fixtures/pure-helpers/r1-02/characterize-baseline.cjs > wasm/test/fixtures/pure-helpers/r1-02/before.json",
+    "npm run docs:sync",
+    "node wasm/scripts/run-wasm-tests.cjs --task hidden-contracts --task pure-helper-vocabulary --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report /workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/fixtures/pure-helpers/r1-02/focused-report.json"
   ],
   "baseline": {
     "helperTasks": 5,
     "status": "passed",
     "policy": {
-      "cases": 508,
-      "accepted": 311,
-      "rejected": 197,
-      "matrixSha256": "c0819c98b9d2bbe293d8a50dd35aad83f9545daf978560cc9ee6c33468c13888"
+      "cases": 521,
+      "accepted": 320,
+      "rejected": 201,
+      "matrixSha256": "5bdcbaf92f6eedd8ce8c936372b5fb8a958dca3092630fab4536939d989a3340",
+      "producerExpressions": 107,
+      "producerPlanHash": "e308616c1bba6f5613c466aa6c4ea0377fbeab6bd7868e6d368020d262ddffa1"
     },
     "native": {
       "wasmBytes": 2187,
       "wasmSha256": "1bf15db834f072f3068794d7cf962ac0a5ddab28278302b067fd101f1b19ecf5",
       "sourceSha256": "f9504c8e8bd218296894da1163295b26c226f1da657b44fa84c06849ab3c3529"
-    }
+    },
+    "note": "Original five-task run preceded the test extension. Current before.json runs the final 521-case test against the frozen base product modules; its 107 producer expressions also validate through the unchanged public Native plan seam."
   },
   "reportLocationNote": "The runner resolves relative report paths under wasm. Baseline report was moved from the resulting wasm/wasm subtree without modifying its content; future report paths are absolute.",
-  "nextAction": "Align validator result facts with shared vocabulary while preserving policy and diagnostic matrix."
+  "nextAction": "Run repository-required gates at the immutable implementation checkpoint, retain terminal evidence, and open the bounded PR. S-01 remains a separate capability task.",
+  "initialCheckpointCommit": "33e65ba618c66a0d6bcb72c5b1dbfb9f9454b80e",
+  "initialCheckpointPolicy": {
+    "cases": 508,
+    "accepted": 311,
+    "rejected": 197,
+    "matrixSha256": "c0819c98b9d2bbe293d8a50dd35aad83f9545daf978560cc9ee6c33468c13888"
+  },
+  "baseProductSha256": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
+    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e"
+  },
+  "validation": {
+    "characterization": "521 cases and 107 producer expressions, exact before/after report match",
+    "focused": "7/7 tasks passed; before final 13-case/producers extension",
+    "portable": "pending",
+    "maintenance": "pending",
+    "documentation": "pending",
+    "build": "pending",
+    "cli": "pending"
+  },
+  "artifacts": {
+    "after.json": {
+      "bytes": 9370,
+      "sha256": "f9f748ff962871f872658bdba4ddfba9116e4cabbd56c168f5c6bc3cffa87008"
+    },
+    "attempts/r102-matrix-attempt.log": {
+      "bytes": 1460,
+      "sha256": "2e764f4146ade9d764cd03ada775b3766db2cb249f4b1aef2a18f3e5bb1df68a"
+    },
+    "baseline-report.json": {
+      "bytes": 4456,
+      "sha256": "d05edaf998055b7df2a3f07e7bef53eed83a37912c27a0de15fa07c5de45f29e"
+    },
+    "baseline.log": {
+      "bytes": 7071,
+      "sha256": "6f5efb72a975aa48e4e2504da88f21590249bddda9b31c459ddf1ecef1f35372"
+    },
+    "before.json": {
+      "bytes": 9370,
+      "sha256": "f9f748ff962871f872658bdba4ddfba9116e4cabbd56c168f5c6bc3cffa87008"
+    },
+    "characterize-baseline.cjs": {
+      "bytes": 1036,
+      "sha256": "af86b58b5a595cfc9631c66e1e553855be2c2c0d525cb49487637592babbff7d"
+    },
+    "focused-report.json": {
+      "bytes": 5821,
+      "sha256": "303de120cd4043fd7303dac84d657fdac72ecb42fc403d956a55ff63c4b84410"
+    },
+    "focused.log": {
+      "bytes": 13469,
+      "sha256": "dc0f1a3c3d3dfb30e11839803ed83567c7d4650298a64de9459bd645f982665b"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/hidden-contracts.log": {
+      "bytes": 112,
+      "sha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-argument-helpers.log": {
+      "bytes": 92,
+      "sha256": "1da42472975829157a2865c96803f4ee4a07621d7c0179c1ad966b6ff2e1e514"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-helper-contract.log": {
+      "bytes": 141,
+      "sha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-helper-vocabulary.log": {
+      "bytes": 9258,
+      "sha256": "e8961a76d0c6413e617dbf3143e1e014a50bd462f6d22f364fbc28c29a6bfdb9"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-loop-helpers.log": {
+      "bytes": 139,
+      "sha256": "d25f0b10e70a7ab24e7e6c8bab3a240344f5ba2ae2b08fc20fc1ff67a4e45a30"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-record-helpers.log": {
+      "bytes": 826,
+      "sha256": "38db7c3be24c190c923a35a9adfde41449f303bc994f1adb6ebbc6ca552814d3"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-source-helpers.log": {
+      "bytes": 364,
+      "sha256": "d1e0d1f4479bb8b2a976491d226b35cab04e0dc4477f6e241194ee5e788fcd84"
+    }
+  }
 }

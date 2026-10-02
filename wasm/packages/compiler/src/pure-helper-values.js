@@ -39,12 +39,15 @@ const BINARY_RULES = Object.freeze({
   '<<': 'numeric', '>>': 'numeric', '>>>': 'numeric'
 });
 const UNARY_TYPES = Object.freeze({ '!': 'boolean', typeof: 'string', '+': 'number', '-': 'number', '~': 'number' });
-function binaryResult(operator, a, b, planKind) {
-  const rule = Object.hasOwn(BINARY_RULES, operator) ? BINARY_RULES[operator] : undefined;
+function binaryRule(operator) {
+  return Object.hasOwn(BINARY_RULES, operator) ? BINARY_RULES[operator] : undefined;
+}
+function binaryResult(operator, a, b, planKind, optionalStringDefault = true) {
+  const rule = binaryRule(operator);
   const unknown = planKind ? 'unknown' : undefined;
   if (rule === 'logical') {
     if (planKind ? a === b : same(a, b)) return a;
-    if (['||', '??'].includes(operator) && (planKind
+    if (optionalStringDefault && ['||', '??'].includes(operator) && (planKind
       ? new Set([a, b]).has('string') && new Set([a, b]).has('string-or-undefined')
       : a === 'string-or-undefined' && b === 'string')) return 'string';
     return unknown;
@@ -56,8 +59,8 @@ function binaryResult(operator, a, b, planKind) {
   // operands, even before operator admission. It must not become a validator.
   return !planKind || rule === 'numeric' ? 'number' : unknown;
 }
-function binaryKind(operator, leftKind, rightKind) {
-  return binaryResult(operator, leftKind, rightKind, true);
+function binaryKind(operator, leftKind, rightKind, optionalStringDefault = true) {
+  return binaryResult(operator, leftKind, rightKind, true, optionalStringDefault);
 }
 function unaryType(operator) {
   return Object.hasOwn(UNARY_TYPES, operator) ? UNARY_TYPES[operator] : undefined;
@@ -105,4 +108,4 @@ function readType(e, types) {
   if (e.kind === 'template') return 'string';
 }
 module.exports = { SCALAR_TYPES, BORROW_LIMITS, FORBIDDEN_FIELDS, scalar, kind, validType, same, member,
-  binaryKind, unaryKind, element, readType, schemaType, schemaRead, effectType };
+  binaryRule, binaryKind, unaryKind, element, readType, schemaType, schemaRead, effectType };

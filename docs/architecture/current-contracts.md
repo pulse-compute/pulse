@@ -258,9 +258,13 @@ consumer owns a second binary/unary result-rule implementation.
 The vocabulary preserves two existing inference boundaries. Dynamic plan kinds
 include symmetric optional-string defaults and `in`; reconstructed type facts
 use structural equality and only a left optional-string default. Inference does
-not establish operation admission. `source-helper-plan.js` remains the independent
-validator, reconstructing caller provenance, helper operands and ownership after
-deserialization. R1-01 changes inference ownership without changing that policy.
+not establish operation admission. `source-helper-plan.js` owns independent
+validation, reconstructing caller provenance, helper operands and ownership after
+deserialization before consuming shared result facts. Its explicit admission
+policy excludes `in` and `void`, requires scalar callee operands and numeric
+arithmetic operands, and preserves the caller's existing scalar coercion and
+optional-string defaults. Callees do not admit optional-string operands. No
+producer tag, serialized hash or signature substitutes for those checks.
 
 String length is admitted in pure callees. Numeric string indexing is inferred
 as `string` and admitted for proven caller projections, but independent pure

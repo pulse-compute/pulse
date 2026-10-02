@@ -19,6 +19,7 @@ module.exports = function characterizePolicy(compile) {
     for (const child of Object.values(value)) { const found = find(child, predicate); if (found) return found; }
   }
   const cases = [];
+  const producerExpressions = [];
   function check(name, expected, mutate) {
     const candidate = JSON.parse(JSON.stringify(plan));
     mutate(candidate);
@@ -68,6 +69,7 @@ module.exports = function characterizePolicy(compile) {
       const bodyAccepted = group === 'comparison' || group === 'logical' && a === b
         || group === 'numeric' && (a === 'number' && b === 'number' || operator === '+' && type === 'string');
       const callerAccepted = group !== 'excluded' && type !== 'unknown';
+      if (bodyAccepted) producerExpressions.push({ source: `(${['n', 's', 'b'][i]} ${operator} ${['n', 's', 'b'][j]})`, type });
       check(`body:${operator}:${a}:${b}`, bodyAccepted,
         insert({ kind: 'binary', operator, left: local(i + 1), right: local(j + 1), valueKind: type }));
       check(`caller:${operator}:${a}:${b}`, callerAccepted,
@@ -77,11 +79,37 @@ module.exports = function characterizePolicy(compile) {
   for (const operator of ['!', 'typeof', '+', '-', '~', 'void', 'delete']) for (const [i, type] of scalarKinds.entries()) {
     const result = operator === '!' ? 'boolean' : operator === 'typeof' ? 'string' : 'number';
     const admitted = !['void', 'delete'].includes(operator);
+    if (admitted && (['!', 'typeof'].includes(operator) || type === 'number')) {
+      producerExpressions.push({ source: `(${operator} ${['n', 's', 'b'][i]})`, type: result });
+    }
     check(`body:${operator}:${type}`, admitted && (['!', 'typeof'].includes(operator) || type === 'number'),
       insert({ kind: 'unary', operator, value: local(i + 1), valueKind: result }));
     check(`caller:${operator}:${type}`, admitted,
       argument({ kind: 'unary', operator, value: literal(type), valueKind: result }, result));
   }
+  for (const operator of ['||', '??']) for (const optionalLeft of [true, false]) {
+    const optional = { kind: 'intrinsic', name: 'request.header', arguments: [literal('string')], valueKind: 'string-or-undefined' };
+    check(`caller:optional-default:${operator}:${optionalLeft}`, true, argument({ kind: 'binary', operator,
+      left: optionalLeft ? optional : literal('string'), right: optionalLeft ? literal('string') : optional, valueKind: 'string' }, 'string'));
+    check(`body:forged-optional-default:${operator}:${optionalLeft}`, false, p => {
+      const id = helper.id + ':uninitialized';
+      p.helpers[0].localIds.push(id);
+      p.locals.push({ id, name: 'uninitialized', scopeId: helper.id, valueKind: 'string-or-undefined', declaration: 'const' });
+      p.summary.localCount++;
+      const optionalLocal = { kind: 'local', id, valueKind: 'string-or-undefined' };
+      insert({ kind: 'binary', operator, left: optionalLeft ? optionalLocal : local(2),
+        right: optionalLeft ? local(2) : optionalLocal, valueKind: 'string' })(p);
+    });
+  }
+  check('body:string-length', true, insert({ kind: 'property', object: local(2), property: 'length', valueKind: 'number' }));
+  check('body:record-field', true, insert({ kind: 'property', object: local(5), property: 'name', valueKind: 'string' }));
+  check('body:array-index', true, insert({ kind: 'element', object: local(4), index: literal('number'), valueKind: 'number' }));
+  check('caller:string-index', true, argument({ kind: 'element', object: literal('string'), index: literal('number'), valueKind: 'string' }, 'string'));
+  check('caller:array-index', true, argument({ kind: 'element', object: { kind: 'array', items: [literal('number')], valueKind: 'array' }, index: literal('number'), valueKind: 'number' }, 'number'));
+  const produced = compile(`export function check(n:number,s:string,b:boolean):number {${producerExpressions.map(e => e.source + ';').join('')}return n;}`,
+    `const result=check(2,'x',true);return ctx.text(''+result);`).plan;
+  assert.deepEqual(produced.helpers[0].body.filter(s => s.kind === 'expression').map(s => s.expression.valueKind),
+    producerExpressions.map(e => e.type), 'producer result tags must agree with the independently admitted scalar matrix');
   const malformed = [
     ['forged-result', insert({ kind: 'binary', operator: '+', left: local(1), right: local(1), valueKind: 'string' })],
     ['forged-literal', insert({ kind: 'literal', value: 'x', valueKind: 'number' })],
@@ -104,5 +132,6 @@ module.exports = function characterizePolicy(compile) {
   return { cases: cases.length, accepted: cases.filter(c => c.accepted).length,
     rejected: cases.filter(c => !c.accepted).length,
     matrixSha256: createHash('sha256').update(JSON.stringify(cases)).digest('hex'),
+    producerExpressions: producerExpressions.length, producerPlanHash: produced.planHash,
     malformed: cases.slice(-malformed.length) };
 };

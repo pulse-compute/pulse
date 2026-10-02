@@ -3,6 +3,20 @@ const contract = require('@pulse-compute/wasm-contracts/handler/canonical-native
 const runtime = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
 const values = require('./pure-helper-values');
 const isPure = helper => helper?.version === contract.CANONICAL_NATIVE_PURE_HELPER_VERSION;
+// Admission belongs to this independent validator, not to inferred result tags.
+// Caller scalars retain their existing coercive rules and optional-string defaults;
+// callee operands must be scalar, arithmetic numeric, and indexes numeric arrays.
+const purePolicy = Object.freeze({
+  binary: operator => runtime.CANONICAL_NATIVE_BINARY_OPERATORS.includes(operator) && operator !== 'in',
+  unary: operator => runtime.CANONICAL_NATIVE_UNARY_OPERATORS.includes(operator) && operator !== 'void',
+  element: (object, index) => object?.kind === 'number-array' && index === 'number',
+  calleeOptionalStringDefault: false
+});
+function binaryResultKind(operator, a, b, optionalStringDefault = true) {
+  // Unsupported operators are rejected by policy. Preserve their historical
+  // diagnostic result kind instead of admitting the vocabulary's broader `in`.
+  return values.binaryRule(operator) ? values.binaryKind(operator, a, b, optionalStringDefault) : 'number';
+}
 function validateHelpers(plan, fail, walkStatements, walkExpression) {
   if (plan.helpers !== undefined && !Array.isArray(plan.helpers)) { fail('helpers must be an array'); return; }
   const helpers = new Map(), locals = new Map(plan.locals.map(l => [l.id, l]));
@@ -309,17 +323,16 @@ module.exports = { validateHelpers };
 // Independently prove the bounded value grammar after deserialization, rather than
 // trusting valueKind tags or a recomputed hash. No external owner is reachable.
 function validatePureBody(helper, locals, fail) {
-  const scalars = new Set(['string', 'number', 'boolean']);
   const owned = new Set(helper.localIds);
   const parameters = new Set(helper.parameters.map(p => p.localId));
   const initialized = new Set(parameters);
   const types = new Map(helper.parameters.map(p => [p.localId, values.validType(p.borrow?.type || p.valueKind) ? p.borrow?.type || p.valueKind : 'unknown']));
-  if (!scalars.has(helper.resultKind)) fail('pure result must be scalar');
+  if (!values.scalar(helper.resultKind)) fail('pure result must be scalar');
   function expression(e, available) {
     if (!e || typeof e !== 'object') { fail('missing pure expression'); return 'unknown'; }
     let kind = 'unknown';
     const child = value => expression(value, available);
-    if (e.kind === 'literal' && scalars.has(typeof e.value) && (typeof e.value !== 'number' || Number.isFinite(e.value))) kind = typeof e.value;
+    if (e.kind === 'literal' && values.scalar(typeof e.value) && (typeof e.value !== 'number' || Number.isFinite(e.value))) kind = typeof e.value;
     else if (e.kind === 'local') {
       if (!owned.has(e.id) || !available.has(e.id)) fail('pure local must be initialized and owned');
       kind = types.get(e.id) || locals.get(e.id)?.valueKind;
@@ -327,21 +340,21 @@ function validatePureBody(helper, locals, fail) {
       kind = values.member(child(e.object), e.property);
     } else if (e.kind === 'element') {
       const object = child(e.object), index = child(e.index);
-      if (object?.kind !== 'number-array' || index !== 'number') fail('pure element requires a numeric array and index');
-      kind = 'number';
+      const admitted = purePolicy.element(object, index);
+      if (!admitted) fail('pure element requires a numeric array and index');
+      kind = admitted ? values.element(object, index) : 'number';
     } else if (e.kind === 'binary') {
       const a = child(e.left), b = child(e.right);
       if (!values.scalar(a) || !values.scalar(b)) fail('pure operators require scalar operands');
-      if (!runtime.CANONICAL_NATIVE_BINARY_OPERATORS.includes(e.operator) || e.operator === 'in') fail('unsupported pure binary operator');
-      if (['===', '!==', '==', '!=', '<', '<=', '>', '>='].includes(e.operator)) kind = 'boolean';
-      else if (['&&', '||', '??'].includes(e.operator)) kind = a === b ? a : 'unknown';
-      else if (e.operator === '+' && (a === 'string' || b === 'string')) kind = 'string';
-      else { if (a !== 'number' || b !== 'number') fail('pure arithmetic requires numbers'); kind = 'number'; }
+      if (!purePolicy.binary(e.operator)) fail('unsupported pure binary operator');
+      kind = binaryResultKind(e.operator, a, b, purePolicy.calleeOptionalStringDefault);
+      const rule = values.binaryRule(e.operator);
+      if ((!rule || rule === 'numeric') && kind !== 'string' && (a !== 'number' || b !== 'number')) fail('pure arithmetic requires numbers');
     } else if (e.kind === 'unary') {
       const value = child(e.value);
       if (!values.scalar(value)) fail('pure unary requires a scalar');
-      if (!runtime.CANONICAL_NATIVE_UNARY_OPERATORS.includes(e.operator) || e.operator === 'void') fail('unsupported pure unary operator');
-      kind = e.operator === '!' ? 'boolean' : e.operator === 'typeof' ? 'string' : 'number';
+      if (!purePolicy.unary(e.operator)) fail('unsupported pure unary operator');
+      kind = values.unaryKind(e.operator);
       if (kind === 'number' && value !== 'number') fail('pure numeric unary requires a number');
     } else if (e.kind === 'conditional') {
       child(e.test); const a = child(e.whenTrue), b = child(e.whenFalse); kind = a === b ? a : 'unknown';
@@ -400,7 +413,7 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   if (!e || typeof e !== 'object') { fail('missing pure call argument'); return 'unknown'; }
   const child = v => scalarArgumentKind(v, locals, fail, bound, projectionType);
   let kind = 'unknown';
-  if (e.kind === 'literal' && ['string', 'number', 'boolean'].includes(typeof e.value)) kind = typeof e.value;
+  if (e.kind === 'literal' && values.scalar(typeof e.value)) kind = typeof e.value;
   else if (e.kind === 'local') kind = locals.get(e.id)?.valueKind;
   else if (['property','element'].includes(e.kind) && projectionType) {
     kind = projectionType(e);
@@ -416,15 +429,12 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
     kind = e.name === 'request.text' ? 'string' : 'string-or-undefined';
   } else if (e.kind === 'binary') {
     const a = child(e.left), b = child(e.right);
-    if (!runtime.CANONICAL_NATIVE_BINARY_OPERATORS.includes(e.operator) || e.operator === 'in') fail('unsupported pure argument operator');
-    if (['===','!==','==','!=','<','<=','>','>='].includes(e.operator)) kind='boolean';
-    else if (['&&','||','??'].includes(e.operator)) {
-      kind = a === b ? a : ['||','??'].includes(e.operator) && new Set([a,b]).has('string') && new Set([a,b]).has('string-or-undefined') ? 'string' : 'unknown';
-    } else kind = e.operator === '+' && (a === 'string' || b === 'string') ? 'string' : 'number';
+    if (!purePolicy.binary(e.operator)) fail('unsupported pure argument operator');
+    kind = binaryResultKind(e.operator, a, b);
   } else if (e.kind === 'unary') {
     child(e.value);
-    if (!['!','+','-','~','typeof'].includes(e.operator)) fail('unsupported pure argument unary');
-    kind = e.operator === '!' ? 'boolean' : e.operator === 'typeof' ? 'string' : 'number';
+    if (!purePolicy.unary(e.operator)) fail('unsupported pure argument unary');
+    kind = values.unaryKind(e.operator);
   } else if (e.kind === 'conditional') {
     child(e.test); const a=child(e.whenTrue), b=child(e.whenFalse); kind=a===b?a:'unknown';
   } else if (e.kind === 'template') {
@@ -438,6 +448,6 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
       if(!runtime.CANONICAL_NATIVE_ASSIGNMENT_OPERATORS.includes(e.operator) || kind!==target) fail('invalid pure argument assignment');
     } else { if(!['++','--'].includes(e.operator) || typeof e.prefix !== 'boolean' || target!=='number') fail('invalid pure argument update'); kind='number'; }
   } else fail('pure helper argument requires a proven scalar expression or request scalar read');
-  if (!['string','number','boolean','string-or-undefined'].includes(kind) || e.valueKind !== kind) fail('pure argument kind mismatch');
+  if (!values.scalar(kind) && kind !== 'string-or-undefined' || e.valueKind !== kind) fail('pure argument kind mismatch');
   return kind;
 }
