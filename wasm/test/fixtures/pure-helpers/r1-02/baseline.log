@@ -1,0 +1,35 @@
+
+[pulsewasm:native] pure-helper-vocabulary
+[pulsewasm] Helper shape/operation characterization and the unchanged string-index validator boundary (timeout 30.00s)
+{"status":"passed","shapeCases":16,"operationCases":39,"accepted":[{"planHash":"c6e87aa32a13e41d074d0ebf9950dddde7238c6d2e2ac950a08997b7169066cd","generatedSourceSha256":"ec2cb19a669525c8a6ef11ee3c04333f97c9171adeca48fdefa09cdcc50e807a","resultKind":"number"},{"planHash":"6106cdebc1c01c535c1fb06ed3161b9912f733264367202b71e72a576308386f","generatedSourceSha256":"0f45f4488bcb3735984525acccf051efae374ee07de9958508fbb58168dd6413","resultKind":"string"},{"planHash":"ef33b3c535eb793a02438f18393a721534fdc78b768f654b59bcbb79a65569c9","generatedSourceSha256":"f69cddde7165ea0d27673e31a32d11b58493d33f0407b1ab66ee290efac17fcd","resultKind":"number"},{"planHash":"b14770b5d6bcf29a5c17a2b81e8982c5da5f4160e39ad8c38ca4c08bb92a9416","generatedSourceSha256":"460817df836c309aaa52f646dae78aa1da2f0848c04f4d93c2a354a3678cb23e","resultKind":"string"},{"planHash":"a8b862afa2efac3d70d2bc918ac05f9eecdc23e0bcb9411515af5af07897aefb","generatedSourceSha256":"ab2249820cdd6ba2e52ae9b64ae80b6495c221f3210a5f287cbb690f121e7b55","resultKind":"boolean"},{"planHash":"bdee73fd7f6128405d28695bb42bcfbad532032f79866636637ebb8f8364b36a","generatedSourceSha256":"869c58f979359c0db519f0b25465d033f8f929f02fe2a0bc9da9d66962fded2f","resultKind":"string"},{"planHash":"ca1cef2f86caa1efffd22dbff911833d71240b948b031e65efabae0bc8dfbfd8","generatedSourceSha256":"e65a8b8c3281d8bcee41a71c760809acb77d57bab7aa52c1baf69e46bd10e352","resultKind":"string"}],"rejected":[[{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure element requires a numeric array and index","detail":{}},{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure expression kind mismatch","detail":{}},{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure return kind mismatch","detail":{}}],[{"code":"PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"Pure helper return paths must match the declared scalar result.","file":"src/index.ts.canonical.generated.js","position":{"line":213,"column":5,"offset":10281},"detail":{}}],[{"code":"PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED","severity":"error","message":"Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.","file":"src/helper.ts","position":{"line":1,"column":1}}],[{"code":"PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED","severity":"error","message":"Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.","file":"src/helper.ts","position":{"line":1,"column":1}}],[{"code":"PULSE_NATIVE_PURE_HELPER_VALUE_UNSUPPORTED","severity":"error","message":"Pure helpers cannot allocate structured values or use type assertions.","file":"src/helper.ts","position":{"line":1,"column":48}}],[{"code":"PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED","severity":"error","message":"Pure helpers cannot call helpers, callbacks, methods, effects or Router operations.","file":"src/helper.ts","position":{"line":1,"column":48}}],[{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure arithmetic requires numbers","detail":{}}]],"native":{"wasmBytes":2187,"wasmSha256":"1bf15db834f072f3068794d7cf962ac0a5ddab28278302b067fd101f1b19ecf5","sourceSha256":"f9504c8e8bd218296894da1163295b26c226f1da657b44fa84c06849ab3c3529"},"stringIndexBoundary":"caller projection admitted; inferred string helper-body index rejected"}
+[pulsewasm] pure-helper-vocabulary: passed in 2.02s
+
+[pulsewasm:native] pure-source-helpers
+[pulsewasm] PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans (timeout 120.00s)
+{"status":"passed","cells":[{"count":1,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2106},{"count":2,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2237},{"count":16,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":3332}],"sourceRejections":22,"planRejections":19,"scope":"Source-tree scalar proof; no packed consumer or final-Wasm sharing claim."}
+[pulsewasm] pure-source-helpers: passed in 7.57s
+
+[pulsewasm:native] pure-record-helpers
+[pulsewasm] Read-only structural pure helper parity, ownership and allocation proof (timeout 180.00s)
+{"status":"passed","parityCases":59,"sourceRejections":22,"planRejections":16,"costs":[{"calls":0,"handles":19,"structuredHandleInsertions":1,"distinctPayloadObjects":1,"wasmBytes":42286,"linearMemoryBytes":1245184},{"calls":1,"handles":226,"structuredHandleInsertions":16,"distinctPayloadObjects":3,"wasmBytes":43568,"linearMemoryBytes":1245184},{"calls":2,"handles":433,"structuredHandleInsertions":31,"distinctPayloadObjects":3,"wasmBytes":43587,"linearMemoryBytes":1245184},{"calls":16,"handles":3331,"structuredHandleInsertions":241,"distinctPayloadObjects":3,"wasmBytes":43758,"linearMemoryBytes":1245184}],"representation":"Borrowed i32 value handles; no per-call serialization, effects, payload copies or guest heap allocation. Property/operator reads retain existing host-handle costs; no reclamation or RSS claim."}
+[pulsewasm] pure-record-helpers: passed in 14.73s
+
+[pulsewasm:native] pure-loop-helpers
+[pulsewasm] Pure validators in bounded caller loops, combined limits and invocation isolation (timeout 180.00s)
+{"status":"passed","parityCases":19,"sourceRejections":10,"planRejections":12,"readSites":1,"pureHelperReadSites":0,"combinedLimit":65536}
+[pulsewasm] pure-loop-helpers: passed in 5.04s
+
+[pulsewasm:native] pure-argument-helpers
+[pulsewasm] Typed KV and scalar projection provenance, parity and independent tamper rejection (timeout 180.00s)
+{"status":"passed","parityCases":21,"variants":6,"sourceRejections":13,"planRejections":12}
+[pulsewasm] pure-argument-helpers: passed in 16.99s
+
+[pulsewasm] test summary
+  passed         2.02s  pure-helper-vocabulary  (wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-33-50-019Z--6/tasks/pure-helper-vocabulary.log)
+  passed         7.57s  pure-source-helpers  (wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-33-50-019Z--6/tasks/pure-source-helpers.log)
+  passed        14.73s  pure-record-helpers  (wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-33-50-019Z--6/tasks/pure-record-helpers.log)
+  passed         5.04s  pure-loop-helpers  (wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-33-50-019Z--6/tasks/pure-loop-helpers.log)
+  passed        16.99s  pure-argument-helpers  (wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-33-50-019Z--6/tasks/pure-argument-helpers.log)
+  report       wasm/test/fixtures/pure-helpers/r1-02/baseline-report.json
+  run logs     wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-33-50-019Z--6
+  total        46.36s

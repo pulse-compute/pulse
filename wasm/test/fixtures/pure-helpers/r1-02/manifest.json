@@ -1,0 +1,56 @@
+{
+  "task": "R1-02",
+  "taskClass": "behavior-preserving refactor",
+  "policyClass": "hardening",
+  "status": "baseline-characterized",
+  "baseCommit": "afce9f129d5c8e80099178261cbce0da6e3bb263",
+  "baseTree": "f1df4ae6092102668125e235998ab80fdd2ce2f1",
+  "branch": "codex/r1-02-helper-validation",
+  "entryPoint": "none; ordinary root -> wasm -> compiler instruction chain",
+  "intendedWrites": [
+    "wasm/packages/compiler/src/pure-helper-values.js",
+    "wasm/packages/compiler/src/source-helper-plan.js",
+    "wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
+    "wasm/test/support/pure-helper-policy.cjs",
+    "docs/architecture/current-contracts.md",
+    "wasm/packages/cli/docs/architecture/current-contracts.md",
+    "wasm/test/fixtures/pure-helpers/r1-02/**"
+  ],
+  "exclusions": [
+    "new capabilities/types",
+    "string-index admission",
+    "ABI/runtime/provider/optimizer changes",
+    "application changes",
+    "merge/release"
+  ],
+  "sourceIdentity": "Base product bytes; uncommitted test extension identified by hashes below. Development evidence, not a release seal.",
+  "testedSha256": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
+    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d",
+    "wasm/test/lowering/assert-pure-helper-vocabulary.cjs": "d1a62591c8eeae6641989f91125ba286caca14524bdb424ec12c692e7bef8cc4",
+    "wasm/test/support/pure-helper-policy.cjs": "dcc9fbecb1ecfc6e0842d62052419f430a9ae86f2b14cf7623d9ab18d2874b65"
+  },
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "dependencies": "Lockfile-pinned dependency roots physically copied from R1-01 worktree; no new dependencies or lifecycle installs.",
+  "commands": [
+    "node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report wasm/test/fixtures/pure-helpers/r1-02/baseline-report.json",
+    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs > wasm/test/fixtures/pure-helpers/r1-02/before.json"
+  ],
+  "baseline": {
+    "helperTasks": 5,
+    "status": "passed",
+    "policy": {
+      "cases": 508,
+      "accepted": 311,
+      "rejected": 197,
+      "matrixSha256": "c0819c98b9d2bbe293d8a50dd35aad83f9545daf978560cc9ee6c33468c13888"
+    },
+    "native": {
+      "wasmBytes": 2187,
+      "wasmSha256": "1bf15db834f072f3068794d7cf962ac0a5ddab28278302b067fd101f1b19ecf5",
+      "sourceSha256": "f9504c8e8bd218296894da1163295b26c226f1da657b44fa84c06849ab3c3529"
+    }
+  },
+  "reportLocationNote": "The runner resolves relative report paths under wasm. Baseline report was moved from the resulting wasm/wasm subtree without modifying its content; future report paths are absolute.",
+  "nextAction": "Align validator result facts with shared vocabulary while preserving policy and diagnostic matrix."
+}
