@@ -47,6 +47,10 @@ const operations = [
   ['&&', 'r', 'r', nested], ['+', 'r', 'n', undefined],
 ];
 for (const [operator, a, b, expected] of operations) assert.deepEqual(values.readType(binary(operator, a, b), types), expected);
+assert.equal(values.binaryKind('||', 'string', 'string-or-undefined'), 'unknown');
+assert.equal(values.binaryKind('||', 'string-or-undefined', 'string'), 'string');
+assert.equal(values.binaryKind('??', 'string', 'string-or-undefined'), 'string');
+assert.equal(values.binaryKind('??', 'string-or-undefined', 'string'), 'string');
 for (const [operator, expected] of [['!', 'boolean'], ['typeof', 'string'], ['+', 'number'], ['-', 'number'], ['~', 'number'], ['void', undefined]]) {
   assert.equal(values.readType({ kind: 'unary', operator, value: local('n'), valueKind: 'forged-tag' }, types), expected);
 }
@@ -103,6 +107,13 @@ try {
     });
     return diagnostics;
   });
+  assert.throws(() => compile(`export function check(s:string):number {return s.length;}`,
+    `const result=check(''||ctx.req.header('x-value'));return ctx.text(''+result);`), error => {
+    assert.ok(error.diagnostics?.some(d => d.code === 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED'
+      && d.detail?.arguments?.some(arg => arg.actual === 'unknown' && arg.expected === 'string')),
+      JSON.stringify(error.diagnostics));
+    return true;
+  }, 'A missing right-hand optional string cannot satisfy a string helper parameter.');
   assert.ok(rejected[0].some(d => d.message === 'pure element requires a numeric array and index'),
     'String inference must not silently expand the pure-body indexing policy.');
   const { plan } = compile(...positives[3]);
