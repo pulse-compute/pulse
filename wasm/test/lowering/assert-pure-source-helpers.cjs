@@ -141,6 +141,20 @@ const app=new Pulse({auto:true});app.${method}('/',async(ctx)=>{${body}});export
       assert.throws(()=>validateCanonicalNativePlan(forged));
     }
 
+    for(const kind of ['string','number','boolean']){
+      const cell=compile(`export function isPositive(value:${kind}):${kind} {return value;}`,
+        `const input=await ctx.req.json();const value=input.name;if(typeof value!=='${kind}'){return ctx.text('invalid');}else{return ctx.text(''+isPositive(value));}`,true,'post');
+      const native=compileCanonicalNativePlan(cell.plan,{cwd:root,emitWat:false});
+      const js=tc.prepareJavascriptApplication(tc.resolveProject({cwd,profile:'js'}));
+      for(const value of ['abc',17,false,null,[],{}]){
+        const body=JSON.stringify({name:value}),headers={'content-type':'application/json'};
+        const nr=await tc.executeCanonicalNativeModule(native,{request:{method:'POST',path:'/',url:'https://test/',headers,body}});
+        const jr=await tc.executeNodeJavascriptApplication(js.loaded.application,new Request('https://test/',{method:'POST',headers,body}),{strict:false});
+        const expected=typeof value===kind?String(value):'invalid';
+        assert.equal(nr.response.body,expected);assert.equal(await jr.text(),expected);
+      }
+    }
+
     const effectfulCaller = compile(`export function isPositive(s:string):boolean {return s==='body';}`,
       `const text=await ctx.fetch('https://effect.test').text();const result=isPositive(text);return ctx.text(''+result);`);
     let effectCount=0;
