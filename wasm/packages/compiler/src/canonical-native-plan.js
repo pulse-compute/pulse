@@ -459,7 +459,7 @@ class NativePlanBuilder {
         const target = this.assignmentTarget(current.left, scope);
         const value = this.expression(current.right, scope);
         if (operator === '=' && target.kind === 'local') {
-          const type = pureValues.readType(value, this.pureTypes);
+          const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
           if (type) this.pureTypes.set(target.id, type);
           else this.pureTypes.delete(target.id);
         }
@@ -536,7 +536,7 @@ class NativePlanBuilder {
     if (ts.isElementAccessExpression(current)) {
       if (current.questionDotToken) this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Optional element access is outside the canonical native value model.');
       const element = { kind: 'element', object: this.expression(current.expression, scope), index: this.expression(current.argumentExpression, scope), valueKind: 'unknown' };
-      const type = pureValues.readType(element, this.pureTypes);
+      const type = pureValues.readType(element, this.pureTypes, this.activeHelper?.pure === true);
       if (type) element.valueKind = pureValues.kind(type);
       return Object.freeze(element);
     }
@@ -887,7 +887,7 @@ class NativePlanBuilder {
       }
       const value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
       const local = this.allocateLocal(item.name.text, value.valueKind || 'unknown', itemPath, declaration);
-      const type = pureValues.readType(value, this.pureTypes);
+      const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
       if (type) this.pureTypes.set(local.id, type);
       scope.set(local.name, local);
       out.push(Object.freeze({ kind: 'local', localId: local.id, name: local.name, declaration, valueKind: local.valueKind, value, statementPath: itemPath }));

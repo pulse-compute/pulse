@@ -90,7 +90,7 @@ try {
     return { planHash: plan.planHash, generatedSourceSha256: digest(compiled.generatedSource), resultKind: plan.helpers[0].resultKind };
   });
   const negatives = [
-    [`export function check(s:string):string {return s[0];}`, `const result=check('abc');return ctx.text(result);`, 'PULSE_CANONICAL_NATIVE_PLAN_INVALID'],
+    [`export function check(s:string):string {return s[0];}`, `const result=check('abc');return ctx.text(result);`, 'PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED'],
     [`export function check(n:number):number {return 'bad';}`, undefined, 'PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED'],
     [`export function check(r:{x?:number}):number {return r.x;}`, `const result=check({x:1});return ctx.text(''+result);`, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
     [`export function check(r:{x:{y:{z:number}}}):number {return r.x.y.z;}`, `const result=check({x:{y:{z:1}}});return ctx.text(''+result);`, 'PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED'],
@@ -114,14 +114,14 @@ try {
       JSON.stringify(error.diagnostics));
     return true;
   }, 'A missing right-hand optional string cannot satisfy a string helper parameter.');
-  assert.ok(rejected[0].some(d => d.message === 'pure element requires a numeric array and index'),
-    'String inference must not silently expand the pure-body indexing policy.');
+  assert.ok(rejected[0].some(d => d.code === 'PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED'),
+    'A possibly missing string index must not satisfy a scalar helper return.');
   const { plan } = compile(...positives[3]);
   const native = compileCanonicalNativePlan(plan, { cwd: root, emitWat: false });
   const policy = require('../support/pure-helper-policy.cjs')(compile);
   console.log(JSON.stringify({ status: 'passed', shapeCases: shapes.length, operationCases: operations.length + 10,
     accepted, rejected, policy, native: { wasmBytes: native.wasm.length, wasmSha256: digest(native.wasm), sourceSha256: digest(native.source) },
-    stringIndexBoundary: 'caller projection admitted; inferred string helper-body index rejected' }));
+    stringIndexBoundary: 'pure string index may be undefined; scalar return requires a definite value' }));
 } finally {
   fs.rmSync(cwd, { recursive: true, force: true });
 }

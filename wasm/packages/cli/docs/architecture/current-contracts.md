@@ -266,16 +266,18 @@ validation, reconstructing caller provenance, helper operands and ownership afte
 deserialization before consuming shared result facts. Its explicit admission
 policy excludes `in` and `void`, requires scalar callee operands and numeric
 arithmetic operands, and preserves the caller's scalar coercion and sound
-optional-string defaults. Callees do not admit optional-string operands. No
-producer tag, serialized hash or signature substitutes for those checks.
+optional-string defaults. A numeric index into a scalar string is admitted in
+a pure callee. It reads one UTF-16 code unit; empty, fractional, negative and
+out-of-range indexes yield `undefined` under JavaScript indexing semantics.
+The callee carries `string-or-undefined` for that read through const bindings
+and admits comparisons against it, including adjacent surrogate-unit checks.
+An unchecked index cannot be returned as a definite string or used as a
+definite scalar in a property read, template, unary or arithmetic operation.
+This internal kind does not widen helper signatures or the preexisting caller
+projection policy. No producer tag, serialized hash or signature substitutes
+for independent operand, result and ownership checks.
 
-String length is admitted in pure callees. Numeric string indexing is inferred
-as `string` and admitted for proven caller projections, but independent pure
-callee-body validation currently rejects it as requiring a numeric array. The
-characterization suite preserves this disagreement; support must be expanded
-deliberately in the later bounded string-index task.
-
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
 for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.
