@@ -16,11 +16,11 @@ async function main() {
     fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
     for (const name of ['pulse', 'runtime']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
     fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>({pulse:{entry:'src/index.ts',strict:false},node:{host:'node',target:'native'},js:{host:'node',target:'javascript'}}));`);
-    function compile(helper, body, imported = true) {
+    function compile(helper, body, imported = true, method = 'get') {
       fs.writeFileSync(path.join(cwd, 'src/helper.ts'), helper);
       fs.writeFileSync(path.join(cwd, 'src/index.ts'), `import {Pulse} from '@pulse-compute/pulse';
 ${imported ? "import {isPositive} from './helper';" : helper}
-const app=new Pulse({auto:true});app.get('/',async(ctx)=>{${body}});export default app;`);
+const app=new Pulse({auto:true});app.${method}('/',async(ctx)=>{${body}});export default app;`);
       const project = tc.resolveProject({ cwd, profile: 'node' });
       const compiled = tc.compileProject(project);
       const plan = buildCanonicalNativePlan(compiled);
@@ -78,6 +78,68 @@ const app=new Pulse({auto:true});app.get('/',async(ctx)=>{${body}});export defau
     const strings = compile(`export function isPositive(s:string,b:boolean):string {if(b)return s+'!';return s+'?';}`,
       `const value=ctx.req.header('x-value')||'';const a=isPositive(value,value==='yes');return ctx.text(a);`);
     await parity(compileCanonicalNativePlan(strings.plan,{cwd:root,emitWat:false}), ['yes','no','']);
+
+    // String elements in pure bodies use the existing UTF-16 value operation,
+    // including out-of-range reads. Test a real surrogate-pair predicate rather
+    // than only admission, and independently reject forged serialized types.
+    const indexed = compile(`export function isPositive(s:string,index:number):boolean {
+      const ch=s[index];
+      return ch>='\\ud800' && ch<='\\udbff' && s[index+1]>='\\udc00' && s[index+1]<='\\udfff';
+    }`, `const value='a😀b';const index=+(ctx.req.header('x-value')||'0');return ctx.text(''+isPositive(value,index));`);
+    const indexedNative=compileCanonicalNativePlan(indexed.plan,{cwd:root,emitWat:false});
+    await parity(indexedNative, ['-1','0','1','2','3','4','1.5','NaN']);
+    const findElement=value=>{
+      if(!value||typeof value!=='object')return;
+      if(value.kind==='element')return value;
+      for(const child of Object.values(value)){const found=findElement(child);if(found)return found;}
+    };
+    for(const mutate of [
+      e=>{e.index={kind:'literal',value:'0',valueKind:'number'};},
+      e=>{e.object={kind:'literal',value:true,valueKind:'string'};},
+      e=>{e.valueKind='number';}
+    ]){
+      const forged=structuredClone(indexed.plan);mutate(findElement(forged.helpers[0].body));
+      delete forged.planHash;forged.planHash=createHash('sha256').update(stableStringify(forged)).digest('hex');
+      assert.throws(()=>validateCanonicalNativePlan(forged));
+    }
+
+    // A checked immutable scalar snapshot is independent of its source record.
+    const guardedSource = `export function isPositive(value:string):number {return value.length;}`;
+    const guardedBody = `const raw=await ctx.req.json();const input={name:raw.name};const value=input.name;if(typeof value==='string'){input.name=17;return ctx.text(''+isPositive(value));}return ctx.text('invalid');`;
+    const guarded = compile(guardedSource, guardedBody, true, 'post');
+    const guardedNative = compileCanonicalNativePlan(guarded.plan,{cwd:root,emitWat:false});
+    const guardedJs=tc.prepareJavascriptApplication(tc.resolveProject({cwd,profile:'js'}));
+    for(const value of ['', 'abc', '😀', 17, false, null, [], {}]){
+      const body=JSON.stringify({name:value});
+      const request={method:'POST',path:'/',url:'https://test/',headers:{'content-type':'application/json'},body};
+      const nr=await tc.executeCanonicalNativeModule(guardedNative,{request});
+      const jsRequest=new Request(request.url,{method:'POST',headers:request.headers,body});
+      const jr=await tc.executeNodeJavascriptApplication(guardedJs.loaded.application,jsRequest,{strict:false});
+      const expected=typeof value==='string'?String(value.length):'invalid';
+      assert.equal(nr.response.body,expected);assert.equal(await jr.text(),expected);
+    }
+    for(const body of [
+      guardedBody.replace("typeof value==='string'",'true'),
+      guardedBody.replace("typeof value==='string'","typeof value!=='string'"),
+      guardedBody.replace('const value=', 'let value='),
+      guardedBody.replace("input.name=17;", "value=17;")
+    ])assert.throws(()=>compile(guardedSource,body));
+    const findGuard=value=>{
+      if(!value||typeof value!=='object')return;
+      if(value.kind==='if' && value.test?.left?.operator==='typeof')return value;
+      for(const child of Object.values(value)){const found=findGuard(child);if(found)return found;}
+    };
+    for(const mutate of [
+      p=>{findGuard(p.handlers).test={kind:'literal',value:true,valueKind:'boolean'};},
+      p=>{findGuard(p.handlers).test.operator='!==';},
+      p=>{findGuard(p.handlers).test.right.value='number';},
+      p=>{const guard=findGuard(p.handlers);[guard.then,guard.else]=[guard.else,guard.then];},
+      p=>{const id=findGuard(p.handlers).test.left.value.id;p.locals.find(l=>l.id===id).declaration='let';}
+    ]){
+      const forged=structuredClone(guarded.plan);mutate(forged);
+      delete forged.planHash;forged.planHash=createHash('sha256').update(stableStringify(forged)).digest('hex');
+      assert.throws(()=>validateCanonicalNativePlan(forged));
+    }
 
     const effectfulCaller = compile(`export function isPositive(s:string):boolean {return s==='body';}`,
       `const text=await ctx.fetch('https://effect.test').text();const result=isPositive(text);return ctx.text(''+result);`);

@@ -28,6 +28,12 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   }
   function proveInputs(expression, visiting = new Set()) {
     if (!expression || typeof expression !== 'object') return;
+    // A const scalar snapshot checked at this exact branch read does not borrow
+    // its initializer's object graph. Writes to that graph cannot change it.
+    if (expression.kind === 'local' && guardedScalar(expression)) {
+      if (expression.valueKind !== guardedScalar(expression)) fail('guarded scalar kind mismatch');
+      return;
+    }
     if (expression.kind === 'local' && expression.valueKind !== locals.get(expression.id)?.valueKind) fail('pure input local tag mismatch');
     if (['object','array'].includes(expression.kind) && expression.valueKind !== expression.kind) fail('pure input structural tag mismatch');
     if (expression.kind !== 'local' && values.scalar(inputType(expression))) scalarArgumentKind(expression,locals,fail,true,projectionType);
@@ -73,6 +79,12 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   // Only an explicit null guard or a definitely non-null assignment removes a
   // nullable initializer. Facts are attached to each read, including alias initializers.
   const nonNullAt = new WeakMap();
+  const scalarAt = new WeakMap();
+  const scalarKey = (id, kind) => `scalar:${id}:${kind}`;
+  function guardedScalar(e) {
+    if (e?.kind !== 'local' || locals.get(e.id)?.declaration !== 'const' || writes.has(e.id)) return;
+    return ['string', 'number', 'boolean'].find(kind => scalarAt.get(e)?.has(scalarKey(e.id, kind)));
+  }
   function nullFacts(e, truth, facts) {
     if(e?.kind!=='binary')return;
     let mutates=false;walkExpression(e,node=>{if(['assignment','update'].includes(node.kind))mutates=true;});
@@ -81,6 +93,9 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       nullFacts(e.left,truth,facts);nullFacts(e.right,truth,facts);return;
     }
     if(!['===','!=='].includes(e.operator))return;
+    if (e.left?.kind === 'unary' && e.left.operator === 'typeof' && e.left.value?.kind === 'local'
+      && e.right?.kind === 'literal' && ['string','number','boolean'].includes(e.right.value)
+      && (e.operator === '===') === truth) facts.add(scalarKey(e.left.value.id, e.right.value));
     const local=e.left?.kind==='local' && e.right?.kind==='literal' && e.right.value===null ? e.left
       : e.right?.kind==='local' && e.left?.kind==='literal' && e.left.value===null ? e.right : undefined;
     if(local && (e.operator==='!==')===truth)facts.add(local.id);
@@ -92,6 +107,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   function markExpression(e,facts) {
     if(!e || typeof e!=='object')return;
     nonNullAt.set(e,new Set(facts));
+    scalarAt.set(e,new Set(facts));
     if(e.kind==='conditional' || e.kind==='binary' && ['&&','||','??'].includes(e.operator)) {
       markExpression(e.test || e.left,facts);
       const yes=new Set(facts),no=new Set(facts);
@@ -139,6 +155,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   const inputTypes = new WeakMap();
   function inputType(e, seen = new Set()) {
     if(!e || typeof e!=='object')return;
+    if (guardedScalar(e)) return guardedScalar(e);
     if(inputTypes.has(e))return inputTypes.get(e);
     const types = {schemas:plan.schemas?.registry, get(id) {
       if (seen.has(id)) return undefined;
@@ -205,6 +222,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     for(const write of memberWrites)if(references(write.target.object))fail('borrowed caller shape is mutated through an alias');
   }
   function projectionType(e) {
+    if (e?.kind === 'local') return guardedScalar(e);
     const type=inputType(e);
     readonlyInput(e);
     return type;
@@ -327,8 +345,8 @@ function validatePureBody(helper, locals, fail) {
       kind = values.member(child(e.object), e.property);
     } else if (e.kind === 'element') {
       const object = child(e.object), index = child(e.index);
-      if (object?.kind !== 'number-array' || index !== 'number') fail('pure element requires a numeric array and index');
-      kind = 'number';
+      if ((object !== 'string' && object?.kind !== 'number-array') || index !== 'number') fail('pure element requires a string or numeric array and numeric index');
+      kind = object === 'string' ? 'string' : 'number';
     } else if (e.kind === 'binary') {
       const a = child(e.left), b = child(e.right);
       if (!values.scalar(a) || !values.scalar(b)) fail('pure operators require scalar operands');
@@ -401,7 +419,7 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   const child = v => scalarArgumentKind(v, locals, fail, bound, projectionType);
   let kind = 'unknown';
   if (e.kind === 'literal' && ['string', 'number', 'boolean'].includes(typeof e.value)) kind = typeof e.value;
-  else if (e.kind === 'local') kind = locals.get(e.id)?.valueKind;
+  else if (e.kind === 'local') kind = projectionType?.(e) || locals.get(e.id)?.valueKind;
   else if (['property','element'].includes(e.kind) && projectionType) {
     kind = projectionType(e);
     if (e.kind === 'element') child(e.index);

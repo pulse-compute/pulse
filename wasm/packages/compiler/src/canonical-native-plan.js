@@ -1053,6 +1053,12 @@ class NativePlanBuilder {
       // A const primitive cannot change between this guard and a branch read.
       // Keep mutable locals and the scope after the branch unrefined.
       if (test.kind === 'binary' && ['===', '!=='].includes(test.operator)) {
+        const typeRead = test.left.kind === 'unary' && test.left.operator === 'typeof' ? test.left : undefined;
+        const typeName = test.right.kind === 'literal' && test.right.value;
+        const checked = typeRead?.value.kind === 'local' ? scope.get(typeRead.value.name) : undefined;
+        if (checked?.declaration === 'const' && ['string', 'number', 'boolean'].includes(typeName)) {
+          (test.operator === '===' ? thenScope : elseScope).set(checked.name, Object.freeze({ ...checked, valueKind: typeName }));
+        }
         const read = test.left.kind === 'undefined' ? test.right : test.right.kind === 'undefined' ? test.left : undefined;
         const local = read?.kind === 'local' ? scope.get(read.name) : undefined;
         if (local?.declaration === 'const' && local.valueKind === 'string-or-undefined') {

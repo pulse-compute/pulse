@@ -186,8 +186,15 @@ recursive, generic, method/accessor and deeper record shapes are excluded.
 The callee borrows existing i32 value handles synchronously. It cannot mutate
 parameters or derived aliases, return a structured value, capture/retain it, or
 pass it to another helper. Derived record/array locals must be `const`; scalar
-locals may mutate. Field reads, array length/index reads, scalar operators,
-branches and literal-capped loops are admitted. A pure helper can return its
+locals may mutate. Field reads, string and array length/index reads, scalar operators,
+branches and literal-capped loops are admitted. Caller scalar arguments also admit an immutable
+`const` snapshot of a value inside an explicit `typeof snapshot === 'string'`
+(or `number` / `boolean`) branch, or the corresponding `!==` else branch.
+Independent plan validation reconstructs the guard at the call and rejects
+mutable bindings, writes, missing/inverted guards and forged scalar tags.
+The snapshot does not borrow its initializer's record; later field writes do
+not change the checked primitive. This does not admit an unchecked record.
+ A pure helper can return its
 scalar result early from its own loop. PF-04 admits pure calls inside existing
 bounded caller loop bodies, including read loops. A pure callee requires no read
 site. Each loop call carries `pulse.bounded-pure-loop-call.v1`; deserialized plans
