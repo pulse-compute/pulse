@@ -20,7 +20,7 @@ module.exports = function characterizePolicy(compile) {
   }
   const cases = [];
   const producerExpressions = [];
-  function check(name, expected, mutate) {
+  function check(name, expected, mutate, rejectionReason) {
     const candidate = JSON.parse(JSON.stringify(plan));
     mutate(candidate);
     delete candidate.planHash;
@@ -34,6 +34,7 @@ module.exports = function characterizePolicy(compile) {
       assert.ok(!diagnostics.some(d => d.message === 'plan hash mismatch'), 'a valid hash must not establish semantic proof');
     }
     assert.equal(diagnostics.length === 0, expected, `${name}: ${JSON.stringify(diagnostics)}`);
+    if (rejectionReason) assert.ok(diagnostics.some(d => d.message === rejectionReason), `${name}: ${JSON.stringify(diagnostics)}`);
     cases.push({ name, accepted: expected, diagnostics });
   }
   function expressionCount(value) {
@@ -89,8 +90,10 @@ module.exports = function characterizePolicy(compile) {
   }
   for (const operator of ['||', '??']) for (const optionalLeft of [true, false]) {
     const optional = { kind: 'intrinsic', name: 'request.header', arguments: [literal('string')], valueKind: 'string-or-undefined' };
-    check(`caller:optional-default:${operator}:${optionalLeft}`, true, argument({ kind: 'binary', operator,
-      left: optionalLeft ? optional : literal('string'), right: optionalLeft ? literal('string') : optional, valueKind: 'string' }, 'string'));
+    const admitted = optionalLeft || operator === '??';
+    check(`caller:optional-default:${operator}:${optionalLeft}`, admitted, argument({ kind: 'binary', operator,
+      left: optionalLeft ? optional : literal('string'), right: optionalLeft ? literal('string') : optional, valueKind: 'string' }, 'string'),
+      admitted ? undefined : 'pure argument kind mismatch');
     check(`body:forged-optional-default:${operator}:${optionalLeft}`, false, p => {
       const id = helper.id + ':uninitialized';
       p.helpers[0].localIds.push(id);

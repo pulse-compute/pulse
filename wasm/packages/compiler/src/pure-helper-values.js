@@ -48,7 +48,8 @@ function binaryResult(operator, a, b, planKind, optionalStringDefault = true) {
   if (rule === 'logical') {
     if (planKind ? a === b : same(a, b)) return a;
     if (optionalStringDefault && ['||', '??'].includes(operator) && (planKind
-      ? new Set([a, b]).has('string') && new Set([a, b]).has('string-or-undefined')
+      ? a === 'string-or-undefined' && b === 'string'
+        || operator === '??' && a === 'string' && b === 'string-or-undefined'
       : a === 'string-or-undefined' && b === 'string')) return 'string';
     return unknown;
   }

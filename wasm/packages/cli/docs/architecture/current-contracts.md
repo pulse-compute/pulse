@@ -255,14 +255,17 @@ The source type resolver translates contained TypeScript declarations using
 those limits; the Native plan builder consumes the shared result rules. Neither
 consumer owns a second binary/unary result-rule implementation.
 
-The vocabulary preserves two existing inference boundaries. Dynamic plan kinds
-include symmetric optional-string defaults and `in`; reconstructed type facts
-use structural equality and only a left optional-string default. Inference does
+The vocabulary preserves two inference boundaries. Dynamic plan kinds include
+`in`; reconstructed type facts use structural equality. Optional-string defaults
+are directional for `||`: an optional left operand with a definite string right
+operand proves a string, while a definite string left operand with an optional
+right operand does not. `??` proves a string in either order because a definite
+string left operand cannot fall through. Inference does
 not establish operation admission. `source-helper-plan.js` owns independent
 validation, reconstructing caller provenance, helper operands and ownership after
 deserialization before consuming shared result facts. Its explicit admission
 policy excludes `in` and `void`, requires scalar callee operands and numeric
-arithmetic operands, and preserves the caller's existing scalar coercion and
+arithmetic operands, and preserves the caller's scalar coercion and sound
 optional-string defaults. Callees do not admit optional-string operands. No
 producer tag, serialized hash or signature substitutes for those checks.
 
