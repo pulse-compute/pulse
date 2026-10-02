@@ -16,7 +16,7 @@
     "humanDecision": "not-required"
   },
   "inferred": {
-    "changedFiles": 23,
+    "changedFiles": 50,
     "areas": [
       "cli",
       "compiler",
@@ -94,6 +94,24 @@
       ]
     },
     {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/attempts/prebuild-crypto-rs256.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/attempts/prebuild-portable-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/attempts/prebuild-portable.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
       "file": "wasm/test/fixtures/pure-helpers/r1-02/attempts/r102-matrix-attempt.log",
       "rules": [
         "tests-and-evidence"
@@ -118,7 +136,121 @@
       ]
     },
     {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/build.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
       "file": "wasm/test/fixtures/pure-helpers/r1-02/characterize-baseline.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-build.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-cli-05-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-cli-05.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-cli-09-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-cli-09.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-task-05.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/baseline-task-09.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/cli-report-01.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/cli-report-02.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/cli-report-03.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/cli-run-01.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/cli-run-02.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/cli-run-03.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/docs-example-05-fastly-capabilities.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/docs-example-09-router-lowering.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/cli/summary.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/documentation-release.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/documentation.log",
       "rules": [
         "tests-and-evidence"
       ]
@@ -136,7 +268,25 @@
       ]
     },
     {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/maintainer.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
       "file": "wasm/test/fixtures/pure-helpers/r1-02/manifest.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/portable-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/portable.log",
       "rules": [
         "tests-and-evidence"
       ]
@@ -179,6 +329,18 @@
     },
     {
       "file": "wasm/test/fixtures/pure-helpers/r1-02/runs/2026-10-02T19-40-22-323Z--27/tasks/pure-source-helpers.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/scope.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-02/toolchain.json",
       "rules": [
         "tests-and-evidence"
       ]

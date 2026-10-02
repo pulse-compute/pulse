@@ -1,0 +1,156 @@
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 1.10s
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 214 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 89ms
+
+[pulsewasm:unit] test-orchestration
+[pulsewasm] atomic reports, deterministic slicing, timeouts, and descendant cleanup (timeout 30.00s)
+
+[pulsewasm:unit] orchestration-pass-fixture
+[pulsewasm] orchestration pass fixture (timeout 5.00s)
+fixture-pass
+[pulsewasm] orchestration-pass-fixture: passed in 57ms
+
+[pulsewasm:unit] orchestration-failure-evidence-fixture
+[pulsewasm] orchestration failure evidence fixture (timeout 5.00s)
+[pulsewasm] orchestration-failure-evidence-fixture: copied 1 task-owned failure log(s) into the durable run report
+[pulsewasm] orchestration-failure-evidence-fixture: failed in 60ms
+
+[pulsewasm:unit] orchestration-timeout-fixture
+[pulsewasm] orchestration timeout and descendant cleanup fixture (timeout 1.20s)
+fixture-timeout-ready
+[pulsewasm] orchestration-timeout-fixture: timeout; process group 74 contains 0 process(es)
+
+Writing Node.js report to file: report.20261003.034655.74.0.001.json
+Node.js report completed
+[pulsewasm] orchestration-timeout-fixture: timeout in 6.97s
+ok - test orchestration writes atomic reports, slices profiles deterministically, preserves task and failure logs, captures timeout diagnostics, and terminates descendant process groups
+[pulsewasm] test-orchestration: passed in 7.16s
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 19 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 5.54s
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 319ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 166ms
+
+[pulsewasm:unit] hidden-contracts
+[pulsewasm] hidden contract literal scanner (timeout 30.00s)
+ok - PulseWasm hidden contract scanner classifies non-contract versions and rejects duplicate contract literals
+[pulsewasm] hidden-contracts: passed in 246ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 846ms
+
+[pulsewasm:unit] release-tag
+[pulsewasm] release-owner tagging guards and immutable tag identity (timeout 30.00s)
+ok - release tag requires reviewed remote main, defaults to dry run, preserves tag identity, and never pushes
+[pulsewasm] release-tag: passed in 424ms
+
+[pulsewasm:unit] api-surface
+[pulsewasm] provider-neutral TypeScript API and fixture type surface (timeout 30.00s)
+ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value
+[pulsewasm] api-surface: passed in 771ms
+
+[pulsewasm:unit] logging-contract
+[pulsewasm] logging levels, ABI, reporting resolution, and public surfaces (timeout 30.00s)
+ok - logging levels, synchronous ABI, flat reporting resolution, and handler surfaces are canonical
+[pulsewasm] logging-contract: passed in 66ms
+
+[pulsewasm:unit] s3-design-contract
+[pulsewasm] S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes (timeout 30.00s)
+ok - S3 O1 design: typed subset, canonical input seam, key/body/signing vectors and bounded envelopes; no runtime support claim
+[pulsewasm] s3-design-contract: passed in 1.14s
+
+[pulsewasm:unit] kv-design-contract
+[pulsewasm] K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty (timeout 30.00s)
+{"status":"passed","proof":"K1-executable-specification","tokens":8,"outcomeVectors":31,"readOutcomeVectors":15,"raceSchedules":12,"publicRuntimeSupport":false,"providerReality":false}
+[pulsewasm] kv-design-contract: passed in 1.12s
+
+[pulsewasm:unit] kv-conditional-runtime
+[pulsewasm] K2 production conditional KV types, wire bounds, snapshots and outcome contracts (timeout 30.00s)
+ok - K2 production types, wire/token/bounds corpus, admission snapshot, redaction and explicit failure outcomes
+[pulsewasm] kv-conditional-runtime: passed in 1.08s
+
+[pulsewasm:unit] kv-conditional-gates
+[pulsewasm] K4 executable requirement and deployed evidence identity, location and uncertainty gates (timeout 30.00s)
+ok - K4 rejects missing executables, mixed deployment identities, repeated receipts, same-POP evidence and unknown write acceptance; deployed orchestration tested with a local fixture only
+[pulsewasm] kv-conditional-gates: passed in 415ms
+
+[pulsewasm:unit] s3-read-contract
+[pulsewasm] S3 read binding authority, lowering negatives and bounded result contract (timeout 30.00s)
+ok - S3 read bindings, literal authority, dynamic key seam and result bounds
+[pulsewasm] s3-read-contract: passed in 213ms
+
+[pulsewasm:unit] s3-write-contract
+[pulsewasm] S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle (timeout 30.00s)
+ok - S3 PUT literal lowering, bounded results, explicit Crypto JavaScript vectors, snapshot and wipe
+[pulsewasm] s3-write-contract: passed in 259ms
+
+[pulsewasm:unit] crypto-config-planning
+[pulsewasm] crypto profile replacement, reachable requirements, and deterministic target realization planning (timeout 180.00s)
+ok - crypto configuration replacement, reachable demand, deterministic realization planning, and pre-lowering failure are canonical
+[pulsewasm] crypto-config-planning: passed in 678ms
+
+[pulsewasm:unit] crypto-es256-signing
+[pulsewasm] RFC6979 signing vector, frame rejection and private material cleanup (timeout 180.00s)
+ok - RFC6979 ES256 signing, independent verification, strict frames, key consistency and cleanup
+[pulsewasm] crypto-es256-signing: passed in 102ms
+
+[pulsewasm:unit] crypto-rs256
+[pulsewasm] RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup (timeout 180.00s)
+Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/bf0d896ef055/pulse-r102/packages/crypto/dist/index.js' imported from /workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/crypto/assert-rs256.cjs
+    at finalizeResolution (node:internal/modules/esm/resolve:271:11)
+    at moduleResolve (node:internal/modules/esm/resolve:865:10)
+    at defaultResolve (node:internal/modules/esm/resolve:992:11)
+    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)
+    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)
+    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)
+    at #resolve (node:internal/modules/esm/loader:683:17)
+    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)
+    at node:internal/modules/esm/loader:632:32
+    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)
+[pulsewasm] crypto-rs256: failed in 72ms
+
+[pulsewasm] test summary
+  passed         1.10s  pure-helper-contract  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/pure-helper-contract.log)
+  passed          89ms  suite-shape  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/suite-shape.log)
+  passed         7.16s  test-orchestration  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/test-orchestration.log)
+  passed         5.54s  package-exports  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/package-exports.log)
+  passed         319ms  boundaries  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/boundaries.log)
+  passed         166ms  workspace-hygiene  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/workspace-hygiene.log)
+  passed         246ms  hidden-contracts  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/hidden-contracts.log)
+  passed         846ms  release-runtime-policy  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/release-runtime-policy.log)
+  passed         424ms  release-tag  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/release-tag.log)
+  passed         771ms  api-surface  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/api-surface.log)
+  passed          66ms  logging-contract  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/logging-contract.log)
+  passed         1.14s  s3-design-contract  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/s3-design-contract.log)
+  passed         1.12s  kv-design-contract  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/kv-design-contract.log)
+  passed         1.08s  kv-conditional-runtime  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/kv-conditional-runtime.log)
+  passed         415ms  kv-conditional-gates  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/kv-conditional-gates.log)
+  passed         213ms  s3-read-contract  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/s3-read-contract.log)
+  passed         259ms  s3-write-contract  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/s3-write-contract.log)
+  passed         678ms  crypto-config-planning  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/crypto-config-planning.log)
+  passed         102ms  crypto-es256-signing  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/crypto-es256-signing.log)
+  failed          72ms  crypto-rs256  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15/tasks/crypto-rs256.log)
+  report       /workspace/scratch/bf0d896ef055/r102-validation/portable-report.json
+  run logs     /workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T19-46-53-387Z--15
+  total        21.82s

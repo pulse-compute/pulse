@@ -1,0 +1,6 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> maintainer:check
+> node scripts/validate-maintainer-control-plane.cjs
+
+ok - 7 change classes, 11 protected boundaries, 9 AGENTS files, 52 documented test commands, 8 workflows, 14 documentation deployment objects, and 17 scope cases validated
