@@ -1,0 +1,17 @@
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 05-fastly-capabilities
+AssertionError [ERR_ASSERTION]: 05-fastly-capabilities documented provider Wasm size changed
+
+47185 !== 47135
+
+    at verifyDefaultNativeSizes (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/docs/assert-executable-documentation.cjs:526:12)
+    at verifyExampleWorkflow (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/docs/assert-executable-documentation.cjs:716:41)
+    at main (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/docs/assert-executable-documentation.cjs:876:23)
+    at Object.<anonymous> (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/docs/assert-executable-documentation.cjs:925:3)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)

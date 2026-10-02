@@ -107,8 +107,9 @@ try {
     'String inference must not silently expand the pure-body indexing policy.');
   const { plan } = compile(...positives[3]);
   const native = compileCanonicalNativePlan(plan, { cwd: root, emitWat: false });
+  const policy = require('../support/pure-helper-policy.cjs')(compile);
   console.log(JSON.stringify({ status: 'passed', shapeCases: shapes.length, operationCases: operations.length + 10,
-    accepted, rejected, native: { wasmBytes: native.wasm.length, wasmSha256: digest(native.wasm), sourceSha256: digest(native.source) },
+    accepted, rejected, policy, native: { wasmBytes: native.wasm.length, wasmSha256: digest(native.wasm), sourceSha256: digest(native.source) },
     stringIndexBoundary: 'caller projection admitted; inferred string helper-body index rejected' }));
 } finally {
   fs.rmSync(cwd, { recursive: true, force: true });

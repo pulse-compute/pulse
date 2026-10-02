@@ -1,0 +1,463 @@
+{
+  "task": "R1-02",
+  "taskClass": "behavior-preserving refactor",
+  "policyClass": "hardening",
+  "status": "refactor complete; characterized output equivalent",
+  "baseCommit": "afce9f129d5c8e80099178261cbce0da6e3bb263",
+  "baseTree": "f1df4ae6092102668125e235998ab80fdd2ce2f1",
+  "branch": "codex/r1-02-helper-validation",
+  "entryPoint": "none; ordinary root -> wasm -> compiler instruction chain",
+  "intendedWrites": [
+    "wasm/packages/compiler/src/pure-helper-values.js",
+    "wasm/packages/compiler/src/source-helper-plan.js",
+    "wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
+    "wasm/test/support/pure-helper-policy.cjs",
+    "docs/architecture/current-contracts.md",
+    "wasm/packages/cli/docs/architecture/current-contracts.md",
+    "wasm/test/fixtures/pure-helpers/r1-02/**"
+  ],
+  "exclusions": [
+    "new capabilities/types",
+    "string-index admission",
+    "ABI/runtime/provider/optimizer changes",
+    "application changes",
+    "merge/release"
+  ],
+  "sourceIdentity": "Portable replay: clean tracked implementation tree at launch. All product/test bytes match implementationCommit and testedSha256. CLI runs: same product/test bytes; only evidence artifacts changed. Reports retain the actual tested source identity and are development validation, not a release seal.",
+  "testedSha256": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "1730eb4c18ae37706b7490d563cc98589b669cf1d6f4a4c091856371c6f2f8a6",
+    "wasm/packages/compiler/src/source-helper-plan.js": "cba795c127201da3c26986bd1ead0a477c6383e27aa994c6113aa0a4ccc1ce5b",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e",
+    "wasm/test/lowering/assert-pure-helper-vocabulary.cjs": "d1a62591c8eeae6641989f91125ba286caca14524bdb424ec12c692e7bef8cc4",
+    "wasm/test/support/pure-helper-policy.cjs": "3d8d89236d44708f2e56c84af797b5cdc525b2330f12d42d650077bbd6129d2b"
+  },
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "dependencies": "Lockfile-pinned dependency roots physically copied from R1-01 worktree; no new dependencies or lifecycle installs.",
+  "commands": [
+    "node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report wasm/test/fixtures/pure-helpers/r1-02/baseline-report.json",
+    "node wasm/test/lowering/assert-pure-helper-vocabulary.cjs > wasm/test/fixtures/pure-helpers/r1-02/before.json",
+    "node wasm/test/fixtures/pure-helpers/r1-02/characterize-baseline.cjs > wasm/test/fixtures/pure-helpers/r1-02/before.json",
+    "npm run docs:sync",
+    "node wasm/scripts/run-wasm-tests.cjs --task hidden-contracts --task pure-helper-vocabulary --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers --report /workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/fixtures/pure-helpers/r1-02/focused-report.json",
+    "npm run maintainer:sync",
+    "npm run maintainer:check",
+    "npm run docs:check",
+    "node scripts/documentation-release.cjs",
+    "node node_modules/typescript/bin/tsc -b tsconfig.workspace.json",
+    "node wasm/scripts/run-wasm-tests.cjs --profile unit --profile native --profile javascript --profile conformance --report /workspace/scratch/bf0d896ef055/r102-validation/portable-report.json",
+    "node wasm/scripts/run-wasm-tests.cjs --profile cli --report /workspace/scratch/bf0d896ef055/r102-validation/cli-report-01.json",
+    "node wasm/scripts/run-wasm-tests.cjs --profile cli --from docs-example-07-opaque-proxy --report /workspace/scratch/bf0d896ef055/r102-validation/cli-report-02.json",
+    "node wasm/scripts/run-wasm-tests.cjs --profile cli --from docs-example-10-entities-tools --report /workspace/scratch/bf0d896ef055/r102-validation/cli-report-03.json",
+    "node wasm/scripts/run-wasm-tests.cjs --task docs-example-05-fastly-capabilities --report /workspace/scratch/bf0d896ef055/r102-validation/baseline-cli-05-report.json (cwd: clean pulse-r102-base at afce9f129d5c8e80099178261cbce0da6e3bb263)",
+    "node wasm/scripts/run-wasm-tests.cjs --task docs-example-09-router-lowering --report /workspace/scratch/bf0d896ef055/r102-validation/baseline-cli-09-report.json (cwd: clean pulse-r102-base at afce9f129d5c8e80099178261cbce0da6e3bb263)"
+  ],
+  "baseline": {
+    "helperTasks": 5,
+    "status": "passed",
+    "policy": {
+      "cases": 521,
+      "accepted": 320,
+      "rejected": 201,
+      "matrixSha256": "5bdcbaf92f6eedd8ce8c936372b5fb8a958dca3092630fab4536939d989a3340",
+      "producerExpressions": 107,
+      "producerPlanHash": "e308616c1bba6f5613c466aa6c4ea0377fbeab6bd7868e6d368020d262ddffa1"
+    },
+    "native": {
+      "wasmBytes": 2187,
+      "wasmSha256": "1bf15db834f072f3068794d7cf962ac0a5ddab28278302b067fd101f1b19ecf5",
+      "sourceSha256": "f9504c8e8bd218296894da1163295b26c226f1da657b44fa84c06849ab3c3529"
+    },
+    "note": "Original five-task run preceded the test extension. Current before.json runs the final 521-case test against the frozen base product modules; its 107 producer expressions also validate through the unchanged public Native plan seam."
+  },
+  "reportLocationNote": "The runner resolves relative report paths under wasm. Baseline report was moved from the resulting wasm/wasm subtree without modifying its content; future report paths are absolute.",
+  "nextAction": "Human review of PR #167. Keep the two CLI baseline failures explicit; separate snapshot upkeep. S-01 is the next capability task. Do not merge or release automatically.",
+  "initialCheckpointCommit": "33e65ba618c66a0d6bcb72c5b1dbfb9f9454b80e",
+  "initialCheckpointPolicy": {
+    "cases": 508,
+    "accepted": 311,
+    "rejected": 197,
+    "matrixSha256": "c0819c98b9d2bbe293d8a50dd35aad83f9545daf978560cc9ee6c33468c13888"
+  },
+  "baseProductSha256": {
+    "wasm/packages/compiler/src/pure-helper-values.js": "0e9e105b6f8b8c29405b60b19d18a21eba6395a00825aa192a3432b319858e0f",
+    "wasm/packages/compiler/src/source-helper-plan.js": "49b1f02c88eab4bfb30b658fe53452cbe74c65349ca1d8bb7f51d1db0a52b85d",
+    "wasm/packages/compiler/src/canonical-native-plan.js": "0fa0d1fd4ffba2c8c91b2e28278d9c2a54697fdd51b6a2aafcdbaa30ba54c81e"
+  },
+  "validation": {
+    "characterization": {
+      "status": "passed",
+      "cases": 521,
+      "accepted": 320,
+      "rejected": 201,
+      "producerExpressions": 107,
+      "exactReportsMatch": true
+    },
+    "focused": {
+      "status": "passed",
+      "completedTasks": 7,
+      "note": "Before final 13-case and producer extension; full replay tests the final extension."
+    },
+    "portable": {
+      "status": "passed",
+      "completedTasks": 106,
+      "selectedTasks": 106,
+      "testReplayMs": 1086098,
+      "testedCommit": "696e3210bc6b19234968e231734e185cd3389f09"
+    },
+    "maintenance": {
+      "status": "passed",
+      "command": "npm run maintainer:check"
+    },
+    "documentation": {
+      "status": "passed",
+      "command": "npm run docs:check"
+    },
+    "documentationRelease": {
+      "status": "passed",
+      "command": "node scripts/documentation-release.cjs",
+      "limit": "local simulation only"
+    },
+    "build": {
+      "status": "passed",
+      "command": "node node_modules/typescript/bin/tsc -b tsconfig.workspace.json",
+      "limit": "Uses restored pinned dependencies; not release pack or clean-machine acceptance."
+    },
+    "cli": {
+      "status": "failed",
+      "gatePassed": false,
+      "developmentCoverage": "Three serial runs at one implementation commit; complete 22-task coverage, not a complete passing CLI replay or release seal.",
+      "implementationCommit": "696e3210bc6b19234968e231734e185cd3389f09",
+      "baselineCommit": "afce9f129d5c8e80099178261cbce0da6e3bb263",
+      "tasks": 22,
+      "passed": 20,
+      "failed": 2,
+      "comparisons": [
+        {
+          "task": "docs-example-05-fastly-capabilities",
+          "expectedBytes": 47135,
+          "cleanBaseBytes": 47185,
+          "candidateBytes": 47185,
+          "deltaBytes": 0
+        },
+        {
+          "task": "docs-example-09-router-lowering",
+          "expectedBytes": 9762,
+          "cleanBaseBytes": 9157,
+          "candidateBytes": 9157,
+          "deltaBytes": 0
+        }
+      ],
+      "results": [
+        {
+          "name": "cli-command-spec",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-init-workflow",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-project-workflow",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-expansion-doctor",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-project-guards",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-dev-workflow",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-schema-json-workflow",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "events-cli-workflow",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "cli-diagnostics",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-executable-contracts",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-executable-init-dev",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-migration-schema-lowering",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-01-hello-json",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-02-request-schema",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-03-fetch-composition",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-05-fastly-capabilities",
+          "status": "failed",
+          "exitCode": 1
+        },
+        {
+          "name": "docs-example-07-opaque-proxy",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-09-router-lowering",
+          "status": "failed",
+          "exitCode": 1
+        },
+        {
+          "name": "docs-example-10-entities-tools",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-11-events",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-12-mcp-proxy",
+          "status": "passed",
+          "exitCode": 0
+        },
+        {
+          "name": "docs-example-13-jwt-es256",
+          "status": "passed",
+          "exitCode": 0
+        }
+      ]
+    }
+  },
+  "artifacts": {
+    "README.md": {
+      "bytes": 4238,
+      "sha256": "a6eba0eb1de321cecc40f018cd3a4493ead51a1d359cb12ebab3226063d80651"
+    },
+    "after.json": {
+      "bytes": 9370,
+      "sha256": "f9f748ff962871f872658bdba4ddfba9116e4cabbd56c168f5c6bc3cffa87008"
+    },
+    "attempts/prebuild-crypto-rs256.log": {
+      "bytes": 900,
+      "sha256": "32bf2d01938d3f4594ffcb649aaa168b97cf7031b49b6bf888528eae84d8093b"
+    },
+    "attempts/prebuild-portable-report.json": {
+      "bytes": 20530,
+      "sha256": "928d870a1badc853e09d9b35c89bdefda7e966442a34a105bb890996c12ffbfc"
+    },
+    "attempts/prebuild-portable.log": {
+      "bytes": 11095,
+      "sha256": "d096732fcda8a8f735a6005b4b80fb53b81ec8b813503c1d865c4d007d3aa04c"
+    },
+    "attempts/r102-matrix-attempt.log": {
+      "bytes": 1460,
+      "sha256": "2e764f4146ade9d764cd03ada775b3766db2cb249f4b1aef2a18f3e5bb1df68a"
+    },
+    "baseline-report.json": {
+      "bytes": 4456,
+      "sha256": "d05edaf998055b7df2a3f07e7bef53eed83a37912c27a0de15fa07c5de45f29e"
+    },
+    "baseline.log": {
+      "bytes": 7071,
+      "sha256": "6f5efb72a975aa48e4e2504da88f21590249bddda9b31c459ddf1ecef1f35372"
+    },
+    "before.json": {
+      "bytes": 9370,
+      "sha256": "f9f748ff962871f872658bdba4ddfba9116e4cabbd56c168f5c6bc3cffa87008"
+    },
+    "build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "characterize-baseline.cjs": {
+      "bytes": 1036,
+      "sha256": "af86b58b5a595cfc9631c66e1e553855be2c2c0d525cb49487637592babbff7d"
+    },
+    "cli/baseline-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cli/baseline-cli-05-report.json": {
+      "bytes": 1511,
+      "sha256": "95886c2a59ed52bdbc0e90069a9579069146c9c844eb887114905adc13c3b95d"
+    },
+    "cli/baseline-cli-05.log": {
+      "bytes": 1799,
+      "sha256": "7091755334bc8fee3e64cf7582d8d2be8b3b7790bce78d8c3e8ef4dc53404c04"
+    },
+    "cli/baseline-cli-09-report.json": {
+      "bytes": 1486,
+      "sha256": "42762da8de62a81ec8a36adf2e0d4450d4a477cb288fc5b4a3f14fa46d2a30e7"
+    },
+    "cli/baseline-cli-09.log": {
+      "bytes": 1774,
+      "sha256": "bd8ac39f8e00ad67e9ce9bbe75f73c27d8f3939bfeafd8451b9100a30b3a4066"
+    },
+    "cli/baseline-task-05.log": {
+      "bytes": 1180,
+      "sha256": "0bde65fb7851bf79b64f29c39c762a8f634a455f05d3e0462fcb7c84008099ed"
+    },
+    "cli/baseline-task-09.log": {
+      "bytes": 1179,
+      "sha256": "0a9aad38fe30c1360214233b078daddf48f1728459e93e93bbba3f8c5d07dd36"
+    },
+    "cli/cli-report-01.json": {
+      "bytes": 12991,
+      "sha256": "2e236525cc9fe7b81abc778670cdaee0331181c73e616cf1193b1cb25a6cb091"
+    },
+    "cli/cli-report-02.json": {
+      "bytes": 3006,
+      "sha256": "e39cc865a37cdda6fea764c3727aa5e5c171e24aa810de79a555728acfe0c09a"
+    },
+    "cli/cli-report-03.json": {
+      "bytes": 4231,
+      "sha256": "3f6e9e28978fe114aea3dfd91f4e0f71e16f199710c69fb5d9dfda50e5e1e189"
+    },
+    "cli/cli-run-01.log": {
+      "bytes": 10619,
+      "sha256": "43674fee391f5c924ff0c894dc5fb8bace05ea69d9b284340ad4c7b3b42f592b"
+    },
+    "cli/cli-run-02.log": {
+      "bytes": 2306,
+      "sha256": "9ca25a2288c0f0da17becb13382a7b391f101ca9be8cc97ec6928442a1cf3453"
+    },
+    "cli/cli-run-03.log": {
+      "bytes": 2362,
+      "sha256": "b40fc7790d4fac43da622f2eb7dcbc72f9d14354e144140b771b4daa942bbe56"
+    },
+    "cli/docs-example-05-fastly-capabilities.log": {
+      "bytes": 1160,
+      "sha256": "3f8470695f71cfb73e2ccf3774a7232f95f00cc3bb4fe25eb2149e8d9c1e6fff"
+    },
+    "cli/docs-example-09-router-lowering.log": {
+      "bytes": 1159,
+      "sha256": "c8929e4cd009385c30ac9154ec59c0133226948512e38e292b79c54ce2805b8b"
+    },
+    "cli/summary.json": {
+      "bytes": 3000,
+      "sha256": "a93f1c486cd7e46398bf00c70dd26cf76b2b12bd506154df9fe8b31ea63b91b8"
+    },
+    "documentation-release.log": {
+      "bytes": 123355,
+      "sha256": "dd3eafbde0ed507c8503ef157e929155c71e5326e93ba447261a3e2f5cc2a8f6"
+    },
+    "documentation.log": {
+      "bytes": 474,
+      "sha256": "ae3a3d973010b81d70e585a290580032312e0870c75999a662004f03e98e4e5a"
+    },
+    "focused-report.json": {
+      "bytes": 5821,
+      "sha256": "303de120cd4043fd7303dac84d657fdac72ecb42fc403d956a55ff63c4b84410"
+    },
+    "focused.log": {
+      "bytes": 13469,
+      "sha256": "dc0f1a3c3d3dfb30e11839803ed83567c7d4650298a64de9459bd645f982665b"
+    },
+    "maintainer.log": {
+      "bytes": 345,
+      "sha256": "6e976f4f9a5ab895ea1adef82f7a6b26039583c1485fc102bbfe002ae947cc7b"
+    },
+    "portable-report.json": {
+      "bytes": 81032,
+      "sha256": "1a76d2ebf6a9eb9aa458ab82854c947f8c951914e883d673da21887a0db15b96"
+    },
+    "portable.log": {
+      "bytes": 93396,
+      "sha256": "e3f11e046576524a62db77d245297d103fb85dc3cad3c7246809d90bdf11da0a"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/hidden-contracts.log": {
+      "bytes": 112,
+      "sha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-argument-helpers.log": {
+      "bytes": 92,
+      "sha256": "1da42472975829157a2865c96803f4ee4a07621d7c0179c1ad966b6ff2e1e514"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-helper-contract.log": {
+      "bytes": 141,
+      "sha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-helper-vocabulary.log": {
+      "bytes": 9258,
+      "sha256": "e8961a76d0c6413e617dbf3143e1e014a50bd462f6d22f364fbc28c29a6bfdb9"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-loop-helpers.log": {
+      "bytes": 139,
+      "sha256": "d25f0b10e70a7ab24e7e6c8bab3a240344f5ba2ae2b08fc20fc1ff67a4e45a30"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-record-helpers.log": {
+      "bytes": 826,
+      "sha256": "38db7c3be24c190c923a35a9adfde41449f303bc994f1adb6ebbc6ca552814d3"
+    },
+    "runs/2026-10-02T19-40-22-323Z--27/tasks/pure-source-helpers.log": {
+      "bytes": 364,
+      "sha256": "d1e0d1f4479bb8b2a976491d226b35cab04e0dc4477f6e241194ee5e788fcd84"
+    },
+    "scope.json": {
+      "bytes": 8785,
+      "sha256": "92522d807f313748b096458a80c045a384dc9030c9fbc62de65d05e79284575a"
+    },
+    "toolchain.json": {
+      "bytes": 144,
+      "sha256": "27ffd7cbe0ff29e8c80fc446e96692b893ea93277fdab8c5bf82313ab06e6a9a"
+    }
+  },
+  "implementationCommit": "696e3210bc6b19234968e231734e185cd3389f09",
+  "implementationTree": "2412b1efc650d3ce7c20daedee3587c4807e5348",
+  "pullRequest": "https://github.com/pulse-compute/pulse/pull/167",
+  "toolchain": {
+    "typescript": "5.9.3",
+    "assemblyscript": "0.28.18",
+    "binaryen": "129.0.0-nightly.20260428",
+    "jsonAs": "1.5.0",
+    "node": "v24.19.0"
+  },
+  "failedAttempts": [
+    {
+      "report": "attempts/prebuild-portable-report.json",
+      "status": "failed",
+      "passedBeforeStop": 19,
+      "failure": "Crypto dist/index.js absent: workspace build prerequisite missed. Same code passed a complete replay after TypeScript build."
+    },
+    {
+      "log": "attempts/r102-matrix-attempt.log",
+      "status": "failed",
+      "failure": "Test construction lacked updated plan summary counters. Corrected before implementation; no product assertion weakened."
+    }
+  ],
+  "currentBlocker": "Full CLI gate not passed: two byte snapshots fail identically on the clean pinned base. Product refactor has no demonstrated regression in the characterized surface. Snapshot upkeep is outside R1-02.",
+  "lastSuccessfulGate": "Complete 106-task portable development replay; final CLI continuation 4/4 passed, complete CLI coverage 20/22 passed."
+}

@@ -1,0 +1,41 @@
+
+[pulsewasm:cli] docs-example-10-entities-tools
+[pulsewasm] documented 10-entities-tools workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 10-entities-tools
+ok - docs example 10-entities-tools: provider=node tests=2 capabilities=3 schemas=2
+[pulsewasm] docs-example-10-entities-tools: passed in 7.08s
+
+[pulsewasm:cli] docs-example-11-events
+[pulsewasm] documented 11-events workflow (timeout 300.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 11-events
+ok - docs example 11-events: provider=node tests=3 capabilities=3 schemas=2
+[pulsewasm] docs-example-11-events: passed in 12.98s
+
+[pulsewasm:cli] docs-example-12-mcp-proxy
+[pulsewasm] documented 12-mcp-proxy workflow (timeout 240.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 12-mcp-proxy
+ok - docs example 12-mcp-proxy: provider=node tests=1 capabilities=3
+[pulsewasm] docs-example-12-mcp-proxy: passed in 6.25s
+
+[pulsewasm:cli] docs-example-13-jwt-es256
+[pulsewasm] documented 13-jwt-es256 workflow (timeout 300.00s)
+docs - verify canonical example formatting
+docs - verify source-backed Markdown
+docs - verify canonical example 13-jwt-es256
+ok - docs example 13-jwt-es256: provider=node tests=3 capabilities=2
+[pulsewasm] docs-example-13-jwt-es256: passed in 24.67s
+
+[pulsewasm] test summary
+  passed         7.08s  docs-example-10-entities-tools  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T20-14-10-939Z--5/tasks/docs-example-10-entities-tools.log)
+  passed        12.98s  docs-example-11-events  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T20-14-10-939Z--5/tasks/docs-example-11-events.log)
+  passed         6.25s  docs-example-12-mcp-proxy  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T20-14-10-939Z--5/tasks/docs-example-12-mcp-proxy.log)
+  passed        24.67s  docs-example-13-jwt-es256  (/workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T20-14-10-939Z--5/tasks/docs-example-13-jwt-es256.log)
+  report       /workspace/scratch/bf0d896ef055/r102-validation/cli-report-03.json
+  run logs     /workspace/scratch/bf0d896ef055/r102-validation/runs/2026-10-02T20-14-10-939Z--5
+  total        50.98s

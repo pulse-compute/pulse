@@ -1,0 +1,7 @@
+{
+  "typescript": "5.9.3",
+  "assemblyscript": "0.28.18",
+  "binaryen": "129.0.0-nightly.20260428",
+  "jsonAs": "1.5.0",
+  "node": "v24.19.0"
+}
