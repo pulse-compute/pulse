@@ -286,3 +286,20 @@ rejections**. The existing retained-Wasm proof still observes one substantial
 validator body at 1/2/16 sites. Package identities, audits and attempt boundaries
 are retained in [`pf06-evidence.json`](./pf06-evidence.json). This is development
 qualification, not an aggregate release seal or application adoption result.
+
+### N-03 flat-record scalar projections
+
+`node wasm/scripts/run-wasm-tests.cjs --task flat-record-projections` qualifies
+the narrow N-01 selection: two required string fields per schema-decoded array
+element, a matching dominating bounds guard, immutable const aliases and scalar
+arguments only. It exercises empty/nonempty inputs, both loop edges, repeated
+iterations/invocations, aliases and post-loop scalar/spread copies on JavaScript,
+Node Native and the Fastly Native host fixture. The fixture is not deployed evidence.
+
+The gate retains the original N-01 matrix unchanged and asserts the five newly
+admitted cases separately. Rehashed plans and source negatives cover schema
+origin/shape, wrong or late guards, invalid indices, binding dominance, alias
+writes, structured escape and existing loop budgets. Set `N03_OUTPUT` to a fresh
+path to retain the complete report. `N03_CONSUMER` selects a byte-inventoried
+official tarball installation. `N03_PLAN_ONLY=1` is explicitly labeled development
+plan-only evidence; it does not satisfy cross-target qualification.

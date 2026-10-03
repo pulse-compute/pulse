@@ -239,6 +239,32 @@ unguarded or non-dominating calls, a null check on an optional string, and
 optional fields in borrowed-record
 signatures remain excluded. The earlier guarded nullable schema-local rule is
 unchanged.
+N-03 admits caller scalar projections from a literal schema decode whose array
+elements are closed records with exactly two required string fields. Field names
+are not special-cased. The new internal array descriptor is inference only and
+is excluded from `pulse.pure-borrow.v1` and typed KV descriptors. Whole-array
+parameters and whole-element record arguments remain outside this slice.
+
+Every element read contributing to a helper argument needs a dominating guard
+for that same array and index. Alias classification does not admit unrelated
+inline reads or impose helper-specific proof on them. The
+index is either a nonnegative integer literal or the active counter of an
+existing zero-initialized, unit-increment, literal-capped pure loop. Guards must
+hold at the read, including a const element initializer; a later helper guard
+cannot repair an earlier unchecked read. A matching nonempty guard proves index
+zero. Direct const array/element aliases preserve identity, while all structured
+aliases must remain immutable and within their lexical and synchronous lifetime.
+The validator rejects alias writes even after a call, retained structured values,
+structured escape and reads across suspension. Scalar copies may outlive the
+producer loop and retain the existing same-shape record-spread rules.
+
+`flat-record-projection-plan.js` reconstructs these facts from serialized
+control flow, decoder origins, binding identities and the complete alias graph.
+It is invoked only when the independent input reader encounters this projection;
+no producer tag or rehashed plan supplies the proof. String arrays, literal array
+origins, optional/deep/nested elements and effect-loop element lifetimes are not
+extended. Existing 1,024 loop caps and the 65,536 caller/callee product are unchanged.
+
 The validator follows aliases and rejects writes through the borrowed graph
 anywhere in the handler, including after a call. Scalar copies do not retain a
 record alias. Nested record/array reads preserve the original object identity.
@@ -298,7 +324,7 @@ This internal kind does not widen helper signatures or the preexisting caller
 projection policy. No producer tag, serialized hash or signature substitutes
 for independent operand, result and ownership checks.
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-field-projection --task pure-guarded-arguments --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
+Run `node wasm/scripts/run-wasm-tests.cjs --task flat-record-projections --task pure-helper-vocabulary --task pure-string-index --task pure-field-projection --task pure-guarded-arguments --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
 for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.

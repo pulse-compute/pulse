@@ -159,30 +159,40 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     return false;
   }
   for(const body of [plan.entry.body,...(plan.handlers||[]).map(h=>h.body),...(plan.stages||[]).map(h=>h.body)])markBody(body,new Set());
-  const inputTypes = new WeakMap();
-  function inputType(e, seen = new Map()) {
+  const inputTypes = new WeakMap(), aliasTypes = new WeakMap();
+  // Alias classification must not admit a read or demand helper bounds for
+  // unrelated inline reads. Both readers still reconstruct every shape/write.
+  const aliasType = e => inputType(e, new Map(), false);
+  let flatRecords;
+  const flatRecordElement = (e, type) => {
+    flatRecords ||= require('./flat-record-projection-plan').flatRecordProjectionProof(
+      plan, locals, definitions, writes, aliasType, fail);
+    return flatRecords.element(e, type);
+  };
+  function inputType(e, seen = new Map(), prove = true) {
     if(!e || typeof e!=='object')return;
-    if(!seen.size && inputTypes.has(e))return inputTypes.get(e);
-    const types = {schemas:plan.schemas?.registry, get(id) {
+    const cache = prove ? inputTypes : aliasTypes;
+    if(!seen.size && cache.has(e))return cache.get(e);
+    const types = {schemas:plan.schemas?.registry, flatRecordElement: prove ? flatRecordElement : undefined, get(id) {
       if (seen.has(id)) return seen.get(id);
       const value = definitions.get(id), effect = resultEffects.get(id);
       const guarded = nonNullAt.get(e)?.has(id);
       const guardedNull = value?.kind==='literal' && value.value===null && guarded;
       const base = value && !guardedNull
-        ? inputType(value,new Map([...seen,[id,undefined]])) : effect ? values.effectType(effect,plan.schemas?.registry) : undefined;
+        ? inputType(value,new Map([...seen,[id,undefined]]),prove) : effect ? values.effectType(effect,plan.schemas?.registry) : undefined;
       const next = new Map([...seen,[id,base]]);
       const candidates=value && !guardedNull || effect ? [base] : [];
       for(const write of writes.get(id)||[]) {
         if(write.kind!=='assignment' || write.operator!=='=') {
           return values.scalar(base) ? base : undefined;
         }
-        candidates.push(inputType(write.value,next));
+        candidates.push(inputType(write.value,next,prove));
       }
       const type = candidates.length && candidates[0] && candidates.every(t=>values.same(candidates[0],t)) ? candidates[0] : undefined;
       return guarded && locals.get(id)?.declaration === 'const' && type === 'string-or-undefined' ? 'string' : type;
     }};
     const type=values.readType(e,types);
-    if(type && !seen.size)inputTypes.set(e,type);
+    if(type && !seen.size)cache.set(e,type);
     return type;
   }
   const readonlyChecked=new WeakSet();
@@ -196,13 +206,13 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       if(value.kind==='intrinsic')return;
       if(value.kind==='local') {
         if(visited.has(value.id))return;visited.add(value.id);
-        if(!scalarType(inputType(value)))aliases.add(value.id);
+        if(!scalarType(aliasType(value)))aliases.add(value.id);
         collect(definitions.get(value.id));
         for(const write of writes.get(value.id)||[])collect(write.value);
         return;
       }
       if(value.kind==='object') {
-        for(const field of value.entries||[])if(!scalarType(inputType(field.value)))collect(field.value);
+        for(const field of value.entries||[])if(!scalarType(aliasType(field.value)))collect(field.value);
         return;
       }
       for(const child of Object.values(value)) {
@@ -214,7 +224,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     function references(value) {
       if(!value || typeof value!=='object')return false;
       if(value.kind==='local')return aliases.has(value.id);
-      if(['property','element'].includes(value.kind))return !scalarType(inputType(value)) && references(value.object);
+      if(['property','element'].includes(value.kind))return !scalarType(aliasType(value)) && references(value.object);
       if(value.kind==='conditional')return references(value.whenTrue)||references(value.whenFalse);
       if(value.kind==='binary' && ['&&','||','??'].includes(value.operator))return references(value.left)||references(value.right);
       if(value.kind==='object')return value.entries.some(f=>references(f.value));
@@ -233,6 +243,7 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   function projectionType(e) {
     const type=inputType(e);
     readonlyInput(e);
+    flatRecords?.check(e);
     return type;
   }
   function containsRecordSpread(e, seen = new Set()) {
@@ -251,9 +262,13 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     if (!values.validType(expected)) { fail('invalid borrow type'); return false; }
     if (containsRecordSpread(e)) { fail('pure structured borrow cannot derive from a record spread'); return false; }
     readonlyInput(e);
+    flatRecords?.check(e);
     const actual=inputType(e);
     // A literal graph also proves all scalar initializer/write chains.
     proveInputs(e);
+    // Reading the candidate type can discover a projection lazily, including
+    // a direct element passed as a previously supported record borrow.
+    flatRecords?.check(e);
     return values.validType(actual) && values.same(actual,expected);
   }
   const admittedCalls = new Map();
