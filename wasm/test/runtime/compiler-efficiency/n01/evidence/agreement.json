@@ -1,0 +1,154 @@
+{
+  "status": "passed",
+  "matrix": [
+    {
+      "id": "scalar-control",
+      "status": "admitted",
+      "diagnosticCodes": []
+    },
+    {
+      "id": "decoded-record-field",
+      "status": "admitted",
+      "diagnosticCodes": []
+    },
+    {
+      "id": "numeric-array-borrow",
+      "status": "admitted",
+      "diagnosticCodes": []
+    },
+    {
+      "id": "numeric-array-projection",
+      "status": "admitted",
+      "diagnosticCodes": []
+    },
+    {
+      "id": "string-array-parameter",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "string-array-element",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "string-array-literal",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-record-array-parameter",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-constant-index-unguarded",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-constant-index-guarded",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-bounded-direct-projection",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-bounded-element-alias",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-bounded-array-alias",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-bounded-loop-spread",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "flat-literal-array",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "optional-element-field",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "nested-record-element",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "nested-array-element",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "numeric-borrow-mutation",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_MUTATION_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "structured-result",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ]
+    },
+    {
+      "id": "excessive-loop-product",
+      "status": "rejected",
+      "diagnosticCodes": [
+        "PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED"
+      ]
+    }
+  ],
+  "cases": 21,
+  "admitted": 4,
+  "rejected": 17,
+  "workspacePackagedAgreement": true,
+  "compilerCommit": "68be2c0a31df8dec756e49c782f6c8c5534ea350",
+  "compilerTree": "e7d37b7f6849c5368af4fd86d16ff687b525e627",
+  "fixtureSha256": "114bef22047e963f830e24f06028e35022fb6d9da03a827626ae81531c381d7f",
+  "runnerSha256": "4eeb96aa7b5b9c6f64278c07afe2d571eee631d5204879a5902d20329b300034",
+  "productChanges": false,
+  "safetyCaveat": "Rejection at unsupported signature or argument provenance does not prove finer mutation, index or lifetime checks for a future array capability."
+}

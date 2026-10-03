@@ -59,6 +59,10 @@ const tasks = Object.freeze({
   'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
     description: 'Pure-helper source oracles and scalar/record admission'
   }),
+  'array-demand-n01': nodeTask('test/runtime/compiler-efficiency/n01/array-demand.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'N-01 bounded string/flat-record array demand matrix; no support activation'
+  }),
   'suite-shape': nodeTask('test/suite/assert-suite-shape.cjs', {
     description: 'profile separation, uniqueness, and timeout budgets'
   }),

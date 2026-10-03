@@ -1,0 +1,73 @@
+'use strict';
+// N-01 is an admission experiment, not an implementation or runtime benchmark.
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const assert = require('node:assert/strict');
+const {createHash} = require('node:crypto');
+const {createRequire} = require('node:module');
+const root = path.resolve(__dirname, '../../../../..');
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const fixturePath = path.join(__dirname, 'cases.json');
+const fixture = JSON.parse(fs.readFileSync(fixturePath));
+function inventory(consumer) {
+  const file = path.join(consumer, 'candidate.json');
+  const candidate = JSON.parse(fs.readFileSync(file));
+  for (const item of candidate.modifiedFiles) {
+    const relative = path.normalize(item.path);
+    assert.ok(!path.isAbsolute(relative) && !relative.startsWith('..'));
+    assert.equal(sha(fs.readFileSync(path.join(consumer, relative))), item.sha256, relative);
+  }
+  return {sourceCommit:candidate.sourceCommit, sourceTree:candidate.sourceTree,
+    candidateSha256:sha(fs.readFileSync(file)), packageFiles:candidate.modifiedFiles.length,
+    officialPackManifestSha256:candidate.officialPackManifestSha256,
+    consumerLockSha256:sha(fs.readFileSync(path.join(consumer, 'package-lock.json')))};
+}
+function main() {
+  const consumer = process.argv[2] ? path.resolve(process.argv[2]) : null;
+  const output = path.resolve(process.argv[3] || path.join(root, 'wasm/.test-results/n01/array-demand.json'));
+  assert.ok(!fs.existsSync(output), 'Fresh output path required');
+  const load = consumer ? createRequire(path.join(consumer, 'package.json')) : null;
+  const resolveProject = consumer ? load('@pulse-compute/cli/project-config').resolveProject : require('../../../../packages/cli/src/project-config').resolveProject;
+  const compileProject = consumer ? load('@pulse-compute/cli/project-execution').compileProject : require('../../../../packages/cli/src/project-execution').compileProject;
+  const planApi = consumer ? load('@pulse-compute/wasm-compiler/canonical-native-plan') : require('../../../../packages/compiler/src/canonical-native-plan');
+  const config = "import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>({pulse:{entry:'src/index.ts',schema:'src/schemas.ts',strict:false},node:{host:'node',target:'native'}}));\n";
+  const schemas = "import {defineSchemaRegistry,schema} from '@pulse-compute/pulse/schema';\nimport type {"+fixture.schemaTypes.join(',')+"} from './types';\nexport default defineSchemaRegistry({schemas:{"+fixture.schemaTypes.map(t=>"'probe."+t+"':schema<"+t+">()").join(',')+"}});\n";
+  const before = consumer ? inventory(consumer) : null;
+  const report = {schemaVersion:'pulse.n01.array-demand.v1',status:'running',node:process.version,
+    scope:'Frontend, canonical planning and deserialized-plan validation only; no Native execution, size or safety activation claim',
+    toolchain:consumer?'packaged-consumer':'workspace',packages:before,
+    runnerSha256:sha(fs.readFileSync(__filename)),fixtureSha256:sha(fs.readFileSync(fixturePath)),
+    setup:{config,schemas,types:fixture.types},cases:[]};
+  fs.mkdirSync(path.dirname(output), {recursive:true});
+  const save = () => fs.writeFileSync(output, JSON.stringify(report,null,2)+'\n');
+  save();
+  for (const spec of fixture.cases) {
+    const dir = fs.mkdtempSync(path.join(consumer || process.env.PULSEWASM_TEST_TMP_ROOT || os.tmpdir(), 'pulse-n01-'));
+    const index = "import {Pulse} from '@pulse-compute/pulse';\nimport type {"+fixture.schemaTypes.join(',')+"} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{"+spec.body+"return ctx.text(answer?'yes':'no')});export default app;\n";
+    let row = {id:spec.id,shape:spec.shape,purpose:spec.purpose,expected:spec.expected,input:{helper:spec.helper,index}};
+    try {
+      fs.mkdirSync(path.join(dir,'src')); fs.mkdirSync(path.join(dir,'.pulse'));
+      if (!consumer) {
+        fs.mkdirSync(path.join(dir,'node_modules/@pulse-compute'), {recursive:true});
+        for (const name of ['pulse','runtime']) fs.symlinkSync(path.join(root,'packages',name),path.join(dir,'node_modules/@pulse-compute',name),'dir');
+      }
+      for (const [file,source] of Object.entries({'src/index.ts':index,'src/helper.ts':spec.helper,'src/types.ts':fixture.types,'src/schemas.ts':schemas,'.pulse/config.ts':config})) fs.writeFileSync(path.join(dir,file),source);
+      const project = resolveProject({cwd:dir,profile:'node'});
+      const compiled = compileProject(project,{target:'native'});
+      const plan = planApi.buildCanonicalNativePlan(compiled,{reporting:project.reporting});
+      planApi.validateCanonicalNativePlan(JSON.parse(JSON.stringify(plan)));
+      row = {...row,status:'admitted',helpers:plan.helpers.map(h=>({id:h.id,parameters:h.parameters})),deserializedPlanValidated:true};
+    } catch (error) {
+      row = {...row,status:'rejected',code:error.code,message:error.message,diagnostics:error.diagnostics};
+    } finally { fs.rmSync(dir,{recursive:true,force:true}); }
+    report.cases.push(row); save(); console.log(spec.id,row.status);
+  }
+  if (consumer) assert.deepEqual(inventory(consumer),before,'Installed input changed');
+  report.expectationsMatched = report.cases.every(row=>row.status===row.expected);
+  report.counts = {cases:report.cases.length,admitted:report.cases.filter(row=>row.status==='admitted').length,rejected:report.cases.filter(row=>row.status==='rejected').length};
+  report.status = report.expectationsMatched ? 'passed' : 'failed'; save();
+  assert.ok(report.expectationsMatched,'Observed admission differs; inspect the complete report');
+  console.log(JSON.stringify({status:report.status,counts:report.counts,output}));
+}
+if (require.main === module) main();
