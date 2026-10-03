@@ -62,6 +62,16 @@ rejections, including a definite request text field replacement, plus Node
 JavaScript, Node Native and Fastly Native parity; it makes
 no application-size claim.
 
+`assert-pure-guarded-arguments.cjs` covers an optional string from a schema
+record or `ctx.state.get` copied into a const scalar and checked against
+`undefined`. A call in
+the proven branch or after the rejecting branch returns executes on Node
+JavaScript, Node Native and Fastly Native. Unguarded, inverted, non-dominating,
+mutable and joined-away facts reject at source; changing the serialized guard
+to an inverted or null check and recomputing its hash still rejects in the
+independent validator. This is a
+generic placement pattern, not a whole-application sharing measurement.
+
 ## Record lifetime and aliases (PF-03)
 
 The structural subset is illustrated by `PartitionHead` in `types.ts`: scalar fields,

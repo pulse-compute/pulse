@@ -103,6 +103,8 @@ function readType(e, types, optionalStringIndex = false) {
     if (type) return type;
   }
   if (e.kind === 'intrinsic' && e.name === 'request.text' && Array.isArray(e.arguments) && e.arguments.length === 0) return 'string';
+  if (e.kind === 'intrinsic' && e.name === 'state.get' && Array.isArray(e.arguments)
+    && e.arguments.length === 1 && read(e.arguments[0]) === 'string') return 'string-or-undefined';
   if (e.kind === 'intrinsic' && ['request.json','schema.decode.text'].includes(e.name)) return schemaRead(e.arguments?.[e.name === 'request.json' ? 0 : 1], types?.schemas);
   if (e.kind === 'array' && e.items.every(item => read(item) === 'number')) return {kind:'number-array'};
   if (e.kind === 'object') {
