@@ -32,6 +32,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'flat-record-projections': nodeTask('test/lowering/assert-flat-record-projections.cjs', {
+    evidence: 'native', description: 'Guarded schema-array scalar reads, alias/lifetime proof and forged-plan rejection', timeoutMs: 180000
+  }),
   'pure-helper-vocabulary': nodeTask('test/lowering/assert-pure-helper-vocabulary.cjs', {
     evidence: 'native', description: 'Helper shape/operation characterization and independent string-index proof', timeoutMs: 30000
   }),
@@ -1106,6 +1109,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'flat-record-projections',
     'pure-helper-vocabulary',
     'pure-string-index',
     'pure-field-projection',

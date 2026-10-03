@@ -5,7 +5,7 @@ const SCALAR_TYPES = Object.freeze(['string', 'number', 'boolean']);
 const BORROW_LIMITS = Object.freeze({ recordDepth: 2, recordFields: 32 });
 const FORBIDDEN_FIELDS = Object.freeze(['__proto__', 'constructor', 'prototype']);
 const scalar = type => SCALAR_TYPES.includes(type);
-const kind = type => typeof type === 'string' ? type : type?.kind === 'record' ? 'object' : type?.kind === 'number-array' ? 'array' : 'unknown';
+const kind = type => typeof type === 'string' ? type : type?.kind === 'record' ? 'object' : ['number-array', 'flat-record-array'].includes(type?.kind) ? 'array' : 'unknown';
 function validType(type, depth = 0) {
   if (scalar(type)) return true;
   if (!type || typeof type !== 'object' || depth > BORROW_LIMITS.recordDepth) return false;
@@ -20,10 +20,11 @@ function same(a, b) {
   if (a === undefined && b === undefined) return true;
   if (typeof a === 'string' || typeof b === 'string') return a === b;
   if (!a || !b || a.kind !== b.kind) return false;
+  if (a.kind === 'flat-record-array') return same(a.element, b.element);
   return a.kind === 'number-array' || Array.isArray(a.fields) && Array.isArray(b.fields) && a.fields.length === b.fields.length && a.fields.every(f => same(f.type, b.fields.find(g => g.name === f.name)?.type));
 }
 function member(type, property) {
-  if ((type === 'string' || type?.kind === 'number-array') && property === 'length') return 'number';
+  if ((type === 'string' || ['number-array', 'flat-record-array'].includes(type?.kind)) && property === 'length') return 'number';
   return type?.kind === 'record' && Array.isArray(type.fields) ? type.fields.find(f => f.name === property)?.type : undefined;
 }
 // Result facts are not admission. These two existing inference boundaries have
@@ -80,6 +81,15 @@ function schemaType(node) {
   if (['string','boolean'].includes(node?.kind)) return node.kind;
   if (['i32','u32','f64'].includes(node?.kind)) return 'number';
   if (node?.kind === 'array' && schemaType(node.element) === 'number') return {kind:'number-array'};
+  // Caller inference only. This descriptor is deliberately NOT a validType:
+  // neither helper signatures nor typed KV borrows gain another array ABI.
+  if (node?.kind === 'array' && node.element?.kind === 'object'
+    && !node.element.open && !node.element.additionalProperties
+    && node.element.fields.length === 2
+    && node.element.fields.every(f => f.required && f.value?.kind === 'string')) {
+    const element = schemaType(node.element);
+    if (validType(element)) return {kind:'flat-record-array', element};
+  }
   if (node?.kind === 'object') return {kind:'record', ...(node.open || node.additionalProperties ? {open:true} : {}), fields: node.fields.map(f => ({name:f.name,
     type: f.required ? schemaType(f.value) : schemaType(f.value) === 'string' ? 'string-or-undefined' : undefined}))};
 }
@@ -99,7 +109,13 @@ function readType(e, types, optionalStringIndex = false) {
   if (e.kind === 'literal' && scalar(typeof e.value)) return typeof e.value;
   if (e.kind === 'property') return member(read(e.object), e.property);
   if (e.kind === 'element') {
-    const type = element(read(e.object), read(e.index), e.index?.kind === 'literal' ? e.index.value : undefined, optionalStringIndex);
+    const object = read(e.object), index = read(e.index);
+    if (object?.kind === 'flat-record-array' && index === 'number') {
+      // The builder infers a candidate kind; the deserialized-plan consumer
+      // supplies the independent placement/provenance proof before admission.
+      return types?.flatRecordElement ? types.flatRecordElement(e, object) : object.element;
+    }
+    const type = element(object, index, e.index?.kind === 'literal' ? e.index.value : undefined, optionalStringIndex);
     if (type) return type;
   }
   if (e.kind === 'intrinsic' && e.name === 'request.text' && Array.isArray(e.arguments) && e.arguments.length === 0) return 'string';

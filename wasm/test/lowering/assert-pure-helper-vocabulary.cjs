@@ -22,6 +22,7 @@ const shapes = [
   ['string', true], ['number', true], ['boolean', true],
   ['string-or-undefined', false], ['unknown', false], [undefined, false],
   [array, true], [{ kind: 'number-array', mutable: true }, false],
+  [{ kind: 'flat-record-array', element: record([field('tag', 'string'), field('text', 'string')]) }, false],
   [nested, true], [record([]), false],
   [record(Array.from({ length: 32 }, (_, i) => field('f' + i, 'number'))), true],
   [record(Array.from({ length: 33 }, (_, i) => field('f' + i, 'number'))), false],
