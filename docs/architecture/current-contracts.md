@@ -403,15 +403,17 @@ change to JavaScript's original-source execution. See the
 
 Native planning automatically factors structurally equivalent registrations of
 one transfer-capable HTTP route or middleware handler into a
-`pulse.canonical-native-stage.v1` body and explicit dispatcher calls. The initial supported family has 1..64
-sequential, bound text-fetch sites, local values, branches, early responses and
-terminal `next()` / `next(error)` transfers. Multiple eligible stage families
+`pulse.canonical-native-stage.v1` body and explicit dispatcher calls. The supported
+family has 1..64 sequential, bound text-fetch, `time.now` or `crypto.digestText`
+sites, local values, branches, bounded pure loops, early responses and terminal
+`next()` / `next(error)` transfers. Multiple eligible stage families
 and more than 16 registrations are supported. This introduces no public function
 syntax or configuration switch. JavaScript keeps original-source execution.
 
 Admission checks both statements and effect inputs after renaming local,
-effect and continuation identities. Captured locals, groups, loops, nested calls,
-non-text-fetch effects, error/event handlers and registration-specific
+effect and continuation identities. The comparison includes package/contract,
+declared result, decoder and provider descriptors. Captured locals, groups,
+effect loops, nested calls, other effect kinds, error/event handlers and registration-specific
 body differences retain their existing Native lowering. Ineligibility does not
 reject previously supported source or introduce a JavaScript fallback. Effectful
 and pure helper calls are explicitly excluded until stage-local helper ownership
@@ -419,9 +421,12 @@ is supported. The internal factoring function can report exclusion reasons
 without changing the fallback plan or its hash.
 
 Scoped middleware retains its original admission guard and occurrence-specific
-continuation. Even one eligible registration can be outlined. MW-01 widens
-eligibility within the existing stage record representation; it does not change
-the host ABI, terminal-next semantics, or the public size flags.
+continuation. Even one eligible registration can be outlined. MW-01 and MW-02
+widen eligibility within the existing stage record representation; they do not
+change the host ABI, terminal-next semantics, or the public size flags. Pure-loop
+induction variables and nested locals belong to the stage frame. The existing
+canonical loop validator still enforces literal and combined iteration caps,
+pure bodies and read-only counter/test rules; no effects occur inside these loops.
 
 Each stage declares its request context, Router inputs, read-only next-cursor
 input, local namespace, effect sites and outputs: response, next, error,
