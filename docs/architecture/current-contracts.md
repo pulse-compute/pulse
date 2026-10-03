@@ -401,9 +401,9 @@ change to JavaScript's original-source execution. See the
 
 ### Shared effectful HTTP stages (O-19)
 
-Native plan v4 automatically factors structurally equivalent registrations of
-one transfer-capable HTTP route handler into a `pulse.canonical-native-stage.v1`
-body and explicit dispatcher calls. The initial supported family has 1..64
+Native planning automatically factors structurally equivalent registrations of
+one transfer-capable HTTP route or middleware handler into a
+`pulse.canonical-native-stage.v1` body and explicit dispatcher calls. The initial supported family has 1..64
 sequential, bound text-fetch sites, local values, branches, early responses and
 terminal `next()` / `next(error)` transfers. Multiple eligible stage families
 and more than 16 registrations are supported. This introduces no public function
@@ -411,9 +411,17 @@ syntax or configuration switch. JavaScript keeps original-source execution.
 
 Admission checks both statements and effect inputs after renaming local,
 effect and continuation identities. Captured locals, groups, loops, nested calls,
-non-text-fetch effects, middleware, error/event handlers and registration-specific
+non-text-fetch effects, error/event handlers and registration-specific
 body differences retain their existing Native lowering. Ineligibility does not
-reject previously supported source or introduce a JavaScript fallback.
+reject previously supported source or introduce a JavaScript fallback. Effectful
+and pure helper calls are explicitly excluded until stage-local helper ownership
+is supported. The internal factoring function can report exclusion reasons
+without changing the fallback plan or its hash.
+
+Scoped middleware retains its original admission guard and occurrence-specific
+continuation. Even one eligible registration can be outlined. MW-01 widens
+eligibility within the existing stage record representation; it does not change
+the host ABI, terminal-next semantics, or the public size flags.
 
 Each stage declares its request context, Router inputs, read-only next-cursor
 input, local namespace, effect sites and outputs: response, next, error,
@@ -433,7 +441,10 @@ their existing authority.
 
 The emitter consumes the validated stage records directly. It emits each body
 once in retained, bounded chunks and adds small entry/exit states and lookup
-wiring. The dispatcher allowance accounts for registration multiplicity so
+wiring. The build-support transform explicitly retains annotated generated
+shared-stage chunks and prepare/clear/ready/result accessors; a matching name in
+a user source or an unannotated generated declaration grants no retention. The
+dispatcher allowance accounts for registration multiplicity so
 sharing cannot shrink the guard for paths with several stage visits. Fastly
 request-body and value-failure analyses inspect stage bodies as well as ordinary
 handlers. Plan and generator versions change; the host ABI remains v2.
