@@ -181,17 +181,15 @@ function claimFetchResponse(data, mode) {
   data.ownershipMode = mode;
 }
 
-function retainFetchResponseForBudget(response, budget) {
-  if (!(response instanceof Response) || !response.body || !budget) return;
-  const remove = budget.onAbort(() => {
-    if (!response.body.locked) void response.body.cancel(budget.signal.reason).catch(() => {});
-  });
+function retainFetchResponseForBudget(response, budget, onRelease) {
+  if (!(response instanceof Response) || !response.body) return;
+  const remove = budget?.onAbort(() => cancelResponseBody(response, budget.signal.reason));
   let registrations = FETCH_RESPONSE_CANCELLATIONS.get(response);
   if (!registrations) {
     registrations = new Set();
     FETCH_RESPONSE_CANCELLATIONS.set(response, registrations);
   }
-  registrations.add(remove);
+  registrations.add(() => { remove?.(); onRelease?.(); });
 }
 
 function releaseFetchResponseCancellation(response) {
@@ -379,9 +377,11 @@ function projectFetchResponse(value, projection, schemaId, options = {}) {
   );
 }
 
-async function cancelResponseBody(response) {
-  if (!(response instanceof Response) || !response.body || response.bodyUsed) return;
-  try { await response.body.cancel(); } catch (_) { /* ownership cleanup is best effort */ }
+function cancelResponseBody(response, reason) {
+  if (!(response instanceof Response) || !response.body || response.body.locked) return;
+  // A provider's cancellation callback may reject or never settle. Cleanup must
+  // observe rejection without delaying request completion or decoding the body.
+  try { void response.body.cancel(reason).catch(() => {}); } catch (_) { /* best effort */ }
 }
 
 async function fetchResponseToResponse(value, requestMethod = 'GET') {
@@ -395,7 +395,7 @@ async function fetchResponseToResponse(value, requestMethod = 'GET') {
     if (bodyAllowed && !statusChanged) {
       return rememberResponseMetadata(data.response, headers, value.bodyClass);
     }
-    if (!bodyAllowed) await cancelResponseBody(data.response);
+    if (!bodyAllowed) cancelResponseBody(data.response);
     return rememberResponseMetadata(
       new Response(bodyAllowed ? data.response.body : null, {
         status: value.status,
@@ -418,6 +418,7 @@ async function fetchResponseToResponse(value, requestMethod = 'GET') {
 module.exports = Object.freeze({
   PulseRuntimeContractError,
   PulseUnhandledError,
+  cancelResponseBody,
   createJsonResult,
   createOpaqueFetchResponse,
   createResponseResult,
@@ -428,6 +429,7 @@ module.exports = Object.freeze({
   markOpaqueResponse,
   normalizeFetchResponse,
   retainFetchResponseForBudget,
+  releaseFetchResponseCancellation,
   normalizeHeaders,
   projectFetchResponse,
   responseAllowsBody,

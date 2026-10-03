@@ -10,8 +10,12 @@ function decision(id, status, reasonId, owner, required = true) {
 
 function classifyNodeJavascriptCapability(id, options = {}) {
   const capability = String(id);
+  if (capability === 'request.body.transform') return decision(capability, options.bodyTransform ? 'eligible' : 'blocked', options.bodyTransform ? 'node-body-transform-experimental' : 'node-body-transform-not-configured', 'provider-node');
+  if (capability === 'response.output') return decision(capability, options.generatedOutput ? 'eligible' : 'blocked', options.generatedOutput ? 'node-generated-output-experimental' : 'node-generated-output-not-configured', 'provider-node');
+  if (capability === 'request.body.forward' || capability === 'req.body') return decision(capability,
+    options.bodyForwarding ? 'eligible' : 'blocked', options.bodyForwarding ? 'node-incoming-body-forwarding' : 'node-incoming-body-forwarding-not-configured', 'provider-node');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
-  if (['s3.head', 's3.getText', 's3.putText'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(capability)) return decision(capability, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (isJavascriptCoreCapability(capability)) {
     return decision(capability, 'eligible', 'node-router-context-parity', 'provider-node');
   }
@@ -79,8 +83,11 @@ function classifyNodeJavascriptCapability(id, options = {}) {
 
 function classifyNodeJavascriptProviderRequirement(id, compilerCapabilities, options = {}) {
   const requirement = String(id);
+  if (requirement === 'request.body.transform') return classifyNodeJavascriptCapability(requirement, options);
+  if (requirement === 'response.output') return classifyNodeJavascriptCapability(requirement, options);
+  if (requirement === 'request.body.forward') return classifyNodeJavascriptCapability(requirement, options);
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'node-javascript-crypto-sha256-runtime-builtin', 'provider-node');
-  if (['s3.head', 's3.getText', 's3.putText'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(requirement)) return decision(requirement, 'eligible', 'node-s3-bounded-origin-transport', 'provider-node');
   if (requirement === 'request') {
     const bodyRequired = compilerCapabilities.some((entry) => entry === 'request.json' || entry.startsWith('request.body'));
     return bodyRequired

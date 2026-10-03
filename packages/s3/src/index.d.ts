@@ -43,7 +43,17 @@ export interface S3PutTextOptions {
 
 // Binding and options must be compiler-proven literals. Key and text may be
 // runtime strings. TypeScript alone cannot enforce that lowering restriction.
+export interface S3GetBodyOptions {
+  readonly method?: 'GET' | 'HEAD';
+  /** One closed byte range, for example bytes=0-1023; GET only. */
+  readonly range?: string;
+  /** One entity tag or *, without a comma-separated list. */
+  readonly ifNoneMatch?: string;
+}
+
 export declare const s3: {
+  /** Opaque binary response; capped by maxTextBytes. Return without decoding. */
+  getBody(ctx: PulseContext, binding: string, key: string, options?: S3GetBodyOptions): PulseParallelEffect<Response>;
   head(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3HeadResult>;
   getText(ctx: PulseContext, binding: string, key: string): PulseParallelEffect<S3GetTextResult>;
   putText(ctx: PulseContext, binding: string, key: string, text: string,

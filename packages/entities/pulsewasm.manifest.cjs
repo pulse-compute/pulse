@@ -22,6 +22,7 @@ const pulseWasmManifest = Object.freeze({
     version: 'pulsewasm.lowerable-compiler-builder.v1',
     entry: './pulsewasm.compiler.cjs',
     export: 'createEntitiesPackageCompilerBuilder',
+    nativeApplicationExport: 'buildEntitiesCanonicalNativeApplication',
     artifact: 'entities-lowering-plan.json',
     builderOwner: '@pulse-compute/entities',
     trust: 'first-party',

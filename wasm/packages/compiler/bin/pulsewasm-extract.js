@@ -3,7 +3,7 @@
 
 const { runCli } = require('../src/cli.js');
 const { getDefaultArtifactsDir } = require('@pulse-compute/wasm-build-support/artifacts-dir');
-const providerProofs = require('./provider-proof-composition.js');
+const providerProofs = require('./provider-proof-composition.js').createProviderProofs(process.cwd());
 
 runCli(process.argv.slice(2), {
   cwd: process.cwd(),

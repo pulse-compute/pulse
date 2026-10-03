@@ -401,6 +401,7 @@ function canonicalLookupEffect(ts, sourceFile, call, entry) {
     range: rangeFor(sourceFile, call),
     resource: Object.freeze({ kind: 'literal', value: `${entry.lookup.store || ''}:${entry.lookup.key || ''}` }),
     payload: Object.freeze({
+      ...entry.lookup.embedded,
       store: entry.lookup.store,
       key: entry.lookup.key,
       method: entry.lookup.method,
@@ -565,6 +566,24 @@ function makeLookupEntry(ts, sourceFile, call, classified, diagnostics, id, mani
 
   const lookupOptions = parseLookupOptions(ts, sourceFile, call, diagnostics, argumentOffset);
   const payloadMode = assetsContracts.assetsPayloadMode(lookupOptions.payloadMode) ? lookupOptions.payloadMode : 'text-response-body';
+  let embedded;
+  const embeddedOptions = unwrapExpression(ts, call.arguments[argumentOffset + 2]);
+  const embeddedInitializer = firstPropertyInitializer(ts, embeddedOptions, ['embeddedManifest']);
+  if (embeddedInitializer) {
+    try {
+      const names = new Set();
+      for (const field of embeddedOptions.properties) {
+        if (!ts.isPropertyAssignment(field) || !['embeddedManifest','method'].includes(field.name.text) || names.has(field.name.text)) throw new TypeError();
+        names.add(field.name.text);
+      }
+      embedded = assetsContracts.selectEmbeddedAsset(literalText(ts, embeddedInitializer), key);
+    } catch {
+      diagnostics.push(makeDiagnostic(sourceFile, call, 'PULSEWASM_ASSETS_EMBEDDED_INVALID',
+        'Embedded assets require a valid bounded canonical manifest literal and contained path.',
+        'Serialize createEmbeddedManifest output with JSON.stringify; only method and embeddedManifest options are allowed.'));
+    }
+  }
+  if (payloadMode === 'embedded-blob-response' && !embedded) diagnostics.push(makeDiagnostic(sourceFile, call, 'PULSEWASM_ASSETS_EMBEDDED_INVALID', 'Embedded payloads require a validated manifest literal.', 'Use embeddedManifest, not payloadMode, to opt in.'));
   const handlerName = enclosingHandlerName(ts, call);
 
   const entry = {
@@ -585,8 +604,9 @@ function makeLookupEntry(ts, sourceFile, call, classified, diagnostics, id, mani
       store,
       key,
       method: lookupOptions.method,
+      embedded,
       handle: handle || undefined,
-      payloadMode,
+      payloadMode: embedded ? 'embedded-blob-response' : payloadMode,
       passThroughOn404: lookupOptions.passThroughOn404,
       cacheControl: lookupOptions.cacheControl,
       loc: locFor(sourceFile, call)
@@ -681,8 +701,8 @@ function buildPayloadModes(sourceFile) {
       sourceFile,
       'binary-buffer',
       'info',
-      'Assets binary body/buffer responses are reserved with a planning diagnostic.',
-      'The current lowering stage validates and plans only; provider proofs must not claim binary/static-file completion yet.'
+      'The application binary-buffer ABI remains reserved; embeddedManifest uses opaque provider responses.',
+      'Use the explicit embeddedManifest Native path for bounded static blobs; arbitrary binary guest values remain unsupported.'
     ),
     assetProtocolDiagnostic(
       sourceFile,

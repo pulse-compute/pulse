@@ -51,6 +51,20 @@ for (const name of Object.keys(profiles)) {
 const release = expandProfile('release');
 const externalTasks = new Set([
   'array-demand-n01',
+  // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
+  'mcp-wire-proof',
+  'mcp-installed',
+  // JWT-01 installs candidate packages from a temporary registry for focused qualification.
+  'jwt-installed-workflow',
+  'str02-installed',
+  'str02b-installed',
+  'str03b-installed', 'node01-installed', 'arc01-installed',
+  'ast01-installed', 'ast02b-installed', 'ast02d-installed',
+  'str02c-fastly-feasibility',
+  // Independent SDK installation is explicit external evidence for the private adapter.
+  'mcp-http-sdk',
+  'mcp-tools-sdk',
+  'mcp-authorization-sdk',
   // The S01 measurement task is a manually selected benchmark with sampled
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',

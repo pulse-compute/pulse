@@ -284,7 +284,7 @@ pulse dev ./my-pulse-app --port 0 --once --json
 ### Related diagnostics
 
 - [`PULSE_DEV_PROVIDER_UNSUPPORTED`](diagnostics.md#pulse-dev-provider-unsupported) — The development server requires an executable provider.
-- [`PULSE_REQUEST_BODY_TOO_LARGE`](diagnostics.md#pulse-request-body-too-large) — An incoming development request exceeded dev.maxBodyBytes.
+- [`PULSE_REQUEST_BODY_TOO_LARGE`](diagnostics.md#pulse-request-body-too-large) — A request or forwarded body exceeded its configured byte limit.
 - [`PULSE_FETCH_NETWORK`](diagnostics.md#pulse-fetch-network) — An outbound fetch failed because the origin or network was unavailable.
 
 

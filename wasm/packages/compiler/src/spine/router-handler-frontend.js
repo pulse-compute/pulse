@@ -130,6 +130,7 @@ function analysisForSurfaceFacts(surfaceFacts) {
   const capabilities = new Set();
   let fetchCount = 0;
   for (const fact of facts) {
+    if (fact.surfaceId === 'ctx.req.body') { capabilities.add('request.body.forward'); continue; }
     if (fact.surfaceId.startsWith('ctx.fetch.')) { capabilities.add('fetch'); fetchCount += 1; continue; }
     if (fact.surfaceId.startsWith('ctx.req.')) capabilities.add(fact.surfaceId.slice('ctx.'.length));
     else if (fact.surfaceId.startsWith('ctx.config.')) capabilities.add('config.get');
@@ -231,7 +232,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     }
     const contextSurface = recognizeHandlerSurface(node, { ctxName, unwrap: true });
     if (contextSurface) {
-      const httpOnly = contextSurface.surfaceId === 'ctx.param'
+      const httpOnly = contextSurface.surfaceId.startsWith('ctx.output.') || contextSurface.surfaceId === 'ctx.param'
         || contextSurface.surfaceId.startsWith('ctx.req.')
         || ['ctx.json', 'ctx.text', 'ctx.response'].includes(contextSurface.surfaceId);
       const eventOnly = contextSurface.surfaceId.startsWith('ctx.event.');

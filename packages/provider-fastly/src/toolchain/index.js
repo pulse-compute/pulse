@@ -169,7 +169,7 @@ function createDriver() {
         runtimeClass: 'native',
         status: 'supported',
         capabilities: Object.freeze([
-          's3.head', 's3.getText',
+          's3.head', 's3.getText', 's3.getBody',
           'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap',
           'jwt.verify',
           'jwt.sign',
@@ -181,6 +181,13 @@ function createDriver() {
         ]),
         keyTypes: Object.freeze(['secret', 'jwk', 'jwks']),
         realizations: Object.freeze([
+          Object.freeze({
+            kind: 'package-native-application',
+            contractId: 'pulse.entities',
+            implementation: 'pulse.package-native-application.v1',
+            implemented: true,
+            automaticFallback: false
+          }),
           Object.freeze({
             kind: 'crypto-composed',
             realization: 'guest-source:pulse-hmac-as',

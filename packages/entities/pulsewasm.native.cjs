@@ -103,11 +103,12 @@ function normalizeInputs(input) {
     fail('PULSE_ENTITIES_NATIVE_HANDLER_BUNDLE_POLICY', 'Managed Native facts must be generic, data-only, and fail closed without fallback.');
   }
   const router = plan.routers[0];
-  const handlers = new Map(nativeBundle.handlers.map((handler) => [handler.id, handler]));
   const routes = router.entities.map((entity, index) => {
-    const handlerId = `${router.id}:${entity.discriminator}`;
-    const handler = handlers.get(handlerId);
-    if (!handler) fail('PULSE_ENTITIES_NATIVE_HANDLER_MISSING', `Entity ${entity.discriminator} has no managed Native handler.`, { handlerId });
+    const localId = `${router.id}:${entity.discriminator}`;
+    const matches = nativeBundle.handlers.filter(handler => handler.id === localId || handler.id.endsWith(`#${localId}`));
+    if (matches.length !== 1) fail('PULSE_ENTITIES_NATIVE_HANDLER_MISSING', `Entity ${entity.discriminator} requires exactly one managed Native handler.`, { localId });
+    const handler = matches[0];
+    const handlerId = handler.id;
     if (handler.parameters.input.schemaId !== entity.inputSchema || handler.result.schemaId !== entity.outputSchema) {
       fail('PULSE_ENTITIES_NATIVE_HANDLER_SCHEMA_MISMATCH', `Managed handler ${handlerId} does not match its entity schema declaration.`, { handlerId });
     }
@@ -127,6 +128,10 @@ function normalizeInputs(input) {
   const schemas = [...requiredSchemaIds].sort().map((id) => {
     const schema = available.get(id);
     if (!schema) fail('PULSE_ENTITIES_NATIVE_SCHEMA_MISSING', `Reachable Native schema ${id} is missing.`, { schemaId: id });
+    const issue = entitiesContracts.nativeEntitySchemaIssue(schema);
+    if (issue) fail(entitiesContracts.ENTITIES_DIAGNOSTIC_CODES.TARGET_INELIGIBLE,
+      `Native Entities cannot enforce schema ${id}: ${issue.reason}. Select JavaScript or a closed typed schema without JSON admission options.`,
+      { ...issue, automaticFallback: false });
     return schema;
   });
   return Object.freeze({ plan, nativeBundle, schemaBundle: input.schemaBundle, router, routes: Object.freeze(routes), schemas: Object.freeze(schemas) });
@@ -196,7 +201,9 @@ function renderSchemas(schemas) {
       body.push('  }', '  const source = input.get<JSON.Obj>()', '  const output = new JSON.Obj()');
       for (const [fieldIndex, field] of (node.fields || []).entries()) {
         const child = renderNode(schemaIndex, field.value, [...pathParts, field.name]);
-        body.push(`  const raw_${fieldIndex} = source.get(${quote(field.name)})`, `  if (raw_${fieldIndex} === null) {`, '    __pulse_entities_schema_valid = false', '    return __pulse_entities_null()', '  }', `  const field_${fieldIndex} = ${child}(raw_${fieldIndex}!)`, '  if (!__pulse_entities_schema_valid) return __pulse_entities_null()', `  output.set<JSON.Value>(${quote(field.name)}, field_${fieldIndex})`);
+        body.push(`  const raw_${fieldIndex} = source.get(${quote(field.name)})`);
+        if (field.required) body.push(`  if (raw_${fieldIndex} === null) {`, '    __pulse_entities_schema_valid = false', '    return __pulse_entities_null()', '  }');
+        body.push(`  if (raw_${fieldIndex} !== null) {`, `    const field_${fieldIndex} = ${child}(raw_${fieldIndex}!)`, '    if (!__pulse_entities_schema_valid) return __pulse_entities_null()', `    output.set<JSON.Value>(${quote(field.name)}, field_${fieldIndex})`, '  }');
       }
       body.push('  return JSON.Value.from<JSON.Obj>(output)');
     } else {
@@ -567,7 +574,9 @@ function renderNativeProgram(model, schemaOutput) {
     } else {
       const schema = schemaOutput.roots.get(route.entity.inputSchema);
       lines.push('      if (!__pulse_entities_params_present || __pulse_entities_request.charCodeAt(__pulse_entities_params_start) != 0x7b) return false');
-      lines.push('      const raw = JSON.parse<JSON.Value>(__pulse_entities_request.substring(__pulse_entities_params_start, __pulse_entities_params_end))');
+      lines.push('      const text = __pulse_entities_request.substring(__pulse_entities_params_start, __pulse_entities_params_end)',
+        '      if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES) return false',
+        '      const raw = JSON.parse<JSON.Value>(text)');
       lines.push('      __pulse_entities_schema_valid = true');
       lines.push(`      __pulse_entities_input = ${schema}(raw)`);
       lines.push('      if (!__pulse_entities_schema_valid) return false');
@@ -584,6 +593,7 @@ function renderNativeProgram(model, schemaOutput) {
     '/* Generated reachable Entities Native program. */',
     ...imports,
     '',
+    `const __PULSE_ENTITIES_SCHEMA_MAX_BYTES: i32 = ${Number(model.schemaBundle.registry.maxBytes || 65536)}`,
     `const __PULSE_ENTITIES_ROUTE_COUNT: i32 = ${model.routes.length}`,
     `const __PULSE_ENTITIES_EFFECT_COUNT: i32 = ${effectCount}`,
     `const __PULSE_ENTITIES_LOCAL_COUNT: i32 = ${localCount}`,
@@ -784,7 +794,81 @@ function buildEntitiesNativeSource(input) {
   });
 }
 
+function buildEntitiesCanonicalNativeApplication(input) {
+  const model = normalizeInputs(input);
+  const artifact = buildEntitiesNativeSource(input);
+  const effects = [];
+  const continuations = [];
+  for (const route of model.routes) {
+    // Catalog order supplies a deterministic, identifier-safe execution namespace.
+    // Source module IDs contain '/' and '#', which are not JSON trace IDs.
+    const owner = `entity-${route.index}`;
+    const ids = new Map(route.handler.effects.sites.map(site => [site.id, `${owner}:${site.id}`]));
+    for (const continuation of route.handler.effects.continuations) {
+      continuations.push({ ...continuation, id: `${owner}:${continuation.id}`,
+        effectIds: continuation.effectIds.map(id => ids.get(id)), stateIndex: continuations.length + 1 });
+    }
+    for (const site of route.handler.effects.sites) {
+      if (!['fetch', 'config.get', 'secret.get', 'kv.get', 'kv.put', 'time.now'].includes(site.kind)) {
+        fail('PULSE_ENTITIES_NATIVE_EFFECT_UNSUPPORTED', `Canonical Entities does not yet realize ${site.kind}.`);
+      }
+      const id = ids.get(site.id);
+      const continuation = continuations.find(entry => entry.effectIds.includes(id));
+      if (!continuation) fail('PULSE_ENTITIES_NATIVE_EFFECT_UNSUPPORTED', 'Managed effect has no continuation.');
+      const decoder = runtimeInputFor(route.handler, site.id).inputs.find(entry => entry.name === 'decoderArgument0');
+      effects.push({ ...site, id, order: effects.length + 1, continuationId: continuation.id, inputs: [],
+        result: { mode: 'bind', ...(site.decoder ? { decoder: {
+          kind: site.decoder, arguments: decoder ? [decoder.value] : []
+        } } : {}) } });
+    }
+  }
+  const schemaOutput = renderSchemas(model.schemas);
+  const schemaCases = schemaRecords(input.schemaBundle).map((schema, index) => {
+    const root = schemaOutput.roots.get(schema.id);
+    return root ? `    case ${index}: result = ${root}(value); break` : '';
+  }).filter(Boolean).join('\n');
+  const codecs = `
+export function pulse_schema_decode(index: i32, pointer: i32): i32 {
+  const text = changetype<string>(pointer)
+  if (__pulse_entities_utf8_bytes(text) > __PULSE_ENTITIES_SCHEMA_MAX_BYTES) abort('Entity schema text too large', 'entities', 0, 0)
+  const value = JSON.parse<JSON.Value>(text)
+  __pulse_entities_schema_valid = true
+  let result = __pulse_entities_null()
+  switch (index) {
+${schemaCases}
+    default: abort('Unknown entity schema', 'entities', 0, 0)
+  }
+  if (!__pulse_entities_schema_valid) abort('Invalid entity schema value', 'entities', 0, 0)
+  return changetype<i32>(JSON.stringify<JSON.Value>(result))
+}
+export function pulse_schema_encode(index: i32, pointer: i32): i32 { return pulse_schema_decode(index, pointer) }
+function __pulse_package_effect_state(index: i32): i32 {
+  switch (index) {
+${effects.map((effect, index) => `    case ${index}: return ${continuations.find(entry => entry.id === effect.continuationId).stateIndex}`).join('\n')}
+    default: return -1
+  }
+}
+`;
+  const source = artifact.source.replace(/^@external\("pulse_entities_host"[^\n]*$/gm, '')
+    + '\n' + fs.readFileSync(path.join(__dirname, 'as/canonical.as.ts'), 'utf8') + codecs;
+  const runtime = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
+  return deepFreeze({
+    version: 'pulse.package-native-application.v1', effectFailure: 'package-completion', contractId: entitiesContracts.ENTITIES_CONTRACT_ID,
+    package: entitiesContracts.ENTITIES_PACKAGE_NAME, intrinsic: entitiesContracts.ENTITIES_PACKAGE_INTRINSICS.handle.name,
+    source, sourceHash: sha256(source), effects, continuations, capabilities: model.nativeBundle.capabilities,
+    planHash: model.plan.planHash, managedHandlerNativeBundleHash: model.nativeBundle.bundleHash,
+    automaticFallback: false,
+    manifest: {
+      version: runtime.CANONICAL_NATIVE_WASM_VERSION, generatorVersion: ENTITIES_NATIVE_SOURCE_VERSION,
+      abiVersion: runtime.CANONICAL_NATIVE_ABI_VERSION, effectCount: effects.length, continuationCount: continuations.length,
+      schemaCodecs: { active: true, backend: 'json-as', package: 'json-as', packageVersion: '1.5.0', codecs: model.schemas.map(schema => ({ id: schema.id })) },
+      policy: { ...runtime.CANONICAL_NATIVE_POLICY, packageOwnedApplication: true, automaticFallback: false }
+    }
+  });
+}
+
 module.exports = Object.freeze({
+  buildEntitiesCanonicalNativeApplication,
   ENTITIES_NATIVE_SOURCE_VERSION,
   MANAGED_NATIVE_BUNDLE_VERSION,
   EntitiesNativeSourceError,

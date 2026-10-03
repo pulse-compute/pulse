@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "pulse.mcp-profile.v1",
+  "status": "design-and-reference-proof",
+  "protocolVersion": "2026-07-28",
+  "referencePackages": {
+    "@modelcontextprotocol/client": "2.2.0",
+    "@modelcontextprotocol/server": "2.2.0",
+    "@modelcontextprotocol/node": "2.1.0"
+  },
+  "transport": {
+    "name": "streamable-http",
+    "path": "/mcp",
+    "responseMode": "json",
+    "legacy": "reject",
+    "sessions": false,
+    "maxRequestBodyBytes": 65536,
+    "requestDeadlineMs": 10000
+  },
+  "capabilities": {
+    "tools": {
+      "listChanged": false
+    }
+  },
+  "authorization": {
+    "remote": "oauth-2.1-resource-server",
+    "authorizationServer": "external-configured-issuer",
+    "referenceClientRegistration": "preregistered",
+    "resourceMetadata": "RFC9728",
+    "operationPolicy": "deny-by-default",
+    "proof": "unauthenticated-loopback-only",
+    "tokenValidation": "RFC7662-introspection-client-secret-basic",
+    "issuerSelection": "explicit-operator-configuration",
+    "backendCredential": "separate-endpoint-scoped-service-bearer"
+  },
+  "proof": {
+    "target": "node-javascript",
+    "entity": "system.status",
+    "boundary": "entities-json-rpc-http",
+    "productionAdapter": false,
+    "installedConsumer": false
+  }
+}

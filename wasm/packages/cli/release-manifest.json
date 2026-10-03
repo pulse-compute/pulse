@@ -412,12 +412,13 @@
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
-      "audience": "Pulse canonical Node provider and compiler maintainers.",
-      "directInstall": "No for application projects; select provider: node through the CLI.",
+      "audience": "Node deployment integrators and Pulse provider maintainers.",
+      "directInstall": "Yes for the production Node launcher; application handlers remain provider-neutral.",
       "entryPoints": [
-        "@pulse-compute/provider-node/toolchain"
+        "@pulse-compute/provider-node/toolchain",
+        "@pulse-compute/provider-node/server"
       ],
-      "stability": "The listed built-in toolchain entry is synchronized with the Beta bootstrap contract; other canonical Node provider interfaces remain internal.",
+      "stability": "The server export is the supported Beta production HTTP integration for explicit Node Native and JavaScript builds. The toolchain entry serves the CLI; other provider subpaths remain internal.",
       "replacement": "provider: 'node' through @pulse-compute/cli"
     },
     {

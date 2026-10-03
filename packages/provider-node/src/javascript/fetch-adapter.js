@@ -22,6 +22,9 @@ function createNodeJavascriptFetchCapability(options = {}) {
     }
 
     try {
+      if (init.body && typeof init.body === 'object') {
+        return await runtimeHost.forwardIncomingBody(init.body, String(url), init, execution);
+      }
       const response = await implementation(String(url), {
         method: init.method,
         headers: init.headers,
@@ -136,6 +139,14 @@ function createNodeJavascriptFixtureFetch(fetches = {}, fallback, options = {}) 
     }
     await delayWithSignal(fixture.delayMs, init.signal);
 
+    // Incoming forwarding fixture transport consumes the already bounded
+    // provider stream without accumulating bytes or replaying it.
+    if (init.duplex === 'half' && init.body?.getReader) {
+      const reader = init.body.getReader();
+      try { while (!(await reader.read()).done) init.signal?.throwIfAborted(); }
+      finally { reader.releaseLock(); }
+    }
+
     const status = Number(fixture.status || 200);
     let body = null;
     let defaultContentType;
@@ -169,7 +180,7 @@ function createNodeJavascriptFixtureFetch(fetches = {}, fallback, options = {}) 
       && status !== 304
       && !(status >= 100 && status < 200);
     const response = new Response(bodyAllowed ? body : null, { status, headers });
-    if (options.rawResponse === true) return response;
+    if (options.rawResponse === true || init.duplex === 'half') return response;
     return runtimeHost.createOpaqueFetchResponse({ response, headers: headerPairs });
   };
 }

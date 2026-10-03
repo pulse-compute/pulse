@@ -16,9 +16,11 @@ function blockedRestriction(id, restriction) {
 
 function classifyFastlyJavascriptCapability(id, restrictions = {}) {
   const capability = String(id);
+  if (capability === 'request.body.transform') return decision(capability, 'blocked', 'fastly-body-transform-unavailable', 'provider-fastly');
+  if (capability === 'request.body.forward' || capability === 'req.body') return decision(capability, 'blocked', 'fastly-incoming-body-forwarding-unavailable', 'provider-fastly');
   if (capability === 'crypto.digestText') return decision(capability, 'eligible', 'fastly-javascript-crypto-sha256-runtime-builtin', 'provider-fastly');
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(capability)) return decision(capability, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
-  if (['s3.head', 's3.getText', 's3.putText'].includes(capability)) return decision(capability, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(capability)) return decision(capability, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
   if (isJavascriptCoreCapability(capability)) {
     return decision(capability, 'eligible', 'fastly-request-router-runtime', 'provider-fastly');
   }
@@ -107,7 +109,7 @@ function classifyFastlyJavascriptProviderRequirement(id, restrictions = {}) {
   const requirement = String(id);
   if (requirement === 'crypto.digestText') return decision(requirement, 'eligible', 'fastly-javascript-crypto-sha256-runtime-builtin', 'provider-fastly');
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-conditional-kv-incomplete', 'provider-fastly');
-  if (['s3.head', 's3.getText', 's3.putText'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
+  if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(requirement)) return decision(requirement, 'blocked', 'fastly-javascript-s3-raw-headers-unavailable', 'provider-fastly');
   if (requirement === 'request' || ['response.json', 'response.text', 'response.custom'].includes(requirement)) {
     return decision(requirement, 'eligible', 'fastly-request-response-lifecycle', 'provider-fastly');
   }
