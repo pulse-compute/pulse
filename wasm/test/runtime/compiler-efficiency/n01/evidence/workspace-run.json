@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-03T03-58-00-953Z--221390",
+  "sourceRevision": "5f81b5756ec854c1bc031b197f789eb0fe589eae",
+  "sourceIdentity": {
+    "sourceRevision": "5f81b5756ec854c1bc031b197f789eb0fe589eae",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-03T03:58:00.959Z",
+  "updatedAt": "2026-10-03T03:58:02.395Z",
+  "finishedAt": "2026-10-03T03:58:02.395Z",
+  "durationMs": 1436,
+  "profiles": [],
+  "requestedTasks": [
+    "array-demand-n01"
+  ],
+  "selectedTasks": [
+    "array-demand-n01"
+  ],
+  "currentTask": null,
+  "completedTasks": 1,
+  "results": [
+    {
+      "name": "array-demand-n01",
+      "evidence": "external",
+      "description": "N-01 bounded string/flat-record array demand matrix; no support activation",
+      "commandSignature": "5689f9ba6fe2335310f253500ab952ec842d31c332e96f16f84820491f0d4ef8",
+      "timeoutMs": 120000,
+      "durationMs": 1434,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "logPath": "/tmp/runs/2026-10-03T03-58-00-953Z--221390/tasks/array-demand-n01.log",
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/tmp/runs/2026-10-03T03-58-00-953Z--221390"
+}

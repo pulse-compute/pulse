@@ -1,0 +1,32 @@
+
+[pulsewasm:external] array-demand-n01
+[pulsewasm] N-01 bounded string/flat-record array demand matrix; no support activation (timeout 120.00s)
+scalar-control admitted
+decoded-record-field admitted
+numeric-array-borrow admitted
+numeric-array-projection admitted
+string-array-parameter rejected
+string-array-element rejected
+string-array-literal rejected
+flat-record-array-parameter rejected
+flat-constant-index-unguarded rejected
+flat-constant-index-guarded rejected
+flat-bounded-direct-projection rejected
+flat-bounded-element-alias rejected
+flat-bounded-array-alias rejected
+flat-bounded-loop-spread rejected
+flat-literal-array rejected
+optional-element-field rejected
+nested-record-element rejected
+nested-array-element rejected
+numeric-borrow-mutation rejected
+structured-result rejected
+excessive-loop-product rejected
+{"status":"passed","counts":{"cases":21,"admitted":4,"rejected":17},"output":"/workspace/scratch/bf0d896ef055/pulse-s01/wasm/.test-results/n01/array-demand.json"}
+[pulsewasm] array-demand-n01: passed in 1.43s
+
+[pulsewasm] test summary
+  passed         1.43s  array-demand-n01  (/tmp/runs/2026-10-03T03-58-00-953Z--221390/tasks/array-demand-n01.log)
+  report       /tmp/pulse-n01-workspace.json
+  run logs     /tmp/runs/2026-10-03T03-58-00-953Z--221390
+  total        1.44s
