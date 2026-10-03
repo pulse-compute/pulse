@@ -51,6 +51,7 @@ for (const name of Object.keys(profiles)) {
 const release = expandProfile('release');
 const externalTasks = new Set([
   'array-demand-n01',
+  'middleware-sharing-mw01',
   // The S01 measurement task is a manually selected benchmark with sampled
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',

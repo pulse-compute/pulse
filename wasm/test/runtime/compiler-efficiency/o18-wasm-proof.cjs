@@ -10,13 +10,13 @@ const { runTool } = require('../../../packages/wasm-guest-link/src/toolchain');
 const root = path.resolve(__dirname, '../../../..');
 const symbol = name => name.replace(/\\([a-f0-9]{2})/gi, (_, byte) => String.fromCharCode(parseInt(byte, 16)));
 
-function inspect(built, target, directory) {
+function inspect(built, target, directory, optimization) {
   const cwd = path.join(directory, target + '-named'); fs.mkdirSync(cwd);
   const entry = target === 'node' ? 'canonical-native.as' : 'fastly-native-platform-capabilities.as';
   fs.writeFileSync(path.join(cwd, entry + '.ts'), built.source);
   const asc = resolveAsc(path.join(root, 'wasm'));
   const args = [asc.script, entry + '.ts', '--outFile', 'named.wasm', '--runtime', 'stub', '--noAssert', '--optimize', '--debug'];
-  appendAssemblyScriptOptimizationArgs(args);
+  appendAssemblyScriptOptimizationArgs(args, optimization);
   if (target === 'fastly') args.push('--use', `abort=${entry}/__pulse_fastly_abort`);
   const result = spawnSync(asc.executable, args, { cwd, encoding: 'utf8', timeout: 120000, maxBuffer: 1024 * 1024 });
   assert.equal(result.status, 0, result.error?.message || result.stderr);
@@ -55,4 +55,4 @@ function inspect(built, target, directory) {
 function inspectPair({ native, fastly, directory }) {
   return { node: inspect(native, 'node', directory), fastly: inspect(fastly, 'fastly', directory) };
 }
-module.exports = { inspectPair };
+module.exports = { inspect, inspectPair };

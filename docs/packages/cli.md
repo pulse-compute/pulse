@@ -48,11 +48,12 @@ saving. Repeated Native bodies with at least 1,024 additional source bytes raise
 `PULSE_NATIVE_EXPANSION_REPEATED`; `--strict` treats that warning as a failed audit.
 JavaScript selections receive advisory Native counts without this size warning.
 
-Current retained HTTP stages require transfer-capable route handlers with 1–64
-bound, ungrouped text-fetch effects and matching lowered bodies across their
-registrations. Middleware/error registrations, terminal private bodies, other
-effect shapes and loops keep ordinary Native lowering. These observations help
-locate missed sharing; declaring a source function alone does not retain a
+Current retained HTTP stages require transfer-capable route or middleware
+handlers with 1–64 bound, ungrouped text-fetch effects and matching lowered bodies
+across their
+registrations. Error/event registrations, terminal private bodies, helper calls,
+other effect shapes and loops keep ordinary Native lowering. These observations
+help locate missed sharing; declaring a source function alone does not retain a
 compiled body.
 
 Human output shows five owners; JSON retains up to twenty, three registration

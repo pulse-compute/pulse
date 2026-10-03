@@ -1,6 +1,6 @@
 'use strict';
 
-// Native plan owner for shared, transfer-capable HTTP route stages. Admission
+// Native plan owner for shared, transfer-capable HTTP route and middleware stages. Admission
 // is conservative: an unsupported shape keeps the ordinary Native lowering.
 function loadStageContract() {
   try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-plan'); }
@@ -14,7 +14,9 @@ const VERSION = contract.version;
 const OUTPUTS = contract.outputs;
 const MAX_SITES = contract.maxEffectSites;
 const excluded = Symbol('not a shared stage');
-const demand = condition => { if (!condition) throw excluded; };
+const demand = (condition, reason = 'unsupported-shape') => {
+  if (!condition) throw { [excluded]: true, reason };
+};
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 function mapTree(node, replace) {
   const replaced = replace(node);
@@ -33,27 +35,30 @@ function effectShape(effect) {
   return Object.fromEntries(['kind', 'providerKind', 'operation', 'capability', 'resource', 'decoder', 'inputs', 'result'].map(key => [key, effect[key]]));
 }
 function rowFor(plan, entry, router) {
-  demand(entry.kind === 'route' && !entry.nativeBody);
+  demand(['route', 'use'].includes(entry.kind) && !entry.nativeBody, 'entry-kind');
   const outer = plan.entry.body.find(s => s.kind === 'if' && s.test?.kind === 'binary'
     && s.test.operator === '===' && s.test.left?.id === router.cursor && s.test.right?.value === entry.index);
   demand(outer?.then?.length === 1 && outer.then[0].kind === 'if');
   const branch = outer.then[0], body = branch.then, localIds = [], effectIds = [];
   statements(body, s => {
-    demand(['local', 'expression', 'return', 'if', 'effect'].includes(s.kind));
+    demand(s.kind !== 'helper-call', 'nested-helper-call');
+    demand(['local', 'expression', 'return', 'if', 'effect'].includes(s.kind), 'unsupported-statement:' + s.kind);
     if (s.kind === 'local') localIds.push(s.localId);
     if (s.kind === 'effect') {
-      demand(s.result?.mode === 'bind'); localIds.push(s.result.localId); effectIds.push(s.effectId);
+      demand(s.result?.mode === 'bind', 'effect-result-mode'); localIds.push(s.result.localId); effectIds.push(s.effectId);
     }
   });
-  demand(new Set(localIds).size === localIds.length && effectIds.length > 0 && effectIds.length <= MAX_SITES);
+  demand(new Set(localIds).size === localIds.length && effectIds.length > 0 && effectIds.length <= MAX_SITES, 'locals-or-effect-count');
   const effects = effectIds.map(id => plan.effects.find(e => e.id === id));
-  demand(effects.every(e => e?.routerEntryStableId === entry.stableId && e.kind === 'fetch' && !e.grouped && e.decoder === 'text'));
+  demand(effects.every(e => e?.routerEntryStableId === entry.stableId && e.kind === 'fetch' && !e.grouped && e.decoder === 'text'), 'effect-kind-or-ownership');
   const locals = new Map(localIds.map((id, i) => [id, `local-${i}`]));
   const ids = new Map(effects.flatMap((e, i) => [[e.id, `effect-${i}`], [e.continuationId, `continuation-${i}`]]));
   let transfers = 0;
   function normalize(node) {
     if (Array.isArray(node)) return node.map(normalize);
     if (!node || typeof node !== 'object') return node;
+    // Helper ownership is still tied to the original Router entry, not a stage.
+    demand(node.kind !== 'pure-helper-call' && node.kind !== 'helper-call', 'nested-helper-call');
     if (node.kind === 'local' && node.id) demand(locals.has(node.id) || Object.values(router).includes(node.id));
     if (node.kind === 'assignment' && node.target?.id === router.cursor && node.value !== null) {
       demand(node.operator === '=' && node.value?.kind === 'literal' && node.value.value === entry.nextIndex);
@@ -70,7 +75,7 @@ function rowFor(plan, entry, router) {
   return { entry, branch, body, localIds, effects, signature };
 }
 
-function lowerSharedStages(plan) {
+function lowerSharedStages(plan, { onExcluded } = {}) {
   const router = Object.fromEntries(['cursor', 'mode', 'error'].map(name => [name,
     plan.locals.find(local => local.name === `__pulse_router_${name}`)?.id]));
   if (!Object.values(router).every(Boolean)) return plan;
@@ -85,8 +90,15 @@ function lowerSharedStages(plan) {
     let rows;
     try {
       rows = entries.map(entry => rowFor(plan, entry, router));
-      demand(rows.every(row => row.signature === rows[0].signature));
-    } catch (error) { if (error === excluded) continue; throw error; }
+      demand(rows.every(row => row.signature === rows[0].signature), 'registration-shape-mismatch');
+    } catch (error) {
+      if (!error?.[excluded]) throw error;
+      // Optional internal inspection; never changes the valid fallback plan/hash.
+      if (onExcluded && entries[0].handlerId) onExcluded({
+        handlerId: entries[0].handlerId, entryIds: entries.map(entry => entry.stableId), reason: error.reason
+      });
+      continue;
+    }
     const first = rows[0], id = `stage:${first.entry.stableId}`, nextCursorLocalId = `${id}:next`;
     const body = mapTree(first.body, node => node?.kind === 'assignment' && node.target?.id === router.cursor
       ? { ...node, value: { kind: 'local', id: nextCursorLocalId, valueKind: 'number' } } : node);
@@ -149,6 +161,7 @@ function validateSharedStages(plan, fail, walkStatements, walkExpression, stable
       if (s.localId && !own.has(s.localId)) fail('stage statement crosses local ownership');
     };
     visitor.expression = expr => {
+      if (expr.kind === 'pure-helper-call') fail('shared stage contains unsupported helper call');
       if (expr.kind === 'local' && !allowed.has(expr.id)) fail('stage captures another lexical owner');
       if (['assignment', 'update'].includes(expr.kind) && expr.target?.id === stage.inputs.nextCursorLocalId) fail('stage return input is read-only');
       if (expr.kind === 'assignment' && expr.target?.id === router.cursor
@@ -161,7 +174,7 @@ function validateSharedStages(plan, fail, walkStatements, walkExpression, stable
     if (!first || !same(stage.effectIds, first.effectIds)) fail('stage requires a representative registration');
     for (const row of stage.registrations) {
       const entry = entries.get(row?.entryId);
-      if (!row || bindings.has(row.entryId) || entry?.kind !== 'route' || entry.nativeBody
+      if (!row || bindings.has(row.entryId) || !['route', 'use'].includes(entry?.kind) || entry.nativeBody
         || entry.handlerId !== stage.handlerId || row.nextIndex !== entry.nextIndex
         || !Array.isArray(row.effectIds) || !Array.isArray(row.continuationIds)
         || row.effectIds.length !== stage.effectIds.length || row.continuationIds.length !== stage.effectIds.length) {
