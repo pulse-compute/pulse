@@ -2,6 +2,7 @@
 
 const { PulseRuntimeContractError } = require('./errors.js');
 const { encodeSchemaValue, requireExplicitSchemaId } = require('./schema.js');
+const { isIncomingBody } = require('./incoming-body.js');
 
 const SUPPORTED_FETCH_METHODS = Object.freeze(new Set(['GET', 'HEAD', 'POST']));
 const SUPPORTED_FETCH_INIT_FIELDS = Object.freeze(new Set(['method', 'headers', 'body', 'json', 'schema', 'timeoutMs']));
@@ -153,11 +154,11 @@ function normalizeFetchInit(input, options = {}) {
   let body;
   let bodyMode = 'none';
   if (hasBody) {
-    if (typeof value.body !== 'string') {
+    if (typeof value.body !== 'string' && !isIncomingBody(value.body)) {
       throw fetchContractError('PULSE_FETCH_BODY_INVALID', 'Pulse fetch body must be a string.', { type: typeof value.body });
     }
     body = value.body;
-    bodyMode = 'text';
+    bodyMode = isIncomingBody(value.body) ? 'incoming-request-v1' : 'text';
   } else if (hasJson) {
     if (!hasHeader(headers, 'content-type')) {
       headers.push(Object.freeze(['content-type', 'application/json; charset=utf-8']));

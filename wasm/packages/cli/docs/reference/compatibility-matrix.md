@@ -79,8 +79,8 @@ separate ordinary-lifecycle and Fastly Native integration boundaries.
 | Declared input/output schema codecs | Measured | Measured | Measured | Measured | Selection precedes decode; only the selected schemas are available. |
 | Managed handler effects | Measured | Measured | Measured | Measured | The shared corpus includes schema work, fetch, and stable negative cases. |
 | Deterministic catalog and inspection | Yes | Yes | Yes | Yes | Catalog and redacted inspection are package-owned build artifacts. |
-| Ordinary project build integration | Yes | Yes | No | No | JavaScript source packaging emits the catalog; Native evidence uses package source outside the ordinary build adoption path. |
-| Ordinary project `test`/`dev` loading | Blocked | Blocked | Not applicable | Not applicable | The shared JavaScript loader requests an unexported physical entry instead of the public package root. |
+| Ordinary project build integration | Yes | Yes | Yes | No | Node Native emits the package-owned application guest and catalog; Fastly Native evidence still uses a separate provider proof. |
+| Ordinary project `test`/`dev` loading | Yes | Not verified | Yes | No | Node lifecycle gates exercise the package root and the emitted Native guest; Fastly ordinary-lifecycle acceptance remains separate. |
 | Automatic target fallback | No | No | No | No | Eligibility, measured execution, and release assignment remain separate claims. |
 
 ## JWT and crypto Beta packages

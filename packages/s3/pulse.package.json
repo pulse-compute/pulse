@@ -10,7 +10,8 @@
     "symbols": [
       "head",
       "getText",
-      "putText"
+      "putText",
+      "getBody"
     ]
   },
   "ownership": {
@@ -66,7 +67,8 @@
     "semanticCases": [
       "s3.head",
       "s3.getText",
-      "s3.putText"
+      "s3.putText",
+      "s3.getBody"
     ]
   },
   "docs": {

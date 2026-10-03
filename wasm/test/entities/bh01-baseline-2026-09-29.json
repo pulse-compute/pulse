@@ -1,0 +1,465 @@
+{
+  "schema": "pulse.bh01.installed-baseline.v1",
+  "source": "0ff93f0f423d91b4d56707652e92ed4744e7270a",
+  "sourceTree": "33a8b5125403697d7781dd1407d7ae25bc45578a",
+  "node": "v24.19.0",
+  "platform": "linux/x64",
+  "fixture": "examples/10-entities-tools (unchanged application/configuration)",
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.5",
+      "sha256": "08ae08cb1b4b6fab82dbc175680d595da1b6c51fcafcbeb285621b1606f9a49e"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.5",
+      "sha256": "6d97de00ef4c9ce7bbee80b00536b95e62ceac4c197c215aafd42bb51c5b3c4b"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.5",
+      "sha256": "9262c7c1e307e91df7e05ddb216d8d6c6cb20e705ed6bc64d7e10318174757b3"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.5",
+      "sha256": "7b2631428704b6a27ed8d691f3689125dd9501a6e9134975889fe46d270124ea"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.5",
+      "sha256": "c0a00f29bc76bd87c2a8e12f55287eca048e6485adec49e2a10aee8756660974"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.5",
+      "sha256": "a65e827447ad34d579700b23baf878a66c87d8c50169d1f2c41c403634d8dc1a"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.5",
+      "sha256": "4e661b98a901e8230e1bf263f4b1bdd16d2fbd9b70f9f279d7d3d2d55ae5f0fb"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.5",
+      "sha256": "ed2412e9c475e4aedbb6f85ecfe116cf441105e607bee6427007c6490042462c"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.5",
+      "sha256": "f0a16205e84658ae7b474ae37e636b1d0f6586ea3c1f3faaa383215f9d3a76cd"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.5",
+      "sha256": "453d6b91c60fa6ea862ca4a2d19c5ee0140b1da98e386a4994475c5b56b9230a"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.5",
+      "sha256": "50b1090702666a6141755b688362a6980ab0601a23c8e25fcc561a1ccbcf303e"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.5",
+      "sha256": "b1d30a054edb0bd85c048df926c9a9ccac9cfcc2e3f9db8794543f3c190441a6"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.5",
+      "sha256": "2a7790eca87ebc661155e059b9b3f4a978ba2792533c5733cda7772cf9bcd598"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.5",
+      "sha256": "e8c63a6a139e85e75b00db88a8aae8c239328d5f55c227eeceff76603a5b618a"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.5",
+      "sha256": "99518448eac4e2d708a4a2b19aa5504be9fd1e7d4d02c182847997a501c9a9fa"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.5",
+      "sha256": "c1712acc638ea4a93b302bb085d30d712f077851bfe277ff12930a3d17fc001c"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.5",
+      "sha256": "3d6f8c5a8f1c63be4f2529459a55d7d3d942e5bc923a1593b0e4298511942738"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.5",
+      "sha256": "523a013f43d0f0051c24642dc24f3c8d5cb542306e697623ab08ce60e12b928a"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.5",
+      "sha256": "ab88e60d2251b72419b70e2b5e2a1329beee05d6fb62d5b2f59eea3550ad9a4a"
+    }
+  ],
+  "install": {
+    "code": 0,
+    "lifecycleScripts": false,
+    "pulseRegistry": "loopback read-only exact candidate",
+    "requests": {
+      "total": 16,
+      "packuments": 16,
+      "tarballs": 0,
+      "rejected": 0,
+      "missing": 0,
+      "missingPackuments": {},
+      "missingTarballs": 0
+    }
+  },
+  "installed": {
+    "files": 981,
+    "sha256": "516257fadfe0097729c192a55d1437594ad28a7a66d33ee5d54afdedff35803b",
+    "unchanged": true
+  },
+  "evidenceKind": "condensed observations; original stdout/stderr digests included; replay script emits full outputs",
+  "sourceState": "Packed at clean pinned baseline; only BH-01 evidence runner was added before installed replay; no product edits",
+  "results": [
+    {
+      "profile": "node-javascript",
+      "command": "doctor",
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "6852749cadf6d4b43977ba4d335d125a5a8a0ac9745e9b46570e1fd1e14ab9d5",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "warning",
+      "nonPassingChecks": [
+        {
+          "id": "canonical-native-plan",
+          "status": "warning",
+          "message": "Provider-neutral native realization is unavailable for this project, but the selected JavaScript target is inspected independently and no native fallback will occur: Canonical native plan validation failed."
+        }
+      ]
+    },
+    {
+      "profile": "node-javascript",
+      "command": "inspect",
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "56d2db18097e7c61e728579bcba46965ca219eacb83bab9e57270905510a6342",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "ok",
+      "note": "Inspection completed; this is not Native build or execution acceptance"
+    },
+    {
+      "profile": "node-javascript",
+      "command": "test",
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "69bf02dc5a8f450ffa42d8dd0f41039e2b0ba3eda241c570c1444a7a7f0bd471",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "failed",
+      "summary": {
+        "total": 2,
+        "passed": 1,
+        "failed": 1
+      },
+      "cases": [
+        {
+          "name": "system-status",
+          "status": "passed",
+          "response": {
+            "status": 200,
+            "bodyClass": "structured",
+            "kind": "json"
+          }
+        },
+        {
+          "name": "customer-lookup",
+          "status": "failed",
+          "error": {
+            "name": "AssertionError",
+            "code": "ERR_ASSERTION",
+            "title": "Uncatalogued Pulse diagnostic",
+            "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+            "category": "internal",
+            "message": "customer-lookup: unexpected JSON body\n+ actual - expected\n\n  {\n    id: 'lookup-doc',\n    jsonrpc: '2.0',\n    result: {\n+     displayName: '\"Ada Lovelace\"',\n-     displayName: 'Ada Lovelace',\n      email: 'ada@example.test'\n    }\n  }\n",
+            "remediation": [
+              "Rerun with `--json` and retain the complete diagnostic for investigation."
+            ],
+            "stability": "internal-or-forward-compatible",
+            "scope": "fallback",
+            "docs": "https://pulsecompute.io/v1.0.0-beta.5/reference/diagnostics/"
+          }
+        }
+      ]
+    },
+    {
+      "profile": "node-javascript",
+      "command": "build",
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "aa9526820d4e6c08781d27f3d9a2a408243ebdf5feacb800cf57cb4c90c6b6bc",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "built",
+      "buildMode": "javascript-source-package",
+      "automaticFallback": false,
+      "files": {
+        "entry": "<consumer>/dist-node-javascript/index.cjs",
+        "package": "<consumer>/dist-node-javascript/package.json",
+        "applicationPlan": "<consumer>/dist-node-javascript/pulse-javascript-application-plan.json",
+        "schemaRegistry": "<consumer>/dist-node-javascript/schema-json-registry.json",
+        "schemaCodecs": "<consumer>/dist-node-javascript/schema-json-codecs.cjs",
+        "sourcePackage": "<consumer>/dist-node-javascript/pulse-javascript-source-package.json",
+        "manifest": "<consumer>/dist-node-javascript/pulse-build.json"
+      }
+    },
+    {
+      "profile": "node-javascript",
+      "command": "dev",
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "request": {
+        "status": 200,
+        "body": "{\"jsonrpc\":\"2.0\",\"result\":null,\"id\":\"bh01\"}"
+      },
+      "stdoutSha256": "2342cb22a7ebf550af33c6f9aa54de9688aea95a359a846f9e4523d332cba69d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": [
+        "compiled",
+        "ready",
+        "request"
+      ]
+    },
+    {
+      "profile": "node-native",
+      "command": "doctor",
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "998df5b8773e01a33a8d1451a054a1b1b0f3db84546cacccdf3f184fb4b9673d",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "failed",
+      "nonPassingChecks": [
+        {
+          "id": "canonical-native-plan",
+          "status": "failed",
+          "message": "Canonical native plan validation failed."
+        }
+      ]
+    },
+    {
+      "profile": "node-native",
+      "command": "inspect",
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "b35509395dc3c2d5f6882ce988d64ac6f4d82463cfe0c13e9c46c8a17339195b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "ok",
+      "note": "Inspection completed; this is not Native build or execution acceptance"
+    },
+    {
+      "profile": "node-native",
+      "command": "test",
+      "code": 1,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "8d96ccf7eb33987d90505264bfd2b62977031294638292e42d201d9576c9863b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "failed",
+      "summary": {
+        "total": 2,
+        "passed": 0,
+        "failed": 2
+      },
+      "cases": [
+        {
+          "name": "system-status",
+          "status": "failed",
+          "error": {
+            "name": "Error",
+            "title": "Uncatalogued Pulse diagnostic",
+            "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+            "category": "internal",
+            "message": "__pulse_entities_handle is not defined",
+            "remediation": [
+              "Rerun with `--json` and retain the complete diagnostic for investigation."
+            ],
+            "stability": "internal-or-forward-compatible",
+            "scope": "fallback",
+            "docs": "https://pulsecompute.io/v1.0.0-beta.5/reference/diagnostics/",
+            "execution": {
+              "executionId": "test:system-status",
+              "continuations": []
+            }
+          }
+        },
+        {
+          "name": "customer-lookup",
+          "status": "failed",
+          "error": {
+            "name": "Error",
+            "title": "Uncatalogued Pulse diagnostic",
+            "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+            "category": "internal",
+            "message": "__pulse_entities_handle is not defined",
+            "remediation": [
+              "Rerun with `--json` and retain the complete diagnostic for investigation."
+            ],
+            "stability": "internal-or-forward-compatible",
+            "scope": "fallback",
+            "docs": "https://pulsecompute.io/v1.0.0-beta.5/reference/diagnostics/",
+            "execution": {
+              "executionId": "test:customer-lookup",
+              "continuations": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "profile": "node-native",
+      "command": "build",
+      "code": 3,
+      "signal": null,
+      "timedOut": false,
+      "request": null,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "b5e2438b1b666e093b81be543f0aa9238c951f2c2680b38dfb12e709bfbf73a6",
+      "status": "error",
+      "error": {
+        "name": "CanonicalNativePlanError",
+        "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+        "title": "Canonical Native Plan Failed",
+        "summary": "The canonical handler could not be represented by the provider-neutral native execution-plan contract.",
+        "category": "compile",
+        "message": "Canonical native plan validation failed.",
+        "remediation": [
+          "Inspect the native-plan diagnostics and rewrite unsupported canonical control flow.",
+          "Run `pulse inspect --json` to view the provider-neutral plan boundary."
+        ],
+        "stability": "preview-stable",
+        "scope": "public",
+        "docs": "https://pulsecompute.io/v1.0.0-beta.5/reference/diagnostics/#pulse-canonical-native-plan-failed",
+        "diagnostics": [
+          {
+            "code": "PULSE_CANONICAL_NATIVE_PLAN_INVALID",
+            "kind": "CanonicalNativePlanDiagnostic",
+            "severity": "error",
+            "message": "intrinsic is unknown",
+            "detail": {
+              "intrinsic": "pulse.entities.handle.v1"
+            },
+            "title": "Uncatalogued Pulse diagnostic",
+            "summary": "The diagnostic is not part of the stable public CLI catalog; inspect its structured detail.",
+            "category": "compile",
+            "remediation": [
+              "Rewrite the source using the documented canonical API subset.",
+              "Run `pulse inspect --json` for structured compiler diagnostics."
+            ],
+            "stability": "internal-or-forward-compatible",
+            "scope": "fallback",
+            "docs": "https://pulsecompute.io/v1.0.0-beta.5/reference/diagnostics/"
+          }
+        ]
+      }
+    },
+    {
+      "profile": "node-native",
+      "command": "dev",
+      "code": 0,
+      "signal": null,
+      "timedOut": false,
+      "request": {
+        "status": 500,
+        "body": "{\n  \"error\": \"Error\",\n  \"category\": \"internal\",\n  \"message\": \"__pulse_entities_handle is not defined\",\n  \"remediation\": [\n    \"Rerun with `--json` and retain the complete diagnostic for investigation.\"\n  ],\n  \"docs\": \"https://pulsecompute.io/v1.0.0-beta.5/reference/diagnostics/\"\n}\n"
+      },
+      "stdoutSha256": "71bb2560002e366d2f7e4c4c867095bbf9f64f1831b94637ab32b7bea89c8ce1",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events": [
+        "compiled",
+        "ready",
+        "request-error"
+      ]
+    }
+  ],
+  "fixtureControl": {
+    "change": "fetch fixture value -> text; original restored in finally",
+    "code": 0,
+    "summary": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    },
+    "cases": [
+      {
+        "name": "system-status",
+        "status": "passed"
+      },
+      {
+        "name": "customer-lookup",
+        "status": "passed"
+      }
+    ]
+  },
+  "unit": {
+    "status": "passed",
+    "durationMs": 31839,
+    "selectedTasks": [
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-runtime-policy",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo"
+    ],
+    "completedTasks": 34
+  },
+  "thirdPartyVersions": {
+    "typescript": "5.9.3",
+    "assemblyscript": "0.28.18",
+    "json-as": "1.5.0",
+    "binaryen": "129.0.0-nightly.20260428",
+    "esbuild": "0.28.1"
+  }
+}

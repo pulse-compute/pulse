@@ -2,7 +2,7 @@
 
 const { CANONICAL_EFFECT_INVOCATION_POLICY } = require('@pulse-compute/wasm-contracts/handler/canonical-runtime');
 
-function runtimeSource() {
+function runtimeSource(options = {}) {
   return `
 const PULSE_FASTLY_MAX_EFFECT_INVOCATIONS: i32 = ${CANONICAL_EFFECT_INVOCATION_POLICY.defaultMaxEffects}
 let __pulse_invocation_count: i32 = 0
@@ -29,7 +29,7 @@ function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {
     __pulse_fastly_fail(PULSE_ERROR_STATE, __pulse_invocation_failure, index); return 0
   }
   unchecked(__pulse_invocation_tickets[index] = 0)
-  return pulse_set_effect_result(index, result)
+  return ${options.packageCompletion ? "result == 0 ? pulse_package_set_effect_failure(index) : pulse_set_effect_result(index, result)" : "pulse_set_effect_result(index, result)"}
 }
 function __pulse_invocation_close(): void {
   __pulse_invocation_closed = true

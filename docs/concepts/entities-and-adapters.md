@@ -58,6 +58,24 @@ these rules: static discovery comes from an emitted catalog, invocation crosses
 a governed adapter boundary, external protocol state stays outside runtime
 core, and MCP behavior never becomes a source of provider or schema authority.
 
+The repository's private `packages/mcp` candidate implements the MCP
+2026-07-28 HTTP protocol shell and a catalog-backed tools facade. Tools are
+projected from one explicitly selected emitted router and its schema registry;
+each admitted call makes one request to a fixed governed Entities HTTP endpoint.
+The facade imports no handlers, executable codecs or runtime registry. Discovery
+advertises tools only when that configuration is present. Optional MCP-04
+authorization uses an explicitly configured external OAuth issuer, resource
+metadata/challenges, bounded introspection and default-deny operation scopes.
+Tool catalogs are filtered per request; unauthorized calls never reach the
+governed endpoint. Separate backend credentials cannot be supplied by the MCP
+client. This candidate does not change the released package set or add an
+Entities adapter. Backend placement and matching build artifacts remain
+application responsibilities. The private MCP resource-directory acceptance app
+packages search, retrieve and propose-update tools and verifies the installed Node
+JavaScript composition with the pinned official OAuth client. It measures real
+local HTTP effects, denials, invalid input, failures, deadlines and cancellation;
+it does not qualify deployment, Native/Fastly MCP or a production Node launcher.
+
 ## Future adapters
 
 A Worker, queue, scheduled-event, or other event adapter would be a new

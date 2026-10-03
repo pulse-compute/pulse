@@ -77,7 +77,7 @@ function input(effectRecord, name) {
 
 assert.equal(CANONICAL_NATIVE_PLAN_VERSION, nativePlanContract.CANONICAL_NATIVE_PLAN_VERSION);
 assert.equal(CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION, nativePlanContract.CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION);
-assert.equal(CANONICAL_NATIVE_PLAN_COMPILER_VERSION, 'pulse.canonical-native-plan-compiler.v9');
+assert.equal(CANONICAL_NATIVE_PLAN_COMPILER_VERSION, 'pulse.canonical-native-plan-compiler.v10');
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.providerNeutral, true);
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.javascriptRuntime, false);
 assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.promiseSemantics, false);

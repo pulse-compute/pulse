@@ -78,6 +78,8 @@ async function executeApplication(application, request, options = {}) {
 }
 
 module.exports = Object.freeze({
+  createIncomingBodyOwnership: require('./internal/incoming-body.js').createIncomingBodyOwnership,
+  forwardIncomingBody: require('./internal/incoming-body.js').forwardIncomingBody,
   ...require('./internal/time.js'),
   ...require('./internal/request-budget.js'),
   isApplicationError: require('./internal/errors.js').isApplicationError,

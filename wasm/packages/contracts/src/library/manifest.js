@@ -87,6 +87,7 @@ function normalizeManifest(manifest) {
       version: compiler.version,
       entry: compiler.entry,
       export: compiler.export,
+      ...(compiler.nativeApplicationExport !== undefined ? { nativeApplicationExport: compiler.nativeApplicationExport } : {}),
       artifact: compiler.artifact,
       builderOwner: compiler.builderOwner,
       trust: compiler.trust,
@@ -264,6 +265,16 @@ function validateLowerableLibraryManifest(manifest) {
       `Lowerable library manifest ${normalized.contractId || '<unknown>'} compiler builderOwner must match npmPackage.`,
       'Keep package-specific lowering rules in the package that owns the lowerable facade.',
       { npmPackage: normalized.npmPackage, builderOwner: compiler.builderOwner }
+    ));
+  }
+
+  if (compiler.nativeApplicationExport !== undefined && (!isNonEmptyString(compiler.nativeApplicationExport)
+    || !/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(compiler.nativeApplicationExport))) {
+    diagnostics.push(makeDiagnostic(
+      'PULSEWASM_LOWERABLE_LIBRARY_COMPILER_EXPORT_REQUIRED',
+      'Native application builders must name a static compiler export.',
+      'Set compiler.nativeApplicationExport to an exported first-party builder function name.',
+      { nativeApplicationExport: compiler.nativeApplicationExport }
     ));
   }
 

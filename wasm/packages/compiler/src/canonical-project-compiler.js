@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const { attachTerminalPackageNative } = require('./spine/terminal-package-native.js');
 const { buildSchemaJsonCompile } = require('@pulse-compute/wasm-schema-json/compiler/schema-json-compile');
 const { buildCanonicalSchemaBundle } = require('@pulse-compute/wasm-schema-json/compiler/canonical-schema-codecs');
 const {
@@ -1233,6 +1234,10 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     ].map((file) => path.resolve(file)))])
   });
   attachPackageOperationRecognition(project, packageOperationRecognition);
+  if (terminalPackageApplication) attachTerminalPackageNative(project, {
+    application: terminalPackageApplication, recognition: packageOperationRecognition,
+    managedHandlers, schemaBundle: schema.bundle, cwd: rootDir, workspaceRoot: options.workspaceRoot
+  });
   return project;
 }
 

@@ -8,6 +8,7 @@ export type {
   PulseEffectResult,
   PulseParallelResult,
   PulseRequest,
+  PulseIncomingBody,
   PulseFetchInit,
   PulseStructuredResponse,
   PulseOpaqueResponse,

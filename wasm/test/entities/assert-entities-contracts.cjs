@@ -69,6 +69,20 @@ for (const source of ['entity-router.ts', 'adapters/json-rpc.ts']) {
   assert.doesNotMatch(publicSource, /@pulse-compute\/wasm-contracts\/entities\/contracts|node:crypto|Buffer\./);
 }
 
+// Native eligibility must agree with projection at every nesting boundary.
+const closed = {kind:'object',fields:[{name:'optional',required:false,value:{kind:'array',element:{kind:'nullable',value:{kind:'string'}}}}]};
+assert.equal(contracts.nativeEntitySchemaIssue({id:'app.Closed',root:closed}), null);
+assert.equal(contracts.nativeEntitySchemaIssue({id:'app.DeclarationOnly'}), null);
+for (const kind of ['scalar-record','json-value','json-object']) {
+  const issue = contracts.nativeEntitySchemaIssue({id:'app.Dynamic',root:{kind:'object',fields:[{name:'nested',required:false,value:{kind:'array',element:{kind:'nullable',value:{kind}}}}]}});
+  assert.equal(issue.reason, 'dynamic-json-not-realized');
+  assert.equal(issue.path, 'root.nested[].value');
+  assert.equal(issue.kind, kind);
+  assert.equal(Object.isFrozen(issue), true);
+}
+assert.equal(contracts.nativeEntitySchemaIssue({id:'app.Open',root:{...closed,additionalProperties:{kind:'json-value'}}}).reason, 'open-object-not-realized');
+assert.equal(contracts.nativeEntitySchemaIssue({id:'app.Limited',root:closed,jsonLimits:{maxDepth:4}}).reason, 'json-admission-not-realized');
+
 const defaults = contracts.normalizeEntityLimits();
 assert.deepEqual(defaults, contracts.ENTITIES_DEFAULT_LIMITS);
 assert.equal(Object.isFrozen(defaults), true);

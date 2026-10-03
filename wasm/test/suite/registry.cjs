@@ -168,6 +168,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native'
   }),
+  's3-body-read': nodeTask('test/s3/assert-body-read.cjs', {
+    timeoutMs: 60000,
+    description: 'AST-02A/C Node and Fastly Native bounded binary S3 response ownership and HTTP subset'
+  }),
   's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
     timeoutMs: 180000,
     description: 'Exact HEAD/GET failure parity through Node Native/JavaScript and Fastly Native'
@@ -186,6 +190,40 @@ const tasks = Object.freeze({
   'jwt-rs256': nodeTask('test/jwt/assert-jwt-rs256.cjs', {
     timeoutMs: 600000, evidence: 'conformance',
     description: 'RS256 issuance and verification through all four targets and normal CLI builds'
+  }),
+  'jwt-installed-workflow': nodeTask('test/jwt/assert-jwt-installed-workflow.cjs', {
+    timeoutMs: 600000, evidence: 'external',
+    description: 'JWT-01 exact installed signing/verification, rotation, cleanup and composition eligibility'
+  }),
+  'str02-installed': nodeTask('test/runtime/str02-installed.cjs', {
+    timeoutMs: 300000, evidence: 'external',
+    description: 'STR-02A exact installed Node JavaScript forwarding workflows and real incremental HTTP'
+  }),
+  'str02b-installed': nodeTask('test/runtime/str02-installed.cjs', {
+    args:['--native'], timeoutMs:300000, evidence:'external',
+    description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
+  }),
+  'str02c-fastly-feasibility': nodeTask('test/provider/assert-fastly-incoming-body-feasibility.cjs', {
+    timeoutMs: 90000, evidence: 'external',
+    description: 'STR-02C pinned Viceroy ABI observations; not Pulse forwarding integration or live platform qualification'
+  }),
+  'str03a-generated-output': nodeTask('test/runtime/str03a-generated-output.cjs', {
+    timeoutMs: 120000, evidence: 'native',
+    description: 'STR-03A generated-output Native/JavaScript lowering, demand, cancellation, finite limits and normal build/dev HTTP'
+  }),
+  'str03c-bounded-transforms': nodeTask('test/runtime/str03c-bounded-transforms.cjs', {
+    description: 'Finite UTF-8 transform Native/JavaScript ownership, bounds, demand and HTTP qualification',
+    timeoutMs: 120000, evidence: 'native'
+  }),
+  'node-launcher': nodeTask('test/runtime/assert-node-launcher.cjs', { timeoutMs: 180000, description: 'NODE-01 public Node launcher, budgets, readiness, drain and restart' }),
+  'node01-installed': nodeTask('test/runtime/node01-installed.cjs', { timeoutMs: 300000, description: 'NODE-01 exact installed public launcher acceptance' }),
+  'str03b-installed': nodeTask('test/runtime/str03b-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external',
+    description: 'STR-03B exact installed Node Native/JavaScript output, CLI, real sockets and controlled writer qualification'
+  }),
+  'str02b-node-native': nodeTask('test/runtime/str02b-node-native.cjs', {
+    timeoutMs: 90000, evidence: 'native',
+    description: 'STR-02B compiled Native forwarding, constant guest memory, HTTP cancellation and ticket fencing'
   }),
   'jwt-es256-signing': nodeTask('test/jwt/assert-jwt-es256-signing.cjs', {
     timeoutMs: 180000, evidence: 'conformance',
@@ -247,6 +285,10 @@ const tasks = Object.freeze({
     evidence: 'javascript',
     timeoutMs: 180000,
     description: 'JWT source admission, provider requirements and HS256/ES256 consumer execution'
+  }),
+  'arc01-installed': nodeTask('test/provider/arc01-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external',
+    description: 'ARC-01 exact compiler-only, Node-only, Fastly-only and bundled CLI package isolation'
   }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
@@ -456,7 +498,18 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'Node/Fastly Native/JavaScript semantic parity and target integrity'
   }),
+  'ast02d-installed': nodeTask('test/assets/ast02d-installed.cjs', { timeoutMs: 300000, description: 'AST-02D isolated installed Native embedded blobs on Node and Fastly ABI fixtures' }),
+  'assets-native-embedded': nodeTask('test/assets/assert-native-embedded.cjs', { timeoutMs: 90000, description: 'AST-02D Native embedded manifest admission and binary HTTP semantics' }),
+  'ast02b-installed': nodeTask('test/assets/ast02b-installed.cjs', {
+    timeoutMs: 180000, evidence: 'external',
+    description: 'Isolated exact-tarball embedded Assets manifest, HTTP and type acceptance'
+  }),
+  'ast01-installed': nodeTask('test/assets/ast01-installed.cjs', {
+    timeoutMs: 180000, evidence: 'external',
+    description: 'AST-01 exact Assets/S3 tarball dependency, public helper and signature compatibility'
+  }),
   'assets-javascript-runtime': vitestTask([
+    path.join(wasmRoot, '..', 'packages/assets/test/sigv4.test.ts', 'packages/assets/test/embedded.test.ts'),
     path.join(wasmRoot, '..', 'packages/assets/test/javascript-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/provider-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/sign.test.ts'),
@@ -761,6 +814,18 @@ const tasks = Object.freeze({
     evidence: 'native',
     description: 'I6 reachable managed-handler effects, package operations, exact provider requirements, and selected Node execution'
   }),
+  'fastly-entities-native-workflow': nodeTask('test/provider/assert-fastly-entities-native-workflow.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'ordinary Fastly Native Entities lifecycle and exact emitted artifact execution; optional explicit Viceroy replay'
+  }),
+  'entities-hardening': nodeTask('test/entities/assert-entities-hardening.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'ordinary four-mode Entities nested schemas, failures, selection, completion, bounds, redaction and honest Native eligibility'
+  }),
+  'entities-node-native-workflow': nodeTask('test/entities/assert-entities-node-native-workflow.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: 'ordinary Node Native Entities guest compilation, artifact execution, test and live development lifecycle'
+  }),
   'entities-native-runtime': nodeTask('test/entities/assert-entities-native-runtime.cjs', {
     evidence: 'native',
     timeoutMs: 180000,
@@ -1001,6 +1066,42 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'
+  }),
+  'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
+    evidence: 'external', timeoutMs: 300000,
+    description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
+  }),
+  'mcp-http': nodeTask('test/mcp/assert-mcp-http.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
+  }),
+  'mcp-tools': nodeTask('test/mcp/assert-mcp-tools.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures'
+  }),
+  'mcp-authorization': nodeTask('test/mcp/assert-mcp-authorization.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-04 resource metadata, token introspection, scoped admission and credential isolation'
+  }),
+  'mcp-authorization-sdk': nodeTask('test/mcp/assert-mcp-http-sdk.cjs', {
+    args: ['--authorization'], evidence: 'external', timeoutMs: 180000,
+    description: 'MCP-04 independent OAuth client with controlled issuer, PKCE and protected backend'
+  }),
+  'mcp-tools-sdk': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
+    args: ['--adapter'], evidence: 'external', timeoutMs: 300000,
+    description: 'MCP-03 independent client against the actual adapter and ordinary Pulse HTTP backend'
+  }),
+  'mcp-http-sdk': nodeTask('test/mcp/assert-mcp-http-sdk.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'MCP-02 real pinned official client against the private first-party HTTP adapter'
+  }),
+  'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
+    evidence: 'release', timeoutMs: 600000,
+    description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
+  }),
   'clean-machine-acceptance': nodeTask('test/release/assert-clean-machine-acceptance.cjs', {
     evidence: 'release',
     timeoutMs: 900000,
@@ -1100,6 +1201,9 @@ const profiles = Object.freeze({
     'entities-schema-bridge',
     'entities-javascript-runtime',
     'entities-json-rpc-corpus',
+    'mcp-http',
+    'mcp-tools',
+    'mcp-authorization',
     'entities-package-owned-lowering',
     'entities-catalog',
     'entities-inspection',
@@ -1117,10 +1221,14 @@ const profiles = Object.freeze({
     'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',
+    's3-body-read',
     's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',
     'shared-stage-o19',
+    'str02b-node-native',
+    'str03a-generated-output',
+    'str03c-bounded-transforms',
     'bounded-app-logic',
     'bounded-read-loops',
     'bounded-loop-helpers',
@@ -1132,12 +1240,16 @@ const profiles = Object.freeze({
     'entities-managed-handler',
     'entities-managed-handler-effects',
     'entities-native-runtime',
+    'entities-hardening',
+    'entities-node-native-workflow',
+    'fastly-entities-native-workflow',
     'crypto-native-guest-source',
     'guest-link-package',
     'guest-link-materialization-stage',
     'guest-link-audit-diagnostics',
     'assets-lowering-plan',
     'assets-package-owned-lowering',
+    'assets-native-embedded',
     'grip-package-owned-lowering',
     'jwt-package-owned-lowering',
     'canonical-api-runtime',
@@ -1178,6 +1290,7 @@ const profiles = Object.freeze({
     'time-conformance',
     'time-consumer',
     'request-budget-transport',
+    'node-launcher',
     'http-input-outcomes',
     'application-errors',
     'application-error-boundaries',
@@ -1193,6 +1306,8 @@ const profiles = Object.freeze({
     'cli-project-guards',
     'cli-dev-workflow',
     'cli-schema-json-workflow',
+    'entities-node-native-workflow',
+    'fastly-entities-native-workflow',
     'events-cli-workflow',
     'cli-diagnostics',
     'docs-executable-contracts',
@@ -1233,6 +1348,7 @@ const profiles = Object.freeze({
     'release-packages',
     'release-artifact-determinism',
     'clean-machine-acceptance',
+    'cli-entities-installed-workflow',
     'release-evidence-authority',
     'deployment-candidates'
   ])

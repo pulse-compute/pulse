@@ -38,6 +38,17 @@ The compiler orchestrates contracts but does not own:
 
 Package-specific lowering belongs to the package owning the facade. Provider realization belongs to provider packages. Shared protocol vocabulary belongs to `@pulse-compute/wasm-contracts`.
 
+Provider packages are not production dependencies of this compiler. Direct
+compiler consumers supply the selected provider in their project context; the
+product CLI owns its bundled Node/Fastly dependencies. Provider-neutral imports,
+compilation and legacy executable help do not load providers. Legacy proof
+commands load only their selected provider when invoked. Repository proof
+scripts retain provider development dependencies.
+
+The canonical API, Native-plan and Native-compiler facades use declared package
+imports and surface missing or unexported dependencies without checkout-relative
+recovery. Other historical loaders are outside this migration.
+
 ## Internal compiler spine
 
 The compiler connects root extraction, surface recognition, normalization, classification, validation, canonical IR, native lowering, provider realization, and artifact verification through a fixed package-internal pipeline. The pipeline is not exported and is not a plugin framework. Compiler refactors must preserve checked-in metadata, diagnostics, native-plan, and generated-Wasm evidence unless an explicit contract migration authorizes a difference.

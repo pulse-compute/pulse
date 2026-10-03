@@ -71,6 +71,7 @@ declare const contracts: {
   normalizeStaticMetadata(value: unknown, limits?: EntitiesLimits): Readonly<Record<string, unknown>> | undefined;
   normalizeEntityDeclaration(input: unknown, limits?: EntitiesLimits): NormalizedEntityDeclaration;
   normalizeHandler<T extends Function>(handler: T): T;
+  nativeEntitySchemaIssue(schema: Readonly<{ id: string; root?: unknown; jsonLimits?: unknown }>): Readonly<{ schemaId: string; reason: string; path: string; kind?: string }> | null;
   normalizeHandlerReference(input: unknown): Readonly<Record<string, string>>;
   normalizeJsonRpcAdapterOptions(input?: Readonly<{ namedParamsOnly?: true; acceptEmptyObjectForNoInput?: boolean }>): Readonly<{
     namedParamsOnly: true;

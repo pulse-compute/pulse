@@ -19,7 +19,7 @@ const CANONICAL_READ_LOOP_CONTRACT = Object.freeze({
   version: 'pulse.bounded-read-loop.v1',
   maxIterations: 64,
   maxNestedIterations: CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations,
-  effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText']),
+  effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText', 'output.write', 'output.readTextChunk']),
   valueIntrinsics: Object.freeze(['schema.decode.text', 'schema.encode.text', 'response.text', 'response.json', 'response.custom']),
   nestedEffects: false,
   helperCallVersion: 'pulse.bounded-read-loop-helper.v1',
@@ -73,8 +73,11 @@ const CANONICAL_NATIVE_CONTEXT_READS = Object.freeze([
 ]);
 
 const CANONICAL_NATIVE_INTRINSICS = Object.freeze([
+  'package.application',
   'request.header',
   'request.text',
+  'request.body.forward-marker',
+  'response.output.close',
   'request.json',
   'response.json',
   'schema.encode.text',

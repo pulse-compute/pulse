@@ -288,6 +288,42 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.bodyTransform`
+
+Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().
+
+- **Type:** boolean
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Experimental Node UTF-8 transforms
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `node.generatedOutput`
+
+Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Use STR-03B for exact-candidate installed qualification.
+
+- **Type:** boolean
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Experimental Node generated output
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `node.bodyForwarding`
+
+Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.
+
+- **Type:** { maxBytes: number }
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Node incoming forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.maxDurationMs`
 
 One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.

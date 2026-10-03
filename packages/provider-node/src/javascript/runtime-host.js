@@ -88,7 +88,12 @@ function nodeJavascriptProviderCapabilities(options) {
 
 async function executeNodeJavascriptApplication(application, request, options = {}) {
   const capabilities = nodeJavascriptProviderCapabilities(options);
-  return runtimeHost.executeApplication(assertNodeJavascriptApplication(application), request, {
+  const incomingBody = options.incomingBody || require('./incoming-body.js').createIncomingBody(request, options);
+  try {
+    options.outputExecution?.bindInput(incomingBody);
+    return await runtimeHost.executeApplication(assertNodeJavascriptApplication(application), request, {
+    outputExecution: options.outputExecution,
+    incomingBody,
     capabilities,
     effectAdapter: options.effectAdapter,
     application: options.application,
@@ -118,7 +123,7 @@ async function executeNodeJavascriptApplication(application, request, options = 
     onJsonTrace: options.onJsonTrace,
     onEffectObservation: options.onEffectObservation,
     onEffectSummary: options.onEffectSummary
-  });
+  }); } finally { if (!options.incomingBody) await incomingBody?.close(); }
 }
 
 async function executeNodeJavascriptEvent(application, frame, options = {}) {

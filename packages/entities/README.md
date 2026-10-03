@@ -85,9 +85,11 @@ application values.
 The JavaScript package target is `supported`; Native is
 `provider-dependent`. One shared corpus has measured Node JavaScript, Node
 Native, Fastly JavaScript, and Fastly Native execution. Fastly evidence uses
-Viceroy 0.20.1. Fastly Native uses an explicit provider-owned adapter over the
-exact package-owned Native source; that adapter is not wired into the ordinary
-Fastly Native project build. No target has automatic JavaScript fallback.
+Viceroy 0.20.1. Ordinary Fastly Native builds bind the package-owned Native
+application through the provider canonical runtime and emit `bin/main.wasm`.
+Test/dev use the Fastly fixture ABI; a separate Viceroy replay executes the exact
+emitted artifact. This is local evidence, not live deployment acceptance.
+No target has automatic JavaScript fallback.
 
 ## Diagnostics
 

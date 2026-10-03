@@ -17,59 +17,12 @@ const {
   PACKAGE_REALIZATION_ARTIFACT_SET_VERSION
 } = require('@pulse-compute/wasm-contracts/package/package-contract');
 
-function loadNativePlanCompiler() {
-  try { return require('@pulse-compute/wasm-compiler/canonical-native-plan'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('./canonical-native-plan.js');
-    throw error;
-  }
-}
-
-function loadRuntimeCore() {
-  try { return require('@pulse-compute/wasm-runtime-core-as/compiler/canonical-native'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../runtime-core-as/src/compiler/canonical-native.js');
-    throw error;
-  }
-}
-
-function loadRuntimeContract() {
-  try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../contracts/src/handler/canonical-native-runtime.js');
-    throw error;
-  }
-}
-
-function loadEventContract() {
-  try { return require('@pulse-compute/wasm-contracts/events'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../contracts/src/events/contracts.js');
-    throw error;
-  }
-}
-
-function loadBuildSupport() {
-  try { return require('@pulse-compute/wasm-build-support/assemblyscript-compile'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) return require('../../build-support/src/assemblyscript-compile.js');
-    throw error;
-  }
-}
-
-const nativePlanCompiler = loadNativePlanCompiler();
-const runtimeCore = loadRuntimeCore();
-const runtimeContract = loadRuntimeContract();
-const eventContract = loadEventContract();
-const { resolveAsc } = loadBuildSupport();
-const { memoryAbi } = (() => {
-  try {
-    return require('@pulse-compute/wasm-guest-link');
-  } catch (error) {
-    if (error && error.code === 'MODULE_NOT_FOUND') return require('../../wasm-guest-link/src/index.js');
-    throw error;
-  }
-})();
+const nativePlanCompiler = require('./canonical-native-plan.js');
+const runtimeCore = require('@pulse-compute/wasm-runtime-core-as/compiler/canonical-native');
+const runtimeContract = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
+const eventContract = require('@pulse-compute/wasm-contracts/events');
+const { resolveAsc } = require('@pulse-compute/wasm-build-support/assemblyscript-compile');
+const { memoryAbi } = require('@pulse-compute/wasm-guest-link');
 const {
   appendAssemblyScriptOptimizationArgs,
   resolveNativeOptimization
@@ -182,7 +135,13 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
   const compilerPackageRoot = path.resolve(__dirname, '..');
   const asc = resolveAsc(cwd) || resolveAsc(compilerPackageRoot);
   if (!asc) throw new CanonicalNativeCompileError('AssemblyScript compiler dependency was not found.', { cwd, remediation: 'Install the lockfile-pinned AssemblyScript dependency before compiling native Wasm.' });
-  const generated = runtimeCore.generateCanonicalNativeAssemblyScript(plan, options);
+  const application = plan.packages && plan.packages.application;
+  const source = application && application.source + `\nconst __pulse_application_plan_hash: string = ${JSON.stringify(plan.planHash)}\n`;
+  const generated = application ? Object.freeze({
+    source, sourceHash: sha256(source), manifest: Object.freeze({
+      ...application.manifest, planVersion: plan.version, planHash: plan.planHash, sourceHash: sha256(source)
+    })
+  }) : runtimeCore.generateCanonicalNativeAssemblyScript(plan, options);
   const schemaCodecsActive = generated.manifest.schemaCodecs && generated.manifest.schemaCodecs.active === true;
   let jsonAs;
   if (schemaCodecsActive) {
@@ -237,9 +196,10 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     });
     // The text capacity profile bounds each Native module to 256 MiB.
     // Linked guests retain their separately owned fixed-memory ABI.
-    if (guestUnits.length === 0 && (runtimeContract.hasBoundedReadLoop(plan) || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
+    if (guestUnits.length === 0 && (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform') || plan.effects.some(effect => effect.kind === 'crypto.digestText' || effect.kind.startsWith('s3.')))) {
       args.push('--maximumMemory', String(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY.maximumMemoryPages));
     }
+    if (guestUnits.length > 0 && (plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))) throw new CanonicalNativeCompileError('Generated output with linked guests requires separate memory qualification.');
     if (guestUnits.length > 0) {
       args.push(
         '--disable', 'bulk-memory',

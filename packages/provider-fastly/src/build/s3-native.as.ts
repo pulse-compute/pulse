@@ -10,6 +10,7 @@
 @external('fastly_http_resp', 'header_values_get') declare function __s3_header_values(response: i32, name: usize, length: i32, buffer: usize, size: i32, cursor: i32, end: usize, written: usize): i32
 
 class __PulseS3Binding {
+  method: string = ''; range: string = ''; ifNoneMatch: string = '';
   contentType: string = ''; endpoint: string = ''; bucket: string = ''; region: string = ''; backend: string = '';
   id: string = ''; secret: string = ''; token: string = ''; max: i32 = 32768; timeout: i32 = 10000;
 }
@@ -35,6 +36,7 @@ function __s3_result(status: string, reason: string = '', http: i32 = 0): i32 {
   return result;
 }
 function __s3_failure(index: i32, reason: string, http: i32 = 0): i32 {
+  if (__pulse_fastly_effect_kind(index) == 21) return __s3_body_failure(reason);
   return __s3_result(__pulse_fastly_effect_kind(index) == 14 ? (__s3_dispatched[index] ? 'unknown' : 'not-stored') : 'failed', reason, http);
 }
 function __s3_fail(index: i32, reason: string): void { __pulse_fastly_ready_effect(index, __s3_failure(index, reason)) }
@@ -84,10 +86,10 @@ function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
   const token = binding.token.length ? __s3_secret(store[0], binding.token) : '';
   if (__s3_remaining(index) == 0) { __s3_fail(index, 'timeout'); return; }
   if (id === null || secret === null || token === null || !__pulse_s3_credentials(id, secret, token)) { __s3_fail(index, 'credentials'); return; }
-  const method = put ? 'PUT' : __pulse_fastly_effect_kind(index) == 12 ? 'HEAD' : 'GET', path = '/' + binding.bucket + '/' + encoded;
+  const method = binding.method.length ? binding.method : put ? 'PUT' : __pulse_fastly_effect_kind(index) == 12 ? 'HEAD' : 'GET', path = '/' + binding.bucket + '/' + encoded;
   const now = __s3_clock(0);
   if (now < 0 || !__pulse_s3_date(now / 1000000000).length) { __s3_fail(index, 'configuration'); return; }
-  const signature = __pulse_s3_sign(method, path, binding.endpoint.slice(8), binding.region, id, secret, token, now / 1000000000, data, binding.contentType);
+  const signature = __pulse_s3_sign(method, path, binding.endpoint.slice(8), binding.region, id, secret, token, now / 1000000000, data, binding.contentType, binding.range, binding.ifNoneMatch);
   __s3_sent_bytes[index] = data.length; __s3_digests[index] = signature.digest;
   __pulse_fastly_remember_secret(signature.digest);
   __pulse_fastly_remember_secret(signature.authorization); __pulse_fastly_remember_secret(binding.endpoint + path);
@@ -100,6 +102,8 @@ function __pulse_fastly_s3_begin(index: i32, outer: __PulseFastlyValue): void {
     && __s3_header(req, 'host', binding.endpoint.slice(8)) && __s3_header(req, 'x-amz-date', signature.date)
     && __s3_header(req, 'x-amz-content-sha256', signature.digest) && __s3_header(req, 'authorization', signature.authorization)
     && __s3_header(req, 'accept-encoding', 'identity');
+  if (ok && binding.range.length) ok = __s3_header(req, 'range', binding.range);
+  if (ok && binding.ifNoneMatch.length) ok = __s3_header(req, 'if-none-match', binding.ifNoneMatch);
   if (ok && put) ok = __s3_header(req, 'content-type', binding.contentType) && __s3_header(req, 'content-length', data.length.toString());
   if (ok && token.length) ok = __s3_header(req, 'x-amz-security-token', token);
   if (!ok || fastly_http_body_new(changetype<usize>(body)) != 0) { __s3_close_req(req); __s3_fail(index, 'transport'); return; }
@@ -135,6 +139,7 @@ function __s3_list(buffer: Uint8Array, size: i32): Array<string> | null {
   return result;
 }
 function __s3_read_response(index: i32, response: i32, body: i32, status: i32): i32 {
+  if (__pulse_fastly_effect_kind(index) == 21) return __s3_body_response(index, response, body, status);
   const put = __pulse_fastly_effect_kind(index) == 14;
   const rejected = put && status >= 400 && status <= 499 && status != 408;
   if (!put && status == 404) return __s3_result('not-found');
@@ -213,5 +218,6 @@ function __pulse_fastly_s3_wait(index: i32): i32 {
   let result: i32;
   if (fastly_http_resp_status_get(response[0], changetype<usize>(code)) != 0) result = __s3_failure(index, 'protocol');
   else result = __s3_remaining(index) == 0 ? __s3_failure(index, 'timeout', code[0]) : __s3_read_response(index, response[0], body[0], code[0]);
-  __s3_close_body(body[0]); __s3_close_resp(response[0]); return result;
+  if (!__pulse_fastly_value(result).s3Body) __s3_close_body(body[0]);
+  __s3_close_resp(response[0]); return result;
 }
