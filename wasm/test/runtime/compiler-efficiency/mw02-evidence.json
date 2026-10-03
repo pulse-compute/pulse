@@ -1,0 +1,102 @@
+{
+  "status": "passed",
+  "scope": "Tiny Native middleware value/effect proof and retained optimized Fastly Wasm; no deployment or application-size claim",
+  "sourceHashes": {
+    "wasm/packages/compiler/src/shared-stage-plan.js": "e9e41b55f8f44ab03b2de93e2ae21a6c0d4bac52838c28790daaa90230d9f714",
+    "wasm/packages/contracts/src/handler/canonical-native-plan.js": "a5cb006d3660fa603bfe06cb186172aa67423a91fcd0aafe85abcbb75fac0a44",
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "6b0d5211f912561c2269229b5964bb4a61ecc569c4bd0b3380f4946789559a17",
+    "wasm/test/runtime/compiler-efficiency/mw02-middleware.cjs": "bae225d3a1cd721491c1682bcfc0fe53ab88d358c68d633ba77c6a7d7d85daca",
+    "wasm/test/runtime/compiler-efficiency/o18-wasm-proof.cjs": "ba513cef35b05ed92d7cc0d12196b7ed9c5ad31522ede67e5912aaf4f612cec4"
+  },
+  "cells": [
+    {
+      "registrations": 1,
+      "optimization": "experimental-native-bounded-size",
+      "planHash": "d96e01b17881fcbd0c442a3243a22a4fe9f74e72d265c948928fc66c688ed90c",
+      "fixtureSha256": "274e44d6ca9c25674e606dde96573f8178f4c1584e2d8164675fd09b8abf329b",
+      "wasmBytes": 96317,
+      "retained": {
+        "namedCompanionSectionsByteExact": true,
+        "roots": [
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_0",
+            "bytes": 981,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          }
+        ],
+        "sharedBodyPartitions": 1,
+        "runtimeIndirectCallers": [
+          "~lib/json-as/assembly/serialize/index/arbitrary/serializeArbitrary"
+        ],
+        "rootBytes": 981,
+        "reachableFunctions": 340,
+        "largestReachableBodyBytes": 4169
+      },
+      "requests": 1,
+      "elapsedMs": 10159
+    },
+    {
+      "registrations": 3,
+      "optimization": "experimental-native-bounded-size",
+      "planHash": "0231ae7ca7f2936c28dac56a8de59d0c8706e1c2ee47d3f6c1c30e93f8d543fb",
+      "fixtureSha256": "d09a59cf25461bc8f6115e8e4c368c88803acbaab70c7be91f2cc2ca5cd56b9c",
+      "wasmBytes": 97380,
+      "retained": {
+        "namedCompanionSectionsByteExact": true,
+        "roots": [
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_0",
+            "bytes": 981,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          }
+        ],
+        "sharedBodyPartitions": 1,
+        "runtimeIndirectCallers": [
+          "~lib/json-as/assembly/serialize/index/arbitrary/serializeArbitrary"
+        ],
+        "rootBytes": 981,
+        "reachableFunctions": 340,
+        "largestReachableBodyBytes": 4169
+      },
+      "requests": 10,
+      "elapsedMs": 9960
+    }
+  ],
+  "planRejections": [
+    "loop counter ownership",
+    "loop cap",
+    "effect inside pure loop",
+    "crossed registration effect",
+    "crossed registration continuation",
+    "wrong digest contract"
+  ],
+  "sameRequestReentry": true,
+  "freshRequestIsolation": true,
+  "command": "node --liftoff-only wasm/test/runtime/compiler-efficiency/mw02-middleware.cjs mw02-public-proof.json",
+  "attempts": [
+    {
+      "attempt": 1,
+      "status": "failed",
+      "reason": "Synthetic app.error plus schema encode hits the existing Fastly schema_apply wrapper signature mismatch. Removed synthetic error handler and next(error) branch; provider code unchanged."
+    },
+    {
+      "attempt": 2,
+      "status": "failed",
+      "reason": "Original O18 whole-module no-indirect assertion rejected json-as serializeArbitrary. Companion now permits that exact existing schema callback only when explicitly requested with active codecs; generated stage and dispatcher calls remain direct."
+    },
+    {
+      "attempt": 3,
+      "status": "failed",
+      "reason": "Fastly host_value_unary does not implement typeof. The schema-proven optional string guard now uses note !== undefined; provider code unchanged."
+    },
+    {
+      "attempt": 4,
+      "status": "passed",
+      "reason": "Both registration cells completed; sourceHashes above identify tested bytes."
+    }
+  ]
+}

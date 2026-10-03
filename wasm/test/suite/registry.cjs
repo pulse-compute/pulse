@@ -566,6 +566,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 120000,
     description: 'MW-01 tiny effectful middleware sharing, scoped admission, retained Wasm and terminal-next proof'
   }),
+  'middleware-sharing-mw02': nodeTask('test/runtime/compiler-efficiency/mw02-middleware.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'MW-02 shared time/digest middleware with bounded pure loops, schema values and retained Wasm proof'
+  }),
   'shared-stage-o19': nodeTask('test/runtime/compiler-efficiency/o19-production-stage.cjs', {
     timeoutMs: 180000,
     description: 'O-19 production stage ownership, fallback, multiple families and cross-target execution'

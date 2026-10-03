@@ -49,10 +49,11 @@ saving. Repeated Native bodies with at least 1,024 additional source bytes raise
 JavaScript selections receive advisory Native counts without this size warning.
 
 Current retained HTTP stages require transfer-capable route or middleware
-handlers with 1–64 bound, ungrouped text-fetch effects and matching lowered bodies
-across their
-registrations. Error/event registrations, terminal private bodies, helper calls,
-other effect shapes and loops keep ordinary Native lowering. These observations
+handlers with 1–64 bound, ungrouped text-fetch, `time.now` or `crypto.digestText`
+effects and matching lowered bodies across their registrations. Existing bounded
+pure loops are supported within stages. Error/event registrations, terminal
+private bodies, helper calls, other effect shapes and effect loops keep ordinary
+Native lowering. These observations
 help locate missed sharing; declaring a source function alone does not retain a
 compiled body.
 

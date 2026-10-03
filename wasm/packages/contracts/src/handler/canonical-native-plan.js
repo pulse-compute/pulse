@@ -162,10 +162,10 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
   }),
   sharedStages: Object.freeze({
     version: CANONICAL_NATIVE_STAGE_CONTRACT.version,
-    family: 'transfer-capable HTTP routes and middleware with 1..64 bound sequential text-fetch sites',
+    family: 'transfer-capable HTTP routes and middleware with 1..64 bound sequential text-fetch, time.now or crypto.digestText sites',
     inputs: 'request context, stage-owned locals and registration-owned return/effect/continuation bindings',
     outputs: 'response, next, error, suspension or terminal failure',
-    calls: 'dispatcher admission only; no captures, recursion, helper calls, groups or loops',
+    calls: 'dispatcher admission only; bounded pure loops retain canonical caps; no captures, recursion, helper calls, groups or effect loops',
     suspension: 'one invocation-owned frame; reset locals at entry and retain across suspension'
   }),
   suspension: 'explicit effect and effect-group statements with stable continuation IDs',

@@ -25,14 +25,21 @@ function mapTree(node, replace) {
   if (!node || typeof node !== 'object') return node;
   return Object.fromEntries(Object.entries(node).map(([key, value]) => [key, mapTree(value, replace)]));
 }
-function statements(body, visit) {
+function statements(body, visit, loopDepth = 0) {
   for (const statement of body || []) {
-    visit(statement);
-    if (statement.kind === 'if') { statements(statement.then, visit); statements(statement.else, visit); }
+    visit(statement, loopDepth);
+    if (statement.kind === 'if') { statements(statement.then, visit, loopDepth); statements(statement.else, visit, loopDepth); }
+    else if (statement.kind === 'pure-loop') statements(statement.body, visit, loopDepth + 1);
   }
 }
 function effectShape(effect) {
-  return Object.fromEntries(['kind', 'providerKind', 'operation', 'capability', 'resource', 'decoder', 'inputs', 'result'].map(key => [key, effect[key]]));
+  return Object.fromEntries(['kind', 'providerKind', 'operation', 'capability', 'resource', 'package', 'contractId',
+    'declaredResult', 'borrowedValue', 'grouped', 'groupIndex', 'decoder', 'inputs', 'result'].map(key => [key, effect[key]]));
+}
+function eligibleEffect(effect) {
+  return effect && !effect.grouped && effect.groupIndex === undefined && !effect.helperId && !effect.borrowedValue
+    && effect.result?.mode === 'bind' && (effect.kind === 'fetch' && effect.decoder === 'text'
+      || ['time.now', 'crypto.digestText'].includes(effect.kind) && effect.decoder === null && !effect.result.decoder);
 }
 function rowFor(plan, entry, router) {
   demand(['route', 'use'].includes(entry.kind) && !entry.nativeBody, 'entry-kind');
@@ -40,17 +47,18 @@ function rowFor(plan, entry, router) {
     && s.test.operator === '===' && s.test.left?.id === router.cursor && s.test.right?.value === entry.index);
   demand(outer?.then?.length === 1 && outer.then[0].kind === 'if');
   const branch = outer.then[0], body = branch.then, localIds = [], effectIds = [];
-  statements(body, s => {
+  statements(body, (s, loopDepth) => {
     demand(s.kind !== 'helper-call', 'nested-helper-call');
-    demand(['local', 'expression', 'return', 'if', 'effect'].includes(s.kind), 'unsupported-statement:' + s.kind);
-    if (s.kind === 'local') localIds.push(s.localId);
+    demand((loopDepth ? ['local', 'expression', 'if', 'pure-loop', 'break', 'continue']
+      : ['local', 'expression', 'return', 'if', 'effect', 'pure-loop']).includes(s.kind), 'unsupported-statement:' + s.kind);
+    if (s.kind === 'local' || s.kind === 'pure-loop') localIds.push(s.localId);
     if (s.kind === 'effect') {
       demand(s.result?.mode === 'bind', 'effect-result-mode'); localIds.push(s.result.localId); effectIds.push(s.effectId);
     }
   });
   demand(new Set(localIds).size === localIds.length && effectIds.length > 0 && effectIds.length <= MAX_SITES, 'locals-or-effect-count');
   const effects = effectIds.map(id => plan.effects.find(e => e.id === id));
-  demand(effects.every(e => e?.routerEntryStableId === entry.stableId && e.kind === 'fetch' && !e.grouped && e.decoder === 'text'), 'effect-kind-or-ownership');
+  demand(effects.every(e => e?.routerEntryStableId === entry.stableId && eligibleEffect(e)), 'effect-kind-or-ownership');
   const locals = new Map(localIds.map((id, i) => [id, `local-${i}`]));
   const ids = new Map(effects.flatMap((e, i) => [[e.id, `effect-${i}`], [e.continuationId, `continuation-${i}`]]));
   let transfers = 0;
@@ -155,9 +163,15 @@ function validateSharedStages(plan, fail, walkStatements, walkExpression, stable
     const allowed = new Set([...own, ...Object.values(router)]);
     const observedEffects = [], declaredLocals = [];
     const visitor = s => {
-      if (!['local', 'expression', 'return', 'if', 'effect'].includes(s.kind)) fail('shared stage contains unsupported control flow');
-      if (s.kind === 'local') declaredLocals.push(s.localId);
-      if (s.kind === 'effect') { observedEffects.push(s.effectId); declaredLocals.push(s.result?.localId); }
+      // The common plan validator enforces pure-loop caps, purity and transfers;
+      // this visitor also discovers induction and nested-body local ownership.
+      if (!['local', 'expression', 'return', 'if', 'effect', 'pure-loop', 'break', 'continue'].includes(s.kind)) fail('shared stage contains unsupported control flow');
+      if (s.kind === 'local' || s.kind === 'pure-loop') declaredLocals.push(s.localId);
+      if (s.kind === 'effect') {
+        observedEffects.push(s.effectId); declaredLocals.push(s.result?.localId);
+        const effect = effects.get(s.effectId);
+        if (!effect || s.continuationId !== effect.continuationId || !same(s.result, effect.result)) fail('stage statement effect binding is invalid');
+      }
       if (s.localId && !own.has(s.localId)) fail('stage statement crosses local ownership');
     };
     visitor.expression = expr => {
@@ -185,12 +199,13 @@ function validateSharedStages(plan, fail, walkStatements, walkExpression, stable
         const effect = effects.get(id), representative = effects.get(stage.effectIds[site]);
         const continuation = continuations.get(row.continuationIds[site]);
         if (!effect || effect.stageId !== stage.id || effect.stageSite !== site || effect.routerEntryStableId !== row.entryId
-          || effect.kind !== 'fetch' || effect.decoder !== 'text' || effect.grouped || effect.result?.mode !== 'bind'
+          || !eligibleEffect(effect)
           || effect.continuationId !== row.continuationIds[site] || continuation?.routerEntryStableId !== row.entryId
           || continuation?.stageId !== stage.id || continuation?.stageSite !== site
           || !same(continuation?.effectIds, [id]) || !representative
           || stableStringify(effectShape(effect)) !== stableStringify(effectShape(representative))) fail('stage effect/continuation binding is invalid');
         for (const input of effect?.inputs || []) walkExpression(input.value, visitor.expression);
+        for (const argument of effect?.result?.decoder?.arguments || []) walkExpression(argument, visitor.expression);
         if (!own.has(effect?.result?.localId)) fail('stage result crosses local ownership');
       });
     }
