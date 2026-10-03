@@ -84,6 +84,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'pure-helper-vocabulary',
       'pure-string-index',
       'pure-field-projection',
+      'pure-guarded-arguments',
       'pure-source-helpers',
       'pure-record-helpers',
       'pure-argument-helpers',

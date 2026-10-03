@@ -227,6 +227,18 @@ cyclic alias provenance do not establish a projection. The validator checks
 the serialized definitions and writes rather than trusting producer field tags.
 A zero-argument request text read supplies a definite string replacement in
 this proof; it does not establish a type for schema-less JSON.
+S-03 carries a proven optional string scalar from a schema field or a bounded
+`ctx.state.get` read through an explicit strict `undefined` guard on a const
+local. A branch-local call is admitted only on the
+non-undefined path; after an early return, only the surviving path contributes
+the fact. Both surviving paths must prove it at a join. The independent plan
+validator reconstructs the guard, source schema field and control-flow join;
+the state read's key and arity must also establish its optional string source.
+the producer's narrowed value tag alone is insufficient. Mutable scalar locals,
+unguarded or non-dominating calls, a null check on an optional string, and
+optional fields in borrowed-record
+signatures remain excluded. The earlier guarded nullable schema-local rule is
+unchanged.
 The validator follows aliases and rejects writes through the borrowed graph
 anywhere in the handler, including after a call. Scalar copies do not retain a
 record alias. Nested record/array reads preserve the original object identity.
@@ -286,7 +298,7 @@ This internal kind does not widen helper signatures or the preexisting caller
 projection policy. No producer tag, serialized hash or signature substitutes
 for independent operand, result and ownership checks.
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-field-projection --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-field-projection --task pure-guarded-arguments --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
 for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
 source/plan coverage. Fixtures and staged exclusions live in
 `wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.

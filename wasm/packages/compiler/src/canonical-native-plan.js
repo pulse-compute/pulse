@@ -1036,7 +1036,7 @@ class NativePlanBuilder {
       const elseScope = new Map(scope);
       const test = this.expression(statement.expression, scope);
       // A const primitive cannot change between this guard and a branch read.
-      // Keep mutable locals and the scope after the branch unrefined.
+      // A returning branch also lets its surviving sibling dominate later reads.
       if (test.kind === 'binary' && ['===', '!=='].includes(test.operator)) {
         const read = test.left.kind === 'undefined' ? test.right : test.right.kind === 'undefined' ? test.left : undefined;
         const local = read?.kind === 'local' ? scope.get(read.name) : undefined;
@@ -1058,6 +1058,19 @@ class NativePlanBuilder {
         : ts.isBlock(statement.elseStatement)
           ? this.statementList(statement.elseStatement.statements, elseScope, [...pathParts, 'else'], depth + 1)
           : this.statement(statement.elseStatement, elseScope, [...pathParts, 'else', 0], depth + 1);
+      const returns = body => {
+        const last = body.at(-1);
+        return last?.kind === 'return' || last?.kind === 'if' && returns(last.then) && returns(last.else);
+      };
+      const thenReturns = returns(thenBody), elseReturns = returns(elseBody);
+      for (const [name, original] of scope) {
+        if (original.declaration !== 'const' || original.valueKind !== 'string-or-undefined') continue;
+        const yes = thenScope.get(name)?.valueKind === 'string';
+        const no = elseScope.get(name)?.valueKind === 'string';
+        if (thenReturns && no || elseReturns && yes || yes && no) {
+          scope.set(name, Object.freeze({ ...original, valueKind: 'string' }));
+        }
+      }
       return [Object.freeze({
         kind: 'if',
         test,

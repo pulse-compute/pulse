@@ -41,6 +41,9 @@ const tasks = Object.freeze({
   'pure-field-projection': nodeTask('test/lowering/assert-pure-field-projection.cjs', {
     evidence: 'native', description: 'Proven record-spread scalar field facts and independent alias/shape rejection', timeoutMs: 180000
   }),
+  'pure-guarded-arguments': nodeTask('test/lowering/assert-pure-guarded-arguments.cjs', {
+    evidence: 'native', description: 'Dominating optional scalar guards, branch joins and independent plan proof', timeoutMs: 180000
+  }),
   'pure-argument-helpers': nodeTask('test/lowering/assert-pure-argument-helpers.cjs', {
     evidence: 'native', description: 'Typed KV and scalar projection provenance, parity and independent tamper rejection', timeoutMs: 180000
   }),
@@ -1102,6 +1105,7 @@ const profiles = Object.freeze({
     'pure-helper-vocabulary',
     'pure-string-index',
     'pure-field-projection',
+    'pure-guarded-arguments',
     'pure-source-helpers',
     'pure-record-helpers',
     'pure-argument-helpers',

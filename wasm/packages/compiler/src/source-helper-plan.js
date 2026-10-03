@@ -44,7 +44,9 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
   }
   function proveInputs(expression, visiting = new Set()) {
     if (!expression || typeof expression !== 'object') return;
-    if (expression.kind === 'local' && expression.valueKind !== locals.get(expression.id)?.valueKind) fail('pure input local tag mismatch');
+    if (expression.kind === 'local' && expression.valueKind !== locals.get(expression.id)?.valueKind
+      && !(expression.valueKind === 'string' && locals.get(expression.id)?.valueKind === 'string-or-undefined'
+        && projectionType(expression) === 'string')) fail('pure input local tag mismatch');
     if (['object','array'].includes(expression.kind) && expression.valueKind !== expression.kind) fail('pure input structural tag mismatch');
     if (expression.kind !== 'local' && values.scalar(inputType(expression))) scalarArgumentKind(expression,locals,fail,true,projectionType);
     // Schema decoders and typed effect results establish their own boundary;
@@ -86,8 +88,8 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       || effect.result.decoder || b?.version !== contract.CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION
       || Object.keys(b).sort().join() !== 'type,version' || !values.validType(b.type)) fail('invalid typed KV borrow provenance');
   }
-  // Only an explicit null guard or a definitely non-null assignment removes a
-  // nullable initializer. Facts are attached to each read, including alias initializers.
+  // Derive dominating null/undefined guards from the serialized control flow.
+  // Facts are attached to reads, not trusted from producer valueKind tags.
   const nonNullAt = new WeakMap();
   function nullFacts(e, truth, facts) {
     if(e?.kind!=='binary')return;
@@ -97,9 +99,14 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
       nullFacts(e.left,truth,facts);nullFacts(e.right,truth,facts);return;
     }
     if(!['===','!=='].includes(e.operator))return;
-    const local=e.left?.kind==='local' && e.right?.kind==='literal' && e.right.value===null ? e.left
-      : e.right?.kind==='local' && e.left?.kind==='literal' && e.left.value===null ? e.right : undefined;
-    if(local && (e.operator==='!==')===truth)facts.add(local.id);
+    const absent = x => x?.kind === 'undefined' ? 'undefined' : x?.kind === 'literal' && x.value === null ? 'null' : undefined;
+    const local=e.left?.kind==='local' && absent(e.right) ? e.left
+      : e.right?.kind==='local' && absent(e.left) ? e.right : undefined;
+    const checked=local && absent(e.left?.kind==='local' ? e.right : e.left);
+    // A null check does not rule out undefined, and an undefined check does
+    // not rule out null. Only the corresponding proven source can be narrowed.
+    if(local && (e.operator==='!==')===truth && (checked==='undefined' && locals.get(local.id)?.valueKind==='string-or-undefined'
+      || checked==='null' && definitions.get(local.id)?.kind==='literal' && definitions.get(local.id).value===null))facts.add(local.id);
   }
   function nonNullValue(e) {
     return e && (e.kind==='literal' && e.value!==null || ['object','array','template'].includes(e.kind)
@@ -159,7 +166,8 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
     const types = {schemas:plan.schemas?.registry, get(id) {
       if (seen.has(id)) return seen.get(id);
       const value = definitions.get(id), effect = resultEffects.get(id);
-      const guardedNull = value?.kind==='literal' && value.value===null && nonNullAt.get(e)?.has(id);
+      const guarded = nonNullAt.get(e)?.has(id);
+      const guardedNull = value?.kind==='literal' && value.value===null && guarded;
       const base = value && !guardedNull
         ? inputType(value,new Map([...seen,[id,undefined]])) : effect ? values.effectType(effect,plan.schemas?.registry) : undefined;
       const next = new Map([...seen,[id,base]]);
@@ -170,7 +178,8 @@ function validateHelpers(plan, fail, walkStatements, walkExpression) {
         }
         candidates.push(inputType(write.value,next));
       }
-      return candidates.length && candidates[0] && candidates.every(t=>values.same(candidates[0],t)) ? candidates[0] : undefined;
+      const type = candidates.length && candidates[0] && candidates.every(t=>values.same(candidates[0],t)) ? candidates[0] : undefined;
+      return guarded && locals.get(id)?.declaration === 'const' && type === 'string-or-undefined' ? 'string' : type;
     }};
     const type=values.readType(e,types);
     if(type && !seen.size)inputTypes.set(e,type);
@@ -431,7 +440,10 @@ function scalarArgumentKind(e, locals, fail, bound = false, projectionType) {
   const child = v => scalarArgumentKind(v, locals, fail, bound, projectionType);
   let kind = 'unknown';
   if (e.kind === 'literal' && values.scalar(typeof e.value)) kind = typeof e.value;
-  else if (e.kind === 'local') kind = locals.get(e.id)?.valueKind;
+  else if (e.kind === 'local') {
+    kind = locals.get(e.id)?.valueKind;
+    if (kind === 'string-or-undefined' && e.valueKind === 'string' && projectionType?.(e) === 'string') kind = 'string';
+  }
   else if (['property','element'].includes(e.kind) && projectionType) {
     kind = projectionType(e);
     if (e.kind === 'element') child(e.index);
