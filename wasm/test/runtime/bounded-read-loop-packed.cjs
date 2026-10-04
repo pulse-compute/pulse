@@ -15,6 +15,9 @@ async function main(packedRoot) {
   const cwd = fs.mkdtempSync(path.join(packedRoot, 'read-loop-'));
   const checks = [];
   try {
+    // Keep contract discovery inside this project's boundary, using only the
+    // byte-verified isolated install (never workspace product packages).
+    fs.symlinkSync(path.join(packedRoot, 'node_modules'), path.join(cwd, 'node_modules'), 'junction');
     fs.cpSync(path.join(fixture, 'src'), path.join(cwd, 'src'), {recursive:true});
     fs.cpSync(path.join(fixture, '.pulse'), path.join(cwd, '.pulse'), {recursive:true});
     const entry = path.join(cwd, 'src/index.ts');
