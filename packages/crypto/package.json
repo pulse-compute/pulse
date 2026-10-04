@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/crypto",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -48,7 +48,7 @@
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.5/packages/crypto/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.6/packages/crypto/",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "pulse": {

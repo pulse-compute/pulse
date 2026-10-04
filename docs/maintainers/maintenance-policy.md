@@ -6,7 +6,7 @@ Pulse uses a machine-readable maintenance policy so repository automation and Co
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
 - **Policy version:** `10`
-- **Release:** `1.0.0-beta.5`
+- **Release:** `1.0.0-beta.6`
 - **Reviewed:** `2026-09-27`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only

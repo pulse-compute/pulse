@@ -4,6 +4,8 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.6 — Beta (2026-10-04)
+
 - Combine bounded Node request forwarding, experimental finite generated output
   and UTF-8 transforms with the current helper/shared-stage Native compiler work.
   Size modes remain opt-in; no default optimization or target fallback changes.

@@ -22,7 +22,7 @@ npm install
 ```
 
 The acceptance below uses freshly packed candidate packages. It does not mean
-these fixes are available in the already published `1.0.0-beta.5` packages.
+these fixes are available in the already published `1.0.0-beta.6` packages.
 Use the matching reviewed package release when it is published; maintainers can
 run the candidate acceptance gate described below before publication.
 

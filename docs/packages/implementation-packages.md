@@ -4,7 +4,7 @@
 
 These packages are synchronized parts of the release set for compiler, provider, runtime, and package-lowering maintainers. They are not general application-author SDKs. Explicitly listed supported entry points are exceptions with their stated bounds: in particular, @pulse-compute/provider-node/server is the finite production HTTP integration, and /toolchain serves the CLI. Other exports remain internal.
 
-The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.5 release policy.
+The package status and supported entry-point lists below come from the synchronized Pulse 1.0.0-beta.6 release policy.
 
 ## `@pulse-compute/wasm-build-support`
 

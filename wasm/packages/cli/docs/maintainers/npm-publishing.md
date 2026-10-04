@@ -74,12 +74,12 @@ HEAD matches the current remote `main` commit and the checkout is clean:
 git fetch origin main --tags
 git switch main
 git pull --ff-only origin main
-npm run release:tag -- 1.0.0-beta.5
-npm run release:tag -- 1.0.0-beta.5 --write
+npm run release:tag -- 1.0.0-beta.6
+npm run release:tag -- 1.0.0-beta.6 --write
 ```
 
 The first invocation checks and prints the plan. `--write` creates an annotated
-local `v1.0.0-beta.5` tag and prints the exact push and workflow commands for the
+local `v1.0.0-beta.6` tag and prints the exact push and workflow commands for the
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
@@ -175,8 +175,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.5 \
-  -f release_tag=v1.0.0-beta.5 \
+  --ref v1.0.0-beta.6 \
+  -f release_tag=v1.0.0-beta.6 \
   -f operation=audit
 ```
 

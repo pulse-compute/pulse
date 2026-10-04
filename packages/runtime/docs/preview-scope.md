@@ -1,6 +1,6 @@
 # Beta scope
 
-Pulse `1.0.0-beta.5` is a Beta of one provider-neutral application contract
+Pulse `1.0.0-beta.6` is a Beta of one provider-neutral application contract
 with explicit Native and JavaScript execution targets. The intended 1.0
 surface is present, but deliberate corrections may still occur before the
 stable `1.0.0` release.
@@ -19,7 +19,7 @@ targets.
   wildcards, and acyclic mounts.
 - Basic branching and structured object, array, and scalar manipulation.
 - Literal-capped pure `for` loops and zero-argument string `.trim()` across
-  Native and JavaScript; see [bounded application values](https://pulsecompute.io/v1.0.0-beta.5/concepts/compilation-and-lowering/#bounded-application-values).
+  Native and JavaScript; see [bounded application values](https://pulsecompute.io/v1.0.0-beta.6/concepts/compilation-and-lowering/#bounded-application-values).
 - Request method, URL, path, headers, text, and JSON access.
 - Bounded, memoized structured body decoding.
 - Explicit TypeScript JSON schema declarations and literal schema IDs.
@@ -79,7 +79,7 @@ JavaScript-selected project into a Native one.
 
 - Unbounded loops, arbitrary callback transformations and Native helper shapes
   outside the supported bounded subset. Effectful loops are limited to the
-  experimental finite Node output/transform forms in the [bodies guide](https://pulsecompute.io/v1.0.0-beta.5/concepts/bodies/);
+  experimental finite Node output/transform forms in the [bodies guide](https://pulsecompute.io/v1.0.0-beta.6/concepts/bodies/);
   other loop bodies must stay within the admitted pure forms.
 
 - Automatic fallback from Native lowering to JavaScript execution.
@@ -115,13 +115,13 @@ JavaScript-selected project into a Native one.
 ## Compatibility authority
 
 The single source-form, provider-binding, artifact, and deployment-boundary
-table is [Provider and target compatibility](https://pulsecompute.io/v1.0.0-beta.5/reference/compatibility-matrix/).
+table is [Provider and target compatibility](https://pulsecompute.io/v1.0.0-beta.6/reference/compatibility-matrix/).
 It uses one public target order—Node JavaScript, Fastly JavaScript, Node Native,
 and Fastly Native—and links every row to a focused proof or canonical contract.
 
 The exact portable language subset and the JavaScript-only Native eligibility
 boundaries are defined in
-[Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.5/reference/handler-authoring/).
+[Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.6/reference/handler-authoring/).
 
 ## Body model
 
