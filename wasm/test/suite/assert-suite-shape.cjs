@@ -50,6 +50,8 @@ for (const name of Object.keys(profiles)) {
 
 const release = expandProfile('release');
 const externalTasks = new Set([
+  // Pre-snapshot upgrade and measurements are explicit qualification, not fast CI or a seal.
+  'beta6-upgrade', 'beta6-measurements',
   'array-demand-n01',
   // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
   'mcp-wire-proof',

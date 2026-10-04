@@ -198,7 +198,12 @@ function manifestRelativePath(value, field) {
 }
 
 function exactValue(value, expected, field, code = diagnosticCodes.invalid) {
-  if (JSON.stringify(value) !== JSON.stringify(expected)) {
+  // JSON object member order is not part of the contract. The compiler writes
+  // sorted artifact JSON; retain array order and exact values when reloading it.
+  const canonical = item => JSON.stringify(item, (_key, nested) => plainObject(nested)
+    ? Object.fromEntries(Object.keys(nested).sort().map(key => [key, nested[key]]))
+    : nested);
+  if (canonical(value) !== canonical(expected)) {
     fail(code, `${field} does not match the reviewed ES256 guest contract.`, { expected, actual: value });
   }
   return value;

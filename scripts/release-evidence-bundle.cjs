@@ -110,6 +110,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-node-native-workflow',
       'fastly-entities-native-workflow',
       'crypto-native-guest-source',
+      'guest-json-roundtrip',
       'guest-link-package',
       'guest-link-materialization-stage',
       'guest-link-audit-diagnostics',
