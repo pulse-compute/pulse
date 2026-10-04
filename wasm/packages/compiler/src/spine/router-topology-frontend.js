@@ -188,7 +188,8 @@ function stableEntryId(entry) {
     method: entry.method,
     path: entry.path,
     handlerId: entry.handler && (entry.handler.id || entry.handler.handlerId),
-    childRouter: entry.childRouter
+    childRouter: entry.childRouter,
+    ...(entry.eligibility ? { eligibility: entry.eligibility } : {})
   });
   return `router_entry_${crypto.createHash('sha256').update(input).digest('hex').slice(0, 24)}`;
 }
@@ -233,6 +234,7 @@ function cleanExecutionEntry(entry) {
     routeRuntimeId: Number.isInteger(entry.runtimeId) ? entry.runtimeId : undefined,
     handlerId: entry.handler && (entry.handler.id || entry.handler.handlerId) || undefined,
     childRouter: entry.childRouter || undefined,
+    ...(entry.eligibility ? { eligibility: Object.freeze({ ...entry.eligibility }) } : {}),
     childStartIndex: Number.isInteger(entry.childStartIndex) ? entry.childStartIndex : undefined,
     parentContinueIndex: Number.isInteger(entry.parentContinueIndex) ? entry.parentContinueIndex : undefined
   });

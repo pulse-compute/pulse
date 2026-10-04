@@ -301,6 +301,7 @@ function buildExecutionPlan(routerTreeArtifact, dispatchTable, options = {}) {
           pattern: mountPattern,
           scopeId: scopeBefore,
           childRouter: op.router,
+          ...(op.eligibility ? { eligibility: op.eligibility } : {}),
           childStartIndex: null,
           parentContinueIndex: null,
           loc: op.loc

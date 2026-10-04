@@ -640,6 +640,9 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'mounted Router topology and continuation lowering'
   }),
+  'router-selected-groups': nodeTask('test/lowering/assert-router-selected-groups.cjs', {
+    evidence: 'native', description: 'Static selected mounts: exclusion, suspension, errors and native continuation edges', timeoutMs: 180000
+  }),
   'canonical-router-terminal-middleware': nodeTask('test/lowering/assert-canonical-router-terminal-middleware.cjs', {
     evidence: 'native',
     timeoutMs: 240000,
@@ -1135,6 +1138,7 @@ const profiles = Object.freeze({
     'logging-lowering',
     'canonical-router-lowering',
     'canonical-router-terminal-middleware',
+    'router-selected-groups',
     'json-as-compatibility',
     'entities-envelope-feasibility',
     'entities-managed-handler',

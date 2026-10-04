@@ -218,7 +218,8 @@ export declare class Router {
   put(path: string, handler: RouteHandler): this;
   patch(path: string, handler: RouteHandler): this;
   delete(path: string, handler: RouteHandler): this;
-  mount(path: string, router: Router): this;
+  /** Enter the child once only when request state strictly equals the literal string; a miss skips the entire child. */
+  mount(path: string, router: Router, eligibility?: { readonly state: string; readonly equals: string }): this;
   error(handler: RouterErrorHandler): this;
 }
 

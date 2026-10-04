@@ -14,3 +14,8 @@ router.error((error, ctx) => ctx.json({ error }))
 
 // @ts-expect-error logging is string-only
 router.get('/invalid-log', async (ctx) => { ctx.log.info({ invalid: true }); return ctx.text('invalid') })
+
+// @ts-expect-error eligibility is a string descriptor, never an effectful predicate
+new Router().mount('/', new Router(), async () => true)
+// @ts-expect-error eligibility compares a literal string family
+new Router().mount('/', new Router(), { state: 'family', equals: 1 })
