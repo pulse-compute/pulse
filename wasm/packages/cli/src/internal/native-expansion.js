@@ -44,7 +44,7 @@ function inspectNativeExpansion(compiled, plan) {
     if (sharing === 'unavailable') observations.push('Native planning unavailable; body sharing is unknown.');
     else if (sharing === 'retained') observations.push('One stage body is retained; registration/effect bindings still grow.');
     else {
-      if (entries.some(entry => entry.kind !== 'route')) observations.push('Middleware/error registrations are outside current retained HTTP-stage lowering.');
+      if (entries.some(entry => entry.kind !== 'route' && !stageByEntry.has(entry.stableId))) observations.push('Some middleware/error registrations lack a retained stage binding.');
       if (entries.some(entry => privateBodies.has(entry.stableId))) observations.push('Terminal private route bodies remain owned per registration.');
       if (effects.some(effect => effect.kind !== 'fetch' || effect.grouped || effect.decoder !== 'text' || effect.result?.mode !== 'bind')) observations.push('Effects include shapes outside bound, ungrouped text-fetch stages.');
       if (!observations.length) observations.push('No single retained body was recorded; inspect this owner against the admitted stage shapes.');

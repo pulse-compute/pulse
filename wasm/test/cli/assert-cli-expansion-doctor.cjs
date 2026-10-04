@@ -6,13 +6,19 @@ const os = require('node:os');
 const path = require('node:path');
 const { fixture } = require('../runtime/compiler-efficiency/o18-reusable-stage.cjs');
 const tc = require('../s3/acceptance-toolchain.cjs').acceptanceToolchain();
-const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
+const { buildCanonicalNativePlan, validateCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { inspectNativeExpansion, MAX_OWNERS } = require('../../packages/cli/src/internal/native-expansion');
 const { writeHumanResult } = require('../../packages/cli/src/internal/command-reporter');
 const { run } = require('./helpers.cjs');
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-o22-'));
 let checks = 0;
+function configureTest(root, testCase) {
+  // Keep missing-test warnings from masking the expansion check's strict outcome.
+  const config = path.join(root, '.pulse/config.ts');
+  fs.writeFileSync(config, fs.readFileSync(config, 'utf8').replace("strict:false", "strict:false,tests:'pulse.harness.ts'"));
+  fs.writeFileSync(path.join(root, 'pulse.harness.ts'), `export default ${JSON.stringify({ cases: [testCase] })};`);
+}
 function compile(count, middleware = false) {
   const root = path.join(tmp, String(count) + (middleware ? '-middleware' : ''));
   fs.mkdirSync(root);
@@ -20,6 +26,7 @@ function compile(count, middleware = false) {
   if (middleware) {
     const file = path.join(root, 'src/index.ts');
     fs.writeFileSync(file, fs.readFileSync(file, 'utf8').replace(/app.get\('\/chain\/(\d+)',stage\)/g, "app.use('/chain/$1',stage)"));
+    configureTest(root, { name: 'early middleware response', request: { path: '/chain/0', headers: { 'x-mode': 'early', 'x-input': 'doctor' } }, expect: { status: 409, text: 'early:doctor' } });
   }
   const project = tc.resolveProject({ cwd: root, profile: 'native' });
   const compiled = tc.compileProject(project);
@@ -49,10 +56,31 @@ try {
     checks++;
   }
   const { root, project, compiled, plan } = compile(2, true);
+  const before = JSON.stringify({ compiled, plan });
+  assert.equal(plan.stages.length, 1);
+  const registrations = plan.stages[0].registrations;
+  assert.equal(registrations.length, 2);
+  assert.equal(new Set(registrations.map(r => r.nextIndex)).size, 2);
+  assert.deepEqual(registrations.map(r => r.entryId).sort(),
+    compiled.metadata.router.entries.filter(entry => entry.kind === 'use').map(entry => entry.stableId).sort());
+  for (const field of ['effectIds', 'continuationIds']) {
+    assert.ok(registrations.every(r => r[field].length > 0));
+    const ids = registrations.flatMap(r => r[field]);
+    assert.equal(new Set(ids).size, ids.length, `${field} remain occurrence-specific`);
+  }
+  validateCanonicalNativePlan(JSON.parse(JSON.stringify(plan)));
   const report = inspectNativeExpansion(compiled, plan), row = report.owners[0];
-  assert.equal(row.registrationCount, 2); assert.equal(row.nativeBodyInstances, 2);
-  assert.equal(row.sharing, 'not-retained'); assert.equal(row.expensiveUnshared, true);
-  assert.match(row.observations[0], /Middleware/); checks++;
+  assert.equal(row.registrationCount, 2); assert.equal(row.nativeBodyInstances, 1);
+  assert.equal(row.sharedStageRegistrations, 2); assert.equal(row.unsharedRegistrations, 0);
+  assert.equal(row.sharing, 'retained'); assert.equal(row.expensiveUnshared, false);
+  assert.equal(report.summary.expensiveUnsharedOwners, 0);
+  assert.equal(JSON.stringify({ compiled, plan }), before, 'middleware inspection must not mutate compiler data');
+  assert.deepEqual(inspectNativeExpansion(compiled, plan), report, 'middleware projection is deterministic'); checks++;
+  const unshared = inspectNativeExpansion(compiled, buildCanonicalNativePlan(compiled, { sharedStages: false }));
+  assert.equal(unshared.owners[0].nativeBodyInstances, 2);
+  assert.equal(unshared.owners[0].sharing, 'not-retained');
+  assert.equal(unshared.owners[0].expensiveUnshared, true);
+  assert.match(unshared.owners[0].observations[0], /middleware\/error registrations lack a retained stage binding/); checks++;
   const unknown = inspectNativeExpansion(compiled);
   assert.equal(unknown.owners[0].nativeBodyInstances, null);
   assert.equal(unknown.owners[0].sharing, 'unavailable');
@@ -63,9 +91,11 @@ try {
 const app=new Pulse({auto:true});
 const terminal=async(ctx)=>{let value='start';${"value=value+'piece';".repeat(80)}return ctx.text(value);};
 app.get('/a',terminal);app.get('/b',terminal);export default app;`);
+  configureTest(terminalRoot, { name: 'terminal response', request: { path: '/a' }, expect: { status: 200, text: 'start' + 'piece'.repeat(80) } });
   const terminal = tc.compileProject(tc.resolveProject({ cwd: terminalRoot, profile: 'native' }));
   const terminalPlan = buildCanonicalNativePlan(terminal);
-  const terminalRow = inspectNativeExpansion(terminal, terminalPlan).owners[0];
+  const terminalReport = inspectNativeExpansion(terminal, terminalPlan);
+  const terminalRow = terminalReport.owners[0];
   assert.equal(terminalPlan.handlers.length, 2); assert.equal(terminalRow.nativeBodyInstances, 2);
   assert.equal(terminalRow.expensiveUnshared, true); assert.match(terminalRow.observations[0], /Terminal private/); checks++;
 
@@ -80,18 +110,25 @@ app.get('/a',terminal);app.get('/b',terminal);export default app;`);
   assert.equal(limited.owners.length, MAX_OWNERS); assert.equal(limited.summary.omittedOwners, 1);
   assert.equal(limited.summary.registrations, 42); checks++;
 
-  const normal = run(['doctor', '--profile', 'native', '--json'], root);
+  for (const flags of [[], ['--strict']]) {
+    const retained = run(['doctor', '--profile', 'native', ...flags, '--json'], root);
+    assert.equal(retained.status, 0, retained.stderr || retained.stdout);
+    const retainedCheck = JSON.parse(retained.stdout).checks.find(c => c.id === 'native-expansion');
+    assert.equal(retainedCheck.status, 'passed');
+    assert.deepEqual(retainedCheck.detail, JSON.parse(JSON.stringify(report))); checks++;
+  }
+  const normal = run(['doctor', '--profile', 'native', '--json'], terminalRoot);
   assert.equal(normal.status, 0, normal.stderr || normal.stdout);
   const audit = JSON.parse(normal.stdout), check = audit.checks.find(c => c.id === 'native-expansion');
   assert.equal(check.status, 'warning'); assert.equal(check.code, 'PULSE_NATIVE_EXPANSION_REPEATED');
-  assert.deepEqual(check.detail, JSON.parse(JSON.stringify(report))); assert.ok(check.docs.endsWith('#pulse-native-expansion-repeated'));
-  const strict = run(['doctor', '--profile', 'native', '--strict', '--json'], root);
+  assert.deepEqual(check.detail, JSON.parse(JSON.stringify(terminalReport))); assert.ok(check.docs.endsWith('#pulse-native-expansion-repeated'));
+  const strict = run(['doctor', '--profile', 'native', '--strict', '--json'], terminalRoot);
   assert.equal(strict.status, 1, strict.stderr); assert.equal(JSON.parse(strict.stdout).status, 'failed'); checks++;
   let human = '';
   writeHumanResult({ write: value => { human += value; } }, 'doctor', audit);
-  assert.match(human, /src\/stage.ts:1:7 \(stage\): 2 registrations, 2 Native plan bodies, not-retained/);
-  assert.match(human, /Middleware/); assert.match(human, /help:.*full target build/); checks++;
-  const js = run(['doctor', '--profile', 'js', '--json'], root);
+  assert.match(human, /src\/index.ts:\d+:\d+ \(terminal\): 2 registrations, 2 Native plan bodies, not-retained/);
+  assert.match(human, /Terminal private/); assert.match(human, /help:.*full target build/); checks++;
+  const js = run(['doctor', '--profile', 'js', '--json'], terminalRoot);
   assert.equal(js.status, 0, js.stderr);
   assert.equal(JSON.parse(js.stdout).checks.find(c => c.id === 'native-expansion').status, 'passed'); checks++;
 
