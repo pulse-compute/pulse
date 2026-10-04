@@ -6,6 +6,7 @@ const path = require('node:path');
 const ts = require('typescript');
 const { executeCanonicalNativePlanSpine } = require('./spine/canonical-native-plan.js');
 const { inspectBoundedPureLoop, inspectBoundedReadLoop } = require('./spine/bounded-pure-loop.js');
+const resultFacts = require('./native-result-facts.js');
 
 function containsYield(node) {
   if (ts.isYieldExpression(node)) return true;
@@ -530,6 +531,7 @@ class NativePlanBuilder {
       const property = { kind: 'property', object, property: current.name.text, valueKind };
       const type = pureValues.readType(property, this.pureTypes);
       if (type) property.valueKind = pureValues.kind(type);
+      property.valueKind = resultFacts.propertyKind(object, current.name.text, scope) || property.valueKind;
       return Object.freeze(property);
     }
 
@@ -646,6 +648,7 @@ class NativePlanBuilder {
 
   assignmentTarget(node, scope) {
     const target = this.expression(node, scope);
+    if (target.kind === 'property' || target.kind === 'element') resultFacts.invalidate(scope);
     if (target.kind === 'local' && scope.get(target.name)?.declaration === 'const') {
       this.fail(node, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'A const local cannot be reassigned.', { name: target.name });
     }
@@ -876,7 +879,7 @@ class NativePlanBuilder {
         const effect = this.prepareEffect(marker, continuationId, scope, itemPath, result);
         const resultType = pureValues.effectType(effect, this.pureTypes.schemas);
         if (resultType) this.pureTypes.set(local.id, resultType);
-        scope.set(local.name, local);
+        scope.set(local.name, resultFacts.bind(local, effect));
         out.push(Object.freeze({ kind: 'effect', effectId: effect.id, continuationId, result, statementPath: itemPath }));
         continue;
       }
@@ -1002,6 +1005,15 @@ class NativePlanBuilder {
     if (ts.isVariableStatement(statement)) return this.lowerVariableStatement(statement, scope, pathParts, depth);
 
     if (ts.isForStatement(statement)) {
+      // A later iteration can observe a write through an alias in an earlier
+      // iteration. Retire outer facts before lowering any loop-body read.
+      const writesProperty = node => {
+        const target = ts.isBinaryExpression(node) && ASSIGNMENT_OPERATORS.has(node.operatorToken.getText(this.sourceFile)) ? unwrap(node.left)
+          : (ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && UPDATE_OPERATORS.has(ts.tokenToString(node.operator)) ? unwrap(node.operand) : undefined;
+        return target && (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target))
+          || Boolean(ts.forEachChild(node, child => writesProperty(child) || undefined));
+      };
+      if (writesProperty(statement)) resultFacts.invalidate(scope);
       const readLoop = containsYield(statement);
       const loop = readLoop
         ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
@@ -1035,6 +1047,8 @@ class NativePlanBuilder {
       const thenScope = new Map(scope);
       const elseScope = new Map(scope);
       const test = this.expression(statement.expression, scope);
+      resultFacts.refine(test, true, thenScope);
+      resultFacts.refine(test, false, elseScope);
       // A const primitive cannot change between this guard and a branch read.
       // A returning branch also lets its surviving sibling dominate later reads.
       if (test.kind === 'binary' && ['===', '!=='].includes(test.operator)) {
@@ -1063,6 +1077,7 @@ class NativePlanBuilder {
         return last?.kind === 'return' || last?.kind === 'if' && returns(last.then) && returns(last.else);
       };
       const thenReturns = returns(thenBody), elseReturns = returns(elseBody);
+      resultFacts.join(scope, thenScope, elseScope, thenReturns, elseReturns);
       for (const [name, original] of scope) {
         if (original.declaration !== 'const' || original.valueKind !== 'string-or-undefined') continue;
         const yes = thenScope.get(name)?.valueKind === 'string';

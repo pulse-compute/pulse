@@ -118,6 +118,7 @@ const program = ts.createProgram({
       '@pulse-compute/runtime': ['packages/runtime/src/index.d.ts'],
       '@pulse-compute/pulse': ['packages/pulse/src/index.d.ts'],
       '@pulse-compute/s3': ['wasm/test/s3/o1/api.d.ts'],
+      '@pulse-compute/crypto': ['packages/crypto/dist/index.d.ts'],
     },
   },
 });

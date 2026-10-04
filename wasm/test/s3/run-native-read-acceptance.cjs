@@ -91,7 +91,7 @@ async function main(options = {}) {
     fs.cpSync(path.join(__dirname, 'o1/native-read'), cwd, { recursive: true });
     if (!options.packedRoot) {
       fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
-      for (const name of ['pulse', 's3']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
+      for (const name of ['pulse', 's3', 'crypto']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
     }
     // Literal provider fragments go through the actual config compiler/schema.
     // They cannot be silently dropped and reintroduced through a custom host.
