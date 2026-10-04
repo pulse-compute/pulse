@@ -39,6 +39,18 @@ async function main() {
   });
   assert.equal(accessorInvoked, false, 'Native structured redaction must not invoke hostile accessors');
 
+  const overlappingSecrets = new Set(['8', 'PULSE', 'code', nativeSecret]);
+  for (const code of ['PULSE_REQUEST_BODY_INVALID_UTF8', 'PULSE_SCHEMA_DECODE', 'PULSE_JWT_CLAIMS_INVALID']) {
+    const failure = Object.assign(new Error(nativeSecret, { cause: new Error(nativeSecret) }), { code, detail: { note: nativeSecret } });
+    const safe = canonicalHostRuntime.redactRuntimeError(canonicalHostRuntime.redactRuntimeError(failure, overlappingSecrets), overlappingSecrets);
+    assert.equal(safe.code, code, 'Native admitted error discriminator survives repeated redaction');
+    assert.equal(safe.message, '<redacted>');
+    assert.equal(JSON.stringify(safe).includes(nativeSecret), false);
+  }
+  const unknownFailure = Object.assign(new Error(nativeSecret), { code: 'PULSE_' + nativeSecret });
+  const unknownSafe = canonicalHostRuntime.redactRuntimeError(unknownFailure, overlappingSecrets);
+  assert.equal(unknownSafe.code, '<redacted>_<redacted>', 'arbitrary provider codes remain private text');
+
   const helloProgram = exampleProgram(EXAMPLES.hello);
   const health = await executeCanonicalProgram(helloProgram, { request: { method: 'GET', path: '/health' } });
   assert.deepEqual(body(health), { ok: true });

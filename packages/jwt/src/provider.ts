@@ -36,3 +36,4 @@ export {
   type JwtCapturedWallClock,
   type JwtWallClockCapture,
 } from './internal/clock.js';
+export { signJwtWithCrypto, normalizeJwtSignOptions, type JwtSignOptions, type JwtSignerCrypto } from './sign.js';

@@ -1,0 +1,27 @@
+node:assert:152
+  throw new AssertionError(obj);
+  ^
+
+AssertionError [ERR_ASSERTION]: body:===:number:number: [{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"summary statementCount mismatch","detail":{"expected":15,"actual":14}},{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"summary expressionCount mismatch","detail":{"expected":49,"actual":46}}]
+
+false !== true
+
+    at check (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/support/pure-helper-policy.cjs:35:12)
+    at characterizePolicy (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/support/pure-helper-policy.cjs:60:7)
+    at Object.<anonymous> (/workspace/scratch/bf0d896ef055/pulse-r102/wasm/test/lowering/assert-pure-helper-vocabulary.cjs:110:62)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

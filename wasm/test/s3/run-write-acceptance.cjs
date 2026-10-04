@@ -85,7 +85,10 @@ async function main(options = {}) {
     assert.equal(jsInspection.provider.targetSupport.project.status, 'eligible', JSON.stringify(jsInspection.provider.targetSupport));
     const js = prepareJavascriptApplication(projects['node-javascript']);
     assert.ok(js.loaded && js.loaded.application);
-    assert.throws(() => inspectProject(projects['fastly-javascript']), /has no HMAC-SHA256 realization/);
+    const fastlyJsInspection = inspectProject(projects['fastly-javascript']);
+    assert.equal(fastlyJsInspection.provider.targetSupport.project.status, 'blocked');
+    assert.ok(JSON.stringify(fastlyJsInspection.provider.targetSupport).includes('fastly-javascript-s3-raw-headers-unavailable'),
+      'HMAC bytes are available for JWT signing; the S3 raw-header boundary still blocks execution.');
     assert.ok(JSON.stringify(classifyFastlyJavascriptProviderRequirement('s3.putText')).includes('fastly-javascript-s3-raw-headers-unavailable'), 'SDK limitation is provider/target specific.');
     assert.equal(fastly.inspection.imports.some(({ module }) => /pulse_host|js[_-]?compute/i.test(module)), false);
     const rows = cases(); let executions = 0;

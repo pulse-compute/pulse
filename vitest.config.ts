@@ -7,6 +7,7 @@ const fromRoot = (path: string) => fileURLToPath(new URL(path, here));
 export default defineConfig({
   resolve: {
     alias: {
+      '@pulse-compute/crypto/provider': fromRoot('packages/crypto/src/provider.cjs'),
       '@pulse-compute/crypto': fromRoot('packages/crypto/src/index.ts'),
       '@pulse-compute/grip': fromRoot('packages/grip/src/index.ts'),
       '@pulse-compute/assets/pulsewasm': fromRoot('packages/assets/src/pulsewasm.ts'),

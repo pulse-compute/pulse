@@ -15,6 +15,7 @@ const { fetchRequestInitForHost } = require('./fetch.js');
 const { createRedactionState } = require('./redaction.js');
 const { validateSchemaValue } = require('./schema.js');
 const { EVENT_EMIT_CODES } = require('./event-emission.js');
+const { cancelResponseBody, retainFetchResponseForBudget, releaseFetchResponseCancellation } = require('./response.js');
 
 const JAVASCRIPT_EFFECT_PROTOCOL_VERSION = 'pulse.javascript-effect.v1';
 const JAVASCRIPT_EFFECT_ADAPTER_VERSION = 'pulse.javascript-effect-adapter.v1';
@@ -510,6 +511,7 @@ function createJavascriptEffectExecution(options = {}) {
   const counters = new Map();
   const dispatchedIds = new Set();
   const pendingEffects = new Map();
+  const ownedResponses = new Set();
   const claimedParallelRootIds = new Set();
   const observations = [];
   const resolutionOrder = [];
@@ -571,6 +573,7 @@ function createJavascriptEffectExecution(options = {}) {
           limitMessage
         );
       }
+      options.outputExecution?.assertEffect();
       const normalizedInput = normalizeEffectDescriptor(input, limits);
       const kind = String(normalizedInput.kind || 'effect');
       const descriptor = Object.freeze({
@@ -605,14 +608,21 @@ function createJavascriptEffectExecution(options = {}) {
       const raw = raceWithSignal(Promise.resolve().then(() => {
         options.requestBudget?.check();
         if (operationSignal.signal.aborted) throw abortedEffectError(operationSignal.signal.reason);
+        options.outputExecution?.assertEffect();
+        if (kind.startsWith('output.')) {
+          if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires a Node HTTP writer.');
+          return options.outputExecution.dispatch(descriptor);
+        }
         if (conditionalKv.isConditionalKv(kind)) return conditionalKv.executeConditionalKv(descriptor,
           adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatch(descriptor, kvExecution)),
           { ...operationExecution, onKvObservation: observe }, limits);
         return Promise.resolve(adapter.dispatch(descriptor, operationExecution)).then(value => {
-          if (value instanceof Response && value.body && options.requestBudget) {
-            options.requestBudget.onAbort(() => {
-              if (!value.body.locked) void value.body.cancel(options.requestBudget.signal.reason).catch(() => {});
-            });
+          if (value instanceof Response && value.body) {
+            if (closed || operationSignal.signal.aborted) cancelResponseBody(value, operationSignal.signal.reason);
+            else {
+              ownedResponses.add(value);
+              retainFetchResponseForBudget(value, options.requestBudget, () => ownedResponses.delete(value));
+            }
           }
           return value;
         });
@@ -739,7 +749,12 @@ function createJavascriptEffectExecution(options = {}) {
 
     parallel(record) {
       assertOpen();
-      const entries = validateParallelRecord(record, execution, claimedParallelRootIds);
+      let entries;
+      try { entries = validateParallelRecord(record, execution, claimedParallelRootIds); }
+      catch (error) {
+        if (record && Object.values(Object.getOwnPropertyDescriptors(record)).some(field => dataForEffect(field.value)?.kind?.startsWith('output.'))) execution.invalidateAdmission(error);
+        throw error;
+      }
       for (const entry of entries) claimedParallelRootIds.add(entry.data.rootId);
       parallelCount += 1;
       const id = `parallel-${parallelCount}`;
@@ -806,6 +821,11 @@ function createJavascriptEffectExecution(options = {}) {
       );
       return parallelEffect;
     },
+    invalidateAdmission(error) {
+      // A synchronous body-claim conflict must fence every already queued
+      // group member before its provider dispatch microtask can run.
+      if (!lifecycleController.signal.aborted) lifecycleController.abort(error);
+    },
 
     async assertIdle() {
       if (pendingEffects.size === 0) return;
@@ -856,7 +876,7 @@ function createJavascriptEffectExecution(options = {}) {
       });
     },
 
-    async close() {
+    async close(transferredResponse) {
       if (closed) return;
       closed = true;
       if (pendingEffects.size > 0 && !lifecycleController.signal.aborted) {
@@ -869,9 +889,21 @@ function createJavascriptEffectExecution(options = {}) {
       }
       if (pendingEffects.size > 0) await Promise.allSettled(Array.from(pendingEffects.keys()));
       if (removeSourceAbortListener) removeSourceAbortListener();
-      if (adapter.dispose) {
-        try { await adapter.dispose(externalExecution); }
-        catch (error) { throw redaction.redactError(error); }
+      try {
+        if (adapter.dispose) await adapter.dispose(externalExecution);
+      } catch (error) {
+        transferredResponse = undefined;
+        throw redaction.redactError(error);
+      } finally {
+        // Only the final response escapes this execution. Intermediate router
+        // responses and successful siblings of a failed group remain owned.
+        for (const response of ownedResponses) {
+          if (response.body !== transferredResponse?.body) {
+            cancelResponseBody(response, lifecycleController.signal.reason);
+            releaseFetchResponseCancellation(response);
+          }
+        }
+        ownedResponses.clear();
       }
     }
   };

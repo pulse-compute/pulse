@@ -435,7 +435,7 @@ function loadInputs() {
   assert.equal(e4.productionBoundary.releaseCatalogMutation, false);
   assert.equal(rootPackage.engines.pnpm, releaseManifest.publication.pnpmDevelopmentRange);
   assert.equal(Object.hasOwn(rootPackage, 'packageManager'), false);
-  assert.match(releaseManifest.publication.pnpmVersion, /^10\.\d+\.\d+$/);
+  assert.match(releaseManifest.publication.pnpmVersion, /^\d+\.\d+\.\d+$/);
   assert.equal(wasmPackage.devDependencies.assemblyscript, '0.28.18');
 
   const inputRegion = a2.candidate.layout.inputRegion;

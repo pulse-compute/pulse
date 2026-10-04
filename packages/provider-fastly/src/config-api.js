@@ -1,5 +1,6 @@
 'use strict';
 
+const { normalizeFastlyMaxWasmBytes } = require('./build/wasm-budget.js');
 const { fastlyConfigDefault } = require('./config-schema.js');
 
 const FASTLY_PROVIDER_API_VERSION = 'pulse.provider-fastly-api.v2';
@@ -49,6 +50,7 @@ function fastly(options = {}) {
       dynamicBackends: options.dynamicBackends === undefined ? fastlyConfigDefault('fastly.dynamicBackends') : options.dynamicBackends === true
     }),
     build: Object.freeze({
+      maxWasmBytes: normalizeFastlyMaxWasmBytes(options.maxWasmBytes),
       name: String(options.name ?? fastlyConfigDefault('fastly.name')),
       description: String(options.description ?? fastlyConfigDefault('fastly.description')),
       authors: Object.freeze((Array.isArray(options.authors) ? options.authors : fastlyConfigDefault('fastly.authors')).map(String)),

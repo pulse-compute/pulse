@@ -1,0 +1,342 @@
+{
+  "sourceRevision": "35a0f96ffe6e9b89cd326dd17a48fe283446094d",
+  "sourceTree": "a2340c92e1cc17ee7380d6098a149da10e48fb1c",
+  "workingTree": "source clean before/after measurement; generated measurement outputs removed",
+  "node": "v24.19.0",
+  "status": "passed",
+  "examples": [
+    {
+      "example": "01-hello-json",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 2353,
+              "sha256": "9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 2270,
+              "sha256": "17e050cfa2c7c1fc74d370563ae7c58f213bcaf6001818b267045aaf113f35fe"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b",
+        ".pulse/config.ts": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61",
+        "package.json": "49cd537752d5bdfb2be33d7888e25f5bccf059719530275e429b5625385edc0b"
+      }
+    },
+    {
+      "example": "02-request-schema",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 41086,
+              "sha256": "9301ae95afc5d1246eab464b988d432c0d5b3228aad490bf5d08502c9ce2a29d"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 32708,
+              "sha256": "ea99f86951db5e699fcf8738bf12b3d642d25f7685553bbebb29490c8e44daec"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "746e47b02bfb401fd375c271df96fb3e3bef386592598137975196e2a233abd1",
+        ".pulse/config.ts": "93d844c6637690510a51c8f105ac179aca0d2ff788d90ec3e68ec9c4927fdc90",
+        "package.json": "66efe2add94d655253701fa1488f44ccd42676477ea03609c0b81b79c7414175"
+      }
+    },
+    {
+      "example": "03-fetch-composition",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 5272,
+              "sha256": "c591c1d1d89b1d0b47e56c949f1d9c0b2346890c7e9d29947381667cee3c972f"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 4570,
+              "sha256": "df578f4e24bfcbec69e930685fee83b065ff2518dac8f67f855b60c5c36a593d"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "97c2e1fe82e2bb8cde5a05ed5adc7db73ead9199553c0adcf143c7f660a95fc1",
+        ".pulse/config.ts": "c5df387372687e0b834acdd9263795222e5a92b2b4040813501027351cf78951",
+        "package.json": "6f80a90e78220a110196fb3a8853fa2094b0b93af7c8a2069ba6db1e5189fcae"
+      }
+    },
+    {
+      "example": "05-fastly-capabilities",
+      "modes": {
+        "default": {
+          "provider": "fastly",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 5695,
+              "sha256": "ff7c7b3b462e597a3a07cd4d497494776c618c3761c2e95051b95146a9f1a66e"
+            },
+            "bin/main.wasm": {
+              "bytes": 47214,
+              "sha256": "868773fa6fa847eedfc87836664a97b12a967618d3cd41975ec994d2b52f828b"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "fastly",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 5181,
+              "sha256": "dfb348f17639b36483418eab2d2abae55f78a0da64d16c760a5a182316bf20b9"
+            },
+            "bin/main.wasm": {
+              "bytes": 39329,
+              "sha256": "0f64970cb92d9c981095e76b7b9d8ae7e7bb03a017842232355eacdabcab7c5c"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "32dd52a0fb128ff72abde80c11424ad4e611b98d3d13dbb912620d3711b30857",
+        ".pulse/config.ts": "24adc1c023b771f355d1ec8bac4e961f3c25201a68376a5b2ba09d883d2e2622",
+        "package.json": "fad9aaf7109d4b66ca137b52fff95dc851b506a398e93149f76dd6cb15594b24"
+      }
+    },
+    {
+      "example": "07-opaque-proxy",
+      "modes": {
+        "default": {
+          "provider": "fastly",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 2304,
+              "sha256": "a715c745d3fc1606f63d2149290cefab71591280076d9fcbe3fcf3650d71d1ad"
+            },
+            "bin/main.wasm": {
+              "bytes": 34747,
+              "sha256": "ee26092e2ac35d4482d6ac6b58412e1a3b28444881e4b6f7d6a2fbe685ef4afb"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "fastly",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 2205,
+              "sha256": "51c317cfa73add05ef78cb6d471816ea9074e3fe1962198be22a88c95e268704"
+            },
+            "bin/main.wasm": {
+              "bytes": 30021,
+              "sha256": "8da5c5130dc9ba1a363d2ab6a6949860b8688c0099b856221cdd4745f2a917b0"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "6dc2fed93d8f0acdc194288486e7be645a8616c8117187270c5e6ffd303b874d",
+        ".pulse/config.ts": "726b86858f49b72766077c4febe236c62f03dd469c7f0b5c1e40b7d78cf4c589",
+        "package.json": "a39ee222f136ba57554505623e5452b459ff7fe1b4db43556324ad210cf5f2bf"
+      }
+    },
+    {
+      "example": "09-router-lowering",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 9157,
+              "sha256": "c9e749cf3a5f46ce6ed41a54d4dd7008a5c80477e0281ef692e3405ef036d706"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 8753,
+              "sha256": "ac8321b8f69ff4285239d30e0eb7bc8cce25e1cc8691c806dbb48b9b2b0d14bd"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "f9950548685c3a719774dd8065c3be505bc5d22b8ad4759f4b38953276d8710d",
+        ".pulse/config.ts": "be7fb9e3f668225cf69d139746790cfcf5755050ea1fc25cf36ebd8c47b97859",
+        "package.json": "0bc0b1208691049b0e9a4937b70707cc4fd2a48b9b78aa9253813f01444fcb1c"
+      }
+    },
+    {
+      "example": "10-entities-tools",
+      "modes": {
+        "javascript": {
+          "provider": "node",
+          "artifacts": {}
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "839a20a8e8940f7b75c02a7e1230610a171d302dac99b04d67686413aa80bcd6",
+        ".pulse/config.ts": "e43628eff33ff8daa0722ac794fbad5b113bc1b3b8f3b99c06f64aae5db833b4",
+        "package.json": "033a728bf0ae9289324ef87130860bf00b47d67654af43e1ccb32c96ce23896a"
+      }
+    },
+    {
+      "example": "11-events",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 40667,
+              "sha256": "47405a2c5aad3519ecc05e56f3e63c9e588bf15eb56cdad28bacd6ebb225c438"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 32460,
+              "sha256": "5dd32d43270b4f88cb3c7f3eba519cc3cdfa8968af326657a676e883914ec082"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "8d442c3c94c3dca967f56dcd5357642a6d01ce86e0aa62b942a656fa2692790a",
+        ".pulse/config.ts": "f9dd6bfaa0dc0991786a22f53ae2db3569aba6c75a8a2ef2f247a52073b67173",
+        "package.json": "681533edd10759d49646442efb327ab8818ca7cbfd1034ee7e9302e28f942274"
+      }
+    },
+    {
+      "example": "12-mcp-proxy",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 2694,
+              "sha256": "d868d3485bab3eb3f8786d9fd4be7446d44b4bf1a80f1e0005ae3eee1c9a2183"
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 2523,
+              "sha256": "da4aebc03e84ce5e2f4ed75b4674534496a2a8cff7071dec5b7355226c5f29c9"
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "52890c6e5264495581864898a4fde2f72432b4129d8facd628faa61645d02b45",
+        ".pulse/config.ts": "7b148fd0ab851e0890e38b52950f5ac0e7d45fb8142b2b1745c01dd3e681a3b5",
+        "package.json": "d4a0a73083659a2110e43bec8f501092faab485170d8c5804de4f205f47225c7"
+      }
+    },
+    {
+      "example": "13-jwt-es256",
+      "modes": {
+        "default": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 36100,
+              "sha256": "ba6f22f236caeedf40b1c945e84fa3479617c7ae9b05f5cca07d58be86a489c4"
+            }
+          },
+          "guestLink": {
+            "inputs": {
+              "guest": {
+                "bytes": 36378,
+                "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf"
+              },
+              "memoryOwner": {
+                "bytes": 26,
+                "sha256": "26af409614f556104522d4d6859237908703bf044fb3e230dc53426d6736ccc0"
+              },
+              "primary": {
+                "bytes": 3030,
+                "sha256": "d483b5eda6fd2770adaadeb94dcbcf9fd4e6df8cd87e95c22389d31cac24489a"
+              }
+            },
+            "finalArtifact": {
+              "bytes": 36100,
+              "file": "canonical-native.wasm",
+              "sha256": "ba6f22f236caeedf40b1c945e84fa3479617c7ae9b05f5cca07d58be86a489c4"
+            },
+            "fallback": {
+              "enabled": false,
+              "used": false
+            }
+          }
+        },
+        "experimental-native-size": {
+          "provider": "node",
+          "artifacts": {
+            "canonical-native.wasm": {
+              "bytes": 35926,
+              "sha256": "fbd9571270e0313dd30accd26f4a58a07142c3e40e826e0f15daec12c9ead964"
+            }
+          },
+          "guestLink": {
+            "inputs": {
+              "guest": {
+                "bytes": 36378,
+                "sha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf"
+              },
+              "memoryOwner": {
+                "bytes": 26,
+                "sha256": "26af409614f556104522d4d6859237908703bf044fb3e230dc53426d6736ccc0"
+              },
+              "primary": {
+                "bytes": 2848,
+                "sha256": "87544e0a51ef97c25d000a18091754612bea9f46d7ab1baf96f57e695fa89473"
+              }
+            },
+            "finalArtifact": {
+              "bytes": 35926,
+              "file": "canonical-native.wasm",
+              "sha256": "fbd9571270e0313dd30accd26f4a58a07142c3e40e826e0f15daec12c9ead964"
+            },
+            "fallback": {
+              "enabled": false,
+              "used": false
+            }
+          }
+        }
+      },
+      "fixtureSha256": {
+        "src/index.ts": "684a83819dfe3c479fd4868f93cfbf5a73a2b8783d804c133bb88a30ded9aa40",
+        ".pulse/config.ts": "f029452f54e10535830d291f7b04ea77176ca9810d0b42b9c1c6cb28993af9c3",
+        "package.json": "85d34edb345caccebd81fc94b3d1fc6e0dfb6d3cc6dc1ff2b527cbdb313af6ad"
+      }
+    }
+  ],
+  "notes": "19 successful CLI builds: 9 Native examples in default/experimental size modes and the JavaScript Entities example with no Wasm. Size evidence only, no runtime performance claim."
+}

@@ -57,6 +57,18 @@ function surface(definition) {
 }
 
 const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
+  surface({ id: 'ctx.req.readTextChunk', class: 'effect', canonicalOperation: 'output.readTextChunk',
+    publicForms: ['ctx.req.readTextChunk()'], awaitPolicy: 'required-when-consumed', validPositions: ['statement'],
+    targetSupport: { javascript: true, native: true }, nativeBehavior: 'request-owned-input-suspension', status: 'experimental' }),
+  ...['start', 'write'].map(operation => surface({
+    id: `ctx.output.${operation}`, class: 'effect', canonicalOperation: `output.${operation}`,
+    publicForms: [`ctx.output.${operation}(...)`], awaitPolicy: 'required-when-consumed',
+    validPositions: ['statement'], targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'request-owned-output-suspension', status: 'experimental'
+  })),
+  surface({ id: 'ctx.output.close', class: 'sync', canonicalOperation: 'response.output.close',
+    publicForms: ['ctx.output.close()'], awaitPolicy: 'forbidden', validPositions: ['return'],
+    targetSupport: { javascript: true, native: true }, nativeBehavior: 'terminal-output-marker', status: 'experimental' }),
   surface({
     id: 'handler.managed-async-wrapper',
     class: 'handler-wrapper',
@@ -268,6 +280,17 @@ const HANDLER_SURFACE_DEFINITIONS = Object.freeze([
     targetSupport: { javascript: true, native: true },
     nativeBehavior: 'emit-effect-and-continuation',
     status: 'supported'
+  }),
+  surface({
+    id: 'ctx.req.body',
+    class: 'sync',
+    canonicalOperation: 'request.body.forward-marker',
+    publicForms: ["ctx.fetch(url, { method: 'POST', body: ctx.req.body() })"],
+    awaitPolicy: 'forbidden',
+    validPositions: ['fetch-body'],
+    targetSupport: { javascript: true, native: true },
+    nativeBehavior: 'host-owned-marker',
+    status: 'node-configured-only'
   }),
   surface({
     id: 'ctx.req.json.schema',

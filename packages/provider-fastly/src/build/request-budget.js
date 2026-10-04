@@ -18,11 +18,12 @@ function instrumentRequestBudget(input, duration, plan) {
   const handles = new StaticArray<i32>(2)
   const downstreamStatus`);
   replace('function host_effect_begin(effectIndex: i32, payload: i32): void {', 'function host_effect_begin(effectIndex: i32, payload: i32): void {\n  if (!__request_check(effectIndex)) return;');
+  replace('function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {', 'function __pulse_invocation_settle(index: i32, ticket: i32, result: i32): i32 {\n  if (!__request_check(index)) return 0;');
   replace('  let runStatus = pulse_start()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  let runStatus = pulse_start()');
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {', `function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
   if (!__request_check(effectIndex)) return 0;
   const kind = __pulse_fastly_effect_kind(effectIndex);
-  if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && kind != 12 && kind != 13 && kind != 14 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
+  if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && kind != 12 && kind != 13 && kind != 14 && kind != 21 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
     if (!__request_wait(unchecked(__pulse_fastly_pending[effectIndex]), effectIndex)) return 0;
   }`);
   replace('    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();', '    if (!__request_wait(handle, effectIndex)) return "";\n    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();');
@@ -38,6 +39,7 @@ function instrumentRequestBudget(input, duration, plan) {
   replace('  const result = pulse_result_handle()', '  if (!__request_check()) { __request_send_timeout(); return; }\n  const result = pulse_result_handle()');
   if (source.includes('__kv_deadline[index] = start +')) replace('__kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;', '__kv_deadline[index] = min<i64>(__request_deadline, start + i64(__KV_timeoutMs) * 1000000);');
   if (source.includes('__s3_deadlines[index] = start +')) replace('__s3_deadlines[index] = start + i64(binding.timeout) * 1000000;', '__s3_deadlines[index] = min<i64>(__request_deadline, start + i64(binding.timeout) * 1000000);');
+  if (source.includes('function __pulse_fastly_write_binary(')) replace('const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) {', 'const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) { if (!__request_check()) return 1;');
   return source + '\n' + fs.readFileSync(path.join(__dirname,'request-budget.as.ts'),'utf8');
 }
 module.exports = {instrumentRequestBudget};

@@ -14,6 +14,8 @@ const {
   PUBLICATION
 } = require('./package-support.cjs');
 
+const { validateShardCoverage } = require('./release-evidence-bundle.cjs');
+
 const PREFLIGHT_SCHEMA = 'pulse.release-preflight.v1';
 const CONFORMANCE_LEDGER_SCHEMA = 'pulse.release-conformance-ledger.v1';
 const INVENTORY_SCHEMA = 'pulse.documentation-inventory.v2';
@@ -78,7 +80,11 @@ function stringArray(value, context, options = {}) {
 }
 
 function documentedReleaseVersions(root) {
-  return new Set(readJson('release/documentation-versions.json', root).versions.map((entry) => entry.version));
+  const { unpublishedDocumentationReleases } = require('./release-pr-check.cjs');
+  return new Set([
+    ...readJson('release/documentation-versions.json', root).versions.map((entry) => entry.version),
+    ...unpublishedDocumentationReleases(readJson('release/pulse-release-manifest.json', root)).map((entry) => entry.version)
+  ]);
 }
 
 function bootstrapEntryCompliant(entry, releaseVersions) {
@@ -348,7 +354,7 @@ function validateAuditPolicy(preflight, root = repoRoot) {
   if (!policy || typeof policy !== 'object' || Array.isArray(policy)) fail('release preflight auditPolicy is required');
   const vulnerabilities = policy.vulnerabilities;
   const licenses = policy.dependencyLicenses;
-  if (!vulnerabilities || vulnerabilities.command !== 'corepack pnpm audit --prod --json' || vulnerabilities.refreshAt !== 'release-seal') {
+  if (!vulnerabilities || vulnerabilities.command !== 'node scripts/pnpm-toolchain.cjs -- audit --prod --json' || vulnerabilities.refreshAt !== 'release-seal') {
     fail('production vulnerability audit method is not fixed to the frozen release closure');
   }
   if (JSON.stringify(vulnerabilities.stopShipSeverities) !== JSON.stringify(['critical', 'high'])) fail('critical and high production vulnerabilities must remain stop-ship');
@@ -514,9 +520,11 @@ function validateSnapshotTransaction(preflight, root = repoRoot) {
 }
 
 function validatePreflight(options = {}) {
+  const shards = validateShardCoverage();
   const root = path.resolve(options.repoRoot || repoRoot);
   const preflight = options.preflight || readJson(PREFLIGHT_FILE, root);
   const inventory = options.inventory || readJson(INVENTORY_FILE, root);
+  require('./release-pr-check.cjs').unpublishedDocumentationReleases(readJson('release/pulse-release-manifest.json', root));
   if (preflight.schemaVersion !== PREFLIGHT_SCHEMA) fail(`unsupported release preflight schema ${preflight.schemaVersion}`);
   if (preflight.checkpoint !== 'sprint-7a-release-preflight' || preflight.baselineCheckpoint !== '2d8468f') fail('release preflight checkpoint identity is invalid');
   if (!/^\d{4}-\d{2}-\d{2}$/.test(preflight.reviewedAt)) fail('release preflight reviewedAt must use YYYY-MM-DD');
@@ -542,8 +550,6 @@ function validatePreflight(options = {}) {
     || PUBLICATION.nodeReleaseRange !== '^24.0.0'
     || PUBLICATION.nodeVersion !== '24.18.0'
     || PUBLICATION.npmVersion !== '11.15.0'
-    || PUBLICATION.pnpmDevelopmentRange !== '>=10 <11'
-    || PUBLICATION.pnpmVersion !== '10.0.0'
   ) {
     fail('release preflight Node, npm, pnpm, or license decision drifted');
   }
@@ -626,6 +632,7 @@ function validatePreflight(options = {}) {
     releaseCandidate: Object.freeze({ ...candidate }),
     vocabulary,
     statuses: Object.freeze(statuses),
+    shards: shards.length,
     gates: preflight.gates.length,
     bootstrap,
     audits: auditPolicy,
@@ -851,7 +858,7 @@ async function main() {
     process.stdout.write(
       `ok - release preflight classified ${validation.gates} gate(s) `
       + `(${validation.statuses.proven} proven, ${validation.statuses.pending} pending, ${validation.statuses.blocked} blocked) `
-      + `and ${validation.documentation.sources} documentation source(s)\n`
+      + `and ${validation.documentation.sources} documentation source(s); ${validation.shards} release shards mapped\n`
     );
   }
 }

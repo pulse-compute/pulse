@@ -39,12 +39,12 @@ function createRequestBudget(options = {}) {
   const deadline = duration === undefined ? undefined : read() + duration;
   const expire = () => controller.abort(new PulseRuntimeContractError('PULSE_REQUEST_DEADLINE_EXCEEDED', 'Pulse request exceeded its total execution deadline.'));
   const signals = [...new Set([options.signal, options.requestSignal].filter(Boolean))];
-  const listeners = signals.map(signal => {
+  const listeners = new Set(signals.map(signal => {
     const abort = () => controller.abort(signal.reason);
     if (signal.aborted) abort();
     else signal.addEventListener('abort', abort, { once: true });
     return () => signal.removeEventListener('abort', abort);
-  });
+  }));
   const budget = Object.freeze({
     signal: controller.signal,
     deadlineMonotonicMs: deadline,
@@ -56,8 +56,11 @@ function createRequestBudget(options = {}) {
     },
     onAbort(callback) {
       if (controller.signal.aborted || closed) { callback(); return () => {}; }
-      const remove = () => controller.signal.removeEventListener('abort', callback);
-      listeners.push(remove);
+      const remove = () => {
+        controller.signal.removeEventListener('abort', callback);
+        listeners.delete(remove);
+      };
+      listeners.add(remove);
       controller.signal.addEventListener('abort', callback, { once: true });
       return remove;
     },
@@ -81,7 +84,7 @@ function createRequestBudget(options = {}) {
       closed = true;
       if (timer !== undefined) clock.clearTimeout(timer);
       for (const remove of listeners) remove();
-      listeners.length = 0;
+      listeners.clear();
     }
   });
   budgets.add(budget);

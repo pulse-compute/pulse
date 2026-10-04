@@ -5,7 +5,7 @@
 ## Install
 
 ```bash
-npm install @pulse-compute/runtime@1.0.0-beta.5
+npm install @pulse-compute/runtime@1.0.0-beta.6
 ```
 
 A project created by `pulse init` depends on the public
@@ -288,7 +288,9 @@ The runtime contract does not expose:
 - ambient `process.env`, global fetch, timers, or randomness;
 - provider SDK objects or provider-specific namespaces;
 - arbitrary binary body inspection;
-- userland stream transforms or background tasks;
+- general userland stream transforms or background tasks; the experimental
+  finite Node UTF-8 output/transform opt-ins retain their separate bounds and
+  qualification in the [bodies guide](../concepts/bodies.md);
 - raw sockets.
 
 The compiler rejects unsupported forms rather than treating them as

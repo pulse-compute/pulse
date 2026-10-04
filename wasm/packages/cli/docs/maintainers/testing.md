@@ -44,6 +44,25 @@ instructions, this guide, release acceptance commands and maintenance-policy
 commands are checked against it by `npm run maintainer:check`. Use explicit
 runner commands for named selections so stale references are detectable.
 
+Finite generated output has a separate installed-consumer acceptance task:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task str03b-installed
+```
+
+It needs the lockfile-pinned build/pack dependencies and npm registry access for
+non-Pulse dependencies. All Pulse packages come from exact local candidate
+tarballs served by a read-only loopback registry; lifecycle scripts are disabled.
+The consumer and its copied fixture run outside the checkout without workspace
+package links. Every installed Pulse file is verified against its tarball before
+and after both targets' CLI and wire tests. Atomic acceptance reports under
+`wasm/.test-results/str03b-installed-*/` record terminal status, source/tree/diff,
+package and fixture hashes, installed-file digests, Wasm identities, workflow
+results, cleanup and memory observations. Keep failed attempts distinct from
+final clean-source evidence. This task is explicitly selected, like the STR-02
+installed tasks; it is not implicitly part of the portable or aggregate release
+profiles and does not authorize publication or promote experimental output.
+
 The event mechanism has focused provider-neutral tasks, plus one project-level
 workflow task included in the `cli` and `release` profiles:
 
@@ -133,6 +152,20 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 ```
 
 `--from` and `--through` aid investigation. A release claim requires the complete release profile.
+
+## Installed feature gates
+
+The clean candidate's separate mandatory installed-feature replay is:
+
+```bash
+node scripts/release-feature-acceptance.cjs
+```
+
+The release seal invokes this after its complete aggregate profile. See
+[installed feature acceptance](./release-acceptance.md#installed-feature-acceptance)
+for the ten gates, source/tarball identity requirements and separate experimental,
+private and external coverage. Focused runs remain development evidence and do
+not replace the complete installed replay or the final release seal.
 
 ## Aggregate release seal
 
@@ -237,7 +270,7 @@ node wasm/scripts/run-wasm-tests.cjs --task deployment-candidates --no-report
 
 ## JWT and crypto proof seals
 
-The `1.0.0-beta.5` JWT/crypto packages build on the focused crypto seal,
+The `1.0.0-beta.6` JWT/crypto packages build on the focused crypto seal,
 which replays the
 configuration, JavaScript runtime, Native guest-source, shared cross-target
 corpus, and real Fastly Compute proofs. First record the one phase-boundary
@@ -281,6 +314,103 @@ internally consistent. It does not publish, promote, deploy, or activate
 anything.
 
 ## Runner evidence
+
+The full `Repository validation / full portable` gate aggregates six independent
+jobs: `unit`, `native`, `javascript`, `conformance-rsa`, `conformance-schema`,
+and `conformance-rest`. The plan in
+`scripts/maintainer-portable-validation.cjs` expands the four existing portable
+profiles from the task registry. RSA isolates `jwt-rs256`; schema isolates
+`schema-codecs` and `schema-kv-parity`; the remaining conformance tasks stay in
+registry order. Every registered portable task occurs exactly once.
+
+After maintenance validates the plan and aggregate contract, each shard
+installs pinned dependencies, builds in its own checkout at the tested
+SHA, and uploads its terminal report and task logs even on failure. The
+`full portable` aggregate runs after failed or skipped jobs as well as successful
+ones. It requires successful shard jobs and complete passing reports for the
+same tested SHA and workflow run. Missing, failed, cancelled, incomplete,
+duplicate or mismatched evidence fails the gate. On a job retry it selects the
+latest attempt for each shard in that run; a newer failed attempt cannot fall
+back to an older passing report. The aggregate artifact records task counts,
+attempts, durations and tested SHA. This remains portable CI evidence; the
+separate release seal still requires its complete candidate replay.
+
+C02's three hosted PR samples completed in 7m59s, 7m58s and 7m37s,
+compared with W01's 20m15s serial run. Queue time and total runner usage
+are separate from task duration. Each shard still builds its own pinned
+workspace; there is no dependency cache.
+
+## Branch validation tiers
+
+| Event target | Required validation |
+| --- | --- |
+| PR into any non-`main` branch | Scope declaration, documentation, maintenance, Node 22 smoke, fast portable |
+| Push to any non-`main` branch | Advisory scope classification, documentation, maintenance, Node 22 smoke, fast portable |
+| PR into `main` | Scope declaration, documentation, maintenance and release preparation, Node 22 support floor, all four portable profiles |
+| Push to `main` | Advisory scope classification, documentation, maintenance, Node 22 support floor, all four portable profiles |
+| Manual branch dispatch | The same tier as a push to that branch |
+
+PRs always test the merge of the event's exact base and head, including after
+retargeting. Branch pushes test the pushed commit. A non-main push is suppressed
+only if an open PR already represents the exact same repository and head SHA;
+its PR merge validation still runs. If the read-only API lookup fails, the push
+runs too. A push immediately followed by PR creation can produce two runs;
+correct merge-ref evidence takes priority over eliminating that race. Main
+pushes always run full validation. Tags do not trigger these workflows.
+
+The stable `Repository validation / portable` check waits for maintenance,
+Node 22 and the required portable tier. It independently derives that tier from
+the event and rejects missing, skipped, cancelled or failed required jobs,
+including routing and fast selection. The distinct `fast portable` and
+`full portable` checks support branch-specific rules. Keep the common gate
+required during and after the human-owned ruleset migration in repository setup.
+
+Fast selection executes the base commit's path matcher and policy. PR selection
+compares base to tested merge; a branch push compares its previous commit to
+the pushed commit. New branches and manual dispatch compare the tested commit's
+first parent. Missing base objects or malformed identities fail validation.
+Known unprotected owners select a fixed cross-target core (`package-exports`,
+`api-surface`, `target-support`, `node-cross-target-conformance`) plus a schema
+check and focused
+tasks from an explicit bounded allowlist. Direct test-file changes select their
+task only when it is in that allowlist.
+
+Protected boundaries, unknown paths, unmapped tests and empty diffs run the
+entire conservative fast set: the core plus CLI command/guard, canonical API
+lowering, JavaScript effect adapter, schema registry and continuation
+registry checks. They never produce an empty successful selection or force a
+full non-main run.
+
+Fast selection always includes exactly one schema codec task. Known unrelated
+documentation, maintenance and test changes use `schema-codecs-smoke`. It runs
+the existing base proof and the same proof assertions as `schema-codecs`: one
+real Native compilation, JavaScript/Native semantic and trace parity, strict
+positive/negative JSON boundaries, malformed-input rejection before dispatch,
+body/cache ownership and JavaScript package output. It is not full conformance.
+
+Schema/JSON tests, shared test support, fixtures and suite selection keep
+`schema-codecs`. Compiler, runtime, provider, CLI, configuration, dependency and
+other owners outside that unrelated set also keep the full corpus, even when
+their filenames do not mention schemas. Unknown paths and empty diffs keep it
+too. A mixed change uses full coverage if any path requires it. Full coverage
+replaces the smoke; it does not run both.
+
+The smoke defers the extended admission, value/text encoding, optional-field,
+scalar-record and nested/open JSON corpus to schema-sensitive changes and
+main/release. The conformance profile, schema shard and release profile still
+run the complete `schema-codecs` task; the smoke adds no duplicate compile to
+those profiles. This reduces unrelated branch feedback time, not application
+build time or Wasm size. It adds a real schema smoke to focused selections that
+previously ran only the cross-target core.
+
+The selection artifact records `schemaCoverage`, including the selected task,
+full-coverage reasons and whether extended coverage is deferred. It also explains each path, rule, boundary,
+selection reason, task, exclusion and source identity. It explicitly defers
+full coverage to main. Fast runs require a terminal passing report with the
+exact requested, selected and completed task identities at the tested SHA.
+The Node 22 smoke remains a separate build and `cli-init-workflow` run in both
+tiers. Fast evidence does not replace full validation before a human merges
+into main, or the separate candidate replay before publication.
 
 The runner writes `wasm/.test-results/last-run.json` atomically after every task and stores one log per task. When a task fails, task-owned `*.log` files such as npm debug logs are copied into that run's durable diagnostics directory before the temporary root is removed. On timeout it captures a Node diagnostic report, terminates the entire task process group, and reports any surviving descendants. The directory is ephemeral and should contain only evidence produced from the current tree.
 

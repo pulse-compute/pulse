@@ -17,6 +17,7 @@ const {
 } = require('./maintainer-scope.cjs');
 const { RELEASE_VERSION } = require('./package-support.cjs');
 const { validatePublicationControlPlane } = require('./validate-publication-workflows.cjs');
+const { validateWorkflow: validatePortableWorkflow } = require('./maintainer-portable-validation.cjs');
 
 const CONTROL_PLANE_SCHEMA = 'pulse.maintainer-control-plane-validation.v1';
 const repoRoot = path.resolve(__dirname, '..');
@@ -328,14 +329,16 @@ function validateWorkflowSecurity() {
   includes(validation, 'node scripts/release-pr-check.cjs --base "$RELEASE_BASE" --head "$RELEASE_HEAD"', 'release preparation gate');
   includes(validation, 'ready_for_review', 'release PR CI activation');
   includes(validation, "publication.pnpmVersion", 'repository validation workflow');
-  includes(validation, 'corepack prepare "pnpm@$pnpm_version" --activate', 'repository validation workflow');
+  includes(validation, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'repository validation workflow');
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
   includes(validation, 'pnpm run build', 'repository validation workflow');
-  for (const profile of ['unit', 'native', 'javascript', 'conformance']) {
-    includes(validation, `--profile ${profile} --report .test-results/${profile}.json`, 'repository validation workflow');
-  }
+  validatePortableWorkflow(validation);
+  const { validateWorkflow: validateRoutingWorkflow } = require('./maintainer-validation-routing.cjs');
+  validateRoutingWorkflow(validation);
+  validateRoutingWorkflow(scope, 'scope');
+  validateRoutingWorkflow(read('.github/workflows/documentation.yml'), 'documentation');
   includes(validation, 'Upload Node 22 failure evidence', 'repository validation workflow');
-  includes(validation, 'Upload portable failure evidence', 'repository validation workflow');
+  includes(validation, 'Upload portable failure evidence and success reports', 'repository validation workflow');
   includes(validation, 'path: wasm/.test-results', 'repository validation workflow');
   includes(validation, 'include-hidden-files: true', 'repository validation workflow');
   if (/pull_request:[\s\S]{0,300}\n\s+paths:/u.test(validation)) fail('required repository validation must not use pull-request path filtering');
@@ -352,6 +355,7 @@ function validateWorkflowSecurity() {
   includes(preparation, 'workflow_dispatch:', 'release preparation workflow');
   includes(preparation, "if: github.ref == 'refs/heads/main'", 'release preparation workflow');
   includes(preparation, 'node scripts/release-prepare-pr.cjs "$RELEASE_VERSION"', 'release preparation workflow');
+  for (const needle of ['documentation_history:', 'default: archive-current', 'replace-unpublished-docs', 'DOCUMENTATION_HISTORY: ${{ inputs.documentation_history }}', '--documentation-history "$DOCUMENTATION_HISTORY"']) includes(preparation, needle, 'explicit documentation history selection');
   includes(preparation, 'needs: prepare', 'release preparation writer isolation');
   const writer = preparation.indexOf('\n  open-pr:');
   if (writer < 0 || /(?:contents|pull-requests): write/.test(preparation.slice(0, writer))) fail('preparation must run before and outside the write-token job');

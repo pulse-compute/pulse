@@ -39,7 +39,7 @@ const EXPECTED_RUSTC = '1.97.1 (8bab26f4f 2026-07-14)';
 const EXPECTED_CARGO = '1.97.1 (c980f4866 2026-06-30)';
 const TARGET = 'wasm32v1-none';
 const CRATE_STEM = 'pulse_es256_rustcrypto_verifier.wasm';
-const BUILD_IDENTITY = 'pulse.crypto.es256.rustcrypto-build.v1';
+const BUILD_IDENTITY = 'pulse.crypto.es256-rs256.build.v3';
 
 function usage() {
   process.stderr.write('Usage: node build.cjs (--write|--check)\n');
@@ -125,17 +125,16 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
   const wasmOpt = binaryen.tools.find((entry) => entry.name === 'wasm-opt');
   assert.ok(wasmOpt);
   const buildScript = fs.readFileSync(__filename);
-  const g0SourceDecision = fs.readFileSync(path.join(
-    repoRoot,
-    'wasm/.test-results/jwt-g0/es256-source-decision.json',
-  ));
+  // Historical source-selection attestation is pinned in the reviewed guest
+  // catalog. Reconstruction must not depend on ignored local evidence files.
+  const g0SourceDecisionSha256 = '58db9e3587ace112a8864c7916f603d8773dce653deafb7d743c0dc1f4d62d63';
   return Object.freeze({
     version: 'pulse.guest-unit.v2',
     id: 'pulse.crypto.es256.rustcrypto-p256.v1',
     module: 'pulse_crypto_es256',
     owner: '@pulse-compute/crypto',
-    packageVersion: '1.0.0-beta.5',
-    abi: 'pulse.crypto.es256.verify.v1',
+    packageVersion: '1.0.0-beta.6',
+    abi: 'pulse.crypto.es256-rs256.verify-and-sign.v3',
     origin: 'package-prebuilt',
     artifact: Object.freeze({
       file: 'prebuilt/es256-verifier.wasm',
@@ -154,6 +153,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
       versions: Object.freeze({
         rustc,
         cargo,
+        zig: '0.13.0',
         binaryen: binaryen.version,
       }),
     }),
@@ -167,13 +167,13 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
         shared: false,
       }),
     })]),
-    exports: Object.freeze([Object.freeze({
-      name: 'pulse_crypto_es256_verify',
+    exports: Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify', 'pulse_crypto_rs256_sign', 'pulse_crypto_rs256_verify'].map(name => Object.freeze({
+      name,
       kind: 'function',
       parameters: Object.freeze(['i32', 'i32']),
       results: Object.freeze(['i32']),
       role: 'abi',
-    })]),
+    }))),
     memory: Object.freeze({
       identity: 'pulse.guest-memory.invocation-frame.v2',
       import: 'env.memory',
@@ -200,7 +200,7 @@ function manifest(source, lock, artifact, rustc, cargo, binaryen) {
       binaryenWasmOptSha256: wasmOpt.sha256,
       g0SourceDecision:
         '../../../../wasm/.test-results/jwt-g0/es256-source-decision.json',
-      g0SourceDecisionSha256: sha256(g0SourceDecision),
+      g0SourceDecisionSha256,
     }),
   });
 }
@@ -215,6 +215,15 @@ function main() {
   if (!['--write', '--check'].includes(mode) || process.argv.length !== 3) {
     usage();
     return;
+  }
+  assert.equal(fs.existsSync(path.join(sourceDirectory, 'target')), false,
+    'Guest source must be clean: set CARGO_TARGET_DIR outside source for direct Cargo experiments.');
+  const upstreamRoot = path.join(sourceDirectory, 'bearssl');
+  const upstream = JSON.parse(fs.readFileSync(path.join(upstreamRoot, 'UPSTREAM.json'), 'utf8'));
+  assert.equal(upstream.version, '0.6');
+  assert.equal(upstream.archiveSha256, '6705bba1714961b41a728dfc5debbe348d2966c117649392f8c8139efc83ff14');
+  for (const [file, expected] of Object.entries(upstream.files)) {
+    assert.equal(sha256(fs.readFileSync(path.join(upstreamRoot, file))), expected, `Vendored upstream file differs: ${file}`);
   }
   const cargoExecutable = process.env.CARGO || 'cargo';
   const rustcExecutable = process.env.RUSTC || 'rustc';

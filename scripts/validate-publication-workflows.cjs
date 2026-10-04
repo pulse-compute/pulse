@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const {
   RELEASE_MANIFEST,
   RELEASE_VERSION,
@@ -41,6 +42,7 @@ const {
   verifyStorage,
   verifyNpmPromotionEvidence,
   assertProductionDeploymentEnvironment,
+  filesystemAdapter,
   awsAdapter
 } = require('./documentation-deployment.cjs');
 const { validatePreflight } = require('./release-preflight.cjs');
@@ -121,6 +123,12 @@ function validateDependencyBundlePolicy() {
   includes(restore, 'publication.pnpmVersion', 'dependency restore script');
   includes(restore, 'publication.pnpmDevelopmentRange', 'dependency restore script');
   includes(restore, 'restore requires release-owned Node', 'dependency restore script');
+  includes(bundle, 'scripts/pnpm-toolchain.cjs --install', 'dependency bundle script');
+  includes(bundle, 'ignoreScripts: true', 'dependency bundle script');
+  includes(bundle, 'trustLockfile: false', 'dependency bundle script');
+  includes(restore, '--config.trust-lockfile=true install --offline --frozen-lockfile --ignore-scripts', 'dependency restore script');
+  for (const source of [bundle, restore]) includes(source, "lockfileVerification: 'verified-during-fetch-and-bound-by-sha256'", 'dependency bundle verification contract');
+  includes(restore, 'bundled pnpm version mismatch', 'dependency restore script');
   return Object.freeze({ nodeVersion: PUBLICATION.nodeVersion, nodeEngines: PUBLICATION.nodeEngines, pnpmVersion: PUBLICATION.pnpmVersion, pnpmDevelopmentRange: PUBLICATION.pnpmDevelopmentRange, restoreInstructions: true });
 }
 
@@ -131,8 +139,8 @@ function validateConfiguration() {
   if (npm !== PUBLICATION) fail('npm publication must be owned by release/pulse-release-manifest.json');
   if (documentation.releaseVersion !== RELEASE_VERSION) fail('documentation deployment is not release-bound');
   if (npm.environment !== 'npm-publish' || documentation.environment !== 'documentation-production') fail('protected production environment names changed unexpectedly');
-  if (npm.nodeEngines !== '^22.14.0 || ^24.0.0' || npm.nodeMinimumVersion !== '22.14.0' || npm.nodeReleaseRange !== '^24.0.0' || npm.nodeVersion !== '24.18.0' || npm.npmVersion !== '11.15.0' || npm.pnpmDevelopmentRange !== '>=10 <11' || npm.pnpmVersion !== '10.0.0') {
-    fail('trusted publishing policy must retain the selected Node/npm toolchain, pnpm 10.x development range, and exact release pnpm for this release');
+  if (npm.nodeEngines !== '^22.14.0 || ^24.0.0' || npm.nodeMinimumVersion !== '22.14.0' || npm.nodeReleaseRange !== '^24.0.0' || npm.nodeVersion !== '24.18.0' || npm.npmVersion !== '11.15.0') {
+    fail('trusted publishing policy must retain the selected Node/npm toolchain for this release; pnpm follows the validated release manifest');
   }
   if (documentation.deployment.neverDelete !== true || documentation.deployment.requiresNpmVerificationBeforePromotion !== true) fail('documentation history or npm promotion gates are disabled');
   if (JSON.stringify(documentation.deployment.promotionCommitObjects) !== JSON.stringify(['latest/index.html', 'index.html'])) fail('documentation promotion commit order changed unexpectedly');
@@ -188,13 +196,13 @@ function validateWorkflows() {
   const docs = read(required[0]);
   includes(docs, 'name: Documentation', 'documentation validation workflow');
   includes(docs, 'pull_request:', 'documentation validation workflow');
-  includes(docs, 'branches: [main]', 'documentation validation workflow');
+  includes(docs, "branches: ['**']", 'documentation validation workflow');
   includes(docs, 'Upload generated preview', 'documentation validation workflow');
   includes(docs, 'documentation-deployment.cjs seal', 'documentation validation workflow');
   includes(docs, 'include-hidden-files: true', 'documentation validation workflow');
   includes(docs, 'package-manager-cache: false', 'documentation validation workflow');
   includes(docs, 'publication.pnpmVersion', 'documentation validation workflow');
-  includes(docs, 'corepack prepare "pnpm@$pnpm_version" --activate', 'documentation validation workflow');
+  includes(docs, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation validation workflow');
   includes(docs, 'pnpm run docs:check', 'documentation validation workflow');
   includes(docs, 'pnpm run docs:site --json', 'documentation validation workflow');
   excludes(docs, 'run: npm run docs:', 'documentation validation workflow');
@@ -209,7 +217,7 @@ function validateWorkflows() {
   includes(npm, 'id-token: write', 'npm publication workflow');
   includes(npm, 'npm install --global npm@11.15.0', 'npm publication workflow');
   includes(npm, 'publication.pnpmVersion', 'npm publication workflow');
-  includes(npm, 'corepack prepare "pnpm@$pnpm_version" --activate', 'npm publication workflow');
+  includes(npm, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'npm publication workflow');
   includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
   includes(npm, 'pnpm run release:seal --skip-install --no-report', 'npm publication workflow');
   includes(npm, 'pnpm run release:pack', 'npm publication workflow');
@@ -291,7 +299,7 @@ function validateWorkflows() {
   if (!(immutableAt >= 0 && npmAt > immutableAt && promotionAt > npmAt && publicAt > promotionAt)) fail('documentation deployment order must be immutable, npm verification, promotion, then public verification');
   includes(deploy, 'package-manager-cache: false', 'documentation deployment workflow');
   includes(deploy, 'publication.pnpmVersion', 'documentation deployment workflow');
-  includes(deploy, 'corepack prepare "pnpm@$pnpm_version" --activate', 'documentation deployment workflow');
+  includes(deploy, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation deployment workflow');
   includes(deploy, 'pnpm run docs:check', 'documentation deployment workflow');
   includes(deploy, 'pnpm run docs:site --json', 'documentation deployment workflow');
   excludes(deploy, '          npm run docs:', 'documentation deployment workflow');
@@ -321,7 +329,7 @@ function validateWorkflows() {
   includes(validation, "node-version: '22.x'", 'repository validation workflow');
   includes(validation, "node-version: '24.x'", 'repository validation workflow');
   includes(validation, 'publication.pnpmVersion', 'repository validation workflow');
-  includes(validation, 'corepack prepare "pnpm@$pnpm_version" --activate', 'repository validation workflow');
+  includes(validation, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'repository validation workflow');
   includes(validation, 'pnpm install --frozen-lockfile --ignore-scripts', 'repository validation workflow');
   includes(validation, 'pnpm run build', 'repository validation workflow');
   includes(validation, '--task cli-init-workflow --report .test-results/node-floor.json', 'repository validation workflow');
@@ -658,6 +666,9 @@ function validatePublicationBundle() {
 
 function writeSyntheticSite(siteDir) {
   const files = {
+    'v0.0.0-history/index.html': 'historical preview bytes\n',
+    'v0.0.0-history/assets/site.css': 'historical preview styles\n',
+    [`${DOCUMENTATION.version}-preview/index.html`]: 'another version with the current version as a prefix\n',
     '.nojekyll': '',
     'index.html': '<!doctype html><title>Pulse</title><h1>Pulse</h1>\n',
     '404.html': '<!doctype html><title>Not found</title><h1>Not found</h1>\n',
@@ -804,6 +815,20 @@ function validateDocumentationBundle() {
     fs.writeFileSync(unsealedCandidateFile, 'must be rejected\n');
     expectFailure(() => verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true }), undefined, 'unsealed documentation candidate file');
     fs.rmSync(unsealedCandidateFile, { force: true });
+    const unexpectedSiteFile = path.join(siteDir, 'unexpected.txt');
+    fs.writeFileSync(unexpectedSiteFile, 'must be rejected\n');
+    expectFailure(() => sealDocumentationCandidate({ repoRoot, siteDir, outDir: path.join(temp, 'unexpected-candidate'), ...source }),
+      'PULSE_DOCUMENTATION_DEPLOYMENT_INVALID', 'unexpected documentation path during sealing');
+    fs.rmSync(unexpectedSiteFile);
+    const historical = verified.manifest.objects.filter((entry) => entry.phase === 'immutable'
+      && !entry.relativePath.startsWith(`${DOCUMENTATION.version}/`) && entry.relativePath !== loaded.config.deployment.receiptPath);
+    if (historical.length !== 3) fail('historical documentation fixtures are missing from the sealed candidate');
+    const historicalCandidateFile = path.join(candidateDir, 'site', historical[0].relativePath);
+    const historicalCandidateBytes = fs.readFileSync(historicalCandidateFile);
+    fs.appendFileSync(historicalCandidateFile, 'tamper');
+    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, adapter: { head() { fail('tampered candidate reached storage'); } }, phase: 'immutable' }),
+      'PULSE_DOCUMENTATION_DEPLOYMENT_INVALID', 'historical candidate integrity before storage selection');
+    fs.writeFileSync(historicalCandidateFile, historicalCandidateBytes);
     verifyDocumentationCandidate({ repoRoot, candidateDir, requireReleaseRef: true });
     const awsChecksumCalls = validateAwsChecksumEnvironment(temp, loaded, path.join(siteDir, 'index.html'));
 
@@ -864,40 +889,105 @@ function validateDocumentationBundle() {
     ensureDirectory(bucketA);
     const first = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
     const retry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
-    if (first.uploaded !== verified.immutableCount || retry.alreadyPresent !== verified.immutableCount) fail('immutable documentation deployment is not idempotent');
+    const immutableStorage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' });
+    const currentImmutableCount = verified.receipt.exactVersionObjectCount + 1;
+    if (first.uploaded !== currentImmutableCount || retry.alreadyPresent !== currentImmutableCount || immutableStorage.objectCount !== currentImmutableCount) fail('current immutable documentation deployment is not idempotent');
+    for (const entry of historical) {
+      if (fs.existsSync(path.join(bucketA, entry.objectKey))) fail('historical preview object was uploaded to an empty bucket');
+    }
     const exact = verified.manifest.objects.find((entry) => entry.phase === 'immutable' && entry.relativePath.startsWith(`${DOCUMENTATION.version}/`));
     fs.appendFileSync(path.join(bucketA, ...exact.objectKey.split('/')), 'tamper');
-    expectFailure(
-      () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+    const bytesConflict = expectFailure(
+      () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketA, phase: 'all', npmVerification: npmFile }),
       'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT',
       'immutable documentation overwrite'
     );
+    if (bytesConflict.objectKey !== exact.objectKey || JSON.stringify(bytesConflict.details?.mismatch) !== '["bytes"]') fail('immutable conflict must identify its key and differing bytes');
+    const failureFile = path.join(temp, 'immutable-deployment-failure.json');
+    const runFailure = (command, jsonFile) => {
+      const result = spawnSync(process.execPath, [
+        'scripts/documentation-deployment.cjs', command, '--candidate-dir', candidateDir,
+        '--driver', 'filesystem', '--bucket-dir', bucketA, '--phase', 'immutable', '--json-out', jsonFile
+      ], { cwd: repoRoot, encoding: 'utf8' });
+      if (result.status !== 1) fail(`${command} conflict did not fail`);
+      return JSON.parse(fs.readFileSync(jsonFile, 'utf8'));
+    };
+    const failedDeploy = runFailure('deploy', failureFile);
+    if (failedDeploy.status !== 'failed' || failedDeploy.operation !== 'deploy'
+      || failedDeploy.failure.code !== 'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT'
+      || failedDeploy.failure.objectKey !== exact.objectKey
+      || JSON.stringify(failedDeploy.failure.mismatch) !== '["bytes"]') fail('immutable deployment failure evidence lacks the conflict identity');
+    const failedVerification = runFailure('verify-storage', path.join(temp, 'immutable-verification-failure.json'));
+    if (failedVerification.status !== 'failed' || failedVerification.operation !== 'verify-storage'
+      || failedVerification.failure.objectKey !== exact.objectKey || !failedVerification.failure.code) fail('storage verification failure evidence lacks the object identity');
+    if (fs.existsSync(path.join(bucketA, loaded.config.objectPrefix, 'index.html'))) fail('immutable conflict allowed alias promotion');
+    fs.copyFileSync(path.join(candidateDir, 'site', exact.relativePath), path.join(bucketA, exact.objectKey));
+    const metadataFile = path.join(bucketA, '.pulse-object-metadata', `${exact.objectKey}.json`);
+    const exactMetadata = fs.readFileSync(metadataFile);
+    const alteredMetadata = JSON.parse(exactMetadata);
+    alteredMetadata.cacheControl = 'no-store';
+    fs.writeFileSync(metadataFile, stableJson(alteredMetadata));
+    const metadataConflict = expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current exact-version metadata conflict');
+    if (metadataConflict.objectKey !== exact.objectKey || JSON.stringify(metadataConflict.details?.mismatch) !== '["cache-control"]') fail('immutable metadata conflict must identify its key and differing metadata');
+    const failedMetadata = runFailure('deploy', failureFile);
+    if (failedMetadata.failure.objectKey !== exact.objectKey
+      || JSON.stringify(failedMetadata.failure.mismatch) !== '["cache-control"]') fail('metadata conflict report must replace earlier failure evidence with the current mismatch');
+    fs.writeFileSync(metadataFile, exactMetadata);
+    fs.appendFileSync(path.join(bucketA, loaded.config.objectPrefix, loaded.config.deployment.receiptPath), 'tamper');
+    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, driver: 'filesystem', bucketDir: bucketA, phase: 'immutable' }),
+      'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', 'current deployment receipt conflict');
 
     const bucketB = path.join(temp, 'bucket-b');
     ensureDirectory(bucketB);
     fs.writeFileSync(path.join(bucketB, 'unrelated-object.txt'), 'retain me\n');
-    deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'immutable' });
+    const historySource = path.join(temp, 'stored-history.txt');
+    fs.writeFileSync(historySource, 'original published historical bytes\n');
+    const filesystem = filesystemAdapter({ bucketDir: bucketB });
+    const historicalKeys = new Set(historical.map((entry) => entry.objectKey));
+    for (const key of historicalKeys) filesystem.put(key, historySource, { contentType: 'text/plain', cacheControl: 'no-store' });
+    const historicalMetadata = [...historicalKeys].map((key) => fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8'));
+    const adapter = { kind: filesystem.kind };
+    for (const operation of ['head', 'read', 'put']) {
+      adapter[operation] = (key, ...args) => {
+        if (historicalKeys.has(key)) fail(`deployment attempted ${operation} on historical storage`);
+        return filesystem[operation](key, ...args);
+      };
+    }
+    deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'immutable' });
     expectFailure(
       () => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable' }),
       'PULSE_DOCUMENTATION_NPM_VERIFICATION_REQUIRED',
       'ungated documentation promotion'
     );
-    const promotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable', npmVerification: npmFile });
-    const repeatPromotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'mutable', npmVerification: npmFile });
-    const storage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, driver: 'filesystem', bucketDir: bucketB, phase: 'all' });
+    const promotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
+    const repeatPromotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
+    const allRetry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all', npmVerification: npmFile });
+    const storage = verifyStorage({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all' });
+    if (allRetry.alreadyPresent !== currentImmutableCount + verified.mutableCount || storage.objectCount !== allRetry.objectCount || allRetry.deleted !== 0) fail('all-phase storage selection includes historical objects or deletes');
+    [...historicalKeys].forEach((key, index) => {
+      if (!filesystem.read(key).equals(fs.readFileSync(historySource))
+        || fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8') !== historicalMetadata[index]) fail('historical storage bytes or metadata changed');
+    });
     if (promotion.uploaded !== verified.mutableCount || repeatPromotion.alreadyPresent !== verified.mutableCount || !fs.existsSync(path.join(bucketB, 'unrelated-object.txt'))) fail('mutable documentation promotion is not idempotent or retained unrelated data');
     const promotionTail = promotion.objects.slice(-loaded.config.deployment.promotionCommitObjects.length).map((entry) => entry.key.replace(`${loaded.config.objectPrefix}/`, ''));
     if (JSON.stringify(promotionTail) !== JSON.stringify(loaded.config.deployment.promotionCommitObjects)) fail('documentation promotion commit objects were not uploaded last in release-owned order');
     return Object.freeze({
       objectCount: verified.objectCount,
       immutableObjects: verified.immutableCount,
+      currentImmutableObjects: currentImmutableCount,
+      historicalPreviewObjects: historical.length,
+      historicalStorageUntouched: true,
+      historicalCandidateIntegrityChecked: true,
+      unexpectedSitePathRejected: true,
       mutableObjects: verified.mutableCount,
       exactVersionReceiptObjects: verified.receipt.exactVersionObjectCount,
       verifiedStorageObjects: storage.objectCount,
       immutableRetryObjects: retry.alreadyPresent,
       mutableRetryObjects: repeatPromotion.alreadyPresent,
       immutabilityConflictRejected: true,
+      immutableMetadataConflictRejected: true,
+      immutableReceiptConflictRejected: true,
       unsealedCandidateFileRejected: true,
       npmPromotionGate: true,
       incompleteNpmEvidenceRejected: true,

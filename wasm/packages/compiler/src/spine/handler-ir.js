@@ -1,7 +1,8 @@
 'use strict';
+const { CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
 
 const ts = require('typescript');
-const { inspectBoundedPureLoop } = require('./bounded-pure-loop.js');
+const { inspectBoundedPureLoop, inspectBoundedReadLoop } = require('./bounded-pure-loop.js');
 const {
   extractFetchChain,
   extractKvNamespaceDeclaration,
@@ -31,6 +32,7 @@ const HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'source-statement',
   'block',
   'if',
+  'read-loop',
   'fetch-single',
   'fetch-group',
   'provider-variable',
@@ -41,7 +43,11 @@ const HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'opaque-fetch-return'
 ]);
 const HANDLER_IR_EXTENSION_OPERATION_KINDS = Object.freeze([
-  'parallel-group'
+  'parallel-group',
+  'router-body',
+  'router-body-call',
+  'helper-body',
+  'helper-call'
 ]);
 const ROUTER_HANDLER_IR_OPERATION_KINDS = Object.freeze([
   'router-transfer',
@@ -160,6 +166,7 @@ function summarizeHandlerOperation(body) {
       if (entry.elseOperation) countOperation(entry.elseOperation);
     }
     if (entry.kind === 'router-guard') countOperation(entry.body);
+    if (entry.kind === 'read-loop' || entry.kind === 'router-body' || entry.kind === 'helper-body') countOperation(entry.body);
   }
   countOperation(body);
   return Object.freeze({
@@ -186,6 +193,24 @@ function buildPlainHandlerIr(frontend, options = {}) {
   const continuationSites = [];
   const effectCounters = new Map();
   let continuationIndex = 0;
+  const helperBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.helpers || []).map(helper => [helper.name, helper]));
+  const pureHelperBounds = new Map();
+  for (const declaration of handler.body.statements || []) {
+    if (!ts.isFunctionDeclaration(declaration) || !helperBodies.get(declaration.name?.text)?.pure) continue;
+    let maxIterationProduct = 1;
+    const visit = node => {
+      if (ts.isForStatement(node)) {
+        const loop = inspectBoundedPureLoop(node, { pureHelper: true });
+        maxIterationProduct = Math.max(maxIterationProduct, loop.maxIterationProduct);
+        return; // The shared inspector includes all nested bounds.
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(declaration.body);
+    pureHelperBounds.set(declaration.name.text, { maxIterationProduct });
+  }
+  const routerBodies = new Map((options.internalGeneratedHandler && options.metadataExtensions?.router?.entries || [])
+    .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
   // Offsets belong to a source file. Project-wide contributions can share an
   // offset; only duplicate ranges within the same owning source are invalid.
   const sourceKey = (file, start) => `${String(file).replace(/\\/g, '/')}\u0000${start}`;
@@ -232,6 +257,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
         linkPackageIntrinsicsWithin(call);
         return linked;
       }
+      // Generated Router offsets belong to a different source tree. A miss in
+      // its explicit mapping must not fall back to authored-source offsets.
+      if (options.internalGeneratedHandler) return undefined;
     }
     const effect = packageEffectsBySource.get(callKey(call));
     if (effect) linkPackageIntrinsicsWithin(call);
@@ -254,6 +282,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
         }
         return linked;
       }
+      if (options.internalGeneratedHandler) return undefined;
     }
     const key = callKey(call);
     const intrinsic = packageIntrinsicsBySource.get(key);
@@ -278,6 +307,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
     if (typeof options.packageResultAdapterForCall === 'function') {
       const linked = options.packageResultAdapterForCall(call);
       if (linked) return linked;
+      if (options.internalGeneratedHandler) return undefined;
     }
     return packageResultAdaptersByStart.get(call.getStart(sourceFile));
   }
@@ -316,10 +346,13 @@ function buildPlainHandlerIr(frontend, options = {}) {
   }
 
   function nextProviderEffectSite(providerOperation, grouped = false, groupKey) {
-    const prefix = providerOperation.providerKind === 'kv' ? `kv-${providerOperation.operation}` : providerOperation.providerKind;
+    const valueType = providerOperation.valueTypeNode && require('./pure-helper-source').resolvePureType(
+      { projectModules: new Map() }, { sourceFile, path: sourceFile.fileName, imports: [] }, providerOperation.valueTypeNode);
+    const prefix = providerOperation.providerKind === 'kv'  ? `kv-${providerOperation.operation}` : providerOperation.providerKind;
     const site = Object.freeze({
       id: nextEffectId(prefix),
       kind: providerOperation.kind,
+      ...(valueType ? { borrowedValue: { version: CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION, type: valueType } } : {}),
       providerKind: providerOperation.providerKind,
       operation: providerOperation.operation,
       grouped: Boolean(grouped),
@@ -360,7 +393,8 @@ function buildPlainHandlerIr(frontend, options = {}) {
       payload: Object.freeze({ ...(effect.payload || {}) }),
       result: String(effect.result || 'value'),
       resource: effect.resource || Object.freeze({ kind: 'none' }),
-      position: packageEffectPosition(effect, call)
+      position: packageEffectPosition(effect, call),
+      ...(options.internalGeneratedHandler ? { generatedPosition: positionFor(sourceFile, call) } : {})
     });
     effectSites.push(site);
     return site;
@@ -450,6 +484,10 @@ function buildPlainHandlerIr(frontend, options = {}) {
         continue;
       }
       const provider = extractProviderCall(property.initializer, ctxName, aliases, { unwrap: true });
+      if (provider && provider.providerKind === 'output') {
+        diagnostics.push(diagnostic(sourceFile, property.initializer, 'PULSE_OUTPUT_PARALLEL_FORBIDDEN', 'Output operations cannot be members of ctx.parallel.'));
+        continue;
+      }
       if (provider) {
         members.push(Object.freeze({ key, kind: 'provider', property, operation: provider }));
         continue;
@@ -594,13 +632,37 @@ function buildPlainHandlerIr(frontend, options = {}) {
         index += 1;
         continue;
       }
-      out.push(buildStatement(statement, aliases));
+      out.push(buildStatement(statement, aliases, true));
       index += 1;
     }
     return Object.freeze(out.flat().filter(Boolean));
   }
 
-  function buildStatement(statement, aliases) {
+  let activePureHelper = false;
+  function buildStatement(statement, aliases, fromList = false) {
+    if (ts.isFunctionDeclaration(statement) && helperBodies.has(statement.name?.text)) {
+      const previous = activePureHelper;
+      activePureHelper = helperBodies.get(statement.name.text).pure === true;
+      const body = buildStatement(statement.body, new Map());
+      activePureHelper = previous;
+      return createHandlerOperation('helper-body', { statement, pure: helperBodies.get(statement.name.text).pure === true, body });
+    }
+    if (ts.isVariableStatement(statement) && statement.declarationList.declarations.length === 1) {
+      const declaration = statement.declarationList.declarations[0], call = declaration.initializer;
+      if (call && ts.isCallExpression(call) && ts.isIdentifier(call.expression) && helperBodies.has(call.expression.text) && !helperBodies.get(call.expression.text).pure)
+        return createHandlerOperation('helper-call', { statement, declaration, call });
+    }
+    if (ts.isFunctionDeclaration(statement) && routerBodies.has(statement.name?.text)) {
+      return createHandlerOperation('router-body', { statement, body: buildStatement(statement.body, new Map()) });
+    }
+    if (ts.isReturnStatement(statement) && statement.expression && ts.isCallExpression(statement.expression)
+      && ts.isIdentifier(statement.expression.expression) && routerBodies.has(statement.expression.expression.text)) {
+      return createHandlerOperation('router-body-call', { statement });
+    }
+    if (!fromList && (ts.isExpressionStatement(statement) || ts.isVariableStatement(statement))) {
+      const statements = buildStatementList([statement], aliases);
+      return statements.length === 1 ? statements[0] : createHandlerOperation('block', { statement: ts.factory.createBlock([statement], true), statements });
+    }
     if (ts.isBlock(statement)) return createHandlerOperation('block', { statement, statements: buildStatementList(statement.statements, aliases) });
     if (ts.isIfStatement(statement)) {
       const thenOperation = buildStatement(statement.thenStatement, new Map(aliases));
@@ -637,12 +699,33 @@ function buildPlainHandlerIr(frontend, options = {}) {
       }
     }
     if (ts.isForStatement(statement)) {
-      const loop = inspectBoundedPureLoop(statement, { ctxName });
+      const effectForCall = call => extractProviderCall(call, ctxName, aliases) || packageEffectForCall(call);
+      const pureHelperForCall = call => ts.isIdentifier(call.expression) && pureHelperBounds.get(call.expression.text);
+      const helperForCall = call => ts.isIdentifier(call.expression) && (
+        (helperBodies.get(call.expression.text)?.pure ? undefined : helperBodies.get(call.expression.text))
+        // JavaScript inspection retains ordinary ctx-first source calls. The
+        // original graph executes them; this is not Native callee admission.
+        || options.target === 'javascript' && call.arguments.length > 0 && ts.isIdentifier(call.arguments[0]) && call.arguments[0].text === ctxName);
+      let hasEffect = false;
+      function findEffect(node) {
+        if (ts.isCallExpression(node) && (effectForCall(node) || helperForCall(node))) hasEffect = true;
+        ts.forEachChild(node, findEffect);
+      }
+      findEffect(statement);
+      if (hasEffect) {
+        const loop = inspectBoundedReadLoop(statement, { ctxName, effectForCall, helperForCall, pureHelperForCall, namespaceAliases: [...aliases.keys()] });
+        for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED', error.message));
+        if (loop.errors.length) return createHandlerOperation('source-statement', { statement, role: 'read-loop-rejected' });
+        return createHandlerOperation('read-loop', { statement, counter: loop.name, maxIterations: loop.maxIterations,
+          initializer: statement.initializer, test: statement.condition, increment: statement.incrementor,
+          body: buildStatement(statement.statement, new Map(aliases)) });
+      }
+      const loop = inspectBoundedPureLoop(statement, { ctxName, pureHelper: activePureHelper, pureHelperForCall });
       for (const error of loop.errors) diagnostics.push(diagnostic(sourceFile, error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message));
       return createHandlerOperation('source-statement', { statement, role: 'bounded-pure-loop' });
     }
     if (ts.isTryStatement(statement) || ts.isForInStatement(statement) || ts.isForOfStatement(statement) || ts.isWhileStatement(statement) || ts.isDoStatement(statement) || ts.isSwitchStatement(statement)) {
-      diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED', 'Canonical lowering supports if/else and literal-capped pure for loops; other loops, switch, and try/catch are reserved.'));
+      diagnostics.push(diagnostic(sourceFile, statement, 'PULSE_CANONICAL_CONTROL_FLOW_UNSUPPORTED', 'Canonical lowering supports if/else, literal-capped pure for loops and bounded sequential read loops; other loops, switch, and try/catch are reserved.'));
     }
     return createHandlerOperation('source-statement', { statement, role: 'preserved-source' });
   }
@@ -688,6 +771,9 @@ function buildPlainHandlerIr(frontend, options = {}) {
     const aliases = new Map(inheritedAliases);
     for (let index = 0; index < statements.length; index += 1) {
       const statement = statements[index];
+      if (ts.isFunctionDeclaration(statement) && (routerBodies.has(statement.name?.text) || helperBodies.has(statement.name?.text))) {
+        scanOriginalStatements(statement.body.statements); continue;
+      }
       const namespace = extractKvNamespaceDeclaration(statement, ctxName);
       if (namespace) { aliases.set(namespace.variableName, namespace.store); continue; }
       if (parallelInvocationStatement(statement, ctxName)) continue;
@@ -700,6 +786,7 @@ function buildPlainHandlerIr(frontend, options = {}) {
       if (ts.isReturnStatement(statement) && packageEffectForCall(unwrapPackageCall(statement.expression))) continue;
       if (ts.isReturnStatement(statement) && extractFetchChain(statement.expression, ctxName)) continue;
       if (ts.isBlock(statement)) { scanOriginalStatements(statement.statements, aliases); continue; }
+      if (ts.isForStatement(statement)) { scanOriginalStatements([statement.statement], aliases); continue; }
       if (ts.isIfStatement(statement)) {
         scanOriginalStatements(ts.isBlock(statement.thenStatement) ? statement.thenStatement.statements : [statement.thenStatement], aliases);
         if (statement.elseStatement) scanOriginalStatements(ts.isBlock(statement.elseStatement) ? statement.elseStatement.statements : [statement.elseStatement], aliases);

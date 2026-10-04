@@ -310,6 +310,10 @@ const allowedLocalVersionLiterals = new Map(Object.entries({
 // *_POLICY / *_CODES / *_CAPABILITIES style hidden contracts even when they do not
 // contain a pulsewasm version literal.
 const allowedLocalIdentifierDefinitions = new Map(Object.entries({
+  // Internal inference vocabulary, consumed only inside wasm-compiler.
+  'packages/compiler/src/pure-helper-values.js': [
+    'SCALAR_TYPES', 'FORBIDDEN_FIELDS', 'BINARY_RULES', 'UNARY_TYPES'
+  ],
   // K1 assigns the portable authoring/host boundary to runtime. Native and Node
   // consume that owner's host export; neither duplicates its operation ledger.
   'packages/runtime/src/internal/conditional-kv.js': ['KV_CONDITIONAL_KINDS'],

@@ -302,6 +302,7 @@ describe('D3 JavaScript JWT realization integration', () => {
     expect(FASTLY_JAVASCRIPT_JWT_REALIZATION).toEqual(expected);
     expect(FASTLY_JAVASCRIPT_JWT_REALIZATIONS).toEqual({
       HS256: expected,
+      RS256: { algorithm: 'RS256', realization: 'runtime-builtin', implementation: 'webcrypto.subtle.rsassa-pkcs1-v1_5-sha-256.v1', automaticFallback: false },
       ES256: {
         algorithm: 'ES256',
         realization: 'runtime-builtin',
@@ -327,15 +328,15 @@ describe('D3 JavaScript JWT realization integration', () => {
     });
     expect(jwtContracts.JWT_TARGET_REALIZATIONS.fastly.javascript)
       .toMatchObject({
-        algorithms: ['HS256', 'ES256'],
+        algorithms: ['HS256', 'ES256', 'RS256'],
         keyTypes: ['secret', 'jwk', 'jwks'],
         automaticFallback: false,
       });
-    expect(classifyNodeJavascriptCapability('jwt.verify.rs256')).toMatchObject({
+    expect(classifyNodeJavascriptCapability('jwt.verify.eddsa')).toMatchObject({
       status: 'blocked',
       reasonId: 'jwt-crypto-realization-unavailable',
     });
-    expect(classifyFastlyJavascriptCapability('jwt.verify.rs256')).toMatchObject({
+    expect(classifyFastlyJavascriptCapability('jwt.verify.eddsa')).toMatchObject({
       status: 'blocked',
       reasonId: 'jwt-crypto-realization-unavailable',
     });
@@ -365,5 +366,17 @@ describe('D3 JavaScript JWT realization integration', () => {
     });
     expect(JSON.stringify(projection)).not.toContain('AUTH_JWT');
     expect(JSON.stringify(projection)).not.toContain(SECRET);
+  });
+  it('cancels after secret resolution without reading the clock or releasing a token', async () => {
+    const controller = new AbortController();
+    let clocks = 0;
+    const execute = createNodeJavascriptJwtVerify({
+      secretLookup: async () => { controller.abort(); return SECRET; },
+      captureWallClock: () => { clocks++; return { trusted: true, unixEpochSeconds: 1 }; },
+    });
+    const effect = { package: '@pulse-compute/jwt', contractId: 'pulse.jwt', providerKind: 'jwt',
+      kind: 'jwt.sign', operation: 'sign', capability: 'jwt.sign', result: 'string', payload: { claims: {}, options: { algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 45 } } };
+    await expect(execute(effect, { signal: controller.signal })).rejects.toHaveProperty('code');
+    expect(clocks).toBe(0);
   });
 });

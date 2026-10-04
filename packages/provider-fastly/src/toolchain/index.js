@@ -169,16 +169,25 @@ function createDriver() {
         runtimeClass: 'native',
         status: 'supported',
         capabilities: Object.freeze([
-          's3.head', 's3.getText',
+          's3.head', 's3.getText', 's3.getBody',
           'kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap',
           'jwt.verify',
+          'jwt.sign',
           'jwt.verify.hs256',
           'jwt.verify.es256',
+          'jwt.verify.rs256',
           'secret.get',
           'time.wall-clock'
         ]),
         keyTypes: Object.freeze(['secret', 'jwk', 'jwks']),
         realizations: Object.freeze([
+          Object.freeze({
+            kind: 'package-native-application',
+            contractId: 'pulse.entities',
+            implementation: 'pulse.package-native-application.v1',
+            implemented: true,
+            automaticFallback: false
+          }),
           Object.freeze({
             kind: 'crypto-composed',
             realization: 'guest-source:pulse-hmac-as',
@@ -197,6 +206,19 @@ function createDriver() {
             realization: 'guest-linked:pulse-es256-rustcrypto-p256',
             implementation: 'rustcrypto.p256-0.13.2.ecdsa-0.16.9.sha2-0.10.9.v1',
             algorithms: Object.freeze(['ES256']),
+            keyTypes: Object.freeze(['jwk', 'jwks']),
+            implemented: true,
+            status: 'implemented-g4',
+            semanticOwner: '@pulse-compute/crypto',
+            guestUnitRequired: true,
+            portable: true,
+            automaticFallback: false
+          }),
+          Object.freeze({
+            kind: 'crypto-composed',
+            realization: 'guest-linked:pulse-rs256-bearssl-i31',
+            implementation: 'bearssl.0.6.rsa-i31.sha256.v1',
+            algorithms: Object.freeze(['RS256']),
             keyTypes: Object.freeze(['jwk', 'jwks']),
             implemented: true,
             status: 'implemented-g4',
@@ -233,6 +255,11 @@ function createDriver() {
             realization: 'guest-linked:pulse-es256-rustcrypto-p256',
             implemented: true,
             status: 'implemented-g4'
+          }, {
+            algorithm: 'RS256',
+            realization: 'guest-linked:pulse-rs256-bearssl-i31',
+            implemented: true,
+            status: 'implemented-g4'
           }]
         }),
         finalWasmPolicy: fastlyFinalWasmPolicy,
@@ -258,6 +285,7 @@ function createDriver() {
         realizationArtifacts: invocation.nativeArtifact.realizationArtifacts,
         guestUnits: invocation.nativeArtifact.guestUnits,
         nativeOptimization: invocation.optimization,
+        emitWat: invocation.nativeArtifact.manifest.wat?.emitted === true,
         compileTimeoutMs: invocation.timeoutMs
       });
       const { native, ...publicRealization } = realization;
@@ -286,6 +314,7 @@ function createDriver() {
         realizationArtifacts: invocation.nativeArtifact.realizationArtifacts,
         guestUnits: invocation.nativeArtifact.guestUnits,
         nativeOptimization: invocation.optimization,
+        emitWat: invocation.nativeArtifact.manifest.wat?.emitted === true,
         compileTimeoutMs: invocation.timeoutMs
       });
       const providerBuild = writeFastlyCanonicalTarget({

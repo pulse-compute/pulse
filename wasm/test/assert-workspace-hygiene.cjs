@@ -36,10 +36,9 @@ function walk(dir, visitor) {
 
 const rootManifest = readJson(path.join(repoRoot, 'package.json'));
 const releaseManifest = readJson(path.join(repoRoot, 'release', 'pulse-release-manifest.json'));
-assert.equal(rootManifest.engines?.pnpm, '>=10 <11', 'root engines must support the pnpm 10.x development line');
 assert.equal(rootManifest.engines.pnpm, releaseManifest.publication.pnpmDevelopmentRange, 'root pnpm range must match release policy');
 assert.equal(Object.hasOwn(rootManifest, 'packageManager'), false, 'root development metadata must not hard-pin one pnpm patch');
-assert.match(releaseManifest.publication.pnpmVersion, /^10\.\d+\.\d+$/, 'release policy must select an exact pnpm 10.x toolchain');
+assert.match(releaseManifest.publication.pnpmVersion, /^\d+\.\d+\.\d+$/, 'release policy must select an exact pnpm toolchain');
 
 const expectedWorkspacePackages = ['packages/*', 'wasm', 'wasm/packages/*'];
 assert.deepEqual(rootManifest.workspaces, expectedWorkspacePackages, 'package.json workspaces must stay aligned with pnpm-workspace.yaml');
@@ -117,8 +116,10 @@ assert.ok(compilerManifest.dependencies && compilerManifest.dependencies['@pulse
 assert.ok(compilerManifest.dependencies && compilerManifest.dependencies['@pulse-compute/wasm-host-runtime'], 'wasm compiler package must depend on host-runtime for package-owned host builders');
 assert.ok(compilerManifest.dependencies && compilerManifest.dependencies['@pulse-compute/wasm-schema-json'], 'wasm compiler package must depend on schema-json for package-owned schema builders');
 assert.ok(compilerManifest.dependencies && compilerManifest.dependencies['@pulse-compute/wasm-runtime-core-as'], 'wasm compiler package must depend on runtime-core-as for package-owned AS builders');
-assert.ok(compilerManifest.dependencies && compilerManifest.dependencies['@pulse-compute/provider-node'], 'wasm compiler package must depend on provider-node for package-owned Node provider builders');
-assert.ok(compilerManifest.dependencies && compilerManifest.dependencies['@pulse-compute/provider-fastly'], 'wasm compiler package must depend on provider-fastly for package-owned Fastly provider builders');
+assert.equal(compilerManifest.dependencies?.['@pulse-compute/provider-node'], undefined, 'compiler production dependencies must exclude Node');
+assert.ok(compilerManifest.devDependencies?.['@pulse-compute/provider-node'], 'repository proof scripts declare their Node development dependency');
+assert.equal(compilerManifest.dependencies?.['@pulse-compute/provider-fastly'], undefined, 'compiler production dependencies must exclude Fastly');
+assert.ok(compilerManifest.devDependencies?.['@pulse-compute/provider-fastly'], 'repository proof scripts declare their Fastly development dependency');
 assert.ok(compilerManifest.dependencies && compilerManifest.dependencies.assemblyscript, 'wasm compiler package must own AssemblyScript as a runtime dependency for packed pulse compile workflows');
 assert.ok(!(compilerManifest.devDependencies && compilerManifest.devDependencies.assemblyscript), 'wasm compiler package must not duplicate the AssemblyScript runtime dependency as a devDependency');
 assert.ok(!(compilerManifest.bin && compilerManifest.bin.pulse), 'wasm compiler must not own the product-facing pulse binary');
@@ -129,8 +130,8 @@ assert.equal(cliManifest.bin && cliManifest.bin.pulse, './bin/pulse.js', 'wasm C
 for (const dependency of ['@pulse-compute/wasm-build-support', '@pulse-compute/wasm-compiler', '@pulse-compute/wasm-contracts', '@pulse-compute/wasm-schema-json', 'typescript']) {
   assert.ok(cliManifest.dependencies && cliManifest.dependencies[dependency], `wasm CLI package must declare ${dependency}`);
 }
-assert.equal(Boolean(cliManifest.dependencies && cliManifest.dependencies['@pulse-compute/provider-fastly']), false, 'wasm CLI package must not depend directly on provider-fastly');
-assert.equal(Boolean(cliManifest.dependencies && cliManifest.dependencies['@pulse-compute/provider-node']), false, 'wasm CLI package must not depend directly on provider-node');
+assert.equal(Boolean(cliManifest.dependencies && cliManifest.dependencies['@pulse-compute/provider-fastly']), true, 'CLI distribution must bundle provider-fastly');
+assert.equal(Boolean(cliManifest.dependencies && cliManifest.dependencies['@pulse-compute/provider-node']), true, 'CLI distribution must bundle provider-node');
 for (const subpath of ['.', './workflow', './project-config', './project-execution']) {
   assert.ok(cliManifest.exports && cliManifest.exports[subpath], `wasm CLI package must expose ${subpath}`);
 }
@@ -148,14 +149,14 @@ assert.ok(
     && cliLockBlock.includes('typescript:'),
   'pnpm-lock.yaml must contain CLI dependencies for compiler, canonical contracts, schema support, build support, and TypeScript'
 );
-assert.ok(!cliLockBlock.includes("'@pulse-compute/provider-node':") && !cliLockBlock.includes("'@pulse-compute/provider-fastly':"), 'pnpm-lock.yaml CLI importer must not contain concrete provider dependencies');
+assert.ok(cliLockBlock.includes("'@pulse-compute/provider-node':") && cliLockBlock.includes("'@pulse-compute/provider-fastly':"), 'pnpm-lock.yaml CLI importer must contain bundled provider dependencies');
 assert.ok(/\n  wasm\/packages\/build-support:\n\s+dependencies:\n\s+'@pulse-compute\/wasm-contracts':/m.test(lockfile), 'pnpm-lock.yaml must contain a build-support importer with contracts dependency');
 assert.ok(lockfile.includes('  wasm/packages/compiler:') && lockfile.includes("'@pulse-compute/wasm-library-kit':"), 'pnpm-lock.yaml must contain a compiler importer dependency on library-kit');
 assert.ok(lockfile.includes('  wasm/packages/compiler:') && lockfile.includes("'@pulse-compute/wasm-host-runtime':"), 'pnpm-lock.yaml must contain a compiler importer dependency on host-runtime');
 assert.ok(lockfile.includes('  wasm/packages/compiler:') && lockfile.includes("'@pulse-compute/wasm-schema-json':"), 'pnpm-lock.yaml must contain a compiler importer dependency on schema-json');
 assert.ok(lockfile.includes('  wasm/packages/compiler:') && lockfile.includes("'@pulse-compute/wasm-runtime-core-as':"), 'pnpm-lock.yaml must contain a compiler importer dependency on runtime-core-as');
-assert.ok(lockfile.includes('  wasm/packages/compiler:') && lockfile.includes("'@pulse-compute/provider-node':"), 'pnpm-lock.yaml must contain a compiler importer dependency on provider-node');
-assert.ok(lockfile.includes('  wasm/packages/compiler:') && lockfile.includes("'@pulse-compute/provider-fastly':"), 'pnpm-lock.yaml must contain a compiler importer dependency on provider-fastly');
+
+
 assert.ok(lockfile.includes('  wasm/packages/library-kit:') && lockfile.includes("'@pulse-compute/wasm-build-support':") && lockfile.includes("'@pulse-compute/wasm-contracts':"), 'pnpm-lock.yaml must contain a library-kit importer with build-support and contracts dependencies');
 assert.ok(lockfile.includes('  wasm/packages/host-runtime:') && lockfile.includes("'@pulse-compute/wasm-build-support':") && lockfile.includes("'@pulse-compute/wasm-contracts':"), 'pnpm-lock.yaml must contain a host-runtime importer with build-support and contracts dependencies');
 const schemaJsonLockBlock = (lockfile.match(/\n  wasm\/packages\/schema-json:\n[\s\S]*?(?=\n  wasm\/packages\/|\n\npackages:|$)/) || [''])[0];
@@ -169,7 +170,13 @@ assert.ok(providerFastlyLockBlock.includes("'@pulse-compute/wasm-build-support':
 assert.ok(!providerNodeLockBlock.includes('@pulse-compute/wasm-compiler'), 'pnpm-lock.yaml must not contain a provider-node importer compiler dependency');
 assert.ok(!providerFastlyLockBlock.includes('@pulse-compute/wasm-compiler'), 'pnpm-lock.yaml must not contain a provider-fastly importer compiler dependency');
 assert.ok(compilerLockBlock.includes('    dependencies:') && compilerLockBlock.includes('      assemblyscript:'), 'pnpm-lock.yaml must keep AssemblyScript in the compiler importer runtime dependencies');
-assert.ok(!compilerLockBlock.includes('    devDependencies:'), 'pnpm-lock.yaml must not duplicate AssemblyScript in compiler importer devDependencies');
+const compilerProductionLock = compilerLockBlock.split('    devDependencies:')[0];
+const compilerDevelopmentLock = compilerLockBlock.split('    devDependencies:')[1] || '';
+for (const id of ['node', 'fastly']) {
+  assert.ok(!compilerProductionLock.includes(`'@pulse-compute/provider-${id}':`), 'compiler production lock must not pull concrete providers');
+  assert.ok(compilerDevelopmentLock.includes(`'@pulse-compute/provider-${id}':`), 'compiler development lock must retain repository proof providers');
+}
+assert.ok(!compilerDevelopmentLock.includes('      assemblyscript:'), 'compiler must not duplicate AssemblyScript in development dependencies');
 assert.ok(!/packages\.applied-caas-gateway\d*\.internal\.api\.openai\.org/.test(lockfile), 'pnpm-lock.yaml must not contain OpenAI-internal artifact registry URLs');
 assert.ok(!/\btarball:\s*https?:\/\//.test(lockfile), 'pnpm-lock.yaml must not pin explicit registry tarball URLs');
 

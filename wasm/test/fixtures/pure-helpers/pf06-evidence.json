@@ -1,0 +1,921 @@
+{
+  "schemaVersion": "pulse.pf06.evidence.v1",
+  "status": "qualified",
+  "productSourceCommit": "4110005ecce100b7725602d101d3b5d632f2a714",
+  "productSourceTree": "61660e0e1e9770db8dc501e8350b4aac53bda294",
+  "trackedTreeCleanAtPack": true,
+  "versions": {
+    "plan": "pulse.canonical-native-plan.v9",
+    "planCompiler": "pulse.canonical-native-plan-compiler.v9",
+    "typedKvBorrow": "pulse.typed-kv-borrow.v1",
+    "guestAbiChanged": false,
+    "generatorChanged": false
+  },
+  "focused": {
+    "parityCases": 21,
+    "variants": 6,
+    "sourceRejections": 13,
+    "recomputedHashPlanRejections": 12
+  },
+  "packed": {
+    "manifestSha256": "b604e0cab2b72e87c9fd3298d2dbd8cdcb3bd1f758a41d7a5dbc4b5bd8299e11",
+    "packages": [
+      {
+        "name": "@pulse-compute/runtime",
+        "sha256": "2a85444e8c05e9f1067e30e5781b90a649a4b6d54e8f849a9d5654c3b29d3fdf"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "sha256": "6d97de00ef4c9ce7bbee80b00536b95e62ceac4c197c215aafd42bb51c5b3c4b"
+      },
+      {
+        "name": "@pulse-compute/cli",
+        "sha256": "64ef69aaa9c5cf9277b6f9998407ca519fd74e3fd4589d498be4d579bf32278b"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "sha256": "477d1ca14e9ab5ce0ebf8fa725321cb801a298bde2454a687a74e4fa1518aa83"
+      },
+      {
+        "name": "@pulse-compute/grip",
+        "sha256": "8bf4fce2fbcd6984dbe8f90c7c3bf790ab2ee9bd5c71fd2caf5411750377472a"
+      },
+      {
+        "name": "@pulse-compute/assets",
+        "sha256": "981d69f8d14dab8118855482a651da8955659ed4edb414737347ba285f2a8627"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "sha256": "1b41d023fd54245fde92553bf219794c1886718f627b3dc026779437655d6ac3"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "sha256": "250f2e950a4d8dd643d76f3f4ef8a8ff209dd814d0be4e014f29ece17eeccc4a"
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "sha256": "1217f7c4baa7f98e938f30c731ef981fd220e615b98e45b98763ce2418b264a7"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "sha256": "453d6b91c60fa6ea862ca4a2d19c5ee0140b1da98e386a4994475c5b56b9230a"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "sha256": "50b1090702666a6141755b688362a6980ab0601a23c8e25fcc561a1ccbcf303e"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "sha256": "6c05836d8cad1c0acca42c3bb927f142be0422a223459fcac6fbacbead82008d"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "sha256": "2a7790eca87ebc661155e059b9b3f4a978ba2792533c5733cda7772cf9bcd598"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "sha256": "50686f9b1bbc03d0638275b70f37b613cd027f2b9d0c6dff5e0c11a643bf0823"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "sha256": "99518448eac4e2d708a4a2b19aa5504be9fd1e7d4d02c182847997a501c9a9fa"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "sha256": "c1712acc638ea4a93b302bb085d30d712f077851bfe277ff12930a3d17fc001c"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "sha256": "3d6f8c5a8f1c63be4f2529459a55d7d3d942e5bc923a1593b0e4298511942738"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "sha256": "699cb19c4c3c45ce191c2ef63b50e79390f511f087f33a75765019bd46372f47"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "sha256": "ab88e60d2251b72419b70e2b5e2a1329beee05d6fb62d5b2f59eea3550ad9a4a"
+      }
+    ],
+    "sealedPulseFiles": 992,
+    "installedClosureUnchanged": true,
+    "tasks": [
+      {
+        "task": "lowering/assert-pure-source-helpers.cjs",
+        "testSha256": "2ed00f4c19829531c492f74dfa9a8939fa9af2ec4c830452d6b3398b41eb5b66",
+        "exitCode": 0,
+        "logSha256": "d1e0d1f4479bb8b2a976491d226b35cab04e0dc4477f6e241194ee5e788fcd84",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 317
+        }
+      },
+      {
+        "task": "lowering/assert-pure-record-helpers.cjs",
+        "testSha256": "71e16d865c71ae2f2ddb9e9e66f5f5704d1d093c39a1131daec59971df46a9c8",
+        "exitCode": 0,
+        "logSha256": "38db7c3be24c190c923a35a9adfde41449f303bc994f1adb6ebbc6ca552814d3",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 317
+        }
+      },
+      {
+        "task": "lowering/assert-pure-argument-helpers.cjs",
+        "testSha256": "d8c5db4adba534cbe7b96e1d17f14173c8b4cdbf60a04db9e00922deea21301b",
+        "exitCode": 0,
+        "logSha256": "1da42472975829157a2865c96803f4ee4a07621d7c0179c1ad966b6ff2e1e514",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 317
+        }
+      },
+      {
+        "task": "lowering/assert-pure-loop-helpers.cjs",
+        "testSha256": "de39972849f72bc2db353c5fe99538f2e6b472bccb326c558a8232e3a4678154",
+        "exitCode": 0,
+        "logSha256": "d25f0b10e70a7ab24e7e6c8bab3a240344f5ba2ae2b08fc20fc1ff67a4e45a30",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 317
+        }
+      },
+      {
+        "task": "lowering/assert-source-helpers.cjs",
+        "testSha256": "91ee67b482a2b5c7f40f33c22178be43508d175ff24977f58bf620f430a11711",
+        "exitCode": 0,
+        "logSha256": "fbdf4abc53090696799ce618734b1d8285ab6a57eabc7aec98e3156c1bb82cca",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 318
+        }
+      },
+      {
+        "task": "lowering/assert-loop-helpers.cjs",
+        "testSha256": "e75181b69d554567ae2bdd6e6da02d58e477e47c8656de63e72bb233ca26c135",
+        "exitCode": 0,
+        "logSha256": "8318a7658273be36c0ebc7ff95b5a8cb0b72e5060291d7a9f9be5b8a5c8b4490",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 321
+        }
+      },
+      {
+        "task": "runtime/compiler-efficiency/o19-production-stage.cjs",
+        "testSha256": "01ad80e3b8c52f021870211673c50b2012d251f6a370a161f3f41316989e9642",
+        "exitCode": 0,
+        "logSha256": "a06706a5f673dbd44c902bc2f6c5c425b4dbe2322a42ff4f0c437ee001f2c9c6",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 321
+        }
+      },
+      {
+        "task": "runtime/compiler-efficiency/pf05-packed-proof.cjs",
+        "testSha256": "82bb182f4ebea92cf0cdc3569e298ac0c637185f16c4ce1e6b48aae89e07de87",
+        "exitCode": 0,
+        "logSha256": "91a34f28624e41d1dd5e1caf9ecb7dde800188ad136205433ed9055561e4327e",
+        "audit": {
+          "workspaceProductModules": 0,
+          "loadedModules": 339
+        }
+      }
+    ],
+    "reportSha256": "74fea6df6d91a81768c50c15b34cfcac635fd444d0a6757d4c7b547e4aad2569",
+    "sharing": {
+      "status": "passed",
+      "cells": [
+        {
+          "callSites": 1,
+          "canonicalHelpers": 1,
+          "parityCases": 8,
+          "targets": {
+            "node": {
+              "generatedBodies": 1,
+              "generatedSourceBytes": 22275,
+              "wasmBytes": 43547,
+              "gzipBytes": 23582,
+              "finalWasm": {
+                "namedCompanionSectionsByteExact": true,
+                "roots": [
+                  {
+                    "name": "canonical-native.as/__pulse_pure_helper_0",
+                    "bytes": 738,
+                    "directCallSites": 1,
+                    "callers": [
+                      "canonical-native.as/__pulse_chunk_1"
+                    ]
+                  }
+                ],
+                "sharedBodyPartitions": 1,
+                "rootBytes": 738,
+                "reachableFunctions": 2,
+                "largestReachableBodyBytes": 738
+              }
+            },
+            "fastly": {
+              "generatedBodies": 1,
+              "generatedSourceBytes": 123319,
+              "wasmBytes": 88506,
+              "gzipBytes": 38441,
+              "finalWasm": {
+                "namedCompanionSectionsByteExact": true,
+                "roots": [
+                  {
+                    "name": "fastly-native-platform-capabilities.as/__pulse_pure_helper_0",
+                    "bytes": 1090,
+                    "directCallSites": 1,
+                    "callers": [
+                      "fastly-native-platform-capabilities.as/__pulse_chunk_1"
+                    ]
+                  }
+                ],
+                "sharedBodyPartitions": 1,
+                "rootBytes": 1090,
+                "reachableFunctions": 72,
+                "largestReachableBodyBytes": 1999
+              }
+            }
+          }
+        },
+        {
+          "callSites": 2,
+          "canonicalHelpers": 1,
+          "parityCases": 8,
+          "targets": {
+            "node": {
+              "generatedBodies": 1,
+              "generatedSourceBytes": 22871,
+              "wasmBytes": 43624,
+              "gzipBytes": 23613,
+              "finalWasm": {
+                "namedCompanionSectionsByteExact": true,
+                "roots": [
+                  {
+                    "name": "canonical-native.as/__pulse_pure_helper_0",
+                    "bytes": 741,
+                    "directCallSites": 1,
+                    "callers": [
+                      "canonical-native.as/__pulse_ex_41$k"
+                    ]
+                  }
+                ],
+                "sharedBodyPartitions": 1,
+                "rootBytes": 741,
+                "reachableFunctions": 2,
+                "largestReachableBodyBytes": 741
+              }
+            },
+            "fastly": {
+              "generatedBodies": 1,
+              "generatedSourceBytes": 123915,
+              "wasmBytes": 88582,
+              "gzipBytes": 38488,
+              "finalWasm": {
+                "namedCompanionSectionsByteExact": true,
+                "roots": [
+                  {
+                    "name": "fastly-native-platform-capabilities.as/__pulse_pure_helper_0",
+                    "bytes": 1090,
+                    "directCallSites": 1,
+                    "callers": [
+                      "fastly-native-platform-capabilities.as/__pulse_ex_41$k"
+                    ]
+                  }
+                ],
+                "sharedBodyPartitions": 1,
+                "rootBytes": 1090,
+                "reachableFunctions": 72,
+                "largestReachableBodyBytes": 1999
+              }
+            }
+          }
+        },
+        {
+          "callSites": 16,
+          "canonicalHelpers": 1,
+          "parityCases": 8,
+          "targets": {
+            "node": {
+              "generatedBodies": 1,
+              "generatedSourceBytes": 30174,
+              "wasmBytes": 44228,
+              "gzipBytes": 23779,
+              "finalWasm": {
+                "namedCompanionSectionsByteExact": true,
+                "roots": [
+                  {
+                    "name": "canonical-native.as/__pulse_pure_helper_0",
+                    "bytes": 741,
+                    "directCallSites": 1,
+                    "callers": [
+                      "canonical-native.as/__pulse_ex_111$k"
+                    ]
+                  }
+                ],
+                "sharedBodyPartitions": 1,
+                "rootBytes": 741,
+                "reachableFunctions": 2,
+                "largestReachableBodyBytes": 741
+              }
+            },
+            "fastly": {
+              "generatedBodies": 1,
+              "generatedSourceBytes": 131218,
+              "wasmBytes": 89200,
+              "gzipBytes": 38650,
+              "finalWasm": {
+                "namedCompanionSectionsByteExact": true,
+                "roots": [
+                  {
+                    "name": "fastly-native-platform-capabilities.as/__pulse_pure_helper_0",
+                    "bytes": 1090,
+                    "directCallSites": 1,
+                    "callers": [
+                      "fastly-native-platform-capabilities.as/__pulse_ex_111$k"
+                    ]
+                  }
+                ],
+                "sharedBodyPartitions": 1,
+                "rootBytes": 1090,
+                "reachableFunctions": 72,
+                "largestReachableBodyBytes": 1999
+              }
+            }
+          }
+        }
+      ],
+      "loopCases": 18,
+      "o25": {
+        "native": {
+          "status": "passed",
+          "checks": [
+            {
+              "name": "found",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "65-packs-two-rounds",
+              "registration": 0,
+              "status": "passed",
+              "reads": 65,
+              "digests": 66,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "not-found",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:"
+              ]
+            },
+            {
+              "name": "malformed-root",
+              "registration": 0,
+              "status": "passed",
+              "reads": 0,
+              "digests": 0,
+              "response": [
+                503,
+                "HISTORY_INDEX_INVALID"
+              ]
+            },
+            {
+              "name": "corrupt-pack",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                503,
+                "HISTORY_INDEX_CORRUPT"
+              ]
+            },
+            {
+              "name": "wrong-owner",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                503,
+                "HISTORY_INDEX_INVALID"
+              ]
+            },
+            {
+              "name": "missing-object",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 1,
+              "response": [
+                503,
+                "HISTORY_INDEX_UNAVAILABLE"
+              ]
+            },
+            {
+              "name": "digest-failure",
+              "registration": 0,
+              "status": "passed",
+              "reads": 0,
+              "digests": 1,
+              "response": [
+                503,
+                "HISTORY_INDEX_UNAVAILABLE"
+              ]
+            },
+            {
+              "name": "caller-bulk-failure",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                207,
+                "bulk:HISTORY_INDEX_INVALID"
+              ]
+            },
+            {
+              "name": "found",
+              "registration": 1,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "found",
+              "registration": 15,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "interleaved-B-storage",
+              "registration": 15,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-B"
+              ]
+            },
+            {
+              "name": "resumed-A-storage",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "interleaved-B-digest",
+              "registration": 15,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-B"
+              ]
+            },
+            {
+              "name": "resumed-A-digest",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "found",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            }
+          ],
+          "completedChecks": 16,
+          "scope": "Compiled Native helper with injected storage and SHA-256 effects; not deployed provider qualification",
+          "pending": [
+            "Work-limit and caller bulk-result qualification"
+          ]
+        },
+        "javascript": {
+          "status": "passed",
+          "checks": [
+            {
+              "name": "found",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "65-packs-two-rounds",
+              "registration": 0,
+              "status": "passed",
+              "reads": 65,
+              "digests": 66,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "not-found",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:"
+              ]
+            },
+            {
+              "name": "malformed-root",
+              "registration": 0,
+              "status": "passed",
+              "reads": 0,
+              "digests": 0,
+              "response": [
+                503,
+                "HISTORY_INDEX_INVALID"
+              ]
+            },
+            {
+              "name": "corrupt-pack",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                503,
+                "HISTORY_INDEX_CORRUPT"
+              ]
+            },
+            {
+              "name": "wrong-owner",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                503,
+                "HISTORY_INDEX_INVALID"
+              ]
+            },
+            {
+              "name": "missing-object",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 1,
+              "response": [
+                503,
+                "HISTORY_INDEX_UNAVAILABLE"
+              ]
+            },
+            {
+              "name": "digest-failure",
+              "registration": 0,
+              "status": "passed",
+              "reads": 0,
+              "digests": 1,
+              "response": [
+                503,
+                "HISTORY_INDEX_UNAVAILABLE"
+              ]
+            },
+            {
+              "name": "caller-bulk-failure",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                207,
+                "bulk:HISTORY_INDEX_INVALID"
+              ]
+            },
+            {
+              "name": "found",
+              "registration": 1,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "found",
+              "registration": 15,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "interleaved-B-storage",
+              "registration": 15,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-B"
+              ]
+            },
+            {
+              "name": "resumed-A-storage",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "interleaved-B-digest",
+              "registration": 15,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-B"
+              ]
+            },
+            {
+              "name": "resumed-A-digest",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            },
+            {
+              "name": "found",
+              "registration": 0,
+              "status": "passed",
+              "reads": 1,
+              "digests": 2,
+              "response": [
+                200,
+                "after:record-A"
+              ]
+            }
+          ],
+          "completedChecks": 16,
+          "scope": "Original source graph on explicit JavaScript target; not Native shared-frame evidence",
+          "pending": [
+            "Native helper suspension/resumption",
+            "Native request-frame isolation",
+            "Native work-limit and caller bulk-result qualification"
+          ]
+        },
+        "finalWasm": {
+          "namedCompanionSectionsByteExact": true,
+          "roots": [
+            {
+              "name": "canonical-native.as/__pulse_shared_helper_1",
+              "bytes": 889,
+              "directCallSites": 1,
+              "callers": [
+                "canonical-native.as/__pulse_step"
+              ]
+            },
+            {
+              "name": "canonical-native.as/__pulse_shared_helper_0",
+              "bytes": 7246,
+              "directCallSites": 1,
+              "callers": [
+                "canonical-native.as/__pulse_step"
+              ]
+            }
+          ],
+          "sharedBodyPartitions": 2,
+          "rootBytes": 8135,
+          "reachableFunctions": 41,
+          "largestReachableBodyBytes": 7246
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Development qualification, not an aggregate release seal.",
+    "Typed KV declarations describe expected fields, not runtime storage validity.",
+    "No payload serialization, new effects, optimizer flag, deployed provider or performance claim."
+  ],
+  "attempts": [
+    "Initial focused fixture retries corrected a nonconforming missing-result envelope, an unawaited request-text call, and an unsupported namespace-alias read inside a loop.",
+    "Guard review added negative tests for mutating conditions and loop-carried null values, then repacked the final product tree.",
+    "Initial aggregate was superseded. A subsequent aggregate and packed run ended without terminal reports; their partial results are not reported as passing aggregates. The final packed retry ran all eight tasks serially."
+  ],
+  "portable": {
+    "coverage": "105 passing task results on final product source across split development runs",
+    "completeAggregateReplay": false,
+    "profiles": [
+      "unit",
+      "native",
+      "javascript",
+      "conformance"
+    ],
+    "sourceRevision": "4110005ecce100b7725602d101d3b5d632f2a714",
+    "uniqueTaskCount": 105,
+    "prefix": {
+      "aggregateStatus": "incomplete",
+      "observedPassedTasks": 46,
+      "reportSha256": "ec2e2670559766ee7c5a189ee8327bf17ab2b2dc86645dccbc8769f05f9c92a3"
+    },
+    "resumed": {
+      "status": "passed",
+      "completedTasks": 59,
+      "reportSha256": "8c81df7c751d4dbee7dc555b448265f5bd8e0ba8a404a63fcf5b9d5f5e82c000"
+    },
+    "tasks": [
+      "pure-helper-contract",
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-runtime-policy",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo",
+      "pure-source-helpers",
+      "pure-record-helpers",
+      "pure-argument-helpers",
+      "pure-loop-helpers",
+      "fastly-driver-behavior-o09",
+      "kv-native-abi-feasibility",
+      "s3-native-read",
+      "s3-node-transport",
+      "canonical-api-lowering",
+      "canonical-native-plan",
+      "shared-stage-o19",
+      "bounded-app-logic",
+      "bounded-read-loops",
+      "bounded-loop-helpers",
+      "logging-lowering",
+      "canonical-router-lowering",
+      "canonical-router-terminal-middleware",
+      "json-as-compatibility",
+      "entities-envelope-feasibility",
+      "entities-managed-handler",
+      "entities-managed-handler-effects",
+      "entities-native-runtime",
+      "crypto-native-guest-source",
+      "guest-link-package",
+      "guest-link-materialization-stage",
+      "guest-link-audit-diagnostics",
+      "assets-lowering-plan",
+      "assets-package-owned-lowering",
+      "grip-package-owned-lowering",
+      "jwt-package-owned-lowering",
+      "canonical-api-runtime",
+      "canonical-opaque-node-emission",
+      "grip-package-runtime",
+      "package-root-native",
+      "canonical-native-wasm",
+      "cli-javascript-target-compilation",
+      "target-support",
+      "jwt-javascript-admission",
+      "crypto-runtime-builtin",
+      "javascript-effect-adapter",
+      "logging-runtime",
+      "assets-javascript-runtime",
+      "jwt-signing",
+      "jwt-es256-signing",
+      "jwt-rs256",
+      "s3-write-conformance",
+      "crypto-cross-target-conformance",
+      "crypto-digest-text-conformance",
+      "crypto-digest-storage-conformance",
+      "multifile-source-identity",
+      "text-capacity-conformance",
+      "events-conformance",
+      "node-router-context-parity",
+      "catalog-router-parity",
+      "fetch-projections-request-bodies",
+      "config-secrets-kv-redaction",
+      "kv-conditional-conformance",
+      "kv-conditional-adversarial",
+      "fastly-conditional-kv",
+      "schema-codecs",
+      "schema-kv-parity",
+      "time-conformance",
+      "time-consumer",
+      "request-budget-transport",
+      "http-input-outcomes",
+      "application-errors",
+      "application-error-boundaries",
+      "node-cross-target-conformance",
+      "grip-cross-target-conformance",
+      "four-mode-conformance"
+    ]
+  },
+  "cli": {
+    "coverage": "split development runs; initial run spans the nullable-guard hardening edit",
+    "tasks": 22,
+    "passed": 20,
+    "knownFailures": [
+      {
+        "task": "docs-example-05-fastly-capabilities",
+        "actualBytes": 47185,
+        "expectedBytes": 47135
+      },
+      {
+        "task": "docs-example-09-router-lowering",
+        "actualBytes": 9157,
+        "expectedBytes": 9762
+      }
+    ],
+    "goldensChanged": false,
+    "reportSha256": [
+      "be1187ba77b5f179d5015edfbf580e013b6684e7cc0a5c1f778531243423729e",
+      "7a020f67af0b5a74ce213be9185b31c2c412d14eba7be31f3923c33574b479e6",
+      "ece11ce711ccfdc8f7f87a81b040e15df430311a4492b7250e4affda5523dbe1"
+    ]
+  },
+  "checks": {
+    "workspaceBuild": "passed",
+    "maintainer": "passed",
+    "documentation": "passed",
+    "documentationRelease": "passed",
+    "scopeDeclaration": "passed"
+  }
+}

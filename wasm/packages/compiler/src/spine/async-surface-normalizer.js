@@ -90,7 +90,10 @@ function normalizeManagedHandler(functionNode, options = {}) {
   const handlerAuthoring = resolveHandlerAuthoringMode(options);
   const requireAsync = handlerAuthoring === HANDLER_AUTHORING_MODES.ASYNC_REQUIRED;
   const requireEffectAwait = options.requireEffectAwait === true;
-  const diagnostics = [];
+  // Router handlers have already been checked individually. The generated
+  // dispatcher can contain markers from several mutually exclusive routes.
+  const diagnostics = options.internalGeneratedHandler === true ? []
+    : require('./incoming-body-source.js').validateIncomingBodySource(functionNode, { ...options, ctxName, frontend, sourceFile });
   const warnings = [];
   const changes = [];
   let kvAliases = new Map();
@@ -152,6 +155,11 @@ function normalizeManagedHandler(functionNode, options = {}) {
       if (ts.isAwaitExpression(node)) {
         awaitCount += 1;
         const inner = unwrapExpression(node.expression);
+        const helper = options.helperForCall && options.helperForCall(inner);
+        if (helper) {
+          changes.push(Object.freeze({ kind: 'source-helper-await-erased', helperId: helper.id }));
+          return ts.visitNode(node.expression, visit);
+        }
         const surface = surfaceFor(inner, 'await-expression');
         if (!surface || surface.surfaceId === 'javascript.await' || surface.class === 'javascript-only') {
           // The explicit JavaScript project path uses this normalized tree only
@@ -241,6 +249,14 @@ function normalizeManagedHandler(functionNode, options = {}) {
       if (ts.isCallExpression(node)) {
         const surface = surfaceFor(node, directReturnExpression(node) ? 'return' : 'expression');
         if (surface) {
+          if (surface.surfaceId === 'ctx.output.close' && !directReturnExpression(node)) {
+            diagnostics.push(createCanonicalDiagnostic({
+              frontend, sourceFile, node,
+              code: 'PULSE_OUTPUT_CLOSE_TERMINAL',
+              message: 'output.close() is synchronous and must be returned directly.',
+              detail: { surfaceId: surface.surfaceId }
+            }));
+          }
           const awaited = awaitedRoots.has(unwrapExpression(node));
           if (surface.classification && surface.classification.ok === false && !awaited) {
             diagnostics.push(createCanonicalDiagnostic({

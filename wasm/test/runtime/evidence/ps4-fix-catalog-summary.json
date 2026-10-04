@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "catalog.ps4-fix-qualification.v1",
+  "status": "passed-local",
+  "merged": false,
+  "published": false,
+  "deployed": false,
+  "step16Closed": false,
+  "sourceTree": "548afc509bd9f9f89cf9861c8afa5809b7c53089",
+  "recordedSourceCommit": "1eac81ee606a1be20e93a8744fc5deec2db8036a",
+  "githubEquivalentCommit": "1c8fe4f39c07397b6f0767561be88f662defe2ed",
+  "installedFiles": 979,
+  "installedBytesUnchanged": true,
+  "reports": {
+    "javascript": {
+      "file": "ps4-fix-js8.json",
+      "sha256": "7641e2be2f5eac7b9a35d5b85b51cfa2b2353ee3430928d60530fd81a97eea8b",
+      "checks": 324
+    },
+    "node-native": {
+      "file": "ps4-fix-node8.json",
+      "sha256": "cd82990ee76f1c2145864a26f1007695b1179dfdfbfe2f178dd107ea90af1a19",
+      "checks": 324
+    },
+    "fastly-native": {
+      "file": "ps4-fix-fastly8.json",
+      "sha256": "b783170e01dacc9a9dc05e438ed2e22d614b2729e3b61e9858fd05c3aeef4ab1",
+      "checks": 324
+    },
+    "browser": {
+      "file": "ps4-fix-browser8.json",
+      "sha256": "217d7dba81a769c7893bf4a8567f64176dea0b8f9a9c2574746d71990838ea31",
+      "checks": 9
+    }
+  },
+  "nodeMaxAccountedRetentionBytes": 31988828,
+  "fastlyMaxLinearMemoryBytes": 192937984,
+  "testHostSha256": "616d1f54964d73024711501eb028f980230d7f1ccca14887cbf86d908d896eb3",
+  "validation": {
+    "unitTests": 584,
+    "pulseSelectedTasks": 118,
+    "pulseSelectedStatus": "passed",
+    "pulseSelectedCompleted": 118,
+    "packedChecks": 53,
+    "reducedReproduction": 4,
+    "viceroy": 10,
+    "generated": "passed",
+    "layout": "passed",
+    "pulseReport": {
+      "file": "ps4-fix-all3-report.json",
+      "sha256": "8893399ad63c9c84b042dab7f5f45ecccc4a6b31e0290f6c410a490f7b6f30fe"
+    },
+    "catalogChecks": {
+      "file": "ps4-fix-catalog-checks3.json",
+      "sha256": "caa5053feb9f3702af812f32b9c50847695878a912cb231d77bf907d729d4555"
+    },
+    "readiness": {
+      "file": "ps4-fix-readiness3.json",
+      "sha256": "562bfe1e35fb54a153fbfc727c37e80f4322ee783bedc80ef4876bb6af78bfcb",
+      "localQualificationValid": true,
+      "openRequirements": 7,
+      "migrationReady": false,
+      "productionReady": false
+    }
+  },
+  "limits": "Local fixtures and local Viceroy; no full clean-machine replay, deployed K4, release, migration or production acceptance."
+}

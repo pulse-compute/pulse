@@ -11,6 +11,23 @@ documentation system.
 
 ## Contract precedence
 
+The private, unreleased `packages/mcp` component owns MCP HTTP admission and
+protocol framing outside Entities. With emitted catalog/schema artifacts and a
+fixed governed HTTP endpoint configured, its MCP-03 facade supports tools/list
+and tools/call, schema projection and finite tool results. Otherwise discovery
+advertises no optional capabilities. It has no Pulse runtime/compiler dependency
+or direct application-handler seam. MCP-04 optionally authenticates through a
+configured external OAuth issuer using bounded token introspection, checks the
+resource audience and scopes, filters tool discovery, and denies unauthorized
+operations before governed dispatch. Backend credentials are distinct from
+client tokens; the deploying application owns TLS and backend protection.
+MCP-05 qualifies the Node JavaScript composition through an independent packaged
+resource-directory consumer and the pinned official client, including controlled
+OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
+acceptance does not establish deployed or Native/Fastly MCP support.
+A same-artifact Native binding requires a separate owner review; this component
+does not widen the released package set or the guest authoring API.
+
 When two surfaces appear to disagree, use this order:
 
 1. the public release manifest and its generated package/support policy define
@@ -59,6 +76,18 @@ that registry. Each verb uses the existing route entry, exact-method dispatch,
 terminal transfer and 404/500 exhaustion contracts. This expands ingress
 registration without changing outgoing fetch methods or the effect/continuation
 ABI.
+
+An ordered mount can carry the static string descriptor
+`mount(path, child, { state: 'key', equals: 'family' })`. The owned Router API
+registry and extractor admit only that inline, literal form. Runtime dispatch
+and canonical lowering read request state once at the matching mount entry;
+false takes `parentContinueIndex`, true takes `childStartIndex`. The descriptor
+participates in the mount's stable identity and retained topology. No child body
+is duplicated, no callback is evaluated, and no new effect or continuation ABI
+is introduced. Resumption stays inside the admitted child even if it changes
+that state. Selection conveys no authorization. Historical table/harness
+emission rejects this form because its compatibility scanner has no eligibility
+contract. See [Selected groups](../guides/routing.md#selected-groups).
 
 The compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`
 declarations as a separate static event topology. Event types and schema IDs
@@ -121,6 +150,353 @@ JavaScript during Native compilation.
 See [Compilation and lowering](../concepts/compilation-and-lowering.md) and the
 [architecture overview](./overview.md).
 
+## Native diagnostic artifacts
+
+Executable Native Wasm and its verification do not depend on optional compiler
+text output. Routine compilation omits diagnostic WAT; `pulse compile` and Native
+`pulse build` opt in with `--emit-wat`. Manifest and file metadata distinguish
+omission from an emitted artifact, and writers remove stale compiler-owned text
+on reuse. Required guest-link disassembly audits remain mandatory. This changes
+artifact policy, not handler admission, the effect ABI, optimizer posture, or
+provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
+
+## Native internal helper sharing
+
+Native generation may share byte-identical internal expression-helper bodies
+after resolving child helpers and local slots. Every original call still
+executes, including allocations, mutations, short-circuiting and budget charges.
+Repeated multi-statement helpers and dispatcher partitions use compiler-owned
+retention annotations. The build-support transform maps these to Binaryen's
+no-inline flags before optimization; AssemblyScript alone ignores `@noinline`.
+Small leaves remain eligible for inlining. This is internal direct-call sharing
+with no public function-value syntax, effect or ABI change.
+
+Expression helpers use private `__pulse_ex_<id>$k` (retained) and
+`__pulse_ex_<id>$i` (inline-eligible) names so exact retention batching also
+works for sparse helper IDs. The name alone grants no retention: compiler-owned
+source and annotation checks still apply, with every matching module function,
+including imports, checked before batching. Names preserve the length and
+lexical ordering of `__pulse_expr_<id>` for dispatcher character budgets and
+Binaryen function-ordering ties. Legacy names remain supported by the transform.
+
+Routers with application-error handlers share one retained error-routing guard.
+Each original guard site calls the helper, which consumes the pending error
+once and returns a private no-error, routed-error or fatal status. It resolves the current plan's Router slots and preserves error-handle, mode,
+cursor, pending, continuation, result and program-counter updates. Its caller
+keeps the existing state-loop or chunk-return transfer and fatal status; sharing
+adds no effect, continuation, allocation or charged dispatcher state. Routers
+without application-error handlers do not emit the helper. Partition budgeting
+charges the original inline guard footprint so sharing does not silently pack
+more states into each optimizer unit.
+
+For modules without guests, AssemblyScript runs Binaryen's similar-function
+merge after its normal optimization. Guest-linked modules instead merge after
+composition in the guest-link stage. In both cases the pass reuses function
+bodies; it does not create a dynamic function table or change the value heap's
+retention or accounting rules. The merge and inlining settings are heuristics,
+not a hard limit on the number of parameters or on the size of every function.
+
+## Synchronous pure source helpers (PF-02/PF-03/PF-04/PF-06)
+
+The integrated Native plan compiler identity is
+`pulse.canonical-native-plan-compiler.v10`. It combines the existing helper
+lowering with terminal package applications and the bounded Node body/output
+extensions. The plan schema, helper contracts and host ABI retain their own
+versions; this compiler identity does not widen their admission rules.
+
+Native plan v9 retains one `pulse.canonical-native-pure-helper.v2` body per
+statically resolved synchronous function declaration. HTTP routes and middleware
+may call it in bindings and expressions, including `if (!validator(value))`,
+without `await` or `ctx`. JavaScript executes the original source graph.
+Parameters and results are explicit; results remain `string`, `number` or
+`boolean`, with a scalar return on every reachable path.
+
+PF-03 adds `pulse.pure-borrow.v1` parameter descriptors for records with required
+scalar fields, one nested record level, and numeric arrays. Records contain at
+most 32 fields per level. Static named project type imports (including aliases),
+local interfaces and type aliases resolve through the contained module graph.
+Mutable source interfaces are allowed. Optional/nullable/union/index-signature,
+recursive, generic, method/accessor and deeper record shapes are excluded.
+
+The callee borrows existing i32 value handles synchronously. It cannot mutate
+parameters or derived aliases, return a structured value, capture/retain it, or
+pass it to another helper. Derived record/array locals must be `const`; scalar
+locals may mutate. Field reads, array length/index reads, scalar operators,
+branches and literal-capped loops are admitted. A pure helper can return its
+scalar result early from its own loop. PF-04 admits pure calls inside existing
+bounded caller loop bodies, including read loops. A pure callee requires no read
+site. Each loop call carries `pulse.bounded-pure-loop-call.v1`; deserialized plans
+independently multiply every enclosing caller cap by nested callee caps against
+the existing 65,536 iteration-product limit. The existing conservative rule counts
+a zero cap as one for static accounting. Sibling loops/calls are not summed.
+Call inputs within loops are read-only; active caller counters cannot mutate.
+Calls in loop headers remain excluded. Effectful helper eligibility is unchanged.
+
+JavaScript inspects statically resolved pure calls in HTTP handler loops through
+the same bounded source checks, then executes the original source graph. This
+does not inspect ordinary dependency function internals or grant Native eligibility.
+Pure helpers finish and clear their slots before a caller read can suspend; caller
+state alone continues under the existing effect invocation contract.
+
+PF-06 propagates caller field/index types from literal graphs, matching schema
+boundaries and explicitly typed `ctx.kv<T>(name).getVersioned(key)` results.
+Direct namespaces and local namespace aliases retain a bounded structural type
+resolved from the contained project graph. `pulse.typed-kv-borrow.v1` belongs to
+the existing KV read result; it adds no effect, decoder or runtime check. The
+`.value` projection borrows the original stored value. The declaration describes
+expected fields, not storage validity: callers still handle found/missing/failed
+outcomes and validate corrupt payloads with their existing value semantics.
+Untyped KV, `unknown`, schema-less JSON and type assertions do not establish shape.
+
+Bindings, record/array aliases, scalar field reads, string length/index reads and
+numeric array reads are proven independently. Optional schema strings require a
+string default. Mutable caller bindings are admitted only when every initializer
+and assignment has the same structural type; nullable schema locals additionally
+need an explicit non-null guard or definite non-null assignment at the read.
+S-02 preserves required scalar field facts across a bounded record spread when
+the spread source and resulting record both satisfy the existing field/depth
+limits and every assignment retains the same shape. A self-spread may use the
+proven initializer shape as its recursive seed; all writes must independently
+reconstruct that shape. Unknown spreads, changed or optional field types and
+cyclic alias provenance do not establish a projection. The validator checks
+the serialized definitions and writes rather than trusting producer field tags.
+A zero-argument request text read supplies a definite string replacement in
+this proof; it does not establish a type for schema-less JSON.
+S-03 carries a proven optional string scalar from a schema field or a bounded
+`ctx.state.get` read through an explicit strict `undefined` guard on a const
+local. A branch-local call is admitted only on the
+non-undefined path; after an early return, only the surviving path contributes
+the fact. Both surviving paths must prove it at a join. The independent plan
+validator reconstructs the guard, source schema field and control-flow join;
+the state read's key and arity must also establish its optional string source.
+the producer's narrowed value tag alone is insufficient. Mutable scalar locals,
+unguarded or non-dominating calls, a null check on an optional string, and
+optional fields in borrowed-record
+signatures remain excluded. The earlier guarded nullable schema-local rule is
+unchanged.
+The validator follows aliases and rejects writes through the borrowed graph
+anywhere in the handler, including after a call. Scalar copies do not retain a
+record alias. Nested record/array reads preserve the original object identity.
+There is no flow-sensitive recovery after a shape-changing write.
+
+Arguments evaluate once, left to right; `&&`, `||` and conditional expressions
+preserve skipped calls. Pure helpers cannot capture values, access context,
+effects or Router authority, construct responses, accept callbacks, nest calls,
+recurse, or use async/generator/exception syntax. Existing admitted value/error
+semantics remain in force. Invocation slots reset at entry and clear on scalar
+return. Failure follows existing request/Router failure handling; no suspension
+or externally callable helper can expose its slots.
+
+Calls add no payload copies, JSON encoding/decoding, host effects or continuations.
+The existing value host still creates handles for property/operator reads; this
+is not handle reclamation or a constant-memory promise. The focused Node host
+fixture observes 207 additional handles per successful validation (including
+three scalar call arguments), of which 15 reference existing structured objects.
+For 0/1/2/16 calls, handles are 19/226/433/3331 and guest linear-memory capacity is
+1,245,184 bytes in every cell. The nested record and numeric array retain identity;
+there are no additional payload graphs. These are source-tree fixture observations,
+not RSS, Fastly, packed-consumer or final-Wasm sharing claims.
+
+After deserialization, the compiler independently validates descriptors, field
+and index kinds, const aliases, scalar results, body/local ownership, arity,
+non-nesting and loop bounds. A recomputed hash does not establish validity.
+Effectful `pulse.canonical-native-helper.v1` keeps its suspension contract.
+Plan/compiler v9 invalidate older cached plans; regenerate them from source.
+Generator v9 and the guest ABI are unchanged.
+
+`wasm/packages/compiler/src/pure-helper-values.js` owns the internal bounded
+value vocabulary: scalar kinds, record depth/field limits, prohibited field
+names, structural equality, field/index result facts and operator result facts.
+The source type resolver translates contained TypeScript declarations using
+those limits; the Native plan builder consumes the shared result rules. Neither
+consumer owns a second binary/unary result-rule implementation.
+
+The vocabulary preserves two inference boundaries. Dynamic plan kinds include
+`in`; reconstructed type facts use structural equality. Optional-string defaults
+are directional for `||`: an optional left operand with a definite string right
+operand proves a string, while a definite string left operand with an optional
+right operand does not. `??` proves a string in either order because a definite
+string left operand cannot fall through. Inference does
+not establish operation admission. `source-helper-plan.js` owns independent
+validation, reconstructing caller provenance, helper operands and ownership after
+deserialization before consuming shared result facts. Its explicit admission
+policy excludes `in` and `void`, requires scalar callee operands and numeric
+arithmetic operands, and preserves the caller's scalar coercion and sound
+optional-string defaults. A numeric index into a scalar string is admitted in
+a pure callee. It reads one UTF-16 code unit; empty, fractional, negative and
+out-of-range indexes yield `undefined` under JavaScript indexing semantics.
+The callee carries `string-or-undefined` for that read through const bindings
+and admits comparisons against it, including adjacent surrogate-unit checks.
+An unchecked index cannot be returned as a definite string or used as a
+definite scalar in a property read, template, unary or arithmetic operation.
+This internal kind does not widen helper signatures or the preexisting caller
+projection policy. No producer tag, serialized hash or signature substitutes
+for independent operand, result and ownership checks.
+
+Run `node wasm/scripts/run-wasm-tests.cjs --task pure-helper-vocabulary --task pure-string-index --task pure-field-projection --task pure-guarded-arguments --task pure-helper-contract --task pure-source-helpers --task pure-record-helpers --task pure-loop-helpers --task pure-argument-helpers`
+for scalar/record/loop parity, unchanged inputs, allocation evidence and negative
+source/plan coverage. Fixtures and staged exclusions live in
+`wasm/test/fixtures/pure-helpers/README.md`. Installed qualification remains PF-05.
+
+## Static effectful source helpers (O-25)
+
+Native plan v5 adds `pulse.canonical-native-helper.v1`: a separately owned
+source-function body, scalar parameters, a value result and an invocation-owned
+return continuation. Static project imports and same-file helpers are admitted
+only through the resolved source graph. The initial shape is an immutable async
+block function with `ctx` first and explicitly typed string, number or boolean
+inputs. An HTTP route or middleware must bind a direct `await helper(ctx, ...)`;
+arguments must have matching proven scalar kinds. JavaScript continues to execute
+the original source graph.
+
+Helpers cannot capture caller or module values, mutate inputs, recurse, nest
+helper calls, accept function values, group effects,
+construct responses or own Router transfers. Ordinary unrecognized calls remain
+ineligible. Helper bodies use the existing bounded value, pure-loop, read-loop,
+schema and trusted Pulse-effect rules. Importing a source function confers no
+package-lowerer trust or host authority.
+
+A directly bound helper may run inside an outer bounded read loop under
+`pulse.bounded-read-loop-helper.v1`. It must contain at least one admitted read
+site, and all its effects must be `s3.getText`, `kv.getVersioned` or
+`crypto.digestText`. It may use schema/value operations and bounded pure loops,
+but cannot hide context authority, an effect loop, another call or an effect
+group. The combined 65,536 iteration-product limit includes pure loops in the
+callee and the enclosing caller loop. Inputs remain proven scalars; neither inputs nor the result binding may
+mutate the caller's counter. Serialized plans tag these calls with `loopContract`
+and independently validate the callee. Ordinary helpers outside loops retain
+their existing effect contract. JavaScript inspection recognizes directly bound
+ctx-first source calls in these bounded loops, while executing the original
+source graph. This does not prove their internals or grant Native eligibility.
+
+The caller owns its loop counter and return continuation. Each visit resets the
+callee frame; suspension preserves that invocation's locals. Early helper return
+resumes the same caller iteration. The finite dispatcher allowance accounts for
+the literal loop cap even when every helper visit returns without suspending.
+Effect, deadline and retained-memory budgets remain cumulative and unchanged.
+
+The linker retains one helper declaration. Handler IR produces one generator
+body; the Native plan retains one body and one set of effect/continuation sites,
+independent of caller count. Helpers own those sites explicitly; the calling
+registration owns its result local and response/failure mapping. Plan validation
+checks parameter/result kinds, local ownership, effect ownership, continuation
+ownership and non-nesting after serialization and a recomputed hash.
+
+One invocation-owned callee frame holds argument handles, local values, the
+selected return program counter and error transfer destination. Entry resets
+callee locals; suspension retains them. A normal return resumes only the selected
+caller. Repeated sequential calls reset the same frame. Normalized application
+errors use the selected caller's error lane; terminal host failures fence further
+execution. Existing effect tickets, cancellation and cumulative read-loop memory
+limits remain authoritative. The host ABI stays v2; the generator is v7.
+
+The O-25 proof covers the retained history body at 1/2/16 callers, byte-matched
+named companions for final-Wasm attribution, early results, corruption/failure,
+65-pack traversal, middleware, re-entry and suspended request isolation. A
+separate reduced-round fixture checks defensive work-limit return parity without
+changing production bounds. These are portable Native/injected-host results,
+not a full application adoption or deployed-provider qualification.
+
+## Native terminal Router bodies
+
+Generated Router package-call mappings are authoritative: an unmapped generated
+call cannot fall back to an authored-source offset. Imported package effects
+retain their authored diagnostic positions; a separate generated position
+determines Router entry ownership without reinterpreting those source offsets.
+
+Registering one handler at multiple Router entries creates separate generated
+effect sites and continuations for those entries. Each site retains its original
+source attribution. Package effects and intrinsics require complete coverage of
+authored calls and a match for every call in each registration; source-call counts
+need not equal generated-site counts. Reuse does not skip effect execution or
+share request state across invocations.
+
+Native plan v3 preserves terminal HTTP route handlers as separately owned bodies
+(`pulse.canonical-native-handler-body.v1`). A terminal route has no `next()` or
+`next(error)` transfer. Its stable Router entry ID owns the body, original source
+span, statements, expressions and local namespace. The dispatcher contains one
+private tail-call reference. Nested or recursive body calls and access to another
+body's locals are rejected. Middleware, transfer-capable routes, error handlers
+and inbound event handlers retain their current lowering in this bounded pass.
+
+The private call completes a response, suspends for a recognized effect,
+transfers a normalized application error to the existing error lane, or fails.
+Native execution resumes at the owning body's program counter and requires no
+live call stack. Local slots remain available across suspension. Generation
+keeps body states in separate retained chunks, subject to the existing state and
+source-character budgets. Call references introduce no charged state; effect
+IDs, continuation IDs, allocation behavior and request budgets retain their
+existing semantics. Read-loop memory containment and Fastly value/body analyses
+inspect both the dispatcher and private bodies.
+
+Plan and generator identities change; the host ABI remains v2. This is an
+internal Router representation, with no public callable-function syntax or
+change to JavaScript's original-source execution. See the
+[B02 evidence](../maintainers/compiler-efficiency-p01.md#b02-terminal-http-route-bodies-24-september-2026).
+
+### Shared effectful HTTP stages (O-19)
+
+Native planning automatically factors structurally equivalent registrations of
+one transfer-capable HTTP route or middleware handler into a
+`pulse.canonical-native-stage.v1` body and explicit dispatcher calls. The supported
+family has 1..64 sequential, bound text-fetch, `time.now` or `crypto.digestText`
+sites, local values, branches, bounded pure loops, early responses and terminal
+`next()` / `next(error)` transfers. Multiple eligible stage families
+and more than 16 registrations are supported. This introduces no public function
+syntax or configuration switch. JavaScript keeps original-source execution.
+
+Admission checks both statements and effect inputs after renaming local,
+effect and continuation identities. The comparison includes package/contract,
+declared result, decoder and provider descriptors. Captured locals, groups,
+effect loops, nested calls, other effect kinds, error/event handlers and registration-specific
+body differences retain their existing Native lowering. Ineligibility does not
+reject previously supported source or introduce a JavaScript fallback. Effectful
+and pure helper calls are explicitly excluded until stage-local helper ownership
+is supported. The internal factoring function can report exclusion reasons
+without changing the fallback plan or its hash.
+
+Scoped middleware retains its original admission guard and occurrence-specific
+continuation. Even one eligible registration can be outlined. MW-01 and MW-02
+widen eligibility within the existing stage record representation; they do not
+change the host ABI, terminal-next semantics, or the public size flags. Pure-loop
+induction variables and nested locals belong to the stage frame. The existing
+canonical loop validator still enforces literal and combined iteration caps,
+pure bodies and read-only counter/test rules; no effects occur inside these loops.
+
+Each stage declares its request context, Router inputs, read-only next-cursor
+input, local namespace, effect sites and outputs: response, next, error,
+suspension or terminal failure. Each registration binds its own next cursor,
+effect slots and continuation IDs. Effects and continuations explicitly name
+both the registration and stage site. Plan validation rejects crossed bindings,
+captures, nested calls and calls outside the owning registration's admission
+branch, including after serialization and a recomputed plan hash.
+
+One invocation-owned frame selects the return program counter and registration
+bindings. Locals reset on entry and survive suspension; no live call stack is
+required. A stage can run again later in the same request. Terminal transfer
+semantics permit one active stage at a time. Original static effect slots remain
+registration-owned, including Fastly's direct pending-slot settlement. Host
+invocation tickets, effect limits, deadlines and single-use resume rules retain
+their existing authority.
+
+The emitter consumes the validated stage records directly. It emits each body
+once in retained, bounded chunks and adds small entry/exit states and lookup
+wiring. The build-support transform explicitly retains annotated generated
+shared-stage chunks and prepare/clear/ready/result accessors; a matching name in
+a user source or an unannotated generated declaration grants no retention. The
+dispatcher allowance accounts for registration multiplicity so
+sharing cannot shrink the guard for paths with several stage visits. Fastly
+request-body and value-failure analyses inspect stage bodies as well as ordinary
+handlers. Plan and generator versions change; the host ABI remains v2.
+
+The earlier [O-18 proof](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md)
+is now replayed through production lowering. The
+[O-19 evidence](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/runtime/compiler-efficiency/o19-production-stage.md)
+records its production gates. This removes the proof-only emitter clone and
+redundant plan bodies/locals; frontend source expansion and per-registration
+metadata still cost space and time. Whole-application savings, arbitrary stage
+composition and deployed acceptance remain separate qualifications.
+
 ## Bounded pure control flow
 
 Canonical HTTP/event handlers admit a literal-capped pure `for` form shared by
@@ -140,6 +516,145 @@ after an observed value error.
 This does not add rollback, preemption, a memory budget, arbitrary helper
 lowering or uniform HTTP exception handling. See
 [bounded application values](../concepts/compilation-and-lowering.md#bounded-application-values).
+
+### Bounded sequential read loops (PS1)
+
+The additional `pulse.bounded-read-loop.v1` contract admits non-nested `for`
+loops whose `let` counter starts at zero, tests a literal cap from 0 through 64
+as the first conjunct, and advances by one. Each loop contains at least one
+directly bound or discarded sequential `s3.getText`, `kv.getVersioned`, or
+`crypto.digestText` site, or a directly bound static helper satisfying the
+read-only helper contract above. Dynamic keys and carried values survive suspension.
+Schema text decoding/encoding and result construction are allowed alongside
+the existing pure value operations. Other context authority is read before the
+loop. Counters, the context parameter and inherited KV namespace aliases cannot
+be rebound or shadowed inside it.
+
+Unlabelled `break` exits the nearest loop; `continue` runs that loop's increment
+before retesting. `return` exits the handler. Nested loops must satisfy the
+existing pure contract, including the 65,536 combined iteration-product limit;
+their transfers target the inner loop. Nested effect loops, parallel groups,
+writes, arbitrary calls/awaits, closures and labelled transfers are rejected.
+The public diagnostic is `PULSE_CANONICAL_READ_LOOP_UNSUPPORTED`.
+
+Handler IR owns a read-loop operation containing the initializer, condition,
+body and increment. The Native plan adds a versioned `read-loop` statement with
+an explicit counter local, initial value and increment expression. Plan
+validation independently checks the cap, counter ownership, admitted effects,
+value operations and nesting before generation. Native emits initialization,
+test, body/suspend/resume, increment and exit states, including across dispatcher
+partitions. Effect and continuation tables contain static call sites, not an
+unrolled entry per iteration. Original-source JavaScript retains its authored
+loop; its target is selected explicitly and is never a Native fallback.
+
+PS1 is the compiler foundation. PS2 supplies the invocation lifecycle below;
+PS3 supplies Native retained-value memory containment below and PS4 owns
+packed/provider/application qualification. Values remain retained for the execution.
+Production qualification remains open. Applications must handle a continuing
+chain at the cap as incomplete rather than conclude that the searched value is
+absent.
+
+### Read-loop invocation lifecycle (PS2)
+
+`pulse.effect-invocation.v1` distinguishes reusable static effect/continuation
+sites from each execution-owned invocation. The internal normalized-generator
+host now records a distinct continuation for each visit, including concurrent
+executions with the same caller-supplied execution label. Node Native effect and
+continuation traces include invocation IDs while retaining static site IDs.
+Original-source JavaScript continues to use its per-call effect identities.
+
+The managed Native controller (`pulse.canonical-native-host.v4`) accepts a pending effect's opaque ticket in
+`setEffectResult(ticket, result)`. Object identity authenticates the ticket;
+copied fields, foreign executions, old loop visits and duplicate settlement fail
+with `PULSE_EFFECT_INVOCATION_INVALID` before allocating a result handle or
+entering the guest. The ticket is consumed before injection. Completion, failure,
+explicit close and cancellation invalidate pending tickets. An incomplete resume
+still preserves the current pending result set for a valid retry.
+
+Terminal first-party Native package applications can use the optional
+`pulse_host.value_json(handle)` data-copy import. The canonical Node host checks
+a 1 MiB UTF-8 JSON limit before allocating a guest managed string. This adds no
+effect authority and leaves opaque/streaming bodies outside this bridge. For a
+plan declaring `effectFailure: 'package-completion'`, the host requires
+`pulse_package_set_effect_failure(index)` and settles failures through the same
+single-use ticket boundary. The guest receives failure status only and owns the
+protocol response; cancellation and execution budgets still terminate at the host.
+Node and Fastly declare this realization for Entities. The Fastly provider
+binds the package application to its canonical platform runtime in ordinary
+builds, preserving provider-owned authority, bounded value transfer and terminal
+request budgets. Its test/dev fixture ABI and exact-artifact Viceroy replay are
+separate evidence levels; neither implies live deployment acceptance.
+
+Fastly's canonical Native platform driver uses request-instance-owned sequence
+tickets, checks the captured ticket before injecting each result, and closes its
+lifecycle on terminal return. A second entry into the same driver instance is
+rejected. Native guest ABI v2 is unchanged: direct calls to
+`pulse_set_effect_result(index, handle)` and other raw control exports remain
+trusted-host operations. These exports do not authenticate an invocation epoch;
+custom hosts must enforce freshness themselves. The managed ticket boundary is
+not a guest-enforced sandbox against a malicious host.
+
+Managed Node Native, internal-generator and original-source JavaScript hosts
+default to 1,024 cumulative effect invocations and retain their host-only
+`maxEffects` option. The canonical Fastly Native platform driver has a fixed
+1,024 ceiling, advertised in its artifact's `effectInvocations` policy; it adds
+no project configuration field. Each guest-requested group member counts,
+including one suppressed by an earlier application error. Reaching the ceiling
+is allowed; attempting the next invocation fails before provider dispatch
+(Fastly state error 1007, stage 170). Invalid Fastly lifecycle use is stage 171.
+Counts span loop visits, sequential loops, groups and error handling rather than
+counting static table entries. An inherited monotonic request deadline is never
+restarted on a loop visit; dispatch, settlement and resume remain fenced by it.
+Late asynchronous success or failure cannot continue a cancelled execution.
+
+### Native read-loop memory containment (PS3)
+
+Plans containing a bounded read loop activate `pulse.native-read-loop-memory.v1`
+for the entire Native execution, including work before and after the loop. The
+artifact records this in `policy.readLoopMemory`. These fixed limits add no
+authoring or provider configuration surface:
+
+| Limit | Ceiling |
+|---|---:|
+| Cumulative accounted retention | 64 MiB |
+| Cumulative value/edge units | 1,048,576 |
+| Complete unlinked Wasm linear memory | 4,096 pages (256 MiB) |
+
+Accounting charges a 32-byte base per retained value, UTF-16 text bytes, and
+container growth (at least eight bytes per edge). Node Native also accounts for
+trace entries, visits each object graph once, and charges guest mutations before
+changing the container. Request-local indexes reuse up to 8,192 immutable
+scalar handles and 8,192 object/array handles by identity. Each index entry costs
+one unit and 16 bytes when its capacity grows. The scalar index replaces its
+oldest mapping once full, reusing that charged capacity; every newly allocated
+value handle remains charged and retained. Positive and negative zero remain
+distinct. Different objects are never coalesced, and guest mutations remain
+charged before changing an object. Cached reads still check latched terminal
+failure. No handles are reclaimed and no charge is refunded. Fastly accounts for retained handles, text assignments,
+container/header appends and a rope's eventual flat size. Cached values and
+object representations differ between hosts, so the counters are conservative
+runtime accounting rather than a portable measure of live heap bytes. They do
+not bound Node process RSS, trusted provider implementation internals, or ordinary
+original-source JavaScript. Existing structured input limits remain in force.
+
+The budget never resets or refunds on iteration, suspension, sequential loops,
+or Router error handling. Node rejects excess retention with
+`PULSE_RUNTIME_MEMORY_LIMIT_EXCEEDED` and invalidates pending tickets before
+inserting the rejected handle. Fastly records terminal memory error 1010 (stage
+172 for bytes or 173 for value units), invalidates pending work, and traps. These
+failures cannot enter an application error handler or dispatch a subsequent
+read. The allocator can also trap at the Wasm memory ceiling, which covers
+temporary codec, parser, crypto and container allocations beyond the accounting
+model. Linked guests retain their separately owned, smaller fixed-memory ABI.
+
+This is request-lifetime retention, without iteration-temporary reclamation or
+a collector/guest ABI change. Carried aliases, pending effect payloads, decoded
+schema values and response roots therefore remain valid. The executable
+`bounded-read-loops` task exercises the Catalog receipt-page shape at 64 pages
+of 57,344 bytes, with two awaits per page, nested pure loops and a carried schema
+alias. It also checks exact budget boundaries, terminal limit failures and the
+encoded linear-memory ceiling of complete target artifacts. PS4 still owns
+packed-consumer, provider-engine and adopted application qualification.
 
 ## Execution ownership
 
@@ -180,15 +695,96 @@ no application code resumes after the transfer. Normal exhaustion produces
 404, error exhaustion produces 500, and effects keep the identity of the route
 or middleware entry that owns them.
 
-Schema registry IR v2 records requiredness for every object property. A
+Schema registry IR v5 records object-property requiredness, bounded scalar
+records, nested JSON markers, typed open objects and normalized per-schema JSON limits. A
 question-mark property preserves absence through encode/decode, including nested
 objects and array elements; a present value must satisfy its type. Nullability
 is independent, present undefined is invalid, and optional fields receive no
 default. Codecs project own data properties in declaration order. Native schemas
-containing optional fields use schema-generated presence-aware projections over
-`json-as` values, while required-only schemas retain generated struct codecs.
+containing optional fields, scalar records, nested JSON or explicit JSON limits use schema-generated projections
+over `json-as` values; other required-only schemas retain generated struct codecs.
 Provider and host preflight preserve the same rules. This extends schema
 semantics without widening effect authority or selecting a target fallback.
+
+The public type-only `ScalarRecord` marker admits dynamic own string keys only
+inside a declared object schema, with string, finite number, boolean or null
+values. Each record permits 32 keys, 64 UTF-16 units per key, 1,024 per string
+value and an 8 KiB conservative JSON byte budget. Budget accounting reserves 24
+bytes per number and six per control code unit, includes JSON structure and
+escaping, and uses UTF-8 size for other characters. This can reject an actual
+encoding under 8 KiB but gives target-independent admission. The full boundary's
+`maxBytes` remains independent. Limits are fixed, not user-defined generics.
+Decoded records are immutable. Nested containers, unsupported values, accessors,
+symbols and custom prototypes are rejected. Duplicate keys in schema-selected
+records are rejected after unescaping; ordinary declared objects retain last wins.
+JavaScript codecs, direct Native guest codecs and both Fastly Native preflight
+paths enforce these rules. See [bounded scalar records](../guides/json-schemas.md#bounded-scalar-records).
+
+The type-only `JsonValue` and `JsonObject` markers select bounded recursive JSON
+inside an otherwise declared object schema. `JsonObject` requires an object at
+its field root; `JsonValue` also admits arrays, scalars and null. Known enclosing
+fields keep their validators and unknown-field projection. Arbitrary recursive
+TypeScript types remain unsupported. Static
+`schema<T>({ json: { ... } })` options select per-schema limits. Registry IR and
+codec inputs use v5; authoring uses v3 and canonical codecs use v4. Effective
+limits and the profile text bound contribute to codec identity.
+
+The type-only `OpenObject<T>` marker wraps a finite declared object at the root,
+a nested field or an array element. Its object IR carries
+`additionalProperties: { kind: 'json-value' }`; this policy contributes to
+registry and codec hashes and selects bounded admission and Native value
+projection even without another dynamic marker. Known fields retain their
+validators, presence and nullability; invalid known data never becomes an extra.
+Other own string keys carry bounded JSON and survive projection as detached,
+immutable values. All names at each open level are unique after unescaping;
+closed nested objects retain their existing projection and duplicate policies.
+Empty, numeric-looking, `__proto__` and `constructor` extension names are data.
+JavaScript, direct Native guest codecs and both Fastly Native preflight paths
+share these semantics. See [typed open objects](../guides/json-schemas.md#typed-open-objects).
+
+The `pulse.json-admission.v1` machinery enforces the policy before parsing or
+serialization. Schemas without markers or options retain prior admission;
+ScalarRecord's fixed per-record limits remain unchanged. Normalized limits are
+positive i32 values. They bound original UTF-8 text,
+container depth, total value nodes, members per object, items per array, decoded
+UTF-16 key/string lengths and a conservative JSON byte budget. Root containers
+have depth one; scalar roots have depth zero. Every syntactic value counts,
+including overwritten and unknown members. Keys do not count as value nodes.
+Whitespace counts toward original text bytes, not the conservative budget;
+numbers reserve 24 bytes and strings follow the existing scalar-record escaping
+budget. Additions check remaining capacity before incrementing i32 counters.
+
+One iterative reference scanner supplies JavaScript and generated AssemblyScript
+semantics. It checks complete JSON syntax without building a JSON value tree,
+and can allow, reject or report duplicate names after unescaping. Reports retain
+the containing object's text offset and both key offsets for subsequent
+schema-owned policy; admission itself does not project fields. Native composition
+helpers precede parsing, and Fastly's helpers precede provider handle creation
+or serialization. Defaults are 65,536 text bytes, depth 32, 4,096 nodes, 256
+members per object, 1,024 items per array, 256 key units, 16,384 string units and
+65,536 conservative JSON bytes. The existing profile `schemas.maxBytes` also
+bounds full input/output. Native supports configured depth through 128; larger
+settings fail compilation. Fastly parser/serializer capacity follows admitted
+schema depth instead of retaining a hidden 64-level ceiling.
+
+All six JSON boundaries select these codecs. Dynamic duplicate keys are rejected
+after unescaping; ordinary closed object fields retain last-member-wins, including
+selection of their final dynamic subtree. Both Fastly realizations apply the
+selected schema to outbound `json` before creating/sending the request. The
+shared corpus executes these paths with the real guest and provider parsers.
+
+In-memory JavaScript and Fastly handle admission use explicit traversal stacks,
+reject cycles and non-JSON values, and count shared references per occurrence.
+JavaScript accepts enumerable own data properties of plain/null-prototype objects
+and dense ordinary arrays; getters and serialization hooks are not invoked.
+Projection copies and deeply freezes output without mutating or freezing input.
+JavaScript own-key reflection
+enumerates the already-created input before its key count can be checked, so the
+value helper is not a bound on VM reflection allocation or arbitrary Proxy traps.
+Text admission is the resource gate before eager parsing. Node retains its
+schema encode/decode, malformed-JSON and body-size error categories; Fastly
+retains schema/JSON errors and stages. See
+[configurable nested JSON](../guides/json-schemas.md#configurable-nested-json).
 
 `ctx.encodeJson(value, 'schema.id')` is a synchronous shared-context operation
 that returns application-owned text through the existing compiled schema codec.
@@ -206,8 +802,8 @@ not a portable canonical-hash contract.
 application-text boundary. It requires a literal registered ID and string
 input, bounds the original UTF-8 text before parsing, and returns a detached,
 deeply immutable schema value. It has no content-type policy or effect and
-does not cache repeated calls. Existing duplicate-member semantics (last wins)
-are preserved; this is not a canonical command-fingerprint parser.
+does not cache repeated calls. Ordinary declared objects preserve existing
+duplicate-member semantics (last wins); scalar records reject duplicates; this is not a canonical command-fingerprint parser.
 The Native `schema.decode.text` intrinsic uses the additive `schema_decode`
 value-handle import. Node uses the existing preflight and guest json-as codec;
 Fastly uses its provider-owned parser and generated schema codec and freezes
@@ -229,6 +825,104 @@ Structured JSON and text bodies become bounded values. Binary and streaming
 bodies remain opaque host-owned handles. An opaque body can be passed through or
 returned by a supported operation, but it cannot be decoded, duplicated, or
 independently consumed by application or package code.
+
+STR-02A adds an opt-in Node JavaScript incoming-body capability
+(`request.body.forward`). A synchronous `ctx.req.body()` marker can occur once,
+inline as a literal POST fetch body. It reserves the request's single consumer
+before provider dispatch and excludes structured reads. The in-process fetch
+descriptor uses `bodyMode: 'incoming-request-v1'`; the marker is held in a runtime
+WeakMap and carries no serializable provider identity or bytes. This does not
+admit Fastly forwarding. STR-02B admits Node Native with the optional
+`pulse_host.request_body() -> i32` import: the result is an execution-local
+value handle to the opaque marker, not a byte pointer or invocation ticket.
+Existing ABI fields retain their meaning; older hosts reject the unknown
+import. Native fetch admission claims ownership while the guest constructs its
+suspension group, before any provider dispatch. Native test/dev execute the
+emitted Wasm for this capability. Native forwarding applications reject
+structured request-read surfaces because those host calls remain synchronous.
+
+STR-02C leaves both Fastly targets ineligible. Local Viceroy ABI probes support
+incremental transfer, early origin responses and unsuccessful stream termination,
+but a successful streaming-body close relinquishes the handle and may hand
+queued completion to the host. That is not a drain receipt or retained
+cancellation authority. Fastly incoming forwarding requires a reviewed
+completion/handoff contract and a metered provider pump before admission; raw
+handle transfer alone does not enforce measured byte limits. Fastly JavaScript
+also retains its separate total-request-deadline restriction.
+
+`node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
+this path. Node adapts incoming HTTP lazily and keeps one provider read and one
+source chunk per pump, with a 64 KiB source/backing-allocation ceiling and
+16 KiB emitted chunks. Upload and response byte limits are independent. Provider
+fetch authority remains injected; transport uses manual redirects and never
+replays input. Upload ownership closes on early response; response ownership
+transfers separately to the completion-aware HTTP writer. The request budget
+and disconnect cancellation remain active through that writer. The optional
+provider-driver `prepareNativeRequest` hook owns lazy local HTTP admission and
+returns request metadata, execution options, a response signal and a close
+operation; the generic CLI awaits the response pipeline before closing it. These bounds do
+not claim total process memory or platform socket-buffer bounds. See
+[incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node)
+for the public configuration and restrictions.
+
+### Experimental finite generated output
+
+STR-03A adds `response.output` on explicitly configured Node Native and Node
+JavaScript targets. `node.generatedOutput: true` requires `node.maxDurationMs`.
+`await ctx.output.start(options)` commits validated status/headers;
+`await ctx.output.write(text)` suspends the producer until the Node write callback
+and, when required, drain complete. `return ctx.output.close()` creates a
+request-local terminal marker. Successful handler completion must return that
+exact marker; the provider then waits for local writer finish under the same
+deadline. Finish does not prove client receipt. A missing/foreign close result,
+producer error, limit violation, deadline or disconnect fails the response;
+after commitment the transport is destroyed, with no error-handler replacement.
+
+Each write is at most 16 KiB UTF-8; at most 64 writes and 1 MiB total are admitted.
+One write can be outstanding. Framing/hop-by-hop headers, HEAD/bodyless statuses,
+parallel output effects, event use and background production are excluded.
+No provider stream object enters application code and opaque input cannot be
+inspected through this API. Sequential output writes may use the existing
+literal-capped loop form (at most 64 iterations); this does not admit arbitrary
+generators, callbacks or unbounded loops on Native.
+
+Native executes the emitted Wasm and uses ordinary single-use effect tickets for
+`output.start` and `output.write`. The additive optional ABI-v2 import
+`pulse_host.output_close() -> i32` returns an execution-local completion marker;
+older hosts reject artifacts requiring the unknown import. All output plans,
+including those without read loops, activate the existing cumulative 64 MiB
+retained-value accounting and a 4,096-page linear-memory ceiling. Budget charges
+are not refunded after writes, and are not RSS measurements. Linked-guest
+composition needs separate memory qualification and is rejected for output
+artifacts. JavaScript retains its existing unsandboxed source semantics; the
+output caps do not bound arbitrary application allocations or preempt CPU work.
+
+The optional provider-driver `createGeneratedOutput` hook gives the generic CLI
+a request-owned writer. HTTP never buffers the entire generated output. The
+explicit CLI test collector may materialize up to the same 1 MiB limit. Current
+evidence covers workspace build/dev, actual Native lowering, real HTTP prefix
+delivery, blocked-writer suspension, cancellation, deadline and bounds.
+
+STR-03B's external `str03b-installed` task packs exact candidate packages and
+installs them outside the checkout with lifecycle scripts disabled. It verifies
+installed file bytes before and after ordinary CLI doctor/inspect/test/build/dev
+workflows on both Node targets. Real HTTP covers prefix-before-completion,
+1 MiB UTF-8 fidelity with a paused client, disconnect/deadline cleanup, producer
+and post-header failures, limits, HEAD/bodyless/framing rejection and recovery.
+Installed controlled writers separately prove suspension, late-callback fencing
+and deadline coverage through final flush; the paused-client case alone is not
+a deterministic backpressure proof. Native test/dev observations bind execution
+to the emitted Wasm hash with no fallback and report guest-memory bytes. The
+controlled full-output case also records cumulative retained-value accounting.
+Neither counter is process RSS or an arbitrary-JavaScript allocation bound.
+
+Qualification belongs to each terminal acceptance report's source, package,
+fixture and Wasm identities. The artifact's `independentInstalledQualification`
+field stays false: compilation cannot certify a later external test. The surface
+remains experimental and the task is separate from the aggregate release seal.
+Fastly output and MCP SSE remain unavailable. Node input transforms have the
+separate experimental bounded request-transform contract below; installed output
+qualification does not qualify that surface.
 
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
 provider's `time.wall-clock` authority. It returns one validated UTC wall-clock
@@ -401,6 +1095,10 @@ requested in record-only mode.
 JavaScript compilation returns canonical inspection metadata without an
 executable normalized generator. The provider's graph-backed loader and source
 packager execute the original module closure with its JavaScript async semantics.
+Router source linking requires counterparts for package effects and intrinsics
+in normalized handlers. Recognized sites in JavaScript source-runtime helpers
+remain in project package inspection and provider requirements without requiring
+generated counterparts; Native still requires every reachable site to link.
 Inspection describes recognized Pulse effects; it does not infer effects inside
 ordinary dependency implementations or certify their isolation. An ordinary
 JavaScript import gains no compiler/lowerer authority or Native guest sandbox
@@ -411,13 +1109,18 @@ JavaScript target; `pulse compile` still requires a real Native compilation.
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target
 support policy. The compiler owns the neutral bootstrap, contract validation,
-the compile-only `none` driver, and shared evidence composition. The CLI carries
-provider identity as data and does not import or branch on concrete provider
-implementations.
+the compile-only `none` driver, and shared evidence composition. The compiler's
+production dependencies contain no Node or Fastly provider. The CLI distribution
+owns both bundled provider dependencies and binds built-in resolution to its own
+package context; CLI orchestration carries provider identity as data and does not
+import or branch on concrete provider implementations.
 
 Provider bootstrap is exact and fail-closed:
 
 - bare host ID `x` resolves by convention to `@pulse-compute/provider-x`;
+- direct compiler consumers resolve the selected provider from `projectRoot`
+  (the working directory when omitted); the CLI resolves its bundled `node` and
+  `fastly` IDs from the CLI package, without retrying against the project;
 - an exact scoped package name resolves from the project;
 - `none` selects the internal compile-only driver;
 - every package provider must export the versioned `./toolchain` contract.
@@ -426,6 +1129,21 @@ Pulse does not scan dependencies, inspect keywords, run self-registration hooks,
 try alternate package names, or substitute another provider or target. A
 selected provider toolchain is trusted build code running in the Pulse process;
 do not run it from an untrusted project tree.
+
+Provider-neutral compiler loading and compilation do not load either provider.
+Legacy proof commands load their selected provider lazily from the caller's
+composition root. Repository proof scripts retain development dependencies only.
+The canonical API compiler, Native plan builder and Native compiler facade use
+declared package imports without checkout-relative recovery for missing or
+unexported dependencies. This is a bounded facade migration, not a claim that all
+historical loaders have been migrated.
+
+`arc01-installed` qualifies exact packed compiler-only, Node-only and Fastly-only
+installs outside the checkout, with the unselected providers physically absent.
+It compiles real Wasm, executes the selected provider driver, verifies unchanged
+installed package bytes, and checks the bundled CLI's doctor/test/build workflow
+on both targets. Fastly Native execution uses its fixture ABI; this evidence does
+not establish Viceroy or deployed service behavior.
 
 The compiler-to-provider seam is exact. A selected package exports one
 versioned toolchain whose zero-argument `createDriver()` returns a versioned
@@ -533,12 +1251,22 @@ explicit no-fallback disposition. The compiler integration module only
 projects and rejoins those exact values.
 
 Guest linking runs after the primary AssemblyScript module is compiled and
-before the exact audited artifact enters provider packaging. The initial
-contract is deliberately closed: one package-prebuilt unit, one fixed
+before the exact audited artifact enters provider packaging. Its pinned final
+Binaryen invocation runs size optimization and bounded similar-function
+merging without memory packing. The final audit still requires every validated
+static data segment, fixed-memory layout, feature restriction, and public
+signature; packaging binds the bytes produced by that invocation to its new
+receipt. The pinned recipe for the reviewed guest prebuilt remains separate.
+The initial contract is deliberately closed: one package-prebuilt unit, one fixed
 link-stage-owned memory, borrowed bounded input, MVP features, no start
 function, no allocation or pointer retention, no undeclared imports, and no
 fallback. `.pulse/guests/` is generated, content-addressed,
-non-authoritative, and reproducible after deletion.
+non-authoritative, and reproducible after deletion. Each entry lives at
+`.pulse/guests/<unit-id>/<artifact-sha256>/<manifest-sha256>/`, keyed by the
+exact artifact and manifest bytes. Upgrading a package whose Wasm is unchanged
+creates a separate entry when its manifest changes. Legacy artifact-only cache
+files remain untouched and are not reused. Reusing an exact entry still verifies
+both files byte for byte and rejects corruption.
 
 Only synchronized first-party package identity is trusted. Manifests contain
 normalized metadata and hashes, never executable commands. A failed selected
@@ -554,7 +1282,7 @@ without moving package semantics into the compiler or widening the trust model.
 
 ## JWT verification
 
-The synchronized `1.0.0-beta.5` JWT/crypto packages compose
+The synchronized `1.0.0-beta.6` JWT/crypto packages compose
 `@pulse-compute/jwt` over the lower-level, provider-neutral verification
 contract owned by `@pulse-compute/crypto`. The executable algorithm set is
 HS256 and ES256. Crypto verifies a MAC or signature over caller-supplied bytes
@@ -622,6 +1350,19 @@ its digest describes sent bytes, not durability. Request cancellation retains
 existing lifecycle behavior and does not fabricate a typed S3 outcome. Fastly
 pending requests lack a cancel ABI; invocation termination owns their release.
 
+AST-01 consolidates JavaScript SigV4 canonicalization, key derivation and RFC3986
+segment encoding in S3's first-party `./signing` integration export. The existing
+provider signer and Assets compatibility facade both delegate to that owner.
+Assets depends on S3 within the exact release set, retains its public helper
+types/defaults/error wrappers and Web Crypto selection, and continues to own
+lookup, bucket URL policy and HTTP serving. Shared signing accepts resolved
+credentials and explicitly supplied crypto primitives; no ambient secret or
+network authority moves into S3. Direct helper compatibility does not weaken
+portable S3 effect admission or extend Native eligibility. The Native
+AssemblyScript implementation remains in S3; no lowerer or provider changes are
+needed. Exact tarball acceptance checks dependency resolution, unchanged golden
+signatures, public helper imports and installed type declarations.
+
 S3 bindings can explicitly select up to 2 MiB text, retaining the 32 KiB default.
 Only digest/S3 text effects admit the 12,648,448-byte escaped envelope; generic
 package effects keep their existing bounds. Request/schema limits remain
@@ -666,7 +1407,7 @@ publish, promote, deploy, or activate the release.
 
 ## Support, release, and authority
 
-Pulse `1.0.0-beta.5` is a Beta intended for the `beta` channel.
+Pulse `1.0.0-beta.6` is a Beta intended for the `beta` channel.
 Documented, evidence-backed behavior is intentional, but public surfaces may
 change deliberately before a compatibility-bearing release. Unsupported
 behavior fails explicitly, historical and implementation subpaths gain no
@@ -718,3 +1459,131 @@ required for the inferred boundaries. The pull request must name those
 boundaries, expose the human decision, and explain the resulting contract change
 where reviewers can evaluate it. Git history and sealed checkpoints retain the
 superseded state.
+
+### JWT issuance and canonical guest linking
+
+JWT signing supports HS256, ES256 and RS256 through request-owned secret and clock
+effects. Private P-256 JWK parsing belongs to JWT; the private Crypto adapter
+accepts bounded `x || y || d` bytes. Native ES256 uses the exact revised
+`pulse.crypto.es256-rs256.verify-and-sign.v3` guest ABI, retaining the verification
+frame and adding a distinct signing export. The caller clears the signing
+frame and borrowed Rust stack. No public generic signing primitive, remote key
+authority, dynamic lowerer, algorithm fallback, or provider discovery is added.
+
+CLI canonical compilation checks its intermediate module against the fixed
+Pulse host ABI owned by `canonical-native-runtime.js`. Provider packaging
+separately checks the final artifact against its selected provider descriptor;
+Fastly's final artifact must not retain `pulse_host` or crypto guest imports.
+This separates the two artifact boundaries without widening either import set.
+Historical G0/G3/G4/G5 reports do not attest the revised signing binary.
+
+
+RS256 shares the exact first-party signature guest with ES256. Its separate
+sign/verify exports use algorithm code 2 in the checked invocation envelope,
+12288 input bytes, and 256/384/512-byte signatures. The original ES256 frame
+semantics remain algorithm code 1. RSA uses vendored, pinned BearSSL 0.6 i31
+arithmetic compiled with Zig 0.13.0's Clang and statically linked by Cargo;
+source inventory, toolchain identity and final bytes are part of the trusted
+package catalog. The existing module/path identifiers are retained, while the
+ABI/build identities advance to v3. This expands neither linked-unit count
+nor the fixed memory/host-import policy. Native SHA/HMAC source composition
+remains rejected by that policy, and Fastly Native keeps one verification
+algorithm per artifact.
+
+JWT owns strict private/public RSA JWK metadata and deterministic static JWKS
+selection. Crypto checks RSA/CRT consistency and signing output. No remote
+key discovery, key generation, certificate/PEM parsing, PSS, or public generic
+sign primitive is added. Native constant-time design assumptions and the
+JavaScript BigInt key-validation timing limitation are documented in the
+Crypto package guide. Existing secret/clock authority, cancellation,
+redaction and application lifetime ownership are retained.
+
+### Experimental bounded request transforms
+
+STR-03C selects strict UTF-8 incoming request chunks, with `request.body.transform`
+and explicit `node.bodyTransform: true` alongside generatedOutput/maxDurationMs.
+The provider-neutral `ctx.req.readTextChunk()` surface lowers to an awaited
+`output.readTextChunk` effect: the existing request-owned output controller owns
+both sides so one reader/write may be outstanding. It uses ordinary single-use
+Native effect tickets, rejects parallel grouping and exposes only `{ done, text }`.
+Native executes the handler's existing pure expressions, including concatenation;
+no callback, binary-view API or new string operation is admitted. Linked guests
+remain excluded pending memory qualification. Fastly explicitly rejects transforms.
+
+The finite contract is 65,536 input bytes, 262,144 output bytes, maximum 4× expansion
+against UTF-8 bytes delivered to the handler, 4,093 raw bytes per fixed input block,
+at most three decoder carry bytes and 4,096 encoded bytes per delivered text chunk.
+BOMs are data; invalid/truncated UTF-8 fails. At most 18 reads include the distinct
+EOF marker; close requires EOF. Existing 16 KiB/write, 64-write, cumulative 64 MiB
+Native accounting, 4,096-page guest limit and shared request deadline still apply.
+Input queue accounting is at most 69,632 bytes, separate from Node transport buffers,
+materialized text, output buffers and retained guest/host values. Input source chunks
+and backing allocations are bounded before retention. No application stream,
+replay, tee, fetched input cursor or allocator reclamation is introduced.
+
+Transform configuration excludes incoming forwarding and reserves structured body
+reads. Native capability composition rejects structured reads; the shared host
+ownership object also fences JavaScript admission conflicts. Reads are lazy and
+writes wait for callback plus drain before the next pull. Errors, disconnect and
+deadline cancel the input owner and fail the writer; post-header failures cannot
+replace the response. The Native manifest records the finite transform policy,
+not an installed qualification claim. Workspace acceptance measures 2× duplication,
+accepts the 4×/256 KiB boundary, rejects over-expansion and validates actual Wasm
+and both Node HTTP targets. See [bounded UTF-8 transforms](../concepts/bodies.md#experimental-bounded-utf-8-transforms-on-node).
+
+### AST-02D Native embedded Assets
+
+The trusted Assets lowerer admits a canonical serialized `embeddedManifest`
+literal on `assets.lookup`. Contracts own manifest validation, deterministic
+identity and the finite embedded HTTP subset; the lowerer owns authoring
+admission and selects the contained literal path. All manifest records are
+validated, including unselected files. The existing opaque package effect
+carries only the selected admitted blob and manifest identity into the Native
+artifact. Node and Fastly retain binary response ownership. The opt-in grants
+no filesystem, store or network authority and adds no binary application ABI.
+Ordinary Native compilation/builds are the supported path. JavaScript retains
+the existing embedded middleware; the Native-only lookup option rejects direct
+JavaScript execution. The older binary-buffer guest ABI remains reserved.
+
+### AST-02A bounded S3 response ownership
+
+S3 `getBody` is a Node Native/JavaScript opaque package effect. S3 owns signed
+GET/HEAD and the narrow conditional/range metadata contract; Node owns origin
+I/O, the existing binding byte limit and transfer deadline. The Native host
+tracks registered response bodies until return or discard. Body bytes do not
+enter application values or imply whole-object integrity. Fastly body-handle
+integration and embedded assets are separate increments; existing S3 text
+support does not imply support for this operation.
+
+### AST-02C Fastly opaque S3 bodies
+
+The Fastly Native provider realizes the existing `s3.getBody` effect with
+provider-owned origin handles, strict raw metadata admission, and a 16 KiB
+streaming copy. S3 owns Native signing and range interpretation. Literal read
+options remain lowerer-admitted; bindings remain configuration-owned. Each
+response copies its deadline so repeated effect slots cannot extend older body
+ownership. Unselected handles close at invocation exit. The downstream handle
+is finished only after exact-length EOF; an unfinished stream aborts at Compute
+invocation exit. This adds no guest byte value or JavaScript fallback.
+Fastly JavaScript remains blocked by raw-header limitations.
+
+
+## Production Node integration (NODE-01)
+
+`@pulse-compute/provider-node/server` is a supported host integration export.
+`createNodeLauncher` admits only an explicitly selected Node Native or JavaScript
+`pulse build` directory and bounded, host-owned configuration. Native startup
+checks plan/Wasm/package identity and ABI, then executes exact Wasm per request.
+JavaScript loads the packaged application and codecs; neither target recompiles
+or reads development configuration at startup. Builds are trusted executable
+inputs, not a sandbox or an authenticity signature.
+
+The launcher owns readiness, connection/concurrency admission, request budgets,
+bounded drain and restart of the same immutable build. Request cancellation
+remains with the existing runtime budget and provider adapters. Shutdown revokes
+request authority and destroys sockets at the configured deadline; it does not
+promise CPU preemption or rollback. It installs no process handlers and exits no
+process. Deployment owners wire signals and retain supervisor/release authority.
+Reference KV resets for each host generation and is not durable production KV.
+The core finite-response contract is separate from stream/blob launcher extensions.
+See [Node build and execution](../guides/deploying-node.md) for defaults and limits.

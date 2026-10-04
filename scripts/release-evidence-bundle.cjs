@@ -10,9 +10,6 @@ const { spawnSync } = require('node:child_process');
 const { expandProfile } = require('../wasm/test/suite/registry.cjs');
 const { MAINTENANCE_POLICY } = require('./maintenance-policy.cjs');
 const { reportForInputs, renderMarkdown } = require('./maintainer-scope.cjs');
-const {
-  FASTLY_JAVASCRIPT_TARGET_SUPPORT_DECLARATION
-} = require('../packages/provider-fastly/src/javascript/support.js');
 
 const EVIDENCE_BUNDLE_VERSION = 'pulse.release-evidence-bundle.v1';
 const AGGREGATE_VERSION = 'pulse.release-evidence-aggregate.v1';
@@ -26,6 +23,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     id: 'historical-contracts',
     title: 'Historical contracts',
     tasks: Object.freeze([
+      'pure-helper-contract',
       'suite-shape',
       'test-orchestration',
       'package-exports',
@@ -38,7 +36,10 @@ const SHARD_DEFINITIONS = Object.freeze([
       'reachable-graph',
       'project-modules',
       'entities-contracts',
-      'entities-json-rpc-corpus'
+      'entities-json-rpc-corpus',
+      'mcp-http',
+      'mcp-tools',
+      'mcp-authorization'
     ])
   }),
   Object.freeze({
@@ -62,9 +63,12 @@ const SHARD_DEFINITIONS = Object.freeze([
       'continuation-registry',
       'crypto-runtime-builtin',
       'bounded-app-logic',
+      'bounded-read-loops',
+      'bounded-loop-helpers',
       'time-conformance',
       'time-consumer',
       'request-budget-transport',
+      'node-launcher',
       'http-input-outcomes',
       'application-errors',
       'application-error-boundaries',
@@ -81,10 +85,20 @@ const SHARD_DEFINITIONS = Object.freeze([
     tasks: Object.freeze([
       'canonical-api-lowering',
       'canonical-native-plan',
+      'pure-helper-vocabulary',
+      'pure-string-index',
+      'pure-field-projection',
+      'pure-guarded-arguments',
+      'pure-source-helpers',
+      'pure-record-helpers',
+      'pure-argument-helpers',
+      'pure-loop-helpers',
+      'shared-stage-o19',
       'multifile-source-identity',
       'logging-lowering',
       'canonical-router-lowering',
       'canonical-router-terminal-middleware',
+      'router-selected-groups',
       'json-as-compatibility',
       'crypto-config-planning',
       'entities-package-owned-lowering',
@@ -92,7 +106,11 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-managed-handler',
       'entities-managed-handler-effects',
       'entities-native-runtime',
+      'entities-hardening',
+      'entities-node-native-workflow',
+      'fastly-entities-native-workflow',
       'crypto-native-guest-source',
+      'guest-json-roundtrip',
       'guest-link-package',
       'guest-link-materialization-stage',
       'guest-link-audit-diagnostics',
@@ -106,6 +124,9 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Node providers',
     tasks: Object.freeze([
       'canonical-opaque-node-emission',
+      'str02b-node-native',
+      'str03a-generated-output',
+      'str03c-bounded-transforms',
       'javascript-effect-adapter',
       's3-node-transport',
       'node-router-context-parity',
@@ -122,6 +143,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-cli-gate-surface',
       'fastly-native-http-shell',
       'fastly-native-http-effects',
+      'fastly-driver-behavior-o09',
       'fastly-request-headers',
       'fastly-native-platform-capabilities',
       'fastly-conditional-kv',
@@ -149,9 +171,16 @@ const SHARD_DEFINITIONS = Object.freeze([
       's3-read-contract',
       's3-write-contract',
       's3-native-read',
+      's3-body-read',
       's3-write-conformance',
+      'jwt-signing',
+      'jwt-es256-signing',
+      'crypto-es256-signing',
+      'crypto-rs256',
+      'jwt-rs256',
       'assets-lowering-plan',
       'assets-package-owned-lowering',
+      'assets-native-embedded',
       'grip-package-owned-lowering',
       'grip-package-runtime',
       'package-root-native',
@@ -197,7 +226,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'clean-machine-consumers',
     title: 'Clean-machine consumers',
-    tasks: Object.freeze(['clean-machine-acceptance'])
+    tasks: Object.freeze(['clean-machine-acceptance', 'cli-entities-installed-workflow'])
   }),
   Object.freeze({
     id: 'deployment-candidates',
@@ -214,8 +243,8 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'maintainer-publication-controls',
     title: 'Maintainer and publication control planes',
-    tasks: Object.freeze(['release-runtime-policy', 'release-tag']),
-    releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release'])
+    tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-tag']),
+    releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release', 'installed-features'])
   })
 ]);
 
@@ -388,6 +417,38 @@ function artifactStatus(name, artifacts) {
   return 'failed';
 }
 
+// This checks the plan only. Passing coverage is never execution evidence.
+function validateShardCoverage(expectedTasks = expandProfile('release'), definitions = SHARD_DEFINITIONS) {
+  const known = new Set(expectedTasks);
+  const ids = new Set();
+  const shards = definitions.map((definition) => {
+    if (!definition.id || ids.has(definition.id)) {
+      fail('PULSE_RELEASE_EVIDENCE_SHARD_INVALID', `Duplicate or missing release shard ID: ${definition.id}`);
+    }
+    ids.add(definition.id);
+    const tasks = definition.taskPrefix
+      ? expectedTasks.filter((name) => definition.taskPrefix.some((prefix) => name.startsWith(prefix)))
+      : [...(definition.tasks || [])];
+    const unknown = tasks.filter((name) => !known.has(name));
+    if (unknown.length) {
+      fail('PULSE_RELEASE_EVIDENCE_TASK_UNKNOWN', `Shard ${definition.id} references tasks outside the release profile: ${unknown.join(', ')}`);
+    }
+    if (!tasks.length || new Set(tasks).size !== tasks.length) {
+      fail('PULSE_RELEASE_EVIDENCE_SHARD_INVALID', `Shard ${definition.id} has empty or duplicate task coverage`);
+    }
+    return Object.freeze({ ...definition, tasks: Object.freeze(tasks) });
+  });
+  const covered = new Set(shards.flatMap((shard) => shard.tasks));
+  const missing = expectedTasks.filter((name) => !covered.has(name));
+  if (missing.length) {
+    fail('PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED', `Release tasks are not mapped to a shard: ${missing.join(', ')}`);
+  }
+  if (shards.length !== 16) {
+    fail('PULSE_RELEASE_EVIDENCE_SHARD_INVALID', `Expected 16 release evidence shards, found ${shards.length}`);
+  }
+  return Object.freeze(shards);
+}
+
 function aggregateValidation(input) {
   const {
     sourceRevision,
@@ -402,6 +463,7 @@ function aggregateValidation(input) {
   assertRevision(fourMode.sourceRevision, sourceRevision, 'Four-mode report');
   assertRevision(candidates.sourceRevision, sourceRevision, 'Candidate report');
   if (releaseSeal.status !== 'passed') fail('PULSE_RELEASE_EVIDENCE_RELEASE_FAILED', 'Release seal did not pass.');
+  require('./release-feature-acceptance.cjs').validateSummary(releaseSeal.featureAcceptance, sourceRevision);
   if (taskReport.status !== 'passed') fail('PULSE_RELEASE_EVIDENCE_TASKS_FAILED', 'Release task report did not pass.');
 
   const expectedTasks = expandProfile('release');
@@ -419,10 +481,8 @@ function aggregateValidation(input) {
   }
   const stepById = new Map(releaseSeal.steps.map((entry) => [entry.id, entry]));
   const artifacts = { fourMode, candidates, replay };
-  const shards = SHARD_DEFINITIONS.map((definition) => {
-    const taskNames = definition.taskPrefix
-      ? expectedTasks.filter((name) => definition.taskPrefix.some((prefix) => name.startsWith(prefix)))
-      : [...(definition.tasks || [])];
+  const shards = validateShardCoverage(expectedTasks).map((definition) => {
+    const taskNames = definition.tasks;
     const taskResults = taskNames.map((name) => {
       const result = resultByName.get(name);
       return Object.freeze({
@@ -453,11 +513,6 @@ function aggregateValidation(input) {
         : null
     });
   });
-  const coveredTasks = new Set(shards.flatMap((entry) => entry.tasks.map((task) => task.name)));
-  const uncoveredTasks = expectedTasks.filter((name) => !coveredTasks.has(name));
-  if (uncoveredTasks.length > 0) {
-    fail('PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED', `Release tasks are not mapped to a shard: ${uncoveredTasks.join(', ')}`);
-  }
   if (shards.length !== 16 || shards.some((entry) => entry.status !== 'passed')) {
     fail('PULSE_RELEASE_EVIDENCE_SHARD_FAILED', 'One or more release evidence shards did not pass.');
   }
@@ -473,6 +528,7 @@ function aggregateValidation(input) {
       failed: shards.filter((entry) => entry.status !== 'passed').length,
       releaseTasks: expectedTasks.length,
       releaseTasksPassed: expectedTasks.length,
+      installedFeatureGates: releaseSeal.featureAcceptance.gates.length,
       providerReality: releaseSeal.externalFastly && releaseSeal.externalFastly.status || 'not-inspected',
       deploymentPerformed: false,
       publicationPerformed: false
@@ -623,6 +679,11 @@ function scopeReport(ledger, baseRevision, headRevision) {
 }
 
 function targetIntegrityReport(headRevision, fourMode, candidates) {
+  // Provider realization needs installed workspace links; shard preflight does not.
+  const {
+    FASTLY_JAVASCRIPT_TARGET_SUPPORT_DECLARATION
+  } = require('../packages/provider-fastly/src/javascript/support.js');
+
   const availability = FASTLY_JAVASCRIPT_TARGET_SUPPORT_DECLARATION.availability;
   if (availability.definition !== 'full-target-support'
       || !availability.fullTargetSupportReady
@@ -962,6 +1023,7 @@ module.exports = Object.freeze({
   TARGET_INTEGRITY_VERSION,
   MIGRATION_LEDGER_VERSION,
   SHARD_DEFINITIONS,
+  validateShardCoverage,
   parseArgs,
   aggregateValidation,
   treeSnapshot,

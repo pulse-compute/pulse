@@ -1,6 +1,9 @@
 name: Maintainer scope
 
 on:
+  workflow_dispatch:
+  push:
+    branches: ['**']
   pull_request:
     types: [opened, synchronize, reopened, edited, ready_for_review]
 
@@ -9,12 +12,31 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: maintainer-scope-${{ github.event.pull_request.number }}
+  group: maintainer-scope-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  route:
+    name: validation route
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tier: ${{ steps.route.outputs.tier }}
+      run: ${{ steps.route.outputs.run }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        id: route
+        with:
+          script: await require('./scripts/maintainer-validation-routing.cjs').route({ github, context, core })
+
   scope:
     name: scope
+    needs: route
+    if: always() && needs.route.outputs.run != 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -28,6 +50,7 @@ jobs:
         with:
           node-version: '24'
       - name: Materialize trusted base policy and sanitized inputs
+        if: github.event_name == 'pull_request'
         shell: bash
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
@@ -61,6 +84,7 @@ jobs:
           git diff --name-only --diff-filter=ACMRDTUXB -z "$BASE...$HEAD" > .pulse-maintainer-input/changed-files.z
           git archive "$BASE" | tar -x -C .pulse-maintainer-trusted
       - name: Validate declaration with the trusted base classifier
+        if: github.event_name == 'pull_request'
         run: >-
           node .pulse-maintainer-trusted/scripts/maintainer-scope.cjs
           --event .pulse-maintainer-input/event.json
@@ -68,11 +92,33 @@ jobs:
           --check
           --json-out maintainer-scope-report.json
           --markdown-out maintainer-scope-report.md
+      - name: Classify branch changes with the prior commit's trusted policy
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="$(node - <<'NODE'
+          const fs = require('node:fs');
+          const { revisionRange } = require('./scripts/maintainer-validation-routing.cjs');
+          const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+          console.log(revisionRange(process.env.GITHUB_EVENT_NAME, event, process.env.GITHUB_SHA).base);
+          NODE
+          )"
+          [[ "$BASE" =~ ^[0-9a-f]{40}$ ]]
+          rm -rf -- .pulse-maintainer-input .pulse-maintainer-trusted
+          mkdir -p .pulse-maintainer-input .pulse-maintainer-trusted
+          git diff --no-renames --name-only -z "$BASE" "$GITHUB_SHA" > .pulse-maintainer-input/changed-files.z
+          git archive "$BASE" | tar -x -C .pulse-maintainer-trusted
+          node .pulse-maintainer-trusted/scripts/maintainer-scope.cjs \
+            --changed-files0-file .pulse-maintainer-input/changed-files.z \
+            --allow-missing-declaration \
+            --json-out maintainer-scope-report.json \
+            --markdown-out maintainer-scope-report.md
       - name: Upload deterministic scope report
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: maintainer-scope-${{ github.event.pull_request.number }}
+          name: maintainer-scope-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             maintainer-scope-report.json
             maintainer-scope-report.md

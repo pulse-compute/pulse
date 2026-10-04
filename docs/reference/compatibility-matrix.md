@@ -42,7 +42,10 @@ the Native build; it does not authorize automatic JavaScript fallback.
 | Ordinary target-compatible JavaScript package API | Yes | Yes | No | No | JavaScript packaging must include a provider-compatible dependency. Native requires a trusted package-owned lowerer. |
 | Arbitrary Promise construction or library await | JS only | JS only | No | No | Never valid inside `ctx.parallel`; Native reports the first eligibility boundary and never falls back. |
 | Ambient `fetch`, timers, environment/process access, filesystem, sockets, or provider SDK | No | No | No | No | Use `ctx` effects and configured provider bindings. |
-| Userland body streams, chunk transforms, or background work | No | No | No | No | Structured reads are bounded, opaque bodies stay host-owned, and work ends with the request. |
+| General userland body streams, binary transforms, or background work | No | No | No | No | Structured reads are bounded, opaque bodies stay host-owned, and work ends with the request. |
+| Incoming opaque request forwarding | Yes | No | Yes | No | Explicit Node `bodyForwarding`; Native excludes structured request reads. See [incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node). |
+| Finite generated UTF-8 output | Experimental | No | Experimental | No | Explicit `generatedOutput` and deadline; installed Node output evidence remains separate from production-launcher qualification. |
+| Finite incoming UTF-8 transforms | Experimental | No | Experimental | No | Explicit `bodyTransform` plus generated output/deadline; 64 KiB input, 256 KiB output, at most 4× expansion. Installed transform qualification is pending. |
 
 ## Provider and target realization
 
@@ -59,12 +62,15 @@ cell names the provider-owned binding or artifact that realizes it.
 | Secret reads | Test/dev binding | Secret Store | Test/dev binding | Secret Store | Secret values remain provider-owned and are redacted from diagnostics and logs. |
 | KV `get` and `put` | In-memory binding | KV Store | In-memory binding | KV Store | Namespaces are explicit profile bindings. |
 | Opaque pass-through | Yes | Yes | Yes | Yes | Bodies remain host-owned in all four modes. |
+| S3 `head`, `getText`, `getBody`, `putText` | Yes | No | Yes | Yes | Bounded exact-key operations. `getBody` returns an opaque binary response with the documented HTTP subset; Fastly JS lacks required raw-header metadata. See [S3](../packages/s3.md). |
+| Embedded Assets bytes | Node middleware | Unqualified | Native lookup | Native lookup | JavaScript `createAssets` embedded middleware is tested on Node; Native uses literal `embeddedManifest`. Fastly Native evidence is injected ABI proof, not deployment. See [Assets](../packages/assets.md). |
+| Finite production HTTP launcher | `/server` | No | `/server` | No | Explicit supported export of `@pulse-compute/provider-node`. Forwarding/output/transforms/S3-body/blob-specific launcher qualification remains separate. See [Node deployment](../guides/deploying-node.md). |
 | GRIP framing and configured broadcast | Yes | Yes | Yes | Yes | The package-root contract owns the portable operation shape. |
 | `ctx.log` and redaction | Yes | Yes | Yes | Yes | Provider output format may differ; the level and redaction contract does not. |
 | Reference event ingress and `ctx.emit` acceptance | Bounded Node adapter | No | Bounded Node adapter | No | Direct parity evidence only: FIFO ingress, exact-frame acceptance, no loopback, delivery promise, public bus, call surface, or automatic fallback. |
 | Local execution evidence | Node lifecycle | Provider emulation | Canonical host | Controlled ABI host | Local proof is not production provider activation. |
 | Deployment candidate | Source package | Source package plus downstream runtime Wasm | Node build | `bin/main.wasm` | A candidate records the selected target and does not contain an automatic fallback artifact. |
-| Production deployment and activation | Not applicable | Human-operated | Not applicable | Human-operated | Fastly reality, deployment, and activation remain explicit external gates. |
+| Production deployment and activation | Host-operated | Human-operated | Host-operated | Human-operated | The Node launcher does not create infrastructure or supervise processes; Fastly reality, deployment, and activation remain explicit external gates. |
 
 ## Entities Beta package
 
@@ -79,14 +85,14 @@ separate ordinary-lifecycle and Fastly Native integration boundaries.
 | Declared input/output schema codecs | Measured | Measured | Measured | Measured | Selection precedes decode; only the selected schemas are available. |
 | Managed handler effects | Measured | Measured | Measured | Measured | The shared corpus includes schema work, fetch, and stable negative cases. |
 | Deterministic catalog and inspection | Yes | Yes | Yes | Yes | Catalog and redacted inspection are package-owned build artifacts. |
-| Ordinary project build integration | Yes | Yes | No | No | JavaScript source packaging emits the catalog; Native evidence uses package source outside the ordinary build adoption path. |
-| Ordinary project `test`/`dev` loading | Blocked | Blocked | Not applicable | Not applicable | The shared JavaScript loader requests an unexported physical entry instead of the public package root. |
+| Ordinary project build integration | Yes | Yes | Yes | No | Node Native emits the package-owned application guest and catalog; Fastly Native evidence still uses a separate provider proof. |
+| Ordinary project `test`/`dev` loading | Yes | Not verified | Yes | No | Node lifecycle gates exercise the package root and the emitted Native guest; Fastly ordinary-lifecycle acceptance remains separate. |
 | Automatic target fallback | No | No | No | No | Eligibility, measured execution, and release assignment remain separate claims. |
 
 ## JWT and crypto Beta packages
 
 This table records the sealed Phase D and E behavior of the synchronized
-`1.0.0-beta.5` JWT/crypto packages. Validation does not itself authorize npm
+`1.0.0-beta.6` JWT/crypto packages. Validation does not itself authorize npm
 publication.
 
 | Candidate capability | Node JS | Fastly JS | Node Native | Fastly Native | Notes |
@@ -96,8 +102,10 @@ publication.
 | Exact realization selection | Yes | Yes | Yes | Yes | Profile replacement is whole-value replacement; there is no array or object merging. |
 | Disabled fallback | Yes | Yes | Yes | Yes | Missing capability, unavailable pins, and realization failures stop without choosing another backend or target. |
 | Secret-safe realization reporting | Yes | Yes | Yes | Yes | Reports identify algorithms and realizations but never key, message, or authenticator bytes. |
-| Prebuilt `guest-linked` unit required | No | No | ES256 only | ES256 only | Native HS256 remains first-party AssemblyScript in the primary module; Native ES256 uses the exact audited RustCrypto guest. |
-| JWT verification | HS256, ES256 | HS256, ES256 | HS256, ES256 | HS256, ES256 | RS256 and EdDSA remain unavailable; no failure changes algorithms, realizations, targets, or providers. |
+| RS256 verification and JWT issuance | Web Crypto | Web Crypto | BearSSL i31 guest | BearSSL i31 guest | Exactly 2048/3072/4096-bit RSA, PKCS#1 v1.5/SHA-256; portable host fixtures, not deployed acceptance. |
+| JWT issuance | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | Secret and clock authority remain request-owned; lifetime policy remains application-owned. |
+| Prebuilt `guest-linked` unit required | No | No | ES256/RS256 | ES256/RS256 | Native HS256 remains first-party AssemblyScript in the primary module; Native ES256/RS256 share the pinned RustCrypto/BearSSL signature guest. |
+| JWT verification | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | HS256, ES256, RS256 | EdDSA remains unavailable; no failure changes algorithms, realizations, targets, or providers. |
 | JWT authenticity before claims | Yes | Yes | Yes | Yes | Invalid authenticity exposes no claims and stops before clock, registered-claim, or schema authority. |
 | Exact final-artifact execution | Package runtime | Compute artifact | Primary Native module | `bin/main.wasm` | Native cells execute the package-owned guest sources; JavaScript cells execute the exact selected runtime builtin. |
 
@@ -167,3 +175,11 @@ documented managed-surface rule with the canonical handler-surface registry.
 - [Node build and execution](../guides/deploying-node.md)
 - [Fastly deployment candidates](../guides/deploying-fastly.md)
 - [Diagnostics and remediation](./diagnostics.md)
+
+
+RS256 and ES256 can share a Native artifact. The fixed-memory linked guest
+currently cannot compose with the allocating SHA/HMAC guest. Fastly Native
+also requires one JWT verification algorithm per artifact. These builds fail
+closed; an explicitly selected JavaScript target can compose these algorithms.
+See [JWT](../packages/jwt.md) for canonical key limits and
+[Crypto](../packages/crypto.md) for private-key timing and memory assumptions.

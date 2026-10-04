@@ -5,6 +5,7 @@ import type {
 import { crypto } from '@pulse-compute/crypto';
 import {
   verify,
+  sign,
   type JwtClaims,
   type JwtVerification,
 } from '../src/index.js';
@@ -64,3 +65,14 @@ const semanticVerification: Promise<JwtVerification<JwtClaims>> = verifyJwtWithC
 );
 
 void semanticVerification;
+
+const issued: PulseParallelEffect<string> = sign(ctx, { sub: 'worker' }, {
+  algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 45,
+});
+void issued;
+const issuedEs: PulseParallelEffect<string> = sign(ctx, {}, { algorithm: 'ES256', key: { type: 'secret', binding: 'PRIVATE_JWK' }, kid: 'rotation-1', expiresInSeconds: 3600 });
+void issuedEs;
+// @ts-expect-error RSA-PSS is not RS256.
+sign(ctx, {}, { algorithm: 'PS256', key: { type: 'secret', binding: 'KEY' }, expiresInSeconds: 45 });
+// @ts-expect-error Signing keys are named bindings, never inline key material.
+sign(ctx, {}, { algorithm: 'HS256', key: { type: 'secret', value: 'private' }, expiresInSeconds: 45 });

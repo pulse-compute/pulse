@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/provider-node",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -39,7 +39,11 @@
     "./javascript/package-effects": "./src/javascript/package-effects.js",
     "./javascript/jwt-verifier": "./src/javascript/jwt-verifier.js",
     "./javascript/grip-broadcast": "./src/javascript/grip-broadcast.js",
-    "./javascript/source-package": "./src/javascript/source-package.js"
+    "./javascript/source-package": "./src/javascript/source-package.js",
+    "./server": {
+      "types": "./src/server/index.d.ts",
+      "default": "./src/server/index.js"
+    }
   },
   "dependencies": {
     "@pulse-compute/crypto": "workspace:*",
@@ -62,7 +66,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/provider-node"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.6/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   }

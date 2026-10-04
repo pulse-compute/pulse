@@ -67,6 +67,9 @@ function assertPortableModule(name, compiled) {
 }
 
 async function main() {
+  await require('../runtime/conditional-kv-normalization.cjs').main();
+  await require('./native-expression-sharing.cjs').main();
+  await require('./native-dispatcher-partitions.cjs').main();
   await require('../runtime/request-budget.cjs').main();
   const plans = new Map();
   for (const name of Object.keys(EXAMPLES)) plans.set(name, planForExample(name));
@@ -294,7 +297,8 @@ async function main() {
   assert.equal(controller.start(), runtimeContract.CANONICAL_NATIVE_RUN_STATUS.SUSPENDED);
   const suspendedPc = controller.programCounter();
   const suspendedState = controller.continuationState();
-  assert.equal(controller.pendingEffects().length, 1);
+  const manualPending = controller.pendingEffects();
+  assert.equal(manualPending.length, 1);
   assert.equal(controller.resume(), runtimeContract.CANONICAL_NATIVE_RUN_STATUS.INVALID_RESUME);
   assert.equal(controller.lastErrorCode(), runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INCOMPLETE_RESUME);
   assert.equal(controller.programCounter(), suspendedPc, 'incomplete resume must not advance the program counter');
@@ -307,7 +311,7 @@ async function main() {
     body: JSON.stringify({ id: 123, name: 'Ada' })
   }, 'fetch-1', 'manual', controller.schemaCodecs);
   assert.deepEqual(lowLevel.plan.effects[0].result.decoder, { kind: 'json', arguments: [] });
-  controller.setEffectResult(0, controller.prepareEffectResult(0, manualResponse));
+  controller.setEffectResult(manualPending[0].ticket, controller.prepareEffectResult(0, manualResponse));
   assert.equal(controller.exports.pulse_set_effect_result(0, 1), runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED, 'duplicate effect results must be rejected');
   assert.equal(controller.resume(), runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE);
   assert.equal(controller.lastErrorCode(), runtimeContract.CANONICAL_NATIVE_ERROR_CODES.NONE);
@@ -319,12 +323,31 @@ async function main() {
   }, nodeOptions()), (error) => error && error.code === 'PULSE_CANONICAL_NATIVE_PLAN_HASH_MISMATCH');
   assert.throws(() => inspectCanonicalNativeWasm(Buffer.from('not wasm')), (error) => error && error.name === 'CanonicalNativeCompileError');
 
+  const textModule = compileCanonicalNativePlan(plans.get('hello'), { cwd: repoRoot, emitWat: true });
+  assert.deepEqual(textModule.wasm, modules.get('hello').wasm, 'text emission must not change executable bytes');
+  assert.ok(textModule.wat.startsWith('(module'));
+  assert.equal(textModule.manifest.wat.emitted, true);
+  assert.deepEqual(modules.get('hello').manifest.wat, { emitted: false, bytes: 0, sha256: null });
+  assert.throws(() => compileCanonicalNativePlan(plans.get('hello'), { cwd: repoRoot, emitWat: 'yes' }), /emitWat must be a boolean/);
+
   const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-canonical-native-write-'));
   try {
     const written = writeCanonicalNativeModule(modules.get('hello'), outputRoot);
     assert.ok(fs.existsSync(written.sourceFile));
     assert.ok(fs.existsSync(written.wasmFile));
-    assert.ok(fs.existsSync(written.watFile));
+    assert.equal(written.watFile, null);
+    assert.equal(fs.existsSync(path.join(outputRoot, 'canonical-native.wat')), false);
+    const withText = writeCanonicalNativeModule(textModule, outputRoot);
+    assert.equal(fs.readFileSync(withText.watFile, 'utf8'), textModule.wat);
+    writeCanonicalNativeModule(modules.get('hello'), outputRoot);
+    assert.equal(fs.existsSync(withText.watFile), false, 'reusing an output directory removes stale diagnostic text');
+    // Inspect the compiler output directly so generating and merely discarding
+    // WAT cannot satisfy the default-omission contract.
+    fs.writeFileSync(withText.watFile, 'stale diagnostic');
+    const direct = compileCanonicalNativePlan(plans.get('hello'), { cwd: repoRoot, outDir: outputRoot });
+    assert.equal(direct.output.watFile, null);
+    assert.equal(fs.existsSync(withText.watFile), false, 'AssemblyScript must not emit default WAT');
+    assert.deepEqual(direct.wasm, textModule.wasm);
     assert.ok(fs.existsSync(written.planFile));
     assert.ok(fs.existsSync(written.manifestFile));
     assert.equal(JSON.parse(fs.readFileSync(written.manifestFile, 'utf8')).wasm.sha256, modules.get('hello').inspection.sha256);

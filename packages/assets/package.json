@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/assets",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "license": "Apache-2.0",
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -51,7 +51,7 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/assets"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.5/packages/assets/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.6/packages/assets/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
   },
@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "@pulse-compute/runtime": "workspace:*",
-    "@pulse-compute/wasm-contracts": "workspace:*"
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/s3": "workspace:*"
   }
 }

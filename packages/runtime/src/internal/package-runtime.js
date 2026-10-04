@@ -26,6 +26,7 @@ const TRUSTED_PACKAGE_EFFECT_CATALOG = Object.freeze({
   }),
   '@pulse-compute/s3': Object.freeze({
     contractId: 'pulse.s3', providerKind: 's3', operations: Object.freeze({
+      getBody: Object.freeze({ kind: 's3.getBody', capability: 's3.getBody', result: 'opaque-response' }),
       head: Object.freeze({ kind: 's3.head', capability: 's3.head', result: 's3-head-result' }),
       getText: Object.freeze({ kind: 's3.getText', capability: 's3.getText', result: 's3-get-text-result' }),
       putText: Object.freeze({ kind: 's3.putText', capability: 's3.putText', result: 's3-put-text-result' })
@@ -57,6 +58,7 @@ const TRUSTED_PACKAGE_EFFECT_CATALOG = Object.freeze({
     contractId: 'pulse.jwt',
     providerKind: 'jwt',
     operations: Object.freeze({
+      sign: Object.freeze({ kind: 'jwt.sign', capability: 'jwt.sign', result: 'string' }),
       verify: Object.freeze({
         kind: 'jwt.verify',
         capability: 'jwt.verify',
@@ -595,6 +597,8 @@ function createPackageRuntime(input) {
         capability: declared.capability,
         result: declared.result,
         payload: clonePackageEffectPayload(payload, {
+          // The sign payload adds one envelope level around its 32-level claims.
+          maxDepth: declared.kind === 'jwt.sign' ? DEFAULT_MAX_PAYLOAD_DEPTH + 1 : DEFAULT_MAX_PAYLOAD_DEPTH,
           maxBytes: declared.kind === 'crypto.digestText' || declared.kind === 's3.putText'
             ? TEXT_MAX_PAYLOAD_BYTES : DEFAULT_MAX_PAYLOAD_BYTES
         })

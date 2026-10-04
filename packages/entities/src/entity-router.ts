@@ -222,13 +222,13 @@ export class EntityRouter {
         );
       }
 
-      if (!isNamedParams(selection)) {
-        return completeFailure(ctx, state.adapter.limits, selection, 'invalid-input');
-      }
-
       const registration = state.registrations.get(selection.method);
       if (!registration) {
         return completeFailure(ctx, state.adapter.limits, selection, 'unknown-entity');
+      }
+
+      if (!isNamedParams(selection)) {
+        return completeFailure(ctx, state.adapter.limits, selection, 'invalid-input');
       }
 
       if (registration.declaration.input === null) {

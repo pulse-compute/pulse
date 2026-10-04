@@ -83,11 +83,11 @@ function __pulse_s3_date(seconds: i64): string {
 class __PulseS3Signature {
   date: string = ''; digest: string = ''; authorization: string = '';
 }
-function __pulse_s3_sign(method: string, path: string, host: string, region: string, id: string, secret: string, token: string, seconds: i64, body: Uint8Array, contentType: string): __PulseS3Signature {
+function __pulse_s3_sign(method: string, path: string, host: string, region: string, id: string, secret: string, token: string, seconds: i64, body: Uint8Array, contentType: string, range: string = '', ifNoneMatch: string = ''): __PulseS3Signature {
   const result = new __PulseS3Signature(); result.date = __pulse_s3_date(seconds);
   result.digest = __pulse_s3_hex(__pulse_s3_sha(body));
-  const names = (contentType.length ? 'content-type;' : '') + 'host;x-amz-content-sha256;x-amz-date' + (token.length ? ';x-amz-security-token' : '');
-  const headers = (contentType.length ? 'content-type:' + __pulse_s3_header_spaces(contentType) + '\n' : '') + 'host:' + host + '\nx-amz-content-sha256:' + result.digest + '\nx-amz-date:' + result.date + '\n'
+  const names = (contentType.length ? 'content-type;' : '') + 'host;' + (ifNoneMatch.length ? 'if-none-match;' : '') + (range.length ? 'range;' : '') + 'x-amz-content-sha256;x-amz-date' + (token.length ? ';x-amz-security-token' : '');
+  const headers = (contentType.length ? 'content-type:' + __pulse_s3_header_spaces(contentType) + '\n' : '') + 'host:' + host + '\n' + (ifNoneMatch.length ? 'if-none-match:' + ifNoneMatch + '\n' : '') + (range.length ? 'range:' + range + '\n' : '') + 'x-amz-content-sha256:' + result.digest + '\nx-amz-date:' + result.date + '\n'
     + (token.length ? 'x-amz-security-token:' + token + '\n' : '');
   const canonical = method + '\n' + path + '\n\n' + headers + '\n' + names + '\n' + result.digest;
   const day = result.date.slice(0, 8), scope = day + '/' + region + '/s3/aws4_request';
@@ -112,4 +112,35 @@ function __pulse_s3_header_spaces(text: string): string {
     space = c == ' ';
   }
   return output;
+}
+
+// Canonical decimal/range validation shared by Native body transports.
+function __pulse_s3_decimal(value: string): f64 {
+  if (!value.length || (value.length > 1 && value.charCodeAt(0) == 48)) return -1;
+  let result: f64 = 0;
+  for (let i = 0; i < value.length; i++) {
+    const digit = value.charCodeAt(i) - 48;
+    if (digit < 0 || digit > 9) return -1;
+    result = result * 10 + digit;
+    if (result > 9007199254740991) return -1;
+  }
+  return result;
+}
+function __pulse_s3_body_range(status: i32, length: f64, contentRange: string, range: string, conditional: bool): bool {
+  if (status == 304 && !conditional) return false;
+  if (status == 206) {
+    if (!range.length || !contentRange.startsWith('bytes ')) return false;
+    const parts = contentRange.slice(6).split('/'), request = range.slice(6).split('-');
+    if (parts.length != 2 || request.length != 2) return false;
+    const interval = parts[0].split('-'); if (interval.length != 2) return false;
+    const start = __pulse_s3_decimal(interval[0]), end = __pulse_s3_decimal(interval[1]), total = __pulse_s3_decimal(parts[1]);
+    return start >= 0 && total >= 0 && start == __pulse_s3_decimal(request[0])
+      && end == Math.min(__pulse_s3_decimal(request[1]), total - 1) && end >= start && length == end - start + 1;
+  }
+  if (status == 416) {
+    if (!range.length || !contentRange.startsWith('bytes */')) return false;
+    const total = __pulse_s3_decimal(contentRange.slice(8));
+    return total >= 0 && __pulse_s3_decimal(range.slice(6).split('-')[0]) >= total;
+  }
+  return !contentRange.length && (status == 200 || status == 304 || status == 404 || status == 412);
 }

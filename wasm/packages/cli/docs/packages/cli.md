@@ -39,6 +39,34 @@ pulse build
 - `compile` writes deterministic provider-neutral Pulse Wasm plus its native plan, generated AssemblyScript, WAT, and manifests.
 - `build` writes the configured target realization: Native profiles emit provider Wasm, while JavaScript profiles emit deterministic source packages. Eligible event projects also emit `event-catalog.json` and `event-inspection.json` beside the target output. Fastly JavaScript packages carry exact downstream compiler pins and deployment-candidate metadata.
 
+Doctor's `native-expansion` check ranks repeated HTTP owners using existing Router
+body ranges and the Native plan already produced by doctor. It names source
+locations, registration multiplicity, retained stages and per-registration body
+instances. The source cost is UTF-8 bytes of lowered Router bodies before Native
+factoring; it is not generated AssemblyScript, final Wasm size or a promised
+saving. Repeated Native bodies with at least 1,024 additional source bytes raise
+`PULSE_NATIVE_EXPANSION_REPEATED`; `--strict` treats that warning as a failed audit.
+JavaScript selections receive advisory Native counts without this size warning.
+
+Current retained HTTP stages require transfer-capable route or middleware
+handlers with 1–64 bound, ungrouped text-fetch, `time.now` or `crypto.digestText`
+effects and matching lowered bodies across their registrations. Existing bounded
+pure loops are supported within stages. Error/event registrations, terminal
+private bodies, helper calls, other effect shapes and effect loops keep ordinary
+Native lowering. These observations
+help locate missed sharing; declaring a source function alone does not retain a
+compiled body.
+
+Human output shows five owners; JSON retains up to twenty, three registration
+examples each, and explicit omitted counts. Sharing stays unknown when Native
+planning is unavailable. A completed plan remains inspectable if later Native
+compilation fails. This check adds no second compilation, source census or Wasm
+disassembly. Inspect the named owner and its observed registration/effect shapes
+against the retained-stage contract, then measure a full target build before
+adopting a generator rewrite for size.
+
+For Native builds, `--experimental-native-bounded-size` selects AssemblyScript O3/shrink2 without convergence. The existing `--experimental-native-size` flag retains O3/shrink2 with convergence. Both are opt-in and mutually exclusive; build manifests record the chosen recipe.
+
 See the generated [CLI reference](../reference/cli.md) for every option, positional form, output, side effect, and exit behavior.
 
 ## Project configuration

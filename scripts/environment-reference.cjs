@@ -21,6 +21,66 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_RELEASE_FEATURE_REPORT_DIR',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Unset; focused installed tests use their own report directories.',
+    precedence: 'The complete feature replay assigns a fresh directory to its child runner.',
+    consumer: 'Installed feature acceptance report routing.',
+    secretSafety: 'Not a secret. Contains source, package and acceptance evidence only.',
+    stability: 'Harness-internal; outside the application compatibility contract.',
+    description: 'Routes each installed proof into a task-specific report for the candidate release decision.',
+    sourceFiles: ['wasm/test/support/installed-acceptance-report.cjs']
+  }),
+  entry({
+    name: 'PULSEWASM_SUITE_TASK',
+    category: 'contributor',
+    value: 'Registered task ID',
+    default: 'Assigned by the test runner for each task.',
+    precedence: 'The runner overrides any inherited task identity.',
+    consumer: 'Installed acceptance report routing and task harnesses.',
+    secretSafety: 'Not a secret. It selects only the report filename.',
+    stability: 'Harness-internal; not a user or application setting.',
+    description: 'Identifies the current registered test task so forwarding target proofs have distinct reports.',
+    sourceFiles: ['wasm/test/support/installed-acceptance-report.cjs']
+  }),
+  entry({
+    name: 'PULSE_B02_BASELINE_ROOT',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Unset; the manual B02 benchmark requires an explicit baseline checkout.',
+    precedence: 'Selects the baseline; the candidate is the checkout containing the harness.',
+    consumer: 'Manual B02 terminal Router body cost proof.',
+    secretSafety: 'Not a secret. The harness executes compiler code from this checkout; use trusted source.',
+    stability: 'Contributor/test-only; outside the application compatibility contract.',
+    description: 'Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs']
+  }),
+  entry({
+    name: 'PULSE_B02_USAGE_DIR',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Created separately for each sample by the B02 benchmark harness.',
+    precedence: 'The harness supplies and overrides this value in each child process.',
+    consumer: 'B02 AssemblyScript child-process RSS collector.',
+    secretSafety: 'Not a secret. Contains temporary process IDs and peak RSS measurements.',
+    stability: 'Harness-internal test control; not a user or application setting.',
+    description: 'Passes the isolated measurement directory to the temporary compiler preload collector.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs']
+  }),
+  entry({
+    name: 'PULSE_B03_USAGE_DIR',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Created separately for each sample by the B03 benchmark harness.',
+    precedence: 'The harness supplies and overrides this value in each compiler child process.',
+    consumer: 'B03 AssemblyScript child-process RSS collector.',
+    secretSafety: 'Not a secret. Contains temporary process IDs and peak RSS measurements.',
+    stability: 'Harness-internal test control; not a user or application setting.',
+    description: 'Keeps compiler-process RSS separate from the planning worker and cold execution measurements.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/b03-handler-functions.cjs']
+  }),
+  entry({
     name: 'PULSE_FASTLY_BIN',
     category: 'tooling',
     value: 'Absolute or relative executable path',
@@ -259,6 +319,18 @@ const ENVIRONMENT_VARIABLES = Object.freeze([
       'wasm/test/guest-link/assert-memory-matrix.cjs',
       'wasm/test/guest-link/assert-final-artifact-reality.cjs'
     ]
+  }),
+  entry({
+    name: 'PULSEWASM_MEM03_BASE',
+    category: 'contributor',
+    value: 'Git commit or ref',
+    default: 'Merged GEN01 commit `8a6f2ff`.',
+    precedence: 'When set, selects the baseline generator source loaded from git; all other dependencies come from the candidate checkout.',
+    consumer: 'Manual MEM03 Fastly schema encode materialization proof.',
+    secretSafety: 'Not a secret. Use only a trusted baseline generator revision for the proof.',
+    stability: 'Contributor/test-only proof reproduction control.',
+    description: 'Selects an explicit baseline generator revision for paired semantic and allocator measurements.',
+    sourceFiles: ['wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.cjs']
   })
 ]);
 

@@ -1,0 +1,3286 @@
+{
+  "version": "pulse.mem12.quote-reuse.v1",
+  "recordedAt": "2026-09-26T21:55:01.443Z",
+  "baseCommit": "71429357b02de7e3993eef213c3fb9114d17f809",
+  "sourceIdentity": {
+    "kvSourceSha256": "63764f69e12be7970952192e1846cf3d9a09a5635984c930d6feb87f78d3da4a",
+    "baselineKvSourceSha256": "c27afa2ee1a454aa4f54a6de43fcfcd078e3962eea3c60b0cd9b08a98ef617e6",
+    "workingDiffSha256": "cd7b1c0d1c342104133d5d7e8b1cc6503bd085a4b1fd9c6c6e469a408cdb292a",
+    "harnessSha256": "e2ab923f351536f0b781c86f0c939645ded1d8fc2f5966475e21beeb121b572a"
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "kernel": "6.18.44",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "viceroy": {
+      "version": "0.21.1",
+      "binarySha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+    }
+  },
+  "method": {
+    "samples": 20,
+    "localRounds": 2,
+    "buildRounds": 3,
+    "warmups": 3,
+    "order": "baseline first round 0; candidate first round 1",
+    "production": "current MEM12 source; unchanged allocator/optimizer; no guest instrumentation or forced collection",
+    "diagnostic": "separate stub arena accessors and integer counters; same allocation implementation; never used for timing",
+    "scope": "injected host and direct Viceroy; capacity is not live bytes or RSS; no deployed or CAS acceptance claim"
+  },
+  "builds": [
+    {
+      "family": "small",
+      "name": "baseline",
+      "buildMs": {
+        "samples": [
+          1283,
+          1341,
+          1386
+        ],
+        "median": 1341,
+        "p95": 1386,
+        "min": 1283,
+        "max": 1386
+      },
+      "wasmBytes": 28168,
+      "wasmSha256": "3194659fb3ebb4d808d5f4727e7380fa3ed605ccd88421a67f68b6c48469f808",
+      "sourceSha256": "e7c759c17092f2aa46374c9cf1ee06bbab7a5d3d2904ec603a9ea72c66664ebb",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      }
+    },
+    {
+      "family": "small",
+      "name": "candidate",
+      "buildMs": {
+        "samples": [
+          1403,
+          1363,
+          1371
+        ],
+        "median": 1371,
+        "p95": 1403,
+        "min": 1363,
+        "max": 1403
+      },
+      "wasmBytes": 28168,
+      "wasmSha256": "3194659fb3ebb4d808d5f4727e7380fa3ed605ccd88421a67f68b6c48469f808",
+      "sourceSha256": "e7c759c17092f2aa46374c9cf1ee06bbab7a5d3d2904ec603a9ea72c66664ebb",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      }
+    },
+    {
+      "family": "loop",
+      "name": "baseline",
+      "buildMs": {
+        "samples": [
+          1879,
+          1954,
+          1829
+        ],
+        "median": 1879,
+        "p95": 1954,
+        "min": 1829,
+        "max": 1954
+      },
+      "wasmBytes": 45054,
+      "wasmSha256": "0f624dc4450b9d65bf8b27194150e40016d730e1cc98b55b8594510b627bb0ab",
+      "sourceSha256": "fffd14a678bc6073792c94a699c2f8c230acc68798fdfb3cc0f86066e3bdca1b",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      }
+    },
+    {
+      "family": "loop",
+      "name": "candidate",
+      "buildMs": {
+        "samples": [
+          1913,
+          1984,
+          1894
+        ],
+        "median": 1913,
+        "p95": 1984,
+        "min": 1894,
+        "max": 1984
+      },
+      "wasmBytes": 44995,
+      "wasmSha256": "3d66df34745714b980ab15d479e3472712f939082fcc869692851cb3d57b9133",
+      "sourceSha256": "7274904cf84a4356048094b18627b7f6e3b89ba58b159eac6b41039efb545f44",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      }
+    },
+    {
+      "family": "schema",
+      "name": "baseline",
+      "buildMs": {
+        "samples": [
+          3957,
+          3789,
+          3906
+        ],
+        "median": 3906,
+        "p95": 3957,
+        "min": 3789,
+        "max": 3957
+      },
+      "wasmBytes": 124592,
+      "wasmSha256": "d696c5c0cc3d5c5b089e6d44a77a2285d403742b56b35b2ca1082a9e6a29e4e6",
+      "sourceSha256": "04390faef4dd9db82cd7442a4f1f86f9998987d34ea16a3f82b85129358ee084",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      }
+    },
+    {
+      "family": "schema",
+      "name": "candidate",
+      "buildMs": {
+        "samples": [
+          4028,
+          3883,
+          3866
+        ],
+        "median": 3883,
+        "p95": 4028,
+        "min": 3866,
+        "max": 4028
+      },
+      "wasmBytes": 124592,
+      "wasmSha256": "d696c5c0cc3d5c5b089e6d44a77a2285d403742b56b35b2ca1082a9e6a29e4e6",
+      "sourceSha256": "04390faef4dd9db82cd7442a4f1f86f9998987d34ea16a3f82b85129358ee084",
+      "assemblyScript": {
+        "package": "assemblyscript",
+        "version": "0.28.18"
+      }
+    }
+  ],
+  "attribution": [
+    {
+      "name": "baseline",
+      "productionWasmSha256": "0f624dc4450b9d65bf8b27194150e40016d730e1cc98b55b8594510b627bb0ab",
+      "diagnosticWasmSha256": "19d2a7acadd13c03cb07c618351ec594582e1c8eb0494c7b654fa6b8bc84ac64",
+      "cases": [
+        {
+          "name": "text-1-small",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 809344,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 4992,
+          "validationBytes": 5088
+        },
+        {
+          "name": "text-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1067392,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 101760,
+          "validationBytes": 166368
+        },
+        {
+          "name": "text-8",
+          "productionCapacityBytes": 5242880,
+          "arenaBytes": 2990480,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 815952,
+          "validationBytes": 1332064
+        },
+        {
+          "name": "text-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 18380448,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6526176,
+          "validationBytes": 10657632
+        },
+        {
+          "name": "objects-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1097728,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 176640,
+          "validationBytes": 122464
+        },
+        {
+          "name": "objects-8",
+          "productionCapacityBytes": 5242880,
+          "arenaBytes": 3238656,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 1417856,
+          "validationBytes": 979520
+        },
+        {
+          "name": "objects-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 20381072,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 11361680,
+          "validationBytes": 7834944
+        },
+        {
+          "name": "quoted-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 20386848,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6766944,
+          "validationBytes": 12421216
+        }
+      ]
+    },
+    {
+      "name": "values-only",
+      "productionWasmSha256": "aed930a913dad67b1fe7c464a301a9f3b6deb20925f397a518a3639c8be063df",
+      "diagnosticWasmSha256": "bafd23c966d39cf678eaf5a7a0fdc856b96995960e2a33d4e064822391a56595",
+      "cases": [
+        {
+          "name": "text-1-small",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 808000,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 4992,
+          "validationBytes": 3744
+        },
+        {
+          "name": "text-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1001536,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 101760,
+          "validationBytes": 100512
+        },
+        {
+          "name": "text-8",
+          "productionCapacityBytes": 2621440,
+          "arenaBytes": 2463632,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 815952,
+          "validationBytes": 805216
+        },
+        {
+          "name": "text-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 14165664,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6526176,
+          "validationBytes": 6442848
+        },
+        {
+          "name": "objects-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1097504,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 176640,
+          "validationBytes": 122240
+        },
+        {
+          "name": "objects-8",
+          "productionCapacityBytes": 5242880,
+          "arenaBytes": 3236864,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 1417856,
+          "validationBytes": 977728
+        },
+        {
+          "name": "objects-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 20366736,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 11361680,
+          "validationBytes": 7820608
+        },
+        {
+          "name": "quoted-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 15477024,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6766944,
+          "validationBytes": 7511392
+        }
+      ]
+    },
+    {
+      "name": "keys-only",
+      "productionWasmSha256": "1cef3ee231ecc2db87a7135c40b8dd4bb5b1145f8f9db133b3d8efae1bd683e0",
+      "diagnosticWasmSha256": "d87f4d14c8872cbc4236e179244c9c47b0f206a1400ecbf3dd34334b947d421a",
+      "cases": [
+        {
+          "name": "text-1-small",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 808768,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 4992,
+          "validationBytes": 4512
+        },
+        {
+          "name": "text-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1066816,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 101760,
+          "validationBytes": 165792
+        },
+        {
+          "name": "text-8",
+          "productionCapacityBytes": 5242880,
+          "arenaBytes": 2985872,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 815952,
+          "validationBytes": 1327456
+        },
+        {
+          "name": "text-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 18343584,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6526176,
+          "validationBytes": 10620768
+        },
+        {
+          "name": "objects-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1056160,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 176640,
+          "validationBytes": 80896
+        },
+        {
+          "name": "objects-8",
+          "productionCapacityBytes": 5242880,
+          "arenaBytes": 2906112,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 1417856,
+          "validationBytes": 646976
+        },
+        {
+          "name": "objects-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 17720720,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 11361680,
+          "validationBytes": 5174592
+        },
+        {
+          "name": "quoted-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 20340064,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6766944,
+          "validationBytes": 12374432
+        }
+      ]
+    },
+    {
+      "name": "candidate",
+      "productionWasmSha256": "3d66df34745714b980ab15d479e3472712f939082fcc869692851cb3d57b9133",
+      "diagnosticWasmSha256": "c285576f20ff810b397e94d79773d45dd217edef354ba54a07390d925caad2f3",
+      "cases": [
+        {
+          "name": "text-1-small",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 807424,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 4992,
+          "validationBytes": 3168
+        },
+        {
+          "name": "text-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1000960,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 101760,
+          "validationBytes": 99936
+        },
+        {
+          "name": "text-8",
+          "productionCapacityBytes": 2621440,
+          "arenaBytes": 2459024,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 815952,
+          "validationBytes": 800608
+        },
+        {
+          "name": "text-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 14128800,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6526176,
+          "validationBytes": 6405984
+        },
+        {
+          "name": "objects-1",
+          "productionCapacityBytes": 1310720,
+          "arenaBytes": 1055936,
+          "readBufferAndOutputBytes": 65648,
+          "parseBytes": 176640,
+          "validationBytes": 80672
+        },
+        {
+          "name": "objects-8",
+          "productionCapacityBytes": 5242880,
+          "arenaBytes": 2904320,
+          "readBufferAndOutputBytes": 65872,
+          "parseBytes": 1417856,
+          "validationBytes": 645184
+        },
+        {
+          "name": "objects-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 17706384,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 11361680,
+          "validationBytes": 5160256
+        },
+        {
+          "name": "quoted-64",
+          "productionCapacityBytes": 20971520,
+          "arenaBytes": 15430240,
+          "readBufferAndOutputBytes": 67664,
+          "parseBytes": 6766944,
+          "validationBytes": 7464608
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "name": "small-config",
+      "family": "small",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+            "traceSha256": "e76e688a4ff1d19705316c780d6e90cd0989a7c69d31afbfd0a90c6f4a7329f5",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 655360,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                0.5571369999961462,
+                0.47110000000247965,
+                0.5248590000046534,
+                0.4964369999943301,
+                0.5213340000045719,
+                0.46990699999878416,
+                0.516115999998874,
+                2.3284459999995306,
+                0.5956539999970119,
+                0.7796270000035292,
+                0.5779879999972763,
+                0.5530710000020918,
+                0.5285939999957918,
+                0.5540120000005118,
+                0.5784589999966556,
+                0.5079939999995986,
+                0.5548640000051819,
+                0.5182089999943855,
+                0.5522790000031819,
+                0.546610999997938
+              ],
+              "median": 0.5522790000031819,
+              "p95": 0.7796270000035292,
+              "min": 0.46990699999878416,
+              "max": 2.3284459999995306
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+              "startupMs": 85.34457700000348,
+              "firstRequestMs": 5.316251000003831,
+              "warmedHttpMs": {
+                "samples": [
+                  0.8174030000009225,
+                  0.6630240000013146,
+                  0.6251679999986663,
+                  0.82314100000076,
+                  0.640730999999505,
+                  0.847819000002346,
+                  0.7212309999958961,
+                  0.6243820000017877,
+                  0.5540820000023814,
+                  0.5894649999972899,
+                  0.6349279999994906,
+                  0.5547789999982342,
+                  0.5158150000061141,
+                  0.5700959999958286,
+                  0.5596199999999953,
+                  0.44973700000264216,
+                  0.4840879999974277,
+                  0.5069819999989704,
+                  0.5927900000024238,
+                  0.4512100000065402
+                ],
+                "median": 0.5927900000024238,
+                "p95": 0.82314100000076,
+                "min": 0.44973700000264216,
+                "max": 0.847819000002346
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+              "startupMs": 79.80442899999616,
+              "firstRequestMs": 1.4035940000030678,
+              "warmedHttpMs": {
+                "samples": [
+                  0.6147219999984372,
+                  0.5787790000031237,
+                  0.6574360000013257,
+                  0.5714880000014091,
+                  0.6489739999960875,
+                  0.4892760000002454,
+                  0.6835449999998673,
+                  0.6516879999981029,
+                  0.5098670000006678,
+                  0.6592779999991762,
+                  0.48031300000002375,
+                  0.4959159999998519,
+                  0.7161529999939376,
+                  0.4709389999989071,
+                  0.7485209999940707,
+                  0.5789500000028056,
+                  0.6014830000058282,
+                  0.5026060000018333,
+                  0.459381000000576,
+                  0.5318800000022748
+                ],
+                "median": 0.5789500000028056,
+                "p95": 0.7161529999939376,
+                "min": 0.459381000000576,
+                "max": 0.7485209999940707
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+            "traceSha256": "e76e688a4ff1d19705316c780d6e90cd0989a7c69d31afbfd0a90c6f4a7329f5",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 655360,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                0.5616840000002412,
+                0.41314299999794457,
+                0.5218650000024354,
+                0.5157949999993434,
+                0.5949929999987944,
+                0.4887850000013714,
+                4.433831000002101,
+                0.5670420000024023,
+                0.4080859999958193,
+                0.4463420000029146,
+                0.4481750000049942,
+                0.4428570000018226,
+                0.4761359999974957,
+                0.4418660000010277,
+                0.3745459999990999,
+                0.3741550000049756,
+                0.5113989999954356,
+                0.44341800000256626,
+                0.5402820000017527,
+                0.4179999999978463
+              ],
+              "median": 0.4761359999974957,
+              "p95": 0.5949929999987944,
+              "min": 0.3741550000049756,
+              "max": 4.433831000002101
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+              "startupMs": 79.29982000000018,
+              "firstRequestMs": 1.6419069999974454,
+              "warmedHttpMs": {
+                "samples": [
+                  1.0354470000020228,
+                  0.5673830000014277,
+                  0.4567779999997583,
+                  0.42909700000018347,
+                  0.4441690000021481,
+                  0.698818000004394,
+                  0.5211640000052284,
+                  0.5579579999975977,
+                  0.5639069999961066,
+                  0.45858099999895785,
+                  0.4473539999962668,
+                  0.4809640000021318,
+                  0.40790500000002794,
+                  0.6031849999999395,
+                  0.47052800000528805,
+                  0.5689540000021225,
+                  0.42102499999600695,
+                  0.42269800000212854,
+                  0.39587800000299467,
+                  0.48162500000034925
+                ],
+                "median": 0.4809640000021318,
+                "p95": 0.698818000004394,
+                "min": 0.39587800000299467,
+                "max": 1.0354470000020228
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "b24d6d33736ecd5604a4b17bc9c6481039fac362bb7df044ef1c10a2bfd21db6",
+              "startupMs": 78.25677600000199,
+              "firstRequestMs": 1.4241040000051726,
+              "warmedHttpMs": {
+                "samples": [
+                  0.5691550000046846,
+                  0.7557419999939157,
+                  0.4639790000001085,
+                  0.48492999999871245,
+                  0.36497099999542115,
+                  0.40023399999336107,
+                  0.40178600000217557,
+                  0.4510389999995823,
+                  0.5743829999992158,
+                  0.46419899999455083,
+                  0.4772279999961029,
+                  0.5791890000036801,
+                  0.5665710000030231,
+                  0.4968670000016573,
+                  0.3736449999996694,
+                  0.7384660000025178,
+                  0.5992039999982808,
+                  0.5744080000004033,
+                  0.6504159999967669,
+                  0.7900829999998678
+                ],
+                "median": 0.5665710000030231,
+                "p95": 0.7557419999939157,
+                "min": 0.36497099999542115,
+                "max": 0.7900829999998678
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "text-1-small",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+            "traceSha256": "681bbe32c287ff74450a0e762053faee7afc73468995a9fd70ee42568f092af6",
+            "traceEntries": 44,
+            "memoryCapacityBytes": 1310720,
+            "accounted": {
+              "bytes": 3076,
+              "values": 80
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                0.700048999999126,
+                1.0588120000029448,
+                1.0342759999984992,
+                1.0332029999990482,
+                0.9731249999967986,
+                1.029497999996238,
+                1.0193230000004405,
+                0.9514430000053835,
+                0.9568409999992582,
+                0.9976000000024214,
+                0.9870259999952395,
+                0.7709839999952237,
+                2.5533700000014505,
+                0.7218609999981709,
+                0.6639759999961825,
+                0.7189870000001974,
+                0.701030999996874,
+                0.6421940000000177,
+                0.6956329999957234,
+                0.6882609999956912
+              ],
+              "median": 0.9568409999992582,
+              "p95": 1.0588120000029448,
+              "min": 0.6421940000000177,
+              "max": 2.5533700000014505
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 79.00355000000127,
+              "firstRequestMs": 1.7130180000021937,
+              "warmedHttpMs": {
+                "samples": [
+                  1.0727619999961462,
+                  0.9723329999978887,
+                  0.6604010000010021,
+                  0.6486930000028224,
+                  0.7458580000020447,
+                  0.6982870000065304,
+                  0.8274680000031367,
+                  1.0093889999989187,
+                  0.6948510000001988,
+                  0.7762720000027912,
+                  0.7022629999992205,
+                  1.1686939999999595,
+                  1.072572000004584,
+                  0.9413780000031693,
+                  0.8102720000024419,
+                  0.7201889999996638,
+                  0.7240450000026613,
+                  0.9858730000050855,
+                  0.7261779999971623,
+                  0.633680999999342
+                ],
+                "median": 0.7762720000027912,
+                "p95": 1.0727619999961462,
+                "min": 0.633680999999342,
+                "max": 1.1686939999999595
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 79.6886269999959,
+              "firstRequestMs": 1.9335899999932735,
+              "warmedHttpMs": {
+                "samples": [
+                  0.8185749999975087,
+                  0.9720529999976861,
+                  0.7476190000015777,
+                  0.7598429999998189,
+                  0.5947630000009667,
+                  0.6103969999967376,
+                  1.0998279999985243,
+                  0.620641000001342,
+                  0.6758929999996326,
+                  0.6425529999978608,
+                  0.6393590000006952,
+                  0.5600310000008903,
+                  0.637775999995938,
+                  0.5573370000056457,
+                  0.8022909999999683,
+                  1.6537249999964843,
+                  1.6407950000066194,
+                  0.9498100000055274,
+                  0.7368740000019898,
+                  3.4982529999979306
+                ],
+                "median": 0.7476190000015777,
+                "p95": 1.6537249999964843,
+                "min": 0.5573370000056457,
+                "max": 3.4982529999979306
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+            "traceSha256": "681bbe32c287ff74450a0e762053faee7afc73468995a9fd70ee42568f092af6",
+            "traceEntries": 44,
+            "memoryCapacityBytes": 1310720,
+            "accounted": {
+              "bytes": 3076,
+              "values": 80
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                1.1156359999949927,
+                0.9731549999996787,
+                0.9848609999971814,
+                0.9671459999954095,
+                0.9691279999969993,
+                0.9325140000000829,
+                1.0041809999966063,
+                0.9284279999992577,
+                0.9050139999962994,
+                1.018882999997004,
+                0.8762099999948987,
+                4.011754999999539,
+                2.127258000000438,
+                0.694841999997152,
+                0.7111850000001141,
+                0.7263879999954952,
+                0.6717869999993127,
+                0.6639960000029532,
+                0.6596490000010817,
+                0.695131999993464
+              ],
+              "median": 0.9325140000000829,
+              "p95": 2.127258000000438,
+              "min": 0.6596490000010817,
+              "max": 4.011754999999539
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 80.41989200000535,
+              "firstRequestMs": 2.1551089999993565,
+              "warmedHttpMs": {
+                "samples": [
+                  0.933366000004753,
+                  0.6501360000038403,
+                  0.8567819999952917,
+                  0.5844570000044769,
+                  0.6615219999948749,
+                  0.9023500000039348,
+                  0.6603009999962524,
+                  0.6144819999972242,
+                  0.6578969999973197,
+                  0.5466210000013234,
+                  0.8166330000021844,
+                  0.5837360000004992,
+                  0.7491320000044652,
+                  0.5696360000001732,
+                  0.7388659999996889,
+                  0.6464889999988372,
+                  0.6754129999972065,
+                  0.6584470000016154,
+                  0.820638000004692,
+                  0.6363549999950919
+                ],
+                "median": 0.6603009999962524,
+                "p95": 0.9023500000039348,
+                "min": 0.5466210000013234,
+                "max": 0.933366000004753
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 78.72291299999779,
+              "firstRequestMs": 2.0090520000012475,
+              "warmedHttpMs": {
+                "samples": [
+                  0.6238960000046063,
+                  1.7056220000013127,
+                  1.0037299999967217,
+                  1.231974000002083,
+                  0.9203259999994771,
+                  0.8232119999956922,
+                  0.8311230000035721,
+                  0.6449880000000121,
+                  0.7014909999998054,
+                  1.0989909999989322,
+                  0.8576329999996233,
+                  0.7367539999977453,
+                  0.9204570000001695,
+                  0.6646570000011707,
+                  0.8014289999991888,
+                  0.7818809999953373,
+                  0.6509770000047865,
+                  0.5661999999938416,
+                  0.8475990000006277,
+                  0.6081429999976535
+                ],
+                "median": 0.8232119999956922,
+                "p95": 1.231974000002083,
+                "min": 0.5661999999938416,
+                "max": 1.7056220000013127
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "text-1",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+            "traceSha256": "8984ac8ab9ce7dc1b0e8498719f0562aae8d99a15b833989d70a6a15b84590b9",
+            "traceEntries": 44,
+            "memoryCapacityBytes": 1310720,
+            "accounted": {
+              "bytes": 35332,
+              "values": 80
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                1.7058619999952498,
+                1.4156109999967157,
+                1.3307949999943958,
+                1.2692039999965345,
+                1.7194519999975455,
+                1.4782739999936894,
+                1.905679000003147,
+                2.365881999998237,
+                1.8566959999952815,
+                1.8829949999999371,
+                1.381359999999404,
+                1.2760839999973541,
+                1.755726000003051,
+                1.404153999996197,
+                1.3582670000032522,
+                1.5345269999961602,
+                1.3713560000032885,
+                1.3833539999977802,
+                1.24112199999945,
+                1.355983000001288
+              ],
+              "median": 1.4156109999967157,
+              "p95": 1.905679000003147,
+              "min": 1.24112199999945,
+              "max": 2.365881999998237
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 80.98372399999789,
+              "firstRequestMs": 2.4623050000009243,
+              "warmedHttpMs": {
+                "samples": [
+                  1.659694000001764,
+                  1.517121999997471,
+                  1.161104000006162,
+                  1.336022999996203,
+                  1.3659479999987525,
+                  1.3359330000021146,
+                  1.2295850000009523,
+                  1.2771559999964666,
+                  1.2295549999980722,
+                  1.440242999997281,
+                  1.5339869999952498,
+                  1.3696530000015628,
+                  1.376192000003357,
+                  1.2363560000012512,
+                  1.2301559999978053,
+                  1.287650999998732,
+                  1.4227309999987483,
+                  1.409881999999925,
+                  1.2168369999999413,
+                  1.7163470000014058
+                ],
+                "median": 1.3659479999987525,
+                "p95": 1.659694000001764,
+                "min": 1.161104000006162,
+                "max": 1.7163470000014058
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 78.7731980000026,
+              "firstRequestMs": 2.128458999999566,
+              "warmedHttpMs": {
+                "samples": [
+                  1.336312999999791,
+                  1.9142309999951976,
+                  1.508469000000332,
+                  1.30498699999589,
+                  1.2340919999987818,
+                  1.2245479999983218,
+                  1.315361999993911,
+                  1.3386170000012498,
+                  1.2467309999992722,
+                  1.140783000002557,
+                  1.4517649999979767,
+                  1.1658299999980954,
+                  1.2306470000039553,
+                  1.4435020000018994,
+                  1.5336559999996098,
+                  1.3707950000025448,
+                  1.562938999995822,
+                  1.2793889999957173,
+                  1.3172150000027614,
+                  1.0982999999978347
+                ],
+                "median": 1.3172150000027614,
+                "p95": 1.562938999995822,
+                "min": 1.0982999999978347,
+                "max": 1.9142309999951976
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+            "traceSha256": "8984ac8ab9ce7dc1b0e8498719f0562aae8d99a15b833989d70a6a15b84590b9",
+            "traceEntries": 44,
+            "memoryCapacityBytes": 1310720,
+            "accounted": {
+              "bytes": 35332,
+              "values": 80
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                1.2596800000028452,
+                1.2021240000030957,
+                1.1042789999992237,
+                1.2182880000036675,
+                1.4684090000009746,
+                1.1058809999958612,
+                1.126973000005819,
+                1.0978899999972782,
+                1.0690770000001066,
+                1.082497000003059,
+                1.0056929999991553,
+                0.9840409999960684,
+                1.0849709999965853,
+                1.8367760000037379,
+                1.461037999994005,
+                1.410833999994793,
+                1.4447149999978137,
+                1.4313140000012936,
+                1.4408889999976964,
+                1.4873179999995045
+              ],
+              "median": 1.2182880000036675,
+              "p95": 1.4873179999995045,
+              "min": 0.9840409999960684,
+              "max": 1.8367760000037379
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 79.47948200000246,
+              "firstRequestMs": 2.3998219999994035,
+              "warmedHttpMs": {
+                "samples": [
+                  1.1920590000008815,
+                  1.0868330000012065,
+                  1.2743820000032429,
+                  1.4903819999963162,
+                  1.5256550000049174,
+                  1.1389600000038627,
+                  1.1086550000036368,
+                  1.0489069999966887,
+                  1.0011869999943883,
+                  1.3390980000040145,
+                  0.9784829999989597,
+                  1.0349170000044978,
+                  0.9405960000003688,
+                  1.09290200000396,
+                  0.9787929999947664,
+                  1.0363080000024638,
+                  0.9762289999998757,
+                  1.059332999997423,
+                  0.9508809999970254,
+                  1.238128000004508
+                ],
+                "median": 1.0868330000012065,
+                "p95": 1.4903819999963162,
+                "min": 0.9405960000003688,
+                "max": 1.5256550000049174
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "a86db12866e1388b093f5771a9107ce1fd69c819af36c139bfb0c4518620f328",
+              "startupMs": 78.8889199999976,
+              "firstRequestMs": 2.1437730000034207,
+              "warmedHttpMs": {
+                "samples": [
+                  1.1066030000001774,
+                  1.2149429999990389,
+                  0.9779320000016014,
+                  1.0919399999984307,
+                  1.1290660000013304,
+                  0.9925529999964056,
+                  1.045851999995648,
+                  0.9663050000017392,
+                  1.0417660000020987,
+                  2.3880950000020675,
+                  0.9807360000049812,
+                  1.1281449999951292,
+                  1.391604999997071,
+                  1.4144890000025043,
+                  1.3977639999939129,
+                  1.0022170000011101,
+                  1.656578999994963,
+                  1.0520919999980833,
+                  1.7054010000065318,
+                  1.1285060000009253
+                ],
+                "median": 1.1281449999951292,
+                "p95": 1.7054010000065318,
+                "min": 0.9663050000017392,
+                "max": 2.3880950000020675
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "text-8",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "ac9f6c0e089bf2c4f2437e24c3357138e33d46386a548e0e2063c59796b1cd12",
+            "traceSha256": "323b2e46ba3b75f1a18a4ee10b87714f4aca49fb875629f405da1a2d6f25dcd2",
+            "traceEntries": 268,
+            "memoryCapacityBytes": 5242880,
+            "accounted": {
+              "bytes": 273302,
+              "values": 394
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                5.391773000003013,
+                5.46687500000553,
+                5.229212000005646,
+                6.4143610000028275,
+                5.471660999995947,
+                5.427266000006057,
+                5.661052999996173,
+                5.786349000001792,
+                6.282214999999269,
+                5.909361999998509,
+                6.048608999997668,
+                5.789152999997896,
+                5.378604000004998,
+                6.270206999994116,
+                5.858186000004935,
+                9.937460999994073,
+                7.948098000000755,
+                7.549176000000443,
+                7.322919999998703,
+                9.940996999997878
+              ],
+              "median": 5.909361999998509,
+              "p95": 9.937460999994073,
+              "min": 5.229212000005646,
+              "max": 9.940996999997878
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "ac9f6c0e089bf2c4f2437e24c3357138e33d46386a548e0e2063c59796b1cd12",
+              "startupMs": 79.86318000000028,
+              "firstRequestMs": 9.65266800000245,
+              "warmedHttpMs": {
+                "samples": [
+                  6.425726999994367,
+                  6.204969999998866,
+                  6.323677000000316,
+                  6.1340649999983725,
+                  6.664060999995854,
+                  6.133053999998083,
+                  10.065194999995583,
+                  5.8363030000036815,
+                  8.925287999998545,
+                  5.625139000003401,
+                  10.055732000000717,
+                  5.669405000000552,
+                  10.011140000002342,
+                  5.910692999997991,
+                  9.310880999997607,
+                  6.236406999996689,
+                  10.318326000000525,
+                  6.2906070000026375,
+                  9.177362999995239,
+                  6.133424999999988
+                ],
+                "median": 6.323677000000316,
+                "p95": 10.065194999995583,
+                "min": 5.625139000003401,
+                "max": 10.318326000000525
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "ac9f6c0e089bf2c4f2437e24c3357138e33d46386a548e0e2063c59796b1cd12",
+              "startupMs": 78.80938099999912,
+              "firstRequestMs": 7.0482520000005024,
+              "warmedHttpMs": {
+                "samples": [
+                  6.320190999998886,
+                  6.874127999995835,
+                  6.884509999996226,
+                  6.325128000004042,
+                  6.1290730000037,
+                  6.131711000001815,
+                  6.340377000000444,
+                  6.298500000004424,
+                  9.426972999994177,
+                  10.170095999994373,
+                  10.114953999996942,
+                  7.3846620000040275,
+                  6.094856000003347,
+                  6.937723000002734,
+                  7.739057999999204,
+                  10.431013000001258,
+                  10.11431299999822,
+                  10.411514999999781,
+                  10.230485000000044,
+                  10.366558000001532
+                ],
+                "median": 7.3846620000040275,
+                "p95": 10.411514999999781,
+                "min": 6.094856000003347,
+                "max": 10.431013000001258
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "ac9f6c0e089bf2c4f2437e24c3357138e33d46386a548e0e2063c59796b1cd12",
+            "traceSha256": "323b2e46ba3b75f1a18a4ee10b87714f4aca49fb875629f405da1a2d6f25dcd2",
+            "traceEntries": 268,
+            "memoryCapacityBytes": 2621440,
+            "accounted": {
+              "bytes": 273302,
+              "values": 394
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                3.894651000002341,
+                3.811086999994586,
+                3.7963850000014645,
+                4.477765999996336,
+                4.003573000001779,
+                3.8228240000025835,
+                4.082429999994929,
+                3.618601000001945,
+                3.739380999999412,
+                4.092563999998674,
+                3.6859419999964302,
+                3.545372000000498,
+                3.7875629999980447,
+                4.071863999997731,
+                3.880950999999186,
+                4.033117000006314,
+                3.6469530000031227,
+                3.5244019999954617,
+                3.7182389999943553,
+                4.049490999997943
+              ],
+              "median": 3.8228240000025835,
+              "p95": 4.092563999998674,
+              "min": 3.5244019999954617,
+              "max": 4.477765999996336
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "ac9f6c0e089bf2c4f2437e24c3357138e33d46386a548e0e2063c59796b1cd12",
+              "startupMs": 78.25083300000551,
+              "firstRequestMs": 6.780300000005809,
+              "warmedHttpMs": {
+                "samples": [
+                  4.275376000005053,
+                  6.862927000001946,
+                  4.605937000000267,
+                  4.326311999997415,
+                  4.265451999999641,
+                  6.386258999998972,
+                  5.994778000000224,
+                  6.651554000003671,
+                  4.098804999994172,
+                  6.490132999999332,
+                  4.516262999997707,
+                  6.673235999995086,
+                  4.991630000004079,
+                  4.279943000001367,
+                  7.0473910000000615,
+                  4.261855999997351,
+                  6.979193999999552,
+                  4.24447599999985,
+                  6.9318290000010165,
+                  4.478126999994856
+                ],
+                "median": 4.991630000004079,
+                "p95": 6.979193999999552,
+                "min": 4.098804999994172,
+                "max": 7.0473910000000615
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "ac9f6c0e089bf2c4f2437e24c3357138e33d46386a548e0e2063c59796b1cd12",
+              "startupMs": 77.88792400000239,
+              "firstRequestMs": 6.006226000004972,
+              "warmedHttpMs": {
+                "samples": [
+                  4.524075000001176,
+                  4.282405999998446,
+                  4.287774999997055,
+                  4.152243999997154,
+                  4.2545049999971525,
+                  4.461051999998745,
+                  4.086466000000655,
+                  4.099304999996093,
+                  4.121737000001303,
+                  4.030552999996871,
+                  4.598160000001371,
+                  4.942786999999953,
+                  4.2001949999976205,
+                  4.558467000002565,
+                  4.331930000000284,
+                  4.3316889999987325,
+                  3.945056000004115,
+                  4.211340999994718,
+                  3.9968929999959073,
+                  4.103049999997893
+                ],
+                "median": 4.2545049999971525,
+                "p95": 4.598160000001371,
+                "min": 3.945056000004115,
+                "max": 4.942786999999953
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "text-64",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+            "traceSha256": "3b01267d3ef999fb44318c05897701aca39aa38ba88717f4f9259b18b49ceb46",
+            "traceEntries": 2060,
+            "memoryCapacityBytes": 20971520,
+            "accounted": {
+              "bytes": 2177238,
+              "values": 2907
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                36.76659500000096,
+                41.66250199999922,
+                37.11828699999751,
+                45.64123799999652,
+                36.86701400000311,
+                42.34428299999854,
+                38.72169699999358,
+                37.68230400000175,
+                42.673884000003454,
+                36.92460900000151,
+                40.48329200000444,
+                37.98385199999757,
+                43.49217900000076,
+                37.19303800000489,
+                40.684049999996205,
+                37.40620399999898,
+                35.38938099999359,
+                40.11269100000209,
+                36.00180000000546,
+                42.915161000004446
+              ],
+              "median": 38.72169699999358,
+              "p95": 43.49217900000076,
+              "min": 35.38938099999359,
+              "max": 45.64123799999652
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 79.72582200000033,
+              "firstRequestMs": 50.69029800000135,
+              "warmedHttpMs": {
+                "samples": [
+                  50.019345999993675,
+                  54.44642799999565,
+                  58.150094999997236,
+                  56.010559999995166,
+                  47.95996000000014,
+                  50.083881999998994,
+                  46.530688999999256,
+                  48.12008299999434,
+                  57.215579000003345,
+                  67.16080099999817,
+                  47.20786300000327,
+                  44.652155000003404,
+                  48.02752999999939,
+                  53.8005589999957,
+                  49.750536999999895,
+                  48.922919000004185,
+                  44.71282899999642,
+                  45.426579999999376,
+                  46.13219599999866,
+                  54.424976999995124
+                ],
+                "median": 49.750536999999895,
+                "p95": 58.150094999997236,
+                "min": 44.652155000003404,
+                "max": 67.16080099999817
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 78.162817000004,
+              "firstRequestMs": 50.21294900000066,
+              "warmedHttpMs": {
+                "samples": [
+                  65.19745499999408,
+                  44.95173000000068,
+                  59.529098999999405,
+                  77.35543699999835,
+                  54.586451999995916,
+                  48.49600400000054,
+                  57.24383300000045,
+                  45.947510999998485,
+                  48.6068679999953,
+                  48.62315799999487,
+                  45.9681070000006,
+                  47.88150499999756,
+                  48.54222700000537,
+                  46.36281700000109,
+                  61.66611499999999,
+                  55.00638600000093,
+                  44.53975799999898,
+                  44.13854100000026,
+                  73.25725599999714,
+                  57.89492999999493
+                ],
+                "median": 48.62315799999487,
+                "p95": 73.25725599999714,
+                "min": 44.13854100000026,
+                "max": 77.35543699999835
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+            "traceSha256": "3b01267d3ef999fb44318c05897701aca39aa38ba88717f4f9259b18b49ceb46",
+            "traceEntries": 2060,
+            "memoryCapacityBytes": 20971520,
+            "accounted": {
+              "bytes": 2177238,
+              "values": 2907
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                23.838544999998703,
+                23.306104999996023,
+                29.054668000004312,
+                24.10654400000203,
+                30.93453800000134,
+                23.75500099999772,
+                32.641371000005165,
+                27.50760099999752,
+                23.473642999997537,
+                32.62130199999956,
+                24.713352999999188,
+                30.899405999996816,
+                23.78383400000166,
+                24.983264000002237,
+                31.48776899999939,
+                24.05872200000158,
+                28.900958999998693,
+                24.265759000001708,
+                23.463619000001927,
+                32.454413999999815
+              ],
+              "median": 24.983264000002237,
+              "p95": 32.62130199999956,
+              "min": 23.306104999996023,
+              "max": 32.641371000005165
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 78.38826699999481,
+              "firstRequestMs": 53.13153700000112,
+              "warmedHttpMs": {
+                "samples": [
+                  33.276153999999224,
+                  33.05401400000119,
+                  31.787554000002274,
+                  30.87922100000287,
+                  35.37117399999988,
+                  42.27360899999621,
+                  41.26426700000593,
+                  34.891771000002336,
+                  37.410329999998794,
+                  34.93947299999854,
+                  32.50553000000218,
+                  43.20385600000009,
+                  34.81098199999542,
+                  31.21201000000292,
+                  29.682028999995964,
+                  32.45379299999331,
+                  47.204187999996066,
+                  38.20776399999886,
+                  37.48432000000321,
+                  50.61933800000406
+                ],
+                "median": 34.93947299999854,
+                "p95": 47.204187999996066,
+                "min": 29.682028999995964,
+                "max": 50.61933800000406
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 78.87554999999702,
+              "firstRequestMs": 34.920884999999544,
+              "warmedHttpMs": {
+                "samples": [
+                  36.18061499999749,
+                  41.79375699999946,
+                  33.52292999999918,
+                  32.315763999999035,
+                  38.24764299999515,
+                  51.85504199999559,
+                  44.17704400000366,
+                  32.2147380000024,
+                  39.120519000003696,
+                  49.94085499999346,
+                  50.854957000003196,
+                  32.599318000000494,
+                  31.10339400000521,
+                  31.783994000004895,
+                  47.81202100000519,
+                  51.1829230000003,
+                  50.527249999999185,
+                  41.46891499999765,
+                  32.57971499999985,
+                  38.96482799999649
+                ],
+                "median": 39.120519000003696,
+                "p95": 51.1829230000003,
+                "min": 31.10339400000521,
+                "max": 51.85504199999559
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "objects-64",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+            "traceSha256": "d53d819e7687d9171af288c92bc33ef02541abc8c889a87aea3a669e32e2ef62",
+            "traceEntries": 2060,
+            "memoryCapacityBytes": 20971520,
+            "accounted": {
+              "bytes": 2059032,
+              "values": 92901
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                29.28543200000422,
+                19.371434999993653,
+                20.49232199999824,
+                18.94782600000326,
+                19.237786999998207,
+                19.65584900000249,
+                19.37745499999437,
+                20.35858300000109,
+                18.82238900000084,
+                19.794724999999744,
+                19.09481400000368,
+                19.354099999996834,
+                18.989246999997704,
+                20.12508600000001,
+                18.807786999997916,
+                19.014606000004278,
+                20.714091000001645,
+                20.641082000001916,
+                25.743648000003304,
+                20.29997600000206
+              ],
+              "median": 19.65584900000249,
+              "p95": 25.743648000003304,
+              "min": 18.807786999997916,
+              "max": 29.28543200000422
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 81.12259800000174,
+              "firstRequestMs": 30.910788000001048,
+              "warmedHttpMs": {
+                "samples": [
+                  29.111283999998705,
+                  29.95543799999723,
+                  40.07969699999376,
+                  31.29424299999664,
+                  36.033673000005365,
+                  34.638794999998936,
+                  37.96405500000401,
+                  43.62745699999505,
+                  31.18282900000486,
+                  40.28934699999809,
+                  45.83554500000173,
+                  33.48410100000183,
+                  27.36591999999655,
+                  28.727560999999696,
+                  43.15920200000255,
+                  28.862805999997363,
+                  29.356030000002647,
+                  28.246836999998777,
+                  30.291002000005392,
+                  31.920067999999446
+                ],
+                "median": 31.920067999999446,
+                "p95": 43.62745699999505,
+                "min": 27.36591999999655,
+                "max": 45.83554500000173
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 78.91205499999342,
+              "firstRequestMs": 31.636599000004935,
+              "warmedHttpMs": {
+                "samples": [
+                  45.721566000000166,
+                  41.91201000000001,
+                  33.339396000003035,
+                  38.387799000003724,
+                  30.97917299999972,
+                  45.141153000004124,
+                  34.7605160000021,
+                  34.41581500000029,
+                  29.6268659999987,
+                  42.254658999998355,
+                  44.84867999999551,
+                  44.61100599999918,
+                  34.44341500000155,
+                  27.457296000000497,
+                  36.18667299999652,
+                  30.196060999995098,
+                  36.33795700000337,
+                  28.212777000000642,
+                  31.890856999998505,
+                  29.10385999999562
+                ],
+                "median": 34.7605160000021,
+                "p95": 45.141153000004124,
+                "min": 27.457296000000497,
+                "max": 45.721566000000166
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+            "traceSha256": "d53d819e7687d9171af288c92bc33ef02541abc8c889a87aea3a669e32e2ef62",
+            "traceEntries": 2060,
+            "memoryCapacityBytes": 20971520,
+            "accounted": {
+              "bytes": 2059032,
+              "values": 92901
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                17.307047000002058,
+                23.647291000001132,
+                18.899924999997893,
+                18.78229000000283,
+                17.743155000003753,
+                17.113129000004847,
+                17.75325999999768,
+                16.23453200000222,
+                17.859879000003275,
+                17.466793999999936,
+                18.724233000000822,
+                22.020712999998068,
+                17.704137000000628,
+                17.258223000004364,
+                18.816971000000194,
+                24.683630999999878,
+                18.394593000004534,
+                19.734035000001313,
+                17.368227999999363,
+                18.509173999998893
+              ],
+              "median": 18.394593000004534,
+              "p95": 23.647291000001132,
+              "min": 16.23453200000222,
+              "max": 24.683630999999878
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 78.45173699999577,
+              "firstRequestMs": 29.285043000003498,
+              "warmedHttpMs": {
+                "samples": [
+                  25.433812000002945,
+                  24.772018999996362,
+                  27.685354000001098,
+                  23.575784000000567,
+                  27.543252999996184,
+                  34.80089600000065,
+                  29.884617999996408,
+                  30.07343799999944,
+                  26.30076800000097,
+                  25.69985699999961,
+                  24.926008000002184,
+                  25.00331300000107,
+                  30.011625999999524,
+                  26.874104999995325,
+                  29.485161000004155,
+                  25.049431000006734,
+                  24.04695399999764,
+                  24.37383399999817,
+                  38.80887899999652,
+                  38.109252000002016
+                ],
+                "median": 26.874104999995325,
+                "p95": 38.109252000002016,
+                "min": 23.575784000000567,
+                "max": 38.80887899999652
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 78.44153200000437,
+              "firstRequestMs": 42.45749000000069,
+              "warmedHttpMs": {
+                "samples": [
+                  39.045466000003216,
+                  23.916850000001432,
+                  29.536010999996506,
+                  24.74918500000058,
+                  25.495132999996713,
+                  25.214937000004284,
+                  38.78889999999956,
+                  25.58672900000238,
+                  27.747156000004907,
+                  39.3875229999976,
+                  37.0976690000025,
+                  25.592227000001003,
+                  32.957499000003736,
+                  27.13967400000547,
+                  24.130277000003844,
+                  25.88021899999876,
+                  24.65027900000132,
+                  40.35126399999717,
+                  39.8340360000002,
+                  27.569406999995408
+                ],
+                "median": 27.569406999995408,
+                "p95": 39.8340360000002,
+                "min": 23.916850000001432,
+                "max": 40.35126399999717
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "schema-small",
+      "family": "schema",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "d4524a47c0062740c51ffae50abd53f4e74f5df95959bc341042ee1158752ea1",
+            "traceSha256": "c52d0405c9bfe592f79a5062b75fa0f90a9487cd612b21706cf864a09a302084",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 2621440,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                1.2230060000001686,
+                1.2321690000026138,
+                1.154713999996602,
+                1.2510760000004666,
+                1.2888129999992088,
+                1.2694439999977476,
+                1.3857569999963744,
+                1.1254410000037751,
+                1.2746320000005653,
+                1.210867000001599,
+                1.4038740000032703,
+                1.1568170000027749,
+                1.1905469999983325,
+                1.2821340000009513,
+                1.0949650000038673,
+                1.2866700000013225,
+                1.172721000002639,
+                1.3721269999950891,
+                1.5176429999992251,
+                1.4995659999985946
+              ],
+              "median": 1.2694439999977476,
+              "p95": 1.4995659999985946,
+              "min": 1.0949650000038673,
+              "max": 1.5176429999992251
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "d4524a47c0062740c51ffae50abd53f4e74f5df95959bc341042ee1158752ea1",
+              "startupMs": 78.62745799999539,
+              "firstRequestMs": 2.788649999994959,
+              "warmedHttpMs": {
+                "samples": [
+                  1.0728830000007292,
+                  1.0890870000002906,
+                  1.0700789999973495,
+                  0.979243999994651,
+                  1.169887000003655,
+                  1.1116500000061933,
+                  0.9968499999959022,
+                  1.1175990000047022,
+                  0.9852420000024722,
+                  1.0054420000014943,
+                  1.0577399999965564,
+                  0.9529750000001513,
+                  1.0279060000029858,
+                  1.0782500000059372,
+                  0.9020690000033937,
+                  1.1257509999995818,
+                  1.0328630000003614,
+                  0.9133760000040638,
+                  0.988868000000366,
+                  1.0845899999985704
+                ],
+                "median": 1.0577399999965564,
+                "p95": 1.1257509999995818,
+                "min": 0.9020690000033937,
+                "max": 1.169887000003655
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "d4524a47c0062740c51ffae50abd53f4e74f5df95959bc341042ee1158752ea1",
+              "startupMs": 78.07981499999005,
+              "firstRequestMs": 2.06414400000358,
+              "warmedHttpMs": {
+                "samples": [
+                  1.1308490000083111,
+                  1.1937520000064978,
+                  0.9540859999979148,
+                  0.8919339999993099,
+                  1.008786999998847,
+                  1.01809100000537,
+                  1.017770999998902,
+                  1.3645350000006147,
+                  1.1019459999952232,
+                  1.1823549999971874,
+                  0.9826889999967534,
+                  1.0261630000022706,
+                  1.0701089999929536,
+                  1.2089039999991655,
+                  0.8924950000073295,
+                  0.8954289999965113,
+                  1.2427750000060769,
+                  0.9785120000015013,
+                  1.1954640000039944,
+                  1.167012000005343
+                ],
+                "median": 1.0701089999929536,
+                "p95": 1.2427750000060769,
+                "min": 0.8919339999993099,
+                "max": 1.3645350000006147
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "d4524a47c0062740c51ffae50abd53f4e74f5df95959bc341042ee1158752ea1",
+            "traceSha256": "c52d0405c9bfe592f79a5062b75fa0f90a9487cd612b21706cf864a09a302084",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 2621440,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                1.213330999999016,
+                1.1584590000056778,
+                1.1927209999994375,
+                1.2782679999945685,
+                2.1191859999962617,
+                1.4266680000000633,
+                1.6619060000011814,
+                1.4417489999977988,
+                2.1573719999942114,
+                1.1616350000040256,
+                1.1455999999961932,
+                1.1772580000033486,
+                1.182755999994697,
+                1.111590000000433,
+                1.1367169999939506,
+                1.244126999998116,
+                1.1015849999967031,
+                1.1321499999976368,
+                1.1977280000064638,
+                4.705785000005562
+              ],
+              "median": 1.1977280000064638,
+              "p95": 2.1573719999942114,
+              "min": 1.1015849999967031,
+              "max": 4.705785000005562
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "d4524a47c0062740c51ffae50abd53f4e74f5df95959bc341042ee1158752ea1",
+              "startupMs": 78.13860299999942,
+              "firstRequestMs": 1.8173280000046361,
+              "warmedHttpMs": {
+                "samples": [
+                  0.95759199999884,
+                  1.2184889999989537,
+                  0.9788929999995162,
+                  0.9549069999993662,
+                  0.9878170000010869,
+                  0.9928240000008373,
+                  0.8742679999995744,
+                  0.9291789999988396,
+                  0.8634919999967678,
+                  0.8640730000042822,
+                  0.9592740000007325,
+                  0.975919000004069,
+                  0.8657049999965238,
+                  1.1340629999976954,
+                  0.8948180000006687,
+                  1.1244690000021365,
+                  0.8841119999997318,
+                  0.9853619999994407,
+                  0.880366999997932,
+                  0.9620779999968363
+                ],
+                "median": 0.9592740000007325,
+                "p95": 1.1340629999976954,
+                "min": 0.8634919999967678,
+                "max": 1.2184889999989537
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "d4524a47c0062740c51ffae50abd53f4e74f5df95959bc341042ee1158752ea1",
+              "startupMs": 78.26185599999735,
+              "firstRequestMs": 2.053937999997288,
+              "warmedHttpMs": {
+                "samples": [
+                  1.2909960000106366,
+                  1.2054190000053495,
+                  1.1353059999964898,
+                  1.2729600000020582,
+                  1.0667430000030436,
+                  1.1828349999996135,
+                  1.1367770000069868,
+                  1.2451680000085616,
+                  1.106832999998005,
+                  1.256215000001248,
+                  1.2322489999933168,
+                  1.008668000009493,
+                  1.0114719999983208,
+                  1.1858099999953993,
+                  1.1404330000077607,
+                  1.0292180000105873,
+                  1.2210829999967245,
+                  1.0538940000114962,
+                  1.091590999989421,
+                  1.1737220000068191
+                ],
+                "median": 1.1737220000068191,
+                "p95": 1.2729600000020582,
+                "min": 1.008668000009493,
+                "max": 1.2909960000106366
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "schema-near-bound-ascii",
+      "family": "schema",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67",
+            "traceSha256": "679bae935de8832d23f6e2f9d16b979c19ef176d637d50b22ace18c8ba884df1",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 5242880,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                12.185607999999775,
+                11.280222999994294,
+                14.42095500000869,
+                12.189784000001964,
+                11.585957000002963,
+                14.553581999993185,
+                11.347022000001743,
+                14.436237999994773,
+                18.02813000000606,
+                11.463263999990886,
+                12.006290999997873,
+                11.758944000001065,
+                12.84178200000315,
+                13.880583000005572,
+                12.830705000000307,
+                12.816202999994857,
+                13.724461000005249,
+                11.570004000008339,
+                14.549326000007568,
+                12.542962999999872
+              ],
+              "median": 12.816202999994857,
+              "p95": 14.553581999993185,
+              "min": 11.280222999994294,
+              "max": 18.02813000000606
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67",
+              "startupMs": 79.16825599998992,
+              "firstRequestMs": 25.79105200000049,
+              "warmedHttpMs": {
+                "samples": [
+                  15.905528999996022,
+                  19.78128199999628,
+                  14.318634000010206,
+                  17.15009700000519,
+                  13.705564000003505,
+                  13.927783000006457,
+                  16.44029299999238,
+                  22.135745999999926,
+                  14.68150200000673,
+                  14.907628000000841,
+                  14.253456999998889,
+                  17.619573999996646,
+                  14.835739999994985,
+                  14.193187000011676,
+                  13.756798999995226,
+                  15.673674999998184,
+                  13.842155000005732,
+                  13.593968000001041,
+                  13.764962000001105,
+                  16.976687999995193
+                ],
+                "median": 14.835739999994985,
+                "p95": 19.78128199999628,
+                "min": 13.593968000001041,
+                "max": 22.135745999999926
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67",
+              "startupMs": 80.41883900000539,
+              "firstRequestMs": 31.57564999999886,
+              "warmedHttpMs": {
+                "samples": [
+                  14.148863999987952,
+                  15.841620999999577,
+                  21.795219999999972,
+                  20.05729799999972,
+                  18.602725000004284,
+                  14.526213999997708,
+                  16.857441000000108,
+                  14.272618000002694,
+                  18.13314099999843,
+                  17.274479999992764,
+                  22.049213000005693,
+                  17.134092000007513,
+                  19.909497000000556,
+                  14.232847999999649,
+                  13.795889000000898,
+                  14.447027999995044,
+                  13.88277699999162,
+                  15.266325000004144,
+                  16.71436700000777,
+                  13.913984999991953
+                ],
+                "median": 16.71436700000777,
+                "p95": 21.795219999999972,
+                "min": 13.795889000000898,
+                "max": 22.049213000005693
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67",
+            "traceSha256": "679bae935de8832d23f6e2f9d16b979c19ef176d637d50b22ace18c8ba884df1",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 5242880,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                10.976842999996734,
+                11.161186999990605,
+                10.908811999994214,
+                10.758788999999524,
+                13.603622000009636,
+                11.226722999999765,
+                17.343433999994886,
+                10.766671999997925,
+                10.773890999989817,
+                10.82612899999367,
+                11.099025000003166,
+                10.826309999989462,
+                11.00027799999225,
+                11.314274000003934,
+                11.244590000002063,
+                10.856794999999693,
+                10.954859999998007,
+                11.00116899999557,
+                17.417102000006707,
+                13.021538000000874
+              ],
+              "median": 11.00116899999557,
+              "p95": 17.343433999994886,
+              "min": 10.758788999999524,
+              "max": 17.417102000006707
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67",
+              "startupMs": 79.13991899999382,
+              "firstRequestMs": 15.336304999989807,
+              "warmedHttpMs": {
+                "samples": [
+                  15.789530000009108,
+                  15.790743999998085,
+                  14.707104000000982,
+                  14.581506999995327,
+                  17.831357999995816,
+                  15.356458999987808,
+                  14.657599000012851,
+                  14.287930999998935,
+                  14.55226299999049,
+                  14.399526000008336,
+                  14.554296000002068,
+                  15.647161000000779,
+                  15.164583999998285,
+                  14.974990999995498,
+                  14.289251999987755,
+                  14.280939999996917,
+                  14.26258300000336,
+                  15.15785400000459,
+                  14.735995999988518,
+                  14.21174699999392
+                ],
+                "median": 14.707104000000982,
+                "p95": 15.790743999998085,
+                "min": 14.21174699999392,
+                "max": 17.831357999995816
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "5248f16b59c21465667b48c5d0b38f3929913cb86d72b4de9769b10b9460ca67",
+              "startupMs": 78.57855399999244,
+              "firstRequestMs": 16.388342999998713,
+              "warmedHttpMs": {
+                "samples": [
+                  15.61875899998995,
+                  14.838218000004417,
+                  24.994516999999178,
+                  25.60800900000322,
+                  15.563065999987884,
+                  14.93844800000079,
+                  19.11655900000187,
+                  13.881206000005477,
+                  13.922617000003811,
+                  15.680359999998473,
+                  28.097420000005513,
+                  14.285837000003085,
+                  13.922858000005363,
+                  19.46032900000864,
+                  14.8825640000141,
+                  18.682213000007323,
+                  15.421724999992875,
+                  14.314949999999953,
+                  14.816116000001784,
+                  16.040145000006305
+                ],
+                "median": 15.563065999987884,
+                "p95": 25.60800900000322,
+                "min": 13.881206000005477,
+                "max": 28.097420000005513
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "schema-escaped-unicode",
+      "family": "schema",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "df79c57e04d817ff1048db1473336af58d7c1677947f74c47cc95638be8a49d7",
+            "traceSha256": "abb9059ef67f2c2e5852c46e122d48c7b830a8657a6112c6d31187cada1f619f",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 5242880,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                5.459647000010591,
+                4.967234000010649,
+                5.003878000003169,
+                5.245097999999416,
+                4.956087999991723,
+                5.136224999994738,
+                5.0171490000066115,
+                4.848398000001907,
+                5.788614999997662,
+                8.997475999989547,
+                6.114799999995739,
+                4.885722999999416,
+                4.867354999994859,
+                4.806094999992638,
+                5.206088999999338,
+                5.295672000007471,
+                5.002447000006214,
+                5.064538999999058,
+                5.326539000001503,
+                5.086962000001222
+              ],
+              "median": 5.086962000001222,
+              "p95": 6.114799999995739,
+              "min": 4.806094999992638,
+              "max": 8.997475999989547
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "df79c57e04d817ff1048db1473336af58d7c1677947f74c47cc95638be8a49d7",
+              "startupMs": 79.83629400000791,
+              "firstRequestMs": 8.361078999994788,
+              "warmedHttpMs": {
+                "samples": [
+                  6.406643999987864,
+                  6.277421999999206,
+                  6.5733519999921555,
+                  6.145575999995344,
+                  6.934748999992735,
+                  6.530087999999523,
+                  6.3940850000071805,
+                  6.624842999997782,
+                  8.85780800000066,
+                  6.493769000007887,
+                  6.636115000001155,
+                  6.351152000002912,
+                  11.045100000003004,
+                  6.37897299999895,
+                  6.472191000008024,
+                  6.456497999999556,
+                  6.403479000000516,
+                  6.284768000012264,
+                  6.541654999993625,
+                  9.333083999998053
+                ],
+                "median": 6.493769000007887,
+                "p95": 9.333083999998053,
+                "min": 6.145575999995344,
+                "max": 11.045100000003004
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "df79c57e04d817ff1048db1473336af58d7c1677947f74c47cc95638be8a49d7",
+              "startupMs": 78.63214400000288,
+              "firstRequestMs": 7.705736000003526,
+              "warmedHttpMs": {
+                "samples": [
+                  6.8671680000115884,
+                  7.058843999999226,
+                  6.628353000007337,
+                  7.134276000011596,
+                  9.544609999997192,
+                  6.6171160000085365,
+                  6.151624999998603,
+                  6.273144999999204,
+                  10.728038000001106,
+                  6.891615000000456,
+                  6.526881999991019,
+                  6.1379240000096615,
+                  7.098532000003615,
+                  6.408427000002121,
+                  6.122401000000536,
+                  6.282600000005914,
+                  6.190042000001995,
+                  10.421782999997959,
+                  8.71127999998862,
+                  7.434691999995266
+                ],
+                "median": 6.8671680000115884,
+                "p95": 10.421782999997959,
+                "min": 6.122401000000536,
+                "max": 10.728038000001106
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "df79c57e04d817ff1048db1473336af58d7c1677947f74c47cc95638be8a49d7",
+            "traceSha256": "abb9059ef67f2c2e5852c46e122d48c7b830a8657a6112c6d31187cada1f619f",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 5242880,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                10.564775999999256,
+                6.541345000005094,
+                5.265878000005614,
+                5.054813999988255,
+                5.350393999993685,
+                5.069775999989361,
+                4.9825870000058785,
+                5.19097700000566,
+                5.118749000001117,
+                5.257324999998673,
+                5.090047000005143,
+                4.972903000001679,
+                4.860906000001705,
+                7.124010999992606,
+                9.956410999991931,
+                5.730108999996446,
+                5.600644999998622,
+                5.023518000001786,
+                5.016646999996738,
+                4.927354999992531
+              ],
+              "median": 5.19097700000566,
+              "p95": 9.956410999991931,
+              "min": 4.860906000001705,
+              "max": 10.564775999999256
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "df79c57e04d817ff1048db1473336af58d7c1677947f74c47cc95638be8a49d7",
+              "startupMs": 81.06190600000264,
+              "firstRequestMs": 7.3515539999934845,
+              "warmedHttpMs": {
+                "samples": [
+                  6.513172000006307,
+                  6.563603000002331,
+                  6.323900999996113,
+                  6.226956999991671,
+                  6.648262999995495,
+                  6.456858000005013,
+                  6.794129999994766,
+                  6.326184000005014,
+                  6.179957000000286,
+                  7.156208000000333,
+                  6.495946999988519,
+                  7.842568000007304,
+                  6.658448000001954,
+                  10.499619000009261,
+                  7.588520999997854,
+                  6.530297999997856,
+                  10.398417999997037,
+                  6.704576000003726,
+                  6.5906479999976,
+                  8.813261000002967
+                ],
+                "median": 6.648262999995495,
+                "p95": 10.398417999997037,
+                "min": 6.179957000000286,
+                "max": 10.499619000009261
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "df79c57e04d817ff1048db1473336af58d7c1677947f74c47cc95638be8a49d7",
+              "startupMs": 78.47872600000119,
+              "firstRequestMs": 7.591174999994109,
+              "warmedHttpMs": {
+                "samples": [
+                  10.343204999997397,
+                  6.356329999995069,
+                  6.670696000001044,
+                  10.958710999999312,
+                  6.390700000003562,
+                  6.243601000009221,
+                  6.1447750000079395,
+                  10.338889999999083,
+                  6.3658830000058515,
+                  6.570378000003984,
+                  6.581104000011692,
+                  6.228510000000824,
+                  6.419162999998662,
+                  6.41066100000171,
+                  6.509516999998596,
+                  6.700410999997985,
+                  6.525280000001658,
+                  6.282569999995758,
+                  6.606571000011172,
+                  6.1457660000014585
+                ],
+                "median": 6.509516999998596,
+                "p95": 10.343204999997397,
+                "min": 6.1447750000079395,
+                "max": 10.958710999999312
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "schema-nested-128",
+      "family": "schema",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "2e9b477f7898455010d5009892903a9f9553e9ec1f6d1e1f6aa403e2585f8e04",
+            "traceSha256": "89865ffdbdab05ea5676a96ddf8464c80eff5e2ea0d1d9dff891366323a3d931",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 5242880,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                4.5197990000015125,
+                3.75093699998979,
+                3.5096469999989495,
+                3.7956319999939296,
+                3.8080210000043735,
+                3.7188179999939166,
+                4.109849000000395,
+                4.003341999996337,
+                3.5252699999982724,
+                3.3012370000069495,
+                6.908150000002934,
+                3.778947999991942,
+                3.098605999999563,
+                3.099216999995406,
+                3.7021940000122413,
+                3.6938809999992372,
+                3.0970430000015767,
+                3.2720939999999246,
+                3.622935999999754,
+                3.1690810000000056
+              ],
+              "median": 3.7021940000122413,
+              "p95": 4.5197990000015125,
+              "min": 3.0970430000015767,
+              "max": 6.908150000002934
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "2e9b477f7898455010d5009892903a9f9553e9ec1f6d1e1f6aa403e2585f8e04",
+              "startupMs": 78.6822480000119,
+              "firstRequestMs": 4.6713850000087405,
+              "warmedHttpMs": {
+                "samples": [
+                  4.1020579999894835,
+                  4.09286499999871,
+                  3.279955999998492,
+                  3.5715689999924507,
+                  5.12825399999565,
+                  3.2648640000115847,
+                  3.640631999995094,
+                  5.222043000001577,
+                  3.1921759999968344,
+                  3.5217549999943003,
+                  5.14698099999805,
+                  3.2337879999977304,
+                  3.450960000001942,
+                  5.481719000003068,
+                  3.5021259999921313,
+                  3.525279999987106,
+                  5.432866000002832,
+                  3.293365999998059,
+                  3.8666879999946104,
+                  3.6625739999872167
+                ],
+                "median": 3.640631999995094,
+                "p95": 5.432866000002832,
+                "min": 3.1921759999968344,
+                "max": 5.481719000003068
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "2e9b477f7898455010d5009892903a9f9553e9ec1f6d1e1f6aa403e2585f8e04",
+              "startupMs": 79.21179499999562,
+              "firstRequestMs": 4.238299999997253,
+              "warmedHttpMs": {
+                "samples": [
+                  3.5987000000022817,
+                  3.1820999999908963,
+                  3.553251999997883,
+                  3.10787999999593,
+                  3.4792519999900833,
+                  3.2846229999995558,
+                  3.2197260000102688,
+                  3.0889120000065304,
+                  3.0918369999999413,
+                  3.9587999999930616,
+                  3.719969999991008,
+                  3.81372000000556,
+                  3.6816130000079283,
+                  3.5388609999936307,
+                  3.44306800000777,
+                  3.3145970000041416,
+                  3.2657149999868125,
+                  5.5051129999919794,
+                  5.033894000007422,
+                  3.3990929999999935
+                ],
+                "median": 3.4792519999900833,
+                "p95": 5.033894000007422,
+                "min": 3.0889120000065304,
+                "max": 5.5051129999919794
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "2e9b477f7898455010d5009892903a9f9553e9ec1f6d1e1f6aa403e2585f8e04",
+            "traceSha256": "89865ffdbdab05ea5676a96ddf8464c80eff5e2ea0d1d9dff891366323a3d931",
+            "traceEntries": 12,
+            "memoryCapacityBytes": 5242880,
+            "accounted": null,
+            "totalHostExecutionMs": {
+              "samples": [
+                3.4067549999890616,
+                4.43874899999355,
+                3.470690000001923,
+                6.063934000005247,
+                3.1890910000074655,
+                3.057005000009667,
+                3.006078999998863,
+                3.028542000000016,
+                2.8721600000135368,
+                3.1189069999963976,
+                3.002422999998089,
+                2.8347040000080597,
+                3.302228999993531,
+                3.2321950000041397,
+                2.9006220000010217,
+                3.5033580000017537,
+                3.3957680000021355,
+                3.393565000005765,
+                3.32104700000491,
+                5.434498999995412
+              ],
+              "median": 3.302228999993531,
+              "p95": 5.434498999995412,
+              "min": 2.8347040000080597,
+              "max": 6.063934000005247
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "2e9b477f7898455010d5009892903a9f9553e9ec1f6d1e1f6aa403e2585f8e04",
+              "startupMs": 79.16769000000204,
+              "firstRequestMs": 6.510819000002812,
+              "warmedHttpMs": {
+                "samples": [
+                  3.951283999995212,
+                  3.764606000011554,
+                  3.6416339999996126,
+                  3.892957000003662,
+                  5.043157000007341,
+                  3.7072409999964293,
+                  3.618849999998929,
+                  5.019331000003149,
+                  3.362037999992026,
+                  3.2499010000028647,
+                  3.432232000006479,
+                  3.6624139999912586,
+                  3.50690300000133,
+                  3.7027149999921676,
+                  3.9437119999929564,
+                  3.540684000006877,
+                  3.664476999998442,
+                  5.376703000001726,
+                  3.828821999995853,
+                  3.192886000004364
+                ],
+                "median": 3.7027149999921676,
+                "p95": 5.043157000007341,
+                "min": 3.192886000004364,
+                "max": 5.376703000001726
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "2e9b477f7898455010d5009892903a9f9553e9ec1f6d1e1f6aa403e2585f8e04",
+              "startupMs": 79.02659000000858,
+              "firstRequestMs": 5.987291000012192,
+              "warmedHttpMs": {
+                "samples": [
+                  3.812246999994386,
+                  3.951223999989452,
+                  3.6908470000053057,
+                  6.460304000007454,
+                  3.767390000008163,
+                  3.5129180000076303,
+                  4.798818999988725,
+                  5.7763470000063535,
+                  4.238790999996127,
+                  4.283498000004329,
+                  3.945205000010901,
+                  5.210306000008131,
+                  3.7212219999928493,
+                  4.090611000006902,
+                  3.4586209999979474,
+                  3.331062999990536,
+                  3.4982700000109617,
+                  3.5145750000083353,
+                  3.1950199999992037,
+                  3.6973270000016782
+                ],
+                "median": 3.812246999994386,
+                "p95": 5.7763470000063535,
+                "min": 3.1950199999992037,
+                "max": 6.460304000007454
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "missing-first-row",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "ba691ba042bcedd9a61a36f5969026bc95859dccdc7e47f24e6bce35673baf2f",
+            "traceSha256": "2e6ccde091601d4f83770791c9c4b5ce48ef2fb08cf1ebc140502a18c6170f1c",
+            "traceEntries": 26,
+            "memoryCapacityBytes": 1310720,
+            "accounted": {
+              "bytes": 1020,
+              "values": 30
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                0.5575990000070306,
+                0.5447899999999208,
+                0.5814150000078371,
+                0.5111590000014985,
+                0.8501839999953518,
+                0.7030649999942398,
+                0.5277340000029653,
+                0.6490749999938998,
+                0.5602429999999003,
+                0.5020170000061626,
+                0.5709689999930561,
+                0.5255020000040531,
+                0.5541740000044229,
+                0.6818429999984801,
+                0.5498680000018794,
+                0.6852780000044731,
+                0.5375590000039665,
+                0.5606140000018058,
+                0.7924780000030296,
+                0.5660809999972116
+              ],
+              "median": 0.5606140000018058,
+              "p95": 0.7924780000030296,
+              "min": 0.5020170000061626,
+              "max": 0.8501839999953518
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "ba691ba042bcedd9a61a36f5969026bc95859dccdc7e47f24e6bce35673baf2f",
+              "startupMs": 78.62744199999725,
+              "firstRequestMs": 1.7318340000056196,
+              "warmedHttpMs": {
+                "samples": [
+                  0.5952150000084657,
+                  0.5138529999967432,
+                  0.5027669999981299,
+                  0.5228470000001835,
+                  0.4751959999994142,
+                  0.5069939999957569,
+                  0.4798529999970924,
+                  0.4733730000007199,
+                  0.7233449999912409,
+                  1.1509419999929378,
+                  0.5082360000087647,
+                  0.5776889999979176,
+                  0.4724630000127945,
+                  0.4930330000061076,
+                  0.5440040000103181,
+                  0.4812050000036834,
+                  0.48719400000118185,
+                  0.5658759999932954,
+                  0.9123560000007274,
+                  0.5765970000065863
+                ],
+                "median": 0.5138529999967432,
+                "p95": 0.9123560000007274,
+                "min": 0.4724630000127945,
+                "max": 1.1509419999929378
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "ba691ba042bcedd9a61a36f5969026bc95859dccdc7e47f24e6bce35673baf2f",
+              "startupMs": 78.30168499999854,
+              "firstRequestMs": 1.3785060000082012,
+              "warmedHttpMs": {
+                "samples": [
+                  0.46777399998973124,
+                  0.5443780000059633,
+                  0.43549699999857694,
+                  0.565470000001369,
+                  0.5910169999988284,
+                  0.5607529999979306,
+                  1.244808000003104,
+                  0.5353139999933774,
+                  0.4696069999918109,
+                  0.4595719999924768,
+                  0.4230680000036955,
+                  0.4446699999971315,
+                  0.4331629999942379,
+                  0.4926619999896502,
+                  0.5020050000021001,
+                  0.5728810000000522,
+                  0.40588299999944866,
+                  0.5805719999916619,
+                  0.4417959999991581,
+                  0.4720309999975143
+                ],
+                "median": 0.4926619999896502,
+                "p95": 0.5910169999988284,
+                "min": 0.40588299999944866,
+                "max": 1.244808000003104
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "ba691ba042bcedd9a61a36f5969026bc95859dccdc7e47f24e6bce35673baf2f",
+            "traceSha256": "2e6ccde091601d4f83770791c9c4b5ce48ef2fb08cf1ebc140502a18c6170f1c",
+            "traceEntries": 26,
+            "memoryCapacityBytes": 1310720,
+            "accounted": {
+              "bytes": 1020,
+              "values": 30
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                0.5484549999964656,
+                0.6042379999998957,
+                0.9173730000038631,
+                0.5663320000021486,
+                0.6161149999970803,
+                0.5369590000045719,
+                0.5505479999992531,
+                0.637698000005912,
+                0.595815999986371,
+                0.7628240000049118,
+                0.6087149999948451,
+                0.6718589999945834,
+                0.5692569999955595,
+                0.7381470000109402,
+                0.6648290000011912,
+                0.60831500000495,
+                0.5885350000025937,
+                0.5594710000004852,
+                0.9907230000098934,
+                0.8908750000118744
+              ],
+              "median": 0.6087149999948451,
+              "p95": 0.9173730000038631,
+              "min": 0.5369590000045719,
+              "max": 0.9907230000098934
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "ba691ba042bcedd9a61a36f5969026bc95859dccdc7e47f24e6bce35673baf2f",
+              "startupMs": 79.30780499998946,
+              "firstRequestMs": 1.4261069999920437,
+              "warmedHttpMs": {
+                "samples": [
+                  0.659339000005275,
+                  0.6222330000018701,
+                  0.6529790000058711,
+                  0.5563459999975748,
+                  0.6296440000005532,
+                  0.4700379999994766,
+                  0.5971370000042953,
+                  0.6301559999992605,
+                  0.5284650000103284,
+                  0.9125550000026124,
+                  0.5857800000085263,
+                  0.5919789999898057,
+                  0.5164070000028005,
+                  0.6150830000115093,
+                  0.7000090000074124,
+                  1.2939709999918705,
+                  0.7477700000017649,
+                  0.8080099999933736,
+                  0.8638320000027306,
+                  0.6393390000012005
+                ],
+                "median": 0.6301559999992605,
+                "p95": 0.9125550000026124,
+                "min": 0.4700379999994766,
+                "max": 1.2939709999918705
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "ba691ba042bcedd9a61a36f5969026bc95859dccdc7e47f24e6bce35673baf2f",
+              "startupMs": 78.3027710000024,
+              "firstRequestMs": 12.296008999997866,
+              "warmedHttpMs": {
+                "samples": [
+                  0.5212739999988116,
+                  0.5137229999963893,
+                  0.5375380000041332,
+                  0.5005530000053113,
+                  0.4771080000064103,
+                  0.4834279999922728,
+                  0.4606340000027558,
+                  0.5136029999994207,
+                  0.5570969999971567,
+                  0.4587210000026971,
+                  0.5013639999961015,
+                  0.6098349999956554,
+                  1.0313310000055935,
+                  0.6629440000106115,
+                  0.5052800000121351,
+                  0.5009830000053626,
+                  0.5146640000020852,
+                  0.4611750000040047,
+                  0.5182099999947241,
+                  0.5056000000040513
+                ],
+                "median": 0.5136029999994207,
+                "p95": 0.6629440000106115,
+                "min": 0.4587210000026971,
+                "max": 1.0313310000055935
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "quoted-64",
+      "family": "loop",
+      "recipes": {
+        "baseline": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+            "traceSha256": "ef265a0ae6866eff0293bb18f50a83dc33262991d62dffa6ab5b15a42ca40c80",
+            "traceEntries": 2060,
+            "memoryCapacityBytes": 20971520,
+            "accounted": {
+              "bytes": 1710126,
+              "values": 3163
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                32.80366000000504,
+                40.73161899999832,
+                34.54877999999735,
+                32.839171999992686,
+                40.90703999999096,
+                32.6910319999879,
+                42.26384300000791,
+                35.99063100000785,
+                31.809382999999798,
+                41.93969199999992,
+                31.70444800000405,
+                39.84085700000287,
+                33.5581899999961,
+                31.816313999996055,
+                41.083912000001874,
+                31.62083299999358,
+                39.984489999988,
+                34.704702000002726,
+                32.092594000001554,
+                42.20054999999411
+              ],
+              "median": 34.704702000002726,
+              "p95": 42.20054999999411,
+              "min": 31.62083299999358,
+              "max": 42.26384300000791
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 81.7645760000014,
+              "firstRequestMs": 68.27371799999673,
+              "warmedHttpMs": {
+                "samples": [
+                  44.339875999998185,
+                  42.451751999993576,
+                  47.649729000011575,
+                  76.8306409999932,
+                  50.3584520000004,
+                  43.3862999999983,
+                  47.369994000007864,
+                  69.62694600000395,
+                  45.63755200000014,
+                  40.843204000004334,
+                  42.105790000001434,
+                  44.429168999995454,
+                  39.536164000004646,
+                  67.74035599999479,
+                  56.836438000013004,
+                  41.02872000000207,
+                  45.993531000000075,
+                  42.28997199999867,
+                  40.653031999987434,
+                  39.89161200000672
+                ],
+                "median": 44.429168999995454,
+                "p95": 69.62694600000395,
+                "min": 39.536164000004646,
+                "max": 76.8306409999932
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 79.18133099999977,
+              "firstRequestMs": 48.76934300000721,
+              "warmedHttpMs": {
+                "samples": [
+                  43.85212300000421,
+                  40.25602099999378,
+                  70.72531400001026,
+                  50.86448100001144,
+                  39.10580300001311,
+                  52.39373199999682,
+                  54.78976099999272,
+                  41.095158000011,
+                  41.609817000004114,
+                  50.223282999999356,
+                  42.29994300000544,
+                  49.65480299999763,
+                  67.48422899999423,
+                  43.58127200001036,
+                  41.94703300000401,
+                  40.01557400000456,
+                  42.52435000000696,
+                  42.26305199999479,
+                  40.34902000000875,
+                  65.40528099999938
+                ],
+                "median": 43.58127200001036,
+                "p95": 67.48422899999423,
+                "min": 39.10580300001311,
+                "max": 70.72531400001026
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        },
+        "candidate": {
+          "injected": {
+            "status": 200,
+            "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+            "traceSha256": "ef265a0ae6866eff0293bb18f50a83dc33262991d62dffa6ab5b15a42ca40c80",
+            "traceEntries": 2060,
+            "memoryCapacityBytes": 20971520,
+            "accounted": {
+              "bytes": 1710126,
+              "values": 3163
+            },
+            "pendingLookups": 0,
+            "acquiredReadBodies": 0,
+            "totalHostExecutionMs": {
+              "samples": [
+                23.53663200000301,
+                28.44036100000085,
+                24.01668499999505,
+                30.182958999997936,
+                23.9469209999952,
+                22.99674099999538,
+                31.117456000007223,
+                24.650504999997793,
+                28.177681999994093,
+                23.557542999988073,
+                23.823879000003217,
+                27.944644999995944,
+                23.004432000001543,
+                29.300729000009596,
+                23.43214699999953,
+                22.939474999991944,
+                27.58496200000809,
+                23.46388300000399,
+                51.56738700000278,
+                22.78881199999887
+              ],
+              "median": 24.01668499999505,
+              "p95": 31.117456000007223,
+              "min": 22.78881199999887,
+              "max": 51.56738700000278
+            }
+          },
+          "local": [
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 79.46143700000539,
+              "firstRequestMs": 32.54667799999879,
+              "warmedHttpMs": {
+                "samples": [
+                  29.60395900000003,
+                  29.860560000000987,
+                  39.99719900000491,
+                  30.998770000005607,
+                  28.703311999997823,
+                  31.842422000001534,
+                  29.29708399999072,
+                  48.889200000005076,
+                  49.340729999996256,
+                  42.06412799999816,
+                  40.370203000013134,
+                  31.29325699999754,
+                  32.425001999989036,
+                  31.340927999990527,
+                  30.877991000001202,
+                  30.04653699998744,
+                  28.983657999997376,
+                  41.01902599999448,
+                  36.77096399999573,
+                  30.29488400000264
+                ],
+                "median": 31.340927999990527,
+                "p95": 48.889200000005076,
+                "min": 28.703311999997823,
+                "max": 49.340729999996256
+              },
+              "stderr": "",
+              "stdout": ""
+            },
+            {
+              "status": 200,
+              "bodySha256": "554c907dff0075d8bd9844499eb0ce80293b9e99226d7ec38efce70a0230ff16",
+              "startupMs": 79.0264509999979,
+              "firstRequestMs": 30.1016959999979,
+              "warmedHttpMs": {
+                "samples": [
+                  29.929159999999683,
+                  30.590993999998318,
+                  29.57599099999061,
+                  31.823059000002104,
+                  31.108042000007117,
+                  29.154449000008754,
+                  31.492442999995546,
+                  28.973821000006865,
+                  29.269890999989002,
+                  29.196001999996952,
+                  31.87941699998919,
+                  29.756188999992446,
+                  28.90765300000203,
+                  30.504970999987563,
+                  30.125040999992052,
+                  29.886547000001883,
+                  30.058712999991258,
+                  31.073294999994687,
+                  48.91514499999175,
+                  29.2729260000051
+                ],
+                "median": 30.058712999991258,
+                "p95": 31.87941699998919,
+                "min": 28.90765300000203,
+                "max": 48.91514499999175
+              },
+              "stderr": "",
+              "stdout": ""
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "stubSourceSha256": "958e9ebb92e9cc70068e6eb60be8ee4945a60184c3059bcf4494871c137ba9c0",
+  "complete": true
+}

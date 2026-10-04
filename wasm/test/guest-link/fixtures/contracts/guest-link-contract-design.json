@@ -263,10 +263,10 @@
         },
         "materialization": {
           "workspace": ".pulse/guests",
-          "directory": ".pulse/guests/pulse.guest-link.proof.borrowed-span/d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c",
+          "directory": ".pulse/guests/pulse.guest-link.proof.borrowed-span/d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c/1111111111111111111111111111111111111111111111111111111111111111",
           "artifact": "unit.wasm",
           "manifest": "unit.json",
-          "contentAddress": "artifact-sha256",
+          "contentAddress": "artifact-and-manifest-sha256",
           "generated": true,
           "authoritative": false
         },
@@ -337,7 +337,7 @@
           }
         },
         "materialization": {
-          "directory": ".pulse/guests/pulse.guest-link.proof.borrowed-span/d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c",
+          "directory": ".pulse/guests/pulse.guest-link.proof.borrowed-span/d92d3b3496debbfd13ec1657efe9eac62ce44580cb1e4f439fc80232d346da2c/1111111111111111111111111111111111111111111111111111111111111111",
           "cache": "content-addressed",
           "hashVerifiedBeforeUse": true
         },
@@ -731,7 +731,7 @@
     {
       "id": "content-addressed-materialization",
       "owner": "wasm-guest-link",
-      "check": "The destination is project-contained under .pulse/guests/<unit-id>/<artifact-sha256>, contains only verified normalized files, and is reproducible after deletion.",
+      "check": "The destination is project-contained under .pulse/guests/<unit-id>/<artifact-sha256>/<manifest-sha256>, contains only verified normalized files, and is reproducible after deletion.",
       "failure": "PULSE_GUEST_UNIT_MATERIALIZATION_FAILED"
     },
     {
@@ -760,7 +760,7 @@
         "order": 30,
         "id": "package-prebuilt-materialization",
         "owner": "wasm-guest-link",
-        "output": ".pulse/guests/<unit-id>/<artifact-sha256>/"
+        "output": ".pulse/guests/<unit-id>/<artifact-sha256>/<manifest-sha256>/"
       },
       {
         "order": 40,

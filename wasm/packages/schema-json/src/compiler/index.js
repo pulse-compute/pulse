@@ -6,8 +6,10 @@ const schemaJsonGenericParser = require('./schema-json-generic-parser.js');
 const schemaJsonSidecarV2 = require('./schema-json-sidecar-v2.js');
 const canonicalSchemaCodecs = require('./canonical-schema-codecs.js');
 const schemaRegistry = require('./schema-registry.js');
+const jsonAdmission = require('./json-admission.js');
 
 module.exports = {
+  jsonAdmission,
   schemaJsonCompile,
   schemaJsonSidecar,
   schemaJsonGenericParser,

@@ -1,0 +1,11 @@
+{
+  "name": "pulse-mcp-01-reference-proof",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@modelcontextprotocol/client": "2.2.0",
+    "@modelcontextprotocol/node": "2.1.0",
+    "@modelcontextprotocol/server": "2.2.0"
+  }
+}

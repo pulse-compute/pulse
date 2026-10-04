@@ -1,0 +1,322 @@
+{
+  "schemaVersion": "pulse.maintainer-scope-report.v2",
+  "policyVersion": 10,
+  "releaseVersion": "1.0.0-beta.5",
+  "status": "decision-required",
+  "pullRequest": null,
+  "range": {
+    "base": null,
+    "head": null
+  },
+  "declaration": {
+    "present": true,
+    "changeClass": "hardening",
+    "scope": "inside-developer-preview",
+    "protectedBoundaries": [
+      "runtime-target-fluidity"
+    ],
+    "humanDecision": "required"
+  },
+  "inferred": {
+    "changedFiles": 42,
+    "areas": [
+      "cli",
+      "compiler",
+      "documentation",
+      "testing"
+    ],
+    "protectedBoundaries": [
+      "runtime-target-fluidity"
+    ],
+    "requiredChecks": [
+      "build",
+      "cli",
+      "conformance",
+      "documentation",
+      "javascript",
+      "maintenance-policy",
+      "native",
+      "unit"
+    ],
+    "matchedRules": [
+      "cli-and-diagnostics",
+      "compiler-default",
+      "documentation",
+      "target-compilation",
+      "tests-and-evidence"
+    ],
+    "unmatchedFiles": [
+      "scripts/release-evidence-bundle.cjs"
+    ],
+    "risk": "high",
+    "humanDecisionRequired": true,
+    "contractUpdateRequired": false,
+    "releaseAuthorityRequired": false,
+    "suggestedChangeClasses": [
+      "defect",
+      "hardening",
+      "architecture",
+      "scope-expansion"
+    ]
+  },
+  "consistency": {
+    "errors": [],
+    "warnings": [
+      "unclassified path(s) require human review: scripts/release-evidence-bundle.cjs"
+    ]
+  },
+  "files": [
+    {
+      "file": "docs/architecture/current-contracts.md",
+      "rules": [
+        "documentation"
+      ]
+    },
+    {
+      "file": "scripts/release-evidence-bundle.cjs",
+      "rules": []
+    },
+    {
+      "file": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "rules": [
+        "cli-and-diagnostics"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-native-plan.js",
+      "rules": [
+        "target-compilation",
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/pure-helper-values.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/packages/compiler/src/spine/pure-helper-source.js",
+      "rules": [
+        "compiler-default"
+      ]
+    },
+    {
+      "file": "wasm/test/assert-hidden-contracts.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/README.md",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/after.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/attempts/sandbox-baseline-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/attempts/sandbox-baseline.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/attempts/sandbox-documentation.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/attempts/unclassified-constant-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/attempts/unclassified-constant-task.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/attempts/unclassified-constant.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/baseline-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/baseline.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/before.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/baseline-05-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/baseline-05.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/baseline-09-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/baseline-09.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/docs-example-05-fastly-capabilities.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/docs-example-09-router-lowering.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/report-01.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/report-02.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/report-03.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/run-01.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/run-02.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/run-03.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/cli/summary.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/compare-inference.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/documentation-release.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/documentation.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/inference-comparison.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/maintainer.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/manifest.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/portable-report.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/portable.log",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/fixtures/pure-helpers/r1-01/scope.json",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/lowering/assert-pure-helper-vocabulary.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    },
+    {
+      "file": "wasm/test/suite/registry.cjs",
+      "rules": [
+        "tests-and-evidence"
+      ]
+    }
+  ],
+  "recommendation": "A human must explicitly decide the named boundary or scope question; Codex may analyze or prepare a patch only after that direction is clear."
+}

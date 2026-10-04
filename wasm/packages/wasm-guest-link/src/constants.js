@@ -99,27 +99,28 @@ const es256GuestUnit = Object.freeze({
   id: 'pulse.crypto.es256.rustcrypto-p256.v1',
   module: 'pulse_crypto_es256',
   owner: '@pulse-compute/crypto',
-  packageVersion: '1.0.0-beta.5',
-  abi: 'pulse.crypto.es256.verify.v1',
+  packageVersion: '1.0.0-beta.6',
+  abi: 'pulse.crypto.es256-rs256.verify-and-sign.v3',
   artifact: Object.freeze({
     file: 'prebuilt/es256-verifier.wasm',
-    bytes: 21009,
-    sha256: 'ee5ab1639cbe1be5a9510c01ab15a3569c0394818a9db98f3e0114ae829fff50'
+    bytes: 36378,
+    sha256: 'b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf'
   }),
   source: Object.freeze({
     directory: 'source',
-    treeSha256: '76c8cf985b2ed384d069f7ba0d7ff1c8513679ea7aec513e1a07a3eeaa3b7208'
+    treeSha256: '581fa765f228bd1a3ab6a40ee3cbb35a9d7a101e2839d32e36ececc94b66a741'
   }),
   toolchain: Object.freeze({
     rustc: '1.97.1 (8bab26f4f 2026-07-14)',
     cargo: '1.97.1 (c980f4866 2026-06-30)',
+    zig: '0.13.0',
     binaryen: binaryenVersion
   }),
   provenance: Object.freeze({
-    cargoLockSha256: '7aa8c6d72751653717a371147e71a546d8f21dfcd1cf698919563e79e2946cb4',
-    reconstructionCommandIdentity: 'pulse.crypto.es256.rustcrypto-build.v1',
+    cargoLockSha256: 'd5ecc12c9c846468686974aaed841156cc82ab8f876fec4d40b2baa29dff1551',
+    reconstructionCommandIdentity: 'pulse.crypto.es256-rs256.build.v3',
     buildScript: 'build.cjs',
-    buildScriptSha256: '026b5405eae3fa2a69834ca914388bb10e4e9c751ee2965c9a29c076e15f9e90',
+    buildScriptSha256: '85d99761b442ec3ea11af6496206f475c14e6c419b5aa89bbedc730d8b61e95d',
     optimizationPosture: 'native-size',
     binaryenWasmOptSha256: '1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56',
     g0SourceDecision: '../../../../wasm/.test-results/jwt-g0/es256-source-decision.json',
@@ -147,6 +148,31 @@ const optimizationPostures = Object.freeze({
   ])
 });
 
+// Keep the pinned prebuilt recipe above unchanged. Composed final modules use
+// these bounded, layout-preserving passes before the existing final audit.
+const finalOptimizationPostures = Object.freeze({
+  'native-default': Object.freeze([
+    '--mvp-features',
+    '--merge-similar-functions',
+    '--one-caller-inline-max-function-size=64',
+    '--flexible-inline-max-function-size=0',
+    '--inline-max-combined-binary-size=1024',
+    '-Oz',
+    '--skip-pass=memory-packing',
+    '--strip-debug'
+  ]),
+  'native-size': Object.freeze([
+    '--mvp-features',
+    '--merge-similar-functions',
+    '--one-caller-inline-max-function-size=64',
+    '--flexible-inline-max-function-size=0',
+    '--inline-max-combined-binary-size=1024',
+    '-Oz',
+    '--skip-pass=memory-packing',
+    '--strip-debug'
+  ])
+});
+
 module.exports = Object.freeze({
   versions,
   binaryenVersion,
@@ -155,5 +181,6 @@ module.exports = Object.freeze({
   memoryAbiV2,
   es256FrameV2,
   es256GuestUnit,
-  optimizationPostures
+  optimizationPostures,
+  finalOptimizationPostures
 });

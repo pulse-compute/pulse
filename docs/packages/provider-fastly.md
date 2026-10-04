@@ -7,10 +7,31 @@ Fastly CLI boundary.
 
 Install it only in projects that select the Fastly provider.
 
+The Native platform-capabilities compiler defaults to a 4 MiB final-Wasm budget
+(4,194,304 bytes, inclusive). Configure a different positive safe integer byte
+count in the selected profile:
+
+```ts
+fastly: {
+  build: { name: 'my-app', maxWasmBytes: 8388608 }, // 8 MiB
+}
+```
+
+The `fastly()` facade accepts `fastly({ maxWasmBytes: 8388608 })` and projects it
+into the same `build.maxWasmBytes` field. Zero, negative, fractional, nonnumeric,
+and unsafe integer values fail with `PULSE_FASTLY_MAX_WASM_BYTES_INVALID`.
+
+This is a Pulse build guard, not a Fastly service limit or a runtime-memory
+allowance. It applies to newly compiled and reused Native artifacts. Modules
+above it fail with `PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE`
+and the observed/configured byte counts; modules within it still require valid
+Wasm and the expected host ABI. No unlimited setting or runtime allocation
+change is implied. The option does not control JavaScript-target packaging.
+
 ## Install
 
 ```bash
-npm install @pulse-compute/provider-fastly@1.0.0-beta.5
+npm install @pulse-compute/provider-fastly@1.0.0-beta.6
 ```
 
 ## Configure a project
@@ -107,6 +128,21 @@ pulse build ./my-app
 `src/main.as.ts` plus compact `bin/main.wasm` importing the required `fastly_*`
 hostcalls directly. It contains no JavaScript runtime image or `pulse_host`.
 Clock-dependent capabilities import only WASI `clock_time_get`.
+
+The canonical Native platform driver caps each invocation at 1,024 cumulative
+effect requests, including repeated loop visits and all requested group members.
+The next request fails before dispatch (state error 1007, stage 170); this is a
+fixed runtime policy, not a provider configuration field. Per-visit tickets fence
+result injection, and terminal driver return invalidates pending work. The
+artifact records `pulse.effect-invocation.v1` in `effectInvocations`. Existing
+monotonic request deadlines span the whole invocation. See the
+[PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2)
+for the managed-host boundary. Plans with bounded read loops also enable the
+[PS3 memory policy](../architecture/current-contracts.md#native-read-loop-memory-containment-ps3):
+64 MiB of cumulative accounted retention, 1,048,576 value/edge units, and a
+256 MiB ceiling on unlinked Wasm linear memory. Exceeding the accounting budget
+closes the invocation and traps with memory error 1010; values remain valid for
+the request lifetime. PS4 provider and application qualification remains open.
 
 Conditional KV (`getVersioned`, `insertIfAbsent`, `compareAndSwap`) uses this
 Native path and the existing logical KV bindings. It preserves generation tokens

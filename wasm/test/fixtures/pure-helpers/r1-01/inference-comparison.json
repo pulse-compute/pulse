@@ -1,0 +1,8 @@
+{
+  "status": "passed",
+  "base": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+  "provenCases": 3146,
+  "kindCases": 3146,
+  "indexCases": 99,
+  "claim": "All compared inference results equal the pinned implementation; admission remains independently validated."
+}

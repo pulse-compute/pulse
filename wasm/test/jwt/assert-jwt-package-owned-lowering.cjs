@@ -104,7 +104,7 @@ assert.equal(jwtManifest.modes.wasm.realization.kind, 'crypto-composed');
 assert.equal(jwtManifest.modes.wasm.realization.semanticOwner, '@pulse-compute/crypto');
 assert.equal(jwtManifest.modes.wasm.realization.realization, 'guest-source:pulse-hmac-as');
 assert.equal(jwtManifest.modes.wasm.realization.implementation, 'pulse-hmac-as.v1');
-assert.deepEqual(jwtManifest.modes.wasm.realization.algorithms, ['HS256', 'ES256']);
+assert.deepEqual(jwtManifest.modes.wasm.realization.algorithms, ['HS256', 'ES256', 'RS256']);
 assert.deepEqual(jwtManifest.modes.wasm.realization.keyTypes, ['secret', 'jwk', 'jwks']);
 assert.equal(jwtManifest.modes.wasm.realization.guestUnitRequired, false);
 assert.equal(jwtManifest.modes.wasm.realization.automaticFallback, false);
@@ -118,9 +118,11 @@ const jwtProduct = packageContracts.normalizePackageContract(JSON.parse(
   fs.readFileSync(path.join(repoRoot, 'packages', 'jwt', 'pulse.package.json'), 'utf8')
 ));
 assert.deepEqual(jwtProduct.targets.native.providerRequirements, [
+  'jwt.sign',
   'jwt.verify',
   'jwt.verify.es256',
   'jwt.verify.hs256',
+  'jwt.verify.rs256',
   'secret.get',
   'time.wall-clock'
 ]);
@@ -129,7 +131,7 @@ assert.equal(jwtProduct.targets.javascript.status, 'provider-dependent');
 
 assert.equal(classifyFastlyJavascriptCapability('jwt.verify.hs256').status, 'eligible');
 assert.equal(classifyFastlyJavascriptProviderRequirement('time.wall-clock').status, 'eligible');
-assert.equal(classifyFastlyJavascriptCapability('jwt.verify.rs256').status, 'blocked');
+assert.equal(classifyFastlyJavascriptCapability('jwt.verify.rs256').status, 'eligible');
 
 const discovered = discoverLowerableLibraryManifests({
   cwd: repoRoot,
@@ -259,8 +261,8 @@ expectCode(
 );
 const asymmetric = expectCode(
   sourceWith(`{
-    algorithms: ['RS256'],
-    key: { type: 'jwk', key: { kty: 'RSA', n: 'D3_PUBLIC_MATERIAL', e: 'AQAB' } }
+    algorithms: ['EdDSA'],
+    key: { type: 'jwk', key: { kty: 'OKP', crv: 'Ed25519', x: 'D3_PUBLIC_MATERIAL' } }
   }`, undefined, 'return'),
   jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED
 );
@@ -394,3 +396,37 @@ try {
 }
 
 console.log('ok - JWT package lowering emits provider-neutral HS256 requirements while target eligibility remains outside the package builder');
+
+const signPolicy = `{ algorithm: 'HS256', key: { type: 'secret', binding: 'WORKER_KEY' }, expiresInSeconds: 45 }`;
+const signSource = (policy = signPolicy, call = 'jwt.sign') => `import { jwt, sign as issue } from '@pulse-compute/jwt';
+export default async function handler(ctx) { const token = await ${call}(ctx, { sub: 'scheduler' }, ${policy}); return ctx.text(token); }`;
+for (const call of ['jwt.sign', 'issue']) {
+  const result = build(signSource(signPolicy, call));
+  assert.equal(result.hasErrors, false, JSON.stringify(result.diagnostics));
+  assert.equal(result.canonicalEffects[0].kind, 'jwt.sign');
+  assert.equal(result.canonicalEffects[0].result, 'string');
+  assert.deepEqual(result.canonicalEffects[0].runtimeInputs, [{ name: 'claims', argumentIndex: 1, source: 'package-call-argument' }]);
+  assert.deepEqual(result.cryptoRequirements[0].algorithms, ['HMAC-SHA256']);
+  assert.deepEqual(result.canonicalEffects[0].providerRequirements, ['jwt.sign', 'secret.get', 'time.wall-clock']);
+  assert.equal(result.canonicalIntrinsics.length, 0);
+}
+for (const policy of [
+  'dynamicOptions',
+  signPolicy.replace("'HS256'", "'PS256'"),
+  signPolicy.replace('45', '0'), signPolicy.replace('45', '9007199254740992'), signPolicy.replace('45', 'ttl'),
+  signPolicy.replace("'WORKER_KEY'", 'binding'),
+  signPolicy.replace("type: 'secret'", "type: 'jwk'"),
+  signPolicy.replace("algorithm: 'HS256'", "...other, algorithm: 'HS256'"),
+  signPolicy.replace('expiresInSeconds: 45', 'expiresInSeconds: 45, kid: ""'),
+]) assert.equal(build(signSource(policy)).hasErrors, true, policy);
+for (const ttl of [301, 3600, 86400, Number.MAX_SAFE_INTEGER]) {
+  assert.equal(build(signSource(signPolicy.replace('45', String(ttl)))).hasErrors, false);
+}
+assert.equal(build(signSource().replace('await jwt.sign', 'jwt.sign')).hasErrors, true);
+assert.equal(build(signSource().replace('jwt.sign(ctx,', 'jwt.sign(other,')).hasErrors, true);
+console.log('ok - JWT signing owns static policy validation, secret/clock authority and explicit HMAC-SHA256 demand');
+
+const esSign = build(signSource(signPolicy.replace("'HS256'", "'ES256'").replace('expiresInSeconds: 45', 'expiresInSeconds: 45, kid: "rotation-1"')));
+assert.equal(esSign.hasErrors, false, JSON.stringify(esSign.diagnostics));
+assert.deepEqual(esSign.cryptoRequirements[0].algorithms, ['ES256']);
+assert.equal(esSign.guestUnits.length, 1);

@@ -43,15 +43,95 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
 
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-fastly-platform-capabilities-'));
 try {
+  require('./assert-fastly-native-config-effect-sharing.cjs').main();
   require('./assert-fastly-request-budget.cjs');
   require('./assert-fastly-bounded-concatenation.cjs').main();
   require('./assert-fastly-schema-allocation.cjs').main();
+  require('./assert-fastly-scalar-sharing.cjs').main();
+  require('./assert-fastly-structural-sharing.cjs').main();
+  require('./assert-fastly-schema-materialization.cjs').main();
+  require('./assert-fastly-schema-encode-text.cjs').main();
+  require('./assert-fastly-json-parser.cjs').main();
   require('./assert-fastly-native-value-parity.cjs').main('platform');
   const zeroEffectPlan = planForExample('hello');
   assert.equal(zeroEffectPlan.effects.length, 0, 'hello plan must exercise the zero-effect provider path');
   const zeroEffectCompiled = platform.compileFastlyNativePlatformCapabilitiesPlan(zeroEffectPlan, { cwd: repoRoot, bindings: {}, requirePlatformCapability: false, canonicalBuild: true });
   assertNativePlatformModule('zero-effect-http', zeroEffectCompiled, ['fastly_abi', 'fastly_http_req', 'fastly_http_resp', 'fastly_http_body'], ['fastly_config_store', 'fastly_secret_store', 'fastly_kv_store'], { platformCapabilities: false });
+  const assetFamily = [
+    '__pulse_fastly_assets_payload', '__pulse_fastly_assets_begin',
+    '__pulse_fastly_asset_content_type', '__pulse_fastly_asset_text', '__pulse_fastly_wait_assets'
+  ];
+  for (const name of assetFamily) assert.doesNotMatch(zeroEffectCompiled.source, new RegExp(`^function ${name}\\(`, 'm'));
+  assert.equal(platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(zeroEffectPlan,
+    { bindings: {}, requirePlatformCapability: false, canonicalBuild: true }).source, zeroEffectCompiled.source,
+    'source-only and compiled zero-effect entries select the same support');
+
+  const assetRoot = path.join(repoRoot, 'wasm/test/fixtures/projects/package-root');
+  const { resolveProject } = require('../../packages/cli/src/project-config.js');
+  const { compileProject } = require('../../packages/cli/src/project-execution.js');
+  const assetPlan = buildCanonicalNativePlan(compileProject(resolveProject({ cwd: assetRoot, env: { PULSE_PROFILE: 'native' } })));
+  assert.deepEqual(assetPlan.effects.map(effect => effect.kind), ['assets.lookup', 'assets.lookup', 'assets.lookup']);
+  const assetOptions = { canonicalBuild: true, bindings: { kv: { public: 'public_assets' } } };
+  const assetSource = platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(assetPlan, assetOptions).source;
+  const assetCompiled = platform.compileFastlyNativePlatformCapabilitiesPlan(assetPlan, { ...assetOptions, emitWat: false });
+  assert.equal(assetSource, assetCompiled.source, 'source-only and compiled Assets entries retain the complete support family');
+  assertNativePlatformModule('assets', assetCompiled, ['fastly_kv_store', 'fastly_http_body']);
+  for (const name of assetFamily) assert.equal([...assetSource.matchAll(new RegExp(`^function ${name}\\(`, 'gm'))].length, 1);
+  for (const [route, body, calls] of [
+    ['/asset', 'console.log(1)', ['open', 'lookup', 'lookup_wait_v2']],
+    ['/parallel', 'first', ['open', 'lookup', 'open', 'lookup', 'lookup_wait_v2', 'lookup_wait_v2']]
+  ]) {
+    const observed = mock.executeFastlyNativePlatformCapabilities(assetCompiled, {
+      request: { method: 'GET', path: route },
+      kvStores: { public_assets: { '/app.js': 'console.log(1)', '/first.js': 'first', '/second.js': 'second' } }
+    });
+    assert.equal(observed.response.status, 200);
+    assert.equal(observed.response.body, body);
+    assert.deepEqual(observed.trace.filter(entry => entry.module === 'fastly_kv_store').map(entry => entry.name), calls);
+  }
   assert.doesNotMatch(zeroEffectCompiled.source, /^\s*else __pulse_fastly_fail\(PULSE_ERROR_UNSUPPORTED/m, 'zero-effect dispatch must not emit a dangling else');
+  // A custom section changes module size without changing executable behavior.
+  // Exercise the former ceiling, the inclusive new boundary, and rejection.
+  const leb = (value) => {
+    const bytes = [];
+    do { const next = value >>> 7; bytes.push((value & 127) | (next ? 128 : 0)); value = next; } while (value);
+    return Buffer.from(bytes);
+  };
+  const paddedTo = (size) => {
+    let payloadBytes = size - zeroEffectCompiled.wasm.length - 5;
+    while (zeroEffectCompiled.wasm.length + 1 + leb(payloadBytes).length + payloadBytes !== size) {
+      payloadBytes = size - zeroEffectCompiled.wasm.length - 1 - leb(payloadBytes).length;
+    }
+    return Buffer.concat([zeroEffectCompiled.wasm, Buffer.from([0]), leb(payloadBytes), Buffer.alloc(payloadBytes)]);
+  };
+  assert.equal(platform.FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES, 4 * 1024 * 1024);
+  for (const bytes of [1024 * 1024 + 1, 4 * 1024 * 1024]) {
+    const inspected = platform.inspectFastlyNativePlatformCapabilitiesWasm(paddedTo(bytes));
+    assert.equal(inspected.bytes, bytes);
+    assert.deepEqual(inspected.imports, zeroEffectCompiled.inspection.imports);
+    assert.deepEqual(inspected.exports, zeroEffectCompiled.inspection.exports);
+  }
+  assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(paddedTo(4 * 1024 * 1024 + 1)),
+    (error) => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'
+      && error.detail.bytes === 4 * 1024 * 1024 + 1 && error.detail.maxBytes === 4 * 1024 * 1024);
+  assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(Buffer.from('invalid')),
+    (error) => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_INVALID');
+  assert.equal(platform.inspectFastlyNativePlatformCapabilitiesWasm(paddedTo(4 * 1024 * 1024 + 1), {maxWasmBytes:8 * 1024 * 1024}).valid, true);
+  const actualBytes = zeroEffectCompiled.wasm.length;
+  assert.equal(platform.inspectFastlyNativePlatformCapabilitiesWasm(zeroEffectCompiled.wasm, {maxWasmBytes:actualBytes}).valid, true);
+  assert.throws(() => platform.inspectFastlyNativePlatformCapabilitiesWasm(zeroEffectCompiled.wasm, {maxWasmBytes:actualBytes-1}),
+    error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE' && error.detail.maxBytes === actualBytes-1);
+  const {inspectFastlyCanonicalTarget,writeFastlyCanonicalTarget} = require('../../../packages/provider-fastly/src/build/canonical-target.js');
+  assert.throws(() => inspectFastlyCanonicalTarget({plan:zeroEffectPlan,native:zeroEffectCompiled,providerConfig:{build:{maxWasmBytes:actualBytes-1}}}),
+    {code:'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'});
+  assert.equal(inspectFastlyCanonicalTarget({plan:zeroEffectPlan,native:zeroEffectCompiled,providerConfig:{build:{maxWasmBytes:actualBytes}}}).wasm.bytes, actualBytes);
+  assert.throws(() => inspectFastlyCanonicalTarget({plan:zeroEffectPlan,providerConfig:{build:{maxWasmBytes:1}}}),
+    {code:'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'});
+  const zeroProviderPlan = require('../../../packages/provider-fastly/src/provider-contract.js').createFastlyLoweringPlan(compileExample(EXAMPLES.hello).compiled.metadata, {});
+  assert.throws(() => writeFastlyCanonicalTarget({outDir:path.join(tempRoot,'reused-budget'),plan:zeroEffectPlan,providerPlan:zeroProviderPlan,native:zeroEffectCompiled,providerConfig:{build:{maxWasmBytes:actualBytes-1}}}),
+    {code:'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_WASM_TOO_LARGE'});
+  assert.throws(() => platform.compileFastlyNativePlatformCapabilitiesPlan(zeroEffectPlan, {maxWasmBytes:NaN}),
+    {code:'PULSE_FASTLY_MAX_WASM_BYTES_INVALID'});
   const zeroEffectResult = mock.executeFastlyNativePlatformCapabilities(zeroEffectCompiled, {
     request: { method: 'GET', path: '/health' },
     kvStores: {}
@@ -83,7 +163,15 @@ try {
     bindings: configBindings,
     experimentalNativeSize: true
   });
+  const configBounded = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, {
+    cwd: repoRoot,
+    bindings: configBindings,
+    nativeOptimization: 'experimental-native-bounded-size'
+  });
   assertNativePlatformModule('fastly-capabilities', configFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
+  assert.doesNotMatch(configFirst.source, /function __pulse_fastly_resolve_config_get\(/,
+    'a single config site keeps the original direct handoff');
+  for (const name of assetFamily) assert.doesNotMatch(configFirst.source, new RegExp(`^function ${name}\\(`, 'm'));
   assertNativePlatformModule('fastly-capabilities-experimental-size', configExperimentalFirst, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
   assert.deepEqual(configFirst.wasm, configSecond.wasm, 'config/secret module must be byte deterministic across cwd');
   assert.equal(configFirst.source, configSecond.source, 'config/secret AssemblyScript must be deterministic across cwd');
@@ -94,6 +182,11 @@ try {
   assert.deepEqual(configExperimentalFirst.inspection.imports, configFirst.inspection.imports, 'experimental size optimization must preserve the Fastly host import surface');
   assert.deepEqual(configExperimentalFirst.inspection.exports, configFirst.inspection.exports, 'experimental size optimization must preserve the required export surface');
   assert.deepEqual(configExperimentalFirst.manifest.optimization, platform.FASTLY_NATIVE_SIZE_OPTIMIZATION);
+  assertNativePlatformModule('fastly-capabilities-bounded-size', configBounded, ['fastly_config_store', 'fastly_secret_store', 'fastly_http_req', 'fastly_kv_store']);
+  assert.deepEqual(configBounded.inspection.imports, configFirst.inspection.imports);
+  assert.deepEqual(configBounded.inspection.exports, configFirst.inspection.exports);
+  assert.equal(configBounded.manifest.optimization.mode, 'experimental-native-bounded-size');
+  assert.equal(configBounded.manifest.optimization.assemblyScript.converge, false);
   assert.equal(configFirst.manifest.optimization, undefined, 'default Fastly Native artifacts must not opt into experimental optimization');
 
   const secretValue = 'platform-capability-secret';
@@ -254,8 +347,23 @@ try {
 
   const writtenRoot = path.join(tempRoot, 'written');
   const written = platform.writeFastlyNativePlatformCapabilitiesModule(gripCompiled, writtenRoot);
-  for (const file of [written.sourceFile, written.wasmFile, written.watFile, written.planFile, written.manifestFile]) assert.equal(fs.existsSync(file), true, `${path.basename(file)} must be written`);
+  for (const file of [written.sourceFile, written.wasmFile, written.planFile, written.manifestFile]) assert.equal(fs.existsSync(file), true, `${path.basename(file)} must be written`);
   assert.deepEqual(fs.readFileSync(written.wasmFile), gripCompiled.wasm);
+  assert.equal(written.watFile, null);
+  assert.deepEqual(configFirst.manifest.wat, { emitted: false, bytes: 0, sha256: null });
+  const withText = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: configBindings, emitWat: true });
+  assert.deepEqual(withText.wasm, configFirst.wasm, 'WAT must not change Fastly Wasm bytes');
+  assert.equal(withText.manifest.wat.emitted, true);
+  assert.ok(withText.wat.startsWith('(module'));
+  const textWritten = platform.writeFastlyNativePlatformCapabilitiesModule(withText, writtenRoot);
+  assert.equal(fs.readFileSync(textWritten.watFile, 'utf8'), withText.wat);
+  platform.writeFastlyNativePlatformCapabilitiesModule(gripCompiled, writtenRoot);
+  assert.equal(fs.existsSync(textWritten.watFile), false);
+  fs.writeFileSync(textWritten.watFile, 'stale diagnostic');
+  const direct = platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: configBindings, outDir: writtenRoot });
+  assert.equal(direct.output.watFile, null);
+  assert.equal(fs.existsSync(textWritten.watFile), false, 'AssemblyScript must not emit default Fastly WAT');
+  assert.deepEqual(direct.wasm, withText.wasm);
 
   assert.throws(
     () => platform.compileFastlyNativePlatformCapabilitiesPlan(configPlan, { cwd: repoRoot, bindings: { secretStore: 'app_secrets', effectBackends: configBindings.effectBackends } }),

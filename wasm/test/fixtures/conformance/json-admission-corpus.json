@@ -1,0 +1,518 @@
+{
+  "limits": {
+    "maxTextBytes": 2048,
+    "maxDepth": 8,
+    "maxNodes": 40,
+    "maxObjectMembers": 8,
+    "maxArrayItems": 8,
+    "maxKeyLength": 16,
+    "maxStringLength": 64,
+    "maxJsonBytes": 512
+  },
+  "cases": [
+    {
+      "name": "empty-object",
+      "text": "{}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "empty-array",
+      "text": "[]",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "null",
+      "text": "null",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "boolean",
+      "text": "false",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "mixed",
+      "text": "{\"a\":[true,false,null,{\"text\":\"\u00e9\ud83d\ude00\",\"empty\":{},\"items\":[]}]}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "number-min",
+      "text": "5e-324",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "number-max",
+      "text": "1.7976931348623157e+308",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "negative-zero",
+      "text": "-0.0",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "reserved-keys",
+      "text": "{\"__proto__\":null,\"constructor\":true,\"\":0}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "surrogates",
+      "text": "{\"x\":\"\ud800x\udfff\"}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "raw-bytes-exact",
+      "text": "{}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "raw-bytes-over",
+      "text": "{}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               ",
+      "reason": "text-bytes",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "utf8-raw-bytes-exact",
+      "text": "\"\ud83d\ude00\"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          ",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "utf8-raw-bytes-over",
+      "text": "\"\ud83d\ude00\"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ",
+      "reason": "text-bytes",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "depth-exact",
+      "text": "[[[[[[[[]]]]]]]]",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "depth-over",
+      "text": "[[[[[[[[[]]]]]]]]]",
+      "reason": "depth",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "very-deep",
+      "text": "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]",
+      "reason": "depth",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "nodes-exact",
+      "text": "[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null]]",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "nodes-over",
+      "text": "[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]]",
+      "reason": "nodes",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "overwritten-work",
+      "text": "{\"x\":[[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null],[null,null,null,null]],\"x\":null}",
+      "reason": "nodes",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "object-exact",
+      "text": "{\"0\":false,\"1\":false,\"2\":false,\"3\":false,\"4\":false,\"5\":false,\"6\":false,\"7\":false}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "object-over",
+      "text": "{\"0\":false,\"1\":false,\"2\":false,\"3\":false,\"4\":false,\"5\":false,\"6\":false,\"7\":false,\"8\":false}",
+      "reason": "object-members",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "array-exact",
+      "text": "[false,false,false,false,false,false,false,false]",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "array-over",
+      "text": "[false,false,false,false,false,false,false,false,false]",
+      "reason": "array-items",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "key-exact",
+      "text": "{\"xxxxxxxxxxxxxxxx\":null}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "key-over",
+      "text": "{\"xxxxxxxxxxxxxxxxx\":null}",
+      "reason": "key-length",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "key-astral-exact",
+      "text": "{\"\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\":null}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "key-astral-over",
+      "text": "{\"\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00x\":null}",
+      "reason": "key-length",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "string-exact",
+      "text": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "string-over",
+      "text": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"",
+      "reason": "string-length",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "string-astral-exact",
+      "text": "\"\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\"",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "string-astral-over",
+      "text": "\"\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00\ud83d\ude00x\"",
+      "reason": "string-length",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "budget-exact",
+      "text": "[\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"]",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "budget-over",
+      "text": "[\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\",\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"]",
+      "reason": "json-bytes",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "escaped-controls",
+      "text": "\"\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\"",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "escaped-string-over",
+      "text": "\"\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\\u0078\"",
+      "reason": "string-length",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "escaped-duplicate-allow",
+      "text": "{\"x\":0,\"\\u0078\":1}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "nested-duplicate-allow",
+      "text": "{\"a\":[{\"x\":null,\"\\u0078\":true}]}",
+      "reason": "none",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "escaped-duplicate-report",
+      "text": "{\"x\":0,\"\\u0078\":1}",
+      "reason": "none",
+      "duplicatePolicy": "report"
+    },
+    {
+      "name": "nested-duplicate-report",
+      "text": "{\"a\":[{\"x\":null,\"\\u0078\":true}]}",
+      "reason": "none",
+      "duplicatePolicy": "report"
+    },
+    {
+      "name": "escaped-duplicate-reject",
+      "text": "{\"x\":0,\"\\u0078\":1}",
+      "reason": "duplicate-key",
+      "duplicatePolicy": "reject"
+    },
+    {
+      "name": "nested-duplicate-reject",
+      "text": "{\"a\":[{\"x\":null,\"\\u0078\":true}]}",
+      "reason": "duplicate-key",
+      "duplicatePolicy": "reject"
+    },
+    {
+      "name": "duplicate-reused-name",
+      "text": "{\"a\":{\"x\":1},\"b\":{\"x\":2}}",
+      "reason": "none",
+      "duplicatePolicy": "reject"
+    },
+    {
+      "name": "duplicate-astral",
+      "text": "{\"\ud83d\ude00\":0,\"\\ud83d\\ude00\":1}",
+      "reason": "duplicate-key",
+      "duplicatePolicy": "reject"
+    },
+    {
+      "name": "non-finite",
+      "text": "1e999",
+      "reason": "non-finite-number",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "non-finite-negative",
+      "text": "-1e999",
+      "reason": "non-finite-number",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-0",
+      "text": "",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-1",
+      "text": " ",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-2",
+      "text": "{",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-3",
+      "text": "[",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-4",
+      "text": "{\"x\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-5",
+      "text": "{\"x\":",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-6",
+      "text": "{\"x\":1",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-7",
+      "text": "{\"x\":1,}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-8",
+      "text": "[1,]",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-9",
+      "text": "[,1]",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-10",
+      "text": "[1 2]",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-11",
+      "text": "{x:1}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-12",
+      "text": "{\"x\" 1}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-13",
+      "text": "[}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-14",
+      "text": "{\"x\":]}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-15",
+      "text": "true false",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-16",
+      "text": "01",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-17",
+      "text": "-01",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-18",
+      "text": "+1",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-19",
+      "text": "-",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-20",
+      "text": "1.",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-21",
+      "text": "1e",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-22",
+      "text": "1e+",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-23",
+      "text": ".1",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-24",
+      "text": "NaN",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-25",
+      "text": "Infinity",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-26",
+      "text": "True",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-27",
+      "text": "nul",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-28",
+      "text": "\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-29",
+      "text": "\"\\",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-30",
+      "text": "\"\\u123\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-31",
+      "text": "\"\\uZZZZ\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-32",
+      "text": "\"\\q\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-33",
+      "text": "\"a\nb\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-34",
+      "text": "\"a\u0000b\"",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-35",
+      "text": "{}x",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-36",
+      "text": "\ufeff{}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    },
+    {
+      "name": "malformed-37",
+      "text": "\u000b{}",
+      "reason": "malformed",
+      "duplicatePolicy": "allow"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { normalizeRsaPublicKey } from '@pulse-compute/crypto';
 import { normalizeP256PublicKeyCoordinates } from '@pulse-compute/crypto';
 import { jwtError } from './errors.js';
 import {
@@ -271,9 +272,8 @@ function normalizePublicJwk(value: unknown): JwtPublicJwk {
   if (
     [...record.keys()].some((key) => PRIVATE_JWK_MEMBERS.includes(key))
     || [...record.keys()].some((key) => (
-      declaredType === 'EC'
-        ? !ES256_JWK_MEMBERS.has(key)
-        : !JWK_MEMBERS.has(key)
+      declaredType === 'RSA' ? !new Set(['kty', 'n', 'e', 'alg', 'use', 'key_ops', 'kid']).has(key)
+        : declaredType === 'EC' ? !ES256_JWK_MEMBERS.has(key) : !JWK_MEMBERS.has(key)
     ))
   ) {
     throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'key' });
@@ -305,8 +305,11 @@ function normalizePublicJwk(value: unknown): JwtPublicJwk {
   }
 
   if (kty === 'RSA') {
-    nonEmptyString(output.n, 'key');
-    nonEmptyString(output.e, 'key');
+    if (typeof output.kid === 'string' && new TextEncoder().encode(output.kid).length > 256) throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'key-kid' });
+    const n = nonEmptyString(output.n, 'key'), e = nonEmptyString(output.e, 'key');
+    const normalized = normalizeRsaPublicKey({ n, e });
+    if (!normalized.ok || output.alg !== undefined && output.alg !== 'RS256') throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'key-rsa' });
+    normalized.key.bytes.fill(0);
   } else if (kty === 'EC') {
     if (output.crv !== 'P-256') throw jwtError('PULSE_JWT_KEY_INVALID', { category: 'key' });
     const x = nonEmptyString(output.x, 'key');
@@ -454,9 +457,12 @@ export function isJwkCompatibleWithAlgorithm(
   return compatibleAlgorithm(jwk, algorithm);
 }
 
-export function selectEs256VerificationJwk(
-  key: JwtVerificationKey,
-  kid: string | undefined,
+export function selectEs256VerificationJwk(key: JwtVerificationKey, kid: string | undefined): JwtPublicJwk {
+  return selectSignatureVerificationJwk(key, kid, 'ES256');
+}
+
+export function selectSignatureVerificationJwk(
+  key: JwtVerificationKey, kid: string | undefined, algorithm: 'ES256' | 'RS256',
 ): JwtPublicJwk {
   if (key.type === 'secret') {
     throw jwtError('PULSE_JWT_KEY_INVALID', {
@@ -464,7 +470,7 @@ export function selectEs256VerificationJwk(
     });
   }
   if (key.type === 'jwk') {
-    if (!compatibleAlgorithm(key.key, 'ES256')) {
+    if (!compatibleAlgorithm(key.key, algorithm)) {
       throw jwtError('PULSE_JWT_KEY_INVALID', {
         category: 'algorithm-key-mismatch',
       });
@@ -482,7 +488,7 @@ export function selectEs256VerificationJwk(
         category: selected.length === 0 ? 'unknown-kid' : 'duplicate-kid',
       });
     }
-    if (!compatibleAlgorithm(selected[0], 'ES256')) {
+    if (!compatibleAlgorithm(selected[0], algorithm)) {
       throw jwtError('PULSE_JWT_KEY_INVALID', {
         category: 'algorithm-key-mismatch',
       });
@@ -491,7 +497,7 @@ export function selectEs256VerificationJwk(
   }
 
   const eligible = key.keys.filter((entry) => (
-    compatibleAlgorithm(entry, 'ES256')
+    compatibleAlgorithm(entry, algorithm)
   ));
   if (eligible.length !== 1) {
     throw jwtError('PULSE_JWT_KEY_INVALID', {

@@ -1,4 +1,5 @@
 'use strict';
+const { createEffectInvocations, normalizeMaxEffects } = require('./effect-invocations.js');
 const portableKv = require('@pulse-compute/runtime/host');
 
 
@@ -262,7 +263,10 @@ function redactRuntimeError(error, sensitiveValues = new Set(), seen = new WeakS
   const rawDetail = ownDataValue(error, 'detail');
   const message = redactString(typeof rawMessage === 'string' ? rawMessage : 'Pulse runtime failure.', sensitiveValues);
   const name = redactString(typeof rawName === 'string' ? rawName : 'Error', sensitiveValues);
-  const code = typeof rawCode === 'string' ? redactString(rawCode, sensitiveValues) : undefined;
+  // Keep the finite admitted discriminator intact; messages, causes and arbitrary
+  // provider codes still pass through ordinary sensitive-value redaction.
+  const code = portableKv.isApplicationError(error) ? rawCode
+    : typeof rawCode === 'string' ? redactString(rawCode, sensitiveValues) : undefined;
   const detail = rawDetail === undefined ? undefined : redactRuntimeValue(rawDetail, sensitiveValues, seen, 'detail', depth + 1);
 
   const safe = code === undefined
@@ -786,11 +790,12 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
   let body;
   let bodyMode = 'none';
   if (hasBody) {
-    if (typeof value.body !== 'string') {
+    const incoming = options.incomingBody && value.body === options.incomingBody.marker();
+    if (typeof value.body !== 'string' && !incoming) {
       throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_BODY_INVALID', 'Canonical fetch body must be a string.', { valueType: typeof value.body });
     }
     body = value.body;
-    bodyMode = 'text';
+    bodyMode = incoming ? 'incoming-request-v1' : 'text';
   } else if (hasJson) {
     if (!headerValue(headers, 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
     if (hasSchema) {
@@ -936,6 +941,8 @@ function normalizeProviderEffect(effect, schemaCodecs, options = {}) {
   if (effect.kind === 'fetch') return normalizeFetchEffect(effect, schemaCodecs, options);
   const id = String(effect.id || '');
   if (!id) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical provider effect requires an id.', { effect });
+  if (effect.kind === 'output.readTextChunk') return Object.freeze({ id, kind: effect.kind, providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform' });
+  if (effect.kind === 'output.start' || effect.kind === 'output.write') return Object.freeze({ id, kind: effect.kind, providerKind: 'output', operation: effect.kind.slice(7), capability: 'response.output', argument0: effect.argument0 });
   if (effect.kind === 'time.now') return Object.freeze({ id, kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock', source: effect.source, ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }) });
   if (effect.kind === 'config.get' || effect.kind === 'secret.get') {
     return Object.freeze({ id, kind: effect.kind, name: String(effect.name), ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }), source: effect.source });
@@ -1364,6 +1371,9 @@ function createCanonicalHostRuntime(options = {}) {
     const metadata = assertCanonicalProgramCompatibility(programModule);
     executionSequence += 1;
     const executionId = String(executionOptions.executionId || `canonical-${adapter.id}-${executionSequence}`);
+    const maxEffects = normalizeMaxEffects(executionOptions.maxEffects ?? options.maxEffects);
+    const invocations = createEffectInvocations(() => executionOptions.requestBudget.check());
+    const continuationIds = [];
     const sensitiveValues = initialSensitiveValues({ ...options, ...executionOptions });
     let executionStatus = 'failed';
     let executionFailure;
@@ -1416,23 +1426,24 @@ function createCanonicalHostRuntime(options = {}) {
     let dispatchedEffects = 0;
 
     function executionContinuations() {
-      const prefix = `${executionId}:`;
-      return registry.list().filter((entry) => entry.id.startsWith(prefix));
+      return continuationIds.map(id => registry.get(id));
     }
 
     async function dispatchOne(effect) {
       executionOptions.requestBudget.check();
+      const ticket = invocations.open(effect.id, effect.id);
       const normalized = normalizeProviderEffect(effect, schemaCodecs, runtimeOptions);
       const conditional = portableKv.isConditionalKv(normalized.kind);
       if (conditional) portableKv.registerKvRedactions(normalized, (value) => sensitiveValues.add(value));
-      recordTrace(effectTraceStart(adapter.id, executionId, normalized, sensitiveValues));
+      recordTrace({ ...effectTraceStart(adapter.id, executionId, normalized, sensitiveValues), invocationId: ticket.invocationId });
       dispatchedEffects += 1;
       try {
-        const effectExecution = { ...options, ...executionOptions, metadata, executionId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
+        const effectExecution = { ...options, ...executionOptions, metadata, executionId, invocationId: ticket.invocationId, trace: traceSink, registerRedactionValue: (value) => sensitiveValues.add(value), onKvObservation: recordTrace };
         let snapshot = conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)), effectExecution, runtimeOptions)
           : await executionOptions.requestBudget.race(adapter.dispatchEffect(normalized, effectExecution));
         executionOptions.requestBudget.check();
+        invocations.assertPending(ticket);
         if (normalized.kind === 'config.get' || normalized.kind === 'secret.get') {
           if (snapshot !== undefined && typeof snapshot !== 'string') {
             throw new CanonicalRuntimeError(
@@ -1480,9 +1491,13 @@ function createCanonicalHostRuntime(options = {}) {
             })
           : snapshot;
         resolutionOrder.push(effect.id);
-        recordTrace(effectTraceResolved(adapter.id, executionId, normalized, value));
-        return value;
+        recordTrace({ ...effectTraceResolved(adapter.id, executionId, normalized, value), invocationId: ticket.invocationId });
+        return invocations.settle(ticket, () => value);
       } catch (error) {
+        // A request deadline outranks a capability's concurrent abort result.
+        try { executionOptions.requestBudget.check(); } catch (failure) {
+          if (typeof failure?.code === 'string' && failure.code.startsWith('PULSE_REQUEST_')) error = failure;
+        }
         recordTrace(Object.freeze({ type: 'effect-failed', provider: adapter.id, executionId, effectId: effect.id, kind: normalized.kind, error: error.name || 'Error', code: error.code }));
         throw redactRuntimeError(error, sensitiveValues);
       }
@@ -1533,12 +1548,18 @@ function createCanonicalHostRuntime(options = {}) {
       const marker = step.value;
       if (!marker || marker.protocol !== canonicalRuntimeContract.CANONICAL_RUNTIME_PROTOCOL_VERSION || !canonicalRuntimeContract.CANONICAL_EFFECT_MARKER_KINDS.includes(marker.kind)) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical handler yielded an unsupported runtime marker.', { marker });
       const effects = marker.kind === 'group' ? marker.effects : [marker.effect];
-      const continuationId = `${executionId}:${marker.continuationId}`;
+      const continuationId = `${executionId}:${invocations.execution}:${marker.continuationId}:${continuationIds.length + 1}`;
       registry.create({ id: continuationId, branchPoint: marker.continuationId, effectIds: effects.map((effect) => effect.id), ttlMs: executionOptions.continuationTtlMs || options.continuationTtlMs });
+      continuationIds.push(continuationId);
       registry.wait(continuationId);
       recordTrace(Object.freeze({ type: 'continuation-waiting', provider: adapter.id, executionId, continuationId, effectIds: effects.map((effect) => effect.id) }));
       let value;
       try {
+        if (dispatchedEffects + effects.length > maxEffects) {
+          throw new CanonicalRuntimeError('EffectLimitError', 'PULSE_RUNTIME_EFFECT_LIMIT_EXCEEDED',
+            `Pulse request exceeded the maximum of ${maxEffects} request-owned effects.`,
+            { effectCount: dispatchedEffects, pendingEffects: effects.length, maxEffects });
+        }
         value = marker.kind === 'group' ? await dispatchGroup(effects) : await dispatchOne(effects[0]);
         executionOptions.requestBudget.check();
         registry.resume(continuationId);
@@ -1584,6 +1605,7 @@ function createCanonicalHostRuntime(options = {}) {
       executionFailure = redactRuntimeError(error, sensitiveValues);
       throw executionFailure;
     } finally {
+      invocations.close();
       try { adapter.disposeExecution(Object.freeze({ executionId, metadata, status: executionStatus, error: executionFailure })); }
       catch (_) { /* provider cleanup must not mask execution results */ }
     }

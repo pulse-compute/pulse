@@ -3,18 +3,23 @@
 const crypto = require('node:crypto');
 const {
   SCHEMA_REGISTRY_IR_VERSION,
-  normalizeSchemaRegistry
+  normalizeSchemaRegistry,
+  scalarRecordStringBytes,
+  schemaHasScalarRecord,
+  schemaHasNestedJson
 } = require('@pulse-compute/wasm-contracts/schema-json/registry');
+const { projectScalarRecord, validateScalarRecordText } = require('./scalar-record-codec.js');
+const { javascriptJsonAdmissionSource } = require('./json-admission.js');
 const {
   normalizeJsonTraceEvent,
   semanticValueDigest
 } = require('@pulse-compute/wasm-contracts/schema-json/semantic-trace');
 
-const CANONICAL_SCHEMA_BUNDLE_VERSION = 'pulse.canonical-schema-bundle.v2';
-const CANONICAL_SCHEMA_REGISTRY_VERSION = 'pulse.canonical-schema-registry.v2';
-const CANONICAL_SCHEMA_CODECS_VERSION = 'pulse.canonical-schema-codecs.v2';
-const JAVASCRIPT_SCHEMA_CODEC_VERSION = 'pulse.javascript-schema-codec.v2';
-const NATIVE_SCHEMA_CODEC_VERSION = 'pulse.native-json-as-schema-codec.v2';
+const CANONICAL_SCHEMA_BUNDLE_VERSION = 'pulse.canonical-schema-bundle.v4';
+const CANONICAL_SCHEMA_REGISTRY_VERSION = 'pulse.canonical-schema-registry.v4';
+const CANONICAL_SCHEMA_CODECS_VERSION = 'pulse.canonical-schema-codecs.v4';
+const JAVASCRIPT_SCHEMA_CODEC_VERSION = 'pulse.javascript-schema-codec.v4';
+const NATIVE_SCHEMA_CODEC_VERSION = 'pulse.native-json-as-schema-codec.v4';
 
 function stableObject(value) {
   if (Array.isArray(value)) return value.map(stableObject);
@@ -105,6 +110,7 @@ function canonicalRegistry(input, options = {}) {
       registryHash: registryIr.registryHash,
       id: schema.id,
       root: schema.root,
+      ...(schema.jsonLimits ? { jsonLimits: schema.jsonLimits, boundaryMaxBytes: maxBytes } : {}),
       policies: registryIr.policies
     };
     const semanticHash = stableHash(semantic);
@@ -155,6 +161,16 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   const codecsName = options.codecsName || '__pulse_schema_codecs';
   const lines = [];
   lines.push(`const ${registryName} = Object.freeze(${JSON.stringify(registry, null, 2)});`);
+  const scalarRecords = registry.schemas.some(schema => schemaHasScalarRecord(schema.root));
+  const nestedJson = registry.schemas.some(schema => schemaHasNestedJson(schema.root));
+  const admission = registry.schemas.some(schema => schema.jsonLimits);
+  if (admission) lines.push(javascriptJsonAdmissionSource());
+  if (scalarRecords || nestedJson) {
+    // Keep generated declarations in the existing reserved schema namespace.
+    for (const helper of [scalarRecordStringBytes, projectScalarRecord, validateScalarRecordText]) {
+      lines.push(helper.toString().replace(/\b(scalarRecordStringBytes|projectScalarRecord|validateScalarRecordText)\b/g, name => '__pulse_schema_' + name));
+    }
+  }
   lines.push('function __pulse_schema_kind(value) {');
   lines.push("  if (value === null) return 'null';");
   lines.push("  if (Array.isArray(value)) return 'array';");
@@ -189,6 +205,17 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push('}');
   lines.push('function __pulse_schema_apply_node(node, value, mode, schemaId, path, source) {');
   lines.push('  const kind = node.kind;');
+  if (nestedJson) {
+    lines.push("  if (kind === 'json-value') return value;");
+    lines.push("  if (kind === 'json-object') {");
+    lines.push("    if (!value || typeof value !== 'object' || Array.isArray(value)) throw __pulse_schema_failure(mode, undefined, schemaId, path, 'json-object', __pulse_schema_kind(value), source);");
+    lines.push('    return value;', '  }');
+  }
+  if (scalarRecords) {
+    lines.push("  if (kind === 'scalar-record') return __pulse_schema_projectScalarRecord(value, node.limits, (key, expected, actual) => {");
+    lines.push('    throw __pulse_schema_failure(mode, undefined, schemaId, key === null ? path : __pulse_schema_pointer(path, key), expected, actual, source);');
+    lines.push('  });');
+  }
   lines.push("  if (kind === 'nullable') {");
   lines.push("    if (value === null) return null;");
   lines.push('    return __pulse_schema_apply_node(node.value, value, mode, schemaId, path, source);');
@@ -230,6 +257,10 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push('      const fieldValue = __pulse_schema_data_value(value, field.name, mode, schemaId, fieldPath, source);');
   lines.push('      Object.defineProperty(output, field.name, { enumerable: true, configurable: false, writable: false, value: __pulse_schema_apply_node(field.value, fieldValue, mode, schemaId, fieldPath, source) });');
   lines.push('    }');
+  lines.push('    if (node.additionalProperties) for (const key of Object.keys(value)) {');
+  lines.push('      if (node.fields.some(field => field.name === key)) continue;');
+  lines.push('      Object.defineProperty(output, key, { enumerable: true, value: value[key] });');
+  lines.push('    }');
   lines.push('    return Object.freeze(output);');
   lines.push('  }');
   lines.push("  throw __pulse_schema_failure(mode, undefined, schemaId, path, 'supported-schema-node', String(kind), source);");
@@ -238,6 +269,10 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   registry.schemas.forEach((schema, index) => {
     const fn = schemaFunctionName(registry, index);
     lines.push(`function ${fn}(value, mode, source) {`);
+    if (schema.jsonLimits) {
+      lines.push(`  try { value = __pulse_schema_inspectJsonValue(value, ${registryName}.schemas[${index}].jsonLimits, true).value; }`);
+      lines.push(`  catch (cause) { throw __pulse_schema_failure(mode, undefined, ${JSON.stringify(schema.id)}, '', 'bounded-json', cause.detail?.reason || 'unsupported-value', source, cause); }`);
+    }
     lines.push(`  return __pulse_schema_apply_node(${registryName}.schemas[${index}].root, value, mode, ${JSON.stringify(schema.id)}, '', source);`);
     lines.push('}');
   });
@@ -264,15 +299,41 @@ function renderCanonicalSchemaCodecDeclaration(registryInput, options = {}) {
   lines.push("  decode(schemaId, value, source = 'json') { return __pulse_schema_apply(schemaId, value, 'decode', source); },");
   lines.push("  encode(schemaId, value, source = 'response') { return __pulse_schema_apply(schemaId, value, 'encode', source); },");
   lines.push("  decodeJsonText(schemaId, text, source = 'json') {");
+  lines.push('    const schema = this.schema(schemaId);');
+  lines.push('    if (!schema) throw __pulse_schema_reference_error(schemaId, source);');
+  if (admission) {
+    lines.push('    let duplicates = [];');
+    lines.push('    if (schema.jsonLimits) {');
+    lines.push('      const limits = { ...schema.jsonLimits, maxTextBytes: Math.min(schema.jsonLimits.maxTextBytes, this.registry.maxBytes) };');
+    lines.push('      const scan = new __pulse_schema_JsonTextAdmission(String(text), limits, 2);');
+    lines.push("      if (!scan.scan()) throw __pulse_schema_failure('decode', scan.failure === 1 ? 'PULSE_SCHEMA_JSON_MALFORMED' : scan.failure === 2 ? 'PULSE_BODY_TOO_LARGE' : undefined, String(schemaId), '', 'bounded-json', __pulse_schema_JSON_ADMISSION_FAILURES[scan.failure], source);");
+    lines.push('      duplicates = scan.duplicateObjects;', '    }');
+  }
+  if ((scalarRecords || nestedJson) && admission) {
+    lines.push("    if (schema.jsonLimits) __pulse_schema_validateScalarRecordText(String(text), schema.root, (path, expected, actual) => { throw __pulse_schema_failure('decode', undefined, String(schemaId), path, expected, actual, source); }, duplicates);");
+  }
   lines.push('    let value;');
   lines.push('    try { value = JSON.parse(String(text)); }');
   lines.push("    catch (cause) { throw __pulse_schema_failure('decode', 'PULSE_SCHEMA_JSON_MALFORMED', String(schemaId), '', 'valid-json', 'malformed-json', source, cause); }");
+  if (scalarRecords) {
+    lines.push("    if (!schema.jsonLimits) __pulse_schema_validateScalarRecordText(String(text), schema.root, (path, expected, actual) => { throw __pulse_schema_failure('decode', undefined, String(schemaId), path, expected, actual, source); });");
+  }
   lines.push("    return __pulse_schema_apply(schemaId, value, 'decode', source);");
   lines.push('  },');
   lines.push("  encodeJsonText(schemaId, value, source = 'response') {");
   lines.push("    const normalized = __pulse_schema_apply(schemaId, value, 'encode', source);");
-  lines.push('    try { return JSON.stringify(normalized); }');
+  lines.push('    let text;');
+  lines.push('    try { text = JSON.stringify(normalized); }');
   lines.push("    catch (cause) { throw __pulse_schema_failure('encode', 'PULSE_SCHEMA_ENCODE', String(schemaId), '', 'serializable-json', __pulse_schema_kind(normalized), source, cause); }");
+  if (admission) {
+    lines.push('    const schema = this.schema(schemaId);');
+    lines.push('    if (schema.jsonLimits) {');
+    lines.push('      const limits = { ...schema.jsonLimits, maxTextBytes: Math.min(schema.jsonLimits.maxTextBytes, this.registry.maxBytes) };');
+    lines.push('      const scan = new __pulse_schema_JsonTextAdmission(text, limits, 0);');
+    lines.push("      if (!scan.scan()) throw __pulse_schema_failure('encode', scan.failure === 2 ? 'PULSE_BODY_TOO_LARGE' : undefined, String(schemaId), '', 'bounded-json', __pulse_schema_JSON_ADMISSION_FAILURES[scan.failure], source);");
+    lines.push('    }');
+  }
+  lines.push('    return text;');
   lines.push('  }');
   lines.push('});');
   return `${lines.join('\n')}\n`;

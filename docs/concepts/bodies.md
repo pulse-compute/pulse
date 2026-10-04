@@ -149,7 +149,163 @@ pulse inspect examples/07-opaque-proxy --json
 
 Opaque pass-through preserves host ownership. Pulse may carry status and headers needed to complete the response, but application code cannot inspect chunks, decode the body, concatenate it, or retain it beyond the request lifecycle.
 
+The JavaScript runtime cancels fetched bodies left behind when execution ends,
+including successful siblings of a failed effect group and bodies rejected
+before structured reading begins. Only the final returned body transfers to the
+host; normal execution cleanup preserves it. A response arriving after request
+cancellation or an operation timeout is cancelled without resuming application
+work. Body cancellation is best effort: a rejecting or stalled provider cleanup
+callback does not delay completion, including body suppression for `HEAD`.
+
 Attempting to inspect an opaque body fails with [`PULSE_OPAQUE_BODY_INSPECTION`](../reference/diagnostics.md#pulse-opaque-body-inspection). A missing or already-consumed structured body can fail with [`PULSE_BODY_UNAVAILABLE`](../reference/diagnostics.md#pulse-body-unavailable).
+
+## Incoming forwarding on Node
+
+Node Native and JavaScript can forward one incoming body to one outbound POST without
+materializing it. Opt in with `node.bodyForwarding: { maxBytes: 67108864 }`
+and `node.maxDurationMs: 30000` in the selected project profile:
+
+```ts
+app.post('/upload', async (ctx) => {
+  return ctx.fetch('https://uploads.example.com/receive', {
+    method: 'POST',
+    body: ctx.req.body()
+  });
+});
+```
+
+`ctx.req.body()` is a synchronous opaque marker, usable only inline in this
+literal POST form. It cannot be awaited, stored, duplicated, inspected or
+combined with request text/JSON reads. Ownership is reserved before provider
+dispatch; conflicting claims invalidate queued effects. A handler can reject
+the request before any incoming body read or outbound dispatch.
+
+The provider reads on demand, emits at most 16 KiB per chunk, and retains at
+most one 64 KiB source chunk per direction. A source chunk or backing allocation
+larger than 64 KiB is rejected. These are Pulse pump bounds, not a total RSS or
+OS/socket buffer guarantee. `maxBytes` independently limits upload and response
+bytes, including bodies with unknown lengths. Declared lengths are checked at
+admission; measured bytes remain authoritative. The configured request deadline
+covers admission, forwarding and the Node response writer. A shorter fetch
+`timeoutMs` continues through the local response writer, including after source EOF.
+
+Request headers are not copied implicitly. Caller-supplied framing, host and
+hop-by-hop headers are rejected. Redirects and retries never replay the body.
+An early origin response cancels the unfinished upload; client disconnect or
+deadline expiry cancels active work. A failure after response headers destroys
+the downstream connection. Opted-in POST responses close their HTTP connection
+so abandoned input does not require unbounded draining.
+
+## Experimental generated output on Node
+
+For a finite generated text response, opt in with `node.generatedOutput: true`
+and `node.maxDurationMs` in the selected Node profile:
+
+```ts
+app.get('/generated', async (ctx) => {
+  await ctx.output.start({ headers: { 'content-type': 'text/plain' } });
+  await ctx.output.write('first\n');
+  const message = await ctx.config.get('MESSAGE');
+  await ctx.output.write(message || 'done');
+  return ctx.output.close();
+});
+```
+
+Both Native and JavaScript send writes incrementally. Await every start/write
+and return the close result directly. One request owns the output; writes cannot
+run in `ctx.parallel`. Each text chunk is limited to 16 KiB UTF-8, with at most
+64 writes and 1 MiB total. Native also enforces cumulative retained-value and
+linear-memory limits; completing a write does not reclaim all earlier values.
+These limits do not promise constant process memory for arbitrary application
+code. Native output with linked guests remains rejected pending qualification.
+
+Start commits the status and headers. HEAD, bodyless statuses, caller-controlled
+framing and hop-by-hop headers are rejected before commitment. After start, a
+failure destroys the transport rather than sending a second response. Close
+waits for local writer completion through the provider; the original deadline
+and disconnect handling remain active through finish. Local completion does not
+prove receipt by the client.
+
+This surface remains experimental. STR-03B provides independent installed Node
+Native/JavaScript qualification for exact candidate bytes, including real HTTP
+failure handling and a separate controlled-writer backpressure check. Passing
+that task does not certify future artifacts or constitute a release seal. It
+does not qualify the separate input transform surface below, binary transforms,
+arbitrary stream/generator objects, Fastly output or MCP SSE.
+
+## Experimental bounded UTF-8 transforms on Node
+
+STR-03C adds `await ctx.req.readTextChunk()` on Native and JavaScript with
+`node: { bodyTransform: true, generatedOutput: true, maxDurationMs: 5000 }`.
+This selects strict UTF-8 text, including a preserved BOM. Malformed or incomplete
+UTF-8 fails; arbitrary binary bodies must use opaque forwarding instead.
+
+```ts
+app.post('/duplicate-blocks', async (ctx) => {
+  await ctx.output.start();
+  for (let i = 0; i < 18; i++) {
+    const chunk = await ctx.req.readTextChunk();
+    if (chunk.done) break;
+    await ctx.output.write(chunk.text + chunk.text);
+  }
+  return ctx.output.close();
+});
+```
+
+The example duplicates each fixed block in Native code and has a measured 2×
+UTF-8 expansion. Identity, concatenation and the existing bounded pure expression
+subset are available; this adds no transformation callbacks or string methods.
+Blocks do not represent lines or records. Pulse collects at most 4,093 raw bytes
+per read, carries up to three incomplete UTF-8 bytes, and delivers at most 4,096
+encoded bytes as text. These boundaries are independent of network fragmentation.
+A partial block waits for more input or EOF under the original request deadline.
+A separate `{ done: true, text: '' }` result marks EOF. Eighteen reads suffice for
+the maximum input including EOF; further reads fail.
+
+Input is capped at 65,536 actual bytes, independently of Content-Length. Output
+is capped at 262,144 bytes and **four times the input bytes delivered so far**.
+Empty input grants no output allowance. The generated writer's 16 KiB/write and
+64-write limits still apply. Read through EOF, then return `ctx.output.close()`.
+No read may overlap a write, and blocked writes prevent subsequent input pulls.
+The shared deadline covers input, transformation effects, output and finish.
+
+`bodyTransform` excludes `bodyForwarding` and structured `req.text()`/`req.json()`
+reads. Native rejects applications combining transform and structured body
+capabilities; JavaScript enforces the ownership conflict at runtime. Denial before
+any read remains lazy. Each request has its own reader, decoder and writer.
+There is no replay, tee, fetched-body cursor or background producer. Failures after
+output starts destroy the response under the generated-output contract.
+
+The source chunk and backing allocation are each limited to 64 KiB. One retained
+source chunk, one 4,093-byte assembly block and at most three decoder carry bytes
+bound the provider input queue to 69,632 bytes; Node transport buffers are separate.
+Native retains its cumulative 64 MiB value-accounting and 4,096-page memory limits;
+completed reads/writes do not refund allocations. These are finite execution and
+queue bounds, not a constant-RSS or arbitrary JavaScript allocation guarantee.
+The `str03c-bounded-transforms` task checks actual Native execution, JavaScript
+parity, UTF-8 fragmentation, limits, cancellation, deterministic writer backpressure
+and real HTTP output before input EOF. It is workspace evidence; installed
+transform qualification and any support promotion remain separate. Fastly rejects
+this capability on both targets.
+
+## Current transport limits
+
+Both Fastly targets reject incoming forwarding. Node Native forwarding uses
+the emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls
+are synchronous, so a Native forwarding application cannot also declare
+structured request reads; use a separate application for those endpoints.
+JavaScript retains per-request read/forward exclusion. Without the Node opt-in, existing
+bounded request buffering is unchanged. Input chunks remain opaque; the separate
+experimental generated-output API above accepts only application-owned text.
+
+Handler completion, response-header commitment and stream completion are
+different boundaries. The Node JavaScript response writer waits for its local
+pipeline; the Native CLI opaque writer can return after starting a pipe. Neither
+fact alone establishes a portable queue bound, client receipt, or a deadline
+covering post-handoff streaming. The
+[bounded HTTP deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)
+retains its explicit streaming exclusions for the pre-existing paths. The
+opted-in Node forwarding path above has its own completion-aware deadline.
 
 ## Why the distinction matters
 
@@ -195,8 +351,8 @@ A package-owned `grip.hold(...)` operation returns an opaque response contract. 
 The public contract does not include:
 
 - arbitrary binary body inspection;
-- userland stream readers or writers;
-- chunk iteration or transforms;
+- arbitrary userland stream readers or writers beyond the experimental finite Node output/UTF-8 transform APIs;
+- general input chunk iteration, binary transforms or fetched-body cursors;
 - buffering an opaque response into structured memory;
 - provider-specific response objects;
 - background consumption after the request completes.

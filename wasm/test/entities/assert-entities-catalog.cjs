@@ -35,14 +35,14 @@ export default function handler(ctx) { return rpc.handle(ctx) }
 `;
 }
 
-function build(registrations, cwd, sourcePath) {
+function build(registrations, cwd, sourcePath, schemas = [{ id: 'tools.AlphaInput' }, { id: 'tools.AlphaOutput' }]) {
   return lowerer.buildEntitiesLoweringPlan({
     cwd,
     sourcePath,
     sourceText: source(registrations),
     schemaBundle: {
       declaredSchemaIds: ['tools.AlphaInput', 'tools.AlphaOutput'],
-      registry: { schemas: [{ id: 'tools.AlphaInput' }, { id: 'tools.AlphaOutput' }] }
+      registry: { schemas }
     }
   });
 }
@@ -67,6 +67,19 @@ assert.equal(Object.isFrozen(first.artifact.catalog), true);
 assert.equal(Object.isFrozen(first.artifact.catalog.routers[0].entities[0].metadata), true);
 assert.equal(JSON.stringify(first.artifact.catalog).includes('handler'), false);
 assert.equal(JSON.stringify(first.artifact.catalog).includes('src/catalog.ts'), false);
+
+const restricted = build([alpha, beta], repoRoot, 'src/catalog.ts', [
+  {id:'tools.AlphaInput',root:{kind:'object',fields:[]}},
+  {id:'tools.AlphaOutput',root:{kind:'object',fields:[]},jsonLimits:{maxDepth:4}}
+]);
+assert.equal(restricted.artifact.catalog.routers[0].entities[0].eligibility['node-native'], false);
+assert.equal(restricted.artifact.catalog.routers[0].entities[1].eligibility['node-native'], true);
+assert.equal(restricted.artifact.catalog.routers[0].entities[0].eligibility['node-javascript'], true);
+assert.notEqual(restricted.artifact.catalog.catalogHash, first.artifact.catalog.catalogHash);
+const unused = build([alpha, beta], repoRoot, 'src/catalog.ts', [
+  {id:'tools.AlphaInput'}, {id:'tools.AlphaOutput'}, {id:'tools.Unused',jsonLimits:{maxDepth:4}}
+]);
+assert.deepEqual(unused.artifact.catalog, first.artifact.catalog);
 
 const checkoutA = build([beta, alpha], '/tmp/entities-a', '/tmp/entities-a/src/catalog.ts');
 const checkoutB = build([alpha, beta], '/tmp/entities-b', '/tmp/entities-b/src/catalog.ts');

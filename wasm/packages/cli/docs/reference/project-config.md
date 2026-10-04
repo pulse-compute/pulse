@@ -94,7 +94,7 @@ Resolved synchronous logging threshold after the flat profile override is applie
 
 ## Cryptographic requirements
 
-Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.5 package set.
+Declare exact algorithms for the global or selected profile and resolve one target realization without fallback. This surface is part of the synchronized 1.0.0-beta.6 package set.
 
 ### `pulse.crypto`
 
@@ -102,7 +102,7 @@ Declares the complete global algorithm set. Array entries are canonical algorith
 
 - **Type:** readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>
 - **Required/default:** Optional; default implicit no-crypto declaration.
-- **Allowed values or constraints:** `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, and `guest-linked:pulse-es256-rustcrypto-p256`
+- **Allowed values or constraints:** `HS256`, `ES256`, `RS256`, `SHA-256`, `HMAC-SHA256`; exact pins `runtime-builtin`, `guest-source:pulse-hmac-as`, `guest-linked:pulse-es256-rustcrypto-p256`, and `guest-linked:pulse-rs256-bearssl-i31`
 - **Scope:** global crypto requirement default
 - **Precedence:** Used only when the selected profile omits `crypto`.
 - **Security and safety:** Keys and verification bytes are not configuration values. Target selection is deterministic and never probes or falls back.
@@ -114,7 +114,7 @@ Replaces the complete global crypto declaration for the selected profile. Arrays
 
 - **Type:** readonly PulseCryptoAlgorithm[] | Readonly<Partial<Record<PulseCryptoAlgorithm, { readonly realization?: PulseCryptoRealization }>>>
 - **Required/default:** Optional; default inherit `pulse.crypto` when absent.
-- **Allowed values or constraints:** `[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `SHA-256`, `HMAC-SHA256`
+- **Allowed values or constraints:** `[]` and `{}` explicitly select no crypto; otherwise `HS256`, `ES256`, `RS256`, `SHA-256`, `HMAC-SHA256`
 - **Scope:** selected profile
 - **Precedence:** Selected-profile declaration replaces `pulse.crypto`; absence inherits it.
 - **Security and safety:** Every declared algorithm must resolve for the selected target before lowering. A failed exact realization cannot select another backend.
@@ -288,6 +288,42 @@ Deterministic fetch fixtures resolved before optional live network fetch.
 
 Provider-owned Node profile configuration.
 
+### `node.bodyTransform`
+
+Opt-in finite request text chunks. Requires generatedOutput and maxDurationMs; incompatible with bodyForwarding. Input 65536 bytes, output 262144 bytes, at most 4 times delivered input bytes. Strict UTF-8, one reader/writer, EOF required before output.close().
+
+- **Type:** boolean
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Experimental Node UTF-8 transforms
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `node.generatedOutput`
+
+Opt-in finite UTF-8 output. Requires node.maxDurationMs. Each write is at most 16384 bytes; at most 64 writes and 1048576 bytes total. Use STR-03B for exact-candidate installed qualification.
+
+- **Type:** boolean
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Experimental Node generated output
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `node.bodyForwarding`
+
+Opt-in single-use incoming POST forwarding. maxBytes is a positive safe integer limiting each transfer direction; requires node.maxDurationMs. Pulse emits chunks up to 16384 bytes and retains at most 65536 bytes per pump. Native uses exact Wasm execution and excludes structured request reads in the same application.
+
+- **Type:** { maxBytes: number }
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** Node incoming forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `node.maxDurationMs`
 
 One provider-owned monotonic budget shared by request effects and continuations; expiry does not prove rollback of dispatched writes.
@@ -315,6 +351,30 @@ Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdS
 ## Fastly provider options
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
+
+### `fastly.maxWasmBytes`
+
+Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.
+
+- **Type:** integer
+- **Required/default:** Optional; default 4194304 (4 MiB).
+- **Allowed values or constraints:** positive safe integer
+- **Scope:** fastly() facade
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `fastly.build.maxWasmBytes`
+
+Inclusive byte budget checked for newly compiled and reused artifacts. Raising it does not increase runtime memory or change Fastly service limits. The fastly() facade accepts maxWasmBytes.
+
+- **Type:** integer
+- **Required/default:** Optional; default 4194304 (4 MiB).
+- **Allowed values or constraints:** positive safe integer
+- **Scope:** Native final Wasm artifact
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
 
 ### `fastly.maxDurationMs`
 

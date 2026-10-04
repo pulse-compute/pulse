@@ -104,7 +104,11 @@ fn outer_frame_is_valid(frame_pointer: u32, frame_capacity: u32) -> bool {
     }
 }
 
-fn header_is_valid(frame: &[u8]) -> Option<(Span, Span, Span)> {
+fn header_is_valid(frame: &[u8], key_bytes: u32) -> Option<(Span, Span, Span)> {
+    signature_header(frame, key_bytes, ES256_SIGNATURE_BYTES, FRAME_ALGORITHM_ES256, ES256_SIGNING_INPUT_BYTES_MAXIMUM)
+}
+
+fn signature_header(frame: &[u8], key_bytes: u32, signature_bytes: u32, algorithm: u32, input_max: u32) -> Option<(Span, Span, Span)> {
     let total_length = read_u32_le(frame, HEADER_TOTAL_LENGTH);
     if read_u32_le(frame, HEADER_MAGIC) != FRAME_MAGIC
         || read_u32_le(frame, HEADER_VERSION) != FRAME_VERSION
@@ -112,7 +116,7 @@ fn header_is_valid(frame: &[u8]) -> Option<(Span, Span, Span)> {
         || total_length < 192
         || total_length > FRAME_CAPACITY_BYTES
         || total_length % FRAME_ALIGNMENT_BYTES != 0
-        || read_u32_le(frame, HEADER_ALGORITHM) != FRAME_ALGORITHM_ES256
+        || read_u32_le(frame, HEADER_ALGORITHM) != algorithm
         || read_u32_le(frame, HEADER_FLAGS) != 0
         || read_u32_le(frame, HEADER_RESERVED_0) != 0
         || read_u32_le(frame, HEADER_RESERVED_1) != 0
@@ -126,9 +130,9 @@ fn header_is_valid(frame: &[u8]) -> Option<(Span, Span, Span)> {
         read_u32_le(frame, HEADER_SIGNING_INPUT_LENGTH);
     let public_key_length = read_u32_le(frame, HEADER_PUBLIC_KEY_LENGTH);
     let signature_length = read_u32_le(frame, HEADER_SIGNATURE_LENGTH);
-    if signing_input_length > ES256_SIGNING_INPUT_BYTES_MAXIMUM
-        || public_key_length != P256_PUBLIC_KEY_BYTES
-        || signature_length != ES256_SIGNATURE_BYTES
+    if signing_input_length > input_max
+        || public_key_length != key_bytes
+        || signature_length != signature_bytes
     {
         return None;
     }
@@ -227,7 +231,7 @@ pub unsafe extern "C" fn pulse_crypto_es256_verify(
         frame_capacity as usize,
     );
     let (signing_input, public_key, signature) =
-        match header_is_valid(frame) {
+        match header_is_valid(frame, P256_PUBLIC_KEY_BYTES) {
             Some(value) => value,
             None => return STATUS_INVALID_INPUT,
         };
@@ -237,4 +241,68 @@ pub unsafe extern "C" fn pulse_crypto_es256_verify(
         &frame[public_key.start as usize..public_key.end as usize],
         &frame[signature.start as usize..signature.end as usize],
     )
+}
+
+
+/// Sign one ES256 request using x || y || d private-key bytes. The frame
+/// follows the verification envelope with a 96-byte key and writable output.
+/// Input spans must not overlap. Callers clear the frame and borrowed Rust
+/// stack after capturing the signature; this function retains no pointers.
+#[no_mangle]
+pub unsafe extern "C" fn pulse_crypto_es256_sign(frame_pointer: u32, frame_capacity: u32) -> i32 {
+    use p256::ecdsa::{signature::hazmat::PrehashSigner, SigningKey};
+    if !outer_frame_is_valid(frame_pointer, frame_capacity) { return STATUS_INVALID_INPUT; }
+    let frame = slice::from_raw_parts_mut(frame_pointer as *mut u8, frame_capacity as usize);
+    let (input, key, output) = match header_is_valid(frame, 96) {
+        Some(value) => value, None => return STATUS_INVALID_INPUT,
+    };
+    // Clear output before validating the key so failed calls cannot expose a
+    // prior signature. Header validation already proved disjoint spans.
+    frame[output.start as usize..output.end as usize].fill(0);
+    let key_start = key.start as usize;
+    let signer = match SigningKey::from_slice(&frame[key_start + 64..key.end as usize]) {
+        Ok(value) => value, Err(_) => return STATUS_INVALID_KEY,
+    };
+    let public = signer.verifying_key().to_encoded_point(false);
+    if public.as_bytes()[1..] != frame[key_start..key_start + 64] { return STATUS_INVALID_KEY; }
+    let digest = Sha256::digest(&frame[input.start as usize..input.end as usize]);
+    // RustCrypto's deterministic RFC6979 signing requires no host randomness.
+    let signature: P256Signature = match signer.sign_prehash(&digest) {
+        Ok(value) => value, Err(_) => return STATUS_INVALID_KEY,
+    };
+    frame[output.start as usize..output.end as usize].copy_from_slice(&signature.to_bytes());
+    STATUS_VALID
+}
+
+
+extern "C" {
+    fn pulse_rs256(key: *const u8, key_len: usize, hash: *const u8,
+        signature: *mut u8, modulus_len: usize, sign: i32) -> i32;
+}
+
+unsafe fn rsa_frame(pointer: u32, capacity: u32, sign: bool) -> i32 {
+    if !outer_frame_is_valid(pointer, capacity) { return STATUS_INVALID_INPUT; }
+    let frame = slice::from_raw_parts_mut(pointer as *mut u8, capacity as usize);
+    let k = read_u32_le(frame, HEADER_SIGNATURE_LENGTH);
+    if !matches!(k, 256 | 384 | 512) { return STATUS_INVALID_INPUT; }
+    let key_len = if sign { 8 + k * 9 / 2 } else { 8 + k };
+    let (input, key, output) = match signature_header(frame, key_len, k, 2, 12_288) {
+        Some(value) => value, None => return STATUS_INVALID_INPUT,
+    };
+    if sign { frame[output.start as usize..output.end as usize].fill(0); }
+    let hash = Sha256::digest(&frame[input.start as usize..input.end as usize]);
+    pulse_rs256(frame.as_ptr().add(key.start as usize), key_len as usize,
+        hash.as_ptr(), frame.as_mut_ptr().add(output.start as usize), k as usize, sign as i32)
+}
+
+/// RS256 uses the same checked v2 envelope, algorithm code 2, variable-width
+/// key/signature spans, and a 12288-byte data bound. Caller clears frame/stack.
+#[no_mangle]
+pub unsafe extern "C" fn pulse_crypto_rs256_sign(pointer: u32, capacity: u32) -> i32 {
+    rsa_frame(pointer, capacity, true)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn pulse_crypto_rs256_verify(pointer: u32, capacity: u32) -> i32 {
+    rsa_frame(pointer, capacity, false)
 }

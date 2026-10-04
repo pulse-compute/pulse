@@ -561,6 +561,63 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     }
   }
 
+  // Only HTTP handler loop calls enter JavaScript's bounded inspection. Never
+  // walk an ordinary dependency function into a new purity requirement.
+  const httpFunctions = new Set();
+  if (options.target === 'javascript') for (const ref of handlerReferences) {
+    if (!['route', 'middleware'].includes(ref.role)) continue;
+    const module = context.projectModules.get(ref.module);
+    if (!module) continue;
+    if (!ref.localName.startsWith('<inline:')) {
+      httpFunctions.add(functionForNamedHandler(module.sourceFile, ref.localName));
+    } else {
+      const visit = node => {
+        if (ts.isArrowFunction(node) || ts.isFunctionExpression(node)) {
+          const pos = module.sourceFile.getLineAndCharacterOfPosition(node.getStart(module.sourceFile));
+          if (pos.line + 1 === ref.source.line && pos.character + 1 === ref.source.column) httpFunctions.add(node);
+        }
+        ts.forEachChild(node, visit);
+      };
+      visit(module.sourceFile);
+    }
+  }
+
+  const sourceHelpers = [];
+  const helperCalls = new WeakMap();
+  {
+    const byIdentity = new Map();
+    for (const module of context.projectModules.values()) {
+      function visit(node) {
+        if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+          const call = node;
+          const awaited = ts.isAwaitExpression(node.parent);
+          const target = resolveLocal(context, indexes, module, call.expression.text, [], [], undefined, consumedImports);
+          const fn = target?.module && functionForNamedHandler(target.module.sourceFile, target.localName);
+          // JavaScript keeps ordinary calls in its original graph. Only bounded
+          // loop calls enter the shared pure-helper inspection contract.
+          let inLoop = false;
+          let owner = call.parent;
+          for (; owner && !ts.isFunctionLike(owner); owner = owner.parent) {
+            if (ts.isForStatement(owner)) inLoop = true;
+          }
+          const inspectPureLoopCall = inLoop && httpFunctions.has(owner) && fn && !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+          if (fn && (options.target !== 'javascript' || inspectPureLoopCall) && (awaited && fn.parameters.length > 1 || !awaited)) {
+            const identity = `${target.module.path}#${target.localName}`;
+            let helper = byIdentity.get(identity);
+            if (!helper) {
+              helper = { pure: !fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword), id: `helper:${identity}`, name: `__pulse_helper_${sourceHelpers.length}`, functionNode: fn,
+                resolveType: node => require('../spine/pure-helper-source').resolvePureType(context, target.module, node),
+                sourceFile: target.module.sourceFile, source: { file: target.module.path, name: target.localName } };
+              sourceHelpers.push(helper); byIdentity.set(identity, helper);
+            }
+            helperCalls.set(call, helper);
+          }
+        }
+        ts.forEachChild(node, visit);
+      }
+      visit(module.sourceFile);
+    }
+  }
   const rootGlobalName = routerSymbols.get(`${root.module.path}:${root.localName}`);
   const ordered = orderLinkedRouters(routers, rootGlobalName);
   if (options.target !== 'javascript') validateRuntimeProjectImports(context, consumedImports, diagnostics);
@@ -616,7 +673,14 @@ function linkProjectRouterModules(graphBuild, options = {}) {
     entrySourceFile: entryModule.sourceFile,
     entrySourceText: entryModule.sourceText,
     retainedDeclarations: retained,
+    sourceHelpers,
+    helperForCall: call => helperCalls.get(ts.getOriginalNode(call)),
     functionNodeForHandler,
+    pureTypeForNode(node) {
+      const original = ts.getOriginalNode(node);
+      const module = [...context.projectModules.values()].find(m => m.sourceFile === original.getSourceFile());
+      return module && require('../spine/pure-helper-source').resolvePureType(context, module, original);
+    },
     sourceFileForPath(file) {
       const module = context.projectModules.get(file);
       return module && module.sourceFile;

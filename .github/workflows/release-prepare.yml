@@ -7,6 +7,14 @@ on:
         description: Next release version, without the v prefix
         required: true
         type: string
+      documentation_history:
+        description: Archive hosted docs, or omit only reviewed unpublished hosted docs while preserving npm history
+        required: true
+        default: archive-current
+        type: choice
+        options:
+          - archive-current
+          - replace-unpublished-docs
 
 permissions:
   contents: read
@@ -41,18 +49,20 @@ jobs:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
         run: |
           set -euo pipefail
-          corepack enable
           pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          corepack prepare "pnpm@$pnpm_version" --activate
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-      - name: Archive previous release and prepare reviewed changes
+      - name: Apply documentation history choice and prepare reviewed changes
         id: prepare
         env:
           RELEASE_VERSION: ${{ inputs.version }}
+          DOCUMENTATION_HISTORY: ${{ inputs.documentation_history }}
           COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
-        run: node scripts/release-prepare-pr.cjs "$RELEASE_VERSION"
+        run: node scripts/release-prepare-pr.cjs "$RELEASE_VERSION" --documentation-history "$DOCUMENTATION_HISTORY"
       - name: Upload prepared source bundle
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:

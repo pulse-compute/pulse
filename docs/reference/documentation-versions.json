@@ -1,12 +1,12 @@
 {
   "schemaVersion": "pulse.documentation-versions.v1",
-  "latest": "1.0.0-beta.5",
+  "latest": "1.0.0-beta.6",
   "versions": [
     {
-      "version": "1.0.0-beta.5",
-      "segment": "v1.0.0-beta.5",
+      "version": "1.0.0-beta.6",
+      "segment": "v1.0.0-beta.6",
       "channel": "beta",
-      "releasedAt": "2026-09-16",
+      "releasedAt": "2026-10-04",
       "status": "current",
       "sourceManifest": "release/pulse-release-manifest.json"
     },

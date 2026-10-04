@@ -1,0 +1,220 @@
+[
+  {
+    "name": "default unsigned GET",
+    "method": "get",
+    "url": "https://bucket.example.test/a%20b/%252F/emoji-%F0%9F%99%82",
+    "headers": {},
+    "expected": {
+      "url": "https://bucket.example.test/a%20b/%252F/emoji-%F0%9F%99%82",
+      "method": "GET",
+      "headers": [
+        [
+          "authorization",
+          "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20260929/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date, Signature=832851c33a479e0f820d678e970695a7c8ff84ec585935ba1db92b04ff21c365"
+        ],
+        [
+          "x-amz-content-sha256",
+          "UNSIGNED-PAYLOAD"
+        ],
+        [
+          "x-amz-date",
+          "20260929T123456Z"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "sorted repeated query and normalized headers",
+    "method": "GET",
+    "url": "https://bucket.example.test/a//b?z=last&a=two+words&a=one&a=&%21=%27%28%29%2A",
+    "headers": [
+      [
+        "X-Custom",
+        "  one\t two  "
+      ],
+      [
+        "x-custom",
+        "three"
+      ],
+      [
+        "authorization",
+        "discard-me"
+      ],
+      [
+        "host",
+        "wrong.example"
+      ]
+    ],
+    "token": "fixture-session-token",
+    "expected": {
+      "url": "https://bucket.example.test/a//b?z=last&a=two+words&a=one&a=&%21=%27%28%29%2A",
+      "method": "GET",
+      "headers": [
+        [
+          "authorization",
+          "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20260929/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token;x-custom, Signature=7236817ba14f4fe4faec38876508e87d0b32bbac3ac4846f6e7817c7621179ab"
+        ],
+        [
+          "host",
+          "wrong.example"
+        ],
+        [
+          "x-amz-content-sha256",
+          "UNSIGNED-PAYLOAD"
+        ],
+        [
+          "x-amz-date",
+          "20260929T123456Z"
+        ],
+        [
+          "x-amz-security-token",
+          "fixture-session-token"
+        ],
+        [
+          "x-custom",
+          "one\t two, three"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "HEAD with alternate region service port payload",
+    "method": "head",
+    "url": "https://example.test:9443/prefix/item?versionId=A%2FB%2B%3D",
+    "region": "eu-west-2",
+    "service": "execute-api",
+    "payloadHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "headers": {
+      "range": "bytes=0-9",
+      "if-none-match": "\"fixture\""
+    },
+    "expected": {
+      "url": "https://example.test:9443/prefix/item?versionId=A%2FB%2B%3D",
+      "method": "HEAD",
+      "headers": [
+        [
+          "authorization",
+          "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20260929/eu-west-2/execute-api/aws4_request, SignedHeaders=host;if-none-match;range;x-amz-content-sha256;x-amz-date, Signature=389ee02eb2c542c81e1ecfff27713110b730f446f73a75bcfe9f7b86cffc0c26"
+        ],
+        [
+          "if-none-match",
+          "\"fixture\""
+        ],
+        [
+          "range",
+          "bytes=0-9"
+        ],
+        [
+          "x-amz-content-sha256",
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        [
+          "x-amz-date",
+          "20260929T123456Z"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "POST without a body retains helper behavior",
+    "method": "post",
+    "url": "https://bucket.example.test/",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "expected": {
+      "url": "https://bucket.example.test/",
+      "method": "POST",
+      "headers": [
+        [
+          "authorization",
+          "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20260929/us-east-1/s3/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=a94e615ba80a5a0976dace75f166afe36933dd0e78ce6c3eb0293460f66c7984"
+        ],
+        [
+          "content-type",
+          "application/json"
+        ],
+        [
+          "x-amz-content-sha256",
+          "UNSIGNED-PAYLOAD"
+        ],
+        [
+          "x-amz-date",
+          "20260929T123456Z"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "empty token preserves supplied token header",
+    "method": "GET",
+    "url": "https://bucket.example.test/plus+percent%25?empty",
+    "headers": {
+      "x-amz-security-token": "existing-token"
+    },
+    "token": "",
+    "expected": {
+      "url": "https://bucket.example.test/plus+percent%25?empty",
+      "method": "GET",
+      "headers": [
+        [
+          "authorization",
+          "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20260929/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-content-sha256;x-amz-date;x-amz-security-token, Signature=6eaa0f080fc5b83faa5addd1e67c32649e5dc3ab5fc112d2439ebff6a44c85d6"
+        ],
+        [
+          "x-amz-content-sha256",
+          "UNSIGNED-PAYLOAD"
+        ],
+        [
+          "x-amz-date",
+          "20260929T123456Z"
+        ],
+        [
+          "x-amz-security-token",
+          "existing-token"
+        ]
+      ]
+    }
+  },
+  {
+    "name": "prototype-named headers are signed",
+    "method": "GET",
+    "url": "https://bucket.example.test/file",
+    "headers": [
+      [
+        "__proto__",
+        "value"
+      ],
+      [
+        "constructor",
+        "value"
+      ]
+    ],
+    "expected": {
+      "url": "https://bucket.example.test/file",
+      "method": "GET",
+      "headers": [
+        [
+          "__proto__",
+          "value"
+        ],
+        [
+          "authorization",
+          "AWS4-HMAC-SHA256 Credential=AKIDEXAMPLE/20260929/us-east-1/s3/aws4_request, SignedHeaders=__proto__;constructor;host;x-amz-content-sha256;x-amz-date, Signature=7f821d316894970934da64e3edfa249fc183c1ab5e79d92d824e4a125259bbda"
+        ],
+        [
+          "constructor",
+          "value"
+        ],
+        [
+          "x-amz-content-sha256",
+          "UNSIGNED-PAYLOAD"
+        ],
+        [
+          "x-amz-date",
+          "20260929T123456Z"
+        ]
+      ]
+    }
+  }
+]

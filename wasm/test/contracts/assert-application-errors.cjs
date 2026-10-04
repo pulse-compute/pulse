@@ -48,12 +48,14 @@ export default defineConfig((_scope) => ({
     fastly: { bindings: { backends: { 'https://origin.test': 'origin' } } } }
 }));`);
   write('src/schemas.ts', `import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema';
+import type {JsonObject,ScalarRecord} from '@pulse-compute/pulse/schema';
 export interface Input { id: string; version: number }
-export default defineSchemaRegistry({ schemas: { 'app.Input': schema<Input>() } });`);
+export default defineSchemaRegistry({ schemas: { 'app.Input': schema<Input>(), 'app.Nested': schema<{value:JsonObject}>({json:{maxArrayItems:2}}), 'app.Scalar': schema<{value:ScalarRecord}>() } });`);
   write('src/index.ts', `import { Pulse } from '@pulse-compute/pulse';
 import { Router } from '@pulse-compute/runtime';
 import { jwt } from '@pulse-compute/jwt';
 import type { Input } from './schemas.js';
+import type {JsonObject,ScalarRecord} from '@pulse-compute/pulse/schema';
 const app = new Pulse({ auto: true });
 const child = new Router();
 child.post('/request', async (ctx) => {
@@ -64,12 +66,32 @@ child.get('/decode', async (ctx) => {
   const input = ctx.decodeJson<Input>(ctx.req.header('x-input'), 'app.Input');
   return ctx.text(ctx.encodeJson(input, 'app.Input'));
 });
+child.post('/nested', async (ctx) => {
+  const raw = await ctx.req.text();
+  const input = ctx.decodeJson<{value:JsonObject}>(raw, 'app.Nested');
+  const forbidden = await ctx.config.get('MUST_NOT_RUN');
+  return ctx.text(forbidden);
+});
+child.post('/scalar', async (ctx) => {
+  const input = await ctx.req.json<{value:ScalarRecord}>('app.Scalar');
+  const forbidden = await ctx.config.get('MUST_NOT_RUN');
+  return ctx.text(forbidden);
+});
+child.get('/nested-encode', async (ctx) => {
+  const encoded = ctx.encodeJson({value:{items:[1,2,3]}}, 'app.Nested');
+  const forbidden = await ctx.config.get('MUST_NOT_RUN');
+  return ctx.text(encoded+forbidden);
+});
 child.get('/encode', async (ctx) => {
   const encoded = ctx.encodeJson({ id: 'r1', version: 'wrong' }, 'app.Input');
   const forbidden = await ctx.config.get('MUST_NOT_RUN');
   return ctx.text(encoded + forbidden);
 });
 child.get('/response', async (ctx) => ctx.json({ id: 'r1', version: 'wrong' }, { schema: 'app.Input' }));
+child.get('/prepare', async (ctx) => {
+  const late = await ctx.config.get(ctx.encodeJson({ id: 'r1', version: 'wrong' }, 'app.Input'));
+  return ctx.text(late);
+});
 child.get('/jwt', async (ctx) => {
   const verified = await jwt.verify(ctx, jwt.bearer(ctx.req), {
     algorithms: ['HS256'], key: { type: 'secret', binding: 'JWT_KEY' }
@@ -116,12 +138,17 @@ export default app;`);
     expect: { status: 400, text: code }
   });
   const cases = [
+    errorCase('nested array budget', 'nested', 'PULSE_SCHEMA_DECODE', {}, '{"value":{"items":[1,2,3]}}'),
+    errorCase('nested duplicate', 'nested', 'PULSE_SCHEMA_DECODE', {}, '{"value":{"key":1,"key":2}}'),
+    errorCase('scalar nested rejection', 'scalar', 'PULSE_SCHEMA_DECODE', {}, '{"value":{"nested":{}}}'),
+    errorCase('nested encode before effect', 'nested-encode', 'PULSE_SCHEMA_ENCODE'),
     errorCase('request schema', 'request', 'PULSE_SCHEMA_DECODE', {}, '{"id":"r1","version":"wrong"}'),
     errorCase('request JSON', 'request', 'PULSE_SCHEMA_JSON_MALFORMED', {}, '{bad'),
     errorCase('text schema', 'decode', 'PULSE_SCHEMA_DECODE', { 'x-input': '{"id":"r1","version":"wrong"}' }),
     errorCase('text JSON', 'decode', 'PULSE_SCHEMA_JSON_MALFORMED', { 'x-input': 'bad' }),
     errorCase('encode before effect', 'encode', 'PULSE_SCHEMA_ENCODE'),
     errorCase('response encoding', 'response', 'PULSE_SCHEMA_ENCODE'),
+    errorCase('payload encoding before effect', 'prepare', 'PULSE_SCHEMA_ENCODE'),
     errorCase('JWT missing', 'jwt', 'PULSE_JWT_TOKEN_REQUIRED'),
     errorCase('JWT bearer', 'jwt', 'PULSE_JWT_BEARER_INVALID', { authorization: 'Basic invalid' }),
     errorCase('JWT malformed', 'jwt', 'PULSE_JWT_MALFORMED', { authorization: 'Bearer abc.def.ghi' }),

@@ -1,0 +1,30 @@
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+node:internal/assert/utils:77
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: release must include current task shared-history-helper-o25
+    at Object.<anonymous> (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/suite/assert-suite-shape.cjs:170:10)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0
+[pulsewasm] suite-shape: failed in 67ms
+
+[pulsewasm] test summary
+  failed          67ms  suite-shape
+  total        68ms

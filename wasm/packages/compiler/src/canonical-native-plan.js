@@ -1,57 +1,26 @@
 'use strict';
 
 const crypto = require('node:crypto');
+const { terminalPackageNativeForCompiled } = require('./spine/terminal-package-native.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
 const { executeCanonicalNativePlanSpine } = require('./spine/canonical-native-plan.js');
-const { inspectBoundedPureLoop } = require('./spine/bounded-pure-loop.js');
+const { inspectBoundedPureLoop, inspectBoundedReadLoop } = require('./spine/bounded-pure-loop.js');
+const resultFacts = require('./native-result-facts.js');
 
-function loadNativePlanContract() {
-  try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-plan'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/handler/canonical-native-plan.js');
-    }
-    throw error;
-  }
+function containsYield(node) {
+  if (ts.isYieldExpression(node)) return true;
+  return Boolean(ts.forEachChild(node, child => containsYield(child) || undefined));
 }
 
-function loadLoggingContract() {
-  try { return require('@pulse-compute/wasm-contracts/logging'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/logging.js');
-    }
-    throw error;
-  }
-}
-
-function loadCryptoContract() {
-  try { return require('@pulse-compute/wasm-contracts/crypto/contracts'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/crypto/contracts.js');
-    }
-    throw error;
-  }
-}
-
-function loadEventContract() {
-  try { return require('@pulse-compute/wasm-contracts/events'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../contracts/src/events/contracts.js');
-    }
-    throw error;
-  }
-}
-
-const contract = loadNativePlanContract();
-const loggingContract = loadLoggingContract();
-const cryptoContract = loadCryptoContract();
-const eventContract = loadEventContract();
-const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v2';
+const contract = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
+const loggingContract = require('@pulse-compute/wasm-contracts/logging');
+const cryptoContract = require('@pulse-compute/wasm-contracts/crypto/contracts');
+const eventContract = require('@pulse-compute/wasm-contracts/events');
+const pureValues = require('./pure-helper-values');
+const CANONICAL_NATIVE_PLAN_COMPILER_VERSION = 'pulse.canonical-native-plan-compiler.v10';
+const { lowerSharedStages, validateSharedStages } = require('./shared-stage-plan');
 const GENERATED_HANDLER_NAME = '__pulse_handler';
 const PULSE_RUNTIME_PARAMETER = '__pulse';
 
@@ -201,6 +170,8 @@ function intrinsicForContextCall(parts) {
   const entries = {
     'req.header': ['request.header', 'string-or-undefined'],
     'req.text': ['request.text', 'string'],
+    'req.body': ['request.body.forward-marker', 'incoming-body-marker'],
+    'output.close': ['response.output.close', 'pulse-result'],
     'req.json': ['request.json', 'json'],
     json: ['response.json', 'pulse-result'],
     encodeJson: ['schema.encode.text', 'string'],
@@ -221,28 +192,15 @@ function resultKindForEffect(site, decoder, continuation, resultMode) {
   if (site.result === 'opaque-response') return 'opaque-response';
   if (site.result === 'structured-response') return 'structured-response';
   if (site.result === 'ack') return 'ack';
+  if (site.result === 'string') return 'string';
   if (site.kind === 'fetch') return 'fetch-response';
   if (site.kind === 'config.get' || site.kind === 'secret.get') return 'string-or-undefined';
+  if (site.kind === 'output.readTextChunk') return 'json';
   if (site.kind === 'time.now') return 'json';
   if (site.kind === 'kv.get') return 'json-or-undefined';
   if (site.kind === 'kv.put') return 'ack';
   if (['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(site.kind)) return 'json';
   if (site.kind === 'event.emit') return 'ack';
-  return 'unknown';
-}
-
-function inferBinaryValueKind(operator, left, right) {
-  if (['===', '!==', '==', '!=', '<', '<=', '>', '>=', 'in'].includes(operator)) return 'boolean';
-  if (['&&', '||', '??'].includes(operator)) {
-    if (left.valueKind === right.valueKind) return left.valueKind;
-    if (['||', '??'].includes(operator)) {
-      const kinds = new Set([left.valueKind, right.valueKind]);
-      if (kinds.has('string') && kinds.has('string-or-undefined')) return 'string';
-    }
-    return 'unknown';
-  }
-  if (operator === '+' && (left.valueKind === 'string' || right.valueKind === 'string')) return 'string';
-  if (['+', '-', '*', '/', '%', '**', '&', '|', '^', '<<', '>>', '>>>'].includes(operator)) return 'number';
   return 'unknown';
 }
 
@@ -253,6 +211,9 @@ class NativePlanBuilder {
     this.diagnostics = [];
     this.effects = [];
     this.locals = [];
+    this.handlers = [];
+    this.helpers = [];
+    this.handlerLocalIndex = 0;
     this.effectOccurrences = new Map();
     this.continuationOccurrences = new Map();
     this.localIndex = 0;
@@ -329,6 +290,20 @@ class NativePlanBuilder {
     }
 
     this.metadata = compiled.metadata;
+    this.pureTypes = new Map();
+    this.pureTypes.schemas = compiled.metadata.schemaRegistry;
+    this.helperBodies = new Map((this.metadata.router?.helpers || []).map(helper => [helper.name, helper]));
+    if (this.metadata.capabilities?.some(id => ['request.body.forward', 'request.body.transform'].includes(id))
+      && this.metadata.capabilities.some(id => ['request.text', 'request.json'].includes(id))) {
+      throw new CanonicalNativePlanError('Native incoming forwarding/transforms cannot be combined with structured request reads.', [
+        diagnostic(undefined, undefined, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED,
+          'Native forwarding/transform applications cannot also project structured request bodies.', { automaticFallback: false })
+      ]);
+    }
+    this.packageApplication = terminalPackageNativeForCompiled(compiled);
+    this.routerBodies = new Map((this.metadata.router?.entries || [])
+      .filter(entry => entry.nativeBody).map(entry => [entry.nativeBody.name, entry]));
+    this.bodyNodes = new Map();
     this.generatedFile = `${this.metadata.file || 'app.ts'}.canonical.generated.js`;
     this.sourceFile = ts.createSourceFile(
       this.generatedFile,
@@ -348,6 +323,14 @@ class NativePlanBuilder {
     this.ctxName = this.handler && this.handler.parameters[0] && ts.isIdentifier(this.handler.parameters[0].name)
       ? this.handler.parameters[0].name.text
       : String(this.metadata.ctxParameter || 'ctx');
+    const collectBodies = node => {
+      if (ts.isFunctionDeclaration(node) && (this.routerBodies.has(node.name?.text) || this.helperBodies.has(node.name?.text))) {
+        if (this.bodyNodes.has(node.name.text)) this.fail(node, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Duplicate private Router body.');
+        this.bodyNodes.set(node.name.text, node);
+      }
+      ts.forEachChild(node, collectBodies);
+    };
+    if (this.handler) collectBodies(this.handler);
     this.effectSites = new Map((this.metadata.effectSites || []).map((site) => [String(site.id), site]));
     this.continuationSites = new Map((this.metadata.continuationSites || []).map((site) => [String(site.id), site]));
     this.compilerOwnedCalls = new Set((this.metadata.compilerOwnedCalls || []).map(String));
@@ -448,6 +431,11 @@ class NativePlanBuilder {
       if (ASSIGNMENT_OPERATORS.has(operator)) {
         const target = this.assignmentTarget(current.left, scope);
         const value = this.expression(current.right, scope);
+        if (operator === '=' && target.kind === 'local') {
+          const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
+          if (type) this.pureTypes.set(target.id, type);
+          else this.pureTypes.delete(target.id);
+        }
         return Object.freeze({ kind: 'assignment', operator, target, value, valueKind: value.valueKind || 'unknown' });
       }
       if (!PURE_BINARY_OPERATORS.has(operator)) {
@@ -455,7 +443,7 @@ class NativePlanBuilder {
       }
       const left = this.expression(current.left, scope);
       const right = this.expression(current.right, scope);
-      return Object.freeze({ kind: 'binary', operator, left, right, valueKind: inferBinaryValueKind(operator, left, right) });
+      return Object.freeze({ kind: 'binary', operator, left, right, valueKind: pureValues.binaryKind(operator, left.valueKind, right.valueKind) });
     }
 
     if (ts.isPrefixUnaryExpression(current)) {
@@ -467,7 +455,7 @@ class NativePlanBuilder {
         this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Prefix operator ${operator} is outside the canonical native value model.`, { operator });
       }
       const value = this.expression(current.operand, scope);
-      return Object.freeze({ kind: 'unary', operator, value, valueKind: operator === '!' ? 'boolean' : (operator === 'typeof' ? 'string' : value.valueKind || 'unknown') });
+      return Object.freeze({ kind: 'unary', operator, value, valueKind: pureValues.unaryKind(operator) });
     }
 
     if (ts.isPostfixUnaryExpression(current)) {
@@ -512,17 +500,19 @@ class NativePlanBuilder {
         else if (current.name.text === 'headers') valueKind = 'headers';
         else this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, `Fetch response property .${current.name.text} is outside the canonical native response contract.`, { property: current.name.text });
       }
-      return Object.freeze({ kind: 'property', object, property: current.name.text, valueKind });
+      const property = { kind: 'property', object, property: current.name.text, valueKind };
+      const type = pureValues.readType(property, this.pureTypes);
+      if (type) property.valueKind = pureValues.kind(type);
+      property.valueKind = resultFacts.propertyKind(object, current.name.text, scope) || property.valueKind;
+      return Object.freeze(property);
     }
 
     if (ts.isElementAccessExpression(current)) {
       if (current.questionDotToken) this.fail(current, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Optional element access is outside the canonical native value model.');
-      return Object.freeze({
-        kind: 'element',
-        object: this.expression(current.expression, scope),
-        index: this.expression(current.argumentExpression, scope),
-        valueKind: 'unknown'
-      });
+      const element = { kind: 'element', object: this.expression(current.expression, scope), index: this.expression(current.argumentExpression, scope), valueKind: 'unknown' };
+      const type = pureValues.readType(element, this.pureTypes, this.activeHelper?.pure === true);
+      if (type) element.valueKind = pureValues.kind(type);
+      return Object.freeze(element);
     }
 
     if (ts.isTypeOfExpression(current)) {
@@ -549,6 +539,21 @@ class NativePlanBuilder {
   callExpression(call, scope) {
     if (call.questionDotToken) this.fail(call, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'Optional calls are outside the canonical native value model.');
     const target = unwrap(call.expression);
+    const helper = ts.isIdentifier(target) && this.helperBodies.get(target.text);
+    if (helper?.pure) {
+      if (this.activeHelper || this.pureCallDepth) {
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_NESTING_UNSUPPORTED', 'Pure helper calls cannot nest in helpers or call arguments.');
+      }
+      this.pureCallDepth = (this.pureCallDepth || 0) + 1;
+      const args = call.arguments.map(arg => this.expression(arg, scope));
+      this.pureCallDepth--;
+      if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind && !(helper.parameters[i]?.borrow && arg.valueKind === 'json'))) {
+        this.fail(call, 'PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED', 'Pure helper arguments must match their declared scalar or borrowed structural kinds.', { arguments: args.map((arg,i) => ({ index:i, actual:arg.valueKind, expected:helper.parameters[i]?.valueKind })) });
+      }
+      return Object.freeze({ kind: 'pure-helper-call', helperId: helper.id,
+        ...((this.pureLoopDepth || this.readLoopDepth) ? { loopContract: contract.CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION } : {}),
+        arguments: Object.freeze(args), valueKind: helper.resultKind });
+    }
     const ctxPath = contextPath(target, this.ctxName);
     if (ctxPath) {
       const intrinsic = intrinsicForContextCall(ctxPath);
@@ -579,6 +584,9 @@ class NativePlanBuilder {
 
     if (ts.isIdentifier(target) && this.compilerOwnedCalls.has(target.text) && this.compilerOwnedIntrinsics.has(target.text)) {
       const intrinsic = this.compilerOwnedIntrinsics.get(target.text);
+      if (this.packageApplication?.intrinsic === intrinsic[0]) return Object.freeze({
+        kind: 'intrinsic', name: 'package.application', arguments: Object.freeze([]), valueKind: 'response'
+      });
       return Object.freeze({
         kind: 'intrinsic',
         name: intrinsic[0],
@@ -615,6 +623,7 @@ class NativePlanBuilder {
 
   assignmentTarget(node, scope) {
     const target = this.expression(node, scope);
+    if (target.kind === 'property' || target.kind === 'element') resultFacts.invalidate(scope);
     if (target.kind === 'local' && scope.get(target.name)?.declaration === 'const') {
       this.fail(node, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.EXPRESSION_UNSUPPORTED, 'A const local cannot be reassigned.', { name: target.name });
     }
@@ -624,13 +633,16 @@ class NativePlanBuilder {
   allocateLocal(name, valueKind, statementPath, declaration) {
     this.localIndex += 1;
     const local = Object.freeze({
-      id: `local-${this.localIndex}`,
+      id: this.activeHandler ? `local:${this.activeHandler.stableId}:${++this.handlerLocalIndex}` : `local-${this.localIndex}`,
+      scopeId: this.activeHelper?.id || (this.activeHandler ? this.activeHandler.stableId : 'entry'),
+      ...(this.activeHandler ? { routerEntryStableId: this.activeHandler.stableId } : {}),
       name: String(name),
       valueKind: contract.CANONICAL_NATIVE_VALUE_KINDS.includes(valueKind) ? valueKind : 'unknown',
       declaration,
       statementPath
     });
     this.locals.push(local);
+    if (pureValues.scalar(valueKind)) this.pureTypes.set(local.id, valueKind);
     this.summary.localCount += 1;
     return local;
   }
@@ -703,6 +715,7 @@ class NativePlanBuilder {
     const record = Object.freeze({
       order: this.effectOrder,
       id: effectId || `invalid-effect-${this.effectOrder}`,
+      ...(this.activeHelper ? { helperId: this.activeHelper.id } : {}),
       kind: kind || 'invalid',
       providerKind: site && site.providerKind ? String(site.providerKind) : undefined,
       operation: site && site.operation ? String(site.operation) : undefined,
@@ -714,6 +727,7 @@ class NativePlanBuilder {
       contractId: site && site.contractId ? String(site.contractId) : undefined,
       declaredResult: site && site.result ? String(site.result) : undefined,
       decoder: site && site.decoder ? String(site.decoder) : null,
+      ...(site?.borrowedValue && result?.mode === 'bind' ? { borrowedValue: cloneJson(site.borrowedValue) } : {}),
       continuationId,
       statementPath,
       source: Object.freeze({ file: this.metadata.file, ...(cloneJson(site && site.position) || {}) }),
@@ -757,6 +771,23 @@ class NativePlanBuilder {
     for (let index = 0; index < statement.declarationList.declarations.length; index += 1) {
       const item = statement.declarationList.declarations[index];
       const itemPath = formatStatementPath(statement.declarationList.declarations.length === 1 ? pathParts : [...pathParts, 'declaration', index]);
+      const helperYield = item.initializer && unwrap(item.initializer);
+      const helperCall = helperYield && ts.isYieldExpression(helperYield) && helperYield.asteriskToken && unwrap(helperYield.expression);
+      const helper = helperCall && ts.isCallExpression(helperCall) && ts.isIdentifier(helperCall.expression) && this.helperBodies.get(helperCall.expression.text);
+      if (helper) {
+        if (this.activeHelper || !ts.isIdentifier(item.name) || this.pureLoopDepth) {
+          this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Helper calls require a direct binding outside pure loops and cannot nest.'); continue;
+        }
+        const args = helperCall.arguments.map(arg => this.expression(arg, scope));
+        if (args.length !== helper.parameters.length || args.some((arg, i) => arg.valueKind !== helper.parameters[i]?.valueKind)) {
+          this.fail(item, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Helper inputs must match their explicit scalar types.'); continue;
+        }
+        const local = this.allocateLocal(item.name.text, this.helpers.find(h => h.id === helper.id)?.resultKind || 'unknown', itemPath, declaration);
+        scope.set(local.name, local);
+        out.push(Object.freeze({ kind: 'helper-call', helperId: helper.id, callerEntryId: this.activeHandler?.stableId || this.activeEntry?.stableId, arguments: Object.freeze(args), localId: local.id, statementPath: itemPath,
+          ...(this.readLoopDepth ? { loopContract: contract.CANONICAL_READ_LOOP_CONTRACT.helperCallVersion } : {}) }));
+        continue;
+      }
       const yielded = item.initializer ? this.pulseYield(item.initializer) : undefined;
 
       if (yielded && yielded.mode === 'group') {
@@ -821,7 +852,9 @@ class NativePlanBuilder {
         const local = this.allocateLocal(item.name.text, resultKindForEffect(site || {}, decoder), itemPath, declaration);
         const result = Object.freeze({ mode: 'bind', localId: local.id, localName: local.name, valueKind: local.valueKind, decoder });
         const effect = this.prepareEffect(marker, continuationId, scope, itemPath, result);
-        scope.set(local.name, local);
+        const resultType = pureValues.effectType(effect, this.pureTypes.schemas);
+        if (resultType) this.pureTypes.set(local.id, resultType);
+        scope.set(local.name, resultFacts.bind(local, effect));
         out.push(Object.freeze({ kind: 'effect', effectId: effect.id, continuationId, result, statementPath: itemPath }));
         continue;
       }
@@ -832,6 +865,8 @@ class NativePlanBuilder {
       }
       const value = item.initializer ? this.expression(item.initializer, scope) : Object.freeze({ kind: 'undefined', valueKind: 'undefined' });
       const local = this.allocateLocal(item.name.text, value.valueKind || 'unknown', itemPath, declaration);
+      const type = pureValues.readType(value, this.pureTypes, this.activeHelper?.pure === true);
+      if (type) this.pureTypes.set(local.id, type);
       scope.set(local.name, local);
       out.push(Object.freeze({ kind: 'local', localId: local.id, name: local.name, declaration, valueKind: local.valueKind, value, statementPath: itemPath }));
     }
@@ -907,6 +942,36 @@ class NativePlanBuilder {
   }
 
   statement(statement, scope, pathParts, depth) {
+    if (ts.isFunctionDeclaration(statement) && this.helperBodies.has(statement.name?.text)) {
+      const helper = this.helperBodies.get(statement.name.text);
+      if (this.activeHelper || this.activeHandler) { this.fail(statement, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Helper declarations require the entry owner.'); return []; }
+      this.activeHelper = helper;
+      const start = this.locals.length, helperScope = new Map();
+      const parameters = helper.parameters.map(parameter => {
+        const local = this.allocateLocal(parameter.name, parameter.valueKind, `helpers.${helper.id}.parameters`, 'const');
+        this.pureTypes ||= new Map();
+        this.pureTypes.set(local.id, parameter.borrow?.type || parameter.valueKind);
+        helperScope.set(parameter.name, local);
+        return { ...parameter, localId: local.id };
+      });
+      const body = this.statementList(statement.body.statements, helperScope, ['helpers', helper.id, 'body'], 0);
+      const resultKinds = new Set();
+      const visitor = s => { if (s.kind === 'return') resultKinds.add(s.value.valueKind); }; visitor.expression = () => {};
+      walkStatements(body, visitor);
+      const resultKind = resultKinds.size === 1 ? [...resultKinds][0] : 'unknown';
+      if (helper.pure && resultKind !== helper.resultKind) this.fail(statement, 'PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED', 'Pure helper return paths must match the declared scalar result.');
+      this.helpers.push({ resultKind, version: helper.pure ? contract.CANONICAL_NATIVE_PURE_HELPER_VERSION : 'pulse.canonical-native-helper.v1', id: helper.id, source: helper.source,
+        parameters, localIds: this.locals.slice(start).map(local => local.id), body,
+        frame: { lifetime: 'invocation', reset: 'call', suspension: helper.pure ? 'none' : 'retain', nesting: false },
+        outputs: helper.pure ? ['value', 'failure'] : ['value', 'suspend', 'failure'] });
+      this.activeHelper = undefined;
+      return [];
+    }
+    if (ts.isFunctionDeclaration(statement) && this.routerBodies.has(statement.name?.text)) return [];
+    if (ts.isReturnStatement(statement)) {
+      const call = this.lowerHandlerCall(statement);
+      if (call) return call;
+    }
     const statementPath = formatStatementPath(pathParts);
     this.summary.maxStatementDepth = Math.max(this.summary.maxStatementDepth, depth);
 
@@ -915,20 +980,40 @@ class NativePlanBuilder {
     if (ts.isVariableStatement(statement)) return this.lowerVariableStatement(statement, scope, pathParts, depth);
 
     if (ts.isForStatement(statement)) {
-      const loop = inspectBoundedPureLoop(statement, { ctxName: this.ctxName });
-      for (const error of loop.errors) this.fail(error.node, 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
+      // A later iteration can observe a write through an alias in an earlier
+      // iteration. Retire outer facts before lowering any loop-body read.
+      const writesProperty = node => {
+        const target = ts.isBinaryExpression(node) && ASSIGNMENT_OPERATORS.has(node.operatorToken.getText(this.sourceFile)) ? unwrap(node.left)
+          : (ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) && UPDATE_OPERATORS.has(ts.tokenToString(node.operator)) ? unwrap(node.operand) : undefined;
+        return target && (ts.isPropertyAccessExpression(target) || ts.isElementAccessExpression(target))
+          || Boolean(ts.forEachChild(node, child => writesProperty(child) || undefined));
+      };
+      if (writesProperty(statement)) resultFacts.invalidate(scope);
+      const readLoop = containsYield(statement);
+      const loop = readLoop
+        ? inspectBoundedReadLoop(statement, { ctxName: this.ctxName, headerOnly: true })
+        : inspectBoundedPureLoop(statement, { ctxName: this.ctxName, pureHelper: this.activeHelper?.pure === true,
+          pureHelperForCall: call => ts.isIdentifier(call.expression) && this.helperBodies.get(call.expression.text)?.pure });
+      for (const error of loop.errors) this.fail(error.node, readLoop ? 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED' : 'PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED', error.message);
       if (loop.errors.length) return [];
+      if (readLoop && (this.readLoopDepth || this.pureLoopDepth)) {
+        this.fail(statement, 'PULSE_CANONICAL_READ_LOOP_UNSUPPORTED', 'Effect loops cannot nest inside another loop.'); return [];
+      }
       const loopScope = new Map(scope);
       const local = this.allocateLocal(loop.name, 'number', statementPath, 'let');
       loopScope.set(loop.name, local);
-      const previousDepth = this.pureLoopDepth || 0;
-      this.pureLoopDepth = previousDepth + 1;
+      const depthField = readLoop ? 'readLoopDepth' : 'pureLoopDepth';
+      const previousDepth = this[depthField] || 0;
+      this[depthField] = previousDepth + 1;
       const body = this.statement(statement.statement, loopScope, [...pathParts, 'body'], depth + 1);
-      this.pureLoopDepth = previousDepth;
-      return [Object.freeze({ kind: 'pure-loop', localId: local.id, maxIterations: loop.maxIterations,
+      this[depthField] = previousDepth;
+      return [Object.freeze({ kind: readLoop ? 'read-loop' : 'pure-loop', localId: local.id, maxIterations: loop.maxIterations,
+        ...(readLoop ? { version: contract.CANONICAL_READ_LOOP_CONTRACT.version,
+          initial: this.expression(statement.initializer.declarations[0].initializer, loopScope),
+          increment: this.expression(statement.incrementor, loopScope) } : {}),
         test: this.expression(statement.condition, loopScope), body: Object.freeze(body), statementPath })];
     }
-    if ((ts.isBreakStatement(statement) || ts.isContinueStatement(statement)) && this.pureLoopDepth && !statement.label) {
+    if ((ts.isBreakStatement(statement) || ts.isContinueStatement(statement)) && (this.pureLoopDepth || this.readLoopDepth) && !statement.label) {
       return [Object.freeze({ kind: ts.isBreakStatement(statement) ? 'break' : 'continue', statementPath })];
     }
 
@@ -937,8 +1022,10 @@ class NativePlanBuilder {
       const thenScope = new Map(scope);
       const elseScope = new Map(scope);
       const test = this.expression(statement.expression, scope);
+      resultFacts.refine(test, true, thenScope);
+      resultFacts.refine(test, false, elseScope);
       // A const primitive cannot change between this guard and a branch read.
-      // Keep mutable locals and the scope after the branch unrefined.
+      // A returning branch also lets its surviving sibling dominate later reads.
       if (test.kind === 'binary' && ['===', '!=='].includes(test.operator)) {
         const read = test.left.kind === 'undefined' ? test.right : test.right.kind === 'undefined' ? test.left : undefined;
         const local = read?.kind === 'local' ? scope.get(read.name) : undefined;
@@ -946,14 +1033,34 @@ class NativePlanBuilder {
           (test.operator === '!==' ? thenScope : elseScope).set(local.name, Object.freeze({ ...local, valueKind: 'string' }));
         }
       }
+      const previousEntry = this.activeEntry;
+      const entryGuard = test.kind === 'binary' && test.operator === '===' && test.left?.kind === 'local'
+        && test.left.name === '__pulse_router_cursor' && test.right?.kind === 'literal'
+        && this.metadata.router?.entries?.find(entry => entry.index === test.right.value);
+      if (entryGuard) this.activeEntry = entryGuard;
       const thenBody = ts.isBlock(statement.thenStatement)
         ? this.statementList(statement.thenStatement.statements, thenScope, [...pathParts, 'then'], depth + 1)
         : this.statement(statement.thenStatement, thenScope, [...pathParts, 'then', 0], depth + 1);
+      this.activeEntry = previousEntry;
       const elseBody = !statement.elseStatement
         ? []
         : ts.isBlock(statement.elseStatement)
           ? this.statementList(statement.elseStatement.statements, elseScope, [...pathParts, 'else'], depth + 1)
           : this.statement(statement.elseStatement, elseScope, [...pathParts, 'else', 0], depth + 1);
+      const returns = body => {
+        const last = body.at(-1);
+        return last?.kind === 'return' || last?.kind === 'if' && returns(last.then) && returns(last.else);
+      };
+      const thenReturns = returns(thenBody), elseReturns = returns(elseBody);
+      resultFacts.join(scope, thenScope, elseScope, thenReturns, elseReturns);
+      for (const [name, original] of scope) {
+        if (original.declaration !== 'const' || original.valueKind !== 'string-or-undefined') continue;
+        const yes = thenScope.get(name)?.valueKind === 'string';
+        const no = elseScope.get(name)?.valueKind === 'string';
+        if (thenReturns && no || elseReturns && yes || yes && no) {
+          scope.set(name, Object.freeze({ ...original, valueKind: 'string' }));
+        }
+      }
       return [Object.freeze({
         kind: 'if',
         test,
@@ -997,6 +1104,35 @@ class NativePlanBuilder {
     return out;
   }
 
+  lowerHandlerCall(statement) {
+    const yielded = unwrap(statement.expression);
+    if (!yielded || !ts.isYieldExpression(yielded) || !yielded.asteriskToken) return undefined;
+    const call = unwrap(yielded.expression);
+    const entry = call && ts.isCallExpression(call) && ts.isIdentifier(call.expression)
+      && this.routerBodies.get(call.expression.text);
+    if (!entry) return undefined;
+    const node = this.bodyNodes.get(entry.nativeBody.name);
+    if (this.activeHandler || !node?.body || call.arguments.length || this.handlers.some(handler => handler.id === entry.stableId)) {
+      this.fail(statement, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'Private Router bodies require one non-recursive terminal call.');
+      return [];
+    }
+    const localStart = this.locals.length;
+    this.activeHandler = entry;
+    this.handlerLocalIndex = 0;
+    const body = this.statementList(node.body.statements, new Map(), ['handlers', entry.stableId, 'body'], 0);
+    this.activeHandler = undefined;
+    this.handlers.push(Object.freeze({
+      version: contract.CANONICAL_NATIVE_HANDLER_BODY_VERSION,
+      id: entry.stableId,
+      handlerId: entry.handlerId,
+      family: 'terminal-route',
+      source: deepFreeze(cloneJson(entry.nativeBody.source)),
+      localIds: Object.freeze(this.locals.slice(localStart).map(local => local.id)),
+      body: Object.freeze(body)
+    }));
+    return [Object.freeze({ kind: 'handler-call', handlerId: entry.stableId })];
+  }
+
   reconcile() {
     const expectedEffectIds = (this.metadata.effectSites || []).map((site) => String(site.id));
     const actualEffectIds = this.effects.map((site) => site.id);
@@ -1019,8 +1155,9 @@ class NativePlanBuilder {
     this.reconcile();
     if (this.diagnostics.length > 0) throw new CanonicalNativePlanError(`Native-plan lowering failed for ${this.metadata.file}.`, this.diagnostics);
 
-    const continuations = (this.metadata.continuationSites || []).map((site, index) => Object.freeze({
+    const continuations = this.packageApplication ? this.packageApplication.continuations : (this.metadata.continuationSites || []).map((site, index) => Object.freeze({
       id: String(site.id),
+      ...(this.effects.find(effect => effect.continuationId === site.id)?.helperId ? { helperId: this.effects.find(effect => effect.continuationId === site.id).helperId } : {}),
       kind: String(site.kind),
       effectIds: Object.freeze(site.effectIds.map(String)),
       stateIndex: index + 1,
@@ -1043,12 +1180,13 @@ class NativePlanBuilder {
       eventType: site.eventType ? String(site.eventType) : undefined,
       eventSchemaId: site.eventSchemaId !== undefined ? site.eventSchemaId : undefined
     }));
+    if (this.packageApplication) this.effects = [...this.packageApplication.effects];
     const states = [Object.freeze({ id: 'entry', kind: 'entry', stateIndex: 0 })]
       .concat(continuations.map((site) => Object.freeze({ id: site.id, kind: 'continuation', continuationKind: site.kind, effectIds: site.effectIds, stateIndex: site.stateIndex })));
-    this.summary = summarizeNativePlan(body, this.locals, this.effects, continuations);
+    this.summary = summarizeNativePlan(body, this.locals, this.effects, continuations, this.handlers);
     const hasInboundEvents = Number(this.metadata.events && this.metadata.events.count || 0) > 0;
 
-    const unsigned = {
+    let unsigned = {
       version: contract.CANONICAL_NATIVE_PLAN_VERSION,
       compilerVersion: CANONICAL_NATIVE_PLAN_COMPILER_VERSION,
       hashAlgorithm: contract.CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
@@ -1107,10 +1245,12 @@ class NativePlanBuilder {
         body: Object.freeze(body)
       }),
       locals: Object.freeze(this.locals),
+      handlers: Object.freeze(this.handlers),
+      ...(this.helpers.length ? { helpers: Object.freeze(this.helpers) } : {}),
       effects: Object.freeze(this.effects),
       continuations: Object.freeze(continuations),
       states: Object.freeze(states),
-      capabilities: Object.freeze([...(this.metadata.capabilities || [])].map(String).sort()),
+      capabilities: Object.freeze([...new Set([...(this.metadata.capabilities || []), ...(this.packageApplication?.capabilities || [])])].map(String).sort()),
       schemas: Object.freeze({
         sourceHash: this.metadata.schemaSourceHash,
         ids: Object.freeze([...(this.metadata.schemaIds || [])].map(String)),
@@ -1124,9 +1264,12 @@ class NativePlanBuilder {
       ...(this.compiled.cryptoRealizationPlan && this.compiled.cryptoRealizationPlan.target === 'native' ? {
         crypto: deepFreeze(cloneJson(this.compiled.cryptoRealizationPlan))
       } : {}),
-      packages: Object.freeze({ effects: deepFreeze(cloneJson(this.metadata.packageEffects || [])) }),
+      packages: Object.freeze({ effects: deepFreeze(cloneJson(this.metadata.packageEffects || [])),
+        ...(this.packageApplication ? { application: this.packageApplication } : {}) }),
       summary: Object.freeze({ ...this.summary })
     };
+    if (this.options.sharedStages !== false) unsigned = lowerSharedStages(unsigned);
+    unsigned.summary = summarizeNativePlan(unsigned.entry.body, unsigned.locals, unsigned.effects, continuations, [...unsigned.handlers, ...(unsigned.stages || []), ...(unsigned.helpers || [])]);
     const planHash = stableHash(stableStringify(unsigned));
     const plan = deepFreeze({ ...unsigned, planHash });
     assertCanonicalNativePlan(plan);
@@ -1172,6 +1315,7 @@ function walkExpression(expression, visit) {
       walkExpression(expression.object, visit);
       walkExpression(expression.index, visit);
       break;
+    case 'pure-helper-call':
     case 'intrinsic':
       for (const argument of expression.arguments || []) walkExpression(argument, visit);
       break;
@@ -1197,12 +1341,17 @@ function walkExpression(expression, visit) {
 function walkStatements(statements, visitor) {
   for (const statement of statements || []) {
     visitor(statement);
-    if (statement.kind === 'local') walkExpression(statement.value, visitor.expression);
+    if (statement.kind === 'helper-call') for (const arg of statement.arguments || []) walkExpression(arg, visitor.expression);
+    else if (statement.kind === 'local') walkExpression(statement.value, visitor.expression);
     else if (statement.kind === 'if') {
       walkExpression(statement.test, visitor.expression);
       walkStatements(statement.then, visitor);
       walkStatements(statement.else, visitor);
-    } else if (statement.kind === 'pure-loop') {
+    } else if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+      if (statement.kind === 'read-loop') {
+        walkExpression(statement.initial, visitor.expression);
+        walkExpression(statement.increment, visitor.expression);
+      }
       walkExpression(statement.test, visitor.expression);
       walkStatements(statement.body, visitor);
     } else if (statement.kind === 'return') walkExpression(statement.value, visitor.expression);
@@ -1216,7 +1365,7 @@ function countExpression(expression) {
   return count;
 }
 
-function summarizeNativePlan(body, locals, effects, continuations) {
+function summarizeNativePlan(body, locals, effects, continuations, handlers = []) {
   const summary = {
     statementCount: 0,
     expressionCount: 0,
@@ -1239,12 +1388,15 @@ function summarizeNativePlan(body, locals, effects, continuations) {
         summary.expressionCount += countExpression(statement.test);
         visitStatements(statement.then, depth + 1);
         visitStatements(statement.else, depth + 1);
-      } else if (statement.kind === 'pure-loop') {
+      } else if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+        if (statement.kind === 'read-loop') summary.expressionCount += countExpression(statement.initial) + countExpression(statement.increment);
         summary.expressionCount += countExpression(statement.test);
         visitStatements(statement.body, depth + 1);
       } else if (statement.kind === 'return') {
         summary.returnCount += 1;
         summary.expressionCount += countExpression(statement.value);
+      } else if (statement.kind === 'helper-call') {
+        for (const arg of statement.arguments || []) summary.expressionCount += countExpression(arg);
       } else if (statement.kind === 'expression') {
         summary.expressionCount += countExpression(statement.expression);
       } else if (statement.kind === 'effect') {
@@ -1256,6 +1408,7 @@ function summarizeNativePlan(body, locals, effects, continuations) {
   }
 
   visitStatements(body, 0);
+  for (const handler of handlers) visitStatements(handler.body, 0);
   for (const effect of effects) {
     for (const input of effect.inputs || []) summary.expressionCount += countExpression(input.value);
     const decoder = effect.result && effect.result.decoder;
@@ -1286,30 +1439,121 @@ function validateResult(result, fail, localIds, detail = {}) {
 }
 
 function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
-  function validateLoops(statements, counters = new Set(), product = 1) {
+  const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
+  const helpers = new Map((plan.helpers || []).map(helper => [helper.id, helper]));
+  function validateHelperLoopProduct(helper, callerProduct, label) {
+    // A synchronous call does not reset the enclosing loop's work bound.
+    const check = (body, product) => {
+      for (const statement of body || []) {
+        if (statement.kind === 'pure-loop') {
+          const nested = product * Math.max(1, statement.maxIterations);
+          if (!Number.isSafeInteger(nested) || nested > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(`${label} exceeds the combined iteration bound`);
+          check(statement.body, nested);
+        } else if (statement.kind === 'if') {
+          check(statement.then, product); check(statement.else, product);
+        }
+      }
+    };
+    check(helper.body, callerProduct);
+  }
+  function validateReadHelper(id, callerProduct) {
+    const helper = helpers.get(id);
+    if (!helper) { fail('read loop helper is unknown'); return; }
+    validateHelperLoopProduct(helper, callerProduct, 'read loop helper');
+    let sites = 0;
+    const visit = statement => {
+      if (['read-loop', 'helper-call', 'handler-call', 'stage-call', 'effect-group'].includes(statement.kind)) fail('read loop helper cannot nest effect loops, calls or groups');
+      if (statement.kind === 'effect') {
+        const effect = effects.get(statement.effectId); sites++;
+        if (!effect || !contract.CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) fail('read loop helper effect kind is not admitted');
+        for (const input of effect?.inputs || []) checkReadExpression(input.value, new Set(), true);
+      }
+    };
+    visit.expression = expression => checkReadExpression(expression, new Set());
+    walkStatements(helper.body, visit);
+    if (!sites) fail('read loop helper requires a sequential read effect site');
+  }
+  function validatePureLoopCalls(expression, counters, product, header = false) {
+    walkExpression(expression, node => {
+      if (node.kind !== 'pure-helper-call') return;
+      if (!counters.size) {
+        if (node.loopContract !== undefined) fail('pure loop call contract requires an enclosing loop');
+        return;
+      }
+      if (header || node.loopContract !== contract.CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION) fail('pure loop call contract or placement is invalid');
+      const helper = helpers.get(node.helperId);
+      if (helper?.version !== contract.CANONICAL_NATIVE_PURE_HELPER_VERSION) { fail('pure loop call requires a pure helper'); return; }
+      for (const argument of node.arguments || []) walkExpression(argument, child => {
+        if (['assignment', 'update'].includes(child.kind)) fail('pure loop call inputs must be read-only');
+      });
+      validateHelperLoopProduct(helper, product, 'pure loop helper');
+    });
+  }
+  function validateLoops(statements, counters = new Set(), product = 1, mode = 'outside', pureHelper = false) {
     for (const statement of statements || []) {
-      if (statement.kind === 'pure-loop') {
+      if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
+        const readLoop = statement.kind === 'read-loop';
+        const label = readLoop ? 'read loop' : 'pure loop';
         const limit = statement.maxIterations;
-        if (!localIds.has(statement.localId) || counters.has(statement.localId)) fail('pure loop requires its own local counter');
-        if (!Number.isInteger(limit) || limit < 0 || limit > contract.CANONICAL_PURE_LOOP_LIMITS.maxIterations
-          || product * Math.max(1, limit) > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail('pure loop iteration bound is invalid');
+        if (!localIds.has(statement.localId) || counters.has(statement.localId)) fail(`${label} requires its own local counter`);
+        if (!Number.isInteger(limit) || limit < 0 || limit > (readLoop ? contract.CANONICAL_READ_LOOP_CONTRACT.maxIterations : contract.CANONICAL_PURE_LOOP_LIMITS.maxIterations)
+          || product * Math.max(1, limit) > contract.CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(`${label} iteration bound is invalid`);
+        if (readLoop) {
+          if (counters.size) fail('read loops cannot nest inside another loop');
+          if (statement.version !== contract.CANONICAL_READ_LOOP_CONTRACT.version) fail('read loop contract version is invalid');
+          if (statement.initial?.kind !== 'literal' || statement.initial.value !== 0) fail('read loop must initialize its counter to zero');
+          const step = statement.increment;
+          if (step?.target?.kind !== 'local' || step.target.id !== statement.localId
+            || !(step.kind === 'update' && step.operator === '++'
+              || step.kind === 'assignment' && step.operator === '+=' && step.value?.kind === 'literal' && step.value.value === 1)) fail('read loop increment must advance its own counter by one');
+        }
         let bound = statement.test;
         while (bound && bound.kind === 'binary' && bound.operator === '&&') bound = bound.left;
         if (!bound || bound.kind !== 'binary' || bound.operator !== '<' || bound.left?.kind !== 'local' || bound.left.id !== statement.localId
-          || bound.right?.kind !== 'literal' || bound.right.value !== limit) fail('pure loop test must start with its declared literal cap');
+          || bound.right?.kind !== 'literal' || bound.right.value !== limit) fail(`${label} test must start with its declared literal cap`);
         const active = new Set([...counters, statement.localId]);
         checkPureExpression(statement.test, active, true);
-        validateLoops(statement.body, active, product * Math.max(1, limit));
+        validatePureLoopCalls(statement.test, active, product, true);
+        validatePureLoopCalls(statement.initial, active, product, true);
+        validatePureLoopCalls(statement.increment, active, product, true);
+        if (!Array.isArray(statement.body)) { fail(`${label} body must be an array`); continue; }
+        if (readLoop) {
+          let sites = 0;
+          const countSites = item => { if (item.kind === 'effect' || item.kind === 'helper-call') sites += 1; };
+          countSites.expression = () => {};
+          walkStatements(statement.body, countSites);
+          if (!sites) fail('read loop requires a sequential effect site');
+        }
+        validateLoops(statement.body, active, product * Math.max(1, limit), readLoop ? 'read' : 'pure', pureHelper);
       } else {
-        if (counters.size && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
-        if (!counters.size && ['break', 'continue'].includes(statement.kind)) fail('loop transfer outside pure loop');
+        validatePureLoopCalls(statement.value || statement.expression || statement.test, counters, product);
+        if (mode === 'pure' && !(pureHelper && statement.kind === 'return') && !['local', 'expression', 'if', 'break', 'continue'].includes(statement.kind)) fail('pure loop contains a non-value statement', { kind: statement.kind });
+        if (mode === 'read' && !['local', 'expression', 'if', 'break', 'continue', 'return', 'effect', 'helper-call'].includes(statement.kind)) fail('read loop contains an unsupported statement', { kind: statement.kind });
+        if (statement.kind === 'helper-call') {
+          if (mode === 'read') {
+            if (statement.loopContract !== contract.CANONICAL_READ_LOOP_CONTRACT.helperCallVersion) fail('read loop helper contract version is invalid');
+            if (counters.has(statement.localId)) fail('read loop helper result cannot replace the counter');
+            for (const argument of statement.arguments || []) checkReadExpression(argument, counters, true);
+            validateReadHelper(statement.helperId, product);
+          } else if (statement.loopContract !== undefined) fail('loop helper contract requires an enclosing read loop');
+        }
+        if (!counters.size && ['break', 'continue'].includes(statement.kind)) fail('loop transfer outside a loop');
         if (counters.size) {
           if (statement.kind === 'local' && counters.has(statement.localId)) fail('pure loop counter cannot be rebound');
-          checkPureExpression(statement.value || statement.expression || statement.test, counters);
+          if (mode === 'pure') checkPureExpression(statement.value || statement.expression || statement.test, counters);
+          else checkReadExpression(statement.value || statement.expression || statement.test, counters);
+        }
+        if (mode === 'read' && statement.kind === 'effect') {
+          const effect = effects.get(statement.effectId);
+          if (!effect || !contract.CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) fail('read loop effect kind is not admitted');
+          for (const result of [statement.result, effect?.result]) {
+            if (!['bind', 'discard'].includes(result?.mode) || counters.has(result?.localId)) fail('read loop effect result cannot replace the counter or return an effect');
+          }
+          for (const input of effect?.inputs || []) checkReadExpression(input.value, counters, true);
         }
         if (statement.kind === 'if') {
-          validateLoops(statement.then, counters, product);
-          validateLoops(statement.else, counters, product);
+          validateLoops(statement.then, counters, product, mode, pureHelper);
+          validateLoops(statement.else, counters, product, mode, pureHelper);
         }
       }
     }
@@ -1320,7 +1564,15 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
       if (['assignment', 'update'].includes(node.kind) && (test || (node.target?.kind === 'local' && counters.has(node.target.id)))) fail('pure loop test or counter mutation is invalid');
     });
   }
-  validateLoops(plan.entry && plan.entry.body);
+  function checkReadExpression(expression, counters, readonly = false) {
+    walkExpression(expression, node => {
+      if (node.kind === 'context-read' || node.kind === 'intrinsic' && !contract.CANONICAL_READ_LOOP_CONTRACT.valueIntrinsics.includes(node.name)
+        || node.kind === 'method-call' && (node.method !== 'string.trim' || node.arguments?.length)) fail('read loop contains an unsupported value operation');
+      if (['assignment', 'update'].includes(node.kind) && (readonly || node.target?.kind === 'local' && counters.has(node.target.id))) fail('read loop counter or effect input mutation is invalid');
+    });
+  }
+  for (const body of [plan.entry && plan.entry.body, ...[...(plan.handlers || []), ...(plan.stages || [])].map(handler => handler.body)]) validateLoops(body);
+  for (const helper of plan.helpers || []) validateLoops(helper.body, new Set(), 1, 'outside', helper.version === contract.CANONICAL_NATIVE_PURE_HELPER_VERSION);
   const visitor = (statement) => {
     if (!contract.CANONICAL_NATIVE_STATEMENT_KINDS.includes(statement.kind)) fail('statement kind is unknown', { kind: statement.kind });
     if (statement.kind === 'local' && !localIds.has(statement.localId)) fail('local statement references unknown local', { localId: statement.localId });
@@ -1337,6 +1589,73 @@ function validatePlanTree(plan, fail, localIds, effectIds, continuationIds) {
   };
   visitor.expression = (expression) => validateExpression(expression, fail, localIds);
   walkStatements(plan.entry && plan.entry.body, visitor);
+  for (const handler of [...(plan.handlers || []), ...(plan.stages || []), ...(plan.helpers || [])]) walkStatements(handler.body, visitor);
+}
+
+function validateHandlerBodies(plan, fail) {
+  const handlers = new Map();
+  const stages = new Set([...(plan.stages || []), ...(plan.helpers || [])].map(stage => stage.id));
+  const entries = new Map((plan.routing?.entries || []).map(entry => [entry.stableId, entry]));
+  const locals = Array.isArray(plan.locals) ? plan.locals : [];
+  const localsByOwner = new Map();
+  for (const local of locals) {
+    if (!localsByOwner.has(local.scopeId)) localsByOwner.set(local.scopeId, []);
+    localsByOwner.get(local.scopeId).push(local);
+  }
+  const effects = new Map((plan.effects || []).map(effect => [effect.id, effect]));
+  const calls = new Map();
+  for (const handler of plan.handlers || []) {
+    const entry = handler && entries.get(handler.id);
+    if (!handler || handlers.has(handler.id) || handler.version !== contract.CANONICAL_NATIVE_HANDLER_BODY_VERSION
+      || handler.family !== 'terminal-route' || entry?.kind !== 'route' || entry.nativeBody?.version !== 'pulse.router-native-body.v1'
+      || handler.handlerId !== entry.handlerId || !Array.isArray(handler.body)
+      || stableStringify(handler.source) !== stableStringify(entry.nativeBody.source)) {
+      fail('private handler body must have a unique terminal route identity and original source');
+      continue;
+    }
+    handlers.set(handler.id, handler);
+    const owned = localsByOwner.get(handler.id) || [];
+    if (stableStringify(handler.localIds) !== stableStringify(owned.map(local => local.id))) fail('private handler local namespace mismatch', { handlerId: handler.id });
+    if (owned.some(local => local.routerEntryStableId !== handler.id)) fail('private handler local ownership mismatch', { handlerId: handler.id });
+  }
+  for (const local of locals) {
+    if (local.scopeId !== 'entry' && !handlers.has(local.scopeId) && !stages.has(local.scopeId)) fail('local requires an existing lexical owner', { localId: local.id });
+    if (local.scopeId === 'entry' && local.routerEntryStableId !== undefined) fail('dispatcher local cannot claim private handler ownership', { localId: local.id });
+  }
+  function validateBody(body, owner) {
+    const owned = new Set((localsByOwner.get(owner) || []).map(local => local.id));
+    const checkEffect = id => {
+      const effect = effects.get(id);
+      if (owner !== 'entry' && effect?.routerEntryStableId !== owner) fail('private handler effect ownership mismatch', { effectId: id, owner });
+      for (const input of effect?.inputs || []) walkExpression(input.value, visitor.expression);
+      for (const arg of effect?.result?.decoder?.arguments || []) walkExpression(arg, visitor.expression);
+      if (effect?.result?.localId && !owned.has(effect.result.localId)) fail('effect result crosses a lexical boundary', { effectId: id });
+    };
+    const visitor = statement => {
+      if (statement.localId && !owned.has(statement.localId)) fail('statement crosses a lexical boundary', { localId: statement.localId });
+      if (statement.kind === 'stage-call' && owner !== 'entry') fail('stage calls cannot nest inside private handlers');
+      if (statement.kind === 'handler-call') {
+        if (owner !== 'entry' || !handlers.has(statement.handlerId)) fail('private handler call must originate in the dispatcher and select an existing body');
+        calls.set(statement.handlerId, (calls.get(statement.handlerId) || 0) + 1);
+      }
+      if (statement.kind === 'effect') checkEffect(statement.effectId);
+      if (statement.kind === 'effect-group') for (const id of statement.effectIds || []) checkEffect(id);
+    };
+    visitor.expression = expression => {
+      if (expression.kind === 'local' && !owned.has(expression.id)) fail('expression crosses a lexical boundary', { localId: expression.id, owner });
+    };
+    walkStatements(body, visitor);
+  }
+  validateBody(plan.entry?.body, 'entry');
+  for (const handler of handlers.values()) {
+    validateBody(handler.body, handler.id);
+    if (calls.get(handler.id) !== 1) fail('private handler requires exactly one static call', { handlerId: handler.id });
+  }
+  for (const continuation of plan.continuations || []) {
+    for (const effectId of continuation.effectIds || []) {
+      if (effects.get(effectId)?.routerEntryStableId !== continuation.routerEntryStableId) fail('continuation must resume in its effect owner', { effectId });
+    }
+  }
 }
 
 function assertCanonicalNativePlan(plan) {
@@ -1379,6 +1698,7 @@ function assertCanonicalNativePlan(plan) {
       }
     }
     if (!Array.isArray(plan.locals)) fail('plan locals must be an array');
+    if (!Array.isArray(plan.handlers)) fail('plan handlers must be an array');
     if (!Array.isArray(plan.effects)) fail('plan effects must be an array');
     if (!Array.isArray(plan.continuations)) fail('plan continuations must be an array');
     if (!Array.isArray(plan.states)) fail('plan states must be an array');
@@ -1438,11 +1758,36 @@ function assertCanonicalNativePlan(plan) {
       fail('plan logging evidence is invalid', { logging: plan.logging });
     }
 
+    if (plan.helpers !== undefined && !Array.isArray(plan.helpers)) {
+      throw new CanonicalNativePlanError('Invalid helper table.', [diagnostic(undefined, undefined, contract.CANONICAL_NATIVE_PLAN_DIAGNOSTIC_CODES.PLAN_INVALID, 'helpers must be an array')]);
+    }
     const unsigned = { ...plan };
     delete unsigned.planHash;
     const expectedHash = stableHash(stableStringify(unsigned));
     if (plan.planHash !== expectedHash) fail('plan hash mismatch', { expectedHash, actual: plan.planHash });
 
+    const application = plan.packages && plan.packages.application;
+    let packageCalls = 0;
+    const packageVisitor = () => {};
+    packageVisitor.expression = expression => { if (expression.kind === 'intrinsic' && expression.name === 'package.application') packageCalls++; };
+    walkStatements(plan.entry && plan.entry.body, packageVisitor);
+    for (const handler of plan.handlers || []) walkStatements(handler.body, packageVisitor);
+    if (application) {
+      const terminal = plan.entry?.body?.[0];
+      if (application.version !== 'pulse.package-native-application.v1' || application.automaticFallback !== false
+        || typeof application.contractId !== 'string' || !application.contractId
+        || typeof application.package !== 'string' || !application.package
+        || typeof application.intrinsic !== 'string' || !application.intrinsic
+        || typeof application.source !== 'string' || stableHash(application.source) !== application.sourceHash
+        || application.effectFailure !== 'package-completion'
+        || stableStringify(application.effects) !== stableStringify(plan.effects)
+        || stableStringify(application.continuations) !== stableStringify(plan.continuations)
+        || packageCalls !== 1 || plan.entry.kind !== 'handler' || plan.entry.body.length !== 1
+        || terminal.kind !== 'return' || terminal.value?.name !== 'package.application'
+        || terminal.value.arguments?.length !== 0 || plan.handlers?.length !== 0) {
+        fail('terminal package Native application does not match its source, entry, or effect plan');
+      }
+    } else if (packageCalls) fail('package application intrinsic requires a trusted Native source contribution');
     const locals = Array.isArray(plan.locals) ? plan.locals : [];
     const effects = Array.isArray(plan.effects) ? plan.effects : [];
     const continuations = Array.isArray(plan.continuations) ? plan.continuations : [];
@@ -1480,6 +1825,9 @@ function assertCanonicalNativePlan(plan) {
     }
 
     if (plan.entry && Array.isArray(plan.entry.body)) validatePlanTree(plan, fail, localIds, effectIds, continuationIds);
+    if (Array.isArray(plan.handlers)) validateHandlerBodies(plan, fail);
+    validateSharedStages(plan, fail, walkStatements, walkExpression, stableStringify);
+    require("./source-helper-plan").validateHelpers(plan, fail, walkStatements, walkExpression);
 
     const states = Array.isArray(plan.states) ? plan.states : [];
     if (states.length !== continuations.length + 1) fail('state table must contain entry plus one state per continuation', { expected: continuations.length + 1, actual: states.length });
@@ -1508,10 +1856,11 @@ function assertCanonicalNativePlan(plan) {
     };
     statementVisitor.expression = () => {};
     if (plan.entry && Array.isArray(plan.entry.body)) walkStatements(plan.entry.body, statementVisitor);
+    for (const handler of [...(plan.handlers || []), ...(plan.stages || []), ...(plan.helpers || [])]) walkStatements(handler.body, statementVisitor);
 
     if (!plan.summary || typeof plan.summary !== 'object') fail('plan summary is required');
     else {
-      const expectedSummary = summarizeNativePlan(plan.entry && plan.entry.body, locals, effects, continuations);
+      const expectedSummary = summarizeNativePlan(plan.entry && plan.entry.body, locals, effects, continuations, [...(plan.handlers || []), ...(plan.stages || []), ...(plan.helpers || [])]);
       for (const [key, expected] of Object.entries(expectedSummary)) {
         if (plan.summary[key] !== expected) fail(`summary ${key} mismatch`, { expected, actual: plan.summary[key] });
       }

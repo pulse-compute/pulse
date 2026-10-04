@@ -8,7 +8,7 @@ pulse-doc-meta:end -->
 # Package lowerer contract reference
 
 This reference describes the internal first-party lowerer protocol used by the
-synchronized `1.0.0-beta.5` release. It documents current repository
+synchronized `1.0.0-beta.6` release. It documents current repository
 interfaces; it is not a third-party plugin compatibility promise. Package
 availability remains owned by the release catalog.
 
@@ -285,6 +285,29 @@ Unknown result fields, owner/version mismatches, provider/compiler object
 bleed, and disagreement between diagnostics and `hasErrors` fail at this
 receiving boundary.
 
+## Terminal Native application contribution
+
+A trusted first-party manifest may additionally name `compiler.nativeApplicationExport`
+in the same compiler module. This internal hook applies only to a recognized
+terminal package application. It does not change package discovery or trust.
+The input is `{ plan, managedHandlerNativeBundle, schemaBundle }`; it contains
+static compiler facts and no provider instance or runtime values.
+
+The builder returns `pulse.package-native-application.v1` with matching
+`contractId`, `package`, and `intrinsic`, `automaticFallback: false`, generated
+`source` and `sourceHash`, canonical `effects`, `continuations`, `capabilities`,
+and a Native codec `manifest`. The compiler binds this contribution into the
+Native plan and requires one terminal `package.application` return with no
+additional handler bodies. Source hash and effect/continuation tables must agree.
+The selected provider must explicitly declare the matching
+`package-native-application` realization before ordinary project compilation.
+
+The contribution uses `effectFailure: 'package-completion'` and exports
+`pulse_package_set_effect_failure(index)`. Managed hosts authenticate failure
+settlement using the same single-use effect tickets as successful results.
+The package receives no host exception detail and owns its failure response.
+This version-locked hook is not a public plugin API.
+
 ## Canonical package effect
 
 A package effect passed into provider planning has this conceptual shape:
@@ -370,7 +393,7 @@ Package lowerer code must not choose `node.*`, `fastly.*`, backend names, store 
 
 ## Compatibility status
 
-This protocol is synchronized inside the `1.0.0-beta.5` release set. It can change with compiler implementation needs. Only explicitly documented application facades carry the package support promise.
+This protocol is synchronized inside the `1.0.0-beta.6` release set. It can change with compiler implementation needs. Only explicitly documented application facades carry the package support promise.
 
 A public external lowerer API would require a new contract that addresses trust, sandboxing, provenance, protocol negotiation, resource limits, lifecycle support, and semver compatibility.
 

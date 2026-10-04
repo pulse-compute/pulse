@@ -824,10 +824,13 @@ function planForRouters(sourceFile, routers, diagnostics) {
   });
 }
 
-function catalogForPlan(plan) {
-  const eligibility = Object.freeze(Object.fromEntries(
-    entitiesCatalogContracts.ENTITIES_CATALOG_TARGETS.map((target) => [target, true])
-  ));
+function schemaIssuesForEntity(entry, schemaBundle) {
+  const schemas = schemaBundle?.registry?.schemas || [];
+  return [...new Set([entry.inputSchema, entry.outputSchema].filter(Boolean))]
+    .flatMap(id => { const schema = schemas.find(item => item.id === id); const issue = schema && entitiesContracts.nativeEntitySchemaIssue(schema); return issue ? [issue] : []; });
+}
+
+function catalogForPlan(plan, schemaBundle) {
   return entitiesCatalogContracts.normalizeEntityCatalog({
     version: entitiesContracts.ENTITIES_CATALOG_VERSION,
     contractId: entitiesContracts.ENTITIES_CONTRACT_ID,
@@ -840,7 +843,8 @@ function catalogForPlan(plan) {
         inputSchema: entry.inputSchema,
         outputSchema: entry.outputSchema,
         ...(entry.metadata === undefined ? {} : { metadata: entry.metadata }),
-        eligibility
+        eligibility: Object.fromEntries(entitiesCatalogContracts.ENTITIES_CATALOG_TARGETS.map(target => [target,
+          !target.endsWith('-native') || schemaIssuesForEntity(entry, schemaBundle).length === 0]))
       }))
     }))
   });
@@ -895,7 +899,15 @@ const entityTargetEvidence = Object.freeze({
   })
 });
 
-function inspectionForPlan(plan, catalog) {
+function inspectionForPlan(plan, catalog, schemaBundle) {
+  const issues = plan.routers.flatMap(router => router.entities.flatMap(entry => schemaIssuesForEntity(entry, schemaBundle)));
+  const targetEvidence = target => target.endsWith('-native') && issues.length ? {
+    target, eligible: false, evidence: 'not-measured', runtimeExecutionMeasured: false,
+    providerRealityValidated: false, externalProviderExecution: false,
+    realization: entityTargetEvidence[target].realization,
+    reasonCode: entitiesContracts.ENTITIES_DIAGNOSTIC_CODES.TARGET_INELIGIBLE,
+    schemaIssues: issues, automaticFallback: false
+  } : entityTargetEvidence[target];
   return deepFreeze({
     version: 'pulse.entities-inspection.v1',
     contractId: entitiesContracts.ENTITIES_CONTRACT_ID,
@@ -923,7 +935,7 @@ function inspectionForPlan(plan, catalog) {
       }))
     })),
     targets: Object.freeze(Object.fromEntries(
-      entitiesCatalogContracts.ENTITIES_CATALOG_TARGETS.map((target) => [target, entityTargetEvidence[target]])
+      entitiesCatalogContracts.ENTITIES_CATALOG_TARGETS.map((target) => [target, targetEvidence(target)])
     )),
     diagnostics: Object.freeze([]),
     policy: Object.freeze({
@@ -932,7 +944,7 @@ function inspectionForPlan(plan, catalog) {
       nodeExecutionMeasured: true,
       fastlyCompileOnly: false,
       fastlyExternalExecutionClaimed: true,
-      fourModeExecutionMeasured: true,
+      fourModeExecutionMeasured: issues.length === 0,
       providerRealityValidated: true,
       runtimeValuesExcluded: true,
       rawPayloadsExcluded: true,
@@ -998,8 +1010,8 @@ function createEntitiesPackageCompilerBuilder(inputs = {}) {
   collectRouterCalls(ts, sourceFile, routers, handlers, schemaSets(inputs.schemaBundle), diagnostics);
 
   const plan = planForRouters(sourceFile, routers, diagnostics);
-  const catalog = catalogForPlan(plan);
-  const inspection = inspectionForPlan(plan, catalog);
+  const catalog = catalogForPlan(plan, inputs.schemaBundle);
+  const inspection = inspectionForPlan(plan, catalog, inputs.schemaBundle);
   const schemaReferences = routers.flatMap((router) => router.registrations.flatMap((entry) => entry.schemaReferences));
   const canonicalIntrinsics = routers.flatMap((router) => (
     router.bindings.length === 1 ? [intrinsicForBinding(sourceFile, router.bindings[0], plan)] : []
@@ -1134,6 +1146,9 @@ const entitiesLoweringBuilder = Object.freeze({
 
 module.exports = Object.freeze({
   createEntitiesPackageCompilerBuilder,
+  buildEntitiesCanonicalNativeApplication(input) {
+    return require('./pulsewasm.native.cjs').buildEntitiesCanonicalNativeApplication(input);
+  },
   buildEntitiesLoweringPlan: createEntitiesPackageCompilerBuilder,
   entitiesLoweringBuilder,
   ENTITIES_DIAGNOSTIC_CODES: entitiesContracts.ENTITIES_DIAGNOSTIC_CODES

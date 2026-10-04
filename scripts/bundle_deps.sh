@@ -143,6 +143,8 @@ cleanup() { rm -rf "$CONTEXT" "$EXPORT_STAGE"; }
 trap cleanup EXIT
 
 cp package.json pnpm-lock.yaml pnpm-workspace.yaml "$CONTEXT/"
+mkdir -p "$CONTEXT/scripts"
+cp scripts/pnpm-toolchain.cjs "$CONTEXT/scripts/pnpm-toolchain.cjs"
 mkdir -p "$CONTEXT/release"
 cp release/pulse-release-manifest.json "$CONTEXT/release/pulse-release-manifest.json"
 mkdir -p "$CONTEXT/wasm"
@@ -188,6 +190,7 @@ RUN apt-get update \
 WORKDIR /workspace
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY release/pulse-release-manifest.json ./release/pulse-release-manifest.json
+COPY scripts/pnpm-toolchain.cjs ./scripts/pnpm-toolchain.cjs
 COPY wasm/package.json ./wasm/package.json
 COPY wasm/packages/compiler/package.json ./wasm/packages/compiler/package.json
 
@@ -212,17 +215,16 @@ const lock = fs.readFileSync('pnpm-lock.yaml', 'utf8').replace(/\r\n/g, '\n');
 if (!lock.includes(`\n  xjb-as@${process.env.XJB_AS_VERSION}:\n`)) {
   throw new Error(`xjb-as ${process.env.XJB_AS_VERSION} is not pinned in the lockfile`);
 }
+// pnpm fetch reads lifecycle policy from the workspace configuration. This is
+// the disposable container copy; the source workspace and lockfile stay intact.
+const workspace = fs.readFileSync('pnpm-workspace.yaml', 'utf8');
+if (/^(?:ignoreScripts|trustLockfile):/m.test(workspace)) throw new Error('review bundle overrides for the declared pnpm workspace policy');
+fs.appendFileSync('pnpm-workspace.yaml', '\nignoreScripts: true\ntrustLockfile: false\n');
 NODE
 
-RUN mkdir -p /bundle/.validation-tools/pnpm /tmp/pnpm-pack \
- && npm pack --silent "pnpm@${PNPM_VERSION}" --pack-destination /tmp/pnpm-pack >/tmp/pnpm-tarball.txt \
- && PNPM_TARBALL="$(tail -n 1 /tmp/pnpm-tarball.txt)" \
- && tar -xzf "/tmp/pnpm-pack/${PNPM_TARBALL}" -C /tmp/pnpm-pack \
- && cp -a /tmp/pnpm-pack/package/. /bundle/.validation-tools/pnpm/ \
- && node /bundle/.validation-tools/pnpm/bin/pnpm.cjs --version | grep -Fx "${PNPM_VERSION}"
+RUN node scripts/pnpm-toolchain.cjs --install --root /bundle --version "${PNPM_VERSION}"
 
-RUN node /bundle/.validation-tools/pnpm/bin/pnpm.cjs fetch \
-      --frozen-lockfile \
+RUN /bundle/.validation-tools/pnpm/bin/pnpm fetch \
       --store-dir /bundle/.pnpm-store
 
 RUN node - <<'NODE'
@@ -244,6 +246,7 @@ const manifest = {
   nodeEngines: process.env.NODE_ENGINES,
   nodeMinimumVersion: process.env.NODE_MINIMUM_VERSION,
   pnpm: process.env.PNPM_VERSION,
+  lockfileVerification: 'verified-during-fetch-and-bound-by-sha256',
   assemblyscript: process.env.AS_VERSION,
   jsonAs: process.env.JSON_AS_VERSION,
   xjbAs: process.env.XJB_AS_VERSION,
@@ -331,6 +334,7 @@ const expected = {
   nodeEngines,
   nodeMinimumVersion,
   pnpm,
+  lockfileVerification: 'verified-during-fetch-and-bound-by-sha256',
   assemblyscript,
   jsonAs,
   xjbAs,

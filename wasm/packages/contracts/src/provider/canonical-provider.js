@@ -5,9 +5,12 @@ const CANONICAL_PROVIDER_PLAN_VERSION = 'pulse.canonical-provider-plan.v1';
 
 const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'request',
+  'request.body.forward',
   'response.json',
   'response.text',
   'response.custom',
+  'response.output',
+  'request.body.transform',
   'fetch',
   'time.wall-clock',
   'crypto.digestText',
@@ -23,10 +26,11 @@ const CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
   'grip.hold',
   'grip.publish',
   'grip.broadcast',
-  'jwt.verify',
+  'jwt.verify', 'jwt.sign',
   's3.head',
   's3.getText',
   's3.putText',
+  's3.getBody',
   'opaque.pass-through'
 ]);
 

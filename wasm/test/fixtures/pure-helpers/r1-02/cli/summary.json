@@ -1,0 +1,138 @@
+{
+  "status": "failed",
+  "gatePassed": false,
+  "developmentCoverage": "Three serial runs at one implementation commit; complete 22-task coverage, not a complete passing CLI replay or release seal.",
+  "implementationCommit": "696e3210bc6b19234968e231734e185cd3389f09",
+  "baselineCommit": "afce9f129d5c8e80099178261cbce0da6e3bb263",
+  "tasks": 22,
+  "passed": 20,
+  "failed": 2,
+  "comparisons": [
+    {
+      "task": "docs-example-05-fastly-capabilities",
+      "expectedBytes": 47135,
+      "cleanBaseBytes": 47185,
+      "candidateBytes": 47185,
+      "deltaBytes": 0
+    },
+    {
+      "task": "docs-example-09-router-lowering",
+      "expectedBytes": 9762,
+      "cleanBaseBytes": 9157,
+      "candidateBytes": 9157,
+      "deltaBytes": 0
+    }
+  ],
+  "results": [
+    {
+      "name": "cli-command-spec",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-init-workflow",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-project-workflow",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-expansion-doctor",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-project-guards",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-dev-workflow",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-schema-json-workflow",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "events-cli-workflow",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "cli-diagnostics",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-executable-contracts",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-executable-init-dev",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-migration-schema-lowering",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-01-hello-json",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-02-request-schema",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-03-fetch-composition",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-05-fastly-capabilities",
+      "status": "failed",
+      "exitCode": 1
+    },
+    {
+      "name": "docs-example-07-opaque-proxy",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-09-router-lowering",
+      "status": "failed",
+      "exitCode": 1
+    },
+    {
+      "name": "docs-example-10-entities-tools",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-11-events",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-12-mcp-proxy",
+      "status": "passed",
+      "exitCode": 0
+    },
+    {
+      "name": "docs-example-13-jwt-es256",
+      "status": "passed",
+      "exitCode": 0
+    }
+  ]
+}

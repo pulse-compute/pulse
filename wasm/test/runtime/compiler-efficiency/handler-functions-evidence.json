@@ -1,0 +1,1517 @@
+{
+  "version": "pulse.handler-functions-proof.v1",
+  "status": "passed",
+  "sourceRevision": "416ea9e69d1412159c86c67fc0feaf2d834354c8",
+  "workingTree": "",
+  "trackedDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "harnessSha256": "59902f8930a708215ca0b878d124ff4a5b01f5632477d4bcc2f1d773ddd054c3",
+  "fixtureHarnessSha256": "8d713aef82097e8e24f7ba6cd764cd8f4de6a0315faad9b86acba51944837580",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "node": "v24.19.0",
+  "binaryen": {
+    "name": "binaryen",
+    "version": "129.0.0-nightly.20260428",
+    "tools": [
+      {
+        "name": "wasm-as",
+        "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+      },
+      {
+        "name": "wasm-dis",
+        "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+      },
+      {
+        "name": "wasm-merge",
+        "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+      },
+      {
+        "name": "wasm-opt",
+        "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+      }
+    ]
+  },
+  "pairs": 3,
+  "cells": [
+    {
+      "count": 1,
+      "target": "node",
+      "profile": "default",
+      "fixtureSha256": "d7bd578f5332646d83e531ecc35ee94702c7ed444e2923fffc227e66ab9ead5a",
+      "sourceSha256": "7cc3f7f26b3642a2c526348f102d82bbe1dc3be01a510291da55c193d9c731d7",
+      "planHash": "9ab4a50eff8a82de087e620475eee13a5ac7a2db6593fb6f91b895e4e4daa967",
+      "wasmSha256": "c7a67ddb6c8e951b24b79a1186f7550a3de875a172ac75f3df95c4b7109133bf",
+      "wasmBytes": 5083,
+      "gzipBytes": 2057,
+      "sourceBytes": 47708,
+      "assemblyScript": "0.28.18",
+      "optimization": null,
+      "shape": {
+        "functions": 18,
+        "codeBodyBytes": 3391,
+        "largestFunction": {
+          "name": "canonical-native.as/__pulse_chunk_2",
+          "bytes": 1229
+        },
+        "stepBytes": 26,
+        "maxHandlerRootBytes": 1220,
+        "largestHandlerReachableBodyBytes": 1220,
+        "sharedFunctions": [],
+        "handlerCount": 1,
+        "chunkCount": 3,
+        "states": 47,
+        "locals": 9,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 1,
+        "sha256": "63fa7492b75a60f6bad1f4cf8b5b6adca6870513a59e1b1b9bc98ef18d944194",
+        "lastRoute": {
+          "status": 200,
+          "body": "0:16:done",
+          "effects": [
+            "/gate",
+            "/value/0"
+          ],
+          "handles": 84,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            },
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 23,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 46,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "budget": {
+          "limitedEffects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 1206.55011,
+          "planningMs": 175.27345099999997,
+          "compilerWorkerPeakRssBytes": 124043264,
+          "assemblyScriptPeakRssBytes": 276160512,
+          "coldModuleMs": 0.38648299999999836,
+          "coldRequestMs": 10.173225000000002,
+          "warmRequestMs": 1.5248584999999992,
+          "runtimeWorkerPeakRssBytes": 55681024
+        },
+        {
+          "sample": 1,
+          "buildMs": 1262.6800759999999,
+          "planningMs": 214.75280200000003,
+          "compilerWorkerPeakRssBytes": 125161472,
+          "assemblyScriptPeakRssBytes": 279396352,
+          "coldModuleMs": 0.4367689999999982,
+          "coldRequestMs": 10.303003000000004,
+          "warmRequestMs": 1.7948840000000004,
+          "runtimeWorkerPeakRssBytes": 55562240
+        },
+        {
+          "sample": 2,
+          "buildMs": 1191.489889,
+          "planningMs": 188.515376,
+          "compilerWorkerPeakRssBytes": 124796928,
+          "assemblyScriptPeakRssBytes": 278958080,
+          "coldModuleMs": 0.40107499999999874,
+          "coldRequestMs": 10.527791999999991,
+          "warmRequestMs": 1.4801885,
+          "runtimeWorkerPeakRssBytes": 55291904
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "target": "node",
+      "profile": "bounded-size",
+      "fixtureSha256": "d7bd578f5332646d83e531ecc35ee94702c7ed444e2923fffc227e66ab9ead5a",
+      "sourceSha256": "7cc3f7f26b3642a2c526348f102d82bbe1dc3be01a510291da55c193d9c731d7",
+      "planHash": "9ab4a50eff8a82de087e620475eee13a5ac7a2db6593fb6f91b895e4e4daa967",
+      "wasmSha256": "ff67fe2759f2ebd2dc7531c4924598dd4f26e476c2112c79754768214fedbe0c",
+      "wasmBytes": 4854,
+      "gzipBytes": 2021,
+      "sourceBytes": 47708,
+      "assemblyScript": "0.28.18",
+      "optimization": {
+        "version": "pulse.native-optimization.v1",
+        "mode": "experimental-native-bounded-size",
+        "experimental": true,
+        "goal": "size",
+        "assemblyScript": {
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2,
+          "converge": false
+        }
+      },
+      "shape": {
+        "functions": 22,
+        "codeBodyBytes": 3154,
+        "largestFunction": {
+          "name": "canonical-native.as/__pulse_chunk_1",
+          "bytes": 1139
+        },
+        "stepBytes": 26,
+        "maxHandlerRootBytes": 1139,
+        "largestHandlerReachableBodyBytes": 1139,
+        "sharedFunctions": [],
+        "handlerCount": 1,
+        "chunkCount": 3,
+        "states": 47,
+        "locals": 9,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 1,
+        "sha256": "63fa7492b75a60f6bad1f4cf8b5b6adca6870513a59e1b1b9bc98ef18d944194",
+        "lastRoute": {
+          "status": 200,
+          "body": "0:16:done",
+          "effects": [
+            "/gate",
+            "/value/0"
+          ],
+          "handles": 84,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            },
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 23,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 46,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "budget": {
+          "limitedEffects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 1116.815947,
+          "planningMs": 208.81192699999997,
+          "compilerWorkerPeakRssBytes": 124301312,
+          "assemblyScriptPeakRssBytes": 277438464,
+          "coldModuleMs": 0.4381009999999961,
+          "coldRequestMs": 11.120393000000007,
+          "warmRequestMs": 1.7572839999999998,
+          "runtimeWorkerPeakRssBytes": 55799808
+        },
+        {
+          "sample": 1,
+          "buildMs": 1212.369463,
+          "planningMs": 181.149118,
+          "compilerWorkerPeakRssBytes": 124829696,
+          "assemblyScriptPeakRssBytes": 276193280,
+          "coldModuleMs": 0.390037999999997,
+          "coldRequestMs": 11.42232100000001,
+          "warmRequestMs": 1.8558398000000011,
+          "runtimeWorkerPeakRssBytes": 55734272
+        },
+        {
+          "sample": 2,
+          "buildMs": 1119.634774,
+          "planningMs": 184.45229100000006,
+          "compilerWorkerPeakRssBytes": 125616128,
+          "assemblyScriptPeakRssBytes": 276996096,
+          "coldModuleMs": 0.34833500000000583,
+          "coldRequestMs": 11.493577000000002,
+          "warmRequestMs": 1.5646589000000006,
+          "runtimeWorkerPeakRssBytes": 55607296
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "target": "fastly",
+      "profile": "default",
+      "fixtureSha256": "d7bd578f5332646d83e531ecc35ee94702c7ed444e2923fffc227e66ab9ead5a",
+      "sourceSha256": "d68cccb038e4e2541a62a8ed7fdb469459c530dab9d850fb98ee31dd40a8523b",
+      "planHash": "9ab4a50eff8a82de087e620475eee13a5ac7a2db6593fb6f91b895e4e4daa967",
+      "wasmSha256": "5156ebcbbaaa959ce8e883a01bc429737420435b942ee627401a1558e149789d",
+      "wasmBytes": 41062,
+      "gzipBytes": 19035,
+      "sourceBytes": 154680,
+      "assemblyScript": "0.28.18",
+      "optimization": null,
+      "shape": {
+        "functions": 94,
+        "codeBodyBytes": 24614,
+        "largestFunction": {
+          "name": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+          "bytes": 1474
+        },
+        "stepBytes": 26,
+        "maxHandlerRootBytes": 1272,
+        "largestHandlerReachableBodyBytes": 1452,
+        "sharedFunctions": [],
+        "handlerCount": 1,
+        "chunkCount": 3,
+        "states": 47,
+        "locals": 9,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 1,
+        "sha256": "b8f4ae78d88e37308048ae68f5cde87524159d6910f8ea4f48f85bf3fdf8967c",
+        "lastRoute": {
+          "status": 200,
+          "body": "0:16:done",
+          "effects": [
+            "/gate",
+            "/value/0"
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 1989.7333859999999,
+          "planningMs": 163.42864599999996,
+          "compilerWorkerPeakRssBytes": 128163840,
+          "assemblyScriptPeakRssBytes": 272465920,
+          "coldModuleMs": 0.44160600000000017,
+          "coldRequestMs": 4.621737000000003,
+          "warmRequestMs": 0.8818824,
+          "runtimeWorkerPeakRssBytes": 54919168
+        },
+        {
+          "sample": 1,
+          "buildMs": 1986.730789,
+          "planningMs": 163.13568400000003,
+          "compilerWorkerPeakRssBytes": 125992960,
+          "assemblyScriptPeakRssBytes": 266919936,
+          "coldModuleMs": 3.6836529999999996,
+          "coldRequestMs": 4.488676999999996,
+          "warmRequestMs": 0.8262606000000006,
+          "runtimeWorkerPeakRssBytes": 54919168
+        },
+        {
+          "sample": 2,
+          "buildMs": 2008.2418519999999,
+          "planningMs": 180.01566100000002,
+          "compilerWorkerPeakRssBytes": 125771776,
+          "assemblyScriptPeakRssBytes": 294248448,
+          "coldModuleMs": 0.4076549999999983,
+          "coldRequestMs": 4.632754000000006,
+          "warmRequestMs": 0.8347814,
+          "runtimeWorkerPeakRssBytes": 54919168
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "target": "fastly",
+      "profile": "bounded-size",
+      "fixtureSha256": "d7bd578f5332646d83e531ecc35ee94702c7ed444e2923fffc227e66ab9ead5a",
+      "sourceSha256": "d68cccb038e4e2541a62a8ed7fdb469459c530dab9d850fb98ee31dd40a8523b",
+      "planHash": "9ab4a50eff8a82de087e620475eee13a5ac7a2db6593fb6f91b895e4e4daa967",
+      "wasmSha256": "8dfd9cd30eac0ccf262b64dba92072e5c44a32f0580d95b237ab31a9278a70b2",
+      "wasmBytes": 35421,
+      "gzipBytes": 17534,
+      "sourceBytes": 154680,
+      "assemblyScript": "0.28.18",
+      "optimization": {
+        "version": "pulse.native-optimization.v1",
+        "mode": "experimental-native-bounded-size",
+        "experimental": true,
+        "goal": "size",
+        "assemblyScript": {
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2,
+          "converge": false
+        }
+      },
+      "shape": {
+        "functions": 131,
+        "codeBodyBytes": 20620,
+        "largestFunction": {
+          "name": "~lib/util/string/strtod",
+          "bytes": 1428
+        },
+        "stepBytes": 29,
+        "maxHandlerRootBytes": 1147,
+        "largestHandlerReachableBodyBytes": 1428,
+        "sharedFunctions": [],
+        "handlerCount": 1,
+        "chunkCount": 3,
+        "states": 47,
+        "locals": 9,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 1,
+        "sha256": "b8f4ae78d88e37308048ae68f5cde87524159d6910f8ea4f48f85bf3fdf8967c",
+        "lastRoute": {
+          "status": 200,
+          "body": "0:16:done",
+          "effects": [
+            "/gate",
+            "/value/0"
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 1824.90527,
+          "planningMs": 172.241625,
+          "compilerWorkerPeakRssBytes": 126779392,
+          "assemblyScriptPeakRssBytes": 274325504,
+          "coldModuleMs": 0.49559200000000203,
+          "coldRequestMs": 5.117624999999997,
+          "warmRequestMs": 0.9809897999999997,
+          "runtimeWorkerPeakRssBytes": 55050240
+        },
+        {
+          "sample": 1,
+          "buildMs": 1822.1499169999997,
+          "planningMs": 172.852236,
+          "compilerWorkerPeakRssBytes": 126525440,
+          "assemblyScriptPeakRssBytes": 288460800,
+          "coldModuleMs": 0.4608649999999983,
+          "coldRequestMs": 7.993570999999996,
+          "warmRequestMs": 0.9642906999999994,
+          "runtimeWorkerPeakRssBytes": 55181312
+        },
+        {
+          "sample": 2,
+          "buildMs": 1880.02861,
+          "planningMs": 154.88449500000002,
+          "compilerWorkerPeakRssBytes": 126799872,
+          "assemblyScriptPeakRssBytes": 295571456,
+          "coldModuleMs": 0.5383119999999977,
+          "coldRequestMs": 8.992272,
+          "warmRequestMs": 2.1002381999999997,
+          "runtimeWorkerPeakRssBytes": 55181312
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "target": "node",
+      "profile": "default",
+      "fixtureSha256": "b236c2d96872a7e699e49c6545fbb2ebfb24418cf09d0d816f230ef498819b96",
+      "sourceSha256": "bba56542b39105896606feb2b38a24c311a6cbd514b1da35d2e159536f89aea9",
+      "planHash": "40f6b1f2eef2b31e33a7de53493a57504bd0635a7cea84395a9e55bef4ef2402",
+      "wasmSha256": "8516b868c75de60d9290bcc62a9991538f2e221b13ed4d87e4c850d15b4c486f",
+      "wasmBytes": 16223,
+      "gzipBytes": 4234,
+      "sourceBytes": 209310,
+      "assemblyScript": "0.28.18",
+      "optimization": null,
+      "shape": {
+        "functions": 41,
+        "codeBodyBytes": 13362,
+        "largestFunction": {
+          "name": "canonical-native.as/__pulse_chunk_9",
+          "bytes": 1242
+        },
+        "stepBytes": 191,
+        "maxHandlerRootBytes": 1242,
+        "largestHandlerReachableBodyBytes": 1242,
+        "sharedFunctions": [],
+        "handlerCount": 8,
+        "chunkCount": 17,
+        "states": 215,
+        "locals": 30,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 8,
+        "sha256": "1b1835668188117d629012c8b3eeed167d34dc6ef9a0fc60dfcbf7d2db823e44",
+        "lastRoute": {
+          "status": 200,
+          "body": "7:16:done",
+          "effects": [
+            "/gate",
+            "/value/7"
+          ],
+          "handles": 161,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            },
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 23,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 123,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "budget": {
+          "limitedEffects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 1654.024387,
+          "planningMs": 270.60984099999996,
+          "compilerWorkerPeakRssBytes": 149626880,
+          "assemblyScriptPeakRssBytes": 285995008,
+          "coldModuleMs": 3.679585000000003,
+          "coldRequestMs": 10.686084999999991,
+          "warmRequestMs": 1.7457999999999998,
+          "runtimeWorkerPeakRssBytes": 59183104
+        },
+        {
+          "sample": 1,
+          "buildMs": 1513.3327430000002,
+          "planningMs": 255.608004,
+          "compilerWorkerPeakRssBytes": 146944000,
+          "assemblyScriptPeakRssBytes": 287358976,
+          "coldModuleMs": 0.4584910000000022,
+          "coldRequestMs": 10.823924999999988,
+          "warmRequestMs": 1.5008452999999988,
+          "runtimeWorkerPeakRssBytes": 59191296
+        },
+        {
+          "sample": 2,
+          "buildMs": 1614.1765209999999,
+          "planningMs": 269.50128499999994,
+          "compilerWorkerPeakRssBytes": 150421504,
+          "assemblyScriptPeakRssBytes": 265551872,
+          "coldModuleMs": 0.43482499999999646,
+          "coldRequestMs": 11.609449999999995,
+          "warmRequestMs": 2.1957727000000005,
+          "runtimeWorkerPeakRssBytes": 58507264
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "target": "node",
+      "profile": "bounded-size",
+      "fixtureSha256": "b236c2d96872a7e699e49c6545fbb2ebfb24418cf09d0d816f230ef498819b96",
+      "sourceSha256": "bba56542b39105896606feb2b38a24c311a6cbd514b1da35d2e159536f89aea9",
+      "planHash": "40f6b1f2eef2b31e33a7de53493a57504bd0635a7cea84395a9e55bef4ef2402",
+      "wasmSha256": "218f37d952b0d3c5ece23ce3ca90c454093705e4b19e4b59c21104b8f9ff28b1",
+      "wasmBytes": 15387,
+      "gzipBytes": 4119,
+      "sourceBytes": 209310,
+      "assemblyScript": "0.28.18",
+      "optimization": {
+        "version": "pulse.native-optimization.v1",
+        "mode": "experimental-native-bounded-size",
+        "experimental": true,
+        "goal": "size",
+        "assemblyScript": {
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2,
+          "converge": false
+        }
+      },
+      "shape": {
+        "functions": 47,
+        "codeBodyBytes": 12514,
+        "largestFunction": {
+          "name": "canonical-native.as/__pulse_chunk_9",
+          "bytes": 1161
+        },
+        "stepBytes": 191,
+        "maxHandlerRootBytes": 1161,
+        "largestHandlerReachableBodyBytes": 1161,
+        "sharedFunctions": [],
+        "handlerCount": 8,
+        "chunkCount": 17,
+        "states": 215,
+        "locals": 30,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 8,
+        "sha256": "1b1835668188117d629012c8b3eeed167d34dc6ef9a0fc60dfcbf7d2db823e44",
+        "lastRoute": {
+          "status": 200,
+          "body": "7:16:done",
+          "effects": [
+            "/gate",
+            "/value/7"
+          ],
+          "handles": 161,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            },
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 23,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 123,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "budget": {
+          "limitedEffects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 1590.9538440000001,
+          "planningMs": 249.09726899999998,
+          "compilerWorkerPeakRssBytes": 149962752,
+          "assemblyScriptPeakRssBytes": 256966656,
+          "coldModuleMs": 3.7030420000000035,
+          "coldRequestMs": 13.739080000000001,
+          "warmRequestMs": 2.099957400000001,
+          "runtimeWorkerPeakRssBytes": 59219968
+        },
+        {
+          "sample": 1,
+          "buildMs": 1472.75442,
+          "planningMs": 264.688793,
+          "compilerWorkerPeakRssBytes": 149696512,
+          "assemblyScriptPeakRssBytes": 267309056,
+          "coldModuleMs": 0.4737340000000003,
+          "coldRequestMs": 10.570884000000007,
+          "warmRequestMs": 1.7104602,
+          "runtimeWorkerPeakRssBytes": 59006976
+        },
+        {
+          "sample": 2,
+          "buildMs": 1596.132847,
+          "planningMs": 356.108445,
+          "compilerWorkerPeakRssBytes": 149610496,
+          "assemblyScriptPeakRssBytes": 287346688,
+          "coldModuleMs": 0.5234179999999995,
+          "coldRequestMs": 11.361384000000001,
+          "warmRequestMs": 2.0928867999999996,
+          "runtimeWorkerPeakRssBytes": 58945536
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "target": "fastly",
+      "profile": "default",
+      "fixtureSha256": "b236c2d96872a7e699e49c6545fbb2ebfb24418cf09d0d816f230ef498819b96",
+      "sourceSha256": "e59a1a768dcf8f879efaae77199c4703868427093a75309e56d5b0374cc81d3f",
+      "planHash": "40f6b1f2eef2b31e33a7de53493a57504bd0635a7cea84395a9e55bef4ef2402",
+      "wasmSha256": "5be404c58ef96e37bf05753f6267d7db8c62198e8d9839d12180fe433ec570f9",
+      "wasmBytes": 55137,
+      "gzipBytes": 21597,
+      "sourceBytes": 325690,
+      "assemblyScript": "0.28.18",
+      "optimization": null,
+      "shape": {
+        "functions": 119,
+        "codeBodyBytes": 37474,
+        "largestFunction": {
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 3739
+        },
+        "stepBytes": 198,
+        "maxHandlerRootBytes": 1290,
+        "largestHandlerReachableBodyBytes": 1452,
+        "sharedFunctions": [],
+        "handlerCount": 8,
+        "chunkCount": 17,
+        "states": 215,
+        "locals": 30,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 8,
+        "sha256": "6fe418d65b168bdfbb23fa292e18597aa9521f60854babf8325a8cfc248a7baa",
+        "lastRoute": {
+          "status": 200,
+          "body": "7:16:done",
+          "effects": [
+            "/gate",
+            "/value/7"
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 2770.387522,
+          "planningMs": 287.16114899999997,
+          "compilerWorkerPeakRssBytes": 152322048,
+          "assemblyScriptPeakRssBytes": 282984448,
+          "coldModuleMs": 0.5146760000000015,
+          "coldRequestMs": 6.084902999999997,
+          "warmRequestMs": 2.2476985,
+          "runtimeWorkerPeakRssBytes": 62775296
+        },
+        {
+          "sample": 1,
+          "buildMs": 2611.6227470000003,
+          "planningMs": 257.18323900000007,
+          "compilerWorkerPeakRssBytes": 153812992,
+          "assemblyScriptPeakRssBytes": 297705472,
+          "coldModuleMs": 0.6337229999999963,
+          "coldRequestMs": 4.765052000000004,
+          "warmRequestMs": 1.1127307999999991,
+          "runtimeWorkerPeakRssBytes": 62365696
+        },
+        {
+          "sample": 2,
+          "buildMs": 2582.837439,
+          "planningMs": 259.297784,
+          "compilerWorkerPeakRssBytes": 151953408,
+          "assemblyScriptPeakRssBytes": 297766912,
+          "coldModuleMs": 3.7704120000000003,
+          "coldRequestMs": 4.951231999999997,
+          "warmRequestMs": 0.9169407000000007,
+          "runtimeWorkerPeakRssBytes": 62889984
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "target": "fastly",
+      "profile": "bounded-size",
+      "fixtureSha256": "b236c2d96872a7e699e49c6545fbb2ebfb24418cf09d0d816f230ef498819b96",
+      "sourceSha256": "e59a1a768dcf8f879efaae77199c4703868427093a75309e56d5b0374cc81d3f",
+      "planHash": "40f6b1f2eef2b31e33a7de53493a57504bd0635a7cea84395a9e55bef4ef2402",
+      "wasmSha256": "f2a533b3738fec6c269eafc85e0530f9e1845e2b70a290d48c2c32ed7fcd2c2a",
+      "wasmBytes": 47381,
+      "gzipBytes": 20026,
+      "sourceBytes": 325690,
+      "assemblyScript": "0.28.18",
+      "optimization": {
+        "version": "pulse.native-optimization.v1",
+        "mode": "experimental-native-bounded-size",
+        "experimental": true,
+        "goal": "size",
+        "assemblyScript": {
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2,
+          "converge": false
+        }
+      },
+      "shape": {
+        "functions": 159,
+        "codeBodyBytes": 31354,
+        "largestFunction": {
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 1776
+        },
+        "stepBytes": 208,
+        "maxHandlerRootBytes": 1169,
+        "largestHandlerReachableBodyBytes": 1428,
+        "sharedFunctions": [],
+        "handlerCount": 8,
+        "chunkCount": 17,
+        "states": 215,
+        "locals": 30,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 8,
+        "sha256": "6fe418d65b168bdfbb23fa292e18597aa9521f60854babf8325a8cfc248a7baa",
+        "lastRoute": {
+          "status": 200,
+          "body": "7:16:done",
+          "effects": [
+            "/gate",
+            "/value/7"
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 2373.4892609999997,
+          "planningMs": 286.83885499999997,
+          "compilerWorkerPeakRssBytes": 154271744,
+          "assemblyScriptPeakRssBytes": 318640128,
+          "coldModuleMs": 0.569108,
+          "coldRequestMs": 4.588175999999997,
+          "warmRequestMs": 0.9853141000000001,
+          "runtimeWorkerPeakRssBytes": 62799872
+        },
+        {
+          "sample": 1,
+          "buildMs": 2429.20098,
+          "planningMs": 274.13695200000006,
+          "compilerWorkerPeakRssBytes": 154447872,
+          "assemblyScriptPeakRssBytes": 291536896,
+          "coldModuleMs": 0.678803000000002,
+          "coldRequestMs": 5.8085650000000015,
+          "warmRequestMs": 1.0955031000000006,
+          "runtimeWorkerPeakRssBytes": 63016960
+        },
+        {
+          "sample": 2,
+          "buildMs": 2528.541433,
+          "planningMs": 269.787536,
+          "compilerWorkerPeakRssBytes": 152137728,
+          "assemblyScriptPeakRssBytes": 302989312,
+          "coldModuleMs": 0.4909099999999995,
+          "coldRequestMs": 8.410592000000001,
+          "warmRequestMs": 0.9570119999999995,
+          "runtimeWorkerPeakRssBytes": 62779392
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "target": "node",
+      "profile": "default",
+      "fixtureSha256": "8517ac171e16897a0292cc234229b8c5b80b8782154861e29614776546b4f3d3",
+      "sourceSha256": "46407b43666ce9e8e34ef7d9330436403fcf205e316ab4cab55edb091d7d5372",
+      "planHash": "bb625b23c9c531e6a61c3f808cb0f7f44ac2f3f6bc8eb785965590aeeae9f22c",
+      "wasmSha256": "46586acb9fec34953986f61d05a557476cdf8b8a34f727701889db44fef288f1",
+      "wasmBytes": 53832,
+      "gzipBytes": 10742,
+      "sourceBytes": 767671,
+      "assemblyScript": "0.28.18",
+      "optimization": null,
+      "shape": {
+        "functions": 115,
+        "codeBodyBytes": 46894,
+        "largestFunction": {
+          "name": "canonical-native.as/__pulse_chunk_9",
+          "bytes": 1247
+        },
+        "stepBytes": 768,
+        "maxHandlerRootBytes": 1247,
+        "largestHandlerReachableBodyBytes": 1247,
+        "sharedFunctions": [],
+        "handlerCount": 32,
+        "chunkCount": 65,
+        "states": 791,
+        "locals": 102,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 32,
+        "sha256": "a805df88d5d7190f1872fce9c060826ac2b59de30215bf2d2c4eb4f5c9df8a33",
+        "lastRoute": {
+          "status": 200,
+          "body": "31:16:done",
+          "effects": [
+            "/gate",
+            "/value/31"
+          ],
+          "handles": 425,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            },
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 23,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 387,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "budget": {
+          "limitedEffects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 3203.4012549999998,
+          "planningMs": 469.420853,
+          "compilerWorkerPeakRssBytes": 214695936,
+          "assemblyScriptPeakRssBytes": 312991744,
+          "coldModuleMs": 0.4295669999999987,
+          "coldRequestMs": 12.018439,
+          "warmRequestMs": 2.4753156000000005,
+          "runtimeWorkerPeakRssBytes": 69083136
+        },
+        {
+          "sample": 1,
+          "buildMs": 3042.7979139999998,
+          "planningMs": 446.71819300000004,
+          "compilerWorkerPeakRssBytes": 215416832,
+          "assemblyScriptPeakRssBytes": 329957376,
+          "coldModuleMs": 0.44521999999999906,
+          "coldRequestMs": 12.905276,
+          "warmRequestMs": 2.5793526000000013,
+          "runtimeWorkerPeakRssBytes": 68653056
+        },
+        {
+          "sample": 2,
+          "buildMs": 3060.2127,
+          "planningMs": 501.311796,
+          "compilerWorkerPeakRssBytes": 212123648,
+          "assemblyScriptPeakRssBytes": 313065472,
+          "coldModuleMs": 0.4126929999999973,
+          "coldRequestMs": 12.738951999999998,
+          "warmRequestMs": 3.0005645000000016,
+          "runtimeWorkerPeakRssBytes": 68902912
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "target": "node",
+      "profile": "bounded-size",
+      "fixtureSha256": "8517ac171e16897a0292cc234229b8c5b80b8782154861e29614776546b4f3d3",
+      "sourceSha256": "46407b43666ce9e8e34ef7d9330436403fcf205e316ab4cab55edb091d7d5372",
+      "planHash": "bb625b23c9c531e6a61c3f808cb0f7f44ac2f3f6bc8eb785965590aeeae9f22c",
+      "wasmSha256": "6f6802d30ba1031d8c1ea2e754a9ec650c935c206198aecf3147b7080b6bab9d",
+      "wasmBytes": 50989,
+      "gzipBytes": 10465,
+      "sourceBytes": 767671,
+      "assemblyScript": "0.28.18",
+      "optimization": {
+        "version": "pulse.native-optimization.v1",
+        "mode": "experimental-native-bounded-size",
+        "experimental": true,
+        "goal": "size",
+        "assemblyScript": {
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2,
+          "converge": false
+        }
+      },
+      "shape": {
+        "functions": 119,
+        "codeBodyBytes": 44044,
+        "largestFunction": {
+          "name": "canonical-native.as/__pulse_chunk_9",
+          "bytes": 1166
+        },
+        "stepBytes": 772,
+        "maxHandlerRootBytes": 1166,
+        "largestHandlerReachableBodyBytes": 1166,
+        "sharedFunctions": [],
+        "handlerCount": 32,
+        "chunkCount": 65,
+        "states": 791,
+        "locals": 102,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 32,
+        "sha256": "a805df88d5d7190f1872fce9c060826ac2b59de30215bf2d2c4eb4f5c9df8a33",
+        "lastRoute": {
+          "status": 200,
+          "body": "31:16:done",
+          "effects": [
+            "/gate",
+            "/value/31"
+          ],
+          "handles": 425,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            },
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 23,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ],
+          "handles": 387,
+          "continuations": [
+            {
+              "states": [
+                "created",
+                "waiting",
+                "resumed",
+                "completed"
+              ]
+            }
+          ]
+        },
+        "budget": {
+          "limitedEffects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 2964.921052,
+          "planningMs": 485.982152,
+          "compilerWorkerPeakRssBytes": 209457152,
+          "assemblyScriptPeakRssBytes": 329076736,
+          "coldModuleMs": 0.4179899999999961,
+          "coldRequestMs": 13.603015999999997,
+          "warmRequestMs": 2.3172234000000005,
+          "runtimeWorkerPeakRssBytes": 68657152
+        },
+        {
+          "sample": 1,
+          "buildMs": 3181.4706600000004,
+          "planningMs": 513.1384410000001,
+          "compilerWorkerPeakRssBytes": 214597632,
+          "assemblyScriptPeakRssBytes": 330346496,
+          "coldModuleMs": 1.0376049999999992,
+          "coldRequestMs": 13.405081999999993,
+          "warmRequestMs": 2.3428156,
+          "runtimeWorkerPeakRssBytes": 68399104
+        },
+        {
+          "sample": 2,
+          "buildMs": 2872.840331,
+          "planningMs": 417.529182,
+          "compilerWorkerPeakRssBytes": 212545536,
+          "assemblyScriptPeakRssBytes": 331403264,
+          "coldModuleMs": 0.40243600000000157,
+          "coldRequestMs": 11.651198000000008,
+          "warmRequestMs": 2.1693922,
+          "runtimeWorkerPeakRssBytes": 69193728
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "target": "fastly",
+      "profile": "default",
+      "fixtureSha256": "8517ac171e16897a0292cc234229b8c5b80b8782154861e29614776546b4f3d3",
+      "sourceSha256": "ce3212fe17da2a6996ebc0cb0a2d885b1da768852e21ab818b26cff1dd936456",
+      "planHash": "bb625b23c9c531e6a61c3f808cb0f7f44ac2f3f6bc8eb785965590aeeae9f22c",
+      "wasmSha256": "5cf4845e2e8fae45144d36e87db93053f336bb5de3e19d4de9c902bc88416c78",
+      "wasmBytes": 102623,
+      "gzipBytes": 29261,
+      "sourceBytes": 916561,
+      "assemblyScript": "0.28.18",
+      "optimization": null,
+      "shape": {
+        "functions": 193,
+        "codeBodyBytes": 80726,
+        "largestFunction": {
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 11788
+        },
+        "stepBytes": 832,
+        "maxHandlerRootBytes": 1294,
+        "largestHandlerReachableBodyBytes": 1452,
+        "sharedFunctions": [],
+        "handlerCount": 32,
+        "chunkCount": 65,
+        "states": 791,
+        "locals": 102,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 32,
+        "sha256": "d5ddb2d0d644cc25c206102723cd65a395c96f778bc281fc5b765d9e4e21bc84",
+        "lastRoute": {
+          "status": 200,
+          "body": "31:16:done",
+          "effects": [
+            "/gate",
+            "/value/31"
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 4811.660995,
+          "planningMs": 491.848544,
+          "compilerWorkerPeakRssBytes": 216748032,
+          "assemblyScriptPeakRssBytes": 328773632,
+          "coldModuleMs": 0.5479860000000016,
+          "coldRequestMs": 6.780599000000002,
+          "warmRequestMs": 1.2053496000000004,
+          "runtimeWorkerPeakRssBytes": 89522176
+        },
+        {
+          "sample": 1,
+          "buildMs": 4569.8391520000005,
+          "planningMs": 445.16905099999997,
+          "compilerWorkerPeakRssBytes": 218365952,
+          "assemblyScriptPeakRssBytes": 365355008,
+          "coldModuleMs": 0.6601749999999953,
+          "coldRequestMs": 9.228667000000002,
+          "warmRequestMs": 1.3105687999999993,
+          "runtimeWorkerPeakRssBytes": 89632768
+        },
+        {
+          "sample": 2,
+          "buildMs": 4730.137035,
+          "planningMs": 460.27929900000004,
+          "compilerWorkerPeakRssBytes": 218341376,
+          "assemblyScriptPeakRssBytes": 331804672,
+          "coldModuleMs": 0.5223269999999971,
+          "coldRequestMs": 5.458106000000001,
+          "warmRequestMs": 1.1588353999999996,
+          "runtimeWorkerPeakRssBytes": 89710592
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "target": "fastly",
+      "profile": "bounded-size",
+      "fixtureSha256": "8517ac171e16897a0292cc234229b8c5b80b8782154861e29614776546b4f3d3",
+      "sourceSha256": "ce3212fe17da2a6996ebc0cb0a2d885b1da768852e21ab818b26cff1dd936456",
+      "planHash": "bb625b23c9c531e6a61c3f808cb0f7f44ac2f3f6bc8eb785965590aeeae9f22c",
+      "wasmSha256": "6a6aa6088ba5236b5e409fc6233cffe72bdc4ac7cfa54aa2ceb7f39718fe24a3",
+      "wasmBytes": 87500,
+      "gzipBytes": 27446,
+      "sourceBytes": 916561,
+      "assemblyScript": "0.28.18",
+      "optimization": {
+        "version": "pulse.native-optimization.v1",
+        "mode": "experimental-native-bounded-size",
+        "experimental": true,
+        "goal": "size",
+        "assemblyScript": {
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2,
+          "converge": false
+        }
+      },
+      "shape": {
+        "functions": 234,
+        "codeBodyBytes": 67248,
+        "largestFunction": {
+          "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+          "bytes": 5313
+        },
+        "stepBytes": 832,
+        "maxHandlerRootBytes": 1173,
+        "largestHandlerReachableBodyBytes": 1428,
+        "sharedFunctions": [],
+        "handlerCount": 32,
+        "chunkCount": 65,
+        "states": 791,
+        "locals": 102,
+        "namedCompanionSectionsByteExact": true,
+        "indirectCalls": 0,
+        "tables": 0
+      },
+      "semantics": {
+        "routeCount": 32,
+        "sha256": "d5ddb2d0d644cc25c206102723cd65a395c96f778bc281fc5b765d9e4e21bc84",
+        "lastRoute": {
+          "status": 200,
+          "body": "31:16:done",
+          "effects": [
+            "/gate",
+            "/value/31"
+          ]
+        },
+        "stop": {
+          "status": 200,
+          "body": "stopped",
+          "effects": [
+            "/gate"
+          ]
+        },
+        "missing": {
+          "status": 404,
+          "body": "Not Found",
+          "effects": [
+            "/gate"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "sample": 0,
+          "buildMs": 4023.1216430000004,
+          "planningMs": 425.24285299999997,
+          "compilerWorkerPeakRssBytes": 219607040,
+          "assemblyScriptPeakRssBytes": 345280512,
+          "coldModuleMs": 0.4266229999999993,
+          "coldRequestMs": 5.450723999999994,
+          "warmRequestMs": 1.2140084999999985,
+          "runtimeWorkerPeakRssBytes": 89763840
+        },
+        {
+          "sample": 1,
+          "buildMs": 4065.5721350000003,
+          "planningMs": 436.41703900000005,
+          "compilerWorkerPeakRssBytes": 226004992,
+          "assemblyScriptPeakRssBytes": 340058112,
+          "coldModuleMs": 0.4884059999999977,
+          "coldRequestMs": 5.423222000000003,
+          "warmRequestMs": 1.1850166999999998,
+          "runtimeWorkerPeakRssBytes": 88330240
+        },
+        {
+          "sample": 2,
+          "buildMs": 4361.712536,
+          "planningMs": 520.4272860000001,
+          "compilerWorkerPeakRssBytes": 219983872,
+          "assemblyScriptPeakRssBytes": 353083392,
+          "coldModuleMs": 0.49859199999999504,
+          "coldRequestMs": 5.651728999999996,
+          "warmRequestMs": 1.5543525999999992,
+          "runtimeWorkerPeakRssBytes": 89853952
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Synthetic terminal-route family only; indivisible pure loops can exceed chunk targets.",
+    "Existing B02 lowering is qualified, not a new optimization or a public function feature.",
+    "Timed builds omit text/debug output; named inspection builds are separate and must match all non-custom sections.",
+    "Fastly uses the injected ABI host; no deployed cold-start claim.",
+    "Compiler worker/AssemblyScript peaks are separate processes, not aggregate or guest live memory.",
+    "Cold module and cold request use different fresh processes. Warm requests use fresh instances and normal engine cache behavior."
+  ],
+  "productionBase": "e2a289b7ba2baf7375533fbd21b453c4707271a4",
+  "rawReportSha256": "7515b3fdd941ee05044706602031653d7896029a74f3e215b8276813e8d5f53c",
+  "rawReport": "wasm/.test-results/compiler-efficiency/b03/2026-09-24T21-43-41-428Z/measurements.json"
+}

@@ -1,0 +1,22 @@
+scalar-control admitted
+decoded-record-field admitted
+numeric-array-borrow admitted
+numeric-array-projection admitted
+string-array-parameter rejected
+string-array-element rejected
+string-array-literal rejected
+flat-record-array-parameter rejected
+flat-constant-index-unguarded rejected
+flat-constant-index-guarded rejected
+flat-bounded-direct-projection rejected
+flat-bounded-element-alias rejected
+flat-bounded-array-alias rejected
+flat-bounded-loop-spread rejected
+flat-literal-array rejected
+optional-element-field rejected
+nested-record-element rejected
+nested-array-element rejected
+numeric-borrow-mutation rejected
+structured-result rejected
+excessive-loop-product rejected
+{"status":"passed","counts":{"cases":21,"admitted":4,"rejected":17},"output":"/tmp/pulse-n01-initial.json"}

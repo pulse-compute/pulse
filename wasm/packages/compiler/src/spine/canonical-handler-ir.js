@@ -39,7 +39,9 @@ function annotateSites(effectSites, continuationSites, routerMetadata) {
   }
 
   function annotate(site) {
-    const owner = ownerForPosition(site && site.position);
+    // Package diagnostics retain authored locations, including imported files.
+    // Router ownership instead follows the mapped call in generated source.
+    const owner = ownerForPosition(site && (site.generatedPosition || site.position));
     if (!owner) return site;
     const ownerKind = owner.kind || 'route';
     const plane = owner.plane || (ownerKind === 'event' ? 'event' : 'http');

@@ -7,9 +7,9 @@
 > **Supported entry points:** `@pulse-compute/entities`<br>
 > **Stability:** The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only.<br>
 > **npm:** [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities)<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/entities/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.6/packages/entities/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.6` package policy.
 <!-- pulse-package-status:end -->
 
 Bounded, statically declared operations for Pulse applications.
@@ -85,9 +85,11 @@ application values.
 The JavaScript package target is `supported`; Native is
 `provider-dependent`. One shared corpus has measured Node JavaScript, Node
 Native, Fastly JavaScript, and Fastly Native execution. Fastly evidence uses
-Viceroy 0.20.1. Fastly Native uses an explicit provider-owned adapter over the
-exact package-owned Native source; that adapter is not wired into the ordinary
-Fastly Native project build. No target has automatic JavaScript fallback.
+Viceroy 0.20.1. Ordinary Fastly Native builds bind the package-owned Native
+application through the provider canonical runtime and emit `bin/main.wasm`.
+Test/dev use the Fastly fixture ABI; a separate Viceroy replay executes the exact
+emitted artifact. This is local evidence, not live deployment acceptance.
+No target has automatic JavaScript fallback.
 
 ## Diagnostics
 
@@ -107,8 +109,8 @@ groups are:
 - eligibility: `PULSE_ENTITIES_TARGET_INELIGIBLE`.
 
 The package diagnostics are part of the synchronized Beta diagnostic catalog.
-See the [Entities package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/entities/)
-for remediation and the [entity/adapter model](https://pulsecompute.io/v1.0.0-beta.5/concepts/entities-and-adapters/)
+See the [Entities package guide](https://pulsecompute.io/v1.0.0-beta.6/packages/entities/)
+for remediation and the [entity/adapter model](https://pulsecompute.io/v1.0.0-beta.6/concepts/entities-and-adapters/)
 for the authority boundary.
 
 ## Deliberate exclusions

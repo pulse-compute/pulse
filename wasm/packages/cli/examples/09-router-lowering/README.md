@@ -80,10 +80,10 @@ pulse test --json
 
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
-| `canonical-native.wasm` | 15.1 KiB (15,450 bytes) | 14.3 KiB (14,662 bytes) | 5.1% |
+| `canonical-native.wasm` | 8.9 KiB (9,157 bytes) | 8.5 KiB (8,753 bytes) | 4.4% |
 
 The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.5`. These are uncompressed on-disk sizes, not transfer sizes or
+`1.0.0-beta.6`. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits.
 The artifact includes checks that transfer application data failures to the
 next error handler.

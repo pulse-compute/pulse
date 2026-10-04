@@ -10,6 +10,11 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 
 | Variable | Scope | Stability |
 |---|---|---|
+| [`PULSE_RELEASE_FEATURE_REPORT_DIR`](#pulse-release-feature-report-dir) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
+| [`PULSEWASM_SUITE_TASK`](#pulsewasm-suite-task) | Contributor and test-only configuration | Harness-internal; not a user or application setting. |
+| [`PULSE_B02_BASELINE_ROOT`](#pulse-b02-baseline-root) | Contributor and test-only configuration | Contributor/test-only; outside the application compatibility contract. |
+| [`PULSE_B02_USAGE_DIR`](#pulse-b02-usage-dir) | Contributor and test-only configuration | Harness-internal test control; not a user or application setting. |
+| [`PULSE_B03_USAGE_DIR`](#pulse-b03-usage-dir) | Contributor and test-only configuration | Harness-internal test control; not a user or application setting. |
 | [`PULSE_FASTLY_BIN`](#pulse-fastly-bin) | Supported tooling configuration | Supported Beta tooling override. |
 | [`PULSE_VICEROY_BIN`](#pulse-viceroy-bin) | Supported tooling configuration | Supported Beta tooling override. |
 | [`PULSE_PROFILE`](#pulse-profile) | Supported tooling configuration | Supported project-selection input. |
@@ -29,6 +34,7 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 | [`PULSE_ES256_REPRODUCTION_ARCHIVE`](#pulse-es256-reproduction-archive) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
 | [`PULSE_RUST_CARGO`](#pulse-rust-cargo) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
 | [`PULSE_RUSTC`](#pulse-rustc) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
+| [`PULSEWASM_MEM03_BASE`](#pulsewasm-mem03-base) | Contributor and test-only configuration | Contributor/test-only proof reproduction control. |
 
 ## Supported tooling configuration
 
@@ -85,6 +91,86 @@ Selects the flat Pulse project profile when no explicit `--profile` option is su
 ## Contributor and test-only configuration
 
 Repository harness controls. They are intentionally outside the application compatibility contract.
+
+<a id="pulse-release-feature-report-dir"></a>
+
+### `PULSE_RELEASE_FEATURE_REPORT_DIR`
+
+Routes each installed proof into a task-specific report for the candidate release decision.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Unset; focused installed tests use their own report directories. |
+| Precedence | The complete feature replay assigns a fresh directory to its child runner. |
+| Consumer | Installed feature acceptance report routing. |
+| Secret safety | Not a secret. Contains source, package and acceptance evidence only. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
+
+<a id="pulsewasm-suite-task"></a>
+
+### `PULSEWASM_SUITE_TASK`
+
+Identifies the current registered test task so forwarding target proofs have distinct reports.
+
+| Property | Contract |
+|---|---|
+| Value | Registered task ID |
+| Default | Assigned by the test runner for each task. |
+| Precedence | The runner overrides any inherited task identity. |
+| Consumer | Installed acceptance report routing and task harnesses. |
+| Secret safety | Not a secret. It selects only the report filename. |
+| Stability | Harness-internal; not a user or application setting. |
+| Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
+
+<a id="pulse-b02-baseline-root"></a>
+
+### `PULSE_B02_BASELINE_ROOT`
+
+Identifies a restored pre-B02 checkout for alternating baseline/candidate compiler measurements.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Unset; the manual B02 benchmark requires an explicit baseline checkout. |
+| Precedence | Selects the baseline; the candidate is the checkout containing the harness. |
+| Consumer | Manual B02 terminal Router body cost proof. |
+| Secret safety | Not a secret. The harness executes compiler code from this checkout; use trusted source. |
+| Stability | Contributor/test-only; outside the application compatibility contract. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
+
+<a id="pulse-b02-usage-dir"></a>
+
+### `PULSE_B02_USAGE_DIR`
+
+Passes the isolated measurement directory to the temporary compiler preload collector.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Created separately for each sample by the B02 benchmark harness. |
+| Precedence | The harness supplies and overrides this value in each child process. |
+| Consumer | B02 AssemblyScript child-process RSS collector. |
+| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
+| Stability | Harness-internal test control; not a user or application setting. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b02-handler-cost.cjs` |
+
+<a id="pulse-b03-usage-dir"></a>
+
+### `PULSE_B03_USAGE_DIR`
+
+Keeps compiler-process RSS separate from the planning worker and cold execution measurements.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Created separately for each sample by the B03 benchmark harness. |
+| Precedence | The harness supplies and overrides this value in each compiler child process. |
+| Consumer | B03 AssemblyScript child-process RSS collector. |
+| Secret safety | Not a secret. Contains temporary process IDs and peak RSS measurements. |
+| Stability | Harness-internal test control; not a user or application setting. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/b03-handler-functions.cjs` |
 
 <a id="pulse-release-ref"></a>
 
@@ -341,6 +427,22 @@ Selects the Rust compiler used to reproduce the sealed first-party Rust guest pr
 | Secret safety | Not a secret. Do not point it at an untrusted executable. |
 | Stability | Contributor/test-only proof reproduction control. |
 | Source owners | `wasm/test/guest-link/assert-scalar-link-control.cjs`, `wasm/test/guest-link/assert-memory-matrix.cjs`, `wasm/test/guest-link/assert-final-artifact-reality.cjs` |
+
+<a id="pulsewasm-mem03-base"></a>
+
+### `PULSEWASM_MEM03_BASE`
+
+Selects an explicit baseline generator revision for paired semantic and allocator measurements.
+
+| Property | Contract |
+|---|---|
+| Value | Git commit or ref |
+| Default | Merged GEN01 commit `8a6f2ff`. |
+| Precedence | When set, selects the baseline generator source loaded from git; all other dependencies come from the candidate checkout. |
+| Consumer | Manual MEM03 Fastly schema encode materialization proof. |
+| Secret safety | Not a secret. Use only a trusted baseline generator revision for the proof. |
+| Stability | Contributor/test-only proof reproduction control. |
+| Source owners | `wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.cjs` |
 
 ## Standard process variables
 

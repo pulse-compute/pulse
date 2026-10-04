@@ -51,7 +51,7 @@ async function main() {
     }));
     fs.mkdirSync(path.join(root, 'node_modules'), { recursive: true });
     fs.mkdirSync(path.join(root, 'node_modules/@pulse-compute'), { recursive: true });
-    for (const name of ['pulse', 'runtime', 'provider-node']) {
+    for (const name of ['pulse', 'runtime', 'provider-node', 'crypto', 'grip']) {
       fs.symlinkSync(path.join(repoRoot, 'packages', name), path.join(root, 'node_modules/@pulse-compute', name), process.platform === 'win32' ? 'junction' : 'dir');
     }
     write('node_modules/@fixture/ordinary/package.json', JSON.stringify({ name: '@fixture/ordinary', version: '1.0.0', main: 'index.cjs' }));
@@ -61,7 +61,7 @@ async function main() {
     };\n`);
     write('.pulse/config.ts', `import { defineConfig } from '@pulse-compute/pulse';
       export default defineConfig((scope) => ({
-        pulse: { entry: 'src/index.ts', tests: 'tests/pulse.harness.ts', defaultProfile: 'javascript', strict: false },
+        pulse: { entry: 'src/index.ts', tests: 'tests/pulse.harness.ts', defaultProfile: 'javascript', strict: false, crypto: ['SHA-256'] },
         javascript: { host: 'node', target: 'javascript', outDir: 'dist' },
         native: { host: 'node', target: 'native', outDir: 'native-dist' }
       }));\n`);
@@ -149,6 +149,59 @@ async function main() {
     assert.throws(() => compile('native'), (e) => e.diagnostics.some((d) => d.code === 'PULSE_PROJECT_RUNTIME_VALUE_IMPORT_UNSUPPORTED'));
     assert.equal(parseJson(run(['doctor', '--json'], root)).summary.failed, 0);
     assert.equal(parseJson(run(['test', '--json'], root)).summary.passed, 1);
+
+    // Normal JavaScript builds execute package calls in source helpers. Only
+    // registered handlers are normalized; their package sites must still link,
+    // including when the same handler is registered more than once.
+    const compilePackageProject = () => require('../../packages/cli/src/project-execution.js').compileProject(
+      require('../../packages/cli/src/project-config.js').resolveProject({ cwd: root }));
+    const helperSource = `export const helper = async (ctx, text) => {
+      const digest = await crypto.digestText(ctx, text);
+      const socket = grip.isWebSocket(ctx.req);
+      return { hash: digest.sha256, socket };
+    };`;
+    const packageImports = `import { crypto } from '@pulse-compute/crypto';
+      import { grip } from '@pulse-compute/grip';`;
+    const routerSource = `const app = new Pulse({ auto: true });
+      const handler = async (ctx) => {
+        const direct = await crypto.digestText(ctx, 'abc');
+        const socket = grip.isWebSocket(ctx.req);
+        const result = await helper(ctx, 'abc');
+        return ctx.json({ direct: direct.sha256, socket, result });
+      };
+      app.get('/health', handler); app.get('/again', handler); export default app;`;
+    const hash = require('node:crypto').createHash('sha256').update('abc').digest('hex');
+    const expected = { direct: hash, socket: false, result: { hash, socket: false } };
+    write('tests/pulse.harness.ts', `export default ${JSON.stringify(['/health', '/again'].map((route) => ({
+      name: route, request: { method: 'GET', path: route }, expect: { status: 200, json: expected }
+    })))};`);
+    for (const imported of [false, true]) {
+      write('src/package-helper.ts', `${packageImports} ${helperSource}`);
+      write('src/index.ts', `import { Pulse } from '@pulse-compute/pulse'; ${packageImports}
+        ${imported ? "import { helper } from './package-helper';" : helperSource} ${routerSource}`);
+      const compiled = compilePackageProject();
+      assert.equal(compiled.packageExtensions.effects.length, 2, 'retain all authored package effects');
+      assert.equal(compiled.packageExtensions.intrinsics.length, 2, 'retain all authored package intrinsics');
+      assert.equal(compiled.metadata.effectSites.filter((site) => site.kind === 'crypto.digestText').length, 2,
+        'link the direct effect for each registration');
+      assert.equal(compiled.generatedSource, undefined);
+      const built = parseJson(run(['build', '--out', `package-${imported}`, '--json'], root));
+      assert.equal(built.buildMode, 'javascript-source-package');
+      const request = createRequire(path.join(root, 'package.json'));
+      const application = request(built.files.entry);
+      const { executeNodeJavascriptTestCase } = request('@pulse-compute/provider-node/javascript/test-runtime');
+      for (const route of ['/health', '/again']) {
+        const executed = await executeNodeJavascriptTestCase(application, {
+          name: route, request: { method: 'GET', path: route, headers: [] }
+        }, { provider: 'node', strict: false, networkFetch: false });
+        assert.equal(executed.response.status, 200);
+        assert.deepEqual(JSON.parse(executed.response.body), expected);
+      }
+      assert.equal(parseJson(run(['test', '--json'], root)).summary.passed, 2);
+    }
+    // Recognition must still validate effects that stay in source helpers.
+    write('src/package-helper.ts', `${packageImports} ${helperSource.replace('await crypto.digestText', 'crypto.digestText')}`);
+    assert.throws(compilePackageProject, (e) => e.diagnostics.some((d) => d.code === 'PULSEWASM_CRYPTO_DIGEST_PLACEMENT'));
 
     // JavaScript selection does not relax graph containment, lifecycle, or
     // canonical effect validation, and arbitrary target spellings fail closed.

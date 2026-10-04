@@ -1,0 +1,26 @@
+{
+  "status": "not-passed: two pre-existing byte-snapshot failures",
+  "coverage": "all 22 CLI tasks across three serial development runs; not one passing aggregate",
+  "completed": 22,
+  "passed": 20,
+  "failed": [
+    {
+      "task": "docs-example-05-fastly-capabilities",
+      "baselineActualBytes": 47185,
+      "currentActualBytes": 47185,
+      "documentedExpectedBytes": 47135,
+      "deltaBytes": 0
+    },
+    {
+      "task": "docs-example-09-router-lowering",
+      "baselineActualBytes": 9157,
+      "currentActualBytes": 9157,
+      "documentedExpectedBytes": 9762,
+      "deltaBytes": 0
+    }
+  ],
+  "baselineSource": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+  "baselineTree": "bb79646fe9174d86572b6e37b6b7b1b55be3e7b1",
+  "baselineTrackedTreeClean": true,
+  "goldensChanged": false
+}

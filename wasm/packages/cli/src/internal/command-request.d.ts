@@ -29,6 +29,7 @@ export type NormalizedCommandRequest = Readonly<CommonNormalizedRequest & {
   readonly outDir?: string;
   readonly clean?: boolean;
   readonly experimentalNativeSize?: boolean;
+  readonly experimentalNativeBoundedSize?: boolean;
 }>;
 
 export declare function parseCommandRequest(argv: readonly string[]): NormalizedCommandRequest | MetaCommandRequest;

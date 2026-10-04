@@ -1,0 +1,390 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "target": "node",
+      "name": "zero",
+      "reads": 0,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "one",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "pure-inner-loop",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "continue-and-break",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "early-return",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "exact-64",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "65-incomplete",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "cycle-incomplete",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "missing-page",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "failed-page",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "kv-0",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "kv-1",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "kv-64",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "kv-65",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "zero",
+      "reads": 0,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "one",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "pure-inner-loop",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "continue-and-break",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "early-return",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "exact-64",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "65-incomplete",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "cycle-incomplete",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "missing-page",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "failed-page",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "kv-0",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "kv-1",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "kv-64",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "kv-65",
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "zero",
+      "reads": 0,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "one",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "pure-inner-loop",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "continue-and-break",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "early-return",
+      "reads": 1,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "exact-64",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "65-incomplete",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "cycle-incomplete",
+      "reads": 64,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "missing-page",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "failed-page",
+      "reads": 2,
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "kv-0",
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "kv-1",
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "kv-64",
+      "status": "passed"
+    },
+    {
+      "target": "fastly",
+      "name": "kv-65",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "cumulative-effects",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "cumulative-deadline",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "cancel-late-false",
+      "status": "passed"
+    },
+    {
+      "target": "node",
+      "name": "cancel-late-true",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "cumulative-effects",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "cumulative-deadline",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "cancel-late-false",
+      "status": "passed"
+    },
+    {
+      "target": "javascript",
+      "name": "cancel-late-true",
+      "status": "passed"
+    }
+  ],
+  "providerReality": false,
+  "artifacts": {
+    "node": "a598bb4dc423e56de3da45513c49570a6b3cbfe4c9536cdd7b5bb09cabfb92c2",
+    "fastly": "1aab682a7378a34d47839c99f96e48ebb47a81695e5d6af1a7f62480cb7d8139"
+  },
+  "workspaceProductModules": 0,
+  "schemaVersion": "pulse.read-loop-packed-acceptance.v1",
+  "installedBytesUnchanged": true,
+  "packages": [
+    {
+      "name": "@pulse-compute/runtime",
+      "version": "1.0.0-beta.5",
+      "sha256": "f25b5057dee8b7d677d030258d19ffef7bb365f29f9e4f6d0f2b9c54d53c8ad9"
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "version": "1.0.0-beta.5",
+      "sha256": "6d97de00ef4c9ce7bbee80b00536b95e62ceac4c197c215aafd42bb51c5b3c4b"
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "version": "1.0.0-beta.5",
+      "sha256": "32ae95273fec1d5466bbd3158697735e0d6c4b2d27a0ff3ee7eb89c452edcef2"
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "version": "1.0.0-beta.5",
+      "sha256": "55c039c90ddcfcb93bdd8298e169098f006bab7aa843ee5e9d25f10f379c0c76"
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "version": "1.0.0-beta.5",
+      "sha256": "c0a00f29bc76bd87c2a8e12f55287eca048e6485adec49e2a10aee8756660974"
+    },
+    {
+      "name": "@pulse-compute/assets",
+      "version": "1.0.0-beta.5",
+      "sha256": "a65e827447ad34d579700b23baf878a66c87d8c50169d1f2c41c403634d8dc1a"
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "version": "1.0.0-beta.5",
+      "sha256": "4e661b98a901e8230e1bf263f4b1bdd16d2fbd9b70f9f279d7d3d2d55ae5f0fb"
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "version": "1.0.0-beta.5",
+      "sha256": "ed2412e9c475e4aedbb6f85ecfe116cf441105e607bee6427007c6490042462c"
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "version": "1.0.0-beta.5",
+      "sha256": "f0a16205e84658ae7b474ae37e636b1d0f6586ea3c1f3faaa383215f9d3a76cd"
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "version": "1.0.0-beta.5",
+      "sha256": "453d6b91c60fa6ea862ca4a2d19c5ee0140b1da98e386a4994475c5b56b9230a"
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "version": "1.0.0-beta.5",
+      "sha256": "65bc69e8f5f28e3db10f6fa5f62b35f3c8e36e11c3a566cba1be49fb72168b6b"
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "version": "1.0.0-beta.5",
+      "sha256": "a5b31f251ce25cac7bf3de32b657ffabdde3367720d290f0f5e11ee4709c0183"
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "version": "1.0.0-beta.5",
+      "sha256": "6fe5f5a2784b3475ceb87478835e655c4909f59563bb4222bf5aa855b23a1f8b"
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "version": "1.0.0-beta.5",
+      "sha256": "b5f5b7e02df9eb0368abc333a9204cdd61ab85bc83ddd26017c14fb513559259"
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "version": "1.0.0-beta.5",
+      "sha256": "0df1b0e6a5cdf4b2ef8e9c653eb60a0711a2a699dead4475a3552be58777a776"
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "version": "1.0.0-beta.5",
+      "sha256": "c1712acc638ea4a93b302bb085d30d712f077851bfe277ff12930a3d17fc001c"
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "version": "1.0.0-beta.5",
+      "sha256": "3d6f8c5a8f1c63be4f2529459a55d7d3d942e5bc923a1593b0e4298511942738"
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "version": "1.0.0-beta.5",
+      "sha256": "73cb24885065f61e3d3e4ef825847b4d10ab2081dde65ef22d070b916a9de697"
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "version": "1.0.0-beta.5",
+      "sha256": "ab88e60d2251b72419b70e2b5e2a1329beee05d6fb62d5b2f59eea3550ad9a4a"
+    }
+  ]
+}

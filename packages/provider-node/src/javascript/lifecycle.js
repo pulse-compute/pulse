@@ -14,7 +14,7 @@ function statusForError(error) {
 
 function writeSafeError(response, error) {
   if (response.headersSent) {
-    if (!response.writableEnded) response.end();
+    if (!response.writableEnded) response.destroy(error);
     return;
   }
   response.statusCode = statusForError(error);

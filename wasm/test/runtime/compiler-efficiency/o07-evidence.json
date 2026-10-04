@@ -1,0 +1,1093 @@
+{
+  "version": "pulse.o07.generated-source.v1",
+  "status": "passed",
+  "sourceRevision": "e18ba95e09e8144b52ab235f7a3d2667554db175",
+  "workingTree": "M wasm/test/suite/assert-suite-shape.cjs\n M wasm/test/suite/registry.cjs\n?? wasm/test/runtime/compiler-efficiency/o07-generated-source.cjs",
+  "harnessSha256": "510a7fd7c8ad073ebef456c3493d41813c3b72f6d5f32f3396b2fac9b40e3d88",
+  "gen01HarnessSha256": "f6f08fa362986128e23d44c78e3d10cd3f32b06c46cc6738a918c8a0f9576519",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "node": "v24.19.0",
+  "productionOwnerSha256": {
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+    "packages/provider-fastly/src/build/native-platform-capabilities.js": "f7c0dda619c98c7db1d211079552071a050a7a2840cef0461b08d7fad2539a25"
+  },
+  "cells": [
+    {
+      "cell": {
+        "id": "sites-1",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "plan": {
+        "routes": 1,
+        "staticEffectSites": 1,
+        "schemaIds": 1
+      },
+      "sourceSha256": "70af33ccbc1ace2a9a2a1fd1055769bfdc99b4d50f7bf75c86a1bb1804a32277",
+      "sourceBytes": 111906,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 1340,
+          "declarations": 7
+        },
+        "provider projections": {
+          "bytes": 3247,
+          "declarations": 7
+        },
+        "runtime support": {
+          "bytes": 94963,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 8614,
+          "declarations": 76
+        },
+        "package/effect adapters": {
+          "bytes": 3742,
+          "declarations": 19
+        }
+      },
+      "namedDeclarationCoverage": 109,
+      "exactRepeatedFunctionBodies": {
+        "groups": 3,
+        "redundantBytes": 367,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_0",
+              "__pulse_schema_encode_0"
+            ],
+            "bodyBytes": 134
+          },
+          {
+            "names": [
+              "__pulse_fastly_jwt_case_id",
+              "__pulse_fastly_secret_store"
+            ],
+            "bodyBytes": 13
+          }
+        ]
+      },
+      "totalDeclarations": 316,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 242,
+          "bytes": 83020
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "Fastly effect dispatch": {
+          "declarations": 10,
+          "bytes": 8272
+        },
+        "expression helpers": {
+          "declarations": 38,
+          "bytes": 3411
+        },
+        "handler chunks": {
+          "declarations": 3,
+          "bytes": 2232
+        },
+        "provider schema projectors": {
+          "declarations": 3,
+          "bytes": 2007
+        },
+        "portable schema codecs": {
+          "declarations": 6,
+          "bytes": 1301
+        },
+        "effect-site state": {
+          "declarations": 3,
+          "bytes": 112
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 1,
+        "configGetResolvers": 0,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 3
+      }
+    },
+    {
+      "cell": {
+        "id": "sites-8",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 8
+      },
+      "fixtureSha256": {
+        "router": "16d2de95434b3287d42f1d5abbbc2e1b9024f9fc71a4bf4707f2f407ee5e8975",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "plan": {
+        "routes": 1,
+        "staticEffectSites": 8,
+        "schemaIds": 1
+      },
+      "sourceSha256": "dfed5d0d43134d822da4828455918413a057a3e631c9fcc6eeb78672c566a00e",
+      "sourceBytes": 122161,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 1340,
+          "declarations": 7
+        },
+        "provider projections": {
+          "bytes": 3247,
+          "declarations": 7
+        },
+        "runtime support": {
+          "bytes": 94963,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 18527,
+          "declarations": 132
+        },
+        "package/effect adapters": {
+          "bytes": 4084,
+          "declarations": 20
+        }
+      },
+      "namedDeclarationCoverage": 166,
+      "exactRepeatedFunctionBodies": {
+        "groups": 3,
+        "redundantBytes": 367,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_0",
+              "__pulse_schema_encode_0"
+            ],
+            "bodyBytes": 134
+          },
+          {
+            "names": [
+              "__pulse_fastly_jwt_case_id",
+              "__pulse_fastly_secret_store"
+            ],
+            "bodyBytes": 13
+          }
+        ]
+      },
+      "totalDeclarations": 373,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 249,
+          "bytes": 85801
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "Fastly effect dispatch": {
+          "declarations": 11,
+          "bytes": 8614
+        },
+        "expression helpers": {
+          "declarations": 66,
+          "bytes": 6053
+        },
+        "handler chunks": {
+          "declarations": 3,
+          "bytes": 5945
+        },
+        "provider schema projectors": {
+          "declarations": 3,
+          "bytes": 2007
+        },
+        "portable schema codecs": {
+          "declarations": 6,
+          "bytes": 1301
+        },
+        "effect-site state": {
+          "declarations": 24,
+          "bytes": 889
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 1,
+        "configGetResolvers": 1,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 24
+      }
+    },
+    {
+      "cell": {
+        "id": "sites-32",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 1,
+        "effects": 32
+      },
+      "fixtureSha256": {
+        "router": "cd4d8db625f31b301516aae9c150cfa48d6acb21f2c62b451598eee7ece6bc9c",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "plan": {
+        "routes": 1,
+        "staticEffectSites": 32,
+        "schemaIds": 1
+      },
+      "sourceSha256": "8a300201827922cf8e0e1b06ece40a448cec8719c67c67a9148fdbede03c307b",
+      "sourceBytes": 157878,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 1340,
+          "declarations": 7
+        },
+        "provider projections": {
+          "bytes": 3247,
+          "declarations": 7
+        },
+        "runtime support": {
+          "bytes": 94964,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 53407,
+          "declarations": 325
+        },
+        "package/effect adapters": {
+          "bytes": 4920,
+          "declarations": 20
+        }
+      },
+      "namedDeclarationCoverage": 359,
+      "exactRepeatedFunctionBodies": {
+        "groups": 3,
+        "redundantBytes": 367,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_0",
+              "__pulse_schema_encode_0"
+            ],
+            "bodyBytes": 134
+          },
+          {
+            "names": [
+              "__pulse_fastly_jwt_case_id",
+              "__pulse_fastly_secret_store"
+            ],
+            "bodyBytes": 13
+          }
+        ]
+      },
+      "totalDeclarations": 566,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 273,
+          "bytes": 95610
+        },
+        "handler chunks": {
+          "declarations": 4,
+          "bytes": 19036
+        },
+        "expression helpers": {
+          "declarations": 162,
+          "bytes": 15304
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "Fastly effect dispatch": {
+          "declarations": 11,
+          "bytes": 9450
+        },
+        "effect-site state": {
+          "declarations": 96,
+          "bytes": 3619
+        },
+        "provider schema projectors": {
+          "declarations": 3,
+          "bytes": 2007
+        },
+        "portable schema codecs": {
+          "declarations": 6,
+          "bytes": 1301
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 1,
+        "configGetResolvers": 1,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 96
+      }
+    },
+    {
+      "cell": {
+        "id": "routes-8-sites-3",
+        "schemas": 1,
+        "diverse": false,
+        "routes": 8,
+        "effects": 3
+      },
+      "fixtureSha256": {
+        "router": "e19e4850fe3ed252a18179dfc4af3108efdfd80035a7f029f88c27a4d4c5fc6b",
+        "schema": "c757470eaf8cc6ff67e62730baddb3aa40f2fe1904f75dedd3ee293b24177567"
+      },
+      "plan": {
+        "routes": 8,
+        "staticEffectSites": 24,
+        "schemaIds": 1
+      },
+      "sourceSha256": "cd8c3fc521ad8445435d3bce871dd9c6bd9016085364863dd4660791dd2d9b6b",
+      "sourceBytes": 158705,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 1340,
+          "declarations": 7
+        },
+        "provider projections": {
+          "bytes": 3247,
+          "declarations": 7
+        },
+        "runtime support": {
+          "bytes": 94964,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 54514,
+          "declarations": 330
+        },
+        "package/effect adapters": {
+          "bytes": 4640,
+          "declarations": 20
+        }
+      },
+      "namedDeclarationCoverage": 364,
+      "exactRepeatedFunctionBodies": {
+        "groups": 3,
+        "redundantBytes": 367,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_0",
+              "__pulse_schema_encode_0"
+            ],
+            "bodyBytes": 134
+          },
+          {
+            "names": [
+              "__pulse_fastly_jwt_case_id",
+              "__pulse_fastly_secret_store"
+            ],
+            "bodyBytes": 13
+          }
+        ]
+      },
+      "totalDeclarations": 571,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 279,
+          "bytes": 94014
+        },
+        "handler chunks": {
+          "declarations": 17,
+          "bytes": 20989
+        },
+        "expression helpers": {
+          "declarations": 172,
+          "bytes": 16966
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "Fastly effect dispatch": {
+          "declarations": 11,
+          "bytes": 9170
+        },
+        "effect-site state": {
+          "declarations": 72,
+          "bytes": 2707
+        },
+        "provider schema projectors": {
+          "declarations": 3,
+          "bytes": 2007
+        },
+        "portable schema codecs": {
+          "declarations": 6,
+          "bytes": 1301
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 1,
+        "configGetResolvers": 1,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 72
+      }
+    },
+    {
+      "cell": {
+        "id": "schemas-16-repeat",
+        "schemas": 16,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "dc86844feea62ec278742ae86520e56a166b4f4818b98e55ea608e4191422adc"
+      },
+      "plan": {
+        "routes": 1,
+        "staticEffectSites": 1,
+        "schemaIds": 16
+      },
+      "sourceSha256": "04ba6cb04807d96245219ef4e7bcc82597f226056c69176187739d7986688425",
+      "sourceBytes": 126885,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 11066,
+          "declarations": 52
+        },
+        "provider projections": {
+          "bytes": 8500,
+          "declarations": 7
+        },
+        "runtime support": {
+          "bytes": 94963,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 8614,
+          "declarations": 76
+        },
+        "package/effect adapters": {
+          "bytes": 3742,
+          "declarations": 19
+        }
+      },
+      "namedDeclarationCoverage": 154,
+      "exactRepeatedFunctionBodies": {
+        "groups": 18,
+        "redundantBytes": 2401,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_10",
+              "__pulse_schema_encode_10"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_11",
+              "__pulse_schema_encode_11"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_12",
+              "__pulse_schema_encode_12"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_13",
+              "__pulse_schema_encode_13"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_14",
+              "__pulse_schema_encode_14"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_15",
+              "__pulse_schema_encode_15"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_0",
+              "__pulse_schema_encode_0"
+            ],
+            "bodyBytes": 134
+          }
+        ]
+      },
+      "totalDeclarations": 361,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 242,
+          "bytes": 83020
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "portable schema codecs": {
+          "declarations": 51,
+          "bytes": 11027
+        },
+        "Fastly effect dispatch": {
+          "declarations": 10,
+          "bytes": 8272
+        },
+        "provider schema projectors": {
+          "declarations": 3,
+          "bytes": 7260
+        },
+        "expression helpers": {
+          "declarations": 38,
+          "bytes": 3411
+        },
+        "handler chunks": {
+          "declarations": 3,
+          "bytes": 2232
+        },
+        "effect-site state": {
+          "declarations": 3,
+          "bytes": 112
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 1,
+        "configGetResolvers": 0,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 3
+      }
+    },
+    {
+      "cell": {
+        "id": "schemas-16-diverse",
+        "schemas": 16,
+        "diverse": true,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "15da1b4840a7585e730bc70b7e7357ab8049bff906999a701eec7030bdfa20c0"
+      },
+      "plan": {
+        "routes": 1,
+        "staticEffectSites": 1,
+        "schemaIds": 16
+      },
+      "sourceSha256": "29e864bde546fc77193c0f26419dd2a39a3798f8706fd2aee9037d5188a0c54c",
+      "sourceBytes": 175134,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 14797,
+          "declarations": 67
+        },
+        "provider projections": {
+          "bytes": 53018,
+          "declarations": 44
+        },
+        "runtime support": {
+          "bytes": 94963,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 8614,
+          "declarations": 76
+        },
+        "package/effect adapters": {
+          "bytes": 3742,
+          "declarations": 19
+        }
+      },
+      "namedDeclarationCoverage": 206,
+      "exactRepeatedFunctionBodies": {
+        "groups": 19,
+        "redundantBytes": 4161,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_schema_3_18",
+              "__pulse_fastly_schema_6_37",
+              "__pulse_fastly_schema_9_56",
+              "__pulse_fastly_schema_12_75",
+              "__pulse_fastly_schema_15_94"
+            ],
+            "bodyBytes": 440
+          },
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_10",
+              "__pulse_schema_encode_10"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_11",
+              "__pulse_schema_encode_11"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_12",
+              "__pulse_schema_encode_12"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_13",
+              "__pulse_schema_encode_13"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_14",
+              "__pulse_schema_encode_14"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_15",
+              "__pulse_schema_encode_15"
+            ],
+            "bodyBytes": 138
+          }
+        ]
+      },
+      "totalDeclarations": 413,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 242,
+          "bytes": 83020
+        },
+        "provider schema projectors": {
+          "declarations": 40,
+          "bytes": 51778
+        },
+        "portable schema codecs": {
+          "declarations": 66,
+          "bytes": 14758
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "Fastly effect dispatch": {
+          "declarations": 10,
+          "bytes": 8272
+        },
+        "expression helpers": {
+          "declarations": 38,
+          "bytes": 3411
+        },
+        "handler chunks": {
+          "declarations": 3,
+          "bytes": 2232
+        },
+        "effect-site state": {
+          "declarations": 3,
+          "bytes": 112
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 16,
+        "configGetResolvers": 0,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 3
+      }
+    },
+    {
+      "cell": {
+        "id": "schemas-32-repeat",
+        "schemas": 32,
+        "diverse": false,
+        "routes": 1,
+        "effects": 1
+      },
+      "fixtureSha256": {
+        "router": "93ca166934921ee2d8fa2174dfd6ee0c570f00a66509018b056707a05351a456",
+        "schema": "f868de7ac6ed15d75912bcb746466f015b165d29bf5ee684552703d7d187ed88"
+      },
+      "plan": {
+        "routes": 1,
+        "staticEffectSites": 1,
+        "schemaIds": 32
+      },
+      "sourceSha256": "5c06d934c1b257eb0bc9859118065621b6eb2c554d21dd4a7b21e702eafcecef",
+      "sourceBytes": 143045,
+      "ownerBytes": {
+        "portable codecs": {
+          "bytes": 21594,
+          "declarations": 100
+        },
+        "provider projections": {
+          "bytes": 14132,
+          "declarations": 7
+        },
+        "runtime support": {
+          "bytes": 94963,
+          "declarations": 207
+        },
+        "dispatcher/handlers": {
+          "bytes": 8614,
+          "declarations": 76
+        },
+        "package/effect adapters": {
+          "bytes": 3742,
+          "declarations": 19
+        }
+      },
+      "namedDeclarationCoverage": 202,
+      "exactRepeatedFunctionBodies": {
+        "groups": 34,
+        "redundantBytes": 4609,
+        "largest": [
+          {
+            "names": [
+              "__pulse_fastly_backend",
+              "__pulse_fastly_jwt_secret_binding",
+              "__pulse_fastly_kv_store",
+              "__pulse_fastly_grip_publish_url",
+              "__pulse_fastly_grip_auth_ref"
+            ],
+            "bodyBytes": 55
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_10",
+              "__pulse_schema_encode_10"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_11",
+              "__pulse_schema_encode_11"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_12",
+              "__pulse_schema_encode_12"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_13",
+              "__pulse_schema_encode_13"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_14",
+              "__pulse_schema_encode_14"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_15",
+              "__pulse_schema_encode_15"
+            ],
+            "bodyBytes": 138
+          },
+          {
+            "names": [
+              "__pulse_schema_decode_16",
+              "__pulse_schema_encode_16"
+            ],
+            "bodyBytes": 138
+          }
+        ]
+      },
+      "totalDeclarations": 409,
+      "preambleBytes": 76,
+      "families": {
+        "other declarations": {
+          "declarations": 242,
+          "bytes": 83020
+        },
+        "portable schema codecs": {
+          "declarations": 99,
+          "bytes": 21555
+        },
+        "provider schema projectors": {
+          "declarations": 3,
+          "bytes": 12892
+        },
+        "Fastly driver and invocation": {
+          "declarations": 11,
+          "bytes": 11475
+        },
+        "Fastly effect dispatch": {
+          "declarations": 10,
+          "bytes": 8272
+        },
+        "expression helpers": {
+          "declarations": 38,
+          "bytes": 3411
+        },
+        "handler chunks": {
+          "declarations": 3,
+          "bytes": 2232
+        },
+        "effect-site state": {
+          "declarations": 3,
+          "bytes": 112
+        }
+      },
+      "exactRepeatedDeclarations": {
+        "groups": 0,
+        "redundantBytes": 0,
+        "largest": []
+      },
+      "controls": {
+        "flatObjectProjectors": 1,
+        "configGetResolvers": 0,
+        "assetsHelpers": 0,
+        "effectSiteStateDeclarations": 3
+      }
+    }
+  ],
+  "limitations": [
+    "Synthetic Fastly Native canonical Router fixtures use config.get only; registered schemas include unused IDs.",
+    "Source owner buckets use GEN01 byte-exact stage matching and assign unmatched text to runtime support.",
+    "Lexical declaration slices include trailing space and comments up to the next top-level declaration.",
+    "Exact repeated declarations and function bodies are source-text comparisons, not semantic clone or retained optimized-Wasm counts.",
+    "No AssemblyScript compile, final-Wasm attribution, runtime measurement or broad consumer cost is inferred."
+  ],
+  "deltasFromSites1": {
+    "sites-8": {
+      "sourceBytes": 10255,
+      "owners": {
+        "portable codecs": 0,
+        "provider projections": 0,
+        "runtime support": 0,
+        "dispatcher/handlers": 9913,
+        "package/effect adapters": 342
+      },
+      "families": {
+        "other declarations": 2781,
+        "Fastly driver and invocation": 0,
+        "Fastly effect dispatch": 342,
+        "expression helpers": 2642,
+        "handler chunks": 3713,
+        "provider schema projectors": 0,
+        "portable schema codecs": 0,
+        "effect-site state": 777
+      }
+    },
+    "sites-32": {
+      "sourceBytes": 45972,
+      "owners": {
+        "portable codecs": 0,
+        "provider projections": 0,
+        "runtime support": 1,
+        "dispatcher/handlers": 44793,
+        "package/effect adapters": 1178
+      },
+      "families": {
+        "other declarations": 12590,
+        "Fastly driver and invocation": 0,
+        "Fastly effect dispatch": 1178,
+        "expression helpers": 11893,
+        "handler chunks": 16804,
+        "provider schema projectors": 0,
+        "portable schema codecs": 0,
+        "effect-site state": 3507
+      }
+    },
+    "routes-8-sites-3": {
+      "sourceBytes": 46799,
+      "owners": {
+        "portable codecs": 0,
+        "provider projections": 0,
+        "runtime support": 1,
+        "dispatcher/handlers": 45900,
+        "package/effect adapters": 898
+      },
+      "families": {
+        "other declarations": 10994,
+        "Fastly driver and invocation": 0,
+        "Fastly effect dispatch": 898,
+        "expression helpers": 13555,
+        "handler chunks": 18757,
+        "provider schema projectors": 0,
+        "portable schema codecs": 0,
+        "effect-site state": 2595
+      }
+    },
+    "schemas-16-repeat": {
+      "sourceBytes": 14979,
+      "owners": {
+        "portable codecs": 9726,
+        "provider projections": 5253,
+        "runtime support": 0,
+        "dispatcher/handlers": 0,
+        "package/effect adapters": 0
+      },
+      "families": {
+        "other declarations": 0,
+        "Fastly driver and invocation": 0,
+        "Fastly effect dispatch": 0,
+        "expression helpers": 0,
+        "handler chunks": 0,
+        "provider schema projectors": 5253,
+        "portable schema codecs": 9726,
+        "effect-site state": 0
+      }
+    },
+    "schemas-16-diverse": {
+      "sourceBytes": 63228,
+      "owners": {
+        "portable codecs": 13457,
+        "provider projections": 49771,
+        "runtime support": 0,
+        "dispatcher/handlers": 0,
+        "package/effect adapters": 0
+      },
+      "families": {
+        "other declarations": 0,
+        "Fastly driver and invocation": 0,
+        "Fastly effect dispatch": 0,
+        "expression helpers": 0,
+        "handler chunks": 0,
+        "provider schema projectors": 49771,
+        "portable schema codecs": 13457,
+        "effect-site state": 0
+      }
+    },
+    "schemas-32-repeat": {
+      "sourceBytes": 31139,
+      "owners": {
+        "portable codecs": 20254,
+        "provider projections": 10885,
+        "runtime support": 0,
+        "dispatcher/handlers": 0,
+        "package/effect adapters": 0
+      },
+      "families": {
+        "other declarations": 0,
+        "Fastly driver and invocation": 0,
+        "Fastly effect dispatch": 0,
+        "expression helpers": 0,
+        "handler chunks": 0,
+        "provider schema projectors": 10885,
+        "portable schema codecs": 20254,
+        "effect-site state": 0
+      }
+    }
+  }
+}

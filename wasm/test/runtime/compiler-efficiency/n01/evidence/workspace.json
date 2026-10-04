@@ -1,0 +1,816 @@
+{
+  "schemaVersion": "pulse.n01.array-demand.v1",
+  "status": "passed",
+  "node": "v24.19.0",
+  "scope": "Frontend, canonical planning and deserialized-plan validation only; no Native execution, size or safety activation claim",
+  "toolchain": "workspace",
+  "packages": null,
+  "runnerSha256": "4eeb96aa7b5b9c6f64278c07afe2d571eee631d5204879a5902d20329b300034",
+  "fixtureSha256": "114bef22047e963f830e24f06028e35022fb6d9da03a827626ae81531c381d7f",
+  "setup": {
+    "config": "import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>({pulse:{entry:'src/index.ts',schema:'src/schemas.ts',strict:false},node:{host:'node',target:'native'}}));\n",
+    "schemas": "import {defineSchemaRegistry,schema} from '@pulse-compute/pulse/schema';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nexport default defineSchemaRegistry({schemas:{'probe.Cell':schema<Cell>(),'probe.Cells':schema<Cells>(),'probe.Strings':schema<Strings>(),'probe.Numbers':schema<Numbers>(),'probe.OptionalCells':schema<OptionalCells>(),'probe.DeepCells':schema<DeepCells>(),'probe.Matrix':schema<Matrix>()}});\n",
+    "types": "export interface Cell {tag:string;text:string}\nexport interface Cells {items:Cell[]}\nexport interface Strings {items:string[]}\nexport interface Numbers {items:number[]}\nexport interface OptionalCell {tag:string;text?:string}\nexport interface OptionalCells {items:OptionalCell[]}\nexport interface DeepCell {tag:string;payload:{text:string}}\nexport interface DeepCells {items:DeepCell[]}\nexport interface Matrix {items:string[][]}\n"
+  },
+  "cases": [
+    {
+      "id": "scalar-control",
+      "shape": "scalar",
+      "purpose": "existing-positive-control",
+      "expected": "admitted",
+      "expectedDiagnosticCodes": [],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const answer=check('sample');return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "admitted",
+      "helpers": [
+        {
+          "id": "helper:src/helper.ts#check",
+          "parameters": [
+            {
+              "name": "value",
+              "valueKind": "string",
+              "localId": "local-1"
+            }
+          ]
+        }
+      ],
+      "deserializedPlanValidated": true,
+      "diagnosticCodes": [],
+      "expectationMatched": true
+    },
+    {
+      "id": "decoded-record-field",
+      "shape": "scalar",
+      "purpose": "existing-positive-control",
+      "expected": "admitted",
+      "expectedDiagnosticCodes": [],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const row=ctx.decodeJson<Cell>(await ctx.req.text(),'probe.Cell');const answer=check(row.text);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "admitted",
+      "helpers": [
+        {
+          "id": "helper:src/helper.ts#check",
+          "parameters": [
+            {
+              "name": "value",
+              "valueKind": "string",
+              "localId": "local-1"
+            }
+          ]
+        }
+      ],
+      "deserializedPlanValidated": true,
+      "diagnosticCodes": [],
+      "expectationMatched": true
+    },
+    {
+      "id": "numeric-array-borrow",
+      "shape": "number-array",
+      "purpose": "existing-positive-control",
+      "expected": "admitted",
+      "expectedDiagnosticCodes": [],
+      "input": {
+        "helper": "export function check(values:number[]):boolean{let ok=true;for(let i=0;i<24&&i<values.length;i++){if(values[i]<0)ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Numbers>(await ctx.req.text(),'probe.Numbers');const answer=check(data.items);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "admitted",
+      "helpers": [
+        {
+          "id": "helper:src/helper.ts#check",
+          "parameters": [
+            {
+              "name": "values",
+              "valueKind": "array",
+              "borrow": {
+                "version": "pulse.pure-borrow.v1",
+                "type": {
+                  "kind": "number-array"
+                }
+              },
+              "localId": "local-1"
+            }
+          ]
+        }
+      ],
+      "deserializedPlanValidated": true,
+      "diagnosticCodes": [],
+      "expectationMatched": true
+    },
+    {
+      "id": "numeric-array-projection",
+      "shape": "number-array",
+      "purpose": "existing-positive-control",
+      "expected": "admitted",
+      "expectedDiagnosticCodes": [],
+      "input": {
+        "helper": "export function check(value:number):boolean{return value>=0}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Numbers>(await ctx.req.text(),'probe.Numbers');let answer=true;for(let i=0;i<24&&i<data.items.length;i++){if(!check(data.items[i]))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "admitted",
+      "helpers": [
+        {
+          "id": "helper:src/helper.ts#check",
+          "parameters": [
+            {
+              "name": "value",
+              "valueKind": "number",
+              "localId": "local-1"
+            }
+          ]
+        }
+      ],
+      "deserializedPlanValidated": true,
+      "diagnosticCodes": [],
+      "expectationMatched": true
+    },
+    {
+      "id": "string-array-parameter",
+      "shape": "string-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(values:string[]):boolean{let ok=true;for(let i=0;i<16&&i<values.length;i++){if(values[i]==='')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Strings>(await ctx.req.text(),'probe.Strings');const answer=check(data.items);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+      "message": "Unsupported pure source helper.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED",
+          "severity": "error",
+          "message": "Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.",
+          "file": "src/helper.ts",
+          "position": {
+            "line": 1,
+            "column": 1
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "string-array-element",
+      "shape": "string-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Strings>(await ctx.req.text(),'probe.Strings');let answer=true;for(let i=0;i<16&&i<data.items.length;i++){if(!check(data.items[i]))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 680,
+            "column": 26,
+            "offset": 29849
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "string-array-literal",
+      "shape": "string-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const values:string[]=['sample'];const answer=check(values[0]);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 678,
+            "column": 32,
+            "offset": 29713
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-record-array-parameter",
+      "shape": "flat-record-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "import type {Cell} from './types';export function check(values:Cell[]):boolean{let ok=true;for(let i=0;i<24&&i<values.length;i++){if(values[i].text==='')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');const answer=check(data.items);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+      "message": "Unsupported pure source helper.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED",
+          "severity": "error",
+          "message": "Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.",
+          "file": "src/helper.ts",
+          "position": {
+            "line": 1,
+            "column": 35
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-constant-index-unguarded",
+      "shape": "flat-record-array",
+      "purpose": "future-index-safety-exclusion",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');const answer=check(data.items[0].text);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 678,
+            "column": 32,
+            "offset": 29746
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-constant-index-guarded",
+      "shape": "flat-record-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');if(data.items.length===0)return ctx.text('empty');const answer=check(data.items[0].text);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 681,
+            "column": 32,
+            "offset": 29857
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-bounded-direct-projection",
+      "shape": "flat-record-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');let answer=true;for(let i=0;i<24&&i<data.items.length;i++){if(!check(data.items[i].text))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 680,
+            "column": 26,
+            "offset": 29847
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-bounded-element-alias",
+      "shape": "flat-record-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');let answer=true;for(let i=0;i<24&&i<data.items.length;i++){const entry=data.items[i];if(!check(entry.text))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 681,
+            "column": 26,
+            "offset": 29896
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-bounded-array-alias",
+      "shape": "flat-record-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');const entries=data.items;let answer=true;for(let i=0;i<24&&i<entries.length;i++){const entry=entries[i];if(!check(entry.text))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 682,
+            "column": 26,
+            "offset": 29934
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-bounded-loop-spread",
+      "shape": "flat-record-array",
+      "purpose": "demand",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Cells>(await ctx.req.text(),'probe.Cells');let selected={text:''};for(let i=0;i<24&&i<data.items.length;i++){const entry=data.items[i];if(entry.tag==='selected')selected={...selected,text:entry.text}}const answer=check(selected.text);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 684,
+            "column": 32,
+            "offset": 30050
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "flat-literal-array",
+      "shape": "flat-record-array",
+      "purpose": "out-of-selected-schema-origin",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const entries:Cell[]=[{tag:'selected',text:'sample'}];const answer=check(entries[0].text);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 678,
+            "column": 32,
+            "offset": 29741
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "optional-element-field",
+      "shape": "optional-record-array",
+      "purpose": "shape-exclusion-not-safety-proof",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<OptionalCells>(await ctx.req.text(),'probe.OptionalCells');let answer=true;for(let i=0;i<24&&i<data.items.length;i++){if(!check(data.items[i].text))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 680,
+            "column": 26,
+            "offset": 29855
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "nested-record-element",
+      "shape": "nested-record-array",
+      "purpose": "shape-exclusion-not-safety-proof",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<DeepCells>(await ctx.req.text(),'probe.DeepCells');let answer=true;for(let i=0;i<24&&i<data.items.length;i++){if(!check(data.items[i].payload.text))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 680,
+            "column": 26,
+            "offset": 29851
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "nested-array-element",
+      "shape": "nested-array",
+      "purpose": "shape-exclusion-not-safety-proof",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Matrix>(await ctx.req.text(),'probe.Matrix');const answer=check(data.items[0][0]);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_NATIVE_PLAN_FAILED",
+      "message": "Native-plan lowering failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED",
+          "kind": "CanonicalNativePlanDiagnostic",
+          "severity": "error",
+          "message": "Pure helper arguments must match their declared scalar or borrowed structural kinds.",
+          "file": "src/index.ts.canonical.generated.js",
+          "position": {
+            "line": 678,
+            "column": 32,
+            "offset": 29747
+          },
+          "detail": {
+            "arguments": [
+              {
+                "index": 0,
+                "actual": "unknown",
+                "expected": "string"
+              }
+            ]
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_ARGUMENT_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "numeric-borrow-mutation",
+      "shape": "number-array",
+      "purpose": "existing-negative-control",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_MUTATION_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(values:number[]):boolean{values[0]=1;return true}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const data=ctx.decodeJson<Numbers>(await ctx.req.text(),'probe.Numbers');const answer=check(data.items);return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+      "message": "Unsupported pure source helper.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_MUTATION_UNSUPPORTED",
+          "severity": "error",
+          "message": "Pure helper parameters are read-only.",
+          "file": "src/helper.ts",
+          "position": {
+            "line": 1,
+            "column": 48
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_MUTATION_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "structured-result",
+      "shape": "scalar",
+      "purpose": "existing-negative-control",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):{text:string}{return {text:value}}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{const answer=check('sample');return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+      "message": "Unsupported pure source helper.",
+      "diagnostics": [
+        {
+          "code": "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED",
+          "severity": "error",
+          "message": "Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.",
+          "file": "src/helper.ts",
+          "position": {
+            "line": 1,
+            "column": 1
+          }
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    },
+    {
+      "id": "excessive-loop-product",
+      "shape": "scalar",
+      "purpose": "existing-negative-control",
+      "expected": "rejected",
+      "expectedDiagnosticCodes": [
+        "PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED"
+      ],
+      "input": {
+        "helper": "export function check(value:string):boolean{let ok=true;for(let j=0;j<320&&j<value.length;j++){if(value[j]==='\\u0000')ok=false}return ok}",
+        "index": "import {Pulse} from '@pulse-compute/pulse';\nimport type {Cell,Cells,Strings,Numbers,OptionalCells,DeepCells,Matrix} from './types';\nimport {check} from './helper';\nconst app=new Pulse({auto:true});app.post('/probe',async(ctx)=>{let answer=true;for(let i=0;i<257;i++){if(!check('sample'))answer=false}return ctx.text(answer?'yes':'no')});export default app;\n"
+      },
+      "status": "rejected",
+      "code": "PULSE_CANONICAL_COMPILE_FAILED",
+      "message": "Canonical compilation failed for src/index.ts.",
+      "diagnostics": [
+        {
+          "code": "PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED",
+          "kind": "CanonicalCompileDiagnostic",
+          "severity": "error",
+          "message": "Pure helper exceeds the combined caller/callee iteration bound.",
+          "file": "src/index.ts",
+          "position": {
+            "line": 19,
+            "column": 18,
+            "offset": 711
+          },
+          "detail": {}
+        }
+      ],
+      "diagnosticCodes": [
+        "PULSE_CANONICAL_PURE_LOOP_UNSUPPORTED"
+      ],
+      "expectationMatched": true
+    }
+  ],
+  "expectationsMatched": true,
+  "counts": {
+    "cases": 21,
+    "admitted": 4,
+    "rejected": 17
+  }
+}

@@ -24,6 +24,9 @@ artifacts, not application-author reference material.
 
 - [Release manifest and package policy](./release-manifest.md) — synchronized version, package set, support tiers, and target inventory.
 - [Testing Pulse](./testing.md) — focused tasks, profiles, dependency restoration, and evidence expectations.
+- [Compiler-efficiency P01 baseline](./compiler-efficiency-p01.md) — the pinned
+  `latest` environment proof, baseline replay, remaining R01 question, and the
+  review packets for P02 and P03.
 - [Release packages and clean-consumer acceptance](./release-acceptance.md) — package construction, packed-consumer checks, and seal evidence.
 - [npm publishing](./npm-publishing.md) — sealed tarballs, trusted publishing, dependency-safe retries, and registry verification.
 

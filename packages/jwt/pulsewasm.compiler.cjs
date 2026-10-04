@@ -483,7 +483,101 @@ function parseEs256Jwk(ts, sourceFile, node, diagnostics) {
   return deepFreeze(output);
 }
 
-function parseEs256Jwks(ts, sourceFile, node, diagnostics) {
+function parseRs256Jwk(ts, sourceFile, node, diagnostics) {
+  const members = objectMembers(
+    ts,
+    sourceFile,
+    node,
+    new Set(['kty', 'n', 'e', 'alg', 'use', 'key_ops', 'kid']),
+    diagnostics,
+    jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID,
+    'RS256 public JWK'
+  );
+  const required = {};
+  for (const name of ['kty', 'n', 'e']) {
+    const value = members.has(name) ? literalString(ts, members.get(name)) : undefined;
+    if (value === undefined || value.length === 0) {
+      diagnostics.push(makeDiagnostic(
+        sourceFile,
+        members.get(name) || node,
+        jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID,
+        `RS256 public JWK requires static ${name}.`,
+        'Use a bounded inline public RSA JWK.'
+      ));
+    } else required[name] = value;
+  }
+  if (required.kty !== undefined && required.kty !== 'RSA') diagnostics.push(makeDiagnostic(
+    sourceFile,
+    members.get('kty') || node,
+    jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID,
+    'RS256 public JWK kty must be RSA.',
+    'Use kty: "RSA".'
+  ));
+  for (const name of ['n', 'e']) {
+    const text = required[name];
+    const bytes = typeof text === 'string' && /^[A-Za-z0-9_-]+$/.test(text) && text.length <= 683 ? Buffer.from(text, 'base64url') : Buffer.alloc(0);
+    const valid = bytes.length > 0 && bytes[0] !== 0 && bytes.toString('base64url') === text
+      && (name === 'n' ? [256, 384, 512].includes(bytes.length) && bytes[0] >= 128 && (bytes.at(-1) & 1)
+        : bytes.length <= 4 && bytes.readUIntBE(0, bytes.length) >= 3 && (bytes.at(-1) & 1));
+    if (!valid) diagnostics.push(makeDiagnostic(sourceFile, members.get(name) || node,
+      jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID, 'RSA requires canonical 2048/3072/4096-bit n and an odd 32-bit exponent >= 3.', 'Use a supported public RSA JWK.'));
+  }
+
+  const output = { ...required };
+  for (const name of ['alg', 'use', 'kid']) {
+    if (!members.has(name)) continue;
+    const value = parseOptionalString(
+      ts,
+      sourceFile,
+      members.get(name),
+      diagnostics,
+      `RS256 public JWK ${name}`,
+      jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID
+    );
+    if (value !== undefined) output[name] = value;
+  }
+  if (output.alg !== undefined && output.alg !== 'RS256') diagnostics.push(makeDiagnostic(
+    sourceFile,
+    members.get('alg'),
+    jwtContracts.JWT_DIAGNOSTIC_CODES.KEY_ALGORITHM_MISMATCH,
+    'RS256 public JWK alg must be absent or RS256.',
+    'Remove alg or use alg: "RS256".'
+  ));
+  if (output.use !== undefined && output.use !== 'sig') diagnostics.push(makeDiagnostic(
+    sourceFile,
+    members.get('use'),
+    jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID,
+    'RS256 public JWK use must be absent or sig.',
+    'Remove use or use use: "sig".'
+  ));
+  if (members.has('key_ops')) {
+    const operations = literalStringArray(
+      ts,
+      sourceFile,
+      members.get('key_ops'),
+      diagnostics,
+      {
+        label: 'RS256 public JWK key_ops',
+        category: 'jwk-key-ops',
+        maximum: 1,
+        code: jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID,
+        limitCode: jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID
+      }
+    );
+    if (operations.length !== 1 || operations[0] !== 'verify') diagnostics.push(makeDiagnostic(
+      sourceFile,
+      members.get('key_ops'),
+      jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID,
+      'RS256 public JWK key_ops must be absent or exactly ["verify"].',
+      'Remove key_ops or declare only verify.'
+    ));
+    output.key_ops = operations;
+  }
+  if (output.kid !== undefined && Buffer.byteLength(output.kid) > 256) diagnostics.push(makeDiagnostic(sourceFile, members.get('kid'), jwtContracts.JWT_DIAGNOSTIC_CODES.JWK_INVALID, 'RSA kid exceeds 256 UTF-8 bytes.', 'Use a bounded kid.'));
+  return deepFreeze(output);
+}
+
+function parseEs256Jwks(ts, sourceFile, node, diagnostics, algorithm = 'ES256') {
   const current = unwrapExpression(ts, node);
   if (!current || !ts.isArrayLiteralExpression(current)) {
     diagnostics.push(makeDiagnostic(
@@ -514,7 +608,7 @@ function parseEs256Jwks(ts, sourceFile, node, diagnostics) {
     }
   ));
   const keys = current.elements.slice(0, jwtContracts.JWT_RESOURCE_LIMITS.jwksEntries)
-    .map((entry) => parseEs256Jwk(ts, sourceFile, entry, diagnostics));
+    .map((entry) => (algorithm === 'RS256' ? parseRs256Jwk : parseEs256Jwk)(ts, sourceFile, entry, diagnostics));
   const kids = keys.map((entry) => entry.kid).filter(Boolean);
   if (new Set(kids).size !== kids.length) diagnostics.push(makeDiagnostic(
     sourceFile,
@@ -527,13 +621,14 @@ function parseEs256Jwks(ts, sourceFile, node, diagnostics) {
 }
 
 function keyArtifact(type, keys) {
+  const algorithm = keys[0]?.kty === 'RSA' ? 'rs256' : 'es256';
   const material = type === 'jwk'
     ? { type, key: keys[0] }
     : { type, keys };
   const materialHash = crypto.createHash('sha256')
     .update(stableStringify(material))
     .digest('hex');
-  const id = `pulse.jwt.es256-key.${materialHash.slice(0, 24)}`;
+  const id = `pulse.jwt.${algorithm}-key.${materialHash.slice(0, 24)}`;
   return Object.freeze({
     descriptor: Object.freeze({
       type,
@@ -547,14 +642,14 @@ function keyArtifact(type, keys) {
       secretBinding: null
     }),
     realizationArtifact: deepFreeze({
-      version: 'pulse.jwt-es256-key-artifact.v1',
+      version: `pulse.jwt-${algorithm}-key-artifact.v1`,
       id,
       contractId: jwtContracts.JWT_CONTRACT_ID,
       package: jwtContracts.JWT_PACKAGE_NAME,
-      kind: 'jwt-es256-static-public-key',
-      mediaType: 'application/vnd.pulse.jwt-es256-key+json',
+      kind: `jwt-${algorithm}-static-public-key`,
+      mediaType: `application/vnd.pulse.jwt-${algorithm}-key+json`,
       materialHash,
-      redaction: ['x', 'y'],
+      redaction: algorithm === 'rs256' ? ['n', 'e'] : ['x', 'y'],
       data: material
     })
   });
@@ -620,7 +715,7 @@ function parseKey(ts, sourceFile, node, algorithms, diagnostics) {
     });
   }
 
-  if (algorithms.length !== 1 || algorithms[0] !== 'ES256') {
+  if (algorithms.length !== 1 || !['ES256', 'RS256'].includes(algorithms[0])) {
     diagnostics.push(makeDiagnostic(
       sourceFile,
       node,
@@ -649,7 +744,7 @@ function parseKey(ts, sourceFile, node, algorithms, diagnostics) {
     ));
     return keyArtifact(
       type,
-      [parseEs256Jwk(ts, sourceFile, members.get('key'), diagnostics)]
+      [(algorithms[0] === 'RS256' ? parseRs256Jwk : parseEs256Jwk)(ts, sourceFile, members.get('key'), diagnostics)]
     );
   }
   if (members.size !== 2 || !members.has('keys')) diagnostics.push(makeDiagnostic(
@@ -661,7 +756,7 @@ function parseKey(ts, sourceFile, node, algorithms, diagnostics) {
   ));
   return keyArtifact(
     type,
-    parseEs256Jwks(ts, sourceFile, members.get('keys'), diagnostics)
+    parseEs256Jwks(ts, sourceFile, members.get('keys'), diagnostics, algorithms[0])
   );
 }
 
@@ -797,6 +892,7 @@ function collectFacadeBindings(ts, sourceFile, manifest) {
   const bindings = {
     namespaces: new Set(),
     verify: new Set(),
+    sign: new Set(),
     bearer: new Set(),
     imports: []
   };
@@ -821,6 +917,7 @@ function collectFacadeBindings(ts, sourceFile, manifest) {
         const local = specifier.name.text;
         if (imported === 'jwt' || imported === 'default') bindings.namespaces.add(local);
         if (imported === 'verify') bindings.verify.add(local);
+        if (imported === 'sign') bindings.sign.add(local);
         if (imported === 'bearer') bindings.bearer.add(local);
         bindings.imports.push({ imported, local, loc: locFor(sourceFile, specifier.name) });
       }
@@ -834,13 +931,14 @@ function resolveFacadeCall(ts, call, bindings) {
   if (expression && ts.isPropertyAccessExpression(expression)) {
     const object = unwrapExpression(ts, expression.expression);
     if (object && ts.isIdentifier(object) && bindings.namespaces.has(object.text)) {
-      if (expression.name.text === 'verify' || expression.name.text === 'bearer') {
+      if (['verify', 'bearer', 'sign'].includes(expression.name.text)) {
         return { method: expression.name.text, local: object.text };
       }
     }
   }
   if (expression && ts.isIdentifier(expression)) {
     if (bindings.verify.has(expression.text)) return { method: 'verify', local: expression.text };
+    if (bindings.sign.has(expression.text)) return { method: 'sign', local: expression.text };
     if (bindings.bearer.has(expression.text)) return { method: 'bearer', local: expression.text };
   }
   return undefined;
@@ -1066,6 +1164,45 @@ function buildJwtLoweringPlan(inputs = {}) {
   function visit(node) {
     if (ts.isCallExpression(node)) {
       const resolved = resolveFacadeCall(ts, node, bindings);
+      if (resolved && resolved.method === 'sign') {
+        const contextName = enclosingContextName(ts, node);
+        const placement = placementForCall(ts, node, contextName);
+        const error = (code, message) => diagnostics.push(makeDiagnostic(sourceFile, node, code, message,
+          'Await jwt.sign(ctx, claims, { algorithm: "HS256", key: { type: "secret", binding: "NAME" }, expiresInSeconds: 45 }) into a local or in ctx.parallel.'));
+        if (node.arguments.length !== 3 || !currentContextArgument(ts, node.arguments[0], contextName)) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.ARGUMENT_SHAPE_UNSUPPORTED, 'Signing requires the current handler context, claims, and static options.');
+          return;
+        }
+        if (!(placement.kind === 'variable' && placement.awaited || placement.parallel && ts.isAwaitExpression(placement.parallel.parent))) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.PLACEMENT_UNSUPPORTED, 'Signing must be directly awaited or grouped.');
+        }
+        const members = objectMembers(ts, sourceFile, node.arguments[2], new Set(['algorithm', 'key', 'expiresInSeconds', 'kid']), diagnostics,
+          jwtContracts.JWT_DIAGNOSTIC_CODES.OPTIONS_LITERAL_REQUIRED, 'JWT signing options');
+        const algorithm = literalString(ts, members.get('algorithm'));
+        const expiresInSeconds = literalNumber(ts, members.get('expiresInSeconds'));
+        if (!['HS256', 'ES256', 'RS256'].includes(algorithm)) error(jwtContracts.JWT_DIAGNOSTIC_CODES.ALGORITHM_UNSUPPORTED, 'Signing supports HS256, ES256 and RS256.');
+        const kid = members.has('kid') ? literalString(ts, members.get('kid')) : undefined;
+        if (members.has('kid') && (typeof kid !== 'string' || !kid.length || kid.includes('\0') || Buffer.byteLength(kid) > 256)) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.KEY_TYPE_UNSUPPORTED, 'Signing kid must be a nonempty literal of at most 256 UTF-8 bytes.');
+        }
+        if (!Number.isSafeInteger(expiresInSeconds) || expiresInSeconds < 1) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.POLICY_LIMIT_EXCEEDED, 'Signing requires a literal positive safe-integer lifetime in seconds.');
+        }
+        const key = parseKey(ts, sourceFile, members.get('key') || node, ['HS256'], diagnostics);
+        if (key.descriptor.type !== 'secret' || !key.resource.secretBinding || key.resource.secretBinding.length > 256
+          || key.resource.secretBinding.includes('\0') || !key.resource.secretBinding.trim()) {
+          error(jwtContracts.JWT_DIAGNOSTIC_CODES.KEY_TYPE_UNSUPPORTED, 'Signing requires a bounded named secret binding.');
+        }
+        const effect = Object.freeze({ ...jwtContracts.JWT_SIGN_OPERATION, placement: placement.kind,
+          range: rangeFor(sourceFile, node), loc: locFor(sourceFile, node), resource: key.resource,
+          payload: { algorithm, expiresInSeconds: expiresInSeconds || 0, ...(kid === undefined ? {} : { kid }) },
+          runtimeInputs: [{ name: 'claims', argumentIndex: 1, source: 'package-call-argument' }],
+          providerRequirements: jwtContracts.JWT_SIGN_CONTRACT.providerRequirements,
+          schemaReferences: [], redaction: ['claims', 'token', 'signature', 'key-material', 'secret-value'] });
+        entries.push(Object.freeze({ kind: 'jwt-sign', symbol: 'jwt.sign', placement: placement.kind,
+          awaited: placement.awaited, algorithms: [], signingAlgorithm: algorithm, key: key.descriptor,
+          providerRequirements: effect.providerRequirements, range: effect.range, loc: effect.loc, canonicalEffect: effect }));
+      }
       if (resolved && resolved.method === 'bearer') bearerCalls.push(node);
       if (resolved && resolved.method === 'verify') {
         const contextName = enclosingContextName(ts, node);
@@ -1141,14 +1278,18 @@ function buildJwtLoweringPlan(inputs = {}) {
       'Pass jwt.bearer(ctx.req) directly as the second jwt.verify argument.'
     ));
   }
-  for (const entry of entries) validateResultAccess(ts, sourceFile, entry, diagnostics);
+  for (const entry of entries.filter(entry => entry.kind === 'jwt-verify')) validateResultAccess(ts, sourceFile, entry, diagnostics);
 
   const canonicalEffects = entries.map((entry) => entry.canonicalEffect);
   const canonicalIntrinsics = entries.map((entry) => entry.bearerIntrinsic).filter(Boolean);
   const schemaReferences = entries.map((entry) => entry.schemaReference).filter(Boolean);
-  const cryptoRequirements = jwtContracts.jwtCryptoRequirements(
+  const cryptoRequirements = Object.freeze([...jwtContracts.jwtCryptoRequirements(
     entries.flatMap((entry) => entry.algorithms)
-  );
+  ), ...[...new Set(entries.filter(entry => entry.kind === 'jwt-sign').map(entry =>
+    entry.signingAlgorithm === 'HS256' ? 'HMAC-SHA256' : entry.signingAlgorithm))].map(algorithm => ({
+      version: packageContracts.PACKAGE_CRYPTO_REQUIREMENT_VERSION, requestedBy: jwtContracts.JWT_PACKAGE_NAME,
+      semanticOwner: '@pulse-compute/crypto', reachable: true, algorithms: [algorithm]
+    }))]);
   const keyArtifacts = entries
     .filter((entry) => entry.key.keyArtifactId)
     .map((entry) => Object.freeze({
@@ -1161,7 +1302,7 @@ function buildJwtLoweringPlan(inputs = {}) {
   const uniqueKeyArtifacts = [...new Map(keyArtifacts.map((entry) => [entry.id, entry])).values()];
   const realizationArtifacts = [...new Map(privateRealizationArtifacts
     .map((entry) => [entry.id, entry])).values()];
-  const guestUnits = entries.some((entry) => entry.algorithms.includes('ES256'))
+  const guestUnits = entries.some((entry) => entry.algorithms.some(algorithm => ['ES256', 'RS256'].includes(algorithm)) || ['ES256', 'RS256'].includes(entry.signingAlgorithm))
     ? Object.freeze([loadCryptoGuestContribution()])
     : Object.freeze([]);
   const artifact = deepFreeze(normalizeArtifact({

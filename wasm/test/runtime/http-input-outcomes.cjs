@@ -55,9 +55,13 @@ async function main(options={}) {
     const {createNodeKvReference}=installed(path.join(path.dirname(installed.resolve('@pulse-compute/provider-node/toolchain')),'runtime/conditional-kv.js'));
     const {createNodeProviderAdapter}=installed('@pulse-compute/provider-node/runtime/canonical-api-runtime');
     const lifecycle=installed('@pulse-compute/provider-node/javascript/lifecycle');
+    // KV registration includes index '8' and the property name 'code'; both can
+    // overlap an admitted error discriminator before body decoding fails.
+    const seed={items:Array(9).fill('private-fixture'),code:'PULSE'};
     const source=`import {Pulse} from '@pulse-compute/pulse';
 import {jwt} from '@pulse-compute/jwt';
 const app=new Pulse({auto:true});
+app.use('/raw',async(ctx,next)=>{const before=await ctx.kv('proof').getVersioned('seed');return next();});
 app.post('/raw',async ctx=>{const raw=await ctx.req.text();const again=await ctx.req.text();if(raw!==again)return ctx.text('snapshot changed',{status:500});const write=await ctx.kv('proof').insertIfAbsent('after-input',1);return ctx.text(raw,{status:201});});
 app.post('/auth',async ctx=>{const verified=await jwt.verify(ctx,jwt.bearer(ctx.req),{algorithms:['HS256'],key:{type:'secret',binding:'JWT_KEY'}});const write=await ctx.kv('proof').insertIfAbsent('after-auth',1);return ctx.text('accepted',{status:201});});
 app.post('/deny',async ctx=>ctx.json({outcome:'not-accepted'},{status:403}));
@@ -68,7 +72,7 @@ app.error(async(error,ctx,next)=>{if(error.code==='PULSE_REQUEST_BODY_INVALID_UT
 export default app;`;
     fs.writeFileSync(path.join(cwd,'src/index.ts'),source);
     const config={pulse:{entry:'src/index.ts',defaultProfile:'node-native',strict:false}};
-    for(const [host,target] of [['node','native'],['node','javascript'],['fastly','native']])config[`${host}-${target}`]={host,target,outDir:`dist/${host}-${target}`,schemas:{maxBytes:64},crypto:{HS256:{realization:target==='javascript'?'runtime-builtin':'guest-source:pulse-hmac-as'}},[host]:{maxDurationMs:10000,...(host==='fastly'?{bindings:{secretStore:'secrets',kv:{proof:'proof'}}}:{})},dev:{maxBodyBytes:64,watch:false,secrets:{JWT_KEY:'private-fixture'},kv:{proof:{command:1}}}};
+    for(const [host,target] of [['node','native'],['node','javascript'],['fastly','native']])config[`${host}-${target}`]={host,target,outDir:`dist/${host}-${target}`,schemas:{maxBytes:64},crypto:{HS256:{realization:target==='javascript'?'runtime-builtin':'guest-source:pulse-hmac-as'}},[host]:{maxDurationMs:10000,...(host==='fastly'?{bindings:{secretStore:'secrets',kv:{proof:'proof'}}}:{})},dev:{maxBodyBytes:64,watch:false,secrets:{JWT_KEY:'private-fixture'},kv:{proof:{command:1,seed}}}};
     fs.writeFileSync(path.join(cwd,'.pulse/config.ts'),`import {defineConfig} from '@pulse-compute/pulse';export default defineConfig((_scope)=>(${JSON.stringify(config)}));`);
     const projects=Object.fromEntries(Object.keys(config).filter(k=>k!=='pulse').map(profile=>[profile,tc.resolveProject({cwd,profile})]));
     const native=tc.compileNativeProjectInMemory(projects['node-native']);
@@ -84,10 +88,11 @@ export default app;`;
         const request={method:'POST',path:'/raw',url:'https://proof.test/raw',headers:[['content-type','text/plain']],body:test.bytes,chunkBytes:1};
         if(mode==='fastly-native') {
           const authority=createConditionalKvAuthority();authority.stores.set('proof',new Map());
+          authority.seed('proof','seed',JSON.stringify({__pulseKv:1,value:seed}));
           const result=tc.executeFastlyNativePlatformCapabilities(fastly,{request,conditionalKv:{authority,onCall(stage){if(stage==='insert')writes++;}}});response=result.response;
           assert.equal(result.trace.filter(x=>x.module==='fastly_http_resp'&&x.name==='send_downstream').length,1,'one terminal response');
         } else {
-          const kvReference=createNodeKvReference({kvHooks:{prepare(){writes++;}}});
+          const kvReference=createNodeKvReference({kv:{proof:{seed}},kvHooks:{prepare(effect){if(effect.kind!=='kv.getVersioned')writes++;}}});
           const runtime={request,strict:false,maxRequestBodyBytes:64,kvReference,adapter:createNodeProviderAdapter({kvReference})};
           if(mode==='node-native')response=(await tc.executeCanonicalNativeModule(native.native,tc.driver.executionOptions(projects[mode].providerConfig,runtime))).response;
           else {const value=await tc.executeNodeJavascriptApplication(js,new Request(request.url,{method:'POST',headers:request.headers,body:test.bytes}),runtime);response={status:value.status,body:Buffer.from(await value.arrayBuffer()).toString('utf8')};}

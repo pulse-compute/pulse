@@ -1,0 +1,8 @@
+{
+  "status": "scalar-record-and-loop-supported",
+  "scalarImplementation": "PF-02",
+  "recordImplementation": "PF-03",
+  "callerLoopImplementation": "PF-04",
+  "errorCode": "PULSE_CANONICAL_ROUTER_COMPILE_FAILED",
+  "diagnosticCode": "PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED"
+}

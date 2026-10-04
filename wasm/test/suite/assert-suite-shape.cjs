@@ -50,6 +50,52 @@ for (const name of Object.keys(profiles)) {
 
 const release = expandProfile('release');
 const externalTasks = new Set([
+  // Pre-snapshot upgrade and measurements are explicit qualification, not fast CI or a seal.
+  'beta6-upgrade', 'beta6-measurements',
+  'array-demand-n01',
+  // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
+  'mcp-wire-proof',
+  'mcp-installed',
+  // JWT-01 installs candidate packages from a temporary registry for focused qualification.
+  'jwt-installed-workflow',
+  'str02-installed',
+  'str02b-installed',
+  'str03b-installed', 'node01-installed', 'arc01-installed',
+  'ast01-installed', 'ast02b-installed', 'ast02d-installed', 's3-body-installed',
+  'str02c-fastly-feasibility',
+  // Independent SDK installation is explicit external evidence for the private adapter.
+  'mcp-http-sdk',
+  'mcp-tools-sdk',
+  'mcp-authorization-sdk',
+  'middleware-sharing-mw01',
+  'middleware-sharing-mw02',
+  // The S01 measurement task is a manually selected benchmark with sampled
+  // process RSS, not a deterministic release acceptance check.
+  'compiler-efficiency-p02',
+  'compiler-phases-o03',
+  'copy-chain-o04',
+  'parser-copy-o05',
+  'memory-qualification-o06',
+  'effect-retention-mem02',
+  'payload-retention-mem08',
+  'fastly-allocator-mem10',
+  'fastly-read-temporaries-mem11',
+  'fastly-kv-quote-reuse-mem12',
+  'compiler-efficiency-p03',
+  'compiler-handler-boundary-b01',
+  'compiler-handler-cost-b02',
+  'compiler-handler-functions-b03',
+  'reusable-stage-o18',
+  'shared-history-helper-o25',
+  'compiler-schema-cost-sc01',
+  'compiler-generated-census-gen01',
+  'generated-source-census-o07',
+  'optimized-wasm-census-o08',
+  'fastly-driver-factoring-o10',
+  'fastly-driver-qualification-o11',
+  'compiler-retention-cost-t01',
+  'compiler-bounded-merging',
+  'compiler-guest-link-evidence',
   'guest-link-final-reality',
   'guest-link-memory-matrix',
   'guest-link-feasibility-decision',
@@ -118,6 +164,13 @@ for (const profile of ['unit', 'native', 'javascript', 'conformance', 'providers
     assert.ok(release.includes(taskName), `release must include ${profile} task ${taskName}`);
   }
 }
+assert.equal(release.includes('compiler-bounded-merging'), false);
+assert.equal(release.includes('compiler-handler-boundary-b01'), false);
+assert.equal(release.includes('compiler-handler-cost-b02'), false);
+assert.equal(release.includes('compiler-handler-functions-b03'), false);
+assert.equal(release.includes('compiler-schema-cost-sc01'), false);
+assert.equal(release.includes('compiler-retention-cost-t01'), false);
+assert.equal(release.includes('compiler-guest-link-evidence'), false);
 assert.equal(release.includes('provider-fastly-compute-reality'), false);
 assert.equal(release.includes('guest-link-scalar-control'), false);
 assert.equal(release.includes('guest-link-memory-matrix'), false);
@@ -126,9 +179,14 @@ assert.equal(release.includes('guest-link-feasibility-decision'), false);
 assert.equal(release.includes('guest-link-contract-design'), false);
 assert.equal(release.includes('guest-link-b-seal'), false);
 assert.ok(release.includes('clean-machine-acceptance'));
+// The fast subset must not add a second copy of its proof to full/release lanes.
+for (const profile of Object.keys(profiles)) {
+  assert.equal(expandProfile(profile).includes('schema-codecs-smoke'), false);
+}
+assert.ok(expandProfile('conformance').includes('schema-codecs'));
 const releaseSet = new Set(release);
 for (const taskName of Object.keys(tasks)) {
-  if (externalTasks.has(taskName)) continue;
+  if (externalTasks.has(taskName) || taskName === 'schema-codecs-smoke') continue;
   assert.ok(releaseSet.has(taskName), `release must include current task ${taskName}`);
 }
 

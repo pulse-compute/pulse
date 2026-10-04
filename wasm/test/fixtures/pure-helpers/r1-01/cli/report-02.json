@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-02T18-59-05-325Z--34895",
+  "sourceRevision": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+  "sourceIdentity": {
+    "sourceRevision": "6c33e869198c4fea23325b20e58d1c24bdf98f04",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "failed",
+  "startedAt": "2026-10-02T18:59:05.329Z",
+  "updatedAt": "2026-10-02T18:59:24.273Z",
+  "finishedAt": "2026-10-02T18:59:24.273Z",
+  "durationMs": 18944,
+  "profiles": [
+    "cli"
+  ],
+  "requestedTasks": [
+    "cli-command-spec",
+    "cli-init-workflow",
+    "cli-project-workflow",
+    "cli-expansion-doctor",
+    "cli-project-guards",
+    "cli-dev-workflow",
+    "cli-schema-json-workflow",
+    "events-cli-workflow",
+    "cli-diagnostics",
+    "docs-executable-contracts",
+    "docs-executable-init-dev",
+    "docs-migration-schema-lowering",
+    "docs-example-01-hello-json",
+    "docs-example-02-request-schema",
+    "docs-example-03-fetch-composition",
+    "docs-example-05-fastly-capabilities",
+    "docs-example-07-opaque-proxy",
+    "docs-example-09-router-lowering",
+    "docs-example-10-entities-tools",
+    "docs-example-11-events",
+    "docs-example-12-mcp-proxy",
+    "docs-example-13-jwt-es256"
+  ],
+  "selectedTasks": [
+    "docs-example-07-opaque-proxy",
+    "docs-example-09-router-lowering",
+    "docs-example-10-entities-tools",
+    "docs-example-11-events",
+    "docs-example-12-mcp-proxy",
+    "docs-example-13-jwt-es256"
+  ],
+  "currentTask": null,
+  "completedTasks": 2,
+  "results": [
+    {
+      "name": "docs-example-07-opaque-proxy",
+      "evidence": "cli",
+      "description": "documented 07-opaque-proxy workflow",
+      "commandSignature": "c399a8e0aabb5c60c18303586122a18356ed73d37d3702ce83bf361028680ce3",
+      "timeoutMs": 360000,
+      "durationMs": 12430,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "logPath": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-59-05-325Z--34895/tasks/docs-example-07-opaque-proxy.log",
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    },
+    {
+      "name": "docs-example-09-router-lowering",
+      "evidence": "cli",
+      "description": "documented 09-router-lowering workflow",
+      "commandSignature": "c6756335e057466cf18ca219ce52a92bfa297d3de4fa5f873a5445d858b4ba0e",
+      "timeoutMs": 240000,
+      "durationMs": 6511,
+      "status": "failed",
+      "exitCode": 1,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "logPath": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-59-05-325Z--34895/tasks/docs-example-09-router-lowering.log",
+      "diagnosticReports": [],
+      "failureArtifacts": [],
+      "processTree": [],
+      "remainingProcessTree": []
+    }
+  ],
+  "runDirectory": "/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-59-05-325Z--34895"
+}

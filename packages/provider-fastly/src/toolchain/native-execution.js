@@ -18,6 +18,7 @@ function prepareFastlyNativeExecution(invocation) {
     realizationArtifacts: invocation.nativeArtifact.realizationArtifacts,
     guestUnits: invocation.nativeArtifact.guestUnits,
     nativeOptimization: invocation.optimization,
+    emitWat: invocation.nativeArtifact.manifest.wat?.emitted === true,
     compileTimeoutMs: invocation.timeoutMs || undefined
   });
   const evidence = Object.freeze({

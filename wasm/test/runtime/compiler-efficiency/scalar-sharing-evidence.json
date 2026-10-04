@@ -1,0 +1,937 @@
+{
+  "version": "pulse.fastly-scalar-sharing.v1",
+  "status": "passed",
+  "node": "v24.19.0",
+  "identities": {
+    "baseline": {
+      "revision": "79c5849b2b4b40569ab6cc1f2b6cce5fd4fe9442",
+      "tree": "797e5d8d092525140875b18930d6e0133feb6189",
+      "workingTree": "",
+      "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+      "ownerSha256": "4c2e380b10c6ce1c7ca802aa3c3c0e1ea38233739ae7092519beef3c0bd2934f",
+      "workerSha256": "e4d503f15428f2563279909098812edb37980be69312fcae26f030d75612b0fd"
+    },
+    "candidate": {
+      "revision": "30f57a592ecee613f0e4c0793ed32d33aae511a6",
+      "tree": "797e5d8d092525140875b18930d6e0133feb6189",
+      "workingTree": "M packages/provider-fastly/src/build/native-platform-capabilities.js\n M wasm/test/provider/assert-fastly-native-platform-capabilities.cjs\n M wasm/test/runtime/compiler-efficiency/schema-cost-profile.cjs\n?? wasm/test/provider/assert-fastly-scalar-sharing.cjs\n?? wasm/test/runtime/compiler-efficiency/sc02-scalar-sharing.cjs",
+      "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+      "ownerSha256": "e1a3eac04c6e15d57d30e2587b76d0adb19f9deed6904bb300124b27bdbd02a3",
+      "workerSha256": "e4d503f15428f2563279909098812edb37980be69312fcae26f030d75612b0fd"
+    }
+  },
+  "harnessSha256": "546ae068ca7f7dd340a9e2dbda84da0e808c949ee551639180e4c65e172a0cbd",
+  "binaryen": {
+    "name": "binaryen",
+    "version": "129.0.0-nightly.20260428",
+    "tools": [
+      {
+        "name": "wasm-as",
+        "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+      },
+      {
+        "name": "wasm-dis",
+        "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+      },
+      {
+        "name": "wasm-merge",
+        "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+      },
+      {
+        "name": "wasm-opt",
+        "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+      }
+    ]
+  },
+  "samples": 3,
+  "cells": [
+    {
+      "count": 1,
+      "fixtureSha256": "3f601ebb178b5d577aa077524ba7cbc94e8ad77e97c3e7af56417b850b9af236",
+      "profiles": {
+        "baseline": {
+          "registryHash": "c42573a93f660af231480d044514831aa4da84f11685bf07b0d49e1361f17dec",
+          "codecTableHash": "464cbcc772321687f16e251c08a5094bd4a518df06b79623ca7f0ec8c5289799",
+          "portableBytes": 5968,
+          "portableSha256": "9df642425c8eca89369d798db2a15f2144828e9dd114af169c733fb8daea22ce",
+          "fastlyBytes": 8370,
+          "fastlySha256": "3eb7ea786b61721d08ef2afd71bd57c43938623055f52c671fc6d7b181b7ee8c",
+          "fastlyDeclarations": 16,
+          "sharedScalarBytes": 0
+        },
+        "candidate": {
+          "registryHash": "c42573a93f660af231480d044514831aa4da84f11685bf07b0d49e1361f17dec",
+          "codecTableHash": "464cbcc772321687f16e251c08a5094bd4a518df06b79623ca7f0ec8c5289799",
+          "portableBytes": 5968,
+          "portableSha256": "9df642425c8eca89369d798db2a15f2144828e9dd114af169c733fb8daea22ce",
+          "fastlyBytes": 7382,
+          "fastlySha256": "3c292756863e634c9e9af108a3c2f30a503aa2429dfb9439633ecc8050de8def",
+          "fastlyDeclarations": 12,
+          "sharedScalarBytes": 820
+        }
+      },
+      "samples": [
+        {
+          "variant": "baseline",
+          "sample": 0,
+          "extractionMs": 11.635289,
+          "planningMs": 119.256114,
+          "buildMs": 3542.4006889999996,
+          "compilerWorkerPeakRssBytes": 115937280,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 120761,
+          "sourceSha256": "73d3cdcc60c720e98378226240b766fd9b53de07b601c04d19906de459dc6ed5",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 321470464,
+          "runtime": {
+            "coldRequestMs": 7.046185000000008,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 0,
+          "extractionMs": 10.515491999999995,
+          "planningMs": 111.85208400000002,
+          "buildMs": 3452.336268,
+          "compilerWorkerPeakRssBytes": 117014528,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 119773,
+          "sourceSha256": "edebe575691106f1be0e580bae5d04562eabfeb6f6d99d079939bdb067f6af42",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 329818112,
+          "runtime": {
+            "coldRequestMs": 5.7333480000000066,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 1,
+          "extractionMs": 11.003176000000025,
+          "planningMs": 124.96034899999998,
+          "buildMs": 3651.137009,
+          "compilerWorkerPeakRssBytes": 123838464,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 119773,
+          "sourceSha256": "edebe575691106f1be0e580bae5d04562eabfeb6f6d99d079939bdb067f6af42",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 359014400,
+          "runtime": {
+            "coldRequestMs": 5.868681000000009,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "baseline",
+          "sample": 1,
+          "extractionMs": 12.19198800000001,
+          "planningMs": 120.44131100000001,
+          "buildMs": 3572.972992,
+          "compilerWorkerPeakRssBytes": 117452800,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 120761,
+          "sourceSha256": "73d3cdcc60c720e98378226240b766fd9b53de07b601c04d19906de459dc6ed5",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 322191360,
+          "runtime": {
+            "coldRequestMs": 6.783969999999982,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "baseline",
+          "sample": 2,
+          "extractionMs": 10.603422999999992,
+          "planningMs": 121.22584900000001,
+          "buildMs": 3477.516323,
+          "compilerWorkerPeakRssBytes": 117342208,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 120761,
+          "sourceSha256": "73d3cdcc60c720e98378226240b766fd9b53de07b601c04d19906de459dc6ed5",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 342450176,
+          "runtime": {
+            "coldRequestMs": 5.728610000000003,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 2,
+          "extractionMs": 11.628668000000005,
+          "planningMs": 122.56403800000001,
+          "buildMs": 3484.713474,
+          "compilerWorkerPeakRssBytes": 117624832,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 119773,
+          "sourceSha256": "edebe575691106f1be0e580bae5d04562eabfeb6f6d99d079939bdb067f6af42",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 341446656,
+          "runtime": {
+            "coldRequestMs": 5.759676000000013,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "fixtureSha256": "3e4210b6c937b3d17aeb62b487e0a9268a92facff522ad7d038023251b569f1c",
+      "profiles": {
+        "baseline": {
+          "registryHash": "37138dd0f129272a7626b5dce642a8458aa5d6dfc68d78cbdb0edc52040325ed",
+          "codecTableHash": "5ff093d8fc63cace98c686633a117ab293468f8452a939297f1e15d90874eca7",
+          "portableBytes": 169077,
+          "portableSha256": "fd7a070fe37f11540feb18c719ba9ece5b6be907fdf45ece56774be19956737b",
+          "fastlyBytes": 228730,
+          "fastlySha256": "1b2c7c2aa336288419fc9350fc0fb142a88fe78db80f23c8aff6894828ed05ae",
+          "fastlyDeclarations": 357,
+          "sharedScalarBytes": 0
+        },
+        "candidate": {
+          "registryHash": "37138dd0f129272a7626b5dce642a8458aa5d6dfc68d78cbdb0edc52040325ed",
+          "codecTableHash": "5ff093d8fc63cace98c686633a117ab293468f8452a939297f1e15d90874eca7",
+          "portableBytes": 169077,
+          "portableSha256": "fd7a070fe37f11540feb18c719ba9ece5b6be907fdf45ece56774be19956737b",
+          "fastlyBytes": 170692,
+          "fastlySha256": "a8f878b75e52b8ad26092d4be7248f9a7c1161dc2c60e95b22afe9fe54bf2a2d",
+          "fastlyDeclarations": 136,
+          "sharedScalarBytes": 820
+        }
+      },
+      "samples": [
+        {
+          "variant": "baseline",
+          "sample": 0,
+          "extractionMs": 21.016381999999993,
+          "planningMs": 265.034762,
+          "buildMs": 3724.818605,
+          "compilerWorkerPeakRssBytes": 167542784,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 504230,
+          "sourceSha256": "10f6e1e920df1eed93015feec56b348a2073860e6e8472a34ad279e53cd983ad",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 351121408,
+          "runtime": {
+            "coldRequestMs": 5.897664999999989,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 0,
+          "extractionMs": 21.647290999999996,
+          "planningMs": 264.072019,
+          "buildMs": 3764.576153,
+          "compilerWorkerPeakRssBytes": 165920768,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 446192,
+          "sourceSha256": "2e71997eed6b94e8fc41dfd903858bc82d287d342d85b5d60f45be7034e6d07c",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 331665408,
+          "runtime": {
+            "coldRequestMs": 6.163846000000007,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 1,
+          "extractionMs": 21.626229999999993,
+          "planningMs": 289.68350699999996,
+          "buildMs": 3722.458387,
+          "compilerWorkerPeakRssBytes": 163295232,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 446192,
+          "sourceSha256": "2e71997eed6b94e8fc41dfd903858bc82d287d342d85b5d60f45be7034e6d07c",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 339968000,
+          "runtime": {
+            "coldRequestMs": 6.2626439999999945,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "baseline",
+          "sample": 1,
+          "extractionMs": 21.94236600000002,
+          "planningMs": 248.26717000000002,
+          "buildMs": 3667.957975,
+          "compilerWorkerPeakRssBytes": 165158912,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 504230,
+          "sourceSha256": "10f6e1e920df1eed93015feec56b348a2073860e6e8472a34ad279e53cd983ad",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 336596992,
+          "runtime": {
+            "coldRequestMs": 5.909552000000019,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "baseline",
+          "sample": 2,
+          "extractionMs": 18.74610099999998,
+          "planningMs": 277.056,
+          "buildMs": 4104.934179,
+          "compilerWorkerPeakRssBytes": 165998592,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 504230,
+          "sourceSha256": "10f6e1e920df1eed93015feec56b348a2073860e6e8472a34ad279e53cd983ad",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 366391296,
+          "runtime": {
+            "coldRequestMs": 5.932485999999983,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 2,
+          "extractionMs": 22.584119999999984,
+          "planningMs": 291.094453,
+          "buildMs": 3841.3717180000003,
+          "compilerWorkerPeakRssBytes": 165576704,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 446192,
+          "sourceSha256": "2e71997eed6b94e8fc41dfd903858bc82d287d342d85b5d60f45be7034e6d07c",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 353243136,
+          "runtime": {
+            "coldRequestMs": 6.186780999999996,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        }
+      ]
+    },
+    {
+      "count": 128,
+      "fixtureSha256": "8b65b72b94ae3fc11f555bfe39976edbebe2511ba236a2c37a890d1454dbc42f",
+      "profiles": {
+        "baseline": {
+          "registryHash": "52c24e7ae72cc66223f68d444a24fd35bf0e16c5eccc03c55f1cb6dfb8b5125c",
+          "codecTableHash": "5e8bea4dfb1b220f8f217e99a2fa7251506fe4bf04385eeb5936900892fad438",
+          "portableBytes": 675809,
+          "portableSha256": "fd1b52e42fe0caf7979149fbcdbff7f964bd86a2a60e0620f175d29b60a1a7a7",
+          "fastlyBytes": 918542,
+          "fastlySha256": "133085e8a830ad8888465aa95fd40e50a0d047d737d83b5afbaa7572314d3576",
+          "fastlyDeclarations": 1413,
+          "sharedScalarBytes": 0
+        },
+        "candidate": {
+          "registryHash": "52c24e7ae72cc66223f68d444a24fd35bf0e16c5eccc03c55f1cb6dfb8b5125c",
+          "codecTableHash": "5e8bea4dfb1b220f8f217e99a2fa7251506fe4bf04385eeb5936900892fad438",
+          "portableBytes": 675809,
+          "portableSha256": "fd1b52e42fe0caf7979149fbcdbff7f964bd86a2a60e0620f175d29b60a1a7a7",
+          "fastlyBytes": 682184,
+          "fastlySha256": "4deb2f04369f985809fea1c420a460a143e6e22978bb6aaf7d0c1a4cf268f59e",
+          "fastlyDeclarations": 520,
+          "sharedScalarBytes": 820
+        }
+      },
+      "samples": [
+        {
+          "variant": "baseline",
+          "sample": 0,
+          "extractionMs": 42.390559999999994,
+          "planningMs": 662.580948,
+          "buildMs": 5096.498565,
+          "compilerWorkerPeakRssBytes": 311443456,
+          "wasmBytes": 116696,
+          "gzipBytes": 44403,
+          "wasmSha256": "e55a9b38caccf5bbfbda691f4eb21ca15e29772090ba02e18335985652d78102",
+          "sourceBytes": 1700774,
+          "sourceSha256": "74a4cba45155019be71e4c20ad3992b1bcf23f68253226717bfb41f77c314649",
+          "functions": 210,
+          "codeBodyBytes": 80381,
+          "largestBodyBytes": 8156,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 442998784,
+          "runtime": {
+            "coldRequestMs": 7.179284999999993,
+            "callableSchemaIds": 128,
+            "compilerUnreferencedCallableIds": 127,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 5242880
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 0,
+          "extractionMs": 45.101776,
+          "planningMs": 664.9971009999999,
+          "buildMs": 5002.071134,
+          "compilerWorkerPeakRssBytes": 307187712,
+          "wasmBytes": 116696,
+          "gzipBytes": 44403,
+          "wasmSha256": "e55a9b38caccf5bbfbda691f4eb21ca15e29772090ba02e18335985652d78102",
+          "sourceBytes": 1464416,
+          "sourceSha256": "6c3b753b512dacd45f5cb17d949f86df931b81997d8fd7ff95a157a88bf5ed1a",
+          "functions": 210,
+          "codeBodyBytes": 80381,
+          "largestBodyBytes": 8156,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 461299712,
+          "runtime": {
+            "coldRequestMs": 7.408798000000019,
+            "callableSchemaIds": 128,
+            "compilerUnreferencedCallableIds": 127,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 5242880
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 1,
+          "extractionMs": 38.368706,
+          "planningMs": 640.1607300000001,
+          "buildMs": 5006.779863,
+          "compilerWorkerPeakRssBytes": 309194752,
+          "wasmBytes": 116696,
+          "gzipBytes": 44403,
+          "wasmSha256": "e55a9b38caccf5bbfbda691f4eb21ca15e29772090ba02e18335985652d78102",
+          "sourceBytes": 1464416,
+          "sourceSha256": "6c3b753b512dacd45f5cb17d949f86df931b81997d8fd7ff95a157a88bf5ed1a",
+          "functions": 210,
+          "codeBodyBytes": 80381,
+          "largestBodyBytes": 8156,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 449396736,
+          "runtime": {
+            "coldRequestMs": 6.067208999999991,
+            "callableSchemaIds": 128,
+            "compilerUnreferencedCallableIds": 127,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 5242880
+          }
+        },
+        {
+          "variant": "baseline",
+          "sample": 1,
+          "extractionMs": 42.07877099999999,
+          "planningMs": 630.931947,
+          "buildMs": 5037.394498,
+          "compilerWorkerPeakRssBytes": 311201792,
+          "wasmBytes": 116696,
+          "gzipBytes": 44403,
+          "wasmSha256": "e55a9b38caccf5bbfbda691f4eb21ca15e29772090ba02e18335985652d78102",
+          "sourceBytes": 1700774,
+          "sourceSha256": "74a4cba45155019be71e4c20ad3992b1bcf23f68253226717bfb41f77c314649",
+          "functions": 210,
+          "codeBodyBytes": 80381,
+          "largestBodyBytes": 8156,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 483020800,
+          "runtime": {
+            "coldRequestMs": 5.896012000000013,
+            "callableSchemaIds": 128,
+            "compilerUnreferencedCallableIds": 127,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 5242880
+          }
+        },
+        {
+          "variant": "baseline",
+          "sample": 2,
+          "extractionMs": 44.88504499999999,
+          "planningMs": 652.699441,
+          "buildMs": 5159.332693,
+          "compilerWorkerPeakRssBytes": 312594432,
+          "wasmBytes": 116696,
+          "gzipBytes": 44403,
+          "wasmSha256": "e55a9b38caccf5bbfbda691f4eb21ca15e29772090ba02e18335985652d78102",
+          "sourceBytes": 1700774,
+          "sourceSha256": "74a4cba45155019be71e4c20ad3992b1bcf23f68253226717bfb41f77c314649",
+          "functions": 210,
+          "codeBodyBytes": 80381,
+          "largestBodyBytes": 8156,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 473001984,
+          "runtime": {
+            "coldRequestMs": 7.1497699999999895,
+            "callableSchemaIds": 128,
+            "compilerUnreferencedCallableIds": 127,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 5242880
+          }
+        },
+        {
+          "variant": "candidate",
+          "sample": 2,
+          "extractionMs": 47.77789299999998,
+          "planningMs": 667.937413,
+          "buildMs": 5272.471821,
+          "compilerWorkerPeakRssBytes": 307712000,
+          "wasmBytes": 116696,
+          "gzipBytes": 44403,
+          "wasmSha256": "e55a9b38caccf5bbfbda691f4eb21ca15e29772090ba02e18335985652d78102",
+          "sourceBytes": 1464416,
+          "sourceSha256": "6c3b753b512dacd45f5cb17d949f86df931b81997d8fd7ff95a157a88bf5ed1a",
+          "functions": 210,
+          "codeBodyBytes": 80381,
+          "largestBodyBytes": 8156,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 432979968,
+          "runtime": {
+            "coldRequestMs": 6.301993999999979,
+            "callableSchemaIds": 128,
+            "compilerUnreferencedCallableIds": 127,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 5242880
+          }
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Default production optimization; injected Fastly ABI host, not deployed cold-start.",
+    "Process peak RSS and post-probe guest memory capacity are not live/request-peak memory.",
+    "Repeated-shape scaling; no registry pruning, general object interning or linked-guest claim."
+  ],
+  "baselineMergeRevision": "30f57a5",
+  "baselineTreeMatchesMerge": true,
+  "interpretation": [
+    "All six artifacts per cell are byte-identical across baseline and candidate.",
+    "Generated source reduction is exact; timings and peak RSS ranges overlap. No statistically established speed or memory improvement.",
+    "No live-memory or deployed cold-start claim."
+  ]
+}

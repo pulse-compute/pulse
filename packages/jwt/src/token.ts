@@ -350,3 +350,8 @@ export function compactJwtParts(token: string): JwtCompactParts {
     signatureSegment: segments[2],
   });
 }
+
+// Private package boundary: retain duplicate-member rejection for secret JWKs.
+export function parsePrivateKeyObject(text: string): Readonly<Record<string, JwtJsonValue>> {
+  return parseObject(text, 'protected-header');
+}

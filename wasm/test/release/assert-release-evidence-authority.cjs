@@ -10,6 +10,7 @@ const { expandProfile } = require('../suite/registry.cjs');
 const {
   AGGREGATE_VERSION,
   SHARD_DEFINITIONS,
+  validateShardCoverage,
   aggregateValidation,
   treeSnapshot,
   targetIntegrityReport,
@@ -55,6 +56,31 @@ try {
 
 const sourceRevision = 'a'.repeat(40);
 const expectedTasks = expandProfile('release');
+const coverage = validateShardCoverage();
+assert.equal(coverage.length, 16);
+assert.throws(
+  () => validateShardCoverage([...expectedTasks, 'new-unmapped-task']),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED' && /new-unmapped-task/.test(error.message)
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, [...SHARD_DEFINITIONS, { id: 'stale', tasks: ['removed-task'] }]),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_TASK_UNKNOWN' && /stale.*removed-task/.test(error.message)
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, [...SHARD_DEFINITIONS, SHARD_DEFINITIONS[0]]),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_SHARD_INVALID'
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, [...SHARD_DEFINITIONS, { id: 'empty', taskPrefix: ['missing-prefix-'] }]),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_SHARD_INVALID'
+);
+assert.throws(
+  () => validateShardCoverage(expectedTasks, SHARD_DEFINITIONS.filter((shard) => shard.id !== 'fastly-javascript-provider')),
+  (error) => error.code === 'PULSE_RELEASE_EVIDENCE_TASK_UNMAPPED' || error.code === 'PULSE_RELEASE_EVIDENCE_SHARD_INVALID'
+);
+// Overlap between shards remains intentional; prefix expansion covers new matching tasks.
+assert.ok(validateShardCoverage([...expectedTasks, 'docs-new-example'])
+  .find((shard) => shard.id === 'cli-documentation').tasks.includes('docs-new-example'));
 const taskReport = {
   sourceRevision,
   status: 'passed',
@@ -68,8 +94,15 @@ const taskReport = {
     durationMs: 1
   }))
 };
+const { SCHEMA: FEATURE_SCHEMA, REQUIRED_TASKS } = require('../../../scripts/release-feature-acceptance.cjs');
+const featureAcceptance = {
+  schemaVersion: FEATURE_SCHEMA, sourceRevision, sourceTree: 'b'.repeat(40), workingTree: '', status: 'passed',
+  gates: REQUIRED_TASKS.map(task => ({ task, status: 'passed', reportSha256: 'c'.repeat(64),
+    packages: [{ name: '@pulse-compute/pulse', version: require('../../../scripts/package-support.cjs').RELEASE_VERSION, sha256: 'd'.repeat(64) }] }))
+};
 const releaseSeal = {
   sourceRevision,
+  featureAcceptance,
   status: 'passed',
   steps: [
     'maintainer',
@@ -77,7 +110,8 @@ const releaseSeal = {
     'build',
     'workspace-unit',
     'documentation',
-    'release'
+    'release',
+    'installed-features'
   ].map((id) => ({ id, status: 'passed' })),
   externalFastly: {
     status: 'unavailable',
@@ -165,7 +199,7 @@ assert.deepEqual(
     .find((entry) => entry.id === 'maintainer-publication-controls')
     .tasks
     .map((entry) => entry.name),
-  ['release-runtime-policy', 'release-tag']
+  ['release-feature-acceptance', 'release-runtime-policy', 'release-tag']
 );
 assert.deepEqual(aggregate.summary, {
   shards: 16,
@@ -173,6 +207,7 @@ assert.deepEqual(aggregate.summary, {
   failed: 0,
   releaseTasks: expectedTasks.length,
   releaseTasksPassed: expectedTasks.length,
+  installedFeatureGates: REQUIRED_TASKS.length,
   providerReality: 'unavailable',
   deploymentPerformed: false,
   publicationPerformed: false

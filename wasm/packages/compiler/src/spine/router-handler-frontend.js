@@ -130,6 +130,7 @@ function analysisForSurfaceFacts(surfaceFacts) {
   const capabilities = new Set();
   let fetchCount = 0;
   for (const fact of facts) {
+    if (fact.surfaceId === 'ctx.req.body') { capabilities.add('request.body.forward'); continue; }
     if (fact.surfaceId.startsWith('ctx.fetch.')) { capabilities.add('fetch'); fetchCount += 1; continue; }
     if (fact.surfaceId.startsWith('ctx.req.')) capabilities.add(fact.surfaceId.slice('ctx.'.length));
     else if (fact.surfaceId.startsWith('ctx.config.')) capabilities.add('config.get');
@@ -197,6 +198,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     handlerAuthoring: topology.options && topology.options.handlerAuthoring,
     requireAsync: topology.options && topology.options.requireAsync === true,
     requireEffectAwait: topology.options && topology.options.requireEffectAwait === true,
+    helperForCall: topology.options?.linkedProjectModules?.helperForCall,
     packageEffectForCall: topology.options && topology.options.packageEffectForCall
       || ((call) => packageEffectsByStart.get(call.getStart(sourceFile)))
   });
@@ -230,7 +232,7 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
     }
     const contextSurface = recognizeHandlerSurface(node, { ctxName, unwrap: true });
     if (contextSurface) {
-      const httpOnly = contextSurface.surfaceId === 'ctx.param'
+      const httpOnly = contextSurface.surfaceId.startsWith('ctx.output.') || contextSurface.surfaceId === 'ctx.param'
         || contextSurface.surfaceId.startsWith('ctx.req.')
         || ['ctx.json', 'ctx.text', 'ctx.response'].includes(contextSurface.surfaceId);
       const eventOnly = contextSurface.surfaceId.startsWith('ctx.event.');
@@ -258,6 +260,41 @@ function normalizeRouterHandler(topology, descriptor, recognition, classificatio
 
   const rewriteTransformer = (context) => {
     const visit = (node) => {
+      if (ts.isCallExpression(node) && ts.isPropertyAccessExpression(node.expression)
+        && ts.isIdentifier(node.expression.expression) && node.expression.expression.text === ctxName
+        && node.expression.name.text === 'kv' && node.typeArguments?.length === 1) {
+        const type = topology.options?.linkedProjectModules?.pureTypeForNode?.(node.typeArguments[0]);
+        if (type) return ts.factory.updateCallExpression(node, node.expression,
+          [require('./pure-helper-source').typeNode(type)], node.arguments.map(arg => ts.visitNode(arg, visit)));
+      }
+      const helper = ts.isCallExpression(node) && topology.options?.linkedProjectModules?.helperForCall?.(node);
+      if (helper) {
+        const original = ts.getOriginalNode(node);
+        const awaited = original.parent && ts.isAwaitExpression(original.parent);
+        const binding = awaited && original.parent.parent;
+        let shadowed = false;
+        const inspect = item => {
+          if ((ts.isVariableDeclaration(item) || ts.isParameter(item) || ts.isFunctionDeclaration(item)) && ts.isIdentifier(item.name) && item.name.text === original.expression.text) shadowed = true;
+          ts.forEachChild(item, inspect);
+        };
+        inspect(authoredFunctionNode);
+        if (helper.pure) {
+          if (awaited || shadowed || node.typeArguments?.length || node.questionDotToken
+            || node.arguments.length !== helper.functionNode.parameters.length || !['route', 'middleware'].includes(role)) {
+            diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED',
+              'Pure helpers require a static unshadowed synchronous pure call in an HTTP handler.'));
+          }
+          return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined,
+            node.arguments.map(arg => ts.visitNode(arg, visit)));
+        }
+        if (!binding || !ts.isVariableDeclaration(binding) || !ts.isIdentifier(binding.name)
+          || shadowed || node.arguments.length !== helper.functionNode.parameters.length
+          || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctxName
+          || !['route', 'middleware'].includes(role)) {
+          diagnostics.push(diagnostic(sourceFile, original, 'PULSE_NATIVE_HELPER_CALL_UNSUPPORTED', 'A source helper requires an unshadowed, directly awaited local binding and the current request context in an HTTP handler.'));
+        }
+        return ts.factory.updateCallExpression(node, ts.factory.createIdentifier(helper.name), undefined, node.arguments.slice(1));
+      }
       if (errorName && ts.isShorthandPropertyAssignment(node) && node.name.text === errorName) {
         return ts.factory.createPropertyAssignment(ts.factory.createIdentifier(errorName), ts.factory.createIdentifier(ERROR));
       }

@@ -692,6 +692,10 @@ function selectedObjects(manifest, phase, loaded = loadDeploymentConfig()) {
   const normalized = normalizePhase(phase);
   const commitOrder = new Map(loaded.config.deployment.promotionCommitObjects.map((relative, index) => [relative, index]));
   return manifest.objects
+    // Historical trees remain sealed preview inputs, never storage operations for this release.
+    .filter((entry) => entry.phase === 'mutable'
+      || entry.relativePath.startsWith(`${loaded.config.deployment.currentVersionDirectory}/`)
+      || entry.relativePath === loaded.config.deployment.receiptPath)
     .filter((entry) => normalized === 'all' || entry.phase === normalized)
     .sort((left, right) => {
       const leftPhase = left.phase === 'immutable' ? 0 : commitOrder.has(left.relativePath) ? 2 : 1;
@@ -755,26 +759,38 @@ function deployDocumentation(options = {}) {
   if (adapter.kind === 'aws') assertProductionDeploymentEnvironment(verified.manifest, options);
   const results = [];
   for (const entry of objects) {
-    const current = adapter.head(entry.objectKey);
-    if (current) {
-      const currentBytes = adapter.read(entry.objectKey);
-      const currentHash = currentBytes && sha256(currentBytes);
-      const metadataMatches = current.contentType === entry.contentType && current.cacheControl === entry.cacheControl;
-      if (currentHash === entry.sha256 && metadataMatches) {
-        results.push(Object.freeze({ key: entry.objectKey, phase: entry.phase, action: 'already-present', sha256: entry.sha256 }));
-        continue;
+    try {
+      const current = adapter.head(entry.objectKey);
+      if (current) {
+        const currentBytes = adapter.read(entry.objectKey);
+        const currentHash = currentBytes && sha256(currentBytes);
+        const metadataMatches = current.contentType === entry.contentType && current.cacheControl === entry.cacheControl;
+        if (currentHash === entry.sha256 && metadataMatches) {
+          results.push(Object.freeze({ key: entry.objectKey, phase: entry.phase, action: 'already-present', sha256: entry.sha256 }));
+          continue;
+        }
+        if (entry.phase === 'immutable') {
+          const mismatch = [
+            ...(currentHash !== entry.sha256 ? ['bytes'] : []),
+            ...(current.contentType !== entry.contentType ? ['content-type'] : []),
+            ...(current.cacheControl !== entry.cacheControl ? ['cache-control'] : [])
+          ];
+          fail(`immutable documentation object ${entry.objectKey} already exists with different bytes or metadata`, 'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT', { mismatch });
+        }
       }
-      if (entry.phase === 'immutable') fail(`immutable documentation object ${entry.objectKey} already exists with different bytes or metadata`, 'PULSE_DOCUMENTATION_IMMUTABLE_CONFLICT');
+      const sourceFile = resolveInside(path.join(verified.candidateDir, 'site'), entry.relativePath, 'deployment source');
+      adapter.put(entry.objectKey, sourceFile, entry);
+      const after = adapter.head(entry.objectKey);
+      const afterBytes = adapter.read(entry.objectKey);
+      if (!after || !afterBytes) fail(`documentation object ${entry.objectKey} is not visible after upload`);
+      if (sha256(afterBytes) !== entry.sha256) fail(`documentation object ${entry.objectKey} checksum differs after upload`);
+      if (after.contentType !== entry.contentType) fail(`documentation object ${entry.objectKey} content type differs after upload`);
+      if (after.cacheControl !== entry.cacheControl) fail(`documentation object ${entry.objectKey} cache control differs after upload`);
+      results.push(Object.freeze({ key: entry.objectKey, phase: entry.phase, action: current ? 'replaced' : 'uploaded', sha256: entry.sha256 }));
+    } catch (error) {
+      error.objectKey = entry.objectKey;
+      throw error;
     }
-    const sourceFile = resolveInside(path.join(verified.candidateDir, 'site'), entry.relativePath, 'deployment source');
-    adapter.put(entry.objectKey, sourceFile, entry);
-    const after = adapter.head(entry.objectKey);
-    const afterBytes = adapter.read(entry.objectKey);
-    if (!after || !afterBytes) fail(`documentation object ${entry.objectKey} is not visible after upload`);
-    if (sha256(afterBytes) !== entry.sha256) fail(`documentation object ${entry.objectKey} checksum differs after upload`);
-    if (after.contentType !== entry.contentType) fail(`documentation object ${entry.objectKey} content type differs after upload`);
-    if (after.cacheControl !== entry.cacheControl) fail(`documentation object ${entry.objectKey} cache control differs after upload`);
-    results.push(Object.freeze({ key: entry.objectKey, phase: entry.phase, action: current ? 'replaced' : 'uploaded', sha256: entry.sha256 }));
   }
   const report = Object.freeze({
     schemaVersion: REPORT_SCHEMA,
@@ -805,14 +821,19 @@ function verifyStorage(options = {}) {
   const objects = selectedObjects(verified.manifest, phase, loaded);
   const results = [];
   for (const entry of objects) {
-    const head = adapter.head(entry.objectKey);
-    if (!head) fail(`documentation object ${entry.objectKey} is missing from storage`);
-    const bytes = adapter.read(entry.objectKey);
-    const actualHash = bytes && sha256(bytes);
-    if (actualHash !== entry.sha256) fail(`documentation object ${entry.objectKey} differs from the sealed candidate`);
-    if (head.contentType !== entry.contentType) fail(`documentation object ${entry.objectKey} has content type ${head.contentType || '(missing)'}, expected ${entry.contentType}`);
-    if (head.cacheControl !== entry.cacheControl) fail(`documentation object ${entry.objectKey} has cache control ${head.cacheControl || '(missing)'}, expected ${entry.cacheControl}`);
-    results.push(Object.freeze({ key: entry.objectKey, sha256: entry.sha256, status: 'ok' }));
+    try {
+      const head = adapter.head(entry.objectKey);
+      if (!head) fail(`documentation object ${entry.objectKey} is missing from storage`);
+      const bytes = adapter.read(entry.objectKey);
+      const actualHash = bytes && sha256(bytes);
+      if (actualHash !== entry.sha256) fail(`documentation object ${entry.objectKey} differs from the sealed candidate`);
+      if (head.contentType !== entry.contentType) fail(`documentation object ${entry.objectKey} has content type ${head.contentType || '(missing)'}, expected ${entry.contentType}`);
+      if (head.cacheControl !== entry.cacheControl) fail(`documentation object ${entry.objectKey} has cache control ${head.cacheControl || '(missing)'}, expected ${entry.cacheControl}`);
+      results.push(Object.freeze({ key: entry.objectKey, sha256: entry.sha256, status: 'ok' }));
+    } catch (error) {
+      error.objectKey = entry.objectKey;
+      throw error;
+    }
   }
   const report = Object.freeze({
     schemaVersion: REPORT_SCHEMA,
@@ -937,17 +958,37 @@ function parseArgs(argv) {
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  let result;
-  if (options.command === 'seal') result = sealDocumentationCandidate(options);
-  else if (options.command === 'verify-candidate') result = verifyDocumentationCandidate(options);
-  else if (options.command === 'deploy') result = deployDocumentation(options);
-  else if (options.command === 'verify-storage') result = verifyStorage(options);
-  else result = await verifyPublicDocumentation(options);
-  if (options.jsonFile) {
-    ensureDirectory(path.dirname(path.resolve(options.jsonFile)));
-    fs.writeFileSync(path.resolve(options.jsonFile), stableJson(result));
+  try {
+    let result;
+    if (options.command === 'seal') result = sealDocumentationCandidate(options);
+    else if (options.command === 'verify-candidate') result = verifyDocumentationCandidate(options);
+    else if (options.command === 'deploy') result = deployDocumentation(options);
+    else if (options.command === 'verify-storage') result = verifyStorage(options);
+    else result = await verifyPublicDocumentation(options);
+    if (options.jsonFile) {
+      ensureDirectory(path.dirname(path.resolve(options.jsonFile)));
+      fs.writeFileSync(path.resolve(options.jsonFile), stableJson(result));
+    }
+    process.stdout.write(stableJson(result));
+  } catch (error) {
+    if (options.jsonFile) {
+      const report = {
+        schemaVersion: REPORT_SCHEMA,
+        status: 'failed',
+        operation: options.command,
+        phase: options.phase || null,
+        releaseVersion: RELEASE_VERSION,
+        failure: {
+          code: error.code || 'PULSE_DOCUMENTATION_DEPLOYMENT_ERROR',
+          objectKey: error.objectKey || null,
+          mismatch: error.details?.mismatch || []
+        }
+      };
+      ensureDirectory(path.dirname(path.resolve(options.jsonFile)));
+      fs.writeFileSync(path.resolve(options.jsonFile), stableJson(report));
+    }
+    throw error;
   }
-  process.stdout.write(stableJson(result));
 }
 
 module.exports = Object.freeze({

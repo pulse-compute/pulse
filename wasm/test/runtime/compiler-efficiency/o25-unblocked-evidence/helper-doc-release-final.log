@@ -1,0 +1,2417 @@
+{
+  "status": "ok",
+  "releaseVersion": "1.0.0-beta.5",
+  "maintenance": {
+    "schemaVersion": "pulse.maintainer-control-plane-validation.v1",
+    "status": "ok",
+    "releaseVersion": "1.0.0-beta.5",
+    "policy": {
+      "policyVersion": 10,
+      "changeClasses": 7,
+      "scopeStates": 5,
+      "boundaries": 11,
+      "pathRules": 13,
+      "checks": 12,
+      "labels": 17,
+      "actionPins": 6,
+      "codexEnvironment": "codex-maintainer",
+      "protectedEnvironments": 3,
+      "generatedFiles": 5
+    },
+    "agents": {
+      "files": 9,
+      "rootEntryPoints": [
+        "runtime-effects",
+        "schema-codecs",
+        "package-lowering"
+      ],
+      "nestedEntryPoints": {
+        "packages/AGENTS.md": [
+          "package-surface"
+        ],
+        "wasm/packages/cli/AGENTS.md": [
+          "project-workflow"
+        ],
+        "docs/AGENTS.md": [
+          "documentation-current"
+        ],
+        "release/AGENTS.md": [
+          "release-readiness",
+          "documentation-release",
+          "release-seal"
+        ],
+        "packages/provider-fastly/AGENTS.md": [
+          "provider-fastly"
+        ]
+      },
+      "largestCombinedBytes": 27708,
+      "largestChainFor": "release/AGENTS.md",
+      "commandReferences": {
+        "files": 11,
+        "policyCommands": 12,
+        "commands": 52,
+        "selections": 70,
+        "regressionCases": 9
+      }
+    },
+    "workflows": {
+      "files": 8,
+      "requiredStatusChecks": 5,
+      "actionPins": 6,
+      "codexTrigger": "workflow_dispatch",
+      "codexEnvironment": "codex-maintainer",
+      "protectedEnvironments": 3,
+      "codexPermissionProfile": ":read-only",
+      "trustedBasePolicy": true,
+      "trustedBaseWorkingTree": true
+    },
+    "community": {
+      "files": 9,
+      "issueForms": 4,
+      "labels": 17
+    },
+    "pathRules": {
+      "repositoryFiles": 2392,
+      "rules": 13,
+      "patterns": 123
+    },
+    "scopeClassifier": {
+      "cases": 17,
+      "trustedChangedFileInput": true
+    },
+    "documentation": {
+      "publicPages": 11
+    },
+    "packageScripts": {
+      "scripts": 4
+    },
+    "publication": {
+      "schemaVersion": "pulse.publication-control-plane-validation.v1",
+      "status": "ok",
+      "releaseVersion": "1.0.0-beta.5",
+      "preflight": {
+        "schemaVersion": "pulse.release-preflight.v1",
+        "status": "ok",
+        "checkpoint": "sprint-7a-release-preflight",
+        "releaseCandidate": {
+          "version": "1.0.0-beta.5",
+          "label": "Beta",
+          "publicationTag": "latest",
+          "latestTagAllowed": true,
+          "currentSnapshotChannel": "beta",
+          "applicationStage": "documentation-release",
+          "snapshotStatus": "applied",
+          "snapshotAppliedAt": "2026-09-16"
+        },
+        "vocabulary": {
+          "schemaVersion": "pulse.release-vocabulary.v1",
+          "displayLabel": "Beta",
+          "displayName": "Pulse 1.0.0-beta.5 — Beta",
+          "npmDistTag": "latest",
+          "activationStage": "documentation-release"
+        },
+        "statuses": {
+          "proven": 11,
+          "pending": 10,
+          "blocked": 0
+        },
+        "shards": 16,
+        "gates": 21,
+        "bootstrap": {
+          "packageCount": 19,
+          "version": "0.0.0",
+          "tag": "bootstrap",
+          "releaseTag": "latest",
+          "authority": "human-release",
+          "auditEvidence": {
+            "schemaVersion": "pulse.npm-catalog-audit-policy.v2",
+            "output": ".pulse-release-preflight/npm-catalog-audit.json",
+            "maxAgeHours": 24,
+            "manifestBinding": "sha256",
+            "requiredBy": "publication"
+          }
+        },
+        "audits": {
+          "vulnerabilityCommand": "node scripts/pnpm-toolchain.cjs -- audit --prod --json",
+          "stopShipSeverities": [
+            "critical",
+            "high"
+          ],
+          "licenseCommand": "node scripts/audit-production-dependencies.cjs",
+          "automaticallyAcceptedSpdx": 7,
+          "noticeDisposition": {
+            "schemaVersion": "pulse.release-notice-disposition.v1",
+            "status": "notice-required-and-shipped",
+            "noticeFile": "NOTICE",
+            "noticeSha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+            "packageFiles": [
+              "LICENSE",
+              "NOTICE"
+            ],
+            "components": 3
+          },
+          "refreshAt": "release-seal"
+        },
+        "conformance": {
+          "schemaVersion": "pulse.release-conformance-ledger.v1",
+          "checkpoint": "sprint-7d-release-blocking-conformance",
+          "items": 14,
+          "statuses": {
+            "closed": 10,
+            "explicitlyDeferred": 4,
+            "releaseBlocking": 0,
+            "unclassified": 0
+          }
+        },
+        "snapshot": {
+          "status": "applied",
+          "version": "1.0.0-beta.5",
+          "channel": "beta",
+          "releasedAt": "2026-09-16",
+          "packages": 19,
+          "dependencyRanges": 60
+        },
+        "documentation": {
+          "schemaVersion": "pulse.documentation-inventory.v2",
+          "status": "ok",
+          "sources": 283,
+          "counts": {
+            "current-public": 62,
+            "current-contributor": 108,
+            "generated": 113
+          },
+          "rules": 9,
+          "entries": [
+            {
+              "path": "API.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-root",
+              "disposition": "Keep as canonical public project, API, release, security, and support material."
+            },
+            {
+              "path": "CHANGELOG.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-root",
+              "disposition": "Keep as canonical public project, API, release, security, and support material."
+            },
+            {
+              "path": "CONTRIBUTING.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-root",
+              "disposition": "Keep as canonical public project, API, release, security, and support material."
+            },
+            {
+              "path": "SECURITY.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-root",
+              "disposition": "Keep as canonical public project, API, release, security, and support material."
+            },
+            {
+              "path": "SUPPORT.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-root",
+              "disposition": "Keep as canonical public project, API, release, security, and support material."
+            },
+            {
+              "path": "docs/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/architecture/current-contracts.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/architecture/overview.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/architecture/vision.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/bodies.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/compilation-and-lowering.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/contracts-and-providers.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/effects-and-continuations.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/entities-and-adapters.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/package-owned-lowering.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/concepts/targets-and-hosts.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/contributing/README.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/contributing/adding-core-provider.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/contributing/adding-first-party-lowerer.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/contributing/entities-lowering.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/contributing/package-lowerer-contract.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/contributing/pulse-aware-packages.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/examples.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/fixtures/inspect-fetch-composition.selected.json",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/getting-started.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/compatibility-imports.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/deploying-fastly.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/deploying-node.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/events.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/fastly-capabilities.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/fetching-and-composition.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/grip.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/json-schemas.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/migrating-from-express.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/project-lifecycle.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/routing.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/guides/troubleshooting.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/maintainers/README.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/codex-maintainer.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/compiler-efficiency-p01.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/documentation-deployment.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/documentation-system.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/documentation-versioning.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/maintainer-charter.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/maintenance-policy.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/maintainers/maintenance-policy.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/maintainers/npm-publishing.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/plugin-readiness.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/maintainers/plugin-readiness.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/maintainers/public-site.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/release-acceptance.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/release-manifest.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/maintainers/repository-setup.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/scope-policy.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/support-and-triage.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/maintainers/testing.md",
+              "classification": "current-contributor",
+              "owner": "maintainer-council",
+              "rule": "current-contributor-governance",
+              "disposition": "Keep current for contributors and maintainers; it may remain hosted without leading application onboarding."
+            },
+            {
+              "path": "docs/packages/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/packages/assets.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/cli.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/crypto.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/entities.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/grip.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/implementation-packages.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/packages/jwt.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/provider-fastly.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/pulse.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/runtime.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/packages/s3.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/preview-scope.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/reference/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/reference/cli-spec.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/cli.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/compatibility-matrix.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/reference/diagnostics.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/documentation-versions.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/environment.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/handler-authoring.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-documentation",
+              "disposition": "Keep as canonical current public guidance unless a more specific rule classifies it otherwise."
+            },
+            {
+              "path": "docs/reference/project-config.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/project-config.schema.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/release-manifest.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "docs/reference/shell-completion.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-canonical-reference",
+              "disposition": "Regenerate from the named CLI, configuration, diagnostic, environment, package, maintenance, and release owners."
+            },
+            {
+              "path": "examples/01-hello-json/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/02-request-schema/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/03-fetch-composition/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/05-fastly-capabilities/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/07-opaque-proxy/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/09-router-lowering/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/10-entities-tools/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/11-events/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/12-mcp-proxy/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/13-jwt-es256/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "examples/README.md",
+              "classification": "current-public",
+              "owner": "docs-platform",
+              "rule": "current-public-examples",
+              "disposition": "Keep as canonical public executable examples."
+            },
+            {
+              "path": "packages/assets/README.md",
+              "classification": "current-public",
+              "owner": "release/pulse-release-manifest.json",
+              "rule": "current-public-package-readmes",
+              "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+            },
+            {
+              "path": "packages/assets/as/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/crypto/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/crypto/guests/es256-rustcrypto/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/crypto/guests/es256-rustcrypto/probe/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/crypto/guests/es256-rustcrypto/source/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/entities/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/grip/README.md",
+              "classification": "current-public",
+              "owner": "release/pulse-release-manifest.json",
+              "rule": "current-public-package-readmes",
+              "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+            },
+            {
+              "path": "packages/grip/as/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/jwt/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/provider-fastly/README.md",
+              "classification": "current-public",
+              "owner": "release/pulse-release-manifest.json",
+              "rule": "current-public-package-readmes",
+              "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+            },
+            {
+              "path": "packages/provider-node/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/pulse/README.md",
+              "classification": "current-public",
+              "owner": "release/pulse-release-manifest.json",
+              "rule": "current-public-package-readmes",
+              "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+            },
+            {
+              "path": "packages/runtime/README.md",
+              "classification": "current-public",
+              "owner": "release/pulse-release-manifest.json",
+              "rule": "current-public-package-readmes",
+              "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+            },
+            {
+              "path": "packages/runtime/docs/API.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "packages/runtime/docs/guides/routing.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "packages/runtime/docs/preview-scope.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "packages/s3/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "packages/s3/conformance/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-packages",
+              "disposition": "Keep as package implementation and maintainer material unless a public package rule owns it."
+            },
+            {
+              "path": "wasm/ARCHITECTURE.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/LIFECYCLE.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/MAPPING.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/docs/CLI.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/docs/PACKAGE-BOUNDARIES.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/docs/TESTING.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/examples/assets-package-out/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/build-support/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/cli/API.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/CHANGELOG.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/README.md",
+              "classification": "current-public",
+              "owner": "release/pulse-release-manifest.json",
+              "rule": "current-public-package-readmes",
+              "disposition": "Keep as public package entry material; generated release-status fragments remain catalog-owned."
+            },
+            {
+              "path": "wasm/packages/cli/cli-spec.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/architecture/current-contracts.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/architecture/overview.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/architecture/vision.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/bodies.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/compilation-and-lowering.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/contracts-and-providers.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/effects-and-continuations.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/entities-and-adapters.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/package-owned-lowering.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/concepts/targets-and-hosts.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/contributing/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/contributing/adding-core-provider.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/contributing/adding-first-party-lowerer.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/contributing/entities-lowering.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/contributing/package-lowerer-contract.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/contributing/pulse-aware-packages.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/examples.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/fixtures/inspect-fetch-composition.selected.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/getting-started.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/compatibility-imports.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/deploying-fastly.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/deploying-node.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/events.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/fastly-capabilities.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/fetching-and-composition.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/grip.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/json-schemas.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/migrating-from-express.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/project-lifecycle.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/routing.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/guides/troubleshooting.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/codex-maintainer.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/compiler-efficiency-p01.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/documentation-deployment.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/documentation-system.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/documentation-versioning.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/maintainer-charter.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/maintenance-policy.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/maintenance-policy.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/npm-publishing.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/plugin-readiness.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/plugin-readiness.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/public-site.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/release-acceptance.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/release-manifest.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/repository-setup.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/scope-policy.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/support-and-triage.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/maintainers/testing.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/assets.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/cli.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/crypto.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/entities.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/grip.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/implementation-packages.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/jwt.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/provider-fastly.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/pulse.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/runtime.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/packages/s3.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/preview-scope.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/cli-spec.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/cli.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/compatibility-matrix.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/diagnostics.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/documentation-versions.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/environment.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/handler-authoring.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/project-config.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/project-config.schema.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/release-manifest.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/docs/reference/shell-completion.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/documentation-site.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/documentation-versions.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/01-hello-json/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/02-request-schema/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/03-fetch-composition/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/05-fastly-capabilities/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/07-opaque-proxy/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/09-router-lowering/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/10-entities-tools/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/11-events/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/12-mcp-proxy/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/13-jwt-es256/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/examples/README.md",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/project-config.schema.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/cli/release-manifest.json",
+              "classification": "generated",
+              "owner": "wasm/scripts/sync-reference-docs.cjs",
+              "rule": "generated-installed-cli",
+              "disposition": "Regenerate from canonical root documentation, examples, and release catalogs; never review or edit independently."
+            },
+            {
+              "path": "wasm/packages/compiler/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulse-config-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulsewasm-core-runtime-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulsewasm-deployment-posture-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulsewasm-json-body-abi-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulsewasm-library-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulsewasm-runtime-abi-boundary-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/pulsewasm-wasm-host-abi-contract-v1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/compiler/docs/runtime-provider-kv-contract.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/contracts/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/host-runtime/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/library-kit/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/runtime-core-as/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/schema-json/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/packages/wasm-guest-link/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/ci/workflow-latency-baseline-2026-09-25.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/internal-canonical/branching/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/internal-canonical/continuation-chain/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/internal-canonical/failure-diagnostics/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/internal-canonical/structured-body/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/bounded-app-logic/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/catalog-router-methods/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/catalog-router-probe/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/fastly-compute-reality/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/schema-json/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/schema-text-storage/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/fixtures/projects/schema-value-storage/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/guest-link/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/jwt/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/kv/K1.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/kv/K2.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/kv/K3.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/kv/K4.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/provider/mem10-allocator-decision.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/provider/mem11-read-temporaries.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/provider/mem12-quote-reuse.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/release/documentation-hosted-history-d01-2026-09-25.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/release/documentation-package-links-d03-2026-09-26.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/PS3.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/PS4.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/effect-retention-ledger.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/gen01-census.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/gen03-structural-sharing.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/guest-link-evidence.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/mem03-encode-materialization.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/mem04-effect-cleanup.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/mem08-payload-retention.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/mem09-normalization-reuse.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o01-baseline.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o02-guest-allocation.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o03-compiler-phases.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o04-copy-chain.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o05-parser-copy.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o06-memory-qualification.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o07-generated-source.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o08-wasm-census.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o09-driver-behavior.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o10-driver-factoring.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o11-driver-qualification.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o18-reusable-stage.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o19-production-stage.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/runtime/compiler-efficiency/o25-history-helper.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/s3/O2.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/s3/O3.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/s3/O4.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            },
+            {
+              "path": "wasm/test/s3/o1/README.md",
+              "classification": "current-contributor",
+              "owner": "release-engineering",
+              "rule": "current-contributor-wasm",
+              "disposition": "Keep as internal compiler, runtime, fixture, and provider maintainer material unless a more specific rule owns it."
+            }
+          ]
+        }
+      },
+      "configuration": {
+        "npmAuthentication": "npm-trusted-publishing-oidc",
+        "npmVersion": "11.15.0",
+        "pnpmDevelopmentRange": "^12.4.2",
+        "pnpmVersion": "12.4.2",
+        "nodeEngines": "^22.14.0 || ^24.0.0",
+        "nodeMinimumVersion": "22.14.0",
+        "nodeReleaseRange": "^24.0.0",
+        "nodeVersion": "24.18.0",
+        "dependencyBundle": {
+          "nodeVersion": "24.18.0",
+          "nodeEngines": "^22.14.0 || ^24.0.0",
+          "pnpmVersion": "12.4.2",
+          "pnpmDevelopmentRange": "^12.4.2",
+          "restoreInstructions": true
+        },
+        "packageMetadata": {
+          "license": "Apache-2.0",
+          "notice": "NOTICE",
+          "noticeSha256": "8af1d352fb8a9d3ba372767b310fa53e28f2424ee052ead7cabbce547186bb6f",
+          "legalFiles": [
+            "LICENSE",
+            "NOTICE"
+          ],
+          "nodeEngines": "^22.14.0 || ^24.0.0",
+          "pnpmDevelopmentRange": "^12.4.2",
+          "packages": 19
+        },
+        "documentationSchema": "pulse.documentation-deployment.v1",
+        "releaseVersion": "1.0.0-beta.5",
+        "packageCount": 19,
+        "channel": "beta",
+        "objectPrefix": "pulse",
+        "environments": [
+          "npm-publish",
+          "documentation-production"
+        ]
+      },
+      "workflows": {
+        "files": 4,
+        "manualProductionWorkflows": 2,
+        "pagesDeploymentRemoved": true,
+        "immutableBeforeNpmBeforePromotion": true,
+        "oidcOnlyInPublishJob": true,
+        "deploymentSecretsStepScoped": true,
+        "nodeFloor": "22.14.0",
+        "releaseNodeRange": "^24.0.0",
+        "releaseNode": "24.18.0"
+      },
+      "npmPublication": {
+        "packageCount": 19,
+        "publishOrder": [
+          "@pulse-compute/wasm-contracts",
+          "@pulse-compute/wasm-build-support",
+          "@pulse-compute/wasm-guest-link",
+          "@pulse-compute/wasm-library-kit",
+          "@pulse-compute/wasm-schema-json",
+          "@pulse-compute/runtime",
+          "@pulse-compute/assets",
+          "@pulse-compute/crypto",
+          "@pulse-compute/wasm-host-runtime",
+          "@pulse-compute/wasm-runtime-core-as",
+          "@pulse-compute/entities",
+          "@pulse-compute/grip",
+          "@pulse-compute/jwt",
+          "@pulse-compute/s3",
+          "@pulse-compute/provider-node",
+          "@pulse-compute/provider-fastly",
+          "@pulse-compute/wasm-compiler",
+          "@pulse-compute/pulse",
+          "@pulse-compute/cli"
+        ],
+        "integrityAlgorithms": [
+          "sha256",
+          "sha512",
+          "sha1"
+        ],
+        "tarballTamperRejected": true,
+        "sealedMetadataTamperRejected": true,
+        "unsealedFileRejected": true,
+        "packageBootstrapGate": true,
+        "resumeVerified": true,
+        "integrityConflictRejected": true,
+        "distTagConflictRejected": true,
+        "dependencyMismatchRejected": true,
+        "unsafeOutputRejected": true,
+        "sourceOutputOverlapRejected": true,
+        "unrelatedOutputRetained": true,
+        "catalogVerification": "registry-catalog"
+      },
+      "registryConvergence": {
+        "delayedVisibility": true,
+        "delayedTag": true,
+        "timeoutMs": 600000,
+        "immediateIntegrityConflict": true,
+        "progress": true,
+        "sharedBatchDeadline": true,
+        "orderedUploadsBeforeWait": true,
+        "pendingOnlyPolling": true,
+        "resumableUploads": true
+      },
+      "documentationDeployment": {
+        "objectCount": 14,
+        "immutableObjects": 7,
+        "currentImmutableObjects": 4,
+        "historicalPreviewObjects": 3,
+        "historicalStorageUntouched": true,
+        "historicalCandidateIntegrityChecked": true,
+        "unexpectedSitePathRejected": true,
+        "mutableObjects": 7,
+        "exactVersionReceiptObjects": 3,
+        "verifiedStorageObjects": 11,
+        "immutableRetryObjects": 4,
+        "mutableRetryObjects": 7,
+        "immutabilityConflictRejected": true,
+        "immutableMetadataConflictRejected": true,
+        "immutableReceiptConflictRejected": true,
+        "unsealedCandidateFileRejected": true,
+        "npmPromotionGate": true,
+        "incompleteNpmEvidenceRejected": true,
+        "legacyPagesOriginRejected": true,
+        "unrelatedObjectRetained": true,
+        "unsafeOutputRejected": true,
+        "sourceOutputOverlapRejected": true,
+        "unrelatedOutputDirectoryRetained": true,
+        "promotionCommitObjectsLast": true,
+        "promotionCommitOrder": [
+          "latest/index.html",
+          "index.html"
+        ],
+        "awsChecksumCalculation": "when_required",
+        "awsChecksumValidation": "when_required",
+        "awsChecksumCalls": 3,
+        "deleteOperations": 0,
+        "candidateSource": {
+          "commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "ref": "refs/tags/v1.0.0-beta.5"
+        }
+      },
+      "fastlyVcl": {
+        "files": 6,
+        "methods": [
+          "GET",
+          "HEAD"
+        ],
+        "privateOriginSigning": "AWS SigV4",
+        "automaticActivation": false
+      },
+      "packageScripts": {
+        "scripts": 6
+      },
+      "documentation": {
+        "pages": 3
+      },
+      "elapsedMs": 692
+    },
+    "elapsedMs": 1081
+  },
+  "packagePolicy": {
+    "packages": 19,
+    "supportTiers": 3
+  },
+  "releaseManifest": {
+    "schemaVersion": "pulse.release-catalog.v1",
+    "releaseVersion": "1.0.0-beta.5",
+    "versions": 5,
+    "runtimeTargets": 3,
+    "packages": 19
+  },
+  "publicSite": {
+    "schemaVersion": "pulse.public-site.v1",
+    "namedDocuments": 34,
+    "sourceAliases": 1,
+    "navigationSections": 8,
+    "homepageSections": 5,
+    "quickStartCommands": 5,
+    "runtimeTargets": 3,
+    "publicPages": 82,
+    "sharedAssets": 8
+  },
+  "links": {
+    "checked": 787,
+    "hosted": 38
+  },
+  "diagnostics": 127,
+  "cli": {
+    "commands": 7,
+    "publicOptions": 18,
+    "maintainerOptions": 0,
+    "completionShells": 3,
+    "metaInvocations": 3
+  },
+  "config": {
+    "fields": 35,
+    "runtimeRules": 13,
+    "fastlyFields": 23,
+    "schemaVersion": "pulse.project-config-schema.v1"
+  },
+  "environment": {
+    "catalog": 23,
+    "discovered": 23
+  },
+  "pluginReadiness": {
+    "publicPluginApi": false,
+    "decision": "deferred",
+    "requirements": 6,
+    "satisfied": 0,
+    "providers": 3
+  },
+  "metadata": {
+    "status": "ok",
+    "files": 20,
+    "owners": 3,
+    "checkedOn": "2026-09-29"
+  },
+  "layers": {
+    "productDocuments": 27,
+    "architectureDocuments": 8,
+    "siteDocuments": 1,
+    "routingDocuments": 1,
+    "middlewareDocuments": 1,
+    "governanceDocuments": 7,
+    "deliveryDocuments": 4,
+    "changelogDocuments": 1,
+    "siteSources": 9,
+    "siteBuildSources": 3,
+    "maintenanceSources": 31,
+    "deliverySources": 15,
+    "machineArtifacts": 6,
+    "publicFixtures": 1,
+    "sourceBindings": 5,
+    "executableBindings": 2
+  },
+  "site": {
+    "pages": 82,
+    "assets": 7,
+    "siteAssets": 8,
+    "searchEntries": 65,
+    "tocEntries": 920,
+    "localLinks": 19867,
+    "generatedFiles": 599,
+    "versionSegment": "v1.0.0-beta.5",
+    "versions": 5,
+    "archivedVersions": 4,
+    "homepage": 1,
+    "heroCanvas": true,
+    "navigationSections": 7
+  }
+}

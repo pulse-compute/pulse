@@ -82,7 +82,7 @@ async function main() {
   for (const [kind, runner] of [['reads', './run-native-read-acceptance.cjs'], ['writes', './run-write-acceptance.cjs']]) {
     fs.writeFileSync(path.join(packedRoot, 'package.json'), JSON.stringify({
       name: `packed-s3-${kind}`, private: true, version: '0.0.0',
-      dependencies: Object.fromEntries(['pulse', 'runtime', 's3', 'cli', 'provider-node', 'provider-fastly']
+      dependencies: Object.fromEntries(['pulse', 'runtime', 's3', 'crypto', 'cli', 'provider-node', 'provider-fastly']
         .map((name) => [`@pulse-compute/${name}`, manifest.releaseVersion])),
     }));
     results[kind] = await require(runner).main({ packedRoot, cwd: packedRoot, quiet: true });

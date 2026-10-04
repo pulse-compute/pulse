@@ -1,3 +1,8 @@
+import { normalizeRs256Request, verifyRs256 } from './internal/rsa.js';
+import { ownDataProperty } from './internal/data.js';
+export { normalizeRsaPublicKey, normalizeRs256JoseVerifyRequest } from './internal/rsa.js';
+export type { RsaPublicKeyBytes, Rs256JoseVerifyInput } from './contracts.js';
+export { CRYPTO_RS256_GUEST_LINKED_REALIZATION, CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION, CRYPTO_RS256_RUNTIME_BUILTIN_IMPLEMENTATION } from './contracts.js';
 import {
   CRYPTO_ALGORITHMS,
   CRYPTO_CONTRACT_VERSION,
@@ -86,6 +91,14 @@ export async function verifyMac(
 export async function verifySignature(
   request: SignatureVerifyRequest,
 ): Promise<CryptoVerificationResult> {
+  let rsa = false;
+  try { rsa = ownDataProperty(request, 'algorithm').value === 'RS256'; }
+  catch { return normalizeVerificationResult({ status: 'invalid-input' }); }
+  if (rsa) {
+    const normalized = normalizeRs256Request(request);
+    if (!normalized.ok) return normalized.result;
+    return normalizeVerificationResult(await verifyRs256(normalized.request));
+  }
   let normalized: ReturnType<typeof normalizeSignatureVerifyRequest>;
   try {
     normalized = normalizeSignatureVerifyRequest(request);

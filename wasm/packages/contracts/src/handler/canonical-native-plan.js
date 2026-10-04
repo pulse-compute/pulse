@@ -1,9 +1,31 @@
 'use strict';
 
-const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v2';
+const CANONICAL_NATIVE_PLAN_VERSION = 'pulse.canonical-native-plan.v9';
+const CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION = 'pulse.bounded-pure-loop-call.v1';
+const CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION = 'pulse.typed-kv-borrow.v1';
+const CANONICAL_NATIVE_PURE_BORROW_VERSION = 'pulse.pure-borrow.v1';
+const CANONICAL_NATIVE_PURE_HELPER_VERSION = 'pulse.canonical-native-pure-helper.v2';
+const CANONICAL_NATIVE_HANDLER_BODY_VERSION = 'pulse.canonical-native-handler-body.v1';
+const CANONICAL_NATIVE_STAGE_CONTRACT = Object.freeze({
+  version: 'pulse.canonical-native-stage.v1',
+  maxEffectSites: 64,
+  outputs: Object.freeze(['response', 'next', 'error', 'suspend', 'failure']),
+  frame: Object.freeze({ lifetime: 'invocation', reset: 'stage-entry', suspension: 'retain', nesting: false })
+});
 const CANONICAL_NATIVE_PLAN_HASH_ALGORITHM = 'sha256';
 const CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION = 'pulse.canonical-native-ownership.v1';
 const CANONICAL_PURE_LOOP_LIMITS = Object.freeze({ maxIterations: 1024, maxNestedIterations: 65536 });
+const CANONICAL_READ_LOOP_CONTRACT = Object.freeze({
+  version: 'pulse.bounded-read-loop.v1',
+  maxIterations: 64,
+  maxNestedIterations: CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations,
+  effectKinds: Object.freeze(['s3.getText', 'kv.getVersioned', 'crypto.digestText', 'output.write', 'output.readTextChunk']),
+  valueIntrinsics: Object.freeze(['schema.decode.text', 'schema.encode.text', 'response.text', 'response.json', 'response.custom']),
+  nestedEffects: false,
+  helperCallVersion: 'pulse.bounded-read-loop-helper.v1',
+  continueTarget: 'increment',
+  breakTarget: 'exit'
+});
 
 const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'local',
@@ -11,13 +33,18 @@ const CANONICAL_NATIVE_STATEMENT_KINDS = Object.freeze([
   'effect-group',
   'if',
   'pure-loop',
+  'read-loop',
   'break',
   'continue',
   'return',
+  'handler-call',
+  'helper-call',
+  'stage-call',
   'expression'
 ]);
 
 const CANONICAL_NATIVE_EXPRESSION_KINDS = Object.freeze([
+  'pure-helper-call',
   'literal',
   'undefined',
   'local',
@@ -46,8 +73,11 @@ const CANONICAL_NATIVE_CONTEXT_READS = Object.freeze([
 ]);
 
 const CANONICAL_NATIVE_INTRINSICS = Object.freeze([
+  'package.application',
   'request.header',
   'request.text',
+  'request.body.forward-marker',
+  'response.output.close',
   'request.json',
   'response.json',
   'schema.encode.text',
@@ -124,7 +154,23 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
   javascriptRuntime: false,
   promiseSemantics: false,
   asyncify: false,
-  controlFlow: 'structured statements, if/else, and literal-capped pure for loops; no effect iteration',
+  controlFlow: 'structured statements, if/else, literal-capped pure for loops and non-nested bounded sequential read loops',
+  handlerBodies: Object.freeze({
+    version: CANONICAL_NATIVE_HANDLER_BODY_VERSION,
+    family: 'terminal HTTP route bodies without next transfer',
+    calls: 'one static tail call from the dispatcher; no recursion or captured locals',
+    outcomes: 'response, suspension, normalized application-error transfer, terminal failure',
+    suspension: 'resume the owning body by program counter; no live call stack',
+    budget: 'one charge per original state; the call reference adds no state'
+  }),
+  sharedStages: Object.freeze({
+    version: CANONICAL_NATIVE_STAGE_CONTRACT.version,
+    family: 'transfer-capable HTTP routes and middleware with 1..64 bound sequential text-fetch, time.now or crypto.digestText sites',
+    inputs: 'request context, stage-owned locals and registration-owned return/effect/continuation bindings',
+    outputs: 'response, next, error, suspension or terminal failure',
+    calls: 'dispatcher admission only; bounded pure loops retain canonical caps; no captures, recursion, helper calls, groups or effect loops',
+    suspension: 'one invocation-owned frame; reset locals at entry and retain across suspension'
+  }),
   suspension: 'explicit effect and effect-group statements with stable continuation IDs',
   values: 'versioned JSON expression tree with stable local identities',
   logging: 'compile-time threshold pruning plus synchronous provider-adapter emission',
@@ -134,8 +180,15 @@ const CANONICAL_NATIVE_PLAN_POLICY = Object.freeze({
 });
 
 module.exports = Object.freeze({
+  CANONICAL_NATIVE_PURE_LOOP_CALL_VERSION,
+  CANONICAL_NATIVE_PURE_BORROW_VERSION,
+  CANONICAL_NATIVE_TYPED_KV_BORROW_VERSION,
+  CANONICAL_NATIVE_PURE_HELPER_VERSION,
   CANONICAL_NATIVE_PLAN_VERSION,
+  CANONICAL_NATIVE_HANDLER_BODY_VERSION,
+  CANONICAL_NATIVE_STAGE_CONTRACT,
   CANONICAL_PURE_LOOP_LIMITS,
+  CANONICAL_READ_LOOP_CONTRACT,
   CANONICAL_NATIVE_PLAN_HASH_ALGORITHM,
   CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION,
   CANONICAL_NATIVE_STATEMENT_KINDS,

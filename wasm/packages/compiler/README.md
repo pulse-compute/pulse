@@ -8,9 +8,9 @@
 > **Stability:** Internal compiler interface; no application-author compatibility guarantee.<br>
 > **npm:** [`@pulse-compute/wasm-compiler`](https://www.npmjs.com/package/@pulse-compute/wasm-compiler)<br>
 > **Canonical replacement:** `@pulse-compute/cli`<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.6/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.6` package policy.
 <!-- pulse-package-status:end -->
 
 Whole-project compiler implementation used by the `pulse` workflow. Application projects should use `@pulse-compute/cli`, not import this package directly.
@@ -38,6 +38,17 @@ The compiler orchestrates contracts but does not own:
 
 Package-specific lowering belongs to the package owning the facade. Provider realization belongs to provider packages. Shared protocol vocabulary belongs to `@pulse-compute/wasm-contracts`.
 
+Provider packages are not production dependencies of this compiler. Direct
+compiler consumers supply the selected provider in their project context; the
+product CLI owns its bundled Node/Fastly dependencies. Provider-neutral imports,
+compilation and legacy executable help do not load providers. Legacy proof
+commands load only their selected provider when invoked. Repository proof
+scripts retain provider development dependencies.
+
+The canonical API, Native-plan and Native-compiler facades use declared package
+imports and surface missing or unexported dependencies without checkout-relative
+recovery. Other historical loaders are outside this migration.
+
 ## Internal compiler spine
 
 The compiler connects root extraction, surface recognition, normalization, classification, validation, canonical IR, native lowering, provider realization, and artifact verification through a fixed package-internal pipeline. The pipeline is not exported and is not a plugin framework. Compiler refactors must preserve checked-in metadata, diagnostics, native-plan, and generated-Wasm evidence unless an explicit contract migration authorizes a difference.
@@ -52,4 +63,4 @@ The package exports its root implementation plus focused compiler, CLI, extracto
 
 Compiler changes should be covered by focused static/lowering tests, canonical project inspection, provider-plan parity, packed-package discovery where relevant, and the release documentation gates.
 
-See the installed [implementation package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/) and [compilation concepts](https://pulsecompute.io/v1.0.0-beta.5/concepts/compilation-and-lowering/).
+See the installed [implementation package guide](https://pulsecompute.io/v1.0.0-beta.6/packages/implementation-packages/) and [compilation concepts](https://pulsecompute.io/v1.0.0-beta.6/concepts/compilation-and-lowering/).

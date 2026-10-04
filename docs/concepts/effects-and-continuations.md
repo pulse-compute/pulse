@@ -32,6 +32,50 @@ compiled values
 
 A continuation is single-use and time-bounded. Expired or duplicate resume attempts fail with stable diagnostics such as [`PULSE_CONTINUATION_EXPIRED`](../reference/diagnostics.md#pulse-continuation-expired) and [`PULSE_CONTINUATION_DOUBLE_RESUME`](../reference/diagnostics.md#pulse-continuation-double-resume).
 
+### Bounded sequential reads
+
+The [PS1 compiler contract](../architecture/current-contracts.md#bounded-sequential-read-loops-ps1)
+supports dependent storage traversal with an explicit literal bound:
+
+```ts
+let key = ctx.req.header('x-page') || ''
+for (let page = 0; page < 64 && key !== ''; page++) {
+  const stored = await ctx.kv<{ next: string; match: boolean }>('pages').getVersioned(key)
+  if (stored.status !== 'found') return ctx.text('unavailable', { status: 503 })
+  if (stored.value.match) return ctx.text('found')
+  key = stored.value.next
+}
+return ctx.text(key === '' ? 'not found' : 'incomplete', { status: key === '' ? 404 : 503 })
+```
+
+Each iteration can call `s3.getText`, `kv.getVersioned` and `crypto.digestText`
+sequentially, decode registered JSON, update carried values, and exit early.
+The literal cap is checked first and cannot exceed 64. `continue` advances the
+counter; `break` exits the nearest loop. Existing bounded pure inner loops are
+allowed, with the combined iteration-product limit still enforced. Read-loop
+diagnostics reject parallel groups, writes, nested effect loops, arbitrary
+helpers and counter mutation. Directly awaited, result-bound static helpers are
+allowed when their bodies contain only these read effects and admitted value
+operations, without nested effect loops or helper calls. Each call resets the
+helper frame while preserving the caller loop across suspension.
+Synchronous pure validators can also run in loop bodies without a callee read
+site. Their own bounded loops count toward the same 65,536 combined product;
+call inputs cannot mutate values, and calls in loop headers remain excluded.
+The validator completes before the caller's next read suspends. The source fixture at
+`wasm/test/fixtures/projects/bounded-read-loops/src/index.ts` exercises a
+read/digest/decode traversal and inner pure collection processing.
+
+Each visit has a distinct execution-owned invocation, even though Native reuses
+the same static effect slot. Managed hosts reject stale or duplicate settlement
+and invalidate pending work at termination. The cumulative effect limit defaults
+to 1,024; canonical Fastly Native fixes that ceiling at 1,024. An inherited request
+deadline covers the whole traversal. See the
+[PS2 lifecycle contract](../architecture/current-contracts.md#read-loop-invocation-lifecycle-ps2).
+
+A bound limits iteration count, not retained memory. PS3 memory containment and
+PS4 production qualification remain open. Compiler and fixture parity do not
+constitute production acceptance, and a chain that reaches its cap is incomplete.
+
 ## Bounded HTTP deadline work
 
 The [selected deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)
@@ -235,6 +279,8 @@ Project tests can set `continuationTtlMs` in a case inside the dedicated `tests/
 
 Write managed handlers with `async` and await trusted Pulse effects. On Native targets, the compiler erases that notation into effects and continuations. On JavaScript targets, the live runtime executes the same async-shaped handler normally.
 
+Static source helpers can return values across recognized effect suspensions under the bounded [source-helper contract](../architecture/current-contracts.md#static-effectful-source-helpers-o-25). Their caller retains response ownership.
+
 Arbitrary Promise construction, ambient asynchronous APIs, and unrecognized library awaits remain outside Native eligibility. They must not be mistaken for Pulse effects or silently trigger target fallback.
 
 This design keeps:
@@ -322,3 +368,21 @@ the key. Pending KV operations have no cancellation hostcall; an expired operati
 is abandoned to invocation teardown and may still commit. Host termination never
 resumes an inactive handler. Local Wasm evidence is separate from K4's deployed
 cross-location acceptance.
+
+## Native dispatcher containment
+
+The Native emitter keeps small plans in one guarded dispatcher. Larger plans use
+internal functions grouped by up to 64 states or 24,000 rendered source characters.
+Selection uses a balanced tree, and chunks are marked `@noinline` so optimization
+cannot reconstruct the original large function. These are internal partition
+budgets, not public request, route, or Wasm-byte limits. A single pure-loop state
+remains whole and may exceed the character budget; the generated manifest reports
+that case instead of truncating or rejecting admitted work.
+
+One shared guard decrements once per original state. The private continue status
+is consumed inside the dispatcher and never crosses the host ABI. Program-counter
+values, effect and continuation identities, pending-result checks, application
+error transfers, and pure-loop `break`/`continue` behavior are unchanged. Generator
+identity and source hashes record the emitter change; plan identity and host ABI
+remain unchanged. This contains optimizer work for large dispatchers without
+introducing user-callable functions, new effects, or a JavaScript fallback.

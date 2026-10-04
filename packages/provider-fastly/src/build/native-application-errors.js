@@ -6,7 +6,7 @@ function enabled(plan) {
 
 // Capture provider diagnostics before clearing them. A failed continuation is
 // drained once; only its application data error can enter the next Router lane.
-function runtimeSource() {
+function runtimeSource(plan) {
   const jwt = ['TOKEN_REQUIRED', 'BEARER_INVALID', 'MALFORMED', 'LIMIT_EXCEEDED',
     'ALGORITHM_NOT_ALLOWED', 'KEY_INVALID', 'SIGNATURE_INVALID', 'CLOCK_INVALID',
     'CLAIMS_INVALID', 'CLAIMS_SCHEMA_INVALID'];
@@ -29,7 +29,10 @@ ${jwt.map((code, i) => `      case ${i + 1}: return "PULSE_JWT_${code}"`).join('
   if (__pulse_fastly_last_error != PULSE_ERROR_SCHEMA) return ""
   if (__pulse_fastly_error_stage == 21) return "PULSE_BODY_TOO_LARGE"
   if (__pulse_fastly_error_stage == 44) return "PULSE_SCHEMA_CONTENT_TYPE"
-  if (__pulse_fastly_error_stage >= 50 && __pulse_fastly_error_stage <= 54)
+  // Stages 56/57 reject ScalarRecord and bounded nested JSON data.
+  // Stage 55 remains a fatal schema-ID/configuration error.
+  if ((__pulse_fastly_error_stage >= 50 && __pulse_fastly_error_stage <= 54)
+    || __pulse_fastly_error_stage == 56 || __pulse_fastly_error_stage == 57)
     return __pulse_application_failed_schema == 2 ? "PULSE_SCHEMA_ENCODE" : "PULSE_SCHEMA_DECODE"
   return ""
 }
@@ -37,6 +40,7 @@ function __pulse_application_clear(): void {
   __pulse_fastly_last_error = 0; __pulse_fastly_error_stage = 0; __pulse_fastly_error_effect = -1
   __pulse_fastly_jwt_error = 0; __pulse_application_failed_schema = 0
 }
+${(plan?.effects || []).length > 0 ? settlementSource() : ''}
 function host_router_error_take(): i32 {
   if (__pulse_fastly_last_error == 0) return 0
   const code = __pulse_application_code()
@@ -54,34 +58,53 @@ function host_router_error_take(): i32 {
 `;
 }
 
+// The caller retains the static pending-slot guards. The shared body owns one
+// site's resolution and authenticated settlement; diagnostics carry the saved
+// failure between calls without allocating an accumulator or merging slot state.
+function settlementSource() {
+  return `
+// Returns 0 for recoverable/no failure, 1 for fatal, -1 for rejected settlement.
+function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
+  let failure = __pulse_fastly_last_error
+  let stage = __pulse_fastly_error_stage
+  let effect = __pulse_fastly_error_effect
+  let jwt = __pulse_fastly_jwt_error
+  let schema = __pulse_application_failed_schema
+  const invocation = unchecked(__pulse_invocation_tickets[index])
+  __pulse_application_clear()
+  let result = host_value_undefined()
+  if (unchecked(__pulse_fastly_pending_mode[index]) != PULSE_FASTLY_PENDING_NONE) {
+    result = __pulse_fastly_resolve_effect(index)
+    if (result <= 0 && __pulse_fastly_last_error == 0) __pulse_fastly_fail(PULSE_ERROR_STATE, 101, index)
+  } else if (failure == 0) __pulse_fastly_fail(PULSE_ERROR_STATE, 101, index)
+  if (__pulse_fastly_last_error != 0) {
+    const terminal = __pulse_application_code().length == 0
+    if (failure == 0 || (!fatal && terminal)) {
+      failure = __pulse_fastly_last_error; stage = __pulse_fastly_error_stage; effect = __pulse_fastly_error_effect
+      jwt = __pulse_fastly_jwt_error; schema = __pulse_application_failed_schema; fatal = terminal
+    }
+    __pulse_application_clear()
+    result = host_value_undefined()
+  }
+  if (__pulse_invocation_settle(index, invocation, result) != 1) {
+    __pulse_fastly_fail(PULSE_ERROR_STATE, 101, index); __pulse_fastly_jwt_send_error(); return -1
+  }
+  __pulse_fastly_last_error = failure; __pulse_fastly_error_stage = stage; __pulse_fastly_error_effect = effect
+  __pulse_fastly_jwt_error = jwt; __pulse_application_failed_schema = schema
+  return fatal ? 1 : 0
+}
+`;
+}
+
+// Preserve the fatal-return boundary consumed by request-budget instrumentation.
 function driverLoop(plan) {
   return `  while (runStatus == 1) {
-    let failure = __pulse_fastly_last_error
-    let stage = __pulse_fastly_error_stage
-    let effect = __pulse_fastly_error_effect
-    let jwt = __pulse_fastly_jwt_error
-    let schema = __pulse_application_failed_schema
-    let fatal = failure != 0 && __pulse_application_code().length == 0
+    let fatal = __pulse_fastly_last_error != 0 && __pulse_application_code().length == 0
 ${(plan.effects || []).map((_, index) => `    if (__pulse_effect_pending_${index} != 0) {
-      __pulse_application_clear()
-      let result = host_value_undefined()
-      if (unchecked(__pulse_fastly_pending_mode[${index}]) != PULSE_FASTLY_PENDING_NONE) {
-        result = __pulse_fastly_resolve_effect(${index})
-        if (result <= 0 && __pulse_fastly_last_error == 0) __pulse_fastly_fail(PULSE_ERROR_STATE, 101, ${index})
-      } else if (failure == 0) __pulse_fastly_fail(PULSE_ERROR_STATE, 101, ${index})
-      if (__pulse_fastly_last_error != 0) {
-        const terminal = __pulse_application_code().length == 0
-        if (failure == 0 || (!fatal && terminal)) {
-          failure = __pulse_fastly_last_error; stage = __pulse_fastly_error_stage; effect = __pulse_fastly_error_effect
-          jwt = __pulse_fastly_jwt_error; schema = __pulse_application_failed_schema; fatal = terminal
-        }
-        __pulse_application_clear()
-        result = host_value_undefined()
-      }
-      if (pulse_set_effect_result(${index}, result) != 1) { __pulse_fastly_fail(PULSE_ERROR_STATE, 101, ${index}); return }
+      const settled = __pulse_application_settle_effect(${index}, fatal)
+      if (settled < 0) return
+      fatal = settled != 0
     }`).join('\n')}
-    __pulse_fastly_last_error = failure; __pulse_fastly_error_stage = stage; __pulse_fastly_error_effect = effect
-    __pulse_fastly_jwt_error = jwt; __pulse_application_failed_schema = schema
     if (fatal) return
     runStatus = pulse_resume()
   }`;

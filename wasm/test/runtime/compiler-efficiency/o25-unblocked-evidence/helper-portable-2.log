@@ -1,0 +1,779 @@
+
+[pulsewasm:native] fastly-driver-behavior-o09
+[pulsewasm] O09 Fastly error driver settlement, ticket freshness and error-priority fixture (timeout 240.00s)
+O-09 1 parallel: 7 scenarios + ticket ownership/freshness passed
+O-09 8 parallel: 13 scenarios + ticket ownership/freshness passed
+O-09 32 parallel: 13 scenarios + ticket ownership/freshness passed
+O-09 8 sequential: 9 scenarios + ticket ownership/freshness passed
+O-09 passed: wasm/.test-results/compiler-efficiency/o09-2026-09-29T22-48-05-268Z/report.json
+[pulsewasm] fastly-driver-behavior-o09: passed in 25.74s
+
+[pulsewasm:native] kv-native-abi-feasibility
+[pulsewasm] K1 compiled Wasm ABI probe for exact 64-bit generation and conditional insert options; no provider acceptance (timeout 30.00s)
+{"status":"passed","tokens":8,"proof":"compiled-wasm-abi-layout-and-lossless-round-trip","productionAdapter":false,"providerReality":false}
+[pulsewasm] kv-native-abi-feasibility: passed in 837ms
+
+[pulsewasm:unit] s3-native-read
+[pulsewasm] Exact HEAD/GET failure parity through Node Native/JavaScript and Fastly Native (timeout 180.00s)
+{"status":"passed","cases":68,"executions":204,"targets":["node-native","node-javascript","fastly-native"],"providerReality":false}
+[pulsewasm] s3-native-read: passed in 15.28s
+
+[pulsewasm:unit] s3-node-transport
+[pulsewasm] Node S3 TLS wire byte fidelity, raw header duplicates, redirects and abort (timeout 30.00s)
+ok - Node TLS transport preserves header/body bytes and duplicates, exposes redirects and aborts
+[pulsewasm] s3-node-transport: passed in 295ms
+
+[pulsewasm:native] canonical-api-lowering
+[pulsewasm] canonical application continuation lowering (timeout 30.00s)
+ok - documented canonical TypeScript examples are the lowering oracle while branch, continuation, body-edge, and failure fixtures remain internal
+[pulsewasm] canonical-api-lowering: passed in 973ms
+
+[pulsewasm:native] canonical-native-plan
+[pulsewasm] deterministic provider-neutral native plan (timeout 60.00s)
+ok - canonical handler analysis lowers deterministically to a provider-neutral native execution plan across nine public examples and retained control-flow fixtures
+[pulsewasm] canonical-native-plan: passed in 1.45s
+
+[pulsewasm:unit] shared-stage-o19
+[pulsewasm] O-19 production stage ownership, fallback, multiple families and cross-target execution (timeout 180.00s)
+{"status":"passed","negativeChecks":13,"fallbackChecks":6,"stages":2,"registrations":34,"requests":6,"planHash":"231c33c9d7c1508086431831b5c9d245f2ed61063d16ff0cc3e5b1aba073e4bd","nodeWasmBytes":18690,"fastlyWasmBytes":53715}
+[pulsewasm] shared-stage-o19: passed in 4.70s
+
+[pulsewasm:conformance] bounded-app-logic
+[pulsewasm] literal-capped pure loops, string trim, target parity and pre-write failure containment (timeout 180.00s)
+ok - public project local: three harness cases and build
+ok - public project javascript: three harness cases and build
+ok - public project fastly: three harness cases and build
+ok - bounded application logic: 52 admission negatives, four plan mutations, 36 value/byte cases, 16 pre-write rejection cases, and maximum nested Router execution
+[pulsewasm] bounded-app-logic: passed in 34.43s
+
+[pulsewasm:conformance] bounded-read-loops
+[pulsewasm] bounded read loop admission, target parity, invocation lifecycle, cumulative budgets and Native memory containment (timeout 180.00s)
+ok - PS2 invocation identity, terminal invalidation, cumulative effect counts and deadlines
+{"status":"passed","memory":[{"pages":0,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":3732,"values":87},"fastly":{"bytes":2094,"values":24,"linearMemoryBytes":7208960},"wasmBytes":122331,"wasmSha256":"0e5b1b209033fba1653868c389f73c4f4b4f1ab218a07d8861a2a47f13792bf2"},{"pages":1,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":510212,"values":1716},"fastly":{"bytes":436546,"values":4052,"linearMemoryBytes":7208960},"wasmBytes":122331,"wasmSha256":"0e5b1b209033fba1653868c389f73c4f4b4f1ab218a07d8861a2a47f13792bf2"},{"pages":16,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":7816738,"values":21505},"fastly":{"bytes":6905874,"values":63167,"linearMemoryBytes":28835840},"wasmBytes":122331,"wasmSha256":"0e5b1b209033fba1653868c389f73c4f4b4f1ab218a07d8861a2a47f13792bf2"},{"pages":64,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":31156278,"values":84693},"fastly":{"bytes":27610110,"values":252270,"linearMemoryBytes":57671680},"wasmBytes":122331,"wasmSha256":"0e5b1b209033fba1653868c389f73c4f4b4f1ab218a07d8861a2a47f13792bf2"},{"pages":64,"incomplete":true,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":31156330,"values":84695},"fastly":{"bytes":27610134,"values":252272,"linearMemoryBytes":57671680},"wasmBytes":122331,"wasmSha256":"0e5b1b209033fba1653868c389f73c4f4b4f1ab218a07d8861a2a47f13792bf2"}],"providerReality":false}
+{"status":"passed","negativeSources":78,"planMutations":14,"storageVectors":7,"lifecycle":"PS2","memory":"PS3","targets":["node-javascript","node-native","internal-generator","fastly-native-fixture"],"providerReality":false}
+[pulsewasm] bounded-read-loops: passed in 38.37s
+
+[pulsewasm:native] logging-lowering
+[pulsewasm] Native logging pruning, hashing, host ABI, and execution (timeout 120.00s)
+ok - Native logging is threshold-pruned, hash-bound, synchronous, redacted, and request-contained
+[pulsewasm] logging-lowering: passed in 2.11s
+
+[pulsewasm:native] canonical-router-lowering
+[pulsewasm] mounted Router topology and continuation lowering (timeout 180.00s)
+{
+  "version": "pulse.router-lowering-proof.v1",
+  "routes": [
+    {
+      "stableId": "route_3ab15a89fce720cc23e709ca",
+      "runtimeId": 0,
+      "method": "GET",
+      "path": "/api/health",
+      "params": []
+    },
+    {
+      "stableId": "route_1062b08d0afb06fc47333180",
+      "runtimeId": 1,
+      "method": "GET",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_078f6a7fd7954fcfdf84d587",
+      "runtimeId": 2,
+      "method": "HEAD",
+      "path": "/api/status",
+      "params": []
+    },
+    {
+      "stableId": "route_0093b23fae2910f2b32215a3",
+      "runtimeId": 3,
+      "method": "POST",
+      "path": "/api/echo",
+      "params": []
+    },
+    {
+      "stableId": "route_fe4dc1881365d705636f2c52",
+      "runtimeId": 4,
+      "method": "PUT",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_55682525f77c74bdb6faa40a",
+      "runtimeId": 5,
+      "method": "PATCH",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_3469fdebc143cff63d9b085d",
+      "runtimeId": 6,
+      "method": "DELETE",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_0bb0636d48b4892f87f811c4",
+      "runtimeId": 7,
+      "method": "GET",
+      "path": "/api/files/*",
+      "params": []
+    }
+  ],
+  "effects": [
+    {
+      "id": "fetch-1",
+      "routeStableId": "route_1062b08d0afb06fc47333180",
+      "method": "GET",
+      "path": "/api/users/:id"
+    }
+  ],
+  "continuations": [
+    {
+      "id": "continuation-1",
+      "routeStableId": "route_1062b08d0afb06fc47333180",
+      "method": "GET",
+      "path": "/api/users/:id"
+    }
+  ],
+  "portableWasm": {
+    "bytes": 4608,
+    "sha256": "63eedb4e2b2d2b7320b9ff4c56190ec9c86e98fb7f6e1a8fa2f8e3cdfe2c7360"
+  },
+  "fastlyWasm": {
+    "bytes": 42467,
+    "sha256": "a4f3502893030dc3359c3e2262b06740b3a3fec4e4e4c0766abdd4ad8a94e4b6"
+  }
+}
+ok - canonical Router preserves mounted exact, parameter, wildcard, method, fetch, and 404 lowering across Node and Fastly
+[pulsewasm] canonical-router-lowering: passed in 6.41s
+
+[pulsewasm:native] canonical-router-terminal-middleware
+[pulsewasm] terminal middleware and error-lane convergence (timeout 240.00s)
+{
+  "version": "pulse.router-terminal-middleware-proof.v1",
+  "compilerVersion": "pulse.canonical-router-compiler.v2",
+  "authoringVersion": "pulse.router-authoring.v2",
+  "executionVersion": "pulse.router-terminal-execution.v1",
+  "semantics": {
+    "nextIsTerminal": true,
+    "onionResume": false,
+    "normalExhaustionStatus": 404,
+    "errorExhaustionStatus": 500,
+    "explicitErrorTransfer": "return next(error)"
+  },
+  "entries": [
+    {
+      "stableId": "router_entry_f164f75ac01f88fd15efae91",
+      "index": 0,
+      "nextIndex": 1,
+      "kind": "use",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_b323a0d0adab624f6554248c",
+      "index": 1,
+      "nextIndex": 2,
+      "kind": "use",
+      "path": "/admin",
+      "pattern": "/admin/*",
+      "scoped": true
+    },
+    {
+      "stableId": "router_entry_cf9d692586e6d416a10d1206",
+      "index": 2,
+      "nextIndex": 8,
+      "kind": "mount",
+      "path": "/admin",
+      "pattern": "/admin/*",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_53b4405e06e51842f5471e6c",
+      "index": 3,
+      "nextIndex": 4,
+      "kind": "use",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_2f68c63253feb06b7074b1e0",
+      "index": 4,
+      "nextIndex": 5,
+      "kind": "route",
+      "path": "/admin/items/:id",
+      "pattern": "/admin/items/:id",
+      "scoped": false,
+      "routeStableId": "route_9a84b3d1deefa1a810356b13"
+    },
+    {
+      "stableId": "router_entry_7ae1e119d351a6e11adf712b",
+      "index": 5,
+      "nextIndex": 6,
+      "kind": "route",
+      "path": "/admin/items/:id",
+      "pattern": "/admin/items/:id",
+      "scoped": false,
+      "routeStableId": "route_b5fad7b456ec0c0b371bab58"
+    },
+    {
+      "stableId": "router_entry_f5ba996cea9392c5895785ec",
+      "index": 6,
+      "nextIndex": 7,
+      "kind": "route",
+      "path": "/admin/handled-error",
+      "pattern": "/admin/handled-error",
+      "scoped": false,
+      "routeStableId": "route_dbf30c103b5fe6d687fd4fd4"
+    },
+    {
+      "stableId": "router_entry_35fe23871498dfe48d2928bb",
+      "index": 7,
+      "nextIndex": 8,
+      "kind": "route",
+      "path": "/admin/unhandled-error",
+      "pattern": "/admin/unhandled-error",
+      "scoped": false,
+      "routeStableId": "route_a9eb44e3e5456a4704c55a51"
+    },
+    {
+      "stableId": "router_entry_17a640487b78a757f1744e9b",
+      "index": 8,
+      "nextIndex": 9,
+      "kind": "error",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_47f3b8ae4cdfd467d12281fc",
+      "index": 9,
+      "nextIndex": 10,
+      "kind": "error",
+      "scoped": false
+    }
+  ],
+  "middlewareEffect": {
+    "id": "fetch-1",
+    "continuationId": "continuation-1",
+    "routerEntryStableId": "router_entry_f164f75ac01f88fd15efae91",
+    "routerEntryKind": "use"
+  },
+  "cases": [
+    {
+      "name": "global middleware short-circuits",
+      "expected": {
+        "status": 401,
+        "body": "{\"blocked\":true}"
+      }
+    },
+    {
+      "name": "scoped middleware short-circuits only its subtree",
+      "expected": {
+        "status": 403,
+        "body": "area denied"
+      }
+    },
+    {
+      "name": "mounted middleware short-circuits",
+      "expected": {
+        "status": 409,
+        "body": "child denied"
+      }
+    },
+    {
+      "name": "first matching route handles request",
+      "expected": {
+        "status": 200,
+        "body": "{\"handler\":\"primary\",\"id\":\"42\"}"
+      }
+    },
+    {
+      "name": "route fallthrough reaches next matching route",
+      "expected": {
+        "status": 200,
+        "body": "{\"handler\":\"fallback\",\"id\":\"42\"}"
+      }
+    },
+    {
+      "name": "normal lane exhaustion returns 404",
+      "expected": {
+        "status": 404,
+        "body": "Not Found"
+      }
+    },
+    {
+      "name": "next(error) reaches error middleware",
+      "expected": {
+        "status": 418,
+        "body": "{\"handled\":\"boom\"}"
+      }
+    },
+    {
+      "name": "error lane exhaustion returns 500",
+      "expected": {
+        "status": 500,
+        "body": "Internal Server Error"
+      }
+    }
+  ],
+  "portableWasm": {
+    "bytes": 8507,
+    "sha256": "109985138ecd29dd44f094ec5ee5883725e09f2985bdeefa1ee8550f03b6bd30"
+  },
+  "fastlyWasm": {
+    "bytes": 48616,
+    "sha256": "6272ed799f399cfed483bf52fa0ddbadf90a5f5e3d460a0bcd5c318923c7f1fa"
+  }
+}
+ok - terminal Router middleware, scoped mounts, route fallthrough, error transfer, 404/500 exhaustion, and middleware effects execute identically through JavaScript, portable Wasm, and native Fastly Wasm
+[pulsewasm] canonical-router-terminal-middleware: passed in 7.60s
+
+[pulsewasm:native] json-as-compatibility
+[pulsewasm] pinned json-as transform and Pulse semantic guards (timeout 120.00s)
+{"assemblyScript":"0.28.18","jsonAs":"1.5.0","xjbAs":"0.1.0","strictTransformCompiled":true,"moduleBytes":{"plain":5086,"jsonAs":43356,"delta":38270},"compileMs":{"plain":1106.623,"jsonAs":2430.395},"medianColdStartMs":0.641914,"semanticGate":{"unknownInputFields":"pulse-preflight-drop-required","missingRequiredFields":"pulse-presence-guard-required","nonFiniteEncode":"pulse-finite-number-guard-required","failures":"pulse-structured-nontrapping-adapter-required","backendRequiresPulseGuards":true},"automaticFallback":false,"fullCodecRealization":true}
+ok - pinned json-as compatibility and required Pulse semantic guards
+[pulsewasm] json-as-compatibility: passed in 3.61s
+
+[pulsewasm:native] entities-envelope-feasibility
+[pulsewasm] I0 bounded raw-envelope, terminal intrinsic, and first-party embedded schema-codec architecture freeze (timeout 120.00s)
+{"version":"pulse.entities-i0-feasibility-evidence.v1","envelope":{"valid":6,"invalid":17,"sha256":"1910f4b982fbf38f0b2bc555e8e7b0784415030c551c681cfbda34a2b64392ba"},"jsonAsRaw":{"jsonAs":"1.5.0","wasmBytes":21925,"wasmSha256":"c5ae2296d10de19eddacae1d639d6c04143b6ece901b79876b800985a06ed3d0","compileMs":2111.565,"rawShapesPreserved":true,"untouchedSerialization":true,"malformedNestingRejected":true,"duplicateReservedKeyRejected":false,"duplicateResolution":"last-value","verdict":"carrier-only-insufficient-as-envelope-authority"},"schemaBridge":{"registryVersion":"pulse.canonical-schema-registry.v4","registryHash":"15cdd0e2f3e88b7a3c89d38a769bc0a237ead0ca7c0940d55cc3058135cb01e3","codecVersion":"pulse.canonical-schema-codecs.v4","selectedSchemaIds":["app.createInput","app.user"],"selectionBeforeDecode":true,"handlerRawExposure":false,"decodedDataDeeplyFrozen":true,"encodedTextOwned":true,"publicBridgeKeys":["decodeEmbeddedJson","encodeEmbeddedJson"]},"terminalBinding":{"routeBinding":"app.post('/rpc', (ctx) => rpc.handle(ctx))","matchedCalls":1,"routeTopologySymbolsRequired":[],"intrinsicVersion":"pulse.package-intrinsic.v1","intrinsic":"pulse.entities.handle.v1","compilerOwnedCallCount":1,"terminalResultAdopted":true},"architectureFreeze":{"version":"pulse.entities-i0-contract-freeze.v1","sha256":"e5765093249cf136a537535f837907a0f86f55bf3eac0c0014767dea40b52198"},"decision":{"representation":"package-owned-bounded-scanner","publicBinding":"rpc.handle(ctx)","schemaBridge":"first-party-declared-codecs-only","readyForI1":true,"automaticFallback":false}}
+ok - Entities I0 freezes bounded envelope scanning, one terminal binding, and a narrow first-party schema bridge
+[pulsewasm] entities-envelope-feasibility: passed in 2.50s
+
+[pulsewasm:native] entities-managed-handler
+[pulsewasm] I5 reachable pure managed-handler IR, schema-bound input/result adoption, and fail-closed source diagnostics (timeout 120.00s)
+{"version":"pulse.managed-handler-ir-bundle.v2","bundleHash":"7420373d45663d86113a67b6ab14fb4f1be6ce2ccee6bb5c76439aa935c1c494","handlers":2,"schemaResults":1,"effects":0,"negativeClasses":10,"targetStatus":"provider-dependent"}
+ok - Entities I5 resolves I2 handler identities into generic pure managed-handler IR with schema-bound input/results and fail-closed diagnostics
+[pulsewasm] entities-managed-handler: passed in 483ms
+
+[pulsewasm:native] entities-managed-handler-effects
+[pulsewasm] I6 reachable managed-handler effects, package operations, exact provider requirements, and selected Node execution (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/f45f4aee55e6/pulse-o25
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  04:20:30
+   Duration  702ms (transform 118ms, setup 0ms, import 344ms, tests 187ms, environment 0ms)
+
+[pulsewasm] entities-managed-handler-effects: passed in 990ms
+
+[pulsewasm:native] entities-native-runtime
+[pulsewasm] I7 package-owned bounded Native scanner, schema codecs, static dispatcher, managed effects, exact framing, and zero JavaScript fallback (timeout 180.00s)
+{"version":"pulse.entities-native-source.v1","sourceSha256":"24d626801331aa755662d2ef394ea0a0fec9d1bd61746d578978780f4add275a","wasmSha256":"169341d79d331e26bfd09dfa3f09cb1d1fe951306d1a8c61df13fc35aed728cd","wasmBytes":78722,"routes":2,"schemas":2,"effects":2,"imports":["env:abort","pulse_entities_host:log","pulse_entities_host:effect_begin"]}
+ok - Entities I7 package-owned Native scanner, schema codecs, static dispatcher, managed handlers, effects, and exact JSON-RPC framer execute without JavaScript fallback
+[pulsewasm] entities-native-runtime: passed in 6.84s
+
+[pulsewasm:native] crypto-native-guest-source
+[pulsewasm] bounded first-party AssemblyScript HS256 in the selected primary Native module (timeout 240.00s)
+ok - Native guest-source HS256 is bounded, vector-correct, constant-time by structure, optimized, redacted, and fallback-free
+[pulsewasm] crypto-native-guest-source: passed in 4.07s
+
+[pulsewasm:native] guest-link-package
+[pulsewasm] production guest-unit validation, materialization, composition, optimization, and audit (timeout 120.00s)
+ok - B1 guest-link package passed; final c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879, evidence d6a55f65f773787bf14c7bc5621e2932fd733afb373aff9e17c06717c21dd0a8
+[pulsewasm] guest-link-package: passed in 6.36s
+
+[pulsewasm:native] guest-link-materialization-stage
+[pulsewasm] guest-link-owned synchronized unit planning, lazy materialization, and fail-closed final handoff (timeout 120.00s)
+ok - B2 materialized once, reused by content hash, and authorized exact audited c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879
+[pulsewasm] guest-link-materialization-stage: passed in 26.90s
+
+[pulsewasm:native] guest-link-audit-diagnostics
+[pulsewasm] secret-safe guest-link provenance plus stable hard-failure diagnostic matrix (timeout 120.00s)
+ok - B3 audit/provenance and 13-case diagnostic matrix passed; evidence 5d5b10ecfddb46ebecc2477f5abb4dbfccc40ccbf78819a779bb72ca8a907218
+[pulsewasm] guest-link-audit-diagnostics: passed in 15.26s
+
+[pulsewasm:native] assets-lowering-plan
+[pulsewasm] Assets facade lowering plan (timeout 30.00s)
+ok - assets lowering plan detects facade imports, emits plan entries, and preserves binary/stream posture
+[pulsewasm] assets-lowering-plan: passed in 365ms
+
+[pulsewasm:native] assets-package-owned-lowering
+[pulsewasm] Assets package-owned lowerer (timeout 30.00s)
+ok - Assets package-owned lowering validates the canonical root, generic loader, and JavaScript implementation
+[pulsewasm] assets-package-owned-lowering: passed in 270ms
+
+[pulsewasm:native] grip-package-owned-lowering
+[pulsewasm] GRIP package-owned lowerer (timeout 30.00s)
+ok - package-owned GRIP lowering emits canonical channel, hold, and publish effects
+[pulsewasm] grip-package-owned-lowering: passed in 267ms
+
+[pulsewasm:native] jwt-package-owned-lowering
+[pulsewasm] JWT package-owned lowerer, provider requirements, and crypto demand (timeout 30.00s)
+ok - JWT package lowering emits provider-neutral HS256 requirements while target eligibility remains outside the package builder
+ok - JWT signing owns static policy validation, secret/clock authority and explicit HMAC-SHA256 demand
+[pulsewasm] jwt-package-owned-lowering: passed in 552ms
+
+[pulsewasm:native] canonical-api-runtime
+[pulsewasm] canonical application runtime effects and continuations (timeout 60.00s)
+ok - documented canonical projects execute through real Node effects while only branch, dependency, body-edge, and failure mechanics use internal canonical fixtures
+[pulsewasm] canonical-api-runtime: passed in 1.48s
+
+[pulsewasm:native] canonical-opaque-node-emission
+[pulsewasm] opaque body ownership and repeated Node headers (timeout 30.00s)
+ok - direct fetch responses preserve host-owned binary and textual pass-through, exact bytes, repeated headers, and deny public body inspection
+[pulsewasm] canonical-opaque-node-emission: passed in 591ms
+
+[pulsewasm:native] grip-package-runtime
+[pulsewasm] GRIP package build and canonical runtime (timeout 240.00s)
+ok - GRIP package root builds and its JavaScript plus compatibility runtime tests pass
+[pulsewasm] grip-package-runtime: passed in 644ms
+
+[pulsewasm:native] package-root-native
+[pulsewasm] package-root Assets and keyed parallel native output (timeout 240.00s)
+ok - package-root Assets and keyed parallel compile to valid 3979-byte Native Wasm 5e4ca1266cd6dafe0f8818d899c182a5b7d6d4f69f7c3229175642774ef616fb
+[pulsewasm] package-root-native: passed in 1.66s
+
+[pulsewasm:native] canonical-native-wasm
+[pulsewasm] provider-neutral native compilation and host execution (timeout 180.00s)
+ok - Native conditional KV normalized handoff, raw validation, isolation, redaction and limits
+ok - real Binaryen retention preserves shared calls, distinct bindings, fresh allocations, live tables and mappings on both Native targets
+ok - bounded Native dispatcher preserves branches, pure-loop control, grouped effects, resume validation and deterministic small functions
+ok - Native and generator request budgets prevent late continuation and checkpoint dispatch
+ok - 10 canonical plans compile deterministically to provider-neutral Pulse Wasm (1668-41086 bytes) and execute through the narrow host ABI
+[pulsewasm] canonical-native-wasm: passed in 43.60s
+
+[pulsewasm:javascript] cli-javascript-target-compilation
+[pulsewasm] explicit JavaScript target propagation, ordinary imports, source execution and Native rejection (timeout 120.00s)
+ok - explicit JavaScript compilation preserves package and relative imports through Router/plain roots, async execution, doctor/test/build and Native rejection
+[pulsewasm] cli-javascript-target-compilation: passed in 13.09s
+
+[pulsewasm:javascript] target-support
+[pulsewasm] complete explicit Node JavaScript target support (timeout 30.00s)
+ok - target support and deterministic provider package bootstrap are current, explicit, and fallback-free
+[pulsewasm] target-support: passed in 366ms
+
+[pulsewasm:javascript] jwt-javascript-admission
+[pulsewasm] JWT source admission, provider requirements and HS256/ES256 consumer execution (timeout 180.00s)
+ok - JWT JavaScript admission, provider capability rejection, HS256/ES256 execution and source packaging
+[pulsewasm] jwt-javascript-admission: passed in 6.33s
+
+[pulsewasm:javascript] crypto-runtime-builtin
+[pulsewasm] bounded HS256 verification through the selected Web Crypto runtime builtin (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/f45f4aee55e6/pulse-o25
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  04:22:39
+   Duration  291ms (transform 166ms, setup 0ms, import 217ms, tests 38ms, environment 0ms)
+
+[pulsewasm] crypto-runtime-builtin: passed in 579ms
+
+[pulsewasm:javascript] javascript-effect-adapter
+[pulsewasm] request-owned JavaScript effects and keyed parallelism (timeout 180.00s)
+ok - JavaScript effects preserve lifecycle, grouping, failure, and bounded-observation contracts
+[pulsewasm] javascript-effect-adapter: passed in 432ms
+
+[pulsewasm:javascript] logging-runtime
+[pulsewasm] synchronous JavaScript logging threshold, redaction, and containment (timeout 30.00s)
+ok - JavaScript ctx.log filters synchronously, redacts messages, and contains provider sink failures
+[pulsewasm] logging-runtime: passed in 70ms
+
+[pulsewasm:javascript] assets-javascript-runtime
+[pulsewasm] request-bound package bridges and Assets/JWT JavaScript runtime (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/f45f4aee55e6/pulse-o25
+
+
+ Test Files  4 passed (4)
+      Tests  68 passed (68)
+   Start at  04:22:40
+   Duration  478ms (transform 578ms, setup 0ms, import 818ms, tests 170ms, environment 0ms)
+
+[pulsewasm] assets-javascript-runtime: passed in 745ms
+
+[pulsewasm:conformance] jwt-signing
+[pulsewasm] Bounded HS256 issuance, independent verification, failures and redaction on four targets (timeout 180.00s)
+{"status":"passed","executions":100,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] jwt-signing: passed in 11.69s
+
+[pulsewasm:conformance] jwt-es256-signing
+[pulsewasm] ES256 private-key signing, independent verification, CLI build and failures on four targets (timeout 180.00s)
+{"status":"passed","executions":97,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] jwt-es256-signing: passed in 31.23s
+
+[pulsewasm:conformance] jwt-rs256
+[pulsewasm] RS256 issuance and verification through all four targets and normal CLI builds (timeout 600.00s)
+{"status":"passed","bits":2048,"executions":146,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+{"status":"passed","bits":3072,"executions":146,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+{"status":"passed","bits":4096,"executions":146,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] jwt-rs256: passed in 394.64s
+
+[pulsewasm:unit] s3-write-conformance
+[pulsewasm] Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native (timeout 180.00s)
+{"status":"passed","cases":40,"executions":114,"targets":["node-native","node-javascript","fastly-native"],"fastlyJavascript":"documented-sdk-limitation","providerReality":false}
+[pulsewasm] s3-write-conformance: passed in 11.58s
+
+[pulsewasm:conformance] crypto-cross-target-conformance
+[pulsewasm] shared HS256 corpus across Web Crypto and optimized Native guest source (timeout 300.00s)
+ok - 14 shared HS256 cases match across Web Crypto and two Native optimization modes; evidence 7ab68698234f0490aa5cbfecbda1a757dbd070815dd0203b7aa278323a4e575b
+[pulsewasm] crypto-cross-target-conformance: passed in 6.08s
+
+[pulsewasm:conformance] crypto-digest-text-conformance
+[pulsewasm] Public exact-text SHA-256 vectors and byte bounds on four target/provider combinations (timeout 180.00s)
+{"status":"passed","cases":19,"executions":76,"nativeMemoryBytes":138412032,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] crypto-digest-text-conformance: passed in 10.40s
+
+[pulsewasm:conformance] crypto-digest-storage-conformance
+[pulsewasm] Pre-upload digest, S3 receipt and exact readback including schema-encoded text (timeout 180.00s)
+{"status":"passed","cases":7,"executions":21,"nativeMemoryBytes":226492416,"targets":["node-native","node-javascript","fastly-native"],"providerReality":false}
+[pulsewasm] crypto-digest-storage-conformance: passed in 12.04s
+
+[pulsewasm:conformance] multifile-source-identity
+[pulsewasm] Source-qualified effect and intrinsic identity, duplicate rejection and three-target multifile routing (timeout 180.00s)
+{"status":"passed","executions":12,"sourceOrders":2,"sharedHandlers":{"status":"passed","executions":18,"authoredEffects":3,"generatedEffects":9},"artifacts":[],"providerReality":false}
+[pulsewasm] multifile-source-identity: passed in 17.27s
+
+[pulsewasm:conformance] text-capacity-conformance
+[pulsewasm] 2 MiB schema/storage boundaries, lower bindings, streamed failures and bounded Native memory (timeout 180.00s)
+{"status":"passed","cases":15,"executions":45,"nativeMemoryBytes":56623104,"nativeMaximumBytes":268435456,"targets":["node-native","node-javascript","fastly-native"],"providerReality":false}
+[pulsewasm] text-capacity-conformance: passed in 15.36s
+
+[pulsewasm:conformance] events-conformance
+[pulsewasm] canonical event corpus across Node JavaScript and Native covering bounded ingress, emit acceptance, containment, isolation, completion, and the absent reflexive call surface (timeout 300.00s)
+{
+  "version": "pulse.event-conformance-corpus.v1",
+  "corpusSha256": "66ca58467a082cf5f15c4844a75a6efc8cbd0323d15403f5be9dd488158f0a9a",
+  "targets": [
+    "node-javascript",
+    "node-native"
+  ],
+  "crossTargetCases": 19,
+  "boundaryCases": 2,
+  "semanticEvaluations": 38,
+  "exactSemanticParity": true,
+  "schemaBeforeHandler": true,
+  "fifoIngress": true,
+  "queueBounded": true,
+  "cancellationContained": true,
+  "redactionContained": true,
+  "stateIsolation": true,
+  "automaticLoopback": false,
+  "sameStackReentry": false,
+  "callExecInvokeSurface": false,
+  "nativeJavascriptImports": 0,
+  "automaticFallback": false
+}
+ok - canonical event corpus matches exactly across Node JavaScript and Native with bounded ingress, one-way emit, containment, and no reflexive call surface
+[pulsewasm] events-conformance: passed in 2.92s
+
+[pulsewasm:conformance] node-router-context-parity
+[pulsewasm] native and JavaScript Node HTTP-boundary parity (timeout 180.00s)
+ok - native and JavaScript Node Router/context behavior matches at the HTTP boundary
+[pulsewasm] node-router-context-parity: passed in 3.52s
+
+[pulsewasm:conformance] catalog-router-parity
+[pulsewasm] Catalog original verb probe and 14 mutation routes across Node/Fastly Native/JavaScript (timeout 300.00s)
+{
+  "status": "passed",
+  "proofs": [
+    {
+      "fixture": "catalog-router-probe",
+      "cases": 3,
+      "executions": 12,
+      "modes": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false
+    },
+    {
+      "fixture": "catalog-router-methods",
+      "cases": 68,
+      "executions": 272,
+      "modes": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false
+    }
+  ]
+}
+ok - Catalog consumer verbs, mounted routing and terminal transfers match on four explicit targets
+[pulsewasm] catalog-router-parity: passed in 20.11s
+
+[pulsewasm:conformance] fetch-projections-request-bodies
+[pulsewasm] bounded fetch projections and request body ownership (timeout 180.00s)
+ok - fetch projections and request bodies preserve bounded ownership across targets
+[pulsewasm] fetch-projections-request-bodies: passed in 589ms
+
+[pulsewasm:conformance] config-secrets-kv-redaction
+[pulsewasm] binding isolation and secret-safe observations (timeout 180.00s)
+ok - config, secrets, and KV bindings preserve isolation and redaction contracts
+[pulsewasm] config-secrets-kv-redaction: passed in 472ms
+
+[pulsewasm:conformance] kv-conditional-conformance
+[pulsewasm] K2 JavaScript, compiled Native and canonical reference races, token transport and dispatch lifecycle (timeout 180.00s)
+ok - K2 javascript: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - K2 native: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - K2 generator: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - 78 K2 target scenarios plus lowering negatives; no Fastly realization or deployed claims
+[pulsewasm] kv-conditional-conformance: passed in 3.22s
+
+[pulsewasm:conformance] kv-conditional-adversarial
+[pulsewasm] K4 project consumers: concurrent requests, retained tombstones, ABA and acknowledgement loss (timeout 180.00s)
+{"version":"pulse.kv-k4-consumer.v1","status":"passed","results":{"node-native":{"status":"passed","requests":171,"groups":[{"width":2,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":8,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":16,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true}],"keyedParallel":true,"boundaryValues":4,"failures":[],"ambiguousCompletion":"passed"},"node-javascript":{"status":"passed","requests":171,"groups":[{"width":2,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":8,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":16,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true}],"keyedParallel":true,"boundaryValues":4,"failures":[],"ambiguousCompletion":"passed"}},"module":{"sha256":"5d10be5963cdd8df8e1e1564199a55e4689c35c4f7a5894b6de677e9e30ca021","bytes":48662,"imports":[{"module":"fastly_http_body","name":"close","kind":"function"},{"module":"fastly_http_resp","name":"send_downstream","kind":"function"},{"module":"fastly_http_body","name":"write","kind":"function"},{"module":"fastly_http_body","name":"read","kind":"function"},{"module":"fastly_http_body","name":"new","kind":"function"},{"module":"wasi_snapshot_preview1","name":"clock_time_get","kind":"function"},{"module":"fastly_kv_store","name":"open","kind":"function"},{"module":"fastly_kv_store","name":"lookup_wait_v2","kind":"function"},{"module":"fastly_kv_store","name":"lookup","kind":"function"},{"module":"fastly_kv_store","name":"insert_wait","kind":"function"},{"module":"fastly_kv_store","name":"insert","kind":"function"},{"module":"fastly_http_resp","name":"status_set","kind":"function"},{"module":"fastly_http_resp","name":"status_get","kind":"function"},{"module":"fastly_http_resp","name":"new","kind":"function"},{"module":"fastly_http_resp","name":"header_append","kind":"function"},{"module":"fastly_http_req","name":"uri_get","kind":"function"},{"module":"fastly_http_req","name":"method_get","kind":"function"},{"module":"fastly_http_req","name":"body_downstream_get","kind":"function"},{"module":"fastly_abi","name":"init","kind":"function"},{"module":"fastly_async_io","name":"select","kind":"function"}]},"providerReality":false,"deployed":"pending-T2"}
+[pulsewasm] kv-conditional-adversarial: passed in 4.88s
+
+[pulsewasm:conformance] fastly-conditional-kv
+[pulsewasm] K3 actual Fastly Native conditional KV ABI, shared bytes, races, deadlines and uncertainty (timeout 180.00s)
+ok - K3 actual Fastly Native Wasm: 209 corpus cases, u64 ABI fidelity, shared wire, races, snapshots, bounded waits and uncertainty (no deployed-service claim)
+[pulsewasm] fastly-conditional-kv: passed in 12.74s
+
+[pulsewasm:conformance] schema-codecs
+[pulsewasm] cross-target rich schema codecs and four JSON boundaries (timeout 180.00s)
+ok - internal JSON admission (84 shared cases, 343 syntax mutations, 3 compiled lanes, pre-materialization rejection)
+ok - 18 single-field Native string regressions; pinned scalar json-as and JSON-equivalent backslash spelling
+ok - schema-bound value encoding: 16 compiler negatives; 52 positive and 20 rejected executions across JavaScript, Node Native and both Fastly Native generators
+ok - application text decoding: 16 compiler negatives, 32 successful and 40 rejected HTTP executions, plus JavaScript/Native event contexts
+ok - optional schema properties preserve absence, nullability, nested/array values and edit merges across JavaScript, Node Native and both Fastly Native paths
+ok - ScalarRecord bounds, duplicates, immutable projection and round-trip parity (112 executions plus direct guest codec checks)
+{"fixture":"schema-nested-json","maximumAdmissionLatencyMs":{"javascript":12.235,"native":67.32,"fastly-http":36.457,"fastly-platform":25.589},"latencyIncludesFreshExecution":true,"profile":"default","maxAdmittedNodes":4096,"guestLinearMemoryBytesAtReturn":2490368,"artifacts":[{"target":"node-native","rawBytes":81936,"gzipBytes":34388,"compileMs":3425},{"target":"fastly-http","rawBytes":137013,"gzipBytes":51286,"compileMs":4685},{"target":"fastly-platform","rawBytes":141342,"gzipBytes":52991,"compileMs":4916}],"providerReality":false}
+ok - schema-nested-json: 200 cross-target executions, all eight exact/over limits, depth 128, immutable detached values, duplicate policy, and zero sends after rejection
+{"fixture":"schema-open-objects","maximumAdmissionLatencyMs":{"javascript":23.322,"native":102.195,"fastly-http":47.915,"fastly-platform":18.995},"latencyIncludesFreshExecution":true,"profile":"default","maxAdmittedNodes":4096,"guestLinearMemoryBytesAtReturn":2490368,"artifacts":[{"target":"node-native","rawBytes":88976,"gzipBytes":36197,"compileMs":3438},{"target":"fastly-http","rawBytes":149903,"gzipBytes":53975,"compileMs":4947},{"target":"fastly-platform","rawBytes":153651,"gzipBytes":55547,"compileMs":4978}],"providerReality":false}
+ok - schema-open-objects: 452 cross-target executions, all eight exact/over limits, depth 128, immutable detached values, duplicate policy, and zero sends after rejection
+ok - pulse.schema codecs preserve strict boundaries and semantic parity across targets
+[pulsewasm] schema-codecs: passed in 117.81s
+
+[pulsewasm:conformance] schema-kv-parity
+[pulsewasm] strict schema and conditional KV public consumer parity (timeout 240.00s)
+ok - javascript: schema/KV response, nested CAS conflict, encoded bytes (local execution)
+ok - native: schema/KV response, nested CAS conflict, encoded bytes (local execution)
+ok - fastly: schema/KV response, nested CAS conflict, encoded bytes (local execution)
+ok - built Node JavaScript schema/KV consumer preserves response bytes and redacted observations
+[pulsewasm] schema-kv-parity: passed in 11.85s
+
+[pulsewasm:conformance] time-conformance
+[pulsewasm] provider-owned wall time, UTC, failures and four-mode parity (timeout 120.00s)
+ok - time: 47 date/range cells, four-mode grouped regression, failures, cancellation and strict admission; Fastly evidence is local Wasm
+[pulsewasm] time-conformance: passed in 7.14s
+
+[pulsewasm:conformance] time-consumer
+[pulsewasm] public time package consumer, target inspection and builds (timeout 240.00s)
+ok - native: public clock inspect and local consumer
+ok - javascript: public clock inspect and local consumer
+ok - fastly: public clock inspect and local consumer
+ok - fastlyjs: public clock inspect and local consumer
+ok - built JavaScript execution and Node/Fastly Native builds; no source dependency mutation
+[pulsewasm] time-consumer: passed in 18.32s
+
+[pulsewasm:conformance] request-budget-transport
+[pulsewasm] shared request deadline across S3 preparation and Node HTTP body admission (timeout 180.00s)
+ok - deadline covers cumulative S3 preparation on three targets and real Node Native/JS HTTP body admission
+[pulsewasm] request-budget-transport: passed in 7.41s
+
+[pulsewasm:conformance] http-input-outcomes
+[pulsewasm] strict bounded UTF-8 and buffered HTTP denial/uncertainty on selected adapters (timeout 180.00s)
+{"status":"passed","providerReality":false,"sourceSha256":"003e115eb9ad23b91b9e6cef88f8d58f81f138ae1814680cc7272ac762f18bbd","fastlyWasmSha256":"3fae5115571387af0f22603a11edaf1ae79a9ef77e6f11b49324e56487744efd","rows":[{"mode":"node-native","case":"80","status":400,"writes":0},{"mode":"node-native","case":"bf","status":400,"writes":0},{"mode":"node-native","case":"c0af","status":400,"writes":0},{"mode":"node-native","case":"c1bf","status":400,"writes":0},{"mode":"node-native","case":"c2","status":400,"writes":0},{"mode":"node-native","case":"c328","status":400,"writes":0},{"mode":"node-native","case":"e08080","status":400,"writes":0},{"mode":"node-native","case":"eda080","status":400,"writes":0},{"mode":"node-native","case":"edbfbf","status":400,"writes":0},{"mode":"node-native","case":"e282","status":400,"writes":0},{"mode":"node-native","case":"e228a1","status":400,"writes":0},{"mode":"node-native","case":"f0808080","status":400,"writes":0},{"mode":"node-native","case":"f4908080","status":400,"writes":0},{"mode":"node-native","case":"f5808080","status":400,"writes":0},{"mode":"node-native","case":"f09f98","status":400,"writes":0},{"mode":"node-native","case":"ff","status":400,"writes":0},{"mode":"node-native","case":"\"\"","status":201,"writes":1},{"mode":"node-native","case":"\"ascii\"","status":201,"writes":1},{"mode":"node-native","case":"\"\\u0000\"","status":201,"writes":1},{"mode":"node-native","case":"\"�(\"","status":201,"writes":1},{"mode":"node-native","case":"\"é中😀\"","status":201,"writes":1},{"mode":"node-native","case":"\"﻿text\"","status":201,"writes":1},{"mode":"node-native","case":"\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀\"","status":201,"writes":1},{"mode":"node-native","case":"over-limit","status":413,"writes":0},{"mode":"node-native","case":"invalid-over-limit","status":413,"writes":0},{"mode":"node-native","case":"/auth","status":401,"preparations":0},{"mode":"node-native","case":"/auth","status":401,"preparations":0},{"mode":"node-native","case":"/deny","status":403,"preparations":0,"outcome":"not-accepted"},{"mode":"node-native","case":"/unknown","status":503,"preparations":0,"outcome":"unknown"},{"mode":"node-native","case":"/commit","status":201,"preparations":1,"outcome":"accepted"},{"mode":"node-native","case":"/commit","status":409,"preparations":1,"outcome":"not-accepted"},{"mode":"node-javascript","case":"80","status":400,"writes":0},{"mode":"node-javascript","case":"bf","status":400,"writes":0},{"mode":"node-javascript","case":"c0af","status":400,"writes":0},{"mode":"node-javascript","case":"c1bf","status":400,"writes":0},{"mode":"node-javascript","case":"c2","status":400,"writes":0},{"mode":"node-javascript","case":"c328","status":400,"writes":0},{"mode":"node-javascript","case":"e08080","status":400,"writes":0},{"mode":"node-javascript","case":"eda080","status":400,"writes":0},{"mode":"node-javascript","case":"edbfbf","status":400,"writes":0},{"mode":"node-javascript","case":"e282","status":400,"writes":0},{"mode":"node-javascript","case":"e228a1","status":400,"writes":0},{"mode":"node-javascript","case":"f0808080","status":400,"writes":0},{"mode":"node-javascript","case":"f4908080","status":400,"writes":0},{"mode":"node-javascript","case":"f5808080","status":400,"writes":0},{"mode":"node-javascript","case":"f09f98","status":400,"writes":0},{"mode":"node-javascript","case":"ff","status":400,"writes":0},{"mode":"node-javascript","case":"\"\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"ascii\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"\\u0000\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"�(\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"é中😀\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"﻿text\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀\"","status":201,"writes":1},{"mode":"node-javascript","case":"over-limit","status":413,"writes":0},{"mode":"node-javascript","case":"invalid-over-limit","status":413,"writes":0},{"mode":"node-javascript","case":"/auth","status":401,"preparations":0},{"mode":"node-javascript","case":"/auth","status":401,"preparations":0},{"mode":"node-javascript","case":"/deny","status":403,"preparations":0,"outcome":"not-accepted"},{"mode":"node-javascript","case":"/unknown","status":503,"preparations":0,"outcome":"unknown"},{"mode":"node-javascript","case":"/commit","status":201,"preparations":1,"outcome":"accepted"},{"mode":"node-javascript","case":"/commit","status":409,"preparations":1,"outcome":"not-accepted"},{"mode":"fastly-native","case":"80","status":400,"writes":0},{"mode":"fastly-native","case":"bf","status":400,"writes":0},{"mode":"fastly-native","case":"c0af","status":400,"writes":0},{"mode":"fastly-native","case":"c1bf","status":400,"writes":0},{"mode":"fastly-native","case":"c2","status":400,"writes":0},{"mode":"fastly-native","case":"c328","status":400,"writes":0},{"mode":"fastly-native","case":"e08080","status":400,"writes":0},{"mode":"fastly-native","case":"eda080","status":400,"writes":0},{"mode":"fastly-native","case":"edbfbf","status":400,"writes":0},{"mode":"fastly-native","case":"e282","status":400,"writes":0},{"mode":"fastly-native","case":"e228a1","status":400,"writes":0},{"mode":"fastly-native","case":"f0808080","status":400,"writes":0},{"mode":"fastly-native","case":"f4908080","status":400,"writes":0},{"mode":"fastly-native","case":"f5808080","status":400,"writes":0},{"mode":"fastly-native","case":"f09f98","status":400,"writes":0},{"mode":"fastly-native","case":"ff","status":400,"writes":0},{"mode":"fastly-native","case":"\"\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"ascii\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"\\u0000\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"�(\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"é中😀\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"﻿text\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀\"","status":201,"writes":1},{"mode":"fastly-native","case":"over-limit","status":413,"writes":0},{"mode":"fastly-native","case":"invalid-over-limit","status":413,"writes":0},{"mode":"fastly-native","case":"/auth","status":401,"preparations":0},{"mode":"fastly-native","case":"/auth","status":401,"preparations":0},{"mode":"fastly-native","case":"/deny","status":403,"preparations":0,"outcome":"not-accepted"},{"mode":"fastly-native","case":"/unknown","status":503,"preparations":0,"outcome":"unknown"},{"mode":"fastly-native","case":"/commit","status":201,"preparations":1,"outcome":"accepted"},{"mode":"fastly-native","case":"/commit","status":409,"preparations":1,"outcome":"not-accepted"},{"mode":"node-native-http","requests":30,"status":"passed"},{"mode":"node-javascript-http","requests":30,"status":"passed"},{"mode":"node-native","case":"committed-acknowledgement-lost","status":503,"committed":true,"outcome":"unknown"},{"mode":"node-javascript","case":"committed-acknowledgement-lost","status":503,"committed":true,"outcome":"unknown"},{"mode":"fastly-native","case":"committed-acknowledgement-lost","status":503,"committed":true,"outcome":"unknown"},{"mode":"node-javascript-http","case":"deadline-after-commit","status":504,"committed":true,"responses":1},{"mode":"fastly-native","case":"deadline-after-commit","status":504,"committed":true,"responses":1},{"mode":"fastly-native","case":"default-body-error","status":400,"writes":0},{"mode":"fastly-native","case":"default-body-error","status":413,"writes":0},{"mode":"node-native-http","case":"default-body-error","status":400,"parityDebt":false},{"mode":"node-javascript-http","case":"default-body-error","status":500,"parityDebt":true}]}
+[pulsewasm] http-input-outcomes: passed in 13.84s
+
+[pulsewasm:conformance] application-errors
+[pulsewasm] public schema and JWT application error recovery across targets (timeout 240.00s)
+ok - javascript: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - native: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - fastly: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - fastlyjs: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - built JavaScript consumer preserves application errors and encoded bytes
+[pulsewasm] application-errors: passed in 18.46s
+
+[pulsewasm:conformance] application-error-boundaries
+[pulsewasm] Native failed continuation settlement and terminal failure boundaries (timeout 120.00s)
+ok - Native error recovery settles siblings once, stops later effects, and excludes traps, protocol faults and cancellation
+[pulsewasm] application-error-boundaries: passed in 3.71s
+
+[pulsewasm:conformance] node-cross-target-conformance
+[pulsewasm] Node native and JavaScript semantic conformance corpus (timeout 240.00s)
+ok - Node native and JavaScript targets conform across the canonical JSON corpus
+[pulsewasm] node-cross-target-conformance: passed in 5.46s
+
+[pulsewasm:conformance] grip-cross-target-conformance
+[pulsewasm] GRIP framing and broadcast conformance corpus (timeout 300.00s)
+ok - GRIP framing and broadcast behavior conforms across Node and Fastly targets
+[pulsewasm] grip-cross-target-conformance: passed in 6.39s
+
+[pulsewasm:conformance] four-mode-conformance
+[pulsewasm] Node/Fastly Native/JavaScript semantic parity and target integrity (timeout 300.00s)
+ok - four-mode semantic traces and target artifacts satisfy the Sprint 6D conformance gate
+[pulsewasm] four-mode-conformance: passed in 32.44s
+
+[pulsewasm] test summary
+  passed        25.74s  fastly-driver-behavior-o09
+  passed         837ms  kv-native-abi-feasibility
+  passed        15.28s  s3-native-read
+  passed         295ms  s3-node-transport
+  passed         973ms  canonical-api-lowering
+  passed         1.45s  canonical-native-plan
+  passed         4.70s  shared-stage-o19
+  passed        34.43s  bounded-app-logic
+  passed        38.37s  bounded-read-loops
+  passed         2.11s  logging-lowering
+  passed         6.41s  canonical-router-lowering
+  passed         7.60s  canonical-router-terminal-middleware
+  passed         3.61s  json-as-compatibility
+  passed         2.50s  entities-envelope-feasibility
+  passed         483ms  entities-managed-handler
+  passed         990ms  entities-managed-handler-effects
+  passed         6.84s  entities-native-runtime
+  passed         4.07s  crypto-native-guest-source
+  passed         6.36s  guest-link-package
+  passed        26.90s  guest-link-materialization-stage
+  passed        15.26s  guest-link-audit-diagnostics
+  passed         365ms  assets-lowering-plan
+  passed         270ms  assets-package-owned-lowering
+  passed         267ms  grip-package-owned-lowering
+  passed         552ms  jwt-package-owned-lowering
+  passed         1.48s  canonical-api-runtime
+  passed         591ms  canonical-opaque-node-emission
+  passed         644ms  grip-package-runtime
+  passed         1.66s  package-root-native
+  passed        43.60s  canonical-native-wasm
+  passed        13.09s  cli-javascript-target-compilation
+  passed         366ms  target-support
+  passed         6.33s  jwt-javascript-admission
+  passed         579ms  crypto-runtime-builtin
+  passed         432ms  javascript-effect-adapter
+  passed          70ms  logging-runtime
+  passed         745ms  assets-javascript-runtime
+  passed        11.69s  jwt-signing
+  passed        31.23s  jwt-es256-signing
+  passed       394.64s  jwt-rs256
+  passed        11.58s  s3-write-conformance
+  passed         6.08s  crypto-cross-target-conformance
+  passed        10.40s  crypto-digest-text-conformance
+  passed        12.04s  crypto-digest-storage-conformance
+  passed        17.27s  multifile-source-identity
+  passed        15.36s  text-capacity-conformance
+  passed         2.92s  events-conformance
+  passed         3.52s  node-router-context-parity
+  passed        20.11s  catalog-router-parity
+  passed         589ms  fetch-projections-request-bodies
+  passed         472ms  config-secrets-kv-redaction
+  passed         3.22s  kv-conditional-conformance
+  passed         4.88s  kv-conditional-adversarial
+  passed        12.74s  fastly-conditional-kv
+  passed       117.81s  schema-codecs
+  passed        11.85s  schema-kv-parity
+  passed         7.14s  time-conformance
+  passed        18.32s  time-consumer
+  passed         7.41s  request-budget-transport
+  passed        13.84s  http-input-outcomes
+  passed        18.46s  application-errors
+  passed         3.71s  application-error-boundaries
+  passed         5.46s  node-cross-target-conformance
+  passed         6.39s  grip-cross-target-conformance
+  passed        32.44s  four-mode-conformance
+  total        1077.84s

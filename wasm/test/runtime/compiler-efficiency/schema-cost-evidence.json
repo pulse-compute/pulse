@@ -1,0 +1,2456 @@
+{
+  "version": "pulse.schema-cost-scope.v1",
+  "status": "passed",
+  "sourceRevision": "cbf4fc7dbdc426b578dde52f8b3108df6b9910fd",
+  "workingTree": "",
+  "node": "v24.19.0",
+  "harnessSha256": "e4d503f15428f2563279909098812edb37980be69312fcae26f030d75612b0fd",
+  "profilerSha256": "b1e467a633e32097ab49eead25d92aef811215aa0cd5462b1fb53ba318ce6c05",
+  "lockfileSha256": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+  "binaryen": {
+    "name": "binaryen",
+    "version": "129.0.0-nightly.20260428",
+    "tools": [
+      {
+        "name": "wasm-as",
+        "sha256": "de7e6f417519fdd1498903829741c64bf0ea5d59965a6b33249b1db2e34ffc47"
+      },
+      {
+        "name": "wasm-dis",
+        "sha256": "0fe8a607071c5c9a00524f9b69d2d7e5c092efce8d6b1f6dcf692f16989014ae"
+      },
+      {
+        "name": "wasm-merge",
+        "sha256": "2e917a96093675895515c8b5677a4f21200488a6dc5ce3590c4acd9cbf577ba2"
+      },
+      {
+        "name": "wasm-opt",
+        "sha256": "1304eb38ad315a0d70d8427757f641c110d972468c126af645ef800b09c26e56"
+      }
+    ]
+  },
+  "samples": 3,
+  "cells": [
+    {
+      "count": 1,
+      "target": "node",
+      "samples": [
+        {
+          "sample": 0,
+          "extractionMs": 10.222926999999999,
+          "planningMs": 158.770208,
+          "buildMs": 2559.814585,
+          "compilerWorkerPeakRssBytes": 112779264,
+          "wasmBytes": 61340,
+          "gzipBytes": 28151,
+          "wasmSha256": "4f5dcc9a86778150d0a0a2c0707d4e75d67755b34cac060c2235d2aa072c22c8",
+          "sourceBytes": 13189,
+          "sourceSha256": "5cd154c735e65c9cee19160c554bc7ff1dfe68b551d34ea730aa9d471a33b16c",
+          "functions": 133,
+          "codeBodyBytes": 41195,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 348024832,
+          "runtime": {
+            "coldRequestMs": 29.03089399999999,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 1245184
+          }
+        },
+        {
+          "sample": 1,
+          "extractionMs": 11.414710999999983,
+          "planningMs": 131.67373700000002,
+          "buildMs": 2431.185194,
+          "compilerWorkerPeakRssBytes": 112709632,
+          "wasmBytes": 61340,
+          "gzipBytes": 28151,
+          "wasmSha256": "4f5dcc9a86778150d0a0a2c0707d4e75d67755b34cac060c2235d2aa072c22c8",
+          "sourceBytes": 13189,
+          "sourceSha256": "5cd154c735e65c9cee19160c554bc7ff1dfe68b551d34ea730aa9d471a33b16c",
+          "functions": 133,
+          "codeBodyBytes": 41195,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 336703488,
+          "runtime": {
+            "coldRequestMs": 28.672586000000024,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 1245184
+          }
+        },
+        {
+          "sample": 2,
+          "extractionMs": 10.681978999999984,
+          "planningMs": 120.727596,
+          "buildMs": 2383.738261,
+          "compilerWorkerPeakRssBytes": 113975296,
+          "wasmBytes": 61340,
+          "gzipBytes": 28151,
+          "wasmSha256": "4f5dcc9a86778150d0a0a2c0707d4e75d67755b34cac060c2235d2aa072c22c8",
+          "sourceBytes": 13189,
+          "sourceSha256": "5cd154c735e65c9cee19160c554bc7ff1dfe68b551d34ea730aa9d471a33b16c",
+          "functions": 133,
+          "codeBodyBytes": 41195,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 325193728,
+          "runtime": {
+            "coldRequestMs": 31.350508999999988,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 1245184
+          }
+        }
+      ]
+    },
+    {
+      "count": 1,
+      "target": "fastly",
+      "samples": [
+        {
+          "sample": 0,
+          "extractionMs": 11.110494000000017,
+          "planningMs": 121.41257200000001,
+          "buildMs": 3623.410848,
+          "compilerWorkerPeakRssBytes": 116072448,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 120761,
+          "sourceSha256": "73d3cdcc60c720e98378226240b766fd9b53de07b601c04d19906de459dc6ed5",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 331239424,
+          "runtime": {
+            "coldRequestMs": 5.745782999999989,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "sample": 1,
+          "extractionMs": 11.050031999999987,
+          "planningMs": 118.49694599999998,
+          "buildMs": 3423.173066,
+          "compilerWorkerPeakRssBytes": 123072512,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 120761,
+          "sourceSha256": "73d3cdcc60c720e98378226240b766fd9b53de07b601c04d19906de459dc6ed5",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 359333888,
+          "runtime": {
+            "coldRequestMs": 5.681758000000002,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "sample": 2,
+          "extractionMs": 11.227170000000001,
+          "planningMs": 130.501563,
+          "buildMs": 3474.207241,
+          "compilerWorkerPeakRssBytes": 116391936,
+          "wasmBytes": 102197,
+          "gzipBytes": 41100,
+          "wasmSha256": "7a6fc0ea4fb903c7d0cd298817a36952414355f9e9cf7d17caf361dd3a81587a",
+          "sourceBytes": 120761,
+          "sourceSha256": "73d3cdcc60c720e98378226240b766fd9b53de07b601c04d19906de459dc6ed5",
+          "functions": 210,
+          "codeBodyBytes": 72271,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 340672512,
+          "runtime": {
+            "coldRequestMs": 5.9120849999999905,
+            "callableSchemaIds": 1,
+            "compilerUnreferencedCallableIds": 0,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "target": "node",
+      "samples": [
+        {
+          "sample": 0,
+          "extractionMs": 14.219306999999986,
+          "planningMs": 166.816461,
+          "buildMs": 2502.004979,
+          "compilerWorkerPeakRssBytes": 123080704,
+          "wasmBytes": 61505,
+          "gzipBytes": 28182,
+          "wasmSha256": "034c6d5b7be2b64cb06369e878cb54334a2859c3900210a9913517bd96b7cc86",
+          "sourceBytes": 49876,
+          "sourceSha256": "8869dccd4b00bf4f04c6c4ee9669c6f416df1437e8fab571664cc570c4f59f29",
+          "functions": 134,
+          "codeBodyBytes": 41356,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 341905408,
+          "runtime": {
+            "coldRequestMs": 28.93748599999998,
+            "callableSchemaIds": 8,
+            "compilerUnreferencedCallableIds": 7,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 1245184
+          }
+        },
+        {
+          "sample": 1,
+          "extractionMs": 13.772985000000006,
+          "planningMs": 177.259068,
+          "buildMs": 2489.911282,
+          "compilerWorkerPeakRssBytes": 122400768,
+          "wasmBytes": 61505,
+          "gzipBytes": 28182,
+          "wasmSha256": "034c6d5b7be2b64cb06369e878cb54334a2859c3900210a9913517bd96b7cc86",
+          "sourceBytes": 49876,
+          "sourceSha256": "8869dccd4b00bf4f04c6c4ee9669c6f416df1437e8fab571664cc570c4f59f29",
+          "functions": 134,
+          "codeBodyBytes": 41356,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 339632128,
+          "runtime": {
+            "coldRequestMs": 28.349007,
+            "callableSchemaIds": 8,
+            "compilerUnreferencedCallableIds": 7,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 1245184
+          }
+        },
+        {
+          "sample": 2,
+          "extractionMs": 14.735174,
+          "planningMs": 187.656559,
+          "buildMs": 2513.3854850000002,
+          "compilerWorkerPeakRssBytes": 125509632,
+          "wasmBytes": 61505,
+          "gzipBytes": 28182,
+          "wasmSha256": "034c6d5b7be2b64cb06369e878cb54334a2859c3900210a9913517bd96b7cc86",
+          "sourceBytes": 49876,
+          "sourceSha256": "8869dccd4b00bf4f04c6c4ee9669c6f416df1437e8fab571664cc570c4f59f29",
+          "functions": 134,
+          "codeBodyBytes": 41356,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 345903104,
+          "runtime": {
+            "coldRequestMs": 30.862067000000025,
+            "callableSchemaIds": 8,
+            "compilerUnreferencedCallableIds": 7,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 1245184
+          }
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "target": "fastly",
+      "samples": [
+        {
+          "sample": 0,
+          "extractionMs": 18.27034899999998,
+          "planningMs": 211.89179399999998,
+          "buildMs": 3765.801274,
+          "compilerWorkerPeakRssBytes": 124620800,
+          "wasmBytes": 102974,
+          "gzipBytes": 41330,
+          "wasmSha256": "4222d2b0abbe2457f1ed79f7e2380dc0a95532cd2b6842f3884ed39e4c879dcd",
+          "sourceBytes": 206609,
+          "sourceSha256": "f7a939bcd78ab2198058da5dffc74300d827fcf89156f4a36fe6b553a34ab372",
+          "functions": 210,
+          "codeBodyBytes": 72712,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 331038720,
+          "runtime": {
+            "coldRequestMs": 6.490836000000002,
+            "callableSchemaIds": 8,
+            "compilerUnreferencedCallableIds": 7,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "sample": 1,
+          "extractionMs": 13.996411000000023,
+          "planningMs": 165.83045,
+          "buildMs": 3648.9164419999997,
+          "compilerWorkerPeakRssBytes": 125239296,
+          "wasmBytes": 102974,
+          "gzipBytes": 41330,
+          "wasmSha256": "4222d2b0abbe2457f1ed79f7e2380dc0a95532cd2b6842f3884ed39e4c879dcd",
+          "sourceBytes": 206609,
+          "sourceSha256": "f7a939bcd78ab2198058da5dffc74300d827fcf89156f4a36fe6b553a34ab372",
+          "functions": 210,
+          "codeBodyBytes": 72712,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 343117824,
+          "runtime": {
+            "coldRequestMs": 6.733632,
+            "callableSchemaIds": 8,
+            "compilerUnreferencedCallableIds": 7,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "sample": 2,
+          "extractionMs": 23.450953999999996,
+          "planningMs": 179.34213599999998,
+          "buildMs": 3528.030704,
+          "compilerWorkerPeakRssBytes": 125337600,
+          "wasmBytes": 102974,
+          "gzipBytes": 41330,
+          "wasmSha256": "4222d2b0abbe2457f1ed79f7e2380dc0a95532cd2b6842f3884ed39e4c879dcd",
+          "sourceBytes": 206609,
+          "sourceSha256": "f7a939bcd78ab2198058da5dffc74300d827fcf89156f4a36fe6b553a34ab372",
+          "functions": 210,
+          "codeBodyBytes": 72712,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 323825664,
+          "runtime": {
+            "coldRequestMs": 9.24750800000001,
+            "callableSchemaIds": 8,
+            "compilerUnreferencedCallableIds": 7,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "target": "node",
+      "samples": [
+        {
+          "sample": 0,
+          "extractionMs": 21.007000000000005,
+          "planningMs": 297.399019,
+          "buildMs": 2740.4386719999998,
+          "compilerWorkerPeakRssBytes": 159207424,
+          "wasmBytes": 61961,
+          "gzipBytes": 28264,
+          "wasmSha256": "92209758ff2591773ce6cb2f5b77ca1c44d66be22b0f212e56dc97cec3cf7ff9",
+          "sourceBytes": 176298,
+          "sourceSha256": "47e5941f513c29c4e2015fad26945ae6bbe409e0bee1168678cf6483d517f7e6",
+          "functions": 134,
+          "codeBodyBytes": 41812,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 338026496,
+          "runtime": {
+            "coldRequestMs": 31.179080999999996,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2490368
+          }
+        },
+        {
+          "sample": 1,
+          "extractionMs": 21.574726,
+          "planningMs": 289.266385,
+          "buildMs": 2676.1721939999998,
+          "compilerWorkerPeakRssBytes": 159059968,
+          "wasmBytes": 61961,
+          "gzipBytes": 28264,
+          "wasmSha256": "92209758ff2591773ce6cb2f5b77ca1c44d66be22b0f212e56dc97cec3cf7ff9",
+          "sourceBytes": 176298,
+          "sourceSha256": "47e5941f513c29c4e2015fad26945ae6bbe409e0bee1168678cf6483d517f7e6",
+          "functions": 134,
+          "codeBodyBytes": 41812,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 338526208,
+          "runtime": {
+            "coldRequestMs": 30.30851199999998,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2490368
+          }
+        },
+        {
+          "sample": 2,
+          "extractionMs": 19.228082,
+          "planningMs": 268.597394,
+          "buildMs": 2695.7379520000004,
+          "compilerWorkerPeakRssBytes": 159539200,
+          "wasmBytes": 61961,
+          "gzipBytes": 28264,
+          "wasmSha256": "92209758ff2591773ce6cb2f5b77ca1c44d66be22b0f212e56dc97cec3cf7ff9",
+          "sourceBytes": 176298,
+          "sourceSha256": "47e5941f513c29c4e2015fad26945ae6bbe409e0bee1168678cf6483d517f7e6",
+          "functions": 134,
+          "codeBodyBytes": 41812,
+          "largestBodyBytes": 5050,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 321822720,
+          "runtime": {
+            "coldRequestMs": 33.353286999999995,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2490368
+          }
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "target": "fastly",
+      "samples": [
+        {
+          "sample": 0,
+          "extractionMs": 19.149832000000004,
+          "planningMs": 290.301874,
+          "buildMs": 3729.367087,
+          "compilerWorkerPeakRssBytes": 165797888,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 504230,
+          "sourceSha256": "10f6e1e920df1eed93015feec56b348a2073860e6e8472a34ad279e53cd983ad",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 349556736,
+          "runtime": {
+            "coldRequestMs": 6.235571999999991,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "sample": 1,
+          "extractionMs": 22.231876999999997,
+          "planningMs": 292.75382799999994,
+          "buildMs": 3820.694707,
+          "compilerWorkerPeakRssBytes": 161947648,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 504230,
+          "sourceSha256": "10f6e1e920df1eed93015feec56b348a2073860e6e8472a34ad279e53cd983ad",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 357134336,
+          "runtime": {
+            "coldRequestMs": 7.100679999999983,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        },
+        {
+          "sample": 2,
+          "extractionMs": 23.575529999999986,
+          "planningMs": 280.801972,
+          "buildMs": 3985.097244,
+          "compilerWorkerPeakRssBytes": 166146048,
+          "wasmBytes": 105691,
+          "gzipBytes": 42024,
+          "wasmSha256": "6630a477965c3993e3d0056f63cd5c206a77326dc52fa6dce6105f64f1d87e83",
+          "sourceBytes": 504230,
+          "sourceSha256": "10f6e1e920df1eed93015feec56b348a2073860e6e8472a34ad279e53cd983ad",
+          "functions": 210,
+          "codeBodyBytes": 74233,
+          "largestBodyBytes": 4010,
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          },
+          "jsonAs": {
+            "package": "json-as",
+            "version": "1.5.0",
+            "transform": true,
+            "strict": true,
+            "mode": "NAIVE",
+            "fastPath": false
+          },
+          "optimization": "default",
+          "assemblyScriptPeakRssBytes": 362684416,
+          "runtime": {
+            "coldRequestMs": 5.939667000000014,
+            "callableSchemaIds": 32,
+            "compilerUnreferencedCallableIds": 31,
+            "modes": [
+              "encode",
+              "decode"
+            ],
+            "unknownFieldsDropped": true,
+            "optionalAbsencePreserved": true,
+            "invalidValueRejected": true,
+            "invalidIndexRejected": true,
+            "codecProbeMemoryCapacityBytes": 2621440
+          }
+        }
+      ]
+    }
+  ],
+  "profiles": [
+    {
+      "count": 1,
+      "fixtureSha256": "3f601ebb178b5d577aa077524ba7cbc94e8ad77e97c3e7af56417b850b9af236",
+      "registryHash": "c42573a93f660af231480d044514831aa4da84f11685bf07b0d49e1361f17dec",
+      "codecTableHash": "464cbcc772321687f16e251c08a5094bd4a518df06b79623ca7f0ec8c5289799",
+      "maxBytes": 65536,
+      "compilerReferenceCount": 2,
+      "fullCodecRealization": true,
+      "productionFragmentsByteExact": true,
+      "javascript": {
+        "bytes": 11929,
+        "sha256": "348c278386f1bdcbb6c8083359a01cb96262afaaea9de5a0c89f2132d683aa0f"
+      },
+      "portable": {
+        "bytes": 5968,
+        "sha256": "9df642425c8eca89369d798db2a15f2144828e9dd114af169c733fb8daea22ce",
+        "shared": {
+          "bytes": 875,
+          "declarations": 4,
+          "families": {
+            "shared-runtime": 111,
+            "dispatch": 732
+          }
+        }
+      },
+      "fastly": {
+        "bytes": 8370,
+        "sha256": "3eb7ea786b61721d08ef2afd71bd57c43938623055f52c671fc6d7b181b7ee8c",
+        "shared": {
+          "bytes": 1785,
+          "declarations": 5,
+          "families": {
+            "shared-runtime": 1240,
+            "dispatch": 545
+          }
+        }
+      },
+      "entries": [
+        {
+          "id": "proof.Record0",
+          "index": 0,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 2,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6585,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6585
+          },
+          "fastlyDeclarations": 11
+        }
+      ],
+      "sourceOwners": {
+        "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+        "packages/provider-fastly/src/build/native-platform-capabilities.js": "4c2e380b10c6ce1c7ca802aa3c3c0e1ea38233739ae7092519beef3c0bd2934f",
+        "wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js": "043a54c0e664223a20f98a084d4896fc1b69a9b0b145bb316647ce5b46ced548",
+        "wasm/packages/schema-json/src/compiler/schema-registry.js": "5d91cc48ba14fa8b42322c9bf7013de5cfd2f5c4a9c43793f63bf0b7c87d3dfe"
+      },
+      "stageSamples": [
+        {
+          "extractionMs": 10.760827000000006,
+          "registryNormalizationAndIdentityMs": 0.42493000000001757,
+          "javascriptDeclarationMs": 0.07082600000001094,
+          "portableSchemaEmissionMs": 0.7127729999999701,
+          "fastlySchemaEmissionMs": 0.454605000000015
+        },
+        {
+          "extractionMs": 9.989625000000018,
+          "registryNormalizationAndIdentityMs": 0.39603599999998096,
+          "javascriptDeclarationMs": 0.06804199999999128,
+          "portableSchemaEmissionMs": 0.6667439999999942,
+          "fastlySchemaEmissionMs": 0.43934099999995624
+        },
+        {
+          "extractionMs": 9.981684000000001,
+          "registryNormalizationAndIdentityMs": 0.41835099999997283,
+          "javascriptDeclarationMs": 0.06714099999999235,
+          "portableSchemaEmissionMs": 0.633043999999984,
+          "fastlySchemaEmissionMs": 0.40525000000002365
+        }
+      ]
+    },
+    {
+      "count": 8,
+      "fixtureSha256": "e4ca1591f0b6bb89d3f26bd88ae8f7d55456be8279ae278890a2f08dba12f631",
+      "registryHash": "38aae05b2704ad648000304b31354dd174fedb6277a9079fdf46a11944e472be",
+      "codecTableHash": "3b2fa10865db74d0f7a5bdbb4d70d0506c5ea8fcc4f2b4583547184bbb88bdb0",
+      "maxBytes": 65536,
+      "compilerReferenceCount": 2,
+      "fullCodecRealization": true,
+      "productionFragmentsByteExact": true,
+      "javascript": {
+        "bytes": 37535,
+        "sha256": "dea604b7ca67cd9302c12ddd2e759723c75e5d73ee002a1262ec35b7e3129adf"
+      },
+      "portable": {
+        "bytes": 42655,
+        "sha256": "c20fb3a7fda3e3fc87029fbca4c7ce8175ed8f528982a32d98d260e656254cf0",
+        "shared": {
+          "bytes": 1911,
+          "declarations": 4,
+          "families": {
+            "shared-runtime": 111,
+            "dispatch": 1768
+          }
+        }
+      },
+      "fastly": {
+        "bytes": 57531,
+        "sha256": "a16c415c0062b8e31ed6c242ffb867184e52dd54277323d5863272f595133ccd",
+        "shared": {
+          "bytes": 4214,
+          "declarations": 5,
+          "families": {
+            "shared-runtime": 1240,
+            "dispatch": 2974
+          }
+        }
+      },
+      "entries": [
+        {
+          "id": "proof.Record0",
+          "index": 0,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 2,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6585,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6585
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record1",
+          "index": 1,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record2",
+          "index": 2,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record3",
+          "index": 3,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record4",
+          "index": 4,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record5",
+          "index": 5,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record6",
+          "index": 6,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record7",
+          "index": 7,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        }
+      ],
+      "sourceOwners": {
+        "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+        "packages/provider-fastly/src/build/native-platform-capabilities.js": "4c2e380b10c6ce1c7ca802aa3c3c0e1ea38233739ae7092519beef3c0bd2934f",
+        "wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js": "043a54c0e664223a20f98a084d4896fc1b69a9b0b145bb316647ce5b46ced548",
+        "wasm/packages/schema-json/src/compiler/schema-registry.js": "5d91cc48ba14fa8b42322c9bf7013de5cfd2f5c4a9c43793f63bf0b7c87d3dfe"
+      },
+      "stageSamples": [
+        {
+          "extractionMs": 13.021023000000014,
+          "registryNormalizationAndIdentityMs": 2.27425599999998,
+          "javascriptDeclarationMs": 0.14031099999999697,
+          "portableSchemaEmissionMs": 1.0387150000000247,
+          "fastlySchemaEmissionMs": 0.7047709999999938
+        },
+        {
+          "extractionMs": 13.037678,
+          "registryNormalizationAndIdentityMs": 2.4308619999999905,
+          "javascriptDeclarationMs": 0.13512300000002142,
+          "portableSchemaEmissionMs": 1.0200059999999667,
+          "fastlySchemaEmissionMs": 4.517202999999995
+        },
+        {
+          "extractionMs": 12.736272999999983,
+          "registryNormalizationAndIdentityMs": 1.1998670000000402,
+          "javascriptDeclarationMs": 0.13557399999996278,
+          "portableSchemaEmissionMs": 1.1208179999999857,
+          "fastlySchemaEmissionMs": 0.7544659999999794
+        }
+      ]
+    },
+    {
+      "count": 32,
+      "fixtureSha256": "3e4210b6c937b3d17aeb62b487e0a9268a92facff522ad7d038023251b569f1c",
+      "registryHash": "37138dd0f129272a7626b5dce642a8458aa5d6dfc68d78cbdb0edc52040325ed",
+      "codecTableHash": "5ff093d8fc63cace98c686633a117ab293468f8452a939297f1e15d90874eca7",
+      "maxBytes": 65536,
+      "compilerReferenceCount": 2,
+      "fullCodecRealization": true,
+      "productionFragmentsByteExact": true,
+      "javascript": {
+        "bytes": 125635,
+        "sha256": "c894e810b1294829641be8ab362c9293060212e222ad42de402cbe92d1ebc950"
+      },
+      "portable": {
+        "bytes": 169077,
+        "sha256": "fd7a070fe37f11540feb18c719ba9ece5b6be907fdf45ece56774be19956737b",
+        "shared": {
+          "bytes": 5551,
+          "declarations": 4,
+          "families": {
+            "shared-runtime": 111,
+            "dispatch": 5408
+          }
+        }
+      },
+      "fastly": {
+        "bytes": 228730,
+        "sha256": "1b2c7c2aa336288419fc9350fc0fb142a88fe78db80f23c8aff6894828ed05ae",
+        "shared": {
+          "bytes": 12652,
+          "declarations": 5,
+          "families": {
+            "shared-runtime": 1240,
+            "dispatch": 11412
+          }
+        }
+      },
+      "entries": [
+        {
+          "id": "proof.Record0",
+          "index": 0,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 2,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6585,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6585
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record1",
+          "index": 1,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record2",
+          "index": 2,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record3",
+          "index": 3,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record4",
+          "index": 4,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record5",
+          "index": 5,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record6",
+          "index": 6,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record7",
+          "index": 7,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record8",
+          "index": 8,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6676,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6676
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record9",
+          "index": 9,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5093,
+          "fastlyBytes": 6705,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4696,
+            "decode": 198,
+            "encode": 199
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6705
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record10",
+          "index": 10,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record11",
+          "index": 11,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record12",
+          "index": 12,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record13",
+          "index": 13,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record14",
+          "index": 14,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record15",
+          "index": 15,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record16",
+          "index": 16,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record17",
+          "index": 17,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record18",
+          "index": 18,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record19",
+          "index": 19,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record20",
+          "index": 20,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record21",
+          "index": 21,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record22",
+          "index": 22,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record23",
+          "index": 23,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record24",
+          "index": 24,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record25",
+          "index": 25,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record26",
+          "index": 26,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record27",
+          "index": 27,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record28",
+          "index": 28,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record29",
+          "index": 29,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record30",
+          "index": 30,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        },
+        {
+          "id": "proof.Record31",
+          "index": 31,
+          "nodes": 11,
+          "fields": 8,
+          "optional": 1,
+          "kinds": {
+            "object": 2,
+            "string": 5,
+            "f64": 1,
+            "boolean": 1,
+            "array": 1,
+            "nullable": 1
+          },
+          "uniqueNodeShapes": 7,
+          "rootShapeSha256": "7209a5fa3113222a435e1280064311bbdd489bfe4ca5c6ec879a072f97493d8f",
+          "validationShapeSha256": "b9da370b70ed9ecab5453ac21137a9788c1db75881687866ec112b07ccb7726a",
+          "jsonLimits": null,
+          "compilerReferences": 0,
+          "responseCases": [],
+          "portableBytes": 5118,
+          "fastlyBytes": 6790,
+          "nativeRepresentation": "value-projection",
+          "portableFamilies": {
+            "presence": 4717,
+            "decode": 200,
+            "encode": 201
+          },
+          "portableDeclarations": 13,
+          "fastlyFamilies": {
+            "value-projection": 6790
+          },
+          "fastlyDeclarations": 11
+        }
+      ],
+      "sourceOwners": {
+        "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "9510187998a7c753ac83422803ad21a085d47cecbbe3ddca2030900962179008",
+        "packages/provider-fastly/src/build/native-platform-capabilities.js": "4c2e380b10c6ce1c7ca802aa3c3c0e1ea38233739ae7092519beef3c0bd2934f",
+        "wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js": "043a54c0e664223a20f98a084d4896fc1b69a9b0b145bb316647ce5b46ced548",
+        "wasm/packages/schema-json/src/compiler/schema-registry.js": "5d91cc48ba14fa8b42322c9bf7013de5cfd2f5c4a9c43793f63bf0b7c87d3dfe"
+      },
+      "stageSamples": [
+        {
+          "extractionMs": 23.124157999999994,
+          "registryNormalizationAndIdentityMs": 14.658026999999947,
+          "javascriptDeclarationMs": 0.5337139999999181,
+          "portableSchemaEmissionMs": 2.03302199999996,
+          "fastlySchemaEmissionMs": 1.3423119999999926
+        },
+        {
+          "extractionMs": 21.237967999999995,
+          "registryNormalizationAndIdentityMs": 6.035060000000044,
+          "javascriptDeclarationMs": 0.5326619999999593,
+          "portableSchemaEmissionMs": 2.04558099999997,
+          "fastlySchemaEmissionMs": 1.2335880000000543
+        },
+        {
+          "extractionMs": 21.537498999999997,
+          "registryNormalizationAndIdentityMs": 4.6714359999999715,
+          "javascriptDeclarationMs": 0.4399919999999611,
+          "portableSchemaEmissionMs": 9.600739999999973,
+          "fastlySchemaEmissionMs": 1.6613219999999274
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Registry scaling, not a before/after optimization; all IDs and validation remain.",
+    "Per-entry attribution is generated source, not additive compiler time, RSS or final Wasm bytes.",
+    "Stage timings exclude diagnostic module loading, source attribution and verification.",
+    "Worker and AssemblyScript peak RSS are separate process maxima, not guest live memory.",
+    "Fastly uses the injected ABI host; no deployed cold-start or linked-guest claim."
+  ],
+  "productionBase": "896289c034cc3bd618bd1142c46387dc7ab9d495"
+}

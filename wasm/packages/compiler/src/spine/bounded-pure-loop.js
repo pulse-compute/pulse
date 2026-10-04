@@ -8,7 +8,7 @@ function loadContract() {
     throw error;
   }
 }
-const { CANONICAL_PURE_LOOP_LIMITS } = loadContract();
+const { CANONICAL_PURE_LOOP_LIMITS, CANONICAL_READ_LOOP_CONTRACT } = loadContract();
 
 function unwrap(node) {
   while (node && (ts.isParenthesizedExpression(node) || ts.isAsExpression(node) || ts.isTypeAssertionExpression(node) || ts.isNonNullExpression(node))) node = node.expression;
@@ -30,10 +30,18 @@ function firstConjunct(node) {
 // extra application expressions after the counter reaches its cap.
 function inspectBoundedPureLoop(statement, options = {}) {
   const errors = [];
+  let loopDepth = 0;
+  let effectCount = 0;
+  let checkingHeader = false;
+  let activeProduct = 1;
+  let maxIterationProduct = 1;
+  const readBody = () => options.readLoop === true && loopDepth === 1 && !checkingHeader;
+  const protectedNames = new Set(options.readLoop ? [options.ctxName, ...(options.namespaceAliases || [])] : []);
   function fail(node, message) { errors.push({ node, message }); }
-  function expression(input, counters, mutation = true) {
-    const node = unwrap(input);
+  function expression(input, counters, mutation = true, effectRoot = false) {
+    let node = unwrap(input);
     if (!node) return;
+    if (readBody() && effectRoot && ts.isAwaitExpression(node)) node = unwrap(node.expression);
     if (ts.isIdentifier(node)) {
       if (node.text === options.ctxName) fail(node, 'Read context values before entering a pure loop.');
       return;
@@ -50,6 +58,44 @@ function inspectBoundedPureLoop(statement, options = {}) {
     }
     if (ts.isCallExpression(node)) {
       const target = unwrap(node.expression);
+      const pure = !checkingHeader && options.pureHelperForCall?.(node);
+      if (pure) {
+        if (activeProduct * (pure.maxIterationProduct || 1) > CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) fail(node, 'Pure helper exceeds the combined caller/callee iteration bound.');
+        if (node.questionDotToken || node.typeArguments?.length) fail(node, 'Pure loop calls require a static synchronous helper.');
+        for (const argument of node.arguments) expression(argument, counters, false);
+        return;
+      }
+      const helper = readBody() && options.helperForCall && options.helperForCall(node);
+      if (helper) {
+        if (!effectRoot) { fail(node, 'Read-loop helpers require a directly bound sequential call.'); return; }
+        effectCount += 1;
+        for (const argument of node.arguments) {
+          // Original-source JavaScript calls retain their explicit context input.
+          if (!named(argument, options.ctxName)) expression(argument, counters, false);
+        }
+        return;
+      }
+      const effect = readBody() && options.effectForCall && options.effectForCall(node);
+      if (effect) {
+        if (!effectRoot || !CANONICAL_READ_LOOP_CONTRACT.effectKinds.includes(effect.kind)) {
+          fail(node, 'Read loops admit only directly bound or discarded sequential s3.getText, kv.getVersioned, crypto.digestText, output.write and req.readTextChunk effects.'); return;
+        }
+        effectCount += 1;
+        for (const argument of node.arguments) {
+          // Package facades receive the context as their first argument.
+          if (!named(argument, options.ctxName)) expression(argument, counters, false);
+        }
+        // A direct KV namespace expression is also evaluated at the call site.
+        if (ts.isPropertyAccessExpression(target) && ts.isCallExpression(unwrap(target.expression))) {
+          for (const argument of unwrap(target.expression).arguments) expression(argument, counters, false);
+        }
+        return;
+      }
+      if (readBody() && ts.isPropertyAccessExpression(target) && named(target.expression, options.ctxName)
+        && ['decodeJson', 'encodeJson', 'text', 'json', 'response'].includes(target.name.text) && !node.questionDotToken && !target.questionDotToken) {
+        for (const argument of node.arguments) expression(argument, counters, mutation);
+        return;
+      }
       if (!ts.isPropertyAccessExpression(target) || target.name.text !== 'trim' || node.arguments.length || node.questionDotToken || target.questionDotToken) {
         fail(node, 'Pure loops admit only zero-argument string .trim() calls; effects, helpers and callbacks are separate contracts.'); return;
       }
@@ -59,12 +105,12 @@ function inspectBoundedPureLoop(statement, options = {}) {
       const assignment = node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment;
       const target = unwrap(node.left);
       if (assignment && !ts.isIdentifier(target) && !ts.isPropertyAccessExpression(target) && !ts.isElementAccessExpression(target)) fail(node, 'Destructuring assignment is outside the pure loop subset.');
-      if (assignment && (!mutation || [...counters].some(name => named(node.left, name)))) fail(node, 'Loop tests cannot mutate values, and loop counters cannot be assigned in the body.');
+      if (assignment && (!mutation || [...counters, ...protectedNames].some(name => named(node.left, name)))) fail(node, 'Loop tests cannot mutate values, and active counters or context/namespace aliases cannot be assigned in the body.');
       expression(node.left, counters, mutation); expression(node.right, counters, mutation); return;
     }
     if (ts.isPrefixUnaryExpression(node) || ts.isPostfixUnaryExpression(node)) {
       const update = node.operator === ts.SyntaxKind.PlusPlusToken || node.operator === ts.SyntaxKind.MinusMinusToken;
-      if (update && (!mutation || [...counters].some(name => named(node.operand, name)))) fail(node, 'Loop tests cannot mutate values, and loop counters cannot be updated in the body.');
+      if (update && (!mutation || [...counters, ...protectedNames].some(name => named(node.operand, name)))) fail(node, 'Loop tests cannot mutate values, and active counters or context/namespace aliases cannot be updated in the body.');
       expression(node.operand, counters, mutation); return;
     }
     if (ts.isConditionalExpression(node)) {
@@ -95,8 +141,8 @@ function inspectBoundedPureLoop(statement, options = {}) {
     if (ts.isVariableStatement(node)) {
       if (!(node.declarationList.flags & ts.NodeFlags.BlockScoped)) fail(node, 'Pure loop locals must use let or const.');
       for (const declaration of node.declarationList.declarations) {
-        if (!ts.isIdentifier(declaration.name) || counters.has(declaration.name.text)) fail(declaration, 'Loop locals require identifiers and cannot shadow an active counter.');
-        if (declaration.initializer) expression(declaration.initializer, counters);
+        if (!ts.isIdentifier(declaration.name) || counters.has(declaration.name.text) || protectedNames.has(declaration.name.text)) fail(declaration, 'Loop locals require identifiers and cannot shadow active counters or context/namespace aliases.');
+        if (declaration.initializer) expression(declaration.initializer, counters, true, readBody() && node.declarationList.declarations.length === 1);
       }
       return;
     }
@@ -104,7 +150,8 @@ function inspectBoundedPureLoop(statement, options = {}) {
       expression(node.expression, counters); body(node.thenStatement, counters, product);
       if (node.elseStatement) body(node.elseStatement, counters, product); return;
     }
-    if (ts.isExpressionStatement(node)) { expression(node.expression, counters); return; }
+    if (ts.isExpressionStatement(node)) { expression(node.expression, counters, true, readBody()); return; }
+    if ((readBody() || options.pureHelper === true) && ts.isReturnStatement(node)) { expression(node.expression, counters); return; }
     if (ts.isBreakStatement(node) || ts.isContinueStatement(node)) {
       if (node.label) fail(node, 'Pure loop break and continue must be unlabelled.');
       return;
@@ -113,6 +160,7 @@ function inspectBoundedPureLoop(statement, options = {}) {
     fail(node, 'Pure loop bodies accept locals, value assignments, if/else, nested bounded for, break and continue only.');
   }
   function loop(node, inherited, product) {
+    const isReadLoop = options.readLoop === true && loopDepth === 0;
     const list = node.initializer;
     const declaration = list && ts.isVariableDeclarationList(list) && list.declarations.length === 1 && list.declarations[0];
     if (!declaration || !(list.flags & ts.NodeFlags.Let) || !ts.isIdentifier(declaration.name) || !number(declaration.initializer, 0)) {
@@ -124,7 +172,7 @@ function inspectBoundedPureLoop(statement, options = {}) {
       fail(node, 'The first loop condition must be index < a literal iteration cap.'); return;
     }
     const maxIterations = Number(unwrap(bound.right).text);
-    if (!Number.isInteger(maxIterations) || maxIterations < 0 || maxIterations > CANONICAL_PURE_LOOP_LIMITS.maxIterations || product * Math.max(1, maxIterations) > CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) {
+    if (!Number.isInteger(maxIterations) || maxIterations < 0 || maxIterations > (isReadLoop ? CANONICAL_READ_LOOP_CONTRACT.maxIterations : CANONICAL_PURE_LOOP_LIMITS.maxIterations) || product * Math.max(1, maxIterations) > CANONICAL_PURE_LOOP_LIMITS.maxNestedIterations) {
       fail(node, 'The literal loop cap or nested iteration product exceeds the portable limit.'); return;
     }
     const increment = unwrap(node.incrementor);
@@ -132,14 +180,31 @@ function inspectBoundedPureLoop(statement, options = {}) {
       && !(ts.isBinaryExpression(increment) && increment.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken && named(increment.left, name) && number(increment.right, 1))) {
       fail(node, 'The loop increment must be index++ or index += 1.'); return;
     }
-    if (inherited.has(name)) fail(declaration, 'Nested loop counters cannot shadow active counters.');
+    if (inherited.has(name) || protectedNames.has(name)) fail(declaration, 'Nested loop counters cannot shadow active counters or context/namespace aliases.');
     const counters = new Set([...inherited, name]);
+    // Header tests retain the pure value contract, including no effects.
+    const previousHeader = checkingHeader;
+    checkingHeader = true;
     expression(node.condition, counters, false);
-    body(node.statement, counters, product * Math.max(1, maxIterations));
+    checkingHeader = previousHeader;
+    if (!options.headerOnly) {
+      loopDepth += 1;
+      const previousProduct = activeProduct;
+      activeProduct = product * Math.max(1, maxIterations);
+      maxIterationProduct = Math.max(maxIterationProduct, activeProduct);
+      body(node.statement, counters, activeProduct);
+      activeProduct = previousProduct;
+      loopDepth -= 1;
+    }
     return { name, maxIterations };
   }
   const result = loop(statement, new Set(), 1);
-  return { ...result, errors };
+  if (options.readLoop && !options.headerOnly && !effectCount) fail(statement, 'A bounded read loop requires at least one admitted sequential effect site.');
+  return { ...result, errors, effectCount, maxIterationProduct };
 }
 
-module.exports = { inspectBoundedPureLoop };
+function inspectBoundedReadLoop(statement, options = {}) {
+  return inspectBoundedPureLoop(statement, { ...options, readLoop: true });
+}
+
+module.exports = { inspectBoundedPureLoop, inspectBoundedReadLoop };

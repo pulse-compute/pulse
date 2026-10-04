@@ -1,0 +1,5 @@
+Error: stop
+    at Object.redactRuntimeError (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/host-runtime/src/runtime/canonical-api-runtime.js:273:21)
+    at executeCanonicalNativeInvocation (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/host-runtime/src/runtime/canonical-native-host.js:1243:41)
+    at async Object.executeCanonicalNativeModule (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/host-runtime/src/runtime/canonical-native-host.js:1267:12)
+    at async main (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:64:17) undefined

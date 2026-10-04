@@ -2,6 +2,8 @@
 
 const { createStructuredBodyReader, normalizeBodyLimit } = require('./body.js');
 const { normalizeFetchRequest } = require('./fetch.js');
+const { isIncomingBody } = require('./incoming-body.js');
+const { PulseRuntimeContractError } = require('./errors.js');
 const { decodeSchemaText, encodeSchemaValue, requireExplicitSchemaId, strictSchemaPolicy } = require('./schema.js');
 const {
   cloneKvValue,
@@ -20,6 +22,10 @@ const {
   projectFetchResponse
 } = require('./response.js');
 
+// Router entries create new contexts but share one effect execution. Keep fetch
+// numbering with that execution, without retaining completed requests.
+const fetchSequences = new WeakMap();
+
 function headersToPairs(headers) {
   const pairs = [];
   for (const [name, value] of headers.entries()) pairs.push(Object.freeze([name, value]));
@@ -35,6 +41,7 @@ function normalizeRequestHeaderPairs(headers, fallback) {
 }
 
 function createRequestView(request, requestHeaders, effectExecution, options = {}) {
+  options.incomingBody?.bindInvalidation(error => effectExecution.invalidateAdmission(error));
   const url = new URL(request.url);
   const headers = normalizeRequestHeaderPairs(requestHeaders, request.headers);
   const body = createStructuredBodyReader(request, {
@@ -52,16 +59,28 @@ function createRequestView(request, requestHeaders, effectExecution, options = {
     url: request.url,
     path: url.pathname || '/',
     headers,
+    body(...args) {
+      if (args.length) throw new TypeError('ctx.req.body takes no arguments.');
+      if (!options.incomingBody) throw new PulseRuntimeContractError(
+        'PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'Incoming body forwarding requires the configured Node JavaScript provider.');
+      return options.incomingBody.marker();
+    },
+    readTextChunk(...args) {
+      if (args.length) throw new TypeError('ctx.req.readTextChunk takes no arguments.');
+      return effectExecution.dispatch({ kind: 'output.readTextChunk', providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform', parallelEligible: false });
+    },
     header(name) {
       const lower = String(name).toLowerCase();
       const match = headers.find(([header]) => header.toLowerCase() === lower);
       return match ? match[1] : undefined;
     },
     text() {
+      options.incomingBody?.structured();
       if (!textEffect) textEffect = effectExecution.local('request.body.text', () => body.text());
       return textEffect;
     },
     json(schemaId) {
+      options.incomingBody?.structured();
       if (schemaId === undefined && !strictSchemaPolicy(options)) {
         if (!jsonEffect) jsonEffect = effectExecution.local('request.body.json', () => body.json());
         return jsonEffect;
@@ -145,7 +164,6 @@ function createContext(frame) {
     ...(frame.executionOptions || {}),
     signal: frame.signal
   });
-  let fetchSequence = 0;
   const log = createPulseLogger({
     reporting: options.reporting,
     redact(message) { return effects.redactValue(message); },
@@ -169,13 +187,24 @@ function createContext(frame) {
     state,
     log,
     fetch(url, init) {
-      fetchSequence += 1;
+      const fetchSequence = (fetchSequences.get(effects) || 0) + 1;
+      fetchSequences.set(effects, fetchSequence);
       const effectId = `fetch-${fetchSequence}`;
-      const fetchRequest = normalizeFetchRequest(url, init, {
-        ...options,
-        operationId: `fetch-request:${effectId}`,
-        effectId
-      });
+      let fetchRequest;
+      try {
+        fetchRequest = normalizeFetchRequest(url, init, {
+          ...options,
+          operationId: `fetch-request:${effectId}`,
+          effectId
+        });
+        if (fetchRequest.init.bodyMode === 'incoming-request-v1') {
+          if (!options.incomingBody) throw new PulseRuntimeContractError('PULSE_REQUEST_BODY_OWNERSHIP', 'Incoming body belongs to another execution.');
+          options.incomingBody.claim(fetchRequest.init.body, fetchRequest.init);
+        }
+      } catch (error) {
+        if (isIncomingBody(init?.body)) effects.invalidateAdmission(error);
+        throw error;
+      }
       const fetchEffect = effects.dispatch({
         id: effectId,
         kind: 'fetch',
@@ -266,6 +295,26 @@ function createContext(frame) {
   if (eventContext) {
     ctx.event = frame.event;
   } else {
+    const output = () => {
+      if (!options.outputExecution) throw new PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires configured Node HTTP execution.');
+      return options.outputExecution;
+    };
+    ctx.output = Object.freeze({
+      start(...args) {
+        if (args.length > 1) throw new TypeError('output.start accepts one options object.');
+        output().assertEffect();
+        return effects.dispatch({ kind: 'output.start', providerKind: 'output', operation: 'start', capability: 'response.output', parallelEligible: false, argument0: args[0] });
+      },
+      write(...args) {
+        if (args.length !== 1) throw new TypeError('output.write requires one text chunk.');
+        output().assertEffect();
+        return effects.dispatch({ kind: 'output.write', providerKind: 'output', operation: 'write', capability: 'response.output', parallelEligible: false, argument0: args[0] });
+      },
+      close(...args) {
+        if (args.length) throw new TypeError('output.close accepts no arguments.');
+        return output().close(init => createTextResult('', init));
+      }
+    });
     ctx.json = (value, descriptor) => createJsonResult(value, descriptor, options);
     ctx.text = (value, responseOptions) => createTextResult(value, responseOptions);
     ctx.response = (input) => createResponseResult(input);

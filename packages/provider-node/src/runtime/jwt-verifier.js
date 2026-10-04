@@ -2,12 +2,15 @@
 
 const {
   CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION,
+  CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION, CRYPTO_RS256_GUEST_LINKED_REALIZATION,
   CRYPTO_ES256_GUEST_LINKED_REALIZATION,
   CRYPTO_GUEST_SOURCE_IMPLEMENTATION
 } = require('@pulse-compute/wasm-contracts/crypto/contracts');
 
 const NODE_NATIVE_JWT_VERIFIER_VERSION = 'pulse.node-native-jwt-verifier.v1';
 const NODE_NATIVE_JWT_REALIZATIONS = Object.freeze({
+  'HMAC-SHA256': Object.freeze({ algorithm: 'HMAC-SHA256', realization: 'guest-source:pulse-hmac-as',
+    implementation: CRYPTO_GUEST_SOURCE_IMPLEMENTATION, guestUnitRequired: false }),
   HS256: Object.freeze({
     algorithm: 'HS256',
     realization: 'guest-source:pulse-hmac-as',
@@ -18,6 +21,12 @@ const NODE_NATIVE_JWT_REALIZATIONS = Object.freeze({
     algorithm: 'ES256',
     realization: CRYPTO_ES256_GUEST_LINKED_REALIZATION,
     implementation: CRYPTO_ES256_GUEST_LINKED_IMPLEMENTATION,
+    guestUnitRequired: true
+  }),
+  RS256: Object.freeze({
+    algorithm: 'RS256',
+    realization: CRYPTO_RS256_GUEST_LINKED_REALIZATION,
+    implementation: CRYPTO_RS256_GUEST_LINKED_IMPLEMENTATION,
     guestUnitRequired: true
   })
 });
@@ -122,10 +131,10 @@ function keyArtifact(executionOptions, artifactId, jwtProvider) {
   const data = artifact && dataRecord(artifact.get('data'));
   if (
     !artifact
-    || artifact.get('version') !== 'pulse.jwt-es256-key-artifact.v1'
+    || !['pulse.jwt-es256-key-artifact.v1', 'pulse.jwt-rs256-key-artifact.v1'].includes(artifact.get('version'))
     || artifact.get('contractId') !== 'pulse.jwt'
     || artifact.get('package') !== '@pulse-compute/jwt'
-    || artifact.get('kind') !== 'jwt-es256-static-public-key'
+    || !['jwt-es256-static-public-key', 'jwt-rs256-static-public-key'].includes(artifact.get('kind'))
     || !data
   ) {
     throw jwtProvider.jwtError('PULSE_JWT_KEY_INVALID', {
@@ -205,11 +214,23 @@ function createNodeNativeJwtVerify(baseOptions = {}) {
   return async function verifyNodeNativeJwt(effect, executionOptions = {}) {
     const jwtProvider = await loadJwtProvider();
     requestActive(executionOptions, jwtProvider);
-    const input = effectInput(effect, executionOptions, jwtProvider);
+    const signing = effect.kind === 'jwt.sign';
+    let input;
+    if (signing) {
+      const resource = dataRecord(effect.resource), payload = dataRecord(effect.payload);
+      if (effect.contractId !== 'pulse.jwt' || effect.package !== '@pulse-compute/jwt'
+        || effect.operation !== 'sign' || effect.capability !== 'jwt.sign'
+        || !resource || resource.size !== 3 || resource.get('keyType') !== 'secret'
+        || resource.get('keyArtifactId') !== null || !payload || ![3, 4].includes(payload.size) || [...payload.keys()].some(name => !['claims', 'algorithm', 'expiresInSeconds', 'kid'].includes(name))) {
+        throw jwtProvider.jwtError('PULSE_JWT_OPERATION_FAILED', { category: 'sign-input' });
+      }
+      input = { claims: payload.get('claims'), options: { algorithm: payload.get('algorithm'),
+        expiresInSeconds: payload.get('expiresInSeconds'), key: { type: 'secret', binding: resource.get('secretBinding') }, ...(payload.has('kid') ? { kid: payload.get('kid') } : {}) } };
+    } else input = effectInput(effect, executionOptions, jwtProvider);
     const selectedCrypto = requireCryptoVerifier(
       executionOptions,
       jwtProvider,
-      input.options.algorithms[0]
+      signing ? (input.options.algorithm === 'HS256' ? 'HMAC-SHA256' : input.options.algorithm) : input.options.algorithms[0]
     );
     const execution = dataRecord(executionOptions);
     const executionClock = execution && execution.get('captureJwtWallClock');
@@ -246,7 +267,7 @@ function createNodeNativeJwtVerify(baseOptions = {}) {
         return result;
       };
     }
-    const result = await jwtProvider.verifyJwtWithCrypto(
+    const result = await (signing ? jwtProvider.signJwtWithCrypto : jwtProvider.verifyJwtWithCrypto)(
       input,
       Object.freeze(host),
       selectedCrypto

@@ -1,6 +1,6 @@
 {
   "name": "@pulse-compute/wasm-compiler",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.6",
   "license": "Apache-2.0",
   "description": "PulseWasm compiler package inside the Pulse monorepo.",
   "type": "commonjs",
@@ -23,9 +23,7 @@
     "@pulse-compute/wasm-library-kit": "workspace:*",
     "@pulse-compute/wasm-host-runtime": "workspace:*",
     "@pulse-compute/wasm-schema-json": "workspace:*",
-    "@pulse-compute/wasm-runtime-core-as": "workspace:*",
-    "@pulse-compute/provider-node": "workspace:*",
-    "@pulse-compute/provider-fastly": "workspace:*"
+    "@pulse-compute/wasm-runtime-core-as": "workspace:*"
   },
   "engines": {
     "node": "^22.14.0 || ^24.0.0"
@@ -61,8 +59,12 @@
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "wasm/packages/compiler"
   },
-  "homepage": "https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/",
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.6/packages/implementation-packages/",
   "bugs": {
     "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "devDependencies": {
+    "@pulse-compute/provider-node": "workspace:*",
+    "@pulse-compute/provider-fastly": "workspace:*"
   }
 }

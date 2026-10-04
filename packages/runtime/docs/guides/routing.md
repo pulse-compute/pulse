@@ -1,6 +1,6 @@
 # Static Router authoring
 
-Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.5/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.5/reference/compatibility-matrix/).
+Use `Router` when an application has several method/path entry points or needs compile-time middleware. It is a static authoring marker from `@pulse-compute/runtime`, not a JavaScript runtime dispatcher. The shared async/static restrictions are defined in [Managed handler TypeScript and JavaScript](https://pulsecompute.io/v1.0.0-beta.6/reference/handler-authoring/); target claims live in the [compatibility matrix](https://pulsecompute.io/v1.0.0-beta.6/reference/compatibility-matrix/).
 
 <!-- pulse-doc-source: examples/09-router-lowering/src/index.ts -->
 ```ts
@@ -105,6 +105,43 @@ acceptance only; they do not implement Catalog persistence or authorization.
 node wasm/scripts/run-wasm-tests.cjs --task catalog-router-parity --no-report
 ```
 
+## Selected groups
+
+Mount a group once after earlier selectors have set request-local state:
+
+```ts
+app.mount('/api', collection, { state: 'read-family', equals: 'collection' })
+```
+
+The optional third argument is an inline object containing exactly `state` and
+`equals`, both string literals. At this mount's ordered position, the request
+path must match and `ctx.state.get('read-family') === 'collection'` must hold.
+An absent or unequal value skips every child owner and effect directly to the
+parent continuation. Selection is not authorization; keep authorization in its
+existing owner.
+
+A match enters the child once. Child `next()` still advances to the next sibling,
+and exhaustion joins the parent continuation once. Terminal responses and ordered
+local/parent error handling keep their existing semantics. A suspended effect
+resumes inside the child; changing selection state there does not reevaluate the
+mount. Method, path and parameter scoping are unchanged. An empty selected child
+continues immediately.
+
+This form is supported by live JavaScript and canonical Native compilation.
+Eligibility does not accept callbacks, calls, getters, spreads, computed keys,
+descriptor references or dynamic values. Unsupported source receives
+`PULSEWASM_UNSUPPORTED_MOUNT_ELIGIBILITY`; historical table/harness emitters also
+reject selected mounts rather than ignoring them. Two-argument mounts are
+unchanged. The group remains one placement with one existing parent continuation.
+
+The `router-selected-groups` task checks exclusion, suspension after a state
+change, terminal/error paths, nested parameters and one common tail on live
+JavaScript and compiled Node/Fastly Native (Fastly uses its local ABI mock host).
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task router-selected-groups --no-report
+```
+
 ## `next()` is a terminal transfer
 
 `next()` is not an onion-style callback. It is a compiler-visible control transfer:
@@ -156,6 +193,11 @@ identical messages, stacks, causes or detail fields across providers.
 | Schema data | `PULSE_SCHEMA_DECODE`, `PULSE_SCHEMA_ENCODE`, `PULSE_SCHEMA_JSON_MALFORMED`, `PULSE_SCHEMA_CONTENT_TYPE`, `PULSE_BODY_TOO_LARGE` |
 | JWT input and verification | `PULSE_JWT_TOKEN_REQUIRED`, `PULSE_JWT_BEARER_INVALID`, `PULSE_JWT_MALFORMED`, `PULSE_JWT_LIMIT_EXCEEDED`, `PULSE_JWT_ALGORITHM_NOT_ALLOWED`, `PULSE_JWT_KEY_INVALID`, `PULSE_JWT_SIGNATURE_INVALID` |
 | JWT claims | `PULSE_JWT_CLOCK_INVALID`, `PULSE_JWT_CLAIMS_INVALID`, `PULSE_JWT_CLAIMS_SCHEMA_INVALID` |
+
+These admitted `error.code` values remain stable through redaction, including
+when a secret, KV key or array index overlaps their spelling. Messages, stacks,
+causes, details and arbitrary provider error codes remain subject to redaction.
+This preserves the existing recovery catalog; it does not admit new failures.
 
 Recovery moves forward in registration order, including through mounted
 routers. A failed handler never resumes. An error handler can return a response,

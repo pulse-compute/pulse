@@ -17,10 +17,13 @@ function nodeTask(file, options = {}) {
 }
 
 function vitestTask(files, options = {}) {
-  const vitest = path.join(path.dirname(require.resolve('vitest')), 'vitest.mjs');
   return Object.freeze({
     command: node,
-    args: [vitest, 'run', '--root', path.resolve(wasmRoot, '..'), ...files],
+    // Release preflight reads profile metadata before dependencies are installed.
+    get args() {
+      const vitest = path.join(path.dirname(require.resolve('vitest')), 'vitest.mjs');
+      return [vitest, 'run', '--root', path.resolve(wasmRoot, '..'), ...files];
+    },
     timeoutMs: options.timeoutMs || 120000,
     evidence: options.evidence || 'javascript',
     description: options.description || files.join(', '),
@@ -29,6 +32,46 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'guest-json-roundtrip': nodeTask('test/release/b6-04/guest-json.cjs', {
+    description: 'Guest v2 manifest/plan JSON key order, exact trust values and ordered arrays'
+  }),
+  'beta6-upgrade': nodeTask('test/release/b6-04/upgrade.cjs', {
+    evidence: 'external', timeoutMs: 900000, description: 'B6-04 published beta.5 replacement, populated guest/cache identity and Native fail-closed evidence'
+  }),
+  'beta6-measurements': nodeTask('test/release/b6-04/measure.cjs', {
+    evidence: 'external', timeoutMs: 2400000, description: 'B6-04 pinned integration control comparison: default and opt-in Native modes'
+  }),
+  'pure-helper-vocabulary': nodeTask('test/lowering/assert-pure-helper-vocabulary.cjs', {
+    evidence: 'native', description: 'Helper shape/operation characterization and independent string-index proof', timeoutMs: 30000
+  }),
+  'pure-string-index': nodeTask('test/lowering/assert-pure-string-index.cjs', {
+    evidence: 'native', description: 'UTF-16 pure-helper indexing across JavaScript and both Native providers', timeoutMs: 180000
+  }),
+  'pure-field-projection': nodeTask('test/lowering/assert-pure-field-projection.cjs', {
+    evidence: 'native', description: 'Proven record-spread scalar field facts and independent alias/shape rejection', timeoutMs: 180000
+  }),
+  'pure-guarded-arguments': nodeTask('test/lowering/assert-pure-guarded-arguments.cjs', {
+    evidence: 'native', description: 'Dominating optional scalar guards, branch joins and independent plan proof', timeoutMs: 180000
+  }),
+  'pure-argument-helpers': nodeTask('test/lowering/assert-pure-argument-helpers.cjs', {
+    evidence: 'native', description: 'Typed KV and scalar projection provenance, parity and independent tamper rejection', timeoutMs: 180000
+  }),
+  'pure-loop-helpers': nodeTask('test/lowering/assert-pure-loop-helpers.cjs', {
+    evidence: 'native', description: 'Pure validators in bounded caller loops, combined limits and invocation isolation', timeoutMs: 180000
+  }),
+  'pure-record-helpers': nodeTask('test/lowering/assert-pure-record-helpers.cjs', {
+    evidence: 'native', description: 'Read-only structural pure helper parity, ownership and allocation proof', timeoutMs: 180000
+  }),
+  'pure-source-helpers': nodeTask('test/lowering/assert-pure-source-helpers.cjs', {
+    evidence: 'native', timeoutMs: 120000, description: 'PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans'
+  }),
+  'pure-helper-contract': nodeTask('test/lowering/assert-pure-helper-contract.cjs', {
+    description: 'Pure-helper source oracles and scalar/record admission'
+  }),
+  'array-demand-n01': nodeTask('test/runtime/compiler-efficiency/n01/array-demand.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'N-01 bounded string/flat-record array demand matrix; no support activation'
+  }),
   'suite-shape': nodeTask('test/suite/assert-suite-shape.cjs', {
     description: 'profile separation, uniqueness, and timeout budgets'
   }),
@@ -134,6 +177,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native'
   }),
+  's3-body-read': nodeTask('test/s3/assert-body-read.cjs', {
+    timeoutMs: 60000,
+    description: 'AST-02A/C Node and Fastly Native bounded binary S3 response ownership and HTTP subset'
+  }),
   's3-native-read': nodeTask('test/s3/run-native-read-acceptance.cjs', {
     timeoutMs: 180000,
     description: 'Exact HEAD/GET failure parity through Node Native/JavaScript and Fastly Native'
@@ -148,6 +195,60 @@ const tasks = Object.freeze({
   }),
   'crypto-digest-text-contract': nodeTask('test/crypto/assert-digest-text-contract.cjs', {
     description: 'Exact-text digest admission, bounded failures, unavailable providers and cancellation'
+  }),
+  'jwt-rs256': nodeTask('test/jwt/assert-jwt-rs256.cjs', {
+    timeoutMs: 600000, evidence: 'conformance',
+    description: 'RS256 issuance and verification through all four targets and normal CLI builds'
+  }),
+  'jwt-installed-workflow': nodeTask('test/jwt/assert-jwt-installed-workflow.cjs', {
+    timeoutMs: 600000, evidence: 'external',
+    description: 'JWT-01 exact installed signing/verification, rotation, cleanup and composition eligibility'
+  }),
+  'str02-installed': nodeTask('test/runtime/str02-installed.cjs', {
+    timeoutMs: 300000, evidence: 'external',
+    description: 'STR-02A exact installed Node JavaScript forwarding workflows and real incremental HTTP'
+  }),
+  'str02b-installed': nodeTask('test/runtime/str02-installed.cjs', {
+    args:['--native'], timeoutMs:300000, evidence:'external',
+    description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
+  }),
+  'str02c-fastly-feasibility': nodeTask('test/provider/assert-fastly-incoming-body-feasibility.cjs', {
+    timeoutMs: 90000, evidence: 'external',
+    description: 'STR-02C pinned Viceroy ABI observations; not Pulse forwarding integration or live platform qualification'
+  }),
+  'str03a-generated-output': nodeTask('test/runtime/str03a-generated-output.cjs', {
+    timeoutMs: 120000, evidence: 'native',
+    description: 'STR-03A generated-output Native/JavaScript lowering, demand, cancellation, finite limits and normal build/dev HTTP'
+  }),
+  'str03c-bounded-transforms': nodeTask('test/runtime/str03c-bounded-transforms.cjs', {
+    description: 'Finite UTF-8 transform Native/JavaScript ownership, bounds, demand and HTTP qualification',
+    timeoutMs: 120000, evidence: 'native'
+  }),
+  'node-launcher': nodeTask('test/runtime/assert-node-launcher.cjs', { timeoutMs: 180000, description: 'NODE-01 public Node launcher, budgets, readiness, drain and restart' }),
+  'node01-installed': nodeTask('test/runtime/node01-installed.cjs', { timeoutMs: 300000, description: 'NODE-01 exact installed public launcher acceptance' }),
+  'str03b-installed': nodeTask('test/runtime/str03b-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external',
+    description: 'STR-03B exact installed Node Native/JavaScript output, CLI, real sockets and controlled writer qualification'
+  }),
+  'str02b-node-native': nodeTask('test/runtime/str02b-node-native.cjs', {
+    timeoutMs: 90000, evidence: 'native',
+    description: 'STR-02B compiled Native forwarding, constant guest memory, HTTP cancellation and ticket fencing'
+  }),
+  'jwt-es256-signing': nodeTask('test/jwt/assert-jwt-es256-signing.cjs', {
+    timeoutMs: 180000, evidence: 'conformance',
+    description: 'ES256 private-key signing, independent verification, CLI build and failures on four targets'
+  }),
+  'crypto-rs256': nodeTask('test/crypto/assert-rs256.cjs', {
+    timeoutMs: 180000, evidence: 'unit',
+    description: 'RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup'
+  }),
+  'crypto-es256-signing': nodeTask('test/crypto/assert-es256-signing.cjs', {
+    timeoutMs: 180000, evidence: 'unit',
+    description: 'RFC6979 signing vector, frame rejection and private material cleanup'
+  }),
+  'jwt-signing': nodeTask('test/jwt/assert-jwt-signing.cjs', {
+    timeoutMs: 180000, evidence: 'conformance',
+    description: 'Bounded HS256 issuance, independent verification, failures and redaction on four targets'
   }),
   'crypto-digest-text-conformance': nodeTask('test/crypto/assert-digest-text-conformance.cjs', {
     timeoutMs: 180000,
@@ -193,6 +294,10 @@ const tasks = Object.freeze({
     evidence: 'javascript',
     timeoutMs: 180000,
     description: 'JWT source admission, provider requirements and HS256/ES256 consumer execution'
+  }),
+  'arc01-installed': nodeTask('test/provider/arc01-installed.cjs', {
+    timeoutMs: 360000, evidence: 'external',
+    description: 'ARC-01 exact compiler-only, Node-only, Fastly-only and bundled CLI package isolation'
   }),
   'provider-toolchain': nodeTask('test/contracts/assert-provider-toolchain-boundary.cjs', {
     evidence: 'unit',
@@ -354,6 +459,12 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'pulse.schema registry and semantic trace contracts'
   }),
+  // Fast selection only; full profiles already exercise this proof in schema-codecs.
+  'schema-codecs-smoke': nodeTask('test/contracts/assert-schema-codecs-smoke.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 60000,
+    description: 'one-compile schema smoke with strict boundaries and cross-target parity'
+  }),
   'schema-codecs': nodeTask('test/contracts/assert-schema-codecs.cjs', {
     evidence: 'conformance',
     timeoutMs: 180000,
@@ -396,9 +507,21 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'Node/Fastly Native/JavaScript semantic parity and target integrity'
   }),
+  'ast02d-installed': nodeTask('test/assets/ast02d-installed.cjs', { timeoutMs: 300000, description: 'AST-02D isolated installed Native embedded blobs on Node and Fastly ABI fixtures' }),
+  'assets-native-embedded': nodeTask('test/assets/assert-native-embedded.cjs', { timeoutMs: 90000, description: 'AST-02D Native embedded manifest admission and binary HTTP semantics' }),
+  'ast02b-installed': nodeTask('test/assets/ast02b-installed.cjs', {
+    timeoutMs: 180000, evidence: 'external',
+    description: 'Isolated exact-tarball embedded Assets manifest, HTTP and type acceptance'
+  }),
+  'ast01-installed': nodeTask('test/assets/ast01-installed.cjs', {
+    timeoutMs: 180000, evidence: 'external',
+    description: 'AST-01 exact Assets/S3 tarball dependency, public helper and signature compatibility'
+  }),
   'assets-javascript-runtime': vitestTask([
+    path.join(wasmRoot, '..', 'packages/assets/test/sigv4.test.ts', 'packages/assets/test/embedded.test.ts'),
     path.join(wasmRoot, '..', 'packages/assets/test/javascript-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/provider-runtime.test.ts'),
+    path.join(wasmRoot, '..', 'packages/jwt/test/sign.test.ts'),
     path.join(wasmRoot, '..', 'packages/runtime/test/package-runtime.test.ts')
   ], {
     evidence: 'javascript',
@@ -423,6 +546,152 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'literal-capped pure loops, string trim, target parity and pre-write failure containment'
   }),
+  'bounded-read-loops': nodeTask('test/lowering/assert-bounded-read-loops.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'bounded read loop admission, target parity, invocation lifecycle, cumulative budgets and Native memory containment'
+  }),
+  'bounded-loop-helpers': nodeTask('test/lowering/assert-loop-helpers.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 180000,
+    description: 'read-only shared helpers in bounded loops, frame reset, target parity and continuation isolation'
+  }),
+  'compiler-efficiency-p02': nodeTask('test/runtime/compiler-efficiency/p02-memory-trace.cjs', {
+    evidence: 'native',
+    timeoutMs: 300000,
+    description: 'S01 synthetic request memory, isolated compiler RSS, generated-source and optimized-Wasm attribution'
+  }),
+  'compiler-phases-o03': nodeTask('test/runtime/compiler-efficiency/o03-compiler-phases.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'O-03 serial compiler phase CPU/wall/RSS attribution with exact production Wasm parity'
+  }),
+  'copy-chain-o04': nodeTask('test/runtime/compiler-efficiency/o04-copy-chain.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'O-04 schema copy-chain allocation attribution and owned-string parser reproducer'
+  }),
+  'parser-copy-o05': nodeTask('test/runtime/compiler-efficiency/o05-parser-copy.cjs', {
+    evidence: 'external',
+    timeoutMs: 600000,
+    description: 'O-05 paired parser, schema, ownership, charge and copy-removal evidence'
+  }),
+  'memory-qualification-o06': nodeTask('test/runtime/compiler-efficiency/o06-memory-qualification.cjs', {
+    evidence: 'external',
+    timeoutMs: 1200000,
+    description: 'O-06 independent builds and alternating fresh-process memory/runtime qualification'
+  }),
+  'effect-retention-mem02': nodeTask('test/runtime/compiler-efficiency/mem02-effect-retention.cjs', {
+    evidence: 'external',
+    timeoutMs: 120000,
+    description: 'MEM02 effect and continuation retention, weak reachability, lifecycle and request-disposal evidence'
+  }),
+  'fastly-kv-quote-reuse-mem12': nodeTask('test/provider/assert-fastly-read-temporaries-mem11.cjs', {
+    args: ['--quote-reuse'], evidence: 'external', timeoutMs: 1200000,
+    description: 'MEM12 paired Fastly KV quoting allocation and direct Viceroy evidence'
+  }),
+  'fastly-read-temporaries-mem11': nodeTask('test/provider/assert-fastly-read-temporaries-mem11.cjs', {
+    evidence: 'external', timeoutMs: 1200000,
+    description: 'MEM11 paired Fastly read allocation attribution and direct Viceroy regression evidence'
+  }),
+  'fastly-allocator-mem10': nodeTask('test/provider/assert-fastly-allocator-mem10.cjs', {
+    evidence: 'external',
+    timeoutMs: 1200000,
+    description: 'MEM10 uninstrumented Fastly allocator build, capacity and direct Viceroy evidence'
+  }),
+  'payload-retention-mem08': nodeTask('test/runtime/compiler-efficiency/mem08-payload-retention.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'MEM08 Node payload heap snapshots and Fastly allocator/root retention evidence'
+  }),
+  'compiler-efficiency-p03': nodeTask('test/runtime/compiler-efficiency/p03-parity-stress.cjs', {
+    evidence: 'conformance',
+    timeoutMs: 300000,
+    description: 'S02 frozen synthetic results, effect order, continuation and budget oracles across Native targets'
+  }),
+  'compiler-handler-boundary-b01': nodeTask('test/runtime/compiler-efficiency/b01-handler-boundary.cjs', {
+    evidence: 'external',
+    timeoutMs: 120000,
+    description: 'B01/B02 Router-to-Native ownership and 1/8/32-handler boundary controls'
+  }),
+  'compiler-handler-cost-b02': nodeTask('test/runtime/compiler-efficiency/b02-handler-cost.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'B02 paired terminal-route structure, compile cost and exact execution/budget evidence against a restored base checkout'
+  }),
+  'compiler-handler-functions-b03': nodeTask('test/runtime/compiler-efficiency/b03-handler-functions.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'B03 final-Wasm handler ownership, 1/8/32 scaling, serial compile and isolated cold-load proof under default and bounded-size modes'
+  }),
+  'middleware-sharing-mw01': nodeTask('test/runtime/compiler-efficiency/mw01-middleware.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'MW-01 tiny effectful middleware sharing, scoped admission, retained Wasm and terminal-next proof'
+  }),
+  'middleware-sharing-mw02': nodeTask('test/runtime/compiler-efficiency/mw02-middleware.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'MW-02 shared time/digest middleware with bounded pure loops, schema values and retained Wasm proof'
+  }),
+  'shared-stage-o19': nodeTask('test/runtime/compiler-efficiency/o19-production-stage.cjs', {
+    timeoutMs: 180000,
+    description: 'O-19 production stage ownership, fallback, multiple families and cross-target execution'
+  }),
+  'reusable-stage-o18': nodeTask('test/runtime/compiler-efficiency/o18-reusable-stage.cjs', {
+    evidence: 'external',
+    timeoutMs: 360000,
+    description: 'O-18 paired 1/2/16 production shared-stage, final-Wasm attribution, re-entry and runtime semantics'
+  }),
+  'shared-history-helper-o25': nodeTask('test/runtime/compiler-efficiency/o25-helper-unblocked.cjs', {
+    evidence: 'external',
+    timeoutMs: 180000,
+    description: 'O-25 retained Native history helper at 1/2/16 callers, final-Wasm attribution and Native/JavaScript semantics'
+  }),
+  'compiler-schema-cost-sc01': nodeTask('test/runtime/compiler-efficiency/sc01-schema-cost.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'SC01 serial 1/8/32-schema compile costs, stage attribution and optimized unreferenced-ID dispatch proof'
+  }),
+  'compiler-generated-census-gen01': nodeTask('test/runtime/compiler-efficiency/gen01-census.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'GEN01 complete generated-source partition and isolated Fastly compiler/Wasm costs across independent schema, route and effect axes'
+  }),
+  'generated-source-census-o07': nodeTask('test/runtime/compiler-efficiency/o07-generated-source.cjs', {
+    evidence: 'external',
+    timeoutMs: 120000,
+    description: 'O-07 current generated-source owner, declaration, family and effect-site census without an optimizer compile'
+  }),
+  'fastly-driver-qualification-o11': nodeTask('test/runtime/compiler-efficiency/o11-driver-qualification.cjs', {
+    evidence: 'external', timeoutMs: 900000,
+    description: 'O11 serial paired default-profile driver behavior, final boundaries, compiler resources and runtime qualification (Linux/Python3)'
+  }),
+  'fastly-driver-factoring-o10': nodeTask('test/runtime/compiler-efficiency/o10-driver-factoring.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'O10 production-byte-verified shared Fastly settlement body and unchanged non-error control'
+  }),
+  'fastly-driver-behavior-o09': nodeTask('test/runtime/compiler-efficiency/o09-driver-behavior.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'O09 Fastly error driver settlement, ticket freshness and error-priority fixture'
+  }),
+  'optimized-wasm-census-o08': nodeTask('test/runtime/compiler-efficiency/o08-wasm-census.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'O-08 optimized code/data, function and direct-call census with byte-exact names companions and matched Fastly error-driver controls'
+  }),
+  'compiler-retention-cost-t01': nodeTask('test/runtime/compiler-efficiency/t01-retention-cost.cjs', {
+    evidence: 'external',
+    timeoutMs: 300000,
+    description: 'T01 serial retention batching cost and byte-exact optimized Wasm comparisons'
+  }),
+  'compiler-guest-link-evidence': nodeTask('test/runtime/compiler-efficiency/guest-link-evidence.cjs', {
+    evidence: 'external', timeoutMs: 300000,
+    description: 'opt-in guest-linked JWT startup, execution, memory observations and audit identity evidence'
+  }),
+  'compiler-bounded-merging': nodeTask('test/runtime/compiler-efficiency/bounded-merging.cjs', {
+    evidence: 'external',
+    timeoutMs: 600000,
+    description: 'opt-in bounded Binaryen merging proof: serial cold builds, function shape, exact semantic parity and execution costs'
+  }),
   'logging-lowering': nodeTask('test/lowering/assert-logging-lowering.cjs', {
     evidence: 'native',
     timeoutMs: 120000,
@@ -432,6 +701,9 @@ const tasks = Object.freeze({
     evidence: 'native',
     timeoutMs: 180000,
     description: 'mounted Router topology and continuation lowering'
+  }),
+  'router-selected-groups': nodeTask('test/lowering/assert-router-selected-groups.cjs', {
+    evidence: 'native', description: 'Static selected mounts: exclusion, suspension, errors and native continuation edges', timeoutMs: 180000
   }),
   'canonical-router-terminal-middleware': nodeTask('test/lowering/assert-canonical-router-terminal-middleware.cjs', {
     evidence: 'native',
@@ -562,6 +834,18 @@ const tasks = Object.freeze({
     evidence: 'native',
     description: 'I6 reachable managed-handler effects, package operations, exact provider requirements, and selected Node execution'
   }),
+  'fastly-entities-native-workflow': nodeTask('test/provider/assert-fastly-entities-native-workflow.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'ordinary Fastly Native Entities lifecycle and exact emitted artifact execution; optional explicit Viceroy replay'
+  }),
+  'entities-hardening': nodeTask('test/entities/assert-entities-hardening.cjs', {
+    evidence: 'native', timeoutMs: 240000,
+    description: 'ordinary four-mode Entities nested schemas, failures, selection, completion, bounds, redaction and honest Native eligibility'
+  }),
+  'entities-node-native-workflow': nodeTask('test/entities/assert-entities-node-native-workflow.cjs', {
+    evidence: 'native', timeoutMs: 180000,
+    description: 'ordinary Node Native Entities guest compilation, artifact execution, test and live development lifecycle'
+  }),
   'entities-native-runtime': nodeTask('test/entities/assert-entities-native-runtime.cjs', {
     evidence: 'native',
     timeoutMs: 180000,
@@ -650,6 +934,11 @@ const tasks = Object.freeze({
     evidence: 'cli',
     timeoutMs: 180000,
     description: 'doctor, test, inspect, compile, and build workflow'
+  }),
+  'cli-expansion-doctor': nodeTask('test/cli/assert-cli-expansion-doctor.cjs', {
+    evidence: 'cli',
+    timeoutMs: 60000,
+    description: 'bounded repeated-owner, retained-stage and missed-sharing doctor diagnostics'
   }),
   'cli-project-guards': nodeTask('test/cli/assert-cli-project-guards.cjs', {
     evidence: 'cli',
@@ -797,6 +1086,42 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
+    evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
+    description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'
+  }),
+  'mcp-wire-proof': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
+    evidence: 'external', timeoutMs: 300000,
+    description: 'MCP-01 pinned official SDK wire proof through the governed Entities HTTP boundary'
+  }),
+  'mcp-http': nodeTask('test/mcp/assert-mcp-http.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge'
+  }),
+  'mcp-tools': nodeTask('test/mcp/assert-mcp-tools.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures'
+  }),
+  'mcp-authorization': nodeTask('test/mcp/assert-mcp-authorization.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'MCP-04 resource metadata, token introspection, scoped admission and credential isolation'
+  }),
+  'mcp-authorization-sdk': nodeTask('test/mcp/assert-mcp-http-sdk.cjs', {
+    args: ['--authorization'], evidence: 'external', timeoutMs: 180000,
+    description: 'MCP-04 independent OAuth client with controlled issuer, PKCE and protected backend'
+  }),
+  'mcp-tools-sdk': nodeTask('test/mcp/assert-mcp-wire-proof.cjs', {
+    args: ['--adapter'], evidence: 'external', timeoutMs: 300000,
+    description: 'MCP-03 independent client against the actual adapter and ordinary Pulse HTTP backend'
+  }),
+  'mcp-http-sdk': nodeTask('test/mcp/assert-mcp-http-sdk.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'MCP-02 real pinned official client against the private first-party HTTP adapter'
+  }),
+  'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
+    evidence: 'release', timeoutMs: 600000,
+    description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
+  }),
   'clean-machine-acceptance': nodeTask('test/release/assert-clean-machine-acceptance.cjs', {
     evidence: 'release',
     timeoutMs: 900000,
@@ -852,6 +1177,13 @@ const tasks = Object.freeze({
     evidence: 'unit',
     description: 'release-owner tagging guards and immutable tag identity'
   }),
+  'release-feature-acceptance': nodeTask('test/release/assert-release-feature-acceptance.cjs', {
+    evidence: 'unit',
+    description: 'installed feature gate coverage and exact candidate report rejection'
+  }),
+  's3-body-installed': nodeTask('test/s3/s3-body-installed.cjs', {
+    timeoutMs: 300000, description: 'installed S3 binary bodies on Node Native/JavaScript and Fastly Native ABI fixtures'
+  }),
   'release-runtime-policy': nodeTask('test/release/assert-release-runtime-policy.cjs', {
     evidence: 'unit',
     description: 'Node release-line acceptance and Fastly CLI lifecycle ownership'
@@ -865,12 +1197,15 @@ const tasks = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'guest-json-roundtrip',
+    'pure-helper-contract',
     'suite-shape',
     'test-orchestration',
     'package-exports',
     'boundaries',
     'workspace-hygiene',
     'hidden-contracts',
+    'release-feature-acceptance',
     'release-runtime-policy',
     'release-tag',
     'api-surface',
@@ -882,6 +1217,8 @@ const profiles = Object.freeze({
     's3-read-contract',
     's3-write-contract',
     'crypto-config-planning',
+    'crypto-es256-signing',
+    'crypto-rs256',
     'crypto-digest-text-contract',
     'reachable-graph',
     'project-modules',
@@ -893,32 +1230,56 @@ const profiles = Object.freeze({
     'entities-schema-bridge',
     'entities-javascript-runtime',
     'entities-json-rpc-corpus',
+    'mcp-http',
+    'mcp-tools',
+    'mcp-authorization',
     'entities-package-owned-lowering',
     'entities-catalog',
     'entities-inspection',
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'pure-helper-vocabulary',
+    'pure-string-index',
+    'pure-field-projection',
+    'pure-guarded-arguments',
+    'pure-source-helpers',
+    'pure-record-helpers',
+    'pure-argument-helpers',
+    'pure-loop-helpers',
+    'fastly-driver-behavior-o09',
     'kv-native-abi-feasibility',
     's3-native-read',
+    's3-body-read',
     's3-node-transport',
     'canonical-api-lowering',
     'canonical-native-plan',
+    'shared-stage-o19',
+    'str02b-node-native',
+    'str03a-generated-output',
+    'str03c-bounded-transforms',
     'bounded-app-logic',
+    'bounded-read-loops',
+    'bounded-loop-helpers',
     'logging-lowering',
     'canonical-router-lowering',
     'canonical-router-terminal-middleware',
+    'router-selected-groups',
     'json-as-compatibility',
     'entities-envelope-feasibility',
     'entities-managed-handler',
     'entities-managed-handler-effects',
     'entities-native-runtime',
+    'entities-hardening',
+    'entities-node-native-workflow',
+    'fastly-entities-native-workflow',
     'crypto-native-guest-source',
     'guest-link-package',
     'guest-link-materialization-stage',
     'guest-link-audit-diagnostics',
     'assets-lowering-plan',
     'assets-package-owned-lowering',
+    'assets-native-embedded',
     'grip-package-owned-lowering',
     'jwt-package-owned-lowering',
     'canonical-api-runtime',
@@ -937,6 +1298,9 @@ const profiles = Object.freeze({
     'assets-javascript-runtime'
   ]),
   conformance: Object.freeze([
+    'jwt-signing',
+    'jwt-es256-signing',
+    'jwt-rs256',
     's3-write-conformance',
     'crypto-cross-target-conformance',
     'crypto-digest-text-conformance',
@@ -956,6 +1320,7 @@ const profiles = Object.freeze({
     'time-conformance',
     'time-consumer',
     'request-budget-transport',
+    'node-launcher',
     'http-input-outcomes',
     'application-errors',
     'application-error-boundaries',
@@ -967,9 +1332,12 @@ const profiles = Object.freeze({
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',
+    'cli-expansion-doctor',
     'cli-project-guards',
     'cli-dev-workflow',
     'cli-schema-json-workflow',
+    'entities-node-native-workflow',
+    'fastly-entities-native-workflow',
     'events-cli-workflow',
     'cli-diagnostics',
     'docs-executable-contracts',
@@ -1010,6 +1378,7 @@ const profiles = Object.freeze({
     'release-packages',
     'release-artifact-determinism',
     'clean-machine-acceptance',
+    'cli-entities-installed-workflow',
     'release-evidence-authority',
     'deployment-candidates'
   ])

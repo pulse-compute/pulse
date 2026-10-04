@@ -75,6 +75,13 @@
     },
     "fastly.maxDurationMs": {
       "kind": "optional-number"
+    },
+    "fastly.build.maxWasmBytes": {
+      "kind": "positive-safe-integer",
+      "default": 4194304
+    },
+    "fastly.maxWasmBytes": {
+      "kind": "positive-safe-integer"
     }
   }
 }

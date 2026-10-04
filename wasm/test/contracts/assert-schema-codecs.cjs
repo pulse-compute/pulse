@@ -1,30 +1,21 @@
 #!/usr/bin/env node
 'use strict';
 
-const assert = require('node:assert/strict');
 const {
-  SCHEMA_CODEC_PROOF_VERSION,
+  assertSchemaCodecProof,
   buildSchemaCodecProof
 } = require('../support/schema-codecs.cjs');
 
 (async () => {
+  await require('../support/schema-admission.cjs').assertSchemaAdmission();
   const proof = await buildSchemaCodecProof();
   await require('../support/schema-value-encoding.cjs').assertSchemaValueEncoding();
   await require('../support/schema-text-decoding.cjs').assertSchemaTextDecoding();
   await require('../support/schema-optional-properties.cjs').assertSchemaOptionalProperties();
-  assert.equal(proof.version, SCHEMA_CODEC_PROOF_VERSION);
-  assert.equal(proof.authority.registry, 'pulse.schema');
-  assert.equal(proof.authority.fullCodecRealization, true);
-  assert.equal(proof.parity.responseSemanticEqual, true);
-  assert.equal(proof.parity.outboundSemanticEqual, true);
-  assert.equal(proof.parity.tracesEqualIgnoringTargetIdentity, true);
-  assert.equal(proof.native.jsonAs.version, '1.5.0');
-  assert.equal(proof.native.jsonAs.strict, true);
-  assert.deepEqual(proof.packaging.emitted, ['schema-json-registry.json', 'schema-json-codecs.cjs']);
-  assert.equal(proof.availability.generalAvailable, true);
-  assert.equal(proof.availability.fullTargetSupportReady, true);
-  assert.equal(proof.availability.automaticFallback, false);
-  assert.match(proof.proofSha256, /^[a-f0-9]{64}$/);
+  await require('../support/schema-scalar-records.cjs').assertSchemaScalarRecords();
+  await require('../support/schema-nested-json.cjs').assertSchemaNestedJson();
+  await require('../support/schema-nested-json.cjs').assertSchemaNestedJson(true);
+  assertSchemaCodecProof(proof);
   console.log('ok - pulse.schema codecs preserve strict boundaries and semantic parity across targets');
 })().catch((error) => {
   console.error(error && error.stack || error);

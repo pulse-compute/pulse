@@ -174,6 +174,12 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
 
   if (receiver && ts.isPropertyAccessExpression(receiver) && isIdentifierNamed(receiver.expression, ctxName, options)) {
     const namespace = receiver.name.text;
+    if (namespace === 'req' && method === 'readTextChunk' && current.arguments.length === 0) {
+      return Object.freeze({ call: current, surfaceId: 'ctx.req.readTextChunk', kind: 'output.readTextChunk', providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform', args: Object.freeze([]) });
+    }
+    if (namespace === 'output' && ((method === 'start' && current.arguments.length <= 1) || (method === 'write' && current.arguments.length === 1))) {
+      return Object.freeze({ call: current, surfaceId: `ctx.output.${method}`, kind: `output.${method}`, providerKind: 'output', operation: method, capability: 'response.output', args: Object.freeze([...current.arguments]) });
+    }
     if (namespace === 'time' && method === 'now' && current.arguments.length === 0) {
       return Object.freeze({ call: current, surfaceId: 'ctx.time.now', kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock', args: Object.freeze([]) });
     }
@@ -200,6 +206,7 @@ function extractProviderCall(expression, ctxName, kvAliases = new Map(), options
         return Object.freeze({
           call: current,
           surfaceId: `ctx.kv.${method}`,
+          valueTypeNode: method === 'getVersioned' && (ts.isCallExpression(receiver) ? receiver : store.parent)?.typeArguments?.length === 1 ? (ts.isCallExpression(receiver) ? receiver : store.parent).typeArguments[0] : undefined,
           kind: `kv.${method}`,
           providerKind: 'kv',
           operation: method,
@@ -278,8 +285,10 @@ function recognizeHandlerSurface(node, options = {}) {
       if (receiver && ts.isPropertyAccessExpression(receiver) && isIdentifierNamed(receiver.expression, ctxName, options)) {
         const namespace = receiver.name.text;
         const method = target.name.text;
+        if (namespace === 'output' && method === 'close' && current.arguments.length === 0) return createRecognition('ctx.output.close', current, { arguments: Object.freeze([]) }, options);
         if (namespace === 'req' && method === 'header') return createRecognition('ctx.req.header', current, { arguments: Object.freeze([...current.arguments]) }, options);
         if (namespace === 'req' && method === 'text') return createRecognition('ctx.req.text', current, { arguments: Object.freeze([...current.arguments]) }, options);
+        if (namespace === 'req' && method === 'body') return createRecognition('ctx.req.body', current, { arguments: Object.freeze([...current.arguments]) }, options);
         if (namespace === 'req' && method === 'json') {
           return createRecognition(current.arguments.length === 0 ? 'ctx.req.json.generic' : 'ctx.req.json.schema', current, { arguments: Object.freeze([...current.arguments]) }, options);
         }

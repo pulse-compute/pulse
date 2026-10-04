@@ -15,6 +15,109 @@ function clock() {
 }
 const exceeded = { code: 'PULSE_REQUEST_DEADLINE_EXCEEDED' }
 describe('provider-owned request budget', () => {
+  it.each(['return', 'throw', 'parallel failure'])('cancels abandoned fetched bodies on %s without closing an inherited budget', async (exit) => {
+    const budget = host.createRequestBudget(); let cancelled = 0, disposed = 0
+    const response = await host.executeApplication(async (ctx: any) => {
+      if (exit === 'parallel failure') {
+        await ctx.parallel({body: ctx.fetch('https://origin.test/'), failure: ctx.config.get('fail')})
+      } else {
+        await ctx.fetch('https://origin.test/')
+        if (exit === 'throw') throw Error('handler failed')
+      }
+      return ctx.text('early return')
+    }, new Request('http://lifecycle.test'), {requestBudget: budget, effectAdapter: {
+      id: 'abandoned-body', dispatch(effect: any) {
+        if (effect.kind !== 'fetch') throw Error('sibling failed')
+        return new Response(new ReadableStream({cancel() { cancelled++; return Promise.reject(Error('cleanup failed')) }}))
+      }, dispose() { disposed++ }
+    }})
+    expect(response.status).toBe(exit === 'return' ? 200 : 500)
+    expect(cancelled).toBe(1); expect(disposed).toBe(1)
+    expect(() => budget.check()).not.toThrow(); budget.close()
+  })
+
+  it.each(['raw', 'fetch'])('does not wait for %s HEAD body cancellation to settle', async (kind) => {
+    let finish: any, cancelled = 0
+    const body = new Response(new ReadableStream({cancel() { cancelled++; return new Promise<void>(resolve => { finish = resolve }) }}))
+    const run = host.executeApplication(async (ctx: any) => kind === 'raw' ? body : ctx.fetch('https://origin.test/'),
+      new Request('http://lifecycle.test', {method: 'HEAD'}), {effectAdapter: {id: 'head-cleanup', dispatch() { return body }}})
+    try {
+      const result = await Promise.race([run, new Promise(resolve => setImmediate(() => resolve('blocked')))])
+      expect(result).toBeInstanceOf(Response)
+      expect((result as Response).body).toBeNull(); expect(cancelled).toBe(1)
+    } finally { finish?.(); await run }
+  })
+
+  it('preserves only the returned parallel fetch body and cancels it if host disposal fails', async () => {
+    for (const disposalFails of [false, true]) {
+      const cancelled: string[] = []
+      const run = host.executeApplication(async (ctx: any) => {
+        const group = await ctx.parallel({discard: ctx.fetch('https://origin.test/discard'), keep: ctx.fetch('https://origin.test/keep')})
+        return group.keep
+      }, new Request('http://lifecycle.test'), {effectAdapter: {
+        id: 'selected-body', dispatch(effect: any) {
+          return new Response(new ReadableStream({
+            start(controller) { controller.enqueue(new TextEncoder().encode(effect.url)); controller.close() },
+            cancel() { cancelled.push(effect.url) }
+          }))
+        }, dispose() { if (disposalFails) throw Error('dispose failed') }
+      }})
+      if (disposalFails) await expect(run).rejects.toThrow('dispose failed')
+      else expect(await (await run).text()).toBe('https://origin.test/keep')
+      expect(cancelled).toEqual(disposalFails ? ['https://origin.test/discard', 'https://origin.test/keep'] : ['https://origin.test/discard'])
+    }
+  })
+
+  it('contains late group success and failure after request cancellation', async () => {
+    const source = new AbortController(); let ready: any, resolveBody: any, rejectConfig: any, admitted = 0, continued = false, disposed = 0, cancelled = 0
+    const waiting = new Promise<void>(resolve => { ready = resolve })
+    const run = host.executeApplication(async (ctx: any) => {
+      await ctx.parallel({body: ctx.fetch('https://origin.test/'), config: ctx.config.get('pending')})
+      continued = true
+      return ctx.text('unreachable')
+    }, new Request('http://lifecycle.test', {signal: source.signal}), {effectAdapter: {
+      id: 'cancelled-group', dispatch(effect: any) {
+        return new Promise((resolve, reject) => {
+          if (effect.kind === 'fetch') resolveBody = resolve
+          else rejectConfig = reject
+          if (++admitted === 2) ready()
+        })
+      }, dispose() { disposed++ }
+    }})
+    const rejection = expect(run).rejects.toThrow('request cancelled')
+    await waiting; source.abort(Error('request cancelled')); await rejection
+    resolveBody(new Response(new ReadableStream({cancel() { cancelled++ }})))
+    rejectConfig(Error('late sibling failure'))
+    await new Promise(resolve => setImmediate(resolve))
+    expect(cancelled).toBe(1); expect(disposed).toBe(1); expect(continued).toBe(false)
+  })
+
+  it.each([false, true])('cancels a late operation-timeout response with execution closed=%s', async (closed) => {
+    const budget = host.createRequestBudget(); let finish: any, resume: any, ready: any, cancelled = 0, continued = false
+    const waiting = new Promise<void>(resolve => { ready = resolve })
+    const run = host.executeApplication(async (ctx: any) => {
+      try { await ctx.fetch('https://origin.test/', {timeoutMs: 1}); continued = true }
+      catch (error: any) { expect(error.code).toBe('PULSE_FETCH_TIMEOUT') }
+      if (!closed) await ctx.config.get('wait')
+      return ctx.text('timeout handled')
+    }, new Request('http://lifecycle.test'), {requestBudget: budget, effectAdapter: {
+      id: 'late-timeout', dispatch(effect: any) {
+        return new Promise(resolve => {
+          if (effect.kind === 'fetch') finish = resolve
+          else { resume = resolve; ready() }
+        })
+      }
+    }})
+    if (closed) await run
+    else await waiting
+    finish(new Response(new ReadableStream({cancel() { cancelled++ }})))
+    await new Promise(resolve => setImmediate(resolve))
+    expect(cancelled).toBe(1); expect(continued).toBe(false)
+    resume?.('done')
+    expect(await (await run).text()).toBe('timeout handled')
+    expect(() => budget.check()).not.toThrow(); budget.close()
+  })
+
   it('validates configuration and accepts only an authentic inherited budget', () => {
     for (const value of [0, -1, 1.5, 30001, NaN, Infinity, '10', null]) expect(() => host.createRequestBudget({ maxDurationMs: value })).toThrow()
     expect(() => host.createRequestBudget({ requestBudget: { check() {} } })).toThrow()
@@ -81,6 +184,70 @@ describe('provider-owned request budget', () => {
     })
     const rejected = expect(run).rejects.toMatchObject(exceeded)
     await ready; c.advance(10); await rejected; expect(cancelled).toBe(true)
+  })
+
+  it('releases consumed fetch cancellation roots while an inherited budget stays open', async () => {
+    const b = host.createRequestBudget(); let calls = 0
+    const seen: Array<{ text: string, listeners: number }> = []
+    const response = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => {
+      for (let i = 0; i < 8; i++) {
+        const fetched = ctx.fetch('https://origin.test/' + i)
+        const text = await fetched.text()
+        const again = await fetched.text()
+        seen.push({text: text + ':' + again, listeners: getEventListeners(b.signal, 'abort').length})
+      }
+      return ctx.text('done')
+    }, new Request('http://deadline.test'), {requestBudget: b, effectAdapter: {
+      id: 'consumed-fetch-root', dispatch() { return new Response('body-' + calls++, {headers: {'content-type': 'text/plain'}}) }
+    }})
+    expect(await response.text()).toBe('done')
+    expect(seen.map(row => row.text)).toEqual(Array.from({length: 8}, (_, i) => `body-${i}:body-${i}`))
+    expect(seen.map(row => row.listeners)).toEqual(Array(8).fill(seen[0].listeners))
+    b.close()
+  })
+
+  it('retains cancellation for unread pass-through and releases failed consumed reads', async () => {
+    const b = host.createRequestBudget(); let cancelled = 0
+    const passed = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => ctx.fetch('https://origin.test/'),
+      new Request('http://deadline.test'), {requestBudget: b, effectAdapter: {id: 'unread-fetch-root', dispatch() {
+        return new Response(new ReadableStream({start(controller) { controller.enqueue(new TextEncoder().encode('stream')); controller.close() },
+          cancel() { cancelled++ }}), {headers: {'content-type': 'application/octet-stream'}})
+      }}})
+    const beforeClose = getEventListeners(b.signal, 'abort').length
+    b.close()
+    expect(getEventListeners(b.signal, 'abort').length).toBe(beforeClose - 1)
+    expect(await passed.text()).toBe('stream')
+    expect(cancelled).toBe(0)
+
+    const failedBudget = host.createRequestBudget(); const failedListeners: number[] = []
+    const failed = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => {
+      for (let i = 0; i < 4; i++) {
+        try { await ctx.fetch('https://origin.test/').text() }
+        catch (error: any) { expect(error.code).toBe('PULSE_BODY_TOO_LARGE') }
+        failedListeners.push(getEventListeners(failedBudget.signal, 'abort').length)
+      }
+      return ctx.text('handled')
+    }, new Request('http://deadline.test'), {requestBudget: failedBudget, maxFetchBodyBytes: 4,
+      effectAdapter: {id: 'failed-fetch-root', dispatch() { return new Response('more than four bytes') }}})
+    expect(await failed.text()).toBe('handled')
+    expect(failedListeners).toEqual(Array(4).fill(failedListeners[0]))
+    failedBudget.close()
+
+    const source = new AbortController(), unreadBudget = host.createRequestBudget({signal: source.signal}); let unreadCancelled = 0
+    const rejectedBeforeRead = await nodeHost.executeNodeJavascriptApplication(async (ctx: any) => {
+      try { await ctx.fetch('https://origin.test/').text() }
+      catch (error: any) { expect(error.code).toBe('PULSE_BODY_TOO_LARGE') }
+      return ctx.text('admission rejected')
+    }, new Request('http://deadline.test'), {requestBudget: unreadBudget, maxFetchBodyBytes: 4,
+      effectAdapter: {id: 'unread-after-admission', dispatch() { return new Response(new ReadableStream({
+        cancel() { unreadCancelled++ }
+      }), {headers: {'content-type': 'text/plain', 'content-length': '100'}}) }}})
+    expect(await rejectedBeforeRead.text()).toBe('admission rejected')
+    expect(unreadCancelled).toBe(1)
+    source.abort()
+    await Promise.resolve()
+    expect(unreadCancelled).toBe(1)
+    unreadBudget.close()
   })
 
   it('removes onAbort hooks at normal close without cancelling transferred bodies', async () => {

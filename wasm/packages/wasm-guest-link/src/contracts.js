@@ -8,7 +8,7 @@ const {
   memoryAbiV2,
   es256FrameV2,
   es256GuestUnit,
-  optimizationPostures
+  finalOptimizationPostures
 } = require('./constants.js');
 const { fail } = require('./errors.js');
 const { assertRelativePath } = require('./files.js');
@@ -198,7 +198,12 @@ function manifestRelativePath(value, field) {
 }
 
 function exactValue(value, expected, field, code = diagnosticCodes.invalid) {
-  if (JSON.stringify(value) !== JSON.stringify(expected)) {
+  // JSON object member order is not part of the contract. The compiler writes
+  // sorted artifact JSON; retain array order and exact values when reloading it.
+  const canonical = item => JSON.stringify(item, (_key, nested) => plainObject(nested)
+    ? Object.fromEntries(Object.keys(nested).sort().map(key => [key, nested[key]]))
+    : nested);
+  if (canonical(value) !== canonical(expected)) {
     fail(code, `${field} does not match the reviewed ES256 guest contract.`, { expected, actual: value });
   }
   return value;
@@ -409,7 +414,7 @@ function normalizeGuestUnitManifestV2(input) {
   );
 
   exactKeys(input.toolchain, ['kind', 'target', 'locked', 'versions'], [], 'guest unit v2 toolchain');
-  exactKeys(input.toolchain.versions, ['rustc', 'cargo', 'binaryen'], [], 'guest unit v2 toolchain.versions');
+  exactKeys(input.toolchain.versions, ['rustc', 'cargo', 'zig', 'binaryen'], [], 'guest unit v2 toolchain.versions');
   const toolchain = Object.freeze({
     kind: string(input.toolchain.kind, 'guest unit v2 toolchain.kind'),
     target: string(input.toolchain.target, 'guest unit v2 toolchain.target'),
@@ -417,6 +422,7 @@ function normalizeGuestUnitManifestV2(input) {
     versions: Object.freeze({
       rustc: string(input.toolchain.versions.rustc, 'guest unit v2 rustc version'),
       cargo: string(input.toolchain.versions.cargo, 'guest unit v2 cargo version'),
+      zig: string(input.toolchain.versions.zig, 'guest unit v2 Zig version'),
       binaryen: string(input.toolchain.versions.binaryen, 'guest unit v2 Binaryen version')
     })
   });
@@ -449,17 +455,10 @@ function normalizeGuestUnitManifestV2(input) {
     })
   })]);
   exactValue(imports, expectedImports, 'guest unit v2 imports', diagnosticCodes.importMismatch);
-  const expectedExports = Object.freeze([Object.freeze({
-    name: es256FrameV2.export,
-    kind: 'function',
-    parameters: es256FrameV2.parameters,
-    results: es256FrameV2.results,
-    role: 'abi'
-  })]);
+  const expectedExports = Object.freeze(['pulse_crypto_es256_sign', 'pulse_crypto_es256_verify', 'pulse_crypto_rs256_sign', 'pulse_crypto_rs256_verify'].map(name => Object.freeze({
+    name, kind: 'function', parameters: es256FrameV2.parameters, results: es256FrameV2.results, role: 'abi'
+  })));
   exactValue(exports, expectedExports, 'guest unit v2 exports', diagnosticCodes.exportMismatch);
-  if (exports.filter((entry) => entry.role === 'abi').length !== 1) {
-    fail(diagnosticCodes.abiMismatch, 'Guest unit v2 must declare exactly one ABI function export.');
-  }
 
   exactKeys(input.memory, ['identity', 'import', 'owner'], [], 'guest unit v2 memory');
   exactValue(input.memory, {
@@ -715,10 +714,10 @@ function normalizeGuestUnitPlanV1(input) {
   const directory = assertRelativePath(input.materialization.directory, 'guest unit plan materialization.directory');
   if (
     workspace !== '.pulse/guests'
-    || directory !== `${workspace}/${unit.id}/${unit.artifactSha256}`
+    || directory !== `${workspace}/${unit.id}/${unit.artifactSha256}/${unit.manifestSha256}`
     || input.materialization.artifact !== 'unit.wasm'
     || input.materialization.manifest !== 'unit.json'
-    || input.materialization.contentAddress !== 'artifact-sha256'
+    || input.materialization.contentAddress !== 'artifact-and-manifest-sha256'
     || input.materialization.generated !== true
     || input.materialization.authoritative !== false
   ) {
@@ -762,7 +761,7 @@ function normalizeGuestUnitPlanV1(input) {
       directory,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     }),
@@ -921,10 +920,10 @@ function normalizeGuestUnitPlanV2(input) {
   );
   if (
     workspace !== '.pulse/guests'
-    || directory !== `${workspace}/${unit.id}/${unit.artifact.sha256}`
+    || directory !== `${workspace}/${unit.id}/${unit.artifact.sha256}/${unit.manifestSha256}`
     || input.materialization.artifact !== 'unit.wasm'
     || input.materialization.manifest !== 'unit.json'
-    || input.materialization.contentAddress !== 'artifact-sha256'
+    || input.materialization.contentAddress !== 'artifact-and-manifest-sha256'
     || input.materialization.generated !== true
     || input.materialization.authoritative !== false
   ) {
@@ -1003,7 +1002,7 @@ function normalizeGuestUnitPlanV2(input) {
       directory,
       artifact: 'unit.wasm',
       manifest: 'unit.json',
-      contentAddress: 'artifact-sha256',
+      contentAddress: 'artifact-and-manifest-sha256',
       generated: true,
       authoritative: false
     }),
@@ -1128,7 +1127,7 @@ function assertPlanMatchesManifest(plan, manifest) {
 }
 
 function optimizationArguments(posture) {
-  const args = optimizationPostures[posture];
+  const args = finalOptimizationPostures[posture];
   if (!args) fail(diagnosticCodes.optimizationFailed, `Unsupported guest-link optimization posture ${posture}.`);
   return args;
 }

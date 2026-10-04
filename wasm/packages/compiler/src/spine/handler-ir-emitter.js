@@ -66,6 +66,8 @@ function providerEffectExpression(factory, sourceFile, site, providerOperation) 
     properties.push(literalProperty(factory, 'key', providerOperation.key));
     if (providerOperation.generation) properties.push(literalProperty(factory, 'generation', providerOperation.generation));
     if (providerOperation.value) properties.push(literalProperty(factory, 'value', providerOperation.value));
+  } else if (providerOperation.providerKind === 'output') {
+    if (providerOperation.args[0]) properties.push(literalProperty(factory, 'argument0', providerOperation.args[0]));
   } else if (providerOperation.kind === 'event.emit') {
     properties.push(literalProperty(factory, 'type', providerOperation.type));
     properties.push(literalProperty(factory, 'emission', providerOperation.emission));
@@ -262,6 +264,22 @@ function emitCanonicalHandlerGenerator(ir) {
 
   function emitOperation(entry) {
     switch (entry.kind) {
+      case 'helper-body':
+        return factory.updateFunctionDeclaration(entry.statement, entry.statement.modifiers,
+          entry.pure ? undefined : factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.name,
+          undefined, entry.statement.parameters, undefined, emitOperation(entry.body));
+      case 'helper-call':
+        return factory.updateVariableStatement(entry.statement, entry.statement.modifiers,
+          factory.updateVariableDeclarationList(entry.statement.declarationList, [factory.updateVariableDeclaration(
+            entry.declaration, entry.declaration.name, undefined, entry.declaration.type,
+            factory.createYieldExpression(factory.createToken(ts.SyntaxKind.AsteriskToken), entry.call))]));
+      case 'router-body':
+        return factory.updateFunctionDeclaration(entry.statement, entry.statement.modifiers,
+          factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.name,
+          undefined, [], undefined, emitOperation(entry.body));
+      case 'router-body-call':
+        return factory.updateReturnStatement(entry.statement,
+          factory.createYieldExpression(factory.createToken(ts.SyntaxKind.AsteriskToken), entry.statement.expression));
       case 'source-statement':
         return rewritePackageIntrinsics(entry.statement);
       case 'block':
@@ -276,6 +294,8 @@ function emitCanonicalHandlerGenerator(ir) {
           emitOperation(entry.thenOperation),
           entry.elseOperation ? emitOperation(entry.elseOperation) : undefined
         );
+      case 'read-loop':
+        return factory.updateForStatement(entry.statement, entry.initializer, entry.test, entry.increment, emitOperation(entry.body));
       case 'fetch-single': {
         const { candidate, site, continuation } = entry;
         const marker = fetchEffectExpression(factory, sourceFile, site, candidate.chain);

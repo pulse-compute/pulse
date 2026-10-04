@@ -1,0 +1,22 @@
+PulseProjectError: Pulse config factory requires exactly one identifier parameter for its symbolic scope.
+    at projectErrorFrom (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/cli/src/project-config.js:405:10)
+    at loadConventionalProject (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/cli/src/project-config.js:511:11)
+    at Object.resolveProject (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/packages/cli/src/project-config.js:626:34)
+    at compile (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:23:57)
+    at main (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:28:16)
+    at Object.<anonymous> (/workspace/scratch/f45f4aee55e6/pulse-o25/wasm/test/lowering/assert-source-helpers.cjs:77:1)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12) {
+  code: 'PULSE_CONFIG_SCOPE_PARAMETER_REQUIRED',
+  detail: {
+    source: {
+      file: '/tmp/pulse-source-helper-XQSojA/.pulse/config.ts',
+      line: 1,
+      column: 79,
+      start: 78,
+      end: 162
+    }
+  }
+} undefined

@@ -80,35 +80,40 @@ function __kv_number(value: f64): string {
   // Count the portable serialized value budget, including this boundary case.
   return text.endsWith('.0') ? text.substring(0, text.length - 2) : text;
 }
-function __kv_private(text: string): void {
+// Return the same quoted form registered for redaction so validation and writes
+// do not allocate and scan a second representation of each string or key.
+function __kv_private(text: string): string {
   __pulse_fastly_remember_secret(text);
   const encoded = __pulse_fastly_quote(text);
   __pulse_fastly_remember_secret(encoded.substring(1, encoded.length - 1));
+  return encoded;
 }
 class __KvEncoder {
   reason: string = ''; entries: i32 = 0; bytes: i32 = 0;
-  seen: Set<i32> = new Set<i32>(); parts: Array<string> = new Array<string>();
-  add(text: string): void { this.bytes += String.UTF8.byteLength(text); if (this.bytes > __KV_valueBytes) this.reason = 'too-large'; else this.parts.push(text); }
+  seen: Set<i32> = new Set<i32>(); parts: Array<string> | null;
+  // Reads need the same validation and redaction walk, but no serialized output.
+  constructor(materialize: bool = true) { this.parts = materialize ? new Array<string>() : null; }
+  add(text: string): void { this.bytes += String.UTF8.byteLength(text); if (this.bytes > __KV_valueBytes) this.reason = 'too-large'; else if (this.parts !== null) this.parts!.push(text); }
   visit(handle: i32, depth: i32 = 0): void {
     if (this.reason.length) return;
     if (++this.entries > __KV_entries || depth > __KV_depth) { this.reason = 'too-large'; return; }
     const value = __pulse_fastly_value(handle);
     if (value.kind == PULSE_VALUE_NULL) this.add('null');
     else if (value.kind == PULSE_VALUE_BOOLEAN) this.add(value.boolean ? 'true' : 'false');
-    else if (value.kind == PULSE_VALUE_STRING) { __kv_private(value.text); this.add(__pulse_fastly_quote(value.text)); }
+    else if (value.kind == PULSE_VALUE_STRING) this.add(__kv_private(value.text));
     else if (value.kind == PULSE_VALUE_NUMBER) { if (!isFinite(value.number)) this.reason = 'invalid-value'; else this.add(value.number == 0 ? '0' : __kv_number(value.number)); }
     else if (value.kind == PULSE_VALUE_ARRAY || value.kind == PULSE_VALUE_OBJECT) {
       if (this.seen.has(handle)) { this.reason = 'invalid-value'; return; } this.seen.add(handle);
       const object = value.kind == PULSE_VALUE_OBJECT; this.add(object ? '{' : '[');
       for (let i = 0; i < value.values.length && !this.reason.length; i++) {
         if (i) this.add(',');
-        if (object) { __kv_private(value.keys[i]); this.add(__pulse_fastly_quote(value.keys[i]) + ':'); }
+        if (object) this.add(__kv_private(value.keys[i]) + ':');
         this.visit(value.values[i], depth + 1);
       }
       this.add(object ? '}' : ']');
     } else this.reason = 'invalid-value';
   }
-  encode(handle: i32): string { this.visit(handle); return this.reason.length ? '' : this.parts.join(''); }
+  encode(handle: i32): string { this.visit(handle); return this.reason.length ? '' : this.parts!.join(''); }
 }
 function __pulse_fastly_kv_conditional_begin(index: i32, payload: __PulseFastlyValue): void {
   __kv_dispatched[index] = false;
@@ -171,8 +176,13 @@ function __kv_utf8(data: Uint8Array, length: i32): bool {
   }
   return true;
 }
+// Each read is synchronous through owned-string decoding and parsing. Parallel
+// effects enter their waits serially; no result or pending hostcall owns this
+// scratch buffer. Only the written prefix is inspected, including after errors.
+@lazy let __kv_read_buffer: Uint8Array | null = null;
 function __kv_read(index: i32, body: i32, generation: u64): i32 {
-  const buffer = new Uint8Array(__KV_wireBytes + 1), written = new StaticArray<i32>(1); let count = 0;
+  if (__kv_read_buffer === null) __kv_read_buffer = new Uint8Array(__KV_wireBytes + 1);
+  const buffer = __kv_read_buffer!, written = new StaticArray<i32>(1); let count = 0;
   while (true) {
     const ready = __kv_ready(index, body); if (ready <= 0) return __kv_ready_failure(index, ready);
     written[0] = 0;
@@ -188,7 +198,7 @@ function __kv_read(index: i32, body: i32, generation: u64): i32 {
   if (outer.kind != PULSE_VALUE_OBJECT || outer.keys.length != 2 || __pulse_fastly_find(outer, '__pulseKv') < 0 || __pulse_fastly_find(outer, 'value') < 0) return __kv_failure(index, 'protocol');
   const marker = __pulse_fastly_value(__pulse_fastly_payload_field(outer, '__pulseKv'));
   if (marker.kind != PULSE_VALUE_NUMBER || marker.number != 1) return __kv_failure(index, 'protocol');
-  const value = __pulse_fastly_payload_field(outer, 'value'), encoder = new __KvEncoder(); encoder.encode(value);
+  const value = __pulse_fastly_payload_field(outer, 'value'), encoder = new __KvEncoder(false); encoder.visit(value);
   if (encoder.reason.length) return __kv_failure(index, encoder.reason);
   const remaining = __kv_remaining(index); if (remaining <= 0) return __kv_failure(index, remaining == 0 ? 'timeout' : 'unavailable');
   const result = __kv_result('found'), token = __kv_token(generation); __kv_private(token);

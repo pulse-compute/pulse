@@ -36,6 +36,24 @@ Every provider must preserve:
 
 Canonical source imports `@pulse-compute/runtime` and supported package facades. Provider SDK objects, request types, storage clients, and deployment resources do not enter handler scope.
 
+## Resolution ownership
+
+The compiler package has no production dependency on either concrete provider.
+Its bootstrap resolves the selected package from the consumer's explicit
+`projectRoot`, defaulting to the working directory. The CLI distribution bundles
+Node and Fastly and binds those built-in IDs to its own package context through
+`createProviderResolver`. Scoped package selections and other bare IDs still
+resolve from the project. Resolution never retries another root after a missing
+or invalid selected package, and the toolchain cache is keyed by resolved entry.
+
+The compiler's canonical API, Native-plan and Native-compiler facades require
+their declared contract/runtime packages directly. A broken export or missing
+dependency must surface, not recover through a sibling checkout path. The
+`arc01-installed` acceptance task checks provider-isolated packed installs and
+ordinary CLI workflows; its Fastly execution is local fixture-ABI evidence.
+This does not widen the public provider/plugin support or package-lowerer trust
+policy.
+
 ## Integration map
 
 | Concern | Current owner/location |
@@ -75,7 +93,7 @@ Descriptors are normalized by the shared provider contract. A conceptual descrip
 ```js
 const EXAMPLE_PROVIDER_DESCRIPTOR = createProviderDescriptor({
   id: 'example',
-  providerVersion: '1.0.0-beta.5',
+  providerVersion: '1.0.0-beta.6',
   package: '@pulse-compute/provider-example',
   runtime: 'pulse.canonical-example-runtime.v1',
   buildTarget: 'example-edge',

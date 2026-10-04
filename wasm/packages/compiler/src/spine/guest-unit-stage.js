@@ -33,6 +33,10 @@ const {
 function optimizationPosture(value) {
   if (value === undefined || value === null || value === false) return 'native-default';
   if (
+    value === 'experimental-native-bounded-size'
+    || (value && typeof value === 'object' && value.mode === 'experimental-native-bounded-size')
+  ) return 'native-default';
+  if (
     value === true
     || value === 'experimental-native-size'
     || (value && typeof value === 'object' && value.mode === 'experimental-native-size')
@@ -67,8 +71,13 @@ function realizeSelectedGuestUnits(realization, guestUnits, options = {}) {
   return Object.freeze({
     ...realization,
     wasm: result.wasm,
-    wat: result.wat,
-    guestUnits: result.guestUnits,
+    // Guest linking retains its mandatory independent disassembly audit.
+    // Only an explicitly requested diagnostic becomes an output artifact.
+    wat: realization.textEmitted ? result.wat : '',
+    // Preserve trusted package roots for subsequent provider-specific linking.
+    guestUnits: Object.freeze(result.guestUnits.map(unit => Object.freeze({
+      ...unit, packageRoot: selected.find(selection => selection.id === unit.id).packageRoot
+    }))),
     guestLink: Object.freeze({
       version: result.version,
       plan: result.plan,

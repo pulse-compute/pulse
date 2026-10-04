@@ -87,3 +87,44 @@ const preparedTooLate = mock.executeFastlyNativePlatformCapabilities(fetchNative
 assert.equal(preparedTooLate.response.status, 504);
 assert.equal(preparedTooLate.trace.filter(x => x.module === 'fastly_http_req' && x.name === 'send_async').length, 0);
 console.log('ok - Fastly outbound preparation cannot dispatch fetch after expiry');
+
+// The error driver has its own fatal-return fence. Keep the request-budget
+// source integration covered when its per-site settlement moves into a helper.
+const {compileCanonicalRouterSource} = require('../../packages/compiler/src/canonical-router-compiler');
+const errorRouter = compileCanonicalRouterSource(`import {Router} from '@pulse-compute/runtime';
+const app = new Router();
+app.get('/run', async ctx => {
+  const {one, two} = await ctx.parallel({
+    one: ctx.fetch('https://budget.example.invalid/one'),
+    two: ctx.config.get('SECOND')
+  });
+  return ctx.text('done');
+});
+app.error(async (error,ctx,next) => ctx.text(error.code,{status:422}));
+export default app;`, {fileName: 'request-budget-error-route.ts'});
+const errorCompiled = compileCanonicalSource(errorRouter.sourceText, {
+  fileName: 'request-budget-error-route.ts', strict: false, internalGeneratedHandler: true,
+  compilerPrelude: errorRouter.compilerPrelude, compilerOwnedCalls: errorRouter.compilerOwnedCalls,
+  metadataExtensions: {router: errorRouter.metadata}
+});
+const errorNative = platform.compileFastlyNativePlatformCapabilitiesPlan(buildCanonicalNativePlan(errorCompiled), {
+  cwd: path.resolve(__dirname, '../../..'), maxDurationMs: 10000,
+  bindings: {configStore: 'app_config', backends: {'https://budget.example.invalid': 'origin'}}
+});
+assert.match(errorNative.source, /if \(fatal\) \{ if \(__request_expired \|\| !__request_check\(\)\) __request_send_timeout\(\); return; \}/,
+  'fatal exit remains instrumented by the existing request-budget owner');
+const errorOptions = {request: {path: '/run'}, config: {SECOND: 'ready'}};
+const expiredGroup = mock.executeFastlyNativePlatformCapabilities(errorNative, {
+  ...errorOptions, fixtures: {'https://budget.example.invalid/one': {body: 'late', delayMs: 10000}}
+});
+assert.equal(expiredGroup.response.status, 504);
+assert.equal(expiredGroup.instance.exports.pulse_fastly_request_expired(), 1);
+assert.equal(expiredGroup.trace.filter(x => x.module === 'fastly_http_resp' && x.name === 'send_downstream').length, 1);
+assert.throws(() => mock.executeFastlyNativePlatformCapabilities(errorNative, {
+  ...errorOptions, fixtures: {'https://budget.example.invalid/one': {transportStatus: 1}}
+}), error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED'
+  && error.detail.lastError === 1006 && error.detail.errorStage === 81 && error.detail.errorEffect === 0);
+assert.equal(mock.executeFastlyNativePlatformCapabilities(errorNative, {
+  ...errorOptions, fixtures: {'https://budget.example.invalid/one': {body: 'ready'}}
+}).response.status, 200);
+console.log('ok - shared error-driver settlement preserves the fatal-return deadline fence and transport diagnostics');

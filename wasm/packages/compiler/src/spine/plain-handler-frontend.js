@@ -360,6 +360,10 @@ function analyzeHandler(sourceFile, handler, ctxName, diagnostics, schemaBundleI
           } else if (surface.surfaceId === 'ctx.req.text') {
             capabilities.add('request.text');
             validateDecoderCall(node, 'request-decode');
+          } else if (surface.surfaceId === 'ctx.output.close') {
+            capabilities.add('response.output');
+          } else if (surface.surfaceId === 'ctx.req.body') {
+            capabilities.add('request.body.forward');
           } else if (surface.surfaceId === 'ctx.state.get' || surface.surfaceId === 'ctx.state.set') {
             capabilities.add(surface.surfaceId.slice('ctx.'.length));
           } else if (surface.surfaceId.startsWith('ctx.log.')) {
@@ -508,6 +512,7 @@ function preparePlainHandlerSource(sourceText, options = {}, recognition) {
       role: 'handler',
       strict: options.strict === true,
       frontend: 'canonical-source',
+      internalGeneratedHandler: options.internalGeneratedHandler === true,
       target: options.target,
       handlerAuthoring: options.handlerAuthoring,
       requireAsync: options.requireAsync === true,

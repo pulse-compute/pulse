@@ -4,6 +4,8 @@ import { pulseAssetsRuntime } from './internal/package-runtime.js';
 export type AssetLookupMethod = 'GET' | 'HEAD';
 
 export type AssetLookupOptions = {
+  /** Native only: canonical JSON.stringify(createEmbeddedManifest(...)) output, as a literal. */
+  readonly embeddedManifest?: string | undefined;
   readonly method?: AssetLookupMethod | undefined;
   readonly headers?: HeadersInit | undefined;
   readonly passThroughOn404?: boolean | undefined;
@@ -47,6 +49,7 @@ function normalizedHeaderPairs(headers: HeadersInit | undefined): readonly (read
 
 function normalizeLookupOptions(options: AssetLookupOptions | undefined): Readonly<Record<string, unknown>> {
   if (options === undefined) return Object.freeze({});
+  if (options.embeddedManifest !== undefined) throw new TypeError('embeddedManifest is Native-only; use createAssets({mode: "embedded", manifest}) in JavaScript.');
   const method = options.method === undefined ? 'GET' : String(options.method).toUpperCase();
   if (method !== 'GET' && method !== 'HEAD') {
     throw new TypeError('Pulse asset lookup method must be GET or HEAD.');

@@ -2,9 +2,34 @@
 
 const CANONICAL_NATIVE_WASM_VERSION = 'pulse.canonical-native-wasm.v2';
 const CANONICAL_NATIVE_ABI_VERSION = 2;
-const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v3';
+const CANONICAL_NATIVE_AS_GENERATOR_VERSION = 'pulse.canonical-native-as-generator.v9';
 const CANONICAL_NATIVE_COMPILER_VERSION = 'pulse.canonical-native-wasm-compiler.v3';
-const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v3';
+const CANONICAL_NATIVE_HOST_VERSION = 'pulse.canonical-native-host.v4';
+
+// Execution-wide containment for plans with bounded storage-read loops. These
+// are accounting limits, not a JavaScript process/RSS limit. Native providers
+// retain handles until completion; no iteration reset may refund this budget.
+const CANONICAL_NATIVE_READ_LOOP_MEMORY = Object.freeze({
+  version: 'pulse.native-read-loop-memory.v1',
+  maxBytes: 64 * 1024 * 1024,
+  maxValues: 1024 * 1024,
+  valueBytes: 32,
+  edgeBytes: 8,
+  maximumMemoryPages: 4096,
+  lifetime: 'execution',
+  reclamation: 'retain-until-terminal'
+});
+
+function hasBoundedReadLoop(plan) {
+  function visit(node) {
+    if (!node || typeof node !== 'object') return false;
+    return node.kind === 'read-loop' || Object.values(node).some(visit);
+  }
+  return visit(plan && plan.entry) || visit(plan && plan.handlers) || visit(plan && plan.helpers);
+}
+
+// Optional data-only host-to-guest JSON copy. UTF-8 accounting precedes guest allocation.
+const CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES = 1024 * 1024;
 
 const CANONICAL_NATIVE_RUN_STATUS = Object.freeze({
   COMPLETE: 0,
@@ -44,6 +69,8 @@ const CANONICAL_NATIVE_ASSIGNMENT_OPERATORS = Object.freeze([
 const CANONICAL_NATIVE_IMPORT_MODULE = 'pulse_host';
 const CANONICAL_NATIVE_ALLOWED_ENV_IMPORTS = Object.freeze(['abort', 'seed']);
 const CANONICAL_NATIVE_IMPORTS = Object.freeze([
+  // Optional, bounded JSON transfer into a managed guest string; no host authority.
+  ['value_json', ['i32'], ['i32']],
   ['value_undefined', [], ['i32']],
   ['value_null', [], ['i32']],
   ['value_boolean', ['i32'], ['i32']],
@@ -71,6 +98,9 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['request_headers', [], ['i32']],
   ['request_header', ['i32'], ['i32']],
   ['request_text', [], ['i32']],
+  // Optional incoming-request-v1 extension: execution-local opaque marker,
+  // never a guest byte buffer or an invocation ticket. Older hosts fail import validation.
+  ['request_body', [], ['i32']],
   ['request_json', ['i32'], ['i32']],
   ['router_match', ['i32', 'i32'], ['i32']],
   ['router_param', ['i32', 'i32', 'i32'], ['i32']],
@@ -80,6 +110,8 @@ const CANONICAL_NATIVE_IMPORTS = Object.freeze([
   ['schema_encode', ['i32', 'i32'], ['i32']],
   ['schema_decode', ['i32', 'i32'], ['i32']],
   ['response_text', ['i32', 'i32'], ['i32']],
+  // Optional output-v1 extension, required only by generated-output artifacts.
+  ['output_close', [], ['i32']],
   ['response_custom', ['i32'], ['i32']],
   ['grip_is_websocket', [], ['i32']],
   ['grip_subscribe', ['i32', 'i32'], ['i32']],
@@ -119,6 +151,21 @@ const CANONICAL_NATIVE_IMPORT_NAMES = Object.freeze(CANONICAL_NATIVE_IMPORTS.map
 const CANONICAL_NATIVE_EXPORT_NAMES = Object.freeze(CANONICAL_NATIVE_EXPORTS.map(([name]) => name));
 const CANONICAL_NATIVE_SCHEMA_EXPORT_NAMES = Object.freeze(CANONICAL_NATIVE_SCHEMA_EXPORTS.map(([name]) => name));
 
+// Canonical compilation produces a Pulse host-ABI module before provider
+// packaging. Its imports are checked independently of the final provider ABI.
+const { defineFinalWasmPolicy, FINAL_WASM_POLICY_VERSION } = require('../provider/final-wasm-policy.js');
+const CANONICAL_NATIVE_FINAL_WASM_POLICY = defineFinalWasmPolicy({
+  version: FINAL_WASM_POLICY_VERSION,
+  descriptorOwner: '@pulse-compute/wasm-contracts',
+  toolchainVersion: 'pulse.provider-toolchain.v1',
+  descriptorIdentity: 'pulse-canonical-native-host',
+  permittedImports: [
+    ...CANONICAL_NATIVE_IMPORT_NAMES.map(name => ({ module: 'pulse_host', name, kind: 'function' })),
+    ...CANONICAL_NATIVE_ALLOWED_ENV_IMPORTS.map(name => ({ module: 'env', name, kind: 'function' }))
+  ],
+  requiredExports: CANONICAL_NATIVE_EXPORTS.map(([name, second]) => ({ name, kind: second === 'memory' ? 'memory' : 'function' }))
+});
+
 const CANONICAL_NATIVE_DIAGNOSTIC_CODES = Object.freeze({
   PLAN_REQUIRED: 'PULSE_CANONICAL_NATIVE_WASM_PLAN_REQUIRED',
   PLAN_INVALID: 'PULSE_CANONICAL_NATIVE_WASM_PLAN_INVALID',
@@ -143,6 +190,7 @@ const CANONICAL_NATIVE_POLICY = Object.freeze({
   suspension: 'effect_begin records descriptors before one explicit suspension boundary; results are injected before pulse_resume',
   groupedEffects: 'all group members begin before one suspension boundary and all results must be ready before resume',
   incompleteResume: 'rejected without advancing the program counter or consuming available results',
+  resultFreshness: 'managed hosts authenticate single-use invocation tickets; raw ABI v2 index/handle exports are trusted-host operations',
   authority: 'request data and consequential effects remain host-owned; guest control flow remains authoritative',
   schemaJson: 'normalized registry IR generates json-as 1.5.0 guest codecs; host preflight enforces shared policy and structured errors',
   schemaBodyOwnership: 'request and fetched-response bytes are snapshotted once; application JSON values are encoded before suspension'
@@ -154,6 +202,9 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_AS_GENERATOR_VERSION,
   CANONICAL_NATIVE_COMPILER_VERSION,
   CANONICAL_NATIVE_HOST_VERSION,
+  CANONICAL_NATIVE_READ_LOOP_MEMORY,
+  CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES,
+  hasBoundedReadLoop,
   CANONICAL_NATIVE_RUN_STATUS,
   CANONICAL_NATIVE_RESULT_STATUS,
   CANONICAL_NATIVE_ERROR_CODES,
@@ -169,5 +220,6 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_SCHEMA_EXPORTS,
   CANONICAL_NATIVE_SCHEMA_EXPORT_NAMES,
   CANONICAL_NATIVE_DIAGNOSTIC_CODES,
-  CANONICAL_NATIVE_POLICY
+  CANONICAL_NATIVE_POLICY,
+  CANONICAL_NATIVE_FINAL_WASM_POLICY
 });

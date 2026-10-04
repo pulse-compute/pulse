@@ -1,0 +1,8 @@
+{
+  "name": "@pulse-examples/13-mcp-resource-directory", "version": "0.0.0", "private": true,
+  "type": "module",
+  "files": ["src", ".pulse", "tests", "tsconfig.json", "mcp-server.cjs", "directory-service.cjs", "README.md"],
+  "scripts": { "doctor": "pulse doctor", "inspect": "pulse inspect", "test": "pulse test", "build": "pulse build", "dev": "pulse dev", "mcp": "node mcp-server.cjs", "directory": "node directory-service.cjs" },
+  "dependencies": { "@pulse-compute/entities": "1.0.0-beta.6", "@pulse-compute/pulse": "1.0.0-beta.6", "@pulse-compute/mcp": "0.0.0" },
+  "devDependencies": { "@pulse-compute/cli": "1.0.0-beta.6", "typescript": "5.9.3" }
+}

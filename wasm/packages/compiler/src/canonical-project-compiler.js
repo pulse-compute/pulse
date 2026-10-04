@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const { attachTerminalPackageNative } = require('./spine/terminal-package-native.js');
 const { buildSchemaJsonCompile } = require('@pulse-compute/wasm-schema-json/compiler/schema-json-compile');
 const { buildCanonicalSchemaBundle } = require('@pulse-compute/wasm-schema-json/compiler/canonical-schema-codecs');
 const {
@@ -509,6 +510,23 @@ function sourceDiagnosticForPackageEffect(effect, message, detail = {}) {
   });
 }
 
+// Native must lower every reachable package site. JavaScript executes helpers
+// from the original source graph; only sites owned by normalized Router handlers
+// require a generated counterpart. Keep the full recognition bundle for package
+// inspection, validation and provider requirements on both targets.
+function packageSitesRequiringRouterLink(sites, records, options) {
+  if (options.target !== 'javascript') return sites;
+  return sites.filter((site) => records.some((record) => {
+    const ir = record && record.operationIr;
+    if (!ir || !ir.sourceFile || !ir.handler) return false;
+    const start = Number(site && site.range && site.range.start);
+    const end = Number(site && site.range && site.range.end);
+    return sameModulePath(site && site.loc && site.loc.file, ir.sourceFile.fileName || ir.file, options.rootDir)
+      && Number.isSafeInteger(start) && Number.isSafeInteger(end)
+      && start >= ir.handler.getStart(ir.sourceFile) && end <= ir.handler.getEnd();
+  }));
+}
+
 function routerGeneratedPackageEffectLookup(router, recognition, options = {}) {
   const effects = [...(recognition && recognition.operations || [])].map((operation) => operation.canonicalEffect);
   if (!router || effects.length === 0) return undefined;
@@ -588,12 +606,15 @@ function routerGeneratedPackageEffectLookup(router, recognition, options = {}) {
     }
   }
 
-  if (generatedByStart.size !== effects.length) {
-    const linked = new Set([...generatedByStart.values()]);
-    const missing = effects.filter((effect) => !linked.has(effect));
-    const first = missing[0];
+  // A handler can be registered more than once. Each entry must link all of its
+  // generated calls above, while coverage here is over authored source effects.
+  // Counting generated sites would reject valid one-to-many source mappings.
+  const linked = new Set(generatedByStart.values());
+  const required = packageSitesRequiringRouterLink(effects, records, options);
+  const missing = required.filter((effect) => !linked.has(effect));
+  if (missing.length > 0) {
     throw new CanonicalProjectCompileError(
-      `Generated Router source linked ${generatedByStart.size} of ${effects.length} reachable package effect(s).`,
+      `Generated Router source linked ${linked.size} of ${required.length} required package effect(s).`,
       missing.map((effect) => sourceDiagnosticForPackageEffect(effect, `Reachable package effect ${effect.kind} was not linked into generated Router source.`, {
         contractId: effect.contractId
       })),
@@ -728,11 +749,13 @@ function routerGeneratedPackageIntrinsicLookup(router, recognition, options = {}
     }
   }
 
-  if (generatedByStart.size !== intrinsics.length) {
-    const linked = new Set([...generatedByStart.values()]);
-    const missing = intrinsics.filter((intrinsic) => !linked.has(intrinsic));
+  // Intrinsic calls share the same source-to-registration multiplicity as effects.
+  const linked = new Set(generatedByStart.values());
+  const required = packageSitesRequiringRouterLink(intrinsics, records, options);
+  const missing = required.filter((intrinsic) => !linked.has(intrinsic));
+  if (missing.length > 0) {
     throw new CanonicalProjectCompileError(
-      `Generated Router source linked ${generatedByStart.size} of ${intrinsics.length} reachable package intrinsic(s).`,
+      `Generated Router source linked ${linked.size} of ${required.length} required package intrinsic(s).`,
       missing.map((intrinsic) => sourceDiagnosticForPackageEffect(
         intrinsic,
         `Reachable package intrinsic ${intrinsic.kind} was not linked into generated Router source.`,
@@ -1045,7 +1068,20 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   const terminalPackageApplication = terminalPackageIntrinsicApplication(root, packageOperationRecognition);
 
   let linkedProjectModules;
-  if (multiModule) {
+  let localHelperCall = false;
+  if (root?.kind === 'router') {
+    const visit = node => {
+      if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+        if (options.target !== 'javascript') localHelperCall = true;
+        else for (let parent = node.parent; parent && !ts.isFunctionLike(parent); parent = parent.parent) {
+          if (ts.isForStatement(parent)) localHelperCall = true;
+        }
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(root.module.sourceFile);
+  }
+  if (multiModule || localHelperCall) {
     try {
       linkedProjectModules = root.kind === 'router'
         ? linkProjectRouterModules(graphBuild, { rootDir, target: options.target })
@@ -1095,13 +1131,13 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
       ? terminalPackageApplication.sourceText
       : authoringSourceText;
   const generatedPackageEffectForCall = router
-    ? routerGeneratedPackageEffectLookup(router, packageOperationRecognition, { rootDir })
+    ? routerGeneratedPackageEffectLookup(router, packageOperationRecognition, { rootDir, target: options.target })
     : packageEffectLookup(packageOperationRecognition);
   const generatedPackageResultAdapterForCall = router
     ? routerGeneratedPackageResultAdapterLookup(router, packageOperationRecognition, { rootDir })
     : packageResultAdapterLookup(packageOperationRecognition);
   const generatedPackageIntrinsicForCall = router
-    ? routerGeneratedPackageIntrinsicLookup(router, packageOperationRecognition, { rootDir })
+    ? routerGeneratedPackageIntrinsicLookup(router, packageOperationRecognition, { rootDir, target: options.target })
     : packageIntrinsicLookup(packageOperationRecognition);
   const applicationEnvelope = createApplicationEnvelope(router, options.applicationProjectMetadata);
   const compileOptions = {
@@ -1198,6 +1234,10 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     ].map((file) => path.resolve(file)))])
   });
   attachPackageOperationRecognition(project, packageOperationRecognition);
+  if (terminalPackageApplication) attachTerminalPackageNative(project, {
+    application: terminalPackageApplication, recognition: packageOperationRecognition,
+    managedHandlers, schemaBundle: schema.bundle, cwd: rootDir, workspaceRoot: options.workspaceRoot
+  });
   return project;
 }
 

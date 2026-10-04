@@ -102,10 +102,15 @@ async function nodeRequestToWebRequest(request, options = {}) {
   for (const [name, value] of headerPairs) headers.append(name, value);
   const init = { method, headers };
   if (bodyAllowed(method)) {
-    const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
-    if (body.byteLength > 0) {
-      init.body = body;
+    if (options.bodyForwarding || options.bodyTransform) {
+      init.body = require('./incoming-body.js').nodeIncomingStream(request);
       init.duplex = 'half';
+    } else {
+      const body = await readNodeRequestBody(request, options.maxRequestBodyBytes ?? options.maxBodyBytes, options.signal);
+      if (body.byteLength > 0) {
+        init.body = body;
+        init.duplex = 'half';
+      }
     }
   }
   return Object.freeze({
@@ -150,6 +155,7 @@ async function writeWebResponseToNode(response, nodeResponse, options = {}) {
     for (const group of groupHeaderPairs(runtimeHost.responseHeaderPairs(response))) {
       nodeResponse.setHeader(group.name, group.values.length === 1 ? group.values[0] : [...group.values]);
     }
+    if (options.closeConnection) nodeResponse.setHeader('connection', 'close');
 
     const method = String(options.requestMethod || 'GET').toUpperCase();
     if (method === 'HEAD' || !statusAllowsBody(response.status) || response.body == null) {
@@ -200,11 +206,21 @@ function createNodeJavascriptHandler(application, options = {}) {
         maxKvValueDepth: options.maxKvValueDepth,
         maxKvValueEntries: options.maxKvValueEntries
       });
-  return async function pulseNodeJavascriptHandler(request, response) {
-    const budget = runtimeHost.createRequestBudget(options);
+  return async function pulseNodeJavascriptHandler(request, response, requestSignal) {
+    const connection = new AbortController();
+    const aborted = () => connection.abort(new Error('Node request disconnected.'));
+    const closed = () => { if (!response.writableFinished) aborted(); };
+    request.once('aborted', aborted); response.once?.('close', closed);
+    const signal = AbortSignal.any([options.signal, requestSignal, connection.signal].filter(Boolean));
+    const budget = runtimeHost.createRequestBudget({ ...options, signal });
+    let incomingBody, adapted, outputExecution;
     try {
       budget.check();
-      const adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
+      adapted = await budget.race(nodeRequestToWebRequest(request, { ...options, signal: budget.signal }));
+      if ((options.bodyForwarding || options.bodyTransform) && bodyAllowed(adapted.method)) response.setHeader('connection', 'close');
+      incomingBody = require('./incoming-body.js').createIncomingBody(adapted.request, {
+        ...options, signal: budget.signal, responseWriterOwnsCompletion: true
+      });
       const requestContext = Object.freeze({
         request,
         response,
@@ -237,7 +253,10 @@ function createNodeJavascriptHandler(application, options = {}) {
       const activeApplication = options.getApplication
         ? runtimeHost.normalizeApplication(options.getApplication())
         : normalizedApplication;
+      outputExecution = require('../runtime/generated-output.js').createGeneratedOutput(response, { ...options, requestBudget: budget, requestMethod: adapted.method });
       const webResponse = await executeNodeJavascriptApplication(activeApplication, adapted.request, {
+        outputExecution,
+        incomingBody,
         capabilities,
         effectAdapter,
         config,
@@ -275,7 +294,13 @@ function createNodeJavascriptHandler(application, options = {}) {
         onEffectObservation: options.onEffectObservation,
         onEffectSummary: options.onEffectSummary
       });
-      await writeWebResponseToNode(webResponse, response, { requestMethod: adapted.method, signal: budget.signal, requestBudget: budget });
+      if (incomingBody?.failure) throw incomingBody.failure;
+      if (outputExecution?.started) await outputExecution.finish();
+      else await writeWebResponseToNode(webResponse, response, {
+        requestMethod: adapted.method,
+        signal: incomingBody?.responseSignal || budget.signal, requestBudget: budget,
+        closeConnection: Boolean((options.bodyForwarding || options.bodyTransform) && bodyAllowed(adapted.method))
+      });
       if (typeof options.onRequest === 'function') {
         options.onRequest(Object.freeze({
           method: adapted.method,
@@ -286,7 +311,15 @@ function createNodeJavascriptHandler(application, options = {}) {
         }));
       }
       return webResponse;
-    } finally { if (!options.requestBudget) budget.close(); }
+    } finally {
+      outputExecution?.dispose();
+      await incomingBody?.close();
+      if ((options.bodyForwarding || options.bodyTransform) && !incomingBody && adapted?.request.body && !adapted.request.body.locked) {
+        void adapted.request.body.cancel().catch(() => {});
+      }
+      request.removeListener('aborted', aborted); response.removeListener?.('close', closed);
+      if (!options.requestBudget) budget.close();
+    }
   };
 }
 

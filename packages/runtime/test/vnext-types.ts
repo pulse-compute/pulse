@@ -26,3 +26,5 @@ const eventHandler: PulseEventHandler<{ readonly userId: string }> = async (ctx)
   await ctx.secret.get('TOKEN')
 }
 void eventHandler
+
+app.mount('/selected', new Router(), { state: 'family', equals: 'collection' })

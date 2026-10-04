@@ -37,7 +37,7 @@ const ASSETS_INITIAL_PROVIDER_TARGETS = Object.freeze(['node', 'fastly']);
 
 const ASSETS_PAYLOAD_MODE_STATUSES = LOWERABLE_LIBRARY_PAYLOAD_MODE_STATUSES;
 
-const ASSETS_SUPPORTED_BODY_KINDS = Object.freeze(['text-response-body']);
+const ASSETS_SUPPORTED_BODY_KINDS = Object.freeze(['text-response-body', 'embedded-blob-response']);
 const ASSETS_LOWERING_PLAN_ONLY_BODY_KINDS = Object.freeze(['stream-pass-through-response']);
 const ASSETS_RESERVED_BODY_KINDS = Object.freeze(['binary-buffer']);
 const ASSETS_UNSUPPORTED_BODY_KINDS = Object.freeze(['json-response-body']);
@@ -78,6 +78,11 @@ const ASSETS_DIAGNOSTIC_CODES = Object.freeze({
 });
 
 const ASSETS_PAYLOAD_MODE_CLASSIFICATION = Object.freeze({
+  embeddedBlobResponse: Object.freeze({
+    mode: 'embedded-blob-response', status: 'implemented-now', hostResultKind: 'opaque-response',
+    hostCapabilities: Object.freeze(['assets', 'result']), owner: '@pulse-compute/assets',
+    notes: 'Native-only, compile-time admitted embeddedManifest literal; bounded selected bytes remain provider-owned.'
+  }),
   textResponseBody: Object.freeze({
     mode: 'text-response-body',
     status: 'implemented-now',
@@ -249,6 +254,7 @@ function assetsProtocolExtension() {
 }
 
 module.exports = {
+  ...require('./embedded.js'),
   ASSETS_CONTRACT_VERSION,
   ASSETS_HOST_ABI_VERSION,
   ASSETS_PROVIDER_CONFIG_VERSION,

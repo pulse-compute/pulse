@@ -8,7 +8,7 @@ pulse-doc-meta:end -->
 # Release packages and clean-consumer acceptance
 
 The current Beta candidate contains nineteen publishable packages
-synchronized at version `1.0.0-beta.5`. The product-facing packages are:
+synchronized at version `1.0.0-beta.6`. The product-facing packages are:
 
 ```text
 @pulse-compute/pulse
@@ -47,6 +47,51 @@ does not claim live Object Storage behavior. That separate evidence follows
 infrastructure setup (T2); package promotion does not publish npm artifacts or
 change the existing registry bootstrap and release approval gates.
 
+## Installed feature acceptance
+
+The aggregate release profile intentionally excludes independent installed
+feature proofs. The release seal now runs them as a separate mandatory step:
+
+```bash
+node scripts/release-feature-acceptance.cjs
+```
+
+Run from a clean, committed candidate after restoring lockfile-pinned dependencies
+and building the workspace. The command runs all ten gates through the registered
+runner with fresh report paths. It requires complete terminal passing coverage,
+matching source revisions, clean source, oracle digests, and exact installed
+package versions and tarball hashes. Shared package hashes must agree across
+proofs. The report is `wasm/.test-results/release-feature-acceptance.json`; its
+summary is retained in the release seal and checked by the evidence authority.
+Missing, partial, failed, dirty or stale reports fail acceptance. A later source
+change requires another replay on the new candidate.
+
+| Gate | Required installed acceptance |
+| --- | --- |
+| `node01-installed` | Finite production Node HTTP, artifact/ABI/version failures, overload, draining and secret-safe diagnostics |
+| `arc01-installed` | Package-owned Entities execution and provider loading without workspace product modules |
+| `jwt-installed-workflow` | Signing/verification, rotation, cleanup and explicit composition rejection |
+| `str02-installed`, `str02b-installed` | Node JavaScript/Native request forwarding, ownership, cancellation and real incremental HTTP |
+| `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
+| `ast01-installed` | Assets signing facade and installed declarations |
+| `ast02b-installed`, `ast02d-installed` | Embedded binary Assets on JavaScript and Native, bounds, HTTP subsets and deterministic manifest identity |
+| `s3-body-installed` | S3 binary bodies, GET/HEAD, range/conditional outcomes, length failures, cancellation and cleanup on Node Native/JavaScript and Fastly Native ABI fixtures |
+
+These gates qualify their existing target cells. They do not expand production
+Node launcher support to forwarding/output/transforms/S3-body/blob applications,
+qualify Fastly JavaScript S3, or establish live-provider behavior. Fastly ABI
+fixtures remain injected evidence, distinct from local-engine and deployed proof.
+
+| Separate coverage | Disposition |
+| --- | --- |
+| `str03c-bounded-transforms` | Experimental workspace Native/JavaScript proof in the aggregate profile; installed transform qualification remains pending |
+| `mcp-installed` | Explicit private adapter coverage; MCP remains outside the published package set |
+| `kv-conditional-acceptance` | Separately mandatory local K4 proof plus deployed Pulse cross-location evidence, as described below |
+
+The generic seal and installed feature report do not waive K4. Private MCP and
+independent SDK proofs remain explicit selections. Fast PR CI keeps its existing
+bounded selection; these dependency-bound installs belong to release acceptance.
+
 ## Conditional KV acceptance
 
 Conditional KV has additional required acceptance beyond the aggregate release
@@ -54,22 +99,34 @@ profile and the generic Fastly Compute reality task:
 
 - `node wasm/scripts/run-wasm-tests.cjs --task kv-conditional-acceptance --no-report`
   installs exact candidate tarballs and executes the Native consumer through
-  Fastly CLI/Viceroy. An unavailable engine or semantic failure fails this gate.
+  Fastly CLI/Viceroy. An unavailable engine or undispositioned failure fails this
+  gate. The exact documented missing-key CAS discrepancy on Viceroy 0.21.0/0.21.1
+  is non-blocking by explicit human release direction on October 4, 2026.
 - Full deployed Pulse cross-location acceptance uses the reviewed isolated
   environment and probe driver described in the
   [K4 acceptance record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/K4.md).
 
-The retained Viceroy 0.21.0 run fails missing-key CAS. The standalone deployed
+The retained Viceroy 0.21.0 run fails missing-key CAS. The October 4 B6-05
+replay on clean merged `latest`, using official Fastly CLI 16.1.0 / Viceroy
+0.21.1, reproduced that failure twice with unchanged assertions and identical
+module/package identities. Its
+[machine record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json)
+and [handoff](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/k4/B6-05.md)
+retain the raw failure evidence and the deployed handoff. The standalone deployed
 Rust SDK probe confirms rejection for never-created and deleted keys in its
 tested cases, but does not satisfy either required Pulse acceptance gate. Full
 Pulse deployed cross-location evidence remains pending the isolated environment.
 
 Report these gates separately even when `release:seal -- --require-fastly`
 passes: that command does not include the dedicated K4 acceptance task or its
-deployed runner. Preserve the local failure and pending deployed requirement as
-release-readiness blockers. An explicit human-directed acceptance-policy change
-must specify any replacement evidence and update the owning gates and current
-contracts; a guidance update alone neither waives a gate nor changes CAS behavior.
+deployed runner. The local task retains raw `status: failed` when the known
+Viceroy discrepancy is reproduced and adds
+`acceptance.status: accepted-with-known-viceroy-discrepancy` with
+`acceptance.releaseBlocking: false`. All other assertions and exact-installed
+checks still block. This disposition relies on the retained local reproduction
+and standalone live missing-key comparison; neither is relabeled as passing
+deployed Pulse acceptance. The pending full deployed requirement remains
+separate. Production CAS semantics are unchanged.
 
 ## Event experimental candidate
 
@@ -212,6 +269,24 @@ The aggregate candidate seal is:
 npm run release:seal
 ```
 
+Before restoring dependencies, the seal checks that every release-profile task
+maps to an evidence shard and every explicit shard task is in that profile.
+After the workspace build, a size-only documentation preflight rebuilds the
+canonical examples in default and experimental Native-size modes. It checks the
+existing README baselines, guest/provider bytes, and guest-link input sizes
+before running unit tests and the complete release profile. Run that bounded
+check directly with:
+
+```bash
+node wasm/test/docs/assert-executable-documentation.cjs --section sizes
+```
+
+Seal steps report start, completion, elapsed time and failure; size checks report
+the example and build mode; packing reports each package on stderr so `--json`
+stdout remains machine-readable. A successful preflight is development evidence.
+The full example workflows and exact-source complete release replay remain
+mandatory; preflight results cannot replace or be pooled into the final seal.
+
 It restores dependencies, validates the repository and generated documentation, runs the complete release profile, and adds the external Fastly task when the Fastly CLI can start its managed local Compute lifecycle. Use `--require-fastly` to make that host proof mandatory.
 
 The seal also regenerates the production vulnerability and installed-platform
@@ -271,7 +346,7 @@ The release owns a versioned hosted-documentation gate:
 pnpm docs:site:check
 ```
 
-The check builds the exact `v1.0.0-beta.5` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
+The check builds the exact `v1.0.0-beta.6` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
 
 The **Documentation** workflow repeats those checks for pull requests and `main`, seals a preview deployment manifest, and uploads artifacts without production credentials. It does not deploy to GitHub Pages.
 
@@ -279,7 +354,7 @@ Production delivery uses the manually dispatched **Documentation deployment** wo
 
 ```text
 build and seal
-→ upload/verify v1.0.0-beta.5 and its receipt immutably
+→ upload/verify v1.0.0-beta.6 and its receipt immutably
 → verify all matching npm packages and configured dist-tags
 → promote root and latest
 → verify representative URLs through Fastly

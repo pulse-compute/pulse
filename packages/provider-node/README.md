@@ -2,20 +2,22 @@
 
 <!-- pulse-package-status:start -->
 > **Support tier:** Implementation/transitive surface<br>
-> **Audience:** Pulse canonical Node provider and compiler maintainers.<br>
-> **Install directly:** No for application projects; select provider: node through the CLI.<br>
-> **Supported entry points:** `@pulse-compute/provider-node/toolchain`<br>
-> **Stability:** The listed built-in toolchain entry is synchronized with the Beta bootstrap contract; other canonical Node provider interfaces remain internal.<br>
+> **Audience:** Node deployment integrators and Pulse provider maintainers.<br>
+> **Install directly:** Yes for the production Node launcher; application handlers remain provider-neutral.<br>
+> **Supported entry points:** `@pulse-compute/provider-node/toolchain`, `@pulse-compute/provider-node/server`<br>
+> **Stability:** The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal.<br>
 > **npm:** [`@pulse-compute/provider-node`](https://www.npmjs.com/package/@pulse-compute/provider-node)<br>
-> **Canonical replacement:** `provider: 'node' through @pulse-compute/cli`<br>
-> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/)
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.6/packages/implementation-packages/)
 >
-> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.6` package policy.
 <!-- pulse-package-status:end -->
 
 Canonical Node provider implementation used internally when a project selects `provider: 'node'`.
 
-Application projects do not install or import this package directly. The supported entry is provider selection through `@pulse-compute/cli`.
+Deployment integrators install this package and import `@pulse-compute/provider-node/server`
+to launch a trusted `pulse build` directory. Application handlers remain provider-neutral.
+See [Node build and execution](https://pulsecompute.io/v1.0.0-beta.6/guides/deploying-node/)
+for configuration, readiness, drain, signals and restart.
 
 ## Responsibilities
 
@@ -60,4 +62,4 @@ The package exposes focused compiler and runtime modules for the synchronized
 repository, including `runtime/canonical-api-runtime`. Those exports are
 implementation interfaces, not application-author APIs.
 
-See [Contracts and providers](https://pulsecompute.io/v1.0.0-beta.5/concepts/contracts-and-providers/) and [Implementation packages](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/).
+See [Contracts and providers](https://pulsecompute.io/v1.0.0-beta.6/concepts/contracts-and-providers/) and [Implementation packages](https://pulsecompute.io/v1.0.0-beta.6/packages/implementation-packages/).

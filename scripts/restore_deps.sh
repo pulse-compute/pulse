@@ -129,7 +129,7 @@ NODE
 info "Extracting and validating the bundle before replacing local dependencies"
 zstd -dc "$BUNDLE" | tar -C "$STAGE" -xf -
 [[ -f "$STAGE/.pulse-dependency-bundle.json" ]] || fail "dependency bundle manifest was not extracted"
-[[ -f "$STAGE/.validation-tools/pnpm/bin/pnpm.cjs" ]] || fail "bundle does not contain its pnpm runner"
+[[ -x "$STAGE/.validation-tools/pnpm/bin/pnpm" ]] || fail "bundle does not contain its pnpm runner"
 if find "$STAGE" -type l -print -quit | grep -q .; then
   fail "dependency bundle contains symbolic links"
 fi
@@ -160,6 +160,7 @@ const expected = {
   nodeEngines,
   nodeMinimumVersion,
   pnpm,
+  lockfileVerification: 'verified-during-fetch-and-bound-by-sha256',
   assemblyscript,
   jsonAs,
   xjbAs,
@@ -188,6 +189,8 @@ if (JSON.stringify(manifest.contents) !== JSON.stringify(['.pnpm-store', '.valid
 }
 NODE
 
+[[ "$("$STAGE/.validation-tools/pnpm/bin/pnpm" --version)" == "$PNPM_EXPECTED" ]] || fail "bundled pnpm version mismatch"
+
 if [[ "$VERIFY_ONLY" == "1" ]]; then
   info "Dependency bundle is safe and exactly compatible with this workspace/runtime"
   INSTALL_COMMITTED=1
@@ -203,7 +206,8 @@ mkdir -p "$ROOT/.validation-tools"
 mv "$STAGE/.validation-tools/pnpm" "$ROOT/.validation-tools/pnpm"
 cp "$STAGE/.pulse-dependency-bundle.json" "$ROOT/.validation-tools/pulse-dependency-bundle.json"
 
-PNPM=(node .validation-tools/pnpm/bin/pnpm.cjs)
+PNPM=("$ROOT/.validation-tools/pnpm/bin/pnpm")
+export PATH="$ROOT/.validation-tools/pnpm/bin:$PATH"
 info "Bundled toolchain preflight"
 node --version
 "${PNPM[@]}" --version
@@ -213,10 +217,13 @@ rm -rf node_modules wasm/node_modules test/node_modules
 rm -rf packages/*/node_modules wasm/packages/*/node_modules
 
 info "Reconstructing the current workspace from the offline store"
-"${PNPM[@]}" install --offline --frozen-lockfile --ignore-scripts --store-dir "$PNPM_STORE_DIR"
+# Registry policies were checked during bundle creation; the manifest above
+# binds that result to this exact lockfile and toolchain. Package integrity
+# checks remain active. Never use trust-lockfile for online installs or CI.
+"${PNPM[@]}" --config.trust-lockfile=true install --offline --frozen-lockfile --ignore-scripts --store-dir "$PNPM_STORE_DIR"
 
 info "Verifying compiler versions"
-[[ "$(node .validation-tools/pnpm/bin/pnpm.cjs --version)" == "$PNPM_EXPECTED" ]] || fail "pnpm version mismatch"
+[[ "$("${PNPM[@]}" --version)" == "$PNPM_EXPECTED" ]] || fail "pnpm version mismatch"
 [[ "$(./wasm/node_modules/.bin/asc --version | awk '{print $2}')" == "$AS_EXPECTED" ]] || fail "AssemblyScript version mismatch"
 node <<'NODE'
 const fs = require('node:fs');

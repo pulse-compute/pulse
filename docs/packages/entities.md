@@ -4,7 +4,7 @@
 operations through the first-party JSON-RPC adapter.
 
 ```bash
-npm install @pulse-compute/entities@1.0.0-beta.5
+npm install @pulse-compute/entities@1.0.0-beta.6
 ```
 
 ## Declare an entity router
@@ -52,7 +52,7 @@ JSON-RPC failures without application exception details.
 | Input | HTTP result | JSON-RPC result |
 |---|---:|---|
 | Valid request with `id` | `200` | `result` or a stable `error` with the same `id` |
-| Notification without `id` | `204` | Empty body after synchronous completion |
+| Notification without `id` | `204` | Empty body after awaited handler and output completion |
 | Unknown method | `200` | `-32601` / `Method not found` |
 | Invalid params or schema input | `200` | `-32602` / `Invalid params` |
 | Handler or output failure | `200` | `-32603` / `Internal error` |
@@ -61,15 +61,23 @@ JSON-RPC failures without application exception details.
 `acceptEmptyObjectForNoInput: true` additionally permits `{}` for an operation
 whose input is `null`. `namedParamsOnly` can only be `true` in this contract.
 
-## Inspect and release evidence
+## JavaScript workflow and inspection
 
-Inspect the static declaration and run the focused candidate proof from this
-source checkout:
+The [Entities tools example](../../examples/10-entities-tools/) defaults to the
+Node JavaScript profile. From that example directory, use the ordinary lifecycle:
 
 ```bash
+pulse doctor
 pulse inspect
-node wasm/scripts/run-wasm-tests.cjs --task entities-orchestration-demo --no-report
+pulse test
+pulse dev
+pulse build
 ```
+
+The two harness cases exercise the no-input operation and a schema-bound lookup
+with a plain-text fetch fixture. Harness fixtures apply to `pulse test`; live
+lookup requests need a configured development fixture or backend. Stop the dev
+server before continuing to the build.
 
 `pulse inspect` reports the entity plan, deterministic catalog, schema linkage,
 redacted handler effects, and target evidence. A successful build writes:
@@ -77,6 +85,14 @@ redacted handler effects, and target evidence. A successful build writes:
 - `entities-catalog.json`: protocol-neutral discovery metadata;
 - `entities-inspection.json`: declarations, handler identities/effects, and
   eligibility/measured-execution evidence.
+
+The `cli-entities-installed-workflow` acceptance gate packs the current candidate,
+installs example 10 outside the checkout, and runs doctor, inspect, test, dev
+startup/request/shutdown, build and artifact inspection in all four profiles.
+It checks installed package bytes before/after and matches Native test/build
+artifact hashes. This is candidate-package evidence; it does not retroactively
+change previously published packages. Fastly test/dev evidence uses its local
+fixture runtime, separately from external Viceroy and deployed acceptance.
 
 Both artifacts are static and checkout-independent. They intentionally omit
 request/runtime values, request IDs, raw payloads, resolved secrets, and
@@ -88,13 +104,39 @@ direct handler or runtime-registry API.
 
 | Mode | Beta evidence | Important boundary |
 |---|---|---|
-| Node JavaScript | Measured execution | Package JavaScript runtime |
+| Node JavaScript | Ordinary doctor, inspect, test, dev, and build workflow | Package JavaScript runtime |
 | Fastly JavaScript | Measured with Viceroy 0.20.1 | Provider JavaScript package/runtime |
-| Node Native | Measured execution | Package-owned Native source |
-| Fastly Native | Measured with Viceroy 0.20.1 | Explicit provider-owned adapter; not the ordinary project build path |
+| Node Native | Ordinary doctor, inspect, test, dev, and build workflow | Package-owned guest through the canonical Node host; no JavaScript fallback |
+| Fastly Native | Ordinary doctor, inspect, test, dev, and build; emitted artifact replayed with Viceroy 0.20.1 | Provider-owned canonical Fastly runtime; no JavaScript fallback |
+
+The source-checkout task `entities-orchestration-demo` separately exercises the
+tools facade and package-owned Native artifact. The `entities-node-native-workflow` and
+`fastly-entities-native-workflow` gates separately verify that ordinary tests
+execute the same guest bytes emitted by build. Fastly builds write
+`bin/main.wasm` and `src/main.as.ts`. Select `host: 'fastly'`, `target: 'native'`
+and configure the required Fastly backend/store bindings in the profile.
+
+Fastly `pulse test` and `pulse dev` execute the provider artifact against its
+fixture ABI; development fetches require fixtures. Set `PULSE_VICEROY_BIN` when
+running the Fastly workflow gate to replay the emitted Wasm with the explicit
+local engine and local backend/store configuration. Local Viceroy replay is
+separate from live Fastly deployment evidence; no deployment is claimed.
 
 Native remains `provider-dependent`, and every target keeps automatic fallback
 disabled. The complete matrix is in [Provider and target compatibility](../reference/compatibility-matrix.md).
+
+Native Entities projects support closed typed schemas, including optional fields,
+nested objects, arrays and nullable values. Their generated decoder enforces the
+profile's `schemas.maxBytes`; the adapter separately bounds the envelope, params
+and output. A provider may reject an oversized request before JSON-RPC handling.
+
+Dynamic JSON (`OpenObject`, `JsonObject`, `JsonValue`, `ScalarRecord`) and schemas
+with JSON admission options currently require JavaScript for Entities. Native
+builds reject reachable schemas they cannot preserve with
+`PULSE_ENTITIES_TARGET_INELIGIBLE`. Catalog eligibility and inspection report
+this restriction for entity input/output declarations. Unused schema declarations
+do not disqualify an entity. Native also checks schemas used by managed fetch
+projections when generating the application.
 
 ## Diagnostics
 

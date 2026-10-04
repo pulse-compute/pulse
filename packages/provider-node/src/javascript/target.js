@@ -27,6 +27,11 @@ const NODE_JAVASCRIPT_TARGET_DESCRIPTOR = normalizeJavascriptTargetDescriptor({
       realization: 'runtime-builtin',
       implemented: true,
       status: 'implemented-g3'
+    }, {
+      algorithm: 'RS256',
+      realization: 'runtime-builtin',
+      implemented: true,
+      status: 'implemented-rs256'
     }]
   }),
   commands: { compile: true, inspect: true, doctor: true, build: true, test: true, dev: true }

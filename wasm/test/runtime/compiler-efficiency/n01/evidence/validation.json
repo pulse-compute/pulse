@@ -1,0 +1,42 @@
+{
+  "status": "passed",
+  "compilerCommit": "68be2c0a31df8dec756e49c782f6c8c5534ea350",
+  "compilerTree": "e7d37b7f6849c5368af4fd86d16ff687b525e627",
+  "matrix": {
+    "workspace": {
+      "status": "passed",
+      "cases": 21
+    },
+    "packaged": {
+      "status": "passed",
+      "cases": 21
+    },
+    "exactOutcomeAndCodeAgreement": true
+  },
+  "unit": {
+    "status": "passed",
+    "selectedTasks": 35,
+    "completedTasks": 35
+  },
+  "maintainer": "passed",
+  "documentation": "passed",
+  "documentationReleaseSimulation": "passed",
+  "runtimeOrCompilerProductChanges": false,
+  "evidenceFiles": {
+    "agreement.json": "97b5da61457a841c264b78905f08d9eae5bd7c13c884aee0e5249de629c45828",
+    "docs.log": "ae3a3d973010b81d70e585a290580032312e0870c75999a662004f03e98e4e5a",
+    "documentation-release.log": "e9d19a279b23a5d73db8bd57f86dbb08a445a92c483909152e0deee3b3ccb19f",
+    "initial-cases.json": "156e9a041623116410eb93a73450b315ff3d6f59079ba22156afd28d6eb7f923",
+    "initial-runner.cjs.txt": "63fb56aead1b607cff7b07e34e5aa59441221b941ebce08daef972684819a221",
+    "initial.json": "eb4a00ead3a191d8876e091f0ec8c83e98e540db6922fdc3324ffc975a1ddf47",
+    "initial.log": "bc49a278741a7cd71a9a91b9a769f4649eff36bfe19651187efde01a54a77c87",
+    "maintainer.log": "6e976f4f9a5ab895ea1adef82f7a6b26039583c1485fc102bbfe002ae947cc7b",
+    "packed.json": "e454694076194ec54f63dd4982302293d5bea467bd9434b6c61d8b1cf656be07",
+    "packed.log": "cbfe74e6471984382722a97085b057071c0c6eaf7bacbfd103dc60b26de02a34",
+    "unit-run.json": "1539e84074928c709c790532ab5804616f35849e8243efd834afdd84f7d33f1b",
+    "unit-run.log": "5b68832a4bb7fb47922b775e92f0bf0da3952f2dfb197ec814cfddfdd26e8286",
+    "workspace-run.json": "24c5d223f935d6b40b030845212077ce47f304358d2d7df48653dba3266eda11",
+    "workspace-run.log": "93a35bc438ee92673df08e0ffcc29c0e0e20132e76193ff19fd05ba503315a55",
+    "workspace.json": "d2d277435bf9792c8067c321851c436566cdd5ea692f19dcbeb937103ed06848"
+  }
+}

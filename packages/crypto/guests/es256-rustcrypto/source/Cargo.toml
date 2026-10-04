@@ -10,7 +10,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 ecdsa = { version = "=0.16.9", default-features = false, features = ["arithmetic", "hazmat"] }
-p256 = { version = "=0.13.2", default-features = false, features = ["arithmetic"] }
+p256 = { version = "=0.13.2", default-features = false, features = ["arithmetic", "ecdsa"] }
 sha2 = { version = "=0.10.9", default-features = false }
 
 [profile.release]

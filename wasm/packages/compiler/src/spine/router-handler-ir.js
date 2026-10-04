@@ -1,4 +1,7 @@
 'use strict';
+const ts = require('typescript');
+const { normalizeManagedHandler } = require('./async-surface-normalizer');
+const { CanonicalRouterCompileError } = require('./router-topology-frontend');
 
 const {
   buildRouterHandlerIr
@@ -142,15 +145,73 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   const topology = prepared.topology;
   const operationByEntry = new Map();
   const emittedByEntry = new Map();
+  const bodyByEntry = new Map();
+  const authoredHandlers = new Map(topology.handlerTable.handlers.map(handler => [handler.id, handler]));
   for (const handler of prepared.handlers) {
     const operationIr = buildRouterHandlerIr(handler);
     operationByEntry.set(handler.entry.stableId, operationIr);
     emittedByEntry.set(handler.entry.stableId, emitCanonicalRouterHandlerBody(operationIr));
+    // The first private body family is a terminal HTTP route. Transfer-capable
+    // handlers retain the existing cursor/mode lowering until their own pass.
+    if (handler.entry.kind === 'route' && !operationIr.summary.operationKinds['router-transfer']) {
+      const authored = authoredHandlers.get(handler.entry.handlerId);
+      bodyByEntry.set(handler.entry.stableId, Object.freeze({
+        version: 'pulse.router-native-body.v1',
+        family: 'terminal-route',
+        name: `__pulse_body_${handler.entry.stableId}`,
+        source: authored && authored.loc
+      }));
+    }
   }
 
   const header = topology.retainedDeclarations;
   let synthetic = header ? `${header}\n\n` : '';
   synthetic += 'export default function __pulse_router_entry(ctx) {\n';
+  const helpers = [];
+  const helperRecords = [];
+  const printer = ts.createPrinter({ newLine: ts.NewLineKind.LineFeed });
+  for (const helper of topology.options?.linkedProjectModules?.sourceHelpers || []) {
+    const fn = helper.functionNode;
+    if (helper.pure) {
+      const diagnostics = require('./pure-helper-source').validatePureHelperSource(helper);
+      if (diagnostics.length) throw new CanonicalRouterCompileError('Unsupported pure source helper.', diagnostics);
+      const start = synthetic.length;
+      synthetic += `function ${helper.name}(${fn.parameters.map(p => printer.printNode(ts.EmitHint.Unspecified, p, helper.sourceFile)).join(',')}) ${printer.printNode(ts.EmitHint.Unspecified, fn.body, helper.sourceFile)}\n`;
+      const generatedRange = { start, end: synthetic.length };
+      helpers.push({ id: helper.id, name: helper.name, pure: true, source: helper.source,
+        resultKind: fn.type.getText(helper.sourceFile),
+        parameters: fn.parameters.map((p, i) => { const type = helper.parameterTypes[i]; return { name: p.name.text, valueKind: typeof type === 'string' ? type : type.kind === 'record' ? 'object' : 'array', ...(typeof type === 'object' ? { borrow: { version: require('@pulse-compute/wasm-contracts/handler/canonical-native-plan').CANONICAL_NATIVE_PURE_BORROW_VERSION, type } } : {}) }; }), generatedRange });
+      helperRecords.push({ entryStableId: helper.id, operationIr: { sourceFile: helper.sourceFile, handler: fn },
+        canonicalIr: { router: { entry: { generatedRange } } } });
+      continue;
+    }
+    const declaration = fn.parent;
+    const immutable = !ts.isVariableDeclaration(declaration) || Boolean(declaration.parent.flags & ts.NodeFlags.Const);
+    let reassigned = false;
+    const scanAssignments = node => {
+      if (ts.isBinaryExpression(node) && node.operatorToken.kind >= ts.SyntaxKind.FirstAssignment && node.operatorToken.kind <= ts.SyntaxKind.LastAssignment
+        && ts.isIdentifier(node.left) && node.left.text === helper.source.name) reassigned = true;
+      ts.forEachChild(node, scanAssignments);
+    };
+    scanAssignments(helper.sourceFile);
+    const valid = immutable && !reassigned && ts.isBlock(fn.body) && fn.parameters[0]?.name?.text === 'ctx'
+      && fn.parameters.every((p, i) => ts.isIdentifier(p.name) && !p.initializer && !p.dotDotDotToken && !p.questionToken
+        && (i === 0 || [ts.SyntaxKind.StringKeyword, ts.SyntaxKind.NumberKeyword, ts.SyntaxKind.BooleanKeyword].includes(p.type?.kind)))
+      && new Set(fn.parameters.map(p => p.name.text)).size === fn.parameters.length
+      && fn.modifiers?.some(m => m.kind === ts.SyntaxKind.AsyncKeyword);
+    if (!valid) throw new CanonicalRouterCompileError('Unsupported source helper signature.', [{ code: 'PULSE_NATIVE_HELPER_SIGNATURE_UNSUPPORTED', severity: 'error', message: 'Helpers require async block bodies, ctx first and explicit scalar inputs.', file: helper.source.file }]);
+    const normalized = normalizeManagedHandler(fn, { sourceFile: helper.sourceFile, ctxName: 'ctx', frontend: 'canonical-router',
+      target: 'native', requireAsync: true, packageEffectForCall: topology.options.packageEffectForCall });
+    if (normalized.diagnostics.length) throw new CanonicalRouterCompileError('Unsupported source helper body.', normalized.diagnostics);
+    const start = synthetic.length;
+    const parameters = fn.parameters.slice(1).map(p => printer.printNode(ts.EmitHint.Unspecified, p, helper.sourceFile)).join(',');
+    synthetic += `function ${helper.name}(${parameters}) ${printer.printNode(ts.EmitHint.Unspecified, normalized.functionNode.body, helper.sourceFile)}\n`;
+    const generatedRange = { start, end: synthetic.length };
+    helpers.push({ id: helper.id, name: helper.name, source: helper.source,
+      parameters: fn.parameters.slice(1).map(p => ({ name: p.name.text, valueKind: p.type.getText(helper.sourceFile) })), generatedRange });
+    helperRecords.push({ entryStableId: helper.id, operationIr: { sourceFile: helper.sourceFile, handler: fn },
+      canonicalIr: { router: { entry: { generatedRange } } } });
+  }
 
   const eventReachable = Boolean(topology.eventTopology && topology.eventCatalog && topology.eventCatalog.events.length > 0);
   const eventTopology = realizedEventTopology(topology, prepared);
@@ -198,7 +259,9 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
 
     if (entry.kind === 'mount') {
       const pattern = rawEntry.pattern && rawEntry.pattern.normalized || `${rawEntry.path || '/'}/*`;
-      synthetic += `    if (${MODE} === 0 && __pulse_router_match(ctx.req.path, ${JSON.stringify(pattern)})) {\n`;
+      const eligibility = rawEntry.eligibility;
+      const condition = eligibility ? ` && ctx.state.get(${JSON.stringify(eligibility.state)}) === ${JSON.stringify(eligibility.equals)}` : '';
+      synthetic += `    if (${MODE} === 0 && __pulse_router_match(ctx.req.path, ${JSON.stringify(pattern)})${condition}) {\n`;
       synthetic += `      ${CURSOR} = ${rawEntry.childStartIndex};\n`;
       synthetic += '    } else {\n';
       synthetic += `      ${CURSOR} = ${rawEntry.parentContinueIndex};\n`;
@@ -213,10 +276,13 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
       }
       if (entry.kind === 'route') matchCondition += ` && ctx.req.method === ${JSON.stringify(entry.method)} && __pulse_router_match(ctx.req.path, ${JSON.stringify(entry.path)})`;
       synthetic += `    if (${matchCondition}) {\n`;
+      const nativeBody = bodyByEntry.get(entry.stableId);
+      if (nativeBody) synthetic += `      function ${nativeBody.name}() {\n`;
       const start = synthetic.length;
-      synthetic += `${indent(emitted.sourceText, 6)}\n`;
+      synthetic += `${indent(emitted.sourceText, nativeBody ? 8 : 6)}\n`;
       const end = synthetic.length;
       generatedRange = Object.freeze({ start, end });
+      if (nativeBody) synthetic += `      }\n      return ${nativeBody.name}();\n`;
       synthetic += '    } else {\n';
       synthetic += `      ${CURSOR} = ${entry.nextIndex};\n`;
       synthetic += '    }\n';
@@ -227,6 +293,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
 
     const record = Object.freeze({
       ...entry,
+      ...(bodyByEntry.has(entry.stableId) ? { nativeBody: bodyByEntry.get(entry.stableId) } : {}),
       ...(eventReachable ? { plane: 'http' } : {}),
       generatedRange,
       generatedBlockRange: Object.freeze({ start: openingStart, end: synthetic.length })
@@ -354,6 +421,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
       }),
       routes: Object.freeze(routeRecords),
       entries: Object.freeze(entryRecords),
+      ...(helpers.length ? { helpers: Object.freeze(helpers) } : {}),
       ...(eventReachable ? { applicationEntries: Object.freeze(entryRecords) } : {})
     }),
     diagnostics: Object.freeze([])
@@ -362,7 +430,7 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
   return Object.freeze({
     version: ROUTER_HANDLER_IR_BUNDLE_VERSION,
     output,
-    handlers: Object.freeze(handlerRecords)
+    handlers: Object.freeze([...helperRecords, ...handlerRecords])
   });
 }
 

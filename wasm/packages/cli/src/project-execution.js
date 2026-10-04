@@ -50,12 +50,15 @@ const {
 } = require('@pulse-compute/wasm-contracts/provider/toolchain');
 const { loadJavascriptApplication } = require('./typescript-module-loader.js');
 const { writeNodeHttpResponse } = require('./internal/node-http.js');
+const { inspectNativeExpansion } = require('./internal/native-expansion.js');
 const {
   HANDLER_AUTHORING_MODES
 } = require('@pulse-compute/wasm-contracts/handler/surface-contract');
 const {
   CANONICAL_PACKAGE_INSPECTION_VERSION
 } = require('@pulse-compute/wasm-contracts/package/package-contract');
+
+const { CANONICAL_NATIVE_FINAL_WASM_POLICY } = require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime');
 
 const PROJECT_EXECUTION_VERSION = 'pulse.project-execution.v10';
 const EVENT_INSPECTION_VERSION = 'pulse.event-inspection.v1';
@@ -340,16 +343,32 @@ function compileNativeProjectInMemory(project, options = {}) {
     throw failure;
   }
   const plan = buildCanonicalNativePlan(compiled, { reporting: project.reporting });
+  const application = plan.packages && plan.packages.application;
+  if (application && !(targetDescriptor(project, 'native').realizations || []).some(entry =>
+    entry.kind === 'package-native-application' && entry.contractId === application.contractId
+    && entry.implementation === application.version && entry.implemented === true)) {
+    throw new CanonicalNativePlanError('The selected provider has not integrated this package Native application.', [{
+      code: 'PULSE_CANONICAL_NATIVE_PLAN_FAILED', severity: 'error',
+      message: `Provider ${project.provider} does not implement ${application.contractId} Native application execution.`,
+      detail: { contractId: application.contractId, provider: project.provider, automaticFallback: false }
+    }]);
+  }
+  if (options.onNativePlan) options.onNativePlan({ compiled, plan });
   const native = compileCanonicalNativePlan(plan, {
     cwd: project.root,
     projectRoot: project.root,
     profile: project.selectedProfile && project.selectedProfile.name || project.profile && project.profile.name || 'native',
-    targetDescriptor: getProviderTargetDescriptor(providerDriver(project), 'native'),
+    // This intermediate artifact uses Pulse's host ABI. The provider writer
+    // separately validates its final artifact against the selected provider ABI.
+    targetDescriptor: { finalWasmPolicy: CANONICAL_NATIVE_FINAL_WASM_POLICY },
     synchronizedPackages: releaseCatalog.packages.map(({ name, version }) => Object.freeze({ name, version })),
     timeoutMs: options.timeoutMs,
-    nativeOptimization: options.experimentalNativeSize === true
-      ? 'experimental-native-size'
-      : options.nativeOptimization
+    emitWat: options.emitWat,
+    nativeOptimization: options.experimentalNativeBoundedSize === true
+      ? 'experimental-native-bounded-size'
+      : options.experimentalNativeSize === true
+        ? 'experimental-native-size'
+        : options.nativeOptimization
   });
   return Object.freeze({ compiled, plan, native });
 }
@@ -506,7 +525,10 @@ function providerExecutionOptions(project, values = {}) {
 function requiresExactNativeExecution(compiled) {
   const algorithms = compiled.cryptoRealizationPlan && compiled.cryptoRealizationPlan.algorithms || [];
   const operations = compiled.metadata && compiled.metadata.providerOperations || [];
-  return algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+  return Boolean(compiled.packageApplication) || algorithms.some((entry) => entry.kind === 'guest-linked' || entry.kind === 'guest-source')
+    || compiled.metadata?.capabilities?.includes('response.output')
+    || compiled.metadata?.capabilities?.includes('request.body.forward')
+    || compiled.metadata?.capabilities?.includes('request.body.transform')
     || (compiled.metadata?.router?.entries || []).some((entry) => entry.kind === 'error')
     || operations.some((entry) => ['kv.getVersioned', 'kv.insertIfAbsent', 'kv.compareAndSwap'].includes(entry.capability));
 }
@@ -674,10 +696,13 @@ function buildProject(project, options = {}) {
       { provider: project.provider, replacement: 'pulse build' }
     );
   }
-  if (options.experimentalNativeSize === true && (project.target || 'native') !== 'native') {
+  if (options.emitWat === true && (project.target || 'native') !== 'native') {
+    throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: project.target || 'native' });
+  }
+  if ((options.experimentalNativeSize === true || options.experimentalNativeBoundedSize === true) && (project.target || 'native') !== 'native') {
     throw new PulseProjectError(
       'PULSE_EXPERIMENTAL_NATIVE_SIZE_UNSUPPORTED',
-      'The --experimental-native-size flag is available only for Native compilation.',
+      'Experimental Native size flags are available only for Native compilation.',
       {
         target: project.target || 'native',
         required: Object.freeze({ target: 'native' })
@@ -958,7 +983,7 @@ function buildProject(project, options = {}) {
       optimization: nativeManifest.optimization,
       source: Object.freeze({ file: path.basename(nativeBuild.sourceFile), sha256: prepared.native.sourceHash }),
       wasm: Object.freeze({ file: path.basename(nativeBuild.wasmFile), ...nativeManifest.wasm }),
-      wat: Object.freeze({ file: path.basename(nativeBuild.watFile), ...nativeManifest.wat }),
+      wat: Object.freeze({ file: nativeBuild.watFile ? path.basename(nativeBuild.watFile) : null, ...nativeManifest.wat }),
       plan: path.basename(nativeBuild.planFile),
       manifest: path.basename(nativeBuild.manifestFile),
       packageRealizationArtifacts: Object.freeze({
@@ -1126,7 +1151,7 @@ function compileNativeProject(project, options = {}) {
         ...nativeManifest.wasm
       }),
       wat: Object.freeze({
-        file: path.basename(nativeBuild.watFile),
+        file: nativeBuild.watFile ? path.basename(nativeBuild.watFile) : null,
         ...nativeManifest.wat
       }),
       plan: path.basename(nativeBuild.planFile),
@@ -1254,6 +1279,26 @@ function materializeTestResponse(response) {
       ? Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength)
       : Buffer.from(String(chunk)))).toString('utf8');
   return Object.freeze({ ...response, body });
+}
+
+async function materializeForwardedTestResponse(response, maxBytes) {
+  const source = response?.bodyStream;
+  if (!source || typeof source.getReader !== 'function') return materializeTestResponse(response);
+  const reader = source.getReader(), chunks = [];
+  let bytes = 0;
+  try {
+    while (true) {
+      const next = await reader.read();
+      if (next.done) break;
+      bytes += next.value.byteLength;
+      if (bytes > maxBytes) throw new PulseProjectError('PULSE_REQUEST_BODY_TOO_LARGE', 'Forwarded test response exceeds its configured limit.');
+      chunks.push(Buffer.from(next.value));
+    }
+    return Object.freeze({ ...response, body:Buffer.concat(chunks).toString('utf8') });
+  } catch (error) {
+    try { await reader.cancel(error); } catch (_) {}
+    throw error;
+  } finally { reader.releaseLock(); }
 }
 
 function assertExpectation(testCase, execution) {
@@ -1456,6 +1501,9 @@ async function runJavascriptProjectTests(project, options = {}) {
         ...runtimeOptions,
         bindings: project.providerConfig.bindings,
         maxDurationMs: project.providerConfig.maxDurationMs,
+        bodyForwarding: project.providerConfig.bodyForwarding,
+        generatedOutput: project.providerConfig.generatedOutput,
+        bodyTransform: project.providerConfig.bodyTransform,
         networkFetch: project.dev.networkFetch
       });
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
@@ -1556,6 +1604,9 @@ async function runProjectTests(project, options = {}) {
   let failed = 0;
   for (const testCase of selected) {
     const started = process.hrtime.bigint();
+    const forwardingBudget = compiled.metadata?.capabilities?.includes('request.body.forward')
+      ? require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').createRequestBudget(providerExecutionOptions(project, {}))
+      : undefined;
     try {
       if (testCase.kind === 'event') {
         const schemaCodecs = createCanonicalSchemaCodecs(compiled.schema.bundle.registry);
@@ -1577,6 +1628,8 @@ async function runProjectTests(project, options = {}) {
       }
       const executionOptions = providerExecutionOptions(project, {
         packageArtifacts: packageRealizationArtifactsForCompiled(compiled),
+        ...(forwardingBudget ? {requestBudget:forwardingBudget,signal:forwardingBudget.signal} : {}),
+        outputCollect: true,
         request: testCase.request,
         fetches: testCase.fetches,
         config: testCase.config,
@@ -1595,7 +1648,9 @@ async function runProjectTests(project, options = {}) {
       if (testCase.expect.error) throw new assert.AssertionError({ message: `${testCase.name}: expected ${testCase.expect.error.name || 'an error'} but execution completed` });
       assertExpectation(testCase, Object.freeze({
         ...execution,
-        response: materializeTestResponse(execution.response)
+        response: compiled.metadata?.capabilities?.includes('request.body.forward')
+          ? await materializeForwardedTestResponse(execution.response, project.providerConfig.bodyForwarding.maxBytes)
+          : materializeTestResponse(execution.response)
       }));
       cases.push(Object.freeze({
         name: testCase.name,
@@ -1603,7 +1658,11 @@ async function runProjectTests(project, options = {}) {
         durationMs: Number(process.hrtime.bigint() - started) / 1e6,
         response: Object.freeze({ status: execution.response.status, bodyClass: execution.response.bodyClass, kind: execution.response.kind }),
         effects: execution.effectCount,
-        ...(execution.evidence ? { executionEvidence: execution.evidence } : {}),
+        ...(execution.evidence ? { executionEvidence: execution.evidence } : exactNativeExecution ? { executionEvidence: Object.freeze({
+          mode: 'native-wasm', planHash: execution.planHash, wasmSha256: execution.wasmSha256,
+          ...(execution.guestMemoryBytes === undefined ? {} : {guestMemoryBytes:execution.guestMemoryBytes}),
+          automaticFallback: false
+        }) } : {}),
         continuations: execution.continuations.map((entry) => Object.freeze({ id: entry.id, state: entry.state, effectIds: entry.effectIds })),
         resolutionOrder: execution.resolutionOrder
       }));
@@ -1616,7 +1675,7 @@ async function runProjectTests(project, options = {}) {
         failed += 1;
         cases.push(Object.freeze({ name: testCase.name, status: 'failed', error: errorSummary(assertion === error ? error : assertion, testCase.secrets), actualError: assertion === error ? undefined : errorSummary(error, testCase.secrets), durationMs: Number(process.hrtime.bigint() - started) / 1e6 }));
       }
-    }
+    } finally { forwardingBudget?.close(); }
   }
   return Object.freeze({
     status: failed === 0 ? 'passed' : 'failed',
@@ -1923,6 +1982,7 @@ function doctorProject(project, options = {}) {
   }
   let compiled;
   let nativePrepared;
+  let nativeInspection;
   let preparedJavascript;
   let targetSupport;
   let eventSupport;
@@ -1976,7 +2036,7 @@ function doctorProject(project, options = {}) {
         : (jsonPolicy.strict ? 'Strict schema-bound JSON policy is active.' : 'Non-strict JSON policy is active, but no schema-less JSON call is reachable.'),
       jsonPolicy
     );
-    nativePrepared = compileNativeProjectInMemory(project, { compiled });
+    nativePrepared = compileNativeProjectInMemory(project, { compiled, onNativePlan: value => { nativeInspection = value; } });
     if (nativePrepared.plan.requestState && nativePrepared.plan.requestState.enabled) {
       check('request-state', 'passed', 'Request-local ctx.state is guest-owned, survives continuations, and resets at pulse_start.', nativePrepared.plan.requestState);
     }
@@ -2029,6 +2089,13 @@ function doctorProject(project, options = {}) {
     }
     const schemaFailure = error.code === 'PULSE_SCHEMA_COMPILE_FAILED' || (error.diagnostics || []).some((entry) => String(entry.code || '').includes('SCHEMA'));
     if (schemaFailure) check('schemas', 'failed', error.message, { code: error.code, diagnostics: error.diagnostics, detail: error.detail });
+  }
+  if (compiled) {
+    const expansion = inspectNativeExpansion(nativeInspection?.compiled || compiled, nativeInspection?.plan);
+    const warning = selectedTarget === 'native' && expansion.summary.expensiveUnsharedOwners > 0;
+    check('native-expansion', warning ? 'warning' : 'passed',
+      `${expansion.summary.repeatedOwners} repeated HTTP owner(s); ${expansion.planStatus === 'unavailable' ? 'Native body sharing is unknown.' : `${expansion.summary.expensiveUnsharedOwners} have substantial per-registration Native bodies.`} ${selectedTarget === 'javascript' ? 'Advisory Native planning only; JavaScript executes the source graph.' : 'Counts describe the plan, not final Wasm savings.'}`,
+      expansion, warning ? 'PULSE_NATIVE_EXPANSION_REPEATED' : undefined);
   }
   if (selectedTarget === 'javascript') {
     try {
@@ -2272,7 +2339,7 @@ function requestHeaders(req) {
 
 function devErrorResponse(res, error, secrets) {
   if (res.headersSent) {
-    if (!res.writableEnded) res.end();
+    if (!res.writableEnded) res.destroy(error);
     return;
   }
   const summary = errorSummary(error, secrets);
@@ -2352,6 +2419,9 @@ async function startBundledJavascriptDevServer(project, options = {}) {
   const environment = javascript.createLocalEnvironment({
     bindings: project.providerConfig.bindings,
     maxDurationMs: project.providerConfig.maxDurationMs,
+    bodyForwarding: project.providerConfig.bodyForwarding,
+    generatedOutput: project.providerConfig.generatedOutput,
+    bodyTransform: project.providerConfig.bodyTransform,
     config: project.dev.config,
     secrets: project.dev.secrets,
     kv: project.dev.kv,
@@ -2458,6 +2528,9 @@ async function startBundledJavascriptDevServer(project, options = {}) {
         environment,
         bindings: project.providerConfig.bindings,
         maxDurationMs: project.providerConfig.maxDurationMs,
+        bodyForwarding: project.providerConfig.bodyForwarding,
+        generatedOutput: project.providerConfig.generatedOutput,
+        bodyTransform: project.providerConfig.bodyTransform,
         application: Object.freeze({
           projectHash: project.projectHash,
           planHash: project.planHash,
@@ -2655,6 +2728,9 @@ async function startJavascriptDevServer(project, options = {}) {
     kv: project.dev.kv,
     bindings: project.providerConfig.bindings,
     maxDurationMs: project.providerConfig.maxDurationMs,
+    bodyForwarding: project.providerConfig.bodyForwarding,
+    generatedOutput: project.providerConfig.generatedOutput,
+    bodyTransform: project.providerConfig.bodyTransform,
     s3FetchImplementation: javascript.createFixtureFetch(
       project.dev.fetches,
       project.dev.networkFetch ? globalThis.fetch : undefined,
@@ -2791,16 +2867,22 @@ async function startDevServer(project, options = {}) {
 
   let handled = 0;
   const server = http.createServer(async (req, res) => {
-    const budget = require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').createRequestBudget(providerExecutionOptions(project, {}));
+    const forwarding = compiled.metadata?.capabilities?.includes('request.body.forward') || Boolean(project.providerConfig.bodyTransform);
+    const connection = new AbortController();
+    const disconnected = () => connection.abort(new Error('Native HTTP request disconnected.'));
+    const closed = () => { if (!res.writableFinished) disconnected(); };
+    req.once('aborted', disconnected); res.once('close', closed);
+    const budget = require('@pulse-compute/wasm-host-runtime/runtime/canonical-api-runtime').createRequestBudget({ ...providerExecutionOptions(project, {}), signal:connection.signal });
+    let ingress, outputExecution;
     if (options.once) res.once('finish', () => server.close());
     try {
       if (compileError) throw compileError;
       const bodyLimit = project.schemas.active ? Math.min(project.dev.maxBodyBytes, project.schemas.maxBytes) : project.dev.maxBodyBytes;
       budget.check();
-      const body = await budget.race(readRequestBody(req, bodyLimit, budget));
+      const body = forwarding ? undefined : await budget.race(readRequestBody(req, bodyLimit, budget));
       const host = req.headers.host || `${project.dev.host}:${project.dev.port}`;
       const url = new URL(req.url || '/', `http://${host}`);
-      const executionOptions = providerExecutionOptions(project, {
+      let executionOptions = providerExecutionOptions(project, {
         packageArtifacts,
         requestBudget: budget, signal: budget.signal,
         request: { method: req.method || 'GET', url: url.href, path: url.pathname, headers: requestHeaders(req), body: body || undefined },
@@ -2813,15 +2895,38 @@ async function startDevServer(project, options = {}) {
         liveFetch: project.dev.networkFetch,
         executionId: `dev:${++handled}`
       });
+      outputExecution = providerDriver(project).createGeneratedOutput?.(res, { ...executionOptions, requestMethod: req.method });
+      executionOptions = { ...executionOptions, outputExecution };
+      if (forwarding) {
+        res.setHeader('connection','close');
+        const prepare = providerDriver(project).prepareNativeRequest;
+        if (!prepare) throw new PulseProjectError('PULSE_REQUEST_FORWARDING_UNAVAILABLE', 'The selected provider has no Native incoming-body admission.');
+        ingress = await budget.race(Promise.resolve(prepare(req, executionOptions)).then(async value => {
+          // A timed-out admission still owns a lazy source and must release it.
+          if (budget.signal.aborted) { await value.close(); budget.check(); }
+          return value;
+        }));
+        executionOptions = { ...executionOptions, ...ingress.options, request:ingress.request };
+      }
       const execution = exactNativeExecution
         ? await executeNative(executionOptions)
         : await executeCanonicalProgram(program, executionOptions);
-      writeNodeHttpResponse(res, execution.response, { requestBudget: budget });
-      events(Object.freeze({ event: 'request', method: req.method || 'GET', path: url.pathname, status: execution.response.status, effects: execution.effectCount }));
+      if (outputExecution?.started) await outputExecution.finish();
+      else await writeNodeHttpResponse(res, execution.response, {
+        requestBudget: budget, signal: ingress?.signal || budget.signal,
+        awaitCompletion: Boolean(forwarding), closeConnection: Boolean(forwarding)
+      });
+      events(Object.freeze({ event: 'request', method: req.method || 'GET', path: url.pathname, status: execution.response.status, effects: execution.effectCount,
+        ...((forwarding || (executionOptions.generatedOutput && exactNativeExecution)) ? {executionEvidence:{mode:'native-wasm',wasmSha256:execution.wasmSha256,planHash:execution.planHash,guestMemoryBytes:execution.guestMemoryBytes,automaticFallback:false}} : {})
+      }));
     } catch (error) {
       devErrorResponse(res, error, project.dev.secrets);
       events(Object.freeze({ event: 'request-error', method: req.method || 'GET', path: req.url || '/', error: errorSummary(error, project.dev.secrets) }));
-    } finally { budget.close(); }
+    } finally {
+      outputExecution?.dispose();
+      await ingress?.close();
+      req.removeListener('aborted',disconnected);res.removeListener('close',closed);budget.close();
+    }
   });
 
   function cleanup() {

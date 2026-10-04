@@ -1,0 +1,1075 @@
+
+[pulsewasm:unit] pure-helper-contract
+[pulsewasm] Pure-helper source oracles and scalar/record admission (timeout 30.00s)
+{"status":"passed","nativeSupport":"scalar-record-and-loop-supported","scalarOracleCases":5,"recordOracleCases":60,"nativeAdmissionCases":4}
+[pulsewasm] pure-helper-contract: passed in 1.16s
+
+[pulsewasm:unit] suite-shape
+[pulsewasm] profile separation, uniqueness, and timeout budgets (timeout 30.00s)
+ok - 214 current tasks across 7 profiles
+[pulsewasm] suite-shape: passed in 51ms
+
+[pulsewasm:unit] test-orchestration
+[pulsewasm] atomic reports, deterministic slicing, timeouts, and descendant cleanup (timeout 30.00s)
+
+[pulsewasm:unit] orchestration-pass-fixture
+[pulsewasm] orchestration pass fixture (timeout 5.00s)
+fixture-pass
+[pulsewasm] orchestration-pass-fixture: passed in 35ms
+
+[pulsewasm:unit] orchestration-failure-evidence-fixture
+[pulsewasm] orchestration failure evidence fixture (timeout 5.00s)
+[pulsewasm] orchestration-failure-evidence-fixture: copied 1 task-owned failure log(s) into the durable run report
+[pulsewasm] orchestration-failure-evidence-fixture: failed in 25ms
+
+[pulsewasm:unit] orchestration-timeout-fixture
+[pulsewasm] orchestration timeout and descendant cleanup fixture (timeout 1.20s)
+fixture-timeout-ready
+[pulsewasm] orchestration-timeout-fixture: timeout; process group 13949 contains 2 process(es)
+[pulsewasm:process] pid=13949 ppid=13923 state=Ssl elapsed=00:01 /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node -e const fs = require('node:fs'); const { spawn } = require('node:child_process'); const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' }); fs.writeFileSync("/tmp/pulse-suite-task-test-orchestration-JRmIR9/pulse-test-orchestration-F4DR7t/descendant.pid", String(child.pid)); process.stdout.write('fixture-timeout-ready\n'); setInterval(() => {}, 1000);
+[pulsewasm:process] pid=13956 ppid=13949 state=Sl elapsed=00:01 /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node -e setInterval(() => {}, 1000)
+
+Writing Node.js report to file: report.20261003.023341.13949.0.001.json
+Node.js report completed
+[pulsewasm] orchestration-timeout-fixture: timeout in 6.98s
+ok - test orchestration writes atomic reports, slices profiles deterministically, preserves task and failure logs, captures timeout diagnostics, and terminates descendant process groups
+[pulsewasm] test-orchestration: passed in 7.09s
+
+[pulsewasm:unit] package-exports
+[pulsewasm] workspace package export smoke (timeout 30.00s)
+ok - 19 package manifests expose only existing current targets
+[pulsewasm] package-exports: passed in 181ms
+
+[pulsewasm:unit] boundaries
+[pulsewasm] workspace layout and import boundaries (timeout 30.00s)
+ok - PulseWasm workspace import/layout boundaries, ephemeral artifact output, and compiler-wrapper debt removal are enforced
+ok - compiler orchestration delegates implementation and contract ownership to the owning packages
+[pulsewasm] boundaries: passed in 315ms
+
+[pulsewasm:unit] workspace-hygiene
+[pulsewasm] package-manager and workspace hygiene (timeout 30.00s)
+ok - workspace package-manager hygiene is pnpm-only and portable
+[pulsewasm] workspace-hygiene: passed in 162ms
+
+[pulsewasm:unit] hidden-contracts
+[pulsewasm] hidden contract literal scanner (timeout 30.00s)
+ok - PulseWasm hidden contract scanner classifies non-contract versions and rejects duplicate contract literals
+[pulsewasm] hidden-contracts: passed in 226ms
+
+[pulsewasm:unit] release-runtime-policy
+[pulsewasm] Node release-line acceptance and Fastly CLI lifecycle ownership (timeout 30.00s)
+ok - pnpm policy follows its manifest range; native execution preserves cwd/exit/JSON and rejects missing offline or stale runners
+ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution
+[pulsewasm] release-runtime-policy: passed in 578ms
+
+[pulsewasm:unit] release-tag
+[pulsewasm] release-owner tagging guards and immutable tag identity (timeout 30.00s)
+ok - release tag requires reviewed remote main, defaults to dry run, preserves tag identity, and never pushes
+[pulsewasm] release-tag: passed in 389ms
+
+[pulsewasm:unit] api-surface
+[pulsewasm] provider-neutral TypeScript API and fixture type surface (timeout 30.00s)
+ok - runtime owns one async provider-neutral type algebra and Pulse re-exports it without a second Router value
+[pulsewasm] api-surface: passed in 905ms
+
+[pulsewasm:unit] logging-contract
+[pulsewasm] logging levels, ABI, reporting resolution, and public surfaces (timeout 30.00s)
+ok - logging levels, synchronous ABI, flat reporting resolution, and handler surfaces are canonical
+[pulsewasm] logging-contract: passed in 42ms
+
+[pulsewasm:unit] s3-design-contract
+[pulsewasm] S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes (timeout 30.00s)
+ok - S3 O1 design: typed subset, canonical input seam, key/body/signing vectors and bounded envelopes; no runtime support claim
+[pulsewasm] s3-design-contract: passed in 1.14s
+
+[pulsewasm:unit] kv-design-contract
+[pulsewasm] K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty (timeout 30.00s)
+{"status":"passed","proof":"K1-executable-specification","tokens":8,"outcomeVectors":31,"readOutcomeVectors":15,"raceSchedules":12,"publicRuntimeSupport":false,"providerReality":false}
+[pulsewasm] kv-design-contract: passed in 1.11s
+
+[pulsewasm:unit] kv-conditional-runtime
+[pulsewasm] K2 production conditional KV types, wire bounds, snapshots and outcome contracts (timeout 30.00s)
+ok - K2 production types, wire/token/bounds corpus, admission snapshot, redaction and explicit failure outcomes
+[pulsewasm] kv-conditional-runtime: passed in 1.08s
+
+[pulsewasm:unit] kv-conditional-gates
+[pulsewasm] K4 executable requirement and deployed evidence identity, location and uncertainty gates (timeout 30.00s)
+ok - K4 rejects missing executables, mixed deployment identities, repeated receipts, same-POP evidence and unknown write acceptance; deployed orchestration tested with a local fixture only
+[pulsewasm] kv-conditional-gates: passed in 412ms
+
+[pulsewasm:unit] s3-read-contract
+[pulsewasm] S3 read binding authority, lowering negatives and bounded result contract (timeout 30.00s)
+ok - S3 read bindings, literal authority, dynamic key seam and result bounds
+[pulsewasm] s3-read-contract: passed in 206ms
+
+[pulsewasm:unit] s3-write-contract
+[pulsewasm] S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle (timeout 30.00s)
+ok - S3 PUT literal lowering, bounded results, explicit Crypto JavaScript vectors, snapshot and wipe
+[pulsewasm] s3-write-contract: passed in 297ms
+
+[pulsewasm:unit] crypto-config-planning
+[pulsewasm] crypto profile replacement, reachable requirements, and deterministic target realization planning (timeout 180.00s)
+ok - crypto configuration replacement, reachable demand, deterministic realization planning, and pre-lowering failure are canonical
+[pulsewasm] crypto-config-planning: passed in 624ms
+
+[pulsewasm:unit] crypto-es256-signing
+[pulsewasm] RFC6979 signing vector, frame rejection and private material cleanup (timeout 180.00s)
+ok - RFC6979 ES256 signing, independent verification, strict frames, key consistency and cleanup
+[pulsewasm] crypto-es256-signing: passed in 80ms
+
+[pulsewasm:unit] crypto-rs256
+[pulsewasm] RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup (timeout 180.00s)
+{"status":"passed","assertions":177,"artifactBytes":36378,"fixedMemoryBytes":2097152,"observedStackBytes":6324,"reservedStackBytes":65536,"timings":[{"bits":2048,"signMedianMs":6.647796,"verifyMedianMs":0.4934639999999888},{"bits":3072,"signMedianMs":19.205286,"verifyMedianMs":0.906626000000017},{"bits":4096,"signMedianMs":42.140360999999984,"verifyMedianMs":1.4946520000000874}],"timingEnvironment":"local Node Wasm; development evidence, not Fastly measurements","providerReality":false}
+[pulsewasm] crypto-rs256: passed in 1.90s
+
+[pulsewasm:unit] crypto-digest-text-contract
+[pulsewasm] Exact-text digest admission, bounded failures, unavailable providers and cancellation (timeout 30.00s)
+ok - digest vectors, exact import admission, bounded failures, staging wipe, provider unavailability and cancellation
+[pulsewasm] crypto-digest-text-contract: passed in 385ms
+
+[pulsewasm:unit] reachable-graph
+[pulsewasm] deterministic path-independent reachable graph (timeout 120.00s)
+ok - reachable graph locks resolver b67ace60ec94fd12c0c05bf64429b1eae16421da96721205c1983852dd931fc5, graph d8af8e6582ab6d2eca4b67a72be9e5becabe2a1fd6a87742590e8a3542ba9790, and 5 path-independent module identities
+[pulsewasm] reachable-graph: passed in 74ms
+
+[pulsewasm:unit] project-modules
+[pulsewasm] recursive modules, handlers, Routers, cycles, and diagnostics (timeout 180.00s)
+ok - project graph compiles 4 runtime modules through one Handler/Router IR path
+[pulsewasm] project-modules: passed in 813ms
+
+[pulsewasm:unit] package-reachability
+[pulsewasm] graph-selected package operations and native eligibility (timeout 240.00s)
+ok - package reachability selects pulse.grip, owns 2 bindings, and rejects unsupported boundaries without fallback
+[pulsewasm] package-reachability: passed in 989ms
+
+[pulsewasm:unit] provider-toolchain
+[pulsewasm] exact compiler-to-provider toolchain invocation and result boundary (timeout 30.00s)
+ok - provider toolchains, target descriptors, invocations, requirements, results, and final-byte packaging are exact, versioned, and fail closed
+[pulsewasm] provider-toolchain: passed in 51ms
+
+[pulsewasm:unit] schema-registry
+[pulsewasm] pulse.schema registry and semantic trace contracts (timeout 120.00s)
+ok - pulse.schema extracts versioned schema/response IR and locks semantic trace and backend-input contracts
+ok - schema cost attribution preserves IDs, policies, response roots, Unicode byte accounting and production generation
+[pulsewasm] schema-registry: passed in 845ms
+
+[pulsewasm:unit] continuation-registry
+[pulsewasm] continuation state, expiry, and resume guards (timeout 30.00s)
+ok - continuation registry enforces waiting/resume/complete, double-resume, expiry, failure, cancellation, and ordered trace transitions
+[pulsewasm] continuation-registry: passed in 31ms
+
+[pulsewasm:unit] entities-contracts
+[pulsewasm] Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary (timeout 30.00s)
+{"version":"pulse.entities-contract.v1","registryHash":"46f5c921451588141b5ffadb27fb4e489a1b72aba5a260aa7122ce71c14931f2","planHash":"379b0d182fb4c9e084547918df3c2cb03c8594e01172fcf973a0163b98bddd30","catalogHash":"433f95d1d129fa638b003911653fefd9ae79ec41a51726705bc0da1d85464db9","diagnostics":18,"packageExports":[".","./pulsewasm/manifest","./pulsewasm/compiler","./pulsewasm-native"],"executableLowererInstalled":true,"releaseAssigned":false}
+ok - Entities versions, normalizers, declaration registry, plan/catalog identities, trusted lowerer, and package-owned Native source entry are singular and bounded
+[pulsewasm] entities-contracts: passed in 92ms
+
+[pulsewasm:unit] entities-schema-bridge
+[pulsewasm] I3 request-bound declared-schema codec bridge, immutable values, semantic traces, and negative authority surface (timeout 120.00s)
+{"version":"pulse.first-party-embedded-schema-codec-bridge.v1","declaredSchemas":["app.createInput","app.user"],"bridgeKeys":["decodeEmbeddedJson","encodeEmbeddedJson"],"traceKinds":["json.decode.request","json.encode.response","json.decode.error","json.encode.error"],"deeplyImmutable":true,"encoded":"{\"id\":\"8\",\"name\":\"Grace\",\"score\":42.5,\"active\":true}","schemaBridgePublicExportsAdded":false,"nativeSourceBuilderExportedByI7":true}
+ok - Entities I3 binds only declared generated schema codecs to contained request text and package-owned output text
+[pulsewasm] entities-schema-bridge: passed in 259ms
+
+[pulsewasm:javascript] entities-javascript-runtime
+[pulsewasm] I4 real package dispatch, JSON-RPC framing, redaction, notification acknowledgement, and catalog identity (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/bf0d896ef055/pulse-r101
+
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  02:34:00
+   Duration  484ms (transform 99ms, setup 0ms, import 135ms, tests 236ms, environment 0ms)
+
+[pulsewasm] entities-javascript-runtime: passed in 790ms
+
+[pulsewasm:unit] entities-json-rpc-corpus
+[pulsewasm] I4 production scanner parity with the frozen bounded positive and negative envelope corpus (timeout 30.00s)
+{"version":"pulse.entities-envelope-corpus.v1","valid":6,"invalid":17,"productionScanner":"packages/entities/dist/internal/bounded-json-rpc.js"}
+ok - Entities I4 production scanner matches the frozen bounded JSON-RPC corpus
+[pulsewasm] entities-json-rpc-corpus: passed in 41ms
+
+[pulsewasm:unit] entities-package-owned-lowering
+[pulsewasm] I2 first-party static extraction, terminal intrinsic, schema linkage, and fail-closed lowerer boundary (timeout 30.00s)
+{"version":"pulse.entities-lowering-plan.v1","planHash":"e675ab4d16eb0d6d4662528410017fd2d38e1c6b509195c59fec11a3006abed5","catalogHash":"090783f5e4635f713051c93920201c2374b2301d8848981761fa51cd1994036d","entities":2,"schemaReferences":2,"intrinsic":"pulse.entities.handle.v1","targetStatus":"provider-dependent","negativeDiagnostics":12}
+ok - Entities package-owned extraction emits deterministic plan/catalog inspection, managed-handler descriptors, terminal intrinsic, and I9 target truth
+[pulsewasm] entities-package-owned-lowering: passed in 285ms
+
+[pulsewasm:unit] entities-catalog
+[pulsewasm] deterministic entity catalog, eligible-target truth, and current product status (timeout 30.00s)
+{"version":"pulse.entities-catalog.v1","catalogHash":"d603d6f18768c799e50ab926fbb21ee75df18fa12386d69040b924ccbc908c55","entityOrder":["alpha.lookup","beta.notify"],"targetsEligible":4,"releaseAssigned":false}
+ok - Entities catalog remains deterministic, non-sensitive, immutable, and honest about I9 target support without assigning a release
+[pulsewasm] entities-catalog: passed in 245ms
+
+[pulsewasm:unit] entities-inspection
+[pulsewasm] canonical project and pulse inspect declarations, redacted handler effects, I9 target evidence, and deterministic build artifacts (timeout 120.00s)
+{"version":"pulse.canonical-package-inspection.v1","planHash":"2539e18788f3a72b135846cada2d8d2e7dcd589dd8c0a1aed8304c4a5344578a","catalogHash":"b1fa3623b597a773efb01a25b7162206817a45462ae824844da626e6cf265a9e","declaredHandlers":2,"measuredNodeTargets":2,"measuredFastlyTargets":2,"externalFastlyExecutionClaimed":true}
+ok - Entities inspection exposes deterministic declarations, schemas, effects, eligibility, reasons, and build artifacts without runtime or provider data
+[pulsewasm] entities-inspection: passed in 1.76s
+
+[pulsewasm:unit] entities-orchestration-demo
+[pulsewasm] I10 external tools facade over static catalog discovery, governed JSON-RPC calls, backend fetch, and Native artifact inspection (timeout 180.00s)
+{
+  "status": "passed",
+  "tools": 2,
+  "calls": 2,
+  "governedEffects": 3,
+  "nativeBytes": 76817,
+  "report": "wasm/.test-results/entities-i10/entities-tools-orchestration.json",
+  "reportSha256": "63f4385116992a8a0e21849b08706a35d4d621d38e34d801d1d0440a7daa6f50"
+}
+ok - I10 projects static catalog metadata through an external tools facade, invokes governed JSON-RPC entities, and inspects reproducible package-owned Native Wasm without protocol state or fallback
+[pulsewasm] entities-orchestration-demo: passed in 6.29s
+
+[pulsewasm:native] pure-helper-vocabulary
+[pulsewasm] Helper shape/operation characterization and the unchanged string-index validator boundary (timeout 30.00s)
+{"status":"passed","shapeCases":16,"operationCases":39,"accepted":[{"planHash":"c6e87aa32a13e41d074d0ebf9950dddde7238c6d2e2ac950a08997b7169066cd","generatedSourceSha256":"ec2cb19a669525c8a6ef11ee3c04333f97c9171adeca48fdefa09cdcc50e807a","resultKind":"number"},{"planHash":"6106cdebc1c01c535c1fb06ed3161b9912f733264367202b71e72a576308386f","generatedSourceSha256":"0f45f4488bcb3735984525acccf051efae374ee07de9958508fbb58168dd6413","resultKind":"string"},{"planHash":"ef33b3c535eb793a02438f18393a721534fdc78b768f654b59bcbb79a65569c9","generatedSourceSha256":"f69cddde7165ea0d27673e31a32d11b58493d33f0407b1ab66ee290efac17fcd","resultKind":"number"},{"planHash":"b14770b5d6bcf29a5c17a2b81e8982c5da5f4160e39ad8c38ca4c08bb92a9416","generatedSourceSha256":"460817df836c309aaa52f646dae78aa1da2f0848c04f4d93c2a354a3678cb23e","resultKind":"string"},{"planHash":"a8b862afa2efac3d70d2bc918ac05f9eecdc23e0bcb9411515af5af07897aefb","generatedSourceSha256":"ab2249820cdd6ba2e52ae9b64ae80b6495c221f3210a5f287cbb690f121e7b55","resultKind":"boolean"},{"planHash":"bdee73fd7f6128405d28695bb42bcfbad532032f79866636637ebb8f8364b36a","generatedSourceSha256":"869c58f979359c0db519f0b25465d033f8f929f02fe2a0bc9da9d66962fded2f","resultKind":"string"},{"planHash":"ca1cef2f86caa1efffd22dbff911833d71240b948b031e65efabae0bc8dfbfd8","generatedSourceSha256":"e65a8b8c3281d8bcee41a71c760809acb77d57bab7aa52c1baf69e46bd10e352","resultKind":"string"}],"rejected":[[{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure element requires a numeric array and index","detail":{}},{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure expression kind mismatch","detail":{}},{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure return kind mismatch","detail":{}}],[{"code":"PULSE_NATIVE_PURE_HELPER_RESULT_UNSUPPORTED","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"Pure helper return paths must match the declared scalar result.","file":"src/index.ts.canonical.generated.js","position":{"line":213,"column":5,"offset":10281},"detail":{}}],[{"code":"PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED","severity":"error","message":"Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.","file":"src/helper.ts","position":{"line":1,"column":1}}],[{"code":"PULSE_NATIVE_PURE_HELPER_SIGNATURE_UNSUPPORTED","severity":"error","message":"Pure helpers require synchronous function declarations with explicit bounded scalar/record/number-array parameters and a scalar result.","file":"src/helper.ts","position":{"line":1,"column":1}}],[{"code":"PULSE_NATIVE_PURE_HELPER_VALUE_UNSUPPORTED","severity":"error","message":"Pure helpers cannot allocate structured values or use type assertions.","file":"src/helper.ts","position":{"line":1,"column":48}}],[{"code":"PULSE_NATIVE_PURE_HELPER_CALL_UNSUPPORTED","severity":"error","message":"Pure helpers cannot call helpers, callbacks, methods, effects or Router operations.","file":"src/helper.ts","position":{"line":1,"column":48}}],[{"code":"PULSE_CANONICAL_NATIVE_PLAN_INVALID","kind":"CanonicalNativePlanDiagnostic","severity":"error","message":"pure arithmetic requires numbers","detail":{}}]],"native":{"wasmBytes":2187,"wasmSha256":"1bf15db834f072f3068794d7cf962ac0a5ddab28278302b067fd101f1b19ecf5","sourceSha256":"f9504c8e8bd218296894da1163295b26c226f1da657b44fa84c06849ab3c3529"},"stringIndexBoundary":"caller projection admitted; inferred string helper-body index rejected"}
+[pulsewasm] pure-helper-vocabulary: passed in 1.65s
+
+[pulsewasm:native] pure-source-helpers
+[pulsewasm] PF-02 scalar source helpers: sharing, Native/JavaScript parity and fail-closed plans (timeout 120.00s)
+{"status":"passed","cells":[{"count":1,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2106},{"count":2,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":2237},{"count":16,"canonicalBodies":1,"generatedBodies":1,"wasmBytes":3332}],"sourceRejections":22,"planRejections":19,"scope":"Source-tree scalar proof; no packed consumer or final-Wasm sharing claim."}
+[pulsewasm] pure-source-helpers: passed in 7.05s
+
+[pulsewasm:native] pure-record-helpers
+[pulsewasm] Read-only structural pure helper parity, ownership and allocation proof (timeout 180.00s)
+{"status":"passed","parityCases":59,"sourceRejections":22,"planRejections":16,"costs":[{"calls":0,"handles":19,"structuredHandleInsertions":1,"distinctPayloadObjects":1,"wasmBytes":42286,"linearMemoryBytes":1245184},{"calls":1,"handles":226,"structuredHandleInsertions":16,"distinctPayloadObjects":3,"wasmBytes":43568,"linearMemoryBytes":1245184},{"calls":2,"handles":433,"structuredHandleInsertions":31,"distinctPayloadObjects":3,"wasmBytes":43587,"linearMemoryBytes":1245184},{"calls":16,"handles":3331,"structuredHandleInsertions":241,"distinctPayloadObjects":3,"wasmBytes":43758,"linearMemoryBytes":1245184}],"representation":"Borrowed i32 value handles; no per-call serialization, effects, payload copies or guest heap allocation. Property/operator reads retain existing host-handle costs; no reclamation or RSS claim."}
+[pulsewasm] pure-record-helpers: passed in 14.95s
+
+[pulsewasm:native] pure-argument-helpers
+[pulsewasm] Typed KV and scalar projection provenance, parity and independent tamper rejection (timeout 180.00s)
+{"status":"passed","parityCases":21,"variants":6,"sourceRejections":13,"planRejections":12}
+[pulsewasm] pure-argument-helpers: passed in 17.34s
+
+[pulsewasm:native] pure-loop-helpers
+[pulsewasm] Pure validators in bounded caller loops, combined limits and invocation isolation (timeout 180.00s)
+{"status":"passed","parityCases":19,"sourceRejections":10,"planRejections":12,"readSites":1,"pureHelperReadSites":0,"combinedLimit":65536}
+[pulsewasm] pure-loop-helpers: passed in 5.05s
+
+[pulsewasm:native] fastly-driver-behavior-o09
+[pulsewasm] O09 Fastly error driver settlement, ticket freshness and error-priority fixture (timeout 240.00s)
+O-09 1 parallel: 7 scenarios + ticket ownership/freshness passed
+O-09 8 parallel: 13 scenarios + ticket ownership/freshness passed
+O-09 32 parallel: 13 scenarios + ticket ownership/freshness passed
+O-09 8 sequential: 9 scenarios + ticket ownership/freshness passed
+O-09 passed: wasm/.test-results/compiler-efficiency/o09-2026-10-02T18-34-56-328Z/report.json
+[pulsewasm] fastly-driver-behavior-o09: passed in 25.23s
+
+[pulsewasm:native] kv-native-abi-feasibility
+[pulsewasm] K1 compiled Wasm ABI probe for exact 64-bit generation and conditional insert options; no provider acceptance (timeout 30.00s)
+{"status":"passed","tokens":8,"proof":"compiled-wasm-abi-layout-and-lossless-round-trip","productionAdapter":false,"providerReality":false}
+[pulsewasm] kv-native-abi-feasibility: passed in 745ms
+
+[pulsewasm:unit] s3-native-read
+[pulsewasm] Exact HEAD/GET failure parity through Node Native/JavaScript and Fastly Native (timeout 180.00s)
+{"status":"passed","cases":68,"executions":204,"targets":["node-native","node-javascript","fastly-native"],"providerReality":false}
+[pulsewasm] s3-native-read: passed in 15.01s
+
+[pulsewasm:unit] s3-node-transport
+[pulsewasm] Node S3 TLS wire byte fidelity, raw header duplicates, redirects and abort (timeout 30.00s)
+ok - Node TLS transport preserves header/body bytes and duplicates, exposes redirects and aborts
+[pulsewasm] s3-node-transport: passed in 328ms
+
+[pulsewasm:native] canonical-api-lowering
+[pulsewasm] canonical application continuation lowering (timeout 30.00s)
+ok - documented canonical TypeScript examples are the lowering oracle while branch, continuation, body-edge, and failure fixtures remain internal
+[pulsewasm] canonical-api-lowering: passed in 972ms
+
+[pulsewasm:native] canonical-native-plan
+[pulsewasm] deterministic provider-neutral native plan (timeout 60.00s)
+ok - canonical handler analysis lowers deterministically to a provider-neutral native execution plan across nine public examples and retained control-flow fixtures
+{"status":"passed","sourceRejections":11,"planRejections":12,"nativeChecks":7,"wasmBytes":5736}
+[pulsewasm] canonical-native-plan: passed in 4.31s
+
+[pulsewasm:unit] shared-stage-o19
+[pulsewasm] O-19 production stage ownership, fallback, multiple families and cross-target execution (timeout 180.00s)
+{"status":"passed","negativeChecks":13,"fallbackChecks":6,"stages":2,"registrations":34,"requests":6,"planHash":"1c5a598c89369af3153e1077272b26830db28ef25084d006b9766e4145b50e6e","nodeWasmBytes":18690,"fastlyWasmBytes":53715}
+[pulsewasm] shared-stage-o19: passed in 4.56s
+
+[pulsewasm:conformance] bounded-app-logic
+[pulsewasm] literal-capped pure loops, string trim, target parity and pre-write failure containment (timeout 180.00s)
+ok - public project local: three harness cases and build
+ok - public project javascript: three harness cases and build
+ok - public project fastly: three harness cases and build
+ok - bounded application logic: 52 admission negatives, four plan mutations, 36 value/byte cases, 16 pre-write rejection cases, and maximum nested Router execution
+[pulsewasm] bounded-app-logic: passed in 32.09s
+
+[pulsewasm:conformance] bounded-read-loops
+[pulsewasm] bounded read loop admission, target parity, invocation lifecycle, cumulative budgets and Native memory containment (timeout 180.00s)
+ok - PS2 invocation identity, terminal invalidation, cumulative effect counts and deadlines
+{"status":"passed","memory":[{"pages":0,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":3732,"values":87},"fastly":{"bytes":2094,"values":24,"linearMemoryBytes":7208960},"wasmBytes":122331,"wasmSha256":"32c68f4870974fedac8f2425f54e35091920c6916bf55915a51d472639ffa8ad"},{"pages":1,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":510212,"values":1716},"fastly":{"bytes":436546,"values":4052,"linearMemoryBytes":7208960},"wasmBytes":122331,"wasmSha256":"32c68f4870974fedac8f2425f54e35091920c6916bf55915a51d472639ffa8ad"},{"pages":16,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":7816738,"values":21505},"fastly":{"bytes":6905874,"values":63167,"linearMemoryBytes":28835840},"wasmBytes":122331,"wasmSha256":"32c68f4870974fedac8f2425f54e35091920c6916bf55915a51d472639ffa8ad"},{"pages":64,"incomplete":false,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":31156278,"values":84693},"fastly":{"bytes":27610110,"values":252270,"linearMemoryBytes":57671680},"wasmBytes":122331,"wasmSha256":"32c68f4870974fedac8f2425f54e35091920c6916bf55915a51d472639ffa8ad"},{"pages":64,"incomplete":true,"node":{"version":"pulse.native-read-loop-memory.v1","bytes":31156330,"values":84695},"fastly":{"bytes":27610134,"values":252272,"linearMemoryBytes":57671680},"wasmBytes":122331,"wasmSha256":"32c68f4870974fedac8f2425f54e35091920c6916bf55915a51d472639ffa8ad"}],"providerReality":false}
+{"status":"passed","negativeSources":78,"planMutations":14,"storageVectors":7,"lifecycle":"PS2","memory":"PS3","targets":["node-javascript","node-native","internal-generator","fastly-native-fixture"],"providerReality":false}
+[pulsewasm] bounded-read-loops: passed in 35.35s
+
+[pulsewasm:conformance] bounded-loop-helpers
+[pulsewasm] read-only shared helpers in bounded loops, frame reset, target parity and continuation isolation (timeout 180.00s)
+{"status":"passed","helperBodies":1,"effectSites":1,"parityVectors":7,"sourceRejections":15,"planRejections":8,"wasmBytes":5535}
+[pulsewasm] bounded-loop-helpers: passed in 4.39s
+
+[pulsewasm:native] logging-lowering
+[pulsewasm] Native logging pruning, hashing, host ABI, and execution (timeout 120.00s)
+ok - Native logging is threshold-pruned, hash-bound, synchronous, redacted, and request-contained
+[pulsewasm] logging-lowering: passed in 1.87s
+
+[pulsewasm:native] canonical-router-lowering
+[pulsewasm] mounted Router topology and continuation lowering (timeout 180.00s)
+{
+  "version": "pulse.router-lowering-proof.v1",
+  "routes": [
+    {
+      "stableId": "route_3ab15a89fce720cc23e709ca",
+      "runtimeId": 0,
+      "method": "GET",
+      "path": "/api/health",
+      "params": []
+    },
+    {
+      "stableId": "route_1062b08d0afb06fc47333180",
+      "runtimeId": 1,
+      "method": "GET",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_078f6a7fd7954fcfdf84d587",
+      "runtimeId": 2,
+      "method": "HEAD",
+      "path": "/api/status",
+      "params": []
+    },
+    {
+      "stableId": "route_0093b23fae2910f2b32215a3",
+      "runtimeId": 3,
+      "method": "POST",
+      "path": "/api/echo",
+      "params": []
+    },
+    {
+      "stableId": "route_fe4dc1881365d705636f2c52",
+      "runtimeId": 4,
+      "method": "PUT",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_55682525f77c74bdb6faa40a",
+      "runtimeId": 5,
+      "method": "PATCH",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_3469fdebc143cff63d9b085d",
+      "runtimeId": 6,
+      "method": "DELETE",
+      "path": "/api/users/:id",
+      "params": [
+        "id"
+      ]
+    },
+    {
+      "stableId": "route_0bb0636d48b4892f87f811c4",
+      "runtimeId": 7,
+      "method": "GET",
+      "path": "/api/files/*",
+      "params": []
+    }
+  ],
+  "effects": [
+    {
+      "id": "fetch-1",
+      "routeStableId": "route_1062b08d0afb06fc47333180",
+      "method": "GET",
+      "path": "/api/users/:id"
+    }
+  ],
+  "continuations": [
+    {
+      "id": "continuation-1",
+      "routeStableId": "route_1062b08d0afb06fc47333180",
+      "method": "GET",
+      "path": "/api/users/:id"
+    }
+  ],
+  "portableWasm": {
+    "bytes": 4608,
+    "sha256": "515516b6bc6c6384714980b3c6699418a64307fa4ef56887e0b2f5c96a864613"
+  },
+  "fastlyWasm": {
+    "bytes": 42467,
+    "sha256": "9eab176933769a0c16d01fa523f3b79fa67851cc00c838cd180ca39a933c6729"
+  }
+}
+ok - canonical Router preserves mounted exact, parameter, wildcard, method, fetch, and 404 lowering across Node and Fastly
+[pulsewasm] canonical-router-lowering: passed in 6.28s
+
+[pulsewasm:native] canonical-router-terminal-middleware
+[pulsewasm] terminal middleware and error-lane convergence (timeout 240.00s)
+{
+  "version": "pulse.router-terminal-middleware-proof.v1",
+  "compilerVersion": "pulse.canonical-router-compiler.v2",
+  "authoringVersion": "pulse.router-authoring.v2",
+  "executionVersion": "pulse.router-terminal-execution.v1",
+  "semantics": {
+    "nextIsTerminal": true,
+    "onionResume": false,
+    "normalExhaustionStatus": 404,
+    "errorExhaustionStatus": 500,
+    "explicitErrorTransfer": "return next(error)"
+  },
+  "entries": [
+    {
+      "stableId": "router_entry_cf5cf736ffda0589eea8ab50",
+      "index": 0,
+      "nextIndex": 1,
+      "kind": "use",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_127d49e853da33c476251c73",
+      "index": 1,
+      "nextIndex": 2,
+      "kind": "use",
+      "path": "/admin",
+      "pattern": "/admin/*",
+      "scoped": true
+    },
+    {
+      "stableId": "router_entry_a99e1b523d7e1ad95bdf7940",
+      "index": 2,
+      "nextIndex": 8,
+      "kind": "mount",
+      "path": "/admin",
+      "pattern": "/admin/*",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_a1773edc9ef5a53b0efa2818",
+      "index": 3,
+      "nextIndex": 4,
+      "kind": "use",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_9af5c3db3814e0904697e9cf",
+      "index": 4,
+      "nextIndex": 5,
+      "kind": "route",
+      "path": "/admin/items/:id",
+      "pattern": "/admin/items/:id",
+      "scoped": false,
+      "routeStableId": "route_9a84b3d1deefa1a810356b13"
+    },
+    {
+      "stableId": "router_entry_f0c39bfbaf5121f3f9353772",
+      "index": 5,
+      "nextIndex": 6,
+      "kind": "route",
+      "path": "/admin/items/:id",
+      "pattern": "/admin/items/:id",
+      "scoped": false,
+      "routeStableId": "route_b5fad7b456ec0c0b371bab58"
+    },
+    {
+      "stableId": "router_entry_bb685b7bf6051d70fdf8d4c7",
+      "index": 6,
+      "nextIndex": 7,
+      "kind": "route",
+      "path": "/admin/handled-error",
+      "pattern": "/admin/handled-error",
+      "scoped": false,
+      "routeStableId": "route_dbf30c103b5fe6d687fd4fd4"
+    },
+    {
+      "stableId": "router_entry_05fbdc8dc5fc43dfb5d49312",
+      "index": 7,
+      "nextIndex": 8,
+      "kind": "route",
+      "path": "/admin/unhandled-error",
+      "pattern": "/admin/unhandled-error",
+      "scoped": false,
+      "routeStableId": "route_a9eb44e3e5456a4704c55a51"
+    },
+    {
+      "stableId": "router_entry_5d05c99d91159c4a33dd411b",
+      "index": 8,
+      "nextIndex": 9,
+      "kind": "error",
+      "scoped": false
+    },
+    {
+      "stableId": "router_entry_555ec0bef6894b34eb318e80",
+      "index": 9,
+      "nextIndex": 10,
+      "kind": "error",
+      "scoped": false
+    }
+  ],
+  "middlewareEffect": {
+    "id": "fetch-1",
+    "continuationId": "continuation-1",
+    "routerEntryStableId": "router_entry_cf5cf736ffda0589eea8ab50",
+    "routerEntryKind": "use"
+  },
+  "cases": [
+    {
+      "name": "global middleware short-circuits",
+      "expected": {
+        "status": 401,
+        "body": "{\"blocked\":true}"
+      }
+    },
+    {
+      "name": "scoped middleware short-circuits only its subtree",
+      "expected": {
+        "status": 403,
+        "body": "area denied"
+      }
+    },
+    {
+      "name": "mounted middleware short-circuits",
+      "expected": {
+        "status": 409,
+        "body": "child denied"
+      }
+    },
+    {
+      "name": "first matching route handles request",
+      "expected": {
+        "status": 200,
+        "body": "{\"handler\":\"primary\",\"id\":\"42\"}"
+      }
+    },
+    {
+      "name": "route fallthrough reaches next matching route",
+      "expected": {
+        "status": 200,
+        "body": "{\"handler\":\"fallback\",\"id\":\"42\"}"
+      }
+    },
+    {
+      "name": "normal lane exhaustion returns 404",
+      "expected": {
+        "status": 404,
+        "body": "Not Found"
+      }
+    },
+    {
+      "name": "next(error) reaches error middleware",
+      "expected": {
+        "status": 418,
+        "body": "{\"handled\":\"boom\"}"
+      }
+    },
+    {
+      "name": "error lane exhaustion returns 500",
+      "expected": {
+        "status": 500,
+        "body": "Internal Server Error"
+      }
+    }
+  ],
+  "portableWasm": {
+    "bytes": 8507,
+    "sha256": "5c395369eabf5997a1a053426ababc6098f20ba7b386521f757ea738c4ad2780"
+  },
+  "fastlyWasm": {
+    "bytes": 48616,
+    "sha256": "daa7beecaff61f08878cf86fe72631194e685c3dcaa727582370703b75f9db49"
+  }
+}
+ok - terminal Router middleware, scoped mounts, route fallthrough, error transfer, 404/500 exhaustion, and middleware effects execute identically through JavaScript, portable Wasm, and native Fastly Wasm
+[pulsewasm] canonical-router-terminal-middleware: passed in 6.49s
+
+[pulsewasm:native] json-as-compatibility
+[pulsewasm] pinned json-as transform and Pulse semantic guards (timeout 120.00s)
+{"assemblyScript":"0.28.18","jsonAs":"1.5.0","xjbAs":"0.1.0","strictTransformCompiled":true,"moduleBytes":{"plain":5086,"jsonAs":43356,"delta":38270},"compileMs":{"plain":905.474,"jsonAs":1820.45},"medianColdStartMs":0.43194,"semanticGate":{"unknownInputFields":"pulse-preflight-drop-required","missingRequiredFields":"pulse-presence-guard-required","nonFiniteEncode":"pulse-finite-number-guard-required","failures":"pulse-structured-nontrapping-adapter-required","backendRequiresPulseGuards":true},"automaticFallback":false,"fullCodecRealization":true}
+ok - pinned json-as compatibility and required Pulse semantic guards
+[pulsewasm] json-as-compatibility: passed in 2.78s
+
+[pulsewasm:native] entities-envelope-feasibility
+[pulsewasm] I0 bounded raw-envelope, terminal intrinsic, and first-party embedded schema-codec architecture freeze (timeout 120.00s)
+{"version":"pulse.entities-i0-feasibility-evidence.v1","envelope":{"valid":6,"invalid":17,"sha256":"1910f4b982fbf38f0b2bc555e8e7b0784415030c551c681cfbda34a2b64392ba"},"jsonAsRaw":{"jsonAs":"1.5.0","wasmBytes":21925,"wasmSha256":"c5ae2296d10de19eddacae1d639d6c04143b6ece901b79876b800985a06ed3d0","compileMs":1852.654,"rawShapesPreserved":true,"untouchedSerialization":true,"malformedNestingRejected":true,"duplicateReservedKeyRejected":false,"duplicateResolution":"last-value","verdict":"carrier-only-insufficient-as-envelope-authority"},"schemaBridge":{"registryVersion":"pulse.canonical-schema-registry.v4","registryHash":"15cdd0e2f3e88b7a3c89d38a769bc0a237ead0ca7c0940d55cc3058135cb01e3","codecVersion":"pulse.canonical-schema-codecs.v4","selectedSchemaIds":["app.createInput","app.user"],"selectionBeforeDecode":true,"handlerRawExposure":false,"decodedDataDeeplyFrozen":true,"encodedTextOwned":true,"publicBridgeKeys":["decodeEmbeddedJson","encodeEmbeddedJson"]},"terminalBinding":{"routeBinding":"app.post('/rpc', (ctx) => rpc.handle(ctx))","matchedCalls":1,"routeTopologySymbolsRequired":[],"intrinsicVersion":"pulse.package-intrinsic.v1","intrinsic":"pulse.entities.handle.v1","compilerOwnedCallCount":1,"terminalResultAdopted":true},"architectureFreeze":{"version":"pulse.entities-i0-contract-freeze.v1","sha256":"e5765093249cf136a537535f837907a0f86f55bf3eac0c0014767dea40b52198"},"decision":{"representation":"package-owned-bounded-scanner","publicBinding":"rpc.handle(ctx)","schemaBridge":"first-party-declared-codecs-only","readyForI1":true,"automaticFallback":false}}
+ok - Entities I0 freezes bounded envelope scanning, one terminal binding, and a narrow first-party schema bridge
+[pulsewasm] entities-envelope-feasibility: passed in 2.16s
+
+[pulsewasm:native] entities-managed-handler
+[pulsewasm] I5 reachable pure managed-handler IR, schema-bound input/result adoption, and fail-closed source diagnostics (timeout 120.00s)
+{"version":"pulse.managed-handler-ir-bundle.v2","bundleHash":"7420373d45663d86113a67b6ab14fb4f1be6ce2ccee6bb5c76439aa935c1c494","handlers":2,"schemaResults":1,"effects":0,"negativeClasses":10,"targetStatus":"provider-dependent"}
+ok - Entities I5 resolves I2 handler identities into generic pure managed-handler IR with schema-bound input/results and fail-closed diagnostics
+[pulsewasm] entities-managed-handler: passed in 365ms
+
+[pulsewasm:native] entities-managed-handler-effects
+[pulsewasm] I6 reachable managed-handler effects, package operations, exact provider requirements, and selected Node execution (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/bf0d896ef055/pulse-r101
+
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  02:37:19
+   Duration  596ms (transform 122ms, setup 0ms, import 327ms, tests 158ms, environment 0ms)
+
+[pulsewasm] entities-managed-handler-effects: passed in 881ms
+
+[pulsewasm:native] entities-native-runtime
+[pulsewasm] I7 package-owned bounded Native scanner, schema codecs, static dispatcher, managed effects, exact framing, and zero JavaScript fallback (timeout 180.00s)
+{"version":"pulse.entities-native-source.v1","sourceSha256":"24d626801331aa755662d2ef394ea0a0fec9d1bd61746d578978780f4add275a","wasmSha256":"169341d79d331e26bfd09dfa3f09cb1d1fe951306d1a8c61df13fc35aed728cd","wasmBytes":78722,"routes":2,"schemas":2,"effects":2,"imports":["env:abort","pulse_entities_host:log","pulse_entities_host:effect_begin"]}
+ok - Entities I7 package-owned Native scanner, schema codecs, static dispatcher, managed handlers, effects, and exact JSON-RPC framer execute without JavaScript fallback
+[pulsewasm] entities-native-runtime: passed in 6.25s
+
+[pulsewasm:native] crypto-native-guest-source
+[pulsewasm] bounded first-party AssemblyScript HS256 in the selected primary Native module (timeout 240.00s)
+ok - Native guest-source HS256 is bounded, vector-correct, constant-time by structure, optimized, redacted, and fallback-free
+[pulsewasm] crypto-native-guest-source: passed in 3.85s
+
+[pulsewasm:native] guest-link-package
+[pulsewasm] production guest-unit validation, materialization, composition, optimization, and audit (timeout 120.00s)
+ok - B1 guest-link package passed; final c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879, evidence d6a55f65f773787bf14c7bc5621e2932fd733afb373aff9e17c06717c21dd0a8
+[pulsewasm] guest-link-package: passed in 5.70s
+
+[pulsewasm:native] guest-link-materialization-stage
+[pulsewasm] guest-link-owned synchronized unit planning, lazy materialization, and fail-closed final handoff (timeout 120.00s)
+ok - B2 materialized once, reused by content hash, and authorized exact audited c6c7c9107a02a5506c793ac9562cc78cf5dbfd3173533101777a7e699d075879
+[pulsewasm] guest-link-materialization-stage: passed in 23.64s
+
+[pulsewasm:native] guest-link-audit-diagnostics
+[pulsewasm] secret-safe guest-link provenance plus stable hard-failure diagnostic matrix (timeout 120.00s)
+ok - B3 audit/provenance and 13-case diagnostic matrix passed; evidence 5d5b10ecfddb46ebecc2477f5abb4dbfccc40ccbf78819a779bb72ca8a907218
+[pulsewasm] guest-link-audit-diagnostics: passed in 12.73s
+
+[pulsewasm:native] assets-lowering-plan
+[pulsewasm] Assets facade lowering plan (timeout 30.00s)
+ok - assets lowering plan detects facade imports, emits plan entries, and preserves binary/stream posture
+[pulsewasm] assets-lowering-plan: passed in 361ms
+
+[pulsewasm:native] assets-package-owned-lowering
+[pulsewasm] Assets package-owned lowerer (timeout 30.00s)
+ok - Assets package-owned lowering validates the canonical root, generic loader, and JavaScript implementation
+[pulsewasm] assets-package-owned-lowering: passed in 233ms
+
+[pulsewasm:native] grip-package-owned-lowering
+[pulsewasm] GRIP package-owned lowerer (timeout 30.00s)
+ok - package-owned GRIP lowering emits canonical channel, hold, and publish effects
+[pulsewasm] grip-package-owned-lowering: passed in 251ms
+
+[pulsewasm:native] jwt-package-owned-lowering
+[pulsewasm] JWT package-owned lowerer, provider requirements, and crypto demand (timeout 30.00s)
+ok - JWT package lowering emits provider-neutral HS256 requirements while target eligibility remains outside the package builder
+ok - JWT signing owns static policy validation, secret/clock authority and explicit HMAC-SHA256 demand
+[pulsewasm] jwt-package-owned-lowering: passed in 501ms
+
+[pulsewasm:native] canonical-api-runtime
+[pulsewasm] canonical application runtime effects and continuations (timeout 60.00s)
+ok - documented canonical projects execute through real Node effects while only branch, dependency, body-edge, and failure mechanics use internal canonical fixtures
+[pulsewasm] canonical-api-runtime: passed in 1.06s
+
+[pulsewasm:native] canonical-opaque-node-emission
+[pulsewasm] opaque body ownership and repeated Node headers (timeout 30.00s)
+ok - direct fetch responses preserve host-owned binary and textual pass-through, exact bytes, repeated headers, and deny public body inspection
+[pulsewasm] canonical-opaque-node-emission: passed in 527ms
+
+[pulsewasm:native] grip-package-runtime
+[pulsewasm] GRIP package build and canonical runtime (timeout 240.00s)
+ok - GRIP package root builds and its JavaScript plus compatibility runtime tests pass
+[pulsewasm] grip-package-runtime: passed in 522ms
+
+[pulsewasm:native] package-root-native
+[pulsewasm] package-root Assets and keyed parallel native output (timeout 240.00s)
+ok - package-root Assets and keyed parallel compile to valid 3979-byte Native Wasm 9db211252b858de0c85c9b65f09d1b3b437f658ec3b01ba7ca88c41b829c264d
+[pulsewasm] package-root-native: passed in 1.47s
+
+[pulsewasm:native] canonical-native-wasm
+[pulsewasm] provider-neutral native compilation and host execution (timeout 180.00s)
+ok - Native conditional KV normalized handoff, raw validation, isolation, redaction and limits
+ok - real Binaryen retention preserves shared calls, distinct bindings, fresh allocations, live tables and mappings on both Native targets
+ok - bounded Native dispatcher preserves branches, pure-loop control, grouped effects, resume validation and deterministic small functions
+ok - Native and generator request budgets prevent late continuation and checkpoint dispatch
+ok - 10 canonical plans compile deterministically to provider-neutral Pulse Wasm (1668-41086 bytes) and execute through the narrow host ABI
+[pulsewasm] canonical-native-wasm: passed in 38.50s
+
+[pulsewasm:javascript] cli-javascript-target-compilation
+[pulsewasm] explicit JavaScript target propagation, ordinary imports, source execution and Native rejection (timeout 120.00s)
+ok - explicit JavaScript compilation preserves package and relative imports through Router/plain roots, async execution, doctor/test/build and Native rejection
+[pulsewasm] cli-javascript-target-compilation: passed in 14.58s
+
+[pulsewasm:javascript] target-support
+[pulsewasm] complete explicit Node JavaScript target support (timeout 30.00s)
+ok - target support and deterministic provider package bootstrap are current, explicit, and fallback-free
+[pulsewasm] target-support: passed in 358ms
+
+[pulsewasm:javascript] jwt-javascript-admission
+[pulsewasm] JWT source admission, provider requirements and HS256/ES256 consumer execution (timeout 180.00s)
+ok - JWT JavaScript admission, provider capability rejection, HS256/ES256 execution and source packaging
+[pulsewasm] jwt-javascript-admission: passed in 6.09s
+
+[pulsewasm:javascript] crypto-runtime-builtin
+[pulsewasm] bounded HS256 verification through the selected Web Crypto runtime builtin (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/bf0d896ef055/pulse-r101
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  02:39:16
+   Duration  277ms (transform 201ms, setup 0ms, import 259ms, tests 50ms, environment 0ms)
+
+[pulsewasm] crypto-runtime-builtin: passed in 581ms
+
+[pulsewasm:javascript] javascript-effect-adapter
+[pulsewasm] request-owned JavaScript effects and keyed parallelism (timeout 180.00s)
+ok - JavaScript effects preserve lifecycle, grouping, failure, and bounded-observation contracts
+[pulsewasm] javascript-effect-adapter: passed in 458ms
+
+[pulsewasm:javascript] logging-runtime
+[pulsewasm] synchronous JavaScript logging threshold, redaction, and containment (timeout 30.00s)
+ok - JavaScript ctx.log filters synchronously, redacts messages, and contains provider sink failures
+[pulsewasm] logging-runtime: passed in 68ms
+
+[pulsewasm:javascript] assets-javascript-runtime
+[pulsewasm] request-bound package bridges and Assets/JWT JavaScript runtime (timeout 120.00s)
+
+ RUN  v4.1.10 /workspace/scratch/bf0d896ef055/pulse-r101
+
+
+ Test Files  4 passed (4)
+      Tests  68 passed (68)
+   Start at  02:39:17
+   Duration  495ms (transform 559ms, setup 0ms, import 856ms, tests 226ms, environment 0ms)
+
+[pulsewasm] assets-javascript-runtime: passed in 771ms
+
+[pulsewasm:conformance] jwt-signing
+[pulsewasm] Bounded HS256 issuance, independent verification, failures and redaction on four targets (timeout 180.00s)
+{"status":"passed","executions":100,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] jwt-signing: passed in 11.45s
+
+[pulsewasm:conformance] jwt-es256-signing
+[pulsewasm] ES256 private-key signing, independent verification, CLI build and failures on four targets (timeout 180.00s)
+{"status":"passed","executions":97,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] jwt-es256-signing: passed in 31.27s
+
+[pulsewasm:conformance] jwt-rs256
+[pulsewasm] RS256 issuance and verification through all four targets and normal CLI builds (timeout 600.00s)
+{"status":"passed","bits":2048,"executions":146,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+{"status":"passed","bits":3072,"executions":146,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+{"status":"passed","bits":4096,"executions":146,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] jwt-rs256: passed in 347.20s
+
+[pulsewasm:unit] s3-write-conformance
+[pulsewasm] Canonical PUT/HEAD/GET, ambiguous writes and cancellation on Node Native/JavaScript and Fastly Native (timeout 180.00s)
+{"status":"passed","cases":40,"executions":114,"targets":["node-native","node-javascript","fastly-native"],"fastlyJavascript":"documented-sdk-limitation","providerReality":false}
+[pulsewasm] s3-write-conformance: passed in 8.75s
+
+[pulsewasm:conformance] crypto-cross-target-conformance
+[pulsewasm] shared HS256 corpus across Web Crypto and optimized Native guest source (timeout 300.00s)
+ok - 14 shared HS256 cases match across Web Crypto and two Native optimization modes; evidence 9bf4f24d883bf17775d36a0fba3192520f6ab8b16ccfe364796fc8de2ddde3a9
+[pulsewasm] crypto-cross-target-conformance: passed in 4.09s
+
+[pulsewasm:conformance] crypto-digest-text-conformance
+[pulsewasm] Public exact-text SHA-256 vectors and byte bounds on four target/provider combinations (timeout 180.00s)
+{"status":"passed","cases":19,"executions":76,"nativeMemoryBytes":138412032,"targets":["node-native","node-javascript","fastly-native","fastly-javascript"],"providerReality":false}
+[pulsewasm] crypto-digest-text-conformance: passed in 8.15s
+
+[pulsewasm:conformance] crypto-digest-storage-conformance
+[pulsewasm] Pre-upload digest, S3 receipt and exact readback including schema-encoded text (timeout 180.00s)
+{"status":"passed","cases":7,"executions":21,"nativeMemoryBytes":226492416,"targets":["node-native","node-javascript","fastly-native"],"providerReality":false}
+[pulsewasm] crypto-digest-storage-conformance: passed in 9.62s
+
+[pulsewasm:conformance] multifile-source-identity
+[pulsewasm] Source-qualified effect and intrinsic identity, duplicate rejection and three-target multifile routing (timeout 180.00s)
+{"status":"passed","executions":12,"sourceOrders":2,"sharedHandlers":{"status":"passed","executions":18,"authoredEffects":3,"generatedEffects":9},"artifacts":[],"providerReality":false}
+[pulsewasm] multifile-source-identity: passed in 14.64s
+
+[pulsewasm:conformance] text-capacity-conformance
+[pulsewasm] 2 MiB schema/storage boundaries, lower bindings, streamed failures and bounded Native memory (timeout 180.00s)
+{"status":"passed","cases":15,"executions":45,"nativeMemoryBytes":56623104,"nativeMaximumBytes":268435456,"targets":["node-native","node-javascript","fastly-native"],"providerReality":false}
+[pulsewasm] text-capacity-conformance: passed in 12.88s
+
+[pulsewasm:conformance] events-conformance
+[pulsewasm] canonical event corpus across Node JavaScript and Native covering bounded ingress, emit acceptance, containment, isolation, completion, and the absent reflexive call surface (timeout 300.00s)
+{
+  "version": "pulse.event-conformance-corpus.v1",
+  "corpusSha256": "66ca58467a082cf5f15c4844a75a6efc8cbd0323d15403f5be9dd488158f0a9a",
+  "targets": [
+    "node-javascript",
+    "node-native"
+  ],
+  "crossTargetCases": 19,
+  "boundaryCases": 2,
+  "semanticEvaluations": 38,
+  "exactSemanticParity": true,
+  "schemaBeforeHandler": true,
+  "fifoIngress": true,
+  "queueBounded": true,
+  "cancellationContained": true,
+  "redactionContained": true,
+  "stateIsolation": true,
+  "automaticLoopback": false,
+  "sameStackReentry": false,
+  "callExecInvokeSurface": false,
+  "nativeJavascriptImports": 0,
+  "automaticFallback": false
+}
+ok - canonical event corpus matches exactly across Node JavaScript and Native with bounded ingress, one-way emit, containment, and no reflexive call surface
+[pulsewasm] events-conformance: passed in 2.78s
+
+[pulsewasm:conformance] node-router-context-parity
+[pulsewasm] native and JavaScript Node HTTP-boundary parity (timeout 180.00s)
+ok - native and JavaScript Node Router/context behavior matches at the HTTP boundary
+[pulsewasm] node-router-context-parity: passed in 3.00s
+
+[pulsewasm:conformance] catalog-router-parity
+[pulsewasm] Catalog original verb probe and 14 mutation routes across Node/Fastly Native/JavaScript (timeout 300.00s)
+{
+  "status": "passed",
+  "proofs": [
+    {
+      "fixture": "catalog-router-probe",
+      "cases": 3,
+      "executions": 12,
+      "modes": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false
+    },
+    {
+      "fixture": "catalog-router-methods",
+      "cases": 68,
+      "executions": 272,
+      "modes": [
+        "node-native",
+        "node-javascript",
+        "fastly-native",
+        "fastly-javascript"
+      ],
+      "providerReality": false
+    }
+  ]
+}
+ok - Catalog consumer verbs, mounted routing and terminal transfers match on four explicit targets
+[pulsewasm] catalog-router-parity: passed in 18.00s
+
+[pulsewasm:conformance] fetch-projections-request-bodies
+[pulsewasm] bounded fetch projections and request body ownership (timeout 180.00s)
+ok - fetch projections and request bodies preserve bounded ownership across targets
+[pulsewasm] fetch-projections-request-bodies: passed in 464ms
+
+[pulsewasm:conformance] config-secrets-kv-redaction
+[pulsewasm] binding isolation and secret-safe observations (timeout 180.00s)
+ok - config, secrets, and KV bindings preserve isolation and redaction contracts
+[pulsewasm] config-secrets-kv-redaction: passed in 413ms
+
+[pulsewasm:conformance] kv-conditional-conformance
+[pulsewasm] K2 JavaScript, compiled Native and canonical reference races, token transport and dispatch lifecycle (timeout 180.00s)
+ok - K2 javascript: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - K2 native: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - K2 generator: shared authority, token transport, races, stale observations, uncertainty, deadlines and cancellation
+ok - 78 K2 target scenarios plus lowering negatives; no Fastly realization or deployed claims
+[pulsewasm] kv-conditional-conformance: passed in 2.89s
+
+[pulsewasm:conformance] kv-conditional-adversarial
+[pulsewasm] K4 project consumers: concurrent requests, retained tombstones, ABA and acknowledgement loss (timeout 180.00s)
+{"version":"pulse.kv-k4-consumer.v1","status":"passed","results":{"node-native":{"status":"passed","requests":171,"groups":[{"width":2,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":8,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":16,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true}],"keyedParallel":true,"boundaryValues":4,"failures":[],"ambiguousCompletion":"passed"},"node-javascript":{"status":"passed","requests":171,"groups":[{"width":2,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":8,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true},{"width":16,"revisions":3,"createWinners":1,"casWinnersPerRevision":1,"retainedTombstone":true}],"keyedParallel":true,"boundaryValues":4,"failures":[],"ambiguousCompletion":"passed"}},"module":{"sha256":"c48c3077240ef3fb54799ab91ce403d5961519c8410ee19860e4de8c7578e290","bytes":48662,"imports":[{"module":"fastly_http_body","name":"close","kind":"function"},{"module":"fastly_http_resp","name":"send_downstream","kind":"function"},{"module":"fastly_http_body","name":"write","kind":"function"},{"module":"fastly_http_body","name":"read","kind":"function"},{"module":"fastly_http_body","name":"new","kind":"function"},{"module":"wasi_snapshot_preview1","name":"clock_time_get","kind":"function"},{"module":"fastly_kv_store","name":"open","kind":"function"},{"module":"fastly_kv_store","name":"lookup_wait_v2","kind":"function"},{"module":"fastly_kv_store","name":"lookup","kind":"function"},{"module":"fastly_kv_store","name":"insert_wait","kind":"function"},{"module":"fastly_kv_store","name":"insert","kind":"function"},{"module":"fastly_http_resp","name":"status_set","kind":"function"},{"module":"fastly_http_resp","name":"status_get","kind":"function"},{"module":"fastly_http_resp","name":"new","kind":"function"},{"module":"fastly_http_resp","name":"header_append","kind":"function"},{"module":"fastly_http_req","name":"uri_get","kind":"function"},{"module":"fastly_http_req","name":"method_get","kind":"function"},{"module":"fastly_http_req","name":"body_downstream_get","kind":"function"},{"module":"fastly_abi","name":"init","kind":"function"},{"module":"fastly_async_io","name":"select","kind":"function"}]},"providerReality":false,"deployed":"pending-T2"}
+[pulsewasm] kv-conditional-adversarial: passed in 4.81s
+
+[pulsewasm:conformance] fastly-conditional-kv
+[pulsewasm] K3 actual Fastly Native conditional KV ABI, shared bytes, races, deadlines and uncertainty (timeout 180.00s)
+ok - K3 actual Fastly Native Wasm: 209 corpus cases, u64 ABI fidelity, shared wire, races, snapshots, bounded waits and uncertainty (no deployed-service claim)
+[pulsewasm] fastly-conditional-kv: passed in 12.64s
+
+[pulsewasm:conformance] schema-codecs
+[pulsewasm] cross-target rich schema codecs and four JSON boundaries (timeout 180.00s)
+ok - internal JSON admission (84 shared cases, 343 syntax mutations, 3 compiled lanes, pre-materialization rejection)
+ok - 18 single-field Native string regressions; pinned scalar json-as and JSON-equivalent backslash spelling
+ok - schema-bound value encoding: 16 compiler negatives; 52 positive and 20 rejected executions across JavaScript, Node Native and both Fastly Native generators
+ok - application text decoding: 16 compiler negatives, 32 successful and 40 rejected HTTP executions, plus JavaScript/Native event contexts
+ok - optional schema properties preserve absence, nullability, nested/array values and edit merges across JavaScript, Node Native and both Fastly Native paths
+ok - ScalarRecord bounds, duplicates, immutable projection and round-trip parity (112 executions plus direct guest codec checks)
+{"fixture":"schema-nested-json","maximumAdmissionLatencyMs":{"javascript":10.501,"native":69.748,"fastly-http":39.901,"fastly-platform":19.331},"latencyIncludesFreshExecution":true,"profile":"default","maxAdmittedNodes":4096,"guestLinearMemoryBytesAtReturn":2490368,"artifacts":[{"target":"node-native","rawBytes":81936,"gzipBytes":34386,"compileMs":2784},{"target":"fastly-http","rawBytes":137013,"gzipBytes":51281,"compileMs":4411},{"target":"fastly-platform","rawBytes":141342,"gzipBytes":52991,"compileMs":4380}],"providerReality":false}
+ok - schema-nested-json: 200 cross-target executions, all eight exact/over limits, depth 128, immutable detached values, duplicate policy, and zero sends after rejection
+{"fixture":"schema-open-objects","maximumAdmissionLatencyMs":{"javascript":17.754,"native":62.104,"fastly-http":36.022,"fastly-platform":18.983},"latencyIncludesFreshExecution":true,"profile":"default","maxAdmittedNodes":4096,"guestLinearMemoryBytesAtReturn":2490368,"artifacts":[{"target":"node-native","rawBytes":88976,"gzipBytes":36191,"compileMs":2917},{"target":"fastly-http","rawBytes":149903,"gzipBytes":53972,"compileMs":4390},{"target":"fastly-platform","rawBytes":153651,"gzipBytes":55545,"compileMs":4654}],"providerReality":false}
+ok - schema-open-objects: 452 cross-target executions, all eight exact/over limits, depth 128, immutable detached values, duplicate policy, and zero sends after rejection
+ok - pulse.schema codecs preserve strict boundaries and semantic parity across targets
+[pulsewasm] schema-codecs: passed in 99.70s
+
+[pulsewasm:conformance] schema-kv-parity
+[pulsewasm] strict schema and conditional KV public consumer parity (timeout 240.00s)
+ok - javascript: schema/KV response, nested CAS conflict, encoded bytes (local execution)
+ok - native: schema/KV response, nested CAS conflict, encoded bytes (local execution)
+ok - fastly: schema/KV response, nested CAS conflict, encoded bytes (local execution)
+ok - built Node JavaScript schema/KV consumer preserves response bytes and redacted observations
+[pulsewasm] schema-kv-parity: passed in 10.35s
+
+[pulsewasm:conformance] time-conformance
+[pulsewasm] provider-owned wall time, UTC, failures and four-mode parity (timeout 120.00s)
+ok - time: 47 date/range cells, four-mode grouped regression, failures, cancellation and strict admission; Fastly evidence is local Wasm
+[pulsewasm] time-conformance: passed in 5.77s
+
+[pulsewasm:conformance] time-consumer
+[pulsewasm] public time package consumer, target inspection and builds (timeout 240.00s)
+ok - native: public clock inspect and local consumer
+ok - javascript: public clock inspect and local consumer
+ok - fastly: public clock inspect and local consumer
+ok - fastlyjs: public clock inspect and local consumer
+ok - built JavaScript execution and Node/Fastly Native builds; no source dependency mutation
+[pulsewasm] time-consumer: passed in 14.77s
+
+[pulsewasm:conformance] request-budget-transport
+[pulsewasm] shared request deadline across S3 preparation and Node HTTP body admission (timeout 180.00s)
+ok - deadline covers cumulative S3 preparation on three targets and real Node Native/JS HTTP body admission
+[pulsewasm] request-budget-transport: passed in 6.11s
+
+[pulsewasm:conformance] http-input-outcomes
+[pulsewasm] strict bounded UTF-8 and buffered HTTP denial/uncertainty on selected adapters (timeout 180.00s)
+{"status":"passed","providerReality":false,"sourceSha256":"003e115eb9ad23b91b9e6cef88f8d58f81f138ae1814680cc7272ac762f18bbd","fastlyWasmSha256":"6534d557965471342b1256a021c58a9bb9a4a9e77f023268d86c2bb03ba75872","rows":[{"mode":"node-native","case":"80","status":400,"writes":0},{"mode":"node-native","case":"bf","status":400,"writes":0},{"mode":"node-native","case":"c0af","status":400,"writes":0},{"mode":"node-native","case":"c1bf","status":400,"writes":0},{"mode":"node-native","case":"c2","status":400,"writes":0},{"mode":"node-native","case":"c328","status":400,"writes":0},{"mode":"node-native","case":"e08080","status":400,"writes":0},{"mode":"node-native","case":"eda080","status":400,"writes":0},{"mode":"node-native","case":"edbfbf","status":400,"writes":0},{"mode":"node-native","case":"e282","status":400,"writes":0},{"mode":"node-native","case":"e228a1","status":400,"writes":0},{"mode":"node-native","case":"f0808080","status":400,"writes":0},{"mode":"node-native","case":"f4908080","status":400,"writes":0},{"mode":"node-native","case":"f5808080","status":400,"writes":0},{"mode":"node-native","case":"f09f98","status":400,"writes":0},{"mode":"node-native","case":"ff","status":400,"writes":0},{"mode":"node-native","case":"\"\"","status":201,"writes":1},{"mode":"node-native","case":"\"ascii\"","status":201,"writes":1},{"mode":"node-native","case":"\"\\u0000\"","status":201,"writes":1},{"mode":"node-native","case":"\"�(\"","status":201,"writes":1},{"mode":"node-native","case":"\"é中😀\"","status":201,"writes":1},{"mode":"node-native","case":"\"﻿text\"","status":201,"writes":1},{"mode":"node-native","case":"\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀\"","status":201,"writes":1},{"mode":"node-native","case":"over-limit","status":413,"writes":0},{"mode":"node-native","case":"invalid-over-limit","status":413,"writes":0},{"mode":"node-native","case":"/auth","status":401,"preparations":0},{"mode":"node-native","case":"/auth","status":401,"preparations":0},{"mode":"node-native","case":"/deny","status":403,"preparations":0,"outcome":"not-accepted"},{"mode":"node-native","case":"/unknown","status":503,"preparations":0,"outcome":"unknown"},{"mode":"node-native","case":"/commit","status":201,"preparations":1,"outcome":"accepted"},{"mode":"node-native","case":"/commit","status":409,"preparations":1,"outcome":"not-accepted"},{"mode":"node-javascript","case":"80","status":400,"writes":0},{"mode":"node-javascript","case":"bf","status":400,"writes":0},{"mode":"node-javascript","case":"c0af","status":400,"writes":0},{"mode":"node-javascript","case":"c1bf","status":400,"writes":0},{"mode":"node-javascript","case":"c2","status":400,"writes":0},{"mode":"node-javascript","case":"c328","status":400,"writes":0},{"mode":"node-javascript","case":"e08080","status":400,"writes":0},{"mode":"node-javascript","case":"eda080","status":400,"writes":0},{"mode":"node-javascript","case":"edbfbf","status":400,"writes":0},{"mode":"node-javascript","case":"e282","status":400,"writes":0},{"mode":"node-javascript","case":"e228a1","status":400,"writes":0},{"mode":"node-javascript","case":"f0808080","status":400,"writes":0},{"mode":"node-javascript","case":"f4908080","status":400,"writes":0},{"mode":"node-javascript","case":"f5808080","status":400,"writes":0},{"mode":"node-javascript","case":"f09f98","status":400,"writes":0},{"mode":"node-javascript","case":"ff","status":400,"writes":0},{"mode":"node-javascript","case":"\"\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"ascii\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"\\u0000\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"�(\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"é中😀\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"﻿text\"","status":201,"writes":1},{"mode":"node-javascript","case":"\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀\"","status":201,"writes":1},{"mode":"node-javascript","case":"over-limit","status":413,"writes":0},{"mode":"node-javascript","case":"invalid-over-limit","status":413,"writes":0},{"mode":"node-javascript","case":"/auth","status":401,"preparations":0},{"mode":"node-javascript","case":"/auth","status":401,"preparations":0},{"mode":"node-javascript","case":"/deny","status":403,"preparations":0,"outcome":"not-accepted"},{"mode":"node-javascript","case":"/unknown","status":503,"preparations":0,"outcome":"unknown"},{"mode":"node-javascript","case":"/commit","status":201,"preparations":1,"outcome":"accepted"},{"mode":"node-javascript","case":"/commit","status":409,"preparations":1,"outcome":"not-accepted"},{"mode":"fastly-native","case":"80","status":400,"writes":0},{"mode":"fastly-native","case":"bf","status":400,"writes":0},{"mode":"fastly-native","case":"c0af","status":400,"writes":0},{"mode":"fastly-native","case":"c1bf","status":400,"writes":0},{"mode":"fastly-native","case":"c2","status":400,"writes":0},{"mode":"fastly-native","case":"c328","status":400,"writes":0},{"mode":"fastly-native","case":"e08080","status":400,"writes":0},{"mode":"fastly-native","case":"eda080","status":400,"writes":0},{"mode":"fastly-native","case":"edbfbf","status":400,"writes":0},{"mode":"fastly-native","case":"e282","status":400,"writes":0},{"mode":"fastly-native","case":"e228a1","status":400,"writes":0},{"mode":"fastly-native","case":"f0808080","status":400,"writes":0},{"mode":"fastly-native","case":"f4908080","status":400,"writes":0},{"mode":"fastly-native","case":"f5808080","status":400,"writes":0},{"mode":"fastly-native","case":"f09f98","status":400,"writes":0},{"mode":"fastly-native","case":"ff","status":400,"writes":0},{"mode":"fastly-native","case":"\"\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"ascii\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"\\u0000\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"�(\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"é中😀\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"﻿text\"","status":201,"writes":1},{"mode":"fastly-native","case":"\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa😀\"","status":201,"writes":1},{"mode":"fastly-native","case":"over-limit","status":413,"writes":0},{"mode":"fastly-native","case":"invalid-over-limit","status":413,"writes":0},{"mode":"fastly-native","case":"/auth","status":401,"preparations":0},{"mode":"fastly-native","case":"/auth","status":401,"preparations":0},{"mode":"fastly-native","case":"/deny","status":403,"preparations":0,"outcome":"not-accepted"},{"mode":"fastly-native","case":"/unknown","status":503,"preparations":0,"outcome":"unknown"},{"mode":"fastly-native","case":"/commit","status":201,"preparations":1,"outcome":"accepted"},{"mode":"fastly-native","case":"/commit","status":409,"preparations":1,"outcome":"not-accepted"},{"mode":"node-native-http","requests":30,"status":"passed"},{"mode":"node-javascript-http","requests":30,"status":"passed"},{"mode":"node-native","case":"committed-acknowledgement-lost","status":503,"committed":true,"outcome":"unknown"},{"mode":"node-javascript","case":"committed-acknowledgement-lost","status":503,"committed":true,"outcome":"unknown"},{"mode":"fastly-native","case":"committed-acknowledgement-lost","status":503,"committed":true,"outcome":"unknown"},{"mode":"node-javascript-http","case":"deadline-after-commit","status":504,"committed":true,"responses":1},{"mode":"fastly-native","case":"deadline-after-commit","status":504,"committed":true,"responses":1},{"mode":"fastly-native","case":"default-body-error","status":400,"writes":0},{"mode":"fastly-native","case":"default-body-error","status":413,"writes":0},{"mode":"node-native-http","case":"default-body-error","status":400,"parityDebt":false},{"mode":"node-javascript-http","case":"default-body-error","status":500,"parityDebt":true}]}
+[pulsewasm] http-input-outcomes: passed in 11.43s
+
+[pulsewasm:conformance] application-errors
+[pulsewasm] public schema and JWT application error recovery across targets (timeout 240.00s)
+ok - javascript: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - native: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - fastly: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - fastlyjs: schema/JWT errors, forward recovery, exhaustion and encoded bytes (local execution)
+ok - built JavaScript consumer preserves application errors and encoded bytes
+[pulsewasm] application-errors: passed in 15.73s
+
+[pulsewasm:conformance] application-error-boundaries
+[pulsewasm] Native failed continuation settlement and terminal failure boundaries (timeout 120.00s)
+ok - Native error recovery settles siblings once, stops later effects, and excludes traps, protocol faults and cancellation
+[pulsewasm] application-error-boundaries: passed in 3.50s
+
+[pulsewasm:conformance] node-cross-target-conformance
+[pulsewasm] Node native and JavaScript semantic conformance corpus (timeout 240.00s)
+ok - Node native and JavaScript targets conform across the canonical JSON corpus
+[pulsewasm] node-cross-target-conformance: passed in 4.97s
+
+[pulsewasm:conformance] grip-cross-target-conformance
+[pulsewasm] GRIP framing and broadcast conformance corpus (timeout 300.00s)
+ok - GRIP framing and broadcast behavior conforms across Node and Fastly targets
+[pulsewasm] grip-cross-target-conformance: passed in 5.59s
+
+[pulsewasm:conformance] four-mode-conformance
+[pulsewasm] Node/Fastly Native/JavaScript semantic parity and target integrity (timeout 300.00s)
+ok - four-mode semantic traces and target artifacts satisfy the Sprint 6D conformance gate
+[pulsewasm] four-mode-conformance: passed in 30.10s
+
+[pulsewasm] test summary
+  passed         1.16s  pure-helper-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/pure-helper-contract.log)
+  passed          51ms  suite-shape  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/suite-shape.log)
+  passed         7.09s  test-orchestration  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/test-orchestration.log)
+  passed         181ms  package-exports  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/package-exports.log)
+  passed         315ms  boundaries  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/boundaries.log)
+  passed         162ms  workspace-hygiene  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/workspace-hygiene.log)
+  passed         226ms  hidden-contracts  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/hidden-contracts.log)
+  passed         578ms  release-runtime-policy  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/release-runtime-policy.log)
+  passed         389ms  release-tag  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/release-tag.log)
+  passed         905ms  api-surface  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/api-surface.log)
+  passed          42ms  logging-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/logging-contract.log)
+  passed         1.14s  s3-design-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/s3-design-contract.log)
+  passed         1.11s  kv-design-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/kv-design-contract.log)
+  passed         1.08s  kv-conditional-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/kv-conditional-runtime.log)
+  passed         412ms  kv-conditional-gates  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/kv-conditional-gates.log)
+  passed         206ms  s3-read-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/s3-read-contract.log)
+  passed         297ms  s3-write-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/s3-write-contract.log)
+  passed         624ms  crypto-config-planning  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-config-planning.log)
+  passed          80ms  crypto-es256-signing  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-es256-signing.log)
+  passed         1.90s  crypto-rs256  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-rs256.log)
+  passed         385ms  crypto-digest-text-contract  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-digest-text-contract.log)
+  passed          74ms  reachable-graph  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/reachable-graph.log)
+  passed         813ms  project-modules  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/project-modules.log)
+  passed         989ms  package-reachability  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/package-reachability.log)
+  passed          51ms  provider-toolchain  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/provider-toolchain.log)
+  passed         845ms  schema-registry  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/schema-registry.log)
+  passed          31ms  continuation-registry  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/continuation-registry.log)
+  passed          92ms  entities-contracts  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-contracts.log)
+  passed         259ms  entities-schema-bridge  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-schema-bridge.log)
+  passed         790ms  entities-javascript-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-javascript-runtime.log)
+  passed          41ms  entities-json-rpc-corpus  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-json-rpc-corpus.log)
+  passed         285ms  entities-package-owned-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-package-owned-lowering.log)
+  passed         245ms  entities-catalog  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-catalog.log)
+  passed         1.76s  entities-inspection  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-inspection.log)
+  passed         6.29s  entities-orchestration-demo  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-orchestration-demo.log)
+  passed         1.65s  pure-helper-vocabulary  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/pure-helper-vocabulary.log)
+  passed         7.05s  pure-source-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/pure-source-helpers.log)
+  passed        14.95s  pure-record-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/pure-record-helpers.log)
+  passed        17.34s  pure-argument-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/pure-argument-helpers.log)
+  passed         5.05s  pure-loop-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/pure-loop-helpers.log)
+  passed        25.23s  fastly-driver-behavior-o09  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/fastly-driver-behavior-o09.log)
+  passed         745ms  kv-native-abi-feasibility  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/kv-native-abi-feasibility.log)
+  passed        15.01s  s3-native-read  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/s3-native-read.log)
+  passed         328ms  s3-node-transport  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/s3-node-transport.log)
+  passed         972ms  canonical-api-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-api-lowering.log)
+  passed         4.31s  canonical-native-plan  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-native-plan.log)
+  passed         4.56s  shared-stage-o19  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/shared-stage-o19.log)
+  passed        32.09s  bounded-app-logic  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/bounded-app-logic.log)
+  passed        35.35s  bounded-read-loops  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/bounded-read-loops.log)
+  passed         4.39s  bounded-loop-helpers  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/bounded-loop-helpers.log)
+  passed         1.87s  logging-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/logging-lowering.log)
+  passed         6.28s  canonical-router-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-router-lowering.log)
+  passed         6.49s  canonical-router-terminal-middleware  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-router-terminal-middleware.log)
+  passed         2.78s  json-as-compatibility  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/json-as-compatibility.log)
+  passed         2.16s  entities-envelope-feasibility  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-envelope-feasibility.log)
+  passed         365ms  entities-managed-handler  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-managed-handler.log)
+  passed         881ms  entities-managed-handler-effects  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-managed-handler-effects.log)
+  passed         6.25s  entities-native-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/entities-native-runtime.log)
+  passed         3.85s  crypto-native-guest-source  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-native-guest-source.log)
+  passed         5.70s  guest-link-package  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/guest-link-package.log)
+  passed        23.64s  guest-link-materialization-stage  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/guest-link-materialization-stage.log)
+  passed        12.73s  guest-link-audit-diagnostics  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/guest-link-audit-diagnostics.log)
+  passed         361ms  assets-lowering-plan  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/assets-lowering-plan.log)
+  passed         233ms  assets-package-owned-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/assets-package-owned-lowering.log)
+  passed         251ms  grip-package-owned-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/grip-package-owned-lowering.log)
+  passed         501ms  jwt-package-owned-lowering  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/jwt-package-owned-lowering.log)
+  passed         1.06s  canonical-api-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-api-runtime.log)
+  passed         527ms  canonical-opaque-node-emission  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-opaque-node-emission.log)
+  passed         522ms  grip-package-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/grip-package-runtime.log)
+  passed         1.47s  package-root-native  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/package-root-native.log)
+  passed        38.50s  canonical-native-wasm  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/canonical-native-wasm.log)
+  passed        14.58s  cli-javascript-target-compilation  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/cli-javascript-target-compilation.log)
+  passed         358ms  target-support  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/target-support.log)
+  passed         6.09s  jwt-javascript-admission  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/jwt-javascript-admission.log)
+  passed         581ms  crypto-runtime-builtin  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-runtime-builtin.log)
+  passed         458ms  javascript-effect-adapter  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/javascript-effect-adapter.log)
+  passed          68ms  logging-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/logging-runtime.log)
+  passed         771ms  assets-javascript-runtime  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/assets-javascript-runtime.log)
+  passed        11.45s  jwt-signing  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/jwt-signing.log)
+  passed        31.27s  jwt-es256-signing  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/jwt-es256-signing.log)
+  passed       347.20s  jwt-rs256  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/jwt-rs256.log)
+  passed         8.75s  s3-write-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/s3-write-conformance.log)
+  passed         4.09s  crypto-cross-target-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-cross-target-conformance.log)
+  passed         8.15s  crypto-digest-text-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-digest-text-conformance.log)
+  passed         9.62s  crypto-digest-storage-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/crypto-digest-storage-conformance.log)
+  passed        14.64s  multifile-source-identity  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/multifile-source-identity.log)
+  passed        12.88s  text-capacity-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/text-capacity-conformance.log)
+  passed         2.78s  events-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/events-conformance.log)
+  passed         3.00s  node-router-context-parity  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/node-router-context-parity.log)
+  passed        18.00s  catalog-router-parity  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/catalog-router-parity.log)
+  passed         464ms  fetch-projections-request-bodies  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/fetch-projections-request-bodies.log)
+  passed         413ms  config-secrets-kv-redaction  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/config-secrets-kv-redaction.log)
+  passed         2.89s  kv-conditional-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/kv-conditional-conformance.log)
+  passed         4.81s  kv-conditional-adversarial  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/kv-conditional-adversarial.log)
+  passed        12.64s  fastly-conditional-kv  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/fastly-conditional-kv.log)
+  passed        99.70s  schema-codecs  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/schema-codecs.log)
+  passed        10.35s  schema-kv-parity  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/schema-kv-parity.log)
+  passed         5.77s  time-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/time-conformance.log)
+  passed        14.77s  time-consumer  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/time-consumer.log)
+  passed         6.11s  request-budget-transport  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/request-budget-transport.log)
+  passed        11.43s  http-input-outcomes  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/http-input-outcomes.log)
+  passed        15.73s  application-errors  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/application-errors.log)
+  passed         3.50s  application-error-boundaries  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/application-error-boundaries.log)
+  passed         4.97s  node-cross-target-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/node-cross-target-conformance.log)
+  passed         5.59s  grip-cross-target-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/grip-cross-target-conformance.log)
+  passed        30.10s  four-mode-conformance  (/workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892/tasks/four-mode-conformance.log)
+  report       /workspace/scratch/bf0d896ef055/r101-final-report.json
+  run logs     /workspace/scratch/bf0d896ef055/runs/2026-10-02T18-33-39-115Z--13892
+  total        1040.45s

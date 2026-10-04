@@ -134,7 +134,7 @@ function loadReleaseManifest(file = RELEASE_MANIFEST_FILE) {
   const releaseNode = parseExactVersion(publication.nodeVersion, 'publication.nodeVersion');
   const releaseRangeMatch = /^\^(\d+)\.0\.0$/.exec(publication.nodeReleaseRange);
   const npmVersion = parseExactVersion(publication.npmVersion, 'publication.npmVersion');
-  const pnpmVersion = parseExactVersion(publication.pnpmVersion, 'publication.pnpmVersion');
+  parseExactVersion(publication.pnpmVersion, 'publication.pnpmVersion');
   if (minimumNode[0] < 22) fail('release manifest publication.nodeMinimumVersion must be Node 22 or newer');
   if (compareVersions(releaseNode, minimumNode) < 0) fail('release manifest publication.nodeVersion must not be older than nodeMinimumVersion');
   const enginesMatch = /^\^(\d+\.\d+\.\d+) \|\| \^(\d+)\.0\.0$/.exec(publication.nodeEngines);
@@ -149,8 +149,9 @@ function loadReleaseManifest(file = RELEASE_MANIFEST_FILE) {
     fail('release manifest publication.nodeVersion must satisfy nodeReleaseRange');
   }
   if (npmVersion[0] < 11) fail('release manifest publication.npmVersion must be npm 11 or newer');
-  if (publication.pnpmDevelopmentRange !== '>=10 <11') fail('release manifest publication.pnpmDevelopmentRange must support pnpm 10.x development');
-  if (pnpmVersion[0] !== 10) fail('release manifest publication.pnpmVersion must select an exact pnpm 10.x release toolchain');
+  if (!versionSatisfiesCaretRange(publication.pnpmVersion, publication.pnpmDevelopmentRange)) {
+    fail('release manifest publication.pnpmVersion must satisfy the declared pnpmDevelopmentRange (^major.minor.patch)');
+  }
 
   if (!Array.isArray(raw.runtimeTargets) || raw.runtimeTargets.length === 0) fail('release manifest runtimeTargets must be a non-empty array');
   const targetIds = new Set();

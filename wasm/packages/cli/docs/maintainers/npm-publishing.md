@@ -27,18 +27,27 @@ The machine-readable publication contract is the `publication` object in `releas
 ## Prepare release identity
 
 Run **Release preparation** from `main` with the next version (without `v`).
-It starts from `latest`, reconciles `main`, rebuilds the previous documentation
-snapshot from its exact release tag, prepares the version metadata, validates
+It starts from `latest`, reconciles `main`, applies the explicit documentation
+history choice, prepares the version metadata, validates
 the result, and opens a draft release PR into `main`.
 
 ```bash
-gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION"
+gh workflow run release-prepare.yml --ref main -f version="$NEXT_VERSION" -f documentation_history=archive-current
 ```
 
 Set `NEXT_VERSION` to the release you intend to prepare and write its notes in
 `CHANGELOG.md` under `Unreleased` first. Preparation moves those notes into the
 new version section and preserves published changelog history. Existing
 archives are compared with the tagged source and never silently overwritten.
+
+The default `archive-current` rebuilds the previous documentation snapshot from
+its exact tag. For the reviewed npm-published release whose hosted docs are not
+a recovery target, deliberately select `documentation_history=replace-unpublished-docs`.
+That choice skips snapshot construction and checks the preserved tag commit
+against `readiness.versionPreparation.unpublishedDocumentationReleases` in the
+release manifest. Unlisted versions fail closed. It removes only the old current
+entry from the next hosted docs list; npm artifacts, Git tags, and published
+changelog sections remain intact. The draft PR records the choice and evidence.
 
 Preparation runs with read-only repository permissions. A separate job pushes
 the prepared Git bundle to a new branch and creates a draft PR; it does not
@@ -52,7 +61,8 @@ does not trigger those workflows for PR creation using `GITHUB_TOKEN`; the
 human ready-for-review event starts them without another credential. Existing
 checks include release preparation inside `Repository validation / maintenance`:
 publishable code changes into `main` require a newer, synchronized version,
-archived previous documentation, and a changelog section. Documentation and
+archived previous documentation (or its reviewed unpublished-docs exception),
+and a changelog section. Documentation and
 workflow-only changes can retain the version. The check is preparation evidence,
 not a release seal or permission to publish.
 
@@ -64,12 +74,12 @@ HEAD matches the current remote `main` commit and the checkout is clean:
 git fetch origin main --tags
 git switch main
 git pull --ff-only origin main
-npm run release:tag -- 1.0.0-beta.5
-npm run release:tag -- 1.0.0-beta.5 --write
+npm run release:tag -- 1.0.0-beta.6
+npm run release:tag -- 1.0.0-beta.6 --write
 ```
 
 The first invocation checks and prints the plan. `--write` creates an annotated
-local `v1.0.0-beta.5` tag and prints the exact push and workflow commands for the
+local `v1.0.0-beta.6` tag and prints the exact push and workflow commands for the
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
@@ -83,6 +93,61 @@ protected publishing approval. A local seal is useful development evidence but
 is not a prerequisite that must be committed before tagging. Reconcile `main`
 back into `latest` after the release so development starts from the new version.
 
+## Release handoff record
+
+Copy this compact record for each exact tag. Fill the status and evidence link
+for every row; use `pending`, `passed`, `failed`, or `blocked`. Record the
+tested commit and terminal report, not merely a dispatched run. Keep a failed
+attempt visible when retrying. `promote_latest=false` deliberately stops after
+immutable verification; the npm gate and alias steps remain `blocked` until a
+separate, approved promotion run.
+
+```text
+Tag: v<version>    Tag commit: <40-character SHA>    Release PR: <URL>
+Step                  Status     Evidence / run, report, or blocker
+PR checks             ____       <full main PR checks at merge SHA>
+Release seal          ____       <npm candidate run / terminal seal report>
+npm publish           ____       <protected publish run / exact package receipts>
+Docs candidate        ____       <tagged docs candidate / manifest digest>
+Immutable upload      ____       <deploy + verify-storage reports / object count>
+npm gate              ____       <registry-catalog verification / package count>
+Alias promotion       ____       <root/latest deployment + storage verification>
+Public verification   ____       <Fastly route report / exact and moving URLs>
+Last failure: <step, code, object key or none, mismatch class, run attempt>
+Human release owner: <name>    Next action: <one concrete action>
+```
+
+After the human has reviewed and pushed the annotated tag, select that **tag**
+as the workflow dispatch ref and supply the identical `release_tag` input:
+
+```bash
+RELEASE_TAG=v<version>
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=audit
+gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=false
+```
+
+Stop and inspect the candidate, seal, and exact-version results. Only after
+the audit passes and the human release owner authorizes publication, dispatch
+the protected publish job. After npm verification and the human deployment
+approval, dispatch promotion from the same tag:
+
+```bash
+RELEASE_TAG=v<version>
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish
+gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=true
+```
+
+The tagged workflow's candidate job has no production credentials; its protected
+publish/deploy jobs still require human approval. An immutable documentation
+failure never authorizes replacing an existing key. Inspect
+`documentation-immutable-deployment.json` (or the corresponding verification
+report) for `failure.code`, `failure.objectKey`, and `failure.mismatch` before
+choosing a remedy. `bytes`, `content-type`, and `cache-control` distinguish
+the conflict classes. If failure occurs before an object is selected,
+`objectKey` is `null`. Failed reports are retained by the workflow's evidence
+upload on tags that contain this reporting change. Do not combine artifacts
+from different tags or run attempts into one passing record.
+
 For local preparation, the underlying command remains available:
 
 ```bash
@@ -91,6 +156,10 @@ node scripts/release-prepare.cjs "$NEXT_VERSION" --channel beta --archive-curren
 
 `--archive-current` requires the committed immutable documentation snapshot.
 Use `--replace-unpublished` only when replacing a candidate that has not shipped.
+For the reviewed hosted-docs exception, use `--replace-unpublished-docs` instead:
+the old release shipped on npm and its changelog must be preserved. See
+[documentation versioning](documentation-versioning.md#unpublished-hosted-docs-after-npm-publication)
+for exact-link behavior and the audit evidence.
 The command updates catalogued metadata and current documentation, runs named
 generators, rejects newly changed paths outside its allowlist, and writes an
 ignored stale-version-token report. Neither preparation route creates or moves
@@ -106,8 +175,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.5 \
-  -f release_tag=v1.0.0-beta.5 \
+  --ref v1.0.0-beta.6 \
+  -f release_tag=v1.0.0-beta.6 \
   -f operation=audit
 ```
 
@@ -117,7 +186,16 @@ A human release authority must approve that environment. Codex may inspect failu
 
 ## Trusted publishing
 
-Pulse uses npm trusted publishing through GitHub Actions OIDC. No `NPM_TOKEN` or `NODE_AUTH_TOKEN` is provided. Published packages support `^22.14.0 || ^24.0.0`; local development supports pnpm `>=10 <11`. Release packing, CI, and the portable dependency bundle select the exact pnpm version in the release manifest (currently 10.0.0). Local release seals accept Node `^24.0.0` and record the exact patch used. The protected publication workflow remains reproducibly pinned to Node 24.18.0 and npm 11.15.0, and `scripts/release-publication.cjs` rejects a different Node patch, a different npm version, or known long-lived npm credential variables in that job.
+Pulse uses npm trusted publishing through GitHub Actions OIDC. No `NPM_TOKEN` or `NODE_AUTH_TOKEN` is provided. Published packages support `^22.14.0 || ^24.0.0`; local development supports pnpm `^12.4.2`. Release packing, CI, and the portable dependency bundle select the exact pnpm version in the release manifest (currently 12.4.2). The development range is a compatibility range, not a patch pin; release validators require the exact version to satisfy it. To install the release toolchain and workspace dependencies without lifecycle scripts:
+
+```bash
+node scripts/pnpm-toolchain.cjs --install
+node scripts/pnpm-toolchain.cjs -- install --frozen-lockfile --ignore-scripts
+```
+
+Version 12 of pnpm supplies a native executable. The bootstrap installs the exact npm distribution with lifecycle scripts disabled, verifies its native executable version, and carries that executable in `.validation-tools/pnpm/bin`. Bundle creation verifies the lockfile against registry supply-chain policies and records `lockfileVerification` with its SHA-256. Offline restore first validates that hash and the exact toolchain/platform, then uses pnpm’s `trust-lockfile` mode for the already-verified lockfile; package integrity checks remain enabled. This avoids requiring uncached registry/provenance metadata offline. Normal online installs and CI keep full verification enabled. Release commands use the bundled runner directly. Rebuild dependency bundles when changing the manifest pin; restore rejects a stale toolchain before replacing dependencies. Older release-tag documentation rebuilds retain their original pnpm version.
+
+Local release seals accept Node `^24.0.0` and record the exact patch used. The protected publication workflow remains reproducibly pinned to Node 24.18.0 and npm 11.15.0, and `scripts/release-publication.cjs` rejects a different Node patch, a different npm version, or known long-lived npm credential variables in that job.
 
 Every manifest-owned npm package setting must authorize exactly:
 
@@ -154,7 +232,7 @@ An npm trusted publisher can be configured only after the package name exists un
 npm run release:audit-npm
 ```
 
-The command derives every package name from the release manifest and writes a timestamped, manifest-digest-bound report to `.pulse-release-preflight/npm-catalog-audit.json`. That report is ignored source evidence: it never rewrites the canonical preflight policy and it performs no registry mutation. Every name must exist with the inert `0.0.0` version and `bootstrap` tag. The `latest` tag may be absent, point to that placeholder, or point to a version both present in the registry and listed in `release/documentation-versions.json`. This preserves existing releases during the next bootstrap audit. Missing versions and unknown release targets remain blocking; any remediation is an explicit human registry action.
+The command derives every package name from the release manifest and writes a timestamped, manifest-digest-bound report to `.pulse-release-preflight/npm-catalog-audit.json`. That report is ignored source evidence: it never rewrites the canonical preflight policy and it performs no registry mutation. Every name must exist with the inert `0.0.0` version and `bootstrap` tag. The `latest` tag may be absent, point to that placeholder, or point to a version both present in the registry and listed in `release/documentation-versions.json` or in the release manifest’s reviewed `unpublishedDocumentationReleases` decisions. This preserves existing releases during the next bootstrap audit. Missing versions and unknown release targets remain blocking; any remediation is an explicit human registry action.
 
 Any missing package name requires a one-time human, 2FA-protected bootstrap publication through `scripts/npm_bootstrap.sh <package-name>`. After all names exist:
 
