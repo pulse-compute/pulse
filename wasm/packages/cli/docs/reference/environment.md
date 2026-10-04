@@ -10,6 +10,8 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 
 | Variable | Scope | Stability |
 |---|---|---|
+| [`PULSE_RELEASE_FEATURE_REPORT_DIR`](#pulse-release-feature-report-dir) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
+| [`PULSEWASM_SUITE_TASK`](#pulsewasm-suite-task) | Contributor and test-only configuration | Harness-internal; not a user or application setting. |
 | [`PULSE_B02_BASELINE_ROOT`](#pulse-b02-baseline-root) | Contributor and test-only configuration | Contributor/test-only; outside the application compatibility contract. |
 | [`PULSE_B02_USAGE_DIR`](#pulse-b02-usage-dir) | Contributor and test-only configuration | Harness-internal test control; not a user or application setting. |
 | [`PULSE_B03_USAGE_DIR`](#pulse-b03-usage-dir) | Contributor and test-only configuration | Harness-internal test control; not a user or application setting. |
@@ -89,6 +91,38 @@ Selects the flat Pulse project profile when no explicit `--profile` option is su
 ## Contributor and test-only configuration
 
 Repository harness controls. They are intentionally outside the application compatibility contract.
+
+<a id="pulse-release-feature-report-dir"></a>
+
+### `PULSE_RELEASE_FEATURE_REPORT_DIR`
+
+Routes each installed proof into a task-specific report for the candidate release decision.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Unset; focused installed tests use their own report directories. |
+| Precedence | The complete feature replay assigns a fresh directory to its child runner. |
+| Consumer | Installed feature acceptance report routing. |
+| Secret safety | Not a secret. Contains source, package and acceptance evidence only. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
+
+<a id="pulsewasm-suite-task"></a>
+
+### `PULSEWASM_SUITE_TASK`
+
+Identifies the current registered test task so forwarding target proofs have distinct reports.
+
+| Property | Contract |
+|---|---|
+| Value | Registered task ID |
+| Default | Assigned by the test runner for each task. |
+| Precedence | The runner overrides any inherited task identity. |
+| Consumer | Installed acceptance report routing and task harnesses. |
+| Secret safety | Not a secret. It selects only the report filename. |
+| Stability | Harness-internal; not a user or application setting. |
+| Source owners | `wasm/test/support/installed-acceptance-report.cjs` |
 
 <a id="pulse-b02-baseline-root"></a>
 

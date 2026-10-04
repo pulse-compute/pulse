@@ -1,4 +1,5 @@
 'use strict';
+const { installedAcceptanceReport } = require('../support/installed-acceptance-report.cjs');
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
@@ -15,7 +16,7 @@ async function main() {
   const consumer = path.join(temporary, 'consumer');
   fs.mkdirSync(path.join(root, 'wasm/.test-results'), { recursive: true });
   const reportDir = fs.mkdtempSync(path.join(root, 'wasm/.test-results/ast01-installed-'));
-  const reportFile = path.join(reportDir, 'acceptance.json');
+  const reportFile = installedAcceptanceReport(path.join(reportDir, 'acceptance.json'));
   const report = { status: 'running', source: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
     workingTree: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(),
     diffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),

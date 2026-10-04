@@ -153,6 +153,20 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 
 `--from` and `--through` aid investigation. A release claim requires the complete release profile.
 
+## Installed feature gates
+
+The clean candidate's separate mandatory installed-feature replay is:
+
+```bash
+node scripts/release-feature-acceptance.cjs
+```
+
+The release seal invokes this after its complete aggregate profile. See
+[installed feature acceptance](./release-acceptance.md#installed-feature-acceptance)
+for the ten gates, source/tarball identity requirements and separate experimental,
+private and external coverage. Focused runs remain development evidence and do
+not replace the complete installed replay or the final release seal.
+
 ## Aggregate release seal
 
 ```bash

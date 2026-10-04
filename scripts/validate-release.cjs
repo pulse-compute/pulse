@@ -151,6 +151,7 @@ function main(argv = process.argv.slice(2)) {
     npm_config_cache: path.join(packageManagerCache, 'npm')
   };
   let externalFastly = Object.freeze({ status: 'not-inspected' });
+  let featureAcceptance = null;
   let status = 'running';
   const runPackageManagerStep = (id, description, args, timeoutMs) => {
     const invocation = packageManagerInvocation();
@@ -213,6 +214,19 @@ function main(argv = process.argv.slice(2)) {
       { timeoutMs: 60 * 60 * 1000, env: identityEnv }
     );
 
+    runStep(
+      steps,
+      'installed-features',
+      'Qualify separately required installed feature gates on this exact candidate',
+      process.execPath,
+      ['scripts/release-feature-acceptance.cjs'],
+      { timeoutMs: 60 * 60 * 1000, env: identityEnv }
+    );
+    featureAcceptance = require('./release-feature-acceptance.cjs').validateSummary(
+      JSON.parse(fs.readFileSync(path.join(resultsRoot, 'release-feature-acceptance.json'), 'utf8')),
+      revision
+    );
+
     externalFastly = fastlyAvailability();
     if (externalFastly.status === 'available') {
       runStep(
@@ -256,6 +270,7 @@ function main(argv = process.argv.slice(2)) {
         startedAt,
         completedAt: new Date().toISOString(),
         steps,
+        featureAcceptance,
         externalFastly,
         error: { code: error.code || null, message: error.message }
       });
@@ -274,6 +289,7 @@ function main(argv = process.argv.slice(2)) {
     startedAt,
     completedAt: new Date().toISOString(),
     steps: Object.freeze(steps),
+    featureAcceptance,
     externalFastly
   });
   if (options.report) atomicJson(reportFile, report);

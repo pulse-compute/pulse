@@ -12,14 +12,14 @@ const { packRelease, readTarEntries } = require('../../../scripts/pack-release.c
 const { catalogFromTarballs, createReadOnlyRegistry } = require('../release/read-only-npm-registry.cjs');
 
 const root = path.resolve(__dirname, '../../..');
-const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-ast02d-installed-'));
+const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-s3-body-installed-'));
 assert.ok(!temporary.startsWith(root + path.sep), 'installed consumer must be outside the checkout');
 const consumer = path.join(temporary, 'consumer');
 const pack = path.join(temporary, 'packages');
 const reportParent = path.join(root, 'wasm/.test-results');
 fs.mkdirSync(reportParent, { recursive: true });
-const reportDir = fs.mkdtempSync(path.join(reportParent, 'ast02d-installed-'));
-const reportFile = installedAcceptanceReport(path.join(reportDir, 'ast02d-installed-acceptance.json'));
+const reportDir = fs.mkdtempSync(path.join(reportParent, 's3-body-installed-'));
+const reportFile = installedAcceptanceReport(path.join(reportDir, 's3-body-installed-acceptance.json'));
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const sensitive = [];
@@ -29,13 +29,13 @@ const clean = text => sensitive.reduce((value, secret) => value.replaceAll(secre
 const env = { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0', npm_config_audit: 'false', npm_config_fund: 'false',
   npm_config_cache: path.join(temporary, 'npm-cache'), npm_config_fetch_retries: '0' };
 for (const key of ['NODE_PATH', 'NODE_OPTIONS', 'PULSE_PROFILE', 'npm_config_registry', 'NPM_CONFIG_REGISTRY']) delete env[key];
-const report = { version: 'pulse.ast02d-installed-acceptance.v1', status: 'running',
+const report = { version: 'pulse.s3-body-installed-acceptance.v1', status: 'running',
   source: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
   sourceTree: execFileSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: root, encoding: 'utf8' }).trim(),
   workingTree: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(),
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
-  node: process.version, fixture: 'ast02d-installed-workflow', lifecycleScripts: false,
+  node: process.version, fixture: 's3-body-installed-workflow', lifecycleScripts: false,
   providerRealityValidated: false, results: [] };
 
 function saveReport() {
@@ -96,19 +96,19 @@ function verifyInstalled(manifest) {
     }
     packages.push({ name: id, version: entry.version, sha256: entry.sha256 });
   }
-  for (const name of ['assets', 'jwt', 'crypto', 's3', 'pulse', 'cli', 'provider-node', 'provider-fastly']) assert.ok(packages.some(entry => entry.name === '@pulse-compute/' + name));
+  for (const name of ['s3', 'pulse', 'cli', 'provider-node', 'provider-fastly']) assert.ok(packages.some(entry => entry.name === '@pulse-compute/' + name));
   return { packages, files: digests.length, sha256: hash(JSON.stringify(digests.sort())) };
 }
 
 async function main() {
   try {
     saveReport();
-    console.log('ast02d-installed - pack exact candidates and install outside checkout');
+    console.log('s3-body-installed - pack exact candidates and install outside checkout');
     const packed = packRelease({ repoRoot: root, outDir: pack });
     const version = packed.manifest.packages.find(p => p.name === '@pulse-compute/pulse').version;
     fs.mkdirSync(consumer, { recursive: true });
-    fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ name: 'ast02d-consumer', private: true, type: 'module',
-      dependencies: Object.fromEntries(['pulse','assets','cli','provider-node','provider-fastly'].map(name => ['@pulse-compute/' + name, version])) }));
+    fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({ name: 's3-body-consumer', private: true, type: 'module',
+      dependencies: Object.fromEntries(['pulse','s3','cli','provider-node','provider-fastly'].map(name => ['@pulse-compute/' + name, version])) }));
     const registry = createReadOnlyRegistry(catalogFromTarballs(packed.manifest.packages.map(p => path.join(pack, p.tarball))));
     await new Promise(resolve => registry.server.listen(0, '127.0.0.1', resolve));
     try {
@@ -118,10 +118,10 @@ async function main() {
       report.registry = registry.requests;
     } finally { await new Promise(resolve => registry.server.close(resolve)); }
     const before = verifyInstalled(packed.manifest); report.installed = before;
-    const fixture = 'ast02d-installed-fixture.cjs';
-    fs.writeFileSync(path.join(consumer, fixture), `require(${JSON.stringify(path.join(__dirname,'assert-native-embedded.cjs'))}).main({packedRoot:process.cwd()}).then(()=>require('node:fs').writeFileSync(process.argv[2],JSON.stringify({status:'passed',cases:40,targets:['node-native','fastly-native-abi'],ordinaryBuild:true}))).catch(e=>{console.error(e);process.exitCode=1;});`);
+    const fixture = 's3-body-installed-fixture.cjs';
+    fs.writeFileSync(path.join(consumer, fixture), `require(${JSON.stringify(path.join(__dirname,'assert-body-read.cjs'))}).main({packedRoot:process.cwd()}).then(()=>require('node:fs').writeFileSync(process.argv[2],JSON.stringify({status:'passed',targets:['node-native','node-javascript','fastly-native-abi'],ordinaryBuild:true}))).catch(e=>{console.error(e);process.exitCode=1;});`);
     report.fixtureSha256 = hash(fs.readFileSync(path.join(consumer, fixture)));
-    console.log('ast02d-installed - installed ordinary builds and binary Node/Fastly Native execution');
+    console.log('s3-body-installed - installed S3 body read corpus on Node Native/JavaScript and Fastly ABI');
     let shown = 0;
     await run(process.execPath, [fixture, path.join(reportDir, 'wire.json')], { timeout: 180000, onOutput(stdout) { process.stdout.write(stdout.slice(shown)); shown = stdout.length; } });
     report.qualification = readJson(path.join(reportDir, 'wire.json'));
@@ -129,7 +129,7 @@ async function main() {
     assert.deepEqual(verifyInstalled(packed.manifest), before); report.installed.unchanged = true;
     assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256);
     report.status = 'passed';
-    console.log('ok - AST-02D exact installed Node/Fastly Native embedded-blob qualification');
+    console.log('ok - S3 exact installed binary body qualification');
   } catch (error) { report.status = 'failed'; report.error = clean(error.stack || String(error)); throw error; }
   finally { saveReport(); fs.rmSync(temporary, { recursive: true, force: true }); console.log(`acceptance report - ${reportFile}`); }
 }

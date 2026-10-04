@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+const { installedAcceptanceReport } = require('../support/installed-acceptance-report.cjs');
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
@@ -18,7 +19,7 @@ const pack = path.join(temporary, 'packages');
 const reportParent = path.join(root, 'wasm/.test-results');
 fs.mkdirSync(reportParent, { recursive: true });
 const reportDir = fs.mkdtempSync(path.join(reportParent, 'jwt-installed-'));
-const reportFile = path.join(reportDir, 'jwt-installed-acceptance.json');
+const reportFile = installedAcceptanceReport(path.join(reportDir, 'jwt-installed-acceptance.json'));
 const profiles = ['node-javascript', 'node-native', 'fastly-javascript', 'fastly-native'];
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));

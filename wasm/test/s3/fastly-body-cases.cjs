@@ -1,7 +1,6 @@
 'use strict';
 const assert = require('node:assert/strict');
-const protocol = require('../../../packages/s3/src/provider.js');
-async function run(toolchain, fastly, binding) {
+async function run(toolchain, fastly, binding, protocol = require('../../../packages/s3/src/provider.js')) {
   const bytes = Buffer.from([0, 255, 192, 128, 254, 1]);
   let cases = 0;
   const crypto = require('node:crypto');

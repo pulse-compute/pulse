@@ -21,6 +21,30 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_RELEASE_FEATURE_REPORT_DIR',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Unset; focused installed tests use their own report directories.',
+    precedence: 'The complete feature replay assigns a fresh directory to its child runner.',
+    consumer: 'Installed feature acceptance report routing.',
+    secretSafety: 'Not a secret. Contains source, package and acceptance evidence only.',
+    stability: 'Harness-internal; outside the application compatibility contract.',
+    description: 'Routes each installed proof into a task-specific report for the candidate release decision.',
+    sourceFiles: ['wasm/test/support/installed-acceptance-report.cjs']
+  }),
+  entry({
+    name: 'PULSEWASM_SUITE_TASK',
+    category: 'contributor',
+    value: 'Registered task ID',
+    default: 'Assigned by the test runner for each task.',
+    precedence: 'The runner overrides any inherited task identity.',
+    consumer: 'Installed acceptance report routing and task harnesses.',
+    secretSafety: 'Not a secret. It selects only the report filename.',
+    stability: 'Harness-internal; not a user or application setting.',
+    description: 'Identifies the current registered test task so forwarding target proofs have distinct reports.',
+    sourceFiles: ['wasm/test/support/installed-acceptance-report.cjs']
+  }),
+  entry({
     name: 'PULSE_B02_BASELINE_ROOT',
     category: 'contributor',
     value: 'Directory path',
