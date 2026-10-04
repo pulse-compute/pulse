@@ -41,3 +41,4 @@ for (const body of ["const r = await s3.head(ctx, name, key)", "const r = await 
   "const read = s3.head; const r = await read(ctx, 'objects', key)", "return await s3.head(ctx, 'objects', key)",
   "const r = await s3.head(other, 'objects', key)", "const r = await s3.head(ctx, 'objects', key, {})"]) assert.equal(lower(body).hasErrors, true, body);
 console.log('ok - S3 read bindings, literal authority, dynamic key seam and result bounds');
+require('./assert-text-state-plan.cjs');

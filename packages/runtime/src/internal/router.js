@@ -34,6 +34,17 @@ function requireRouter(value) {
   return value;
 }
 
+function mountEligibility(value) {
+  if (value === undefined) return undefined;
+  const invalid = () => { throw new TypeError('Pulse Router mount eligibility requires { state: "key", equals: "value" } with string data properties.'); };
+  if (!value || typeof value !== 'object') return invalid();
+  const properties = Object.getOwnPropertyDescriptors(value);
+  if (Reflect.ownKeys(properties).length !== 2 ||
+      !properties.state || !properties.equals ||
+      typeof properties.state.value !== 'string' || typeof properties.equals.value !== 'string') return invalid();
+  return Object.freeze({ state: properties.state.value, equals: properties.equals.value });
+}
+
 function mergeParams(left, right) {
   return Object.freeze({ ...(left || {}), ...(right || {}) });
 }
@@ -114,10 +125,11 @@ class Router {
     return this;
   }
 
-  mount(path, router) {
+  mount(path, router, eligibility) {
     ROUTER_STATE.get(this).entries.push(entry('mount', {
       path: compileRoutePath(path, { scoped: true, allowWildcard: true }),
-      router: requireRouter(router)
+      router: requireRouter(router),
+      eligibility: mountEligibility(eligibility)
     }));
     return this;
   }
@@ -217,7 +229,7 @@ async function dispatchRouter(router, frame, startIndex, activeError) {
 
     if (current.kind === 'mount') {
       const match = matchRoutePath(current.path, frame.relativePath);
-      if (!match) {
+      if (!match || (current.eligibility && frame.state.get(current.eligibility.state) !== current.eligibility.equals)) {
         index += 1;
         continue;
       }

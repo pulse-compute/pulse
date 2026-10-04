@@ -259,7 +259,9 @@ function emitCanonicalRouterFromHandlerIrs(prepared) {
 
     if (entry.kind === 'mount') {
       const pattern = rawEntry.pattern && rawEntry.pattern.normalized || `${rawEntry.path || '/'}/*`;
-      synthetic += `    if (${MODE} === 0 && __pulse_router_match(ctx.req.path, ${JSON.stringify(pattern)})) {\n`;
+      const eligibility = rawEntry.eligibility;
+      const condition = eligibility ? ` && ctx.state.get(${JSON.stringify(eligibility.state)}) === ${JSON.stringify(eligibility.equals)}` : '';
+      synthetic += `    if (${MODE} === 0 && __pulse_router_match(ctx.req.path, ${JSON.stringify(pattern)})${condition}) {\n`;
       synthetic += `      ${CURSOR} = ${rawEntry.childStartIndex};\n`;
       synthetic += '    } else {\n';
       synthetic += `      ${CURSOR} = ${rawEntry.parentContinueIndex};\n`;

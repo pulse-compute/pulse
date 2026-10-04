@@ -1,0 +1,160 @@
+{
+  "status": "passed",
+  "sourceHashes": {
+    "wasm/packages/compiler/src/shared-stage-plan.js": "a2f902e0b197199cee3a6330abc9147c574cfadbc40cb58407be307694a9e4ce",
+    "wasm/packages/contracts/src/handler/canonical-native-plan.js": "e5a758079c22f62c773d6cbe5db052bc4334346175db8da08cebabc574d257cc",
+    "wasm/packages/build-support/src/native-retention-transform.cjs": "261464678386aedb9ac93776093583331a1ebb35d25b5b9ecef85306fe74e14d",
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native.js": "6b0d5211f912561c2269229b5964bb4a61ecc569c4bd0b3380f4946789559a17",
+    "wasm/test/runtime/compiler-efficiency/mw01-middleware.cjs": "6e72e276ab1d4b06ce442a12e858fbe5137199c01513c0d5115f0550c185e682",
+    "wasm/test/runtime/compiler-efficiency/o18-wasm-proof.cjs": "9d0e01e914405d579193cea2d733e1048df8c2f6b177f620807b298b83395b50"
+  },
+  "scope": "focused middleware Native plan, Fastly ABI-fixture runtime and optimized Wasm; no deployed or application-size claim",
+  "retention": {
+    "selected": 6,
+    "negativeControls": 11
+  },
+  "cells": [
+    {
+      "registrations": 1,
+      "optimization": "normal",
+      "planHash": "2a01c4d9f83064736d713e022a9f4bcd31bc591d7c8823490ee9ed4065866393",
+      "sourceSha256": "7f48ca6f143685bb1d5240ee8c4d50187412ecea8b61b45ff2c8411fe6d7d916",
+      "wasmBytes": 43414,
+      "requests": 1,
+      "retained": {
+        "namedCompanionSectionsByteExact": true,
+        "roots": [
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_1",
+            "bytes": 845,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          },
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_0",
+            "bytes": 1871,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          }
+        ],
+        "sharedBodyPartitions": 2,
+        "rootBytes": 2716,
+        "reachableFunctions": 69,
+        "largestReachableBodyBytes": 1871
+      },
+      "elapsedMs": 5835
+    },
+    {
+      "registrations": 1,
+      "optimization": "experimental-native-bounded-size",
+      "planHash": "2a01c4d9f83064736d713e022a9f4bcd31bc591d7c8823490ee9ed4065866393",
+      "sourceSha256": "7f48ca6f143685bb1d5240ee8c4d50187412ecea8b61b45ff2c8411fe6d7d916",
+      "wasmBytes": 37048,
+      "requests": 1,
+      "retained": {
+        "namedCompanionSectionsByteExact": true,
+        "roots": [
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_1",
+            "bytes": 727,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          },
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_0",
+            "bytes": 1270,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          }
+        ],
+        "sharedBodyPartitions": 2,
+        "rootBytes": 1997,
+        "reachableFunctions": 104,
+        "largestReachableBodyBytes": 1428
+      },
+      "elapsedMs": 4933
+    },
+    {
+      "registrations": 2,
+      "optimization": "normal",
+      "planHash": "c8386413b08bc2a0a99319456d18d79e61d8efa0fd989b9f7898cf57913630bf",
+      "sourceSha256": "e4eccfe958445c5f2d580bce6d0070e8cfd603ba78cb867e6254760a91e86216",
+      "wasmBytes": 44861,
+      "requests": 8,
+      "retained": {
+        "namedCompanionSectionsByteExact": true,
+        "roots": [
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_1",
+            "bytes": 845,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          },
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_0",
+            "bytes": 1902,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          }
+        ],
+        "sharedBodyPartitions": 2,
+        "rootBytes": 2747,
+        "reachableFunctions": 69,
+        "largestReachableBodyBytes": 1902
+      },
+      "elapsedMs": 5324
+    },
+    {
+      "registrations": 2,
+      "optimization": "experimental-native-bounded-size",
+      "planHash": "c8386413b08bc2a0a99319456d18d79e61d8efa0fd989b9f7898cf57913630bf",
+      "sourceSha256": "e4eccfe958445c5f2d580bce6d0070e8cfd603ba78cb867e6254760a91e86216",
+      "wasmBytes": 38283,
+      "requests": 8,
+      "retained": {
+        "namedCompanionSectionsByteExact": true,
+        "roots": [
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_1",
+            "bytes": 727,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          },
+          {
+            "name": "fastly-native-platform-capabilities.as/__pulse_shared_stage_0",
+            "bytes": 1270,
+            "callers": [
+              "fastly-native-platform-capabilities.as/__pulse_step"
+            ]
+          }
+        ],
+        "sharedBodyPartitions": 2,
+        "rootBytes": 1997,
+        "reachableFunctions": 104,
+        "largestReachableBodyBytes": 1428
+      },
+      "elapsedMs": 4723
+    }
+  ],
+  "fallback": [
+    {
+      "helper": "pure",
+      "reason": "nested-helper-call",
+      "nativePlanValid": true
+    },
+    {
+      "helper": "effectful",
+      "reason": "nested-helper-call",
+      "nativePlanValid": true
+    }
+  ],
+  "sameRequestReentry": true,
+  "crossedContinuationRejected": true
+}

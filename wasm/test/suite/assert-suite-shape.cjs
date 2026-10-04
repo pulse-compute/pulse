@@ -65,6 +65,8 @@ const externalTasks = new Set([
   'mcp-http-sdk',
   'mcp-tools-sdk',
   'mcp-authorization-sdk',
+  'middleware-sharing-mw01',
+  'middleware-sharing-mw02',
   // The S01 measurement task is a manually selected benchmark with sampled
   // process RSS, not a deterministic release acceptance check.
   'compiler-efficiency-p02',

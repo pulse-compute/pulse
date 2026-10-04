@@ -615,6 +615,14 @@ const tasks = Object.freeze({
     timeoutMs: 300000,
     description: 'B03 final-Wasm handler ownership, 1/8/32 scaling, serial compile and isolated cold-load proof under default and bounded-size modes'
   }),
+  'middleware-sharing-mw01': nodeTask('test/runtime/compiler-efficiency/mw01-middleware.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'MW-01 tiny effectful middleware sharing, scoped admission, retained Wasm and terminal-next proof'
+  }),
+  'middleware-sharing-mw02': nodeTask('test/runtime/compiler-efficiency/mw02-middleware.cjs', {
+    evidence: 'external', timeoutMs: 120000,
+    description: 'MW-02 shared time/digest middleware with bounded pure loops, schema values and retained Wasm proof'
+  }),
   'shared-stage-o19': nodeTask('test/runtime/compiler-efficiency/o19-production-stage.cjs', {
     timeoutMs: 180000,
     description: 'O-19 production stage ownership, fallback, multiple families and cross-target execution'
@@ -684,6 +692,9 @@ const tasks = Object.freeze({
     evidence: 'native',
     timeoutMs: 180000,
     description: 'mounted Router topology and continuation lowering'
+  }),
+  'router-selected-groups': nodeTask('test/lowering/assert-router-selected-groups.cjs', {
+    evidence: 'native', description: 'Static selected mounts: exclusion, suspension, errors and native continuation edges', timeoutMs: 180000
   }),
   'canonical-router-terminal-middleware': nodeTask('test/lowering/assert-canonical-router-terminal-middleware.cjs', {
     evidence: 'native',
@@ -1235,6 +1246,7 @@ const profiles = Object.freeze({
     'logging-lowering',
     'canonical-router-lowering',
     'canonical-router-terminal-middleware',
+    'router-selected-groups',
     'json-as-compatibility',
     'entities-envelope-feasibility',
     'entities-managed-handler',

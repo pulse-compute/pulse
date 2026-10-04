@@ -77,6 +77,18 @@ terminal transfer and 404/500 exhaustion contracts. This expands ingress
 registration without changing outgoing fetch methods or the effect/continuation
 ABI.
 
+An ordered mount can carry the static string descriptor
+`mount(path, child, { state: 'key', equals: 'family' })`. The owned Router API
+registry and extractor admit only that inline, literal form. Runtime dispatch
+and canonical lowering read request state once at the matching mount entry;
+false takes `parentContinueIndex`, true takes `childStartIndex`. The descriptor
+participates in the mount's stable identity and retained topology. No child body
+is duplicated, no callback is evaluated, and no new effect or continuation ABI
+is introduced. Resumption stays inside the admitted child even if it changes
+that state. Selection conveys no authorization. Historical table/harness
+emission rejects this form because its compatibility scanner has no eligibility
+contract. See [Selected groups](../guides/routing.md#selected-groups).
+
 The compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`
 declarations as a separate static event topology. Event types and schema IDs
 must be literal, schema IDs must resolve through the project registry, each
@@ -424,19 +436,32 @@ change to JavaScript's original-source execution. See the
 
 ### Shared effectful HTTP stages (O-19)
 
-Native plan v4 automatically factors structurally equivalent registrations of
-one transfer-capable HTTP route handler into a `pulse.canonical-native-stage.v1`
-body and explicit dispatcher calls. The initial supported family has 1..64
-sequential, bound text-fetch sites, local values, branches, early responses and
-terminal `next()` / `next(error)` transfers. Multiple eligible stage families
+Native planning automatically factors structurally equivalent registrations of
+one transfer-capable HTTP route or middleware handler into a
+`pulse.canonical-native-stage.v1` body and explicit dispatcher calls. The supported
+family has 1..64 sequential, bound text-fetch, `time.now` or `crypto.digestText`
+sites, local values, branches, bounded pure loops, early responses and terminal
+`next()` / `next(error)` transfers. Multiple eligible stage families
 and more than 16 registrations are supported. This introduces no public function
 syntax or configuration switch. JavaScript keeps original-source execution.
 
 Admission checks both statements and effect inputs after renaming local,
-effect and continuation identities. Captured locals, groups, loops, nested calls,
-non-text-fetch effects, middleware, error/event handlers and registration-specific
+effect and continuation identities. The comparison includes package/contract,
+declared result, decoder and provider descriptors. Captured locals, groups,
+effect loops, nested calls, other effect kinds, error/event handlers and registration-specific
 body differences retain their existing Native lowering. Ineligibility does not
-reject previously supported source or introduce a JavaScript fallback.
+reject previously supported source or introduce a JavaScript fallback. Effectful
+and pure helper calls are explicitly excluded until stage-local helper ownership
+is supported. The internal factoring function can report exclusion reasons
+without changing the fallback plan or its hash.
+
+Scoped middleware retains its original admission guard and occurrence-specific
+continuation. Even one eligible registration can be outlined. MW-01 and MW-02
+widen eligibility within the existing stage record representation; they do not
+change the host ABI, terminal-next semantics, or the public size flags. Pure-loop
+induction variables and nested locals belong to the stage frame. The existing
+canonical loop validator still enforces literal and combined iteration caps,
+pure bodies and read-only counter/test rules; no effects occur inside these loops.
 
 Each stage declares its request context, Router inputs, read-only next-cursor
 input, local namespace, effect sites and outputs: response, next, error,
@@ -456,7 +481,10 @@ their existing authority.
 
 The emitter consumes the validated stage records directly. It emits each body
 once in retained, bounded chunks and adds small entry/exit states and lookup
-wiring. The dispatcher allowance accounts for registration multiplicity so
+wiring. The build-support transform explicitly retains annotated generated
+shared-stage chunks and prepare/clear/ready/result accessors; a matching name in
+a user source or an unannotated generated declaration grants no retention. The
+dispatcher allowance accounts for registration multiplicity so
 sharing cannot shrink the guard for paths with several stage visits. Fastly
 request-body and value-failure analyses inspect stage bodies as well as ordinary
 handlers. Plan and generator versions change; the host ABI remains v2.
