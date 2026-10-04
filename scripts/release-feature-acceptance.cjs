@@ -28,7 +28,7 @@ const REQUIRED_TASKS = Object.freeze(GATES.map(gate => gate.task));
 const SEPARATE_GATES = Object.freeze([
   { task: 'str03c-bounded-transforms', classification: 'experimental', disposition: 'Workspace evidence only; installed transform qualification pending' },
   { task: 'mcp-installed', classification: 'private', disposition: 'Explicit private adapter coverage; outside npm publication' },
-  { task: 'kv-conditional-acceptance', classification: 'external-required', disposition: 'Separate mandatory local K4 gate plus deployed Pulse cross-location evidence; B6-05' }
+  { task: 'kv-conditional-acceptance', classification: 'external-required', disposition: 'Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05' }
 ].map(Object.freeze));
 
 const digest = bytes => crypto.createHash('sha256').update(bytes).digest('hex');

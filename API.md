@@ -11,7 +11,7 @@ This document describes the provider-neutral TypeScript application contract com
 
 `@pulse-compute/runtime` is the low-level portable application surface and
 `@pulse-compute/pulse` is the conventional project surface. Both belong to the
-14-package public release catalog. Native and JavaScript execution remain
+19-package public release catalog. Native and JavaScript execution remain
 explicitly selected targets over the same canonical runtime contract.
 
 ## Context at a glance
@@ -154,12 +154,23 @@ interface PulseRequest {
   readonly path: string
   readonly headers: readonly [string, string][]
   header(name: string): string | undefined
+  body(): PulseIncomingBody
+  readTextChunk(): PulseEffect<{ readonly done: boolean; readonly text: string }>
   text(): PulseEffect<string>
   json<T = unknown>(schemaId?: string): PulseEffect<T>
 }
 ```
 
 Structured request bodies are bounded runtime-owned snapshots. Repeated `text()` and `json()` reads are memoized immutable transforms.
+
+`body()` is an opaque incoming handle under the Node `bodyForwarding` opt-in;
+it grants no reader or binary inspection. `readTextChunk()` belongs only to the
+experimental Node `bodyTransform` opt-in, with generated output and a finite
+deadline. It excludes forwarding and structured body reads. Both Fastly targets
+reject these capabilities. The [bodies guide](./docs/concepts/bodies.md) owns the
+byte/read/write limits and separates installed output qualification from pending
+installed transform qualification. The production `/server` launcher remains
+qualified for finite HTTP, as described in [Node deployment](./docs/guides/deploying-node.md).
 
 ### Request metadata and headers
 

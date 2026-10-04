@@ -77,8 +77,10 @@ JavaScript-selected project into a Native one.
 
 ## Deliberately unsupported
 
-- Effectful or unbounded loops, arbitrary callback transformations, and Native
-  pure-helper calls. Pure loop bodies cannot transfer from the handler.
+- Unbounded loops, arbitrary callback transformations and Native helper shapes
+  outside the supported bounded subset. Effectful loops are limited to the
+  experimental finite Node output/transform forms in the [bodies guide](https://pulsecompute.io/v1.0.0-beta.5/concepts/bodies/);
+  other loop bodies must stay within the admitted pure forms.
 
 - Automatic fallback from Native lowering to JavaScript execution.
 - Declaring general target availability without satisfying every declared
@@ -93,7 +95,9 @@ JavaScript-selected project into a Native one.
 - Automatic discovery of arbitrary TypeScript types.
 - Dynamic schema IDs.
 - Arbitrary binary body inspection or mutation.
-- Userland chunk iteration, transform streams, or manual backpressure.
+- General userland chunk iteration, transform streams, or manual backpressure.
+  Experimental finite Node UTF-8 output/transforms are explicit bounded opt-ins,
+  not general stream support or production-launcher qualification.
 - Background tasks and work that outlives the request.
 - Raw TCP or UDP sockets.
 - Dynamic GRIP channel, framing-option, or message shapes under Native
@@ -141,7 +145,7 @@ pass it through → opaque handle
 - Package names, release artifacts, and published versions are immutable once
   released.
 
-The intended npm dist-tag for the Beta is `beta`. It becomes
-active only through the atomic documentation-release transaction and an
-explicitly authorized publication. The workflow never assigns `latest`
-implicitly.
+The release manifest explicitly selects the npm `latest` dist-tag while package
+versions retain the Beta prerelease suffix. The npm tag and Git branch are
+separate names. Publication remains a distinct human-authorized action; this
+support cleanup does not change that policy.

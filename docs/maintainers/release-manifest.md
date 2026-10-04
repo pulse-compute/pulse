@@ -60,7 +60,7 @@ scoped package name.
 |---|---|---|
 | `canonical-application` | Canonical application surface | Fully documented and supported as the Pulse application authoring or workflow contract. |
 | `supported-extension` | Supported provider/extension surface | Documented entry points are supported; implementation and toolchain subpaths are explicitly excluded. |
-| `implementation` | Implementation/transitive surface | Installable as part of the synchronized release set, without an application-author compatibility guarantee. |
+| `implementation` | Implementation/transitive surface | Installable as part of the synchronized release set. Only explicitly listed supported entry points carry their stated compatibility guarantee; all other interfaces are internal. |
 
 ## Synchronized packages
 

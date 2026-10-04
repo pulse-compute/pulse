@@ -10,6 +10,7 @@ const { packRelease } = require('../../../scripts/pack-release.cjs');
 const { PUBLICATION } = require('../../../scripts/package-support.cjs');
 const { catalogFromTarballs, createReadOnlyRegistry } = require('../release/read-only-npm-registry.cjs');
 const fastly = require('../../../packages/provider-fastly/src/testing/fastly-cli.js');
+const { localAcceptance } = require('./k4/local-acceptance.cjs');
 const run = promisify(execFile);
 
 async function main() {
@@ -53,11 +54,12 @@ async function main() {
     assert.equal(evidence.providerReality, true);
     assert.equal(evidence.installedBytesUnchanged, true); assert.equal(evidence.workspaceProductModules, 0);
     assert.equal(registry.requests.rejected, 0); assert.equal(registry.requests.missing, 0);
-    const output = { ...evidence, registry: registry.requests, deployed: 'pending-T2' };
+    const acceptance = localAcceptance(evidence);
+    const output = { ...evidence, acceptance, registry: registry.requests, deployed: 'pending-T2' };
     if (process.env.PULSEWASM_TEST_TMP_ROOT) fs.writeFileSync(path.join(process.env.PULSEWASM_TEST_TMP_ROOT, 'kv-k4-acceptance.json'), JSON.stringify(output, null, 2) + '\n');
     console.log(JSON.stringify(output));
-    assert.equal(evidence.status, 'passed', 'K4 real Compute contract gate failed; see recorded scenario failures');
-    console.log('ok - K4 exact packed consumers and required real Compute acceptance; deployed evidence remains pending T2');
+    assert.equal(acceptance.releaseBlocking, false, 'K4 has an undispositioned failure; see recorded scenario failures');
+    console.log(`ok - K4 local release disposition: ${acceptance.status}; raw semantics: ${evidence.status}; deployed evidence remains pending T2`);
   } finally {
     if (registry) await new Promise((resolve) => registry.server.close(resolve));
     fs.rmSync(root, { recursive: true, force: true });

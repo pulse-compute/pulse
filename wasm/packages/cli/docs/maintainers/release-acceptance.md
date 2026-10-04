@@ -99,7 +99,9 @@ profile and the generic Fastly Compute reality task:
 
 - `node wasm/scripts/run-wasm-tests.cjs --task kv-conditional-acceptance --no-report`
   installs exact candidate tarballs and executes the Native consumer through
-  Fastly CLI/Viceroy. An unavailable engine or semantic failure fails this gate.
+  Fastly CLI/Viceroy. An unavailable engine or undispositioned failure fails this
+  gate. The exact documented missing-key CAS discrepancy on Viceroy 0.21.0/0.21.1
+  is non-blocking by explicit human release direction on October 4, 2026.
 - Full deployed Pulse cross-location acceptance uses the reviewed isolated
   environment and probe driver described in the
   [K4 acceptance record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/K4.md).
@@ -110,17 +112,21 @@ replay on clean merged `latest`, using official Fastly CLI 16.1.0 / Viceroy
 module/package identities. Its
 [machine record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json)
 and [handoff](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/k4/B6-05.md)
-retain the current blockers. The standalone deployed
+retain the raw failure evidence and the deployed handoff. The standalone deployed
 Rust SDK probe confirms rejection for never-created and deleted keys in its
 tested cases, but does not satisfy either required Pulse acceptance gate. Full
 Pulse deployed cross-location evidence remains pending the isolated environment.
 
 Report these gates separately even when `release:seal -- --require-fastly`
 passes: that command does not include the dedicated K4 acceptance task or its
-deployed runner. Preserve the local failure and pending deployed requirement as
-release-readiness blockers. An explicit human-directed acceptance-policy change
-must specify any replacement evidence and update the owning gates and current
-contracts; a guidance update alone neither waives a gate nor changes CAS behavior.
+deployed runner. The local task retains raw `status: failed` when the known
+Viceroy discrepancy is reproduced and adds
+`acceptance.status: accepted-with-known-viceroy-discrepancy` with
+`acceptance.releaseBlocking: false`. All other assertions and exact-installed
+checks still block. This disposition relies on the retained local reproduction
+and standalone live missing-key comparison; neither is relabeled as passing
+deployed Pulse acceptance. The pending full deployed requirement remains
+separate. Production CAS semantics are unchanged.
 
 ## Event experimental candidate
 

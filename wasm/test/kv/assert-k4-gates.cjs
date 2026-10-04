@@ -4,8 +4,36 @@ const { spawnSync } = require('node:child_process');
 const path = require('node:path');
 const { createNodeKvReference } = require('../../../packages/provider-node/src/runtime/conditional-kv.js');
 const { deployed } = require('./k4/deployed.cjs');
+const { localAcceptance } = require('./k4/local-acceptance.cjs');
 
 async function main() {
+  const recorded = require('./k4/viceroy-0.21.1-beta6-evidence.json').localK4.consumer;
+  const known = localAcceptance(recorded);
+  assert.equal(known.status, 'accepted-with-known-viceroy-discrepancy');
+  assert.equal(known.releaseBlocking, false); assert.equal(known.semanticStatus, 'failed');
+  assert.equal(known.deployedPulseCrossLocationStillRequired, true);
+  assert.equal(localAcceptance(require('./k4/viceroy-0.21.0-evidence.json')).releaseBlocking, false);
+  const fixed = structuredClone(recorded);
+  fixed.status = fixed.results['fastly-compute'].status = 'passed';
+  fixed.results['fastly-compute'].failures = [];
+  assert.equal(localAcceptance(fixed).status, 'passed');
+  for (const change of [
+    e => { e.results['node-native'].status = 'failed'; },
+    e => { e.results['node-javascript'].status = 'failed'; },
+    e => { e.results['node-native'].failures.push({ check: 'another-failure' }); },
+    e => { e.results['fastly-compute'].failures.push({ check: 'another-failure' }); },
+    e => { e.results['fastly-compute'].failures[0].actual.subsequentRead = 'failed'; },
+    e => { e.results['fastly-compute'].toolchain.viceroy.version = '0.21.2'; },
+    e => { delete e.results['fastly-compute'].toolchain.viceroy; },
+    e => { e.results['fastly-compute'].lostResponse.status = 'failed'; },
+    e => { e.results['unexpected-target'] = { status: 'failed' }; },
+    e => { e.installedBytesUnchanged = false; },
+    e => { e.workspaceProductModules = 1; },
+    e => { e.publicTypes = 'failed'; },
+  ]) {
+    const invalid = structuredClone(recorded); change(invalid);
+    assert.equal(localAcceptance(invalid).releaseBlocking, true, 'unrelated or unverified failures still block');
+  }
   // Missing dependencies must fail before packing/installing, not pass/skip.
   const unavailable = spawnSync(process.execPath, [path.join(__dirname, 'assert-k4-acceptance.cjs')], {
     env: { ...process.env, PULSE_FASTLY_BIN: path.join(__dirname, 'absent-fastly-executable'), PULSE_VICEROY_BIN: '' },

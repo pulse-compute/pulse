@@ -144,7 +144,9 @@ request-owned operations instead:
 | Streaming proxy response | Direct opaque response pass-through |
 
 Provider SDK objects, sockets, filesystem access, timers, background work, and
-userland body streams are outside the managed handler contract.
+general userland body streams are outside the managed handler contract. The
+experimental finite Node UTF-8 output/transform APIs are bounded opt-ins;
+see [body handling](../concepts/bodies.md) and its qualification limits.
 
 ## Decide what code can move unchanged
 

@@ -5,9 +5,8 @@
 > **Audience:** Node deployment integrators and Pulse provider maintainers.<br>
 > **Install directly:** Yes for the production Node launcher; application handlers remain provider-neutral.<br>
 > **Supported entry points:** `@pulse-compute/provider-node/toolchain`, `@pulse-compute/provider-node/server`<br>
-> **Stability:** The server export is the supported Beta production HTTP integration for explicit Node Native and JavaScript builds. The toolchain entry serves the CLI; other provider subpaths remain internal.<br>
+> **Stability:** The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal.<br>
 > **npm:** [`@pulse-compute/provider-node`](https://www.npmjs.com/package/@pulse-compute/provider-node)<br>
-> **Canonical replacement:** `provider: 'node' through @pulse-compute/cli`<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/implementation-packages/)
 >
 > This release-status block is generated from the synchronized `Pulse 1.0.0-beta.5` package policy.

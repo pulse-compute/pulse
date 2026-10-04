@@ -920,8 +920,9 @@ Qualification belongs to each terminal acceptance report's source, package,
 fixture and Wasm identities. The artifact's `independentInstalledQualification`
 field stays false: compilation cannot certify a later external test. The surface
 remains experimental and the task is separate from the aggregate release seal.
-Fastly output, chunk transforms and MCP SSE remain unavailable; this adds no
-capability to them.
+Fastly output and MCP SSE remain unavailable. Node input transforms have the
+separate experimental bounded request-transform contract below; installed output
+qualification does not qualify that surface.
 
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
 provider's `time.wall-clock` authority. It returns one validated UTC wall-clock
