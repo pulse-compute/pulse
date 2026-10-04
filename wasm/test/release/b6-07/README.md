@@ -45,7 +45,7 @@ Main is an ancestor on this branch. Reconcile the final main release into latest
 with both parents retained after release; no integration/release ref is moved by
 this preparation.
 
-## Validation
+## Snapshot validation (historical)
 
 [validation.json](validation.json) records preparation, both ancestry parents,
 all patch-ID pairs, immutable archive file-set hashes, remaining historical
@@ -62,9 +62,27 @@ the tested snapshot; it does not constitute a release seal.
   [precise blocker](CLI-DOCTOR-BLOCKER.md). All 20 remaining CLI tasks passed and are recorded
   separately; partial/resumed reports are not pooled into a passing profile.
 
-B6-07's atomic snapshot is prepared and reviewable. The draft remains open while
-the existing CLI mismatch is resolved and B6-08 supplies the complete clean
-beta.6 release replay, packed feature/provider/K4 gates and exact artifact seal.
+## F01 resolution
+
+The user requested “Resolve B6-07-F01, update PR 185.” Commit
+`3c220e9b33bdd336173531d8194f697ccac2119d`, tree
+`fed0863dc58ffa5a93161bdef95ee2efb8b6e825`, corrects the stale middleware
+exclusion explanation and assertions under the existing MW01/MW02 contract.
+Two middleware registrations retain one stage body with occurrence-specific
+bindings. Genuine duplicated-body warnings and strict failures remain covered;
+compiler behavior and optimization defaults are unchanged.
+
+Fresh complete profiles on that clean commit passed **40/40 unit tasks and
+24/24 CLI tasks**, including the 15-check doctor assertion. Maintainer,
+documentation, documentation-release, scope and release-PR checks passed.
+[f01-validation.json](f01-validation.json) records exact source identity and
+terminal reports, including the focused development retry. The original snapshot
+record and failed/resumed attempts above remain unchanged. This evidence-only
+follow-up does not change tested product or fixture bytes.
+
+B6-07's atomic snapshot is prepared and F01 is resolved. The draft remains open
+while B6-08 supplies the complete clean beta.6 release replay, packed
+feature/provider/K4 gates and exact artifact seal.
 The known Viceroy missing-key CAS discrepancy retains B6-06's authorized
 non-blocking disposition; other failures still block. Deployed Pulse cross-location
 K4 proof and B6-04's historical populated beta.5 guest-cache qualification remain
