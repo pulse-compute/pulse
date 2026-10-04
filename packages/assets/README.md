@@ -5,7 +5,7 @@
 > **Audience:** Applications using JavaScript asset middleware or the package-owned lowerable asset lookup capability.<br>
 > **Install directly:** Yes, only when the application uses the assets capability.<br>
 > **Supported entry points:** `@pulse-compute/assets`<br>
-> **Stability:** The package root is the supported JavaScript API and canonical Native authoring surface; /pulsewasm remains a compatibility subpath, while manifest/compiler subpaths are toolchain integration.<br>
+> **Stability:** The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed.<br>
 > **npm:** [`@pulse-compute/assets`](https://www.npmjs.com/package/@pulse-compute/assets)<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/assets/)
 >

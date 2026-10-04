@@ -5,7 +5,7 @@
 > **Audience:** Applications using bounded exact-key object reads and writes through Pulse effects.<br>
 > **Install directly:** Yes, when an application uses S3 object operations.<br>
 > **Supported entry points:** `@pulse-compute/s3`<br>
-> **Stability:** The package root supports head, getText and putText on Node Native, Node JavaScript and Fastly Native. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.<br>
+> **Stability:** The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate.<br>
 > **npm:** [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3)<br>
 > **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.5/packages/s3/)
 >

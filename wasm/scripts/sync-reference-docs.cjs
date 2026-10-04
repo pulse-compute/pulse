@@ -167,7 +167,7 @@ function renderImplementationPackages() {
   return renderPackageGroupPage(
     'implementation',
     'Implementation packages',
-    'These packages are synchronized parts of the release set for compiler, provider, runtime, and package-lowering maintainers. They are not application-author SDKs.'
+    'These packages are synchronized parts of the release set for compiler, provider, runtime, and package-lowering maintainers. They are not general application-author SDKs. Explicitly listed supported entry points are exceptions with their stated bounds: in particular, @pulse-compute/provider-node/server is the finite production HTTP integration, and /toolchain serves the CLI. Other exports remain internal.'
   );
 }
 
@@ -735,10 +735,12 @@ function transformApiCopy(sourceRelative, content) {
       .replaceAll('./docs/guides/project-lifecycle.md', publicCliDoc('docs/guides/project-lifecycle.md'))
       .replaceAll('./docs/guides/compatibility-imports.md', publicCliDoc('docs/guides/compatibility-imports.md'))
       .replaceAll('./docs/guides/events.md', publicCliDoc('docs/guides/events.md'))
+      .replaceAll('./docs/guides/deploying-node.md', publicCliDoc('docs/guides/deploying-node.md'))
       .replaceAll('./docs/packages/grip.md', publicCliDoc('docs/packages/grip.md'))
       .replaceAll('./docs/packages/runtime.md', publicCliDoc('docs/packages/runtime.md'))
       .replaceAll('./docs/packages/entities.md', publicCliDoc('docs/packages/entities.md'))
       .replaceAll('./docs/concepts/entities-and-adapters.md', publicCliDoc('docs/concepts/entities-and-adapters.md'))
+      .replaceAll('./docs/concepts/bodies.md', publicCliDoc('docs/concepts/bodies.md'))
       .replaceAll('./examples/10-entities-tools/', publicCliDoc('examples/10-entities-tools/README.md'))
       .replaceAll('./examples/11-events/', publicCliDoc('examples/11-events/README.md'))
       .replaceAll('./docs/guides/routing.md', './guides/routing.md')
@@ -747,6 +749,7 @@ function transformApiCopy(sourceRelative, content) {
   if (sourceRelative === 'docs/preview-scope.md') {
     return stable(content
       .replaceAll('concepts/compilation-and-lowering.md', publicCliDoc('docs/concepts/compilation-and-lowering.md'))
+      .replaceAll('concepts/bodies.md', publicCliDoc('docs/concepts/bodies.md'))
       .replaceAll('./reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('./reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md')));
   }

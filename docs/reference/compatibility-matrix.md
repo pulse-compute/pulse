@@ -42,7 +42,10 @@ the Native build; it does not authorize automatic JavaScript fallback.
 | Ordinary target-compatible JavaScript package API | Yes | Yes | No | No | JavaScript packaging must include a provider-compatible dependency. Native requires a trusted package-owned lowerer. |
 | Arbitrary Promise construction or library await | JS only | JS only | No | No | Never valid inside `ctx.parallel`; Native reports the first eligibility boundary and never falls back. |
 | Ambient `fetch`, timers, environment/process access, filesystem, sockets, or provider SDK | No | No | No | No | Use `ctx` effects and configured provider bindings. |
-| Userland body streams, chunk transforms, or background work | No | No | No | No | Structured reads are bounded, opaque bodies stay host-owned, and work ends with the request. |
+| General userland body streams, binary transforms, or background work | No | No | No | No | Structured reads are bounded, opaque bodies stay host-owned, and work ends with the request. |
+| Incoming opaque request forwarding | Yes | No | Yes | No | Explicit Node `bodyForwarding`; Native excludes structured request reads. See [incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node). |
+| Finite generated UTF-8 output | Experimental | No | Experimental | No | Explicit `generatedOutput` and deadline; installed Node output evidence remains separate from production-launcher qualification. |
+| Finite incoming UTF-8 transforms | Experimental | No | Experimental | No | Explicit `bodyTransform` plus generated output/deadline; 64 KiB input, 256 KiB output, at most 4× expansion. Installed transform qualification is pending. |
 
 ## Provider and target realization
 
@@ -59,12 +62,15 @@ cell names the provider-owned binding or artifact that realizes it.
 | Secret reads | Test/dev binding | Secret Store | Test/dev binding | Secret Store | Secret values remain provider-owned and are redacted from diagnostics and logs. |
 | KV `get` and `put` | In-memory binding | KV Store | In-memory binding | KV Store | Namespaces are explicit profile bindings. |
 | Opaque pass-through | Yes | Yes | Yes | Yes | Bodies remain host-owned in all four modes. |
+| S3 `head`, `getText`, `getBody`, `putText` | Yes | No | Yes | Yes | Bounded exact-key operations. `getBody` returns an opaque binary response with the documented HTTP subset; Fastly JS lacks required raw-header metadata. See [S3](../packages/s3.md). |
+| Embedded Assets bytes | Node middleware | Unqualified | Native lookup | Native lookup | JavaScript `createAssets` embedded middleware is tested on Node; Native uses literal `embeddedManifest`. Fastly Native evidence is injected ABI proof, not deployment. See [Assets](../packages/assets.md). |
+| Finite production HTTP launcher | `/server` | No | `/server` | No | Explicit supported export of `@pulse-compute/provider-node`. Forwarding/output/transforms/S3-body/blob-specific launcher qualification remains separate. See [Node deployment](../guides/deploying-node.md). |
 | GRIP framing and configured broadcast | Yes | Yes | Yes | Yes | The package-root contract owns the portable operation shape. |
 | `ctx.log` and redaction | Yes | Yes | Yes | Yes | Provider output format may differ; the level and redaction contract does not. |
 | Reference event ingress and `ctx.emit` acceptance | Bounded Node adapter | No | Bounded Node adapter | No | Direct parity evidence only: FIFO ingress, exact-frame acceptance, no loopback, delivery promise, public bus, call surface, or automatic fallback. |
 | Local execution evidence | Node lifecycle | Provider emulation | Canonical host | Controlled ABI host | Local proof is not production provider activation. |
 | Deployment candidate | Source package | Source package plus downstream runtime Wasm | Node build | `bin/main.wasm` | A candidate records the selected target and does not contain an automatic fallback artifact. |
-| Production deployment and activation | Not applicable | Human-operated | Not applicable | Human-operated | Fastly reality, deployment, and activation remain explicit external gates. |
+| Production deployment and activation | Host-operated | Human-operated | Host-operated | Human-operated | The Node launcher does not create infrastructure or supervise processes; Fastly reality, deployment, and activation remain explicit external gates. |
 
 ## Entities Beta package
 

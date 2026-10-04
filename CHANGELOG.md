@@ -4,6 +4,28 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+- Combine bounded Node request forwarding, experimental finite generated output
+  and UTF-8 transforms with the current helper/shared-stage Native compiler work.
+  Size modes remain opt-in; no default optimization or target fallback changes.
+- Add bounded opaque S3 `getBody` responses on Node Native/JavaScript and Fastly
+  Native, and embedded Assets bytes through the existing qualified interfaces.
+  Fastly JavaScript S3 remains ineligible; arbitrary binary inspection is excluded.
+- Qualify the explicit Node `/server` export for finite production HTTP, including
+  build identity, overload, readiness and graceful draining. Streaming/output/
+  transform/S3-body/blob-specific launcher qualification remains separate.
+- Tighten Entities integration, JWT signing/verification and cleanup, and the
+  private MCP adapter. MCP remains unpublished and outside the 19-package set;
+  Native signature-guest composition restrictions remain enforced.
+- Require the separately selected installed-feature proofs and preserve exact
+  package/artifact identity. Fix guest JSON roundtrips while retaining ordered
+  arrays and exact trust values; beta.5 historical guest-cache evidence remains
+  distinct from current candidate cache reuse.
+- Refresh example Wasm sizes from rebuilt default and experimental-size artifacts,
+  clarify bounded support limits, and preserve the reviewed npm `latest` tag.
+- Retain the documented Viceroy missing-key CAS discrepancy as non-blocking by
+  release-owner direction. Raw failures remain recorded, CAS semantics are
+  unchanged, and deployed Pulse cross-location acceptance remains separate.
+
 ## 1.0.0-beta.5 — Beta (2026-09-16)
 
 - Add bounded application-owned JSON decoding, pure application loops and string

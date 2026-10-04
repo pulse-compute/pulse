@@ -158,7 +158,7 @@
     },
     "implementation": {
       "label": "Implementation/transitive surface",
-      "promise": "Installable as part of the synchronized release set, without an application-author compatibility guarantee."
+      "promise": "Installable as part of the synchronized release set. Only explicitly listed supported entry points carry their stated compatibility guarantee; all other interfaces are internal."
     }
   },
   "packages": [
@@ -262,7 +262,7 @@
       "entryPoints": [
         "@pulse-compute/assets"
       ],
-      "stability": "The package root is the supported JavaScript API and canonical Native authoring surface; /pulsewasm remains a compatibility subpath, while manifest/compiler subpaths are toolchain integration."
+      "stability": "The package root is the supported JavaScript API and canonical Native authoring surface, including bounded embedded Assets bytes on their qualified targets. /pulsewasm remains a compatibility subpath; manifest/compiler subpaths are toolchain integration. No application binary inspection is exposed."
     },
     {
       "dir": "packages/crypto",
@@ -318,7 +318,7 @@
       "entryPoints": [
         "@pulse-compute/s3"
       ],
-      "stability": "The package root supports head, getText and putText on Node Native, Node JavaScript and Fastly Native. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
+      "stability": "The package root supports head, getText, getBody and putText on Node Native, Node JavaScript and Fastly Native. getBody returns bounded opaque binary responses with the documented HTTP subset. Fastly JavaScript is ineligible. Provider and lowering subpaths are toolchain-only; live origin acceptance is separate."
     },
     {
       "dir": "wasm/packages/build-support",
@@ -418,8 +418,7 @@
         "@pulse-compute/provider-node/toolchain",
         "@pulse-compute/provider-node/server"
       ],
-      "stability": "The server export is the supported Beta production HTTP integration for explicit Node Native and JavaScript builds. The toolchain entry serves the CLI; other provider subpaths remain internal.",
-      "replacement": "provider: 'node' through @pulse-compute/cli"
+      "stability": "The /server export is an explicit supported-entry-point exception within this implementation package: finite production HTTP for explicit Node Native and JavaScript builds. Forwarding, generated output, transforms, S3-body bindings and blob-specific production qualification remain separate. /toolchain serves the CLI; all other provider subpaths remain internal."
     },
     {
       "dir": "wasm/packages/runtime-core-as",

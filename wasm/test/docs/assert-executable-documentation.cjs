@@ -45,8 +45,8 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 5695,
     optimizedGuestWasmBytes: 5181,
-    providerWasmBytes: 47135,
-    optimizedProviderWasmBytes: 39250,
+    providerWasmBytes: 47214,
+    optimizedProviderWasmBytes: 39329,
     capabilities: [
       'config.get',
       'secret.get',
@@ -62,16 +62,16 @@ const examples = Object.freeze([
     provider: 'fastly',
     guestWasmBytes: 2304,
     optimizedGuestWasmBytes: 2205,
-    providerWasmBytes: 34718,
-    optimizedProviderWasmBytes: 29992,
+    providerWasmBytes: 34747,
+    optimizedProviderWasmBytes: 30021,
     capabilities: ['fetch'],
     opaque: true
   }),
   Object.freeze({
     id: '09-router-lowering',
     provider: 'node',
-    guestWasmBytes: 9762,
-    optimizedGuestWasmBytes: 9355,
+    guestWasmBytes: 9157,
+    optimizedGuestWasmBytes: 8753,
     capabilities: ['fetch', 'response.json', 'response.text'],
     routes: 7
   }),

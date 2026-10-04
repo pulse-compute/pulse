@@ -351,8 +351,8 @@ A package-owned `grip.hold(...)` operation returns an opaque response contract. 
 The public contract does not include:
 
 - arbitrary binary body inspection;
-- arbitrary userland stream readers or writers beyond the experimental finite Node output API;
-- input chunk iteration or transforms;
+- arbitrary userland stream readers or writers beyond the experimental finite Node output/UTF-8 transform APIs;
+- general input chunk iteration, binary transforms or fetched-body cursors;
 - buffering an opaque response into structured memory;
 - provider-specific response objects;
 - background consumption after the request completes.

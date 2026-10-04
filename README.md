@@ -102,7 +102,9 @@ publish a Fastly service.
 
 The Beta deliberately does **not** expose general Promise-based Native
 semantics, provider SDKs, ambient environment authority, arbitrary binary
-inspection, userland stream transforms, background tasks, or raw sockets.
+inspection, general userland stream transforms, background tasks, or raw sockets.
+The separate experimental Node finite-output and UTF-8 transform opt-ins retain
+their documented limits and qualification status; see [body handling](docs/concepts/bodies.md).
 
 ## Public packages
 
