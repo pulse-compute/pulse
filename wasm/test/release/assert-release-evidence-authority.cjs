@@ -94,8 +94,15 @@ const taskReport = {
     durationMs: 1
   }))
 };
+const { SCHEMA: FEATURE_SCHEMA, REQUIRED_TASKS } = require('../../../scripts/release-feature-acceptance.cjs');
+const featureAcceptance = {
+  schemaVersion: FEATURE_SCHEMA, sourceRevision, sourceTree: 'b'.repeat(40), workingTree: '', status: 'passed',
+  gates: REQUIRED_TASKS.map(task => ({ task, status: 'passed', reportSha256: 'c'.repeat(64),
+    packages: [{ name: '@pulse-compute/pulse', version: require('../../../scripts/package-support.cjs').RELEASE_VERSION, sha256: 'd'.repeat(64) }] }))
+};
 const releaseSeal = {
   sourceRevision,
+  featureAcceptance,
   status: 'passed',
   steps: [
     'maintainer',
@@ -103,7 +110,8 @@ const releaseSeal = {
     'build',
     'workspace-unit',
     'documentation',
-    'release'
+    'release',
+    'installed-features'
   ].map((id) => ({ id, status: 'passed' })),
   externalFastly: {
     status: 'unavailable',
@@ -191,7 +199,7 @@ assert.deepEqual(
     .find((entry) => entry.id === 'maintainer-publication-controls')
     .tasks
     .map((entry) => entry.name),
-  ['release-runtime-policy', 'release-tag']
+  ['release-feature-acceptance', 'release-runtime-policy', 'release-tag']
 );
 assert.deepEqual(aggregate.summary, {
   shards: 16,
@@ -199,6 +207,7 @@ assert.deepEqual(aggregate.summary, {
   failed: 0,
   releaseTasks: expectedTasks.length,
   releaseTasksPassed: expectedTasks.length,
+  installedFeatureGates: REQUIRED_TASKS.length,
   providerReality: 'unavailable',
   deploymentPerformed: false,
   publicationPerformed: false

@@ -1,4 +1,5 @@
 'use strict';
+const { installedAcceptanceReport } = require('../support/installed-acceptance-report.cjs');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -11,7 +12,7 @@ const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 async function main() {
   const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-embedded-'));
   fs.mkdirSync(path.join(root, 'wasm/.test-results'), { recursive: true });
-  const reportFile = path.join(fs.mkdtempSync(path.join(root, 'wasm/.test-results/ast02b-')), 'acceptance.json');
+  const reportFile = installedAcceptanceReport(path.join(fs.mkdtempSync(path.join(root, 'wasm/.test-results/ast02b-')), 'acceptance.json'));
   const report = { status:'running', source:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(), workingTree:execFileSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).trim(), diffSha256:hash(execFileSync('git',['diff','HEAD'],{cwd:root})), scriptSha256:hash(fs.readFileSync(__filename)) };
   try {
     const consumer=path.join(temporary,'consumer'); fs.mkdirSync(consumer);

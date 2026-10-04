@@ -1168,6 +1168,13 @@ const tasks = Object.freeze({
     evidence: 'unit',
     description: 'release-owner tagging guards and immutable tag identity'
   }),
+  'release-feature-acceptance': nodeTask('test/release/assert-release-feature-acceptance.cjs', {
+    evidence: 'unit',
+    description: 'installed feature gate coverage and exact candidate report rejection'
+  }),
+  's3-body-installed': nodeTask('test/s3/s3-body-installed.cjs', {
+    timeoutMs: 300000, description: 'installed S3 binary bodies on Node Native/JavaScript and Fastly Native ABI fixtures'
+  }),
   'release-runtime-policy': nodeTask('test/release/assert-release-runtime-policy.cjs', {
     evidence: 'unit',
     description: 'Node release-line acceptance and Fastly CLI lifecycle ownership'
@@ -1188,6 +1195,7 @@ const profiles = Object.freeze({
     'boundaries',
     'workspace-hygiene',
     'hidden-contracts',
+    'release-feature-acceptance',
     'release-runtime-policy',
     'release-tag',
     'api-surface',

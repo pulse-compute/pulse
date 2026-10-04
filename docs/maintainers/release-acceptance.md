@@ -47,6 +47,51 @@ does not claim live Object Storage behavior. That separate evidence follows
 infrastructure setup (T2); package promotion does not publish npm artifacts or
 change the existing registry bootstrap and release approval gates.
 
+## Installed feature acceptance
+
+The aggregate release profile intentionally excludes independent installed
+feature proofs. The release seal now runs them as a separate mandatory step:
+
+```bash
+node scripts/release-feature-acceptance.cjs
+```
+
+Run from a clean, committed candidate after restoring lockfile-pinned dependencies
+and building the workspace. The command runs all ten gates through the registered
+runner with fresh report paths. It requires complete terminal passing coverage,
+matching source revisions, clean source, oracle digests, and exact installed
+package versions and tarball hashes. Shared package hashes must agree across
+proofs. The report is `wasm/.test-results/release-feature-acceptance.json`; its
+summary is retained in the release seal and checked by the evidence authority.
+Missing, partial, failed, dirty or stale reports fail acceptance. A later source
+change requires another replay on the new candidate.
+
+| Gate | Required installed acceptance |
+| --- | --- |
+| `node01-installed` | Finite production Node HTTP, artifact/ABI/version failures, overload, draining and secret-safe diagnostics |
+| `arc01-installed` | Package-owned Entities execution and provider loading without workspace product modules |
+| `jwt-installed-workflow` | Signing/verification, rotation, cleanup and explicit composition rejection |
+| `str02-installed`, `str02b-installed` | Node JavaScript/Native request forwarding, ownership, cancellation and real incremental HTTP |
+| `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
+| `ast01-installed` | Assets signing facade and installed declarations |
+| `ast02b-installed`, `ast02d-installed` | Embedded binary Assets on JavaScript and Native, bounds, HTTP subsets and deterministic manifest identity |
+| `s3-body-installed` | S3 binary bodies, GET/HEAD, range/conditional outcomes, length failures, cancellation and cleanup on Node Native/JavaScript and Fastly Native ABI fixtures |
+
+These gates qualify their existing target cells. They do not expand production
+Node launcher support to forwarding/output/transforms/S3-body/blob applications,
+qualify Fastly JavaScript S3, or establish live-provider behavior. Fastly ABI
+fixtures remain injected evidence, distinct from local-engine and deployed proof.
+
+| Separate coverage | Disposition |
+| --- | --- |
+| `str03c-bounded-transforms` | Experimental workspace Native/JavaScript proof in the aggregate profile; installed transform qualification remains pending |
+| `mcp-installed` | Explicit private adapter coverage; MCP remains outside the published package set |
+| `kv-conditional-acceptance` | Separately mandatory local K4 proof plus deployed Pulse cross-location evidence, as described below |
+
+The generic seal and installed feature report do not waive K4. Private MCP and
+independent SDK proofs remain explicit selections. Fast PR CI keeps its existing
+bounded selection; these dependency-bound installs belong to release acceptance.
+
 ## Conditional KV acceptance
 
 Conditional KV has additional required acceptance beyond the aggregate release

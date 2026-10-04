@@ -242,8 +242,8 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'maintainer-publication-controls',
     title: 'Maintainer and publication control planes',
-    tasks: Object.freeze(['release-runtime-policy', 'release-tag']),
-    releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release'])
+    tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-tag']),
+    releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release', 'installed-features'])
   })
 ]);
 
@@ -462,6 +462,7 @@ function aggregateValidation(input) {
   assertRevision(fourMode.sourceRevision, sourceRevision, 'Four-mode report');
   assertRevision(candidates.sourceRevision, sourceRevision, 'Candidate report');
   if (releaseSeal.status !== 'passed') fail('PULSE_RELEASE_EVIDENCE_RELEASE_FAILED', 'Release seal did not pass.');
+  require('./release-feature-acceptance.cjs').validateSummary(releaseSeal.featureAcceptance, sourceRevision);
   if (taskReport.status !== 'passed') fail('PULSE_RELEASE_EVIDENCE_TASKS_FAILED', 'Release task report did not pass.');
 
   const expectedTasks = expandProfile('release');
@@ -526,6 +527,7 @@ function aggregateValidation(input) {
       failed: shards.filter((entry) => entry.status !== 'passed').length,
       releaseTasks: expectedTasks.length,
       releaseTasksPassed: expectedTasks.length,
+      installedFeatureGates: releaseSeal.featureAcceptance.gates.length,
       providerReality: releaseSeal.externalFastly && releaseSeal.externalFastly.status || 'not-inspected',
       deploymentPerformed: false,
       publicationPerformed: false
