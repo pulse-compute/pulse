@@ -32,6 +32,15 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'guest-json-roundtrip': nodeTask('test/release/b6-04/guest-json.cjs', {
+    description: 'Guest v2 manifest/plan JSON key order, exact trust values and ordered arrays'
+  }),
+  'beta6-upgrade': nodeTask('test/release/b6-04/upgrade.cjs', {
+    evidence: 'external', timeoutMs: 900000, description: 'B6-04 published beta.5 replacement, populated guest/cache identity and Native fail-closed evidence'
+  }),
+  'beta6-measurements': nodeTask('test/release/b6-04/measure.cjs', {
+    evidence: 'external', timeoutMs: 2400000, description: 'B6-04 pinned integration control comparison: default and opt-in Native modes'
+  }),
   'pure-helper-vocabulary': nodeTask('test/lowering/assert-pure-helper-vocabulary.cjs', {
     evidence: 'native', description: 'Helper shape/operation characterization and independent string-index proof', timeoutMs: 30000
   }),
@@ -1188,6 +1197,7 @@ const tasks = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'guest-json-roundtrip',
     'pure-helper-contract',
     'suite-shape',
     'test-orchestration',
