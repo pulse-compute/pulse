@@ -12,11 +12,12 @@ const { RELEASE_VERSION, PACKAGE_SET } = require('./package-support.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const SCHEMA = 'pulse.release-feature-acceptance.v1';
 const GATES = Object.freeze([
+  // Check the combined Native rejection seam before the long JWT workflows.
+  { task: 'str02b-installed', feature: 'Node Native request-body forwarding' },
   { task: 'node01-installed', feature: 'Finite production Node HTTP launcher' },
   { task: 'arc01-installed', feature: 'Package-owned execution and provider loading' },
   { task: 'jwt-installed-workflow', feature: 'JWT signing, verification, cleanup and eligibility' },
   { task: 'str02-installed', feature: 'Node JavaScript request-body forwarding' },
-  { task: 'str02b-installed', feature: 'Node Native request-body forwarding' },
   { task: 'str03b-installed', feature: 'Experimental Node generated output; no support promotion' },
   { task: 'ast01-installed', feature: 'Assets signing facade' },
   { task: 'ast02b-installed', feature: 'JavaScript embedded Assets bytes' },
