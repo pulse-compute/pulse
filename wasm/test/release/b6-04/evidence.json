@@ -1,0 +1,1485 @@
+{
+  "schema": "pulse.b6-04.retained-evidence.v1",
+  "candidate": {
+    "revision": "e8c55e01754518650c3394c3b58c2351274fdb6e",
+    "tree": "825ce70ae3279f278482bdd8002679561bb6314a",
+    "workingTree": "",
+    "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "control": {
+    "revision": "e9bf187d0de0ccc54248a29bca24937d6bed79a9",
+    "tree": "ca3af1a8e037f3975d434ae7cf4c1ca46fc89a3e",
+    "workingTree": "",
+    "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "toolchain": {
+    "node": "v24.19.0",
+    "pnpm": "12.4.2",
+    "assemblyscript": "0.28.18",
+    "jsonAs": "1.5.0",
+    "binaryen": "129.0.0-nightly.20260428",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "INTEL(R) XEON(R) PLATINUM 8573C"
+  },
+  "lockfiles": {
+    "candidate": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+    "control": "4c184d78e2ab5e3224bfdc19b8d34830c8a17ef349ad9923f651c5da28cda0f8",
+    "externalResolutionsEqual": true,
+    "workspaceTopology": "each revision retains its own workspace importers"
+  },
+  "reportDigests": {
+    "measurements": "bda90ac68d61c3bcf6d45784ffaae054702019fcd4b67b90202ff685350a5d28",
+    "upgrade": "a9435a2a3984ba0ef58d30231cab9c4c54d8444ec088e0a809c8714be43b7cd5",
+    "measurementRunner": "7c9acc6febc64ce3f789604de90d550927a1017b15b04417f67b404443e5b61d",
+    "upgradeRunner": "55f612ed125a51ba019e87e245b88f0d8cb155137ae9543ee99c78994cd36909"
+  },
+  "oracleDigests": {
+    "measurements": "a0cc0945b80b0fc4c54288258a8ad103f6a968ac95395e57d9ef88dc8a6e4871",
+    "upgrade": "2ed6a722cb830e269f60f2c60b0b0d33c7ac3e59699d44801846e2f9092ad732"
+  },
+  "applicationSources": {
+    "compact": {
+      "source": [
+        [
+          "index.ts",
+          "bb4d54863111a617bfd9497d729579650a3cedcb050d5a8ea70fbef5e54b46a2"
+        ],
+        [
+          "partition.ts",
+          "c637c66ccbbc2eca7f1ccc469d0438ec2946ed7063fc2a3a7a53688e77984993"
+        ],
+        [
+          "schemas.ts",
+          "7939c9c4234cb5bf0d5cf6bacc4f4306ff9bada2ae03da4568cf77a8b269088c"
+        ],
+        [
+          "types.ts",
+          "ce047b0bcbd7abb73122959452db5b0d6383a1bafaa00e7efde535fcbfce3887"
+        ]
+      ],
+      "config": [
+        [
+          "config.ts",
+          "79bf009e7c4c6c5db2ac1da89dcc15ed3437bb5a7b2a261cdf867d817ddb2199"
+        ]
+      ]
+    },
+    "history": {
+      "source": [
+        [
+          "index.ts",
+          "f2dc6cf741df9354034c80e8104903fe0ed2ce189752c6193a4d72e99a3edf1c"
+        ],
+        [
+          "lookup.ts",
+          "256e9cb36bfdc7155a2d578cc2179dde6e95aae3540c5710ec524a8b8f50ffc8"
+        ],
+        [
+          "schemas.ts",
+          "0f55f8b2c7788e1679ede37961bf375fb428bd883873608253af22d9b26da039"
+        ],
+        [
+          "types.ts",
+          "74cb03d389081978aa52772a49f48b953be6c08b52e8ac513d9f0365222f1869"
+        ]
+      ],
+      "config": [
+        [
+          "config.ts",
+          "be78aca16edb03647f1c8b8202b89e79578cf20be9ddb56c8f1c9ebf181e3448"
+        ]
+      ]
+    }
+  },
+  "measurements": [
+    {
+      "application": "compact",
+      "mode": "default",
+      "revision": "control",
+      "wasmBytes": 43614,
+      "wasmSha256": "776e7bf88fab5cb19163213407697d53ae146400a6d8ebaef7902abb077df1de",
+      "planHash": "54be3155ac280440656a9fc264e9f0871249d1bf0050b4158b917faaa1fc1d09",
+      "compileWallMs": [
+        2498.584,
+        2577.098
+      ],
+      "compilePeakRssKiB": [
+        327884,
+        322432
+      ],
+      "startupProcessMs": 101.199,
+      "runtime": {
+        "moduleLoadMs": 35.437668,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 1.258499999999998,
+          "p95Ms": 4.631615999999994
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 1.5477850000000046,
+          "p95Ms": 1.8927110000000198
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_pure_helper_0",
+            "bytes": 741,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "compact",
+      "mode": "default",
+      "revision": "candidate",
+      "wasmBytes": 43614,
+      "wasmSha256": "7cbf24eae5da1b146e174af36ace61311584e8d5eb722394de9189c94f94656f",
+      "planHash": "8ab58740580f7f7a77aba96116aefded1c834e8adf08d9713cea803b1f718bb8",
+      "compileWallMs": [
+        2499.345,
+        2475.407
+      ],
+      "compilePeakRssKiB": [
+        308404,
+        308616
+      ],
+      "startupProcessMs": 87.008,
+      "runtime": {
+        "moduleLoadMs": 34.934985000000005,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 1.3514100000000013,
+          "p95Ms": 4.859977999999998
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 1.6756110000000035,
+          "p95Ms": 3.0388729999999953
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_pure_helper_0",
+            "bytes": 741,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "compact",
+      "mode": "experimental-native-bounded-size",
+      "revision": "control",
+      "wasmBytes": 34969,
+      "wasmSha256": "621638d6389190b47fb7532c4bff630ab32ee31fca387da63a58f43700ed7b6f",
+      "planHash": "54be3155ac280440656a9fc264e9f0871249d1bf0050b4158b917faaa1fc1d09",
+      "compileWallMs": [
+        2263.666,
+        2271.415
+      ],
+      "compilePeakRssKiB": [
+        313640,
+        329612
+      ],
+      "startupProcessMs": 97.966,
+      "runtime": {
+        "moduleLoadMs": 34.443615,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 1.307413000000011,
+          "p95Ms": 4.583992999999992
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 1.5958689999999933,
+          "p95Ms": 2.7090010000000007
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_pure_helper_0",
+            "bytes": 645,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "compact",
+      "mode": "experimental-native-bounded-size",
+      "revision": "candidate",
+      "wasmBytes": 34969,
+      "wasmSha256": "8dba436367ec3ca3abe5a6e0f551b039d0671aa9a4dfb6518135fce3b4613bd4",
+      "planHash": "8ab58740580f7f7a77aba96116aefded1c834e8adf08d9713cea803b1f718bb8",
+      "compileWallMs": [
+        2211.245,
+        2207.471
+      ],
+      "compilePeakRssKiB": [
+        333948,
+        308780
+      ],
+      "startupProcessMs": 86.797,
+      "runtime": {
+        "moduleLoadMs": 33.374308000000006,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 1.1831049999999976,
+          "p95Ms": 4.534222
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 1.5517749999999921,
+          "p95Ms": 2.6470979999999997
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_pure_helper_0",
+            "bytes": 645,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "compact",
+      "mode": "experimental-native-size",
+      "revision": "control",
+      "wasmBytes": 34970,
+      "wasmSha256": "cd884d32e7d94173abf4525ff74709801b3820ab32401ea507b2ba57638fe820",
+      "planHash": "54be3155ac280440656a9fc264e9f0871249d1bf0050b4158b917faaa1fc1d09",
+      "compileWallMs": [
+        2638.158,
+        2826.284
+      ],
+      "compilePeakRssKiB": [
+        334452,
+        345176
+      ],
+      "startupProcessMs": 94.908,
+      "runtime": {
+        "moduleLoadMs": 36.340483000000006,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 1.2824930000000023,
+          "p95Ms": 5.9636349999999965
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 1.6246480000000076,
+          "p95Ms": 2.305950999999993
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_pure_helper_0",
+            "bytes": 645,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "compact",
+      "mode": "experimental-native-size",
+      "revision": "candidate",
+      "wasmBytes": 34970,
+      "wasmSha256": "ecb838b62513b5e6e60531c25837ed0b75623454947a2ff1ac06ce3a1b994bb5",
+      "planHash": "8ab58740580f7f7a77aba96116aefded1c834e8adf08d9713cea803b1f718bb8",
+      "compileWallMs": [
+        3070.162,
+        3288.727
+      ],
+      "compilePeakRssKiB": [
+        346872,
+        328300
+      ],
+      "startupProcessMs": 88.709,
+      "runtime": {
+        "moduleLoadMs": 36.579716,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 1.4939080000000047,
+          "p95Ms": 4.914940999999999
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 1.6642999999999972,
+          "p95Ms": 2.182641000000018
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_pure_helper_0",
+            "bytes": 645,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "history",
+      "mode": "default",
+      "revision": "control",
+      "wasmBytes": 75280,
+      "wasmSha256": "4e086cfb6b0ef1fe4e7d2a77aa0945e71e905a7b483a27568dd8a43963d9a0d9",
+      "planHash": "9d6ad15f927805950500594fc043d5f4dad7e6fcb60d31f8074cefbf1448dbde",
+      "compileWallMs": [
+        3782.844,
+        3584.244
+      ],
+      "compilePeakRssKiB": [
+        330928,
+        327388
+      ],
+      "startupProcessMs": 97.929,
+      "runtime": {
+        "moduleLoadMs": 37.534915000000005,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 2.5444109999999966,
+          "p95Ms": 7.043608000000006
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 4.028832999999992,
+          "p95Ms": 5.92580700000002
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_1",
+            "bytes": 889,
+            "directCallSites": 1,
+            "reachable": true
+          },
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_0",
+            "bytes": 7246,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "history",
+      "mode": "default",
+      "revision": "candidate",
+      "wasmBytes": 75280,
+      "wasmSha256": "abd0c31af641ba9f4d31823d6ebec16ddfe01fe98777d1659f62de2a5b8c79b7",
+      "planHash": "13db68695081e6be3aa374686b9dc72fe0af5d3714a76ab97a01670f51b6a9dc",
+      "compileWallMs": [
+        3435.653,
+        3612.802
+      ],
+      "compilePeakRssKiB": [
+        321184,
+        321316
+      ],
+      "startupProcessMs": 97.456,
+      "runtime": {
+        "moduleLoadMs": 39.20967900000001,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 2.7072859999999963,
+          "p95Ms": 8.036482000000007
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 4.394511999999992,
+          "p95Ms": 6.022005999999976
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_1",
+            "bytes": 889,
+            "directCallSites": 1,
+            "reachable": true
+          },
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_0",
+            "bytes": 7246,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "history",
+      "mode": "experimental-native-bounded-size",
+      "revision": "control",
+      "wasmBytes": 64046,
+      "wasmSha256": "e4c1dc0fb79ddbb42e5c154267fc92f71e9b807f0c28649e917c7f92fa588cc8",
+      "planHash": "9d6ad15f927805950500594fc043d5f4dad7e6fcb60d31f8074cefbf1448dbde",
+      "compileWallMs": [
+        3188.004,
+        3433.228
+      ],
+      "compilePeakRssKiB": [
+        306384,
+        328840
+      ],
+      "startupProcessMs": 100.243,
+      "runtime": {
+        "moduleLoadMs": 38.604603999999995,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 2.566892999999993,
+          "p95Ms": 7.27720699999999
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 3.9906939999999906,
+          "p95Ms": 5.736244000000056
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_1",
+            "bytes": 840,
+            "directCallSites": 1,
+            "reachable": true
+          },
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_0",
+            "bytes": 5681,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "history",
+      "mode": "experimental-native-bounded-size",
+      "revision": "candidate",
+      "wasmBytes": 64046,
+      "wasmSha256": "08312416c8846ca7d296412edaecc731f5ad088d323680a92e80554409a744d7",
+      "planHash": "13db68695081e6be3aa374686b9dc72fe0af5d3714a76ab97a01670f51b6a9dc",
+      "compileWallMs": [
+        3243.361,
+        3266.546
+      ],
+      "compilePeakRssKiB": [
+        333464,
+        321040
+      ],
+      "startupProcessMs": 96.727,
+      "runtime": {
+        "moduleLoadMs": 36.343451,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 2.6118819999999943,
+          "p95Ms": 7.2311810000000065
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 4.424759999999992,
+          "p95Ms": 6.072617000000008
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_1",
+            "bytes": 840,
+            "directCallSites": 1,
+            "reachable": true
+          },
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_0",
+            "bytes": 5681,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "history",
+      "mode": "experimental-native-size",
+      "revision": "control",
+      "wasmBytes": 64003,
+      "wasmSha256": "67ed5b4db3ba67bf5b25d1ede1d978928ea76fe9748af02a22a076e84061f66d",
+      "planHash": "9d6ad15f927805950500594fc043d5f4dad7e6fcb60d31f8074cefbf1448dbde",
+      "compileWallMs": [
+        4611.012,
+        4855.14
+      ],
+      "compilePeakRssKiB": [
+        313740,
+        315548
+      ],
+      "startupProcessMs": 96.167,
+      "runtime": {
+        "moduleLoadMs": 38.824653999999995,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 2.6628099999999932,
+          "p95Ms": 7.115157999999994
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 4.113254999999981,
+          "p95Ms": 6.869543999999962
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_1",
+            "bytes": 840,
+            "directCallSites": 1,
+            "reachable": true
+          },
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_0",
+            "bytes": 5671,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    },
+    {
+      "application": "history",
+      "mode": "experimental-native-size",
+      "revision": "candidate",
+      "wasmBytes": 64003,
+      "wasmSha256": "2ea28cf7c8330ae2b39857fbe162e8b4c049edeaa17693f9ab3b5dfb88ad7904",
+      "planHash": "13db68695081e6be3aa374686b9dc72fe0af5d3714a76ab97a01670f51b6a9dc",
+      "compileWallMs": [
+        4887.398,
+        4835.913
+      ],
+      "compilePeakRssKiB": [
+        335676,
+        320688
+      ],
+      "startupProcessMs": 102.865,
+      "runtime": {
+        "moduleLoadMs": 39.538911999999996,
+        "instantiate": {
+          "samples": 10,
+          "medianMs": 2.642399999999995,
+          "p95Ms": 8.479242
+        },
+        "requestLifecycle": {
+          "samples": 30,
+          "medianMs": 4.432830999999993,
+          "p95Ms": 7.496773999999988
+        },
+        "requestIncludesInstantiation": true,
+        "provider": "injected Node effects; no network",
+        "semantics": "passed"
+      },
+      "structure": {
+        "namedCompanionSectionsByteExact": true,
+        "retainedBodies": [
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_1",
+            "bytes": 840,
+            "directCallSites": 1,
+            "reachable": true
+          },
+          {
+            "name": "canonical-native.as/__pulse_shared_helper_0",
+            "bytes": 5671,
+            "directCallSites": 1,
+            "reachable": true
+          }
+        ]
+      }
+    }
+  ],
+  "upgrade": {
+    "status": "partial",
+    "upgradeStatus": "passed",
+    "freshInstallStatus": "passed",
+    "populatedPublishedGuestUpgrade": "blocked",
+    "publishedBeta5Guest": {
+      "status": "blocked",
+      "code": "PULSE_GUEST_UNIT_INVALID",
+      "reason": "Published beta.5 crypto tarball contains no ES256 guest payload; a fresh published install cannot populate that guest cache."
+    },
+    "versionTransition": {
+      "from": "1.0.0-beta.5",
+      "to": "1.0.0-beta.5",
+      "method": "exact tarball replacement; no cache or application-state deletion",
+      "finalBeta6SnapshotReplayRequired": true
+    },
+    "npmCacheContentFilesPreserved": 89,
+    "oldGuestAddress": null,
+    "candidateGuestAddress": ".pulse/guests/pulse.crypto.es256.rustcrypto-p256.v1/b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf/6d7110f3cd432ab0caaa60006c7920a4c70d8f58a3f6974c2f9380a72c04c39b",
+    "candidatePackages": [
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.5",
+        "sha256": "4e864f7da9cc026a6b58a8277b755505dc212146ee40653845b1138ec5b04790"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.5",
+        "sha256": "2f4392ceb390fc01295dc5a3fff5dc5c0d1ad7a7df40c33d48199c3e986408f6"
+      },
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.5",
+        "sha256": "2c5eb451e65f826f1fa6ab6e32f084b180a58bf93c62dbdc57e7b53f9d42256c"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.5",
+        "sha256": "8169b10762ca9e7fa39a57262985c5b642206064e76cce35b2d417affb6a7cc7"
+      },
+      {
+        "name": "@pulse-compute/grip",
+        "version": "1.0.0-beta.5",
+        "sha256": "c0a00f29bc76bd87c2a8e12f55287eca048e6485adec49e2a10aee8756660974"
+      },
+      {
+        "name": "@pulse-compute/assets",
+        "version": "1.0.0-beta.5",
+        "sha256": "a443d1e203985e4ad11ffba2a45dcb5ce4f47c1c2ee5d3f81dc60dc22ef6c6d4"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.5",
+        "sha256": "4e661b98a901e8230e1bf263f4b1bdd16d2fbd9b70f9f279d7d3d2d55ae5f0fb"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.5",
+        "sha256": "ed2412e9c475e4aedbb6f85ecfe116cf441105e607bee6427007c6490042462c"
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "version": "1.0.0-beta.5",
+        "sha256": "ae289319f0828495b0a2fc4446cf47ccd94a16a52b13f83a2a6268db625a67f5"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.5",
+        "sha256": "18786e379cf5d54d50721310657f5105664dfeb29ad6b2605ac8c5d9b5570421"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.5",
+        "sha256": "5455fa39d5e474c7b3cbf1325c52973a4113cafac5ae5c1228363f663bf4f4ec"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.5",
+        "sha256": "0f40997ead613ce9895c7b23f07cc2aac4aa033b1de003912e529c8fcdfabeaa"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.5",
+        "sha256": "935d99da6806934dc34bc2d525c72337b1288674b0f9ad5f7fc515e013bf82b2"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.5",
+        "sha256": "56eec6b39e719f982e4938011b16a1f90af4b33b91496314c2ca5703874a7048"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.5",
+        "sha256": "0638897cf235318bd1706f8b6c6171bd9187d46036a437d6d73c6308768e4e5d"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.5",
+        "sha256": "c1712acc638ea4a93b302bb085d30d712f077851bfe277ff12930a3d17fc001c"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.5",
+        "sha256": "97f2765a44b714497adf8e1c16fabdc96a7bc10df687d3cd3f7fdad597aee6de"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.5",
+        "sha256": "da82453ebaed726d0680ff30d11f25d8162980ff884073924aa526b125a599a7"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.5",
+        "sha256": "ab88e60d2251b72419b70e2b5e2a1329beee05d6fb62d5b2f59eea3550ad9a4a"
+      }
+    ],
+    "previousPackages": [
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.5",
+        "sha256": "ace5366f421bf5d3c2c723e76a7110eabe6d58a227c3abb85b3dd17772e7c186",
+        "integrity": "sha512-SI/2gvRfazjt1q+lzSM9wynfOA4kscxBT3eDA/eNO9KS5cN4i37dfoLT6nzaXAuk50/nO9uYyUC/j/KorZJC3A=="
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.5",
+        "sha256": "912f7f1b897b94a3980fc59e458908adb5801d4d2294c40c9770f6195a2e50ec",
+        "integrity": "sha512-aH4puFicZ9rG78jNkGBbCIeQTDu/Fwf//16GOMASb9Au5xIo5bplrsuxv2Wdem65vzC2PHkGpMtfwgmBoKd90w=="
+      },
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.5",
+        "sha256": "10d49e4d4c62eff7f1ce749db3d5fe0a558b0331eb3b21d68d7c12393a95d883",
+        "integrity": "sha512-bAv5Vg+GdPCd57K5LChrAISLKSCi6Mx6fw6WHYI1g31eAYllkc9BrwJ8CD3K+ogviP3BHk9XtCLRL+9jA9NmjQ=="
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.5",
+        "sha256": "8735aadfd093e271cee526e6c2f08edb759d15af865b1ec74772ab896b890d3e",
+        "integrity": "sha512-BBTr3K58ggLf3BPGuuRdpFBVle+Bn1NTHA6ZDaBNAE5tNAQLqchHqQzLwlt1t+1xMW0eSt2Cxrza+uLRlq6uUA=="
+      },
+      {
+        "name": "@pulse-compute/grip",
+        "version": "1.0.0-beta.5",
+        "sha256": "cb18e01392aec610547dbca6fcfcda45702451e1b8feaa31dbbb9e7189ace950",
+        "integrity": "sha512-dIJgyv2HNXttzqi93Fb9/ZtBv240fN+b1TwL//rhw2qfV9ZWaKnKkwubsbvZbGtaq3kvFYBewKOV4d2c8+310g=="
+      },
+      {
+        "name": "@pulse-compute/assets",
+        "version": "1.0.0-beta.5",
+        "sha256": "69e1f95ffd54a277b62deb869c6e4b05e68db3a5eb9a4d06f1e21503bf675f73",
+        "integrity": "sha512-WMUuAy5brZY+bFy2tSmHg45vg9DNKv9Nycnj3XCnrDoYLzJjfK3VzPFG1Q1JBrgVYvJOVegR6nsxTwwxOkTrhw=="
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.5",
+        "sha256": "daab1e13eeaf4f17965943b77cc9b530bcea3e03ce1889e2511874a25a8691b3",
+        "integrity": "sha512-1V5OcqvHaVUv3l0hoeNJXVIOW7X6UkMOr0aa3KBeKphFHHhQWX1FBJlVlcZWc1Tv+0tCK500io/eKjd2PPx9Tw=="
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.5",
+        "sha256": "91a0c209226ef9e260dcd8fa1e6f41c0da3ab01af991249f4f55bce5fa5148c3",
+        "integrity": "sha512-/qUtRzPtg9mv1lF0Fs4r+vXwbxT0pfzEGwmYhiOFoBQAaLnlO1Fv3LMx1wno79R64KExgm7aDi/fituPhtqRhw=="
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "version": "1.0.0-beta.5",
+        "sha256": "82782d6b8a33386e76f8c2c4161a334719f91b00e830c4ef1f514c2e849ac482",
+        "integrity": "sha512-xUrO0tv8w4DkPmHBpM4NlJWdWMRr3Mznw85vdyIvPSxEJuquostIDmOWNI0YekHU3q1ZAT09OUmxgb8tmgi8ZQ=="
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.5",
+        "sha256": "ea0d20614f759a2c053378ed07ba71af7dd69169b86f02029a956d76266a48a2",
+        "integrity": "sha512-c1BpNS2LxdJLGr95IoHl/eTrrS9HLI+mdMiYGCDiBgsoKhqxY/hz1R0AY50lMyuGu8B+73mhIl9pHmSvNKztlQ=="
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.5",
+        "sha256": "daef675d1426b546e2ee9b7b43860e8409858792eb5df785d3cd55c854a102fc",
+        "integrity": "sha512-SADqt4tx04p6KLQ/W335RkO/mFkGxHIWI8MOLwI7xPPxkLnQjJLpn9wBF9H8c+/sn7tpjBC7Rn9PW+bUZnZGdA=="
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.5",
+        "sha256": "eb487eff2eae7bc444ab2efdd234065c3d50af045845bb755298a0041cc72c95",
+        "integrity": "sha512-wFLcZtSjIQgsJCKcX4jX7sh81zS5uWx+5bBodAENSKiyMQYpOvzoX2S8zFryR9akSIeUnMn5NhoSBeFiMqnQgg=="
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.5",
+        "sha256": "c932405d9ce63bb345a2f4b4158e639381de0064627087b7a3820e5b0d95707c",
+        "integrity": "sha512-XZVLC/pmm+jorR7U0zni8k5J3eMeUNbJPfbUTI3xM9Bf4FFWBBjW5OpethFIw37uKWM5C1/FV2H4mrLfn1dmlA=="
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.5",
+        "sha256": "8c176bab9149ef0c91e5c84d3a1b08ce2a1031e458bf24f7d4bc8a0e4785ae4a",
+        "integrity": "sha512-xEhtF1dOa8NPcuRoGGjkXzMCT5ITMcEaURo6R4WsHn7FvqOS9IavVKEwn1nc7rl4ZlSO1NbNe6haioHHUd306Q=="
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.5",
+        "sha256": "8cb5528a70680745d7ec0f651e80e523c92c0c94c8168f2d94a971966345eb45",
+        "integrity": "sha512-tGt06TzPxxmIZm32nXqQHJpa+ezv4KN9F8PHJ70CZbLSe4yLaRnPoUA7KUnJ7Bm/wZQ+KKsAJ/QPgOn1ORvkjQ=="
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.5",
+        "sha256": "0ee10a1a086dde919b221067c7496ddf3ab740095a9dd70bc2c4b0c6229dd55e",
+        "integrity": "sha512-Ed0Ihp1pR65uA4zpY2sE87VY4Od++SDJhwrSy1ZzYDmxBPIrmgg09X+DY3OUyhkQUlFE0tLhsKc1+2+L2X4tDQ=="
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.5",
+        "sha256": "4a1c5cf940de8249684195b4330209343afde4b5c96daca02acea3ea53ee474a",
+        "integrity": "sha512-CsgkNBKQ2FFlEl/ClaJgfQvBMyXLxPvSfSZfJgE8HzlFUjhY22BeCtjONZ3/Bxh8YpM73LPFLFaAvlBcQJGWXA=="
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.5",
+        "sha256": "73e6650ad024694ff2dc67d4690b547b4d30d89f55182bbfe18744bca5a9aebd",
+        "integrity": "sha512-MKOl42kGab916b+vpdXsxUk/ucelYVF9ncydqqC5RFhzrJn0fz/SXJOTd8k+UWDKJXNBC6G0PeCjfekzz8hhdg=="
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.5",
+        "sha256": "a23edbe1dbc802016d2c25f64e3f3cf53b2cf0d2df2cb9c2044ea0fbb6dcc507",
+        "integrity": "sha512-Gw1UnLXYIJ7MrSRSH6/5Dab9IQ40NIAogZwtyb+hVIQl6joySVQtjMmofmlII9eXtgUrpv6XULhn0o2KeH/9PQ=="
+      }
+    ],
+    "steps": [
+      {
+        "label": "published-beta5",
+        "status": "partial",
+        "cold": {
+          "app": {
+            "wasmSha256": "c643b769dd83b630c4f37c8f6530341bb6f4f5a8434cb08409f4546f26b883cf",
+            "wasmBytes": 1920,
+            "planSha256": "05277b514e5573f7125bc764534efa13375c2deb31cac7f0211817e35163e78a",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          }
+        },
+        "warm": {
+          "app": {
+            "wasmSha256": "c643b769dd83b630c4f37c8f6530341bb6f4f5a8434cb08409f4546f26b883cf",
+            "wasmBytes": 1920,
+            "planSha256": "05277b514e5573f7125bc764534efa13375c2deb31cac7f0211817e35163e78a",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          }
+        },
+        "preservedState": true,
+        "guest": {
+          "status": "blocked",
+          "code": "PULSE_GUEST_UNIT_INVALID",
+          "reason": "Published beta.5 crypto tarball contains no ES256 guest payload; a fresh published install cannot populate that guest cache."
+        }
+      },
+      {
+        "label": "upgraded-candidate",
+        "status": "passed",
+        "cold": {
+          "app": {
+            "wasmSha256": "2614252eac71483ce8692daad9a9314b189bfce98460e102c606ddec1e4ff0a9",
+            "wasmBytes": 2030,
+            "planSha256": "051aaca652a8e1fb93ec40e492c6af873da4a84047372e01261cca44661f4df8",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          },
+          "guest": {
+            "wasmSha256": "4fa3f6badfade818727d1a85e9cb2c32d3180211b6fe8e19bfde9886ad959229",
+            "wasmBytes": 36100,
+            "planSha256": "de58b361a575ddd6d85263cc52a604366ed7526fb2648b791c7fc8c2b58c948a",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          }
+        },
+        "warm": {
+          "app": {
+            "wasmSha256": "2614252eac71483ce8692daad9a9314b189bfce98460e102c606ddec1e4ff0a9",
+            "wasmBytes": 2030,
+            "planSha256": "051aaca652a8e1fb93ec40e492c6af873da4a84047372e01261cca44661f4df8",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          },
+          "guest": {
+            "wasmSha256": "4fa3f6badfade818727d1a85e9cb2c32d3180211b6fe8e19bfde9886ad959229",
+            "wasmBytes": 36100,
+            "planSha256": "de58b361a575ddd6d85263cc52a604366ed7526fb2648b791c7fc8c2b58c948a",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          }
+        },
+        "preservedState": true,
+        "evidence": {
+          "status": "passed",
+          "guest": {
+            "directory": ".pulse/guests/pulse.crypto.es256.rustcrypto-p256.v1/b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf/6d7110f3cd432ab0caaa60006c7920a4c70d8f58a3f6974c2f9380a72c04c39b",
+            "reused": true,
+            "artifactSha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "manifestSha256": "6d7110f3cd432ab0caaa60006c7920a4c70d8f58a3f6974c2f9380a72c04c39b"
+          },
+          "mixedPackageDiagnostic": "PULSE_GUEST_UNIT_OWNER_MISMATCH",
+          "manifestOnlyCacheSeparation": true,
+          "production": {
+            "finiteHttp": "passed",
+            "mixedBuildRejected": true,
+            "mixedPlanRejected": true,
+            "corruptNativeRejected": true,
+            "javascriptFallbackUsed": false
+          }
+        }
+      },
+      {
+        "label": "fresh-candidate",
+        "status": "passed",
+        "cold": {
+          "app": {
+            "wasmSha256": "2614252eac71483ce8692daad9a9314b189bfce98460e102c606ddec1e4ff0a9",
+            "wasmBytes": 2030,
+            "planSha256": "051aaca652a8e1fb93ec40e492c6af873da4a84047372e01261cca44661f4df8",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          },
+          "guest": {
+            "wasmSha256": "4fa3f6badfade818727d1a85e9cb2c32d3180211b6fe8e19bfde9886ad959229",
+            "wasmBytes": 36100,
+            "planSha256": "de58b361a575ddd6d85263cc52a604366ed7526fb2648b791c7fc8c2b58c948a",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          }
+        },
+        "warm": {
+          "app": {
+            "wasmSha256": "2614252eac71483ce8692daad9a9314b189bfce98460e102c606ddec1e4ff0a9",
+            "wasmBytes": 2030,
+            "planSha256": "051aaca652a8e1fb93ec40e492c6af873da4a84047372e01261cca44661f4df8",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          },
+          "guest": {
+            "wasmSha256": "4fa3f6badfade818727d1a85e9cb2c32d3180211b6fe8e19bfde9886ad959229",
+            "wasmBytes": 36100,
+            "planSha256": "de58b361a575ddd6d85263cc52a604366ed7526fb2648b791c7fc8c2b58c948a",
+            "compilerVersion": "pulse.canonical-native-wasm-compiler.v3",
+            "buildVersion": "pulse.project-execution.v10"
+          }
+        },
+        "preservedState": true,
+        "evidence": {
+          "status": "passed",
+          "guest": {
+            "directory": ".pulse/guests/pulse.crypto.es256.rustcrypto-p256.v1/b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf/6d7110f3cd432ab0caaa60006c7920a4c70d8f58a3f6974c2f9380a72c04c39b",
+            "reused": true,
+            "artifactSha256": "b1d09f10fddf7587cb9e87f959fa908457e076e207db078fc101390c70e4aecf",
+            "manifestSha256": "6d7110f3cd432ab0caaa60006c7920a4c70d8f58a3f6974c2f9380a72c04c39b"
+          },
+          "mixedPackageDiagnostic": "PULSE_GUEST_UNIT_OWNER_MISMATCH",
+          "manifestOnlyCacheSeparation": true,
+          "production": {
+            "finiteHttp": "passed",
+            "mixedBuildRejected": true,
+            "mixedPlanRejected": true,
+            "corruptNativeRejected": true,
+            "javascriptFallbackUsed": false
+          }
+        }
+      }
+    ]
+  },
+  "boundaries": {
+    "releaseSeal": false,
+    "deployment": false,
+    "publication": false,
+    "performanceGuarantee": false,
+    "finalBeta6ReplayRequired": true
+  },
+  "binaryComparison": [
+    {
+      "application": "compact",
+      "mode": "default",
+      "changedSections": [
+        "11"
+      ],
+      "onlyEmbeddedPlanHashChanged": true
+    },
+    {
+      "application": "compact",
+      "mode": "experimental-native-bounded-size",
+      "changedSections": [
+        "11"
+      ],
+      "onlyEmbeddedPlanHashChanged": true
+    },
+    {
+      "application": "compact",
+      "mode": "experimental-native-size",
+      "changedSections": [
+        "11"
+      ],
+      "onlyEmbeddedPlanHashChanged": true
+    },
+    {
+      "application": "history",
+      "mode": "default",
+      "changedSections": [
+        "11"
+      ],
+      "onlyEmbeddedPlanHashChanged": true
+    },
+    {
+      "application": "history",
+      "mode": "experimental-native-bounded-size",
+      "changedSections": [
+        "11"
+      ],
+      "onlyEmbeddedPlanHashChanged": true
+    },
+    {
+      "application": "history",
+      "mode": "experimental-native-size",
+      "changedSections": [
+        "11"
+      ],
+      "onlyEmbeddedPlanHashChanged": true
+    }
+  ],
+  "timingRepeat": {
+    "status": "passed",
+    "reason": "Resolve compact converging-size compile increase in first clean run and runtime sample variation",
+    "source": {
+      "revision": "e8c55e01754518650c3394c3b58c2351274fdb6e",
+      "tree": "825ce70ae3279f278482bdd8002679561bb6314a",
+      "workingTree": "",
+      "diffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "reportSha256": "9c988e714862768d662b03a8f6d146af2b34b1d4963264b741013b539ca00e55",
+    "runnerReportSha256": "9369fece1cc48b23eecd3a829b6778300c102b2cd1a4f6a427891a6db90e9896",
+    "allTwelveArtifactIdentitiesUnchanged": true,
+    "rows": [
+      {
+        "application": "compact",
+        "mode": "default",
+        "revision": "control",
+        "compileWallMs": [
+          2538.266,
+          2398.068
+        ],
+        "compilePeakRssKiB": [
+          310540,
+          310020
+        ],
+        "startupProcessMs": 93.802,
+        "runtime": {
+          "moduleLoadMs": 36.432288,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 1.2965909999999923,
+            "p95Ms": 4.994390999999993
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 1.7378420000000006,
+            "p95Ms": 3.3182609999999784
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "compact",
+        "mode": "default",
+        "revision": "candidate",
+        "compileWallMs": [
+          2436.067,
+          2389.982
+        ],
+        "compilePeakRssKiB": [
+          306932,
+          327904
+        ],
+        "startupProcessMs": 88.129,
+        "runtime": {
+          "moduleLoadMs": 32.95499600000001,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 1.1412909999999954,
+            "p95Ms": 4.621929000000009
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 1.5094980000000078,
+            "p95Ms": 2.0592829999999935
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "compact",
+        "mode": "experimental-native-bounded-size",
+        "revision": "control",
+        "compileWallMs": [
+          2371.632,
+          2416.584
+        ],
+        "compilePeakRssKiB": [
+          345760,
+          333260
+        ],
+        "startupProcessMs": 93.121,
+        "runtime": {
+          "moduleLoadMs": 32.69079299999999,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 1.1363890000000083,
+            "p95Ms": 4.439139999999995
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 1.4996449999999868,
+            "p95Ms": 2.0862380000000087
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "compact",
+        "mode": "experimental-native-bounded-size",
+        "revision": "candidate",
+        "compileWallMs": [
+          2305.667,
+          2240.631
+        ],
+        "compilePeakRssKiB": [
+          309716,
+          330164
+        ],
+        "startupProcessMs": 95.846,
+        "runtime": {
+          "moduleLoadMs": 35.94704900000001,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 1.1750119999999953,
+            "p95Ms": 4.530571000000009
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 1.607420999999988,
+            "p95Ms": 2.1241589999999917
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "compact",
+        "mode": "experimental-native-size",
+        "revision": "control",
+        "compileWallMs": [
+          2827.176,
+          2600.035
+        ],
+        "compilePeakRssKiB": [
+          324564,
+          325960
+        ],
+        "startupProcessMs": 107.098,
+        "runtime": {
+          "moduleLoadMs": 34.200855,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 1.2680059999999997,
+            "p95Ms": 4.708075999999991
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 1.570886999999999,
+            "p95Ms": 3.248283000000015
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "compact",
+        "mode": "experimental-native-size",
+        "revision": "candidate",
+        "compileWallMs": [
+          2740.713,
+          2593.031
+        ],
+        "compilePeakRssKiB": [
+          327688,
+          335436
+        ],
+        "startupProcessMs": 89.467,
+        "runtime": {
+          "moduleLoadMs": 33.645549,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 1.2393140000000074,
+            "p95Ms": 4.8996039999999965
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 1.5155549999999778,
+            "p95Ms": 2.0176440000000184
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "history",
+        "mode": "default",
+        "revision": "control",
+        "compileWallMs": [
+          3548.549,
+          3493.307
+        ],
+        "compilePeakRssKiB": [
+          344124,
+          303216
+        ],
+        "startupProcessMs": 94.607,
+        "runtime": {
+          "moduleLoadMs": 40.412385,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 2.6039829999999995,
+            "p95Ms": 7.638296999999994
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 4.252376999999967,
+            "p95Ms": 7.307209
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "history",
+        "mode": "default",
+        "revision": "candidate",
+        "compileWallMs": [
+          3621.815,
+          3599.652
+        ],
+        "compilePeakRssKiB": [
+          327176,
+          324132
+        ],
+        "startupProcessMs": 96.079,
+        "runtime": {
+          "moduleLoadMs": 36.81103400000001,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 2.540181000000004,
+            "p95Ms": 7.062438999999998
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 4.140855000000045,
+            "p95Ms": 5.829948000000002
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "history",
+        "mode": "experimental-native-bounded-size",
+        "revision": "control",
+        "compileWallMs": [
+          3215.614,
+          3403.764
+        ],
+        "compilePeakRssKiB": [
+          319996,
+          321844
+        ],
+        "startupProcessMs": 92.201,
+        "runtime": {
+          "moduleLoadMs": 39.865414,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 2.6934069999999934,
+            "p95Ms": 7.621518999999992
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 4.336226999999951,
+            "p95Ms": 7.477350000000001
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "history",
+        "mode": "experimental-native-bounded-size",
+        "revision": "candidate",
+        "compileWallMs": [
+          3371.268,
+          3466.952
+        ],
+        "compilePeakRssKiB": [
+          321348,
+          342560
+        ],
+        "startupProcessMs": 87.103,
+        "runtime": {
+          "moduleLoadMs": 35.684096000000004,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 2.6563079999999957,
+            "p95Ms": 7.617861000000005
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 4.097633999999999,
+            "p95Ms": 6.0479469999999935
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "history",
+        "mode": "experimental-native-size",
+        "revision": "control",
+        "compileWallMs": [
+          4677.897,
+          4951.633
+        ],
+        "compilePeakRssKiB": [
+          311468,
+          310512
+        ],
+        "startupProcessMs": 101.286,
+        "runtime": {
+          "moduleLoadMs": 39.47679399999999,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 2.6070749999999947,
+            "p95Ms": 7.548596999999987
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 4.1726799999999855,
+            "p95Ms": 7.4248380000000225
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      },
+      {
+        "application": "history",
+        "mode": "experimental-native-size",
+        "revision": "candidate",
+        "compileWallMs": [
+          4715.427,
+          4837.769
+        ],
+        "compilePeakRssKiB": [
+          313028,
+          318076
+        ],
+        "startupProcessMs": 96.224,
+        "runtime": {
+          "moduleLoadMs": 38.860253,
+          "instantiate": {
+            "samples": 10,
+            "medianMs": 2.5326629999999994,
+            "p95Ms": 7.708865000000003
+          },
+          "requestLifecycle": {
+            "samples": 30,
+            "medianMs": 4.400860000000023,
+            "p95Ms": 7.107974000000013
+          },
+          "requestIncludesInstantiation": true,
+          "provider": "injected Node effects; no network",
+          "semantics": "passed"
+        }
+      }
+    ]
+  },
+  "validation": {
+    "focused": {
+      "sourceRevision": "5e8c0f0c60bf2a4d61325ced2f7fd81bfaf4adc0",
+      "status": "passed",
+      "tasks": 6,
+      "reportSha256": "ea564bfa46a7688449547a0eedf5879c6000d98f0dad275636aa357b62a9e913"
+    },
+    "unitDevelopment": {
+      "status": "passed",
+      "tasks": 40,
+      "reportSha256": "467aeb38f099382a5ac768b222d37f350a90d354291547cf3832c1bbadd662c4"
+    },
+    "cleanUnitAttempt": {
+      "status": "failed",
+      "completedTasks": 4,
+      "failure": "test-orchestration process-group snapshot; issue #181",
+      "reportSha256": "6ffe1bc7e944d063e3985af5deee5dd0049ffb5183728afa780b48007d34b914"
+    }
+  }
+}
