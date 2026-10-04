@@ -41,11 +41,14 @@ async function main(){
   const manifestFile=path.join(buildDir,'pulse-build.json'),original=fs.readFileSync(manifestFile),build=JSON.parse(original);
   try {fs.writeFileSync(manifestFile,JSON.stringify({...build,version:'pulse.project-execution.v0'}));assert.throws(()=>createNodeLauncher(options),/provider\/target mismatch/);}
   finally {fs.writeFileSync(manifestFile,original);}
+  const planFile=path.join(buildDir,build.portable.plan),planBytes=fs.readFileSync(planFile);
+  try {fs.copyFileSync(path.join(root,'dist-guest/canonical-native-plan.json'),planFile);assert.throws(()=>createNodeLauncher(options),/plan hash mismatch/);}
+  finally {fs.writeFileSync(planFile,planBytes);}
   const wasmFile=path.join(buildDir,build.portable.wasm.file),wasm=fs.readFileSync(wasmFile);
   const poison=path.join(buildDir,'fallback.cjs');fs.writeFileSync(poison,"require('node:fs').writeFileSync('FALLBACK_USED','bad');throw Error('unexpected JavaScript fallback');");
   try {fs.writeFileSync(wasmFile,Buffer.concat([wasm,Buffer.from([1])]));fs.writeFileSync(manifestFile,JSON.stringify({...build,application:{sourcePackage:'fallback.cjs'}}));assert.throws(()=>createNodeLauncher(options),/Wasm hash mismatch/);assert.equal(fs.existsSync('FALLBACK_USED'),false);}
   finally {fs.writeFileSync(wasmFile,wasm);fs.writeFileSync(manifestFile,original);fs.unlinkSync(poison);}
-  report.production={finiteHttp:'passed',mixedBuildRejected:true,corruptNativeRejected:true,javascriptFallbackUsed:false};
+  report.production={finiteHttp:'passed',mixedBuildRejected:true,mixedPlanRejected:true,corruptNativeRejected:true,javascriptFallbackUsed:false};
  }
  for(const file of Object.keys(require.cache)) if(file.includes('/node_modules/@pulse-compute/')) assert.ok(file.startsWith(root+'/node_modules/'));
  console.log(JSON.stringify(report));
