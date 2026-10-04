@@ -41,9 +41,10 @@ const ROUTER_API_DEFINITIONS = Object.freeze([
     name: 'mount',
     kind: 'mount',
     opKind: 'mount',
-    allowedArities: Object.freeze([2]),
+    allowedArities: Object.freeze([2, 3]),
     signatures: Object.freeze([
-      Object.freeze({ arity: 2, pathArg: 0, routerArg: 1 })
+      Object.freeze({ arity: 2, pathArg: 0, routerArg: 1 }),
+      Object.freeze({ arity: 3, pathArg: 0, routerArg: 1, eligibilityArg: 2 })
     ]),
     pathPolicy: 'mount-static'
   }),

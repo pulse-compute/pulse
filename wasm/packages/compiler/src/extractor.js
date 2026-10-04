@@ -421,6 +421,29 @@ function parseTimeoutLiteral(sourceFile, node, diagnostics, phase = 'extract') {
   return config;
 }
 
+function parseMountEligibility(sourceFile, node, diagnostics) {
+  const result = {};
+  let valid = ts.isObjectLiteralExpression(node) && node.properties.length === 2;
+  if (valid) {
+    for (const property of node.properties) {
+      if (!ts.isPropertyAssignment(property) ||
+          !(ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)) ||
+          !['state', 'equals'].includes(property.name.text) ||
+          Object.hasOwn(result, property.name.text) || !ts.isStringLiteral(property.initializer)) {
+        valid = false;
+        break;
+      }
+      result[property.name.text] = property.initializer.text;
+    }
+  }
+  if (valid && Object.hasOwn(result, 'state') && Object.hasOwn(result, 'equals')) return result;
+  diagnostics.push(diagnostic(sourceFile, node, DIAGNOSTIC_CODES.UNSUPPORTED_MOUNT_ELIGIBILITY,
+    'Mount eligibility must be an inline { state: "key", equals: "value" } descriptor with exactly two string literals.',
+    'Select a family in earlier middleware. Eligibility cannot call functions, run effects, use getters, spreads, computed keys or dynamic values.',
+    { phase: 'extract' }));
+  return undefined;
+}
+
 function parsePathLiteral(sourceFile, node, diagnostics, usage, phase = 'extract') {
   if (!isStringLiteralLike(node)) {
     diagnostics.push(
@@ -732,6 +755,7 @@ function parseRouterOperation(sourceFile, step, diagnostics, options = {}) {
     return {
       ...base(definition.opKind),
       path: stripScopedWildcard(parsePathLiteral(sourceFile, args[signature.pathArg], diagnostics, 'mount')),
+      ...(signature.eligibilityArg !== undefined ? { eligibility: parseMountEligibility(sourceFile, args[signature.eligibilityArg], diagnostics) } : {}),
       router: ts.isIdentifier(unwrappedRouter.expression) ? unwrappedRouter.expression.text : nodeText(sourceFile, routerArg),
       ...(unwrappedRouter.wrappers.length > 0 ? { routerWrappers: unwrappedRouter.wrappers } : {})
     };
@@ -1625,6 +1649,18 @@ function extractFromSourceFile(sourceFile, options = {}) {
   }
 
   const ir = buildRouterIR(sourceFile, options);
+  // Historical table/harness emitters have no request-state eligibility ABI.
+  // Keep this new authoring form on the canonical Router pipeline only.
+  const selectedMount = ir.routerIR.flatMap(router => router.ops || []).find(op => op.eligibility);
+  if (selectedMount) {
+    throw new ExtractionError([{
+      code: DIAGNOSTIC_CODES.UNSUPPORTED_MOUNT_ELIGIBILITY,
+      severity: 'error', phase: 'extract', loc: selectedMount.loc,
+      message: 'Selected mounts require the canonical Router compiler; historical table/harness emitters do not support eligibility.',
+      hint: 'Use the canonical Pulse project compile/build workflow.'
+    }], { passes, source });
+  }
+
   const indexDiagnostics = ir.diagnostics.filter((diag) => (diag.phase || diag.pass) === 'index');
   const extractDiagnostics = ir.diagnostics.filter((diag) => (diag.phase || diag.pass) !== 'index');
   passes.push(makePass('index', indexDiagnostics.length === 0 ? 'ok' : 'error', {

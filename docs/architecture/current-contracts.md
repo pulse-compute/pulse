@@ -60,6 +60,18 @@ terminal transfer and 404/500 exhaustion contracts. This expands ingress
 registration without changing outgoing fetch methods or the effect/continuation
 ABI.
 
+An ordered mount can carry the static string descriptor
+`mount(path, child, { state: 'key', equals: 'family' })`. The owned Router API
+registry and extractor admit only that inline, literal form. Runtime dispatch
+and canonical lowering read request state once at the matching mount entry;
+false takes `parentContinueIndex`, true takes `childStartIndex`. The descriptor
+participates in the mount's stable identity and retained topology. No child body
+is duplicated, no callback is evaluated, and no new effect or continuation ABI
+is introduced. Resumption stays inside the admitted child even if it changes
+that state. Selection conveys no authorization. Historical table/harness
+emission rejects this form because its compatibility scanner has no eligibility
+contract. See [Selected groups](../guides/routing.md#selected-groups).
+
 The compiler also recognizes root-only `Pulse.on(type, { schema }, handler)`
 declarations as a separate static event topology. Event types and schema IDs
 must be literal, schema IDs must resolve through the project registry, each

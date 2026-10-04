@@ -96,6 +96,45 @@ describe('@pulse-compute/runtime live JavaScript core', () => {
     expect(() => new Router()[verb]('/items', null)).toThrow(TypeError)
   })
 
+  it('checks selected mounts once, keeps parameter scope, and snapshots eligibility', async () => {
+    const app = new Router()
+    const child = new Router()
+    const selection = { state: 'family', equals: 'selected' }
+    const seen: string[] = []
+    app.use(async (ctx: any, next: any) => {
+      ctx.state.set('family', ctx.req.header('x-family'))
+      return next()
+    })
+    child.use(async (ctx: any, next: any) => {
+      seen.push('enter')
+      ctx.state.set('family', 'changed')
+      await new Promise(resolve => setImmediate(resolve))
+      return next()
+    })
+    child.get('/users/:id', async (ctx: any, next: any) => {
+      seen.push(ctx.param('tenant') + ':' + ctx.param('id'))
+      return next()
+    })
+    app.mount('/api/:tenant', child, selection)
+    selection.equals = 'mutated-after-registration'
+    app.get('/api/:other/users/:id', async (ctx: any) => ctx.text(ctx.param('other') + ':' + ctx.param('id')))
+    for (const family of ['selected', 'other']) {
+      const response = await runtime.executeRouter(app, new Request('https://example.test/api/acme/users/7', { headers: { 'x-family': family } }))
+      expect(await response.text()).toBe('acme:7')
+    }
+    expect(seen).toEqual(['enter', 'acme:7'])
+  })
+
+  it('rejects effectful and malformed eligibility without invoking accessors', () => {
+    const child = new Router()
+    let reads = 0
+    const accessor = { get state() { reads++; return 'family' }, equals: 'selected' }
+    for (const value of [null, () => true, { state: 'family' }, { state: 'family', equals: 1 }, { state: 'family', equals: 'selected', extra: true }, accessor]) {
+      expect(() => new Router().mount('/', child, value)).toThrow(/mount eligibility/)
+    }
+    expect(reads).toBe(0)
+  })
+
   it('preserves route order, scoped middleware, mounts, params, and request-local state', async () => {
     const app = new Router()
     const child = new Router()

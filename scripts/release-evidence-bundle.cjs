@@ -94,6 +94,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'logging-lowering',
       'canonical-router-lowering',
       'canonical-router-terminal-middleware',
+      'router-selected-groups',
       'json-as-compatibility',
       'crypto-config-planning',
       'entities-package-owned-lowering',
