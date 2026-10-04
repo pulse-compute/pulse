@@ -104,7 +104,13 @@ profile and the generic Fastly Compute reality task:
   environment and probe driver described in the
   [K4 acceptance record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/K4.md).
 
-The retained Viceroy 0.21.0 run fails missing-key CAS. The standalone deployed
+The retained Viceroy 0.21.0 run fails missing-key CAS. The October 4 B6-05
+replay on clean merged `latest`, using official Fastly CLI 16.1.0 / Viceroy
+0.21.1, reproduced that failure twice with unchanged assertions and identical
+module/package identities. Its
+[machine record](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json)
+and [handoff](https://github.com/pulse-compute/pulse/blob/latest/wasm/test/kv/k4/B6-05.md)
+retain the current blockers. The standalone deployed
 Rust SDK probe confirms rejection for never-created and deleted keys in its
 tested cases, but does not satisfy either required Pulse acceptance gate. Full
 Pulse deployed cross-location evidence remains pending the isolated environment.
