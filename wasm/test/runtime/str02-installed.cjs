@@ -188,7 +188,11 @@ app.post('/forward',async ctx=>{return ctx.fetch('${originUrl}/collect',{method:
     const mixed = await run(process.execPath,[cli,'build','--profile',selectedProfile,'--json'],{allowFailure:true});
     if (target === 'native') {
       assert.notEqual(mixed.code,0);
-      assert.match(mixed.stdout+mixed.stderr,/Native forwarding applications cannot also project structured request bodies/);
+      const failure = JSON.parse(mixed.stdout).error;
+      assert.equal(failure.code, 'PULSE_CANONICAL_NATIVE_PLAN_FAILED');
+      const diagnostic = failure.diagnostics.find(item => item.code === 'PULSE_CANONICAL_NATIVE_EXPRESSION_UNSUPPORTED');
+      assert.equal(diagnostic?.message, 'Native forwarding/transform applications cannot also project structured request bodies.');
+      assert.equal(diagnostic.detail.automaticFallback, false);
     } else assert.equal(mixed.code,0,mixed.stdout+mixed.stderr);
     fs.writeFileSync(path.join(consumer,'src/index.ts'),source);
     delete config[selectedProfile].node.bodyForwarding;
