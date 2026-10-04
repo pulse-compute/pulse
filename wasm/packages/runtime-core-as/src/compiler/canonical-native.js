@@ -544,10 +544,12 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
           'event.runtime-id': () => 'host_value_number(<f64>__pulse_event_runtime_id)',
           'request.header': () => `host_request_header(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'request.text': () => 'host_request_text()',
+          'request.body.forward-marker': () => 'host_request_body()',
           'request.json': () => `host_request_json(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'response.json': () => `host_response_json(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
           'schema.encode.text': () => `host_schema_encode(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
           'schema.decode.text': () => `host_schema_decode(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
+          'response.output.close': () => 'host_output_close()',
           'response.text': () => `host_response_text(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'}, ${args[1] ? `${exprName(args[1])}()` : 'host_value_undefined()'})`,
           'response.custom': () => `host_response_custom(${args[0] ? `${exprName(args[0])}()` : 'host_value_undefined()'})`,
           'grip.is-websocket': () => 'host_grip_is_websocket()',
@@ -1316,6 +1318,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
       ? Object.freeze([...runtimeContract.CANONICAL_NATIVE_EXPORTS, ...eventContract.EVENT_NATIVE_ABI_EXTENSION.exports])
       : runtimeContract.CANONICAL_NATIVE_EXPORTS,
     policy: Object.freeze({ ...runtimeContract.CANONICAL_NATIVE_POLICY,
+      ...(plan.capabilities.includes('request.body.transform') ? { bodyTransform: { version: 'pulse.bounded-text-transform.v1', inputBytes: 65536, outputBytes: 262144, maxExpansionRatio: 4, encoding: 'utf-8-fatal', memory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY } } : {}),
+      ...(plan.capabilities.includes('response.output') ? { generatedOutput: { version: 'pulse.generated-output.v1', memory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, completion: 'provider-local-finish', independentInstalledQualification: false } } : {}),
       ...(runtimeContract.hasBoundedReadLoop(plan) ? { readLoopMemory: runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY } : {}) })
   });
 

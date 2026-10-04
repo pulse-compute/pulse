@@ -421,8 +421,8 @@ assertProviderConformanceImports([
 ]);
 
 const cliManifest = readJson(path.join(packagesRoot, 'cli', 'package.json'));
-assert.equal(hasDependency(cliManifest, '@pulse-compute/provider-fastly'), false, 'CLI package must not depend directly on the Fastly provider');
-assert.equal(hasDependency(cliManifest, '@pulse-compute/provider-node'), false, 'CLI package must not depend directly on the Node provider');
+assert.equal(hasDependency(cliManifest, '@pulse-compute/provider-fastly'), true, 'CLI distribution owns the bundled Fastly dependency');
+assert.equal(hasDependency(cliManifest, '@pulse-compute/provider-node'), true, 'CLI distribution owns the bundled Node dependency');
 for (const fileName of ['project-config.js', 'project-config-schema.js', 'project-execution.js']) {
   const file = path.join(packagesRoot, 'cli', 'src', fileName);
   const text = fs.readFileSync(file, 'utf8');

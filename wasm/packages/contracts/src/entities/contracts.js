@@ -98,6 +98,26 @@ function normalizeEntityPlan(input) {
   return Object.freeze({ ...normalized, planHash: sha256Hex(stableStringify(normalized)) });
 }
 
+// One capability decision shared by catalog inspection and Native source
+// generation. Closed typed nesting is implemented; dynamic JSON and explicit
+// admission policies must never be silently projected or ignored.
+function nativeEntitySchemaIssue(schema) {
+  if (schema.jsonLimits) return Object.freeze({ schemaId: schema.id, reason: 'json-admission-not-realized', path: 'root' });
+  function visit(node, path) {
+    if (!node) return null; // Declaration-only compiler passes have no schema IR.
+    if (node.additionalProperties) return { schemaId: schema.id, reason: 'open-object-not-realized', path };
+    if (['scalar-record', 'json-value', 'json-object'].includes(node.kind)) return { schemaId: schema.id, reason: 'dynamic-json-not-realized', path, kind: node.kind };
+    if (node.kind === 'nullable') return visit(node.value, path + '.value');
+    if (node.kind === 'array') return visit(node.element, path + '[]');
+    if (node.kind === 'object') {
+      for (const field of node.fields) { const issue = visit(field.value, path + '.' + field.name); if (issue) return issue; }
+    }
+    return null;
+  }
+  const issue = visit(schema.root, 'root');
+  return issue ? Object.freeze(issue) : null;
+}
+
 module.exports = Object.freeze({
   ...runtime,
   ENTITIES_PACKAGE_VERSION,
@@ -116,6 +136,7 @@ module.exports = Object.freeze({
   ENTITIES_PACKAGE_INTRINSIC_VERSION,
   ENTITIES_PUBLIC_SYMBOLS,
   ENTITIES_PACKAGE_INTRINSICS,
+  nativeEntitySchemaIssue,
   normalizeHandlerReference,
   normalizeEntityRegistry,
   normalizeEntityPlan

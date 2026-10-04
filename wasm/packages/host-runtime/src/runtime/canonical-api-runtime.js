@@ -790,11 +790,12 @@ function normalizedInit(init = {}, schemaCodecs, options = {}) {
   let body;
   let bodyMode = 'none';
   if (hasBody) {
-    if (typeof value.body !== 'string') {
+    const incoming = options.incomingBody && value.body === options.incomingBody.marker();
+    if (typeof value.body !== 'string' && !incoming) {
       throw new CanonicalRuntimeError('FetchRequestError', 'PULSE_FETCH_BODY_INVALID', 'Canonical fetch body must be a string.', { valueType: typeof value.body });
     }
     body = value.body;
-    bodyMode = 'text';
+    bodyMode = incoming ? 'incoming-request-v1' : 'text';
   } else if (hasJson) {
     if (!headerValue(headers, 'content-type')) headers.push(['content-type', 'application/json; charset=utf-8']);
     if (hasSchema) {
@@ -940,6 +941,8 @@ function normalizeProviderEffect(effect, schemaCodecs, options = {}) {
   if (effect.kind === 'fetch') return normalizeFetchEffect(effect, schemaCodecs, options);
   const id = String(effect.id || '');
   if (!id) throw new CanonicalRuntimeError('CanonicalEffectProtocolError', 'PULSE_CANONICAL_EFFECT_PROTOCOL', 'Canonical provider effect requires an id.', { effect });
+  if (effect.kind === 'output.readTextChunk') return Object.freeze({ id, kind: effect.kind, providerKind: 'output', operation: 'readTextChunk', capability: 'request.body.transform' });
+  if (effect.kind === 'output.start' || effect.kind === 'output.write') return Object.freeze({ id, kind: effect.kind, providerKind: 'output', operation: effect.kind.slice(7), capability: 'response.output', argument0: effect.argument0 });
   if (effect.kind === 'time.now') return Object.freeze({ id, kind: 'time.now', providerKind: 'time', operation: 'now', capability: 'time.wall-clock', source: effect.source, ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }) });
   if (effect.kind === 'config.get' || effect.kind === 'secret.get') {
     return Object.freeze({ id, kind: effect.kind, name: String(effect.name), ...(effect.groupKey === undefined ? {} : { groupKey: String(effect.groupKey) }), source: effect.source });

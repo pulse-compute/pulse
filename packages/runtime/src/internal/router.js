@@ -9,6 +9,7 @@ const { isApplicationError } = require('./errors.js');
 const {
   PulseRuntimeContractError,
   PulseUnhandledError,
+  cancelResponseBody,
   fetchResponseToResponse,
   isPulseFetchResponse,
   isPulseResult,
@@ -185,9 +186,7 @@ async function normalizeHandlerResponse(value, requestMethod) {
   if (isPulseFetchResponse(value)) return fetchResponseToResponse(value, requestMethod);
   if (value instanceof Response) {
     if (String(requestMethod).toUpperCase() !== 'HEAD' && statusAllowsBody(value.status)) return value;
-    if (value.body && !value.bodyUsed) {
-      try { await value.body.cancel(); } catch (_) { /* ownership cleanup is best effort */ }
-    }
+    cancelResponseBody(value);
     const response = new Response(null, { status: value.status, statusText: value.statusText, headers: value.headers });
     return responseBodyClass(value) === 'opaque'
       ? markOpaqueResponse(response, responseHeaderPairs(value))
@@ -316,10 +315,12 @@ async function runNormalHandler(_router, frame, index, handler, routeContext) {
     if (handlerError === undefined) handlerError = error;
   }
   frame.signal?.throwIfAborted();
+  if (handlerError !== undefined && frame.executionOptions.outputExecution?.started) throw handlerError;
   if (handlerError !== undefined) {
     return Object.freeze({ kind: 'continue', index: index + 1, error: containUnexpected(handlerError, frame), frame });
   }
 
+  frame.executionOptions.outputExecution?.validateResult(output);
   const transfer = transferData(output, transferFactory.token);
   if (transferFactory.wasCalled()) {
     if (!transfer || output !== transferFactory.transfer()) {
@@ -370,10 +371,12 @@ async function runErrorHandler(_router, frame, index, activeError, handler) {
     if (handlerError === undefined) handlerError = error;
   }
   frame.signal?.throwIfAborted();
+  if (handlerError !== undefined && frame.executionOptions.outputExecution?.started) throw handlerError;
   if (handlerError !== undefined) {
     return Object.freeze({ kind: 'continue', index: index + 1, error: containUnexpected(handlerError, frame), frame });
   }
 
+  frame.executionOptions.outputExecution?.validateResult(output);
   const transfer = transferData(output, transferFactory.token);
   if (transferFactory.wasCalled()) {
     if (!transfer || output !== transferFactory.transfer()) {
@@ -431,9 +434,11 @@ async function executeRouter(router, request, options = {}) {
   options = { ...options, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock };
   const executionSignal = budget.signal;
   let effectExecution;
+  let transferredResponse;
   try {
     budget.check();
     effectExecution = createJavascriptEffectExecution({
+      outputExecution: options.outputExecution,
       effectAdapter: options.effectAdapter,
       capabilities: options.capabilities,
       application: options.application,
@@ -480,7 +485,7 @@ async function executeRouter(router, request, options = {}) {
     budget.check();
     const result = await budget.race(dispatchRouter(router, frame, 0, NO_ERROR));
     executionSignal?.throwIfAborted();
-    if (result.kind === 'response') return result.response;
+    if (result.kind === 'response') return (transferredResponse = result.response);
     if (result.error !== NO_ERROR) {
       return new Response('Internal Server Error', {
         status: 500,
@@ -493,7 +498,7 @@ async function executeRouter(router, request, options = {}) {
     });
   } finally {
     try {
-      await effectExecution?.close();
+      await effectExecution?.close(transferredResponse);
     } finally {
       if (ownsBudget) budget.close();
       if (effectExecution && typeof options.onEffectSummary === 'function') options.onEffectSummary(effectExecution.summary());

@@ -41,6 +41,7 @@ export {
   type BucketAssetsConfig,
   type HostedAssetsConfig,
   type LocalAssetsConfig,
+  type EmbeddedAssetsConfig,
 } from './asset-manager.js';
 
 export {
@@ -55,3 +56,5 @@ export {
 } from './portable.js';
 
 export { assets as default } from './portable.js';
+
+export { createEmbeddedManifest, EMBEDDED_ASSET_LIMITS, type EmbeddedAssetInput, type EmbeddedAssetRecord, type EmbeddedAssetManifest } from './embedded.js';

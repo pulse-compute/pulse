@@ -81,16 +81,17 @@ Pulse package-lowering and compiler maintainers.
 
 ## `@pulse-compute/provider-node`
 
-Pulse canonical Node provider and compiler maintainers.
+Node deployment integrators and Pulse provider maintainers.
 
 - **npm:** [`@pulse-compute/provider-node`](https://www.npmjs.com/package/@pulse-compute/provider-node)
-- **Install directly:** No for application projects; select provider: node through the CLI.
-- **Stability:** The listed built-in toolchain entry is synchronized with the Beta bootstrap contract; other canonical Node provider interfaces remain internal.
+- **Install directly:** Yes for the production Node launcher; application handlers remain provider-neutral.
+- **Stability:** The server export is the supported Beta production HTTP integration for explicit Node Native and JavaScript builds. The toolchain entry serves the CLI; other provider subpaths remain internal.
 - **Canonical replacement:** `provider: 'node' through @pulse-compute/cli`
 
 ### Supported entry points
 
 - `@pulse-compute/provider-node/toolchain`
+- `@pulse-compute/provider-node/server`
 
 ## `@pulse-compute/wasm-runtime-core-as`
 

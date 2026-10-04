@@ -285,6 +285,29 @@ Unknown result fields, owner/version mismatches, provider/compiler object
 bleed, and disagreement between diagnostics and `hasErrors` fail at this
 receiving boundary.
 
+## Terminal Native application contribution
+
+A trusted first-party manifest may additionally name `compiler.nativeApplicationExport`
+in the same compiler module. This internal hook applies only to a recognized
+terminal package application. It does not change package discovery or trust.
+The input is `{ plan, managedHandlerNativeBundle, schemaBundle }`; it contains
+static compiler facts and no provider instance or runtime values.
+
+The builder returns `pulse.package-native-application.v1` with matching
+`contractId`, `package`, and `intrinsic`, `automaticFallback: false`, generated
+`source` and `sourceHash`, canonical `effects`, `continuations`, `capabilities`,
+and a Native codec `manifest`. The compiler binds this contribution into the
+Native plan and requires one terminal `package.application` return with no
+additional handler bodies. Source hash and effect/continuation tables must agree.
+The selected provider must explicitly declare the matching
+`package-native-application` realization before ordinary project compilation.
+
+The contribution uses `effectFailure: 'package-completion'` and exports
+`pulse_package_set_effect_failure(index)`. Managed hosts authenticate failure
+settlement using the same single-use effect tickets as successful results.
+The package receives no host exception detail and owns its failure response.
+This version-locked hook is not a public plugin API.
+
 ## Canonical package effect
 
 A package effect passed into provider planning has this conceptual shape:

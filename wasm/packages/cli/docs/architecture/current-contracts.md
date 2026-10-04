@@ -11,6 +11,23 @@ documentation system.
 
 ## Contract precedence
 
+The private, unreleased `packages/mcp` component owns MCP HTTP admission and
+protocol framing outside Entities. With emitted catalog/schema artifacts and a
+fixed governed HTTP endpoint configured, its MCP-03 facade supports tools/list
+and tools/call, schema projection and finite tool results. Otherwise discovery
+advertises no optional capabilities. It has no Pulse runtime/compiler dependency
+or direct application-handler seam. MCP-04 optionally authenticates through a
+configured external OAuth issuer using bounded token introspection, checks the
+resource audience and scopes, filters tool discovery, and denies unauthorized
+operations before governed dispatch. Backend credentials are distinct from
+client tokens; the deploying application owns TLS and backend protection.
+MCP-05 qualifies the Node JavaScript composition through an independent packaged
+resource-directory consumer and the pinned official client, including controlled
+OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
+acceptance does not establish deployed or Native/Fastly MCP support.
+A same-artifact Native binding requires a separate owner review; this component
+does not widen the released package set or the guest authoring API.
+
 When two surfaces appear to disagree, use this order:
 
 1. the public release manifest and its generated package/support policy define
@@ -180,6 +197,12 @@ retention or accounting rules. The merge and inlining settings are heuristics,
 not a hard limit on the number of parameters or on the size of every function.
 
 ## Synchronous pure source helpers (PF-02/PF-03/PF-04/PF-06)
+
+The integrated Native plan compiler identity is
+`pulse.canonical-native-plan-compiler.v10`. It combines the existing helper
+lowering with terminal package applications and the bounded Node body/output
+extensions. The plan schema, helper contracts and host ABI retain their own
+versions; this compiler identity does not widen their admission rules.
 
 Native plan v9 retains one `pulse.canonical-native-pure-helper.v2` body per
 statically resolved synchronous function declaration. HTTP routes and middleware
@@ -548,6 +571,20 @@ entering the guest. The ticket is consumed before injection. Completion, failure
 explicit close and cancellation invalidate pending tickets. An incomplete resume
 still preserves the current pending result set for a valid retry.
 
+Terminal first-party Native package applications can use the optional
+`pulse_host.value_json(handle)` data-copy import. The canonical Node host checks
+a 1 MiB UTF-8 JSON limit before allocating a guest managed string. This adds no
+effect authority and leaves opaque/streaming bodies outside this bridge. For a
+plan declaring `effectFailure: 'package-completion'`, the host requires
+`pulse_package_set_effect_failure(index)` and settles failures through the same
+single-use ticket boundary. The guest receives failure status only and owns the
+protocol response; cancellation and execution budgets still terminate at the host.
+Node and Fastly declare this realization for Entities. The Fastly provider
+binds the package application to its canonical platform runtime in ordinary
+builds, preserving provider-owned authority, bounded value transfer and terminal
+request budgets. Its test/dev fixture ABI and exact-artifact Viceroy replay are
+separate evidence levels; neither implies live deployment acceptance.
+
 Fastly's canonical Native platform driver uses request-instance-owned sequence
 tickets, checks the captured ticket before injecting each result, and closes its
 lifecycle on terminal return. A second entry into the same driver instance is
@@ -789,6 +826,103 @@ bodies remain opaque host-owned handles. An opaque body can be passed through or
 returned by a supported operation, but it cannot be decoded, duplicated, or
 independently consumed by application or package code.
 
+STR-02A adds an opt-in Node JavaScript incoming-body capability
+(`request.body.forward`). A synchronous `ctx.req.body()` marker can occur once,
+inline as a literal POST fetch body. It reserves the request's single consumer
+before provider dispatch and excludes structured reads. The in-process fetch
+descriptor uses `bodyMode: 'incoming-request-v1'`; the marker is held in a runtime
+WeakMap and carries no serializable provider identity or bytes. This does not
+admit Fastly forwarding. STR-02B admits Node Native with the optional
+`pulse_host.request_body() -> i32` import: the result is an execution-local
+value handle to the opaque marker, not a byte pointer or invocation ticket.
+Existing ABI fields retain their meaning; older hosts reject the unknown
+import. Native fetch admission claims ownership while the guest constructs its
+suspension group, before any provider dispatch. Native test/dev execute the
+emitted Wasm for this capability. Native forwarding applications reject
+structured request-read surfaces because those host calls remain synchronous.
+
+STR-02C leaves both Fastly targets ineligible. Local Viceroy ABI probes support
+incremental transfer, early origin responses and unsuccessful stream termination,
+but a successful streaming-body close relinquishes the handle and may hand
+queued completion to the host. That is not a drain receipt or retained
+cancellation authority. Fastly incoming forwarding requires a reviewed
+completion/handoff contract and a metered provider pump before admission; raw
+handle transfer alone does not enforce measured byte limits. Fastly JavaScript
+also retains its separate total-request-deadline restriction.
+
+`node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
+this path. Node adapts incoming HTTP lazily and keeps one provider read and one
+source chunk per pump, with a 64 KiB source/backing-allocation ceiling and
+16 KiB emitted chunks. Upload and response byte limits are independent. Provider
+fetch authority remains injected; transport uses manual redirects and never
+replays input. Upload ownership closes on early response; response ownership
+transfers separately to the completion-aware HTTP writer. The request budget
+and disconnect cancellation remain active through that writer. The optional
+provider-driver `prepareNativeRequest` hook owns lazy local HTTP admission and
+returns request metadata, execution options, a response signal and a close
+operation; the generic CLI awaits the response pipeline before closing it. These bounds do
+not claim total process memory or platform socket-buffer bounds. See
+[incoming forwarding](../concepts/bodies.md#incoming-forwarding-on-node)
+for the public configuration and restrictions.
+
+### Experimental finite generated output
+
+STR-03A adds `response.output` on explicitly configured Node Native and Node
+JavaScript targets. `node.generatedOutput: true` requires `node.maxDurationMs`.
+`await ctx.output.start(options)` commits validated status/headers;
+`await ctx.output.write(text)` suspends the producer until the Node write callback
+and, when required, drain complete. `return ctx.output.close()` creates a
+request-local terminal marker. Successful handler completion must return that
+exact marker; the provider then waits for local writer finish under the same
+deadline. Finish does not prove client receipt. A missing/foreign close result,
+producer error, limit violation, deadline or disconnect fails the response;
+after commitment the transport is destroyed, with no error-handler replacement.
+
+Each write is at most 16 KiB UTF-8; at most 64 writes and 1 MiB total are admitted.
+One write can be outstanding. Framing/hop-by-hop headers, HEAD/bodyless statuses,
+parallel output effects, event use and background production are excluded.
+No provider stream object enters application code and opaque input cannot be
+inspected through this API. Sequential output writes may use the existing
+literal-capped loop form (at most 64 iterations); this does not admit arbitrary
+generators, callbacks or unbounded loops on Native.
+
+Native executes the emitted Wasm and uses ordinary single-use effect tickets for
+`output.start` and `output.write`. The additive optional ABI-v2 import
+`pulse_host.output_close() -> i32` returns an execution-local completion marker;
+older hosts reject artifacts requiring the unknown import. All output plans,
+including those without read loops, activate the existing cumulative 64 MiB
+retained-value accounting and a 4,096-page linear-memory ceiling. Budget charges
+are not refunded after writes, and are not RSS measurements. Linked-guest
+composition needs separate memory qualification and is rejected for output
+artifacts. JavaScript retains its existing unsandboxed source semantics; the
+output caps do not bound arbitrary application allocations or preempt CPU work.
+
+The optional provider-driver `createGeneratedOutput` hook gives the generic CLI
+a request-owned writer. HTTP never buffers the entire generated output. The
+explicit CLI test collector may materialize up to the same 1 MiB limit. Current
+evidence covers workspace build/dev, actual Native lowering, real HTTP prefix
+delivery, blocked-writer suspension, cancellation, deadline and bounds.
+
+STR-03B's external `str03b-installed` task packs exact candidate packages and
+installs them outside the checkout with lifecycle scripts disabled. It verifies
+installed file bytes before and after ordinary CLI doctor/inspect/test/build/dev
+workflows on both Node targets. Real HTTP covers prefix-before-completion,
+1 MiB UTF-8 fidelity with a paused client, disconnect/deadline cleanup, producer
+and post-header failures, limits, HEAD/bodyless/framing rejection and recovery.
+Installed controlled writers separately prove suspension, late-callback fencing
+and deadline coverage through final flush; the paused-client case alone is not
+a deterministic backpressure proof. Native test/dev observations bind execution
+to the emitted Wasm hash with no fallback and report guest-memory bytes. The
+controlled full-output case also records cumulative retained-value accounting.
+Neither counter is process RSS or an arbitrary-JavaScript allocation bound.
+
+Qualification belongs to each terminal acceptance report's source, package,
+fixture and Wasm identities. The artifact's `independentInstalledQualification`
+field stays false: compilation cannot certify a later external test. The surface
+remains experimental and the task is separate from the aggregate release seal.
+Fastly output, chunk transforms and MCP SSE remain unavailable; this adds no
+capability to them.
+
 `ctx.time.now()` is an execution-owned `time.now` effect requiring the selected
 provider's `time.wall-clock` authority. It returns one validated UTC wall-clock
 sample or a bounded unavailable/invalid-clock result. The clock is sampled at
@@ -974,13 +1108,18 @@ JavaScript target; `pulse compile` still requires a real Native compilation.
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target
 support policy. The compiler owns the neutral bootstrap, contract validation,
-the compile-only `none` driver, and shared evidence composition. The CLI carries
-provider identity as data and does not import or branch on concrete provider
-implementations.
+the compile-only `none` driver, and shared evidence composition. The compiler's
+production dependencies contain no Node or Fastly provider. The CLI distribution
+owns both bundled provider dependencies and binds built-in resolution to its own
+package context; CLI orchestration carries provider identity as data and does not
+import or branch on concrete provider implementations.
 
 Provider bootstrap is exact and fail-closed:
 
 - bare host ID `x` resolves by convention to `@pulse-compute/provider-x`;
+- direct compiler consumers resolve the selected provider from `projectRoot`
+  (the working directory when omitted); the CLI resolves its bundled `node` and
+  `fastly` IDs from the CLI package, without retrying against the project;
 - an exact scoped package name resolves from the project;
 - `none` selects the internal compile-only driver;
 - every package provider must export the versioned `./toolchain` contract.
@@ -989,6 +1128,21 @@ Pulse does not scan dependencies, inspect keywords, run self-registration hooks,
 try alternate package names, or substitute another provider or target. A
 selected provider toolchain is trusted build code running in the Pulse process;
 do not run it from an untrusted project tree.
+
+Provider-neutral compiler loading and compilation do not load either provider.
+Legacy proof commands load their selected provider lazily from the caller's
+composition root. Repository proof scripts retain development dependencies only.
+The canonical API compiler, Native plan builder and Native compiler facade use
+declared package imports without checkout-relative recovery for missing or
+unexported dependencies. This is a bounded facade migration, not a claim that all
+historical loaders have been migrated.
+
+`arc01-installed` qualifies exact packed compiler-only, Node-only and Fastly-only
+installs outside the checkout, with the unselected providers physically absent.
+It compiles real Wasm, executes the selected provider driver, verifies unchanged
+installed package bytes, and checks the bundled CLI's doctor/test/build workflow
+on both targets. Fastly Native execution uses its fixture ABI; this evidence does
+not establish Viceroy or deployed service behavior.
 
 The compiler-to-provider seam is exact. A selected package exports one
 versioned toolchain whose zero-argument `createDriver()` returns a versioned
@@ -1195,6 +1349,19 @@ its digest describes sent bytes, not durability. Request cancellation retains
 existing lifecycle behavior and does not fabricate a typed S3 outcome. Fastly
 pending requests lack a cancel ABI; invocation termination owns their release.
 
+AST-01 consolidates JavaScript SigV4 canonicalization, key derivation and RFC3986
+segment encoding in S3's first-party `./signing` integration export. The existing
+provider signer and Assets compatibility facade both delegate to that owner.
+Assets depends on S3 within the exact release set, retains its public helper
+types/defaults/error wrappers and Web Crypto selection, and continues to own
+lookup, bucket URL policy and HTTP serving. Shared signing accepts resolved
+credentials and explicitly supplied crypto primitives; no ambient secret or
+network authority moves into S3. Direct helper compatibility does not weaken
+portable S3 effect admission or extend Native eligibility. The Native
+AssemblyScript implementation remains in S3; no lowerer or provider changes are
+needed. Exact tarball acceptance checks dependency resolution, unchanged golden
+signatures, public helper imports and installed type declarations.
+
 S3 bindings can explicitly select up to 2 MiB text, retaining the 32 KiB default.
 Only digest/S3 text effects admit the 12,648,448-byte escaped envelope; generic
 package effects keep their existing bounds. Request/schema limits remain
@@ -1329,3 +1496,93 @@ sign primitive is added. Native constant-time design assumptions and the
 JavaScript BigInt key-validation timing limitation are documented in the
 Crypto package guide. Existing secret/clock authority, cancellation,
 redaction and application lifetime ownership are retained.
+
+### Experimental bounded request transforms
+
+STR-03C selects strict UTF-8 incoming request chunks, with `request.body.transform`
+and explicit `node.bodyTransform: true` alongside generatedOutput/maxDurationMs.
+The provider-neutral `ctx.req.readTextChunk()` surface lowers to an awaited
+`output.readTextChunk` effect: the existing request-owned output controller owns
+both sides so one reader/write may be outstanding. It uses ordinary single-use
+Native effect tickets, rejects parallel grouping and exposes only `{ done, text }`.
+Native executes the handler's existing pure expressions, including concatenation;
+no callback, binary-view API or new string operation is admitted. Linked guests
+remain excluded pending memory qualification. Fastly explicitly rejects transforms.
+
+The finite contract is 65,536 input bytes, 262,144 output bytes, maximum 4× expansion
+against UTF-8 bytes delivered to the handler, 4,093 raw bytes per fixed input block,
+at most three decoder carry bytes and 4,096 encoded bytes per delivered text chunk.
+BOMs are data; invalid/truncated UTF-8 fails. At most 18 reads include the distinct
+EOF marker; close requires EOF. Existing 16 KiB/write, 64-write, cumulative 64 MiB
+Native accounting, 4,096-page guest limit and shared request deadline still apply.
+Input queue accounting is at most 69,632 bytes, separate from Node transport buffers,
+materialized text, output buffers and retained guest/host values. Input source chunks
+and backing allocations are bounded before retention. No application stream,
+replay, tee, fetched input cursor or allocator reclamation is introduced.
+
+Transform configuration excludes incoming forwarding and reserves structured body
+reads. Native capability composition rejects structured reads; the shared host
+ownership object also fences JavaScript admission conflicts. Reads are lazy and
+writes wait for callback plus drain before the next pull. Errors, disconnect and
+deadline cancel the input owner and fail the writer; post-header failures cannot
+replace the response. The Native manifest records the finite transform policy,
+not an installed qualification claim. Workspace acceptance measures 2× duplication,
+accepts the 4×/256 KiB boundary, rejects over-expansion and validates actual Wasm
+and both Node HTTP targets. See [bounded UTF-8 transforms](../concepts/bodies.md#experimental-bounded-utf-8-transforms-on-node).
+
+### AST-02D Native embedded Assets
+
+The trusted Assets lowerer admits a canonical serialized `embeddedManifest`
+literal on `assets.lookup`. Contracts own manifest validation, deterministic
+identity and the finite embedded HTTP subset; the lowerer owns authoring
+admission and selects the contained literal path. All manifest records are
+validated, including unselected files. The existing opaque package effect
+carries only the selected admitted blob and manifest identity into the Native
+artifact. Node and Fastly retain binary response ownership. The opt-in grants
+no filesystem, store or network authority and adds no binary application ABI.
+Ordinary Native compilation/builds are the supported path. JavaScript retains
+the existing embedded middleware; the Native-only lookup option rejects direct
+JavaScript execution. The older binary-buffer guest ABI remains reserved.
+
+### AST-02A bounded S3 response ownership
+
+S3 `getBody` is a Node Native/JavaScript opaque package effect. S3 owns signed
+GET/HEAD and the narrow conditional/range metadata contract; Node owns origin
+I/O, the existing binding byte limit and transfer deadline. The Native host
+tracks registered response bodies until return or discard. Body bytes do not
+enter application values or imply whole-object integrity. Fastly body-handle
+integration and embedded assets are separate increments; existing S3 text
+support does not imply support for this operation.
+
+### AST-02C Fastly opaque S3 bodies
+
+The Fastly Native provider realizes the existing `s3.getBody` effect with
+provider-owned origin handles, strict raw metadata admission, and a 16 KiB
+streaming copy. S3 owns Native signing and range interpretation. Literal read
+options remain lowerer-admitted; bindings remain configuration-owned. Each
+response copies its deadline so repeated effect slots cannot extend older body
+ownership. Unselected handles close at invocation exit. The downstream handle
+is finished only after exact-length EOF; an unfinished stream aborts at Compute
+invocation exit. This adds no guest byte value or JavaScript fallback.
+Fastly JavaScript remains blocked by raw-header limitations.
+
+
+## Production Node integration (NODE-01)
+
+`@pulse-compute/provider-node/server` is a supported host integration export.
+`createNodeLauncher` admits only an explicitly selected Node Native or JavaScript
+`pulse build` directory and bounded, host-owned configuration. Native startup
+checks plan/Wasm/package identity and ABI, then executes exact Wasm per request.
+JavaScript loads the packaged application and codecs; neither target recompiles
+or reads development configuration at startup. Builds are trusted executable
+inputs, not a sandbox or an authenticity signature.
+
+The launcher owns readiness, connection/concurrency admission, request budgets,
+bounded drain and restart of the same immutable build. Request cancellation
+remains with the existing runtime budget and provider adapters. Shutdown revokes
+request authority and destroys sockets at the configured deadline; it does not
+promise CPU preemption or rollback. It installs no process handlers and exits no
+process. Deployment owners wire signals and retain supervisor/release authority.
+Reference KV resets for each host generation and is not durable production KV.
+The core finite-response contract is separate from stream/blob launcher extensions.
+See [Node build and execution](../guides/deploying-node.md) for defaults and limits.

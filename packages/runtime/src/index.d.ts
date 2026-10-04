@@ -2,6 +2,10 @@ export type HeaderPair = readonly [name: string, value: string];
 
 declare const pulseEffectBrand: unique symbol;
 declare const pulseParallelEffectBrand: unique symbol;
+declare const incomingBodyBrand: unique symbol;
+
+/** Single-use opaque marker, admitted only inline as a configured Node fetch body. */
+export interface PulseIncomingBody { readonly [incomingBodyBrand]: true; }
 
 export interface PulseEffect<T> extends Promise<T> {
   readonly [pulseEffectBrand]: T;
@@ -23,6 +27,9 @@ export interface PulseRequest {
   readonly path: string;
   readonly headers: readonly HeaderPair[];
   header(name: string): string | undefined;
+  body(): PulseIncomingBody;
+  /** Experimental finite UTF-8 transform input; Node bodyTransform opt-in required. */
+  readTextChunk(): PulseEffect<{ readonly done: boolean; readonly text: string }>;
   text(): PulseEffect<string>;
   json<T = unknown>(schemaId?: string): PulseEffect<T>;
 }
@@ -35,7 +42,7 @@ export interface PulseFetchInitBase {
 
 export type PulseFetchInit = PulseFetchInitBase & (
   | { readonly body?: never; readonly json?: never; readonly schema?: never }
-  | { readonly body: string; readonly json?: never; readonly schema?: never }
+  | { readonly body: string | PulseIncomingBody; readonly json?: never; readonly schema?: never }
   | { readonly body?: never; readonly json: unknown; readonly schema?: string }
 );
 
@@ -166,6 +173,12 @@ export interface PulseExecutionContext {
 
 /** HTTP request execution context. */
 export interface PulseContext extends PulseExecutionContext {
+  /** Experimental Node output: opt-in, finite, request-owned UTF-8 writes. */
+  readonly output: {
+    start(options?: PulseResponseOptions): PulseEffect<void>;
+    write(text: string): PulseEffect<void>;
+    close(): PulseResult;
+  };
   readonly req: PulseRequest;
   json(value: unknown, descriptor?: PulseJsonResponseOptions | string): PulseResult;
   text(value: string, options?: PulseResponseOptions): PulseResult;

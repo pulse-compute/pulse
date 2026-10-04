@@ -65,6 +65,7 @@
   },
   "dependencies": {
     "@pulse-compute/runtime": "workspace:*",
-    "@pulse-compute/wasm-contracts": "workspace:*"
+    "@pulse-compute/wasm-contracts": "workspace:*",
+    "@pulse-compute/s3": "workspace:*"
   }
 }

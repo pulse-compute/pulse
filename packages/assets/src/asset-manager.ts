@@ -1,3 +1,4 @@
+import { snapshotEmbeddedManifest, loadEmbeddedManifest, embeddedRequestPath, embeddedResponse, type EmbeddedAssetManifest } from './embedded.js';
 import {
   AssetBucket,
   type AssetBucketInstance,
@@ -40,7 +41,9 @@ export type BucketAssetsConfig = AssetCacheOptions & AssetBucketOptions & {
   mode: 'bucket';
 };
 
-export type AssetsConfig = LocalAssetsConfig | HostedAssetsConfig | BucketAssetsConfig;
+export type EmbeddedAssetsConfig = AssetCacheOptions & { mode: 'embedded'; manifest: EmbeddedAssetManifest };
+
+export type AssetsConfig = LocalAssetsConfig | HostedAssetsConfig | BucketAssetsConfig | EmbeddedAssetsConfig;
 
 export type AssetManagerMiddleware =
   & ((ctx: PulseContext, next: RouterNext) => Promise<Response>)
@@ -142,20 +145,25 @@ function validateMode(config: AssetsConfig): void {
     throw new AssetBucketConfigError('AssetManager requires an assets config object');
   }
 
-  if (config.mode !== 'local' && config.mode !== 'hosted' && config.mode !== 'bucket') {
-    throw new AssetBucketConfigError('AssetManager requires explicit mode: local, hosted, or bucket');
+  if (config.mode !== 'local' && config.mode !== 'hosted' && config.mode !== 'bucket' && config.mode !== 'embedded') {
+    throw new AssetBucketConfigError('AssetManager requires explicit mode: local, hosted, bucket, or embedded');
   }
 }
 
 export class AssetManagerCore {
   readonly config: AssetsConfig;
+  private readonly embeddedManifest?: EmbeddedAssetManifest;
+  private embeddedFiles?: ReturnType<typeof loadEmbeddedManifest>;
   private readonly bucket?: AssetBucketInstance | undefined;
 
   constructor(config: AssetsConfig) {
     validateMode(config);
     this.config = config;
 
-    if (config.mode === 'bucket') {
+    if (config.mode === 'embedded') {
+      this.embeddedManifest = snapshotEmbeddedManifest(config.manifest);
+      this.config = Object.freeze({ ...config, manifest: this.embeddedManifest });
+    } else if (config.mode === 'bucket') {
       this.bucket = new AssetBucket(config);
     } else if (config.mode === 'local') {
       if (!config.dir) throw new AssetBucketConfigError('AssetManager local mode requires dir');
@@ -171,6 +179,7 @@ export class AssetManagerCore {
 
   async handle(ctx: AssetBucketRouteContext, next?: RouteNext): Promise<Response | void> {
     switch (this.config.mode) {
+      case 'embedded': return await this.handleEmbedded(ctx, next);
       case 'local': return await this.handleLocal(ctx, next);
       case 'hosted': return await this.handleHosted(ctx, next);
       case 'bucket': return await this.bucket!.core.handle(ctx, next);
@@ -182,6 +191,8 @@ export class AssetManagerCore {
     if (this.config.mode === 'bucket') {
       return await this.bucket!.resolveKey(ctx);
     }
+
+    if (this.config.mode === 'embedded') return embeddedRequestPath(requestRelativePath(ctx));
 
     const key = normalizeKey(requestRelativePath(ctx));
     const prefix = normalizePrefix(this.config.prefix);
@@ -198,6 +209,20 @@ export class AssetManagerCore {
 
   private allowed(method: string): boolean {
     return normalizeMethods(this.config.methods).has(method as AssetBucketMethod);
+  }
+
+  private async handleEmbedded(ctx: AssetBucketRouteContext, next?: RouteNext): Promise<Response | void> {
+    const { request } = normalizeAssetContext(ctx);
+    if (!['GET', 'HEAD'].includes(request.method) || !this.allowed(request.method)) return await this.pass(next);
+    let key: string;
+    try { key = await this.resolveKey(ctx); } catch { return new Response(null, { status: 400 }); }
+    // Validate every byte once before serving any file. A malformed manifest is
+    // a configuration error, never a pass-through miss or partial load.
+    const files = await (this.embeddedFiles ??= loadEmbeddedManifest(this.embeddedManifest!));
+    const response = embeddedResponse(files, key, request);
+    if (!response) return await this.handleMiss(next);
+    applyCache(response.headers, this.config);
+    return response;
   }
 
   private async handleLocal(ctx: AssetBucketRouteContext, next?: RouteNext): Promise<Response | void> {

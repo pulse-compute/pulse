@@ -30,6 +30,12 @@ claims, captures one wall-clock instant after authenticity, evaluates
 registered claims, and then applies an optional runtime schema. Results are
 detached and deeply frozen.
 
+The canonical JWT lowerer accepts `jwt.bearer(ctx.req)` as the verification
+token source. A local variable holding a freshly signed token is not an
+admitted source (`PULSE_JWT_TOKEN_SOURCE_UNSUPPORTED`). Exercise issuance and
+verification as separate requests. This compile-time restriction also applies
+to ordinary JavaScript projects that use the canonical package lowerer.
+
 ## Algorithms and keys
 
 The Beta supports HS256, ES256 and RS256 verification. ES256 accepts inline public
@@ -175,3 +181,37 @@ artifact. Signing and verification with RS256 together, issuance alone,
 verification alone, and RS256/ES256 issuance composition are tested through
 the normal CLI build path. Injected Fastly hosts are portable evidence, not
 a deployed-service confirmation or an aggregate release seal.
+
+## Installed workflow qualification
+
+The focused `jwt-installed-workflow` gate installs exact candidate packages
+outside the source checkout, with lifecycle scripts disabled and no workspace
+links. It exercises ordinary `doctor`, `inspect`, `test`, `build` and finite
+`dev` startup/request/shutdown for HS256, ES256 and RS256 on the four provider
+profiles. Native test evidence is matched to the emitted Wasm hash. Package
+bytes are checked before and after execution, and private signing material
+must not appear in build artifacts.
+
+Rotation coverage uses distinct old and new keys: accept both during the
+explicit overlap, reject the retired key, reject a selected wrong key without
+retry, and issue successfully after malformed-key/signature failures. HS256
+rotation replaces a named secret binding; it is not static JWKS selection.
+An installed Node provider probe checks cancellation before/during secret
+resolution, temporary byte cleanup on an injected signing failure, and
+independent signature verification after recovery.
+
+The same gate builds composition probes for signature plus SHA-256, HMAC and
+S3, mixed ES256/RS256 issuance, and mixed verification. Expected restrictions
+must remain explicit errors; a successful JavaScript build is not Native
+eligibility. For signature-plus-S3 composition, select Node JavaScript:
+Fastly JavaScript separately rejects S3 with
+`PULSE_PROVIDER_CAPABILITY_UNSUPPORTED` and reason
+`fastly-javascript-s3-raw-headers-unavailable`. The other retained restrictions
+are the Native guest-memory/start contract and Fastly Native's single
+verification algorithm. Fastly `test`/`dev` evidence uses local provider fixtures, not a
+deployed service or the actual Fastly JavaScript engine. No live-provider or
+aggregate release acceptance follows from this gate.
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task jwt-installed-workflow --no-report
+```

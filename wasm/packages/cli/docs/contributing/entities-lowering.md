@@ -24,6 +24,7 @@ public extension API.
 | `packages/entities/pulsewasm.compiler.cjs` | Static extraction, plan/catalog/inspection, managed-handler descriptors |
 | `packages/entities/pulsewasm.native.cjs` | Package-owned bounded Native dispatcher source |
 | `packages/entities/as/index.as.ts` | Native source template/contract input |
+| `packages/entities/as/canonical.as.ts` | Package-owned canonical host ABI adapter |
 | `wasm/packages/contracts/src/entities/` | Versioned shared normalization, limits, JSON-RPC, catalog, and plan contracts |
 | `packages/entities/conformance/i9.json` | Shared four-mode corpus/evidence declaration |
 
@@ -67,12 +68,57 @@ invocation, stable failure categories, output validation, JSON-RPC framing, and
 synchronous `204` notification acknowledgement. It may use only the provider
 requirements declared by the package contract.
 
-Native status remains `provider-dependent`. Node Native uses the canonical
-package source. Fastly Native evidence uses an explicit provider-owned adapter
-over the exact package source. Do not wire that adapter into the ordinary
-Fastly project build or change the product status as part of a documentation or
-candidate-seal change. Any such integration is a separately classified product
-unit with provider ownership and focused tests.
+Native status remains `provider-dependent`. The trusted manifest declares
+`compiler.nativeApplicationExport: 'buildEntitiesCanonicalNativeApplication'`.
+The generic compiler passes only the static entity plan, managed-handler Native
+bundle, and schema bundle. The package returns the versioned source contribution,
+effects, continuations, capabilities, and codec manifest. Source and effect identity
+are bound into the canonical Native plan hash; the ordinary compiler appends that
+hash and validates the resulting Wasm ABI.
+
+Node's explicit `package-native-application` realization enables the ordinary
+build, test, and dev path. Tests report the executed plan/Wasm hashes. The guest
+owns dispatch, selected schema validation, continuations, notification completion,
+and failure framing. The canonical host owns fetch, configuration, secrets, KV,
+and time effects. The current adapter accepts `fetch`, `config.get`, `secret.get`,
+`kv.get`, `kv.put`, and `time.now`; other managed effect kinds fail closed.
+
+The optional `pulse_host.value_json` import copies a host value into a guest
+managed string, with a 1 MiB UTF-8 limit before guest allocation. It grants no
+I/O authority. Effect rejection uses a single-use invocation ticket and the
+conditional `pulse_package_set_effect_failure` export; only failure status
+crosses the boundary. Cancellation and execution budgets remain host failures.
+
+Fastly Native ordinary builds bind the same package application through
+`provider-fastly`'s canonical platform runtime. The provider maps the canonical
+imports, uses the package's codecs, enforces a 1 MiB UTF-8 value-copy limit,
+and settles operational failures through single-use effect tickets. Grouped
+results drain before the package resumes; request deadlines, body admission
+and invalid lifecycle state remain provider-terminal failures. Binding resolution
+and final Wasm import/export audits use the ordinary build pipeline.
+
+`fastly-entities-native-workflow` checks doctor, inspect, build, test and dev,
+compares emitted/tested Wasm hashes, and optionally replays that exact
+`bin/main.wasm` with `PULSE_VICEROY_BIN`. Fixture ABI, local Viceroy and live
+deployment are distinct evidence levels. The older standalone adapter remains
+bounded proof infrastructure; it is not the ordinary build implementation.
+
+The package schema generator preserves absent optional fields at every typed
+nesting level and enforces `schemas.maxBytes` before decoding input text. Shared
+Entities schema eligibility rejects dynamic JSON nodes, open objects and JSON
+admission policies that this generator cannot realize. Both catalog inspection
+and source generation use that decision; rejection belongs to
+`PULSE_ENTITIES_TARGET_INELIGIBLE`, without data loss or automatic fallback.
+Catalog eligibility covers declared entity input/output schemas; source generation
+also checks reachable managed fetch schemas.
+
+The `entities-hardening` task exercises ordinary tests in all four modes, including
+nested optional/nullable schemas, invalid input/output, selected-only effects,
+notification completion, effect failures and redaction. It also checks byte
+admission using emitted Native artifacts and verifies JavaScript dynamic JSON
+behavior against Native eligibility and diagnostics. Provider request-body
+rejection precedes package envelope handling and can therefore return a provider
+status instead of a JSON-RPC error.
 
 ## Catalog and evidence invariants
 

@@ -31,6 +31,13 @@ const NODE_NATIVE_TARGET_DESCRIPTOR = Object.freeze({
   keyTypes: Object.freeze(['secret', 'jwk', 'jwks']),
   realizations: Object.freeze([
     Object.freeze({
+      kind: 'package-native-application',
+      contractId: 'pulse.entities',
+      implementation: 'pulse.package-native-application.v1',
+      implemented: true,
+      automaticFallback: false
+    }),
+    Object.freeze({
       kind: 'crypto-composed',
       realization: 'guest-source:pulse-hmac-as',
       implementation: 'pulse-hmac-as.v1',

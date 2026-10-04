@@ -264,6 +264,7 @@ function nativeEffect(planEffect, payload) {
     resource: planEffect.resource,
     source: planEffect.source
   };
+  if (planEffect.kind === 'output.start' || planEffect.kind === 'output.write') return { ...base, argument0: payload.argument0 };
   if (planEffect.kind === 'time.now') return { ...base, providerKind: 'time', operation: 'now', capability: 'time.wall-clock' };
   if (planEffect.kind === 'fetch') {
     const response = nativeFetchResponseContract(planEffect, payload);
@@ -368,6 +369,9 @@ function validateNativeModule(module, plan) {
   const missing = runtimeContract.CANONICAL_NATIVE_EXPORT_NAMES.filter((name) => !exportNames.has(name));
   if (missing.length > 0) throw new CanonicalNativeHostError('Native module is missing required ABI exports.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH', { missing });
   if (!plan || typeof plan !== 'object' || !plan.planHash) throw new TypeError('Native module execution requires its canonical native plan.');
+  if (plan.packages?.application?.effectFailure === 'package-completion' && !exports.some(entry => entry.name === 'pulse_package_set_effect_failure' && entry.kind === 'function')) {
+    throw new CanonicalNativeHostError('Native package application is missing its effect failure ABI.', 'PULSE_CANONICAL_NATIVE_ABI_EXPORT_MISMATCH');
+  }
   const eventReachable = Boolean(plan.events && plan.events.catalog && plan.events.catalog.events.length > 0);
   const eventExportNames = eventContract.EVENT_NATIVE_ABI_EXTENSION.exports.map((entry) => entry.name);
   const presentEventExports = eventExportNames.filter((name) => exportNames.has(name));
@@ -391,7 +395,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   const moduleShape = validateNativeModule(module, plan);
   const adapter = normalizeProviderAdapter(options.providerAdapter || options.provider);
   const executionPlane = options.executionPlane === 'event' ? 'event' : 'http';
-  const memoryBudget = runtimeContract.hasBoundedReadLoop(plan)
+  const memoryBudget = (runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.includes('response.output') || plan.capabilities.includes('request.body.transform'))
     ? new NativeValueBudget(runtimeContract.CANONICAL_NATIVE_READ_LOOP_MEMORY, close) : undefined;
   const heap = new ValueHeap(memoryBudget);
   const pending = [];
@@ -612,6 +616,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   }
 
   const pulseHost = {
+    value_json(handle) {
+      const text = JSON.stringify(value(handle) ?? null);
+      if (Buffer.byteLength(text, 'utf8') > runtimeContract.CANONICAL_NATIVE_VALUE_TRANSFER_MAX_BYTES) throw new CanonicalNativeHostError('Native value transfer exceeds 1 MiB.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE');
+      const exports = instance.exports;
+      const pointer = exports.__new(text.length * 2, exports.pulse_schema_string_id());
+      const view = new Uint16Array(memory().buffer, pointer, text.length);
+      for (let index = 0; index < text.length; index++) view[index] = text.charCodeAt(index);
+      return pointer;
+    },
     value_undefined() { return put(undefined); },
     value_null() { return put(null); },
     value_boolean(input) { return put(Number(input) !== 0); },
@@ -719,9 +732,19 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       const header = context.ctx.req.headers.find(([key]) => String(key).toLowerCase() === name);
       return put(header ? header[1] : undefined);
     },
-    request_text() { requireHttpSurface('ctx.req.text'); return put(context.ctx.req.text()); },
+    request_body() {
+      requireHttpSurface('ctx.req.body');
+      if (!options.incomingBody || adapter.id !== 'node') throw new CanonicalNativeHostError('Incoming forwarding requires an admitted Node request owner.', 'PULSE_REQUEST_FORWARDING_UNAVAILABLE');
+      return put(options.incomingBody.marker());
+    },
+    request_text() {
+      requireHttpSurface('ctx.req.text');
+      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding/transform admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
+      return put(context.ctx.req.text());
+    },
     request_json(schemaHandle) {
       requireHttpSurface('ctx.req.json');
+      if (options.incomingBody) throw new CanonicalNativeHostError('Native forwarding/transform admission cannot also project structured request bytes.', 'PULSE_REQUEST_BODY_OWNERSHIP');
       const schema = value(schemaHandle);
       return put(schema === undefined ? context.ctx.req.json() : context.ctx.req.json(schema));
     },
@@ -798,11 +821,22 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
       if (!response || typeof response.header !== 'function') throw new CanonicalNativeHostError('fetch_header requires a fetch response.', 'PULSE_CANONICAL_NATIVE_VALUE_TYPE');
       return put(response.header(value(nameHandle)));
     },
+    output_close() {
+      if (!options.outputExecution) throw new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires Node HTTP execution.');
+      return put(options.outputExecution.close());
+    },
     effect_begin(effectIndex, payloadHandle) {
+      options.outputExecution?.assertEffect();
       const index = Number(effectIndex);
       const effect = plan.effects && plan.effects[index];
       if (!effect) throw new CanonicalNativeHostError(`Native module requested unknown effect index ${index}.`, 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID', { effectIndex: index });
       const payload = value(payloadHandle);
+      // Admission happens while the guest builds its suspension group. A bad
+      // later member throws before the host dispatch loop starts any member.
+      if (effect.kind === 'fetch' && options.incomingBody) {
+        const admitted = canonicalRuntime.normalizeProviderEffect(nativeEffect(effect, payload), schemaCodecs, { ...options, strict, target: 'native', provider: adapter.id });
+        if (admitted.init.bodyMode === 'incoming-request-v1') options.incomingBody.claim(admitted.init.body, admitted.init);
+      }
       const kvAdmission = portableKv.isConditionalKv(effect.kind) ? portableKv.admitConditionalKv(nativeEffect(effect, payload), options) : undefined;
       if (kvAdmission) portableKv.registerKvRedactions(kvAdmission, (value) => sensitiveValues.add(value));
       const ticket = invocations.open(index, effect.id);
@@ -826,6 +860,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
   let applicationError = 0;
   const applicationErrors = executionPlane === 'http' && (plan.routing?.entries || []).some(entry => entry.kind === 'error');
   function captureApplicationError(error) {
+    if (options.outputExecution?.started) return false;
     if (!applicationErrors || options.signal?.aborted || !portableKv.isApplicationError(error)) return false;
     if (!applicationError) {
       const safe = canonicalRuntime.redactRuntimeError(error, sensitiveValues);
@@ -932,6 +967,15 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     });
   }
 
+  function setEffectFailure(ticket) {
+    return invocations.settle(ticket, () => {
+      if (instance.exports.pulse_package_set_effect_failure(ticket.slot) !== runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED) {
+        close();
+        throw new CanonicalNativeHostError('Native package rejected an invocation failure.', 'PULSE_CANONICAL_NATIVE_EFFECT_INDEX_INVALID');
+      }
+    });
+  }
+
   function resultValue() {
     const handle = instance.exports.pulse_result_handle();
     return handle === 0 ? undefined : value(handle);
@@ -1000,6 +1044,7 @@ function instantiateCanonicalNativeModule(compiled, options = {}) {
     prepareEffectResult,
     captureApplicationError,
     setEffectResult,
+    setEffectFailure,
     resultValue,
     response() { requireHttpSurface('HTTP completion'); return canonicalRuntime.finalResponse(resultValue(), context.ctx.req.method); },
     programCounter() { return instance.exports.pulse_program_counter(); },
@@ -1047,6 +1092,13 @@ function raceNativeSignal(value, signal, eventMode = true) {
 }
 
 async function executeCanonicalNativeInvocation(compiled, options = {}, invocation = Object.freeze({ plane: 'http' })) {
+  const ownedResponseBodies = new Set();
+  let responseBodyTransferred, invocationClosed = false;
+  const cancelBody = body => { try { void body.cancel().catch(() => {}); } catch (_) {} };
+  options = { ...options, registerResponseBody(body) {
+    if (invocationClosed) cancelBody(body);
+    else ownedResponseBodies.add(body);
+  } };
   const eventMode = invocation && invocation.plane === 'event';
   const maxEffects = normalizeMaxEffects(options.maxEffects);
   const controller = instantiateCanonicalNativeModule(compiled, { ...options, executionPlane: eventMode ? 'event' : 'http' });
@@ -1110,6 +1162,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       }
       effectCount += pending.length;
 
+      if (pending.length > 1 && pending.some(entry => entry.effect.kind.startsWith('output.'))) throw new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_PARALLEL_FORBIDDEN', 'Output effects cannot be grouped.');
       const settled = await raceNativeSignal(Promise.allSettled(pending.map(async (entry) => {
         options.requestBudget?.check();
         if (eventMode && options.signal && options.signal.aborted) {
@@ -1117,7 +1170,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
         }
         const rawEffect = { ...nativeEffect(entry.effect, entry.payload), ...entry.kvAdmission };
         const conditional = portableKv.isConditionalKv(rawEffect.kind);
-        const privateEffect = conditional || ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
+        const privateEffect = rawEffect.kind.startsWith('output.') || conditional || ((controller.plan.packages && controller.plan.packages.effects) || []).some((item) =>
           item.package === entry.effect.package && item.contractId === entry.effect.contractId && item.operation === entry.effect.operation
           && item.redaction && Object.keys(item.redaction).length > 0);
         const normalized = canonicalRuntime.normalizeProviderEffect(rawEffect, controller.schemaCodecs, {
@@ -1148,7 +1201,10 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
             return controller.schemaCodecs.decode(String(schemaId), value, context.source || 'package-effect');
           }
         };
-        const rawResult = conditional
+        options.outputExecution?.assertEffect();
+        const rawResult = normalized.kind.startsWith('output.')
+          ? await (options.outputExecution ? options.outputExecution.dispatch(normalized) : Promise.reject(new portableKv.PulseRuntimeContractError('PULSE_OUTPUT_UNAVAILABLE', 'Generated output requires Node HTTP execution.')))
+          : conditional
           ? await portableKv.executeConditionalKv(normalized, adapter.prepareConditionalKv || ((_admitted, kvExecution) => () => adapter.dispatchEffect(normalized, kvExecution)),
               { ...effectExecution, onKvObservation: (event) => controller.trace.push(event) }, options)
           : await raceNativeSignal(adapter.dispatchEffect(normalized, effectExecution), options.signal, eventMode);
@@ -1170,12 +1226,15 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       if (!eventMode && options.signal?.aborted) throw nativeRequestCancelled(options.signal);
       const failures = settled.filter(entry => entry.status === 'rejected');
       const failed = failures.find(entry => !portableKv.isApplicationError(entry.reason)) || failures[0];
-      if (failed && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
+      const packageFailure = controller.plan.packages?.application?.effectFailure === 'package-completion';
+      if (failed && !packageFailure && (!failures.every(entry => portableKv.isApplicationError(entry.reason))
         || !controller.captureApplicationError(failed.reason))) {
         throw canonicalRuntime.redactRuntimeError(failed.reason, controller.sensitiveValues);
       }
-      settled.forEach((item, index) => controller.setEffectResult(pending[index].ticket,
-        item.status === 'fulfilled' ? item.value.result : undefined));
+      settled.forEach((item, index) => {
+        if (item.status === 'rejected' && packageFailure) controller.setEffectFailure(pending[index].ticket);
+        else controller.setEffectResult(pending[index].ticket, item.status === 'fulfilled' ? item.value.result : undefined);
+      });
       const previousPc = controller.programCounter();
       activeContinuation.state = 'resumed';
       activeContinuation.states.push('resumed');
@@ -1219,7 +1278,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     }
     if (options.signal?.aborted) throw nativeRequestCancelled(options.signal);
     options.requestBudget?.check();
+    options.outputExecution?.validateResult(controller.resultValue());
     const response = controller.response();
+    responseBodyTransferred = response.bodyStream;
     controller.trace.push(Object.freeze(redactValue({ type: 'native-execution-completed', executionId, provider: adapter.id, status: response.status, bodyClass: response.bodyClass }, controller.sensitiveValues)));
     return Object.freeze({
       status: 'completed',
@@ -1233,6 +1294,7 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
       wasmSha256: controller.wasmSha256,
       response,
       effectCount,
+      ...((options.incomingBody || options.outputExecution) ? {guestMemoryBytes:controller.exports.memory.buffer.byteLength} : {}),
       resolutionOrder: Object.freeze([...resolutionOrder]),
       continuations: Object.freeze(continuations.map((entry) => Object.freeze({ ...entry, states: Object.freeze([...entry.states]) }))),
       trace: Object.freeze([...controller.trace]),
@@ -1254,6 +1316,9 @@ async function executeCanonicalNativeInvocation(compiled, options = {}, invocati
     }) });
     throw executionFailure;
   } finally {
+    invocationClosed = true;
+    for (const body of ownedResponseBodies) if (body !== responseBodyTransferred) cancelBody(body);
+    ownedResponseBodies.clear();
     controller.close();
     try { adapter.disposeExecution(Object.freeze({ executionId, metadata: controller.plan.canonical, plan: controller.plan, status: executionFailure ? 'failed' : 'completed', error: executionFailure })); }
     catch (_) { /* provider cleanup must not mask execution */ }
@@ -1264,7 +1329,7 @@ async function executeCanonicalNativeModule(compiled, options = {}) {
   const budget = portableKv.createRequestBudget(options);
   try {
     budget.check();
-    return await executeCanonicalNativeInvocation(compiled, { ...options, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
+    return await executeCanonicalNativeInvocation(compiled, { ...options, responseSignal: options.signal, requestBudget: budget, signal: budget.signal, deadlineMonotonicMs: budget.deadlineMonotonicMs ?? options.deadlineMonotonicMs, kvClock: budget.deadlineMonotonicMs === undefined ? options.kvClock : budget.clock }, Object.freeze({ plane: 'http' }));
   } finally { if (!options.requestBudget) budget.close(); }
 }
 

@@ -3,8 +3,11 @@
 const NODE_JWT_VERIFY_CAPABILITY = 'jwt.verify';
 
 const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
-  's3.head', 's3.getText', 's3.putText',
+  's3.head', 's3.getText', 's3.putText', 's3.getBody',
   'request',
+  'request.body.forward',
+  'response.output',
+  'request.body.transform',
   'response.json',
   'response.text',
   'response.custom',
@@ -27,9 +30,12 @@ const NODE_CANONICAL_PROVIDER_CAPABILITIES = Object.freeze([
 
 const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   request: 'node.http.request',
+  'request.body.forward': 'node.http.incoming-request-v1',
   'response.json': 'node.http.response.json',
   'response.text': 'node.http.response.text',
   'response.custom': 'node.http.response.custom',
+  'request.body.transform': 'node.http.bounded-text-transform-v1',
+  'response.output': 'node.http.generated-output-v1',
   fetch: 'node.fetch.dispatch',
   'time.wall-clock': 'node.runtime.time.now',
   'crypto.digestText': 'node.crypto.digest-text',
@@ -45,6 +51,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
   's3.head': 'node.native.s3.head',
   's3.getText': 'node.native.s3.getText',
   's3.putText': 'node.native.s3.putText',
+  's3.getBody': 'node.s3.opaque-body',
   'assets.lookup': 'node.runtime.assets.lookup',
   'grip.broadcast': 'node.http.grip.publish',
   [NODE_JWT_VERIFY_CAPABILITY]: 'node.native.jwt.verify',
@@ -53,7 +60,7 @@ const NODE_CANONICAL_PROVIDER_LOWERING = Object.freeze({
 });
 
 const NODE_NATIVE_TARGET_CAPABILITIES = Object.freeze([
-  's3.head', 's3.getText', 's3.putText',
+  's3.head', 's3.getText', 's3.putText', 's3.getBody',
   NODE_JWT_VERIFY_CAPABILITY,
   'jwt.sign',
   'jwt.verify.hs256',

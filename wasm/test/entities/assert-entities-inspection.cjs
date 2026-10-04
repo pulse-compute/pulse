@@ -167,10 +167,10 @@ assert.equal(JSON.stringify(cliInspection).includes(secretSentinel), false);
 
 const fastlyNativeInspection = parseJson(run(['inspect', '--profile', 'fastly-native', '--json'], fixture));
 assert.equal(fastlyNativeInspection.status, 'ok');
-assert.equal(fastlyNativeInspection.compiler.native.status, 'unavailable-for-project');
+assert.equal(fastlyNativeInspection.compiler.native.status, 'available');
 assert.equal(fastlyNativeInspection.compiler.native.requiredForSelectedTarget, true);
-assert.equal(fastlyNativeInspection.provider.realization.status, 'unavailable-for-project');
-assert.equal(fastlyNativeInspection.provider.realization.providerRealityValidated, false);
+assert.equal(fastlyNativeInspection.provider.realization.nativeWasm, true);
+assert.equal(fastlyNativeInspection.provider.realization.policy.realFastlyExecution, false);
 assert.deepEqual(fastlyNativeInspection.compiler.packageInspection, inspection);
 assert.equal(
   artifact(fastlyNativeInspection.compiler.packageInspection, 'pulse.entities-inspection.v1').data.targets['fastly-native'].evidence,

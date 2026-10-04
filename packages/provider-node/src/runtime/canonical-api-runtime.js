@@ -45,11 +45,13 @@ function providerResponseSpec(spec = {}) {
       streamRef: spec.streamRef
     };
   }
-  const body = Object.prototype.hasOwnProperty.call(spec, 'body') ? spec.body : JSON.stringify(Object.prototype.hasOwnProperty.call(spec, 'value') ? spec.value : {});
+  const textFixture = Object.prototype.hasOwnProperty.call(spec, 'text') && !Object.prototype.hasOwnProperty.call(spec, 'value');
+  const body = Object.prototype.hasOwnProperty.call(spec, 'body') ? spec.body
+    : textFixture ? String(spec.text) : JSON.stringify(Object.prototype.hasOwnProperty.call(spec, 'value') ? spec.value : {});
   return {
     status: Number(Object.prototype.hasOwnProperty.call(spec, 'status') ? spec.status : 200),
     kind: spec.kind || 'text',
-    headers: normalizeHeaders(spec.headers || [['content-type', 'application/json; charset=utf-8']]),
+    headers: normalizeHeaders(spec.headers || [['content-type', textFixture ? 'text/plain; charset=utf-8' : 'application/json; charset=utf-8']]),
     body: typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body)
   };
 }
@@ -134,7 +136,12 @@ function assetContentType(key) {
   })[extension] || 'application/octet-stream';
 }
 
-function assetResponse(payload, stores) {
+function assetResponse(payload, stores, request) {
+  if (payload.embeddedId !== undefined) {
+    const result = require('@pulse-compute/wasm-contracts/assets/contracts').embeddedAssetResponse(payload, request?.headers);
+    const bodyStream = result.bytes === null ? undefined : new ReadableStream({start(controller) { controller.enqueue(result.bytes); controller.close(); }});
+    return {status:result.status,kind:'stream',headers:[...result.headers],...(bodyStream ? {bodyStream} : {})};
+  }
   const storeName = portableRuntimeHost.normalizeKvNamespace(payload.store, {});
   const key = portableRuntimeHost.normalizeKvKey(payload.key, {});
   const store = stores.get(storeName);
@@ -486,6 +493,11 @@ function createNodeProviderAdapter(baseOptions = {}) {
   function kvStoresFor(executionOptions) { return kvReferenceFor(executionOptions).legacyStores(); }
 
   async function dispatchFetch(normalized, executionOptions = {}) {
+    if (normalized.init.bodyMode === 'incoming-request-v1') {
+      const response = await portableRuntimeHost.forwardIncomingBody(normalized.init.body, normalized.parts.url, normalized.init, executionOptions);
+      if (response.body) executionOptions.forwardedBodies?.add(response.body);
+      return { status: response.status, kind: 'stream', headers: responseHeaders(response), bodyStream: response.body };
+    }
     const fetchFixtures = normalizeFetchFixtures(executionOptions.fetches || baseOptions.fetches);
     const providerData = buildProviderBackends(fetchFixtures);
     const fixture = providerData.specs.get(`${normalized.init.method} ${normalized.parts.url}`) || providerData.specs.get(normalized.parts.url);
@@ -528,11 +540,14 @@ function createNodeProviderAdapter(baseOptions = {}) {
     async dispatchEffect(effect, executionOptions = {}) {
       if (effect.kind === 'crypto.digestText') return require('@pulse-compute/crypto/provider').executeTextDigest(effect, executionOptions);
       if (effect.kind === 'time.now') return portableRuntimeHost.readWallTime(baseOptions.wallClock === undefined ? () => Date.now() : baseOptions.wallClock);
-      if (['s3.head', 's3.getText', 's3.putText'].includes(effect.kind)) {
-        return require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions,
+      if (['s3.head', 's3.getText', 's3.putText', 's3.getBody'].includes(effect.kind)) {
+        const result = await require('./s3-reader.js').readS3(effect, { ...baseOptions, ...executionOptions,
           fetchImplementation: executionOptions.s3FetchImplementation || baseOptions.s3FetchImplementation
             || executionOptions.fetchImplementation || baseOptions.fetchImplementation
         }, (name) => bindingValue(executionOptions, 'secrets', name));
+        if (effect.operation !== 'getBody') return result;
+        if (result.body) executionOptions.registerResponseBody?.(result.body);
+        return { status: result.status, kind: 'stream', headers: [...result.headers], bodyStream: result.body || undefined };
       }
       if (effect.kind === 'fetch') return dispatchFetch(effect, executionOptions);
       if (effect.kind === 'jwt.verify' || effect.kind === 'jwt.sign') return verifyNativeJwt(effect, executionOptions);
@@ -581,7 +596,7 @@ function createNodeProviderAdapter(baseOptions = {}) {
         return eventAdapter.acceptOutbound(effect.frame, executionOptions);
       }
       if (effect.kind === 'assets.lookup') {
-        return assetResponse(effect.payload || {}, kvStoresFor(executionOptions));
+        return assetResponse(effect.payload || {}, kvStoresFor(executionOptions), executionOptions.request);
       }
       throw new hostRuntime.CanonicalRuntimeError('ProviderCapabilityError', 'PULSE_PROVIDER_CAPABILITY_UNSUPPORTED', `Node provider does not implement ${effect.kind}.`, { provider: 'node', kind: effect.kind, effectId: effect.id });
     },

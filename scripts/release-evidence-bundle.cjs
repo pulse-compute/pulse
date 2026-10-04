@@ -36,7 +36,10 @@ const SHARD_DEFINITIONS = Object.freeze([
       'reachable-graph',
       'project-modules',
       'entities-contracts',
-      'entities-json-rpc-corpus'
+      'entities-json-rpc-corpus',
+      'mcp-http',
+      'mcp-tools',
+      'mcp-authorization'
     ])
   }),
   Object.freeze({
@@ -65,6 +68,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'time-conformance',
       'time-consumer',
       'request-budget-transport',
+      'node-launcher',
       'http-input-outcomes',
       'application-errors',
       'application-error-boundaries',
@@ -102,6 +106,9 @@ const SHARD_DEFINITIONS = Object.freeze([
       'entities-managed-handler',
       'entities-managed-handler-effects',
       'entities-native-runtime',
+      'entities-hardening',
+      'entities-node-native-workflow',
+      'fastly-entities-native-workflow',
       'crypto-native-guest-source',
       'guest-link-package',
       'guest-link-materialization-stage',
@@ -116,6 +123,9 @@ const SHARD_DEFINITIONS = Object.freeze([
     title: 'Node providers',
     tasks: Object.freeze([
       'canonical-opaque-node-emission',
+      'str02b-node-native',
+      'str03a-generated-output',
+      'str03c-bounded-transforms',
       'javascript-effect-adapter',
       's3-node-transport',
       'node-router-context-parity',
@@ -160,6 +170,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       's3-read-contract',
       's3-write-contract',
       's3-native-read',
+      's3-body-read',
       's3-write-conformance',
       'jwt-signing',
       'jwt-es256-signing',
@@ -168,6 +179,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'jwt-rs256',
       'assets-lowering-plan',
       'assets-package-owned-lowering',
+      'assets-native-embedded',
       'grip-package-owned-lowering',
       'grip-package-runtime',
       'package-root-native',
@@ -213,7 +225,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'clean-machine-consumers',
     title: 'Clean-machine consumers',
-    tasks: Object.freeze(['clean-machine-acceptance'])
+    tasks: Object.freeze(['clean-machine-acceptance', 'cli-entities-installed-workflow'])
   }),
   Object.freeze({
     id: 'deployment-candidates',

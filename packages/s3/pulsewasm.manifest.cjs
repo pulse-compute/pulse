@@ -3,7 +3,7 @@ const { S3_PACKAGE, S3_CONTRACT_ID, S3_OPERATIONS } = require('@pulse-compute/wa
 module.exports = Object.freeze({
   version: 'pulsewasm.lowerable-library-manifest.v2', kind: 'pulsewasm.lowerable-library-manifest',
   contractId: S3_CONTRACT_ID, npmPackage: S3_PACKAGE, lowerableSubpath: S3_PACKAGE,
-  facade: { namespace: 's3', import: S3_PACKAGE, symbols: ['head', 'getText', 'putText'] },
+  facade: { namespace: 's3', import: S3_PACKAGE, symbols: ['head', 'getText', 'putText', 'getBody'] },
   publicApi: { package: S3_PACKAGE, symbols: ['s3'], compatibilitySubpaths: [], loweringIntentionallyNarrow: true },
   compiler: { version: 'pulsewasm.lowerable-compiler-builder.v1', entry: './pulsewasm.compiler.cjs', export: 'buildS3LoweringPlan', artifact: 's3-lowering-plan.json', builderOwner: S3_PACKAGE, trust: 'first-party', inputs: ['typescript.SourceFile'] },
   modes: {
