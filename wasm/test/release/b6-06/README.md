@@ -66,3 +66,39 @@ node wasm/test/docs/assert-executable-documentation.cjs --section sizes
 Later product changes require refreshing affected rows. Final clean installed
 feature/provider proofs and the exact release seal belong to B6-08; these size
 measurements and focused checks do not constitute that seal.
+
+## Validation and handoff
+
+[PR #184](https://github.com/pulse-compute/pulse/pull/184) targets `latest`.
+The [validation record](validation.json) retains terminal reports, actual K4
+consumer results, package/toolchain hashes and failed-attempt identity. Final
+local K4 and all 40 unit tasks passed on clean commit
+`727a398e386404d0b03ce9e408acfd0d1ca3b01e`, tree
+`ba3e02a6148cd89a4a6ba5fcb5e9e17337efc5f7`. Evidence files are added afterwards;
+these checks are development validation, not the final release seal.
+
+| Check | Result |
+| --- | --- |
+| Ordinary measurement and documented size preflight | 19 builds across 10 examples; all baselines accepted |
+| Final unit profile | 40/40 tasks passed |
+| Focused documentation/K4/example workflows | 5/5 tasks passed during branch preparation |
+| Final installed K4 disposition | Passed; raw CAS semantics retain the known Viceroy failure |
+| Exact installed package closure and documentation | 19 packages verified; no workspace product modules; installed bytes unchanged |
+| Maintainer, documentation, documentation-release, publication and scope checks | Passed on the tested clean source |
+| TypeScript build and release preflight | Passed during branch preparation |
+
+The first K4 replay failed at packed documentation validation. The new runtime
+API/body/deployment links were corrected through canonical rewrite rules and
+regenerated; the final replay passed that check. The earlier failed report is
+retained separately and was not overwritten. Final Node Native and JavaScript
+each passed 171 requests plus acknowledgement-fault checks. Real Fastly Compute
+ran the same corpus and response-loss check; its sole missing-key CAS mismatch
+receives the authorized non-blocking disposition while raw `status: failed`
+remains visible.
+
+B6-06 implementation is complete. The atomic beta.6 snapshot remains B6-07,
+and B6-08 must run the complete exact-source release replay. Deployed Pulse
+cross-location K4 proof still requires the reviewed T2 service/store/probes.
+The earlier B6-04 historical populated beta.5 guest-cache transition remains
+partially qualified as recorded in B6-05. No packages were published, services
+activated or pull requests merged.
