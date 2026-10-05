@@ -107,5 +107,12 @@
     "attempts": 8,
     "delayMs": 10000,
     "requestTimeoutMs": 20000
+  },
+  "cdnPurge": {
+    "method": "purge-all",
+    "serviceIdVariable": "FASTLY_DOCUMENTATION_SERVICE_ID",
+    "tokenSecret": "FASTLY_DOCUMENTATION_PURGE_TOKEN",
+    "tokenScope": "purge_all",
+    "requiredAfterPromotion": true
   }
 }
