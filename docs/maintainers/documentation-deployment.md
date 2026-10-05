@@ -16,6 +16,7 @@ source documentation + release catalogs
 → immutable exact-version upload
 → matching npm release verification
 → root/latest promotion
+→ documentation CDN hard purge
 → public verification through Fastly
 ```
 
@@ -100,6 +101,7 @@ The GitHub environment provides:
 Secrets
   FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID
   FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY
+  FASTLY_DOCUMENTATION_PURGE_TOKEN
 
 Variables
   FASTLY_OBJECT_STORAGE_BUCKET
@@ -107,6 +109,7 @@ Variables
   FASTLY_OBJECT_STORAGE_ENDPOINT
   PULSE_DOCUMENTATION_ORIGIN
   PULSE_DOCUMENTATION_BASE_PATH
+  FASTLY_DOCUMENTATION_SERVICE_ID
 ```
 
 The deployer supplies only these bucket credentials to AWS CLI v2. It clears ambient profiles, session tokens, web-identity roles, container-credential endpoints, and generic AWS endpoint overrides, and points AWS config and shared-credential lookup at the platform null device. This prevents unrelated runner credentials from influencing Object Storage requests.
@@ -114,6 +117,8 @@ The deployer supplies only these bucket credentials to AWS CLI v2. It clears amb
 The workflow requires AWS CLI v2, maps the two secrets to its standard credential variables and sends S3-compatible requests to the selected Fastly regional endpoint. Fastly Object Storage rejects the AWS CLI's optional request-checksum behavior, so both the protected deployment job and the deployment adapter set `AWS_REQUEST_CHECKSUM_CALCULATION=when_required`. Storage reads likewise use `AWS_RESPONSE_CHECKSUM_VALIDATION=when_required`. These are fixed compatibility settings, not repository environment variables or credentials.
 
 The read-only VCL origin key must never be reused as the deployment key, and the read/write deployment key must never be embedded in VCL.
+
+For CDN invalidation, set `FASTLY_DOCUMENTATION_SERVICE_ID` to the Fastly service serving the public documentation origin. Use a separate `FASTLY_DOCUMENTATION_PURGE_TOKEN` restricted to that service with the `purge_all` scope. It is a Fastly API token, not an Object Storage credential. These values are required only when `promote_latest` is enabled; the workflow checks them before changing mutable objects.
 
 ## VCL delivery boundary
 
@@ -137,13 +142,16 @@ The production workflow performs these steps in order:
 
 1. verify the downloaded documentation candidate and its exact release-tag identity;
 2. upload or verify only the current release's immutable exact-version objects and deployment receipt;
-3. query npm for all 18 matching package versions and configured dist-tags;
+3. query npm for all matching package versions and configured dist-tags, then verify the protected CDN purge configuration;
 4. upload mutable manifests, error pages, and alias payloads using that npm verification report, then write `latest/index.html` and root `index.html` last as the release-owned publication points;
 5. verify the mutable objects directly in Object Storage;
-6. request homepage, latest, getting started, the moving site manifest, exact version, CSS, and a missing path through the configured Fastly public origin; and
-7. retain object, registry, and HTTP evidence as workflow artifacts.
+6. issue a hard purge using `POST https://api.fastly.com/service/<service-id>/purge_all` and require a successful response;
+7. request homepage, latest, getting started, the moving site manifest, exact version, CSS, and a missing path through the configured Fastly public origin; and
+8. retain object, registry, purge, and HTTP evidence as workflow artifacts.
 
-Public verification checks that the moving routes and `site-manifest.json` expose the new release version. It retries within the release-owned window so the one-minute alias cache can converge without a privileged CDN purge token.
+Public verification checks that the moving routes and `site-manifest.json` expose the new release version. The hard purge invalidates all cached objects on the configured documentation service, including stale aliases and cached missing paths. It runs after mutable storage verification and before any public checks; a failed purge stops public verification. The existing verification retry window still allows CDN propagation. Immutable-only deployments skip the purge. `documentation-cdn-purge.json` retains the API response with the deployment evidence.
+
+Workflow changes take effect in a future reviewed release tag. Rerunning an existing tag uses that tag's workflow; it does not pick up later changes from `main`.
 
 No bucket-wide synchronization or delete operation is used. Mutable promotion is resumable and idempotent, but it is not presented as a cross-object atomic transaction. Writing the two publication points last minimizes partially visible promotions; a failed run is rerun against the same sealed candidate.
 

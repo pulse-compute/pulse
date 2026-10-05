@@ -5,9 +5,9 @@
 Pulse uses a machine-readable maintenance policy so repository automation and Codex receive the same scope boundaries. The policy is advisory about product direction and mandatory about process: Codex may analyze, review, and prepare bounded patches, while a human retains architecture, merge, repository-setting, and release authority.
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
-- **Policy version:** `10`
+- **Policy version:** `11`
 - **Release:** `1.0.0-beta.6`
-- **Reviewed:** `2026-09-27`
+- **Reviewed:** `2026-10-05`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only
 - **Release authority:** human-only
@@ -20,7 +20,7 @@ Pulse uses a machine-readable maintenance policy so repository automation and Co
 |---|---|---|---|---|
 | `codex-maintainer` | human-maintainer | `default-branch` | `OPENAI_API_KEY` | None |
 | `npm-publish` | human-release | `release-tags` | None | None |
-| `documentation-production` | human-release-infrastructure | `release-tags` | `FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID`, `FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY` | `FASTLY_OBJECT_STORAGE_BUCKET`, `FASTLY_OBJECT_STORAGE_REGION`, `FASTLY_OBJECT_STORAGE_ENDPOINT`, `PULSE_DOCUMENTATION_ORIGIN`, `PULSE_DOCUMENTATION_BASE_PATH` |
+| `documentation-production` | human-release-infrastructure | `release-tags` | `FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID`, `FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY`, `FASTLY_DOCUMENTATION_PURGE_TOKEN` | `FASTLY_OBJECT_STORAGE_BUCKET`, `FASTLY_OBJECT_STORAGE_REGION`, `FASTLY_OBJECT_STORAGE_ENDPOINT`, `PULSE_DOCUMENTATION_ORIGIN`, `PULSE_DOCUMENTATION_BASE_PATH`, `FASTLY_DOCUMENTATION_SERVICE_ID` |
 
 Production environments are release-control boundaries. Codex may inspect failures and prepare patches, but it cannot approve an environment, receive production credentials outside the declared job, publish packages, promote documentation, or activate infrastructure.
 

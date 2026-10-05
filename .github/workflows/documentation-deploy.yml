@@ -193,6 +193,16 @@ jobs:
           node scripts/verify-npm-release.cjs
           --catalog-only
           --json-out npm-release-availability.json
+      - name: Verify protected CDN purge configuration
+        if: inputs.promote_latest
+        shell: bash
+        env:
+          FASTLY_DOCUMENTATION_SERVICE_ID: ${{ vars.FASTLY_DOCUMENTATION_SERVICE_ID }}
+          FASTLY_DOCUMENTATION_PURGE_TOKEN: ${{ secrets.FASTLY_DOCUMENTATION_PURGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          [[ "$FASTLY_DOCUMENTATION_SERVICE_ID" =~ ^[A-Za-z0-9]+$ ]] || { echo '::error::Set FASTLY_DOCUMENTATION_SERVICE_ID in documentation-production'; exit 1; }
+          test -n "$FASTLY_DOCUMENTATION_PURGE_TOKEN" || { echo '::error::Set FASTLY_DOCUMENTATION_PURGE_TOKEN in documentation-production'; exit 1; }
       - name: Promote root and latest routes
         if: inputs.promote_latest
         shell: bash
@@ -219,6 +229,29 @@ jobs:
             --driver aws \
             --phase promote \
             --json-out documentation-promotion-verification.json
+      - name: Purge the documentation CDN before public verification
+        if: inputs.promote_latest
+        timeout-minutes: 2
+        shell: bash
+        env:
+          FASTLY_DOCUMENTATION_SERVICE_ID: ${{ vars.FASTLY_DOCUMENTATION_SERVICE_ID }}
+          FASTLY_DOCUMENTATION_PURGE_TOKEN: ${{ secrets.FASTLY_DOCUMENTATION_PURGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          [[ "$FASTLY_DOCUMENTATION_SERVICE_ID" =~ ^[A-Za-z0-9]+$ ]]
+          test -n "$FASTLY_DOCUMENTATION_PURGE_TOKEN"
+          curl --fail --silent --show-error \
+            --connect-timeout 10 --max-time 30 --retry 2 \
+            --request POST \
+            --header "Fastly-Key: $FASTLY_DOCUMENTATION_PURGE_TOKEN" \
+            --header 'Accept: application/json' \
+            --output documentation-cdn-purge.json \
+            "https://api.fastly.com/service/$FASTLY_DOCUMENTATION_SERVICE_ID/purge_all"
+          node <<'NODE'
+          const result = require('./documentation-cdn-purge.json');
+          if (result.status !== 'ok') throw new Error('Fastly documentation CDN purge did not return status=ok');
+          console.log('Fastly documentation CDN purge accepted');
+          NODE
       - name: Verify the public Fastly route after promotion
         if: inputs.promote_latest
         env:
@@ -240,6 +273,7 @@ jobs:
             documentation-immutable-verification.json
             documentation-promotion-deployment.json
             documentation-promotion-verification.json
+            documentation-cdn-purge.json
             documentation-public-verification.json
           if-no-files-found: warn
           retention-days: 90
