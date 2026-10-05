@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { canInspectDescendants } = require('../../../scripts/release-process.cjs');
 const {
   REPORT_SCHEMA,
   parseArgs,
@@ -18,8 +19,9 @@ function processAlive(pid) {
   if (!Number.isInteger(pid) || pid <= 0) return false;
   try {
     process.kill(pid, 0);
-    if (process.platform !== 'win32') {
-      const status = fs.readFileSync(`/proc/${pid}/stat`, 'utf8').split(' ')[2];
+    if (process.platform === 'linux' && canInspectDescendants()) {
+      const stat = fs.readFileSync(`/proc/${pid}/stat`, 'utf8');
+      const status = stat.slice(stat.lastIndexOf(')') + 2).split(' ')[0];
       return status !== 'Z';
     }
     return true;
@@ -38,7 +40,9 @@ async function waitForProcessExit(pid, timeoutMs = 5000) {
 }
 
 function processGroupInspectionAvailable() {
-  if (process.platform === 'win32') return false;
+  // A working ps can still describe a different PID namespace. Match the
+  // runner's availability boundary; signal-based liveness remains mandatory.
+  if (!canInspectDescendants()) return false;
   const result = spawnSync('ps', ['-eo', 'pid=,ppid=,pgid=,sid=,stat=,etime=,command='], {
     encoding: 'utf8',
     timeout: 5000
