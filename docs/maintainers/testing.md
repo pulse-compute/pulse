@@ -181,6 +181,22 @@ runs the release profile, and records revision-bound evidence under
 Native and JavaScript candidate inputs and invokes the pinned downstream
 JavaScript compiler locally. It does not deploy or publish either candidate.
 
+After build and documentation checks, the seal constructs one package set in its
+private temporary directory. A SHA-256-pinned receipt binds every output file to
+the clean checkout, commit and tree. Each packed-consumer task verifies that
+receipt, current source and package bytes, then receives its own ordinary file
+copies. Consumer installations, behavioral assertions and reports remain
+independent. The artifact-determinism task constructs a second package set from
+source and compares it with the first; it cannot reuse the second construction.
+Standalone packing and focused tasks still construct their own packages.
+
+This replaces fifteen full package constructions with two during a complete
+seal. The shared set is attempt-local and removed by supervised seal cleanup;
+it is never reused across seal attempts. Tasks still run serially because some
+fixtures and cleanup own workspace build outputs. Documented default and
+optimized size assertions run in the complete example workflows; the separate
+size-only command remains available for focused diagnosis.
+
 Each attempt writes `wasm/.test-results/seal-runs/<run-id>/report.json`
 and one log per step. `wasm/.test-results/release-seal.json` identifies the
 most recently started attempt; an older attempt finishing cannot overwrite it.

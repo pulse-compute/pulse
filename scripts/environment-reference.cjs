@@ -21,6 +21,30 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSE_RELEASE_SHARED_PACK',
+    category: 'contributor',
+    value: 'Directory path',
+    default: 'Unset; packing constructs fresh packages.',
+    precedence: 'The seal supplies its own attempt-local directory to consumer tasks.',
+    consumer: 'Release package construction and installed acceptance.',
+    secretSafety: 'Not a secret. Contains verified candidate tarballs and their receipt.',
+    stability: 'Harness-internal; outside the application compatibility contract.',
+    description: 'Reuses one clean-source package set through verified private copies; independent determinism construction bypasses reuse.',
+    sourceFiles: ['scripts/pack-release.cjs', 'scripts/release-shared-pack.cjs']
+  }),
+  entry({
+    name: 'PULSE_RELEASE_SHARED_PACK_SHA256',
+    category: 'contributor',
+    value: 'SHA-256 digest',
+    default: 'Unset; required when a shared package directory is supplied.',
+    precedence: 'The seal pins the receipt digest before launching consumer tasks.',
+    consumer: 'Shared release package receipt verification.',
+    secretSafety: 'Not a secret. Identifies source-bound package evidence.',
+    stability: 'Harness-internal; outside the application compatibility contract.',
+    description: 'Rejects receipt changes before validating source identity and every shared package file.',
+    sourceFiles: ['scripts/release-shared-pack.cjs']
+  }),
+  entry({
     name: 'PULSE_RELEASE_FEATURE_REPORT_DIR',
     category: 'contributor',
     value: 'Directory path',

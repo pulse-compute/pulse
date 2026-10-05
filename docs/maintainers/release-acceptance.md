@@ -271,11 +271,10 @@ npm run release:seal
 
 Before restoring dependencies, the seal checks that every release-profile task
 maps to an evidence shard and every explicit shard task is in that profile.
-After the workspace build, a size-only documentation preflight rebuilds the
-canonical examples in default and experimental Native-size modes. It checks the
-existing README baselines, guest/provider bytes, and guest-link input sizes
-before running unit tests and the complete release profile. Run that bounded
-check directly with:
+The complete example workflows check the existing README baselines,
+guest/provider bytes and guest-link input sizes in default and experimental
+Native-size modes. The seal runs those assertions once, within the full release
+profile. A size-only diagnostic remains available separately:
 
 ```bash
 node wasm/test/docs/assert-executable-documentation.cjs --section sizes
@@ -286,6 +285,13 @@ the example and build mode; packing reports each package on stderr so `--json`
 stdout remains machine-readable. A successful preflight is development evidence.
 The full example workflows and exact-source complete release replay remain
 mandatory; preflight results cannot replace or be pooled into the final seal.
+
+The seal builds one shared package set after workspace and documentation checks.
+Every consumer gets private copies verified against a source-bound, hash-pinned
+receipt; clean installs and behavioral coverage remain separate. Determinism
+still requires a second independent construction from source. The shared set
+belongs to this attempt only and is removed during seal cleanup. See
+[testing](testing.md#aggregate-release-seal) for the reuse and isolation rules.
 
 It restores dependencies, validates the repository and generated documentation, runs the complete release profile, and adds the external Fastly task when the Fastly CLI can start its managed local Compute lifecycle. Use `--require-fastly` to make that host proof mandatory.
 
