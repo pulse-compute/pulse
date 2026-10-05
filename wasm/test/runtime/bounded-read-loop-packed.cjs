@@ -94,10 +94,20 @@ async function main(packedRoot) {
       const limited=run(fetcher,{maxEffects:3});
       if(target==='node')await assert.rejects(limited,{code:'PULSE_RUNTIME_EFFECT_LIMIT_EXCEEDED'});else assert.equal((await limited).status,500);
       assert.equal(calls,2);checks.push({target,name:'cumulative-effects',status:'passed'});
+      // S3 caps its real timeout by the virtual request budget remaining.
+      // Keep virtual expiry at fetch three without creating a 2ms real timer.
       let time=0;const timers=new Map();calls=0;
       const clock={now:()=>time,setTimeout(fn,ms){const id={};timers.set(id,{fn,at:time+ms});return id},clearTimeout(id){timers.delete(id)}};
-      await assert.rejects(run(async()=>{calls++;time+=4;for(const [id,t] of [...timers])if(t.at<=time){timers.delete(id);t.fn()}return new Response(JSON.stringify({next:'p2',action:'',values:[1]}));},{maxDurationMs:10,requestClock:clock}),{code:'PULSE_REQUEST_DEADLINE_EXCEEDED'});
-      assert.equal(calls,3);assert.equal(timers.size,0);checks.push({target,name:'cumulative-deadline',status:'passed'});
+      await assert.rejects(run(async()=>{
+        calls++;time+=4000;
+        for(const [id,t] of [...timers])if(t.at<=time){timers.delete(id);t.fn()}
+        // Expose a competing real S3 timeout instead of relying on a fast host.
+        await new Promise(resolve=>setTimeout(resolve,25));
+        return new Response(JSON.stringify({next:'p2',action:'',values:[1]}));
+      },{maxDurationMs:10000,requestClock:clock}),{code:'PULSE_REQUEST_DEADLINE_EXCEEDED'},target+' cumulative request deadline');
+      assert.equal(calls,3,target+' deadline expires on third fetch');
+      assert.equal(timers.size,0,target+' deadline timers are cleared');
+      checks.push({target,name:'cumulative-deadline',status:'passed'});
       for(const lateFailure of [false,true]) {
         calls=0;const abort=new AbortController();let ready,settle;const admitted=new Promise(resolve=>{ready=resolve});
         const pending=run(async()=>{if(++calls===1)return new Response(JSON.stringify({next:'p2',action:'',values:[1]}));ready();return new Promise((resolve,reject)=>{settle=()=>lateFailure?reject(new Error('late')):resolve(new Response('{}'))});},{signal:abort.signal});
