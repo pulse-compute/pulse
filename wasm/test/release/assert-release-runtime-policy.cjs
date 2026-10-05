@@ -84,42 +84,45 @@ try {
 
 // Exercise the real seal orchestration with child execution isolated. A failing
 // size preflight must stop before audits, unit tests and the long release replay.
-const childProcess = require('node:child_process');
-const sealModule = require.resolve('../../../scripts/validate-release.cjs');
-const originalSpawn = childProcess.spawnSync;
-const originalWrite = process.stdout.write;
-const commands = [];
-let output = '';
-let failSizes = true;
-try {
-  childProcess.spawnSync = (command, args) => {
-    // Preserve source identity inspection without spawning test/build processes.
-    if (command === 'git') return originalSpawn(command, args, { encoding: 'utf8' });
-    commands.push([command, ...args]);
-    if (command !== process.execPath && (args.includes('version') || args.includes('--version'))) return { status: 1, stdout: '', stderr: '' };
-    const fail = failSizes ? args.includes('sizes') : args.includes('--profile');
-    return { status: fail ? 1 : 0, signal: null };
-  };
-  process.stdout.write = (chunk) => { output += chunk; return true; };
-  delete require.cache[sealModule];
-  const seal = require(sealModule);
-  assert.throws(() => seal.main(['--skip-install', '--no-report']),
-    (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'documentation-sizes');
-  assert.ok(commands.some((args) => args.includes('build')));
-  assert.ok(commands.some((args) => args.includes('sizes')));
-  assert.ok(!commands.some((args) => args.includes('test') || args.includes('--profile') || args.includes('scripts/audit-production-dependencies.cjs')));
-  assert.match(output, /Step 4 failed: documentation-sizes/);
-  commands.length = 0;
-  failSizes = false;
-  assert.throws(() => seal.main(['--skip-install', '--no-report']),
-    (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'release');
-  const replay = commands.find((args) => args.includes('--profile'));
-  assert.deepEqual(replay.slice(1), ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', '.test-results/release-tasks.json']);
-  assert.ok(commands.findIndex((args) => args.includes('sizes')) < commands.findIndex((args) => args.includes('--profile')));
-} finally {
-  childProcess.spawnSync = originalSpawn;
-  process.stdout.write = originalWrite;
-  delete require.cache[sealModule];
-}
+async function verifySealOrchestration() {
+  const supervisor = require('../../../scripts/release-process.cjs');
+  const sealModule = require.resolve('../../../scripts/validate-release.cjs');
+  const originalRun = supervisor.runCommand;
+  const originalWrite = process.stdout.write;
+  const commands = [];
+  let output = '';
+  let failSizes = true;
+  try {
+    supervisor.runCommand = async (command, args, options) => {
+      if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
+      commands.push([command, ...args]);
+      if (command !== process.execPath && (args.includes('version') || args.includes('--version'))) return { status: 1, stdout: '', stderr: '' };
+      const fail = failSizes ? args.includes('sizes') : args.includes('--profile');
+      return { status: fail ? 1 : 0, signal: null };
+    };
+    process.stdout.write = (chunk) => { output += chunk; return true; };
+    delete require.cache[sealModule];
+    const seal = require(sealModule);
+    await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
+      (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'documentation-sizes');
+    assert.ok(commands.some((args) => args.includes('build')));
+    assert.ok(commands.some((args) => args.includes('sizes')));
+    assert.ok(!commands.some((args) => args.includes('test') || args.includes('--profile') || args.includes('scripts/audit-production-dependencies.cjs')));
+    assert.match(output, /Step 4 failed: documentation-sizes/);
+    commands.length = 0;
+    failSizes = false;
+    await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
+      (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'release');
+    const replay = commands.find((args) => args.includes('--profile'));
+    assert.deepEqual(replay.slice(1), ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', '.test-results/release-tasks.json']);
+    assert.ok(commands.findIndex((args) => args.includes('sizes')) < commands.findIndex((args) => args.includes('--profile')));
+  } finally {
+    supervisor.runCommand = originalRun;
+    process.stdout.write = originalWrite;
+    delete require.cache[sealModule];
+  }
 
-console.log('ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution');
+  console.log('ok - release seals accept the Node 24 line while preserving the exact reproducible toolchain pin and require only Fastly CLI-owned local execution');
+
+}
+verifySealOrchestration().catch(error => { console.error(error); process.exitCode = 1; });

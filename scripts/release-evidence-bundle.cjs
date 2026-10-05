@@ -243,7 +243,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'maintainer-publication-controls',
     title: 'Maintainer and publication control planes',
-    tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-tag']),
+    tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-seal-lifecycle', 'release-tag']),
     releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release', 'installed-features'])
   })
 ]);
