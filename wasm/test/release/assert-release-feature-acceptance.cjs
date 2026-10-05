@@ -65,27 +65,31 @@ reject(x => x.identity.workingTree = '?? fixture.ts', /Candidate must be clean/)
 
 // Exercise the owning release orchestration: successful aggregate replay must
 // still stop on a failing installed-feature gate before external host evidence.
-const childProcess = require('node:child_process');
-const sealModule = require.resolve('../../../scripts/validate-release.cjs');
-const originalSpawn = childProcess.spawnSync;
-const originalWrite = process.stdout.write;
-const commands = [];
-try {
-  childProcess.spawnSync = (command, args, options) => {
-    if (command === 'git') return originalSpawn(command, args, options);
-    commands.push(args);
-    return { status: args.includes('scripts/release-feature-acceptance.cjs') ? 1 : 0, signal: null };
-  };
-  process.stdout.write = () => true;
-  delete require.cache[sealModule];
-  assert.throws(() => require(sealModule).main(['--skip-install', '--no-report']),
-    error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'installed-features');
-  assert(commands.some(args => args.includes('--profile') && args.includes('release')));
-  assert(commands.some(args => args.includes('scripts/release-feature-acceptance.cjs')));
-  assert(!commands.some(args => args.includes('provider-fastly-compute-reality')));
-} finally {
-  childProcess.spawnSync = originalSpawn;
-  process.stdout.write = originalWrite;
-  delete require.cache[sealModule];
+async function verifySealOrchestration() {
+  const supervisor = require('../../../scripts/release-process.cjs');
+  const sealModule = require.resolve('../../../scripts/validate-release.cjs');
+  const originalRun = supervisor.runCommand;
+  const originalWrite = process.stdout.write;
+  const commands = [];
+  try {
+    supervisor.runCommand = async (command, args, options) => {
+      if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
+      commands.push(args);
+      return { status: args.includes('scripts/release-feature-acceptance.cjs') ? 1 : 0, signal: null };
+    };
+    process.stdout.write = () => true;
+    delete require.cache[sealModule];
+    await assert.rejects(() => require(sealModule).main(['--skip-install', '--no-report']),
+      error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'installed-features');
+    assert(commands.some(args => args.includes('--profile') && args.includes('release')));
+    assert(commands.some(args => args.includes('scripts/release-feature-acceptance.cjs')));
+    assert(!commands.some(args => args.includes('provider-fastly-compute-reality')));
+  } finally {
+    supervisor.runCommand = originalRun;
+    process.stdout.write = originalWrite;
+    delete require.cache[sealModule];
+  }
+  console.log('ok - ten separate installed gates, cross-lane coverage and fail-closed candidate/report identity');
+
 }
-console.log('ok - ten separate installed gates, cross-lane coverage and fail-closed candidate/report identity');
+verifySealOrchestration().catch(error => { console.error(error); process.exitCode = 1; });

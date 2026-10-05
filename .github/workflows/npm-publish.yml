@@ -89,7 +89,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          pnpm run release:seal --skip-install --no-report
+          pnpm run release:seal --skip-install
+      - name: Preserve seal status and terminal evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-npm-seal-${{ github.run_id }}-${{ github.run_attempt }}
+          path: wasm/.test-results
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
       - name: Pack the exact release candidate
         shell: bash
         run: |

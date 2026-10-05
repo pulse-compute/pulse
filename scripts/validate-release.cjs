@@ -4,7 +4,8 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
-const { spawnSync } = require('node:child_process');
+const { runCommand } = require('./release-process.cjs');
+const { createSealStatus } = require('./release-seal-status.cjs');
 const fastly = require('../packages/provider-fastly/src/testing/fastly-cli.js');
 const { PUBLICATION, versionSatisfiesCaretRange } = require('./package-support.cjs');
 const { validatePreflight } = require('./release-preflight.cjs');
@@ -12,7 +13,6 @@ const { resolveSourceIdentity, sourceIdentityEnv } = require('./source-identity.
 
 const repoRoot = path.resolve(__dirname, '..');
 const resultsRoot = path.join(repoRoot, 'wasm', '.test-results');
-const reportFile = path.join(resultsRoot, 'release-seal.json');
 
 function parseArgs(argv) {
   const options = { install: true, report: true, requireFastly: false };
@@ -46,13 +46,6 @@ function usage() {
   ].join('\n');
 }
 
-function atomicJson(file, value) {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  const temporary = `${file}.tmp-${process.pid}`;
-  fs.writeFileSync(temporary, `${JSON.stringify(value, null, 2)}\n`);
-  fs.renameSync(temporary, file);
-}
-
 function commandText(command, args) {
   return [command, ...args].join(' ');
 }
@@ -61,27 +54,39 @@ function packageManagerInvocation() {
   return require('./pnpm-toolchain.cjs').pnpmInvocation(repoRoot);
 }
 
-function runStep(steps, id, description, command, args, options = {}) {
+async function executeStep(steps, id, description, command, args, options = {}) {
   process.stdout.write(`\n[pulse:release] Step ${steps.length + 1} started: ${id} — ${description}\n`);
   const startedAt = new Date().toISOString();
-  const result = spawnSync(command, args, {
-    cwd: repoRoot,
-    env: { ...process.env, ...(options.env || {}) },
-    stdio: 'inherit',
-    timeout: options.timeoutMs || 20 * 60 * 1000
-  });
+  options.progress.persist({ currentStep: id, steps });
+  const logPath = options.progress.directory ? path.join(options.progress.directory, `${id}.log`) : null;
+  const log = logPath ? fs.openSync(logPath, 'w') : null;
+  let result;
+  try {
+    result = await runCommand(command, args, {
+      cwd: repoRoot, env: { ...process.env, ...(options.env || {}) },
+      timeoutMs: options.timeoutMs || 20 * 60 * 1000, signal: options.signal,
+      onOutput(name, chunk) {
+        process[name].write(chunk);
+        if (log !== null) fs.writeSync(log, chunk);
+      }
+    });
+  } finally { if (log !== null) fs.closeSync(log); }
   const step = Object.freeze({
     id,
     description,
     command: commandText(command, args),
-    status: !result.error && result.status === 0 ? 'passed' : 'failed',
+    status: !result.error && !result.timedOut && !result.interruptedBy && result.status === 0 ? 'passed' : 'failed',
     exitCode: result.status,
     signal: result.signal || null,
+    timedOut: result.timedOut,
+    interruptedBy: result.interruptedBy,
+    logPath,
     startedAt,
     completedAt: new Date().toISOString(),
-    error: result.error ? result.error.message : null
+    error: result.error ? result.error.message : result.timedOut ? 'Step deadline exceeded' : result.interruptedBy ? `Interrupted by ${result.interruptedBy}` : null
   });
   steps.push(step);
+  options.progress.persist({ steps, currentStep: null });
   process.stdout.write(`[pulse:release] Step ${steps.length} ${step.status}: ${id} (${Date.parse(step.completedAt) - Date.parse(startedAt)}ms)\n`);
   if (step.status !== 'passed') {
     const error = new Error(`${description} failed (${step.command})`);
@@ -125,21 +130,30 @@ function assertReleasePreflight(provenGates = []) {
   return validatePreflight({ stage: 'release-seal', provenGates });
 }
 
-function main(argv = process.argv.slice(2)) {
+async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   if (options.help) {
     process.stdout.write(`${usage()}\n`);
     return;
   }
   const runtime = assertReleaseNode();
-  const preflight = validatePreflight();
-  process.stdout.write(`[pulse:release] Preflight passed: ${preflight.shards} release shards mapped; full replay still required.\n`);
-
-  const startedAt = new Date().toISOString();
   const sourceIdentity = resolveSourceIdentity(repoRoot);
   const revision = sourceIdentity.sourceRevision;
   const identityEnv = sourceIdentityEnv(sourceIdentity);
   const steps = [];
+  const progress = createSealStatus({ resultsRoot, report: options.report, initial: {
+    schemaVersion: 'pulse.release-seal.v1', sourceRevision: revision, sourceIdentity, runtime
+  } });
+  const controller = new AbortController();
+  const handlers = new Map(['SIGINT', 'SIGTERM', 'SIGHUP'].map(signal => [signal, () => {
+    if (!controller.signal.aborted) {
+      controller.abort(signal);
+      progress.persist({ interruption: signal });
+    }
+  }]));
+  for (const [signal, handler] of handlers) process.on(signal, handler);
+  const runStep = (steps, id, description, command, args, stepOptions = {}) =>
+    executeStep(steps, id, description, command, args, { ...stepOptions, progress, signal: controller.signal });
   const packageManagerCache = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-release-seal-package-manager-'));
   const packageManagerEnv = {
     ...process.env,
@@ -153,6 +167,8 @@ function main(argv = process.argv.slice(2)) {
   let externalFastly = Object.freeze({ status: 'not-inspected' });
   let featureAcceptance = null;
   let status = 'running';
+  let failure = null;
+  let cleanup = null;
   const runPackageManagerStep = (id, description, args, timeoutMs) => {
     const invocation = packageManagerInvocation();
     return runStep(
@@ -165,9 +181,11 @@ function main(argv = process.argv.slice(2)) {
     );
   };
   try {
+    const preflight = validatePreflight();
+    process.stdout.write(`[pulse:release] Preflight passed: ${preflight.shards} release shards mapped; full replay still required.\n`);
     if (options.dependencyBundle) {
       if (!fs.existsSync(options.dependencyBundle)) throw new Error(`Dependency bundle does not exist: ${options.dependencyBundle}`);
-      runStep(
+      await runStep(
         steps,
         'dependencies',
         'Restore lockfile-pinned dependencies from the offline bundle',
@@ -176,7 +194,7 @@ function main(argv = process.argv.slice(2)) {
         { timeoutMs: 20 * 60 * 1000 }
       );
     } else if (options.install) {
-      runPackageManagerStep(
+      await runPackageManagerStep(
         'dependencies',
         'Restore the lockfile-pinned workspace dependency graph',
         ['install', '--frozen-lockfile', '--ignore-scripts'],
@@ -184,10 +202,10 @@ function main(argv = process.argv.slice(2)) {
       );
     }
 
-    runStep(steps, 'maintainer', 'Validate the maintainer control plane', 'node', ['scripts/validate-maintainer-control-plane.cjs']);
-    runStep(steps, 'publication', 'Validate publication and deployment controls', 'node', ['scripts/validate-publication-workflows.cjs']);
-    runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
-    runStep(
+    await runStep(steps, 'maintainer', 'Validate the maintainer control plane', 'node', ['scripts/validate-maintainer-control-plane.cjs']);
+    await runStep(steps, 'publication', 'Validate publication and deployment controls', 'node', ['scripts/validate-publication-workflows.cjs']);
+    await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
+    await runStep(
       steps,
       'documentation-sizes',
       'Preflight documented Wasm sizes before the complete release replay',
@@ -195,7 +213,7 @@ function main(argv = process.argv.slice(2)) {
       ['wasm/test/docs/assert-executable-documentation.cjs', '--section', 'sizes'],
       { timeoutMs: 10 * 60 * 1000, env: identityEnv }
     );
-    runStep(
+    await runStep(
       steps,
       'production-dependency-audit',
       'Regenerate production vulnerability and license evidence',
@@ -203,9 +221,9 @@ function main(argv = process.argv.slice(2)) {
       ['scripts/audit-production-dependencies.cjs'],
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv }
     );
-    runPackageManagerStep('workspace-unit', 'Run workspace unit tests', ['run', '-s', 'test'], 10 * 60 * 1000);
-    runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
-    runStep(
+    await runPackageManagerStep('workspace-unit', 'Run workspace unit tests', ['run', '-s', 'test'], 10 * 60 * 1000);
+    await runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
+    await runStep(
       steps,
       'release',
       'Run native, JavaScript, conformance, provider, CLI, package, consumer, and determinism evidence',
@@ -214,7 +232,7 @@ function main(argv = process.argv.slice(2)) {
       { timeoutMs: 60 * 60 * 1000, env: identityEnv }
     );
 
-    runStep(
+    await runStep(
       steps,
       'installed-features',
       'Qualify separately required installed feature gates on this exact candidate',
@@ -229,7 +247,7 @@ function main(argv = process.argv.slice(2)) {
 
     externalFastly = fastlyAvailability();
     if (externalFastly.status === 'available') {
-      runStep(
+      await runStep(
         steps,
         'fastly-reality',
         'Run external Fastly Compute reality evidence',
@@ -259,50 +277,41 @@ function main(argv = process.argv.slice(2)) {
     }
     status = 'passed';
   } catch (error) {
-    status = 'failed';
-    if (options.report) {
-      atomicJson(reportFile, {
-        schemaVersion: 'pulse.release-seal.v1',
-        sourceRevision: revision,
-        sourceIdentity,
-        runtime,
-        status,
-        startedAt,
-        completedAt: new Date().toISOString(),
-        steps,
-        featureAcceptance,
-        externalFastly,
-        error: { code: error.code || null, message: error.message }
-      });
-    }
-    throw error;
+    failure = error;
+    status = controller.signal.aborted ? 'interrupted' : 'failed';
   } finally {
-    fs.rmSync(packageManagerCache, { recursive: true, force: true });
+    // Cleanup is a supervised subprocess: a stalled filesystem operation must
+    // not prevent a terminal receipt or leave the parent waiting indefinitely.
+    progress.persist({ currentStep: 'cleanup', steps, featureAcceptance, externalFastly });
+    const result = await runCommand(process.execPath, ['-e',
+      "require('node:fs').rmSync(process.argv[1], { recursive: true, force: true })", packageManagerCache
+    ], { timeoutMs: 30000 });
+    cleanup = { status: result.status === 0 && !result.error && !result.timedOut ? 'passed' : 'failed',
+      timedOut: result.timedOut, retainedPath: result.status === 0 ? null : packageManagerCache };
+    if (cleanup.status !== 'passed' && !failure) {
+      failure = Object.assign(new Error('Release package-manager cleanup failed or exceeded its deadline'), { code: 'PULSE_RELEASE_CLEANUP_FAILED' });
+      status = 'failed';
+    }
+    if (controller.signal.aborted) {
+      status = 'interrupted';
+      failure ||= Object.assign(new Error(`Seal interrupted by ${controller.signal.reason}`), { code: 'PULSE_RELEASE_INTERRUPTED' });
+    }
+    for (const [signal, handler] of handlers) process.removeListener(signal, handler);
   }
 
-  const report = Object.freeze({
-    schemaVersion: 'pulse.release-seal.v1',
-    sourceRevision: revision,
-    sourceIdentity,
-    runtime,
-    status,
-    startedAt,
-    completedAt: new Date().toISOString(),
-    steps: Object.freeze(steps),
-    featureAcceptance,
-    externalFastly
-  });
-  if (options.report) atomicJson(reportFile, report);
-  process.stdout.write(`\n[pulse:release] Seal passed with ${steps.length} completed step(s); Fastly reality: ${externalFastly.status}.\n`);
+  const report = progress.finish({ status, steps, featureAcceptance, externalFastly, cleanup,
+    ...(failure ? { error: { code: failure.code || null, message: failure.message } } : {}) });
+  process.stdout.write(`\n[pulse:release] Seal ${status} with ${steps.length} completed step(s); Fastly reality: ${externalFastly.status}.\n`);
+  if (progress.directory) process.stdout.write(`[pulse:release] Terminal report: ${path.join(progress.directory, 'report.json')}\n`);
+  if (failure) throw failure;
+  return report;
 }
 
 if (require.main === module) {
-  try {
-    main();
-  } catch (error) {
+  main().catch(error => {
     process.stderr.write(`${error && error.stack ? error.stack : String(error)}\n`);
     process.exitCode = 1;
-  }
+  });
 }
 
 module.exports = Object.freeze({ parseArgs, fastlyAvailability, assertReleaseNode, assertReleasePreflight, main });

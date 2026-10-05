@@ -181,6 +181,22 @@ runs the release profile, and records revision-bound evidence under
 Native and JavaScript candidate inputs and invokes the pinned downstream
 JavaScript compiler locally. It does not deploy or publish either candidate.
 
+Each attempt writes `wasm/.test-results/seal-runs/<run-id>/report.json`
+and one log per step. `wasm/.test-results/release-seal.json` identifies the
+most recently started attempt; an older attempt finishing cannot overwrite it.
+The report starts as `running`, records `currentStep`, `updatedAt` and
+`durationMs`, and refreshes every ten seconds even when a child is quiet. The
+nested task report also refreshes every ten seconds and distinguishes execution
+from cleanup. Recovery should inspect these reports before starting another run.
+
+Step deadlines terminate the supervised process tree, escalating from TERM to
+KILL after ten seconds, with one further second to settle output. Temporary
+cleanup has a separate thirty-second deadline; failure or interruption cannot
+produce a passing receipt. A terminal result and report path are printed before
+any separate evidence-bundle command. npm publication retains the reports on
+success and failure. A missing terminal receipt after an uncatchable kill or
+machine loss remains incomplete evidence, never an implied pass.
+
 External npm organization settings, trusted publishers, protected publication
 environments, public repository administration, and the production documentation
 origin do not authorize or block candidate construction. They remain explicit

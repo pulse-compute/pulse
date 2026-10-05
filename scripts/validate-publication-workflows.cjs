@@ -219,7 +219,10 @@ function validateWorkflows() {
   includes(npm, 'publication.pnpmVersion', 'npm publication workflow');
   includes(npm, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'npm publication workflow');
   includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
-  includes(npm, 'pnpm run release:seal --skip-install --no-report', 'npm publication workflow');
+  includes(npm, 'pnpm run release:seal --skip-install\n', 'npm publication workflow');
+  excludes(npm, 'release:seal --skip-install --no-report', 'npm publication workflow');
+  includes(npm, 'name: Preserve seal status and terminal evidence\n        if: always()', 'npm publication workflow');
+  includes(npm, 'name: pulse-npm-seal-${{ github.run_id }}-${{ github.run_attempt }}', 'npm publication workflow');
   includes(npm, 'pnpm run release:pack', 'npm publication workflow');
   includes(npm, 'release-candidate.cjs prepare', 'npm publication workflow');
   includes(npm, 'publish-release.cjs audit', 'npm publication workflow');

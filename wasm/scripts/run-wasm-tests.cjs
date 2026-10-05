@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const os = require('node:os');
 const { spawn, spawnSync } = require('node:child_process');
-const { once } = require('node:events');
+const { runCommand, canInspectDescendants } = require('../../scripts/release-process.cjs');
 const { createHash } = require('node:crypto');
 const { wasmRoot, tasks, profiles, expandProfile } = require('../test/suite/registry.cjs');
 const {
@@ -156,6 +156,9 @@ function copyTaskFailureLogs(sourceRoot, diagnosticsDir) {
 
 function processGroupRows(groupId) {
   if (process.platform === 'win32' || !Number.isInteger(groupId)) return [];
+  // Managed execution can expose a host /proc unrelated to Node's PID namespace.
+  // Such rows are neither diagnostics nor authority to signal a process.
+  if (process.platform === 'linux' && !canInspectDescendants()) return [];
   const result = spawnSync('ps', ['-eo', 'pid=,ppid=,pgid=,sid=,stat=,etime=,command='], { encoding: 'utf8', timeout: 5000 });
   if (result.status !== 0) {
     if (process.platform !== 'linux') return [];
@@ -242,10 +245,25 @@ function appendNodeReportOptions(existing, diagnosticsDir) {
   return [existing || '', ...additions].filter(Boolean).join(' ');
 }
 
-async function finishLog(stream) {
-  if (!stream) return;
-  stream.end();
-  if (!stream.closed) await once(stream, 'close').catch(() => {});
+function finishLog(stream) {
+  if (!stream) return Promise.resolve();
+  return new Promise(resolve => {
+    const timer = setTimeout(() => { stream.destroy(); resolve('task log close exceeded its deadline'); }, 1000);
+    stream.once('close', () => { clearTimeout(timer); resolve(); });
+    stream.once('error', error => { clearTimeout(timer); stream.destroy(); resolve(error.message); });
+    stream.end();
+  });
+}
+
+function cleanupTaskOutputs(taskTempRoot, diagnosticsDir, retainFailure) {
+  let failureArtifacts = [], failureEvidenceError = null;
+  if (retainFailure) {
+    try { failureArtifacts = copyTaskFailureLogs(taskTempRoot, diagnosticsDir).map(relativeToWasm); }
+    catch (error) { failureEvidenceError = error.message; }
+  }
+  cleanupRecordedWorkspacePackageBuilds(taskTempRoot);
+  fs.rmSync(taskTempRoot, { recursive: true, force: true, maxRetries: 3, retryDelay: 50 });
+  return { failureArtifacts, failureEvidenceError };
 }
 
 async function runTask(name, task, options = {}) {
@@ -371,30 +389,33 @@ async function runTask(name, task, options = {}) {
   if (terminationPromise) await terminationPromise;
   if (typeof options.onChild === 'function') options.onChild(null);
 
-  if (!childPassed && options.runDir) {
+  options.onPhase?.('cleanup');
+  let cleanupOutput = '';
+  const cleanupCommand = options.cleanupCommand || {
+    command: process.execPath,
+    args: ['-e', `const { cleanupTaskOutputs } = require(process.argv[1]);
+      const result = cleanupTaskOutputs(...JSON.parse(process.argv[2]));
+      process.stdout.write(JSON.stringify(result));`, __filename,
+    JSON.stringify([taskTempRoot, diagnosticsDir, !childPassed && Boolean(options.runDir)])]
+  };
+  const cleaned = await runCommand(cleanupCommand.command, cleanupCommand.args, {
+    timeoutMs: options.cleanupTimeoutMs || 30000,
+    ...(options.cleanupGraceMs === undefined ? {} : { termGraceMs: options.cleanupGraceMs, killGraceMs: options.cleanupGraceMs }),
+    onOutput(name, chunk) { if (name === 'stdout') cleanupOutput += chunk; }
+  });
+  if (cleaned.status !== 0 || cleaned.error || cleaned.timedOut) {
+    cleanupError = new Error(`cleanup failed or exceeded its deadline; retained task root: ${taskTempRoot}`);
+  } else {
     try {
-      failureArtifacts = copyTaskFailureLogs(taskTempRoot, diagnosticsDir).map(relativeToWasm);
-      if (failureArtifacts.length) {
-        writeLine(`[pulsewasm] ${name}: copied ${failureArtifacts.length} task-owned failure log(s) into the durable run report`);
-      }
-    } catch (error) {
-      failureEvidenceError = error;
-      writeLine(`[pulsewasm] ${name}: could not copy task-owned failure logs: ${error.message || error}`);
-    }
+      const result = JSON.parse(cleanupOutput);
+      failureArtifacts = result.failureArtifacts;
+      if (result.failureEvidenceError) failureEvidenceError = new Error(result.failureEvidenceError);
+      if (failureArtifacts.length) writeLine(`[pulsewasm] ${name}: copied ${failureArtifacts.length} task-owned failure log(s) into the durable run report`);
+    } catch (error) { cleanupError = error; }
   }
-
-  try {
-    cleanupRecordedWorkspacePackageBuilds(taskTempRoot);
-    fs.rmSync(taskTempRoot, {
-      recursive: true,
-      force: true,
-      maxRetries: 3,
-      retryDelay: 50
-    });
-  } catch (error) {
-    cleanupError = error;
-  }
-  await finishLog(logStream);
+  if (options.signal?.aborted) interruptedBy ||= String(options.signal.reason || 'SIGTERM');
+  const logError = await finishLog(logStream);
+  if (logError) cleanupError ||= new Error(logError);
 
   const durationMs = Date.now() - startedAt;
   const diagnosticReports = fs.existsSync(diagnosticsDir)
@@ -441,6 +462,7 @@ async function runTask(name, task, options = {}) {
     interruptedBy,
     error,
     logPath: relativeToWasm(logPath),
+    retainedTaskRoot: cleanupError ? taskTempRoot : null,
     diagnosticReports: Object.freeze(diagnosticReports),
     failureArtifacts: Object.freeze(failureArtifacts),
     processTree: Object.freeze(processTree),
@@ -463,6 +485,7 @@ function reportSnapshot(state, updates = {}) {
     requestedTasks: state.requestedTasks,
     selectedTasks: state.selectedTasks,
     currentTask: updates.currentTask === undefined ? state.currentTask : updates.currentTask,
+    currentTaskPhase: state.currentTaskPhase || null,
     completedTasks: state.results.length,
     results: Object.freeze([...state.results]),
     runDirectory: relativeToWasm(state.runDir)
@@ -531,20 +554,30 @@ async function main() {
   for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.once(signal, () => signalHandler(signal));
   process.once('exit', () => { if (activeChild) signalTaskTree(activeChild, 'SIGKILL'); });
 
-  for (const name of selection.selected) {
-    state.currentTask = name;
-    persist({ currentTask: name });
-    const result = await runTask(name, tasks[name], {
-      runDir: state.runDir,
-      sourceEnv: identityEnv,
-      signal: controller.signal,
-      onChild(child) { activeChild = child; }
-    });
-    state.results.push(result);
-    state.currentTask = null;
-    persist({ currentTask: null });
-    if (result.status !== 'passed') break;
-  }
+  const heartbeat = setInterval(() => {
+    persist();
+    console.log(`[pulsewasm] Running ${state.currentTask || 'selection'} (${state.currentTaskPhase || 'execution'}); elapsed ${formatDuration(Date.now() - state.startMs)}`);
+  }, 10000);
+  heartbeat.unref();
+  try {
+    for (const name of selection.selected) {
+      state.currentTask = name;
+      state.currentTaskPhase = 'execution';
+      persist({ currentTask: name });
+      const result = await runTask(name, tasks[name], {
+        runDir: state.runDir,
+        sourceEnv: identityEnv,
+        signal: controller.signal,
+        onChild(child) { activeChild = child; },
+        onPhase(phase) { state.currentTaskPhase = phase; persist(); }
+      });
+      state.results.push(result);
+      state.currentTask = null;
+      state.currentTaskPhase = null;
+      persist({ currentTask: null });
+      if (result.status !== 'passed') break;
+    }
+  } finally { clearInterval(heartbeat); }
 
   const failed = state.results.find((result) => result.status !== 'passed');
   state.status = failed ? (failed.status === 'interrupted' ? 'interrupted' : 'failed') : 'passed';
@@ -579,6 +612,7 @@ module.exports = Object.freeze({
   processGroupRows,
   signalTaskTree,
   copyTaskFailureLogs,
+  cleanupTaskOutputs,
   runTask,
   reportSnapshot
 });

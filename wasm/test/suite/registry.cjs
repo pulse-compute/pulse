@@ -1184,6 +1184,10 @@ const tasks = Object.freeze({
   's3-body-installed': nodeTask('test/s3/s3-body-installed.cjs', {
     timeoutMs: 300000, description: 'installed S3 binary bodies on Node Native/JavaScript and Fastly Native ABI fixtures'
   }),
+  'release-seal-lifecycle': nodeTask('test/release/assert-release-seal-lifecycle.cjs', {
+    evidence: 'unit', timeoutMs: 60000,
+    description: 'durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle'
+  }),
   'release-runtime-policy': nodeTask('test/release/assert-release-runtime-policy.cjs', {
     evidence: 'unit',
     description: 'Node release-line acceptance and Fastly CLI lifecycle ownership'
@@ -1207,6 +1211,7 @@ const profiles = Object.freeze({
     'hidden-contracts',
     'release-feature-acceptance',
     'release-runtime-policy',
+    'release-seal-lifecycle',
     'release-tag',
     'api-surface',
     'logging-contract',
