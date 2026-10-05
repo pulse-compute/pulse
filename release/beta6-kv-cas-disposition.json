@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "pulse.release-owner-disposition.v1",
+  "releaseVersion": "1.0.0-beta.6",
+  "sourceRevision": "0da09bba3a806b04ee6ef0e6f98d196e3a2232c1",
+  "sourceTree": "64c7a17483fa32612a881c085ef43619d01019d3",
+  "decidedAt": "2026-10-05T07:46:23-06:00",
+  "authority": "release-owner",
+  "userStatement": "Yes KV KAS is ignored",
+  "approvedQuestion": "For this beta, do you authorize treating the Viceroy race as non-blocking and deferring deployed cross-location K4, with both recorded as unresolved qualifications?",
+  "scope": "Only the identified sealed beta.6 candidate; no inherited exception for later candidates.",
+  "localK4": {
+    "semanticStatus": "failed",
+    "releaseBlocking": false,
+    "disposition": "accepted-local-engine-discrepancy-for-beta.6",
+    "observations": [
+      "missing-key CAS accepted by Viceroy",
+      "two CAS winners for one generation"
+    ]
+  },
+  "deployedCrossLocationK4": {
+    "semanticStatus": "not-run",
+    "releaseBlocking": false,
+    "disposition": "deferred-for-beta.6"
+  },
+  "completedAggregateSeal": {
+    "status": "passed",
+    "completedAt": "2026-10-05T10:08:39.557Z",
+    "durationMs": 2890855,
+    "stepsPassed": 11,
+    "releaseTasksPassed": 165,
+    "installedFeatureGatesPassed": 10,
+    "cleanup": "passed",
+    "note": "Historical evidence remains bound to sourceRevision, not to the commit carrying this decision."
+  },
+  "rawReportSha256": {
+    "release-seal.json": "d6e9f143b67ce4766974c3baaf08d60c02823648a1c93f6be848e666654105f7",
+    "release-tasks.json": "125f48e491085287fd3ba5f4e6b1973ca31736547d4c8c569dd871627d84a6fd",
+    "release-feature-acceptance.json": "bad75434e53d6a0613ce354371d64692cc113d586307438cae8349f4391cfe62"
+  },
+  "standaloneIsolation": {
+    "status": "reproduced-multiple-CAS-winners-without-Pulse",
+    "engine": {
+      "version": "viceroy 0.21.1",
+      "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+    },
+    "moduleSha256": "0f174750d97fcc9b383efb15315e0bd6ee01a1fb427d3db41d7c124cc3053d66",
+    "pulseGuestCode": false,
+    "sequentialControls": "passed",
+    "raceWidth": 64,
+    "round": 88,
+    "acknowledgedWriters": [
+      1,
+      2
+    ],
+    "inputGeneration": "1791203883688800301",
+    "observed": {
+      "kvError": 1,
+      "generation": "1791203883690533404",
+      "value": 1,
+      "mask": 0,
+      "op": 3
+    },
+    "rawValueBytes": 65536,
+    "reportSha256": "16cd049514269e336643af2173adf5a4beb0c4dcfbbc85155af6cc1309616e53",
+    "claimLimit": "Reproduces the local engine defect without Pulse; does not establish deployed Fastly or full Pulse acceptance."
+  },
+  "retainedArtifacts": [
+    {
+      "name": "Pulse-beta6-Seal-Recovery-0da09bb.zip",
+      "sha256": "5afbfbee78cd55fa4ba1c984e7d9adea2550729e838bf10429c1fc175833f5f0"
+    },
+    {
+      "name": "Pulse-K4-Viceroy-Race-Proof-2026-10-05.zip",
+      "sha256": "1a975f668309046207b1f8c574161eff2b41d1641b096e571cd66e80f78b7c01"
+    }
+  ],
+  "enforcement": "Release-owner disposition, not a runtime switch. Strict diagnostic commands and general acceptance functions remain unchanged and may return failure.",
+  "publicCASSemanticsChanged": false,
+  "rawReportsModified": false,
+  "aggregateSealReplayed": false,
+  "mergeAuthorized": false,
+  "tagAuthorized": false,
+  "publicationAuthorized": false,
+  "deploymentAuthorized": false
+}
