@@ -229,6 +229,9 @@ function validatePackedPackage(tarball, sourceManifest, entry, legalBytes) {
 function packRelease(options = {}) {
   const repoRoot = path.resolve(options.repoRoot || path.join(__dirname, '..'));
   const outDir = path.resolve(options.outDir || path.join(repoRoot, '.pulse-release'));
+  if (process.env.PULSE_RELEASE_SHARED_PACK && options.fresh !== true) {
+    return require('./release-shared-pack.cjs').copySharedPack({ repoRoot, outDir });
+  }
   const packageManagerCache = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-release-package-manager-'));
   const packageManagerEnv = {
     ...process.env,

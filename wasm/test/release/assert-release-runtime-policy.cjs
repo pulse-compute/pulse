@@ -2,6 +2,7 @@
 'use strict';
 
 require('./assert-pnpm-toolchain.cjs');
+require('./assert-release-shared-pack.cjs');
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -83,7 +84,8 @@ try {
 }
 
 // Exercise the real seal orchestration with child execution isolated. A failing
-// size preflight must stop before audits, unit tests and the long release replay.
+// shared pack must stop before consumer replay; size assertions remain in the
+// complete documentation tasks instead of running twice.
 async function verifySealOrchestration() {
   const supervisor = require('../../../scripts/release-process.cjs');
   const sealModule = require.resolve('../../../scripts/validate-release.cjs');
@@ -91,31 +93,39 @@ async function verifySealOrchestration() {
   const originalWrite = process.stdout.write;
   const commands = [];
   let output = '';
-  let failSizes = true;
+  let failPack = true;
   try {
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push([command, ...args]);
       if (command !== process.execPath && (args.includes('version') || args.includes('--version'))) return { status: 1, stdout: '', stderr: '' };
-      const fail = failSizes ? args.includes('sizes') : args.includes('--profile');
+      if (!failPack && args.includes('scripts/release-shared-pack.cjs')) {
+        const directory = args[args.indexOf('--out') + 1];
+        fs.mkdirSync(directory, { recursive: true });
+        fs.writeFileSync(path.join(directory, 'pulse-shared-pack.json'), '{}');
+      }
+      if (args.includes('--profile')) {
+        assert(options.env.PULSE_RELEASE_SHARED_PACK);
+        assert.match(options.env.PULSE_RELEASE_SHARED_PACK_SHA256, /^[a-f0-9]{64}$/);
+      }
+      const fail = failPack ? args.includes('scripts/release-shared-pack.cjs') : args.includes('--profile');
       return { status: fail ? 1 : 0, signal: null };
     };
     process.stdout.write = (chunk) => { output += chunk; return true; };
     delete require.cache[sealModule];
     const seal = require(sealModule);
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
-      (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'documentation-sizes');
+      (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'shared-pack');
     assert.ok(commands.some((args) => args.includes('build')));
-    assert.ok(commands.some((args) => args.includes('sizes')));
-    assert.ok(!commands.some((args) => args.includes('test') || args.includes('--profile') || args.includes('scripts/audit-production-dependencies.cjs')));
-    assert.match(output, /Step 4 failed: documentation-sizes/);
+    assert.ok(!commands.some((args) => args.includes('sizes') || args.includes('--profile')));
+    assert.match(output, /failed: shared-pack/);
     commands.length = 0;
-    failSizes = false;
+    failPack = false;
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
       (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'release');
     const replay = commands.find((args) => args.includes('--profile'));
     assert.deepEqual(replay.slice(1), ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', '.test-results/release-tasks.json']);
-    assert.ok(commands.findIndex((args) => args.includes('sizes')) < commands.findIndex((args) => args.includes('--profile')));
+    assert.ok(commands.findIndex((args) => args.includes('scripts/release-shared-pack.cjs')) < commands.findIndex((args) => args.includes('--profile')));
   } finally {
     supervisor.runCommand = originalRun;
     process.stdout.write = originalWrite;

@@ -10,6 +10,8 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 
 | Variable | Scope | Stability |
 |---|---|---|
+| [`PULSE_RELEASE_SHARED_PACK`](#pulse-release-shared-pack) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
+| [`PULSE_RELEASE_SHARED_PACK_SHA256`](#pulse-release-shared-pack-sha256) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSE_RELEASE_FEATURE_REPORT_DIR`](#pulse-release-feature-report-dir) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSEWASM_SUITE_TASK`](#pulsewasm-suite-task) | Contributor and test-only configuration | Harness-internal; not a user or application setting. |
 | [`PULSE_B02_BASELINE_ROOT`](#pulse-b02-baseline-root) | Contributor and test-only configuration | Contributor/test-only; outside the application compatibility contract. |
@@ -91,6 +93,38 @@ Selects the flat Pulse project profile when no explicit `--profile` option is su
 ## Contributor and test-only configuration
 
 Repository harness controls. They are intentionally outside the application compatibility contract.
+
+<a id="pulse-release-shared-pack"></a>
+
+### `PULSE_RELEASE_SHARED_PACK`
+
+Reuses one clean-source package set through verified private copies; independent determinism construction bypasses reuse.
+
+| Property | Contract |
+|---|---|
+| Value | Directory path |
+| Default | Unset; packing constructs fresh packages. |
+| Precedence | The seal supplies its own attempt-local directory to consumer tasks. |
+| Consumer | Release package construction and installed acceptance. |
+| Secret safety | Not a secret. Contains verified candidate tarballs and their receipt. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `scripts/pack-release.cjs`, `scripts/release-shared-pack.cjs` |
+
+<a id="pulse-release-shared-pack-sha256"></a>
+
+### `PULSE_RELEASE_SHARED_PACK_SHA256`
+
+Rejects receipt changes before validating source identity and every shared package file.
+
+| Property | Contract |
+|---|---|
+| Value | SHA-256 digest |
+| Default | Unset; required when a shared package directory is supplied. |
+| Precedence | The seal pins the receipt digest before launching consumer tasks. |
+| Consumer | Shared release package receipt verification. |
+| Secret safety | Not a secret. Identifies source-bound package evidence. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `scripts/release-shared-pack.cjs` |
 
 <a id="pulse-release-feature-report-dir"></a>
 

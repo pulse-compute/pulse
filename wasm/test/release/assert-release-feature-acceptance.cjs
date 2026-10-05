@@ -2,6 +2,8 @@
 
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
+const fs = require('node:fs');
+const path = require('node:path');
 const { tasks, expandProfile } = require('../suite/registry.cjs');
 const { RELEASE_VERSION } = require('../../../scripts/package-support.cjs');
 const { REQUIRED_TASKS, SEPARATE_GATES, validateCoverage, validateAcceptance, validateSummary } = require('../../../scripts/release-feature-acceptance.cjs');
@@ -71,10 +73,27 @@ async function verifySealOrchestration() {
   const originalRun = supervisor.runCommand;
   const originalWrite = process.stdout.write;
   const commands = [];
+  let sharedEnvironment;
   try {
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push(args);
+      if (args.includes('scripts/release-shared-pack.cjs')) {
+        const directory = args[args.indexOf('--out') + 1];
+        fs.mkdirSync(directory, { recursive: true });
+        fs.writeFileSync(path.join(directory, 'pulse-shared-pack.json'), '{}');
+      }
+      if (args.includes('--profile')) {
+        sharedEnvironment = {
+          directory: options.env.PULSE_RELEASE_SHARED_PACK,
+          digest: options.env.PULSE_RELEASE_SHARED_PACK_SHA256
+        };
+        assert(sharedEnvironment.directory);
+        assert.match(sharedEnvironment.digest, /^[a-f0-9]{64}$/);
+      }
+      if (args.includes('scripts/release-feature-acceptance.cjs')) {
+        assert.deepEqual({ directory: options.env.PULSE_RELEASE_SHARED_PACK, digest: options.env.PULSE_RELEASE_SHARED_PACK_SHA256 }, sharedEnvironment);
+      }
       return { status: args.includes('scripts/release-feature-acceptance.cjs') ? 1 : 0, signal: null };
     };
     process.stdout.write = () => true;

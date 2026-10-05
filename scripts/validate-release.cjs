@@ -6,6 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { runCommand } = require('./release-process.cjs');
 const { createSealStatus } = require('./release-seal-status.cjs');
+const { sharedPackEnv } = require('./release-shared-pack.cjs');
 const fastly = require('../packages/provider-fastly/src/testing/fastly-cli.js');
 const { PUBLICATION, versionSatisfiesCaretRange } = require('./package-support.cjs');
 const { validatePreflight } = require('./release-preflight.cjs');
@@ -207,14 +208,6 @@ async function main(argv = process.argv.slice(2)) {
     await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
     await runStep(
       steps,
-      'documentation-sizes',
-      'Preflight documented Wasm sizes before the complete release replay',
-      process.execPath,
-      ['wasm/test/docs/assert-executable-documentation.cjs', '--section', 'sizes'],
-      { timeoutMs: 10 * 60 * 1000, env: identityEnv }
-    );
-    await runStep(
-      steps,
       'production-dependency-audit',
       'Regenerate production vulnerability and license evidence',
       'node',
@@ -223,13 +216,18 @@ async function main(argv = process.argv.slice(2)) {
     );
     await runPackageManagerStep('workspace-unit', 'Run workspace unit tests', ['run', '-s', 'test'], 10 * 60 * 1000);
     await runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
+    const sharedPackDirectory = path.join(packageManagerCache, 'packages');
+    await runStep(steps, 'shared-pack', 'Construct the exact package set once for isolated consumers', process.execPath,
+      ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory],
+      { timeoutMs: 10 * 60 * 1000, env: identityEnv });
+    const consumerEnv = { ...identityEnv, ...sharedPackEnv(sharedPackDirectory) };
     await runStep(
       steps,
       'release',
       'Run native, JavaScript, conformance, provider, CLI, package, consumer, and determinism evidence',
       'node',
       ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', '.test-results/release-tasks.json'],
-      { timeoutMs: 60 * 60 * 1000, env: identityEnv }
+      { timeoutMs: 60 * 60 * 1000, env: consumerEnv }
     );
 
     await runStep(
@@ -238,7 +236,7 @@ async function main(argv = process.argv.slice(2)) {
       'Qualify separately required installed feature gates on this exact candidate',
       process.execPath,
       ['scripts/release-feature-acceptance.cjs'],
-      { timeoutMs: 60 * 60 * 1000, env: identityEnv }
+      { timeoutMs: 60 * 60 * 1000, env: consumerEnv }
     );
     featureAcceptance = require('./release-feature-acceptance.cjs').validateSummary(
       JSON.parse(fs.readFileSync(path.join(resultsRoot, 'release-feature-acceptance.json'), 'utf8')),

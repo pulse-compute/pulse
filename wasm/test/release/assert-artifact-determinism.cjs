@@ -36,7 +36,9 @@ function treeIdentity(root) {
 const firstPackages = path.join(tempRoot, 'packages-a');
 const secondPackages = path.join(tempRoot, 'packages-b');
 const firstRelease = packRelease({ repoRoot, outDir: firstPackages, build: false });
-const secondRelease = packRelease({ repoRoot, outDir: secondPackages, build: false });
+// The first pack can be the seal's verified candidate; this construction must
+// always be independent, including when the parent supplies a shared pack.
+const secondRelease = packRelease({ repoRoot, outDir: secondPackages, build: false, fresh: true });
 
 assert.deepEqual(
   firstRelease.manifest.packages.map(({ name, version, tarball, bytes, sha256: digest, integrity }) => ({ name, version, tarball, bytes, sha256: digest, integrity })),
