@@ -199,7 +199,7 @@ assert.deepEqual(
     .find((entry) => entry.id === 'maintainer-publication-controls')
     .tasks
     .map((entry) => entry.name),
-  ['release-feature-acceptance', 'release-runtime-policy', 'release-tag']
+  ['release-feature-acceptance', 'release-runtime-policy', 'release-seal-lifecycle', 'release-tag']
 );
 assert.deepEqual(aggregate.summary, {
   shards: 16,
