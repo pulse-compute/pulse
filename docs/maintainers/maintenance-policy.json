@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 10,
+  "policyVersion": 11,
   "releaseVersion": "1.0.0-beta.6",
-  "reviewedAt": "2026-09-27",
+  "reviewedAt": "2026-10-05",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -74,14 +74,16 @@
         "allowedRefs": "release-tags",
         "secrets": [
           "FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID",
-          "FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY"
+          "FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY",
+          "FASTLY_DOCUMENTATION_PURGE_TOKEN"
         ],
         "variables": [
           "FASTLY_OBJECT_STORAGE_BUCKET",
           "FASTLY_OBJECT_STORAGE_REGION",
           "FASTLY_OBJECT_STORAGE_ENDPOINT",
           "PULSE_DOCUMENTATION_ORIGIN",
-          "PULSE_DOCUMENTATION_BASE_PATH"
+          "PULSE_DOCUMENTATION_BASE_PATH",
+          "FASTLY_DOCUMENTATION_SERVICE_ID"
         ]
       }
     },

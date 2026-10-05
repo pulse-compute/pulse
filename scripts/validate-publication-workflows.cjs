@@ -149,6 +149,10 @@ function validateConfiguration() {
   if (documentation.storage.requestChecksumCalculation !== 'when_required' || documentation.storage.responseChecksumValidation !== 'when_required') {
     fail('Fastly Object Storage documentation deployment must use required-only AWS request and response checksums');
   }
+  const purge = documentation.cdnPurge;
+  if (!purge || purge.method !== 'purge-all' || purge.requiredAfterPromotion !== true || purge.tokenScope !== 'purge_all') fail('documentation promotion must require a hard CDN purge');
+  const environment = readJson('release/maintenance-policy.json').github.protectedEnvironments[documentation.environment];
+  if (!environment.variables.includes(purge.serviceIdVariable) || !environment.secrets.includes(purge.tokenSecret)) fail('documentation CDN purge configuration must belong to the protected deployment environment');
   if (documentation.publicVerification.attempts !== 8 || documentation.publicVerification.delayMs !== 10000 || documentation.publicVerification.requestTimeoutMs !== 20000) fail('documentation public verification convergence window changed unexpectedly');
   const siteManifestCheck = documentation.publicChecks.find((entry) => entry.path === '/site-manifest.json');
   if (!siteManifestCheck || siteManifestCheck.status !== 200 || !String(siteManifestCheck.bodyIncludes || '').includes(RELEASE_VERSION)) fail('documentation public verification must prove the promoted release version');
@@ -182,6 +186,58 @@ function validateConfiguration() {
 function productionWorkflowIsManual(source, context) {
   includes(source, 'workflow_dispatch:', context);
   if (/^\s{2}(?:push|pull_request|pull_request_target|schedule|repository_dispatch):\s*$/mu.test(source)) fail(`${context} must remain manually dispatched`);
+}
+
+function validateCdnPurgeWorkflow(source) {
+  const start = source.indexOf('      - name: Purge the documentation CDN before public verification\n');
+  if (start < 0) fail('documentation workflow must purge the CDN before public verification');
+  const next = source.indexOf('\n      - name:', start + 1);
+  const step = source.slice(start, next < 0 ? source.length : next);
+  const purge = loadDeploymentConfig(repoRoot).config.cdnPurge;
+  includes(step, 'if: inputs.promote_latest', 'documentation CDN purge step');
+  includes(step, 'timeout-minutes: 2', 'documentation CDN purge step');
+  includes(step, `vars.${purge.serviceIdVariable}`, 'documentation CDN purge step');
+  includes(step, `secrets.${purge.tokenSecret}`, 'documentation CDN purge step');
+  for (const forbidden of ['continue-on-error', 'Fastly-Soft-Purge', 'curl --verbose', 'set -x', '--location']) excludes(step, forbidden, 'documentation CDN purge step');
+  const runAt = step.indexOf('        run: |\n');
+  if (runAt < 0) fail('documentation CDN purge step must have a shell body');
+  const script = step.slice(runAt + '        run: |\n'.length).split('\n').map((line) => line.replace(/^          /, '')).join('\n');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-cdn-purge-check-'));
+  try {
+    const probe = path.join(directory, 'curl');
+    fs.writeFileSync(probe, `#!/usr/bin/env node\n'use strict';
+const fs = require('node:fs');
+const args = process.argv.slice(2);
+const value = (flag) => args[args.indexOf(flag) + 1];
+if (value('--request') !== 'POST' || args.at(-1) !== 'https://api.fastly.com/service/TestService123/purge_all') process.exit(90);
+if (!args.includes('Fastly-Key: test-purge-token') || !args.includes('Accept: application/json')) process.exit(91);
+if (!args.includes('--fail') || value('--connect-timeout') !== '10' || value('--max-time') !== '30' || value('--retry') !== '2') process.exit(92);
+fs.writeFileSync('curl-called', 'yes');
+if (process.env.PURGE_PROBE_FAILURE === 'http') process.exit(22);
+fs.writeFileSync(value('--output'), JSON.stringify({ status: process.env.PURGE_PROBE_FAILURE === 'api' ? 'error' : 'ok' }));
+`, { mode: 0o755 });
+    for (const scenario of ['success', 'http', 'api', 'missing-token', 'invalid-service']) {
+      const marker = path.join(directory, 'curl-called');
+      fs.rmSync(marker, { force: true });
+      const result = spawnSync('bash', ['-c', script], {
+        cwd: directory,
+        encoding: 'utf8',
+        timeout: 10000,
+        env: {
+          ...process.env,
+          PATH: `${directory}${path.delimiter}${process.env.PATH}`,
+          FASTLY_DOCUMENTATION_SERVICE_ID: scenario === 'invalid-service' ? '../other-service' : 'TestService123',
+          FASTLY_DOCUMENTATION_PURGE_TOKEN: scenario === 'missing-token' ? '' : 'test-purge-token',
+          PURGE_PROBE_FAILURE: scenario
+        }
+      });
+      if (result.error || (scenario === 'success' ? result.status !== 0 : result.status === 0)) fail(`documentation CDN purge ${scenario} probe failed`);
+      if (['missing-token', 'invalid-service'].includes(scenario) && fs.existsSync(marker)) fail(`documentation CDN purge ${scenario} issued a request`);
+      if (`${result.stdout}${result.stderr}`.includes('test-purge-token')) fail('documentation CDN purge printed its credential');
+    }
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
 }
 
 function validateWorkflows() {
@@ -298,8 +354,13 @@ function validateWorkflows() {
   const immutableAt = deploy.indexOf('--phase immutable');
   const npmAt = deploy.indexOf('verify-npm-release.cjs');
   const promotionAt = deploy.indexOf('--phase promote');
+  const purgeAt = deploy.indexOf('name: Purge the documentation CDN before public verification');
   const publicAt = deploy.indexOf('documentation-deployment.cjs verify-public');
-  if (!(immutableAt >= 0 && npmAt > immutableAt && promotionAt > npmAt && publicAt > promotionAt)) fail('documentation deployment order must be immutable, npm verification, promotion, then public verification');
+  if (!(immutableAt >= 0 && npmAt > immutableAt && promotionAt > npmAt && purgeAt > promotionAt && publicAt > purgeAt)) fail('documentation deployment order must be immutable, npm verification, promotion, CDN purge, then public verification');
+  const storageVerificationAt = deploy.lastIndexOf('documentation-promotion-verification.json', purgeAt);
+  if (storageVerificationAt < promotionAt) fail('documentation CDN purge must follow mutable storage verification');
+  validateCdnPurgeWorkflow(deploy);
+  includes(deploy, 'documentation-cdn-purge.json', 'documentation deployment evidence');
   includes(deploy, 'package-manager-cache: false', 'documentation deployment workflow');
   includes(deploy, 'publication.pnpmVersion', 'documentation deployment workflow');
   includes(deploy, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation deployment workflow');
@@ -317,6 +378,7 @@ function validateWorkflows() {
   const deployJobHeader = deploy.slice(deployJobStart, deployStepsStart);
   excludes(deployJobHeader, 'secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID', 'documentation deployment job-level environment');
   excludes(deployJobHeader, 'secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY', 'documentation deployment job-level environment');
+  excludes(deployJobHeader, 'secrets.FASTLY_DOCUMENTATION_PURGE_TOKEN', 'documentation deployment job-level environment');
   includes(deployJobHeader, 'AWS_REQUEST_CHECKSUM_CALCULATION: when_required', 'documentation deployment job-level environment');
   includes(deployJobHeader, 'AWS_RESPONSE_CHECKSUM_VALIDATION: when_required', 'documentation deployment job-level environment');
   const protectedConfigurationStep = deploy.indexOf('- name: Verify protected deployment configuration', deployStepsStart);
@@ -324,6 +386,7 @@ function validateWorkflows() {
   const preCredentialSteps = deploy.slice(deployStepsStart, protectedConfigurationStep);
   excludes(preCredentialSteps, 'secrets.FASTLY_OBJECT_STORAGE_ACCESS_KEY_ID', 'documentation deployment bootstrap steps');
   excludes(preCredentialSteps, 'secrets.FASTLY_OBJECT_STORAGE_SECRET_ACCESS_KEY', 'documentation deployment bootstrap steps');
+  excludes(preCredentialSteps, 'secrets.FASTLY_DOCUMENTATION_PURGE_TOKEN', 'documentation deployment bootstrap steps');
   for (const forbidden of ['s3 sync', '--delete', 'delete-object', 'pages: write', 'deploy-pages']) excludes(deploy, forbidden, 'documentation deployment workflow');
 
   const validation = read(required[3]);
