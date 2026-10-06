@@ -64,6 +64,7 @@ const externalTasks = new Set([
   // PMCP-01 qualifies the private packed surface before PMCP-06 release membership.
   'mcp-package',
   'mcp-codex',
+  'mcp-claude',
   // JWT-01 installs candidate packages from a temporary registry for focused qualification.
   'jwt-installed-workflow',
   'str02-installed',
