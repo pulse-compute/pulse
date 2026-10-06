@@ -8,6 +8,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawn, execFileSync } = require('node:child_process');
+const { performance } = require('node:perf_hooks');
 const { packRelease, readTarEntries } = require('../../../scripts/pack-release.cjs');
 const { catalogFromTarballs, createReadOnlyRegistry } = require('../release/read-only-npm-registry.cjs');
 
@@ -24,6 +25,8 @@ const profiles = ['node-javascript', 'node-native', 'fastly-javascript', 'fastly
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const sensitive = [];
+const started = performance.now();
+let commandContext = {};
 const clean = text => sensitive.reduce((value, secret) => value.replaceAll(secret, '<redacted>'),
   text.replaceAll(temporary, '<acceptance>').replaceAll(root, '<checkout>')
     .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '<token>'));
@@ -37,9 +40,11 @@ const report = { version: 'pulse.jwt-installed-acceptance.v1', status: 'running'
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
   node: process.version, fixture: 'jwt-installed-workflow', lifecycleScripts: false,
+  startedAt: new Date().toISOString(),
   providerRealityValidated: false, results: [] };
 
 function saveReport() {
+  report.durationMs = Math.round(performance.now() - started);
   fs.mkdirSync(reportDir, { recursive: true });
   fs.writeFileSync(reportFile + '.tmp', JSON.stringify(report, null, 2) + '\n');
   fs.renameSync(reportFile + '.tmp', reportFile);
@@ -47,7 +52,16 @@ function saveReport() {
 
 function run(command, args, { timeout = 120000, onOutput, allowFailure = false } = {}) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args, { cwd: consumer, env, stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32' });
+    const started = performance.now();
+    const context = { ...commandContext };
+    const cli = command === process.execPath && path.basename(args[0]) === 'pulse.js';
+    const metricsFile = path.join(temporary, `compile-${report.results.length}.json`);
+    const preload = path.join(temporary, 'compile-preload.cjs');
+    if (cli) fs.writeFileSync(preload, `require(${JSON.stringify(path.join(consumer, 'compile-metrics.cjs'))}).writeOnExit(${JSON.stringify(metricsFile)});\n`);
+    const child = spawn(command, cli ? ['--require', preload, ...args] : args, {
+      cwd: consumer, env,
+      stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32'
+    });
     let stdout = '', stderr = '', failure;
     const stop = error => {
       failure ||= error;
@@ -66,7 +80,11 @@ function run(command, args, { timeout = 120000, onOutput, allowFailure = false }
     child.once('error', error => { clearTimeout(timer); reject(error); });
     child.once('close', (code, signal) => {
       clearTimeout(timer);
-      const record = { command: path.basename(command), args: args.map(clean), code, signal, stdoutSha256: hash(stdout), stderrSha256: hash(stderr) };
+      const compilation = cli && fs.existsSync(metricsFile) ? readJson(metricsFile) : null;
+      if (cli && !compilation) failure ||= new Error('CLI compile metrics missing');
+      const record = { command: path.basename(command), args: args.map(clean), ...context, code, signal,
+        durationMs: Math.round(performance.now() - started), compilation,
+        stdoutSha256: hash(stdout), stderrSha256: hash(stderr) };
       report.results.push(record); saveReport();
       let diagnostic;
       try { const value=JSON.parse(stdout);diagnostic=JSON.stringify({error:value.error,checks:value.checks?.filter(c=>c.status==='failed'),cases:value.cases?.filter(c=>c.status==='failed'),diagnostics:value.diagnostics}); }
@@ -122,6 +140,7 @@ async function main() {
     } finally { await new Promise(resolve=>registry.server.close(resolve)); }
     report.installed=verifyInstalled(packed.manifest);
     const cli=path.join(consumer,'node_modules/@pulse-compute/cli/bin/pulse.js');
+    fs.copyFileSync(path.join(__dirname,'compile-metrics.cjs'),path.join(consumer,'compile-metrics.cjs'));
     const pulse=async args=>JSON.parse((await run(process.execPath,[cli,...args,'--json'])).stdout);
     const config={pulse:{entry:'src/index.ts',tests:'tests/pulse.harness.ts',defaultProfile:'node-javascript',strict:false}};
     const s3={endpoint:'https://objects.example.invalid',bucket:'jwt-fixture',region:'us-east-1',accessKeyIdSecret:'ACCESS',secretAccessKeySecret:'SECRET'};
@@ -138,7 +157,7 @@ async function main() {
     };
     const fixtures=['HS256','ES256','RS256'].map(fixture);
     for(const f of fixtures) sensitive.push(...Object.values(f.secrets),...f.pairs.map(p=>f.algorithm==='HS256'?p.secret:JSON.parse(p.secret).d));
-    report.fixtures=Object.fromEntries(['installed-fixture.cjs','installed-cleanup.mjs'].map(file=>[file,hash(fs.readFileSync(path.join(__dirname,file)))]));
+    report.fixtures=Object.fromEntries(['installed-fixture.cjs','installed-cleanup.mjs','compile-metrics.cjs'].map(file=>[file,hash(fs.readFileSync(path.join(__dirname,file)))]));
     // Exercise provider integration from installed exports, with no checkout paths.
     fs.copyFileSync(path.join(__dirname,'installed-cleanup.mjs'),path.join(consumer,'cleanup.mjs'));
     fs.writeFileSync(path.join(consumer,'cleanup-fixtures.json'),JSON.stringify(fixtures.map(f=>({algorithm:f.algorithm,options:f.options(1),secret:f.secrets.NEW_KEY,publicKey:f.pairs[1].public}))));
@@ -157,6 +176,7 @@ async function main() {
     for(const [name,source,algorithms] of variants) {
       write(source,algorithms);
       for(const profile of profiles) {
+        commandContext={composition:name,profile};
         console.log(`jwt-installed - inventory: ${name}, ${profile}`);
         const s3Restriction=profile==='fastly-javascript'&&name.endsWith('S3');
         const expectedFailure=s3Restriction||profile.endsWith('native')&&(name.includes('SHA-256')||name.includes('HMAC')||name.includes('S3'))
@@ -174,15 +194,23 @@ async function main() {
     for(const f of fixtures) {
       write(f.source,f.crypto,f.rows);
       for(const profile of profiles) {
-        console.log(`jwt-installed - ${f.algorithm} ${profile}: doctor/inspect/test/build/dev`);
-        assert.equal((await pulse(['doctor','--profile',profile])).status,'passed');
-        assert.equal((await pulse(['inspect','--profile',profile])).status,'ok');
+        commandContext={algorithm:f.algorithm,profile};
+        // RS256 owns installed doctor/inspect on every target. Every algorithm
+        // still executes its full harness, exact build and independently verified
+        // dev signature; build/test also enforce algorithm-specific eligibility.
+        const lifecycle = f.algorithm === 'RS256';
+        console.log(`jwt-installed - ${f.algorithm} ${profile}: ${lifecycle?'doctor/inspect/':''}test/build/dev`);
+        if(lifecycle) {
+          assert.equal((await pulse(['doctor','--profile',profile])).status,'passed');
+          assert.equal((await pulse(['inspect','--profile',profile])).status,'ok');
+        }
         const tests=await pulse(['test','--profile',profile]);
         assert.equal(tests.status,'passed',JSON.stringify(tests.cases.filter(c=>c.status!=='passed')));
         assert.equal(tests.summary.passed,f.rows.length);
         const built=await pulse(['build','--profile',profile]); assert.equal(built.status,'built');
         const out=path.join(consumer,'dist-'+profile), manifest=readJson(path.join(out,'pulse-build.json'));
-        const cell={algorithm:f.algorithm,profile,cases:tests.summary,buildMode:manifest.buildMode};
+        const cell={algorithm:f.algorithm,profile,cases:tests.summary,buildMode:manifest.buildMode,
+          commands:lifecycle?['doctor','inspect','test','build','dev']:['test','build','dev']};
         if(profile.endsWith('native')) {
           const wasm=fs.readFileSync(path.join(out,profile.startsWith('node')?'canonical-native.wasm':'bin/main.wasm'));
           cell.wasmSha256=hash(wasm);

@@ -32,13 +32,17 @@ direct-install guidance, and supported entry points for all 19 artifacts.
 ## S3 candidate acceptance
 
 The S3 package root supports bounded `head`, `getText` and `putText` on Node
-Native, Node JavaScript and Fastly Native. The clean-consumer gate repeats the
-same read and write failure corpus using installed package exports, packaged
+Native, Node JavaScript and Fastly Native. The clean-consumer gate owns the
+release read and write failure corpus using installed package exports, packaged
 lowering and provider builds. It type-checks the public declarations and
 compares every installed Pulse package file against its exact tarball both
-before and after execution. No workspace links or installed dependency edits
+before and after execution. Full workspace replays remain directly selectable
+for development. No workspace links or installed dependency edits
 are permitted. The report `s3-packed-acceptance.json` includes all tarball
 SHA-256 identities and target execution counts in the acceptance task directory.
+The retained `clean-machine-*/corpora.json` report also records every internal
+corpus result and duration. See [testing](./testing.md) for the complete shared
+corpus ownership map and the workspace-only multifile assertion owner.
 
 Fastly's host ABI fixture supplies the platform to compiled Wasm; no workspace
 product implementation is loaded by the packed consumer. Fastly JavaScript S3

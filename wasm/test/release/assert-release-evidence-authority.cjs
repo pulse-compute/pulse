@@ -194,6 +194,17 @@ assert.equal(aggregate.status, 'passed');
 assert.equal(aggregate.shards.length, 16);
 assert.equal(aggregate.shards.length, SHARD_DEFINITIONS.length);
 assert.equal(aggregate.shards.every((entry) => entry.status === 'passed'), true);
+for (const id of ['runtime', 'lowering', 'fastly-native-provider', 'package-effects']) {
+  assert.ok(aggregate.shards.find(shard => shard.id === id).tasks.some(task => task.name === 'clean-machine-acceptance'),
+    `${id} requires the installed corpus owner`);
+}
+for (const status of ['failed', 'missing']) {
+  const incomplete = structuredClone(taskReport);
+  incomplete.results = incomplete.results.flatMap(task => task.name !== 'clean-machine-acceptance'
+    ? [task] : status === 'missing' ? [] : [{ ...task, status }]);
+  assert.throws(() => aggregateValidation({ sourceRevision, releaseSeal, taskReport: incomplete, fourMode, candidates, replay }),
+    /clean-machine-acceptance|release task/i, `A ${status} installed owner cannot qualify the release`);
+}
 assert.deepEqual(
   aggregate.shards
     .find((entry) => entry.id === 'maintainer-publication-controls')

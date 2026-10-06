@@ -19,6 +19,7 @@ function nodeTask(file, options = {}) {
 function vitestTask(files, options = {}) {
   return Object.freeze({
     command: node,
+    testFiles: Object.freeze([...files]),
     // Release preflight reads profile metadata before dependencies are installed.
     get args() {
       const vitest = path.join(path.dirname(require.resolve('vitest')), 'vitest.mjs');
@@ -264,6 +265,10 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     evidence: 'conformance',
     description: 'Source-qualified effect and intrinsic identity, duplicate rejection and three-target multifile routing'
+  }),
+  'multifile-source-indexes': nodeTask('test/crypto/assert-multifile-source-identity.cjs', {
+    args: ['--indexes-only'],
+    description: 'Workspace-only source range, intrinsic and generated-call identity assertions'
   }),
   'text-capacity-conformance': nodeTask('test/crypto/assert-text-capacity.cjs', {
     timeoutMs: 180000,
@@ -518,7 +523,8 @@ const tasks = Object.freeze({
     description: 'AST-01 exact Assets/S3 tarball dependency, public helper and signature compatibility'
   }),
   'assets-javascript-runtime': vitestTask([
-    path.join(wasmRoot, '..', 'packages/assets/test/sigv4.test.ts', 'packages/assets/test/embedded.test.ts'),
+    path.join(wasmRoot, '..', 'packages/assets/test/sigv4.test.ts'),
+    path.join(wasmRoot, '..', 'packages/assets/test/embedded.test.ts'),
     path.join(wasmRoot, '..', 'packages/assets/test/javascript-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/provider-runtime.test.ts'),
     path.join(wasmRoot, '..', 'packages/jwt/test/sign.test.ts'),
@@ -1199,8 +1205,21 @@ const tasks = Object.freeze({
   })
 });
 
+// Full development tasks stay directly selectable and in their functional
+// profiles. In release, these exact corpora run through installed exports inside
+// clean-machine acceptance. Workspace-only source-index assertions stay in unit.
+const installedCorpusOwners = Object.freeze({
+  's3-native-read': 's3',
+  's3-write-conformance': 's3',
+  'request-budget-transport': 'request-deadline',
+  'multifile-source-identity': 'multifile',
+  'http-input-outcomes': 'http-input',
+  'kv-conditional-adversarial': 'kv'
+});
+
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
     'suite-shape',
@@ -1398,7 +1417,7 @@ function expandProfile(name, stack = []) {
     if (entry.startsWith('@')) expanded.push(...expandProfile(entry.slice(1), [...stack, name]));
     else expanded.push(entry);
   }
-  return [...new Set(expanded)];
+  return [...new Set(expanded)].filter(task => name !== 'release' || !Object.hasOwn(installedCorpusOwners, task));
 }
 
-module.exports = { wasmRoot, tasks, profiles, expandProfile };
+module.exports = { wasmRoot, tasks, profiles, expandProfile, installedCorpusOwners };

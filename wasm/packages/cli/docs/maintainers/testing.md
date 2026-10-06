@@ -28,7 +28,7 @@ These commands cover the TypeScript workspace and package-level unit tests.
 | `conformance` | Node/Fastly Native/JavaScript Router, fetch, binding, schema, GRIP, logging, and target-integrity parity |
 | `providers` | Fastly Native and JavaScript packaging, runtime, capability, tooling, HTTP, and platform realization |
 | `cli` | commands, diagnostics, clean projects, live development, and executable documentation examples |
-| `release` | every functional profile plus package construction, deterministic artifacts, packed clean-consumer acceptance, evidence authority, and offline deployment candidates |
+| `release` | functional coverage with shared corpora owned by installed acceptance, package construction, deterministic artifacts, evidence authority, and offline deployment candidates |
 
 Run one profile or task:
 
@@ -43,6 +43,36 @@ node wasm/scripts/run-wasm-tests.cjs --list
 instructions, this guide, release acceptance commands and maintenance-policy
 commands are checked against it by `npm run maintainer:check`. Use explicit
 runner commands for named selections so stale references are detectable.
+
+The release selection runs six shared corpus tasks once through exact installed
+packages in `clean-machine-acceptance`. The full workspace tasks remain in their
+functional profiles and are directly selectable for development:
+
+| Workspace task | Installed corpus owner |
+|---|---|
+| `s3-native-read`, `s3-write-conformance` | S3 read/write acceptance |
+| `request-budget-transport` | Request-deadline acceptance |
+| `multifile-source-identity` | Multifile and shared-handler acceptance |
+| `http-input-outcomes` | HTTP-input acceptance |
+| `kv-conditional-adversarial` | Conditional-KV acceptance without external Compute |
+
+`multifile-source-indexes` separately retains the workspace-only source-range,
+intrinsic and generated-call assertions in `unit` and `release`. Clean-machine
+acceptance retains public typing, exact tarball bytes, isolated resolution and
+additional artifact checks. Its atomic `clean-machine-*/corpora.json` report
+records every corpus outcome, elapsed time, source identity and candidate
+package hashes, including failed and not-run cells. All corpora must complete;
+partial reports never qualify a release. The existing evidence shards require
+the installed owner. External provider qualification remains separate.
+
+JWT workflows keep all algorithms, RSA widths, semantic target cells and
+composition outcomes. Installed `doctor` and `inspect` use RS256 on all four
+targets; each algorithm still runs `test`, `build` and `dev`, with independent
+signature verification and secret-leak checks. The 4096-bit workspace workflow
+inspects the combined form once per target and still builds and tests all three
+forms. Focused reports include command elapsed time and actual AssemblyScript
+subprocess counts; those counts include attempted compilations, not frontend
+planning or guest linking.
 
 Finite generated output has a separate installed-consumer acceptance task:
 

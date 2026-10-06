@@ -8,6 +8,9 @@ const http = require('node:http');
 const os = require('node:os');
 const path = require('node:path');
 const { spawn, spawnSync } = require('node:child_process');
+const { performance } = require('node:perf_hooks');
+const { resolveSourceIdentity } = require('../../../scripts/source-identity.cjs');
+const { installedCorpusOwners } = require('../suite/registry.cjs');
 const { once } = require('node:events');
 const { RELEASE_VERSION, packRelease } = require('../../../scripts/pack-release.cjs');
 const { PUBLICATION } = require('../../../scripts/package-support.cjs');
@@ -21,6 +24,59 @@ const testRoot = process.env.PULSEWASM_TEST_TMP_ROOT || fs.mkdtempSync(path.join
 const releaseDir = path.join(testRoot, 'release');
 const homeDir = path.join(testRoot, 'home');
 const npmCache = path.join(testRoot, 'npm-cache');
+const corpusReportRoot = path.join(repoRoot, 'wasm/.test-results');
+fs.mkdirSync(corpusReportRoot, { recursive: true });
+const corpusReportFile = path.join(fs.mkdtempSync(path.join(corpusReportRoot, 'clean-machine-')), 'corpora.json');
+const corpusStarted = performance.now();
+const git = args => {
+  const result = spawnSync('git', args, { cwd: repoRoot, encoding: 'utf8', timeout: 5000 });
+  return result.status === 0 ? result.stdout : null;
+};
+const workingDiff = git(['diff', 'HEAD']);
+const corpusReport = {
+  version: 'pulse.clean-machine-corpora.v1', status: 'running',
+  sourceIdentity: resolveSourceIdentity(repoRoot), sourceTree: git(['rev-parse', 'HEAD^{tree}'])?.trim() ?? null,
+  workingTree: git(['status', '--porcelain'])?.trim() ?? null,
+  workingDiffSha256: workingDiff === null ? null : crypto.createHash('sha256').update(workingDiff).digest('hex'),
+  acceptanceScriptSha256: crypto.createHash('sha256').update(fs.readFileSync(__filename)).digest('hex'),
+  node: process.version, startedAt: new Date().toISOString(),
+  corpora: ['s3', 'request-deadline', 'multifile', 'http-input', 'read-loop', 'read-loop-adoption', 'kv'].map(id => ({
+    id, status: 'not-run', workspaceTasks: Object.keys(installedCorpusOwners).filter(task => installedCorpusOwners[task] === id)
+  }))
+};
+for (const id of Object.values(installedCorpusOwners)) {
+  assert.ok(corpusReport.corpora.some(row => row.id === id), `Missing installed owner ${id}`);
+}
+function saveCorpusReport() {
+  corpusReport.durationMs = Math.round(performance.now() - corpusStarted);
+  fs.writeFileSync(corpusReportFile + '.tmp', JSON.stringify(corpusReport, null, 2) + '\n');
+  fs.renameSync(corpusReportFile + '.tmp', corpusReportFile);
+}
+function replayCorpus(id, script, toolRoot, check) {
+  const cell = corpusReport.corpora.find(row => row.id === id);
+  assert.ok(cell && cell.status === 'not-run', `Unexpected or repeated installed corpus ${id}`);
+  const started = performance.now();
+  cell.status = 'running';
+  cell.oracleSha256 = sha256File(path.join(repoRoot, script));
+  saveCorpusReport();
+  try {
+    const result = parseJson(run(process.execPath, [path.join(repoRoot, script), toolRoot, releaseDir], {
+      cwd: toolRoot, timeoutMs: 600000
+    }));
+    cell.result = result;
+    check(result);
+    cell.status = 'passed';
+    return result;
+  } catch (error) {
+    cell.status = 'failed';
+    throw error;
+  } finally {
+    cell.durationMs = Math.round(performance.now() - started);
+    saveCorpusReport();
+    console.log(JSON.stringify({ event: 'installed-corpus', id, status: cell.status, durationMs: cell.durationMs }));
+  }
+}
+
 fs.mkdirSync(homeDir, { recursive: true });
 fs.mkdirSync(npmCache, { recursive: true });
 
@@ -728,7 +784,10 @@ async function verifyGripProject(tarballs, packageNames) {
 
 async function main() {
   console.log('acceptance - pack release candidate');
+  saveCorpusReport();
   const packed = packRelease({ repoRoot, outDir: releaseDir, build: false });
+  corpusReport.packages = packed.manifest.packages.map(({ name, version, sha256 }) => ({ name, version, sha256 }));
+  saveCorpusReport();
   const pulseTarballs = packageTarballs(packed.manifest);
   const installTarballs = pulseTarballs;
   const packageNames = packed.manifest.packages.map((entry) => entry.name);
@@ -771,75 +830,68 @@ async function main() {
     assert.equal(run(toolCli, ['--version'], { cwd: toolRoot }).stdout.trim(), RELEASE_VERSION);
 
     console.log('acceptance - replay S3 read/write failure corpus from exact installed tarballs');
-    const s3 = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/s3/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(s3.status, 'passed');
-    assert.equal(s3.installedBytesUnchanged, true);
-    assert.equal(s3.providerReality, false);
+    const s3 = replayCorpus('s3', 'wasm/test/s3/assert-packed-consumer.cjs', toolRoot, s3 => {
+      assert.equal(s3.status, 'passed');
+      assert.equal(s3.installedBytesUnchanged, true);
+      assert.equal(s3.providerReality, false);
+    });
     fs.writeFileSync(path.join(testRoot, 's3-packed-acceptance.json'), `${JSON.stringify(s3, null, 2)}\n`);
     // The suite deletes temporary installs; keep artifact identities in its retained task log too.
     console.log(JSON.stringify(s3));
 
     console.log('acceptance - replay request deadlines from exact installed tarballs');
-    const deadline = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-request-deadline-packages.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(deadline.status, 'passed');
-    assert.equal(deadline.installedBytesUnchanged, true);
-    assert.equal(deadline.workspaceProductModules, 0);
+    const deadline = replayCorpus('request-deadline', 'wasm/test/release/assert-request-deadline-packages.cjs', toolRoot, deadline => {
+      assert.equal(deadline.status, 'passed');
+      assert.equal(deadline.installedBytesUnchanged, true);
+      assert.equal(deadline.workspaceProductModules, 0);
+    });
     fs.writeFileSync(path.join(testRoot, 'request-deadline-packed-acceptance.json'), `${JSON.stringify(deadline, null, 2)}\n`);
     console.log(JSON.stringify(deadline));
 
     console.log('acceptance - replay multifile source identity from exact installed tarballs');
-    const multifile = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-multifile-packages.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(multifile.status, 'passed');
-    assert.equal(multifile.installedBytesUnchanged, true);
-    assert.equal(multifile.workspaceProductModules, 0);
-    assert.equal(multifile.regeneratedArtifactsMatch, true);
+    const multifile = replayCorpus('multifile', 'wasm/test/release/assert-multifile-packages.cjs', toolRoot, multifile => {
+      assert.equal(multifile.status, 'passed');
+      assert.equal(multifile.installedBytesUnchanged, true);
+      assert.equal(multifile.workspaceProductModules, 0);
+      assert.equal(multifile.regeneratedArtifactsMatch, true);
+    });
     fs.writeFileSync(path.join(testRoot, 'multifile-packed-acceptance.json'), `${JSON.stringify(multifile, null, 2)}\n`);
     console.log(JSON.stringify(multifile));
 
     console.log('acceptance - replay HTTP input and outcomes from exact installed tarballs');
-    const httpInput = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-http-input-packages.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(httpInput.status, 'passed');
-    assert.equal(httpInput.installedBytesUnchanged, true);
-    assert.equal(httpInput.workspaceProductModules, 0);
-    assert.equal(httpInput.providerReality, false);
+    const httpInput = replayCorpus('http-input', 'wasm/test/release/assert-http-input-packages.cjs', toolRoot, httpInput => {
+      assert.equal(httpInput.status, 'passed');
+      assert.equal(httpInput.installedBytesUnchanged, true);
+      assert.equal(httpInput.workspaceProductModules, 0);
+      assert.equal(httpInput.providerReality, false);
+    });
     fs.writeFileSync(path.join(testRoot, 'http-input-packed-acceptance.json'), `${JSON.stringify(httpInput, null, 2)}\n`);
     console.log(JSON.stringify(httpInput));
 
     console.log('acceptance - replay bounded read loops from exact installed tarballs');
-    const readLoops = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/release/assert-read-loop-packages.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(readLoops.status, 'passed');
-    assert.equal(readLoops.installedBytesUnchanged, true);
-    assert.equal(readLoops.workspaceProductModules, 0);
-    assert.equal(readLoops.checks.length, 53);
+    const readLoops = replayCorpus('read-loop', 'wasm/test/release/assert-read-loop-packages.cjs', toolRoot, readLoops => {
+      assert.equal(readLoops.status, 'passed');
+      assert.equal(readLoops.installedBytesUnchanged, true);
+      assert.equal(readLoops.workspaceProductModules, 0);
+      assert.equal(readLoops.checks.length, 53);
+    });
     fs.writeFileSync(path.join(testRoot, 'read-loop-packed-acceptance.json'), `${JSON.stringify(readLoops, null, 2)}\n`);
     console.log(JSON.stringify(readLoops));
 
-    const readLoopAdoption = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/runtime/reproduce-read-loop-adoption.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(readLoopAdoption.status, 'passed');
-    assert.equal(readLoopAdoption.installedBytesUnchanged, true);
-    assert.equal(readLoopAdoption.rows.length, 4);
-    assert.ok(readLoopAdoption.rows.every(row => row.status === 'passed'));
+    const readLoopAdoption = replayCorpus('read-loop-adoption', 'wasm/test/runtime/reproduce-read-loop-adoption.cjs', toolRoot, readLoopAdoption => {
+      assert.equal(readLoopAdoption.status, 'passed');
+      assert.equal(readLoopAdoption.installedBytesUnchanged, true);
+      assert.equal(readLoopAdoption.rows.length, 4);
+      assert.ok(readLoopAdoption.rows.every(row => row.status === 'passed'));
+    });
     fs.writeFileSync(path.join(testRoot, 'read-loop-adoption.json'), `${JSON.stringify(readLoopAdoption, null, 2)}\n`);
 
     console.log('acceptance - replay conditional KV from exact installed tarballs');
-    const kv = parseJson(run(process.execPath, [path.join(repoRoot, 'wasm/test/kv/assert-packed-consumer.cjs'), toolRoot, releaseDir], {
-      cwd: toolRoot, timeoutMs: 600000,
-    }));
-    assert.equal(kv.status, 'passed');
-    assert.equal(kv.installedBytesUnchanged, true);
-    assert.equal(kv.providerReality, false);
+    const kv = replayCorpus('kv', 'wasm/test/kv/assert-packed-consumer.cjs', toolRoot, kv => {
+      assert.equal(kv.status, 'passed');
+      assert.equal(kv.installedBytesUnchanged, true);
+      assert.equal(kv.providerReality, false);
+    });
     fs.writeFileSync(path.join(testRoot, 'kv-packed-acceptance.json'), `${JSON.stringify(kv, null, 2)}\n`);
     console.log(JSON.stringify(kv));
 
@@ -871,4 +923,15 @@ function formatError(error, indent = '') {
   return nested ? `${primary}\n${nested}` : primary;
 }
 
-main().catch((error) => { console.error(formatError(error)); process.exit(1); });
+main().then(() => {
+  assert.ok(corpusReport.corpora.every(row => row.status === 'passed'), 'Every installed corpus must complete');
+  corpusReport.status = 'passed';
+  saveCorpusReport();
+  console.log(`corpus report - ${corpusReportFile}`);
+}).catch((error) => {
+  corpusReport.status = 'failed';
+  saveCorpusReport();
+  console.error(formatError(error));
+  console.log(`corpus report - ${corpusReportFile}`);
+  process.exitCode = 1;
+});

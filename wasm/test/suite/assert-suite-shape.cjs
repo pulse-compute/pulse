@@ -4,7 +4,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { tasks, profiles, expandProfile, wasmRoot } = require('./registry.cjs');
+const { tasks, profiles, expandProfile, wasmRoot, installedCorpusOwners } = require('./registry.cjs');
 const { canonicalizeEphemeralPaths } = require('../../packages/build-support/src/files.js');
 
 const shallowStaging = canonicalizeEphemeralPaths('$../../tmp/pulsewasm-compiled-handlers-a1B2c3/generated/as/app.as');
@@ -30,6 +30,11 @@ for (const [name, task] of Object.entries(tasks)) {
   assert.ok(Number.isInteger(task.timeoutMs) && task.timeoutMs >= 1000, `${name} must define a finite timeout`);
   assert.ok(evidenceKinds.has(task.evidence), `${name} must use a known evidence kind`);
   assert.equal(fs.existsSync(task.args[0]), true, `${name} must reference an existing executable`);
+  // Vitest treats missing filters as substrings and can pass with only a subset.
+  // Validate the literal files independently of its dependency-backed args getter.
+  for (const file of task.testFiles || []) {
+    assert.equal(fs.existsSync(file) && fs.statSync(file).isFile(), true, `${name}: missing Vitest file ${file}`);
+  }
   assert.equal(path.relative(wasmRoot, task.args[0]).startsWith(`audit${path.sep}`), false, `${name} must not execute archived evidence`);
   const signature = `${task.command}\0${task.args.join('\0')}`;
   assert.equal(signatures.has(signature), false, `${name} duplicates ${signatures.get(signature) || 'another task'}`);
@@ -161,7 +166,7 @@ for (const required of [
 }
 for (const profile of ['unit', 'native', 'javascript', 'conformance', 'providers', 'cli']) {
   for (const taskName of expandProfile(profile)) {
-    assert.ok(release.includes(taskName), `release must include ${profile} task ${taskName}`);
+    assert.ok(release.includes(taskName) || Object.hasOwn(installedCorpusOwners, taskName), `release must own ${profile} task ${taskName}`);
   }
 }
 assert.equal(release.includes('compiler-bounded-merging'), false);
@@ -179,6 +184,16 @@ assert.equal(release.includes('guest-link-feasibility-decision'), false);
 assert.equal(release.includes('guest-link-contract-design'), false);
 assert.equal(release.includes('guest-link-b-seal'), false);
 assert.ok(release.includes('clean-machine-acceptance'));
+assert.ok(release.includes('multifile-source-indexes'));
+assert.deepEqual(Object.keys(installedCorpusOwners).sort(), [
+  'http-input-outcomes', 'kv-conditional-adversarial', 'multifile-source-identity',
+  'request-budget-transport', 's3-native-read', 's3-write-conformance'
+]);
+for (const name of Object.keys(installedCorpusOwners)) {
+  assert.ok(tasks[name], `${name} retains a directly runnable development task`);
+  assert.ok(['native', 'conformance'].some(profile => expandProfile(profile).includes(name)), `${name} retains full development profile coverage`);
+  assert.equal(release.includes(name), false, `${name} must execute once through installed acceptance`);
+}
 // The fast subset must not add a second copy of its proof to full/release lanes.
 for (const profile of Object.keys(profiles)) {
   assert.equal(expandProfile(profile).includes('schema-codecs-smoke'), false);
@@ -186,7 +201,7 @@ for (const profile of Object.keys(profiles)) {
 assert.ok(expandProfile('conformance').includes('schema-codecs'));
 const releaseSet = new Set(release);
 for (const taskName of Object.keys(tasks)) {
-  if (externalTasks.has(taskName) || taskName === 'schema-codecs-smoke') continue;
+  if (externalTasks.has(taskName) || Object.hasOwn(installedCorpusOwners, taskName) || taskName === 'schema-codecs-smoke') continue;
   assert.ok(releaseSet.has(taskName), `release must include current task ${taskName}`);
 }
 
