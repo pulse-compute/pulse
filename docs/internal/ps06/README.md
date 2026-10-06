@@ -74,6 +74,29 @@ current full critical path is unmeasured. Provisioning the qualified toolchain,
 registry access and Fastly is the immediate checkpoint blocker. Measure before
 deciding whether that cluster or another owner warrants further work.
 
+## Qualified CI runner
+
+The opt-in `Seal checkpoint` workflow provisions Node 24.18.0, manifest-owned
+pnpm, npm 11.15.0 and checksum-pinned Fastly CLI 16.1.0 on Ubuntu 24.04. A fresh
+frozen-lockfile install with lifecycle scripts disabled is a supported
+restoration route; the offline bundle is only needed when using that route.
+An early local Fastly execution check catches environment failures before the
+expensive seal. The workflow has read-only permissions and no publication jobs.
+
+`--verify-resume` measures one complete fresh seal, restores its checkpoints in
+a second attempt, deliberately interrupts that retry at the always-fresh Fastly
+step, and resumes the immediate interrupted attempt. All three use the same
+candidate and environment. The final report must pass the existing complete
+evidence verifier. This avoids a second fresh compilation campaign just to
+exercise recovery. GNU time separately records combined worker CPU and maximum
+individual process RSS across the command; that RSS is not a simultaneous sum
+of process-tree memory.
+
+Automatic execution is limited to the explicit `evidence/ps06-qualified-seal`
+bootstrap branch when the workflow or measurement helper changes. Ordinary PRs
+keep their existing fast lane. Later runs are manually dispatched. Every attempt
+and measurement is archived, including failures and interruptions.
+
 ## Manual commands in a qualified environment
 
 Restore the official compatible dependency bundle and Fastly CLI first. Use a

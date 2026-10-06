@@ -13,6 +13,8 @@ try {
   assert.throws(() => parseArgs(['--interrupt-at', 'workspace-unit']), /installed feature gate/);
   assert.throws(() => parseArgs(['--skip-install', '--dependency-bundle', 'bundle']), /cannot be combined/);
   assert.throws(() => parseArgs(['--resume', 'attempt']), /Unknown/);
+  assert.equal(parseArgs(['--verify-resume']).verifyResume, true);
+  assert.throws(() => parseArgs(['--verify-resume', '--interrupt-at', 's3-body-installed']), /cannot be combined/);
   assert.deepEqual(parseArgs(['--out', 'result']).sealArgs, ['--require-fastly']);
   const events = path.join(temporary, 'events.jsonl'), preload = path.join(temporary, 'observer.cjs');
   fs.writeFileSync(events, '');

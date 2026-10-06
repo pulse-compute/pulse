@@ -26,12 +26,14 @@ function parseArgs(argv) {
       assert(value && !value.startsWith('-'), `${token} requires a value`);
       options.sealArgs.push(token, value);
     } else if (token === '--skip-install') options.sealArgs.push(token);
+    else if (token === '--verify-resume') options.verifyResume = true;
     else if (token === '--help' || token === '-h') options.help = true;
     else throw new Error(`Unknown measurement option: ${token}`);
   }
   require('./validate-release.cjs').parseArgs(options.sealArgs);
   assert(!options.interruptAt || require('./release-feature-acceptance.cjs').REQUIRED_TASKS.includes(options.interruptAt),
     '--interrupt-at must name a required installed feature gate');
+  assert(!(options.verifyResume && options.interruptAt), '--verify-resume and --interrupt-at cannot be combined');
   return options;
 }
 
@@ -87,7 +89,7 @@ function summarize(report, wallMs, events) {
 async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   if (options.help) {
-    console.log('Usage: node scripts/release-seal-measure.cjs --out .pulse-seal/measurements/<new-name> [--skip-install | --dependency-bundle <file>] [--timeout-minutes N] [--interrupt-at <installed-task>]');
+    console.log('Usage: node scripts/release-seal-measure.cjs --out .pulse-seal/measurements/<new-name> [--skip-install | --dependency-bundle <file>] [--timeout-minutes N] [--interrupt-at <installed-task> | --verify-resume]');
     return;
   }
   assert(options.out, '--out is required');
@@ -119,22 +121,28 @@ async function main(argv = process.argv.slice(2)) {
   const attempts = [];
   let failure = null;
   try {
-    for (const phase of options.interruptAt ? ['interrupted-fresh', 'resume'] : ['fresh']) {
+    const phases = options.verifyResume ? ['fresh', 'interrupted-resume', 'resume']
+      : options.interruptAt ? ['interrupted-fresh', 'resume'] : ['fresh'];
+    for (const phase of phases) {
       const prior = attempts.at(-1);
+      if (phase === 'interrupted-resume' && prior.report.status !== 'passed') break;
       if (phase === 'resume' && (!prior.interruptionSent || prior.report.status !== 'interrupted')) break;
-      const sealArgs = [...options.sealArgs, ...(phase === 'resume' ? ['--resume', prior.report.runDirectory] : [])];
+      const sealArgs = [...options.sealArgs, ...(phase.endsWith('resume') ? ['--resume', prior.report.runDirectory] : [])];
       const previousRunId = fs.existsSync(previousAlias) ? read(previousAlias).runId : null;
       const eventOffset = fs.statSync(eventsFile).size, attemptStarted = performance.now();
       let child, interrupted = false, timer, result, report = null, terminalFile = null, outputTail = '';
       try {
-        if (phase === 'interrupted-fresh') timer = setInterval(() => {
+        if (phase.startsWith('interrupted-')) timer = setInterval(() => {
           try {
             const owner = read(path.join(ROOT, '.pulse-seal/active.json'));
             if (!child || owner.pid !== child.pid) return;
             const current = read(path.join(owner.directory, 'report.json'));
             if (current.runId === previousRunId || current.status !== 'running' || !current.recovery?.artifacts?.featureTasks) return;
             const runner = read(current.recovery.artifacts.featureTasks);
-            if (runner.currentTask === options.interruptAt && runner.currentTaskPhase === 'execution' && child && !interrupted) {
+            const ready = phase === 'interrupted-resume'
+              ? current.currentStep === 'fastly-reality' && runner.status === 'passed'
+              : runner.currentTask === options.interruptAt && runner.currentTaskPhase === 'execution';
+            if (ready && child && !interrupted) {
               interrupted = true;
               child.kill('SIGTERM');
             }
@@ -170,9 +178,14 @@ async function main(argv = process.argv.slice(2)) {
       const events = fs.readFileSync(eventsFile).subarray(eventOffset).toString('utf8').trim().split('\n').filter(Boolean).map(line => JSON.parse(line));
       const attempt = { phase, report, interruptionSent: interrupted, metrics: summarize(report, Math.round(performance.now() - attemptStarted), events) };
       attempts.push(attempt);
+      if (phase === 'interrupted-resume' && report.status === 'interrupted') {
+        assert.deepEqual(report.recovery.context, prior.report.recovery.context, 'Interrupted retry context changed');
+        assert.equal(attempt.metrics.tasks.executed, 0, 'Interrupted retry unexpectedly executed recoverable work');
+        assert.equal(report.recovery.sharedPack.execution, 'reused', 'Interrupted retry reconstructed the shared pack');
+      }
       if (phase === 'resume' && report.status === 'passed') assert(attempt.metrics.tasks.reused > 0, 'Resume reused no completed work');
       atomicJson(path.join(out, `${phase}.json`), attempt);
-      if (phase === 'interrupted-fresh' && report.status === 'passed') throw new Error('Requested interruption was missed; no recovery demonstration');
+      if (phase.startsWith('interrupted-') && report.status === 'passed') throw new Error('Requested interruption was missed; no recovery demonstration');
     }
   } catch (error) { failure = error.message; }
   finally {
@@ -183,8 +196,8 @@ async function main(argv = process.argv.slice(2)) {
   const measurement = { schemaVersion: 'pulse.seal-measurement.v1', candidate, startedAt, completedAt: new Date().toISOString(),
     status: failure ? 'invalid' : final?.report.status || 'failed', qualificationPassed: !failure && final?.report.status === 'passed',
     error: failure || final?.report.error || null, attemptDirectory: final?.report.runDirectory || null,
-    commandOptions: options.sealArgs, interruptionRequested: options.interruptAt,
-    recoveryDemonstrated: !failure && attempts.length === 2 && final?.report.status === 'passed',
+    commandOptions: options.sealArgs, interruptionRequested: options.verifyResume ? 'fastly-reality after checkpoint restoration' : options.interruptAt,
+    recoveryDemonstrated: !failure && final?.phase === 'resume' && final?.report.status === 'passed',
     environment: { node: process.version, platform: process.platform, arch: process.arch, osRelease: os.release(),
       dependencyProvenance: options.sealArgs.includes('--skip-install') ? 'Existing graph; provenance must be supplied by the operator' : 'Controller restoration',
       observerPreload: preload },
