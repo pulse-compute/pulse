@@ -590,11 +590,12 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   const freshSteps = ['maintainer', 'publication', 'build', 'production-dependency-audit', 'workspace-unit', 'documentation', 'release', 'installed-features'];
   if (recovery.context.options.workers > 1) {
     freshSteps.push('workspaces');
-    const { workerCount, workspaceRoot, WORKER_MIB } = require('./release-parallel.cjs');
+    const { workerCount, compilerCount, workspaceRoot, WORKER_MIB } = require('./release-parallel.cjs');
     const count = workerCount(recovery.context.options.workers, recovery.context.options.memoryBudgetMiB);
     const { repoRoot: _checkout, ...workerCandidate } = recovery.context.candidate;
     const layout = { schemaVersion: 'pulse.seal-workers.v1', root: repoRoot, candidate: workerCandidate,
       workers: count, memoryBudgetMiB: recovery.context.options.memoryBudgetMiB, estimatedWorkerMiB: WORKER_MIB,
+      compilerWorkers: compilerCount(recovery.context.options.compilerWorkers, count),
       workspaces: Array.from({ length: count }, (_, index) => ({ id: `worker-${index + 1}`,
         directory: path.join(workspaceRoot(repoRoot, workerCandidate.sourceTree, count), `worker-${index + 1}`) })) };
     const { workspaces, ...settings } = recovery.context.scheduling;

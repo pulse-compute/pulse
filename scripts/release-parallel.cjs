@@ -15,6 +15,10 @@ function workerCount(requested = 1, memoryMiB = 4096) {
     '--memory-budget-mib must be an integer from 768 to 65536');
   return Math.min(requested, Math.floor(memoryMiB / WORKER_MIB));
 }
+function compilerCount(requested = 2, workers = 1) {
+  assert(Number.isSafeInteger(requested) && requested >= 1 && requested <= 8, '--compiler-workers must be an integer from 1 to 8');
+  return Math.min(requested, workers);
+}
 function workspaceRoot(root, tree, workers) {
   assert.match(tree, /^[a-f0-9]{40}$/);
   return path.join(root, '.pulse-seal/workspaces', `${tree}-${workers}`);
@@ -31,7 +35,7 @@ function directories(root) {
   }
   return found;
 }
-function prepareWorkspaces(root, candidate, requested, memoryMiB) {
+function prepareWorkspaces(root, candidate, requested, memoryMiB, compilerWorkers = 2) {
   assert.deepEqual(candidateIdentity(root), candidate, 'Worker setup requires the same clean candidate');
   const count = workerCount(requested, memoryMiB);
   const parent = workspaceRoot(root, candidate.sourceTree, count);
@@ -88,11 +92,11 @@ function prepareWorkspaces(root, candidate, requested, memoryMiB) {
     workspaces.push({ id, directory });
   }
   const layout = { schemaVersion: 'pulse.seal-workers.v1', root, candidate, workers: count, memoryBudgetMiB: memoryMiB,
-    estimatedWorkerMiB: WORKER_MIB, workspaces };
+    estimatedWorkerMiB: WORKER_MIB, compilerWorkers: compilerCount(compilerWorkers, count), workspaces };
   atomicJson(path.join(parent, 'layout.json'), layout);
   return layout;
 }
-function readLayout(root, candidate, requested, memoryMiB) {
+function readLayout(root, candidate, requested, memoryMiB, compilerWorkers = 2) {
   const { repoRoot: _checkout, ...source } = candidate;
   candidate = source;
   const count = workerCount(requested, memoryMiB);
@@ -103,6 +107,7 @@ function readLayout(root, candidate, requested, memoryMiB) {
   assert.deepEqual(layout.candidate, candidate);
   assert.equal(layout.workers, count);
   assert.equal(layout.memoryBudgetMiB, memoryMiB);
+  assert.equal(layout.compilerWorkers, compilerCount(compilerWorkers, count));
   assert.deepEqual(layout.workspaces, Array.from({ length: count }, (_, index) => ({ id: `worker-${index + 1}`,
     directory: path.join(workspaceRoot(root, candidate.sourceTree, count), `worker-${index + 1}`) })));
   for (const item of layout.workspaces) {
@@ -126,7 +131,7 @@ function cleanupWorkspaces(root, tree, count) {
 function assertManagedWorker(directory, owner, candidate, layoutFile) {
   assert(typeof layoutFile === 'string' && path.isAbsolute(layoutFile), 'Shared pack belongs to another checkout');
   const supplied = JSON.parse(fs.readFileSync(layoutFile, 'utf8'));
-  const layout = readLayout(owner, candidate, supplied.workers, supplied.memoryBudgetMiB);
+  const layout = readLayout(owner, candidate, supplied.workers, supplied.memoryBudgetMiB, supplied.compilerWorkers);
   assert.equal(layoutFile, path.join(workspaceRoot(owner, candidate.sourceTree, layout.workers), 'layout.json'), 'Foreign worker layout');
   assert(layout.workspaces.some(workspace => workspace.directory === fs.realpathSync(directory)), 'Unowned shared-pack consumer');
 }
@@ -139,13 +144,14 @@ const COST_SECONDS = { 'jwt-rs256': 284, 'jwt-installed-workflow': 250, 'clean-m
 function scheduling(name, task) {
   const hints = task.scheduling || {};
   return { cost: hints.cost || COST_SECONDS[name] || 10, resources: hints.resources || [],
+    compiler: hints.compiler === undefined ? ['native', 'conformance', 'cli', 'external'].includes(task.evidence) : hints.compiler,
     exclusive: hints.exclusive === true || /benchmark|measure|timing/i.test(`${name} ${task.description}`),
     after: hints.after || [] };
 }
 
-module.exports = { workerCount, workspaceRoot, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker, scheduling, WORKER_MIB };
+module.exports = { workerCount, compilerCount, workspaceRoot, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker, scheduling, WORKER_MIB };
 if (require.main === module) {
-  const [root, requested, memory] = process.argv.slice(2);
-  const layout = prepareWorkspaces(root, candidateIdentity(root), Number(requested), Number(memory));
-  console.log(`Prepared ${layout.workers} isolated seal workers (${layout.memoryBudgetMiB} MiB admission budget)`);
+  const [root, requested, memory, compilers = '2'] = process.argv.slice(2);
+  const layout = prepareWorkspaces(root, candidateIdentity(root), Number(requested), Number(memory), Number(compilers));
+  console.log(`Prepared ${layout.workers} isolated seal workers, ${layout.compilerWorkers} compiler slots (${layout.memoryBudgetMiB} MiB admission budget)`);
 }

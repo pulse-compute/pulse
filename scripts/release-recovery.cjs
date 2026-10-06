@@ -110,7 +110,7 @@ function createContext(root, candidate, options, externalFastly, env = process.e
   assert(fs.existsSync(pnpm), 'Release pnpm executable must exist before checkpointing');
   const environment = Object.fromEntries(Object.entries(env).filter(([key]) => !['_', 'SHLVL', 'PWD', 'OLDPWD'].includes(key)).sort(([a], [b]) => a.localeCompare(b)));
   const layout = options.workers > 1
-    ? require('./release-parallel.cjs').readLayout(root, candidate, options.workers, options.memoryBudgetMiB) : null;
+    ? require('./release-parallel.cjs').readLayout(root, candidate, options.workers, options.memoryBudgetMiB, options.compilerWorkers) : null;
   return {
     schemaVersion: SCHEMA,
     candidate: { ...candidate, repoRoot: fs.realpathSync(root) },
@@ -121,7 +121,7 @@ function createContext(root, candidate, options, externalFastly, env = process.e
       fastlySha256: externalFastly.fastlyCli?.binary ? fileHash(externalFastly.fastlyCli.binary) : null },
     environmentSha256: fingerprint(environment),
     options: { requireFastly: options.requireFastly, install: options.install,
-      workers: options.workers || 1, memoryBudgetMiB: options.memoryBudgetMiB || 4096,
+      workers: options.workers || 1, memoryBudgetMiB: options.memoryBudgetMiB || 4096, compilerWorkers: options.compilerWorkers || 2,
       dependencyBundleSha256: options.dependencyBundle ? fileHash(options.dependencyBundle) : null },
     selections: { release: require('../wasm/test/suite/registry.cjs').expandProfile('release'),
       features: require('./release-feature-acceptance.cjs').REQUIRED_TASKS },

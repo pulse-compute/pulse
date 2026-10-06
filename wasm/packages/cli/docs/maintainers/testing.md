@@ -307,14 +307,18 @@ Serial execution remains the default. To overlap independent release and
 installed-feature tasks in one controller-owned seal:
 
 ```bash
-npm run release:seal -- --workers 4 --memory-budget-mib 6144 --require-fastly
+npm run release:seal -- --workers 4 --compiler-workers 2 --memory-budget-mib 6144 --require-fastly
 ```
 
 `--workers` accepts 1–8. The memory admission budget accepts 768–65536 MiB;
 the controller admits at most one worker per estimated 768 MiB. This limits
 concurrency, not operating-system memory use. Measure actual process-tree RSS
-before increasing the budget; compiler-heavy tasks are limited by that same
-worker pool. `--workers 1` is the serial fallback.
+before increasing the budget. `--compiler-workers` accepts 1–8, defaults to two
+and is capped by the admitted workers. Native, conformance, CLI and external
+tasks use those compiler slots by default; registry hints can refine that
+classification. Lighter tasks may occupy the remaining worker slots. This avoids
+starting four heavy compilation pipelines together on a four-CPU runner.
+`--workers 1` is the serial fallback. Task deadlines are unchanged.
 
 Each worker is a private Git worktree of the clean candidate, with copied
 dependencies and build outputs, worker-local workspace links and private task
@@ -329,7 +333,7 @@ ready tasks without changing coverage.
 Reports preserve canonical selection order, record every active child and bind
 each task to its worker. Failure or interruption cancels all active workers;
 successfully cleaned passed tasks retain their recovery proofs. Resuming requires
-the same worker/budget options and freshly recreated identical worker inputs.
+the same worker/compiler/budget options and freshly recreated identical worker inputs.
 Changing the options invalidates reuse. Worker source and executable inputs are
 rechecked before terminal cleanup, then disposable checkouts are removed while
 attempt-local logs, receipts and artifacts remain. Foreign checkouts, remote

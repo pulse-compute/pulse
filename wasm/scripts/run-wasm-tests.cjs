@@ -554,7 +554,7 @@ function checkpointDefinition(name, task, options = {}) {
 }
 
 async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryConfig = null,
-  persist = () => {}, signal, onChild, taskRunOptions = {}, workspaces = null }) {
+  persist = () => {}, signal, onChild, taskRunOptions = {}, workspaces = null, compilerWorkers = 2 }) {
   let store = null;
   if (recoveryConfig) {
     validateRecoveryConfig(recoveryConfig, selection);
@@ -656,7 +656,8 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
         if ((await execute(name, workspaces?.[0])).status !== 'passed') break;
       }
     } else {
-      const { scheduling } = require('../../scripts/release-parallel.cjs');
+      const { scheduling, compilerCount } = require('../../scripts/release-parallel.cjs');
+      const compilerLimit = compilerCount(compilerWorkers, workspaces.length);
       const queue = selection.selected.map((name, index) => ({ name, index, ...scheduling(name, taskMap[name]) }))
         .sort((a, b) => b.cost - a.cost || a.index - b.index);
       const selected = new Set(selection.selected);
@@ -667,6 +668,7 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
         if (!control.signal.aborted) {
           for (let index = 0; index < queue.length && free.length; index++) {
             const item = queue[index];
+            if (item.compiler && [...active.values()].filter(value => value.item.compiler).length >= compilerLimit) continue;
             if (item.after.some(name => finished.get(name)?.status !== 'passed') || item.resources.some(resource => held.has(resource))) continue;
             if ((item.exclusive && active.size) || [...active.values()].some(value => value.item.exclusive)) continue;
             queue.splice(index--, 1);
@@ -817,7 +819,7 @@ async function main() {
     if (recoveryConfig?.context.scheduling) {
       const { readLayout } = require('../../scripts/release-parallel.cjs');
       const root = path.resolve(wasmRoot, '..'), options = recoveryConfig.context.options;
-      const layout = readLayout(root, recoveryConfig.context.candidate, options.workers, options.memoryBudgetMiB);
+      const layout = readLayout(root, recoveryConfig.context.candidate, options.workers, options.memoryBudgetMiB, options.compilerWorkers);
       workspaces = layout.workspaces;
       for (const workspace of workspaces) {
         const input = require('../../scripts/release-recovery.cjs').inputIdentity(workspace.directory);
@@ -826,6 +828,7 @@ async function main() {
       }
     }
     await runSelectedTasks({ state, selection, recoveryConfig, persist, signal: controller.signal, workspaces,
+      compilerWorkers: recoveryConfig?.context.scheduling?.compilerWorkers || 2,
       onChild(child, name) {
         if (child) activeChildren.set(name, child); else activeChildren.delete(name);
         state.activeChildPids = [...activeChildren.values()].map(value => value.pid);

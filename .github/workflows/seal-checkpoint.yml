@@ -85,6 +85,7 @@ jobs:
             timeout --signal=TERM --kill-after=45s 60m \
             node scripts/release-seal-measure.cjs --skip-install --timeout-minutes 50 \
               --workers "$SEAL_WORKERS" --memory-budget-mib "$SEAL_MEMORY_MIB" \
+              --compiler-workers 2 \
               --out .pulse-seal/measurements/ps06-qualified --verify-resume
       - name: Preserve every terminal attempt and measurement
         if: always()

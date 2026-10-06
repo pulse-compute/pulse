@@ -9,7 +9,7 @@ The implementation builds on the qualified PS-06 head
 `1b539b24700563d7035a7847d3f1f1bc9957f7a6` (PR #198), against `latest`
 `d16255369b16efab5a88704bd009d5efaff854c7`.
 
-Serial is the default. `--workers 4 --memory-budget-mib 6144` enables up to four
+Serial is the default. `--workers 4 --compiler-workers 2 --memory-budget-mib 6144` enables up to four
 private local worktrees of one clean candidate. Dependency/build copies and
 workspace links isolate mutable outputs; the existing shared package receipt
 admits only registered children of its controller. Task definitions, coverage,
@@ -27,7 +27,7 @@ development evidence, never an additional registered seal task.
 ```bash
 node wasm/test/release/ps05-measure.cjs
 node scripts/release-seal-measure.cjs --skip-install --timeout-minutes 50 \
-  --workers 4 --memory-budget-mib 6144 \
+  --workers 4 --compiler-workers 2 --memory-budget-mib 6144 \
   --out .pulse-seal/measurements/ps05-qualified --verify-resume
 ```
 
@@ -80,3 +80,16 @@ Real package construction with two active worktrees then passed all 19 packages
 and the canonical nine-instruction-file check. The retry proceeds directly to
 full qualification; the already completed six-minute paired comparison is retained
 rather than added to every seal.
+
+The next attempt (`37424416574`, source `9119941e9dc01fc112f2b32f8e13c949090e03c2`)
+passed package construction, but four simultaneous heavy tasks made
+`schema-codecs` exceed its unchanged 180-second deadline. The other three tasks
+were cancelled and cleanup passed. Its retained failure is not passing coverage.
+A separate `--compiler-workers` limit now defaults to two and is bound into the
+worker layout/recovery context. Native, conformance, CLI and external tasks use
+compiler slots by default; hints can override the classification. The four-worker
+pool can still overlap lighter work. Fixture coverage verifies compiler admission
+and overlap separately from exclusive benchmarks and shared-resource locks.
+The earlier paired samples describe the original four-compiler schedule; they do
+not estimate the throughput of this revised policy. Full qualification measures
+the revised schedule with the original task deadlines.

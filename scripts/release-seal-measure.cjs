@@ -21,7 +21,7 @@ function parseArgs(argv) {
       const value = argv[++i];
       assert(value && !value.startsWith('-'), `${token} requires a value`);
       options[token === '--out' ? 'out' : 'interruptAt'] = value;
-    } else if (['--dependency-bundle', '--timeout-minutes', '--workers', '--memory-budget-mib'].includes(token)) {
+    } else if (['--dependency-bundle', '--timeout-minutes', '--workers', '--memory-budget-mib', '--compiler-workers'].includes(token)) {
       const value = argv[++i];
       assert(value && !value.startsWith('-'), `${token} requires a value`);
       options.sealArgs.push(token, value);

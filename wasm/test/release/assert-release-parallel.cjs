@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { runSelectedTasks, runTask } = require('../../scripts/run-wasm-tests.cjs');
-const { workerCount, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker } = require('../../../scripts/release-parallel.cjs');
+const { workerCount, compilerCount, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker } = require('../../../scripts/release-parallel.cjs');
 const { candidateIdentity } = require('../../../scripts/release-feature-acceptance.cjs');
 const { copySharedPack, recordPack, sharedPackEnv } = require('../../../scripts/release-shared-pack.cjs');
 
@@ -17,6 +17,8 @@ async function verifyParallel() {
     assert.equal(workerCount(4, 4096), 4);
     assert.throws(() => workerCount(9), /workers/);
     assert.throws(() => workerCount(2, 767), /memory-budget/);
+    assert.equal(compilerCount(4, 2), 2);
+    assert.throws(() => compilerCount(0, 2), /compiler-workers/);
     const candidateRoot = path.join(root, 'candidate');
     put(path.join(candidateRoot, '.gitignore'), 'node_modules/\ndist/\n.validation-tools/\n.pulse-seal/\n');
     put(path.join(candidateRoot, 'wasm/.keep'), '');
@@ -90,11 +92,12 @@ async function verifyParallel() {
         selectedTasks: names, taskOptions: {}, dependencies: { 'shared-pack': 'same-pack' } };
       await runSelectedTasks({ state, selection: { requested: names, selected: names }, taskMap, recoveryConfig: config,
         workspaces: parallel ? workspaces : [workspaces[0]], signal,
+        compilerWorkers: 1,
         taskRunOptions: { terminationGraceMs: 25, killGraceMs: 25 } });
       return { state, config };
     }
-    const tasks = { a: task('a', { resources: ['provider'] }), b: task('b', { resources: ['provider'] }),
-      c: task('c'), d: task('d', { after: ['a'] }), benchmark: task('benchmark', { exclusive: true, cost: 100 }) };
+    const tasks = { a: task('a', { compiler: true, resources: ['provider'] }), b: task('b', { compiler: true, resources: ['provider'] }),
+      c: task('c'), d: task('d', { compiler: true, after: ['a'] }), benchmark: task('benchmark', { exclusive: true, cost: 100 }) };
     const parallel = await attempt('parallel', tasks);
     assert.deepEqual(parallel.state.results.map(item => [item.name, item.status]), Object.keys(tasks).map(name => [name, 'passed']));
     const events = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
@@ -102,6 +105,8 @@ async function verifyParallel() {
     assert(interval('benchmark')[1].at <= Math.min(interval('a')[0].at, interval('c')[0].at), 'Benchmark must execute alone');
     assert(interval('a')[1].at <= interval('b')[0].at, 'Dependency and shared provider lock must serialize');
     assert(interval('a')[1].at <= interval('d')[0].at, 'Dependency must finish before its consumer');
+    assert(interval('b')[1].at <= interval('d')[0].at, 'Compiler-heavy tasks must respect their separate slot limit');
+    assert(interval('a')[0].at < interval('c')[1].at && interval('c')[0].at < interval('a')[1].at, 'Light work must overlap admitted compiler work');
     assert(interval('a')[0].cwd !== interval('c')[0].cwd, 'Overlapping tasks need isolated outputs');
     fs.writeFileSync(trace, '');
     const serial = await attempt('serial', tasks, null, false);

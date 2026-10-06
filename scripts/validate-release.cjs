@@ -13,7 +13,7 @@ const repoRoot = path.resolve(__dirname, '..');
 const resultsRoot = path.join(repoRoot, 'wasm', '.test-results');
 
 function parseArgs(argv) {
-  const options = { install: true, report: true, requireFastly: false, timeoutMs: 55 * 60 * 1000, workers: 1, memoryBudgetMiB: 4096 };
+  const options = { install: true, report: true, requireFastly: false, timeoutMs: 55 * 60 * 1000, workers: 1, memoryBudgetMiB: 4096, compilerWorkers: 2 };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--skip-install') options.install = false;
@@ -25,10 +25,10 @@ function parseArgs(argv) {
     else if (token === '--prune-recovery') options.pruneRecovery = true;
     else if (token === '--no-report') options.report = false;
     else if (token === '--require-fastly') options.requireFastly = true;
-    else if (token === '--workers' || token === '--memory-budget-mib') {
+    else if (token === '--workers' || token === '--memory-budget-mib' || token === '--compiler-workers') {
       const value = argv[++index];
       if (!/^[1-9]\d*$/.test(value || '')) throw new Error(`${token} requires a positive integer`);
-      options[token === '--workers' ? 'workers' : 'memoryBudgetMiB'] = Number(value);
+      options[{ '--workers': 'workers', '--memory-budget-mib': 'memoryBudgetMiB', '--compiler-workers': 'compilerWorkers' }[token]] = Number(value);
     }
     else if (token === '--timeout-minutes') {
       const value = argv[++index];
@@ -47,6 +47,7 @@ function parseArgs(argv) {
   if (!options.install && options.dependencyBundle) throw new Error('--skip-install and --dependency-bundle cannot be combined');
   if (options.resume && !options.report) throw new Error('--resume requires reports');
   require('./release-parallel.cjs').workerCount(options.workers, options.memoryBudgetMiB);
+  require('./release-parallel.cjs').compilerCount(options.compilerWorkers, options.workers);
   if (options.workers > 1 && !options.report) throw new Error('Parallel sealing requires durable reports');
   if (options.pruneRecovery && argv.length !== 1) throw new Error('--prune-recovery must be used alone');
   return Object.freeze(options);
@@ -62,6 +63,7 @@ function usage() {
     '  --require-fastly            fail if the Fastly CLI or its local Compute lifecycle is unavailable',
     '  --resume <attempt-dir>      verify and reuse this same-candidate attempt\'s completed work',
     '  --workers <count>          isolated local test workers (1–8; default 1 is serial)',
+    '  --compiler-workers <count> compiler-heavy task slots (1–8; default 2, capped by workers)',
     '  --memory-budget-mib <MiB> admission budget, 768 MiB per worker (default 4096)',
     '  --prune-recovery            remove terminal attempts older than seven days (never active work)',
     '  --timeout-minutes <minutes> overall work deadline (default 55); cleanup is separately bounded',
@@ -314,7 +316,7 @@ async function main(argv = process.argv.slice(2)) {
     const sharedPackDirectory = progress.directory ? path.join(progress.directory, 'packages') : path.join(packageManagerCache, 'packages');
     if (options.workers > 1) {
       await runStep(steps, 'workspaces', 'Prepare isolated local seal workers', process.execPath,
-        ['scripts/release-parallel.cjs', repoRoot, String(options.workers), String(options.memoryBudgetMiB)],
+        ['scripts/release-parallel.cjs', repoRoot, String(options.workers), String(options.memoryBudgetMiB), String(options.compilerWorkers)],
         { timeoutMs: 10 * 60 * 1000 });
     }
     let packStore, packSpec;

@@ -41,7 +41,7 @@ async function main() {
   const env = { ...process.env, ...sharedPackEnv(packageDirectory) }, results = [];
   try {
     for (const count of [1, 4]) {
-      const options = { install: false, requireFastly: false, workers: count, memoryBudgetMiB: 6144 };
+      const options = { install: false, requireFastly: false, workers: count, memoryBudgetMiB: 6144, compilerWorkers: 2 };
       const setupStarted = Date.now();
       if (count > 1) {
         const setup = await runCommand(process.execPath, ['scripts/release-parallel.cjs', root, String(count), String(options.memoryBudgetMiB)],
@@ -70,7 +70,7 @@ async function main() {
       assert.deepEqual(candidateIdentity(root), candidate);
       assert.deepEqual({ ...recovery.createContext(root, candidate, options, { status: 'unavailable' }), schemaVersion: context.schemaVersion },
         context, 'Source, dependency or build inputs changed during the sample');
-      const result = { workers: count, setupMs, wallMs: Date.now() - started, peakSummedRSSKiB: peak,
+      const result = { workers: count, compilerWorkers: workers.compilerCount(options.compilerWorkers, count), setupMs, wallMs: Date.now() - started, peakSummedRSSKiB: peak,
         report: reportFile, reportSha256: require('node:crypto').createHash('sha256').update(fs.readFileSync(reportFile)).digest('hex') };
       results.push(result); recovery.atomicJson(path.join(directory, 'measurement.json'), result);
     }

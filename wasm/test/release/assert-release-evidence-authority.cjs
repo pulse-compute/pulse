@@ -274,7 +274,7 @@ try {
       const { workspaceRoot, WORKER_MIB } = require('../../../scripts/release-parallel.cjs');
       const { repoRoot: _checkout, ...candidate } = context.candidate;
       context.scheduling = { schemaVersion: 'pulse.seal-workers.v1', root: checkout, candidate,
-        workers, memoryBudgetMiB: 6144, estimatedWorkerMiB: WORKER_MIB,
+        workers, memoryBudgetMiB: 6144, estimatedWorkerMiB: WORKER_MIB, compilerWorkers: 2,
         workspaces: Array.from({ length: workers }, (_, index) => ({ id: `worker-${index + 1}`,
           directory: path.join(workspaceRoot(checkout, candidate.sourceTree, workers), `worker-${index + 1}`),
           inputs: { dependenciesSha256: 'e'.repeat(64), buildSha256: 'f'.repeat(64), dependencyFiles: 1, build: [] } })) };
