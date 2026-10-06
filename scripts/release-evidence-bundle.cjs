@@ -67,9 +67,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'bounded-loop-helpers',
       'time-conformance',
       'time-consumer',
-      'request-budget-transport',
+      'clean-machine-acceptance', // installed request-deadline and HTTP-input corpora
       'node-launcher',
-      'http-input-outcomes',
       'application-errors',
       'application-error-boundaries',
       'entities-javascript-runtime',
@@ -94,7 +93,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       'pure-argument-helpers',
       'pure-loop-helpers',
       'shared-stage-o19',
-      'multifile-source-identity',
+      'multifile-source-indexes',
+      'clean-machine-acceptance', // installed multifile and shared-handler corpus
       'logging-lowering',
       'canonical-router-lowering',
       'canonical-router-terminal-middleware',
@@ -147,7 +147,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'fastly-request-headers',
       'fastly-native-platform-capabilities',
       'fastly-conditional-kv',
-      'kv-conditional-adversarial'
+      'clean-machine-acceptance' // installed conditional-KV adversarial corpus
     ])
   }),
   Object.freeze({
@@ -170,9 +170,8 @@ const SHARD_DEFINITIONS = Object.freeze([
       's3-design-contract',
       's3-read-contract',
       's3-write-contract',
-      's3-native-read',
+      'clean-machine-acceptance', // installed S3 read/write corpora
       's3-body-read',
-      's3-write-conformance',
       'jwt-signing',
       'jwt-es256-signing',
       'crypto-es256-signing',

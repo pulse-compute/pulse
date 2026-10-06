@@ -73,6 +73,7 @@ function assertSourceIndexes() {
 
 async function main(options = {}) {
   if (!options.packedRoot) assertSourceIndexes();
+  if (options.indexesOnly) return { status: 'passed', sourceIndexes: 'passed' };
   const sharedHandlers = await require('./shared-handler-effects.cjs').main(options);
   const tc = acceptanceToolchain(options.packedRoot);
   const root = path.resolve(__dirname, '../../..');
@@ -179,4 +180,6 @@ async function main(options = {}) {
 }
 
 module.exports = { main };
-if (require.main === module) main().catch(error => { console.error(error.stack || error); console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });
+if (require.main === module) main({ indexesOnly: process.argv.includes('--indexes-only') }).then(result => {
+  if (result.sourceIndexes) console.log(JSON.stringify(result));
+}).catch(error => { console.error(error.stack || error); console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });

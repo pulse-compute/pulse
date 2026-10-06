@@ -1,0 +1,5923 @@
+{
+  "schemaVersion": "pulse.ps03-measurements.v1",
+  "purpose": "Focused development comparison, not release qualification",
+  "base": "a48c8dfd2ced3ba286315bbcb635d1e555e962a4",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+    "pnpm": "12.4.2",
+    "typescript": "5.9.3",
+    "assemblyscript": "0.28.18",
+    "workspaceDependencies": "Existing dependency graph; Pulse links point into each measured checkout",
+    "pnpmRunSettings": {
+      "npm_config_verify_deps_before_run": "false",
+      "npm_config_ignore_scripts": "true"
+    },
+    "sampling": "One successful complete task sample per variant; serial tasks; fresh generated signing fixtures and fresh installed consumers"
+  },
+  "summary": {
+    "jwt-rs256": {
+      "beforeMs": 340755,
+      "afterMs": 287080,
+      "savedMs": 53675,
+      "beforeCompiles": 63,
+      "afterCompiles": 51
+    },
+    "jwt-installed-workflow": {
+      "beforeMs": 358631,
+      "afterMs": 299622,
+      "savedMs": 59009,
+      "beforeCompiles": 68,
+      "afterCompiles": 48
+    },
+    "assets-javascript-runtime": {
+      "beforeMs": 757,
+      "afterMs": 817,
+      "savedMs": -60
+    }
+  },
+  "combinedJwt": {
+    "beforeMs": 699386,
+    "afterMs": 586702,
+    "savedMs": 112684,
+    "beforeCompiles": 131,
+    "afterCompiles": 99,
+    "reductionPercent": 16.11
+  },
+  "before": {
+    "jwt-rs256": {
+      "schemaVersion": 2,
+      "runId": "2026-10-06T00-38-15-769Z--54",
+      "sourceRevision": "4266782bfc288336a56f59f04a633dc91fe4176c",
+      "status": "failed",
+      "startedAt": "2026-10-06T00:38:15.773Z",
+      "finishedAt": "2026-10-06T00:43:58.361Z",
+      "requestedTasks": [
+        "jwt-rs256",
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "selectedTasks": [
+        "jwt-rs256",
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "completedTasks": 2,
+      "reportSha256": "4da5a0afd3404f1354ae2acdfc234b02211920267ca16225c1ddcad20e9a0266",
+      "result": {
+        "name": "jwt-rs256",
+        "evidence": "conformance",
+        "description": "RS256 issuance and verification through all four targets and normal CLI builds",
+        "commandSignature": "c521897e1134f212ac03288e77fad1fad65524a81e9898f22a1a5dd98aaea5d7",
+        "timeoutMs": 600000,
+        "durationMs": 340755,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "interruptedBy": null,
+        "error": null
+      },
+      "taskLogSha256": "4ea58cfef707a76805ab0e2bd57b508a1410573b6624aebea421f4c621db3ec0",
+      "widths": [
+        {
+          "status": "passed",
+          "bits": 2048,
+          "executions": 146,
+          "targets": [
+            "node-native",
+            "node-javascript",
+            "fastly-native",
+            "fastly-javascript"
+          ],
+          "providerReality": false,
+          "durationMs": 54455,
+          "compilation": {
+            "invocations": 10,
+            "failed": 0,
+            "durationMs": 14872
+          },
+          "operations": [
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4491,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 756
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4279,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 830
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12592,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3808
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11936,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3427
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4476,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 857
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12901,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4075
+              }
+            },
+            {
+              "command": "prepareJavascriptApplication",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 24,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 2605,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1119
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "failed",
+              "durationMs": 20,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "failed",
+              "durationMs": 18,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "failed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            }
+          ]
+        },
+        {
+          "status": "passed",
+          "bits": 3072,
+          "executions": 146,
+          "targets": [
+            "node-native",
+            "node-javascript",
+            "fastly-native",
+            "fastly-javascript"
+          ],
+          "providerReality": false,
+          "durationMs": 54223,
+          "compilation": {
+            "invocations": 10,
+            "failed": 0,
+            "durationMs": 15109
+          },
+          "operations": [
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4358,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 825
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4456,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 802
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11865,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3572
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12515,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3835
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4454,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 754
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13101,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4361
+              }
+            },
+            {
+              "command": "prepareJavascriptApplication",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 2413,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 960
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 19,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "failed",
+              "durationMs": 16,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "failed",
+              "durationMs": 16,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "failed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            }
+          ]
+        },
+        {
+          "status": "passed",
+          "bits": 4096,
+          "executions": 146,
+          "targets": [
+            "node-native",
+            "node-javascript",
+            "fastly-native",
+            "fastly-javascript"
+          ],
+          "providerReality": false,
+          "durationMs": 231884,
+          "compilation": {
+            "invocations": 43,
+            "failed": 0,
+            "durationMs": 62354
+          },
+          "operations": [
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4419,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 780
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4368,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 860
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12264,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3658
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12001,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3621
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4405,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 841
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13143,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4508
+              }
+            },
+            {
+              "command": "prepareJavascriptApplication",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 22,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "signing-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4474,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 801
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4360,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 800
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4431,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 826
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "signing-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4420,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 893
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 44,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 48,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12248,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3664
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12200,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3725
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11851,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3647
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "signing-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4316,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 808
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 185,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 78,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "verification-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4370,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 856
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4112,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 691
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4148,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 729
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "verification-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4184,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 748
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 42,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 36,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12111,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3624
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12060,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3774
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11694,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3559
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "verification-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4201,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 775
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 81,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 63,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4636,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 879
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4758,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1090
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4308,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 751
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4394,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 779
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 52,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 51,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13006,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4371
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12758,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4228
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12906,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4262
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4350,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 786
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 79,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 73,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 2583,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1020
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "failed",
+              "durationMs": 18,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "failed",
+              "durationMs": 17,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "failed",
+              "durationMs": 18,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            }
+          ]
+        }
+      ],
+      "compilation": {
+        "invocations": 63,
+        "failed": 0,
+        "durationMs": 92335
+      }
+    },
+    "jwt-installed-workflow": {
+      "schemaVersion": 2,
+      "runId": "2026-10-06T00-48-32-208Z--5",
+      "sourceRevision": "1787af3ff2f6ecbe303bf2c39aac0a006069664b",
+      "status": "passed",
+      "startedAt": "2026-10-06T00:48:32.212Z",
+      "finishedAt": "2026-10-06T00:54:31.604Z",
+      "requestedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "selectedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "completedTasks": 2,
+      "reportSha256": "672d527a45ccd78c9c7c2cc394ab44c6e14743b2c639bcf568b75f04fafd07cf",
+      "result": {
+        "name": "jwt-installed-workflow",
+        "evidence": "external",
+        "description": "JWT-01 exact installed signing/verification, rotation, cleanup and composition eligibility",
+        "commandSignature": "8dd481f79bd6f26c1bb37743c82a7a434f15beb0ddaeaa4caef92458294eedf6",
+        "timeoutMs": 600000,
+        "durationMs": 358631,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "interruptedBy": null,
+        "error": null
+      },
+      "taskLogSha256": "8b652ee26586571966112df79332ab95fe78d8fdb72249ad4b92dd15b604fd5d",
+      "acceptanceReportSha256": "c01e7dd818536bfb8e31629ba608eb5ca3d7200620947d5fcee81747ff7e98b3",
+      "acceptance": {
+        "version": "pulse.jwt-installed-acceptance.v1",
+        "status": "passed",
+        "source": "1787af3ff2f6ecbe303bf2c39aac0a006069664b",
+        "sourceTree": "bea7f15df14dd188eb16da6dc69ea887eaef6eef",
+        "workingTree": "",
+        "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "acceptanceScriptSha256": "7038da1e5f375d0bae87e7fe80b83bd67543d0f56daa3fb46f5888c97a258cf7",
+        "node": "v24.19.0",
+        "fixtures": {
+          "installed-fixture.cjs": "30c01361bb53f66d758ee4aa22653c249e850f2b7f49212fc5c28e69b2df4430",
+          "installed-cleanup.mjs": "d158572bf00bbeb315207ee67e4266c0735116f394a4f7bf9305cf15d8c97551",
+          "compile-metrics.cjs": "8c6baecb2f39b9b5083d3d1f424cfcfeabb1c60fd7b74500128883059020e1c4"
+        },
+        "cells": [
+          {
+            "algorithm": "HS256",
+            "profile": "node-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "devExit": 0
+          },
+          {
+            "algorithm": "HS256",
+            "profile": "node-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "wasmSha256": "ff793b614170f3a0aced8eaf1a06efb7dd40aa42e1a9a53f2f57e4d56ed38cd6",
+            "devExit": 0
+          },
+          {
+            "algorithm": "HS256",
+            "profile": "fastly-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "devExit": 0
+          },
+          {
+            "algorithm": "HS256",
+            "profile": "fastly-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "wasmSha256": "58b530367dfe550ceda7a78deaaed510df5ecf7870384ed4790c380a3eaecb0e",
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "node-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "node-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "wasmSha256": "dc8f8c42004887a151202ac8e62856e6eb821f2eb46a175c4c850771d05693e0",
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "fastly-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "fastly-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "wasmSha256": "49c208dc00ccf223b437068a43eb011890eb319cb722c9342ee33d58b5449b2e",
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "node-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "node-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "wasmSha256": "722d31468ce7be87f7935074723e2c69c727afd7e7a7954253b46cdcda0a8f7e",
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "fastly-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "fastly-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "wasmSha256": "d87636b98e28bc2f75046ad53ebe2fbbcfa2373f95e0938e28d51edfdb7d3f1b",
+            "devExit": 0
+          }
+        ],
+        "composition": [
+          {
+            "name": "signature + SHA-256",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + SHA-256",
+            "profile": "node-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + SHA-256",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + SHA-256",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "node-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + S3",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + S3",
+            "profile": "node-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + S3",
+            "profile": "fastly-javascript",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+              "PULSE_JWT_PROVIDER_CAPABILITY_REQUIRED"
+            ]
+          },
+          {
+            "name": "signature + S3",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "node-native",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "fastly-native",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "node-native",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID"
+            ]
+          }
+        ],
+        "installed": {
+          "packages": [
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "db393bffdc7048bc079cb873f4a04fc9a89a8ff67b97062e7fd4733b3ff72f44"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ],
+          "files": 897,
+          "sha256": "fc42a294c43a673bd44f5eb991c3883b542518a24c915a0ead68a87563c3afcd",
+          "unchanged": true
+        },
+        "cleanup": {
+          "status": "passed",
+          "checks": 12,
+          "algorithms": [
+            "HS256",
+            "ES256",
+            "RS256"
+          ],
+          "provider": "node-javascript",
+          "injectedCryptoFailure": true
+        }
+      },
+      "commandDurationMs": 350835,
+      "cliDurationMs": 329856,
+      "installDurationMs": 20877,
+      "commands": [
+        {
+          "command": "npm",
+          "args": [
+            "install",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "code": 0,
+          "signal": null,
+          "durationMs": 20877,
+          "compilation": null
+        },
+        {
+          "command": "node",
+          "args": [
+            "cleanup.mjs"
+          ],
+          "code": 0,
+          "signal": null,
+          "durationMs": 102,
+          "compilation": null
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 527,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "node-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3031,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1029
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 666,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "fastly-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3001,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1007
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 539,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "node-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3088,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1024
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 641,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "fastly-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 2980,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 975
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 517,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "node-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3048,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 967
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "fastly-javascript",
+          "code": 3,
+          "signal": null,
+          "durationMs": 576,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "fastly-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3121,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1056
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 528,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4777,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 698
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 655,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 12209,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3438
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 596,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5185,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 891
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 683,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "fastly-native",
+          "code": 5,
+          "signal": null,
+          "durationMs": 5159,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 905
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1728,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1006
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1834,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 989
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 640,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 567,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 611,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1681,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 970
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1705,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1047
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1754,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 970
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1644,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 991
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1674,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 981
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1726,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1026
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1754,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 996
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 760,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 715,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 724,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4260,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3388
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4145,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3413
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4183,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3396
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4110,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3339
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 3880,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3208
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5112,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 886
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5194,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 912
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 611,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 550,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 608,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5104,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 860
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5136,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 904
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5137,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 930
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5068,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 968
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5048,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 847
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5098,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 888
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5099,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 935
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 695,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 626,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 638,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 12643,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3724
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 12834,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3802
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13250,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4051
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13867,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4175
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13945,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4081
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5673,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1014
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5360,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 915
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 635,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 608,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 609,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5470,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 944
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5405,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 996
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5441,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 950
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5471,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1019
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5175,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 978
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5141,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 914
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5373,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 983
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 715,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 668,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 698,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 14111,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4532
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13583,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4242
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 14601,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4690
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13608,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4428
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13626,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4289
+          }
+        }
+      ],
+      "compilation": {
+        "invocations": 68,
+        "failed": 0,
+        "durationMs": 96567
+      }
+    },
+    "assets-javascript-runtime": {
+      "schemaVersion": 2,
+      "runId": "2026-10-06T00-48-32-208Z--5",
+      "sourceRevision": "1787af3ff2f6ecbe303bf2c39aac0a006069664b",
+      "status": "passed",
+      "startedAt": "2026-10-06T00:48:32.212Z",
+      "finishedAt": "2026-10-06T00:54:31.604Z",
+      "requestedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "selectedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "completedTasks": 2,
+      "reportSha256": "672d527a45ccd78c9c7c2cc394ab44c6e14743b2c639bcf568b75f04fafd07cf",
+      "result": {
+        "name": "assets-javascript-runtime",
+        "evidence": "javascript",
+        "description": "request-bound package bridges and Assets/JWT JavaScript runtime",
+        "commandSignature": "befedb7f4416d082d4434ece0f69ffc0e01074078c05aac9ec9f6e5bb295852c",
+        "timeoutMs": 120000,
+        "durationMs": 757,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "interruptedBy": null,
+        "error": null
+      },
+      "taskLogSha256": "8c1902343477b091ac7735574ef9ce53507bdeb51885345696bd4183bd507a1e",
+      "vitest": {
+        "files": 4,
+        "tests": 68
+      }
+    }
+  },
+  "after": {
+    "jwt-rs256": {
+      "schemaVersion": 2,
+      "runId": "2026-10-06T00-55-02-243Z--5",
+      "sourceRevision": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+      "status": "failed",
+      "startedAt": "2026-10-06T00:55:02.247Z",
+      "finishedAt": "2026-10-06T00:59:54.146Z",
+      "requestedTasks": [
+        "jwt-rs256",
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "selectedTasks": [
+        "jwt-rs256",
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "completedTasks": 2,
+      "reportSha256": "a0c12eda7fee23e8ecf23275c5f23bc16342e09a4a0fd8d7edf5fca6ceaaefe6",
+      "result": {
+        "name": "jwt-rs256",
+        "evidence": "conformance",
+        "description": "RS256 issuance and verification through all four targets and normal CLI builds",
+        "commandSignature": "dd43a8d513d2541f1bce4c345d8080b6c8f5dc4b657fc06b2c4ee903118ec59e",
+        "timeoutMs": 600000,
+        "durationMs": 287080,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "interruptedBy": null,
+        "error": null
+      },
+      "taskLogSha256": "85631d589257d62f85918095735c4120c643ff9a29cc63e48121aebd0da40402",
+      "widths": [
+        {
+          "status": "passed",
+          "bits": 2048,
+          "executions": 146,
+          "targets": [
+            "node-native",
+            "node-javascript",
+            "fastly-native",
+            "fastly-javascript"
+          ],
+          "providerReality": false,
+          "durationMs": 52643,
+          "compilation": {
+            "invocations": 10,
+            "failed": 0,
+            "durationMs": 14500
+          },
+          "operations": [
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4558,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 823
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4385,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 789
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11796,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3640
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11362,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3410
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4242,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 783
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12657,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4015
+              }
+            },
+            {
+              "command": "prepareJavascriptApplication",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 2596,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1040
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 38,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "failed",
+              "durationMs": 18,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "failed",
+              "durationMs": 17,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "failed",
+              "durationMs": 24,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            }
+          ]
+        },
+        {
+          "status": "passed",
+          "bits": 3072,
+          "executions": 146,
+          "targets": [
+            "node-native",
+            "node-javascript",
+            "fastly-native",
+            "fastly-javascript"
+          ],
+          "providerReality": false,
+          "durationMs": 55192,
+          "compilation": {
+            "invocations": 10,
+            "failed": 0,
+            "durationMs": 15782
+          },
+          "operations": [
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4297,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 821
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4478,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 863
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12338,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3809
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12352,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3749
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4507,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 891
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13720,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4579
+              }
+            },
+            {
+              "command": "prepareJavascriptApplication",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 21,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 2582,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1070
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 20,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "failed",
+              "durationMs": 17,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "failed",
+              "durationMs": 18,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "failed",
+              "durationMs": 19,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            }
+          ]
+        },
+        {
+          "status": "passed",
+          "bits": 4096,
+          "executions": 146,
+          "targets": [
+            "node-native",
+            "node-javascript",
+            "fastly-native",
+            "fastly-javascript"
+          ],
+          "providerReality": false,
+          "durationMs": 179033,
+          "compilation": {
+            "invocations": 31,
+            "failed": 0,
+            "durationMs": 50414
+          },
+          "operations": [
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11831,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3600
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 11885,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3687
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4612,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 956
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13089,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4432
+              }
+            },
+            {
+              "command": "prepareJavascriptApplication",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 20,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4336,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 734
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4376,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 795
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 48,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 44,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12605,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3951
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13246,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4111
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "signing-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 150,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "signing-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 75,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4738,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 795
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4669,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 817
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 49,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 39,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12259,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3823
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 12542,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 3792
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "verification-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 87,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "verification-only",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 63,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4709,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 917
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4487,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 882
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "passed",
+              "durationMs": 4686,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 886
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 4585,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 961
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 53,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "passed",
+              "durationMs": 56,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13105,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4204
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13618,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4595
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "passed",
+              "durationMs": 13695,
+              "compilation": {
+                "invocations": 2,
+                "failed": 0,
+                "durationMs": 4402
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 4842,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1006
+              }
+            },
+            {
+              "command": "buildProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 86,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "runProjectTests",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "passed",
+              "durationMs": 79,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "compileNativeProjectInMemory",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 2603,
+              "compilation": {
+                "invocations": 1,
+                "failed": 0,
+                "durationMs": 1068
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-native",
+              "status": "failed",
+              "durationMs": 22,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "node-javascript",
+              "status": "failed",
+              "durationMs": 19,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-native",
+              "status": "failed",
+              "durationMs": 19,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            },
+            {
+              "command": "inspectProject",
+              "form": "combined",
+              "profile": "fastly-javascript",
+              "status": "failed",
+              "durationMs": 20,
+              "compilation": {
+                "invocations": 0,
+                "failed": 0,
+                "durationMs": 0
+              }
+            }
+          ]
+        }
+      ],
+      "compilation": {
+        "invocations": 51,
+        "failed": 0,
+        "durationMs": 80696
+      }
+    },
+    "jwt-installed-workflow": {
+      "schemaVersion": 2,
+      "runId": "2026-10-06T01-01-16-761Z--66",
+      "sourceRevision": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+      "status": "passed",
+      "startedAt": "2026-10-06T01:01:16.766Z",
+      "finishedAt": "2026-10-06T01:06:17.209Z",
+      "requestedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "selectedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "completedTasks": 2,
+      "reportSha256": "00c671c7ad39ce2fd5a03765258363d16abbb339568d8c82be90bd24a7c38848",
+      "result": {
+        "name": "jwt-installed-workflow",
+        "evidence": "external",
+        "description": "JWT-01 exact installed signing/verification, rotation, cleanup and composition eligibility",
+        "commandSignature": "b245c11de48d8c1fe6221d2bbfc241d8b5fe012391f1f8d4178694f4e3c61057",
+        "timeoutMs": 600000,
+        "durationMs": 299622,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "interruptedBy": null,
+        "error": null
+      },
+      "taskLogSha256": "4be03f114901a200a31d3157fe28ad4e8009b7e6bb84c4b101f3a4368e233cc4",
+      "acceptanceReportSha256": "7169e9d7061476bfc91a6ee48d8b5be52130ec3010853da782c25215b31b8b6b",
+      "acceptance": {
+        "version": "pulse.jwt-installed-acceptance.v1",
+        "status": "passed",
+        "source": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+        "sourceTree": "599b3ca2581ea5030deece917bf43008cbfec00b",
+        "workingTree": "",
+        "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "acceptanceScriptSha256": "9cb6505fa91966e91ed6b5246e7574b76e37bad646d65a78f4b49beeadc5fd19",
+        "node": "v24.19.0",
+        "fixtures": {
+          "installed-fixture.cjs": "30c01361bb53f66d758ee4aa22653c249e850f2b7f49212fc5c28e69b2df4430",
+          "installed-cleanup.mjs": "d158572bf00bbeb315207ee67e4266c0735116f394a4f7bf9305cf15d8c97551",
+          "compile-metrics.cjs": "8c6baecb2f39b9b5083d3d1f424cfcfeabb1c60fd7b74500128883059020e1c4"
+        },
+        "cells": [
+          {
+            "algorithm": "HS256",
+            "profile": "node-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "devExit": 0
+          },
+          {
+            "algorithm": "HS256",
+            "profile": "node-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "wasmSha256": "ff793b614170f3a0aced8eaf1a06efb7dd40aa42e1a9a53f2f57e4d56ed38cd6",
+            "devExit": 0
+          },
+          {
+            "algorithm": "HS256",
+            "profile": "fastly-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "devExit": 0
+          },
+          {
+            "algorithm": "HS256",
+            "profile": "fastly-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "wasmSha256": "58b530367dfe550ceda7a78deaaed510df5ecf7870384ed4790c380a3eaecb0e",
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "node-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "node-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "wasmSha256": "493d75e910aefc4b32f4631a9cb96de6251316cbf516bfc46370488c1e28726a",
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "fastly-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "devExit": 0
+          },
+          {
+            "algorithm": "ES256",
+            "profile": "fastly-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "commands": [
+              "test",
+              "build",
+              "dev"
+            ],
+            "wasmSha256": "affb527f411db4ea27fd810d76f1c4a629caacd0bc8a4adcbe24d8ffade68bc3",
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "node-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "commands": [
+              "doctor",
+              "inspect",
+              "test",
+              "build",
+              "dev"
+            ],
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "node-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "commands": [
+              "doctor",
+              "inspect",
+              "test",
+              "build",
+              "dev"
+            ],
+            "wasmSha256": "6e047d49c32813fa419bb643a3335c36281bd5fe81e0d929b58d4808d1a85d47",
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "fastly-javascript",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "javascript-source-package",
+            "commands": [
+              "doctor",
+              "inspect",
+              "test",
+              "build",
+              "dev"
+            ],
+            "devExit": 0
+          },
+          {
+            "algorithm": "RS256",
+            "profile": "fastly-native",
+            "cases": {
+              "total": 10,
+              "passed": 10,
+              "failed": 0
+            },
+            "buildMode": "native-provider",
+            "commands": [
+              "doctor",
+              "inspect",
+              "test",
+              "build",
+              "dev"
+            ],
+            "wasmSha256": "af0fd76af23b465a981abee630b67315116feeb00b752677684cb32ff97e68b2",
+            "devExit": 0
+          }
+        ],
+        "composition": [
+          {
+            "name": "signature + SHA-256",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + SHA-256",
+            "profile": "node-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + SHA-256",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + SHA-256",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "node-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + HMAC",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + S3",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "signature + S3",
+            "profile": "node-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "signature + S3",
+            "profile": "fastly-javascript",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_PROVIDER_CAPABILITY_UNSUPPORTED",
+              "PULSE_JWT_PROVIDER_CAPABILITY_REQUIRED"
+            ]
+          },
+          {
+            "name": "signature + S3",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_GUEST_UNIT_START_MISMATCH"
+            ]
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "node-native",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 signing",
+            "profile": "fastly-native",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "node-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "node-native",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "fastly-javascript",
+            "status": "built",
+            "diagnosticCodes": []
+          },
+          {
+            "name": "ES256 + RS256 verification",
+            "profile": "fastly-native",
+            "status": "ineligible",
+            "diagnosticCodes": [
+              "PULSE_FASTLY_NATIVE_JWT_CRYPTO_REALIZATION_INVALID"
+            ]
+          }
+        ],
+        "installed": {
+          "packages": [
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ],
+          "files": 897,
+          "sha256": "f02d7d8615f8ac9b0c7cec74bfef6f80e1c5b4ee0bd1f86d768f86bbcbe7f11a",
+          "unchanged": true
+        },
+        "cleanup": {
+          "status": "passed",
+          "checks": 12,
+          "algorithms": [
+            "HS256",
+            "ES256",
+            "RS256"
+          ],
+          "provider": "node-javascript",
+          "injectedCryptoFailure": true
+        }
+      },
+      "commandDurationMs": 291425,
+      "cliDurationMs": 258732,
+      "installDurationMs": 32598,
+      "commands": [
+        {
+          "command": "npm",
+          "args": [
+            "install",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "code": 0,
+          "signal": null,
+          "durationMs": 32598,
+          "compilation": null
+        },
+        {
+          "command": "node",
+          "args": [
+            "cleanup.mjs"
+          ],
+          "code": 0,
+          "signal": null,
+          "durationMs": 95,
+          "compilation": null
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 568,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "node-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3184,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1015
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 836,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "signature + SHA-256",
+          "profile": "fastly-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3148,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1036
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 566,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "node-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3207,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1093
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 665,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "signature + HMAC",
+          "profile": "fastly-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3167,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1054
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 535,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "node-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3102,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 986
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "fastly-javascript",
+          "code": 3,
+          "signal": null,
+          "durationMs": 511,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "signature + S3",
+          "profile": "fastly-native",
+          "code": 1,
+          "signal": null,
+          "durationMs": 3316,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1116
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 560,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5262,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 808
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 648,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 signing",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13237,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3648
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 607,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5471,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 985
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 666,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "composition": "ES256 + RS256 verification",
+          "profile": "fastly-native",
+          "code": 5,
+          "signal": null,
+          "durationMs": 5445,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1016
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 659,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 596,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 587,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1874,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1047
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1847,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1105
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 1925,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1121
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 724,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 680,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 687,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4044,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3265
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4145,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3386
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "HS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 4039,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 3281
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 642,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 563,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 590,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5122,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 852
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5234,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 936
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5294,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 904
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 755,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 654,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 709,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13884,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4226
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13584,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4128
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "ES256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13615,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4000
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5612,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 991
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5302,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 932
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 592,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 576,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 655,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5482,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 996
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5329,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 926
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5815,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1053
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "node-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5859,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1265
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "node-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "node-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5186,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 953
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5312,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 955
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 5324,
+          "compilation": {
+            "invocations": 1,
+            "failed": 0,
+            "durationMs": 1039
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 694,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-javascript",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 666,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-javascript",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-javascript",
+          "code": 0,
+          "signal": null,
+          "durationMs": 703,
+          "compilation": {
+            "invocations": 0,
+            "failed": 0,
+            "durationMs": 0
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "doctor",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13816,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4376
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "inspect",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13654,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4272
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "test",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13650,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4240
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "build",
+            "--profile",
+            "fastly-native",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13634,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4439
+          }
+        },
+        {
+          "command": "node",
+          "args": [
+            "<acceptance>/consumer/node_modules/@pulse-compute/cli/bin/pulse.js",
+            "dev",
+            "--profile",
+            "fastly-native",
+            "--port",
+            "0",
+            "--no-watch",
+            "--once",
+            "--json"
+          ],
+          "algorithm": "RS256",
+          "profile": "fastly-native",
+          "code": 0,
+          "signal": null,
+          "durationMs": 13717,
+          "compilation": {
+            "invocations": 2,
+            "failed": 0,
+            "durationMs": 4480
+          }
+        }
+      ],
+      "compilation": {
+        "invocations": 48,
+        "failed": 0,
+        "durationMs": 71925
+      }
+    },
+    "assets-javascript-runtime": {
+      "schemaVersion": 2,
+      "runId": "2026-10-06T01-01-16-761Z--66",
+      "sourceRevision": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+      "status": "passed",
+      "startedAt": "2026-10-06T01:01:16.766Z",
+      "finishedAt": "2026-10-06T01:06:17.209Z",
+      "requestedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "selectedTasks": [
+        "jwt-installed-workflow",
+        "assets-javascript-runtime"
+      ],
+      "completedTasks": 2,
+      "reportSha256": "00c671c7ad39ce2fd5a03765258363d16abbb339568d8c82be90bd24a7c38848",
+      "result": {
+        "name": "assets-javascript-runtime",
+        "evidence": "javascript",
+        "description": "request-bound package bridges and Assets/JWT JavaScript runtime",
+        "commandSignature": "8bcad15690abcbeb7b2258bd54ea4b5e9825af8e4bc5419ab6be8dd997abd2b7",
+        "timeoutMs": 120000,
+        "durationMs": 817,
+        "status": "passed",
+        "exitCode": 0,
+        "signal": null,
+        "interruptedBy": null,
+        "error": null
+      },
+      "taskLogSha256": "4045cc5a54f11c3ff788da87474c4291d28270325a25db39777155c19511f5f0",
+      "vitest": {
+        "files": 6,
+        "tests": 91
+      }
+    }
+  },
+  "failedAttempts": [
+    {
+      "report": "ps03-before.json",
+      "sha256": "4da5a0afd3404f1354ae2acdfc234b02211920267ca16225c1ddcad20e9a0266",
+      "status": "failed",
+      "completedTasks": 2,
+      "reason": "RSA task passed; installed task blocked before packaging by observer environment-reference guard"
+    },
+    {
+      "report": "ps03-before-installed.json",
+      "sha256": "33718fd66c28b6434d97b7505f50947192625e611f7563ed633c4b8a81c189b1",
+      "status": "failed",
+      "completedTasks": 1,
+      "reason": "pnpm dependency-state verification attempted an install and rejected unapproved lifecycle scripts"
+    },
+    {
+      "report": "ps03-before-installed-complete.json",
+      "sha256": "36ce72b4ba5ca3b65cf7b0209ae7670502a0ffd3b6b046a169932e6de414ce22",
+      "status": "failed",
+      "completedTasks": 1,
+      "reason": "Documentation dependency link missing after the automatic install; repaired before successful runs"
+    },
+    {
+      "report": "ps03-after.json",
+      "sha256": "a0c12eda7fee23e8ecf23275c5f23bc16342e09a4a0fd8d7edf5fca6ceaaefe6",
+      "status": "failed",
+      "completedTasks": 2,
+      "reason": "RSA task passed; installed setup stopped during pnpm dependency-state verification before executing test cells"
+    }
+  ]
+}
