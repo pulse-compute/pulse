@@ -32,7 +32,9 @@ const ownerFiles = [
   'packages/provider-fastly/src/build/effect-invocations.js',
   'wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js',
   'wasm/packages/runtime-core-as/src/compiler/canonical-native-schema.js',
-  'wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js'
+  'wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js',
+  'wasm/packages/runtime-core-as/src/compiler/canonical-native-expressions.js',
+  'wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js'
 ];
 
 function fixture(cell) {

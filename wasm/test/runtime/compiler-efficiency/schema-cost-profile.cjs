@@ -128,7 +128,9 @@ function profileRegistry(input, references = [], options = {}) {
       nativeRepresentation: portable.codecs[index].rootClass === 'JSON.Value' ? 'value-projection' : 'typed-class' })),
     sourceOwners: Object.fromEntries([portablePath, portableSchemaPath,
       'wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js',
-      'wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js', fastlyPath,
+      'wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js',
+      'wasm/packages/runtime-core-as/src/compiler/canonical-native-expressions.js',
+      'wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js', fastlyPath,
       'wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js',
       'wasm/packages/schema-json/src/compiler/schema-registry.js'].map(file => [file, hash(fs.readFileSync(path.join(root, file)))])) };
 }
