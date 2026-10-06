@@ -1,0 +1,335 @@
+{
+  "schemaVersion": "pulse.ps06-checkpoint.v1",
+  "status": "qualification-blocked",
+  "releaseSeal": false,
+  "base": "ce75cd009c456046b1a1bdd6356653b8b1c465b4",
+  "testedCandidate": {
+    "sourceRevision": "ff6b9db3841ff03719ecaccb9978cdce18a73760",
+    "sourceTree": "e58d9103d1c4d185c9f4a08ac99f6720a262d15c",
+    "workingTree": ""
+  },
+  "ps05": {
+    "disposition": "skipped",
+    "scheduling": "serial",
+    "reason": "Workspace build/cleanup ownership remains shared; independent resources for safe bounded parallel scheduling not demonstrated"
+  },
+  "qualification": {
+    "status": "failed",
+    "requiredFastly": true,
+    "reason": {
+      "code": "PULSE_FASTLY_CLI_UNAVAILABLE",
+      "message": "The Fastly CLI is required for the Fastly Compute reality gate. Install the Fastly CLI with local Compute support."
+    },
+    "completedReleaseTasks": 0,
+    "completedInstalledGates": 0,
+    "requiredReleaseTasks": 163,
+    "requiredInstalledGates": 10,
+    "freshCompleteWallMs": null,
+    "freshWallReductionPercent": null,
+    "goalDisposition": "unmeasured; no pass or miss claim",
+    "controlledBaselineAvailable": false,
+    "measurementSha256": "8814b3620793c7712ea286b6bdb70b2db490478d59c46f2aaf366e09124f8dbe",
+    "terminalReportSha256": "faa62dc2cc1780f0d806f2173a9df90923f8c443112610ef1c415c671f700ee8",
+    "measurement": {
+      "schemaVersion": "pulse.seal-measurement.v1",
+      "candidate": {
+        "sourceRevision": "ff6b9db3841ff03719ecaccb9978cdce18a73760",
+        "sourceTree": "e58d9103d1c4d185c9f4a08ac99f6720a262d15c",
+        "workingTree": ""
+      },
+      "startedAt": "2026-10-06T02:34:12.024Z",
+      "completedAt": "2026-10-06T02:34:12.134Z",
+      "status": "failed",
+      "qualificationPassed": false,
+      "error": {
+        "code": "PULSE_FASTLY_CLI_UNAVAILABLE",
+        "message": "The Fastly CLI is required for the Fastly Compute reality gate. Install the Fastly CLI with local Compute support."
+      },
+      "attemptDirectory": "/workspace/scratch/a2363caaf8ab/pulse-ps06/.pulse-seal/attempts/2026-10-06T02-34-12-075Z-ew8Wum",
+      "commandOptions": [
+        "--require-fastly",
+        "--skip-install"
+      ],
+      "interruptionRequested": null,
+      "recoveryDemonstrated": false,
+      "environment": {
+        "node": "v24.19.0",
+        "platform": "linux",
+        "arch": "x64",
+        "osRelease": "6.18.44",
+        "dependencyProvenance": "Existing graph; provenance must be supplied by the operator",
+        "observerPreload": "/tmp/pulse-seal-observer-j3mHCh/observer.cjs"
+      },
+      "expectedCoverage": {
+        "releaseTasks": 163,
+        "installedGates": 10
+      },
+      "totalWallMs": 110,
+      "freshCompleteWallMs": null,
+      "attempts": [
+        {
+          "phase": "fresh",
+          "interruptionSent": false,
+          "metrics": {
+            "wallMs": 109,
+            "controllerMs": 33,
+            "workerOccupancyMs": 0,
+            "workerTimeDefinition": "Serial executed task elapsed time, including waits and cleanup; not CPU time or bootstrap steps",
+            "tasks": {
+              "completed": 0,
+              "passed": 0,
+              "executed": 0,
+              "reused": 0
+            },
+            "avoidedTaskOccupancyMs": 0,
+            "candidatePackages": null,
+            "observedLaunches": {
+              "asc": 0,
+              "pack": 0,
+              "install": 0
+            },
+            "observationScope": "Node child_process launches under inherited preload; lower bounds. Shell launches and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.",
+            "workerCpuMs": null,
+            "peakProcessTreeRSSKiB": null,
+            "resourceLimit": "Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer",
+            "observedNodeCpuMs": 84.243,
+            "peakObservedNodeRSSKiB": 46256
+          },
+          "status": "failed",
+          "directory": "/workspace/scratch/a2363caaf8ab/pulse-ps06/.pulse-seal/attempts/2026-10-06T02-34-12-075Z-ew8Wum"
+        }
+      ]
+    }
+  },
+  "developmentRecovery": {
+    "status": "passed",
+    "releaseSeal": false,
+    "schemaVersion": "pulse.ps06-development-recovery.v1",
+    "contextSha256": "2f5c83b6ec34240595f73c01cfcc30fd17b2b6362c75e0586a38d2dd87e65928",
+    "reportSha256": "6d13f624f23f59c7990959e1cff2b1f534acde608772c071aa7d52137232fd90",
+    "selectedTasks": [
+      "ast01-installed",
+      "ps06-late-failure"
+    ],
+    "first": {
+      "status": "failed",
+      "wallMs": 8680,
+      "pack": {
+        "execution": "executed",
+        "proofId": "11dbfee2-e219-4997-b304-3908c45d2ffa",
+        "packages": 19
+      },
+      "results": [
+        {
+          "name": "ast01-installed",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2063,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed"
+          },
+          "proofId": "684952fa-37e0-4699-b2f4-a512cf860c4d"
+        },
+        {
+          "name": "ps06-late-failure",
+          "status": "failed",
+          "exitCode": 9,
+          "durationMs": 111,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed"
+          },
+          "proofId": "6a2f257f-63d1-4d11-b36e-7d67a23c39d9"
+        }
+      ],
+      "installedArtifact": {
+        "kind": "file",
+        "sha256": "7d8a3741ee3b92eee56c27113bd486df9425a90e593123c4ef6bcd0d1cd710e6",
+        "mode": 420,
+        "bytes": 1246
+      }
+    },
+    "resumed": {
+      "status": "passed",
+      "wallMs": 140,
+      "pack": {
+        "execution": "reused",
+        "proofId": "11dbfee2-e219-4997-b304-3908c45d2ffa",
+        "packages": 19
+      },
+      "results": [
+        {
+          "name": "ast01-installed",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 0,
+          "execution": "reused",
+          "cleanup": {
+            "status": "passed"
+          },
+          "reusedDurationMs": 2063,
+          "proofId": "684952fa-37e0-4699-b2f4-a512cf860c4d"
+        },
+        {
+          "name": "ps06-late-failure",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 112,
+          "execution": "executed",
+          "cleanup": {
+            "status": "passed"
+          },
+          "proofId": "8ea62ced-2274-47a6-a2a2-1e063c9e5ff7"
+        }
+      ],
+      "installedArtifact": {
+        "kind": "file",
+        "sha256": "7d8a3741ee3b92eee56c27113bd486df9425a90e593123c4ef6bcd0d1cd710e6",
+        "mode": 420,
+        "bytes": 1246
+      }
+    },
+    "dependencyProvenance": "Existing installed graph; no fresh bundle restoration",
+    "baselineExcludedWork": "Build, always-fresh seal stages, all 163 release tasks, nine other installed gates, audit and provider reality"
+  },
+  "checks": {
+    "measurementFixture": {
+      "status": "passed",
+      "command": "node wasm/test/release/assert-release-seal-measure.cjs"
+    },
+    "unit": {
+      "status": "passed",
+      "selectedTasks": [
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo"
+      ],
+      "completedTasks": 45,
+      "durationMs": 61889,
+      "finishedAt": "2026-10-06T02:36:32.174Z",
+      "sourceRevision": "ff6b9db3841ff03719ecaccb9978cdce18a73760",
+      "reportSha256": "3023c4c7fbcdf06561ae5e5933e5c912191c31297bc5fe8cbe4e2aadb90692c0",
+      "scope": "Development evidence; report-only README edits introduced while unit run was active"
+    },
+    "build": {
+      "status": "passed",
+      "command": "node scripts/pnpm-toolchain.cjs -- --config.verify-deps-before-run=false run -s build",
+      "freshBundleRestored": false
+    },
+    "maintainer": "passed",
+    "publication": "passed",
+    "docsCheck": "passed",
+    "documentationRelease": "passed",
+    "scope": {
+      "status": "decision-required",
+      "consistencyErrors": [],
+      "reason": "Manual helper is unclassified by path policy; human placement review declared in PR. Implementation direction already supplied for PS-06; no protected boundaries inferred."
+    }
+  },
+  "retainedDiagnostics": [
+    {
+      "kind": "earlier required-Fastly attempt",
+      "sourceRevision": "ce75cd009c456046b1a1bdd6356653b8b1c465b4",
+      "status": "failed",
+      "errorCode": "PULSE_FASTLY_CLI_UNAVAILABLE",
+      "reportSha256": "7b7e5f38d822ea8619c5fa7f3549b123dd16b4b24d3830ab402ea7230272b332"
+    },
+    {
+      "kind": "development preparation before workspace build",
+      "status": "failed",
+      "reason": "GRIP tarball missing canonical pulsewasm facade",
+      "logSha256": "f1cfe09c80cad6498ab9649faac6c67c8cb4bd655f5f5b8c9c6f34b6c2ce210d"
+    }
+  ],
+  "baseline": {
+    "ps01": {
+      "sourceRevision": "4410513f82378f1dc4f4abb868b70fd0673115c4",
+      "durationMs": 1984848,
+      "serialTaskOccupancyMs": 1968905,
+      "scope": "Retained single-run observation; Node 24.18.0, skip install, Fastly unavailable; not a matched comparison"
+    },
+    "ps03JwtPair": {
+      "beforeMs": 699386,
+      "afterMs": 586702,
+      "savedMs": 112684,
+      "beforeAscLaunches": 131,
+      "afterAscLaunches": 99,
+      "scope": "Two JWT workflows only; not full-seal reduction"
+    },
+    "historicalBeta6": "48m 11s; orientation only"
+  },
+  "externalDispositions": {
+    "fastlyReality": "not run; required CLI unavailable",
+    "kvCas": "not run on this candidate; no old-candidate exception extended",
+    "deployedCrossLocation": "not run; separate qualification",
+    "experimentalTransforms": "installed qualification remains pending"
+  },
+  "stopDecision": "Provision qualified environment and measure complete seal before selecting any further optimization campaign",
+  "observerCompatibility": {
+    "status": "passed",
+    "releaseSeal": false,
+    "candidate": {
+      "sourceRevision": "34e0e1342bfbfffbd9c9995a99dbc347c005c14f",
+      "sourceTree": "a0b1aaa99ed1d1dd107bbcab62199d9290cf2573",
+      "workingTree": ""
+    },
+    "reportSha256": "073bba7fcf931cd2ad4c007678b2a92e5bcef7a45405713dfb30d5d014808f38",
+    "eventsSha256": "6eca247b4a6a382b0aec3c13654a5369ee297797e02b311d3f97c829acfff0b4",
+    "firstWallMs": 9376,
+    "resumedWallMs": 147,
+    "observedLaunches": {
+      "asc": 0,
+      "pack": 19,
+      "install": 1
+    },
+    "observedNodeExits": 39,
+    "observedNodeCpuMs": 9858.468,
+    "peakObservedNodeRSSKiB": 342552,
+    "workerCpuMs": null,
+    "peakProcessTreeRSSKiB": null,
+    "scope": "Separate real installed-consumer/preload compatibility check across both development attempts. Lower-bound Node launch/resources only; no full-seal timing or complete worker resource claim"
+  }
+}
