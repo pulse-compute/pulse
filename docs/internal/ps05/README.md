@@ -100,3 +100,11 @@ tasks bypassed the two compiler slots. That classification defect is corrected;
 unit and JavaScript tasks are light by default, other categories consume compiler
 slots unless explicitly overridden. A regression checks the four actual registry
 entries from the failing cluster, in addition to the scheduler's admission fixture.
+
+Attempt `37426674953` confirmed the compiler cap but exposed a shared-package
+validation race: a consumer checked every sibling's untracked files while another
+worker was creating a temporary JWT fixture. Active consumer validation now keeps
+the exact revision, tracked-source and registered-layout checks while allowing
+untracked sibling fixtures. The consumer itself and the controller's pre/post
+execution barriers still require full cleanliness. A regression rejects tracked
+sibling mutations and confirms temporary sibling files do not block a consumer.

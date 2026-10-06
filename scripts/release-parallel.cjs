@@ -96,7 +96,7 @@ function prepareWorkspaces(root, candidate, requested, memoryMiB, compilerWorker
   atomicJson(path.join(parent, 'layout.json'), layout);
   return layout;
 }
-function readLayout(root, candidate, requested, memoryMiB, compilerWorkers = 2) {
+function readLayout(root, candidate, requested, memoryMiB, compilerWorkers = 2, { allowUntracked = false } = {}) {
   const { repoRoot: _checkout, ...source } = candidate;
   candidate = source;
   const count = workerCount(requested, memoryMiB);
@@ -112,7 +112,12 @@ function readLayout(root, candidate, requested, memoryMiB, compilerWorkers = 2) 
     directory: path.join(workspaceRoot(root, candidate.sourceTree, count), `worker-${index + 1}`) })));
   for (const item of layout.workspaces) {
     assert.equal(fs.realpathSync(item.directory), item.directory, 'Worker checkout traverses a symlink');
-    assert.deepEqual(candidateIdentity(item.directory), candidate, 'Worker candidate differs');
+    // Active siblings create temporary untracked fixtures. They must retain the
+    // bound revision and tracked source; full cleanliness is checked at barriers.
+    const git = args => execFileSync('git', args, { cwd: item.directory, encoding: 'utf8', timeout: 10000 }).trim();
+    const identity = allowUntracked ? { sourceRevision: git(['rev-parse', 'HEAD']), sourceTree: git(['rev-parse', 'HEAD^{tree}']),
+      workingTree: git(['status', '--porcelain', '--untracked-files=no']) } : candidateIdentity(item.directory);
+    assert.deepEqual(identity, candidate, 'Worker candidate differs');
   }
   return layout;
 }
@@ -131,7 +136,7 @@ function cleanupWorkspaces(root, tree, count) {
 function assertManagedWorker(directory, owner, candidate, layoutFile) {
   assert(typeof layoutFile === 'string' && path.isAbsolute(layoutFile), 'Shared pack belongs to another checkout');
   const supplied = JSON.parse(fs.readFileSync(layoutFile, 'utf8'));
-  const layout = readLayout(owner, candidate, supplied.workers, supplied.memoryBudgetMiB, supplied.compilerWorkers);
+  const layout = readLayout(owner, candidate, supplied.workers, supplied.memoryBudgetMiB, supplied.compilerWorkers, { allowUntracked: true });
   assert.equal(layoutFile, path.join(workspaceRoot(owner, candidate.sourceTree, layout.workers), 'layout.json'), 'Foreign worker layout');
   assert(layout.workspaces.some(workspace => workspace.directory === fs.realpathSync(directory)), 'Unowned shared-pack consumer');
 }

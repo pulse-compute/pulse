@@ -53,6 +53,18 @@ async function verifyParallel() {
     const worker = layout.workspaces[0];
     assert.throws(() => copySharedPack({ repoRoot: worker.directory, outDir: copy }, sharedPackEnv(pack)), /another checkout/);
     copySharedPack({ repoRoot: worker.directory, outDir: copy }, { ...sharedPackEnv(pack), PULSEWASM_SEAL_WORKER_LAYOUT: layoutFile });
+    const sibling = layout.workspaces[1].directory;
+    const temporary = path.join(sibling, 'packages/one/active-fixture.js');
+    put(temporary, 'temporary');
+    assert.throws(() => readLayout(candidateRoot, candidate, 2, 1536), /clean candidate/);
+    copySharedPack({ repoRoot: worker.directory, outDir: copy }, { ...sharedPackEnv(pack), PULSEWASM_SEAL_WORKER_LAYOUT: layoutFile });
+    const tracked = path.join(sibling, 'packages/one/source.js');
+    put(tracked, 'changed source');
+    assert.throws(() => copySharedPack({ repoRoot: worker.directory, outDir: copy },
+      { ...sharedPackEnv(pack), PULSEWASM_SEAL_WORKER_LAYOUT: layoutFile }), /Worker candidate differs/);
+    put(tracked, 'source');
+    fs.rmSync(temporary);
+    assert.deepEqual(readLayout(candidateRoot, candidate, 2, 1536), layout);
     assert.throws(() => assertManagedWorker(candidateRoot, candidateRoot, candidate, layoutFile), /Unowned/);
     assert.deepEqual(candidateIdentity(candidateRoot), candidate);
     // A retry rebuilds private inputs at the same bound paths.
