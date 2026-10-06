@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
+const compileMetrics = require('./compile-metrics.cjs');
 const assert = require('node:assert/strict');
+const { performance } = require('node:perf_hooks');
 const fs = require('node:fs');
 const path = require('node:path');
 const { generateKeyPairSync, verify, sign, constants, publicDecrypt, privateEncrypt } = require('node:crypto');
@@ -11,7 +13,23 @@ const root = path.resolve(__dirname, '../../..');
 const NOW = Math.floor(Date.now() / 1000);
 
 async function main(bits) {
+  const started = performance.now(), compilation = compileMetrics.snapshot(), operations = [];
   const tc = acceptanceToolchain();
+  let form = 'combined';
+  for (const name of ['inspectProject', 'buildProject', 'runProjectTests', 'compileNativeProjectInMemory', 'prepareJavascriptApplication']) {
+    const operation = tc[name];
+    tc[name] = function (project, ...args) {
+      const start = performance.now(), before = compileMetrics.snapshot();
+      const record = { command: name, form, profile: `${project.provider}-${project.target}` };
+      const finish = status => operations.push({ ...record, status,
+        durationMs: Math.round(performance.now() - start), compilation: compileMetrics.since(before) });
+      try {
+        const result = operation.call(this, project, ...args);
+        if (result && typeof result.then === 'function') return result.then(value => { finish('passed'); return value; }, error => { finish('failed'); throw error; });
+        finish('passed'); return result;
+      } catch (error) { finish('failed'); throw error; }
+    };
+  }
   const cwd = fs.mkdtempSync(path.join(__dirname, '.rs-sign-'));
   const pair = generateKeyPairSync('rsa', { modulusLength: bits });
   const key = pair.privateKey.export({ format: 'jwk' });
@@ -49,11 +67,13 @@ export default app;`;
     const writeConfig = () => fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse'; export default defineConfig((_scope) => (${JSON.stringify(config)}));`);
     writeConfig();
     const projects = Object.fromEntries(Object.keys(config).filter(id => id !== 'pulse').map(profile => [profile, tc.resolveProject({ cwd, profile })]));
-    for (const profile of Object.keys(projects).filter(id=>id.endsWith('javascript'))) {
+    // The 4096-bit combined workflow below owns inspection for that width.
+    for (const profile of Object.keys(projects).filter(id=>bits !== 4096 && id.endsWith('javascript'))) {
       const inspection = tc.inspectProject(projects[profile]);
       assert.equal(inspection.provider.targetSupport.project.status, 'eligible');
     }
     // Issuance alone must not require a static verification key artifact.
+    form = 'signing-only';
     fs.writeFileSync(path.join(cwd, 'src/index.ts'), source.split('\n').filter(line => !line.startsWith("app.get('/verify'")).join('\n'));
     const signingOnly = tc.buildProject(projects['fastly-native']);
     const signingOnlyWasm = fs.readFileSync(path.join(signingOnly.outDir, 'bin/main.wasm'));
@@ -63,11 +83,13 @@ export default app;`;
     });
     assert.equal(signed.response.status,200);validate(signed.response.body,{});executions++;
     // Normal CLI verification-only build also needs no secret signing binding.
+    form = 'verification-only';
     fs.writeFileSync(path.join(cwd, 'src/index.ts'), source.split('\n').filter(line => !line.startsWith('app.') || line.startsWith("app.get('/verify'")).join('\n'));
     const verifyOnly = tc.buildProject(projects['fastly-native']);
     const verified = tc.executeFastlyNativePlatformCapabilities({wasm:fs.readFileSync(path.join(verifyOnly.outDir,'bin/main.wasm'))}, {request:{method:'GET',path:'/verify',url:'https://sign.test/verify',headers:[['authorization','Bearer '+external()]]},clockUnixSeconds:NOW});
     assert.equal(verified.response.body,'scheduler');executions++;
     fs.writeFileSync(path.join(cwd, 'src/index.ts'), source);
+    form = 'combined';
     const node = tc.compileNativeProjectInMemory(projects['node-native']);
     const built = tc.buildProject(projects['fastly-native']);
     assert.equal(built.status, 'built');
@@ -162,14 +184,19 @@ export default app;`;
       executions++;
     }
     if (bits === 4096) {
-      for (const form of ['signing-only','verification-only','combined']) {
+      for (form of ['signing-only','verification-only','combined']) {
         const app = source.split('\n').filter(line => !line.startsWith('app.') || form === 'combined'
           || (form === 'verification-only' ? line.startsWith("app.get('/verify'") : !line.startsWith("app.get('/verify'"))).join('\n');
         fs.writeFileSync(path.join(cwd,'src/index.ts'),app);
         for (const profile of Object.keys(projects)) {
           const project = tc.resolveProject({cwd,profile});
-          const inspection = tc.inspectProject(project);
-          if (profile.endsWith('javascript')) assert.equal(inspection.provider.targetSupport.project.status,'eligible');
+          // Inspect the combined form once per target. Keep build and execution
+          // of all three forms: verification alone must need no signing secret,
+          // and signing alone must need no static verification-key artifact.
+          if (form === 'combined') {
+            const inspection = tc.inspectProject(project);
+            if (profile.endsWith('javascript')) assert.equal(inspection.provider.targetSupport.project.status,'eligible');
+          }
           const build = tc.buildProject(project);
           assert.equal(build.status,'built');
           const tests = await tc.runProjectTests(project, form === 'combined' ? {} : {caseName:form === 'signing-only'?'issue':'verify'});
@@ -188,7 +215,8 @@ export default app;`;
     assert.throws(()=>tc.compileNativeProjectInMemory(tc.resolveProject({cwd,profile:'node-native'})), /forbidden start|fixed-memory|MVP/);
     config.pulse.crypto=['ES256'];writeConfig();
     for (const profile of Object.keys(projects)) assert.throws(()=>tc.inspectProject(tc.resolveProject({cwd,profile})),/RS256/);
-    console.log(JSON.stringify({status:'passed',bits,executions,targets:Object.keys(projects),providerReality:false}));
+    console.log(JSON.stringify({status:'passed',bits,executions,targets:Object.keys(projects),providerReality:false,
+      durationMs:Math.round(performance.now()-started),compilation:compileMetrics.since(compilation),operations}));
   } finally { fs.rmSync(cwd,{recursive:true,force:true}); }
 }
 (async()=>{for(const bits of [2048,3072,4096]) await main(bits);})().catch(error=>{console.error(error.stack||error);console.error(JSON.stringify({detail:error.detail,diagnostics:error.diagnostics}));process.exitCode=1;});

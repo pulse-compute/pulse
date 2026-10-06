@@ -10,7 +10,7 @@ The test registry is organized around seven product behaviors.
 | `conformance` | native/JavaScript semantic parity |
 | `providers` | Fastly package and native capability realization |
 | `cli` | commands, diagnostics, clean projects, and executable documentation |
-| `release` | all functional profiles, package output, byte determinism, and packed consumers |
+| `release` | functional coverage, package output, byte determinism, and packed consumers owning shared corpora |
 
 Run a profile, task, or bounded diagnostic slice:
 
@@ -41,12 +41,20 @@ The environment-dependent `provider-fastly-compute-reality` task is deliberately
 npm run release:seal
 ```
 
-This is the only aggregate seal. It covers dependency restoration, repository controls, build and unit tests, documentation, every functional test profile, package and consumer evidence, artifact determinism, and available external Fastly reality.
+This is the only aggregate seal. It covers dependency restoration, repository controls, build and unit tests, documentation, functional coverage, package and consumer evidence, artifact determinism, and available external Fastly reality.
+
+Six workspace replays run once through installed packages in release:
+`s3-native-read`, `s3-write-conformance`, `request-budget-transport`,
+`multifile-source-identity`, `http-input-outcomes`, and
+`kv-conditional-adversarial`. Their full development profiles and direct tasks
+remain available. `multifile-source-indexes` retains the workspace-only assertions.
+See [Testing Pulse](../../docs/maintainers/testing.md) for ownership and retained
+per-corpus reports; failed or incomplete installed acceptance cannot qualify a seal.
 
 ## Registry policy
 
 - Register a task once; compose profiles by task identity.
-- Keep every non-external task reachable from `release`.
+- Keep every non-external claim owned in `release`; shared full corpora use the explicit installed owner map in the registry.
 - Keep external tool availability separate from portable correctness.
 - Use `--from` and `--through` only for diagnosis.
 - Keep `.test-results` ephemeral and regenerate it only from the current tree.

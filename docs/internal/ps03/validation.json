@@ -1,0 +1,3078 @@
+{
+  "schemaVersion": 2,
+  "runId": "2026-10-06T01-06-44-274Z--13",
+  "sourceRevision": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+  "sourceIdentity": {
+    "sourceRevision": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+    "sourceIdentityKind": "git-commit",
+    "sourceDigestSha256": null,
+    "sourceFiles": null
+  },
+  "status": "passed",
+  "startedAt": "2026-10-06T01:06:44.280Z",
+  "updatedAt": "2026-10-06T01:11:28.214Z",
+  "finishedAt": "2026-10-06T01:11:28.214Z",
+  "durationMs": 283934,
+  "profiles": [
+    "unit"
+  ],
+  "requestedTasks": [
+    "multifile-source-indexes",
+    "guest-json-roundtrip",
+    "pure-helper-contract",
+    "suite-shape",
+    "test-orchestration",
+    "package-exports",
+    "boundaries",
+    "workspace-hygiene",
+    "hidden-contracts",
+    "release-feature-acceptance",
+    "release-runtime-policy",
+    "release-seal-lifecycle",
+    "release-tag",
+    "api-surface",
+    "logging-contract",
+    "s3-design-contract",
+    "kv-design-contract",
+    "kv-conditional-runtime",
+    "kv-conditional-gates",
+    "s3-read-contract",
+    "s3-write-contract",
+    "crypto-config-planning",
+    "crypto-es256-signing",
+    "crypto-rs256",
+    "crypto-digest-text-contract",
+    "reachable-graph",
+    "project-modules",
+    "package-reachability",
+    "provider-toolchain",
+    "schema-registry",
+    "continuation-registry",
+    "entities-contracts",
+    "entities-schema-bridge",
+    "entities-javascript-runtime",
+    "entities-json-rpc-corpus",
+    "mcp-http",
+    "mcp-tools",
+    "mcp-authorization",
+    "entities-package-owned-lowering",
+    "entities-catalog",
+    "entities-inspection",
+    "entities-orchestration-demo",
+    "clean-machine-acceptance",
+    "multifile-source-identity",
+    "release-evidence-authority"
+  ],
+  "selectedTasks": [
+    "multifile-source-indexes",
+    "guest-json-roundtrip",
+    "pure-helper-contract",
+    "suite-shape",
+    "test-orchestration",
+    "package-exports",
+    "boundaries",
+    "workspace-hygiene",
+    "hidden-contracts",
+    "release-feature-acceptance",
+    "release-runtime-policy",
+    "release-seal-lifecycle",
+    "release-tag",
+    "api-surface",
+    "logging-contract",
+    "s3-design-contract",
+    "kv-design-contract",
+    "kv-conditional-runtime",
+    "kv-conditional-gates",
+    "s3-read-contract",
+    "s3-write-contract",
+    "crypto-config-planning",
+    "crypto-es256-signing",
+    "crypto-rs256",
+    "crypto-digest-text-contract",
+    "reachable-graph",
+    "project-modules",
+    "package-reachability",
+    "provider-toolchain",
+    "schema-registry",
+    "continuation-registry",
+    "entities-contracts",
+    "entities-schema-bridge",
+    "entities-javascript-runtime",
+    "entities-json-rpc-corpus",
+    "mcp-http",
+    "mcp-tools",
+    "mcp-authorization",
+    "entities-package-owned-lowering",
+    "entities-catalog",
+    "entities-inspection",
+    "entities-orchestration-demo",
+    "clean-machine-acceptance",
+    "multifile-source-identity",
+    "release-evidence-authority"
+  ],
+  "currentTask": null,
+  "currentTaskPhase": null,
+  "completedTasks": 45,
+  "results": [
+    {
+      "name": "multifile-source-indexes",
+      "evidence": "unit",
+      "description": "Workspace-only source range, intrinsic and generated-call identity assertions",
+      "commandSignature": "7e6f63e86f6ed0f6a0d9cabdc42b2b52b419127331dcf8be1364e2edcacd6e37",
+      "timeoutMs": 30000,
+      "durationMs": 362,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "e59673e97fdeb90039a38f41e39f93d239a5062600be498e61405522df2664f1"
+    },
+    {
+      "name": "guest-json-roundtrip",
+      "evidence": "unit",
+      "description": "Guest v2 manifest/plan JSON key order, exact trust values and ordered arrays",
+      "commandSignature": "a13f586b2333a85096abc564c52c73c6f08ca08b7e178dd885888f59d0871a97",
+      "timeoutMs": 30000,
+      "durationMs": 154,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "250c726913dde6e425f1f05a88a8892854c2b2f37f86dd00cc9fcde5ee45fc90"
+    },
+    {
+      "name": "pure-helper-contract",
+      "evidence": "unit",
+      "description": "Pure-helper source oracles and scalar/record admission",
+      "commandSignature": "68a7bad6a1b74c9590f45df8e980433fa09270a2b33356a8270baabd8a1cc1f1",
+      "timeoutMs": 30000,
+      "durationMs": 1170,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+    },
+    {
+      "name": "suite-shape",
+      "evidence": "unit",
+      "description": "profile separation, uniqueness, and timeout budgets",
+      "commandSignature": "1babb294652605aeba8cb17e079c7dc0b4e31f356778af280b0fa054172e9aeb",
+      "timeoutMs": 30000,
+      "durationMs": 129,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "5ad6d138eacc209982a31fc504701cb5d1df0c10cb5828869480078bb466d05c"
+    },
+    {
+      "name": "test-orchestration",
+      "evidence": "unit",
+      "description": "atomic reports, deterministic slicing, timeouts, and descendant cleanup",
+      "commandSignature": "e8cb2e8e35962225c4926b89c7390a8e1860a01beff3662015905792ee17ad4c",
+      "timeoutMs": 30000,
+      "durationMs": 7400,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "dee5b61c674977e9e66b17d4d60b44afbae52d9b57ee4e2f31846108bdaa7561"
+    },
+    {
+      "name": "package-exports",
+      "evidence": "unit",
+      "description": "workspace package export smoke",
+      "commandSignature": "68ffccf41d5fa0ff1adf269f6029f7e8254725ccc1f25cd23eef84f175fc650a",
+      "timeoutMs": 30000,
+      "durationMs": 190,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "620dabe7893a0e0a2a0083ac56a200b88765bda77895e98c47722b1bb11ffff4"
+    },
+    {
+      "name": "boundaries",
+      "evidence": "unit",
+      "description": "workspace layout and import boundaries",
+      "commandSignature": "7cd14676663cb3b516fd19ddef42ba1f0a47c53f5f969470c684d240f4db2124",
+      "timeoutMs": 30000,
+      "durationMs": 333,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+    },
+    {
+      "name": "workspace-hygiene",
+      "evidence": "unit",
+      "description": "package-manager and workspace hygiene",
+      "commandSignature": "079555177e0354811e277122ef77479c54f5f666e7ac53726165166fb7000279",
+      "timeoutMs": 30000,
+      "durationMs": 211,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "14bf84a2cea12e92bce6ad28f772a73acb46a101d5255efdee9dc0e9c342c92c"
+    },
+    {
+      "name": "hidden-contracts",
+      "evidence": "unit",
+      "description": "hidden contract literal scanner",
+      "commandSignature": "9cfedba21672089dc4d1d7a02e2b77114674f3f052288201221c247e460872d3",
+      "timeoutMs": 30000,
+      "durationMs": 306,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+    },
+    {
+      "name": "release-feature-acceptance",
+      "evidence": "unit",
+      "description": "installed feature gate coverage and exact candidate report rejection",
+      "commandSignature": "08d5777154cb85f872d2564b803348bd703ef6524d065db59a2faa9736c828c7",
+      "timeoutMs": 30000,
+      "durationMs": 478,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "0d5484d497517b8a252457eb169c75cb7d92691909db20189f866164e9a59965"
+    },
+    {
+      "name": "release-runtime-policy",
+      "evidence": "unit",
+      "description": "Node release-line acceptance and Fastly CLI lifecycle ownership",
+      "commandSignature": "9b0ec0df3309a6877bf2cdc2a58c94f01651d465469374786df55c842bf87e95",
+      "timeoutMs": 30000,
+      "durationMs": 1182,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "a370f3402c99c8972adfd54bb1bdcbb4554e9ee64805b9eb0d69659ae4653dc2"
+    },
+    {
+      "name": "release-seal-lifecycle",
+      "evidence": "unit",
+      "description": "durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle",
+      "commandSignature": "81c16be76226564d5594c2076972022ff3cc64a5c613b2aa84ee8cdc376771a9",
+      "timeoutMs": 60000,
+      "durationMs": 2925,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "494530f832b832317e4a370ef520dea3c61a7938784ab2bd6821080e1b853b97"
+    },
+    {
+      "name": "release-tag",
+      "evidence": "unit",
+      "description": "release-owner tagging guards and immutable tag identity",
+      "commandSignature": "57aa4352ce47e2e885cf4a1b835d468bd29a152b956125e6c00adf811aa2219f",
+      "timeoutMs": 30000,
+      "durationMs": 480,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "84813d71b96931d09502bf2d9a33a9ea9a23895a468d430cbdfd40e12af78f31"
+    },
+    {
+      "name": "api-surface",
+      "evidence": "unit",
+      "description": "provider-neutral TypeScript API and fixture type surface",
+      "commandSignature": "c62e2486efa65b940ae97f2b4ab8c0b47c9571ecb2f622310808be1ade507522",
+      "timeoutMs": 30000,
+      "durationMs": 816,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "72ae6e9145a6217b37175888a59fd6718937d174ee1e8c1009d32e361c2f1019"
+    },
+    {
+      "name": "logging-contract",
+      "evidence": "unit",
+      "description": "logging levels, ABI, reporting resolution, and public surfaces",
+      "commandSignature": "50668b8659af816b77eeaf78d635ddc49b88c20e357b913dc52620f5b0b04399",
+      "timeoutMs": 30000,
+      "durationMs": 138,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "250ed2ef7d8e7c249c300b8eb44df6a36f8b7e8f545f4d0e9b1d90cfd989d15c"
+    },
+    {
+      "name": "s3-design-contract",
+      "evidence": "unit",
+      "description": "S3 draft types, canonical input seam, exact key/body/signing vectors and bounded envelopes",
+      "commandSignature": "c2d7347248f569cb8d0930dba80d78ef06e71f8e8e1d36d359e34d6bf768af6f",
+      "timeoutMs": 30000,
+      "durationMs": 1220,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "633798a97981a42f8eb4b4534a1a3b369d1eba4ffd504614b44c3e4eaea95c7e"
+    },
+    {
+      "name": "kv-design-contract",
+      "evidence": "unit",
+      "description": "K1 conditional KV draft types, opaque generations, wire format, races and dispatch uncertainty",
+      "commandSignature": "fed60a8289e682cb230282c8f2f01604a7a97c1789a765b22bc299e813d68305",
+      "timeoutMs": 30000,
+      "durationMs": 1054,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "460980145d170ca43f7b0c7af6f0a68fcd588e3c1068dd8acb5f7b6dee366337"
+    },
+    {
+      "name": "kv-conditional-runtime",
+      "evidence": "unit",
+      "description": "K2 production conditional KV types, wire bounds, snapshots and outcome contracts",
+      "commandSignature": "9e07f9390a90533b2861f5b1ba9bda228d1a59f3ff7ef2d20de888e7aaff276f",
+      "timeoutMs": 30000,
+      "durationMs": 1105,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "099993c1331c0b9ecc5861e1d6446589d5dd3dd6c725a0c2952ea11dd1e8405b"
+    },
+    {
+      "name": "kv-conditional-gates",
+      "evidence": "unit",
+      "description": "K4 executable requirement and deployed evidence identity, location and uncertainty gates",
+      "commandSignature": "8e13986882708a1b60eaea8d0c591131fa7b50331d31901ab73d6cdb3f248c7f",
+      "timeoutMs": 30000,
+      "durationMs": 513,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "7461acbf17df08cc70e925c1ba4d2936f95ba45b235b6894607a79e01e255281"
+    },
+    {
+      "name": "s3-read-contract",
+      "evidence": "unit",
+      "description": "S3 read binding authority, lowering negatives and bounded result contract",
+      "commandSignature": "491c7963566480a1beb19ec473c912d541c6351cdd693e0e6b2d6e3b30599168",
+      "timeoutMs": 30000,
+      "durationMs": 1745,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "64b705e071841d45de8195590c7145981ba9ab294bd667fcae85e3c5b661df11"
+    },
+    {
+      "name": "s3-write-contract",
+      "evidence": "unit",
+      "description": "S3 PUT lowering, bounded outcomes, JavaScript Crypto bytes and pre-dispatch lifecycle",
+      "commandSignature": "8bb0cb3043db8502e30e69ea971284370eefe33b1903bae07f3043d7d146df3a",
+      "timeoutMs": 30000,
+      "durationMs": 319,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "c44352d10985250a8bd75caddd1dee5dcc11182cfe4e63113ad73a6fb095e63d"
+    },
+    {
+      "name": "crypto-config-planning",
+      "evidence": "unit",
+      "description": "crypto profile replacement, reachable requirements, and deterministic target realization planning",
+      "commandSignature": "f974c9c28b2c6c462d8f2ffe1fcefd79c92dd2ca8f7400521f3b5fdc7f595629",
+      "timeoutMs": 180000,
+      "durationMs": 604,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "f0bd6466c4cdaea4923a910011dc087181e0f2f8d8dd50ca1a543dc871c708d2"
+    },
+    {
+      "name": "crypto-es256-signing",
+      "evidence": "unit",
+      "description": "RFC6979 signing vector, frame rejection and private material cleanup",
+      "commandSignature": "18b1c9b900bb60dbcf834208456d972eb9b89d95315d096fc0fa0e6f5cd7c12e",
+      "timeoutMs": 180000,
+      "durationMs": 140,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "538fae1059c91b768501e644ca6b90945bdc662f1d68727f65d3410503dc8def"
+    },
+    {
+      "name": "crypto-rs256",
+      "evidence": "unit",
+      "description": "RS256 independent interoperability, CRT consistency, malformed padding, bounds and cleanup",
+      "commandSignature": "2b89c6a68f41a1b4c6b6a871965e9c61daf9bed21d44cd9fe2623ef90c45c179",
+      "timeoutMs": 180000,
+      "durationMs": 1645,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "469b7a5a4ab06f927b709cfa61d76580a7d1583b75b066456fa03da1edb6f8bd"
+    },
+    {
+      "name": "crypto-digest-text-contract",
+      "evidence": "unit",
+      "description": "Exact-text digest admission, bounded failures, unavailable providers and cancellation",
+      "commandSignature": "b000696b88d5e74ee4f7530009f303c581c31a146d25e21f557758d7fa24c84a",
+      "timeoutMs": 30000,
+      "durationMs": 459,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "d38e6eb47a03fe6ceeef8ddd34138ea4920fb279937366783613b6c6391c6974"
+    },
+    {
+      "name": "reachable-graph",
+      "evidence": "unit",
+      "description": "deterministic path-independent reachable graph",
+      "commandSignature": "36f0d4051f425a15def64e50b19939728707f4bf704c8a6549b657ba5f61e758",
+      "timeoutMs": 120000,
+      "durationMs": 167,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "dd9b8737febeb3712781f1949f26d882b159d27160cfce0a9cca5eaadaeb43ac"
+    },
+    {
+      "name": "project-modules",
+      "evidence": "unit",
+      "description": "recursive modules, handlers, Routers, cycles, and diagnostics",
+      "commandSignature": "23af0c5d3a3e51967c6ffad3a2a96d0d8ce5664af47515255b217941979964b3",
+      "timeoutMs": 180000,
+      "durationMs": 966,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "d6b9875711b70aac9276a6d87706dec95cdac7a24f43f60d65e2c9714ab0a86a"
+    },
+    {
+      "name": "package-reachability",
+      "evidence": "unit",
+      "description": "graph-selected package operations and native eligibility",
+      "commandSignature": "fd015bbdd89c052de0752cf060edbc2f529ac7b478a7cd458089c00b3af78974",
+      "timeoutMs": 240000,
+      "durationMs": 1029,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "cf2529ae95c9f13f9c65a246ee8d57465b3d40905aaaea42b9061a586fe97fdb"
+    },
+    {
+      "name": "provider-toolchain",
+      "evidence": "unit",
+      "description": "exact compiler-to-provider toolchain invocation and result boundary",
+      "commandSignature": "355ef81880d425286032372e3d4e8a18a46cd21d60c87dbeea2ae6e44346de01",
+      "timeoutMs": 30000,
+      "durationMs": 142,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "7a3c6123c712abf97460b998e0dbb55a036187414c17dda9fd1cec5ddba02098"
+    },
+    {
+      "name": "schema-registry",
+      "evidence": "unit",
+      "description": "pulse.schema registry and semantic trace contracts",
+      "commandSignature": "0a717d390ffe199d5cfd072240aad9c4f155b1b24cdaba92e2cd77e246b4f29b",
+      "timeoutMs": 120000,
+      "durationMs": 869,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "acd08c340e8d1f0027e7a25598fc759ae6e21728b79a9b96fb7e8c9d8045659a"
+    },
+    {
+      "name": "continuation-registry",
+      "evidence": "unit",
+      "description": "continuation state, expiry, and resume guards",
+      "commandSignature": "f4bec6420908331bf64d7107ff093b083b927d2790bf0ddbdf340f182efb0243",
+      "timeoutMs": 30000,
+      "durationMs": 116,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "3c671433498470a7364bbe60b158b86b4599d6c6a877da06a84919ddeb4bc74d"
+    },
+    {
+      "name": "entities-contracts",
+      "evidence": "unit",
+      "description": "Entities versions, bounded normalizers, deterministic identities, and trusted compile-time package boundary",
+      "commandSignature": "571216ef38a3bebe3e4d51ee1daa0ee4c667763ef9245039b8764005cfcc91ef",
+      "timeoutMs": 30000,
+      "durationMs": 166,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "571a190fd447549e59eca2280512bf86277476a69408bc956e7c805eb0178cba"
+    },
+    {
+      "name": "entities-schema-bridge",
+      "evidence": "unit",
+      "description": "I3 request-bound declared-schema codec bridge, immutable values, semantic traces, and negative authority surface",
+      "commandSignature": "71b57e051ad9e0539044d0bc54106195808ff9cc0aeddcd841846a0a9cb5ba63",
+      "timeoutMs": 120000,
+      "durationMs": 322,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "bd0953d88382715b73af8c6fba359d4e3274af5a76d63992132d324cf60c1331"
+    },
+    {
+      "name": "entities-javascript-runtime",
+      "evidence": "javascript",
+      "description": "I4 real package dispatch, JSON-RPC framing, redaction, notification acknowledgement, and catalog identity",
+      "commandSignature": "1f2a2e29b5bf2ec23f7c7b1f085e905cbe63e79afa9a8ec765ba630c2371501e",
+      "timeoutMs": 120000,
+      "durationMs": 752,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "12428b2cfe41007d4405322179225926d5a45f311cd7720c03186b78c26f36ed"
+    },
+    {
+      "name": "entities-json-rpc-corpus",
+      "evidence": "unit",
+      "description": "I4 production scanner parity with the frozen bounded positive and negative envelope corpus",
+      "commandSignature": "8400b65775a097b3cbe972fd49be0f26b4b0932b9adde4bbb93838d9a4d13729",
+      "timeoutMs": 30000,
+      "durationMs": 122,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "f970589887a2c27f2a692a5a0076b6dd2bad97d7310b4b67ceffdeb287389b6b"
+    },
+    {
+      "name": "mcp-http",
+      "evidence": "unit",
+      "description": "MCP-02 bounded protocol admission, discovery, errors, deadlines and Node HTTP bridge",
+      "commandSignature": "078cea9ab2935b29c630947082e44b9dff5fd9ff15e38269774f9ea215485f57",
+      "timeoutMs": 30000,
+      "durationMs": 337,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "e368ef604eb1c7fd3b3e83a405f738379c071c601c18da2c11a7f50dc59c8819"
+    },
+    {
+      "name": "mcp-tools",
+      "evidence": "unit",
+      "description": "MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures",
+      "commandSignature": "b9e548270a9287b77ca0ce2fdf6ba7fab60c695c587fbf5ebbcfee2e16b5edd4",
+      "timeoutMs": 30000,
+      "durationMs": 280,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "3fd3ca4e1b669122a45d9859ca4f1413b8a9ff4e8fe023bc23301b9fe2896844"
+    },
+    {
+      "name": "mcp-authorization",
+      "evidence": "unit",
+      "description": "MCP-04 resource metadata, token introspection, scoped admission and credential isolation",
+      "commandSignature": "c873c9c368c8d6a9ba2086b8c78a26248d4cf087569bc29468e34bf3e3a15845",
+      "timeoutMs": 30000,
+      "durationMs": 2480,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "3cd0be716e8ddb613156b870643d144caa0140311db229f0570f38e92a7c0f4e"
+    },
+    {
+      "name": "entities-package-owned-lowering",
+      "evidence": "unit",
+      "description": "I2 first-party static extraction, terminal intrinsic, schema linkage, and fail-closed lowerer boundary",
+      "commandSignature": "ba1c1d3fd6b9e918f9ffcd7b8ee1f3d6cd0a5d17f203619180c311fa6a819375",
+      "timeoutMs": 30000,
+      "durationMs": 395,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "7e465d36b63d27cf66e44ba517fecd74e7506bc74c8e8bbdc83edecb21f10509"
+    },
+    {
+      "name": "entities-catalog",
+      "evidence": "unit",
+      "description": "deterministic entity catalog, eligible-target truth, and current product status",
+      "commandSignature": "aefc59951bc4e252ff4332426dcc57f465cb0a12340263790ca1dff6e819d9bf",
+      "timeoutMs": 30000,
+      "durationMs": 335,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "ede80b3844e948f3b12da690d83f3ccbb633c6bcb6d75539cde584b218d3bea2"
+    },
+    {
+      "name": "entities-inspection",
+      "evidence": "unit",
+      "description": "canonical project and pulse inspect declarations, redacted handler effects, I9 target evidence, and deterministic build artifacts",
+      "commandSignature": "c8a47921084289327f480e40dd1657f94da65cc1a3637d283b280a2d4ceb70c2",
+      "timeoutMs": 120000,
+      "durationMs": 11003,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "3f0f464baecefd1869b43c513ed4ee78a40f38b2c52ba9fa496752743d8f28d7"
+    },
+    {
+      "name": "entities-orchestration-demo",
+      "evidence": "unit",
+      "description": "I10 external tools facade over static catalog discovery, governed JSON-RPC calls, backend fetch, and Native artifact inspection",
+      "commandSignature": "eb44b5c04b442c101bb52125a05535715488a21e5e44a14f62a82112663092a7",
+      "timeoutMs": 180000,
+      "durationMs": 6054,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "22a18d182f96ad8818f61b4e47eb930e3fd6966cfbaa10d1aefe28aaee7eb8ca"
+    },
+    {
+      "name": "clean-machine-acceptance",
+      "evidence": "release",
+      "description": "packed clean-consumer workflows",
+      "commandSignature": "29f613ecc5a64ad213c739ee1d6593ad76e6a501f5d6bb02a23aa75cfcf412b4",
+      "timeoutMs": 900000,
+      "durationMs": 218732,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "d9677ffb58657440b34f4e71cc079f0b94c0f9c83d2a583363f5db83560056a8"
+    },
+    {
+      "name": "multifile-source-identity",
+      "evidence": "conformance",
+      "description": "Source-qualified effect and intrinsic identity, duplicate rejection and three-target multifile routing",
+      "commandSignature": "b764cab8b1bb788e04965277ae472599c0f8dc04b2ad6867b37d3e3e2a796986",
+      "timeoutMs": 180000,
+      "durationMs": 14362,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "ddd6118e94d615de1ebedce441e79d058119d389e90e874be53898c0a5a648da"
+    },
+    {
+      "name": "release-evidence-authority",
+      "evidence": "release",
+      "description": "sixteen-shard aggregation and exact evidence boundary",
+      "commandSignature": "db2665493c6d094be64e887afccad1f929b70508bdc98af57a696517306bdeec",
+      "timeoutMs": 30000,
+      "durationMs": 183,
+      "status": "passed",
+      "exitCode": 0,
+      "signal": null,
+      "interruptedBy": null,
+      "error": null,
+      "taskLogSha256": "8ee08590fb421e091c6c8f080b96d1abd6bf0247ec52195cdbef1a306689f6e8"
+    }
+  ],
+  "reportSha256": "fd328a78c82f40a6b8ec41165b032545c3358fd811a7deffd1c5d39c45770d44",
+  "testedTree": "599b3ca2581ea5030deece917bf43008cbfec00b",
+  "workingTreeAtStart": "",
+  "qualification": "Focused development selection; not a complete seal",
+  "corpusReportSha256": "ce6fa2c0d32fa72725d544dd7d0100e5242851d0fb0504fa1c651cc78fc2344b",
+  "corpusReport": {
+    "version": "pulse.clean-machine-corpora.v1",
+    "status": "passed",
+    "sourceIdentity": {
+      "sourceRevision": "a5ab13ec0a83ff7daa85ae756ec42c4eb6570786",
+      "sourceIdentityKind": "git-commit",
+      "sourceDigestSha256": null,
+      "sourceFiles": null
+    },
+    "sourceTree": "599b3ca2581ea5030deece917bf43008cbfec00b",
+    "workingTree": "",
+    "workingDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "acceptanceScriptSha256": "e6c8cecbd3a4bd373a963582dc51c1a0722ad1c1d4ecbd86cd6a613721504166",
+    "node": "v24.19.0",
+    "startedAt": "2026-10-06T01:07:35.301Z",
+    "corpora": [
+      {
+        "id": "s3",
+        "status": "passed",
+        "workspaceTasks": [
+          "s3-native-read",
+          "s3-write-conformance"
+        ],
+        "oracleSha256": "2fb8c4469f2bed3ef9bc6afcf87b1bfd87405151fa450e620f357d1e9a3aed94",
+        "result": {
+          "status": "passed",
+          "results": {
+            "reads": {
+              "status": "passed",
+              "cases": 68,
+              "executions": 204,
+              "targets": [
+                "node-native",
+                "node-javascript",
+                "fastly-native"
+              ],
+              "providerReality": false
+            },
+            "writes": {
+              "status": "passed",
+              "cases": 40,
+              "executions": 114,
+              "targets": [
+                "node-native",
+                "node-javascript",
+                "fastly-native"
+              ],
+              "fastlyJavascript": "documented-sdk-limitation",
+              "providerReality": false
+            }
+          },
+          "publicTypes": "passed",
+          "providerReality": false,
+          "version": "pulse.s3-packed-acceptance.v1",
+          "releaseVersion": "1.0.0-beta.6",
+          "packageCount": 19,
+          "packages": [
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/grip",
+              "version": "1.0.0-beta.6",
+              "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+            },
+            {
+              "name": "@pulse-compute/assets",
+              "version": "1.0.0-beta.6",
+              "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/entities",
+              "version": "1.0.0-beta.6",
+              "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ],
+          "installedBytesUnchanged": true,
+          "liveOrigin": "deferred-until-after-T2"
+        },
+        "durationMs": 24996
+      },
+      {
+        "id": "request-deadline",
+        "status": "passed",
+        "workspaceTasks": [
+          "request-budget-transport"
+        ],
+        "oracleSha256": "3931a7b2cc751c92fb3f3389dfa77fdd2daf73c49d02ae2f8640ffd41c8c7dee",
+        "result": {
+          "status": "passed",
+          "results": {
+            "profiles": [
+              "node-native",
+              "node-javascript",
+              "fastly-native"
+            ],
+            "maxDurationMs": 10000,
+            "cumulativeDelaysMs": [
+              6000,
+              6000
+            ],
+            "targetCases": 6,
+            "httpAdmissionCases": 2,
+            "fastlyWasmSha256": "80ca1e228f62b3859ecb113d5b915633492f5e92bd4bbecd2fd2fbdc9fc7f379"
+          },
+          "publicTypes": "passed",
+          "workspaceProductModules": 0,
+          "providerReality": false,
+          "staleArtifactRejected": true,
+          "fastlyJavascriptRejected": true,
+          "regeneratedArtifactMatches": true,
+          "schemaVersion": "pulse.request-deadline-packed.v1",
+          "packageCount": 19,
+          "packages": [
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/grip",
+              "version": "1.0.0-beta.6",
+              "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+            },
+            {
+              "name": "@pulse-compute/assets",
+              "version": "1.0.0-beta.6",
+              "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/entities",
+              "version": "1.0.0-beta.6",
+              "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ],
+          "installedBytesUnchanged": true,
+          "incompleteClosureRejected": true,
+          "alteredTarballRejected": true
+        },
+        "durationMs": 10841
+      },
+      {
+        "id": "multifile",
+        "status": "passed",
+        "workspaceTasks": [
+          "multifile-source-identity"
+        ],
+        "oracleSha256": "c36cc973ad77bd53ae6b1c7c0d0f05225036d02637db0698f7132db1b12ca33e",
+        "result": {
+          "status": "passed",
+          "executions": 12,
+          "sourceOrders": 2,
+          "sharedHandlers": {
+            "status": "passed",
+            "executions": 18,
+            "authoredEffects": 3,
+            "generatedEffects": 9
+          },
+          "artifacts": [
+            {
+              "profile": "node-native",
+              "sourceOrder": [
+                "first",
+                "other"
+              ],
+              "sourceHash": "c9da6f63b1cd85fb4e313c364951d23f78c0c472aa7d1b9480d60522516235cf",
+              "files": [
+                {
+                  "path": "canonical-handler.cjs",
+                  "sha256": "e28b0cc06a734385634bc94c841e73f56db419c76bd91e12b5fc45482fca9592"
+                },
+                {
+                  "path": "canonical-native-manifest.json",
+                  "sha256": "7fc140af73e12b659c3b9272e29858e313fa4363685f3769e61588c38469127f"
+                },
+                {
+                  "path": "canonical-native-plan.json",
+                  "sha256": "c535cfe30bff268f8ccbc7eda90ab3f4c7d3b8daec45524ed8901fa2e4ce844d"
+                },
+                {
+                  "path": "canonical-native.as.ts",
+                  "sha256": "3a2907cd69377d8716961c097ad31883341d9b2b84c413bb4c8a13af02f01a35"
+                },
+                {
+                  "path": "canonical-native.wasm",
+                  "sha256": "bcf50ccb1e4a2c58e76c6ecbe282a465e16b32555e8b2284fdaaa94eacdacd46"
+                },
+                {
+                  "path": "canonical-program.json",
+                  "sha256": "39d945bb815392b679a223e067037be203ab93d52b8bafa1a4c9a09b45af8a5e"
+                },
+                {
+                  "path": "pulse-build.json",
+                  "sha256": "0beb4bdf339c35261577d8c85c34d50ed773857a50cab0051a98e904619e710e"
+                }
+              ]
+            },
+            {
+              "profile": "node-javascript",
+              "sourceOrder": [
+                "first",
+                "other"
+              ],
+              "sourceHash": "c9da6f63b1cd85fb4e313c364951d23f78c0c472aa7d1b9480d60522516235cf",
+              "files": [
+                {
+                  "path": "application/src/first.js",
+                  "sha256": "e2f15cbac0837e918bcde38c35fdb5c759ed59139629244c5f7ceac25ca8e9e3"
+                },
+                {
+                  "path": "application/src/index.js",
+                  "sha256": "fbaaa8f7c0507af70e58c703d946b2be7914b3aa8b5814d65cd569a18f63df1c"
+                },
+                {
+                  "path": "application/src/other.js",
+                  "sha256": "004313e54c55fcc508404579491c1db8d855416b6ca5da6240ba252bdc04e1f7"
+                },
+                {
+                  "path": "index.cjs",
+                  "sha256": "3a69e9d98122cb2f640d3aa0aade78b128d8a6ad211fd0bc2c1f2a7b23b6962b"
+                },
+                {
+                  "path": "package.json",
+                  "sha256": "aa5f13369837a3e2fc57d0cb336629e051996aaaee7a9705ff78ca2f463c1212"
+                },
+                {
+                  "path": "pulse-build.json",
+                  "sha256": "d4b11f88b62126f734dd55163df318d3c35008cb33c50566990968e6e274f373"
+                },
+                {
+                  "path": "pulse-javascript-application-plan.json",
+                  "sha256": "5816902d7df754c01e5c6d88c930260603af3605c7462023638dc17faa13b09a"
+                },
+                {
+                  "path": "pulse-javascript-source-package.json",
+                  "sha256": "681faeb5bf8678391b577cb74e073e58c9b2c893751dbf3bd7bb1c506cf4eca9"
+                }
+              ]
+            },
+            {
+              "profile": "fastly-native",
+              "sourceOrder": [
+                "first",
+                "other"
+              ],
+              "sourceHash": "c9da6f63b1cd85fb4e313c364951d23f78c0c472aa7d1b9480d60522516235cf",
+              "files": [
+                {
+                  "path": "bin/main.wasm",
+                  "sha256": "018f2787af5bac51b7847a93c1f3392fc44e66f30a517e04aa8ea242c8f149f6"
+                },
+                {
+                  "path": "canonical-handler.cjs",
+                  "sha256": "7f135d42b718d3664689940d2cdaf0f0e1254c7ff11b8b163472ff0c32214794"
+                },
+                {
+                  "path": "canonical-native-manifest.json",
+                  "sha256": "11b79c72b953fa0a330d82c49291dc7070a0716560e5f72e7a2dd2553c382d7e"
+                },
+                {
+                  "path": "canonical-native-plan.json",
+                  "sha256": "9d7c769b11332da849d4c3830e51c156a90ad7c296e3c95e6d2a07be3fec519c"
+                },
+                {
+                  "path": "canonical-native.as.ts",
+                  "sha256": "2533583b028343e359d2b90d79a09d29d5bb83fb8994f435c4caf0736d01577e"
+                },
+                {
+                  "path": "canonical-native.wasm",
+                  "sha256": "5f50c837041d0f2c1573bc19c641fa5fdecf1f54399ef51cf533f0eb5f36db96"
+                },
+                {
+                  "path": "canonical-program.json",
+                  "sha256": "92f1c435bd51c496c05b93fda7afe20007fa3f859384b8b567666d98d229fcc8"
+                },
+                {
+                  "path": "fastly-build.json",
+                  "sha256": "b506e069199d88e504264e1c78e39515174e47d86eaae4c40b709aedacafe8a0"
+                },
+                {
+                  "path": "fastly-entry.cjs",
+                  "sha256": "7d8c8fb554ca55ba0a3e571d3f0e34022b0196268657527004c7c1924bd41e85"
+                },
+                {
+                  "path": "fastly-native-manifest.json",
+                  "sha256": "59a478384f39000a5d5d5e6ab61afab3405f5c7bcdeb81b42118052e3fbb9bb8"
+                },
+                {
+                  "path": "fastly-native-plan.json",
+                  "sha256": "9d7c769b11332da849d4c3830e51c156a90ad7c296e3c95e6d2a07be3fec519c"
+                },
+                {
+                  "path": "fastly-provider.json",
+                  "sha256": "e48cde8bc74b530bc594bece20874b93360cd9acbd372722c54fd3afcbf1581c"
+                },
+                {
+                  "path": "fastly.toml",
+                  "sha256": "1ba6e757dd37d13099cb7a0ba3d8ce2185773fbf02e0ae205033379ac4bbed14"
+                },
+                {
+                  "path": "package.json",
+                  "sha256": "b41a8a450a335be9579b411d3bdccd2d1784589c79eaf82e0d0158a4112235da"
+                },
+                {
+                  "path": "pulse-build.json",
+                  "sha256": "54e799ea940210c4dc7bddf4a5cc1003fd3c7f01e46b522fa87afdcefc9552e6"
+                },
+                {
+                  "path": "src/main.as.ts",
+                  "sha256": "4b58391649557d891a2aab932ceaa10c96ab23d4d5d1866881a4b8051e842793"
+                }
+              ]
+            },
+            {
+              "profile": "node-native",
+              "sourceOrder": [
+                "other",
+                "first"
+              ],
+              "sourceHash": "eca91310af30ef12c6e2da7018a31b38f06bd5b73823cbf703bfa1ee5b7aeaec",
+              "files": [
+                {
+                  "path": "canonical-handler.cjs",
+                  "sha256": "26d588e463195e66b3398188a207f93c9a8d8be93353d2c5ad88a0821717c10f"
+                },
+                {
+                  "path": "canonical-native-manifest.json",
+                  "sha256": "612cfc98bc4be994960e89143f877a614a27b731ec412218eade1abbffba0510"
+                },
+                {
+                  "path": "canonical-native-plan.json",
+                  "sha256": "ddb4fbae4b6dfd3bc268c6fcea0d24aef571279c1c0acb4c29faac3cb156e481"
+                },
+                {
+                  "path": "canonical-native.as.ts",
+                  "sha256": "cb6950e90952986cf274788899b29b0d8ffd45eef76cda2b5d26dfb7c394cd95"
+                },
+                {
+                  "path": "canonical-native.wasm",
+                  "sha256": "7f043aedf0a131f9006e40d6cb07737570f69c2a8cfcb64bd0e46e76a3b9d868"
+                },
+                {
+                  "path": "canonical-program.json",
+                  "sha256": "01668fef4f42ca30c5f510dad7fab4822e1b1b3db055e084e516df4afb768939"
+                },
+                {
+                  "path": "pulse-build.json",
+                  "sha256": "832d46967e5a56fc79d771f8f53b811b14c4e4b44ef3f9dd3f95d3c6687046ef"
+                }
+              ]
+            },
+            {
+              "profile": "node-javascript",
+              "sourceOrder": [
+                "other",
+                "first"
+              ],
+              "sourceHash": "eca91310af30ef12c6e2da7018a31b38f06bd5b73823cbf703bfa1ee5b7aeaec",
+              "files": [
+                {
+                  "path": "application/src/first.js",
+                  "sha256": "e2f15cbac0837e918bcde38c35fdb5c759ed59139629244c5f7ceac25ca8e9e3"
+                },
+                {
+                  "path": "application/src/index.js",
+                  "sha256": "5a548312daab04ab167fd7d5b96b95f2c300143cdeb82ed3f4b807fbeefc300e"
+                },
+                {
+                  "path": "application/src/other.js",
+                  "sha256": "004313e54c55fcc508404579491c1db8d855416b6ca5da6240ba252bdc04e1f7"
+                },
+                {
+                  "path": "index.cjs",
+                  "sha256": "3a69e9d98122cb2f640d3aa0aade78b128d8a6ad211fd0bc2c1f2a7b23b6962b"
+                },
+                {
+                  "path": "package.json",
+                  "sha256": "aa5f13369837a3e2fc57d0cb336629e051996aaaee7a9705ff78ca2f463c1212"
+                },
+                {
+                  "path": "pulse-build.json",
+                  "sha256": "c7fc7b74ed20cd83ba232700d23b8618b99646a121db0d008ffc0e78b07bcf69"
+                },
+                {
+                  "path": "pulse-javascript-application-plan.json",
+                  "sha256": "e58cb28e2456beadb4525056a124f0666d458bb0f85708b4f3c65bd2f9f1c905"
+                },
+                {
+                  "path": "pulse-javascript-source-package.json",
+                  "sha256": "033baa725807a610e2d50a5905728717c15b5c22c6057beb2f4e7a95bfea73c8"
+                }
+              ]
+            },
+            {
+              "profile": "fastly-native",
+              "sourceOrder": [
+                "other",
+                "first"
+              ],
+              "sourceHash": "eca91310af30ef12c6e2da7018a31b38f06bd5b73823cbf703bfa1ee5b7aeaec",
+              "files": [
+                {
+                  "path": "bin/main.wasm",
+                  "sha256": "c1beeb18576333d84618644b72cc988a1cbf5ae8a40a947d265aace1c13e9ba9"
+                },
+                {
+                  "path": "canonical-handler.cjs",
+                  "sha256": "4f97c9a428ba4759a6dd293ebdffeca964b1fb7238b377840278234d5e1ea897"
+                },
+                {
+                  "path": "canonical-native-manifest.json",
+                  "sha256": "165df0e60a6cbb33c97fa7419446d433ac5141e73617e5614db49abc5fe789fd"
+                },
+                {
+                  "path": "canonical-native-plan.json",
+                  "sha256": "062c5d0a14c4284dd2b3bd1d4c873c9f21b9ea3e9f24808a081652487a5fd55c"
+                },
+                {
+                  "path": "canonical-native.as.ts",
+                  "sha256": "73fd25917275d423555e6ff8b81ddd2d8412bbe5e3f1ca79afc21b79d0992d47"
+                },
+                {
+                  "path": "canonical-native.wasm",
+                  "sha256": "fe55dc96c00e2044c49e0106688a3f9e0ea6a0f78bafd66ced815b9f3f41c375"
+                },
+                {
+                  "path": "canonical-program.json",
+                  "sha256": "e91e8c57fb04a53245b6450f2e80fb402a89f81e105f9f3d4b542e96f5ad1871"
+                },
+                {
+                  "path": "fastly-build.json",
+                  "sha256": "cfce701ae879f9ee7eaedfd1d7929195a66e5e3695a58288a0d98042c16ec0d3"
+                },
+                {
+                  "path": "fastly-entry.cjs",
+                  "sha256": "7d8c8fb554ca55ba0a3e571d3f0e34022b0196268657527004c7c1924bd41e85"
+                },
+                {
+                  "path": "fastly-native-manifest.json",
+                  "sha256": "40c1d8d6a2aab51ccc44e07c988df9c0c71a6aff3c88d21d925ba7d5bbad95e8"
+                },
+                {
+                  "path": "fastly-native-plan.json",
+                  "sha256": "062c5d0a14c4284dd2b3bd1d4c873c9f21b9ea3e9f24808a081652487a5fd55c"
+                },
+                {
+                  "path": "fastly-provider.json",
+                  "sha256": "a927fc6e2ae5e0029ab948a4a20531bd42aeb3087f5e4b930d56a3c92ea98b53"
+                },
+                {
+                  "path": "fastly.toml",
+                  "sha256": "1ba6e757dd37d13099cb7a0ba3d8ce2185773fbf02e0ae205033379ac4bbed14"
+                },
+                {
+                  "path": "package.json",
+                  "sha256": "b41a8a450a335be9579b411d3bdccd2d1784589c79eaf82e0d0158a4112235da"
+                },
+                {
+                  "path": "pulse-build.json",
+                  "sha256": "a2bc466133783e95f8d11710b33646d32a9c8ad8bfeb1190863f158b56f26cba"
+                },
+                {
+                  "path": "src/main.as.ts",
+                  "sha256": "6be2e4d5508951588038cb1b808d8123e708b48dbdccefb1215491c3455fc3b1"
+                }
+              ]
+            }
+          ],
+          "providerReality": false,
+          "workspaceProductModules": 0,
+          "schemaVersion": "pulse.multifile-packed.v1",
+          "packageCount": 19,
+          "packages": [
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/grip",
+              "version": "1.0.0-beta.6",
+              "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+            },
+            {
+              "name": "@pulse-compute/assets",
+              "version": "1.0.0-beta.6",
+              "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/entities",
+              "version": "1.0.0-beta.6",
+              "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ],
+          "installedBytesUnchanged": true,
+          "incompleteClosureRejected": true,
+          "alteredCompilerRejected": true,
+          "regeneratedArtifactsMatch": true
+        },
+        "durationMs": 38742
+      },
+      {
+        "id": "http-input",
+        "status": "passed",
+        "workspaceTasks": [
+          "http-input-outcomes"
+        ],
+        "oracleSha256": "5d53988b0e3a9f32c300a32de23477a76cd10c48ba700ccaf2fec639668ecb9d",
+        "result": {
+          "status": "passed",
+          "providerReality": false,
+          "sourceSha256": "003e115eb9ad23b91b9e6cef88f8d58f81f138ae1814680cc7272ac762f18bbd",
+          "fastlyWasmSha256": "be0774635bce6ce0a098e8bcacddcad49a14553502fbb6aa9c8071075a781e86",
+          "rows": [
+            {
+              "mode": "node-native",
+              "case": "80",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "bf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "c0af",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "c1bf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "c2",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "c328",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "e08080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "eda080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "edbfbf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "e282",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "e228a1",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "f0808080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "f4908080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "f5808080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "f09f98",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "ff",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "\"\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "\"ascii\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "\"\\u0000\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "\"\ufffd(\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "\"\u00e9\u4e2d\ud83d\ude00\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "\"\ufefftext\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\ud83d\ude00\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-native",
+              "case": "over-limit",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "invalid-over-limit",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "/auth",
+              "status": 401,
+              "preparations": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "/auth",
+              "status": 401,
+              "preparations": 0
+            },
+            {
+              "mode": "node-native",
+              "case": "/deny",
+              "status": 403,
+              "preparations": 0,
+              "outcome": "not-accepted"
+            },
+            {
+              "mode": "node-native",
+              "case": "/unknown",
+              "status": 503,
+              "preparations": 0,
+              "outcome": "unknown"
+            },
+            {
+              "mode": "node-native",
+              "case": "/commit",
+              "status": 201,
+              "preparations": 1,
+              "outcome": "accepted"
+            },
+            {
+              "mode": "node-native",
+              "case": "/commit",
+              "status": 409,
+              "preparations": 1,
+              "outcome": "not-accepted"
+            },
+            {
+              "mode": "node-javascript",
+              "case": "80",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "bf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "c0af",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "c1bf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "c2",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "c328",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "e08080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "eda080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "edbfbf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "e282",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "e228a1",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "f0808080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "f4908080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "f5808080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "f09f98",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "ff",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"ascii\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"\\u0000\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"\ufffd(\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"\u00e9\u4e2d\ud83d\ude00\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"\ufefftext\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\ud83d\ude00\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "node-javascript",
+              "case": "over-limit",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "invalid-over-limit",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "/auth",
+              "status": 401,
+              "preparations": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "/auth",
+              "status": 401,
+              "preparations": 0
+            },
+            {
+              "mode": "node-javascript",
+              "case": "/deny",
+              "status": 403,
+              "preparations": 0,
+              "outcome": "not-accepted"
+            },
+            {
+              "mode": "node-javascript",
+              "case": "/unknown",
+              "status": 503,
+              "preparations": 0,
+              "outcome": "unknown"
+            },
+            {
+              "mode": "node-javascript",
+              "case": "/commit",
+              "status": 201,
+              "preparations": 1,
+              "outcome": "accepted"
+            },
+            {
+              "mode": "node-javascript",
+              "case": "/commit",
+              "status": 409,
+              "preparations": 1,
+              "outcome": "not-accepted"
+            },
+            {
+              "mode": "fastly-native",
+              "case": "80",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "bf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "c0af",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "c1bf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "c2",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "c328",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "e08080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "eda080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "edbfbf",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "e282",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "e228a1",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "f0808080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "f4908080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "f5808080",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "f09f98",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "ff",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"ascii\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"\\u0000\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"\ufffd(\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"\u00e9\u4e2d\ud83d\ude00\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"\ufefftext\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\ud83d\ude00\"",
+              "status": 201,
+              "writes": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "over-limit",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "invalid-over-limit",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "/auth",
+              "status": 401,
+              "preparations": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "/auth",
+              "status": 401,
+              "preparations": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "/deny",
+              "status": 403,
+              "preparations": 0,
+              "outcome": "not-accepted"
+            },
+            {
+              "mode": "fastly-native",
+              "case": "/unknown",
+              "status": 503,
+              "preparations": 0,
+              "outcome": "unknown"
+            },
+            {
+              "mode": "fastly-native",
+              "case": "/commit",
+              "status": 201,
+              "preparations": 1,
+              "outcome": "accepted"
+            },
+            {
+              "mode": "fastly-native",
+              "case": "/commit",
+              "status": 409,
+              "preparations": 1,
+              "outcome": "not-accepted"
+            },
+            {
+              "mode": "node-native-http",
+              "requests": 30,
+              "status": "passed"
+            },
+            {
+              "mode": "node-javascript-http",
+              "requests": 30,
+              "status": "passed"
+            },
+            {
+              "mode": "node-native",
+              "case": "committed-acknowledgement-lost",
+              "status": 503,
+              "committed": true,
+              "outcome": "unknown"
+            },
+            {
+              "mode": "node-javascript",
+              "case": "committed-acknowledgement-lost",
+              "status": 503,
+              "committed": true,
+              "outcome": "unknown"
+            },
+            {
+              "mode": "fastly-native",
+              "case": "committed-acknowledgement-lost",
+              "status": 503,
+              "committed": true,
+              "outcome": "unknown"
+            },
+            {
+              "mode": "node-javascript-http",
+              "case": "deadline-after-commit",
+              "status": 504,
+              "committed": true,
+              "responses": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "deadline-after-commit",
+              "status": 504,
+              "committed": true,
+              "responses": 1
+            },
+            {
+              "mode": "fastly-native",
+              "case": "default-body-error",
+              "status": 400,
+              "writes": 0
+            },
+            {
+              "mode": "fastly-native",
+              "case": "default-body-error",
+              "status": 413,
+              "writes": 0
+            },
+            {
+              "mode": "node-native-http",
+              "case": "default-body-error",
+              "status": 400,
+              "parityDebt": false
+            },
+            {
+              "mode": "node-javascript-http",
+              "case": "default-body-error",
+              "status": 500,
+              "parityDebt": true
+            }
+          ],
+          "workspaceProductModules": 0,
+          "schemaVersion": "pulse.http-input-packed.v1",
+          "packageCount": 19,
+          "packages": [
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/grip",
+              "version": "1.0.0-beta.6",
+              "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+            },
+            {
+              "name": "@pulse-compute/assets",
+              "version": "1.0.0-beta.6",
+              "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/entities",
+              "version": "1.0.0-beta.6",
+              "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ],
+          "installedBytesUnchanged": true,
+          "incompleteClosureRejected": true,
+          "alteredCompilerRejected": true
+        },
+        "durationMs": 12240
+      },
+      {
+        "id": "read-loop",
+        "status": "passed",
+        "workspaceTasks": [],
+        "oracleSha256": "152b5b267cde103bc63b0ee26febee7bcb7a7138c022c537434c3d17cd40568e",
+        "result": {
+          "status": "passed",
+          "checks": [
+            {
+              "target": "node",
+              "name": "zero",
+              "reads": 0,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "one",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "pure-inner-loop",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "continue-and-break",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "early-return",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "exact-64",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "65-incomplete",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "cycle-incomplete",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "missing-page",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "failed-page",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "kv-0",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "kv-1",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "kv-64",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "kv-65",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "zero",
+              "reads": 0,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "one",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "pure-inner-loop",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "continue-and-break",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "early-return",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "exact-64",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "65-incomplete",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "cycle-incomplete",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "missing-page",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "failed-page",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "kv-0",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "kv-1",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "kv-64",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "kv-65",
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "zero",
+              "reads": 0,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "one",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "pure-inner-loop",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "continue-and-break",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "early-return",
+              "reads": 1,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "exact-64",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "65-incomplete",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "cycle-incomplete",
+              "reads": 64,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "missing-page",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "failed-page",
+              "reads": 2,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "kv-0",
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "kv-1",
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "kv-64",
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "kv-65",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "bounded-escaped-field-copy",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "bounded-escaped-field-copy",
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "name": "bounded-escaped-field-copy",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "cumulative-effects",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "cumulative-deadline",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "cancel-late-false",
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "name": "cancel-late-true",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "cumulative-effects",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "cumulative-deadline",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "cancel-late-false",
+              "status": "passed"
+            },
+            {
+              "target": "javascript",
+              "name": "cancel-late-true",
+              "status": "passed"
+            }
+          ],
+          "providerReality": false,
+          "artifacts": {
+            "node": "7ac4f02ca08f4f4b1d7ae932ecb9d0e0e36b190cba3b9bd9d32634cd41756129",
+            "fastly": "30ad9e9551b39c9e3339b01cc876a97985b9dc1df5f868af8899ea5319ed7b69"
+          },
+          "workspaceProductModules": 0,
+          "schemaVersion": "pulse.read-loop-packed-acceptance.v1",
+          "installedBytesUnchanged": true,
+          "packages": [
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/grip",
+              "version": "1.0.0-beta.6",
+              "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+            },
+            {
+              "name": "@pulse-compute/assets",
+              "version": "1.0.0-beta.6",
+              "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/entities",
+              "version": "1.0.0-beta.6",
+              "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ]
+        },
+        "durationMs": 10887
+      },
+      {
+        "id": "read-loop-adoption",
+        "status": "passed",
+        "workspaceTasks": [],
+        "oracleSha256": "f09df2b75ca890bd4b6742615da2afd4d35433642bbde3c18dd627ec73947b11",
+        "result": {
+          "schemaVersion": "pulse.read-loop-adoption-reproduction.v1",
+          "status": "passed",
+          "rows": [
+            {
+              "target": "node",
+              "withReadLoop": false,
+              "status": "passed"
+            },
+            {
+              "target": "fastly",
+              "withReadLoop": false,
+              "status": "passed"
+            },
+            {
+              "target": "node",
+              "withReadLoop": true,
+              "status": "passed",
+              "memory": {
+                "version": "pulse.native-read-loop-memory.v1",
+                "bytes": 6589828,
+                "values": 245866
+              }
+            },
+            {
+              "target": "fastly",
+              "withReadLoop": true,
+              "status": "passed"
+            }
+          ],
+          "installedBytesUnchanged": true,
+          "providerReality": false
+        },
+        "durationMs": 16094
+      },
+      {
+        "id": "kv",
+        "status": "passed",
+        "workspaceTasks": [
+          "kv-conditional-adversarial"
+        ],
+        "oracleSha256": "940891eeacad11bd20d533c5e7db52eca19acf098a990dfae426d4d57fe43f5d",
+        "result": {
+          "version": "pulse.kv-k4-packed.v1",
+          "status": "passed",
+          "results": {
+            "node-native": {
+              "status": "passed",
+              "requests": 171,
+              "groups": [
+                {
+                  "width": 2,
+                  "revisions": 3,
+                  "createWinners": 1,
+                  "casWinnersPerRevision": 1,
+                  "retainedTombstone": true
+                },
+                {
+                  "width": 8,
+                  "revisions": 3,
+                  "createWinners": 1,
+                  "casWinnersPerRevision": 1,
+                  "retainedTombstone": true
+                },
+                {
+                  "width": 16,
+                  "revisions": 3,
+                  "createWinners": 1,
+                  "casWinnersPerRevision": 1,
+                  "retainedTombstone": true
+                }
+              ],
+              "keyedParallel": true,
+              "boundaryValues": 4,
+              "failures": [],
+              "ambiguousCompletion": "passed"
+            },
+            "node-javascript": {
+              "status": "passed",
+              "requests": 171,
+              "groups": [
+                {
+                  "width": 2,
+                  "revisions": 3,
+                  "createWinners": 1,
+                  "casWinnersPerRevision": 1,
+                  "retainedTombstone": true
+                },
+                {
+                  "width": 8,
+                  "revisions": 3,
+                  "createWinners": 1,
+                  "casWinnersPerRevision": 1,
+                  "retainedTombstone": true
+                },
+                {
+                  "width": 16,
+                  "revisions": 3,
+                  "createWinners": 1,
+                  "casWinnersPerRevision": 1,
+                  "retainedTombstone": true
+                }
+              ],
+              "keyedParallel": true,
+              "boundaryValues": 4,
+              "failures": [],
+              "ambiguousCompletion": "passed"
+            }
+          },
+          "module": {
+            "sha256": "c3a50c0c44f92dda7805205a33a5154ffa462277582864916fb74a0410e2116a",
+            "bytes": 48691,
+            "imports": [
+              {
+                "module": "fastly_http_body",
+                "name": "close",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_resp",
+                "name": "send_downstream",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_body",
+                "name": "write",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_body",
+                "name": "read",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_body",
+                "name": "new",
+                "kind": "function"
+              },
+              {
+                "module": "wasi_snapshot_preview1",
+                "name": "clock_time_get",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_kv_store",
+                "name": "open",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_kv_store",
+                "name": "lookup_wait_v2",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_kv_store",
+                "name": "lookup",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_kv_store",
+                "name": "insert_wait",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_kv_store",
+                "name": "insert",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_resp",
+                "name": "status_set",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_resp",
+                "name": "status_get",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_resp",
+                "name": "new",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_resp",
+                "name": "header_append",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_req",
+                "name": "uri_get",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_req",
+                "name": "method_get",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_http_req",
+                "name": "body_downstream_get",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_abi",
+                "name": "init",
+                "kind": "function"
+              },
+              {
+                "module": "fastly_async_io",
+                "name": "select",
+                "kind": "function"
+              }
+            ]
+          },
+          "providerReality": false,
+          "deployed": "pending-T2",
+          "publicTypes": "passed",
+          "workspaceProductModules": 0,
+          "installedBytesUnchanged": true,
+          "packageCount": 19,
+          "packages": [
+            {
+              "name": "@pulse-compute/runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+            },
+            {
+              "name": "@pulse-compute/pulse",
+              "version": "1.0.0-beta.6",
+              "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+            },
+            {
+              "name": "@pulse-compute/cli",
+              "version": "1.0.0-beta.6",
+              "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+            },
+            {
+              "name": "@pulse-compute/provider-fastly",
+              "version": "1.0.0-beta.6",
+              "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+            },
+            {
+              "name": "@pulse-compute/grip",
+              "version": "1.0.0-beta.6",
+              "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+            },
+            {
+              "name": "@pulse-compute/assets",
+              "version": "1.0.0-beta.6",
+              "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+            },
+            {
+              "name": "@pulse-compute/crypto",
+              "version": "1.0.0-beta.6",
+              "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+            },
+            {
+              "name": "@pulse-compute/jwt",
+              "version": "1.0.0-beta.6",
+              "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+            },
+            {
+              "name": "@pulse-compute/entities",
+              "version": "1.0.0-beta.6",
+              "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+            },
+            {
+              "name": "@pulse-compute/s3",
+              "version": "1.0.0-beta.6",
+              "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+            },
+            {
+              "name": "@pulse-compute/wasm-build-support",
+              "version": "1.0.0-beta.6",
+              "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+            },
+            {
+              "name": "@pulse-compute/wasm-compiler",
+              "version": "1.0.0-beta.6",
+              "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+            },
+            {
+              "name": "@pulse-compute/wasm-guest-link",
+              "version": "1.0.0-beta.6",
+              "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+            },
+            {
+              "name": "@pulse-compute/wasm-contracts",
+              "version": "1.0.0-beta.6",
+              "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+            },
+            {
+              "name": "@pulse-compute/wasm-host-runtime",
+              "version": "1.0.0-beta.6",
+              "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+            },
+            {
+              "name": "@pulse-compute/wasm-library-kit",
+              "version": "1.0.0-beta.6",
+              "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+            },
+            {
+              "name": "@pulse-compute/provider-node",
+              "version": "1.0.0-beta.6",
+              "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+            },
+            {
+              "name": "@pulse-compute/wasm-runtime-core-as",
+              "version": "1.0.0-beta.6",
+              "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+            },
+            {
+              "name": "@pulse-compute/wasm-schema-json",
+              "version": "1.0.0-beta.6",
+              "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+            }
+          ]
+        },
+        "durationMs": 5998
+      }
+    ],
+    "durationMs": 218104,
+    "packages": [
+      {
+        "name": "@pulse-compute/runtime",
+        "version": "1.0.0-beta.6",
+        "sha256": "67dae8a13d39c4d6f0c85a0a48288cbaf052865435471c4ab0fedb187f378b1a"
+      },
+      {
+        "name": "@pulse-compute/pulse",
+        "version": "1.0.0-beta.6",
+        "sha256": "cf46606f366c6868eb459e3b7224b19a95533c3c7ef54898dab5ab2280713ec6"
+      },
+      {
+        "name": "@pulse-compute/cli",
+        "version": "1.0.0-beta.6",
+        "sha256": "78fc0e93a22424583b5c4d52e970232a54e11878f0caa57b6d30f4c62eaac97a"
+      },
+      {
+        "name": "@pulse-compute/provider-fastly",
+        "version": "1.0.0-beta.6",
+        "sha256": "a1eaaf19949478fa3633fafb193aebed700e048a13eafb02f620d4c6777d72db"
+      },
+      {
+        "name": "@pulse-compute/grip",
+        "version": "1.0.0-beta.6",
+        "sha256": "a47116d19cad8a355531b90281cc8023736bfd939a82627cde6d46733f4cf422"
+      },
+      {
+        "name": "@pulse-compute/assets",
+        "version": "1.0.0-beta.6",
+        "sha256": "6cc3b37eb5063672a0ccaa508e15f6d1e455659f08f092423a3749a27229c4ff"
+      },
+      {
+        "name": "@pulse-compute/crypto",
+        "version": "1.0.0-beta.6",
+        "sha256": "322562c4141b51cbd3ab8dabecf2a32148c6ccc190ff7924ac39dce5f903d144"
+      },
+      {
+        "name": "@pulse-compute/jwt",
+        "version": "1.0.0-beta.6",
+        "sha256": "1213f3dbb10234e32082cb57330df978ec008b78db1b515cab4c29116e4e7eb4"
+      },
+      {
+        "name": "@pulse-compute/entities",
+        "version": "1.0.0-beta.6",
+        "sha256": "2757c40d590c169987a4c780a10eb8d6ceee65305b06c10f8f43d9466a80ebab"
+      },
+      {
+        "name": "@pulse-compute/s3",
+        "version": "1.0.0-beta.6",
+        "sha256": "3c0770ee67d345ed6ca343eda90d172136b6f1c5c50f1a04677d69cd9a5e19f3"
+      },
+      {
+        "name": "@pulse-compute/wasm-build-support",
+        "version": "1.0.0-beta.6",
+        "sha256": "c92f391dc79be5389ac9fa023f1d5cde79cd7d26b42f2f681205467024921d00"
+      },
+      {
+        "name": "@pulse-compute/wasm-compiler",
+        "version": "1.0.0-beta.6",
+        "sha256": "dcb4103ebff6c833c271558e60a10b1e75156bfc2f008f4f30247bd38e717316"
+      },
+      {
+        "name": "@pulse-compute/wasm-guest-link",
+        "version": "1.0.0-beta.6",
+        "sha256": "cc45303e2709b31806591ea4ce468af29064d037db20e57cdea8bbce2f437324"
+      },
+      {
+        "name": "@pulse-compute/wasm-contracts",
+        "version": "1.0.0-beta.6",
+        "sha256": "50df707cdaa37b07516e200f3c51465e6a3d102fc89b900ca0895b4255696817"
+      },
+      {
+        "name": "@pulse-compute/wasm-host-runtime",
+        "version": "1.0.0-beta.6",
+        "sha256": "5b7fc225edfa2fa7b1177f4cc645a41a213dd45a31a4d878eb30afb16b964a3f"
+      },
+      {
+        "name": "@pulse-compute/wasm-library-kit",
+        "version": "1.0.0-beta.6",
+        "sha256": "5f6394684538156d0dc656500803149acbc3831e82447ddfe85084a14325463b"
+      },
+      {
+        "name": "@pulse-compute/provider-node",
+        "version": "1.0.0-beta.6",
+        "sha256": "92406e2200f5f481ce5649caff6e4ff2fc68aa22dab14be194e09fcac5a3556d"
+      },
+      {
+        "name": "@pulse-compute/wasm-runtime-core-as",
+        "version": "1.0.0-beta.6",
+        "sha256": "6b4f7bc10b2f0b97f8126ee89a0098b0711069100546954856cfb4bc8809ee9a"
+      },
+      {
+        "name": "@pulse-compute/wasm-schema-json",
+        "version": "1.0.0-beta.6",
+        "sha256": "a61b80c442df4defedc8f9a574adb542d18ed0394e3f1f9502e1359206a4973f"
+      }
+    ]
+  }
+}
