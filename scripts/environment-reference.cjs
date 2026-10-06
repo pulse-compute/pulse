@@ -21,6 +21,18 @@ const ENVIRONMENT_CATEGORIES = Object.freeze({
 
 const ENVIRONMENT_VARIABLES = Object.freeze([
   entry({
+    name: 'PULSEWASM_SEAL_WORKER_LAYOUT',
+    category: 'contributor',
+    value: 'Absolute controller-owned layout path',
+    default: 'Unset; shared packages belong only to their original checkout.',
+    precedence: 'The release controller supplies the registered layout to each isolated worker.',
+    consumer: 'Shared package verification in local seal workers.',
+    secretSafety: 'Not a secret. Identifies private worktrees and their clean candidate.',
+    stability: 'Harness-internal; outside the application compatibility contract.',
+    description: 'Allows exact shared-package consumption by registered local children of one controller; foreign checkouts and remote proof pooling remain rejected.',
+    sourceFiles: ['scripts/release-shared-pack.cjs', 'wasm/scripts/run-wasm-tests.cjs']
+  }),
+  entry({
     name: 'PULSE_RELEASE_SHARED_PACK',
     category: 'contributor',
     value: 'Directory path',

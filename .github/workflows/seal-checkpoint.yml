@@ -2,12 +2,21 @@ name: Seal checkpoint
 
 on:
   workflow_dispatch:
+    inputs:
+      workers:
+        description: Isolated local workers (1 keeps serial execution)
+        type: choice
+        options: ['1', '2', '4']
+        default: '1'
   pull_request:
     types: [opened, synchronize, reopened]
     branches: [latest]
     paths:
       - '.github/workflows/seal-checkpoint.yml'
       - 'scripts/release-seal-measure.cjs'
+      - 'scripts/release-parallel.cjs'
+      - 'scripts/validate-release.cjs'
+      - 'wasm/scripts/run-wasm-tests.cjs'
       - 'wasm/test/release/**'
 
 permissions:
@@ -20,9 +29,12 @@ concurrency:
 jobs:
   qualify:
     # The bootstrap branch is an explicit opt-in, not an ordinary PR gate.
-    if: github.event_name == 'workflow_dispatch' || (github.head_ref == 'evidence/ps06-qualified-seal' && github.event.pull_request.head.repo.full_name == github.repository)
+    if: github.event_name == 'workflow_dispatch' || ((github.head_ref == 'evidence/ps06-qualified-seal' || github.head_ref == 'perf/ps05-bounded-parallel-seal') && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-24.04
     timeout-minutes: 75
+    env:
+      SEAL_WORKERS: ${{ github.head_ref == 'perf/ps05-bounded-parallel-seal' && '4' || inputs.workers || '1' }}
+      SEAL_MEMORY_MIB: '6144'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -72,6 +84,8 @@ jobs:
           /usr/bin/time -v -o .pulse-seal/measurements/worker-resources.txt \
             timeout --signal=TERM --kill-after=45s 60m \
             node scripts/release-seal-measure.cjs --skip-install --timeout-minutes 50 \
+              --workers "$SEAL_WORKERS" --memory-budget-mib "$SEAL_MEMORY_MIB" \
+              --compiler-workers 2 \
               --out .pulse-seal/measurements/ps06-qualified --verify-resume
       - name: Preserve every terminal attempt and measurement
         if: always()
@@ -80,6 +94,7 @@ jobs:
           name: pulse-seal-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             .pulse-seal
+            !.pulse-seal/workspaces
             wasm/.test-results
           include-hidden-files: true
           if-no-files-found: warn

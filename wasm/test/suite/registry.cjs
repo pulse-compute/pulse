@@ -12,7 +12,8 @@ function nodeTask(file, options = {}) {
     timeoutMs: options.timeoutMs || 30000,
     evidence: options.evidence || 'unit',
     description: options.description || file,
-    isolatedArtifacts: options.isolatedArtifacts === true
+    isolatedArtifacts: options.isolatedArtifacts === true,
+    ...(options.scheduling ? { scheduling: options.scheduling } : {})
   });
 }
 

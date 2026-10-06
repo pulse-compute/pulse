@@ -41,7 +41,11 @@ function copySharedPack({ repoRoot, outDir }, env = process.env) {
   assert.equal(sha256(receiptBytes), env.PULSE_RELEASE_SHARED_PACK_SHA256, 'Shared pack receipt changed');
   const receipt = JSON.parse(receiptBytes);
   assert.equal(receipt.schemaVersion, SCHEMA, 'Unknown shared pack receipt');
-  assert.equal(fs.realpathSync(repoRoot), receipt.repoRoot, 'Shared pack belongs to another checkout');
+  if (fs.realpathSync(repoRoot) !== receipt.repoRoot) {
+    require('./release-parallel.cjs').assertManagedWorker(repoRoot, receipt.repoRoot,
+      { sourceRevision: receipt.sourceRevision, sourceTree: receipt.sourceTree, workingTree: receipt.workingTree },
+      env.PULSEWASM_SEAL_WORKER_LAYOUT);
+  }
   const { sourceRevision, sourceTree, workingTree } = receipt;
   assert.deepEqual(candidateIdentity(repoRoot), { sourceRevision, sourceTree, workingTree }, 'Shared pack source changed');
   const names = receipt.files.map(file => file.name);
@@ -63,6 +67,7 @@ function copySharedPack({ repoRoot, outDir }, env = process.env) {
   const destination = path.join(fs.realpathSync(ancestor), ...suffix);
   assert(!contains(destination, directory) && !contains(directory, destination), 'Shared pack and destination must not overlap');
   assert(!contains(destination, fs.realpathSync(repoRoot)), 'Shared pack destination must not contain the checkout');
+  assert(!contains(destination, receipt.repoRoot), 'Shared pack destination must not contain its owning checkout');
   fs.rmSync(outDir, { recursive: true, force: true });
   fs.mkdirSync(outDir, { recursive: true });
   for (const file of receipt.files) {

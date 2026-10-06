@@ -261,120 +261,137 @@ const write = (file, value) => {
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 };
 try {
-  const artifacts = artifactPaths(recoveryDirectory);
-  const context = { schemaVersion: 'pulse.release-recovery.v1',
-    selections: { release: expectedTasks, features: REQUIRED_TASKS }, candidate: { sourceRevision, sourceTree: 'b'.repeat(40), workingTree: '', repoRoot: checkout },
-    lockfileSha256: 'c'.repeat(64), environmentSha256: 'd'.repeat(64), toolchain: { node: process.version },
-    inputs: { dependenciesSha256: 'e'.repeat(64) }, options: { install: true } };
-  const recovery = { schemaVersion: 'pulse.release-recovery.v1', directory: recoveryDirectory,
-    previousDirectory: previousRecoveryDirectory, context, contextSha256: fingerprint(context), artifacts };
-  const packFile = path.join(recoveryDirectory, 'packages/candidate.tgz');
-  write(packFile, { package: 'fixture' });
-  const packLog = path.join(recoveryDirectory, 'shared-pack.log');
-  write(packLog, { package: 'built' });
-  const packStore = createCheckpointStore({ directory: path.join(recoveryDirectory, 'checkpoints/pack'), context });
-  const pack = packStore.record({ id: 'shared-pack', definition: sharedPackDefinition(), dependencies: {},
-    artifacts: { pack: path.dirname(packFile), log: packLog }, result: { id: 'shared-pack', status: 'passed', exitCode: 0, cleanup: { status: 'passed' } } });
-  recovery.sharedPack = { execution: 'executed', proofId: pack.proofId, receiptPath: pack.receiptPath, receiptSha256: pack.receiptSha256 };
-  write(artifacts.fourMode, fourMode);
-  write(artifacts.candidateReport, candidates);
-  write(path.join(artifacts.candidates, 'candidate.json'), candidates);
-  write(artifacts.cleanMachineCorpora, { status: 'passed' });
-  function checkpointReport(names, kind) {
-    const directory = path.join(recoveryDirectory, 'checkpoints', kind);
-    const previousDirectory = path.join(previousRecoveryDirectory, 'checkpoints', kind);
-    const store = createCheckpointStore({ directory, previousDirectory, context });
-    const taskOptions = recoveryTaskOptions(artifacts, kind);
-    const dependencies = { 'shared-pack': pack.proofId };
-    const results = names.map(name => {
-      const overrides = taskOptions[name] || {};
-      if (kind === 'features') write(overrides.artifacts.installedReport, { task: name, status: 'passed' });
-      const logPath = path.join(recoveryDirectory, 'logs', `${name}.log`);
-      write(logPath, { task: name });
-      const result = { name, status: 'passed', exitCode: 0, evidence: tasks[name].evidence, durationMs: 1,
-        logPath, cleanup: { status: 'passed' }, retainedTaskRoot: null, remainingProcessTree: [] };
-      const spec = { id: `task:${name}`, definition: checkpointDefinition(name, tasks[name], overrides),
-        dependencies, artifacts: { ...(overrides.artifacts || {}), 'task-log': logPath }, result };
-      let proof;
-      if (kind === 'release' && name === names[0]) {
-        createCheckpointStore({ directory: previousDirectory, context }).record(spec);
-        proof = store.tryReuse(spec);
-        assert.equal(proof.reused, true);
-      } else proof = store.record(spec);
-      return { ...result, execution: proof.reused ? 'reused' : 'executed',
-        ...(proof.reused ? { originalResult: result, durationMs: 0, reusedDurationMs: result.durationMs } : {}),
-        recoveryReason: proof.reused ? 'verified-checkpoint' : 'missing-checkpoint', checkpoint: {
-        proofId: proof.proofId, receiptPath: proof.receiptPath, receiptSha256: proof.receiptSha256, contextHash: fingerprint(context) } };
-    });
-    return { ...structuredClone(taskReport), requestedTasks: names, selectedTasks: names, completedTasks: names.length, results,
-      recovery: { schemaVersion: 'pulse.seal-task-recovery.v1', directory, previousDirectory,
-        contextHash: fingerprint(context), dependencies, taskOptions,
-        reusedTasks: results.filter(result => result.execution === 'reused').map(result => result.name),
-        executedTasks: results.filter(result => result.execution === 'executed').map(result => result.name) } };
-  }
-  const recoveredTasks = checkpointReport(expectedTasks, 'release');
-  const featureTasks = checkpointReport(REQUIRED_TASKS, 'features');
-  write(artifacts.taskReport, recoveredTasks);
-  write(artifacts.featureTasks, featureTasks);
-  const recoveredFeatures = { ...structuredClone(featureAcceptance),
-    runnerReportSha256: crypto.createHash('sha256').update(fs.readFileSync(artifacts.featureTasks)).digest('hex') };
-  write(artifacts.featureReport, recoveredFeatures);
-  recovery.artifactsSha256 = Object.fromEntries(Object.entries(artifacts).filter(([key]) => key !== 'fastlyReality')
-    .map(([key, file]) => [key, describeArtifact(file)]));
-  const recoveredSeal = { ...structuredClone(releaseSeal), cleanup: { status: 'passed', retainedPath: null },
-    featureAcceptance: recoveredFeatures, recovery, steps: [...releaseSeal.steps,
-      { id: 'dependencies', status: 'passed' }, { id: 'production-dependency-audit', status: 'passed' }, { id: 'shared-pack', status: 'passed' }].map(step => ({ ...step, exitCode: 0 })) };
-  validateRecoveryEvidence(recoveredSeal, { taskReport: recoveredTasks, fourMode, candidates });
-  assert.equal(aggregateValidation({ sourceRevision, releaseSeal: recoveredSeal, taskReport: recoveredTasks, fourMode, candidates, replay }).status, 'passed');
-  assert.equal(resolveEvidencePaths({ explicitArtifacts: [] }, recoveredSeal).taskReport, artifacts.taskReport);
-  const override = path.join(recoveryDirectory, 'copy-tasks.json');
-  fs.copyFileSync(artifacts.taskReport, override);
-  assert.equal(resolveEvidencePaths({ taskReport: override, explicitArtifacts: ['taskReport'] }, recoveredSeal).taskReport, override);
-  fs.appendFileSync(override, ' ');
-  assert.throws(() => resolveEvidencePaths({ taskReport: override, explicitArtifacts: ['taskReport'] }, recoveredSeal), /sealed artifact bytes/);
-  for (const mutate of [
-    seal => { seal.recovery.context.candidate.repoRoot += '-foreign'; seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
-    seal => { seal.recovery.context.candidate.sourceRevision = 'f'.repeat(40); seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
-    seal => { seal.cleanup.status = 'failed'; },
-    seal => { delete seal.recovery.context.schemaVersion; seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
-    seal => { seal.recovery.context.selections.release = ['suite-shape']; seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
-    seal => { seal.recovery.context.selections.features = REQUIRED_TASKS.slice(1); seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
-    seal => { seal.steps.find(step => step.id === 'build').exitCode = 1; },
-    seal => { seal.steps.find(step => step.id === 'build').error = 'failed despite status'; },
-    seal => { seal.steps.find(step => step.id === 'build').timedOut = true; },
-    seal => { seal.steps.find(step => step.id === 'build').interruptedBy = 'SIGTERM'; },
-    seal => { seal.steps.find(step => step.id === 'build').execution = 'reused'; },
-    seal => { seal.steps = seal.steps.filter(step => step.id !== 'dependencies'); },
-    seal => { seal.recovery.sharedPack.proofId = 'foreign-pack'; },
-    seal => { delete seal.recovery.artifactsSha256.featureTasks; }
-  ]) {
-    const invalid = structuredClone(recoveredSeal);
-    mutate(invalid);
-    assert.throws(() => validateRecoveryEvidence(invalid));
-  }
-  function rejectTaskMutation(mutate, pattern) {
-    const invalid = structuredClone(recoveredTasks);
-    mutate(invalid);
-    write(artifacts.taskReport, invalid);
-    const invalidSeal = structuredClone(recoveredSeal);
-    invalidSeal.recovery.artifactsSha256.taskReport = describeArtifact(artifacts.taskReport);
-    assert.throws(() => validateRecoveryEvidence(invalidSeal), pattern);
+  for (const workers of [1, 4]) {
+    fs.rmSync(recoveryDirectory, { recursive: true, force: true });
+    fs.rmSync(previousRecoveryDirectory, { recursive: true, force: true });
+    fs.mkdirSync(recoveryDirectory); fs.mkdirSync(previousRecoveryDirectory);
+    const artifacts = artifactPaths(recoveryDirectory);
+    const context = { schemaVersion: 'pulse.release-recovery.v1',
+      selections: { release: expectedTasks, features: REQUIRED_TASKS }, candidate: { sourceRevision, sourceTree: 'b'.repeat(40), workingTree: '', repoRoot: checkout },
+      lockfileSha256: 'c'.repeat(64), environmentSha256: 'd'.repeat(64), toolchain: { node: process.version },
+      inputs: { dependenciesSha256: 'e'.repeat(64) }, options: { install: true, workers, memoryBudgetMiB: 6144 } };
+    if (workers > 1) {
+      const { workspaceRoot, WORKER_MIB } = require('../../../scripts/release-parallel.cjs');
+      const { repoRoot: _checkout, ...candidate } = context.candidate;
+      context.scheduling = { schemaVersion: 'pulse.seal-workers.v1', root: checkout, candidate,
+        workers, memoryBudgetMiB: 6144, estimatedWorkerMiB: WORKER_MIB, compilerWorkers: 2,
+        workspaces: Array.from({ length: workers }, (_, index) => ({ id: `worker-${index + 1}`,
+          directory: path.join(workspaceRoot(checkout, candidate.sourceTree, workers), `worker-${index + 1}`),
+          inputs: { dependenciesSha256: 'e'.repeat(64), buildSha256: 'f'.repeat(64), dependencyFiles: 1, build: [] } })) };
+    }
+    const recovery = { schemaVersion: 'pulse.release-recovery.v1', directory: recoveryDirectory,
+      previousDirectory: previousRecoveryDirectory, context, contextSha256: fingerprint(context), artifacts };
+    const packFile = path.join(recoveryDirectory, 'packages/candidate.tgz');
+    write(packFile, { package: 'fixture' });
+    const packLog = path.join(recoveryDirectory, 'shared-pack.log');
+    write(packLog, { package: 'built' });
+    const packStore = createCheckpointStore({ directory: path.join(recoveryDirectory, 'checkpoints/pack'), context });
+    const pack = packStore.record({ id: 'shared-pack', definition: sharedPackDefinition(), dependencies: {},
+      artifacts: { pack: path.dirname(packFile), log: packLog }, result: { id: 'shared-pack', status: 'passed', exitCode: 0, cleanup: { status: 'passed' } } });
+    recovery.sharedPack = { execution: 'executed', proofId: pack.proofId, receiptPath: pack.receiptPath, receiptSha256: pack.receiptSha256 };
+    write(artifacts.fourMode, fourMode);
+    write(artifacts.candidateReport, candidates);
+    write(path.join(artifacts.candidates, 'candidate.json'), candidates);
+    write(artifacts.cleanMachineCorpora, { status: 'passed' });
+    function checkpointReport(names, kind) {
+      const directory = path.join(recoveryDirectory, 'checkpoints', kind);
+      const previousDirectory = path.join(previousRecoveryDirectory, 'checkpoints', kind);
+      const store = createCheckpointStore({ directory, previousDirectory, context });
+      const taskOptions = recoveryTaskOptions(artifacts, kind);
+      const dependencies = { 'shared-pack': pack.proofId };
+      const results = names.map(name => {
+        const overrides = taskOptions[name] || {};
+        if (kind === 'features') write(overrides.artifacts.installedReport, { task: name, status: 'passed' });
+        const logPath = path.join(recoveryDirectory, 'logs', `${name}.log`);
+        write(logPath, { task: name });
+        const result = { name, status: 'passed', exitCode: 0, evidence: tasks[name].evidence, durationMs: 1,
+          logPath, cleanup: { status: 'passed' }, retainedTaskRoot: null, remainingProcessTree: [],
+          ...(workers > 1 ? { executionWorkspace: `worker-${names.indexOf(name) % workers + 1}` } : {}) };
+        const spec = { id: `task:${name}`, definition: checkpointDefinition(name, tasks[name], overrides),
+          dependencies, artifacts: { ...(overrides.artifacts || {}), 'task-log': logPath }, result };
+        let proof;
+        if (kind === 'release' && name === names[0]) {
+          createCheckpointStore({ directory: previousDirectory, context }).record(spec);
+          proof = store.tryReuse(spec);
+          assert.equal(proof.reused, true);
+        } else proof = store.record(spec);
+        return { ...result, execution: proof.reused ? 'reused' : 'executed',
+          ...(proof.reused ? { originalResult: result, durationMs: 0, reusedDurationMs: result.durationMs } : {}),
+          recoveryReason: proof.reused ? 'verified-checkpoint' : 'missing-checkpoint', checkpoint: {
+          proofId: proof.proofId, receiptPath: proof.receiptPath, receiptSha256: proof.receiptSha256, contextHash: fingerprint(context) } };
+      });
+      return { ...structuredClone(taskReport), requestedTasks: names, selectedTasks: names, completedTasks: names.length, results,
+        recovery: { schemaVersion: 'pulse.seal-task-recovery.v1', directory, previousDirectory,
+          contextHash: fingerprint(context), dependencies, taskOptions,
+          reusedTasks: results.filter(result => result.execution === 'reused').map(result => result.name),
+          executedTasks: results.filter(result => result.execution === 'executed').map(result => result.name) } };
+    }
+    const recoveredTasks = checkpointReport(expectedTasks, 'release');
+    const featureTasks = checkpointReport(REQUIRED_TASKS, 'features');
     write(artifacts.taskReport, recoveredTasks);
+    write(artifacts.featureTasks, featureTasks);
+    const recoveredFeatures = { ...structuredClone(featureAcceptance),
+      runnerReportSha256: crypto.createHash('sha256').update(fs.readFileSync(artifacts.featureTasks)).digest('hex') };
+    write(artifacts.featureReport, recoveredFeatures);
+    recovery.artifactsSha256 = Object.fromEntries(Object.entries(artifacts).filter(([key]) => key !== 'fastlyReality')
+      .map(([key, file]) => [key, describeArtifact(file)]));
+    const recoveredSeal = { ...structuredClone(releaseSeal), cleanup: { status: 'passed', retainedPath: null },
+      featureAcceptance: recoveredFeatures, recovery, steps: [...releaseSeal.steps,
+        ...(workers > 1 ? [{ id: 'workspaces', status: 'passed' }] : []),
+        { id: 'dependencies', status: 'passed' }, { id: 'production-dependency-audit', status: 'passed' }, { id: 'shared-pack', status: 'passed' }].map(step => ({ ...step, exitCode: 0 })) };
+    validateRecoveryEvidence(recoveredSeal, { taskReport: recoveredTasks, fourMode, candidates });
+    assert.equal(aggregateValidation({ sourceRevision, releaseSeal: recoveredSeal, taskReport: recoveredTasks, fourMode, candidates, replay }).status, 'passed');
+    assert.equal(resolveEvidencePaths({ explicitArtifacts: [] }, recoveredSeal).taskReport, artifacts.taskReport);
+    const override = path.join(recoveryDirectory, 'copy-tasks.json');
+    fs.copyFileSync(artifacts.taskReport, override);
+    assert.equal(resolveEvidencePaths({ taskReport: override, explicitArtifacts: ['taskReport'] }, recoveredSeal).taskReport, override);
+    fs.appendFileSync(override, ' ');
+    assert.throws(() => resolveEvidencePaths({ taskReport: override, explicitArtifacts: ['taskReport'] }, recoveredSeal), /sealed artifact bytes/);
+    for (const mutate of [
+      seal => { seal.recovery.context.candidate.repoRoot += '-foreign'; seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
+      seal => { seal.recovery.context.candidate.sourceRevision = 'f'.repeat(40); seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
+      seal => { seal.cleanup.status = 'failed'; },
+      seal => { delete seal.recovery.context.schemaVersion; seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
+      seal => { seal.recovery.context.selections.release = ['suite-shape']; seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
+      seal => { seal.recovery.context.selections.features = REQUIRED_TASKS.slice(1); seal.recovery.contextSha256 = fingerprint(seal.recovery.context); },
+      seal => { seal.steps.find(step => step.id === 'build').exitCode = 1; },
+      seal => { seal.steps.find(step => step.id === 'build').error = 'failed despite status'; },
+      seal => { seal.steps.find(step => step.id === 'build').timedOut = true; },
+      seal => { seal.steps.find(step => step.id === 'build').interruptedBy = 'SIGTERM'; },
+      seal => { seal.steps.find(step => step.id === 'build').execution = 'reused'; },
+      seal => { seal.steps = seal.steps.filter(step => step.id !== 'dependencies'); },
+      seal => { seal.recovery.sharedPack.proofId = 'foreign-pack'; },
+      seal => { delete seal.recovery.artifactsSha256.featureTasks; }
+    ]) {
+      const invalid = structuredClone(recoveredSeal);
+      mutate(invalid);
+      assert.throws(() => validateRecoveryEvidence(invalid));
+    }
+    function rejectTaskMutation(mutate, pattern) {
+      const invalid = structuredClone(recoveredTasks);
+      mutate(invalid);
+      write(artifacts.taskReport, invalid);
+      const invalidSeal = structuredClone(recoveredSeal);
+      invalidSeal.recovery.artifactsSha256.taskReport = describeArtifact(artifacts.taskReport);
+      assert.throws(() => validateRecoveryEvidence(invalidSeal), pattern);
+      write(artifacts.taskReport, recoveredTasks);
+    }
+    rejectTaskMutation(report => { delete report.results[0].checkpoint; }, /checkpoint/);
+    rejectTaskMutation(report => { report.results[1].execution = 'reused'; }, /disposition/);
+    rejectTaskMutation(report => { report.results[0].checkpoint = report.results[1].checkpoint; }, /definition|another task/);
+    rejectTaskMutation(report => { report.results[0].cleanup.status = 'failed'; }, /differs|altered/);
+    rejectTaskMutation(report => { report.results[0].executionWorkspace = 'foreign-worker'; }, /worker workspace/);
+    rejectTaskMutation(report => { report.recovery.taskOptions['suite-shape'] = { args: ['fake-success'] }; }, /overrides/);
+    const originalReceipt = fs.readFileSync(recoveredTasks.results[0].checkpoint.receiptPath);
+    const damaged = JSON.parse(originalReceipt);
+    damaged.receipt.result.cleanup.status = 'failed';
+    damaged.sha256 = fingerprint(damaged.receipt);
+    write(recoveredTasks.results[0].checkpoint.receiptPath, damaged);
+    assert.throws(() => validateRecoveryEvidence(recoveredSeal), /cleanup/);
+    fs.writeFileSync(recoveredTasks.results[0].checkpoint.receiptPath, originalReceipt);
+    fs.appendFileSync(artifacts.cleanMachineCorpora, ' ');
+    assert.throws(() => validateRecoveryEvidence(recoveredSeal), /artifact changed/);
   }
-  rejectTaskMutation(report => { delete report.results[0].checkpoint; }, /checkpoint/);
-  rejectTaskMutation(report => { report.results[1].execution = 'reused'; }, /disposition/);
-  rejectTaskMutation(report => { report.results[0].checkpoint = report.results[1].checkpoint; }, /definition|another task/);
-  rejectTaskMutation(report => { report.results[0].cleanup.status = 'failed'; }, /differs|altered/);
-  rejectTaskMutation(report => { report.recovery.taskOptions['suite-shape'] = { args: ['fake-success'] }; }, /overrides/);
-  const originalReceipt = fs.readFileSync(recoveredTasks.results[0].checkpoint.receiptPath);
-  const damaged = JSON.parse(originalReceipt);
-  damaged.receipt.result.cleanup.status = 'failed';
-  damaged.sha256 = fingerprint(damaged.receipt);
-  write(recoveredTasks.results[0].checkpoint.receiptPath, damaged);
-  assert.throws(() => validateRecoveryEvidence(recoveredSeal), /cleanup/);
-  fs.writeFileSync(recoveredTasks.results[0].checkpoint.receiptPath, originalReceipt);
-  fs.appendFileSync(artifacts.cleanMachineCorpora, ' ');
-  assert.throws(() => validateRecoveryEvidence(recoveredSeal), /artifact changed/);
 } finally {
   fs.rmSync(recoveryDirectory, { recursive: true, force: true });
   fs.rmSync(previousRecoveryDirectory, { recursive: true, force: true });

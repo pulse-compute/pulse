@@ -322,13 +322,21 @@ async function runTask(name, task, options = {}) {
   const completion = new Promise((resolve) => {
     const detached = process.platform !== 'win32';
     try {
-      child = spawn(task.command, task.args, {
+      // Registry argv contains absolute source/tool paths. Keep the canonical
+      // definition for checkpoint signatures, but execute the worker's copy.
+      const executionPath = value => {
+        if (!options.executionRoot || !path.isAbsolute(value)) return value;
+        const relative = path.relative(path.dirname(wasmRoot), value);
+        if (relative.startsWith(`..${path.sep}`) || relative === '..' || path.isAbsolute(relative) ||
+            relative === '.pulse-seal' || relative.startsWith(`.pulse-seal${path.sep}`)) return value;
+        return path.join(options.executionRoot, relative);
+      };
+      child = spawn(executionPath(task.command), task.args.map(executionPath), {
         cwd: options.cwd || wasmRoot,
         stdio: ['ignore', 'pipe', 'pipe'],
         env,
         detached
       });
-      if (typeof options.onChild === 'function') options.onChild(child);
     } catch (error) {
       spawnError = error;
       resolve(Object.freeze({ code: null, signal: null }));
@@ -366,9 +374,9 @@ async function runTask(name, task, options = {}) {
       // process group. Always terminate the group rather than treating the
       // child's close event as proof that task-owned resources are gone.
       if (processGroupRows(child.pid).length || !resolved) signalTaskTree(child, 'SIGTERM');
-      await wait(TERMINATION_GRACE_MS);
+      await wait(options.terminationGraceMs ?? TERMINATION_GRACE_MS);
       if (processGroupRows(child.pid).length || !resolved) signalTaskTree(child, 'SIGKILL');
-      await wait(KILL_GRACE_MS);
+      await wait(options.killGraceMs ?? KILL_GRACE_MS);
       remainingProcessTree = processGroupRows(child.pid);
       if (!resolved) {
         forcedCompletion = true;
@@ -388,6 +396,9 @@ async function runTask(name, task, options = {}) {
       clearTimeout(timer);
       if (options.signal && abortListener) options.signal.removeEventListener('abort', abortListener);
     });
+    // Tracking/persistence failures must not abandon a spawned worker.
+    try { options.onChild?.(child); }
+    catch (error) { spawnError = error; terminationPromise = terminate('observer-failure'); }
   });
 
   const completed = await completion;
@@ -532,6 +543,7 @@ function recoveryDefinition(task, options = {}) {
     timeoutMs: task.timeoutMs,
     evidence: task.evidence,
     isolatedArtifacts: task.isolatedArtifacts === true,
+    scheduling: task.scheduling || null,
     env: Object.fromEntries(Object.entries(options.env || {}).map(([key, value]) => [key, normalize(value)]))
   };
   return { ...definition, commandSignature: commandSignature(definition) };
@@ -542,7 +554,7 @@ function checkpointDefinition(name, task, options = {}) {
 }
 
 async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryConfig = null,
-  persist = () => {}, signal, onChild, taskRunOptions = {} }) {
+  persist = () => {}, signal, onChild, taskRunOptions = {}, workspaces = null, compilerWorkers = 2 }) {
   let store = null;
   if (recoveryConfig) {
     validateRecoveryConfig(recoveryConfig, selection);
@@ -562,8 +574,25 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       ...(recoveryConfig.artifacts ? { artifacts: recoveryConfig.artifacts } : {}),
       reusedTasks: [], executedTasks: [] };
   }
-  for (const name of selection.selected) {
-    if (signal?.aborted) break;
+  const parallel = workspaces && workspaces.length > 1;
+  const control = new AbortController();
+  const abort = () => control.abort(signal.reason);
+  if (signal?.aborted) abort();
+  else signal?.addEventListener("abort", abort, { once: true });
+  const running = new Map(), finished = new Map();
+  const refresh = () => {
+    state.currentTasks = [...running.keys()];
+    state.currentTask = state.currentTasks[0] || null;
+    state.currentTaskPhases = Object.fromEntries([...running].map(([name, item]) => [name, item.phase]));
+    state.currentTaskPhase = state.currentTaskPhases[state.currentTask] || null;
+    state.results = selection.selected.filter(name => finished.has(name)).map(name => finished.get(name));
+    if (state.recovery) {
+      state.recovery.reusedTasks = state.results.filter(item => item.execution === "reused").map(item => item.name);
+      state.recovery.executedTasks = state.results.filter(item => item.execution === "executed").map(item => item.name);
+    }
+    persist();
+  };
+  async function execute(name, workspace) {
     assert(taskMap[name], `Unknown task: ${name}`);
     const overrides = recoveryConfig?.taskOptions?.[name] || {};
     const task = { ...taskMap[name], args: overrides.args || taskMap[name].args };
@@ -571,9 +600,8 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       ...(store ? { 'task-log': path.join(state.runDir, 'tasks', `${safeName(name)}.log`) } : {}) };
     const spec = store ? { id: `task:${name}`, definition: checkpointDefinition(name, task, overrides),
       dependencies: recoveryConfig.dependencies || {}, artifacts } : null;
-    state.currentTask = name;
-    state.currentTaskPhase = store ? 'checkpoint' : 'execution';
-    persist({ currentTask: name });
+    running.set(name, { workspace, phase: store ? 'checkpoint' : 'execution' });
+    refresh();
     const reuse = store?.tryReuse(spec);
     let result;
     if (reuse?.reused) {
@@ -583,13 +611,18 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       state.recovery.reusedTasks.push(name);
       console.log(`[pulsewasm] ${name}: reused verified same-candidate checkpoint`);
     } else {
-      state.currentTaskPhase = 'execution';
-      persist();
+      running.get(name).phase = 'execution';
+      refresh();
       result = await runTask(name, task, {
         ...taskRunOptions, runDir: state.runDir, sourceEnv: state.sourceEnv,
-        taskEnv: overrides.env, signal, onChild,
-        onPhase(phase) { state.currentTaskPhase = phase; persist(); }
+        taskEnv: { ...overrides.env, ...(workspace && recoveryConfig?.context.scheduling ? {
+          PULSEWASM_SEAL_WORKER_LAYOUT: path.join(path.dirname(workspace.directory), 'layout.json')
+        } : {}) }, signal: control.signal,
+        ...(workspace ? { cwd: path.join(workspace.directory, 'wasm'), executionRoot: workspace.directory } : {}),
+        onChild(child) { onChild?.(child, name); },
+        onPhase(phase) { running.get(name).phase = phase; refresh(); }
       });
+      if (workspace) result = { ...result, executionWorkspace: workspace.id };
       if (store) {
         state.recovery.executedTasks.push(name);
         let recorded;
@@ -611,11 +644,61 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       }
     }
     if (reuse?.reused) result = { ...result, checkpoint: checkpointReference(reuse), recoveryReason: reuse.reason };
-    state.results.push(Object.freeze(result));
-    state.currentTask = null;
-    state.currentTaskPhase = null;
-    persist({ currentTask: null });
-    if (result.status !== 'passed') break;
+    finished.set(name, Object.freeze(result));
+    running.delete(name);
+    refresh();
+    return result;
+  }
+  try {
+    if (!parallel) {
+      for (const name of selection.selected) {
+        if (control.signal.aborted) break;
+        if ((await execute(name, workspaces?.[0])).status !== 'passed') break;
+      }
+    } else {
+      const { scheduling, compilerCount } = require('../../scripts/release-parallel.cjs');
+      const compilerLimit = compilerCount(compilerWorkers, workspaces.length);
+      const queue = selection.selected.map((name, index) => ({ name, index, ...scheduling(name, taskMap[name]) }))
+        .sort((a, b) => b.cost - a.cost || a.index - b.index);
+      const selected = new Set(selection.selected);
+      for (const item of queue) for (const dependency of item.after) assert(selected.has(dependency), `Missing scheduling dependency: ${dependency}`);
+      const free = [...workspaces], active = new Map(), held = new Set();
+      while ((queue.length || active.size) && (!control.signal.aborted || active.size)) {
+        let started = false;
+        if (!control.signal.aborted) {
+          for (let index = 0; index < queue.length && free.length; index++) {
+            const item = queue[index];
+            if (item.compiler && [...active.values()].filter(value => value.item.compiler).length >= compilerLimit) continue;
+            if (item.after.some(name => finished.get(name)?.status !== 'passed') || item.resources.some(resource => held.has(resource))) continue;
+            if ((item.exclusive && active.size) || [...active.values()].some(value => value.item.exclusive)) continue;
+            queue.splice(index--, 1);
+            const workspace = free.shift();
+            item.resources.forEach(resource => held.add(resource));
+            const promise = execute(item.name, workspace).then(result => {
+              if (result.status !== 'passed' && !control.signal.aborted) {
+                state.error = { code: 'PULSE_PARALLEL_TASK_FAILED', message: `${item.name} failed; sibling workers cancelled` };
+                control.abort('sibling-failure');
+              }
+            }).catch(error => {
+              state.error = { code: error.code || null, message: error.message };
+              control.abort('sibling-failure');
+            }).finally(() => {
+              item.resources.forEach(resource => held.delete(resource));
+              active.delete(item.name); free.push(workspace);
+            });
+            active.set(item.name, { promise, item });
+            started = true;
+          }
+        }
+        if (active.size) await Promise.race([...active.values()].map(value => value.promise));
+        else if (queue.length && !control.signal.aborted) throw new Error('Scheduling dependencies cannot make progress');
+        else if (!started) break;
+      }
+      await Promise.all([...active.values()].map(value => value.promise));
+    }
+  } finally {
+    signal?.removeEventListener('abort', abort);
+    running.clear(); state.currentTaskPhase = null; refresh();
   }
   return state.results;
 }
@@ -642,6 +725,9 @@ function reportSnapshot(state, updates = {}) {
     currentTask: updates.currentTask === undefined ? state.currentTask : updates.currentTask,
     currentTaskPhase: state.currentTaskPhase || null,
     activeChildPid: state.activeChildPid || null,
+    ...(state.activeChildPids ? { activeChildPids: [...state.activeChildPids] } : {}),
+    ...(state.currentTasks ? { currentTasks: [...state.currentTasks] } : {}),
+    ...(state.currentTaskPhases ? { currentTaskPhases: { ...state.currentTaskPhases } } : {}),
     completedTasks: state.results.length,
     results: Object.freeze([...state.results]),
     runDirectory: relativeToWasm(state.runDir),
@@ -703,7 +789,7 @@ async function main() {
   persist();
 
   const controller = new AbortController();
-  let activeChild = null;
+  const activeChildren = new Map();
   let receivedSignal = null;
   const signalHandler = (signal) => {
     if (receivedSignal) return;
@@ -712,7 +798,7 @@ async function main() {
     persist({ status: 'interrupted', currentTask: state.currentTask });
   };
   for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) process.once(signal, () => signalHandler(signal));
-  process.once('exit', () => { if (activeChild) signalTaskTree(activeChild, 'SIGKILL'); });
+  process.once('exit', () => { for (const child of activeChildren.values()) signalTaskTree(child, 'SIGKILL'); });
 
   const heartbeat = setInterval(() => {
     persist();
@@ -729,8 +815,25 @@ async function main() {
         assert.equal(candidate.sourceRevision, state.sourceRevision, 'Recovery candidate differs from the runner source identity');
       }
     }
-    await runSelectedTasks({ state, selection, recoveryConfig, persist, signal: controller.signal,
-      onChild(child) { activeChild = child; state.activeChildPid = child?.pid || null; persist(); } });
+    let workspaces = null;
+    if (recoveryConfig?.context.scheduling) {
+      const { readLayout } = require('../../scripts/release-parallel.cjs');
+      const root = path.resolve(wasmRoot, '..'), options = recoveryConfig.context.options;
+      const layout = readLayout(root, recoveryConfig.context.candidate, options.workers, options.memoryBudgetMiB, options.compilerWorkers);
+      workspaces = layout.workspaces;
+      for (const workspace of workspaces) {
+        const input = require('../../scripts/release-recovery.cjs').inputIdentity(workspace.directory);
+        assert.deepEqual(input, recoveryConfig.context.scheduling.workspaces.find(item => item.id === workspace.id).inputs,
+          'Worker dependency/build inputs changed before execution');
+      }
+    }
+    await runSelectedTasks({ state, selection, recoveryConfig, persist, signal: controller.signal, workspaces,
+      compilerWorkers: recoveryConfig?.context.scheduling?.compilerWorkers || 2,
+      onChild(child, name) {
+        if (child) activeChildren.set(name, child); else activeChildren.delete(name);
+        state.activeChildPids = [...activeChildren.values()].map(value => value.pid);
+        state.activeChildPid = state.activeChildPids[0] || null; persist();
+      } });
   } catch (error) {
     state.error = { code: error.code || null, message: error.message || String(error) };
     console.error(error && error.stack ? error.stack : error);
