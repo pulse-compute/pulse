@@ -1,6 +1,11 @@
 # PS-09: final Native emission extraction map
 
-The next implementation is **two sequential PS-10 slices**: preparation and
+The mapped extraction is complete in PS-10 A/B (PRs #204/#205).
+[PS-11](../ps11/README.md) is the final ownership map, parity and measurement
+closeout. The inventory and line references below preserve the original planning
+revision; they are not the current implementation layout.
+
+The planned implementation was **two sequential PS-10 slices**: preparation and
 support emission, then expression/control emission and final assembly. Keep the
 existing plan, contract and provider authorities. The extraction needs private
 modules and explicit inputs, not another compiler pipeline or IR.
