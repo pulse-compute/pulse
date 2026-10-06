@@ -36,6 +36,7 @@ async function verifyBootstrap(root) {
   const identity = { sourceRevision: git(['rev-parse', 'HEAD']).toString().trim(), sourceIdentityKind: 'git-commit' };
   const supervisor = require('../../../scripts/release-process.cjs');
   const statusOwner = require('../../../scripts/release-seal-status.cjs');
+  const recovery = require('../../../scripts/release-recovery.cjs');
   const sourceModule = require.resolve('../../../scripts/source-identity.cjs');
   const sourceExports = require(sourceModule);
   const sourceOwner = { ...sourceExports };
@@ -45,12 +46,15 @@ async function verifyBootstrap(root) {
   const fastly = { ...fastlyExports };
   const sealModule = require.resolve('../../../scripts/validate-release.cjs');
   const original = { run: supervisor.runCommand, create: statusOwner.createSealStatus,
+    acquire: recovery.acquireSealLock,
     source: sourceOwner.resolveSourceIdentity, candidate: acceptance.candidateIdentity,
     fastly: fastly.inspectFastlyCli, load: Module._load, mkdtemp: fs.mkdtempSync,
     now: Date.now, node: Object.getOwnPropertyDescriptor(process.versions, 'node'), write: process.stdout.write };
   let calls, lastReport;
   const unavailable = () => { throw Object.assign(new Error('Fixture CLI unavailable'), { code: 'PULSE_FASTLY_CLI_UNAVAILABLE' }); };
   async function attempt(args, configure = () => {}) {
+    // Exercise real ownership in a private fixture, outside the candidate tree.
+    recovery.acquireSealLock = (_root, directory) => original.acquire(path.join(root, 'bootstrap-lock-owner'), directory);
     calls = [];
     lastReport = null;
     sourceOwner.resolveSourceIdentity = () => identity;
@@ -99,6 +103,7 @@ async function verifyBootstrap(root) {
       return lastReport;
     } finally {
       supervisor.runCommand = original.run;
+      recovery.acquireSealLock = original.acquire;
       statusOwner.createSealStatus = original.create;
       require.cache[sourceModule].exports = sourceExports;
       acceptance.candidateIdentity = original.candidate;
