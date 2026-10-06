@@ -32,8 +32,9 @@ node scripts/release-seal-measure.cjs --skip-install --timeout-minutes 50 \
 ```
 
 The opt-in hosted checkpoint restores pinned dependencies without lifecycle
-scripts, runs the representative comparison, then one complete parallel seal and
-interrupted recovery demonstration. Retained artifacts exclude disposable worker
+scripts, then runs one complete parallel seal and interrupted recovery
+demonstration. The paired comparison is a manually selected development workload,
+not a recurring qualification gate. Retained artifacts exclude disposable worker
 checkouts. Full seal speedup remains unmeasured until that job passes; the goal is
 10–15 minutes, not an acceptance claim or relaxed coverage.
 
@@ -63,3 +64,19 @@ workers owned even when child tracking fails and uses short termination grace
 periods only in synthetic scheduler fixtures; production deadlines are unchanged.
 Hosted results, tested source identity and artifact links belong in the PR and its
 retained Actions evidence. This note grants no release-candidate KV exception.
+
+The first hosted comparison (run `37423259848`, source `5f39e95a79f70b46a869bd61ef4ae3c6283689c2`)
+passed the same four tasks with freshly installed pinned dependencies on four CPUs:
+220.954 s serial versus 145.981 s parallel plus 4.827 s setup (1.47× including
+setup). Sampled summed process-tree RSS rose from 856,608 to 2,891,212 KiB,
+within the 6144 MiB budget; worker source/dependency/build inputs were unchanged.
+The subsequent full seal failed before release tasks: the maintainer source walk
+counted the four disposable worktrees as additional AGENTS sources (45 instead
+of nine). The canonical walk now excludes generated `.pulse-seal` contents,
+consistent with its existing publication/documentation-output exclusions.
+The failed attempt and successful comparison remain retained in the run artifact;
+neither is described as a passing full seal.
+Real package construction with two active worktrees then passed all 19 packages
+and the canonical nine-instruction-file check. The retry proceeds directly to
+full qualification; the already completed six-minute paired comparison is retained
+rather than added to every seal.

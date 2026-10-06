@@ -75,10 +75,6 @@ jobs:
           pnpm run build
           node wasm/test/release/assert-release-seal-measure.cjs
           node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no-report
-      - name: Compare representative serial and parallel compilation work
-        if: env.SEAL_WORKERS == '4'
-        timeout-minutes: 15
-        run: node wasm/test/release/ps05-measure.cjs
       - name: Measure fresh seal and interrupted same-candidate recovery
         timeout-minutes: 62
         shell: bash

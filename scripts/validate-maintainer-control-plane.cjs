@@ -36,7 +36,7 @@ function stableJson(value) { return `${JSON.stringify(value, null, 2)}\n`; }
 function filesUnder(root, predicate = () => true, out = []) {
   if (!fs.existsSync(root)) return out;
   for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
-    if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.pulse-docs-site' || entry.name === '.pulse-publication' || entry.name === '.pulse-documentation-deployment') continue;
+    if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.pulse-seal' || entry.name === '.pulse-docs-site' || entry.name === '.pulse-publication' || entry.name === '.pulse-documentation-deployment') continue;
     const file = path.join(root, entry.name);
     if (entry.isDirectory()) filesUnder(file, predicate, out);
     else if (entry.isFile() && predicate(file)) out.push(file);
