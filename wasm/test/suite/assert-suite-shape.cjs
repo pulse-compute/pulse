@@ -61,6 +61,8 @@ const externalTasks = new Set([
   // MCP-01 is a reference SDK/design proof, not Pulse adapter release acceptance.
   'mcp-wire-proof',
   'mcp-installed',
+  // PMCP-01 qualifies the private packed surface before PMCP-06 release membership.
+  'mcp-package',
   // JWT-01 installs candidate packages from a temporary registry for focused qualification.
   'jwt-installed-workflow',
   'str02-installed',

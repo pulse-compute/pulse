@@ -1,37 +1,87 @@
-# Pulse MCP HTTP adapter — private candidate
+# Pulse MCP HTTP adapter
 
-MCP-02/03/04 implement the bounded protocol shell and tools facade for **MCP 2026-07-28** outside the
-entity engine. This package is private, version `0.0.0`, and excluded from the
-release manifest. Its interfaces are repository candidate interfaces, not
-supported Pulse guest imports. It has no runtime dependencies.
+`@pulse-compute/mcp` provides bounded **MCP 2026-07-28** HTTP integration for
+host applications outside the entity engine. It has zero runtime dependencies.
+The package surface is the root and `/node`; implementation files are private.
+
+Release status: still private, version `0.0.0`, and excluded from the release
+manifest. PMCP-01 prepares and qualifies the packed host surface; PMCP-06 owns
+release membership and publication readiness. These are host APIs, used outside
+Pulse guest handlers and schemas.
 
 `server/discover` always works. Configuring `tools` enables `tools/list` and
 `tools/call`, and advertises `{ tools: { listChanged: false } }`. Otherwise the
-capabilities remain `{}`. MCP-04 adds optional OAuth resource-server admission
-and per-operation scope policy. Without `authorization`, the candidate remains
+capabilities remain `{}`. Optional OAuth resource-server admission includes
+per-operation scope policy. Without `authorization`, the adapter remains
 unauthenticated and suitable only for local/private integration.
-The protocol profile remains [MCP-01](../../wasm/test/mcp/MCP-01.md).
 
-## Candidate interfaces
+## Host integration
+
+| Import | Runtime exports |
+|---|---|
+| `@pulse-compute/mcp` | `createMcpHttpHandler`, `PROTOCOL_VERSION`, `DEFAULT_LIMITS` |
+| `@pulse-compute/mcp/node` | `createMcpNodeHandler` |
+
+CommonJS `require` and ESM named imports use the same implementation. Root
+declarations export `McpHttpOptions`, `McpHttpHandler`, `McpLimits`,
+`McpToolsOptions` and `McpAuthorizationOptions`. Node TypeScript consumers supply
+`@types/node` as a development dependency; the adapter adds no runtime dependency.
 
 `createMcpHttpHandler(options)` returns `{ fetch(Request): Promise<Response> }`.
 `createMcpNodeHandler(options)` returns an `http.createServer` request listener.
 The application owns the listener, authentication, shutdown and deployment.
-This is not the production Node launcher (NODE-01).
+An application may compose this listener with its ordinary backend launcher.
 
-Repository-only Node use:
+Until publication, pack the package and install that tarball in the host project:
+
+```sh
+# From the Pulse checkout; no build or lifecycle script is needed.
+npm pack ./packages/mcp --ignore-scripts --pack-destination /tmp
+# From a separate host project:
+npm install /tmp/pulse-compute-mcp-0.0.0.tgz --ignore-scripts
+```
+
+CommonJS host:
 
 ```js
 const http = require('node:http');
-const { createMcpNodeHandler } = require('./packages/mcp/src/node.js');
+const { createMcpNodeHandler } = require('@pulse-compute/mcp/node');
 const server = http.createServer(createMcpNodeHandler());
 server.listen(3000, '127.0.0.1');
 ```
+
+ESM hosts use `import { createMcpNodeHandler } from '@pulse-compute/mcp/node'`.
+Fetch-based hosts use `import { createMcpHttpHandler } from '@pulse-compute/mcp'`
+and pass incoming Web `Request` objects to the returned `fetch` method. The
+measured host is Node JavaScript on Node 24.19.0. The package declares Node
+`^22.14.0 || ^24.0.0`;
+other deployment environments require their own acceptance evidence.
+
+The tarball includes only runtime JavaScript, declarations, this README,
+`LICENSE`, `NOTICE` and package metadata. Acceptance applications and tests stay
+in the repository. Apache-2.0 legal files match the repository's release notices.
 
 The default path is `/mcp`. `serverInfo` accepts bounded name/version strings,
 copied at construction. `allowedOrigins` is an exact HTTP(S) origin allowlist,
 also copied. By default every present Origin is rejected; an absent Origin is
 permitted. Origin checks and self-reported client metadata are not authentication.
+
+## Client compatibility
+
+The adapter requires the `2026-07-28` HTTP/tools profile: `server/discover`,
+revision/method headers and per-request metadata. It provides no legacy
+`initialize` handshake or revision negotiation. A client's Streamable HTTP
+support alone does not establish compatibility.
+
+| Client | Measured result |
+|---|---|
+| Official `@modelcontextprotocol/client@2.2.0`, pinned to `2026-07-28` | Packed-adapter discovery passes; existing tools and OAuth proofs qualify the same profile. |
+| Intended host: Codex CLI `0.160.1` | Incompatible in the 2026-10-06 probe: sends `initialize` with `2025-06-18`, lacks the required modern headers and receives HTTP 400 / `-32020`. MCP startup fails before tool discovery. |
+
+Codex support is **not claimed**. Follow-up **PMCP-01A: intended-client protocol
+compatibility** must decide and qualify a bounded compatibility path or a newer
+compatible Codex version before promising Codex support or its end-to-end
+acceptance. PMCP-01 does not change the protocol or add a compatibility shim.
 
 ## Admission and lifetime
 
@@ -239,6 +289,7 @@ identity-provider/deployment qualification are not claimed by this Node fixture.
 ## Evidence
 
 ```sh
+node wasm/scripts/run-wasm-tests.cjs --task mcp-package --no-report
 node wasm/scripts/run-wasm-tests.cjs --task mcp-http --report /tmp/mcp-http.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-http-sdk --report /tmp/mcp-sdk.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-tools --report /tmp/mcp-tools.json
@@ -246,6 +297,25 @@ node wasm/scripts/run-wasm-tests.cjs --task mcp-tools-sdk --report /tmp/mcp-tool
 node wasm/scripts/run-wasm-tests.cjs --task mcp-authorization --report /tmp/mcp-auth.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-authorization-sdk --report /tmp/mcp-auth-sdk.json
 ```
+
+`mcp-package` packs and installs outside the checkout, checks the exact file
+allowlist and legal notices, imports both entry points from CommonJS and ESM,
+rejects implementation subpaths, and type-checks `.cts`/`.mts` consumers with
+strict NodeNext resolution and no source aliases or `skipLibCheck`. The restored
+workspace supplies only the consumer's development compiler and Node types.
+An independently installed locked official client then performs repeated
+discovery against the installed tarball. This explicit external task is not
+added to the fast or seal profiles. Reports are retained under
+`wasm/.test-results/mcp-package-*`.
+
+To reproduce the intended-host probe with a separately installed, pinned Codex
+CLI, run `node wasm/test/mcp/probe-mcp-codex.cjs /absolute/path/to/codex` from
+the checkout. It packs the adapter, uses an isolated child configuration and
+calls app-server `mcpServerStatus/list` without starting a thread or inference.
+Exit 2 means measured incompatibility; exit 1 means the probe itself failed.
+Discovery success does not qualify tool invocation. Reports are retained under
+`wasm/.test-results/mcp-codex-*`. Repository profile details and historical
+evidence live in `wasm/test/mcp/MCP-01.md`.
 
 `mcp-http` covers T01–T06 and HTTP admission in T07 from MCP-01, including negative
 envelopes/headers, concurrent isolation, byte/depth limits, stalled streams,
@@ -271,7 +341,7 @@ successful invocation; the backend records exactly one request. This is Node
 JavaScript source-workspace evidence, not installed/deployed acceptance. Source,
 fixture and adapter identities plus wire records are retained under
 `wasm/.test-results/mcp-tools-sdk-*`. MCP-05 adds independent installed acceptance through
-[the resource-directory app](examples/resource-directory/README.md). Run
+the repository app at `packages/mcp/examples/resource-directory`. Run
 `node wasm/scripts/run-wasm-tests.cjs --task mcp-installed` with lifecycle scripts
 disabled (`npm_config_ignore_scripts=true`). It packs the app and private adapter,
 installs exact Pulse candidates outside the checkout, and exercises the pinned
