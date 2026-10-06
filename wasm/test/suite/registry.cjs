@@ -1093,6 +1093,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 240000,
     description: 'PMCP-01A locked Codex host against packed adapter with scoped discovery and one governed HTTP call'
   }),
+  'mcp-claude': nodeTask('test/mcp/assert-mcp-claude.cjs', {
+    evidence: 'external', timeoutMs: 240000,
+    description: 'PMCP-01B locked Claude Code host against packed modern adapter with scoped tools and fresh authorization'
+  }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
     description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'

@@ -76,7 +76,48 @@ A client's Streamable HTTP support alone does not establish compatibility.
 | Client | Measured result |
 |---|---|
 | Official `@modelcontextprotocol/client@2.2.0`, pinned to `2026-07-28` | Packed-adapter discovery passes; existing tools and OAuth proofs qualify the same profile. |
+| Claude Code `2.1.292` | Default modern profile: packed-adapter discovery, scoped listing and one governed HTTP tool call pass. Writer scope denial and revocation prevent additional backend effects. No legacy option is needed. |
 | Intended host: Codex CLI `0.160.1` | With `legacyProtocol: '2025-06-18'`, packed-adapter initialization, scoped listing and one governed HTTP tool call pass. The default modern-only configuration still rejects its legacy initialization. |
+
+### Claude Code
+
+Configure the host's ordinary `createMcpNodeHandler` or Fetch handler with the
+catalog/backend and authorization options below. Claude Code uses the default
+modern profile; `legacyProtocol` is needed only when also serving the measured
+Codex client.
+
+Add a project `.mcp.json` entry for the running adapter:
+
+```json
+{
+  "mcpServers": {
+    "pulse": {
+      "type": "http",
+      "url": "http://127.0.0.1:3000/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PULSE_MCP_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Set `PULSE_MCP_ACCESS_TOKEN` in the environment that launches Claude Code, using
+an access token issued for the adapter's exact configured resource and required
+scopes. Keep the issuer's confidential credentials and backend service token in
+the host application, separate from this client token. The loopback URL assumes
+a local listener; a deployed adapter uses its configured HTTPS resource URL.
+Approve the project MCP entry when Claude Code requests it, then check `/mcp`
+for the connection and scoped tools. The package supplies the adapter, not a
+CLI executable that starts a server by itself.
+
+PMCP-01B measures Node JavaScript HTTP transport with a controlled issuer and
+preissued bearer token. It exercises the real Claude Code control channel,
+including `${VAR}` header expansion, without a model turn. This does not qualify
+Claude Desktop, claude.ai connectors, older Code versions, browser OAuth or live
+deployment. No stdio wrapper, SSE session or additional protocol branch is added.
+
+### Codex compatibility
 
 Enable the bounded compatibility profile in the host application:
 
@@ -323,6 +364,7 @@ identity-provider/deployment qualification are not claimed by this Node fixture.
 ```sh
 node wasm/scripts/run-wasm-tests.cjs --task mcp-package --no-report
 node wasm/scripts/run-wasm-tests.cjs --task mcp-compatibility --task mcp-codex --no-report
+node wasm/scripts/run-wasm-tests.cjs --task mcp-claude --no-report
 node wasm/scripts/run-wasm-tests.cjs --task mcp-http --report /tmp/mcp-http.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-http-sdk --report /tmp/mcp-sdk.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-tools --report /tmp/mcp-tools.json
@@ -349,6 +391,25 @@ It uses a local no-inference provider, disables workspace instruction loading
 and shell snapshots, and verifies zero model requests. Client and backend
 credentials remain separate; reports contain neither credentials nor raw logs.
 The Codex task remains explicit external evidence outside fast and seal profiles.
+
+`mcp-claude` independently installs frozen Claude Code `2.1.292` with lifecycle
+scripts disabled. Its official wrapper selects the locked native executable;
+the packed adapter uses its default modern profile. The isolated client has no
+operator account, built-in tools, workspace instructions, hooks or saved session.
+Trusted control requests exercise discovery and tool invocation; no prompt or
+model request is sent. The proof checks scoped listing, a successful protected
+backend call, HTTP 403 for a writer call, HTTP 401 after token revocation, and
+exactly one backend attempt/effect. Reports retain framing/status summaries and
+tarball integrity, omitting credentials, raw client configuration and logs.
+This explicit external task adds no fast-profile or seal work. The first cold
+install downloads the client's native executable; cached runs reuse the package
+manager's verified bytes.
+
+For an already installed pinned client, run
+`node wasm/test/mcp/probe-mcp-claude.cjs /absolute/path/to/claude`.
+The official `cli-wrapper.cjs` path also works for a scripts-disabled install.
+Exit 1 means qualification failed; reports are retained under
+`wasm/.test-results/mcp-claude-*`.
 
 For an already installed pinned CLI, run
 `node wasm/test/mcp/probe-mcp-codex.cjs /absolute/path/to/codex --qualify`.
@@ -410,3 +471,8 @@ and [changelog](https://modelcontextprotocol.io/specification/2026-07-28/changel
 The bounded legacy path follows the dated
 [2025-06-18 lifecycle](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle)
 and [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports).
+Claude client configuration follows [Claude Code's MCP setup](https://code.claude.com/docs/en/mcp).
+The pinned client's control request definitions are published in Anthropic's
+[`@anthropic-ai/claude-agent-sdk`](https://github.com/anthropics/claude-agent-sdk-typescript)
+declarations; qualification invokes the actual Claude Code executable, not that
+SDK's reference MCP client.
