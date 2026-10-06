@@ -68,20 +68,49 @@ permitted. Origin checks and self-reported client metadata are not authenticatio
 
 ## Client compatibility
 
-The adapter requires the `2026-07-28` HTTP/tools profile: `server/discover`,
-revision/method headers and per-request metadata. It provides no legacy
-`initialize` handshake or revision negotiation. A client's Streamable HTTP
-support alone does not establish compatibility.
+The default profile requires `2026-07-28`: `server/discover`, revision/method
+headers and per-request metadata. Hosts can explicitly enable the single
+`2025-06-18` stateless Streamable HTTP profile for the measured Codex client.
+A client's Streamable HTTP support alone does not establish compatibility.
 
 | Client | Measured result |
 |---|---|
 | Official `@modelcontextprotocol/client@2.2.0`, pinned to `2026-07-28` | Packed-adapter discovery passes; existing tools and OAuth proofs qualify the same profile. |
-| Intended host: Codex CLI `0.160.1` | Incompatible in the 2026-10-06 probe: sends `initialize` with `2025-06-18`, lacks the required modern headers and receives HTTP 400 / `-32020`. MCP startup fails before tool discovery. |
+| Intended host: Codex CLI `0.160.1` | With `legacyProtocol: '2025-06-18'`, packed-adapter initialization, scoped listing and one governed HTTP tool call pass. The default modern-only configuration still rejects its legacy initialization. |
 
-Codex support is **not claimed**. Follow-up **PMCP-01A: intended-client protocol
-compatibility** must decide and qualify a bounded compatibility path or a newer
-compatible Codex version before promising Codex support or its end-to-end
-acceptance. PMCP-01 does not change the protocol or add a compatibility shim.
+Enable the bounded compatibility profile in the host application:
+
+```js
+const handler = createMcpNodeHandler({
+  legacyProtocol: '2025-06-18',
+  tools: backendTools,
+});
+```
+
+`backendTools` is the same deployed catalog/schema/fixed-endpoint configuration
+shown below. The Fetch entry point accepts the same option. Omitting it preserves
+the modern-only profile; booleans and other legacy revisions fail configuration.
+Legacy initialization replies with `protocolVersion`, `serverInfo` and the
+configured capabilities. It stores no handshake state and grants no authority.
+Subsequent legacy requests require the exact `MCP-Protocol-Version: 2025-06-18`
+header. Missing or unsupported revisions are rejected; there is no implicit
+`2025-03-26` fallback. Mixed modern headers or modern request metadata are
+validated by the strict modern path, never downgraded.
+
+Legacy supports `initialize`, `ping`, `tools/list` and `tools/call`; tool results
+use the legacy envelope without modern `resultType` or discovery cache fields.
+The modern discovery result continues to advertise only its modern revision.
+Both profiles share request/response limits, deadlines, Origin policy,
+per-request authentication, scope filtering and exactly one governed HTTP call.
+Notifications, including `notifications/initialized` and cancellation, are
+accepted and discarded without execution or retained state. Disconnect/deadline
+cancellation remains bounded; protocol cancellation notifications do not
+coordinate other requests. GET/DELETE return 405: no SSE, sessions, resumption,
+server-to-client requests, Resources, Prompts or general legacy negotiation.
+
+PMCP-01A qualifies Codex's local Node JavaScript transport with a preregistered
+bearer credential and controlled issuer/backend. It does not establish Codex
+browser OAuth, live deployment, other CLI versions or Native/Fastly acceptance.
 
 ## Admission and lifetime
 
@@ -103,8 +132,10 @@ input or resetting the socket before replying. Disconnects and deadlines abort a
 The adapter never retries. Aborting the HTTP hop does not promise rollback of
 already completed effects or cancellation inside a remote backend.
 
-There are no protocol sessions, handshake, SSE output, subscriptions, tasks,
-MRTR or other optional RPC methods. Removed `ping` and `logging/setLevel` are rejected.
+There are no protocol sessions, SSE output, subscriptions, tasks,
+MRTR or other optional RPC methods. The modern profile has no handshake and
+rejects removed `ping` and `logging/setLevel`; the explicit legacy profile adds
+metadata-only initialization and ping.
 Legacy session/resume headers are ignored. Valid notifications are discarded
 with 202 and an empty body, including `tools/call` without an ID. This revision
 defines no core HTTP client notifications or header requirements for them.
@@ -117,6 +148,7 @@ Readable IDs are echoed; errors before bounded parsing omit the ID.
 | Outcome | HTTP / protocol result |
 |---|---|
 | Discovery | 200 / `resultType: complete` |
+| Explicit legacy initialization / ping | 200 / legacy JSON-RPC result |
 | Accepted notification | 202 / empty |
 | Disallowed Origin | 403 / empty |
 | Other endpoint / unsupported RPC | 404 / empty endpoint error or `-32601` |
@@ -127,7 +159,7 @@ Readable IDs are echoed; errors before bounded parsing omit the ID.
 | Body limit / interrupted read | 413 / 408, `-32600` before parsing |
 | Response limit / internal failure | 500 / `-32603` |
 
-Header presence precedes metadata validation; then agreement and revision are
+On the modern path, header presence precedes metadata validation; then agreement and revision are
 checked. Name agreement precedes the method allowlist. No executable method registry,
 application callback, compiler hook or Entities import is exposed.
 
@@ -290,6 +322,7 @@ identity-provider/deployment qualification are not claimed by this Node fixture.
 
 ```sh
 node wasm/scripts/run-wasm-tests.cjs --task mcp-package --no-report
+node wasm/scripts/run-wasm-tests.cjs --task mcp-compatibility --task mcp-codex --no-report
 node wasm/scripts/run-wasm-tests.cjs --task mcp-http --report /tmp/mcp-http.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-http-sdk --report /tmp/mcp-sdk.json
 node wasm/scripts/run-wasm-tests.cjs --task mcp-tools --report /tmp/mcp-tools.json
@@ -308,14 +341,20 @@ discovery against the installed tarball. This explicit external task is not
 added to the fast or seal profiles. Reports are retained under
 `wasm/.test-results/mcp-package-*`.
 
-To reproduce the intended-host probe with a separately installed, pinned Codex
-CLI, run `node wasm/test/mcp/probe-mcp-codex.cjs /absolute/path/to/codex` from
-the checkout. It packs the adapter, uses an isolated child configuration and
-calls app-server `mcpServerStatus/list` without starting a thread or inference.
-Exit 2 means measured incompatibility; exit 1 means the probe itself failed.
-Discovery success does not qualify tool invocation. Reports are retained under
-`wasm/.test-results/mcp-codex-*`. Repository profile details and historical
-evidence live in `wasm/test/mcp/MCP-01.md`.
+`mcp-compatibility` is a small unit check for explicit opt-in, initialization validation,
+modern isolation, legacy results and shared authorization/limits. `mcp-codex`
+independently installs locked Codex CLI `0.160.1`, packs the adapter, and exercises
+scoped listing and one tool call through an isolated app-server test thread.
+It uses a local no-inference provider, disables workspace instruction loading
+and shell snapshots, and verifies zero model requests. Client and backend
+credentials remain separate; reports contain neither credentials nor raw logs.
+The Codex task remains explicit external evidence outside fast and seal profiles.
+
+For an already installed pinned CLI, run
+`node wasm/test/mcp/probe-mcp-codex.cjs /absolute/path/to/codex --qualify`.
+Omit `--qualify` to reproduce modern-only rejection (exit 2); exit 1 means the
+probe itself failed. Reports are retained under `wasm/.test-results/mcp-codex-*`.
+Repository profile details and historical evidence live in `wasm/test/mcp/MCP-01.md`.
 
 `mcp-http` covers T01–T06 and HTTP admission in T07 from MCP-01, including negative
 envelopes/headers, concurrent isolation, byte/depth limits, stalled streams,
@@ -368,3 +407,6 @@ Authority: dated [base protocol](https://modelcontextprotocol.io/specification/2
 [RFC 7662](https://www.rfc-editor.org/rfc/rfc7662.html),
 [RFC 9728](https://www.rfc-editor.org/rfc/rfc9728.html)
 and [changelog](https://modelcontextprotocol.io/specification/2026-07-28/changelog).
+The bounded legacy path follows the dated
+[2025-06-18 lifecycle](https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle)
+and [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports).

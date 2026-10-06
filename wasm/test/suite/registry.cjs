@@ -1089,6 +1089,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 180000,
     description: 'PMCP-01 packed CJS/ESM imports, strict declarations, legal layout and pinned official client'
   }),
+  'mcp-codex': nodeTask('test/mcp/assert-mcp-codex.cjs', {
+    evidence: 'external', timeoutMs: 240000,
+    description: 'PMCP-01A locked Codex host against packed adapter with scoped discovery and one governed HTTP call'
+  }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
     description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'
@@ -1104,6 +1108,10 @@ const tasks = Object.freeze({
   'mcp-tools': nodeTask('test/mcp/assert-mcp-tools.cjs', {
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures'
+  }),
+  'mcp-compatibility': nodeTask('test/mcp/assert-mcp-compatibility.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'PMCP-01A opt-in 2025-06-18 framing, modern isolation and shared bounded/authenticated tools'
   }),
   'mcp-authorization': nodeTask('test/mcp/assert-mcp-authorization.cjs', {
     evidence: 'unit', timeoutMs: 30000,
@@ -1265,6 +1273,7 @@ const profiles = Object.freeze({
     'entities-javascript-runtime',
     'entities-json-rpc-corpus',
     'mcp-http',
+    'mcp-compatibility',
     'mcp-tools',
     'mcp-authorization',
     'entities-package-owned-lowering',
