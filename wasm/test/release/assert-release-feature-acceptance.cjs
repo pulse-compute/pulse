@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
 const { tasks, expandProfile } = require('../suite/registry.cjs');
 const { RELEASE_VERSION } = require('../../../scripts/package-support.cjs');
@@ -71,12 +72,17 @@ async function verifySealOrchestration() {
   const supervisor = require('../../../scripts/release-process.cjs');
   const sealModule = require.resolve('../../../scripts/validate-release.cjs');
   const originalRun = supervisor.runCommand;
+  const recovery = require('../../../scripts/release-recovery.cjs');
+  const originalAcquire = recovery.acquireSealLock;
+  const lockRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-seal-fixture-lock-'));
   const acceptance = require('../../../scripts/release-feature-acceptance.cjs');
   const originalCandidate = acceptance.candidateIdentity;
   const originalWrite = process.stdout.write;
   const commands = [];
   let sharedEnvironment;
   try {
+    // A controller fixture must not claim the enclosing seal's checkout lock.
+    recovery.acquireSealLock = (_root, directory) => originalAcquire(lockRoot, directory);
     acceptance.candidateIdentity = () => ({
       sourceRevision: require('../../../scripts/source-identity.cjs').resolveSourceIdentity(path.resolve(__dirname, '../../..')).sourceRevision,
       sourceTree: 'a'.repeat(40), workingTree: ''
@@ -111,6 +117,8 @@ async function verifySealOrchestration() {
     assert(!commands.some(args => args.includes('provider-fastly-compute-reality')));
   } finally {
     supervisor.runCommand = originalRun;
+    recovery.acquireSealLock = originalAcquire;
+    fs.rmSync(lockRoot, { recursive: true, force: true });
     acceptance.candidateIdentity = originalCandidate;
     process.stdout.write = originalWrite;
     delete require.cache[sealModule];

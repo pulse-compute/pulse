@@ -8,6 +8,7 @@ on:
     paths:
       - '.github/workflows/seal-checkpoint.yml'
       - 'scripts/release-seal-measure.cjs'
+      - 'wasm/test/release/**'
 
 permissions:
   contents: read

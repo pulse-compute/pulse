@@ -90,6 +90,9 @@ async function verifySealOrchestration() {
   const supervisor = require('../../../scripts/release-process.cjs');
   const sealModule = require.resolve('../../../scripts/validate-release.cjs');
   const originalRun = supervisor.runCommand;
+  const recovery = require('../../../scripts/release-recovery.cjs');
+  const originalAcquire = recovery.acquireSealLock;
+  const lockRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-seal-fixture-lock-'));
   const acceptance = require('../../../scripts/release-feature-acceptance.cjs');
   const originalCandidate = acceptance.candidateIdentity;
   const originalWrite = process.stdout.write;
@@ -97,6 +100,8 @@ async function verifySealOrchestration() {
   let output = '';
   let failPack = true;
   try {
+    // A controller fixture must not claim the enclosing seal's checkout lock.
+    recovery.acquireSealLock = (_root, directory) => originalAcquire(lockRoot, directory);
     acceptance.candidateIdentity = () => ({
       sourceRevision: require('../../../scripts/source-identity.cjs').resolveSourceIdentity(path.resolve(__dirname, '../../..')).sourceRevision,
       sourceTree: 'a'.repeat(40), workingTree: ''
@@ -134,6 +139,8 @@ async function verifySealOrchestration() {
     assert.ok(commands.findIndex((args) => args.includes('scripts/release-shared-pack.cjs')) < commands.findIndex((args) => args.includes('--profile')));
   } finally {
     supervisor.runCommand = originalRun;
+    recovery.acquireSealLock = originalAcquire;
+    fs.rmSync(lockRoot, { recursive: true, force: true });
     acceptance.candidateIdentity = originalCandidate;
     process.stdout.write = originalWrite;
     delete require.cache[sealModule];
