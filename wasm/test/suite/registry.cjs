@@ -668,14 +668,6 @@ const tasks = Object.freeze({
     timeoutMs: 120000,
     description: 'O-07 current generated-source owner, declaration, family and effect-site census without an optimizer compile'
   }),
-  'fastly-driver-qualification-o11': nodeTask('test/runtime/compiler-efficiency/o11-driver-qualification.cjs', {
-    evidence: 'external', timeoutMs: 900000,
-    description: 'O11 serial paired default-profile driver behavior, final boundaries, compiler resources and runtime qualification (Linux/Python3)'
-  }),
-  'fastly-driver-factoring-o10': nodeTask('test/runtime/compiler-efficiency/o10-driver-factoring.cjs', {
-    evidence: 'external', timeoutMs: 180000,
-    description: 'O10 production-byte-verified shared Fastly settlement body and unchanged non-error control'
-  }),
   'fastly-driver-behavior-o09': nodeTask('test/runtime/compiler-efficiency/o09-driver-behavior.cjs', {
     evidence: 'native', timeoutMs: 240000,
     description: 'O09 Fastly error driver settlement, ticket freshness and error-priority fixture'

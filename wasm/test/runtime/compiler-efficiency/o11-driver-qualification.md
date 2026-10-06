@@ -1,5 +1,10 @@
 # O-11 — qualify shared error-driver settlement
 
+Historical result. PS-07 retired the frozen replay task, compiler-resource helper
+and local JSON ledger. The [deletion ledger](../../../../docs/internal/ps07/README.md)
+maps surviving coverage and links the original files at an immutable Git revision.
+The recorded `regression-observed` verdict below remains unchanged.
+
 O-11 measures the O-10 factoring under the unchanged default profile. It adds
 an opt-in, serial qualification task and a recorded ledger; it changes no product
 source, compiler flag, retention rule or supported behavior. Entry point: none;
@@ -17,7 +22,7 @@ The registered run completed in 244 seconds. The ledger verdict is **`regression
 | 32 sites + error | 244,047 → 214,094 | 88,732 → 78,350 | 29,032 → 28,225 | 12,519 → 2,315 | 148 → 148 |
 | 16 diverse schemas, no error | 175,134 → 175,134 | 123,408 → 123,408 | 40,737 → 40,737 | 1,244 → 1,244 | 239 → 239 |
 
-Compiler medians below are from three fresh build pairs. RSS is MiB; CPU and wall time are milliseconds. All raw observations and paired intervals are retained in [o11-evidence.json](o11-evidence.json).
+Compiler medians below are from three fresh build pairs. RSS is MiB; CPU and wall time are milliseconds. All raw observations and paired intervals are retained in [the archived o11-evidence.json](https://github.com/pulse-compute/pulse/blob/8f2b02b3815ff144b94d59b01f809e7793be67c5/wasm/test/runtime/compiler-efficiency/o11-evidence.json).
 
 | Control | Compiler wall ms | User CPU ms | System CPU ms | Compiler peak RSS MiB |
 | --- | ---: | ---: | ---: | ---: |
@@ -108,17 +113,12 @@ behavior is reused; the baseline size/build/runtime fixtures are freshly built.
 
 ## Reproduction and evidence
 
-Restore lockfile-pinned dependencies and workspace outputs, and ensure both
-recorded revisions are available in Git history. This external task requires
-Linux, Python 3, GNU gzip and the pinned workspace toolchain. It is deliberately
-excluded from the release profile and normal CI timing gates.
-
-```bash
-node wasm/scripts/run-wasm-tests.cjs --task fastly-driver-qualification-o11 \
-  --report .test-results/o11-qualification.json
-# Explicitly refresh the checked-in ledger after reviewing a new complete run:
-node wasm/test/runtime/compiler-efficiency/o11-driver-qualification.cjs --record
-```
+The [original reproduction commands and prerequisites](https://github.com/pulse-compute/pulse/blob/8f2b02b3815ff144b94d59b01f809e7793be67c5/wasm/test/runtime/compiler-efficiency/o11-driver-qualification.md#reproduction-and-evidence)
+remain available in Git history. The replay required its frozen production
+candidate, Linux, Python 3, GNU gzip and the pinned workspace toolchain. It was
+excluded from every standard profile, including release, and is no longer
+registered. Current behavior coverage belongs to `fastly-driver-behavior-o09`
+and the platform request-budget regression described in the deletion ledger.
 
 Timestamped running/completed/failed reports, all sampled artifacts, names
 companions, call graphs and the O-09 log remain under

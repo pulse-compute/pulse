@@ -96,8 +96,6 @@ const externalTasks = new Set([
   'compiler-generated-census-gen01',
   'generated-source-census-o07',
   'optimized-wasm-census-o08',
-  'fastly-driver-factoring-o10',
-  'fastly-driver-qualification-o11',
   'compiler-retention-cost-t01',
   'compiler-bounded-merging',
   'compiler-guest-link-evidence',
