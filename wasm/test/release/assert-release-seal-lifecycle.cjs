@@ -64,7 +64,8 @@ async function verifyBootstrap(root) {
       return { status: 23, signal: null }; // never execute product work or install
     };
     statusOwner.createSealStatus = options => {
-      const reporter = original.create({ ...options, resultsRoot: path.join(root, 'bootstrap-reports'), output() {} });
+      const reporter = original.create({ ...options, resultsRoot: path.join(root, 'bootstrap-reports'),
+        attemptsRoot: path.join(root, 'bootstrap-reports/seal-runs'), output() {} });
       const finish = reporter.finish;
       reporter.finish = updates => { lastReport = finish(updates); return lastReport; };
       return reporter;
@@ -248,6 +249,24 @@ async function main() {
     assert.equal((await command('process.exit(7)')).status, 7);
     const missing = await runCommand(path.join(root, 'missing-command'), [], { timeoutMs: 500 });
     assert(missing.error);
+    let observedPid;
+    const observerFailure = await command('setInterval(() => {}, 1000)', {
+      onChild(child) {
+        if (child) { observedPid = child.pid; throw new Error('fixture lock write failure'); }
+      }
+    });
+    assert.match(observerFailure.error.message, /lock write failure/);
+    assert.equal(observerFailure.interruptedBy, 'child-observer-error');
+    assert.equal(observerFailure.timedOut, false);
+    assert(!alive(observedPid), 'failed lock persistence must terminate the spawned child');
+    const earlyController = new AbortController();
+    const earlyInterruption = await command('setInterval(() => {}, 1000)', {
+      signal: earlyController.signal,
+      onChild(child) { if (child) { observedPid = child.pid; earlyController.abort('SIGINT'); } }
+    });
+    assert.equal(earlyInterruption.interruptedBy, 'SIGINT');
+    assert.equal(earlyInterruption.timedOut, false);
+    assert(!alive(observedPid), 'onChild cancellation must reach the spawned child');
     const controller = new AbortController();
     const interrupted = await command('process.stdout.write("ready"); setInterval(() => {}, 1000)', {
       signal: controller.signal,

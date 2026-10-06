@@ -206,13 +206,15 @@ npm run release:seal
 The seal restores the lockfile-pinned dependency graph, regenerates production
 vulnerability and license evidence, validates maintenance and source publication
 controls, builds and unit-tests the workspace, checks synchronized documentation,
-runs the release profile, and records revision-bound evidence under
-`wasm/.test-results/`. The release profile creates deterministic Fastly
+runs the complete release selection, and records revision-bound evidence under
+`.pulse-seal/attempts/<run-id>/`. This durable directory survives the ordinary
+workspace clean command; task scratch space remains under `wasm/.test-results/`.
+The release profile creates deterministic Fastly
 Native and JavaScript candidate inputs and invokes the pinned downstream
 JavaScript compiler locally. It does not deploy or publish either candidate.
 
 After build and documentation checks, the seal constructs one package set in its
-private temporary directory. A SHA-256-pinned receipt binds every output file to
+attempt directory. A SHA-256-pinned receipt binds every output file to
 the clean checkout, commit and tree. Each packed-consumer task verifies that
 receipt, current source and package bytes, then receives its own ordinary file
 copies. Consumer installations, behavioral assertions and reports remain
@@ -220,14 +222,15 @@ independent. The artifact-determinism task constructs a second package set from
 source and compares it with the first; it cannot reuse the second construction.
 Standalone packing and focused tasks still construct their own packages.
 
-This replaces fifteen full package constructions with two during a complete
-seal. The shared set is attempt-local and removed by supervised seal cleanup;
-it is never reused across seal attempts. Tasks still run serially because some
-fixtures and cleanup own workspace build outputs. Documented default and
+This replaces fifteen full package constructions with two during a fresh complete
+seal. Verified recovery can reuse the exact shared set and completed task proofs
+from the same immutable candidate. Every attempt has its own copies and reports.
+Tasks still run serially because some fixtures and cleanup own workspace build
+outputs. Documented default and
 optimized size assertions run in the complete example workflows; the separate
 size-only command remains available for focused diagnosis.
 
-Each attempt writes `wasm/.test-results/seal-runs/<run-id>/report.json`
+Each attempt writes `.pulse-seal/attempts/<run-id>/report.json`
 and one log per step. `wasm/.test-results/release-seal.json` identifies the
 most recently started attempt; an older attempt finishing cannot overwrite it.
 The report starts as `running`, records `currentStep`, `updatedAt` and
@@ -264,8 +267,53 @@ first step and ends after 50 minutes; setup consumes that same budget. The seal
 receives the remaining whole minutes, with a 52-minute workflow step ceiling.
 This reserves ten minutes for bounded cleanup, evidence upload and publication
 candidate preparation. Toolchain restoration has a separate ten-minute limit.
-These deadlines bound recovery; they do not predict a faster passing seal or
-permit resumed evidence to replace the complete replay.
+These deadlines bound recovery; they do not predict a faster fresh seal. Recovery
+still requires the complete ordered selection and a terminal passing aggregate.
+
+### Recovering the same candidate
+
+To recover an interrupted or failed attempt, pass its durable directory:
+
+```bash
+npm run release:seal -- --resume .pulse-seal/attempts/<run-id> --require-fastly
+```
+
+The controller creates a new attempt and reconstructs the entire ordered release
+and installed-feature selection. Each result says `executed` or `reused`, with
+its immutable receipt and original proof identity. Passed tasks become reusable
+only after child-process termination and successful task cleanup. Failed,
+incomplete, cancelled, expired, altered or missing checkpoints run again;
+recovery never turns those statuses into a pass. A corrupt or mismatched context
+is rejected for reuse; the affected work executes again.
+
+Eligibility binds the clean Git revision and tree, checkout real path, lockfile,
+actual dependency/toolchain bytes and versions, freshly built outputs, options,
+provider/environment hashes, task definition, prerequisite proof identities and
+exact retained artifact bytes. Checkpoints expire after seven days; reusing one
+does not extend its original expiry. There is no cross-checkout or remote cache.
+Publication CI archives `.pulse-seal/` for diagnosis; those uploads do not enable
+remote reuse. Environment values enter the context as hashes, not plaintext credentials.
+
+Bootstrap, source and prerequisite checks, dependency restoration (unless the
+explicit `--skip-install` option applies), build, maintenance/publication checks,
+documentation, workspace unit tests, vulnerability/license refresh, external
+Fastly reality and final cleanup execute on every attempt. Expensive release and
+installed tasks and the exact shared package set may be recovered. The independent
+second package construction remains part of the determinism task's proof.
+
+`--no-report` disables recovery recording and cannot resume an attempt. To remove
+expired terminal attempts without touching active work, run:
+
+```bash
+npm run release:seal -- --prune-recovery
+```
+
+Retain the previous attempt when reporting a retry. Its failed or interrupted
+status remains historical evidence. Final evidence aggregation validates the new
+attempt's complete selection, every checkpoint, successful cleanup and all bound
+report/artifact hashes. Selecting a focused range or manually copying successful
+reports does not create a recoverable seal. Conditional-KV failed/not-run states
+and the exact Beta.6 exception retain their existing meaning.
 
 External npm organization settings, trusted publishers, protected publication
 environments, public repository administration, and the production documentation
@@ -307,7 +355,10 @@ npm run release:evidence -- \
 The authority creates a source-only archive, binary patch, independent replay,
 four-mode and target-integrity reports, migration ledger, maintainer scope,
 Fastly Native and JavaScript candidates, checksums, and one delivery bundle. It
-requires a clean tree and matching source revisions in every persisted report.
+requires a clean tree and matching source revisions in every persisted report. For
+recovery-aware seals it reads the selected attempt's bound paths by default and
+verifies checkpoint provenance, exact report bytes and artifact manifests; an
+explicit path override must match those same sealed bytes.
 
 ## Executable documentation
 
@@ -512,7 +563,9 @@ identify uncommitted changes. Label those runs as development evidence and retai
 the tested diff or tree digest. Preserve failures when retrying, identify why the
 rerun was bounded, and report the retry separately. Focused, split or resumed
 development runs do not substitute for the complete clean-candidate release
-replay or permit combining reports from different source trees.
+replay or permit combining reports from different source trees. Only the release
+controller's verified same-candidate recovery described above can reuse task
+proofs in authoritative evidence.
 
 On an interruption or handoff, record the branch, base/head, uncommitted work,
 report/artifact paths, completed and running checks, blockers and the next action.

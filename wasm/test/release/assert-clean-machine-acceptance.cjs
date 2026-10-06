@@ -24,9 +24,14 @@ const testRoot = process.env.PULSEWASM_TEST_TMP_ROOT || fs.mkdtempSync(path.join
 const releaseDir = path.join(testRoot, 'release');
 const homeDir = path.join(testRoot, 'home');
 const npmCache = path.join(testRoot, 'npm-cache');
+const corpusArgs = process.argv.slice(2);
+assert(corpusArgs.length === 0 || (corpusArgs.length === 2 && corpusArgs[0] === '--corpus-report'),
+  'Usage: assert-clean-machine-acceptance.cjs [--corpus-report <file>]');
 const corpusReportRoot = path.join(repoRoot, 'wasm/.test-results');
 fs.mkdirSync(corpusReportRoot, { recursive: true });
-const corpusReportFile = path.join(fs.mkdtempSync(path.join(corpusReportRoot, 'clean-machine-')), 'corpora.json');
+const corpusReportFile = corpusArgs.length ? path.resolve(corpusArgs[1])
+  : path.join(fs.mkdtempSync(path.join(corpusReportRoot, 'clean-machine-')), 'corpora.json');
+fs.mkdirSync(path.dirname(corpusReportFile), { recursive: true });
 const corpusStarted = performance.now();
 const git = args => {
   const result = spawnSync('git', args, { cwd: repoRoot, encoding: 'utf8', timeout: 5000 });

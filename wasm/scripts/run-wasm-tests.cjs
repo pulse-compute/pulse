@@ -2,6 +2,7 @@
 'use strict';
 
 const fs = require('node:fs');
+const assert = require('node:assert/strict');
 const path = require('node:path');
 const os = require('node:os');
 const { spawn, spawnSync } = require('node:child_process');
@@ -43,10 +44,14 @@ function parseArgs(argv) {
     if (token === '--no-report') { out.report = false; continue; }
     if (token === '--report') { out.reportPath = readValue(i, token); i += 1; continue; }
     if (token.startsWith('--report=')) { out.reportPath = token.slice(9); continue; }
+    if (token === '--recovery-config') { out.recoveryConfig = path.resolve(readValue(i, token)); i += 1; continue; }
     if (token === '--help' || token === '-h') { out.help = true; continue; }
     if (profiles[token]) { out.profiles.push(token); continue; }
     if (tasks[token]) { out.tasks.push(token); continue; }
     throw new Error(`Unknown PulseWasm test selection: ${token}`);
+  }
+  if (out.recoveryConfig && (out.fromTask || out.throughTask || !out.report)) {
+    throw new Error('Seal recovery requires a complete selection and a report; --from, --through and --no-report cannot be combined with --recovery-config');
   }
   return out;
 }
@@ -64,6 +69,7 @@ function usage() {
     '  --json                emit final summary as JSON',
     '  --report <path>       write an atomic incremental JSON report',
     '  --no-report           do not write task logs or a report',
+    '  --recovery-config <path> internal same-candidate seal checkpoint configuration',
     '',
     `Profiles: ${Object.keys(profiles).sort().join(', ')}`,
     `Tasks: ${Object.keys(tasks).sort().join(', ')}`
@@ -301,6 +307,7 @@ async function runTask(name, task, options = {}) {
 
   const env = {
     ...process.env,
+    ...(options.taskEnv || {}),
     ...(options.sourceEnv || {}),
     TMPDIR: taskTempRoot,
     TMP: taskTempRoot,
@@ -316,7 +323,7 @@ async function runTask(name, task, options = {}) {
     const detached = process.platform !== 'win32';
     try {
       child = spawn(task.command, task.args, {
-        cwd: wasmRoot,
+        cwd: options.cwd || wasmRoot,
         stdio: ['ignore', 'pipe', 'pipe'],
         env,
         detached
@@ -387,7 +394,6 @@ async function runTask(name, task, options = {}) {
   const childPassed = completed.code === 0 && !spawnError;
 
   if (terminationPromise) await terminationPromise;
-  if (typeof options.onChild === 'function') options.onChild(null);
 
   options.onPhase?.('cleanup');
   let cleanupOutput = '';
@@ -416,6 +422,7 @@ async function runTask(name, task, options = {}) {
   if (options.signal?.aborted) interruptedBy ||= String(options.signal.reason || 'SIGTERM');
   const logError = await finishLog(logStream);
   if (logError) cleanupError ||= new Error(logError);
+  if (typeof options.onChild === 'function') options.onChild(null);
 
   const durationMs = Date.now() - startedAt;
   const diagnosticReports = fs.existsSync(diagnosticsDir)
@@ -459,8 +466,10 @@ async function runTask(name, task, options = {}) {
     status,
     exitCode,
     signal: completed.signal || null,
+    timedOut,
     interruptedBy,
     error,
+    cleanup: Object.freeze({ status: cleanupError ? 'failed' : 'passed' }),
     logPath: relativeToWasm(logPath),
     retainedTaskRoot: cleanupError ? taskTempRoot : null,
     diagnosticReports: Object.freeze(diagnosticReports),
@@ -468,6 +477,152 @@ async function runTask(name, task, options = {}) {
     processTree: Object.freeze(processTree),
     remainingProcessTree: Object.freeze(remainingProcessTree)
   });
+}
+
+const RECOVERY_SCHEMA = 'pulse.seal-task-recovery.v1';
+
+function validateRecoveryConfig(config, selection) {
+  assert.equal(config?.schemaVersion, RECOVERY_SCHEMA, 'Unsupported seal task recovery configuration');
+  assert.deepEqual(selection.selected, selection.requested, 'Recovery cannot qualify a sliced selection');
+  assert.deepEqual(config.selectedTasks, selection.selected, 'Recovery task selection differs from the complete requested selection');
+  assert(config.context && typeof config.context === 'object' && !Array.isArray(config.context), 'Recovery requires candidate context');
+  if (config.context.schemaVersion === 'pulse.release-recovery.v1') {
+    assert(['release', 'features'].includes(config.kind), 'Production recovery must identify its release or features selection');
+    assert.deepEqual(config.selectedTasks, config.context.selections?.[config.kind], 'Recovery selection differs from the candidate context');
+    const required = config.kind === 'release' ? expandProfile('release') : require('../../scripts/release-feature-acceptance.cjs').REQUIRED_TASKS;
+    assert.deepEqual(config.selectedTasks, required, 'Production recovery must cover the current required task set');
+    assert.deepEqual(config.taskOptions, require('../../scripts/release-recovery.cjs').recoveryTaskOptions(config.artifacts, config.kind), 'Production recovery task options differ from their artifact owners');
+  }
+  assert(typeof config.directory === 'string' && path.isAbsolute(config.directory), 'Recovery checkpoint directory must be absolute');
+  assert(!config.previousDirectory || (typeof config.previousDirectory === 'string' && path.isAbsolute(config.previousDirectory)), 'Previous recovery checkpoint directory must be absolute');
+  assert(config.taskOptions === undefined || (config.taskOptions && typeof config.taskOptions === 'object' && !Array.isArray(config.taskOptions)), 'Recovery task options must be an object');
+  for (const [name, options] of Object.entries(config.taskOptions || {})) {
+    assert(selection.selected.includes(name), `Recovery options name an unselected task: ${name}`);
+    assert(options && typeof options === 'object' && !Array.isArray(options), `Invalid recovery options for ${name}`);
+    assert(Object.keys(options).every(key => ['args', 'env', 'artifacts'].includes(key)), `Unknown recovery options for ${name}`);
+    assert(options.args === undefined || (Array.isArray(options.args) && options.args.every(arg => typeof arg === 'string')), `Invalid recovery arguments for ${name}`);
+    assert(options.env === undefined || (options.env && typeof options.env === 'object' && !Array.isArray(options.env) && Object.values(options.env).every(value => typeof value === 'string')), `Invalid recovery environment for ${name}`);
+    for (const key of Object.keys(options.env || {})) {
+      assert(!/^(?:PULSE_SOURCE_|PULSEWASM_SUITE_TASK|PULSEWASM_TEST_TMP_ROOT$|TMPDIR$|TMP$|TEMP$)/.test(key), `Recovery cannot override runner-owned environment: ${key}`);
+    }
+    assert(options.artifacts === undefined || (options.artifacts && typeof options.artifacts === 'object' && !Array.isArray(options.artifacts)), `Invalid recovery artifacts for ${name}`);
+    assert(!Object.hasOwn(options.artifacts || {}, 'task-log'), 'The task-log artifact belongs to the runner');
+    for (const [key, target] of Object.entries(options.artifacts || {})) {
+      assert(typeof target === 'string' && path.isAbsolute(target), `Recovery artifact ${name}/${key} must be an absolute path`);
+    }
+  }
+  return config;
+}
+
+function recoveryDefinition(task, options = {}) {
+  // Output destinations belong to an attempt, not to the task's meaning. Name
+  // those paths by artifact key, including a report's parent directory used by
+  // installed feature tasks. All other command/environment values stay bound.
+  const entries = Object.entries(options.artifacts || {}).sort(([left], [right]) => left.localeCompare(right));
+  const replacements = entries.map(([key, target]) => [target, `$artifact.${key}`])
+    .sort(([left], [right]) => right.length - left.length);
+  const normalize = value => {
+    const parent = entries.find(([, target]) => path.dirname(target) === value);
+    if (parent) return `$artifact.${parent[0]}.parent`;
+    return replacements.reduce((current, [target, marker]) => current.split(target).join(marker), value);
+  };
+  const definition = {
+    command: task.command,
+    args: task.args.map(normalize),
+    timeoutMs: task.timeoutMs,
+    evidence: task.evidence,
+    isolatedArtifacts: task.isolatedArtifacts === true,
+    env: Object.fromEntries(Object.entries(options.env || {}).map(([key, value]) => [key, normalize(value)]))
+  };
+  return { ...definition, commandSignature: commandSignature(definition) };
+}
+
+function checkpointDefinition(name, task, options = {}) {
+  return { name, ...recoveryDefinition({ ...task, args: options.args || task.args }, options) };
+}
+
+async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryConfig = null,
+  persist = () => {}, signal, onChild, taskRunOptions = {} }) {
+  let store = null;
+  if (recoveryConfig) {
+    validateRecoveryConfig(recoveryConfig, selection);
+    assert(state.runDir, 'Recovery requires durable task logs');
+    const checkpoints = require('../../scripts/release-checkpoints.cjs');
+    store = checkpoints.createCheckpointStore({
+      directory: recoveryConfig.directory,
+      previousDirectory: recoveryConfig.previousDirectory,
+      context: recoveryConfig.context,
+      ...(recoveryConfig.expiresAt ? { expiresAt: recoveryConfig.expiresAt } : {})
+    });
+    state.recovery = { schemaVersion: RECOVERY_SCHEMA, directory: recoveryConfig.directory,
+      previousDirectory: recoveryConfig.previousDirectory || null,
+      contextHash: checkpoints.fingerprint(recoveryConfig.context),
+      dependencies: recoveryConfig.dependencies || {}, taskOptions: recoveryConfig.taskOptions || {},
+      ...(recoveryConfig.kind ? { kind: recoveryConfig.kind } : {}),
+      ...(recoveryConfig.artifacts ? { artifacts: recoveryConfig.artifacts } : {}),
+      reusedTasks: [], executedTasks: [] };
+  }
+  for (const name of selection.selected) {
+    if (signal?.aborted) break;
+    assert(taskMap[name], `Unknown task: ${name}`);
+    const overrides = recoveryConfig?.taskOptions?.[name] || {};
+    const task = { ...taskMap[name], args: overrides.args || taskMap[name].args };
+    const artifacts = { ...(overrides.artifacts || {}),
+      ...(store ? { 'task-log': path.join(state.runDir, 'tasks', `${safeName(name)}.log`) } : {}) };
+    const spec = store ? { id: `task:${name}`, definition: checkpointDefinition(name, task, overrides),
+      dependencies: recoveryConfig.dependencies || {}, artifacts } : null;
+    state.currentTask = name;
+    state.currentTaskPhase = store ? 'checkpoint' : 'execution';
+    persist({ currentTask: name });
+    const reuse = store?.tryReuse(spec);
+    let result;
+    if (reuse?.reused) {
+      result = { ...reuse.result, execution: 'reused', durationMs: 0,
+        reusedDurationMs: reuse.result.durationMs, originalResult: reuse.result,
+        logPath: relativeToWasm(artifacts['task-log']) };
+      state.recovery.reusedTasks.push(name);
+      console.log(`[pulsewasm] ${name}: reused verified same-candidate checkpoint`);
+    } else {
+      state.currentTaskPhase = 'execution';
+      persist();
+      result = await runTask(name, task, {
+        ...taskRunOptions, runDir: state.runDir, sourceEnv: state.sourceEnv,
+        taskEnv: overrides.env, signal, onChild,
+        onPhase(phase) { state.currentTaskPhase = phase; persist(); }
+      });
+      if (store) {
+        state.recovery.executedTasks.push(name);
+        let recorded;
+        try { recorded = store.record({ ...spec, result }); }
+        catch (error) {
+          // A zero-exit task with missing or changed output is not reusable or
+          // qualified. Keep the failed attempt instead of losing its receipt.
+          result = { ...result, status: 'failed', exitCode: result.exitCode || 1,
+            error: result.error ? `${result.error}; checkpoint capture failed: ${error.message}` : `checkpoint capture failed: ${error.message}` };
+          try { recorded = store.record({ ...spec, result }); }
+          catch (recordError) {
+            // A disk failure may prevent even the failure receipt. Preserve
+            // the actual task outcome in the outer runner report regardless.
+            result = { ...result, checkpointError: recordError.message };
+          }
+        }
+        result = { ...result, execution: 'executed',
+          ...(recorded ? { checkpoint: checkpointReference(recorded) } : {}), recoveryReason: reuse.reason };
+      }
+    }
+    if (reuse?.reused) result = { ...result, checkpoint: checkpointReference(reuse), recoveryReason: reuse.reason };
+    state.results.push(Object.freeze(result));
+    state.currentTask = null;
+    state.currentTaskPhase = null;
+    persist({ currentTask: null });
+    if (result.status !== 'passed') break;
+  }
+  return state.results;
+}
+
+function checkpointReference(checkpoint) {
+  return { proofId: checkpoint.proofId, receiptPath: checkpoint.receiptPath,
+    receiptSha256: checkpoint.receiptSha256, contextHash: checkpoint.receipt.contextHash };
 }
 
 function reportSnapshot(state, updates = {}) {
@@ -486,9 +641,12 @@ function reportSnapshot(state, updates = {}) {
     selectedTasks: state.selectedTasks,
     currentTask: updates.currentTask === undefined ? state.currentTask : updates.currentTask,
     currentTaskPhase: state.currentTaskPhase || null,
+    activeChildPid: state.activeChildPid || null,
     completedTasks: state.results.length,
     results: Object.freeze([...state.results]),
-    runDirectory: relativeToWasm(state.runDir)
+    runDirectory: relativeToWasm(state.runDir),
+    ...(state.error ? { error: state.error } : {}),
+    ...(state.recovery ? { recovery: state.recovery } : {})
   });
 }
 
@@ -510,12 +668,12 @@ async function main() {
   }
 
   let selection;
+  let recoveryConfig = null;
   try { selection = selectedTasks(options); }
   catch (error) {
     console.error(error.message);
     process.exit(2);
   }
-
   const runId = runIdentifier();
   const paths = createRunPaths(options, runId);
   const sourceIdentity = resolveSourceIdentity(path.resolve(wasmRoot, '..'));
@@ -524,6 +682,7 @@ async function main() {
     runId,
     sourceRevision: sourceIdentity.sourceRevision,
     sourceIdentity,
+    sourceEnv: identityEnv,
     status: 'running',
     startedAt: new Date().toISOString(),
     startMs: Date.now(),
@@ -532,6 +691,7 @@ async function main() {
     requestedTasks: selection.requested,
     selectedTasks: selection.selected,
     currentTask: null,
+    activeChildPid: null,
     results: [],
     reportPath: paths.reportPath,
     runDir: paths.runDir
@@ -560,27 +720,29 @@ async function main() {
   }, 10000);
   heartbeat.unref();
   try {
-    for (const name of selection.selected) {
-      state.currentTask = name;
-      state.currentTaskPhase = 'execution';
-      persist({ currentTask: name });
-      const result = await runTask(name, tasks[name], {
-        runDir: state.runDir,
-        sourceEnv: identityEnv,
-        signal: controller.signal,
-        onChild(child) { activeChild = child; },
-        onPhase(phase) { state.currentTaskPhase = phase; persist(); }
-      });
-      state.results.push(result);
-      state.currentTask = null;
-      state.currentTaskPhase = null;
-      persist({ currentTask: null });
-      if (result.status !== 'passed') break;
+    if (options.recoveryConfig) {
+      recoveryConfig = validateRecoveryConfig(JSON.parse(fs.readFileSync(options.recoveryConfig, 'utf8')), selection);
+      if (recoveryConfig.context.schemaVersion === 'pulse.release-recovery.v1') {
+        const root = path.resolve(wasmRoot, '..');
+        const candidate = require('../../scripts/release-feature-acceptance.cjs').candidateIdentity(root);
+        assert.deepEqual(recoveryConfig.context.candidate, { ...candidate, repoRoot: fs.realpathSync(root) }, 'Recovery candidate differs from this clean checkout');
+        assert.equal(candidate.sourceRevision, state.sourceRevision, 'Recovery candidate differs from the runner source identity');
+      }
     }
+    await runSelectedTasks({ state, selection, recoveryConfig, persist, signal: controller.signal,
+      onChild(child) { activeChild = child; state.activeChildPid = child?.pid || null; persist(); } });
+  } catch (error) {
+    state.error = { code: error.code || null, message: error.message || String(error) };
+    console.error(error && error.stack ? error.stack : error);
   } finally { clearInterval(heartbeat); }
 
   const failed = state.results.find((result) => result.status !== 'passed');
-  state.status = failed ? (failed.status === 'interrupted' ? 'interrupted' : 'failed') : 'passed';
+  if (state.results.length !== selection.selected.length && !state.error && !failed && !controller.signal.aborted) {
+    state.error = { code: null, message: 'Runner did not complete the selected task set' };
+  }
+  state.status = controller.signal.aborted ? 'interrupted' : state.error ? 'failed' : failed ? (failed.status === 'interrupted' ? 'interrupted' : 'failed') : 'passed';
+  state.currentTask = null;
+  state.currentTaskPhase = null;
   state.finishedAt = new Date().toISOString();
   const report = reportSnapshot(state, { status: state.status, currentTask: null, finishedAt: state.finishedAt });
   if (state.reportPath) writeReportAtomic(state.reportPath, report);
@@ -592,6 +754,8 @@ async function main() {
   console.log(`  total        ${formatDuration(report.durationMs)}`);
 
   if (options.json) console.log(JSON.stringify(report, null, 2));
+  if (controller.signal.aborted) process.exit(INTERRUPT_EXIT[controller.signal.reason] || 1);
+  if (state.error) process.exit(1);
   if (failed) process.exit(failed.exitCode || 1);
 }
 
@@ -614,5 +778,10 @@ module.exports = Object.freeze({
   copyTaskFailureLogs,
   cleanupTaskOutputs,
   runTask,
-  reportSnapshot
+  reportSnapshot,
+  RECOVERY_SCHEMA,
+  validateRecoveryConfig,
+  recoveryDefinition,
+  checkpointDefinition,
+  runSelectedTasks
 });

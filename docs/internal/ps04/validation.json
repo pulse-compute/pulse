@@ -1,0 +1,225 @@
+{
+  "schemaVersion": "pulse.ps04-development-validation.v1",
+  "releaseSeal": false,
+  "unit": {
+    "status": "passed",
+    "selectedTasks": [
+      "multifile-source-indexes",
+      "guest-json-roundtrip",
+      "pure-helper-contract",
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-feature-acceptance",
+      "release-runtime-policy",
+      "release-seal-lifecycle",
+      "release-checkpoints",
+      "release-recovery-runner",
+      "release-recovery",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "mcp-http",
+      "mcp-tools",
+      "mcp-authorization",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo"
+    ],
+    "completedTasks": 45,
+    "finishedAt": "2026-10-06T01:59:24.791Z",
+    "durationMs": 65524,
+    "sourceRevision": "16d83612bbd5c17a1a0a87b698cc423160b5735a",
+    "workingTree": "implementation changes present",
+    "phase": "before final latest-alias/toolchain/observer hardening; affected fixtures rerun below",
+    "reportSha256": "32a26a0ea7004bfcae340ab4d45892a3a9eaff64c2d405aa70ed9d519e6a0793"
+  },
+  "finalFocused": {
+    "status": "passed",
+    "selectedTasks": [
+      "release-checkpoints",
+      "release-recovery",
+      "release-seal-lifecycle",
+      "release-evidence-authority"
+    ],
+    "completedTasks": 4,
+    "finishedAt": "2026-10-06T02:06:20.423Z",
+    "durationMs": 6636,
+    "sourceRevision": "92da37c58a7143f85feefa3405109362bebf3dc2",
+    "workingTree": "implementation changes present",
+    "phase": "implementation candidate plus final process-observer hardening",
+    "reportSha256": "f0587d7c1dc4027bf33beeebab98f8b0c938c43df2ac363e61bb89dd37dbcaac"
+  },
+  "finalCodePatchSha256": "5b65759a3ac20f305c1db3d89d0595e626e14cae1ac10e0507699e19a952b65e",
+  "realPackageRecovery": {
+    "status": "passed",
+    "candidate": {
+      "sourceRevision": "92da37c58a7143f85feefa3405109362bebf3dc2",
+      "sourceTree": "f91e82025cc020dd7ade9667b6b7b6508b780330",
+      "workingTree": ""
+    },
+    "contextSha256": "9636424869efe910f5404e3d29545c405f8ee89b3e409cd8e7de8e165cfba0ae",
+    "dependencyProvenance": "relinked from successful PS-03 worktree; no fresh bundle restore",
+    "first": {
+      "elapsedMs": 244418,
+      "pack": {
+        "execution": "executed",
+        "proofId": "5f1669d8-73e2-4157-a2ba-67f59c68e1a6"
+      },
+      "tasks": [
+        {
+          "name": "clean-machine-acceptance",
+          "durationMs": 233698,
+          "status": "passed",
+          "execution": "executed",
+          "proofId": "24d65d95-5b97-4200-9628-c955634c4b19"
+        },
+        {
+          "name": "ast01-installed",
+          "durationMs": 2252,
+          "status": "passed",
+          "execution": "executed",
+          "proofId": "78e93ab9-c59e-44d5-a450-4721e6641421"
+        }
+      ],
+      "artifacts": {
+        "corpora": {
+          "kind": "file",
+          "sha256": "94e8d9e9fead089fca779608d1a11bc89b6edf549a0dcf7ca856de9ddd7caf36",
+          "mode": 420,
+          "bytes": 74400
+        },
+        "installed": {
+          "kind": "file",
+          "sha256": "7db8025886dc73716c03e56e1dbdfed77ffca80ad3dd0675bcaff948eeccaecc",
+          "mode": 420,
+          "bytes": 1246
+        }
+      }
+    },
+    "resumed": {
+      "elapsedMs": 1112,
+      "pack": {
+        "execution": "reused",
+        "proofId": "5f1669d8-73e2-4157-a2ba-67f59c68e1a6"
+      },
+      "tasks": [
+        {
+          "durationMs": 0,
+          "name": "clean-machine-acceptance",
+          "status": "passed",
+          "execution": "reused",
+          "reusedDurationMs": 233698,
+          "proofId": "24d65d95-5b97-4200-9628-c955634c4b19"
+        },
+        {
+          "durationMs": 0,
+          "name": "ast01-installed",
+          "status": "passed",
+          "execution": "reused",
+          "reusedDurationMs": 2252,
+          "proofId": "78e93ab9-c59e-44d5-a450-4721e6641421"
+        }
+      ],
+      "artifacts": {
+        "corpora": {
+          "kind": "file",
+          "sha256": "94e8d9e9fead089fca779608d1a11bc89b6edf549a0dcf7ca856de9ddd7caf36",
+          "mode": 420,
+          "bytes": 74400
+        },
+        "installed": {
+          "kind": "file",
+          "sha256": "7db8025886dc73716c03e56e1dbdfed77ffca80ad3dd0675bcaff948eeccaecc",
+          "mode": 420,
+          "bytes": 1246
+        }
+      }
+    },
+    "packages": 19,
+    "corpora": [
+      {
+        "id": "s3",
+        "status": "passed"
+      },
+      {
+        "id": "request-deadline",
+        "status": "passed"
+      },
+      {
+        "id": "multifile",
+        "status": "passed"
+      },
+      {
+        "id": "http-input",
+        "status": "passed"
+      },
+      {
+        "id": "read-loop",
+        "status": "passed"
+      },
+      {
+        "id": "read-loop-adoption",
+        "status": "passed"
+      },
+      {
+        "id": "kv",
+        "status": "passed"
+      }
+    ],
+    "measurementScope": "One development sample: package/task recovery only; excludes always-fresh seal stages and is not a full-seal speed estimate.",
+    "summarySha256": "9f05354e099e222769530778f70864da23084a1018593c3e3ceb3cd5dd9443fc"
+  },
+  "checks": {
+    "build": "passed",
+    "maintainerSync": "passed",
+    "docsSync": "passed",
+    "maintainerCheck": "passed",
+    "docsCheck": "passed",
+    "documentationRelease": "passed",
+    "publicationCheck": "passed",
+    "releasePreflight": "passed",
+    "scopeDeclaration": "passed; protected-boundary review remains required"
+  },
+  "retainedEarlierAttempts": [
+    {
+      "log": "ps04-runner-final-test.log",
+      "status": "incomplete",
+      "note": "Exit zero without final fixture assertion; excluded from passing evidence. Successful retry retained separately and fixture now rejects premature completion."
+    },
+    {
+      "log": "ps04-scope.log",
+      "status": "failed",
+      "note": "Missing documentation-deployment declaration corrected; classifier rerun passed."
+    }
+  ],
+  "deferred": [
+    "Full authoritative seal and full recovery timing (PS-06)",
+    "External Fastly reality",
+    "Fresh dependency-bundle restoration"
+  ]
+}
