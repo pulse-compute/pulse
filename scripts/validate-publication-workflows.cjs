@@ -288,6 +288,8 @@ function validateWorkflows() {
   excludes(npm, 'release:seal --skip-install --no-report', 'npm publication workflow');
   includes(npm, 'name: Preserve seal status and terminal evidence\n        if: always()', 'npm publication workflow');
   includes(npm, 'name: pulse-npm-seal-${{ github.run_id }}-${{ github.run_attempt }}', 'npm publication workflow');
+  const sealEvidence = candidate.slice(candidate.indexOf('name: Preserve seal status'), candidate.indexOf('name: Pack the exact release candidate'));
+  includes(sealEvidence, '            .pulse-seal\n', 'durable seal evidence upload');
   includes(npm, 'pnpm run release:pack', 'npm publication workflow');
   includes(npm, 'release-candidate.cjs prepare', 'npm publication workflow');
   includes(npm, 'publish-release.cjs audit', 'npm publication workflow');

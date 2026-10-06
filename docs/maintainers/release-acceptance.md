@@ -61,8 +61,10 @@ node scripts/release-feature-acceptance.cjs
 ```
 
 Run from a clean, committed candidate after restoring lockfile-pinned dependencies
-and building the workspace. The command runs all ten gates through the registered
-runner with fresh report paths. It requires complete terminal passing coverage,
+and building the workspace. The command selects all ten gates through the registered
+runner with fresh report paths. Within a recovery-aware seal, verified
+same-candidate checkpoints may supply completed gates; every result records
+whether it executed or was reused. It requires complete terminal passing coverage,
 matching source revisions, clean source, oracle digests, and exact installed
 package versions and tarball hashes. Shared package hashes must agree across
 proofs. The report is `wasm/.test-results/release-feature-acceptance.json`; its
@@ -298,8 +300,11 @@ mandatory; preflight results cannot replace or be pooled into the final seal.
 The seal builds one shared package set after workspace and documentation checks.
 Every consumer gets private copies verified against a source-bound, hash-pinned
 receipt; clean installs and behavioral coverage remain separate. Determinism
-still requires a second independent construction from source. The shared set
-belongs to this attempt only and is removed during seal cleanup. See
+still requires a second independent construction from source. The shared set and completed task proofs are retained in the attempt directory
+for seven days. A new attempt may recover them only after verifying the identical
+clean candidate, checkout, restored dependencies, toolchain, rebuilt outputs,
+options/provider context, prerequisite proofs, task definitions, artifact bytes
+and successful cleanup. Reuse never extends a checkpoint's original expiry. See
 [testing](testing.md#aggregate-release-seal) for the reuse and isolation rules.
 
 It restores dependencies, validates the repository and generated documentation, runs the complete release profile, and adds the external Fastly task when the Fastly CLI can start its managed local Compute lifecycle. Use `--require-fastly` to make that host proof mandatory.
@@ -321,7 +326,10 @@ npm run release:evidence -- \
 ```
 
 The evidence authority checks that all reports belong to the exact head
-revision, aggregates sixteen passing shards, creates source and binary-patch
+revision and cover the complete ordered selection. For recovery-aware seals it
+uses the attempt-local report/artifact paths and validates their sealed hashes,
+checkpoint provenance and successful cleanup. Focused or manually pooled reports
+do not qualify. It aggregates sixteen passing shards, creates source and binary-patch
 artifacts, independently applies the patch to the accepted source archive, and
 compares path, mode, and bytes with the sealed head. The resulting bundle is
 offline evidence only; merge, tagging, deployment, activation, and publication
