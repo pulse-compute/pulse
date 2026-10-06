@@ -220,6 +220,9 @@ async function main() {
       put(path.join(directory, 'artifacts/release-tasks.json'), JSON.stringify({ activeChildPid: child.pid }));
       put(path.join(root, '.pulse-seal/active.json'), JSON.stringify({ pid: 2147483647, childPid: null, hostname: os.hostname(), token: 'orphaned-runner', directory }));
       assert.throws(() => recovery.acquireSealLock(root), /process group.*active/);
+      fs.rmSync(path.join(directory, 'artifacts/release-tasks.json'));
+      put(path.join(directory, 'artifacts/feature-tasks.json'), JSON.stringify({ activeChildPid: null, activeChildPids: [child.pid] }));
+      assert.throws(() => recovery.acquireSealLock(root), /process group.*active/);
     } finally { process.kill(-child.pid, 'SIGKILL'); await exited; }
   });
 

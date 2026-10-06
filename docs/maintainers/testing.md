@@ -290,7 +290,7 @@ Eligibility binds the clean Git revision and tree, checkout real path, lockfile,
 actual dependency/toolchain bytes and versions, freshly built outputs, options,
 provider/environment hashes, task definition, prerequisite proof identities and
 exact retained artifact bytes. Checkpoints expire after seven days; reusing one
-does not extend its original expiry. There is no cross-checkout or remote cache.
+does not extend its original expiry. There is no foreign-checkout or remote cache.
 Publication CI archives `.pulse-seal/` for diagnosis; those uploads do not enable
 remote reuse. Environment values enter the context as hashes, not plaintext credentials.
 
@@ -300,6 +300,45 @@ documentation, workspace unit tests, vulnerability/license refresh, external
 Fastly reality and final cleanup execute on every attempt. Expensive release and
 installed tasks and the exact shared package set may be recovered. The independent
 second package construction remains part of the determinism task's proof.
+
+### Bounded local seal workers
+
+Serial execution remains the default. To overlap independent release and
+installed-feature tasks in one controller-owned seal:
+
+```bash
+npm run release:seal -- --workers 4 --compiler-workers 2 --memory-budget-mib 6144 --require-fastly
+```
+
+`--workers` accepts 1–8. The memory admission budget accepts 768–65536 MiB;
+the controller admits at most one worker per estimated 768 MiB. This limits
+concurrency, not operating-system memory use. Measure actual process-tree RSS
+before increasing the budget. `--compiler-workers` accepts 1–8, defaults to two
+and is capped by the admitted workers. Native, conformance, CLI, provider, release
+and external tasks use those compiler slots by default; registry hints can refine that
+classification. Lighter tasks may occupy the remaining worker slots. This avoids
+starting four heavy compilation pipelines together on a four-CPU runner.
+`--workers 1` is the serial fallback. Task deadlines are unchanged.
+
+Each worker is a private Git worktree of the clean candidate, with copied
+dependencies and build outputs, worker-local workspace links and private task
+temporary roots. Absolute source/tool argv paths are rebased into that worker.
+The exact shared package set is constructed once before task scheduling;
+consumers receive verified private copies. External Fastly reality, bootstrap,
+build and other always-fresh controller stages remain serial. Registry scheduling
+hints can declare dependencies, shared-resource locks and exclusive work;
+benchmarks and timing measurements execute alone. Historical task costs order
+ready tasks without changing coverage.
+
+Reports preserve canonical selection order, record every active child and bind
+each task to its worker. Failure or interruption cancels all active workers;
+successfully cleaned passed tasks retain their recovery proofs. Resuming requires
+the same worker/compiler/budget options and freshly recreated identical worker inputs.
+Changing the options invalidates reuse. Worker source and executable inputs are
+rechecked before terminal cleanup, then disposable checkouts are removed while
+attempt-local logs, receipts and artifacts remain. Foreign checkouts, remote
+workers and independently assembled reports are not eligible for this aggregate.
+Parallel execution requires reports and cannot use `--no-report`.
 
 `--no-report` disables recovery recording and cannot resume an attempt. To remove
 expired terminal attempts without touching active work, run:
