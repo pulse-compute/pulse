@@ -18,6 +18,7 @@ const { compileCanonicalSource } = require('../../../packages/compiler/src/canon
 const { buildCanonicalNativePlan } = require('../../../packages/compiler/src/canonical-native-plan');
 const provider = require('../../../../packages/provider-fastly/src/build/native-platform-capabilities');
 const portable = require('../../../packages/runtime-core-as/src/compiler/canonical-native');
+const { nativeSchemaCodecSource } = require('../../../packages/runtime-core-as/src/compiler/canonical-native-schema');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const write = (file, value) => fs.writeFileSync(file, JSON.stringify(value, null, 2) + '\n');
 const size = text => Buffer.byteLength(text);
@@ -28,7 +29,10 @@ const ownerFiles = [
   'packages/provider-fastly/src/build/time-native.js',
   'packages/provider-fastly/src/build/digest-native.js',
   'packages/provider-fastly/src/build/kv-native.js',
-  'packages/provider-fastly/src/build/effect-invocations.js'
+  'packages/provider-fastly/src/build/effect-invocations.js',
+  'wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js',
+  'wasm/packages/runtime-core-as/src/compiler/canonical-native-schema.js',
+  'wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js'
 ];
 
 function fixture(cell) {
@@ -93,8 +97,8 @@ function diagnosticStage(file, name) {
 }
 
 function attribution(source, plan, generated) {
-  const providerFile = ownerFiles[1], portableFile = ownerFiles[0];
-  const codecStage = diagnosticStage(portableFile, 'nativeSchemaCodecSource')(plan);
+  const providerFile = ownerFiles[1];
+  const codecStage = nativeSchemaCodecSource(plan);
   const projectorStage = diagnosticStage(providerFile, 'generateSchemaRuntime')(plan);
   const effectResult = diagnosticStage(providerFile, 'effectResultSource')(plan, generated.bindings);
   const effectDispatch = diagnosticStage(providerFile, 'effectDispatchSource')(plan);
