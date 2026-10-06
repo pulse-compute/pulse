@@ -91,7 +91,7 @@ const version: '2026-07-28' = PROTOCOL_VERSION;
 const limits: Readonly<McpLimits> = DEFAULT_LIMITS;
 const tools: McpToolsOptions = { catalog: {}, schemas: {}, routerId: 'rpc', target: 'node-javascript', endpoint: 'http://127.0.0.1:4000/' };
 const authorization: McpAuthorizationOptions = { resource: 'https://mcp.example/mcp', issuer: 'https://issuer.example', introspectionEndpoint: 'https://issuer.example/introspect', clientId: 'host', clientSecret: 'fixture', scopes: ['read'], operations: { status: [] } };
-const options: McpHttpOptions = { tools, authorization, limits: { deadlineMs: 1000 } };
+const options: McpHttpOptions = { tools, authorization, limits: { deadlineMs: 1000 }, legacyProtocol: '2025-06-18' };
 const handler: Readonly<McpHttpHandler> = createMcpHttpHandler(options);
 const response: Promise<Response> = handler.fetch(new Request('https://mcp.example/mcp'));
 createServer(createMcpNodeHandler(options));
@@ -101,6 +101,8 @@ import internal from '@pulse-compute/mcp/src/index.js';
 const legacy: '2025-06-18' = PROTOCOL_VERSION;
 // @ts-expect-error ceilings are immutable
 DEFAULT_LIMITS.deadlineMs = 1;
+// @ts-expect-error legacy compatibility is explicit and revision-bounded
+const unsupported: McpHttpOptions = { legacyProtocol: '2025-11-25' };
 `;
   for (const extension of ['cts', 'mts']) fs.writeFileSync(path.join(consumer, `consumer.${extension}`), types);
   run(process.execPath, [require.resolve('typescript/bin/tsc'), '--noEmit', '--strict', '--module', 'NodeNext',

@@ -21,6 +21,13 @@ configured external OAuth issuer using bounded token introspection, checks the
 resource audience and scopes, filters tool discovery, and denies unauthorized
 operations before governed dispatch. Backend credentials are distinct from
 client tokens; the deploying application owns TLS and backend protection.
+PMCP-01A adds an explicit `legacyProtocol: '2025-06-18'` host option for stateless
+initialize/ping/tools compatibility with measured Codex CLI 0.160.1. The modern
+profile remains the default; mixed modern framing cannot downgrade to legacy.
+Both profiles share bounded admission, fresh per-request authority and governed
+HTTP dispatch. Initialization retains no session, capability grant or principal;
+notifications do not execute or coordinate cancellation. No SSE, Resources,
+Prompts, stdio or direct-handler boundary is added.
 MCP-05 qualifies the Node JavaScript composition through an independent packaged
 resource-directory consumer and the pinned official client, including controlled
 OAuth, real local HTTP effects and bounded failure/cancellation. Installed local

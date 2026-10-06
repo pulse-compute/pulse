@@ -5,6 +5,7 @@ const { createTools } = require('./tools.js');
 const { createAuthorization, AuthorizationError } = require('./authorization.js');
 
 const PROTOCOL_VERSION = '2026-07-28';
+const LEGACY_PROTOCOL_VERSION = '2025-06-18';
 const META = 'io.modelcontextprotocol/';
 const DEFAULT_LIMITS = Object.freeze({ maxRequestBytes: 65536, maxResponseBytes: 1048576,
   maxDepth: 32, deadlineMs: 10000 });
@@ -14,6 +15,9 @@ const own = (value, key) => Object.hasOwn(value, key);
 const encoder = new TextEncoder();
 
 function configuration(options) {
+  if (options.legacyProtocol !== undefined && options.legacyProtocol !== LEGACY_PROTOCOL_VERSION) {
+    throw new TypeError('Invalid MCP legacy protocol');
+  }
   const path = options.path ?? '/mcp';
   if (typeof path !== 'string' || !/^\/[A-Za-z0-9/_-]*$/.test(path)) throw new TypeError('Invalid MCP endpoint path');
   const info = options.serverInfo ?? { name: 'pulse-mcp', version: '0.0.0' };
@@ -31,7 +35,8 @@ function configuration(options) {
     if (!['http:', 'https:'].includes(url.protocol) || url.origin !== origin) throw new TypeError('MCP origins must be exact HTTP(S) origins');
     return origin;
   }));
-  return { path, info: { name: info.name, version: info.version }, limits, origins };
+  return { path, info: { name: info.name, version: info.version }, limits, origins,
+    legacyProtocol: options.legacyProtocol };
 }
 
 function accepts(header, type) {
@@ -62,7 +67,7 @@ function nameHeader(value) {
 
 /** Bounded, stateless HTTP protocol shell. No entity or tool executor is owned here. */
 function createMcpHttpHandler(options = {}) {
-  const { path, info, limits, origins } = configuration(options);
+  const { path, info, limits, origins, legacyProtocol } = configuration(options);
   const tools = options.tools === undefined ? null : createTools(options.tools, limits);
   const authorization = options.authorization === undefined ? null
     : createAuthorization(options.authorization, path, tools?.list.map(tool => tool.name) ?? []);
@@ -117,38 +122,63 @@ function createMcpHttpHandler(options = {}) {
       if (!own(message, 'id')) return response(202, null);
       const versionHeader = request.headers.get('mcp-protocol-version');
       const methodHeader = request.headers.get('mcp-method');
-      if (!versionHeader || !methodHeader || methodHeader !== message.method
-        || !/^[\x21-\x7e]+$/.test(methodHeader) || !/^[\x21-\x7e]+$/.test(versionHeader)) return headerError(id);
-      const params = message.params;
-      const meta = params?._meta;
-      if (!object(meta) || typeof meta[META + 'protocolVersion'] !== 'string'
-        || !object(meta[META + 'clientCapabilities'])) return error(400, -32602, 'Invalid request metadata', id);
-      if (own(meta, META + 'clientInfo') && (!object(meta[META + 'clientInfo'])
-        || !['name', 'version'].every(key => typeof meta[META + 'clientInfo'][key] === 'string'))) return error(400, -32602, 'Invalid client information', id);
-      if (versionHeader !== meta[META + 'protocolVersion']) return headerError(id);
-      if (versionHeader !== PROTOCOL_VERSION) return error(400, -32022, 'Unsupported protocol version', id,
-        { supported: [PROTOCOL_VERSION], requested: versionHeader });
-      const nameField = message.method === 'resources/read' ? 'uri'
-        : ['tools/call', 'prompts/get'].includes(message.method) ? 'name' : undefined;
-      if (nameField && (typeof params[nameField] !== 'string' || nameHeader(request.headers.get('mcp-name')) !== params[nameField])) return headerError(id);
+      // Legacy is an explicit, stateless wire profile, not fallback from failed
+      // modern admission. Mixed modern headers/metadata always take the strict path.
+      const modernMetadata = object(message.params?._meta)
+        && Object.keys(message.params._meta).some(key => key.startsWith(META));
+      const legacy = legacyProtocol !== undefined && !request.headers.has('mcp-method')
+        && !request.headers.has('mcp-name') && !modernMetadata
+        && (versionHeader === legacyProtocol || (message.method === 'initialize' && versionHeader === null));
+      const params = legacy ? message.params ?? {} : message.params;
+      if (legacy) {
+        if (own(params, '_meta') && !object(params._meta)) return error(400, -32602, 'Invalid request metadata', id);
+      } else {
+        if (!versionHeader || !methodHeader || methodHeader !== message.method
+          || !/^[\x21-\x7e]+$/.test(methodHeader) || !/^[\x21-\x7e]+$/.test(versionHeader)) return headerError(id);
+        const meta = params?._meta;
+        if (!object(meta) || typeof meta[META + 'protocolVersion'] !== 'string'
+          || !object(meta[META + 'clientCapabilities'])) return error(400, -32602, 'Invalid request metadata', id);
+        if (own(meta, META + 'clientInfo') && (!object(meta[META + 'clientInfo'])
+          || !['name', 'version'].every(key => typeof meta[META + 'clientInfo'][key] === 'string'))) return error(400, -32602, 'Invalid client information', id);
+        if (versionHeader !== meta[META + 'protocolVersion']) return headerError(id);
+        if (versionHeader !== PROTOCOL_VERSION) return error(400, -32022, 'Unsupported protocol version', id,
+          { supported: [PROTOCOL_VERSION], requested: versionHeader });
+        const nameField = message.method === 'resources/read' ? 'uri'
+          : ['tools/call', 'prompts/get'].includes(message.method) ? 'name' : undefined;
+        if (nameField && (typeof params[nameField] !== 'string' || nameHeader(request.headers.get('mcp-name')) !== params[nameField])) return headerError(id);
+      }
       let result;
       if (authorization) authorization.fresh(principal);
-      if (message.method === 'server/discover') {
+      if (legacy && message.method === 'initialize') {
+        if (Object.keys(params).some(key => !['_meta', 'protocolVersion', 'capabilities', 'clientInfo'].includes(key))
+          || typeof params.protocolVersion !== 'string' || !object(params.capabilities) || !object(params.clientInfo)
+          || !['name', 'version'].every(key => typeof params.clientInfo[key] === 'string'
+            && params.clientInfo[key].length > 0 && encoder.encode(params.clientInfo[key]).length <= 128)) {
+          return error(400, -32602, 'Invalid initialization params', id);
+        }
+        if (params.protocolVersion !== legacyProtocol) return error(400, -32022, 'Unsupported protocol version', id,
+          { supported: [legacyProtocol], requested: params.protocolVersion });
+        result = { protocolVersion: legacyProtocol, capabilities: tools ? { tools: { listChanged: false } } : {}, serverInfo: info };
+      } else if (legacy && message.method === 'ping') {
+        if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
+        result = {};
+      } else if (!legacy && message.method === 'server/discover') {
         if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
         result = { supportedVersions: [PROTOCOL_VERSION], capabilities: tools ? { tools: { listChanged: false } } : {},
           ttlMs: 0, cacheScope: 'private' };
       } else if (tools && message.method === 'tools/list') {
         if (Object.keys(params).some(key => key !== '_meta')) return error(400, -32602, 'Invalid params', id);
         result = { tools: authorization ? tools.list.filter(tool => authorization.allowed(principal, tool.name)) : tools.list,
-          ttlMs: 0, cacheScope: 'private' };
+          ...(legacy ? {} : { ttlMs: 0, cacheScope: 'private' }) };
       } else if (tools && message.method === 'tools/call') {
         if (Object.keys(params).some(key => !['_meta', 'name', 'arguments'].includes(key))
+          || typeof params.name !== 'string'
           || (own(params, 'arguments') && !object(params.arguments))) return error(400, -32602, 'Invalid params', id);
         if (authorization) authorization.requireOperation(principal, params.name);
         if (!tools.has(params.name)) return error(400, -32602, 'Unknown tool', id);
         result = await tools.call(params.name, params.arguments ?? {}, signal);
       } else return error(404, -32601, 'Method not found', id);
-      result = { resultType: 'complete', _meta: { [META + 'serverInfo']: info }, ...result };
+      if (!legacy) result = { resultType: 'complete', _meta: { [META + 'serverInfo']: info }, ...result };
       const body = JSON.stringify({ jsonrpc: '2.0', id, result });
       if (encoder.encode(body).length > limits.maxResponseBytes) return error(500, -32603, 'Response body limit exceeded', id);
       return response(200, body);

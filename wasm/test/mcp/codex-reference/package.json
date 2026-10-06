@@ -1,0 +1,7 @@
+{
+  "name": "pulse-mcp-codex-reference",
+  "private": true,
+  "dependencies": {
+    "@openai/codex": "0.160.1"
+  }
+}
