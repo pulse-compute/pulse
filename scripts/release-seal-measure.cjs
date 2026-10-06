@@ -54,6 +54,9 @@ for (const method of ['spawn', 'spawnSync', 'execFile', 'execFileSync']) {
     if (category) emit({kind: 'launch', category});
     return original.call(this, command, args, ...rest);
   };
+  // Preserve Node's custom promisified execFile result ({stdout, stderr}) and
+  // child handle. Its native custom implementation bypasses launch observation.
+  Object.defineProperties(cp[method], Object.getOwnPropertyDescriptors(original));
 }
 process.on('exit', () => {
   const usage = process.resourceUsage();
@@ -78,7 +81,7 @@ function summarize(report, wallMs, events) {
     candidatePackages: packFile && fs.existsSync(packFile) ? read(path.join(report.runDirectory, 'packages/pulse-release-manifest.json')).packageCount : null,
     observedLaunches: Object.fromEntries(['asc', 'pack', 'install'].map(category => [category,
       events.filter(event => event.kind === 'launch' && event.category === category).length])),
-    observationScope: 'Node child_process launches under inherited preload; lower bounds. Shell launches and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.',
+    observationScope: 'Node child_process launches under inherited preload; lower bounds. Shell launches, native custom-promisified calls and consumers that clear NODE_OPTIONS are excluded. Counts include failed attempts.',
     workerCpuMs: null, peakProcessTreeRSSKiB: null,
     resourceLimit: 'Whole-worker CPU and simultaneous process-tree RSS are not measured by this portable observer',
     observedNodeCpuMs: sum(events.filter(event => event.kind === 'node-exit'), 'cpuMicros') / 1000,

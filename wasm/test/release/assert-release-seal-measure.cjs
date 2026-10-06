@@ -27,6 +27,17 @@ try {
     if (a.error.code !== 'ENOENT') throw new Error('spawn outcome changed');
     try { b(); throw new Error('exec outcome changed'); } catch (e) { if (e.code !== 'ENOENT') throw e; }
     cp.spawnSync(process.execPath, ['/missing/assemblyscript/bin/asc.js'], {stdio: 'ignore'});
+    // execFile has a custom promisifier: replacing it with the generic wrapper
+    // silently resolves only stdout and breaks real CLI/launcher consumers.
+    (async () => {
+      const assert = require('node:assert/strict');
+      const exec = require('node:util').promisify(cp.execFile);
+      const pending = exec(process.execPath, ['-e', 'process.stdout.write("out");process.stderr.write("err")']);
+      assert(pending.child && Number.isInteger(pending.child.pid));
+      assert.deepEqual(await pending, {stdout: 'out', stderr: 'err'});
+      await assert.rejects(exec(process.execPath, ['-e', 'process.stdout.write("failed-out");process.stderr.write("failed-err");process.exitCode=7']),
+        error => error.code === 7 && error.stdout === 'failed-out' && error.stderr === 'failed-err');
+    })().catch(error => { console.error(error); process.exitCode = 1; });
   `], { encoding: 'utf8', timeout: 5000 });
   assert.equal(result.status, 0, result.stderr);
   const bytes = fs.readFileSync(events, 'utf8');

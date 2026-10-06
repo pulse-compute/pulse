@@ -93,7 +93,7 @@ individual process RSS across the command; that RSS is not a simultaneous sum
 of process-tree memory.
 
 Automatic execution is limited to the explicit `evidence/ps06-qualified-seal`
-bootstrap branch when the workflow or measurement helper changes. Ordinary PRs
+bootstrap branch when the workflow, measurement helper or release-test fixtures change. Ordinary PRs
 keep their existing fast lane. Later runs are manually dispatched. Every attempt
 and measurement is archived, including failures and interruptions.
 
@@ -128,7 +128,7 @@ task counts, candidate package count, observed AssemblyScript/pack/install
 launches and observed Node CPU/peak RSS. The preload records categories only,
 without arguments or environment values, and lives outside the checkout to
 preserve installed-consumer isolation. Launch and Node resource observations
-are lower bounds: shell/native subprocesses and consumers that replace or clear
+are lower bounds: shell/native subprocesses, native custom-promisified calls and consumers that replace or clear
 `NODE_OPTIONS` are outside this observer. Whole-worker CPU, whole-tree RSS and
 total compiler launches remain explicitly unavailable, rather than inferred
 from elapsed time. Keep the small preload until recovery is finished; subsequent
