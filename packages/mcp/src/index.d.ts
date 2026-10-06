@@ -1,4 +1,4 @@
-/** Private, unreleased MCP component. Not a Pulse guest authoring API. */
+/** MCP host integration. Use outside Pulse guest handlers and schemas. */
 export declare const PROTOCOL_VERSION: '2026-07-28';
 export interface McpLimits {
   maxRequestBytes: number;
