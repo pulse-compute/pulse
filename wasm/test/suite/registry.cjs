@@ -1085,6 +1085,10 @@ const tasks = Object.freeze({
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
   }),
+  'mcp-package': nodeTask('test/mcp/assert-mcp-package.cjs', {
+    evidence: 'external', timeoutMs: 180000,
+    description: 'PMCP-01 packed CJS/ESM imports, strict declarations, legal layout and pinned official client'
+  }),
   'mcp-installed': nodeTask('test/mcp/assert-mcp-installed.cjs', {
     evidence: 'external', timeoutMs: 600000, isolatedArtifacts: true,
     description: 'MCP-05 packaged resource-directory app and pinned OAuth client through installed governed HTTP'

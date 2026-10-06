@@ -4,8 +4,18 @@
   "private": true,
   "license": "Apache-2.0",
   "type": "commonjs",
-  "description": "Unreleased first-party bounded MCP HTTP adapter.",
+  "description": "Bounded MCP HTTP adapter for Pulse host applications.",
   "engines": { "node": "^22.14.0 || ^24.0.0" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pulse-compute/pulse.git",
+    "directory": "packages/mcp"
+  },
+  "bugs": { "url": "https://github.com/pulse-compute/pulse/issues" },
+  "homepage": "https://github.com/pulse-compute/pulse/tree/latest/packages/mcp#readme",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "files": ["src/*.js", "src/*.d.ts", "README.md", "LICENSE", "NOTICE"],
   "exports": {
     ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
     "./node": { "types": "./src/node.d.ts", "default": "./src/node.js" }
