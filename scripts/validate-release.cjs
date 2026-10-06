@@ -13,7 +13,7 @@ const repoRoot = path.resolve(__dirname, '..');
 const resultsRoot = path.join(repoRoot, 'wasm', '.test-results');
 
 function parseArgs(argv) {
-  const options = { install: true, report: true, requireFastly: false, timeoutMs: 55 * 60 * 1000 };
+  const options = { install: true, report: true, requireFastly: false, timeoutMs: 55 * 60 * 1000, workers: 1, memoryBudgetMiB: 4096 };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--skip-install') options.install = false;
@@ -25,6 +25,11 @@ function parseArgs(argv) {
     else if (token === '--prune-recovery') options.pruneRecovery = true;
     else if (token === '--no-report') options.report = false;
     else if (token === '--require-fastly') options.requireFastly = true;
+    else if (token === '--workers' || token === '--memory-budget-mib') {
+      const value = argv[++index];
+      if (!/^[1-9]\d*$/.test(value || '')) throw new Error(`${token} requires a positive integer`);
+      options[token === '--workers' ? 'workers' : 'memoryBudgetMiB'] = Number(value);
+    }
     else if (token === '--timeout-minutes') {
       const value = argv[++index];
       if (!/^[1-9]\d*$/.test(value || '') || Number(value) > 1440) {
@@ -41,6 +46,8 @@ function parseArgs(argv) {
   }
   if (!options.install && options.dependencyBundle) throw new Error('--skip-install and --dependency-bundle cannot be combined');
   if (options.resume && !options.report) throw new Error('--resume requires reports');
+  require('./release-parallel.cjs').workerCount(options.workers, options.memoryBudgetMiB);
+  if (options.workers > 1 && !options.report) throw new Error('Parallel sealing requires durable reports');
   if (options.pruneRecovery && argv.length !== 1) throw new Error('--prune-recovery must be used alone');
   return Object.freeze(options);
 }
@@ -54,6 +61,8 @@ function usage() {
     '  --skip-install              keep the current dependency installation',
     '  --require-fastly            fail if the Fastly CLI or its local Compute lifecycle is unavailable',
     '  --resume <attempt-dir>      verify and reuse this same-candidate attempt\'s completed work',
+    '  --workers <count>          isolated local test workers (1–8; default 1 is serial)',
+    '  --memory-budget-mib <MiB> admission budget, 768 MiB per worker (default 4096)',
     '  --prune-recovery            remove terminal attempts older than seven days (never active work)',
     '  --timeout-minutes <minutes> overall work deadline (default 55); cleanup is separately bounded',
     '  --no-report                 do not write wasm/.test-results/release-seal.json',
@@ -303,6 +312,11 @@ async function main(argv = process.argv.slice(2)) {
     const currentCandidate = assertCandidateSource(sourceIdentity);
     if (currentCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed before package qualification');
     const sharedPackDirectory = progress.directory ? path.join(progress.directory, 'packages') : path.join(packageManagerCache, 'packages');
+    if (options.workers > 1) {
+      await runStep(steps, 'workspaces', 'Prepare isolated local seal workers', process.execPath,
+        ['scripts/release-parallel.cjs', repoRoot, String(options.workers), String(options.memoryBudgetMiB)],
+        { timeoutMs: 10 * 60 * 1000 });
+    }
     let packStore, packSpec;
     if (progress.directory) {
       const { createCheckpointStore, fingerprint } = require('./release-checkpoints.cjs');
@@ -421,12 +435,19 @@ async function main(argv = process.argv.slice(2)) {
     // not prevent a terminal receipt or leave the parent waiting indefinitely.
     progress.persist({ currentStep: 'cleanup', steps, featureAcceptance, externalFastly });
     const result = packageManagerCache ? await runCommand(process.execPath, ['-e',
-      "require('node:fs').rmSync(process.argv[1], { recursive: true, force: true })", packageManagerCache
+      "require('node:fs').rmSync(process.argv[1], { recursive: true, force: true });" +
+      (options.workers > 1 && candidate ? "const owner=require(process.argv[2]);owner.cleanupWorkspaces(process.argv[3],process.argv[4],Number(process.argv[5]));" : ''),
+      packageManagerCache, path.join(repoRoot, 'scripts/release-parallel.cjs'), repoRoot, candidate?.sourceTree || '',
+      String(require('./release-parallel.cjs').workerCount(options.workers, options.memoryBudgetMiB))
     ], { timeoutMs: 30000 }) : null;
     cleanup = result ? { status: result.status === 0 && !result.error && !result.timedOut ? 'passed' : 'failed',
       timedOut: result.timedOut, retainedPath: result.status === 0 ? null : packageManagerCache } : { status: 'not-needed', retainedPath: null };
+    if (options.workers > 1 && candidate && cleanup.status === 'failed') {
+      cleanup.retainedWorkerPath = require('./release-parallel.cjs').workspaceRoot(repoRoot, candidate.sourceTree,
+        require('./release-parallel.cjs').workerCount(options.workers, options.memoryBudgetMiB));
+    }
     if (cleanup.status === 'failed' && !failure) {
-      failure = Object.assign(new Error('Release package-manager cleanup failed or exceeded its deadline'), { code: 'PULSE_RELEASE_CLEANUP_FAILED' });
+      failure = Object.assign(new Error('Release temporary-input cleanup failed or exceeded its deadline'), { code: 'PULSE_RELEASE_CLEANUP_FAILED' });
       status = 'failed';
     }
     if (controller.signal.aborted) {

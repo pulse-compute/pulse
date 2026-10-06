@@ -173,6 +173,7 @@ async function main() {
     const afterInterruption = await attempt('after-interruption', interrupted, { names: ['first'] });
     assert.equal(afterInterruption.state.results[0].execution, 'executed');
     assert.equal(afterInterruption.state.results[0].status, 'passed');
+    await require('./assert-release-parallel.cjs').verifyParallel();
     console.log('ok - real task recovery preserves late failures, changed inputs, lost outputs, interruption and failed cleanup; malformed configuration and checkpoint disk errors terminalize without invented passes');
   } finally {
     for (const directory of retained) fs.rmSync(directory, { recursive: true, force: true });

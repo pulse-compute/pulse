@@ -511,6 +511,10 @@ function validateCheckpointTasks(report, expectedTasks, releaseSeal, kind) {
   assert.deepEqual(report.recovery.dependencies, dependencies, 'Runner prerequisite proofs differ from the seal');
   const reused = [], executed = [];
   for (const result of report.results) {
+    if (recovery.context.scheduling) {
+      assert(recovery.context.scheduling.workspaces.some(workspace => workspace.id === result.executionWorkspace),
+        'Task execution belongs to an unbound worker workspace');
+    } else assert.equal(result.executionWorkspace, undefined, 'Serial proof cannot claim a worker workspace');
     assert(['executed', 'reused'].includes(result.execution), `Missing execution provenance for ${result.name}`);
     const reference = result.checkpoint;
     assert(reference && reference.contextHash === recovery.contextSha256, `Missing or foreign checkpoint for ${result.name}`);
@@ -584,6 +588,25 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   const stepIds = releaseSeal.steps.map(step => step.id);
   assert.equal(new Set(stepIds).size, stepIds.length, 'Duplicate seal steps');
   const freshSteps = ['maintainer', 'publication', 'build', 'production-dependency-audit', 'workspace-unit', 'documentation', 'release', 'installed-features'];
+  if (recovery.context.options.workers > 1) {
+    freshSteps.push('workspaces');
+    const { workerCount, workspaceRoot, WORKER_MIB } = require('./release-parallel.cjs');
+    const count = workerCount(recovery.context.options.workers, recovery.context.options.memoryBudgetMiB);
+    const { repoRoot: _checkout, ...workerCandidate } = recovery.context.candidate;
+    const layout = { schemaVersion: 'pulse.seal-workers.v1', root: repoRoot, candidate: workerCandidate,
+      workers: count, memoryBudgetMiB: recovery.context.options.memoryBudgetMiB, estimatedWorkerMiB: WORKER_MIB,
+      workspaces: Array.from({ length: count }, (_, index) => ({ id: `worker-${index + 1}`,
+        directory: path.join(workspaceRoot(repoRoot, workerCandidate.sourceTree, count), `worker-${index + 1}`) })) };
+    const { workspaces, ...settings } = recovery.context.scheduling;
+    for (const workspace of workspaces) {
+      assert.match(workspace.inputs?.dependenciesSha256 || '', /^[a-f0-9]{64}$/);
+      assert.match(workspace.inputs?.buildSha256 || '', /^[a-f0-9]{64}$/);
+      assert(Number.isSafeInteger(workspace.inputs.dependencyFiles) && workspace.inputs.dependencyFiles > 0);
+      assert(Array.isArray(workspace.inputs.build));
+    }
+    assert.deepEqual({ ...settings, workspaces: workspaces.map(({ inputs, ...workspace }) => workspace) }, layout,
+      'Bound seal worker layout differs');
+  } else assert.equal(recovery.context.scheduling, undefined, 'Serial recovery cannot supply worker scheduling');
   if (recovery.context.options.install || recovery.context.options.dependencyBundleSha256) freshSteps.push('dependencies');
   if (releaseSeal.externalFastly?.status === 'passed') freshSteps.push('fastly-reality');
   if (recovery.context.options.requireFastly) assert.equal(releaseSeal.externalFastly?.status, 'passed', 'Required Fastly reality did not pass');

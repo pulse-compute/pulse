@@ -10,6 +10,7 @@ Do not use these variables as a substitute for `ctx.config`, `ctx.secret`, or pr
 
 | Variable | Scope | Stability |
 |---|---|---|
+| [`PULSEWASM_SEAL_WORKER_LAYOUT`](#pulsewasm-seal-worker-layout) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSE_RELEASE_SHARED_PACK`](#pulse-release-shared-pack) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSE_RELEASE_SHARED_PACK_SHA256`](#pulse-release-shared-pack-sha256) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
 | [`PULSE_RELEASE_FEATURE_REPORT_DIR`](#pulse-release-feature-report-dir) | Contributor and test-only configuration | Harness-internal; outside the application compatibility contract. |
@@ -93,6 +94,22 @@ Selects the flat Pulse project profile when no explicit `--profile` option is su
 ## Contributor and test-only configuration
 
 Repository harness controls. They are intentionally outside the application compatibility contract.
+
+<a id="pulsewasm-seal-worker-layout"></a>
+
+### `PULSEWASM_SEAL_WORKER_LAYOUT`
+
+Allows exact shared-package consumption by registered local children of one controller; foreign checkouts and remote proof pooling remain rejected.
+
+| Property | Contract |
+|---|---|
+| Value | Absolute controller-owned layout path |
+| Default | Unset; shared packages belong only to their original checkout. |
+| Precedence | The release controller supplies the registered layout to each isolated worker. |
+| Consumer | Shared package verification in local seal workers. |
+| Secret safety | Not a secret. Identifies private worktrees and their clean candidate. |
+| Stability | Harness-internal; outside the application compatibility contract. |
+| Source owners | `scripts/release-shared-pack.cjs`, `wasm/scripts/run-wasm-tests.cjs` |
 
 <a id="pulse-release-shared-pack"></a>
 

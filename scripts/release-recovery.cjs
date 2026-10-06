@@ -109,6 +109,8 @@ function createContext(root, candidate, options, externalFastly, env = process.e
   const pnpm = require('./pnpm-toolchain.cjs').binaryPath(root);
   assert(fs.existsSync(pnpm), 'Release pnpm executable must exist before checkpointing');
   const environment = Object.fromEntries(Object.entries(env).filter(([key]) => !['_', 'SHLVL', 'PWD', 'OLDPWD'].includes(key)).sort(([a], [b]) => a.localeCompare(b)));
+  const layout = options.workers > 1
+    ? require('./release-parallel.cjs').readLayout(root, candidate, options.workers, options.memoryBudgetMiB) : null;
   return {
     schemaVersion: SCHEMA,
     candidate: { ...candidate, repoRoot: fs.realpathSync(root) },
@@ -119,10 +121,16 @@ function createContext(root, candidate, options, externalFastly, env = process.e
       fastlySha256: externalFastly.fastlyCli?.binary ? fileHash(externalFastly.fastlyCli.binary) : null },
     environmentSha256: fingerprint(environment),
     options: { requireFastly: options.requireFastly, install: options.install,
+      workers: options.workers || 1, memoryBudgetMiB: options.memoryBudgetMiB || 4096,
       dependencyBundleSha256: options.dependencyBundle ? fileHash(options.dependencyBundle) : null },
     selections: { release: require('../wasm/test/suite/registry.cjs').expandProfile('release'),
       features: require('./release-feature-acceptance.cjs').REQUIRED_TASKS },
-    inputs: inputIdentity(root)
+    inputs: inputIdentity(root),
+    ...(layout ? { scheduling: {
+      ...layout,
+      workspaces: layout.workspaces
+        .map(workspace => ({ ...workspace, inputs: inputIdentity(workspace.directory) }))
+    } } : {})
   };
 }
 function artifactPaths(directory) {
@@ -204,7 +212,7 @@ function acquireSealLock(root, directory = null) {
           const reportFile = path.join(prior.directory, 'artifacts', name);
           if (!fs.existsSync(reportFile)) continue;
           const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
-          assert(!alive(report.activeChildPid, true), 'A prior seal task process group is still active');
+          assert(![report.activeChildPid, ...(report.activeChildPids || [])].some(pid => alive(pid, true)), 'A prior seal task process group is still active');
         }
       }
       assert.equal(JSON.parse(fs.readFileSync(file, 'utf8')).token, prior.token, 'Seal lock owner changed during acquisition');
@@ -236,7 +244,10 @@ function pruneRecovery(root, now = Date.now()) {
       let live = alive(report.activeChildPid, true);
       for (const name of ['release-tasks.json', 'feature-tasks.json']) {
         const file = path.join(directory, 'artifacts', name);
-        try { if (fs.existsSync(file)) live ||= alive(JSON.parse(fs.readFileSync(file, 'utf8')).activeChildPid, true); }
+        try { if (fs.existsSync(file)) {
+          const taskReport = JSON.parse(fs.readFileSync(file, 'utf8'));
+          live ||= [taskReport.activeChildPid, ...(taskReport.activeChildPids || [])].some(pid => alive(pid, true));
+        } }
         catch (_) { live = true; }
       }
       if (live) { retained.push(entry.name); continue; }
