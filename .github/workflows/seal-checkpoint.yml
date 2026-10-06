@@ -1,0 +1,86 @@
+name: Seal checkpoint
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [latest]
+    paths:
+      - '.github/workflows/seal-checkpoint.yml'
+      - 'scripts/release-seal-measure.cjs'
+      - 'wasm/test/release/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seal-checkpoint-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  qualify:
+    # The bootstrap branch is an explicit opt-in, not an ordinary PR gate.
+    if: github.event_name == 'workflow_dispatch' || (github.head_ref == 'evidence/ps06-qualified-seal' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Restore release-owned toolchain and pinned Fastly CLI
+        timeout-minutes: 10
+        shell: bash
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          npm install --global npm@11.15.0
+          test "$(npm --version)" = '11.15.0'
+          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
+          pnpm install --frozen-lockfile --ignore-scripts
+          mkdir -p .validation-tools/fastly .pulse-seal/prerequisites
+          curl --fail --location --retry 3 --max-time 120 \
+            https://github.com/fastly/cli/releases/download/v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz \
+            --output .validation-tools/fastly/cli.tar.gz
+          echo '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad  .validation-tools/fastly/cli.tar.gz' | sha256sum --check
+          tar -xzf .validation-tools/fastly/cli.tar.gz -C .validation-tools/fastly fastly
+          .validation-tools/fastly/fastly version
+          echo "PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly" >> "$GITHUB_ENV"
+          node -e "const fs=require('node:fs');fs.writeFileSync('.pulse-seal/prerequisites/environment.json',JSON.stringify({node:process.version,platform:process.platform,arch:process.arch,release:require('node:os').release(),dependencyProvenance:'Fresh pnpm frozen-lockfile install with lifecycle scripts disabled; no dependency cache restored',fastlyVersion:'16.1.0'},null,2)+'\n')"
+      - name: Check local Fastly execution before the expensive seal
+        timeout-minutes: 5
+        env:
+          PULSE_FASTLY_REALITY_EVIDENCE: ${{ github.workspace }}/.pulse-seal/prerequisites/fastly.json
+        run: |
+          pnpm run build
+          node wasm/test/release/assert-release-seal-measure.cjs
+          node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no-report
+      - name: Measure fresh seal and interrupted same-candidate recovery
+        timeout-minutes: 62
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .pulse-seal/measurements
+          /usr/bin/time -v -o .pulse-seal/measurements/worker-resources.txt \
+            timeout --signal=TERM --kill-after=45s 60m \
+            node scripts/release-seal-measure.cjs --skip-install --timeout-minutes 50 \
+              --out .pulse-seal/measurements/ps06-qualified --verify-resume
+      - name: Preserve every terminal attempt and measurement
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-seal-checkpoint-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .pulse-seal
+            wasm/.test-results
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14
