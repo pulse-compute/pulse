@@ -28,6 +28,11 @@ Both profiles share bounded admission, fresh per-request authority and governed
 HTTP dispatch. Initialization retains no session, capability grant or principal;
 notifications do not execute or coordinate cancellation. No SSE, Resources,
 Prompts, stdio or direct-handler boundary is added.
+PMCP-01B qualifies the unchanged modern default with Claude Code 2.1.292:
+packed Node HTTP discovery, scoped tools, separate backend credentials and fresh
+request authority, including denied writer access and token revocation. This
+local no-inference control-channel proof does not establish Desktop, claude.ai,
+browser OAuth, deployed or other client-version support.
 MCP-05 qualifies the Node JavaScript composition through an independent packaged
 resource-directory consumer and the pinned official client, including controlled
 OAuth, real local HTTP effects and bounded failure/cancellation. Installed local
