@@ -1194,6 +1194,16 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 60000,
     description: 'durable seal heartbeat, terminal receipts and bounded process/cleanup lifecycle'
   }),
+  'release-checkpoints': nodeTask('test/release/assert-release-checkpoints.cjs', {
+    description: 'Same-candidate receipt integrity, output retention and dependency invalidation'
+  }),
+  'release-recovery-runner': nodeTask('test/release/assert-release-recovery-runner.cjs', {
+    timeoutMs: 30000,
+    description: 'Real subprocess late-failure recovery and fail-closed reruns'
+  }),
+  'release-recovery': nodeTask('test/release/assert-release-recovery.cjs', {
+    description: 'Recovery input identity, checkout exclusion and retained-attempt expiry'
+  }),
   'release-runtime-policy': nodeTask('test/release/assert-release-runtime-policy.cjs', {
     evidence: 'unit',
     description: 'Node release-line acceptance and Fastly CLI lifecycle ownership'
@@ -1231,6 +1241,9 @@ const profiles = Object.freeze({
     'release-feature-acceptance',
     'release-runtime-policy',
     'release-seal-lifecycle',
+    'release-checkpoints',
+    'release-recovery-runner',
+    'release-recovery',
     'release-tag',
     'api-surface',
     'logging-contract',

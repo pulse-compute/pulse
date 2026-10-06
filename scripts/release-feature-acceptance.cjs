@@ -119,20 +119,28 @@ function writeJson(file, value) {
 }
 
 function main(argv = process.argv.slice(2)) {
-  assert.equal(argv.length, 0, 'Usage: node scripts/release-feature-acceptance.cjs');
+  assert(argv.length === 0 || (argv.length === 2 && argv[0] === '--recovery-config'),
+    'Usage: node scripts/release-feature-acceptance.cjs [--recovery-config <file>]');
+  const recovery = argv.length ? JSON.parse(fs.readFileSync(argv[1], 'utf8')) : null;
   const { tasks, expandProfile } = require('../wasm/test/suite/registry.cjs');
   validateCoverage(tasks, expandProfile);
   const identity = candidateIdentity();
   const parent = path.join(ROOT, 'wasm/.test-results');
   fs.mkdirSync(parent, { recursive: true });
-  const directory = fs.mkdtempSync(path.join(parent, 'release-features-'));
-  const installedDir = path.join(directory, 'installed');
-  const runnerFile = path.join(directory, 'tasks.json');
-  const reportFile = path.join(parent, 'release-feature-acceptance.json');
+  const directory = recovery ? path.dirname(recovery.artifacts.featureReport) : fs.mkdtempSync(path.join(parent, 'release-features-'));
+  const installedDir = recovery ? recovery.artifacts.installedReports : path.join(directory, 'installed');
+  const runnerFile = recovery ? recovery.artifacts.featureTasks : path.join(directory, 'tasks.json');
+  const reportFile = recovery ? recovery.artifacts.featureReport : path.join(parent, 'release-feature-acceptance.json');
+  if (recovery) {
+    assert.equal(recovery.kind, 'features');
+    assert.deepEqual(recovery.selectedTasks, REQUIRED_TASKS);
+    assert.deepEqual(recovery.context.candidate, { ...identity, repoRoot: fs.realpathSync(ROOT) }, 'Recovery candidate differs');
+  }
   const startedAt = new Date().toISOString();
   writeJson(reportFile, { schemaVersion: SCHEMA, ...identity, status: 'running', startedAt, directory });
   try {
-    const result = spawnSync(process.execPath, ['wasm/scripts/run-wasm-tests.cjs', ...REQUIRED_TASKS.flatMap(task => ['--task', task]), '--report', runnerFile], {
+    const result = spawnSync(process.execPath, ['wasm/scripts/run-wasm-tests.cjs', ...REQUIRED_TASKS.flatMap(task => ['--task', task]), '--report', runnerFile,
+      ...(recovery ? ['--recovery-config', path.resolve(argv[1])] : [])], {
       cwd: ROOT, stdio: 'inherit', timeout: 60 * 60 * 1000,
       env: { ...process.env, PULSE_SOURCE_REVISION: identity.sourceRevision, PULSE_SOURCE_IDENTITY_KIND: 'git-commit',
         PULSE_SOURCE_DIGEST_SHA256: '', PULSE_SOURCE_FILE_COUNT: '', PULSE_RELEASE_FEATURE_REPORT_DIR: installedDir }

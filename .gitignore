@@ -47,5 +47,8 @@ pulse-deps-*.tar.zst.sha256
 .pulse-release-preflight/
 .pulse-release-preparation/
 
+# Verified seal checkpoints; explicit seven-day cleanup via release:seal.
+.pulse-seal/
+
 # Documentation example build output
 .pulse-docs-build/

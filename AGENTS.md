@@ -311,9 +311,11 @@ The path classifier is conservative. A protected-path match means “name and re
 7. Summarize changed boundaries, evidence, and residual uncertainty.
 
 When a check produces a report, confirm terminal status and completed task coverage
-as well as process exit. Preserve failed attempts and identify retries; focused or
-resumed runs are development evidence, not the complete release replay. Record
-the tested source identity and working-tree state. A commit ID alone does not
+as well as process exit. Preserve failed attempts and identify retries. Focused or manually combined
+runs are development evidence. The release controller may resume the complete
+selection only through verified, unexpired checkpoints for the same immutable
+candidate and checkout; missing or invalid proofs execute again. Record the
+tested source identity and working-tree state. A commit ID alone does not
 identify uncommitted bytes. See `docs/maintainers/testing.md` for evidence rules.
 
 Before a planned pause or handoff, record the branch/base/head, uncommitted work,

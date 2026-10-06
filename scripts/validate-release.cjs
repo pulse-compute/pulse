@@ -2,6 +2,7 @@
 'use strict';
 
 const fs = require('node:fs');
+const assert = require('node:assert/strict');
 const os = require('node:os');
 const path = require('node:path');
 const { runCommand } = require('./release-process.cjs');
@@ -16,6 +17,12 @@ function parseArgs(argv) {
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--skip-install') options.install = false;
+    else if (token === '--resume') {
+      const value = argv[++index];
+      if (!value || value.startsWith('-')) throw new Error('--resume requires an attempt directory');
+      options.resume = path.resolve(value);
+    }
+    else if (token === '--prune-recovery') options.pruneRecovery = true;
     else if (token === '--no-report') options.report = false;
     else if (token === '--require-fastly') options.requireFastly = true;
     else if (token === '--timeout-minutes') {
@@ -33,6 +40,8 @@ function parseArgs(argv) {
     else throw new Error(`Unknown release-seal option: ${token}`);
   }
   if (!options.install && options.dependencyBundle) throw new Error('--skip-install and --dependency-bundle cannot be combined');
+  if (options.resume && !options.report) throw new Error('--resume requires reports');
+  if (options.pruneRecovery && argv.length !== 1) throw new Error('--prune-recovery must be used alone');
   return Object.freeze(options);
 }
 
@@ -44,6 +53,8 @@ function usage() {
     '  --dependency-bundle <path>  restore the exact offline dependency bundle',
     '  --skip-install              keep the current dependency installation',
     '  --require-fastly            fail if the Fastly CLI or its local Compute lifecycle is unavailable',
+    '  --resume <attempt-dir>      verify and reuse this same-candidate attempt\'s completed work',
+    '  --prune-recovery            remove terminal attempts older than seven days (never active work)',
     '  --timeout-minutes <minutes> overall work deadline (default 55); cleanup is separately bounded',
     '  --no-report                 do not write wasm/.test-results/release-seal.json',
     '  -h, --help                  show this help'
@@ -69,6 +80,7 @@ async function executeStep(steps, id, description, command, args, options = {}) 
     result = await runCommand(command, args, {
       cwd: repoRoot, env: { ...process.env, ...(options.env || {}) },
       timeoutMs: options.timeoutMs || 20 * 60 * 1000, signal: options.signal,
+      onChild: options.onChild,
       onOutput(name, chunk) {
         process[name].write(chunk);
         if (log !== null) fs.writeSync(log, chunk);
@@ -175,8 +187,13 @@ async function main(argv = process.argv.slice(2)) {
     process.stdout.write(`${usage()}\n`);
     return;
   }
+  if (options.pruneRecovery) {
+    const result = require('./release-recovery.cjs').pruneRecovery(repoRoot);
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    return result;
+  }
   const steps = [];
-  const progress = createSealStatus({ resultsRoot, report: options.report, initial: {
+  const progress = createSealStatus({ resultsRoot, attemptsRoot: path.join(repoRoot, '.pulse-seal/attempts'), report: options.report, deferLatest: true, initial: {
     schemaVersion: 'pulse.release-seal.v1', sourceRevision: null, sourceIdentity: null, runtime: null,
     currentStep: 'bootstrap'
   } });
@@ -189,9 +206,11 @@ async function main(argv = process.argv.slice(2)) {
   }]));
   for (const [signal, handler] of handlers) process.on(signal, handler);
   const deadline = createDeadline(controller, options.timeoutMs);
+  let sealLock = null;
   const runStep = (steps, id, description, command, args, stepOptions = {}) => {
     const timeoutMs = Math.min(stepOptions.timeoutMs || 20 * 60 * 1000, deadline.remaining());
-    return executeStep(steps, id, description, command, args, { ...stepOptions, timeoutMs, progress, signal: controller.signal });
+    return executeStep(steps, id, description, command, args, { ...stepOptions, timeoutMs, progress, signal: controller.signal,
+      onChild: child => sealLock?.child(child?.pid || null) });
   };
   let packageManagerCache = null;
   let packageManagerEnv;
@@ -201,6 +220,8 @@ async function main(argv = process.argv.slice(2)) {
   let status = 'running';
   let failure = null;
   let cleanup = null;
+  let recovery = null;
+  let artifactFiles = null;
   const runPackageManagerStep = (id, description, args, timeoutMs) => {
     const invocation = packageManagerInvocation();
     return runStep(
@@ -221,6 +242,10 @@ async function main(argv = process.argv.slice(2)) {
     identityEnv = sourceIdentityEnv(sourceIdentity);
     progress.persist({ sourceRevision: revision, sourceIdentity });
     candidate = assertCandidateSource(sourceIdentity);
+    const recoveryTools = require('./release-recovery.cjs');
+    sealLock = recoveryTools.acquireSealLock(repoRoot, progress.directory);
+    progress.claimLatest();
+    const previousDirectory = options.resume ? recoveryTools.previousAttempt(repoRoot, options.resume) : null;
     progress.persist({ candidate, currentStep: 'prerequisites' });
     externalFastly = fastlyAvailability();
     progress.persist({ externalFastly });
@@ -232,7 +257,7 @@ async function main(argv = process.argv.slice(2)) {
       throw new Error(`Dependency bundle is not a file: ${options.dependencyBundle}`);
     }
     const preflight = require('./release-preflight.cjs').validatePreflight();
-    process.stdout.write(`[pulse:release] Preflight passed: ${preflight.shards} release shards mapped; full replay still required.\n`);
+    process.stdout.write(`[pulse:release] Preflight passed: ${preflight.shards} release shards mapped; complete verified coverage required.\n`);
     deadline.remaining();
     progress.persist({ currentStep: 'setup' });
     packageManagerCache = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-release-seal-package-manager-'));
@@ -277,17 +302,56 @@ async function main(argv = process.argv.slice(2)) {
     await runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
     const currentCandidate = assertCandidateSource(sourceIdentity);
     if (currentCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed before package qualification');
-    const sharedPackDirectory = path.join(packageManagerCache, 'packages');
-    await runStep(steps, 'shared-pack', 'Construct the exact package set once for isolated consumers', process.execPath,
-      ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory],
-      { timeoutMs: 10 * 60 * 1000, env: identityEnv });
+    const sharedPackDirectory = progress.directory ? path.join(progress.directory, 'packages') : path.join(packageManagerCache, 'packages');
+    let packStore, packSpec;
+    if (progress.directory) {
+      const { createCheckpointStore, fingerprint } = require('./release-checkpoints.cjs');
+      const context = recoveryTools.createContext(repoRoot, candidate, options, externalFastly);
+      artifactFiles = recoveryTools.artifactPaths(progress.directory);
+      recovery = { schemaVersion: recoveryTools.SCHEMA, directory: progress.directory, previousDirectory,
+        context, contextSha256: fingerprint(context), artifacts: artifactFiles };
+      progress.persist({ recovery });
+      packStore = createCheckpointStore({ directory: path.join(progress.directory, 'checkpoints/pack'),
+        previousDirectory: previousDirectory ? path.join(previousDirectory, 'checkpoints/pack') : undefined, context });
+      packSpec = { id: 'shared-pack', definition: recoveryTools.sharedPackDefinition(), dependencies: {},
+        artifacts: { pack: sharedPackDirectory, log: path.join(progress.directory, 'shared-pack.log') } };
+    }
+    const reusedPack = packStore?.tryReuse(packSpec);
+    let packProof;
+    if (reusedPack?.reused) {
+      packProof = reusedPack;
+      steps.push({ ...reusedPack.result, execution: 'reused', logPath: packSpec.artifacts.log,
+        originalResult: reusedPack.result, proofId: reusedPack.proofId });
+      progress.persist({ steps });
+      process.stdout.write('[pulse:release] Reused verified exact package set from the preceding attempt.\n');
+    } else {
+      const step = await runStep(steps, 'shared-pack', 'Construct the exact package set once for isolated consumers', process.execPath,
+        ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory],
+        { timeoutMs: 10 * 60 * 1000, env: identityEnv });
+      if (packStore) packProof = packStore.record({ ...packSpec, result: { ...step, cleanup: { status: 'passed' } } });
+    }
+    if (recovery) {
+      recovery.sharedPack = { proofId: packProof.proofId, receiptPath: packProof.receiptPath,
+        receiptSha256: packProof.receiptSha256, execution: reusedPack?.reused ? 'reused' : 'executed',
+        reason: reusedPack?.reason || 'fresh attempt' };
+      progress.persist({ recovery });
+    }
     const consumerEnv = { ...identityEnv, ...require('./release-shared-pack.cjs').sharedPackEnv(sharedPackDirectory) };
+    let releaseConfigFile, featureConfigFile;
+    if (recovery) {
+      const { expandProfile } = require('../wasm/test/suite/registry.cjs');
+      releaseConfigFile = path.join(progress.directory, 'release-recovery.json');
+      featureConfigFile = path.join(progress.directory, 'feature-recovery.json');
+      recoveryTools.atomicJson(releaseConfigFile, recoveryTools.recoveryConfig(recovery, 'release', expandProfile('release')));
+      recoveryTools.atomicJson(featureConfigFile, recoveryTools.recoveryConfig(recovery, 'features', require('./release-feature-acceptance.cjs').REQUIRED_TASKS));
+    }
     await runStep(
       steps,
       'release',
       'Run native, JavaScript, conformance, provider, CLI, package, consumer, and determinism evidence',
       'node',
-      ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', '.test-results/release-tasks.json'],
+      ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', artifactFiles?.taskReport || '.test-results/release-tasks.json',
+        ...(releaseConfigFile ? ['--recovery-config', releaseConfigFile] : [])],
       { timeoutMs: 60 * 60 * 1000, env: consumerEnv }
     );
 
@@ -296,11 +360,11 @@ async function main(argv = process.argv.slice(2)) {
       'installed-features',
       'Qualify separately required installed feature gates on this exact candidate',
       process.execPath,
-      ['scripts/release-feature-acceptance.cjs'],
+      ['scripts/release-feature-acceptance.cjs', ...(featureConfigFile ? ['--recovery-config', featureConfigFile] : [])],
       { timeoutMs: 60 * 60 * 1000, env: consumerEnv }
     );
     featureAcceptance = require('./release-feature-acceptance.cjs').validateSummary(
-      JSON.parse(fs.readFileSync(path.join(resultsRoot, 'release-feature-acceptance.json'), 'utf8')),
+      JSON.parse(fs.readFileSync(artifactFiles?.featureReport || path.join(resultsRoot, 'release-feature-acceptance.json'), 'utf8')),
       revision
     );
 
@@ -316,7 +380,7 @@ async function main(argv = process.argv.slice(2)) {
         ['wasm/scripts/run-wasm-tests.cjs', '--task', 'provider-fastly-compute-reality', '--no-report'],
         {
           timeoutMs: 10 * 60 * 1000,
-          env: { PULSE_FASTLY_REALITY_EVIDENCE: path.join(resultsRoot, 'fastly-reality.json') }
+          env: { PULSE_FASTLY_REALITY_EVIDENCE: artifactFiles?.fastlyReality || path.join(resultsRoot, 'fastly-reality.json') }
         }
       );
       externalFastly = Object.freeze({ ...externalFastly, status: 'passed' });
@@ -338,6 +402,14 @@ async function main(argv = process.argv.slice(2)) {
     }
     const finalCandidate = assertCandidateSource(sourceIdentity);
     if (finalCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed during qualification');
+    if (recovery) {
+      const finalAvailability = externalFastly.status === 'passed' ? { ...externalFastly, status: 'available' } : externalFastly;
+      assert.deepEqual(recoveryTools.createContext(repoRoot, finalCandidate, options, finalAvailability), recovery.context,
+        'Candidate, dependency, toolchain, environment or built workspace bytes changed during qualification');
+      if (externalFastly.status !== 'passed') delete recovery.artifacts.fastlyReality;
+      recovery.artifactsSha256 = Object.fromEntries(Object.entries(recovery.artifacts).map(([name, file]) => [name, recoveryTools.describeArtifact(file)]));
+      progress.persist({ recovery });
+    }
     deadline.remaining();
     status = 'passed';
   } catch (error) {
@@ -364,9 +436,10 @@ async function main(argv = process.argv.slice(2)) {
       else failure ||= Object.assign(new Error(`Seal interrupted by ${controller.signal.reason}`), { code: 'PULSE_RELEASE_INTERRUPTED' });
     }
     for (const [signal, handler] of handlers) process.removeListener(signal, handler);
+    try { sealLock?.release(); } catch (error) { failure ||= error; status = 'failed'; }
   }
 
-  const report = progress.finish({ status, steps, featureAcceptance, externalFastly, cleanup,
+  const report = progress.finish({ status, steps, featureAcceptance, externalFastly, cleanup, recovery,
     ...(failure ? { error: { code: failure.code || null, message: failure.message } } : {}) });
   process.stdout.write(`\n[pulse:release] Seal ${status} with ${steps.length} completed step(s); Fastly reality: ${externalFastly.status}.\n`);
   if (progress.directory) process.stdout.write(`[pulse:release] Terminal report: ${path.join(progress.directory, 'report.json')}\n`);

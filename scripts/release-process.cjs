@@ -65,6 +65,7 @@ function runCommand(command, args, options = {}) {
       options.signal?.removeEventListener('abort', abort);
       child?.stdout?.destroy(); child?.stderr?.destroy();
       if (forcedCompletion) child?.unref();
+      try { options.onChild?.(null); } catch (cause) { error ||= cause; }
       resolve({ status: closed?.code ?? null, signal: closed?.signal ?? null,
         error: error || null, timedOut: stopped === 'timeout',
         interruptedBy: stopped && stopped !== 'timeout' ? stopped : null, forcedCompletion });
@@ -97,7 +98,15 @@ function runCommand(command, args, options = {}) {
       child.once('close', (code, signal) => { closed = { code, signal }; if (!stopped) finish(); });
       timer = setTimeout(() => stop('timeout'), timeoutMs);
       options.signal?.addEventListener('abort', abort, { once: true });
-    } catch (cause) { error = cause; finish(); }
+      // Persistence/cancellation observers run only after supervision is ready.
+      // A failed lock update must terminate its child, not merely settle early.
+      try { options.onChild?.(child); }
+      catch (cause) { error ||= cause; stop('child-observer-error'); }
+    } catch (cause) {
+      error ||= cause;
+      if (child?.pid) stop('supervision-error');
+      else finish();
+    }
   });
 }
 

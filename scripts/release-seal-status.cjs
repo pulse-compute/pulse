@@ -10,10 +10,18 @@ function atomicJson(file, value) {
   fs.renameSync(temporary, file);
 }
 
-function createSealStatus({ resultsRoot, initial, report = true, heartbeatMs = 10000, output = text => process.stdout.write(text) }) {
+function createSealStatus({ resultsRoot, attemptsRoot, initial, report = true, deferLatest = false, heartbeatMs = 10000, output = text => process.stdout.write(text) }) {
   const started = Date.now();
   const prefix = new Date(started).toISOString().replace(/[:.]/g, '-');
-  const parent = path.join(resultsRoot, 'seal-runs');
+  const parent = attemptsRoot || path.join(resultsRoot, 'seal-runs');
+  if (report && attemptsRoot) {
+    let current = path.resolve(parent);
+    while (current !== path.dirname(current)) {
+      try { if (fs.lstatSync(current).isSymbolicLink()) throw new Error(`Seal attempt path traverses a symlink: ${current}`); }
+      catch (error) { if (error.code !== 'ENOENT') throw error; }
+      current = path.dirname(current);
+    }
+  }
   if (report) fs.mkdirSync(parent, { recursive: true });
   const directory = report ? fs.mkdtempSync(path.join(parent, `${prefix}-`)) : null;
   const latest = path.join(resultsRoot, 'release-seal.json');
@@ -21,6 +29,7 @@ function createSealStatus({ resultsRoot, initial, report = true, heartbeatMs = 1
     runDirectory: directory, status: 'running', startedAt: new Date(started).toISOString(),
     completedAt: null, currentStep: null, steps: [] };
   let terminal = false;
+  let claimedLatest = !deferLatest;
   const persist = (updates = {}, first = false) => {
     Object.assign(state, updates, { updatedAt: new Date().toISOString(), durationMs: Date.now() - started });
     if (report) {
@@ -28,7 +37,7 @@ function createSealStatus({ resultsRoot, initial, report = true, heartbeatMs = 1
       // An older run finishing must not replace a newer run's current status.
       let owner;
       try { owner = JSON.parse(fs.readFileSync(latest, 'utf8')).runId; } catch (_) { /* first run */ }
-      if (first || owner === state.runId) atomicJson(latest, state);
+      if (claimedLatest && (first || owner === state.runId)) atomicJson(latest, state);
     }
     return { ...state };
   };
@@ -40,6 +49,11 @@ function createSealStatus({ resultsRoot, initial, report = true, heartbeatMs = 1
   heartbeat.unref();
   return {
     directory, persist,
+    claimLatest() {
+      if (terminal) throw new Error('A terminal seal attempt cannot claim current status');
+      claimedLatest = true;
+      return persist({}, true);
+    },
     finish(updates) {
       clearInterval(heartbeat);
       terminal = true;

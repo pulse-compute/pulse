@@ -7,7 +7,8 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { expandProfile } = require('../wasm/test/suite/registry.cjs');
+const { expandProfile, tasks } = require('../wasm/test/suite/registry.cjs');
+const { validateReport } = require('./maintainer-portable-validation.cjs');
 const { MAINTENANCE_POLICY } = require('./maintenance-policy.cjs');
 const { reportForInputs, renderMarkdown } = require('./maintainer-scope.cjs');
 
@@ -242,7 +243,7 @@ const SHARD_DEFINITIONS = Object.freeze([
   Object.freeze({
     id: 'maintainer-publication-controls',
     title: 'Maintainer and publication control planes',
-    tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-seal-lifecycle', 'release-tag']),
+    tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-seal-lifecycle', 'release-checkpoints', 'release-recovery-runner', 'release-recovery', 'release-tag']),
     releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release', 'installed-features'])
   })
 ]);
@@ -364,6 +365,9 @@ function parseArgs(argv) {
     fail('PULSE_RELEASE_EVIDENCE_ARGUMENT', `Invalid evidence label: ${label}`);
   }
   options.label = label.toLowerCase();
+  const artifactFlags = { '--task-report': 'taskReport', '--four-mode': 'fourMode',
+    '--candidate-report': 'candidateReport', '--candidates': 'candidates' };
+  options.explicitArtifacts = argv.flatMap(token => artifactFlags[token.split('=')[0]] ? [artifactFlags[token.split('=')[0]]] : []);
   return Object.freeze(options);
 }
 
@@ -448,6 +452,194 @@ function validateShardCoverage(expectedTasks = expandProfile('release'), definit
   return Object.freeze(shards);
 }
 
+function assertAttemptPath(file, directory, label) {
+  assert(typeof file === 'string' && path.isAbsolute(file), `${label} needs an absolute attempt path`);
+  const relative = path.relative(directory, file);
+  assert(relative && relative !== '..' && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative),
+    `${label} is outside its seal attempt`);
+  assert.equal(fs.realpathSync(file), path.resolve(file), `${label} traverses a symlink`);
+}
+
+function resolveEvidencePaths(options, releaseSeal) {
+  if (!releaseSeal.recovery) return options;
+  const { artifacts } = releaseSeal.recovery;
+  const { describeArtifact } = require('./release-recovery.cjs');
+  const defaults = {
+    taskReport: path.join(repoRoot, 'wasm/.test-results/release-tasks.json'),
+    fourMode: path.join(repoRoot, 'wasm/.test-results/four-mode-conformance.json'),
+    candidateReport: path.join(repoRoot, 'wasm/.test-results/deployment-candidates.json'),
+    candidates: path.join(repoRoot, 'wasm/.test-results/deployment-candidates')
+  };
+  const resolved = { ...options };
+  for (const name of Object.keys(defaults)) {
+    const explicit = options.explicitArtifacts
+      ? options.explicitArtifacts.includes(name)
+      : options[name] && path.resolve(options[name]) !== defaults[name];
+    if (explicit) {
+      assert.deepEqual(describeArtifact(options[name]), releaseSeal.recovery.artifactsSha256?.[name],
+        `Explicit ${name} does not match the sealed artifact bytes`);
+    } else resolved[name] = artifacts?.[name];
+  }
+  return resolved;
+}
+
+function validatePredecessor(verified, previousDirectory, context) {
+  const { readCheckpointReceipt } = require('./release-checkpoints.cjs');
+  assert.equal(verified.receipt.reusedFrom?.directory, previousDirectory, 'Checkpoint selected another prior attempt');
+  const prior = readCheckpointReceipt({ receiptPath: path.join(previousDirectory, path.basename(verified.receiptPath)), context });
+  assert.equal(prior.receiptSha256, verified.receipt.reusedFrom.receiptSha256, 'Checkpoint predecessor digest differs');
+  const { disposition, reusedFrom, ...currentProof } = verified.receipt;
+  const { disposition: previousDisposition, reusedFrom: previousSource, ...previousProof } = prior.receipt;
+  assert.deepEqual(currentProof, previousProof, 'Checkpoint predecessor proof differs');
+}
+
+function validateCheckpointTasks(report, expectedTasks, releaseSeal, kind) {
+  const recovery = releaseSeal.recovery;
+  const { readCheckpointReceipt, fingerprint } = require('./release-checkpoints.cjs');
+  const { recoveryTaskOptions, describeArtifact } = require('./release-recovery.cjs');
+  const { checkpointDefinition } = require('../wasm/scripts/run-wasm-tests.cjs');
+  validateReport(report, expectedTasks, releaseSeal.sourceRevision);
+  assert.equal(report.recovery?.schemaVersion, 'pulse.seal-task-recovery.v1', 'Missing task recovery provenance');
+  assert.equal(report.recovery.contextHash, recovery.contextSha256, 'Runner recovery context differs from the seal');
+  const expectedDirectory = path.join(recovery.directory, 'checkpoints', kind);
+  assert.equal(report.recovery.directory, expectedDirectory, 'Runner checkpoint directory differs from its attempt');
+  const previousDirectory = recovery.previousDirectory ? path.join(recovery.previousDirectory, 'checkpoints', kind) : null;
+  assert.equal(report.recovery.previousDirectory, previousDirectory, 'Runner prior attempt differs from the seal');
+  const taskOptions = recoveryTaskOptions(recovery.artifacts, kind);
+  const dependencies = { 'shared-pack': recovery.sharedPack.proofId };
+  assert.deepEqual(report.recovery.taskOptions, taskOptions, 'Runner task overrides differ from the release controller');
+  assert.deepEqual(report.recovery.dependencies, dependencies, 'Runner prerequisite proofs differ from the seal');
+  const reused = [], executed = [];
+  for (const result of report.results) {
+    assert(['executed', 'reused'].includes(result.execution), `Missing execution provenance for ${result.name}`);
+    const reference = result.checkpoint;
+    assert(reference && reference.contextHash === recovery.contextSha256, `Missing or foreign checkpoint for ${result.name}`);
+    assert.equal(path.dirname(reference.receiptPath), expectedDirectory, 'Checkpoint receipt is outside its task lane');
+    const overrides = taskOptions[result.name] || {};
+    const verified = readCheckpointReceipt({ receiptPath: reference.receiptPath, context: recovery.context,
+      definition: checkpointDefinition(result.name, tasks[result.name], overrides), dependencies });
+    assert.equal(verified.receipt.id, `task:${result.name}`, 'Checkpoint belongs to another task');
+    assert.equal(verified.receiptSha256, reference.receiptSha256, 'Checkpoint digest differs from the runner');
+    assert.equal(verified.proofId, reference.proofId, 'Checkpoint proof differs from the runner');
+    assert.equal(verified.receipt.disposition, result.execution, 'Checkpoint execution disposition differs');
+    assert.equal(verified.receipt.result.name, result.name, 'Checkpoint result belongs to another task');
+    const { execution, checkpoint, recoveryReason, originalResult, reusedDurationMs, ...reported } = result;
+    if (execution === 'reused') {
+      reused.push(result.name);
+      assert(previousDirectory && verified.receipt.reusedFrom?.directory === previousDirectory, 'Reused proof does not belong to the selected prior attempt');
+      validatePredecessor(verified, previousDirectory, recovery.context);
+      assert.deepEqual(originalResult, verified.receipt.result, 'Reused original result differs from its checkpoint');
+      assert.equal(reported.durationMs, 0, 'Reused work cannot claim a new execution duration');
+      assert.equal(reusedDurationMs, originalResult.durationMs, 'Reused duration differs from its original proof');
+      assert.deepEqual({ ...reported, durationMs: originalResult.durationMs, logPath: originalResult.logPath },
+        originalResult, 'Reused task result was altered');
+    } else {
+      executed.push(result.name);
+      assert.equal(originalResult, undefined, 'Executed task cannot supply a substituted original result');
+      assert.deepEqual(reported, verified.receipt.result, 'Executed task result differs from its checkpoint');
+    }
+    const expectedArtifacts = { ...(overrides.artifacts || {}),
+      'task-log': path.isAbsolute(result.logPath) ? result.logPath : path.resolve(repoRoot, 'wasm', result.logPath) };
+    assert.deepEqual(verified.receipt.artifacts.map(entry => entry.key).sort(), Object.keys(expectedArtifacts).sort(),
+      'Checkpoint artifact set differs from its task');
+    for (const [key, target] of Object.entries(expectedArtifacts)) {
+      assertAttemptPath(target, recovery.directory, `${result.name}/${key}`);
+      const captured = path.join(expectedDirectory, sha256(`task:${result.name}`), key);
+      assert.deepEqual(describeArtifact(target), describeArtifact(captured), `Restored task artifact differs: ${result.name}/${key}`);
+    }
+  }
+  assert.deepEqual(report.recovery.reusedTasks, reused, 'Reused task inventory differs');
+  assert.deepEqual(report.recovery.executedTasks, executed, 'Executed task inventory differs');
+  assert.equal(fingerprint(recovery.context), recovery.contextSha256, 'Recovery context digest differs');
+}
+
+function validateRecoveryEvidence(releaseSeal, supplied = {}) {
+  const recovery = releaseSeal.recovery;
+  assert.equal(recovery?.schemaVersion, 'pulse.release-recovery.v1', 'Unsupported release recovery evidence');
+  const { readCheckpointReceipt, fingerprint } = require('./release-checkpoints.cjs');
+  const { describeArtifact, sharedPackDefinition } = require('./release-recovery.cjs');
+  const { REQUIRED_TASKS, validateSummary } = require('./release-feature-acceptance.cjs');
+  assert.equal(releaseSeal.status, 'passed', 'Recovery seal did not pass');
+  assert.equal(releaseSeal.cleanup?.status, 'passed', 'Recovery seal cleanup did not pass');
+  assert(!releaseSeal.cleanup.retainedPath && !releaseSeal.cleanup.timedOut, 'Recovery seal retained unfinished cleanup');
+  assert.equal(recovery.contextSha256, fingerprint(recovery.context), 'Recovery context digest differs');
+  assert.equal(recovery.context.schemaVersion, 'pulse.release-recovery.v1', 'Unsupported recovery candidate context');
+  assert.deepEqual(recovery.context.selections, { release: expandProfile('release'), features: REQUIRED_TASKS },
+    'Recovery context must bind both complete canonical selections');
+  assert.equal(recovery.context.candidate?.sourceRevision, releaseSeal.sourceRevision, 'Recovery source differs');
+  assert.equal(recovery.context.candidate?.workingTree, '', 'Recovery candidate must be clean');
+  assert.match(recovery.context.candidate?.sourceTree || '', /^[a-f0-9]{40}$/, 'Recovery candidate tree missing');
+  assert.equal(recovery.context.candidate?.repoRoot, fs.realpathSync(repoRoot), 'Recovery belongs to another checkout');
+  for (const key of ['lockfileSha256', 'environmentSha256']) assert.match(recovery.context[key] || '', /^[a-f0-9]{64}$/, `Missing recovery ${key}`);
+  for (const key of ['inputs', 'toolchain', 'options']) assert(recovery.context[key] && typeof recovery.context[key] === 'object', `Missing recovery ${key}`);
+  assert(typeof recovery.directory === 'string' && path.isAbsolute(recovery.directory), 'Recovery attempt directory missing');
+  assert.equal(fs.realpathSync(recovery.directory), recovery.directory, 'Recovery attempt traverses a symlink');
+  assert.equal(path.dirname(recovery.directory), path.join(fs.realpathSync(repoRoot), '.pulse-seal/attempts'),
+    'Recovery attempt is outside this checkout');
+  if (recovery.previousDirectory) {
+    assert.equal(fs.realpathSync(recovery.previousDirectory), recovery.previousDirectory, 'Prior attempt traverses a symlink');
+    assert.equal(path.dirname(recovery.previousDirectory), path.dirname(recovery.directory), 'Prior attempt belongs to another checkout');
+    assert.notEqual(recovery.previousDirectory, recovery.directory, 'An attempt cannot reuse itself');
+  }
+  const stepIds = releaseSeal.steps.map(step => step.id);
+  assert.equal(new Set(stepIds).size, stepIds.length, 'Duplicate seal steps');
+  const freshSteps = ['maintainer', 'publication', 'build', 'production-dependency-audit', 'workspace-unit', 'documentation', 'release', 'installed-features'];
+  if (recovery.context.options.install || recovery.context.options.dependencyBundleSha256) freshSteps.push('dependencies');
+  if (releaseSeal.externalFastly?.status === 'passed') freshSteps.push('fastly-reality');
+  if (recovery.context.options.requireFastly) assert.equal(releaseSeal.externalFastly?.status, 'passed', 'Required Fastly reality did not pass');
+  for (const id of freshSteps) {
+    const step = releaseSeal.steps.find(entry => entry.id === id);
+    assert.equal(step?.status, 'passed', `Required fresh seal step did not pass: ${id}`);
+    assert.equal(step.exitCode, 0, `Required fresh seal step exit was not zero: ${id}`);
+    assert(!step.error && !step.timedOut && !step.interruptedBy && !step.signal,
+      `Required fresh seal step has failure or interruption evidence: ${id}`);
+    assert(!step.execution || step.execution === 'executed', `Seal step must execute on every attempt: ${id}`);
+  }
+
+  const required = ['taskReport', 'featureReport', 'featureTasks', 'fourMode', 'candidateReport', 'candidates', 'installedReports', 'cleanMachineCorpora'];
+  if (releaseSeal.externalFastly?.status === 'passed') required.push('fastlyReality');
+  assert.deepEqual(Object.keys(recovery.artifactsSha256 || {}).sort(), required.sort(), 'Sealed recovery artifact inventory differs');
+  for (const key of required) {
+    const file = recovery.artifacts?.[key];
+    assertAttemptPath(file, recovery.directory, key);
+    assert.deepEqual(describeArtifact(file), recovery.artifactsSha256[key], `Sealed recovery artifact changed: ${key}`);
+  }
+  const taskReport = readJson(recovery.artifacts.taskReport);
+  const featureReport = readJson(recovery.artifacts.featureReport);
+  const featureTasks = readJson(recovery.artifacts.featureTasks);
+  for (const [name, key] of Object.entries({ taskReport: 'taskReport', fourMode: 'fourMode', candidates: 'candidateReport' })) {
+    if (supplied[name]) assert.deepEqual(supplied[name], readJson(recovery.artifacts[key]), `Supplied ${name} differs from its sealed bytes`);
+  }
+  validateSummary(featureReport, releaseSeal.sourceRevision);
+  assert.deepEqual(releaseSeal.featureAcceptance, featureReport, 'Installed feature summary differs from its sealed report');
+  assert.equal(featureReport.sourceTree, recovery.context.candidate.sourceTree, 'Installed feature candidate tree differs');
+  assert.equal(featureReport.runnerReportSha256, sha256File(recovery.artifacts.featureTasks), 'Installed feature runner digest differs');
+  const pack = recovery.sharedPack;
+  assert(pack && typeof pack.receiptPath === 'string', 'Shared package prerequisite proof missing');
+  assert.equal(path.dirname(pack.receiptPath), path.join(recovery.directory, 'checkpoints', 'pack'), 'Shared package proof belongs to another attempt');
+  const verifiedPack = readCheckpointReceipt({ receiptPath: pack.receiptPath, context: recovery.context,
+    definition: sharedPackDefinition(), dependencies: {} });
+  assert.equal(verifiedPack.receipt.id, 'shared-pack', 'Shared package checkpoint identity differs');
+  assert.equal(verifiedPack.proofId, pack.proofId, 'Shared package proof identity differs');
+  assert.equal(verifiedPack.receiptSha256, pack.receiptSha256, 'Shared package proof digest differs');
+  assert.equal(verifiedPack.receipt.disposition, pack.execution, 'Shared package execution provenance differs');
+  assert.equal(verifiedPack.receipt.result.id, 'shared-pack', 'Shared package result identity differs');
+  assert.equal(releaseSeal.steps.find(step => step.id === 'shared-pack')?.status, 'passed', 'Shared package seal step did not pass');
+  assert.deepEqual(verifiedPack.receipt.artifacts.map(artifact => artifact.key).sort(), ['log', 'pack'], 'Shared package artifact set differs');
+  for (const [key, target] of Object.entries({ pack: path.join(recovery.directory, 'packages'), log: path.join(recovery.directory, 'shared-pack.log') })) {
+    assertAttemptPath(target, recovery.directory, `shared-pack/${key}`);
+    const captured = path.join(path.dirname(pack.receiptPath), sha256('shared-pack'), key);
+    assert.deepEqual(describeArtifact(target), describeArtifact(captured), `Shared package artifact changed: ${key}`);
+  }
+  if (verifiedPack.receipt.disposition === 'reused') {
+    assert(recovery.previousDirectory, 'Reused package proof requires a selected prior attempt');
+    validatePredecessor(verifiedPack, path.join(recovery.previousDirectory, 'checkpoints', 'pack'), recovery.context);
+  }
+  validateCheckpointTasks(taskReport, expandProfile('release'), releaseSeal, 'release');
+  validateCheckpointTasks(featureTasks, REQUIRED_TASKS, releaseSeal, 'features');
+  return recovery;
+}
+
 function aggregateValidation(input) {
   const {
     sourceRevision,
@@ -466,18 +658,13 @@ function aggregateValidation(input) {
   if (taskReport.status !== 'passed') fail('PULSE_RELEASE_EVIDENCE_TASKS_FAILED', 'Release task report did not pass.');
 
   const expectedTasks = expandProfile('release');
-  assert.deepEqual(taskReport.requestedTasks, expectedTasks, 'Release task request does not match the current release profile');
-  assert.deepEqual(taskReport.selectedTasks, expectedTasks, 'Release task selection does not match the current release profile');
-  if (taskReport.completedTasks !== expectedTasks.length || taskReport.results.length !== expectedTasks.length) {
-    fail('PULSE_RELEASE_EVIDENCE_TASKS_INCOMPLETE', 'Release task report is incomplete.');
+  validateReport(taskReport, expectedTasks, sourceRevision);
+  if (releaseSeal.recovery) validateRecoveryEvidence(releaseSeal, { taskReport, fourMode, candidates });
+  else {
+    assert(!taskReport.recovery && !taskReport.results.some(result => result.execution === 'reused' || result.checkpoint),
+      'Recovered task evidence requires a recovery-aware release seal');
   }
   const resultByName = new Map(taskReport.results.map((entry) => [entry.name, entry]));
-  for (const task of expectedTasks) {
-    const result = resultByName.get(task);
-    if (!result || result.status !== 'passed') {
-      fail('PULSE_RELEASE_EVIDENCE_TASK_FAILED', `Release task is not passing: ${task}`);
-    }
-  }
   const stepById = new Map(releaseSeal.steps.map((entry) => [entry.id, entry]));
   const artifacts = { fourMode, candidates, replay };
   const shards = validateShardCoverage(expectedTasks).map((definition) => {
@@ -488,7 +675,8 @@ function aggregateValidation(input) {
         name,
         status: result && result.status || 'missing',
         evidence: result && result.evidence || null,
-        durationMs: result && result.durationMs || null
+        durationMs: result && result.durationMs !== undefined ? result.durationMs : null,
+        ...(result?.execution ? { execution: result.execution, checkpoint: result.checkpoint } : {})
       });
     });
     const releaseSteps = (definition.releaseSteps || []).map((id) => {
@@ -842,6 +1030,11 @@ function createEvidenceBundle(options) {
   }
 
   const releaseSeal = readJson(options.releaseSeal);
+  options = resolveEvidencePaths(options, releaseSeal);
+  if (releaseSeal.recovery) {
+    const tree = String(run('git', ['rev-parse', 'HEAD^{tree}']).stdout).trim();
+    assert.equal(releaseSeal.recovery.context?.candidate?.sourceTree, tree, 'Recovery candidate tree differs from the checked-out head');
+  }
   const taskReport = readJson(options.taskReport);
   const fourMode = readJson(options.fourMode);
   const candidates = readJson(options.candidateReport);
@@ -871,7 +1064,11 @@ function createEvidenceBundle(options) {
       'release-seal.json': options.releaseSeal,
       'release-tasks.json': options.taskReport,
       'four-mode-conformance.json': options.fourMode,
-      'deployment-candidates.json': options.candidateReport
+      'deployment-candidates.json': options.candidateReport,
+      ...(releaseSeal.recovery ? {
+        'release-feature-acceptance.json': releaseSeal.recovery.artifacts.featureReport,
+        'release-feature-tasks.json': releaseSeal.recovery.artifacts.featureTasks
+      } : {})
     })) {
       fs.copyFileSync(file, path.join(evidenceRoot, name));
     }
@@ -1025,6 +1222,8 @@ module.exports = Object.freeze({
   validateShardCoverage,
   parseArgs,
   aggregateValidation,
+  resolveEvidencePaths,
+  validateRecoveryEvidence,
   treeSnapshot,
   migrationLedger,
   targetIntegrityReport,

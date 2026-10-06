@@ -226,7 +226,9 @@ const currentPipelineFiles = [
 ];
 for (const relativeFile of currentPipelineFiles) {
   const source = fs.readFileSync(path.join(repoRoot, relativeFile), 'utf8');
-  assert.doesNotMatch(source, /\b(?:sprint|wave|phase\s*\d|pass\s*\d|legacy|baseline|checkpoint)\b/i, `${relativeFile} must describe only the current pipeline`);
+  // Recovery checkpoints are current behavior; numbered historical milestones
+  // still must not become active pipeline names.
+  assert.doesNotMatch(source, /\b(?:sprint|wave|phase\s*\d|pass\s*\d|legacy|baseline|checkpoint\s*\d)\b/i, `${relativeFile} must describe only the current pipeline`);
 }
 
 const releaseValidator = fs.readFileSync(path.join(repoRoot, 'scripts/validate-release.cjs'), 'utf8');
