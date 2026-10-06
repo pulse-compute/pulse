@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-16
-review-by: 2027-01-16
+last-reviewed: 2026-10-06
+review-by: 2027-04-06
 pulse-doc-meta:end -->
 
 # Release packages and clean-consumer acceptance
@@ -271,6 +271,11 @@ npm run release:seal
 
 Before restoring dependencies, the seal checks that every release-profile task
 maps to an evidence shard and every explicit shard task is in that profile.
+It also requires the supported release Node line, a clean Git candidate with
+matching source identity, the supplied dependency bundle when selected, and
+Fastly CLI availability when `--require-fastly` is selected. These checks have
+an attempt report even when startup fails. Packaging dependencies load after
+restoration, and source identity is checked again before package qualification.
 The complete example workflows check the existing README baselines,
 guest/provider bytes and guest-link input sizes in default and experimental
 Native-size modes. The seal runs those assertions once, within the full release
