@@ -37,6 +37,8 @@ export interface McpAuthorizationOptions {
   allowInsecureLoopback?: boolean;
 }
 export interface McpHttpOptions {
+  /** Opt in to stateless initialize/ping/tools for this single legacy revision. Off by default. */
+  legacyProtocol?: '2025-06-18';
   path?: string;
   serverInfo?: { name: string; version: string };
   /** Exact origins; an empty list rejects every present Origin header. */
