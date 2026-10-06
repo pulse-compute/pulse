@@ -86,10 +86,17 @@ passed package construction, but four simultaneous heavy tasks made
 `schema-codecs` exceed its unchanged 180-second deadline. The other three tasks
 were cancelled and cleanup passed. Its retained failure is not passing coverage.
 A separate `--compiler-workers` limit now defaults to two and is bound into the
-worker layout/recovery context. Native, conformance, CLI and external tasks use
+worker layout/recovery context. Native, conformance, CLI, provider, release and external tasks use
 compiler slots by default; hints can override the classification. The four-worker
 pool can still overlap lighter work. Fixture coverage verifies compiler admission
 and overlap separately from exclusive benchmarks and shared-resource locks.
 The earlier paired samples describe the original four-compiler schedule; they do
 not estimate the throughput of this revised policy. Full qualification measures
 the revised schedule with the original task deadlines.
+
+Attempt `37425767655` retained the same timeout because its initial classifier
+omitted the registry's `providers` and `release` evidence categories: two heavy
+tasks bypassed the two compiler slots. That classification defect is corrected;
+unit and JavaScript tasks are light by default, other categories consume compiler
+slots unless explicitly overridden. A regression checks the four actual registry
+entries from the failing cluster, in addition to the scheduler's admission fixture.

@@ -5,7 +5,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { runSelectedTasks, runTask } = require('../../scripts/run-wasm-tests.cjs');
-const { workerCount, compilerCount, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker } = require('../../../scripts/release-parallel.cjs');
+const { workerCount, compilerCount, prepareWorkspaces, cleanupWorkspaces, readLayout, assertManagedWorker, scheduling } = require('../../../scripts/release-parallel.cjs');
 const { candidateIdentity } = require('../../../scripts/release-feature-acceptance.cjs');
 const { copySharedPack, recordPack, sharedPackEnv } = require('../../../scripts/release-shared-pack.cjs');
 
@@ -19,6 +19,10 @@ async function verifyParallel() {
     assert.throws(() => workerCount(2, 767), /memory-budget/);
     assert.equal(compilerCount(4, 2), 2);
     assert.throws(() => compilerCount(0, 2), /compiler-workers/);
+    const registry = require('../suite/registry.cjs').tasks;
+    for (const name of ['jwt-rs256', 'clean-machine-acceptance', 'schema-codecs', 'fastly-native-platform-capabilities']) {
+      assert.equal(scheduling(name, registry[name]).compiler, true, `${name} must consume a compiler slot`);
+    }
     const candidateRoot = path.join(root, 'candidate');
     put(path.join(candidateRoot, '.gitignore'), 'node_modules/\ndist/\n.validation-tools/\n.pulse-seal/\n');
     put(path.join(candidateRoot, 'wasm/.keep'), '');

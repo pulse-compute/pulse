@@ -144,7 +144,7 @@ const COST_SECONDS = { 'jwt-rs256': 284, 'jwt-installed-workflow': 250, 'clean-m
 function scheduling(name, task) {
   const hints = task.scheduling || {};
   return { cost: hints.cost || COST_SECONDS[name] || 10, resources: hints.resources || [],
-    compiler: hints.compiler === undefined ? ['native', 'conformance', 'cli', 'external'].includes(task.evidence) : hints.compiler,
+    compiler: hints.compiler === undefined ? !['unit', 'javascript'].includes(task.evidence) : hints.compiler,
     exclusive: hints.exclusive === true || /benchmark|measure|timing/i.test(`${name} ${task.description}`),
     after: hints.after || [] };
 }

@@ -314,8 +314,8 @@ npm run release:seal -- --workers 4 --compiler-workers 2 --memory-budget-mib 614
 the controller admits at most one worker per estimated 768 MiB. This limits
 concurrency, not operating-system memory use. Measure actual process-tree RSS
 before increasing the budget. `--compiler-workers` accepts 1–8, defaults to two
-and is capped by the admitted workers. Native, conformance, CLI and external
-tasks use those compiler slots by default; registry hints can refine that
+and is capped by the admitted workers. Native, conformance, CLI, provider, release
+and external tasks use those compiler slots by default; registry hints can refine that
 classification. Lighter tasks may occupy the remaining worker slots. This avoids
 starting four heavy compilation pipelines together on a four-CPU runner.
 `--workers 1` is the serial fallback. Task deadlines are unchanged.
