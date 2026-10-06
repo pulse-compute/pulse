@@ -1,389 +1,30 @@
 'use strict';
 
-const crypto = require('node:crypto');
-const { schemaNeedsValueProjection, schemaHasScalarRecord, schemaHasNestedJson } = require('@pulse-compute/wasm-contracts/schema-json/registry');
-const { scalarRecordRuntimeSource, generateScalarRecordTextValidation } = require('./schema-scalar-record.js');
-const { generateSchemaPresenceCodec } = require('./schema-presence-codec.js');
-const { jsonAdmissionRuntimeSource, generateSchemaJsonPolicy } = require('./schema-admission.js');
-const { nestedJsonProjectionSource } = require('./schema-nested-json.js');
 const {
-  buildNativeCryptoGuestSources
-} = require('./crypto-guest-source.js');
+  runtimeContract, eventContract, CanonicalNativeAssemblyScriptError,
+  stableHash, quote, prepareNativePlan, prepareNativeEmissionInputs, prepareNativeFlow
+} = require('./canonical-native-context.js');
+const { nativeSchemaCodecSource } = require('./canonical-native-schema.js');
+const { buildNativeCryptoGuestSources } = require('./crypto-guest-source.js');
+const {
+  prepareNativeRuntimeSupport, renderNativeValueSupport,
+  renderNativeResumeSupport, renderNativeExports
+} = require('./canonical-native-support.js');
 
-function loadRuntimeContract() {
-  try { return require('@pulse-compute/wasm-contracts/handler/canonical-native-runtime'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../../contracts/src/handler/canonical-native-runtime.js');
-    }
-    throw error;
-  }
-}
-
-function loadEventContract() {
-  try { return require('@pulse-compute/wasm-contracts/events'); }
-  catch (error) {
-    if (error && ['MODULE_NOT_FOUND', 'ERR_PACKAGE_PATH_NOT_EXPORTED'].includes(error.code)) {
-      return require('../../../contracts/src/events/contracts.js');
-    }
-    throw error;
-  }
-}
-
-const runtimeContract = loadRuntimeContract();
-const runtimePlanContract = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
-const eventContract = loadEventContract();
 const CANONICAL_NATIVE_AS_GENERATOR_VERSION = runtimeContract.CANONICAL_NATIVE_AS_GENERATOR_VERSION;
 
-class CanonicalNativeAssemblyScriptError extends Error {
-  constructor(message, detail = {}) {
-    super(message);
-    this.name = 'CanonicalNativeAssemblyScriptError';
-    this.code = 'PULSE_CANONICAL_NATIVE_AS_GENERATION_FAILED';
-    this.detail = Object.freeze({ ...detail });
-  }
-}
-
-function stableHash(value) {
-  return crypto.createHash('sha256').update(String(value)).digest('hex');
-}
-
-function quote(value) {
-  return JSON.stringify(String(value));
-}
-
-function schemaIdentifier(value) {
-  const normalized = String(value || 'schema').normalize('NFKC').replace(/[^A-Za-z0-9_$]+/g, '_');
-  return /^[A-Za-z_$]/.test(normalized) ? normalized : `_${normalized}`;
-}
-
-function nativeSchemaCodecSource(plan) {
-  const registry = plan.schemas && plan.schemas.registry;
-  const schemas = registry && Array.isArray(registry.schemas) ? registry.schemas : [];
-  if (schemas.length === 0) {
-    return Object.freeze({
-      active: false,
-      imports: Object.freeze([]),
-      declarations: Object.freeze([]),
-      exports: Object.freeze([]),
-      codecs: Object.freeze([]),
-      sourceHash: null
-    });
-  }
-
-  const declarations = [];
-  const codecEntries = [];
-
-  function typeFor(node, symbols, path) {
-    switch (node.kind) {
-      case 'string': return 'string';
-      case 'boolean': return 'bool';
-      case 'i32': return 'i32';
-      case 'u32': return 'u32';
-      case 'f64': return 'f64';
-      case 'string-enum': return 'string';
-      case 'array': return `Array<${typeFor(node.element, symbols, [...path, 'item'])}>`;
-      case 'object': return symbols.get(path.join('.'));
-      case 'nullable': {
-        const inner = typeFor(node.value, symbols, [...path, 'value']);
-        return ['boolean', 'i32', 'u32', 'f64'].includes(node.value.kind)
-          ? `JSON.Box<${inner}> | null`
-          : `${inner} | null`;
-      }
-      default: throw new CanonicalNativeAssemblyScriptError(`Unsupported Native schema node ${String(node.kind)}.`, { node, path });
-    }
-  }
-
-  function defaultFor(node, symbols, path) {
-    if (node.kind === 'nullable') return 'null';
-    if (node.kind === 'string' || node.kind === 'string-enum') return "''";
-    if (node.kind === 'boolean') return 'false';
-    if (node.kind === 'i32' || node.kind === 'u32') return '0';
-    if (node.kind === 'f64') return '0.0';
-    if (node.kind === 'array') return `new Array<${typeFor(node.element, symbols, [...path, 'item'])}>()`;
-    if (node.kind === 'object') return `new ${symbols.get(path.join('.'))}()`;
-    throw new CanonicalNativeAssemblyScriptError(`Unsupported Native schema default for ${String(node.kind)}.`, { node, path });
-  }
-
-  function collectObjects(schema, schemaIndex, node, symbols, records, path = []) {
-    if (node.kind === 'nullable') {
-      collectObjects(schema, schemaIndex, node.value, symbols, records, [...path, 'value']);
-      return;
-    }
-    if (node.kind === 'array') {
-      collectObjects(schema, schemaIndex, node.element, symbols, records, [...path, 'item']);
-      return;
-    }
-    if (node.kind !== 'object') return;
-    const key = path.join('.');
-    const suffix = path.length === 0
-      ? ''
-      : `_${path.map(schemaIdentifier).join('_')}_${stableHash(JSON.stringify(path)).slice(0, 8)}`;
-    const baseSymbol = registry.codecs
-      && registry.codecs[schemaIndex]
-      && registry.codecs[schemaIndex].native
-      && registry.codecs[schemaIndex].native.symbol
-      || `__Pulse_${schemaIdentifier(schema.id)}_${schemaIndex}`;
-    const symbol = `${baseSymbol}${suffix}`;
-    symbols.set(key, symbol);
-    for (const field of node.fields) collectObjects(schema, schemaIndex, field.value, symbols, records, [...path, field.name]);
-    records.push(Object.freeze({ symbol, node, path: Object.freeze([...path]) }));
-  }
-
-  if (schemas.some(schema => schemaHasScalarRecord(schema.root) || schemaHasNestedJson(schema.root))) declarations.push(scalarRecordRuntimeSource());
-  if (schemas.some(schema => schema.jsonLimits)) declarations.push(jsonAdmissionRuntimeSource());
-  if (schemas.some(schema => schemaHasNestedJson(schema.root))) declarations.push(nestedJsonProjectionSource());
-  schemas.forEach((schema, schemaIndex) => {
-    const decode = `__pulse_schema_decode_${schemaIndex}`;
-    const encode = `__pulse_schema_encode_${schemaIndex}`;
-    let root;
-    if (schema.jsonLimits) declarations.push(generateSchemaJsonPolicy(schema, schemaIndex, registry.maxBytes));
-    if (schemaNeedsValueProjection(schema.root) || schema.jsonLimits) {
-      root = 'JSON.Value';
-      const presence = generateSchemaPresenceCodec(schema.root, schemaIndex);
-      declarations.push(...presence.declarations);
-      const nested = schemaHasNestedJson(schema.root);
-      const recordText = schemaHasScalarRecord(schema.root) || nested ? generateScalarRecordTextValidation(schema.root, schemaIndex) : null;
-      if (recordText) declarations.push(...recordText.declarations);
-      for (const fn of [decode, encode]) {
-        declarations.push(`function ${fn}(input: string): string {`);
-        if (schema.jsonLimits) {
-          declarations.push(`  const admission = __pulse_schema_json_scan_${schemaIndex}(input)`);
-          declarations.push('  if (admission.failure != 0) abort("JSON admission failed", "pulse-schema-codecs", 0, 0)');
-          if (recordText) declarations.push(`  ${recordText.apply}(new __PulseSchemaTextCursor(input), 0${nested ? ', admission.duplicateObjects' : ''})`);
-        }
-        declarations.push(`  const value = JSON.parse<JSON.Value>(input)`);
-        if (recordText && !schema.jsonLimits) declarations.push(`  ${recordText.apply}(new __PulseSchemaTextCursor(input), 0)`);
-        declarations.push(`  const text = JSON.stringify<JSON.Value>(${presence.apply}(value))`);
-        if (schema.jsonLimits) declarations.push(`  if (__pulse_schema_json_scan_${schemaIndex}(text, 0).failure != 0) abort("JSON output admission failed", "pulse-schema-codecs", 0, 0)`);
-        declarations.push('  return text');
-        declarations.push('}');
-      }
-    } else {
-      const symbols = new Map();
-      const records = [];
-      collectObjects(schema, schemaIndex, schema.root, symbols, records);
-      for (const record of records) {
-        declarations.push('@json');
-        declarations.push(`class ${record.symbol} {`);
-        record.node.fields.forEach((field, fieldIndex) => {
-          const member = `field_${fieldIndex}`;
-          declarations.push(`  @alias(${quote(field.name)})`);
-          declarations.push(`  ${member}: ${typeFor(field.value, symbols, [...record.path, field.name])} = ${defaultFor(field.value, symbols, [...record.path, field.name])}`);
-        });
-        declarations.push('}');
-        declarations.push('');
-      }
-      root = symbols.get('');
-      // json-as 1.5.0's slow struct scanner treats a closing quote after a
-      // doubled backslash as escaped. A JSON-equivalent Unicode spelling avoids
-      // that scanner defect without changing schema values or admitting fallback.
-      declarations.push(`function ${decode}(input: string): string {`);
-      declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
-      declarations.push(`  return JSON.stringify<${root}>(value)`);
-      declarations.push('}');
-      declarations.push(`function ${encode}(input: string): string {`);
-      declarations.push(`  const value = JSON.parse<${root}>(input.replaceAll(${quote('\\\\')}, ${quote('\\u005c')}))`);
-      declarations.push(`  return JSON.stringify<${root}>(value)`);
-      declarations.push('}');
-    }
-    declarations.push('');
-    codecEntries.push(Object.freeze({
-      id: String(schema.id),
-      index: schemaIndex,
-      rootClass: root,
-      decode,
-      encode,
-      semanticHash: registry.codecs && registry.codecs[schemaIndex] && registry.codecs[schemaIndex].semanticHash,
-      nativeHash: registry.codecs && registry.codecs[schemaIndex] && registry.codecs[schemaIndex].native && registry.codecs[schemaIndex].native.hash
-    }));
-  });
-
-  const exports = [
-    "let __pulse_schema_result: string = ''",
-    'export function pulse_schema_string_id(): i32 { return idof<string>() }',
-    'export function pulse_schema_decode(schemaIndex: i32, inputPointer: i32): i32 {',
-    '  const input = changetype<string>(inputPointer)',
-    '  switch (schemaIndex) {',
-    ...codecEntries.map((entry) => `    case ${entry.index}: __pulse_schema_result = ${entry.decode}(input); break`),
-    "    default: abort('Unknown Pulse schema codec index', 'pulse-schema-codecs', 0, 0)",
-    '  }',
-    '  return changetype<i32>(__pulse_schema_result)',
-    '}',
-    'export function pulse_schema_encode(schemaIndex: i32, inputPointer: i32): i32 {',
-    '  const input = changetype<string>(inputPointer)',
-    '  switch (schemaIndex) {',
-    ...codecEntries.map((entry) => `    case ${entry.index}: __pulse_schema_result = ${entry.encode}(input); break`),
-    "    default: abort('Unknown Pulse schema codec index', 'pulse-schema-codecs', 0, 0)",
-    '  }',
-    '  return changetype<i32>(__pulse_schema_result)',
-    '}',
-    ''
-  ];
-  const source = [
-    "import { JSON } from 'json-as'",
-    '',
-    ...declarations,
-    ...exports
-  ].join('\n');
-  return Object.freeze({
-    active: true,
-    imports: Object.freeze(["import { JSON } from 'json-as'"]),
-    declarations: Object.freeze(declarations),
-    exports: Object.freeze(exports),
-    codecs: Object.freeze(codecEntries),
-    sourceHash: stableHash(source)
-  });
-}
-
-function collectExpressions(plan) {
-  const expressions = [];
-  const seen = new WeakSet();
-
-  function add(expression) {
-    if (!expression || typeof expression !== 'object' || seen.has(expression)) return;
-    seen.add(expression);
-    expressions.push(expression);
-    switch (expression.kind) {
-      case 'array':
-        for (const item of expression.items || []) add(item.kind === 'spread' ? item.value : item);
-        break;
-      case 'object':
-        for (const entry of expression.entries || []) {
-          if (entry.kind === 'spread') add(entry.value);
-          else {
-            if (entry.key && entry.key.kind === 'computed') add(entry.key.value);
-            else add(entry.key);
-            add(entry.value);
-          }
-        }
-        break;
-      case 'template':
-        for (const part of expression.parts || []) if (part.kind === 'value') add(part.value);
-        break;
-      case 'binary':
-        add(expression.left);
-        add(expression.right);
-        break;
-      case 'unary':
-        add(expression.value);
-        break;
-      case 'conditional':
-        add(expression.test);
-        add(expression.whenTrue);
-        add(expression.whenFalse);
-        break;
-      case 'property':
-        add(expression.object);
-        break;
-      case 'element':
-        add(expression.object);
-        add(expression.index);
-        break;
-      case 'pure-helper-call':
-      case 'intrinsic':
-        for (const argument of expression.arguments || []) add(argument);
-        break;
-      case 'method-call':
-        add(expression.receiver);
-        for (const argument of expression.arguments || []) add(argument);
-        break;
-      case 'assignment':
-        add(expression.target);
-        add(expression.value);
-        break;
-      case 'update':
-        add(expression.target);
-        break;
-      case 'spread':
-        add(expression.value);
-        break;
-      default:
-        break;
-    }
-  }
-
-  function walkStatements(statements) {
-    for (const statement of statements || []) {
-      if (statement.kind === 'helper-call') for (const arg of statement.arguments) add(arg);
-      else if (statement.kind === 'local') add(statement.value);
-      else if (statement.kind === 'expression') add(statement.expression);
-      else if (statement.kind === 'return') add(statement.value);
-      else if (statement.kind === 'if') {
-        add(statement.test);
-        walkStatements(statement.then);
-        walkStatements(statement.else);
-      } else if (statement.kind === 'pure-loop' || statement.kind === 'read-loop') {
-        if (statement.kind === 'read-loop') { add(statement.initial); add(statement.increment); }
-        add(statement.test);
-        walkStatements(statement.body);
-      }
-    }
-  }
-
-  walkStatements(plan.entry && plan.entry.body);
-  for (const handler of [...(plan.handlers || []), ...(plan.stages || []), ...(plan.helpers || [])]) walkStatements(handler.body);
-  for (const effect of plan.effects || []) {
-    for (const input of effect.inputs || []) add(input.value);
-    const decoder = effect.result && effect.result.decoder;
-    for (const argument of (decoder && decoder.arguments) || []) add(argument);
-  }
-  return expressions;
-}
-
 function generateCanonicalNativeAssemblyScript(plan, options = {}) {
-  if (!plan || typeof plan !== 'object') throw new TypeError('generateCanonicalNativeAssemblyScript requires a canonical native plan.');
-  const pureHelpers = new Map((plan.helpers || []).filter(h => h.version === runtimePlanContract.CANONICAL_NATIVE_PURE_HELPER_VERSION).map((h, i) => [h.id, { ...h, nativeName: `__pulse_pure_helper_${i}` }]));
-  const stages = new Map((plan.stages || []).map(stage => [stage.id, stage]));
-  const stageBindings = new Map((plan.stages || []).flatMap(stage => stage.registrations.map(row => [row.entryId, row])));
+  const {
+    pureHelpers, stages, stageBindings, stageSites, maxStageSites,
+    localIndex, effectIndex, continuationIndex, expressions, expressionIndex,
+    stateEnabled, binaryIndex, unaryIndex, fail, localName, stringHandle
+  } = prepareNativePlan(plan);
   const stageEntries = new Map();
-  const stageSites = new Map((plan.effects || []).flatMap((effect, index) => effect.stageId === undefined ? [] : [[index, { site: effect.stageSite }]]));
-  const maxStageSites = Math.max(0, ...(plan.stages || []).map(stage => stage.effectIds.length));
-  const localIndex = new Map((plan.locals || []).map((local, index) => [String(local.id), index]));
-  const effectIndex = new Map((plan.effects || []).map((effect, index) => [String(effect.id), index]));
-  const continuationIndex = new Map((plan.continuations || []).map((continuation) => [String(continuation.id), Number(continuation.stateIndex)]));
-  const expressions = collectExpressions(plan);
-  const expressionIndex = new Map(expressions.map((expression, index) => [expression, index]));
   const expressionAlias = new Map();
   const retainedExpressions = new Set();
-  const stateEnabled = expressions.some((expression) => expression && expression.kind === 'intrinsic' && ['state.get', 'state.set'].includes(expression.name));
-  const binaryIndex = new Map(runtimeContract.CANONICAL_NATIVE_BINARY_OPERATORS.map((operator, index) => [operator, index]));
-  const unaryIndex = new Map(runtimeContract.CANONICAL_NATIVE_UNARY_OPERATORS.map((operator, index) => [operator, index]));
   const nativeSchemaCodecs = nativeSchemaCodecSource(plan);
   const nativeCrypto = buildNativeCryptoGuestSources(plan);
-  const eventEntries = plan.events && plan.events.catalog && Array.isArray(plan.events.catalog.events)
-    ? plan.events.catalog.events
-    : [];
-  const eventReachable = eventEntries.length > 0;
-  if (eventReachable && (!plan.events.abi || plan.events.abi.version !== eventContract.EVENT_NATIVE_ABI_EXTENSION_VERSION)) {
-    throw new CanonicalNativeAssemblyScriptError('Event-reachable Native plans require the frozen event ABI extension.', {
-      planHash: plan.planHash,
-      expected: eventContract.EVENT_NATIVE_ABI_EXTENSION_VERSION,
-      actual: plan.events.abi && plan.events.abi.version
-    });
-  }
-
-  for (const effect of plan.effects || []) {
-    const decoder = effect.result && effect.result.decoder;
-    const decoderArguments = (decoder && decoder.arguments) || [];
-    if (!decoder || decoderArguments.length === 0) continue;
-    const supportedSchemaDecoder = decoder.kind === 'json'
-      && decoderArguments.length === 1
-      && decoderArguments[0].kind === 'literal'
-      && typeof decoderArguments[0].value === 'string';
-    if (!supportedSchemaDecoder) {
-      throw new CanonicalNativeAssemblyScriptError('Native effect-result decoder arguments must be one static JSON schema ID.', {
-        planHash: plan.planHash,
-        effectId: effect.id,
-        decoder: decoder.kind,
-        arguments: decoderArguments
-      });
-    }
-  }
-
-  function fail(message, detail = {}) {
-    throw new CanonicalNativeAssemblyScriptError(message, { planHash: plan.planHash, ...detail });
-  }
+  const { eventEntries, eventReachable } = prepareNativeEmissionInputs(plan);
 
   function exprName(expression) {
     const index = expressionIndex.get(expression);
@@ -393,16 +34,6 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     // lexical order: chunk budgets count source characters and Binaryen uses
     // names to break function-ordering ties. '$' sorts before the next digit.
     return `__pulse_ex_${representative}$${retainedExpressions.has(representative) ? 'k' : 'i'}`;
-  }
-
-  function localName(localId) {
-    const index = localIndex.get(String(localId));
-    if (!Number.isInteger(index)) fail(`Native plan references unknown local ${String(localId)}.`, { localId });
-    return `__pulse_local_${index}`;
-  }
-
-  function stringHandle(value) {
-    return `__pulse_string(${quote(value)})`;
   }
 
   function targetParts(target, emit) {
@@ -685,12 +316,8 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   }
 
   const blocks = [];
-  const applicationErrors = (plan.routing?.entries || []).some(entry => entry.kind === 'error');
-  const helpers = new Map((plan.helpers || []).filter(helper => !pureHelpers.has(helper.id)).map(helper => [helper.id, helper]));
+  const { applicationErrors, helpers, handlers, routerLocal, routerCursor } = prepareNativeFlow(plan, pureHelpers);
   const helperEntries = new Map();
-  const handlers = new Map((plan.handlers || []).map(handler => [handler.id, handler]));
-  const routerLocal = name => (plan.locals || []).find(local => local.name === `__pulse_router_${name}`)?.id;
-  const routerCursor = routerLocal('cursor');
   const protectedEntries = new Set();
   let activeBoundary;
   let activeHandler;
@@ -1050,76 +677,10 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '}'
   );
 
-  const imports = runtimeContract.CANONICAL_NATIVE_IMPORTS.filter(([name]) => name !== 'router_error_take' || applicationErrors).map(([name, parameters, results]) => {
-    const args = parameters.map((type, index) => `arg${index}: ${type}`).join(', ');
-    const result = results.length > 0 ? results[0] : 'void';
-    return `@external("${runtimeContract.CANONICAL_NATIVE_IMPORT_MODULE}", "${name}") declare function host_${name}(${args}): ${result}`;
+  const support = prepareNativeRuntimeSupport({
+    plan, stages, stageSites, maxStageSites, helpers, applicationErrors,
+    stateEnabled, eventEntries, eventReachable, blocks, resumeRequirements
   });
-
-  const globals = stages.size ? [
-    'let __pulse_stage_next: i32 = 0', 'let __pulse_stage_return: i32 = 0',
-    ...Array.from({ length: maxStageSites }, (_, site) => site).flatMap(site => [`let __pulse_stage_effect_${site}: i32 = -1`, `let __pulse_stage_continuation_${site}: i32 = 0`])
-  ] : [];
-  if (helpers.size) globals.push('let __pulse_helper_result: i32 = 0', 'let __pulse_helper_return: i32 = 0', 'let __pulse_helper_error_next: i32 = 0', 'let __pulse_helper_error_return: i32 = 0');
-  if (eventReachable) {
-    globals.push('let __pulse_event_runtime_id: i32 = -1');
-    globals.push('let __pulse_event_payload_handle: i32 = 0');
-  }
-  if (stateEnabled) {
-    globals.push('let __pulse_state_keys = new Array<i32>()');
-    globals.push('let __pulse_state_values = new Array<i32>()');
-  }
-  for (let index = 0; index < (plan.locals || []).length; index += 1) globals.push(`let __pulse_local_${index}: i32 = 0`);
-  for (let index = 0; index < (plan.effects || []).length; index += 1) {
-    globals.push(`let __pulse_effect_result_${index}: i32 = 0`);
-    globals.push(`let __pulse_effect_ready_${index}: i32 = 0`);
-    globals.push(`let __pulse_effect_pending_${index}: i32 = 0`);
-  }
-
-  const setterCases = (plan.effects || []).map((_, index) => [
-    `    case ${index}:`,
-    `      if (handle <= 0 || __pulse_effect_pending_${index} == 0 || __pulse_effect_ready_${index} != 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_EFFECT_RESULT}; return ${runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED} }`,
-    `      __pulse_effect_result_${index} = handle`,
-    `      __pulse_effect_ready_${index} = 1`,
-    `      __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.NONE}`,
-    `      return ${runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.ACCEPTED}`
-  ].join('\n')).join('\n');
-  const readyCases = [...resumeRequirements.entries()].map(([pc, required]) => {
-    const condition = required.length > 0 ? required.map((index) => stages.has(blocks[pc].handlerId)
-      ? `__pulse_stage_ready(__pulse_stage_effect_${stageSites.get(index).site}) != 0` : `__pulse_effect_ready_${index} != 0`).join(' && ') : 'true';
-    return `    case ${pc}: return ${condition}`;
-  }).join('\n');
-  const clearCases = [...resumeRequirements.entries()].map(([pc, required]) => {
-    const lines = required.flatMap((index) => stages.has(blocks[pc].handlerId)
-      ? [`__pulse_stage_clear(__pulse_stage_effect_${stageSites.get(index).site})`] : [`__pulse_effect_ready_${index} = 0`, `__pulse_effect_pending_${index} = 0`]).join('; ');
-    return `    case ${pc}: ${lines}${lines ? '; ' : ''}return`;
-  }).join('\n');
-  const eventPayloadCases = eventEntries.map((event) => {
-    const condition = event.schemaId === null ? 'payloadHandle == 0' : 'payloadHandle > 0';
-    return `    case ${event.runtimeId}: validPayload = ${condition}; break`;
-  }).join('\n');
-  const eventExports = eventReachable ? [
-    `export function pulse_event_abi_version(): i32 { return ${eventContract.EVENT_NATIVE_ABI_EXTENSION.abiVersion} }`,
-    'export function pulse_event_start(runtimeId: i32, payloadHandle: i32): i32 {',
-    `  if (__pulse_started != 0 || runtimeId < 0 || payloadHandle < 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_START}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`,
-    '  let validPayload = false',
-    '  switch (runtimeId) {',
-    eventPayloadCases,
-    '    default: validPayload = false',
-    '  }',
-    `  if (!validPayload) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_START}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`,
-    '  __pulse_started = 1',
-    '  __pulse_event_runtime_id = runtimeId',
-    '  __pulse_event_payload_handle = payloadHandle',
-    '  __pulse_pc = PULSE_ENTRY_PC',
-    '  __pulse_state = 0',
-    '  __pulse_result = 0',
-    '  __pulse_error = 0',
-    '  __pulse_pending = 0',
-    ...(stateEnabled ? ['  __pulse_state_keys = new Array<i32>()', '  __pulse_state_values = new Array<i32>()'] : []),
-    '  return __pulse_run()',
-    '}'
-  ] : [];
 
   let helperCallCount = 0;
   const countHelperCalls = (value, visits = 1) => {
@@ -1139,44 +700,19 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     '/* Generated by Pulse canonical native AssemblyScript compiler. */',
     ...nativeSchemaCodecs.imports,
     ...(nativeSchemaCodecs.imports.length > 0 ? [''] : []),
-    ...imports,
+    ...support.imports,
     '',
     `const PULSE_ABI_VERSION: i32 = ${runtimeContract.CANONICAL_NATIVE_ABI_VERSION}`,
     `const PULSE_PLAN_HASH: string = ${quote(plan.planHash)}`,
     `const PULSE_ENTRY_PC: i32 = ${entryBlock}`,
-    'let __pulse_started: i32 = 0',
-    'let __pulse_pc: i32 = 0',
-    'let __pulse_state: i32 = 0',
-    'let __pulse_result: i32 = 0',
-    'let __pulse_error: i32 = 0',
-    'let __pulse_pending: i32 = 0',
-    ...globals,
-    ...(stages.size ? require('./shared-stage-accessors').effectAccessors(stageSites) : []),
-    '',
-    'function __pulse_string(value: string): i32 { return host_value_string(changetype<i32>(value), value.length) }',
-    'function __pulse_drop(value: i32): void {}',
-    ...(stateEnabled ? [
-      `function __pulse_state_find(key: i32): i32 { for (let index: i32 = 0; index < __pulse_state_keys.length; index += 1) { const equal = host_value_binary(${binaryIndex.get('===')}, __pulse_state_keys[index], key); if (host_value_truthy(equal) != 0) return index; } return -1 }`,
-      'function __pulse_state_get(key: i32): i32 { const index = __pulse_state_find(key); return index < 0 ? host_value_undefined() : __pulse_state_values[index] }',
-      'function __pulse_state_set(key: i32, value: i32): i32 { const index = __pulse_state_find(key); if (index < 0) { __pulse_state_keys.push(key); __pulse_state_values.push(value); } else { __pulse_state_values[index] = value; } return host_value_undefined() }'
-    ] : []),
+    ...support.executionGlobals,
+    ...support.globals,
+    ...renderNativeValueSupport({ stages, stageSites, stateEnabled, binaryIndex }),
     ...nativeSchemaCodecs.declarations,
     ...(nativeCrypto.active ? [nativeCrypto.source] : []),
     ...expressions.filter((_, index) => !expressionAlias.has(index)).map(renderExpression),
     ...[...pureHelpers.values()].map(renderPureHelper),
-    '',
-    'function __pulse_ready_for_resume(): bool {',
-    '  switch (__pulse_pc) {',
-    ...(readyCases ? [readyCases] : []),
-    '    default: return false',
-    '  }',
-    '}',
-    'function __pulse_clear_resume_flags(): void {',
-    '  switch (__pulse_pc) {',
-    ...(clearCases ? [clearCases] : []),
-    '    default: return',
-    '  }',
-    '}',
+    ...renderNativeResumeSupport(support),
     ...errorGuard,
     ...dispatcherFunctions,
     'function __pulse_run(): i32 {',
@@ -1198,39 +734,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     `  return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED}`,
     '}',
     '',
-    'export function pulse_abi_version(): i32 { return PULSE_ABI_VERSION }',
-    'export function pulse_plan_hash_ptr(): i32 { return changetype<i32>(PULSE_PLAN_HASH) }',
-    'export function pulse_plan_hash_length(): i32 { return PULSE_PLAN_HASH.length }',
-    'export function pulse_start(): i32 {',
-    `  if (__pulse_started != 0) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_START}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.FAILED} }`,
-    '  __pulse_started = 1',
-    '  __pulse_pc = PULSE_ENTRY_PC',
-    '  __pulse_state = 0',
-    '  __pulse_result = 0',
-    '  __pulse_error = 0',
-    '  __pulse_pending = 0',
-    ...(eventReachable ? ['  __pulse_event_runtime_id = -1', '  __pulse_event_payload_handle = 0'] : []),
-    ...(stateEnabled ? ['  __pulse_state_keys = new Array<i32>()', '  __pulse_state_values = new Array<i32>()'] : []),
-    '  return __pulse_run()',
-    '}',
-    ...eventExports,
-    'export function pulse_resume(): i32 {',
-    `  if (__pulse_started == 0 || __pulse_pending == 0 || !__pulse_ready_for_resume()) { __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INCOMPLETE_RESUME}; return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.INVALID_RESUME} }`,
-    `  __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.NONE}`,
-    '  __pulse_clear_resume_flags()',
-    '  return __pulse_run()',
-    '}',
-    'export function pulse_set_effect_result(effectIndex: i32, handle: i32): i32 {',
-    '  switch (effectIndex) {',
-    ...(setterCases ? [setterCases] : []),
-    `    default: __pulse_error = ${runtimeContract.CANONICAL_NATIVE_ERROR_CODES.INVALID_EFFECT_RESULT}; return ${runtimeContract.CANONICAL_NATIVE_RESULT_STATUS.REJECTED}`,
-    '  }',
-    '}',
-    'export function pulse_result_handle(): i32 { return __pulse_result }',
-    'export function pulse_program_counter(): i32 { return __pulse_pc }',
-    'export function pulse_continuation_state(): i32 { return __pulse_state }',
-    'export function pulse_last_error_code(): i32 { return __pulse_error }',
-    'export function pulse_pending_count(): i32 { return __pulse_pending }',
+    ...renderNativeExports({ eventReachable, stateEnabled, eventExports: support.eventExports, setterCases: support.setterCases }),
     ...nativeSchemaCodecs.exports,
     ''
   ].join('\n');
