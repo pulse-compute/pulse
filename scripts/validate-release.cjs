@@ -6,23 +6,25 @@ const os = require('node:os');
 const path = require('node:path');
 const { runCommand } = require('./release-process.cjs');
 const { createSealStatus } = require('./release-seal-status.cjs');
-const { sharedPackEnv } = require('./release-shared-pack.cjs');
-const fastly = require('../packages/provider-fastly/src/testing/fastly-cli.js');
-const { PUBLICATION, versionSatisfiesCaretRange } = require('./package-support.cjs');
-const { validatePreflight } = require('./release-preflight.cjs');
 const { resolveSourceIdentity, sourceIdentityEnv } = require('./source-identity.cjs');
 
 const repoRoot = path.resolve(__dirname, '..');
 const resultsRoot = path.join(repoRoot, 'wasm', '.test-results');
 
 function parseArgs(argv) {
-  const options = { install: true, report: true, requireFastly: false };
+  const options = { install: true, report: true, requireFastly: false, timeoutMs: 55 * 60 * 1000 };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--skip-install') options.install = false;
     else if (token === '--no-report') options.report = false;
     else if (token === '--require-fastly') options.requireFastly = true;
-    else if (token === '--dependency-bundle') {
+    else if (token === '--timeout-minutes') {
+      const value = argv[++index];
+      if (!/^[1-9]\d*$/.test(value || '') || Number(value) > 1440) {
+        throw new Error('--timeout-minutes requires an integer from 1 to 1440');
+      }
+      options.timeoutMs = Number(value) * 60 * 1000;
+    } else if (token === '--dependency-bundle') {
       const value = argv[index + 1];
       if (!value || value.startsWith('-')) throw new Error('--dependency-bundle requires a path');
       options.dependencyBundle = path.resolve(value);
@@ -42,6 +44,7 @@ function usage() {
     '  --dependency-bundle <path>  restore the exact offline dependency bundle',
     '  --skip-install              keep the current dependency installation',
     '  --require-fastly            fail if the Fastly CLI or its local Compute lifecycle is unavailable',
+    '  --timeout-minutes <minutes> overall work deadline (default 55); cleanup is separately bounded',
     '  --no-report                 do not write wasm/.test-results/release-seal.json',
     '  -h, --help                  show this help'
   ].join('\n');
@@ -99,6 +102,7 @@ async function executeStep(steps, id, description, command, args, options = {}) 
 }
 
 function fastlyAvailability(env = process.env) {
+  const fastly = require('../packages/provider-fastly/src/testing/fastly-cli.js');
   try {
     const cli = fastly.inspectFastlyCli({ env });
     return Object.freeze({
@@ -115,6 +119,7 @@ function fastlyAvailability(env = process.env) {
 }
 
 function assertReleaseNode(version = process.versions.node) {
+  const { PUBLICATION, versionSatisfiesCaretRange } = require('./package-support.cjs');
   if (!versionSatisfiesCaretRange(version, PUBLICATION.nodeReleaseRange)) {
     const error = new Error(`Release seal requires Node ${PUBLICATION.nodeReleaseRange}; running ${version}`);
     error.code = 'PULSE_RELEASE_NODE_RANGE_MISMATCH';
@@ -128,7 +133,40 @@ function assertReleaseNode(version = process.versions.node) {
 }
 
 function assertReleasePreflight(provenGates = []) {
-  return validatePreflight({ stage: 'release-seal', provenGates });
+  return require('./release-preflight.cjs').validatePreflight({ stage: 'release-seal', provenGates });
+}
+
+function createDeadline(controller, timeoutMs) {
+  const deadlineAt = Date.now() + timeoutMs;
+  const expire = () => {
+    if (!controller.signal.aborted) controller.abort('deadline');
+  };
+  const timer = setTimeout(expire, timeoutMs);
+  return {
+    deadlineAt: new Date(deadlineAt).toISOString(),
+    remaining() {
+      const remaining = deadlineAt - Date.now();
+      if (remaining <= 0) expire();
+      if (controller.signal.aborted) {
+        const timedOut = controller.signal.reason === 'deadline';
+        throw Object.assign(new Error(timedOut ? 'Release seal deadline exceeded' : `Seal interrupted by ${controller.signal.reason}`),
+          { code: timedOut ? 'PULSE_RELEASE_SEAL_DEADLINE' : 'PULSE_RELEASE_INTERRUPTED' });
+      }
+      return remaining;
+    },
+    close() { clearTimeout(timer); }
+  };
+}
+
+function assertCandidateSource(identity) {
+  // This module and its metadata dependencies use only Node built-ins. Do not
+  // import shared packaging/documentation code before dependency restoration.
+  const candidate = require('./release-feature-acceptance.cjs').candidateIdentity(repoRoot);
+  if (candidate.sourceRevision !== identity.sourceRevision) {
+    throw Object.assign(new Error('Release source identity differs from the clean candidate HEAD'),
+      { code: 'PULSE_RELEASE_SOURCE_MISMATCH' });
+  }
+  return candidate;
 }
 
 async function main(argv = process.argv.slice(2)) {
@@ -137,13 +175,10 @@ async function main(argv = process.argv.slice(2)) {
     process.stdout.write(`${usage()}\n`);
     return;
   }
-  const runtime = assertReleaseNode();
-  const sourceIdentity = resolveSourceIdentity(repoRoot);
-  const revision = sourceIdentity.sourceRevision;
-  const identityEnv = sourceIdentityEnv(sourceIdentity);
   const steps = [];
   const progress = createSealStatus({ resultsRoot, report: options.report, initial: {
-    schemaVersion: 'pulse.release-seal.v1', sourceRevision: revision, sourceIdentity, runtime
+    schemaVersion: 'pulse.release-seal.v1', sourceRevision: null, sourceIdentity: null, runtime: null,
+    currentStep: 'bootstrap'
   } });
   const controller = new AbortController();
   const handlers = new Map(['SIGINT', 'SIGTERM', 'SIGHUP'].map(signal => [signal, () => {
@@ -153,18 +188,14 @@ async function main(argv = process.argv.slice(2)) {
     }
   }]));
   for (const [signal, handler] of handlers) process.on(signal, handler);
-  const runStep = (steps, id, description, command, args, stepOptions = {}) =>
-    executeStep(steps, id, description, command, args, { ...stepOptions, progress, signal: controller.signal });
-  const packageManagerCache = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-release-seal-package-manager-'));
-  const packageManagerEnv = {
-    ...process.env,
-    ...identityEnv,
-    COREPACK_HOME: path.join(packageManagerCache, 'corepack'),
-    PNPM_HOME: path.join(packageManagerCache, 'pnpm-home'),
-    XDG_CACHE_HOME: path.join(packageManagerCache, 'xdg-cache'),
-    XDG_DATA_HOME: path.join(packageManagerCache, 'xdg-data'),
-    npm_config_cache: path.join(packageManagerCache, 'npm')
+  const deadline = createDeadline(controller, options.timeoutMs);
+  const runStep = (steps, id, description, command, args, stepOptions = {}) => {
+    const timeoutMs = Math.min(stepOptions.timeoutMs || 20 * 60 * 1000, deadline.remaining());
+    return executeStep(steps, id, description, command, args, { ...stepOptions, timeoutMs, progress, signal: controller.signal });
   };
+  let packageManagerCache = null;
+  let packageManagerEnv;
+  let sourceIdentity, revision, identityEnv, candidate;
   let externalFastly = Object.freeze({ status: 'not-inspected' });
   let featureAcceptance = null;
   let status = 'running';
@@ -182,10 +213,38 @@ async function main(argv = process.argv.slice(2)) {
     );
   };
   try {
-    const preflight = validatePreflight();
+    progress.persist({ deadlineAt: deadline.deadlineAt, currentStep: 'bootstrap' });
+    const runtime = assertReleaseNode();
+    progress.persist({ runtime, currentStep: 'source' });
+    sourceIdentity = resolveSourceIdentity(repoRoot);
+    revision = sourceIdentity.sourceRevision;
+    identityEnv = sourceIdentityEnv(sourceIdentity);
+    progress.persist({ sourceRevision: revision, sourceIdentity });
+    candidate = assertCandidateSource(sourceIdentity);
+    progress.persist({ candidate, currentStep: 'prerequisites' });
+    externalFastly = fastlyAvailability();
+    progress.persist({ externalFastly });
+    if (options.requireFastly && externalFastly.status !== 'available') {
+      throw Object.assign(new Error(`${externalFastly.message} Install the Fastly CLI with local Compute support.`),
+        { code: externalFastly.code });
+    }
+    if (options.dependencyBundle && !fs.statSync(options.dependencyBundle).isFile()) {
+      throw new Error(`Dependency bundle is not a file: ${options.dependencyBundle}`);
+    }
+    const preflight = require('./release-preflight.cjs').validatePreflight();
     process.stdout.write(`[pulse:release] Preflight passed: ${preflight.shards} release shards mapped; full replay still required.\n`);
+    deadline.remaining();
+    progress.persist({ currentStep: 'setup' });
+    packageManagerCache = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-release-seal-package-manager-'));
+    packageManagerEnv = {
+      ...process.env, ...identityEnv,
+      COREPACK_HOME: path.join(packageManagerCache, 'corepack'),
+      PNPM_HOME: path.join(packageManagerCache, 'pnpm-home'),
+      XDG_CACHE_HOME: path.join(packageManagerCache, 'xdg-cache'),
+      XDG_DATA_HOME: path.join(packageManagerCache, 'xdg-data'),
+      npm_config_cache: path.join(packageManagerCache, 'npm')
+    };
     if (options.dependencyBundle) {
-      if (!fs.existsSync(options.dependencyBundle)) throw new Error(`Dependency bundle does not exist: ${options.dependencyBundle}`);
       await runStep(
         steps,
         'dependencies',
@@ -216,11 +275,13 @@ async function main(argv = process.argv.slice(2)) {
     );
     await runPackageManagerStep('workspace-unit', 'Run workspace unit tests', ['run', '-s', 'test'], 10 * 60 * 1000);
     await runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
+    const currentCandidate = assertCandidateSource(sourceIdentity);
+    if (currentCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed before package qualification');
     const sharedPackDirectory = path.join(packageManagerCache, 'packages');
     await runStep(steps, 'shared-pack', 'Construct the exact package set once for isolated consumers', process.execPath,
       ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory],
       { timeoutMs: 10 * 60 * 1000, env: identityEnv });
-    const consumerEnv = { ...identityEnv, ...sharedPackEnv(sharedPackDirectory) };
+    const consumerEnv = { ...identityEnv, ...require('./release-shared-pack.cjs').sharedPackEnv(sharedPackDirectory) };
     await runStep(
       steps,
       'release',
@@ -243,6 +304,8 @@ async function main(argv = process.argv.slice(2)) {
       revision
     );
 
+    // Availability is a prerequisite, not reality evidence. Inspect it again
+    // immediately before the separately required local execution.
     externalFastly = fastlyAvailability();
     if (externalFastly.status === 'available') {
       await runStep(
@@ -273,26 +336,32 @@ async function main(argv = process.argv.slice(2)) {
       if (externalFastly.status === 'passed') provenGates.push('fastly-cli');
       assertReleasePreflight(provenGates);
     }
+    const finalCandidate = assertCandidateSource(sourceIdentity);
+    if (finalCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed during qualification');
+    deadline.remaining();
     status = 'passed';
   } catch (error) {
     failure = error;
-    status = controller.signal.aborted ? 'interrupted' : 'failed';
+    status = controller.signal.aborted && controller.signal.reason !== 'deadline' ? 'interrupted' : 'failed';
   } finally {
+    deadline.close();
     // Cleanup is a supervised subprocess: a stalled filesystem operation must
     // not prevent a terminal receipt or leave the parent waiting indefinitely.
     progress.persist({ currentStep: 'cleanup', steps, featureAcceptance, externalFastly });
-    const result = await runCommand(process.execPath, ['-e',
+    const result = packageManagerCache ? await runCommand(process.execPath, ['-e',
       "require('node:fs').rmSync(process.argv[1], { recursive: true, force: true })", packageManagerCache
-    ], { timeoutMs: 30000 });
-    cleanup = { status: result.status === 0 && !result.error && !result.timedOut ? 'passed' : 'failed',
-      timedOut: result.timedOut, retainedPath: result.status === 0 ? null : packageManagerCache };
-    if (cleanup.status !== 'passed' && !failure) {
+    ], { timeoutMs: 30000 }) : null;
+    cleanup = result ? { status: result.status === 0 && !result.error && !result.timedOut ? 'passed' : 'failed',
+      timedOut: result.timedOut, retainedPath: result.status === 0 ? null : packageManagerCache } : { status: 'not-needed', retainedPath: null };
+    if (cleanup.status === 'failed' && !failure) {
       failure = Object.assign(new Error('Release package-manager cleanup failed or exceeded its deadline'), { code: 'PULSE_RELEASE_CLEANUP_FAILED' });
       status = 'failed';
     }
     if (controller.signal.aborted) {
-      status = 'interrupted';
-      failure ||= Object.assign(new Error(`Seal interrupted by ${controller.signal.reason}`), { code: 'PULSE_RELEASE_INTERRUPTED' });
+      const timedOut = controller.signal.reason === 'deadline';
+      status = timedOut ? 'failed' : 'interrupted';
+      if (timedOut) failure = Object.assign(new Error('Release seal deadline exceeded'), { code: 'PULSE_RELEASE_SEAL_DEADLINE' });
+      else failure ||= Object.assign(new Error(`Seal interrupted by ${controller.signal.reason}`), { code: 'PULSE_RELEASE_INTERRUPTED' });
     }
     for (const [signal, handler] of handlers) process.removeListener(signal, handler);
   }
@@ -312,4 +381,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = Object.freeze({ parseArgs, fastlyAvailability, assertReleaseNode, assertReleasePreflight, main });
+module.exports = Object.freeze({ parseArgs, fastlyAvailability, assertReleaseNode, assertReleasePreflight, createDeadline, main });

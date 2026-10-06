@@ -8,6 +8,10 @@ const META_END = 'pulse-doc-meta:end -->';
 const REVIEWED_ON = '2026-07-16';
 const AUTHORITY_REVIEWED_ON = '2026-07-25';
 const AUTHORITY_REVIEW_BY = '2027-01-25';
+const SEAL_REVIEWED_FILES = new Set([
+  'docs/maintainers/testing.md',
+  'docs/maintainers/release-acceptance.md'
+]);
 const GENERATED_MAINTAINER_DOCS = new Set([
   'docs/maintainers/maintenance-policy.md',
   'docs/maintainers/plugin-readiness.md',
@@ -50,7 +54,9 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function policyFor(relativeFile) {
   const file = slash(relativeFile);
-  const reviewed = AUTHORITY_REVIEWED_FILES.has(file)
+  const reviewed = SEAL_REVIEWED_FILES.has(file)
+    ? { lastReviewed: '2026-10-06', reviewBy: '2027-04-06' }
+    : AUTHORITY_REVIEWED_FILES.has(file)
     ? { lastReviewed: AUTHORITY_REVIEWED_ON, reviewBy: AUTHORITY_REVIEW_BY }
     : { lastReviewed: REVIEWED_ON, reviewBy: '2027-01-16' };
   if (file.startsWith('docs/maintainers/') && file.endsWith('.md')) {

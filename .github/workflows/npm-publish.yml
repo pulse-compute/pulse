@@ -36,6 +36,10 @@ jobs:
       artifact_name: ${{ steps.identity.outputs.candidate_artifact }}
     timeout-minutes: 60
     steps:
+      - name: Start candidate work deadline
+        id: deadline
+        shell: bash
+        run: echo "seconds=$(( $(date +%s) + 50 * 60 ))" >> "$GITHUB_OUTPUT"
       - name: Check out the selected release tag
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -73,6 +77,7 @@ jobs:
           echo "source_ref=refs/tags/$expected" >> "$GITHUB_OUTPUT"
           echo "candidate_artifact=$artifact_prefix-$expected" >> "$GITHUB_OUTPUT"
       - name: Install the release-owned toolchain
+        timeout-minutes: 10
         shell: bash
         env:
           COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
@@ -86,10 +91,15 @@ jobs:
           echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
       - name: Build and validate the release source
+        timeout-minutes: 52
         shell: bash
+        env:
+          CANDIDATE_DEADLINE_SECONDS: ${{ steps.deadline.outputs.seconds }}
         run: |
           set -euo pipefail
-          pnpm run release:seal --skip-install
+          remaining=$(( (CANDIDATE_DEADLINE_SECONDS - $(date +%s)) / 60 ))
+          [ "$remaining" -ge 1 ] || { echo 'Candidate work deadline exhausted before seal' >&2; exit 1; }
+          pnpm run release:seal --skip-install --timeout-minutes "$remaining"
       - name: Preserve seal status and terminal evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
