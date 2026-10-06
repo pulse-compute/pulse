@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-16
-review-by: 2027-01-16
+last-reviewed: 2026-10-06
+review-by: 2027-04-06
 pulse-doc-meta:end -->
 
 # Testing Pulse
@@ -205,6 +205,22 @@ The report starts as `running`, records `currentStep`, `updatedAt` and
 nested task report also refreshes every ten seconds and distinguishes execution
 from cleanup. Recovery should inspect these reports before starting another run.
 
+The attempt report exists before Node, source and prerequisite checks. A cold
+checkout reaches dependency restoration without loading packaging or
+documentation modules that need workspace packages. The seal requires a clean
+Git candidate and rejects a supplied source revision that differs from `HEAD`
+before restoration or compilation. It checks required Fastly CLI availability
+early, then rechecks the source before packaging and after qualification. Node,
+source, prerequisite and temporary-directory failures receive terminal reports;
+unresolved source identity remains `null`, never a borrowed successful revision.
+`--no-report` suppresses all attempt files, including setup failures.
+
+The overall work deadline defaults to 55 minutes and is recorded as `deadlineAt`.
+Use `--timeout-minutes <minutes>` (1–1440) to set an explicit finite budget.
+Each child receives the smaller of its step limit and the remaining overall
+budget. Expiry cancels active work, prevents later steps and records a failed
+seal with `PULSE_RELEASE_SEAL_DEADLINE`; it does not qualify partial work.
+
 Step deadlines terminate the supervised process tree, escalating from TERM to
 KILL after ten seconds, with one further second to settle output. Temporary
 cleanup has a separate thirty-second deadline; failure or interruption cannot
@@ -212,6 +228,14 @@ produce a passing receipt. A terminal result and report path are printed before
 any separate evidence-bundle command. npm publication retains the reports on
 success and failure. A missing terminal receipt after an uncatchable kill or
 machine loss remains incomplete evidence, never an implied pass.
+
+The npm candidate job keeps its 60-minute limit. Its work budget starts at the
+first step and ends after 50 minutes; setup consumes that same budget. The seal
+receives the remaining whole minutes, with a 52-minute workflow step ceiling.
+This reserves ten minutes for bounded cleanup, evidence upload and publication
+candidate preparation. Toolchain restoration has a separate ten-minute limit.
+These deadlines bound recovery; they do not predict a faster passing seal or
+permit resumed evidence to replace the complete replay.
 
 External npm organization settings, trusted publishers, protected publication
 environments, public repository administration, and the production documentation

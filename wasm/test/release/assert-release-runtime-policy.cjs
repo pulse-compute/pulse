@@ -90,11 +90,17 @@ async function verifySealOrchestration() {
   const supervisor = require('../../../scripts/release-process.cjs');
   const sealModule = require.resolve('../../../scripts/validate-release.cjs');
   const originalRun = supervisor.runCommand;
+  const acceptance = require('../../../scripts/release-feature-acceptance.cjs');
+  const originalCandidate = acceptance.candidateIdentity;
   const originalWrite = process.stdout.write;
   const commands = [];
   let output = '';
   let failPack = true;
   try {
+    acceptance.candidateIdentity = () => ({
+      sourceRevision: require('../../../scripts/source-identity.cjs').resolveSourceIdentity(path.resolve(__dirname, '../../..')).sourceRevision,
+      sourceTree: 'a'.repeat(40), workingTree: ''
+    });
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push([command, ...args]);
@@ -128,6 +134,7 @@ async function verifySealOrchestration() {
     assert.ok(commands.findIndex((args) => args.includes('scripts/release-shared-pack.cjs')) < commands.findIndex((args) => args.includes('--profile')));
   } finally {
     supervisor.runCommand = originalRun;
+    acceptance.candidateIdentity = originalCandidate;
     process.stdout.write = originalWrite;
     delete require.cache[sealModule];
   }
