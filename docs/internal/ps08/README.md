@@ -90,5 +90,60 @@ removed in `finally`; reports/logs remain. Output filenames cannot be reused.
 
 ## Initial results and validation
 
-Recorded after the implementation and focused checks; see the result record added
-with the baseline. These are development measurements, not seal qualification.
+[Baseline](baseline.json) and [repeat](repeat.json) are compact, versioned JSON
+snapshots from the clean, recoverable harness commit
+[`64e2f7cd1270`](https://github.com/pulse-compute/pulse/commit/64e2f7cd127009aa0e1c3bdea1596f1525baa0c3)
+(tree `ced8ceb8e13336bcf528a3693fec2205d6485d84`). The subsequent result/documentation commit
+changes no measured code. Reports passed all six cells in **32.17 s** and
+**30.23 s**, including preflight checks and disposable cleanup.
+Machine: AMD EPYC 9V74 80-Core Processor,
+8 available CPUs, 8 GiB cgroup memory cap; Node v24.19.0.
+Full OS, dependency and compiler identities are in each report.
+
+First campaign medians (warm p95 also shown):
+
+| Fixture | Target | Build ms | Compiler RSS MiB | Artifact bytes | Warm p50 / p95 ms |
+| --- | --- | ---: | ---: | ---: | ---: |
+
+| minimal-request | node-javascript | 440.2 | 127.3 | 379 | 0.249 / 0.493 |
+| minimal-request | node-native | 1382.1 | 257.5 | 808 | 0.429 / 1.294 |
+| schema-effect | node-javascript | 491.2 | 127.4 | 14,035 | 0.620 / 1.784 |
+| schema-effect | node-native | 2484.6 | 316.8 | 39,479 | 1.533 / 2.522 |
+| multi-route | node-javascript | 475.3 | 127.5 | 742 | 0.204 / 0.391 |
+| multi-route | node-native | 1371.1 | 261.9 | 2,933 | 0.527 / 0.903 |
+
+The real reports compare successfully:
+
+```bash
+node wasm/test/performance/baseline.cjs --compare docs/internal/ps08/baseline.json docs/internal/ps08/repeat.json
+```
+
+The unchanged-code repeat moved build medians by −14.6% to −0.1% and warm medians
+by −13.5% to +20.3%. These are observed run-to-run variation, not an optimization
+win or a statistical confidence bound. Re-run a control from the measured source
+on the same environment before judging later compiler changes; reports from
+different hardware/dependencies/settings are deliberately incompatible. The ninety
+warm observations share three processes and are not ninety independent trials.
+
+Validation:
+
+- All twelve campaign preflight cells passed; each campaign checked six cases per
+  target (one minimal, one schema/effect and four multi-route outputs). Every timed
+  request was also checked outside its timer.
+- Complete unit profile passed **45/45 tasks in 72.02 s** on the latest base with
+  the PS-08 working patch. Comparison checks reject target/settings/protocol,
+  dependency/environment, incomplete evidence and metric-shape mismatches.
+- A modified Native optimization setting in a real report was rejected with a
+  nonzero CLI exit. An interrupted campaign terminated within the ten-second
+  check bound, retained an `interrupted` partial report/log and was rejected by
+  comparison. The report retained completion and explicit cleanup timing.
+- Maintainer/documentation synchronization and checks, release documentation
+  validation, whitespace and scope declaration passed. A first documentation
+  validation attempt found a test-only environment name using the public Pulse
+  prefix; it was renamed to `PS08_COMPILER_RSS_FILE` and revalidated.
+- The initial baseline launch refused a unit-created untracked temporary config
+  before measuring anything. That residue was retained under ignored test results;
+  both completed campaigns identify a clean source tree.
+
+These are focused development measurements. No full seal was run for PS-08 and
+no performance threshold or parallel-default promotion is introduced.
