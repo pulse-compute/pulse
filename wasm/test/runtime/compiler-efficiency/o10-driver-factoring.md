@@ -1,5 +1,9 @@
 # O-10 — shared Fastly error-driver settlement
 
+Historical result. PS-07 retired the frozen replay task and local JSON ledger.
+The [deletion ledger](../../../../docs/internal/ps07/README.md) maps surviving
+coverage and links the original files at an immutable Git revision.
+
 O-10 extracts one per-site settlement branch family from
 `__pulse_fastly_run_invocation` into `__pulse_application_settle_effect`.
 The helper survives the default optimizer at 1/8/32 sites. At 32 sites, the
@@ -40,7 +44,7 @@ cases. It remains part of the existing `fastly-native-platform-capabilities` tas
 
 ## Structural result
 
-The opt-in `fastly-driver-factoring-o10` task reuses O-08's fixtures, compiler
+The retired `fastly-driver-factoring-o10` task reused O-08's fixtures, compiler
 worker and inspector. Captured source/recipe hashes confirm O-08's implementation
 matches the pre-factoring O-09 base. Each new production binary is compared with
 a names-enabled companion: every non-custom section must be byte-identical
@@ -71,14 +75,13 @@ operations and 11 accepted manual settlements as well as real Router execution.
 
 ```bash
 node wasm/scripts/run-wasm-tests.cjs --task fastly-driver-behavior-o09 --no-report
-node wasm/scripts/run-wasm-tests.cjs --task fastly-driver-factoring-o10 --no-report
-# Deliberately refresh structural evidence after reviewing the result:
-node wasm/test/runtime/compiler-efficiency/o10-driver-factoring.cjs --record
 ```
 
-[o10-evidence.json](o10-evidence.json) records source/artifact identities,
+[The archived o10-evidence.json](https://github.com/pulse-compute/pulse/blob/8f2b02b3815ff144b94d59b01f809e7793be67c5/wasm/test/runtime/compiler-efficiency/o10-evidence.json) records source/artifact identities,
 per-control sizes, direct edges and terminal status. The structural runner needs
-the recorded pre-factoring commit available in local Git history. Full binaries,
+the recorded pre-factoring commit available in local Git history; its
+[original reproduction commands](https://github.com/pulse-compute/pulse/blob/8f2b02b3815ff144b94d59b01f809e7793be67c5/wasm/test/runtime/compiler-efficiency/o10-driver-factoring.md#behavior-and-reproduction)
+belong to that historical checkout. Full binaries,
 named companions, disassembly, graphs and timestamped running/passed/failed
 reports remain under `wasm/.test-results/compiler-efficiency/o10/`. Failed
 prototype attempts are retained separately; retries corrected inspector access
