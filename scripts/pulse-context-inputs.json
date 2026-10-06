@@ -1,0 +1,483 @@
+{
+  "schemaVersion": "pulse.context-inputs.v1",
+  "snapshotStatus": "candidate",
+  "packages": [
+    "@pulse-compute/pulse",
+    "@pulse-compute/runtime",
+    "@pulse-compute/cli",
+    "@pulse-compute/provider-node",
+    "@pulse-compute/provider-fastly",
+    "@pulse-compute/entities",
+    "@pulse-compute/assets",
+    "@pulse-compute/grip",
+    "@pulse-compute/crypto",
+    "@pulse-compute/jwt",
+    "@pulse-compute/s3"
+  ],
+  "documents": [
+    {
+      "path": "docs/getting-started.md",
+      "category": "guide",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "start/requirements",
+          "heading": "Requirements",
+          "tags": [
+            "start",
+            "install"
+          ]
+        },
+        {
+          "id": "start/create",
+          "heading": "Create a project",
+          "tags": [
+            "start",
+            "init"
+          ]
+        },
+        {
+          "id": "start/verify",
+          "heading": "Verify the project",
+          "tags": [
+            "test",
+            "doctor"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/packages/pulse.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "contract/application-root",
+          "heading": "Application root",
+          "tags": [
+            "Pulse",
+            "Router",
+            "handler"
+          ]
+        },
+        {
+          "id": "contract/project-configuration",
+          "heading": "Project configuration",
+          "tags": [
+            "profile",
+            "provider",
+            "target"
+          ]
+        },
+        {
+          "id": "contract/schema-declarations",
+          "heading": "Schema declarations",
+          "tags": [
+            "schema",
+            "json"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/concepts/effects-and-continuations.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "contract/effects",
+          "heading": "Effect",
+          "tags": [
+            "effects",
+            "authority"
+          ]
+        },
+        {
+          "id": "contract/parallel",
+          "heading": "Explicit portable groups with `ctx.parallel`",
+          "tags": [
+            "parallel",
+            "await"
+          ]
+        },
+        {
+          "id": "contract/managed-async",
+          "heading": "Managed async, not arbitrary async",
+          "tags": [
+            "await",
+            "async",
+            "Native"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/concepts/bodies.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "contract/request-json",
+          "heading": "Structured request bodies",
+          "tags": [
+            "schema",
+            "json",
+            "request"
+          ]
+        },
+        {
+          "id": "contract/fetch-json",
+          "heading": "Structured fetch responses",
+          "tags": [
+            "fetch",
+            "schema",
+            "json"
+          ]
+        },
+        {
+          "id": "contract/opaque-bodies",
+          "heading": "Opaque response pass-through",
+          "tags": [
+            "opaque",
+            "body"
+          ]
+        },
+        {
+          "id": "contract/transport-limits",
+          "heading": "Current transport limits",
+          "tags": [
+            "limits",
+            "body"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/concepts/targets-and-hosts.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "contract/targets",
+          "heading": "Current Beta targets",
+          "tags": [
+            "provider",
+            "Native",
+            "JavaScript"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/reference/compatibility-matrix.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "contract/source-compatibility",
+          "heading": "Source-form compatibility",
+          "tags": [
+            "Native",
+            "JavaScript",
+            "eligibility"
+          ]
+        },
+        {
+          "id": "contract/provider-compatibility",
+          "heading": "Provider and target realization",
+          "tags": [
+            "provider",
+            "target"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/guides/json-schemas.md",
+      "category": "guide",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "schema/registry",
+          "heading": "Declare the registry",
+          "tags": [
+            "schema",
+            "registry"
+          ]
+        },
+        {
+          "id": "schema/boundaries",
+          "heading": "Bind every JSON boundary",
+          "tags": [
+            "schema",
+            "effects",
+            "json"
+          ]
+        },
+        {
+          "id": "schema/strict",
+          "heading": "Understand strict mode",
+          "tags": [
+            "strict",
+            "schema"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/guides/project-lifecycle.md",
+      "category": "guide",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "workflow/init",
+          "heading": "1. Initialize",
+          "tags": [
+            "init",
+            "start"
+          ]
+        },
+        {
+          "id": "workflow/build",
+          "heading": "5. Build the selected target",
+          "tags": [
+            "build",
+            "target"
+          ]
+        },
+        {
+          "id": "workflow/inspect",
+          "heading": "Inspect when you need the plan",
+          "tags": [
+            "inspect"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/guides/deploying-node.md",
+      "category": "guide",
+      "providers": [
+        "node"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "node/configure",
+          "heading": "Configure the Node provider",
+          "tags": [
+            "node",
+            "profile"
+          ]
+        },
+        {
+          "id": "node/native",
+          "heading": "Node Native candidate",
+          "tags": [
+            "node",
+            "Native"
+          ],
+          "targets": [
+            "native"
+          ]
+        },
+        {
+          "id": "node/javascript",
+          "heading": "Node JavaScript candidate",
+          "tags": [
+            "node",
+            "JavaScript"
+          ],
+          "targets": [
+            "javascript"
+          ]
+        },
+        {
+          "id": "node/production",
+          "heading": "Production launcher (NODE-01)",
+          "tags": [
+            "node",
+            "server"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "docs/architecture/current-contracts.md",
+      "category": "contract",
+      "providers": [
+        "node",
+        "fastly",
+        "none"
+      ],
+      "targets": [
+        "native",
+        "javascript"
+      ],
+      "sections": [
+        {
+          "id": "contract/application",
+          "heading": "One application contract and one compiler spine",
+          "tags": [
+            "handler",
+            "authority"
+          ]
+        },
+        {
+          "id": "contract/eligibility",
+          "heading": "Providers, targets, and eligibility",
+          "tags": [
+            "provider",
+            "eligibility"
+          ]
+        },
+        {
+          "id": "contract/package-authority",
+          "heading": "Package-owned capabilities",
+          "tags": [
+            "packages",
+            "authority"
+          ]
+        }
+      ]
+    }
+  ],
+  "examples": [
+    {
+      "id": "01-hello-json",
+      "providers": [
+        "node"
+      ],
+      "targets": [
+        "native"
+      ],
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        ".pulse/config.ts",
+        "src/index.ts",
+        "tests/pulse.harness.ts"
+      ],
+      "readmeSection": "Workflow"
+    },
+    {
+      "id": "02-request-schema",
+      "providers": [
+        "node"
+      ],
+      "targets": [
+        "native"
+      ],
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        ".pulse/config.ts",
+        "src/index.ts",
+        "tests/pulse.harness.ts",
+        "src/schemas.ts"
+      ],
+      "readmeSection": "Workflow"
+    },
+    {
+      "id": "03-fetch-composition",
+      "providers": [
+        "node"
+      ],
+      "targets": [
+        "native"
+      ],
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        ".pulse/config.ts",
+        "src/index.ts",
+        "tests/pulse.harness.ts"
+      ],
+      "readmeSection": "Workflow"
+    },
+    {
+      "id": "09-router-lowering",
+      "providers": [
+        "node"
+      ],
+      "targets": [
+        "native"
+      ],
+      "files": [
+        "package.json",
+        "tsconfig.json",
+        ".pulse/config.ts",
+        "src/index.ts",
+        "tests/pulse.harness.ts"
+      ],
+      "readmeSection": "Workflow"
+    }
+  ]
+}

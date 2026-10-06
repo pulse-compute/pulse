@@ -4,6 +4,11 @@
 host applications outside the entity engine. It has zero runtime dependencies.
 The package surface is the root and `/node`; implementation files are private.
 
+PMCP-02 prepares a versioned, immutable Pulse context corpus in the private
+`examples/pulse-context` application area. Its generator and source inputs stay
+outside this generic adapter; that application data is excluded from the package
+tarball. The context operations and standalone host are subsequent slices.
+
 Release status: still private, version `0.0.0`, and excluded from the release
 manifest. PMCP-01 prepares and qualifies the packed host surface; PMCP-06 owns
 release membership and publication readiness. These are host APIs, used outside
