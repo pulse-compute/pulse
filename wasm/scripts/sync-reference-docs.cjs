@@ -842,7 +842,7 @@ function buildExpectedFiles() {
   expected.set('wasm/packages/cli/CHANGELOG.md', canonicalContent('CHANGELOG.md', generatedCanonical));
 
   const exampleFiles = filesUnder(path.join(repoRoot, 'examples'), (file) => {
-    const segments = file.split(path.sep);
+    const segments = relative(file).split('/');
     return !segments.includes('node_modules')
       && !segments.includes('dist')
       && !segments.some((segment) => segment.startsWith('.pulse-'))

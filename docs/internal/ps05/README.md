@@ -108,3 +108,12 @@ the exact revision, tracked-source and registered-layout checks while allowing
 untracked sibling fixtures. The consumer itself and the controller's pre/post
 execution barriers still require full cleanliness. A regression rejects tracked
 sibling mutations and confirms temporary sibling files do not block a consumer.
+
+Attempt `37427390122` retained 159 passing release tasks before independent
+artifact construction failed. The example-source filter considered absolute path
+segments, treating the `.pulse-seal` ancestor of a worker as generated example
+output and excluding all canonical examples. The filter now uses checkout-relative
+segments; the existing artifact-determinism task runs early to catch worker
+packaging boundaries before the long compiler lane. Documentation synchronization
+is an explicitly scoped additional owner for this worktree-path correction.
+This failed aggregate is retained and is not a full-seal timing result.
