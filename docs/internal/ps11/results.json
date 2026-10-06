@@ -1,0 +1,304 @@
+{
+  "schemaVersion": "pulse.ps11-compiler-closeout.v1",
+  "status": "passed",
+  "classification": {
+    "changeClass": "evidence",
+    "scope": "evidence-only",
+    "protectedBoundaries": []
+  },
+  "candidate": {
+    "sourceRevision": "718ebe31a35363e30a0c6281367bbbeba2fd516b",
+    "sourceTree": "ef42d1f7bb7df733330a9cd9f2c50835ff703508",
+    "workingTree": ""
+  },
+  "control": {
+    "sourceRevision": "8b634eefcf3963f001adf00a78ce86adb619589c",
+    "sourceTree": "4a6e3c3f94e861af9611a3d9df53675c3e3b6f8c",
+    "workingTree": ""
+  },
+  "originalBaseline": {
+    "path": "docs/internal/ps08/baseline.json",
+    "sha256": "421e33aa2795be5f29d38fa06fba25b934a8ea6b51b5b7f9e459bb80cb6d017f",
+    "source": {
+      "sourceRevision": "64e2f7cd127009aa0e1c3bdea1596f1525baa0c3",
+      "sourceTree": "ced8ceb8e13336bcf528a3693fec2205d6485d84",
+      "workingTree": ""
+    },
+    "compatible": true
+  },
+  "structure": {
+    "originalRootLines": 1339,
+    "finalRootLines": 203,
+    "originalGeneratorLines": 1000,
+    "finalGeneratorLines": 42,
+    "originalProductionLines": 1339,
+    "finalProductionLines": 1536,
+    "netProductionLines": 197,
+    "newPrivateOwners": 5,
+    "inventory": {
+      "sourceRevision": "718ebe31a35363e30a0c6281367bbbeba2fd516b",
+      "files": [
+        {"file": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js","sha256": "052d6f4252127c2c44853962e9694a2f126be60d6055d8898a100be8f868c375","lines": 203,"functions": [{"name": "generateCanonicalNativeAssemblyScript","start": 21,"end": 62,"lines": 42,"directNestedFunctions": 0},{"name": "assembleNativeSource","start": 64,"end": 93,"lines": 30,"directNestedFunctions": 0},{"name": "assembleNativeResult","start": 95,"end": 197,"lines": 103,"directNestedFunctions": 0}]},
+        {"file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js","sha256": "86754f00e26f0dfc347f088f2e502660bb882cdb13ac29ef7f8834f81297f5df","lines": 228,"functions": [{"name": "loadRuntimeContract","start": 5,"end": 13,"lines": 9,"directNestedFunctions": 0},{"name": "loadEventContract","start": 15,"end": 23,"lines": 9,"directNestedFunctions": 0},{"name": "stableHash","start": 38,"end": 40,"lines": 3,"directNestedFunctions": 0},{"name": "quote","start": 42,"end": 44,"lines": 3,"directNestedFunctions": 0},{"name": "collectExpressions","start": 46,"end": 139,"lines": 94,"directNestedFunctions": 2},{"name": "add","start": 50,"end": 111,"lines": 62,"directNestedFunctions": 0},{"name": "walkStatements","start": 113,"end": 129,"lines": 17,"directNestedFunctions": 0},{"name": "prepareNativePlan","start": 143,"end": 178,"lines": 36,"directNestedFunctions": 3},{"name": "fail","start": 159,"end": 161,"lines": 3,"directNestedFunctions": 0},{"name": "localName","start": 163,"end": 167,"lines": 5,"directNestedFunctions": 0},{"name": "stringHandle","start": 169,"end": 171,"lines": 3,"directNestedFunctions": 0},{"name": "prepareNativeEmissionInputs","start": 182,"end": 214,"lines": 33,"directNestedFunctions": 0},{"name": "prepareNativeFlow","start": 216,"end": 223,"lines": 8,"directNestedFunctions": 0}]},
+        {"file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-schema.js","sha256": "737b9c2114632e52baba0c3c93ccf9ec408ffe2dd46db6d2e70e80b912588ecb","lines": 194,"functions": [{"name": "schemaIdentifier","start": 10,"end": 13,"lines": 4,"directNestedFunctions": 0},{"name": "nativeSchemaCodecSource","start": 15,"end": 192,"lines": 178,"directNestedFunctions": 3},{"name": "typeFor","start": 32,"end": 50,"lines": 19,"directNestedFunctions": 0},{"name": "defaultFor","start": 52,"end": 61,"lines": 10,"directNestedFunctions": 0},{"name": "collectObjects","start": 63,"end": 86,"lines": 24,"directNestedFunctions": 0}]},
+        {"file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js","sha256": "d90e4078d33e49c997e200ceafb800530fd1029aa03948eda329fbc77f154a81","lines": 167,"functions": [{"name": "prepareNativeRuntimeSupport","start": 7,"end": 91,"lines": 85,"directNestedFunctions": 0},{"name": "renderNativeValueSupport","start": 94,"end": 106,"lines": 13,"directNestedFunctions": 0},{"name": "renderNativeResumeSupport","start": 108,"end": 124,"lines": 17,"directNestedFunctions": 0},{"name": "renderNativeExports","start": 126,"end": 162,"lines": 37,"directNestedFunctions": 0}]},
+        {"file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-expressions.js","sha256": "7180b6efc7f5d7cbde61325b3b87089280518c47602ca95dd102b5972acb53bd","lines": 311,"functions": [{"name": "prepareNativeExpressions","start": 5,"end": 309,"lines": 305,"directNestedFunctions": 4},{"name": "exprName","start": 11,"end": 19,"lines": 9,"directNestedFunctions": 0},{"name": "targetParts","start": 21,"end": 51,"lines": 31,"directNestedFunctions": 0},{"name": "renderExpression","start": 53,"end": 249,"lines": 197,"directNestedFunctions": 0},{"name": "renderPureHelper","start": 253,"end": 276,"lines": 24,"directNestedFunctions": 1},{"name": "body","start": 254,"end": 271,"lines": 18,"directNestedFunctions": 0}]},
+        {"file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js","sha256": "61d2e4eaa4d66594b5e50e859f19129ac900473386bbe4e1b59f2de445f94750","lines": 433,"functions": [{"name": "buildNativeControl","start": 7,"end": 209,"lines": 203,"directNestedFunctions": 7},{"name": "block","start": 19,"end": 23,"lines": 5,"directNestedFunctions": 0},{"name": "effectRecord","start": 27,"end": 32,"lines": 6,"directNestedFunctions": 0},{"name": "continuationState","start": 34,"end": 38,"lines": 5,"directNestedFunctions": 0},{"name": "resumeAction","start": 40,"end": 56,"lines": 17,"directNestedFunctions": 0},{"name": "suspendBlock","start": 58,"end": 83,"lines": 26,"directNestedFunctions": 0},{"name": "pureLines","start": 86,"end": 103,"lines": 18,"directNestedFunctions": 0},{"name": "compileSequence","start": 105,"end": 183,"lines": 79,"directNestedFunctions": 0},{"name": "layoutNativeControl","start": 211,"end": 385,"lines": 175,"directNestedFunctions": 3},{"name": "errorGuardPartitionSize","start": 239,"end": 248,"lines": 10,"directNestedFunctions": 0},{"name": "renderBlock","start": 250,"end": 322,"lines": 73,"directNestedFunctions": 0},{"name": "selectChunk","start": 362,"end": 373,"lines": 12,"directNestedFunctions": 0},{"name": "countNativeGuardStates","start": 389,"end": 405,"lines": 17,"directNestedFunctions": 0},{"name": "renderNativeRun","start": 407,"end": 429,"lines": 23,"directNestedFunctions": 0}]}
+      ],
+      "before": {
+        "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js",
+        "lines": 1339,
+        "sha256": "00af9a9df5225c162d3f99e19f8054a6c12a14d2346818ed7b5a4102aaac9f16"
+      }
+    }
+  },
+  "affectedFiles": {
+    "production": ["wasm/packages/runtime-core-as/src/compiler/canonical-native.js","wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js","wasm/packages/runtime-core-as/src/compiler/canonical-native-schema.js","wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js","wasm/packages/runtime-core-as/src/compiler/canonical-native-expressions.js","wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js"],
+    "diagnosticFingerprints": ["wasm/test/runtime/compiler-efficiency/schema-cost-profile.cjs","wasm/test/runtime/compiler-efficiency/gen01-census.cjs"]
+  },
+  "validation": {
+    "mode": "Verified retained development evidence, not seal receipts or a new release qualification",
+    "record": "docs/internal/ps10b/results.json",
+    "recordSha256": "3b2f10c126ca5ef880670c0f5d6932817b9db21757b631bfb5d2c166408db3e1",
+    "testedRevision": "57794f2382f9f02e6f1740edca896e165db31d5c",
+    "candidateDiff": ["docs/internal/ps10b/README.md","docs/internal/ps10b/results.json"],
+    "allSixProductionHashesMatch": true,
+    "corpusFixtures": 13,
+    "sourceManifestBlockComparisons": 26,
+    "diagnosticComparisons": 16,
+    "functionalTaskCount": 131,
+    "terminalReports": [
+      {
+        "lane": "lane-1",
+        "sha256": "721f055ae3538a6915314a70f29e4ca2d09874b21d13d4438f47b69f3301dd47",
+        "taskCount": 24,
+        "status": "passed"
+      },
+      {
+        "lane": "lane-2",
+        "sha256": "723a71eb8e1ed5e2019cecc867e7377301c3e500e308528d71b7543e1616470d",
+        "taskCount": 35,
+        "status": "passed"
+      },
+      {
+        "lane": "lane-3",
+        "sha256": "7b4c264c839a876791495b5b04a151be3f0d116a69f96cf569beca4876d85513",
+        "taskCount": 36,
+        "status": "passed"
+      },
+      {
+        "lane": "lane-4",
+        "sha256": "8ba5e57675722540af649460dba0e4bad02dc741e3ebe02870aca02067f5b1f9",
+        "taskCount": 36,
+        "status": "passed"
+      }
+    ],
+    "workspaceBuild": "retained passed result; production and build inputs unchanged",
+    "candidateTreeEqualsReviewedPrHeadTree": true,
+    "reviewedPr": 205,
+    "integrationWorkflows": [
+      {
+        "name": "Repository validation",
+        "runId": 37531117901,
+        "conclusion": "success"
+      },
+      {
+        "name": "Documentation",
+        "runId": 37531117755,
+        "conclusion": "success"
+      },
+      {
+        "name": "Maintainer scope",
+        "runId": 37531118075,
+        "conclusion": "success"
+      }
+    ],
+    "freshPerformanceCells": 12,
+    "timedRequestsChecked": true
+  },
+  "performance": {
+    "layout": "Reconstruct each original PS-08 report from shared fields, run fields excluding id/cells, and ordered cells formed by merging fixture identity with run cell. Every sample and statistic is retained.",
+    "shared": {
+      "schemaVersion": "pulse.performance-baseline.v1",
+      "dependencies": {
+        "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "installedLockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+        "packages": {"typescript": {"version": "5.9.3","manifestSha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"},"assemblyscript": {"version": "0.28.18","manifestSha256": "e09a22d5667fd83f4119862e9e717f722ae46d68fc57eec8c33620cde07d5916"},"json-as": {"version": "1.5.0","manifestSha256": "dc6a65c22d62266557de1519c5bd3546fc5ed635e7429a59f30a996672dae696"}},
+        "workspacePreparation": "lockfile install with scripts disabled; pnpm build required before run"
+      },
+      "environment": {
+        "node": "v24.19.0",
+        "versions": {"node": "24.19.0","acorn": "8.17.0","ada": "3.4.4","amaro": "1.1.10","ares": "1.34.6","brotli": "1.2.0","cldr": "48.0","icu": "78.3","llhttp": "9.4.3","merve": "1.2.2","modules": "137","napi": "10","nbytes": "0.1.4","ncrypto": "0.0.1","nghttp2": "1.69.0","nghttp3": "","ngtcp2": "","openssl": "3.5.7","simdjson": "4.6.4","simdutf": "6.4.0","sqlite": "3.53.3","tz": "2026b","undici": "7.29.0","unicode": "17.0","uv": "1.52.1","uvwasi": "0.0.23","v8": "13.6.233.17-node.51","zlib": "1.3.2.1-motley-3246f1b","zstd": "1.5.7"},
+        "executableSha256": "bc17c508ffeed0ec622934f9b7fa72f8e78da65350e63c3eceb56fa688aa5e12",
+        "nodeOptions": "",
+        "execArgv": [],
+        "os": {"platform": "linux","release": "6.18.44","arch": "x64"},
+        "hardware": {"cpu": "AMD EPYC 9V74 80-Core Processor","logicalCpus": 9,"availableParallelism": 8,"hostMemoryBytes": 10451464192,"cgroupCpuMax": "800000 100000","cgroupMemoryMax": "8589934592"}
+      },
+      "protocol": {
+        "version": "pulse.performance-protocol.v1",
+        "serial": true,
+        "buildSamples": 3,
+        "coldProcesses": 3,
+        "warmup": 10,
+        "warmSamplesPerProcess": 30,
+        "cache": {"build": "fresh process, empty output directory","load": "fresh process, built artifact","warm": "same process after warmup; fresh request lifecycle","dependencies": "preinstalled workspace build","os": "uncontrolled filesystem/page caches; not flushed"},
+        "timing": {"buildMs": "CLI imports, project resolution and buildProject; excludes fixture setup and worker startup","coldLoadMs": "artifact reads and runtime imports; JavaScript application/codecs import; Native instantiation occurs in requests","firstRequestMs": "first complete provider-host request including request construction/body materialization, Native validation/compilation/instantiation and mandatory request disposal","warmRequestMs": "same complete request after warmup, including request construction, body materialization and mandatory disposal; correctness assertions outside timer","cleanupMs": "delete per-cell project and build outputs after all samples; excluded from build/load/request","compilerPeakRssBytes": "maximum individual ASC process resourceUsage.maxRSS, including its source-map re-exec; never summed; Native only; JavaScript compiler/build worker high-water RSS (includes imports/writer)","artifactBytes": "Native executable Wasm; JavaScript emitted executable .js/.cjs modules and schema codecs; dependencies/inspection excluded"},
+        "request": "fixtures.cases[0]; in-memory Node provider fixture fetch, no network or HTTP server",
+        "runtime": "workspace Node provider host, generated JavaScript source package / canonical Native Wasm",
+        "instrumentation": "test-owned spawnSync wrapper preloads resourceUsage exit recorder into ASC; no production source hooks",
+        "harnessSha256": "ab8a5de96a93af047136876f3b2bf15cf1208d3dad4f0eca1e7cb25caa0853bb"
+      },
+      "validation": [
+        {"fixture": "minimal-request","target": "javascript","status": "passed","cases": 1},
+        {"fixture": "minimal-request","target": "native","status": "passed","cases": 1},
+        {"fixture": "schema-effect","target": "javascript","status": "passed","cases": 1},
+        {"fixture": "schema-effect","target": "native","status": "passed","cases": 1},
+        {"fixture": "multi-route","target": "javascript","status": "passed","cases": 4},
+        {"fixture": "multi-route","target": "native","status": "passed","cases": 4}
+      ]
+    },
+    "fixtures": [
+      {
+        "fixture": {"id": "minimal-request","sha256": "316faa0799ed3b7cdb93173d58d5e8c9da35b328a541fb730e352f06850a207a","verifiedCases": 1},
+        "target": "node-javascript",
+        "settings": {"provider": "node","target": "javascript","strict": true,"reporting": "info","emitWat": false,"optimization": {"mode": "source-package","minified": false},"compiler": {"flags": [],"env": {}}},
+        "artifactKind": "emitted-javascript-and-codecs",
+        "artifactSha256": ["c4f267fcead360b8daf7bc7b4cb9716406ed08667951266821be0dd763ea3785","c4f267fcead360b8daf7bc7b4cb9716406ed08667951266821be0dd763ea3785","c4f267fcead360b8daf7bc7b4cb9716406ed08667951266821be0dd763ea3785"]
+      },
+      {
+        "fixture": {"id": "minimal-request","sha256": "316faa0799ed3b7cdb93173d58d5e8c9da35b328a541fb730e352f06850a207a","verifiedCases": 1},
+        "target": "node-native",
+        "settings": {"provider": "node","target": "native","strict": true,"reporting": "info","emitWat": false,"optimization": {"mode": "default","assemblyScript": "--optimize"},"compiler": {"flags": ["canonical-native.as.ts","--outFile","<output>","--runtime","stub","--noAssert","--optimize","--transform","<repo>/wasm/packages/build-support/src/native-retention-transform.cjs","--runPasses","merge-similar-functions"],"env": {"JSON_STRICT": null,"JSON_USE_FAST_PATH": null,"JSON_MODE": null}}},
+        "artifactKind": "executable-wasm",
+        "artifactSha256": ["d4387b3452d3dc7edc255127407c44015d14403879d48b213aa74c58384ef6a4","d4387b3452d3dc7edc255127407c44015d14403879d48b213aa74c58384ef6a4","d4387b3452d3dc7edc255127407c44015d14403879d48b213aa74c58384ef6a4"]
+      },
+      {
+        "fixture": {"id": "schema-effect","sha256": "a1b5dcc37ec620649b468ee6c6d0dd37576abf2f965a05007a71e5b8508b8c30","verifiedCases": 1},
+        "target": "node-javascript",
+        "settings": {"provider": "node","target": "javascript","strict": true,"reporting": "info","emitWat": false,"optimization": {"mode": "source-package","minified": false},"compiler": {"flags": [],"env": {}}},
+        "artifactKind": "emitted-javascript-and-codecs",
+        "artifactSha256": ["80e53e444d29a9e0e9a4a2890d0bbac33f67ade6f9f015dc3dadf24821463b9b","80e53e444d29a9e0e9a4a2890d0bbac33f67ade6f9f015dc3dadf24821463b9b","80e53e444d29a9e0e9a4a2890d0bbac33f67ade6f9f015dc3dadf24821463b9b"]
+      },
+      {
+        "fixture": {"id": "schema-effect","sha256": "a1b5dcc37ec620649b468ee6c6d0dd37576abf2f965a05007a71e5b8508b8c30","verifiedCases": 1},
+        "target": "node-native",
+        "settings": {"provider": "node","target": "native","strict": true,"reporting": "info","emitWat": false,"optimization": {"mode": "default","assemblyScript": "--optimize"},"compiler": {"flags": ["canonical-native.as.ts","--outFile","<output>","--runtime","incremental","--noAssert","--optimize","--transform","<repo>/wasm/packages/build-support/src/native-retention-transform.cjs","--runPasses","merge-similar-functions","--exportRuntime","--transform","<repo>/node_modules/.pnpm/json-as@1.5.0/node_modules/json-as/transform/lib/index.js","--path","<repo>/wasm/packages/compiler/node_modules","--path","<repo>/node_modules/.pnpm/json-as@1.5.0/node_modules"],"env": {"JSON_STRICT": "true","JSON_USE_FAST_PATH": "0","JSON_MODE": "NAIVE"}}},
+        "artifactKind": "executable-wasm",
+        "artifactSha256": ["b12dc0793501ca703a64d790291ebaef6652cdca3ba577cab6dc60f9d3ce1a13","b12dc0793501ca703a64d790291ebaef6652cdca3ba577cab6dc60f9d3ce1a13","b12dc0793501ca703a64d790291ebaef6652cdca3ba577cab6dc60f9d3ce1a13"]
+      },
+      {
+        "fixture": {"id": "multi-route","sha256": "5027b739f3db8000cf56850affe04354f4f6cf6db2c2da1ef8347d5d2b4b6836","verifiedCases": 4},
+        "target": "node-javascript",
+        "settings": {"provider": "node","target": "javascript","strict": true,"reporting": "info","emitWat": false,"optimization": {"mode": "source-package","minified": false},"compiler": {"flags": [],"env": {}}},
+        "artifactKind": "emitted-javascript-and-codecs",
+        "artifactSha256": ["8892172873c685041043aa0297a367ac0d59e42b7d6a473c39ca90f64fdd8c48","8892172873c685041043aa0297a367ac0d59e42b7d6a473c39ca90f64fdd8c48","8892172873c685041043aa0297a367ac0d59e42b7d6a473c39ca90f64fdd8c48"]
+      },
+      {
+        "fixture": {"id": "multi-route","sha256": "5027b739f3db8000cf56850affe04354f4f6cf6db2c2da1ef8347d5d2b4b6836","verifiedCases": 4},
+        "target": "node-native",
+        "settings": {"provider": "node","target": "native","strict": true,"reporting": "info","emitWat": false,"optimization": {"mode": "default","assemblyScript": "--optimize"},"compiler": {"flags": ["canonical-native.as.ts","--outFile","<output>","--runtime","stub","--noAssert","--optimize","--transform","<repo>/wasm/packages/build-support/src/native-retention-transform.cjs","--runPasses","merge-similar-functions"],"env": {"JSON_STRICT": null,"JSON_USE_FAST_PATH": null,"JSON_MODE": null}}},
+        "artifactKind": "executable-wasm",
+        "artifactSha256": ["059950cf893ab929f71ce12381bc4e42c4e2816b33e3b7f0fc19090cef2abe57","059950cf893ab929f71ce12381bc4e42c4e2816b33e3b7f0fc19090cef2abe57","059950cf893ab929f71ce12381bc4e42c4e2816b33e3b7f0fc19090cef2abe57"]
+      }
+    ],
+    "runs": [
+      {
+        "id": "control",
+        "status": "passed",
+        "createdAt": "2026-10-06T21:26:10.151Z",
+        "source": {"sourceRevision": "8b634eefcf3963f001adf00a78ce86adb619589c","sourceTree": "4a6e3c3f94e861af9611a3d9df53675c3e3b6f8c","workingTree": ""},
+        "finalCleanupMs": 1.0605560000003607,
+        "completedAt": "2026-10-06T21:26:39.752Z",
+        "elapsedMs": 29623.241687,
+        "cells": [{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 387.286627,"max": 438.40889699999997,"mean": 415.6836686666666,"p50": 421.355482,"p95": 438.40889699999997},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 133058560,"max": 133058560,"mean": 133058560,"p50": 133058560,"p95": 133058560},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 379,"max": 379,"mean": 379,"p50": 379,"p95": 379},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 25.916039999999995,"max": 27.170569,"mean": 26.568163999999996,"p50": 26.617883,"p95": 27.170569},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 6.910653999999994,"max": 7.072349000000003,"mean": 6.999291333333332,"p50": 7.014870999999999,"p95": 7.072349000000003},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.16710299999999734,"max": 0.4707420000000013,"mean": 0.22427645555555592,"p50": 0.21108999999999867,"p95": 0.3200039999999973},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.7249279999996361,"max": 0.7249279999996361,"mean": 0.7249279999996361,"p50": 0.7249279999996361,"p95": 0.7249279999996361},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [387.286627,421.355482,438.40889699999997],"coldLoadMs": [25.916039999999995,26.617883,27.170569],"firstRequestMs": [7.072349000000003,7.014870999999999,6.910653999999994]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.1761759999999981,"max": 0.4367809999999963,"mean": 0.22402206666666682,"p50": 0.21598699999999837,"p95": 0.29686900000000094},{"status": "measured","sampleCount": 30,"min": 0.16710299999999734,"max": 0.4707420000000013,"mean": 0.2356044333333344,"p50": 0.21634800000001064,"p95": 0.43015099999999507},{"status": "measured","sampleCount": 30,"min": 0.1692769999999939,"max": 0.3200039999999973,"mean": 0.21320286666666657,"p50": 0.20300799999999697,"p95": 0.31718100000000504}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 1172.803426,"max": 1215.71813,"mean": 1189.190365,"p50": 1179.049539,"p95": 1215.71813},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 269533184,"max": 272510976,"mean": 271014570.6666667,"p50": 270999552,"p95": 272510976},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 808,"max": 808,"mean": 808,"p50": 808,"p95": 808},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 33.49666800000001,"max": 36.301565000000004,"mean": 35.04686833333334,"p50": 35.342372000000005,"p95": 36.301565000000004},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 5.425995,"max": 6.550336999999999,"mean": 5.905380999999996,"p50": 5.739810999999989,"p95": 6.550336999999999},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.3079960000000028,"max": 3.8800409999999914,"mean": 0.5239460999999997,"p50": 0.3895299999999935,"p95": 1.1313540000000017},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.5280099999999948,"max": 0.5280099999999948,"mean": 0.5280099999999948,"p50": 0.5280099999999948,"p95": 0.5280099999999948},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [1179.049539,1215.71813,1172.803426],"coldLoadMs": [35.342372000000005,36.301565000000004,33.49666800000001],"firstRequestMs": [5.739810999999989,5.425995,6.550336999999999]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.3214969999999937,"max": 1.1313540000000017,"mean": 0.4641901999999988,"p50": 0.41040099999999313,"p95": 1.071241999999998},{"status": "measured","sampleCount": 30,"min": 0.33149199999999723,"max": 3.8800409999999914,"mean": 0.7028498999999991,"p50": 0.3876069999999885,"p95": 2.976827},{"status": "measured","sampleCount": 30,"min": 0.3079960000000028,"max": 1.01006000000001,"mean": 0.4047982000000014,"p50": 0.3589630000000028,"p95": 0.9858929999999901}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 396.794172,"max": 434.403999,"mean": 416.47153966666673,"p50": 418.21644799999996,"p95": 434.403999},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 133058560,"max": 133074944,"mean": 133064021.33333333,"p50": 133058560,"p95": 133074944},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 14035,"max": 14035,"mean": 14035,"p50": 14035,"p95": 14035},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 25.844862,"max": 28.128279,"mean": 26.94171966666666,"p50": 26.852017999999994,"p95": 28.128279},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 13.187888000000001,"max": 13.74255699999999,"mean": 13.395291666666665,"p50": 13.255430000000004,"p95": 13.74255699999999},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.3863450000000057,"max": 2.0616010000000102,"mean": 0.5822509444444444,"p50": 0.5150299999999959,"p95": 1.2383659999999992},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.6834550000003219,"max": 0.6834550000003219,"mean": 0.6834550000003219,"p50": 0.6834550000003219,"p95": 0.6834550000003219},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [434.403999,418.21644799999996,396.794172],"coldLoadMs": [25.844862,28.128279,26.852017999999994],"firstRequestMs": [13.187888000000001,13.74255699999999,13.255430000000004]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.3863450000000057,"max": 1.2569830000000053,"mean": 0.5662737999999995,"p50": 0.5131669999999957,"p95": 1.2182149999999865},{"status": "measured","sampleCount": 30,"min": 0.3926840000000027,"max": 2.0616010000000102,"mean": 0.6072928333333337,"p50": 0.520387999999997,"p95": 1.259326999999999},{"status": "measured","sampleCount": 30,"min": 0.40318999999999505,"max": 1.256461999999999,"mean": 0.5731861999999998,"p50": 0.5075479999999999,"p95": 1.2383659999999992}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 2121.3867800000003,"max": 2251.153852,"mean": 2184.279684333333,"p50": 2180.298421,"p95": 2251.153852},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 316329984,"max": 351469568,"mean": 328555178.6666667,"p50": 317865984,"p95": 351469568},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 39479,"max": 39479,"mean": 39479,"p50": 39479,"p95": 39479},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 33.825925999999995,"max": 40.525871,"mean": 36.463255999999994,"p50": 35.03797099999999,"p95": 40.525871},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 13.034355000000005,"max": 15.205551999999997,"mean": 14.176831666666667,"p50": 14.290588,"p95": 15.205551999999997},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 1.2959519999999998,"max": 2.8896249999999952,"mean": 1.6208390777777772,"p50": 1.5278830000000028,"p95": 1.998486000000014},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.7784990000000107,"max": 0.7784990000000107,"mean": 0.7784990000000107,"p50": 0.7784990000000107,"p95": 0.7784990000000107},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [2180.298421,2121.3867800000003,2251.153852],"coldLoadMs": [35.03797099999999,33.825925999999995,40.525871],"firstRequestMs": [14.290588,13.034355000000005,15.205551999999997]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 1.308450999999991,"max": 2.871417000000008,"mean": 1.625506600000001,"p50": 1.5504580000000203,"p95": 1.998486000000014},{"status": "measured","sampleCount": 30,"min": 1.2959519999999998,"max": 2.496219999999994,"mean": 1.513311033333332,"p50": 1.456185000000005,"p95": 1.8190449999999885},{"status": "measured","sampleCount": 30,"min": 1.37903799999998,"max": 2.8896249999999952,"mean": 1.7236995999999987,"p50": 1.716448999999983,"p95": 2.047390000000007}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 418.127674,"max": 436.455354,"mean": 429.41234000000003,"p50": 433.65399199999996,"p95": 436.455354},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 133701632,"max": 134017024,"mean": 133911893.33333333,"p50": 134017024,"p95": 134017024},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 742,"max": 742,"mean": 742,"p50": 742,"p95": 742},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 24.940391999999996,"max": 29.921498999999997,"mean": 26.920531999999998,"p50": 25.899704999999997,"p95": 29.921498999999997},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 7.019217999999995,"max": 7.443471000000002,"mean": 7.1840709999999985,"p50": 7.089523999999997,"p95": 7.443471000000002},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.16301699999999641,"max": 0.4442729999999955,"mean": 0.2180783333333322,"p50": 0.20562100000000783,"p95": 0.30839699999999937},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.5883909999975003,"max": 0.5883909999975003,"mean": 0.5883909999975003,"p50": 0.5883909999975003,"p95": 0.5883909999975003},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [433.65399199999996,436.455354,418.127674],"coldLoadMs": [29.921498999999997,24.940391999999996,25.899704999999997],"firstRequestMs": [7.443471000000002,7.019217999999995,7.089523999999997]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.16470999999999947,"max": 0.4442729999999955,"mean": 0.23498219999999984,"p50": 0.21001799999999093,"p95": 0.32732599999999934},{"status": "measured","sampleCount": 30,"min": 0.16301699999999641,"max": 0.32109599999999716,"mean": 0.21169116666666382,"p50": 0.20381899999999575,"p95": 0.2865939999999938},{"status": "measured","sampleCount": 30,"min": 0.16437899999999672,"max": 0.3203850000000017,"mean": 0.2075616333333329,"p50": 0.19873100000000932,"p95": 0.2597430000000003}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 1273.4515370000001,"max": 1476.21868,"mean": 1368.272455,"p50": 1355.147148,"p95": 1476.21868},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 272642048,"max": 274898944,"mean": 273633280,"p50": 273358848,"p95": 274898944},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 2933,"max": 2933,"mean": 2933,"p50": 2933,"p95": 2933},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 39.589132,"max": 46.412364,"mean": 42.071858,"p50": 40.214078,"p95": 46.412364},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 6.440702000000002,"max": 9.572963999999999,"mean": 7.666901666666665,"p50": 6.987038999999996,"p95": 9.572963999999999},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.35369600000001356,"max": 3.9860850000000028,"mean": 0.6355608222222241,"p50": 0.558645999999996,"p95": 1.0384420000000034},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.6713469999995141,"max": 0.6713469999995141,"mean": 0.6713469999995141,"p50": 0.6713469999995141,"p95": 0.6713469999995141},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [1355.147148,1273.4515370000001,1476.21868],"coldLoadMs": [40.214078,46.412364,39.589132],"firstRequestMs": [6.440702000000002,9.572963999999999,6.987038999999996]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.35369600000001356,"max": 3.9860850000000028,"mean": 0.6972140333333348,"p50": 0.558645999999996,"p95": 1.3557229999999976},{"status": "measured","sampleCount": 30,"min": 0.40434200000001397,"max": 1.4395690000000059,"mean": 0.56180446666667,"p50": 0.5074979999999982,"p95": 0.8102570000000071},{"status": "measured","sampleCount": 30,"min": 0.4338869999999986,"max": 1.3778060000000067,"mean": 0.6476639666666676,"p50": 0.6027420000000063,"p95": 1.0384420000000034}]}]
+      },
+      {
+        "id": "final",
+        "status": "passed",
+        "createdAt": "2026-10-06T21:26:39.857Z",
+        "source": {"sourceRevision": "718ebe31a35363e30a0c6281367bbbeba2fd516b","sourceTree": "ef42d1f7bb7df733330a9cd9f2c50835ff703508","workingTree": ""},
+        "finalCleanupMs": 1.3401389999999083,
+        "completedAt": "2026-10-06T21:27:10.101Z",
+        "elapsedMs": 30269.773581999998,
+        "cells": [{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 401.65933,"max": 463.433554,"mean": 424.0071843333333,"p50": 406.928669,"p95": 463.433554},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 132669440,"max": 132669440,"mean": 132669440,"p50": 132669440,"p95": 132669440},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 379,"max": 379,"mean": 379,"p50": 379,"p95": 379},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 24.481037999999998,"max": 31.499043,"mean": 27.782786333333334,"p50": 27.368278000000004,"p95": 31.499043},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 7.082222999999999,"max": 7.447165999999996,"mean": 7.236112666666666,"p50": 7.178949000000003,"p95": 7.447165999999996},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.16383799999999837,"max": 0.5242440000000101,"mean": 0.22660324444444438,"p50": 0.21282200000000273,"p95": 0.3556790000000092},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.6313460000001214,"max": 0.6313460000001214,"mean": 0.6313460000001214,"p50": 0.6313460000001214,"p95": 0.6313460000001214},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [406.928669,401.65933,463.433554],"coldLoadMs": [27.368278000000004,31.499043,24.481037999999998],"firstRequestMs": [7.178949000000003,7.447165999999996,7.082222999999999]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.17068899999999587,"max": 0.5242440000000101,"mean": 0.23983710000000116,"p50": 0.21739900000000034,"p95": 0.38650599999999713},{"status": "measured","sampleCount": 30,"min": 0.16383799999999837,"max": 0.39506799999999487,"mean": 0.22486429999999918,"p50": 0.21505499999999245,"p95": 0.31530699999999},{"status": "measured","sampleCount": 30,"min": 0.16526099999998678,"max": 0.3485780000000034,"mean": 0.21510833333333276,"p50": 0.20437899999998876,"p95": 0.30441100000000176}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 1172.3179010000001,"max": 1201.044191,"mean": 1189.7298546666668,"p50": 1195.827472,"p95": 1201.044191},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 268181504,"max": 270118912,"mean": 269266944,"p50": 269500416,"p95": 270118912},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 808,"max": 808,"mean": 808,"p50": 808,"p95": 808},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 34.999993999999994,"max": 39.534515,"mean": 37.38263166666666,"p50": 37.613386,"p95": 39.534515},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 5.504544999999993,"max": 5.898081000000005,"mean": 5.6770226666666685,"p50": 5.628442000000007,"p95": 5.898081000000005},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.302747999999994,"max": 2.703523000000004,"mean": 0.538377144444444,"p50": 0.4091399999999936,"p95": 1.4328399999999988},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.5670479999989766,"max": 0.5670479999989766,"mean": 0.5670479999989766,"p50": 0.5670479999989766,"p95": 0.5670479999989766},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [1195.827472,1172.3179010000001,1201.044191],"coldLoadMs": [34.999993999999994,37.613386,39.534515],"firstRequestMs": [5.898081000000005,5.504544999999993,5.628442000000007]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.3268849999999901,"max": 1.4328399999999988,"mean": 0.480472833333332,"p50": 0.4309020000000032,"p95": 1.2666279999999972},{"status": "measured","sampleCount": 30,"min": 0.3209059999999937,"max": 1.1567809999999952,"mean": 0.4368302666666655,"p50": 0.37352599999999825,"p95": 1.0463849999999866},{"status": "measured","sampleCount": 30,"min": 0.302747999999994,"max": 2.703523000000004,"mean": 0.6978283333333342,"p50": 0.41308499999999526,"p95": 2.4935550000000006}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 437.98131,"max": 486.38141900000005,"mean": 458.4711726666667,"p50": 451.050789,"p95": 486.38141900000005},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 132673536,"max": 132689920,"mean": 132678997.33333333,"p50": 132673536,"p95": 132689920},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 14035,"max": 14035,"mean": 14035,"p50": 14035,"p95": 14035},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 26.113619000000007,"max": 27.53605300000001,"mean": 26.827356666666674,"p50": 26.832397999999998,"p95": 27.53605300000001},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 12.899561999999989,"max": 14.447956000000005,"mean": 13.536295999999998,"p50": 13.26137,"p95": 14.447956000000005},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.3814079999999933,"max": 2.2211889999999954,"mean": 0.6651542333333336,"p50": 0.5609889999999922,"p95": 1.4863810000000086},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.8995020000002114,"max": 0.8995020000002114,"mean": 0.8995020000002114,"p50": 0.8995020000002114,"p95": 0.8995020000002114},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [437.98131,486.38141900000005,451.050789],"coldLoadMs": [26.113619000000007,27.53605300000001,26.832397999999998],"firstRequestMs": [14.447956000000005,13.26137,12.899561999999989]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.44026700000000574,"max": 2.2211889999999954,"mean": 0.7444989000000012,"p50": 0.5848450000000014,"p95": 2.170310999999998},{"status": "measured","sampleCount": 30,"min": 0.3814079999999933,"max": 1.4820629999999966,"mean": 0.6264408333333312,"p50": 0.5644149999999968,"p95": 1.4317979999999864},{"status": "measured","sampleCount": 30,"min": 0.4027100000000132,"max": 1.9083300000000065,"mean": 0.6245229666666684,"p50": 0.5443850000000054,"p95": 1.4863810000000086}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 2291.648018,"max": 2483.31462,"mean": 2387.7547433333334,"p50": 2388.3015920000003,"p95": 2483.31462},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 338202624,"max": 351281152,"mean": 343052288,"p50": 339673088,"p95": 351281152},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 39479,"max": 39479,"mean": 39479,"p50": 39479,"p95": 39479},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 36.140744,"max": 40.961323,"mean": 37.93068766666667,"p50": 36.689996,"p95": 40.961323},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 14.062753999999998,"max": 14.531264000000007,"mean": 14.31364733333333,"p50": 14.346923999999987,"p95": 14.531264000000007},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 1.2672389999999893,"max": 3.4850569999999834,"mean": 1.6301769666666641,"p50": 1.5145430000000033,"p95": 2.6549599999999884},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.6424220000008063,"max": 0.6424220000008063,"mean": 0.6424220000008063,"p50": 0.6424220000008063,"p95": 0.6424220000008063},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [2291.648018,2483.31462,2388.3015920000003],"coldLoadMs": [40.961323,36.140744,36.689996],"firstRequestMs": [14.062753999999998,14.346923999999987,14.531264000000007]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 1.298565999999994,"max": 3.040483999999992,"mean": 1.6393079333333305,"p50": 1.492040000000003,"p95": 2.919070000000005},{"status": "measured","sampleCount": 30,"min": 1.2672389999999893,"max": 3.4850569999999834,"mean": 1.66870813333333,"p50": 1.5186300000000017,"p95": 3.3562009999999987},{"status": "measured","sampleCount": 30,"min": 1.4046669999999892,"max": 2.6549599999999884,"mean": 1.5825148333333316,"p50": 1.5145430000000033,"p95": 1.8179619999999943}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 459.25817399999994,"max": 473.23613700000004,"mean": 465.3257776666667,"p50": 463.48302200000006,"p95": 473.23613700000004},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 133246976,"max": 133435392,"mean": 133372586.66666667,"p50": 133435392,"p95": 133435392},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 742,"max": 742,"mean": 742,"p50": 742,"p95": 742},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 26.912738999999995,"max": 27.983981,"mean": 27.566799333333336,"p50": 27.803678000000005,"p95": 27.983981},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 7.292340999999993,"max": 7.985691000000003,"mean": 7.572021333333335,"p50": 7.438032000000007,"p95": 7.985691000000003},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.16824499999999887,"max": 0.5356310000000093,"mean": 0.24158256666666583,"p50": 0.22889600000000598,"p95": 0.35684999999999434},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.6648969999987457,"max": 0.6648969999987457,"mean": 0.6648969999987457,"p50": 0.6648969999987457,"p95": 0.6648969999987457},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [463.48302200000006,473.23613700000004,459.25817399999994],"coldLoadMs": [26.912738999999995,27.983981,27.803678000000005],"firstRequestMs": [7.292340999999993,7.438032000000007,7.985691000000003]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.16824499999999887,"max": 0.5033320000000003,"mean": 0.24033186666666495,"p50": 0.22688300000000083,"p95": 0.35684999999999434},{"status": "measured","sampleCount": 30,"min": 0.16971700000000567,"max": 0.3288479999999936,"mean": 0.21831853333333318,"p50": 0.20655299999999954,"p95": 0.2881670000000014},{"status": "measured","sampleCount": 30,"min": 0.17290100000001019,"max": 0.5356310000000093,"mean": 0.26609729999999937,"p50": 0.2513310000000075,"p95": 0.3943569999999994}]},{"metrics": {"buildMs": {"status": "measured","sampleCount": 3,"min": 1301.151318,"max": 1373.247091,"mean": 1348.2877303333335,"p50": 1370.464782,"p95": 1373.247091},"compilerPeakRssBytes": {"status": "measured","sampleCount": 3,"min": 273235968,"max": 274722816,"mean": 273801216,"p50": 273444864,"p95": 274722816},"artifactBytes": {"status": "measured","sampleCount": 3,"min": 2933,"max": 2933,"mean": 2933,"p50": 2933,"p95": 2933},"coldLoadMs": {"status": "measured","sampleCount": 3,"min": 34.412994999999995,"max": 36.745236,"mean": 35.38042333333333,"p50": 34.983039000000005,"p95": 36.745236},"firstRequestMs": {"status": "measured","sampleCount": 3,"min": 6.460332000000008,"max": 6.691220999999999,"mean": 6.570148000000003,"p50": 6.558891000000003,"p95": 6.691220999999999},"warmRequestMs": {"status": "measured","sampleCount": 90,"min": 0.36283000000000243,"max": 2.1287130000000047,"mean": 0.5527249777777776,"p50": 0.4844230000000067,"p95": 0.7510670000000061},"cleanupMs": {"status": "measured","sampleCount": 1,"min": 0.5793069999999716,"max": 0.5793069999999716,"mean": 0.5793069999999716,"p50": 0.5793069999999716,"p95": 0.5793069999999716},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook","sampleCount": 0}},"coldSamples": {"buildMs": [1301.151318,1370.464782,1373.247091],"coldLoadMs": [36.745236,34.412994999999995,34.983039000000005],"firstRequestMs": [6.691220999999999,6.460332000000008,6.558891000000003]},"warmProcesses": [{"status": "measured","sampleCount": 30,"min": 0.4284190000000052,"max": 1.5819249999999982,"mean": 0.5745221666666676,"p50": 0.534860000000009,"p95": 0.7510670000000061},{"status": "measured","sampleCount": 30,"min": 0.36283000000000243,"max": 1.5679839999999956,"mean": 0.5198754999999987,"p50": 0.4610979999999927,"p95": 0.6750219999999985},{"status": "measured","sampleCount": 30,"min": 0.38867799999999875,"max": 2.1287130000000047,"mean": 0.5637772666666668,"p50": 0.462600000000009,"p95": 1.0806570000000022}]}]
+      }
+    ],
+    "freshComparison": {
+      "schemaVersion": "pulse.performance-comparison.v1",
+      "beforeSource": {
+        "sourceRevision": "8b634eefcf3963f001adf00a78ce86adb619589c",
+        "sourceTree": "4a6e3c3f94e861af9611a3d9df53675c3e3b6f8c",
+        "workingTree": ""
+      },
+      "afterSource": {
+        "sourceRevision": "718ebe31a35363e30a0c6281367bbbeba2fd516b",
+        "sourceTree": "ef42d1f7bb7df733330a9cd9f2c50835ff703508",
+        "workingTree": ""
+      },
+      "interpretation": "Descriptive medians; small local samples, no significance or performance gate.",
+      "cells": [
+        {"fixture": "minimal-request","target": "node-javascript","metrics": {"buildMs": {"beforeP50": 421.355482,"afterP50": 406.928669,"percentChange": -3.4239053759362204},"compilerPeakRssBytes": {"beforeP50": 133058560,"afterP50": 132669440,"percentChange": -0.2924426658457713},"artifactBytes": {"beforeP50": 379,"afterP50": 379,"percentChange": 0},"coldLoadMs": {"beforeP50": 26.617883,"afterP50": 27.368278000000004,"percentChange": 2.819138546818345},"firstRequestMs": {"beforeP50": 7.014870999999999,"afterP50": 7.178949000000003,"percentChange": 2.3390023850759833},"warmRequestMs": {"beforeP50": 0.21108999999999867,"afterP50": 0.21282200000000273,"percentChange": 0.8205031029437926},"cleanupMs": {"beforeP50": 0.7249279999996361,"afterP50": 0.6313460000001214,"percentChange": -12.909144080455114},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "minimal-request","target": "node-native","metrics": {"buildMs": {"beforeP50": 1179.049539,"afterP50": 1195.827472,"percentChange": 1.4230049243079135},"compilerPeakRssBytes": {"beforeP50": 270999552,"afterP50": 269500416,"percentChange": -0.5531876303618399},"artifactBytes": {"beforeP50": 808,"afterP50": 808,"percentChange": 0},"coldLoadMs": {"beforeP50": 35.342372000000005,"afterP50": 37.613386,"percentChange": 6.425754332504896},"firstRequestMs": {"beforeP50": 5.739810999999989,"afterP50": 5.628442000000007,"percentChange": -1.9402903684456185},"warmRequestMs": {"beforeP50": 0.3895299999999935,"afterP50": 0.4091399999999936,"percentChange": 5.034272071470869},"cleanupMs": {"beforeP50": 0.5280099999999948,"afterP50": 0.5670479999989766,"percentChange": 7.39342057896295},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "schema-effect","target": "node-javascript","metrics": {"buildMs": {"beforeP50": 418.21644799999996,"afterP50": 451.050789,"percentChange": 7.851040091087014},"compilerPeakRssBytes": {"beforeP50": 133058560,"afterP50": 132673536,"percentChange": -0.28936432199476725},"artifactBytes": {"beforeP50": 14035,"afterP50": 14035,"percentChange": 0},"coldLoadMs": {"beforeP50": 26.852017999999994,"afterP50": 26.832397999999998,"percentChange": -0.07306713409769294},"firstRequestMs": {"beforeP50": 13.255430000000004,"afterP50": 13.26137,"percentChange": 0.044811824286306035},"warmRequestMs": {"beforeP50": 0.5150299999999959,"afterP50": 0.5609889999999922,"percentChange": 8.923557850998321},"cleanupMs": {"beforeP50": 0.6834550000003219,"afterP50": 0.8995020000002114,"percentChange": 31.61100584526966},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "schema-effect","target": "node-native","metrics": {"buildMs": {"beforeP50": 2180.298421,"afterP50": 2388.3015920000003,"percentChange": 9.540123911322151},"compilerPeakRssBytes": {"beforeP50": 317865984,"afterP50": 339673088,"percentChange": 6.860471109736621},"artifactBytes": {"beforeP50": 39479,"afterP50": 39479,"percentChange": 0},"coldLoadMs": {"beforeP50": 35.03797099999999,"afterP50": 36.689996,"percentChange": 4.714956239903301},"firstRequestMs": {"beforeP50": 14.290588,"afterP50": 14.346923999999987,"percentChange": 0.3942175087546351},"warmRequestMs": {"beforeP50": 1.5278830000000028,"afterP50": 1.5145430000000033,"percentChange": -0.8731035033441303},"cleanupMs": {"beforeP50": 0.7784990000000107,"afterP50": 0.6424220000008063,"percentChange": -17.47940588224295},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "multi-route","target": "node-javascript","metrics": {"buildMs": {"beforeP50": 433.65399199999996,"afterP50": 463.48302200000006,"percentChange": 6.878532320763253},"compilerPeakRssBytes": {"beforeP50": 134017024,"afterP50": 133435392,"percentChange": -0.43399859408905783},"artifactBytes": {"beforeP50": 742,"afterP50": 742,"percentChange": 0},"coldLoadMs": {"beforeP50": 25.899704999999997,"afterP50": 27.803678000000005,"percentChange": 7.351330835621517},"firstRequestMs": {"beforeP50": 7.089523999999997,"afterP50": 7.438032000000007,"percentChange": 4.915816633105541},"warmRequestMs": {"beforeP50": 0.20562100000000783,"afterP50": 0.22889600000000598,"percentChange": 11.319369130583578},"cleanupMs": {"beforeP50": 0.5883909999975003,"afterP50": 0.6648969999987457,"percentChange": 13.002578217812722},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "multi-route","target": "node-native","metrics": {"buildMs": {"beforeP50": 1355.147148,"afterP50": 1370.464782,"percentChange": 1.1303299440659664},"compilerPeakRssBytes": {"beforeP50": 273358848,"afterP50": 273444864,"percentChange": 0.03146633102579788},"artifactBytes": {"beforeP50": 2933,"afterP50": 2933,"percentChange": 0},"coldLoadMs": {"beforeP50": 40.214078,"afterP50": 34.983039000000005,"percentChange": -13.007979444412465},"firstRequestMs": {"beforeP50": 6.987038999999996,"afterP50": 6.558891000000003,"percentChange": -6.127745959339759},"warmRequestMs": {"beforeP50": 0.558645999999996,"afterP50": 0.4844230000000067,"percentChange": -13.286231352231969},"cleanupMs": {"beforeP50": 0.6713469999995141,"afterP50": 0.5793069999999716,"percentChange": -13.709750695185818},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}}
+      ]
+    },
+    "archivedPs08Comparison": {
+      "schemaVersion": "pulse.performance-comparison.v1",
+      "beforeSource": {
+        "sourceRevision": "64e2f7cd127009aa0e1c3bdea1596f1525baa0c3",
+        "sourceTree": "ced8ceb8e13336bcf528a3693fec2205d6485d84",
+        "workingTree": ""
+      },
+      "afterSource": {
+        "sourceRevision": "718ebe31a35363e30a0c6281367bbbeba2fd516b",
+        "sourceTree": "ef42d1f7bb7df733330a9cd9f2c50835ff703508",
+        "workingTree": ""
+      },
+      "interpretation": "Descriptive medians; small local samples, no significance or performance gate.",
+      "cells": [
+        {"fixture": "minimal-request","target": "node-javascript","metrics": {"buildMs": {"beforeP50": 440.159452,"afterP50": 406.928669,"percentChange": -7.549714733832403},"compilerPeakRssBytes": {"beforeP50": 133476352,"afterP50": 132669440,"percentChange": -0.6045355509865846},"artifactBytes": {"beforeP50": 379,"afterP50": 379,"percentChange": 0},"coldLoadMs": {"beforeP50": 28.415580000000006,"afterP50": 27.368278000000004,"percentChange": -3.68566117601683},"firstRequestMs": {"beforeP50": 7.6138289999999955,"afterP50": 7.178949000000003,"percentChange": -5.711712201574171},"warmRequestMs": {"beforeP50": 0.24865599999999688,"afterP50": 0.21282200000000273,"percentChange": -14.411073933464147},"cleanupMs": {"beforeP50": 0.8315490000004502,"afterP50": 0.6313460000001214,"percentChange": -24.075911341390633},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "minimal-request","target": "node-native","metrics": {"buildMs": {"beforeP50": 1382.074205,"afterP50": 1195.827472,"percentChange": -13.47588518230104},"compilerPeakRssBytes": {"beforeP50": 269967360,"afterP50": 269500416,"percentChange": -0.17296313154301357},"artifactBytes": {"beforeP50": 808,"afterP50": 808,"percentChange": 0},"coldLoadMs": {"beforeP50": 37.53235599999999,"afterP50": 37.613386,"percentChange": 0.21589372114025895},"firstRequestMs": {"beforeP50": 6.507975000000002,"afterP50": 5.628442000000007,"percentChange": -13.514695431374502},"warmRequestMs": {"beforeP50": 0.42920999999998344,"afterP50": 0.4091399999999936,"percentChange": -4.676032711258027},"cleanupMs": {"beforeP50": 0.6971060000014404,"afterP50": 0.5670479999989766,"percentChange": -18.65684702214514},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "schema-effect","target": "node-javascript","metrics": {"buildMs": {"beforeP50": 491.16169,"afterP50": 451.050789,"percentChange": -8.166536970747861},"compilerPeakRssBytes": {"beforeP50": 133607424,"afterP50": 132673536,"percentChange": -0.6989791225972541},"artifactBytes": {"beforeP50": 14035,"afterP50": 14035,"percentChange": 0},"coldLoadMs": {"beforeP50": 29.26883,"afterP50": 26.832397999999998,"percentChange": -8.324323179300308},"firstRequestMs": {"beforeP50": 16.094091000000006,"afterP50": 13.26137,"percentChange": -17.601000267738055},"warmRequestMs": {"beforeP50": 0.620428999999973,"afterP50": 0.5609889999999922,"percentChange": -9.58046770863119},"cleanupMs": {"beforeP50": 0.7040170000000217,"afterP50": 0.8995020000002114,"percentChange": 27.767085169844453},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "schema-effect","target": "node-native","metrics": {"buildMs": {"beforeP50": 2484.594541,"afterP50": 2388.3015920000003,"percentChange": -3.875600119496503},"compilerPeakRssBytes": {"beforeP50": 332136448,"afterP50": 339673088,"percentChange": 2.269139700078937},"artifactBytes": {"beforeP50": 39479,"afterP50": 39479,"percentChange": 0},"coldLoadMs": {"beforeP50": 36.896748,"afterP50": 36.689996,"percentChange": -0.5603529069824864},"firstRequestMs": {"beforeP50": 15.170403000000007,"afterP50": 14.346923999999987,"percentChange": -5.428194623438943},"warmRequestMs": {"beforeP50": 1.5327110000000062,"afterP50": 1.5145430000000033,"percentChange": -1.1853506629757815},"cleanupMs": {"beforeP50": 0.879691999998613,"afterP50": 0.6424220000008063,"percentChange": -26.97194017885588},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "multi-route","target": "node-javascript","metrics": {"buildMs": {"beforeP50": 475.278509,"afterP50": 463.48302200000006,"percentChange": -2.4818052524230416},"compilerPeakRssBytes": {"beforeP50": 133726208,"afterP50": 133435392,"percentChange": -0.2174712080372454},"artifactBytes": {"beforeP50": 742,"afterP50": 742,"percentChange": 0},"coldLoadMs": {"beforeP50": 29.700115000000004,"afterP50": 27.803678000000005,"percentChange": -6.385285040142097},"firstRequestMs": {"beforeP50": 8.238415999999987,"afterP50": 7.438032000000007,"percentChange": -9.715265653008798},"warmRequestMs": {"beforeP50": 0.20445999999999742,"afterP50": 0.22889600000000598,"percentChange": 11.951481952464471},"cleanupMs": {"beforeP50": 0.7855500000005122,"afterP50": 0.6648969999987457,"percentChange": -15.359047801118686},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}},
+        {"fixture": "multi-route","target": "node-native","metrics": {"buildMs": {"beforeP50": 1371.085441,"afterP50": 1370.464782,"percentChange": -0.04526771136503793},"compilerPeakRssBytes": {"beforeP50": 274657280,"afterP50": 273444864,"percentChange": -0.4414286779509391},"artifactBytes": {"beforeP50": 2933,"afterP50": 2933,"percentChange": 0},"coldLoadMs": {"beforeP50": 39.627236999999994,"afterP50": 34.983039000000005,"percentChange": -11.719711873931537},"firstRequestMs": {"beforeP50": 7.711617000000004,"afterP50": 6.558891000000003,"percentChange": -14.94791559279981},"warmRequestMs": {"beforeP50": 0.5269569999999959,"afterP50": 0.4844230000000067,"percentChange": -8.071626337630878},"cleanupMs": {"beforeP50": 0.7024429999983113,"afterP50": 0.5793069999999716,"percentChange": -17.52967856447224},"requestCleanupMs": {"status": "unavailable","reason": "Mandatory request disposal is inside the provider invocation; no separate public timing hook"}}}
+      ]
+    },
+    "interpretation": "All artifacts are byte-identical. Small descriptive samples show variation; no performance or size improvement is established. Archived comparisons are not causal attribution."
+  },
+  "remainingLargestResponsibilities": [
+    {
+      "owner": "canonical-native-expressions.js",
+      "function": "renderExpression",
+      "lines": 197,
+      "work": "Split operation-family rendering only when a concrete syntax or semantic change needs it; preserve reverse aliases and assignment/short-circuit ordering."
+    },
+    {
+      "owner": "canonical-native-schema.js",
+      "function": "nativeSchemaCodecSource",
+      "lines": 178,
+      "work": "Composition already reuses codec owners. Any later validation deletion needs a specific equivalence argument and surviving rejection owner."
+    },
+    {
+      "owner": "canonical-native-control.js",
+      "functions": {
+        "buildNativeControl": 203,
+        "layoutNativeControl": 175,
+        "compileSequence": 79,
+        "renderBlock": 73
+      },
+      "work": "Construction and layout are separated. Keep IDs, loop target patching, routing boundaries, character charging and visit-weight allowance with this owner."
+    },
+    {
+      "owner": "canonical-native.js",
+      "function": "assembleNativeResult",
+      "lines": 103,
+      "work": "Mostly frozen manifest fields and result assembly; no urgent additional split is justified."
+    }
+  ],
+  "limitations": ["Three build/cold samples and ninety warm requests per cell, clustered in three processes; no significance claim.","OS caches are uncontrolled; Native requests include validation/compilation/instantiation and request disposal.","Compiler RSS measures individual ASC high-water RSS, not total toolchain/request memory.","Three small Node fixtures do not qualify large catalogs, Fastly deployment, ESP32 or release publication.","No aggregate seal is selected by this documentation-only diff; no new gate or optimizer campaign."]
+}
