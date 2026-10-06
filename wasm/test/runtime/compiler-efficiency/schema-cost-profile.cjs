@@ -13,6 +13,7 @@ const codecs = require('../../../packages/schema-json/src/compiler/canonical-sch
 const { compileCanonicalSource } = require('../../../packages/compiler/src/canonical-api-compiler');
 const { buildCanonicalNativePlan } = require('../../../packages/compiler/src/canonical-native-plan');
 const portablePath = 'wasm/packages/runtime-core-as/src/compiler/canonical-native.js';
+const portableSchemaPath = 'wasm/packages/runtime-core-as/src/compiler/canonical-native-schema.js';
 const fastlyPath = 'packages/provider-fastly/src/build/native-platform-capabilities.js';
 
 // Expose the existing private stage in a separate diagnostic module. The file
@@ -98,7 +99,7 @@ function makePlan(registry, options) {
 function profileRegistry(input, references = [], options = {}) {
   // Only the attribution worker loads these diagnostic modules. In particular,
   // compiling and executing a measured artifact must not load duplicate owners.
-  const portableStage = stage(portablePath, 'nativeSchemaCodecSource');
+  const { nativeSchemaCodecSource: portableStage } = require(path.join(root, portableSchemaPath));
   const fastlyStage = stage(fastlyPath, 'generateSchemaRuntime');
   const stages = {};
   const measure = (name, fn) => { const start = performance.now(); const value = fn(); stages[name] = performance.now() - start; return value; };
@@ -125,7 +126,9 @@ function profileRegistry(input, references = [], options = {}) {
       responseCases: registry.responses.filter(response => response.schemaId === schema.id).map(response => response.id),
       portableBytes: portableCosts.entries[index].bytes, fastlyBytes: fastlyCosts.entries[index].bytes,
       nativeRepresentation: portable.codecs[index].rootClass === 'JSON.Value' ? 'value-projection' : 'typed-class' })),
-    sourceOwners: Object.fromEntries([portablePath, fastlyPath,
+    sourceOwners: Object.fromEntries([portablePath, portableSchemaPath,
+      'wasm/packages/runtime-core-as/src/compiler/canonical-native-context.js',
+      'wasm/packages/runtime-core-as/src/compiler/canonical-native-support.js', fastlyPath,
       'wasm/packages/schema-json/src/compiler/canonical-schema-codecs.js',
       'wasm/packages/schema-json/src/compiler/schema-registry.js'].map(file => [file, hash(fs.readFileSync(path.join(root, file)))])) };
 }
