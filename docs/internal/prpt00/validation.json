@@ -1,0 +1,97 @@
+{
+  "kind": "pulse.prpt00-validation",
+  "version": 1,
+  "date": "2026-10-07",
+  "baseBranch": "latest",
+  "baseCommit": "858618a0c04e236b01d992241c87f3b2d222d94e",
+  "workBranch": "codex/prpt-00-report-feasibility",
+  "scope": "repository-only documentation and development evidence",
+  "productSourcesChanged": false,
+  "checks": [
+    {
+      "name": "maintainer-sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+    },
+    {
+      "name": "docs-sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "df523c01c756ab753f9886477f4bbbc582488cd6d6a83691236726b9bc6c403b"
+    },
+    {
+      "name": "maintainer-check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "597f324b132d2ea4a0e392e5524a9d6a7f16ac23a259902af630daab77b272e8"
+    },
+    {
+      "name": "docs-check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "da28f1fc8afe90dbf24db676298f4bcd4933239854d9bf4f226e2921f9cbb075"
+    },
+    {
+      "name": "documentation-release",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "467e908d39a79360347d5769fa443a9790b120682597b4944f755d333c957db7"
+    }
+  ],
+  "additionalChecks": [
+    {
+      "command": "corepack pnpm@12.4.2 install --frozen-lockfile --ignore-scripts",
+      "status": "passed"
+    },
+    {
+      "command": "npm run build",
+      "status": "passed"
+    },
+    {
+      "command": "pulse compile examples/01-hello-json --out .pulse/prpt00 --json",
+      "status": "passed",
+      "successfulWasmCompilations": 1
+    },
+    {
+      "command": "node docs/internal/prpt00/proof.cjs <completed manifest> <ARC assets>",
+      "status": "passed",
+      "report": "proof.json"
+    },
+    {
+      "command": "node --check docs/internal/prpt00/proof.cjs",
+      "status": "passed"
+    }
+  ],
+  "attempts": [
+    {
+      "step": "default pnpm install",
+      "status": "rejected-before-install",
+      "reason": "pnpm 11.25.0 did not satisfy ^12.4.2; retried with pinned manager"
+    },
+    {
+      "step": "compile --out-dir",
+      "status": "usage-error-before-compile",
+      "reason": "Unsupported flag; retried with documented --out"
+    },
+    {
+      "step": "interactive design fixture",
+      "status": "not-run",
+      "reason": "Browser executable missing; pinned browser download returned invalid/truncated ZIP"
+    }
+  ],
+  "pending": [
+    "Human scope review of unavailable per-route byte metrics versus separate final-emission mapping proof",
+    "Browser interaction and accessibility qualification",
+    "Report implementation PRPT-01 through PRPT-06",
+    "Matched real-app and Catalog Wasm evidence and report overhead/guest-byte invariance measurements",
+    "Existing beta.7 release qualification; no seal, merge, publication or deployment performed"
+  ],
+  "planningInput": {
+    "file": "feature-spec-v2.md",
+    "sha256": "d674f15faf0bf2917d4a0169b35d12822eb3e7eb27f00e0f7286c79899c34757",
+    "originalSha256": "bfce711513d62f192e02e512f26c1e6b4513d7d7662abd430ecda9e7cc70abfc",
+    "normalization": "Removed trailing Markdown hard-break spaces for repository whitespace checks; content unchanged."
+  },
+  "delivery": "This record belongs to the PR commit containing it; inspect Git/PR metadata for head SHA and CI status. It is not merged/released evidence."
+}
