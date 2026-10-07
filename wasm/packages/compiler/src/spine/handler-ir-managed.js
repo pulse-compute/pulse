@@ -815,7 +815,7 @@ function effectPlanForHandler(options) {
   });
 }
 
-function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageRecognition) {
+function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageRecognition, options = {}) {
   const descriptor = resolved.descriptor;
   const sourceFile = resolved.sourceModule.sourceFile;
   const original = resolved.functionNode;
@@ -868,10 +868,18 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     frontend: 'canonical-source',
     role: MANAGED_HANDLER_ROLE,
     strict: true,
-    requireEffectAwait: false,
+    requireEffectAwait: options.target === 'javascript',
+    target: options.target,
     packageEffectForCall
   });
   diagnostics.push(...normalizer.diagnostics);
+  // JavaScript executes the original source graph. Native expression admission
+  // is independent, and cannot prevent inspection of that explicit target.
+  const nativeDiagnostics = options.target === 'javascript' ? [] : diagnostics;
+  if (options.target === 'javascript') nativeDiagnostics.push(...normalizeManagedHandler(original, {
+    sourceFile, ctxName, frontend: 'canonical-source', role: MANAGED_HANDLER_ROLE,
+    strict: true, requireEffectAwait: false, packageEffectForCall
+  }).diagnostics);
   const handler = normalizer.functionNode;
 
   const schemaReferences = Object.freeze([
@@ -896,6 +904,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     })
   };
   const rawOperationIr = buildPlainHandlerIr(frontend, {
+    target: options.target,
     packageEffects: packageInputs.effects,
     packageIntrinsics: packageInputs.intrinsics,
     packageResultAdapters: packageInputs.resultAdapters,
@@ -916,7 +925,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
   const compileExpression = createExpressionCompiler({
     sourceFile,
     descriptor,
-    diagnostics,
+    diagnostics: nativeDiagnostics,
     ctxName,
     inputName,
     handlerTargets,
@@ -938,7 +947,7 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
   ]);
 
   function fail(node, code, message, detail = {}) {
-    diagnostics.push(diagnostic({ descriptor, sourceFile, node, code, message, detail }));
+    nativeDiagnostics.push(diagnostic({ descriptor, sourceFile, node, code, message, detail }));
   }
 
   function registerEffectRuntimeInputs(site, candidate, scope) {
@@ -1377,6 +1386,9 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
     packageEffects: packageInputs.effects,
     packageLowering: packageInputs.lowering
   });
+  if (options.target === 'javascript') diagnostics.push(...nativeDiagnostics.filter(entry => [
+    'PULSE_MANAGED_HANDLER_RECURSION_UNSUPPORTED', 'PULSE_MANAGED_HANDLER_DIRECT_CALL_UNSUPPORTED'
+  ].includes(entry.code)));
   const semantic = {
     version: managedHandlerIrVersion,
     kind: 'managed-handler',
@@ -1408,7 +1420,8 @@ function compileHandler(resolved, graphBuild, allResolved, diagnostics, packageR
       inspected: true,
       packageTargetPromotion: false,
       javascript: Object.freeze({ eligible: true, blockers: Object.freeze([]) }),
-      native: Object.freeze({ eligible: true, blockers: Object.freeze([]) })
+      native: Object.freeze({ eligible: options.target !== 'javascript' || nativeDiagnostics.length === 0,
+        blockers: Object.freeze(options.target === 'javascript' ? sortedUnique(nativeDiagnostics.map(entry => entry.code)) : []) })
     })
   };
   const record = deepFreeze({ ...semantic, handlerHash: sha256Hex(stableStringify(semantic)) });
@@ -1465,7 +1478,7 @@ function compileManagedHandlerDescriptors(inputs = {}) {
   const resolved = resolveDescriptors(inputs.graphBuild, descriptors, diagnostics);
   const handlers = [];
   for (const entry of resolved) {
-    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition);
+    const handler = compileHandler(entry, inputs.graphBuild, resolved, diagnostics, packageRecognition, { target: inputs.target });
     if (handler) handlers.push(handler);
   }
   if (diagnostics.length > 0) {

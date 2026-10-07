@@ -42,6 +42,15 @@ registrations, and one terminal request binding. It rejects aliases, dynamic
 names, computed schema IDs, conditional registration, chained registration,
 and multiple request-body owners.
 
+With an explicit JavaScript target, schema handlers retain ordinary source
+helpers and callbacks. The schema codec owns input and output admission;
+handlers still obey Pulse effect-await rules and cannot directly call another
+declared handler or recurse. Inspection describes recognized effects in the
+declared handler, not the internals of ordinary helpers or dependencies.
+Native restrictions are recorded separately as handler eligibility blockers;
+JavaScript inspection is not an executable Native lowering. Selecting Native
+still enforces those restrictions without fallback.
+
 ## JSON-RPC behavior
 
 The first adapter accepts JSON-RPC 2.0 request objects and named object params.

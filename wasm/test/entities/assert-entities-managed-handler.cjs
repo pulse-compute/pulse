@@ -245,6 +245,19 @@ expectCodes([descriptorFor('valueForCompletion', { completion: true })], ['PULSE
 expectCodes([descriptorFor('unresolvedReference')], ['PULSE_MANAGED_HANDLER_REFERENCE_UNRESOLVED']);
 expectCodes([descriptorFor('mutateInput')], ['PULSE_MANAGED_HANDLER_INPUT_ESCAPE']);
 expectCodes([descriptorFor('badSignature')], ['PULSE_MANAGED_HANDLER_SIGNATURE_INVALID']);
+
+// Explicit JavaScript source execution admits ordinary callbacks while recording
+// the independent Native blockers. It must not produce a Native projection.
+const javascriptCallback = managed.compileManagedHandlerDescriptors({ graphBuild: base.graphBuild,
+  descriptors: [descriptorFor('callbackOperation')], target: 'javascript' });
+assert.equal(javascriptCallback.handlers[0].eligibility.javascript.eligible, true);
+assert.equal(javascriptCallback.handlers[0].eligibility.native.eligible, false);
+assert.ok(javascriptCallback.handlers[0].eligibility.native.blockers.includes('PULSE_MANAGED_HANDLER_INPUT_ESCAPE'));
+assert.throws(() => managed.compileManagedHandlerNativeBundle(javascriptCallback));
+for (const descriptors of [[descriptorFor('recursiveOperation')],
+  [descriptorFor('crossOperationA'), descriptorFor('crossOperationB')], [descriptorFor('badSignature')]]) {
+  assert.throws(() => managed.compileManagedHandlerDescriptors({ graphBuild: base.graphBuild, descriptors, target: 'javascript' }));
+}
 expectCodes([descriptorFor('missingHandler', { file: 'src/missing.js' })], ['PULSE_MANAGED_HANDLER_SOURCE_UNREACHABLE']);
 
 const product = JSON.parse(fs.readFileSync(path.join(repoRoot, 'packages/entities/pulse.package.json'), 'utf8'));
