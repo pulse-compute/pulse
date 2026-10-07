@@ -310,6 +310,10 @@ const allowedLocalVersionLiterals = new Map(Object.entries({
 // *_POLICY / *_CODES / *_CAPABILITIES style hidden contracts even when they do not
 // contain a pulsewasm version literal.
 const allowedLocalIdentifierDefinitions = new Map(Object.entries({
+  // Report input adapters are CLI-local, pinned readers of existing producer
+  // versions; they do not redefine compiler/schema producer contracts.
+  'packages/cli/src/internal/report/completion.js': ['MANIFEST_VERSION'],
+  'packages/cli/src/internal/report/schema-projection.js': ['REGISTRY_VERSION'],
   // Internal inference vocabulary, consumed only inside wasm-compiler.
   'packages/compiler/src/pure-helper-values.js': [
     'SCALAR_TYPES', 'FORBIDDEN_FIELDS', 'BINARY_RULES', 'UNARY_TYPES'

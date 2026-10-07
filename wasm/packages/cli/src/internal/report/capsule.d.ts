@@ -1,0 +1,11 @@
+import type { ReportCapsule } from './model';
+export function createCapsule(input: unknown): ReportCapsule;
+export function validateCapsule(input: unknown): ReportCapsule;
+export function parseCapsule(input: string | Uint8Array): ReportCapsule;
+export function serializeCapsule(input: unknown): string;
+export function htmlPayload(input: unknown): string;
+export function terminalText(input: string): string;
+export function evidenceDigest(input: ReportCapsule): string;
+export function stableReportId(kind: 'route' | 'entry' | 'schema' | 'binding' | 'resource' | 'measurement' | 'evidence' | 'declaration' | 'root-set' | 'handler' | 'root', canonicalId: string): string;
+export function artifactId(sha256: string): string;
+export function bodyId(sha256: string, index: number): string;

@@ -34,6 +34,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'report-capsule-contract': nodeTask('test/cli/assert-report-capsule-contract.cjs', {
+    description: 'PRPT-01 capsule identity, schema projection, completion and attribution contracts'
+  }),
   'guest-json-roundtrip': nodeTask('test/release/b6-04/guest-json.cjs', {
     description: 'Guest v2 manifest/plan JSON key order, exact trust values and ordered arrays'
   }),
@@ -1250,6 +1253,7 @@ const installedCorpusOwners = Object.freeze({
 
 const profiles = Object.freeze({
   unit: Object.freeze([
+    'report-capsule-contract',
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
@@ -1391,6 +1395,7 @@ const profiles = Object.freeze({
     'four-mode-conformance'
   ]),
   cli: Object.freeze([
+    'report-capsule-contract',
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',
