@@ -14,20 +14,18 @@ package's `examples/12-pulse-context-mcp/` directory into a new directory. The
 corpus, host and request helper are included; no repository checkout, upstream
 server, credentials or global Pulse installation is needed at runtime.
 
-**Candidate status:** the adapter is still private at `0.0.0`. The dependency
-versions identify the current candidate graph, and the published beta.6 CLI
-predates its JavaScript Entities correction. Plain registry `npm install` is
-therefore not yet supported for this candidate. Use matching candidate packages
-through your candidate registry; PMCP-06 prepares synchronized release versions
-and PMCP-07 qualifies the exact installed journey. Once those packages are
-available, the declared install command is:
+**Candidate status:** all Pulse dependencies, including MCP, use the exact
+`1.0.0-beta.7` synchronized candidate version. Registry installation becomes
+available after release-owner bootstrap, trusted-publisher setup and publication.
+Until then, use matching candidate packages through the candidate registry.
+PMCP-07 owns the installed context-app onboarding journey. The install command is:
 
 ```bash
 npm install
 ```
 
 Do not substitute an older CLI or an unrelated MCP package. This README's
-context version is `1.0.0-beta.6` with snapshot status `candidate`; check the
+context version is `1.0.0-beta.7` with snapshot status `candidate`; check the
 readiness response for the bundled version before calling tools.
 
 ## Workflow
@@ -87,8 +85,8 @@ pulse test --json
 Ask for a Node Native plan with an explicit goal and exact corpus version:
 
 ```bash
-node client/request.cjs pulse.start '{"version":"1.0.0-beta.6","goal":"json-api","provider":"node","target":"native"}'
-node client/request.cjs pulse.example '{"version":"1.0.0-beta.6","id":"01-hello-json"}'
+node client/request.cjs pulse.start '{"version":"1.0.0-beta.7","goal":"json-api","provider":"node","target":"native"}'
+node client/request.cjs pulse.example '{"version":"1.0.0-beta.7","id":"01-hello-json"}'
 ```
 
 The plan selects `01-hello-json`, gives imports, exact dependency versions,
@@ -105,10 +103,10 @@ context; it does not create the project or run those commands.
 Compare the same starter across the two targets:
 
 ```bash
-node client/request.cjs pulse.start '{"version":"1.0.0-beta.6","goal":"schema-api","provider":"node","target":"native"}'
-node client/request.cjs pulse.start '{"version":"1.0.0-beta.6","goal":"schema-api","provider":"node","target":"javascript"}'
-node client/request.cjs pulse.read '{"version":"1.0.0-beta.6","id":"contract/eligibility"}'
-node client/request.cjs pulse.read '{"version":"1.0.0-beta.6","id":"node/javascript"}'
+node client/request.cjs pulse.start '{"version":"1.0.0-beta.7","goal":"schema-api","provider":"node","target":"native"}'
+node client/request.cjs pulse.start '{"version":"1.0.0-beta.7","goal":"schema-api","provider":"node","target":"javascript"}'
+node client/request.cjs pulse.read '{"version":"1.0.0-beta.7","id":"contract/eligibility"}'
+node client/request.cjs pulse.read '{"version":"1.0.0-beta.7","id":"node/javascript"}'
 ```
 
 Both plans select `02-request-schema`. Its maintained files remain Node Native;
@@ -126,10 +124,10 @@ JavaScript and does not claim Native eligibility.
 Use the exact code reported by your local CLI, then read the cited boundary:
 
 ```bash
-node client/request.cjs pulse.explain_diagnostic '{"version":"1.0.0-beta.6","code":"PULSE_SCHEMA_COMPILE_FAILED"}'
-node client/request.cjs pulse.read '{"version":"1.0.0-beta.6","id":"schema/boundaries"}'
-node client/request.cjs pulse.explain_diagnostic '{"version":"1.0.0-beta.6","code":"PULSE_PACKAGE_LOWERING_FAILED"}'
-node client/request.cjs pulse.read '{"version":"1.0.0-beta.6","id":"contract/effects"}'
+node client/request.cjs pulse.explain_diagnostic '{"version":"1.0.0-beta.7","code":"PULSE_SCHEMA_COMPILE_FAILED"}'
+node client/request.cjs pulse.read '{"version":"1.0.0-beta.7","id":"schema/boundaries"}'
+node client/request.cjs pulse.explain_diagnostic '{"version":"1.0.0-beta.7","code":"PULSE_PACKAGE_LOWERING_FAILED"}'
+node client/request.cjs pulse.read '{"version":"1.0.0-beta.7","id":"contract/effects"}'
 ```
 
 A schema explanation supplies the canonical diagnostic, remediation and related
@@ -165,7 +163,7 @@ record even when a page is truncated.
 The corpus is generated from an explicit allowlist of public contract sections,
 package/provider metadata, CLI commands/diagnostics and four maintained starters.
 It has no runtime generator, repository crawler or external index. The snapshot
-has 219 records and remains explicitly a candidate. No client filesystem,
+has 220 records and remains explicitly a candidate. No client filesystem,
 process execution, build, doctor, inspection, outbound fetch, Resources, Prompts
 or stdio capability is exposed. Command descriptions are context, not authority.
 

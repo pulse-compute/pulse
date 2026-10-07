@@ -52,7 +52,7 @@ remains in the explicit reality profile.
 | `bin/main.wasm` | 33.9 KiB (34,747 bytes) | 29.3 KiB (30,021 bytes) | 13.6% |
 
 The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.6`. These are uncompressed on-disk sizes, not transfer sizes or
+`1.0.0-beta.7`. These are uncompressed on-disk sizes, not transfer sizes or
 platform limits.
 
 ## Handler

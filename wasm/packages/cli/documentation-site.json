@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.public-site.v1",
-  "releaseVersion": "1.0.0-beta.6",
+  "releaseVersion": "1.0.0-beta.7",
   "product": {
     "name": "Pulse",
     "eyebrow": "TypeScript in / inspectable Wasm out",
@@ -144,6 +144,10 @@
     "s3-package": {
       "source": "docs/packages/s3.md",
       "label": "S3"
+    },
+    "mcp-package": {
+      "source": "docs/packages/mcp.md",
+      "label": "MCP HTTP host extension"
     }
   },
   "sourceAliases": {

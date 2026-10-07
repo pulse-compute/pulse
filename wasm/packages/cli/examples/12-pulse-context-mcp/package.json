@@ -12,13 +12,13 @@
     "start": "node host/start.cjs"
   },
   "dependencies": {
-    "@pulse-compute/pulse": "1.0.0-beta.6",
-    "@pulse-compute/entities": "1.0.0-beta.6",
-    "@pulse-compute/provider-node": "1.0.0-beta.6",
-    "@pulse-compute/mcp": "0.0.0"
+    "@pulse-compute/pulse": "1.0.0-beta.7",
+    "@pulse-compute/entities": "1.0.0-beta.7",
+    "@pulse-compute/provider-node": "1.0.0-beta.7",
+    "@pulse-compute/mcp": "1.0.0-beta.7"
   },
   "devDependencies": {
-    "@pulse-compute/cli": "1.0.0-beta.6",
+    "@pulse-compute/cli": "1.0.0-beta.7",
     "typescript": "5.9.3"
   }
 }

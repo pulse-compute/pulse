@@ -12,8 +12,17 @@ fail() {
 
 usage() {
   echo "Usage: scripts/npm_bootstrap.sh <package-name>" >&2
+  echo "       scripts/npm_bootstrap.sh --prepare-only <package-name> <output-directory>" >&2
 }
 
+PREPARE_ONLY=false
+OUTPUT_DIRECTORY=""
+if [[ $# -eq 3 && "$1" == "--prepare-only" ]]; then
+  PREPARE_ONLY=true
+  OUTPUT_DIRECTORY="$3"
+  set -- "$2"
+  [[ ! -e "$OUTPUT_DIRECTORY" ]] || fail "prepare-only output directory must not exist"
+fi
 [[ $# -eq 1 ]] || {
   usage
   exit 64
@@ -88,6 +97,14 @@ npm pack "$STAGE" \
   --json \
   --ignore-scripts \
   --registry "$REGISTRY"
+
+if [[ "$PREPARE_ONLY" == true ]]; then
+  mkdir -p -- "$OUTPUT_DIRECTORY"
+  OUTPUT_DIRECTORY="$(cd "$OUTPUT_DIRECTORY" && pwd)"
+  npm pack "$STAGE" --json --ignore-scripts --pack-destination "$OUTPUT_DIRECTORY" --registry "$REGISTRY"
+  echo "==> Prepared inert bootstrap tarball in $OUTPUT_DIRECTORY; no registry mutation performed"
+  exit 0
+fi
 
 echo "==> Publishing ${PACKAGE_NAME}@${BOOTSTRAP_VERSION} with dist-tag ${BOOTSTRAP_TAG}"
 npm publish "$STAGE" \

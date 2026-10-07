@@ -74,12 +74,12 @@ HEAD matches the current remote `main` commit and the checkout is clean:
 git fetch origin main --tags
 git switch main
 git pull --ff-only origin main
-npm run release:tag -- 1.0.0-beta.6
-npm run release:tag -- 1.0.0-beta.6 --write
+npm run release:tag -- 1.0.0-beta.7
+npm run release:tag -- 1.0.0-beta.7 --write
 ```
 
 The first invocation checks and prints the plan. `--write` creates an annotated
-local `v1.0.0-beta.6` tag and prints the exact push and workflow commands for the
+local `v1.0.0-beta.7` tag and prints the exact push and workflow commands for the
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
@@ -175,8 +175,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.6 \
-  -f release_tag=v1.0.0-beta.6 \
+  --ref v1.0.0-beta.7 \
+  -f release_tag=v1.0.0-beta.7 \
   -f operation=audit
 ```
 
@@ -243,6 +243,29 @@ Any missing package name requires a one-time human, 2FA-protected bootstrap publ
 5. prohibit ordinary publish tokens for routine releases.
 
 The production workflow fails rather than silently performing first publication with a broader credential.
+
+### MCP package handoff
+
+`@pulse-compute/mcp` joins the twenty-package `1.0.0-beta.7` candidate. The
+2026-10-07 registry check returned E404 for this name. Existing-package-name
+policy remains enabled; prepare its inert placeholder without registry mutation:
+
+```bash
+scripts/npm_bootstrap.sh --prepare-only @pulse-compute/mcp .pulse-release-preflight/mcp-bootstrap
+```
+
+The destination must not exist. Inspect the resulting `0.0.0` tarball: only
+`package.json`, `README.md`, the root `LICENSE` and `NOTICE` are allowed. It has
+no exports, executable entry points, scripts or dependencies, and declares the
+`bootstrap` tag. The real adapter is a separate synchronized release artifact.
+
+The human release owner then runs `scripts/npm_bootstrap.sh @pulse-compute/mcp`
+with the one-time 2FA credential, reruns `npm run release:audit-npm`, and configures
+this package's trusted publisher for GitHub owner `pulse-compute`, repository
+`pulse`, workflow `npm-publish.yml`, environment `npm-publish`. Remove the
+bootstrap credential after setup. Keep first publication blocked until that
+handoff and the final tagged-source release qualification complete; package
+membership and local acceptance do not establish registry readiness.
 
 ## Sealed candidate
 
