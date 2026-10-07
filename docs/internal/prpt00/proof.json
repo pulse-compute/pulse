@@ -1,0 +1,271 @@
+{
+  "kind": "pulse.prpt00-feasibility-proof",
+  "version": 1,
+  "status": "passed",
+  "sourceCommit": "858618a0c04e236b01d992241c87f3b2d222d94e",
+  "sourceTree": "d3036a8aa7255a78cf4d8097b336b1a0b101a450",
+  "trackedWorkingTreeDirty": false,
+  "scope": "Development evidence on unchanged product sources; not a Pulse Report or release qualification.",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "assemblyScript": {
+      "package": "assemblyscript",
+      "version": "0.28.18"
+    }
+  },
+  "sourceFiles": [
+    {
+      "file": "examples/01-hello-json/src/index.ts",
+      "sha256": "906ee162e032a700ca9685b2635987a3ae3655ebc06f71846b3f56841f6c740b"
+    },
+    {
+      "file": "examples/01-hello-json/.pulse/config.ts",
+      "sha256": "9e28021e790711db393c0df169abace20765dea0fe548bfb3378c70b33aaae61"
+    },
+    {
+      "file": "pnpm-lock.yaml",
+      "sha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+    }
+  ],
+  "artifact": {
+    "file": "canonical-native.wasm",
+    "bytes": 2353,
+    "sha256": "9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479",
+    "magic": "0061736d01000000",
+    "validated": true,
+    "manifestHashMatched": true,
+    "configuredHost": "node",
+    "configuredTarget": "native"
+  },
+  "ledger": {
+    "headerBytes": 8,
+    "sections": [
+      {
+        "id": 1,
+        "bytes": 48,
+        "payloadBytes": 46,
+        "sha256": "7c54ed1b606d1b02c63892d4ef2f3677f0d14e944ea06b14040bf25122f440d0"
+      },
+      {
+        "id": 2,
+        "bytes": 354,
+        "payloadBytes": 351,
+        "sha256": "099c8071d3c3215bf32feee4ab24ace3b9c983b4006fd92a4c7ff21ad226e508"
+      },
+      {
+        "id": 3,
+        "bytes": 24,
+        "payloadBytes": 22,
+        "sha256": "27dc049d965e5377e59b156adb96c1b7fbbece71205df381f27a406e5539999e"
+      },
+      {
+        "id": 5,
+        "bytes": 5,
+        "payloadBytes": 3,
+        "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+      },
+      {
+        "id": 6,
+        "bytes": 33,
+        "payloadBytes": 31,
+        "sha256": "aaccb3dd9c21fa15e4633359593955ccccc35ab8f49a3817597b74641304cfbf"
+      },
+      {
+        "id": 7,
+        "bytes": 254,
+        "payloadBytes": 251,
+        "sha256": "32fd345cac53bd91229c7f45932ffc3fa816f4d89421e979aa0413094ad4dbbb"
+      },
+      {
+        "id": 12,
+        "bytes": 3,
+        "payloadBytes": 1,
+        "sha256": "9cd638778016591d1b689915a10ccb1cf212d7169775e66dff3016fcbd242165"
+      },
+      {
+        "id": 10,
+        "bytes": 1075,
+        "payloadBytes": 1072,
+        "sha256": "297bf00518eb60892b234a401e71524510fb49554f8f46b1a9c3ad385c9f6374"
+      },
+      {
+        "id": 11,
+        "bytes": 549,
+        "payloadBytes": 546,
+        "sha256": "c996f02ece243f946f86a83ae0a7fd89e5d75e339b9d828e0d3ed069573f98e2"
+      }
+    ],
+    "fileBytes": 2353,
+    "codeBodyBytes": 1048,
+    "definedFunctions": 21,
+    "importedFunctions": 13,
+    "initializedDataPayloadBytes": 400,
+    "reconciles": true
+  },
+  "exportedFunctionBodies": [
+    {
+      "name": "pulse_abi_version",
+      "index": 24,
+      "bodyBytes": 4
+    },
+    {
+      "name": "pulse_plan_hash_ptr",
+      "index": 20,
+      "bodyBytes": 5
+    },
+    {
+      "name": "pulse_plan_hash_length",
+      "index": 21,
+      "bodyBytes": 11
+    },
+    {
+      "name": "pulse_start",
+      "index": 15,
+      "bodyBytes": 80
+    },
+    {
+      "name": "pulse_resume",
+      "index": 17,
+      "bodyBytes": 8
+    },
+    {
+      "name": "pulse_set_effect_result",
+      "index": 16,
+      "bodyBytes": 8
+    },
+    {
+      "name": "pulse_result_handle",
+      "index": 18,
+      "bodyBytes": 4
+    },
+    {
+      "name": "pulse_program_counter",
+      "index": 19,
+      "bodyBytes": 4
+    },
+    {
+      "name": "pulse_continuation_state",
+      "index": 22,
+      "bodyBytes": 4
+    },
+    {
+      "name": "pulse_last_error_code",
+      "index": 23,
+      "bodyBytes": 4
+    },
+    {
+      "name": "pulse_pending_count",
+      "index": 22,
+      "bodyBytes": 4
+    }
+  ],
+  "routing": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "order": 0,
+      "stableId": "route_082d572d95327b0d973ed399",
+      "handlerId": "handler_6ce0e6e1b913590c805aa18f",
+      "generatedChunks": [
+        5
+      ],
+      "handlerBodyBytes": null,
+      "reason": "no-final-function-index-map"
+    },
+    {
+      "method": "GET",
+      "path": "/hello",
+      "order": 1,
+      "stableId": "route_e833ce2a4b57856a6482b50a",
+      "handlerId": "handler_69c87297ccbdd05200c072a8",
+      "generatedChunks": [
+        3
+      ],
+      "handlerBodyBytes": null,
+      "reason": "no-final-function-index-map"
+    },
+    {
+      "method": "GET",
+      "path": "/*",
+      "order": 2,
+      "stableId": "route_472d311ab7a5c8956ceb6a3d",
+      "handlerId": "handler_94b74995838ff42973ce9db8",
+      "generatedChunks": [
+        1
+      ],
+      "handlerBodyBytes": null,
+      "reason": "no-final-function-index-map"
+    }
+  ],
+  "mapping": {
+    "nameSections": 0,
+    "routeMappedCount": 0,
+    "routeTotal": 3,
+    "generatorChunkIdsAreFinalFunctionIndices": false,
+    "ownReachableShared": "unavailable",
+    "defaultOptimizationRecordPresent": false
+  },
+  "schemaProducer": {
+    "fixture": "examples/02-request-schema/src/schemas.ts",
+    "version": "pulse.schema-registry-ir.v5",
+    "schemas": [
+      {
+        "id": "app.CreateUserInput",
+        "kind": "object",
+        "topLevelKeys": 2,
+        "requiredKeys": 2,
+        "source": {
+          "file": "src/schemas.ts",
+          "line": 3,
+          "column": 18
+        }
+      },
+      {
+        "id": "app.CreateUserOutput",
+        "kind": "object",
+        "topLevelKeys": 4,
+        "requiredKeys": 4,
+        "source": {
+          "file": "src/schemas.ts",
+          "line": 8,
+          "column": 18
+        }
+      }
+    ],
+    "descriptorBytes": "Deferred to PRPT-01 normalization contract; no second schema grammar."
+  },
+  "design": {
+    "files": [
+      {
+        "name": "Pulse-Report-ARC-Design.html",
+        "sha256": "4fb0dbdfb90f20bebb3e702eb50f1cd30f8e4b8cb38bb0a1ec7e1394717874f9"
+      },
+      {
+        "name": "Pulse-Report-ARC-Fixture.json",
+        "sha256": "1833a078007104fee92e81154245237036666c896d991dfe8a129094103ba481"
+      },
+      {
+        "name": "Pulse-Report-ARC-Preview.png",
+        "sha256": "525d32959c1418a6c3dcef5902f8d36cde0e494df022958110e2239377ad2c2e"
+      },
+      {
+        "name": "Pulse-Report-ARC-Schemas-Preview.png",
+        "sha256": "6e661cc7aaa63e905de1bf1fe3c1e11d2483176807e30fc924f0215adf990990"
+      }
+    ],
+    "embeddedPayloadEqualsJson": true,
+    "capsuleHashValid": true,
+    "schemaMetricsChecked": 20,
+    "interactiveBrowserStatus": "not-run-browser-unavailable",
+    "synthetic": true
+  },
+  "limits": [
+    "No provider deployment proof.",
+    "No request or test execution in this proof script.",
+    "Fixture compilation occurred separately once.",
+    "Exported ABI body measurements do not establish route ownership.",
+    "O-08 binary parser supports bounded data offsets; reuse requires guarded unsupported-input behavior."
+  ]
+}
