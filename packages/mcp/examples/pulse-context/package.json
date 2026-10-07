@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": { "doctor": "pulse doctor", "inspect": "pulse inspect", "test": "pulse test", "build": "pulse build", "dev": "pulse dev" },
-  "dependencies": { "@pulse-compute/pulse": "1.0.0-beta.6", "@pulse-compute/entities": "1.0.0-beta.6" },
+  "scripts": { "doctor": "pulse doctor", "inspect": "pulse inspect", "test": "pulse test", "build": "pulse build && node host/prepare.cjs", "dev": "pulse dev", "start": "node host/start.cjs" },
+  "dependencies": { "@pulse-compute/pulse": "1.0.0-beta.6", "@pulse-compute/entities": "1.0.0-beta.6", "@pulse-compute/provider-node": "1.0.0-beta.6", "@pulse-compute/mcp": "0.0.0" },
   "devDependencies": { "@pulse-compute/cli": "1.0.0-beta.6", "typescript": "5.9.3" }
 }

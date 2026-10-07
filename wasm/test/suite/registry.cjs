@@ -1117,6 +1117,10 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection'
   }),
+  'pulse-context-host': nodeTask('test/mcp/assert-context-host.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'PMCP-04 built-only loopback host, build/corpus identity, bounded MCP readiness, interruption and shutdown'
+  }),
   'mcp-tools': nodeTask('test/mcp/assert-mcp-tools.cjs', {
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures'
@@ -1287,6 +1291,7 @@ const profiles = Object.freeze({
     'mcp-http',
     'pulse-context-corpus',
     'pulse-context-application',
+    'pulse-context-host',
     'mcp-compatibility',
     'mcp-tools',
     'mcp-authorization',
