@@ -11,9 +11,10 @@ Source inspected/prepared: `748e7e3066d3efabfc0934936c67acb9e9322a01`, tree
 neither that script nor the legal/payload inputs. This is name-reservation
 preparation, not the real beta.7 adapter or a release seal.
 
-**Status: prepared and verified; human registry reservation pending.** B7-02
-closes only after the owner publishes the inert package and a fresh catalog audit
-confirms all 20 names satisfy policy. B7-03 owns trusted-publisher setup afterward.
+**Status: complete.** On October 7, 2026, the release owner reported "Bootstrap
+is complete." A fresh read-only catalog audit confirms all 20 names satisfy
+policy, and the published MCP tarball matches the reviewed preparation exactly.
+B7-03 owns trusted-publisher setup next.
 
 ## Read-only registry observation
 
@@ -54,7 +55,36 @@ integrity, all four file sizes/hashes, source revision/tree and checked status.
 Dry-run and actual local pack produced identical tarball identities. This
 operation did not publish, change registry tags or configure npm accounts.
 
-## Owner action and completion receipt
+## Post-bootstrap verification
+
+At `2026-10-07T19:32:35.576Z` (13:32 Denver), `release:audit-npm` reported
+`ready`: 20 existing/bootstrap-compliant names, zero missing, zero indeterminate
+and zero tag-remediation cases. MCP's `bootstrap` and `latest` both point to
+`0.0.0`; the other 19 `latest` tags still point to beta.6. No beta.7 package is
+published in this observation.
+
+The audit is bound to release-manifest SHA-256
+`389ffca6e6c6e0ad2612f8ddc42533179ed14935ee99a17f2546bb1fd1cd9e0f`.
+Verification source: `latest` at `1dbc6c9623dca55f274715bdc8eca5e31652e5df`,
+tree `6d055aaf3728f4311a672969055ae90210f779ba`. This completion record changes
+only internal documentation; release policy and payload inputs remain intact.
+
+Read-only registry packing with lifecycle scripts disabled retrieved
+`@pulse-compute/mcp@0.0.0`. Its 6,961-byte tarball has the exact SHA-256,
+npm SHA-1 and SHA-512 identities recorded above, the same four files, exact
+root legal bytes and no runtime surface. The catalog validator also checked
+manifest binding, ordered package coverage and the 24-hour freshness limit.
+
+The downloadable completion receipt retains `npm-catalog-audit-after.json`,
+`npm-pack.json`, `registry-verification.json` and the published tarball. These
+are observations, not permanent release authority: refresh the catalog audit
+for publication. B7-02 is closed; trusted-publisher/account/environment setup,
+the real beta.7 release and its explicit human gates remain pending.
+
+## Bootstrap procedure (reference)
+
+The owner action below is complete. Retain this procedure for review; do not
+repeat publication for the reserved name.
 
 Use a human npm session with one-time 2FA authority for `pulse-compute`. Before
 publication, reproduce the prepare-only artifact in a new directory and compare
