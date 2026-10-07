@@ -34,6 +34,9 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
+    description: 'PRPT-02 completion lifecycle, canonical inventory, safe replay and unchanged Wasm'
+  }),
   'report-capsule-contract': nodeTask('test/cli/assert-report-capsule-contract.cjs', {
     description: 'PRPT-01 capsule identity, schema projection, completion and attribution contracts'
   }),
@@ -1254,6 +1257,7 @@ const installedCorpusOwners = Object.freeze({
 const profiles = Object.freeze({
   unit: Object.freeze([
     'report-capsule-contract',
+    'cli-report-retained-evidence',
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
@@ -1396,6 +1400,7 @@ const profiles = Object.freeze({
   ]),
   cli: Object.freeze([
     'report-capsule-contract',
+    'cli-report-retained-evidence',
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',

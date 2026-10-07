@@ -687,7 +687,28 @@ function cleanOutputDirectory(project, outDir) {
   return target;
 }
 
+function withReportBuild(project, options, operation, execute) {
+  const report = require('./internal/report/retained');
+  const outDir = resolveOutputDirectory(project, options.outDir || project.outDir);
+  const release = report.acquireBuildLock(project, outDir);
+  try {
+    const attempt = report.beginBuild(project, { ...options, operation }, outDir);
+    attempt.assertLease = release.verify;
+    return execute(attempt);
+  }
+  catch (error) {
+    // Do not invalidate evidence published by a replacement lease owner.
+    try { release.verify(); report.invalidate(outDir); } catch { /* Lease lost. */ }
+    throw error;
+  }
+  finally { release(); }
+}
+
 function buildProject(project, options = {}) {
+  return withReportBuild(project, options, 'native-build', attempt => buildProjectWithReport(project, options, attempt));
+}
+
+function buildProjectWithReport(project, options, reportAttempt) {
   const driver = providerDriver(project);
   if (options.sourceOnly === true) {
     throw new PulseProjectError(
@@ -906,7 +927,7 @@ function buildProject(project, options = {}) {
   const providerBuildMetadata = providerBuild && providerBuild.build;
   const nativeManifest = prepared.native.manifest;
 
-  const manifest = Object.freeze({
+  let manifest = Object.freeze({
     version: PROJECT_EXECUTION_VERSION,
     status: 'built',
     buildMode: 'native-provider',
@@ -1019,7 +1040,7 @@ function buildProject(project, options = {}) {
     ...(eventInspection ? { events: eventManifestProjection(eventInspection) } : {})
   });
   const manifestFile = path.join(outDir, BUILD_MANIFEST);
-  fs.writeFileSync(manifestFile, stableJson(manifest));
+  manifest = require('./internal/report/retained').publishBuild(project, prepared, manifest, manifestFile, outDir, reportAttempt);
   return Object.freeze({
     status: 'built',
     version: PROJECT_EXECUTION_VERSION,
@@ -1071,6 +1092,10 @@ function buildProject(project, options = {}) {
 }
 
 function compileNativeProject(project, options = {}) {
+  return withReportBuild(project, options, 'compile', attempt => compileNativeProjectWithReport(project, options, attempt));
+}
+
+function compileNativeProjectWithReport(project, options, reportAttempt) {
   const requestedOutDir = options.outDir || project.outDir;
   const outDir = options.clean === false
     ? resolveOutputDirectory(project, requestedOutDir)
@@ -1090,7 +1115,7 @@ function compileNativeProject(project, options = {}) {
   const packageInspection = writePackageInspectionArtifacts(prepared.compiled, outDir);
   const eventInspection = writeEventInspectionArtifacts(project, prepared.compiled, outDir, eventSupport);
   const nativeManifest = prepared.native.manifest;
-  const manifest = Object.freeze({
+  let manifest = Object.freeze({
     version: PROJECT_EXECUTION_VERSION,
     status: 'compiled',
     target: 'portable-native-wasm',
@@ -1189,7 +1214,7 @@ function compileNativeProject(project, options = {}) {
     ...(eventInspection ? { events: eventManifestProjection(eventInspection) } : {})
   });
   const manifestFile = path.join(outDir, COMPILE_MANIFEST);
-  fs.writeFileSync(manifestFile, stableJson(manifest));
+  manifest = require('./internal/report/retained').publishBuild(project, prepared, manifest, manifestFile, outDir, reportAttempt);
 
   return Object.freeze({
     status: 'compiled',

@@ -469,6 +469,13 @@
           },
           "maxItems": 100000
         },
+        "compositionCoverage": {
+          "enum": [
+            "complete",
+            "bounded",
+            "unavailable"
+          ]
+        },
         "schemaIds": {
           "type": "array",
           "items": {
@@ -648,6 +655,93 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
           },
           "maxItems": 100000
+        },
+        "flow": {
+          "type": "object",
+          "properties": {
+            "nextEntryId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "childEntryId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parentContinueEntryId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "routerPath": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "maxItems": 100000
+            },
+            "path": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "method": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576,
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "scoped": {
+              "type": "boolean"
+            },
+            "conditional": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "nextEntryId",
+            "childEntryId",
+            "parentContinueEntryId",
+            "routerPath",
+            "path",
+            "method",
+            "scoped",
+            "conditional"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
