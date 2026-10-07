@@ -16,7 +16,8 @@
     "currentSnapshotChannel": "beta",
     "applicationStage": "documentation-release",
     "snapshotStatus": "applied",
-    "snapshotAppliedAt": "2026-10-07"
+    "snapshotAppliedAt": "2026-10-07",
+    "readinessLedger": "docs/internal/beta7/README.md"
   },
   "releaseVocabulary": {
     "schemaVersion": "pulse.release-vocabulary.v1",
@@ -500,7 +501,7 @@
       "status": "proven",
       "requiredBy": "documentation-release",
       "owner": "release-engineering",
-      "summary": "The Sprint 7D implementation ledger has zero release-blocking and zero unclassified conformance items.",
+      "summary": "The historical Sprint 7D implementation ledger has zero release-blocking and zero unclassified items; beta.7 preparation, final candidate evidence and separate KV/CAS decisions are tracked in the candidate readiness ledger.",
       "evidence": [
         "release/release-preflight.json#conformanceLedger"
       ],
@@ -550,17 +551,8 @@
       "status": "pending",
       "requiredBy": "release-seal",
       "owner": "release-engineering",
-      "summary": "A 2026-07-25 preflight run reported 49 production dependencies and zero advisories; final evidence must be regenerated from the frozen candidate.",
-      "nextAction": "Rerun the production audit from the clean frozen checkout and record dispositions in the final release evidence.",
-      "observedAt": "2026-07-25",
-      "observed": {
-        "productionDependencies": 49,
-        "advisories": 0,
-        "critical": 0,
-        "high": 0,
-        "moderate": 0,
-        "low": 0
-      },
+      "summary": "Production advisory status for the frozen beta.7 candidate is pending; historical observations do not establish the current dependency closure's vulnerability status.",
+      "nextAction": "Refresh the production audit once in the final seal from the frozen checkout; block unresolved critical/high advisories and obtain release-owner dispositions for remaining advisories before publication.",
       "verification": "node scripts/pnpm-toolchain.cjs -- audit --prod --json"
     },
     {
@@ -581,14 +573,8 @@
       "status": "pending",
       "requiredBy": "release-seal",
       "owner": "human-release",
-      "summary": "The current production closure reports only MIT, Apache-2.0, and MIT AND Apache-2.0; the final packed and generated artifacts still require attribution review.",
-      "nextAction": "Regenerate the production license inventory from the frozen candidate and inspect all redistributed third-party material.",
-      "observedAt": "2026-07-25",
-      "observedLicenses": [
-        "MIT",
-        "Apache-2.0",
-        "(MIT AND Apache-2.0)"
-      ],
+      "summary": "Production license closure for the frozen beta.7 candidate is pending; the existing root NOTICE disposition is retained but is not proof of the final installed, packed or generated closure.",
+      "nextAction": "Refresh the license inventory in the final seal, inspect redistributed material and retain explicit release-owner dispositions for any non-allowlisted, missing or custom license; preserve the exact root LICENSE and NOTICE in every release tarball.",
       "verification": "node scripts/audit-production-dependencies.cjs"
     },
     {
