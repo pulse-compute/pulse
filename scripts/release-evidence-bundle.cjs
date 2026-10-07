@@ -24,6 +24,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     id: 'historical-contracts',
     title: 'Historical contracts',
     tasks: Object.freeze([
+      'report-capsule-contract',
       'pure-helper-contract',
       'suite-shape',
       'test-orchestration',
