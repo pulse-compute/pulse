@@ -108,7 +108,7 @@ their documented limits and qualification status; see [body handling](docs/conce
 
 ## Public packages
 
-The public `1.0.0-beta.6` catalog is defined by the release manifest.
+The public `1.0.0-beta.7` catalog is defined by the release manifest.
 
 
 | Package | Role |
@@ -132,7 +132,7 @@ never changes targets automatically.
 
 ## Documentation
 
-The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.6/) is release-pinned; repository Markdown remains the reviewable source.
+The [public Pulse site](https://pulsecompute.io/) introduces the compiler and links into the layered documentation. [Exact hosted documentation](https://pulsecompute.io/v1.0.0-beta.7/) is release-pinned; repository Markdown remains the reviewable source.
 
 - [Documentation index](./docs/README.md)
 - [Changelog](./CHANGELOG.md)

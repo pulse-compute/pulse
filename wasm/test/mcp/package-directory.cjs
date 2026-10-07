@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 'use strict';
-// Local packaging only. Does not alter the release package set or publish anything.
+// Local packaging only. Public packages come exclusively from the standard release pack.
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
@@ -19,8 +19,9 @@ function packageDirectory(outDir) {
     if (previous === undefined) delete process.env.npm_config_ignore_scripts;
     else process.env.npm_config_ignore_scripts = previous;
   }
+  if (packed.manifest.packages.filter(p => p.name === '@pulse-compute/mcp').length !== 1) throw new Error('Standard release pack must contain MCP exactly once');
   const extra = [];
-  for (const relative of ['packages/mcp', 'packages/mcp/examples/resource-directory']) {
+  for (const relative of ['packages/mcp/examples/resource-directory']) {
     const result = JSON.parse(execFileSync('npm', ['pack', '--ignore-scripts', '--json', '--pack-destination', outDir], {
       cwd: path.join(root, relative), encoding: 'utf8', timeout: 30000,
       env: { ...process.env, NODE_OPTIONS: '', NODE_PATH: '' }, maxBuffer: 1024 * 1024,
@@ -32,7 +33,7 @@ function packageDirectory(outDir) {
   const entries = readTarEntries(path.join(outDir, app.tarball));
   if (!entries.has('package/.pulse/config.ts')) throw new Error('Application package omitted configuration');
   const manifest = { version: 'pulse.mcp-directory-package.v1', source: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
-    releaseMembershipChanged: false, published: false, packages: [...packed.manifest.packages, ...extra] };
+    published: false, packages: [...packed.manifest.packages, ...extra] };
   fs.writeFileSync(path.join(outDir, 'mcp-directory-pack.json'), JSON.stringify(manifest, null, 2) + '\n');
   return manifest;
 }

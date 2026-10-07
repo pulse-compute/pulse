@@ -1,13 +1,13 @@
 {
   "schemaVersion": "pulse.release-catalog.v1",
-  "releaseVersion": "1.0.0-beta.6",
+  "releaseVersion": "1.0.0-beta.7",
   "channel": "beta",
-  "releasedAt": "2026-10-04",
+  "releasedAt": "2026-10-07",
   "license": "Apache-2.0",
   "display": {
     "productName": "Pulse",
     "candidateLabel": "Beta",
-    "candidateName": "Pulse 1.0.0-beta.6 — Beta",
+    "candidateName": "Pulse 1.0.0-beta.7 — Beta",
     "activationStage": "documentation-release"
   },
   "legal": {
@@ -29,7 +29,7 @@
   "documentation": {
     "origin": "https://pulsecompute.io",
     "basePath": "/",
-    "version": "v1.0.0-beta.6",
+    "version": "v1.0.0-beta.7",
     "latestAlias": "latest",
     "source": "docs/README.md"
   },
@@ -59,7 +59,8 @@
       "dependencyManifestRoots": [
         "examples",
         "wasm/packages/cli/examples",
-        "wasm/test/fixtures/projects"
+        "wasm/test/fixtures/projects",
+        "packages/mcp/examples"
       ],
       "replaceUnpublishedDocumentationClasses": [
         "current-public",
@@ -165,7 +166,7 @@
     {
       "dir": "packages/runtime",
       "name": "@pulse-compute/runtime",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/runtime.md",
       "role": "public-runtime",
       "tier": "canonical-application",
@@ -179,7 +180,7 @@
     {
       "dir": "packages/pulse",
       "name": "@pulse-compute/pulse",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/pulse.md",
       "role": "public-api",
       "tier": "canonical-application",
@@ -194,7 +195,7 @@
     {
       "dir": "wasm/packages/cli",
       "name": "@pulse-compute/cli",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/cli.md",
       "role": "public-cli",
       "tier": "canonical-application",
@@ -219,7 +220,7 @@
     {
       "dir": "packages/provider-fastly",
       "name": "@pulse-compute/provider-fastly",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/provider-fastly.md",
       "role": "public-provider",
       "tier": "supported-extension",
@@ -239,7 +240,7 @@
     {
       "dir": "packages/grip",
       "name": "@pulse-compute/grip",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/grip.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -253,7 +254,7 @@
     {
       "dir": "packages/assets",
       "name": "@pulse-compute/assets",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/assets.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -267,7 +268,7 @@
     {
       "dir": "packages/crypto",
       "name": "@pulse-compute/crypto",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/crypto.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -281,7 +282,7 @@
     {
       "dir": "packages/jwt",
       "name": "@pulse-compute/jwt",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/jwt.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -295,7 +296,7 @@
     {
       "dir": "packages/entities",
       "name": "@pulse-compute/entities",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/entities.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -307,9 +308,24 @@
       "stability": "The package root and first-party JSON-RPC adapter are supported Beta contracts; compiler integration subpaths remain toolchain-only."
     },
     {
+      "dir": "packages/mcp",
+      "name": "@pulse-compute/mcp",
+      "version": "1.0.0-beta.7",
+      "documentation": "docs/packages/mcp.md",
+      "role": "public-extension",
+      "tier": "supported-extension",
+      "audience": "Host applications exposing bounded MCP HTTP tools over a governed Entities endpoint.",
+      "directInstall": "Yes, when a host application exposes MCP HTTP; use outside Pulse guest handlers.",
+      "entryPoints": [
+        "@pulse-compute/mcp",
+        "@pulse-compute/mcp/node"
+      ],
+      "stability": "The root Fetch handler and /node HTTP bridge are supported Beta host APIs with zero runtime dependencies. Implementation subpaths are private; no guest lowering, stdio, execution or workspace access is exposed."
+    },
+    {
       "dir": "packages/s3",
       "name": "@pulse-compute/s3",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/s3.md",
       "role": "public-extension",
       "tier": "supported-extension",
@@ -323,7 +339,7 @@
     {
       "dir": "wasm/packages/build-support",
       "name": "@pulse-compute/wasm-build-support",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -337,7 +353,7 @@
     {
       "dir": "wasm/packages/compiler",
       "name": "@pulse-compute/wasm-compiler",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -352,7 +368,7 @@
     {
       "dir": "wasm/packages/wasm-guest-link",
       "name": "@pulse-compute/wasm-guest-link",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -366,7 +382,7 @@
     {
       "dir": "wasm/packages/contracts",
       "name": "@pulse-compute/wasm-contracts",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -380,7 +396,7 @@
     {
       "dir": "wasm/packages/host-runtime",
       "name": "@pulse-compute/wasm-host-runtime",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -394,7 +410,7 @@
     {
       "dir": "wasm/packages/library-kit",
       "name": "@pulse-compute/wasm-library-kit",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -408,7 +424,7 @@
     {
       "dir": "packages/provider-node",
       "name": "@pulse-compute/provider-node",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -423,7 +439,7 @@
     {
       "dir": "wasm/packages/runtime-core-as",
       "name": "@pulse-compute/wasm-runtime-core-as",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",
@@ -437,7 +453,7 @@
     {
       "dir": "wasm/packages/schema-json",
       "name": "@pulse-compute/wasm-schema-json",
-      "version": "1.0.0-beta.6",
+      "version": "1.0.0-beta.7",
       "documentation": "docs/packages/implementation-packages.md",
       "role": "implementation",
       "tier": "implementation",

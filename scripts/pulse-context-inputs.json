@@ -12,7 +12,16 @@
     "@pulse-compute/grip",
     "@pulse-compute/crypto",
     "@pulse-compute/jwt",
-    "@pulse-compute/s3"
+    "@pulse-compute/s3",
+    {
+      "name": "@pulse-compute/mcp",
+      "providers": [
+        "node"
+      ],
+      "targets": [
+        "javascript"
+      ]
+    }
   ],
   "documents": [
     {

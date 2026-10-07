@@ -6,8 +6,8 @@
 
 ## Beta candidate
 
-- **Candidate:** Pulse 1.0.0-beta.6 — Beta
-- **Version:** `1.0.0-beta.6`
+- **Candidate:** Pulse 1.0.0-beta.7 — Beta
+- **Version:** `1.0.0-beta.7`
 - **Activation stage:** `documentation-release`
 - **License:** `Apache-2.0`
 - **Supported Node:** `^22.14.0 || ^24.0.0`
@@ -16,9 +16,9 @@
 - **Reproducible publication toolchain:** Node `24.18.0` with npm `11.15.0`
 - **Readiness register:** `release/release-preflight.json`
 - **Documentation inventory:** `release/documentation-inventory.json`
-- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.6/`
+- **Exact documentation:** `https://pulsecompute.io/v1.0.0-beta.7/`
 - **Runtime targets:** 3
-- **Packages:** 19
+- **Packages:** 20
 
 The installed CLI ships the same machine-readable data as
 `release-manifest.json`. The atomic snapshot transaction aligns
@@ -75,6 +75,7 @@ scoped package name.
 | [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | Supported provider/extension surface | [Guide](../packages/crypto.md) | Yes, when an application uses verification or digestText directly; JWT applications receive it transitively. |
 | [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt) | Supported provider/extension surface | [Guide](../packages/jwt.md) | Yes, when an application verifies or signs JWTs. |
 | [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities) | Supported provider/extension surface | [Guide](../packages/entities.md) | Yes, when an application declares entity operations. |
+| [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp) | Supported provider/extension surface | [Guide](../packages/mcp.md) | Yes, when a host application exposes MCP HTTP; use outside Pulse guest handlers. |
 | [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3) | Supported provider/extension surface | [Guide](../packages/s3.md) | Yes, when an application uses S3 object operations. |
 | [`@pulse-compute/wasm-build-support`](https://www.npmjs.com/package/@pulse-compute/wasm-build-support) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; it is installed transitively where required. |
 | [`@pulse-compute/wasm-compiler`](https://www.npmjs.com/package/@pulse-compute/wasm-compiler) | Implementation/transitive surface | [Guide](../packages/implementation-packages.md) | No for application projects; use the pulse CLI. |

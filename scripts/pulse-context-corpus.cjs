@@ -94,12 +94,13 @@ function buildCorpus(root = ROOT) {
           providers: selected.providers ?? document.providers, targets: selected.targets ?? document.targets } });
     }
   }
-  for (const name of config.packages) {
+  for (const selected of config.packages) {
+    const name = typeof selected === 'string' ? selected : selected.name;
     const descriptor = manifest.packages.find(entry => entry.name === name);
     if (!descriptor || descriptor.version !== manifest.releaseVersion) throw new Error(`Missing or mismatched corpus package: ${name}`);
     add({ id: `package/${name.replace('@pulse-compute/', '')}`, title: name, category: 'package',
       file: MANIFEST, selection: `packages[name=${name}]`, content: serialize(descriptor), tags: ['package', descriptor.role, descriptor.tier],
-      scope: name.includes('/provider-') ? { ...common, providers: [name.split('/provider-')[1]] } : common });
+      scope: typeof selected === 'object' ? selected : name.includes('/provider-') ? { ...common, providers: [name.split('/provider-')[1]] } : common });
   }
   for (const target of manifest.runtimeTargets) {
     add({ id: `provider/${target.id}`, title: target.label, category: 'target', file: MANIFEST,

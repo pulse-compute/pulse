@@ -20,7 +20,8 @@ const pack = path.join(temporary, 'packages');
 const reportParent = path.join(root, 'wasm/.test-results');
 fs.mkdirSync(reportParent, { recursive: true });
 const reportDir = fs.mkdtempSync(path.join(reportParent, 'mcp-installed-'));
-const reportFile = path.join(reportDir, 'mcp-installed-acceptance.json');
+const { installedAcceptanceReport } = require('../support/installed-acceptance-report.cjs');
+const reportFile = installedAcceptanceReport(path.join(reportDir, 'mcp-installed-acceptance.json'));
 
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -99,7 +100,7 @@ function verifyInstalled(manifest) {
 async function main() {
   try {
     saveReport();
-    console.log('mcp-installed - pack exact Pulse candidates, private adapter and application');
+    console.log('mcp-installed - pack standard public Pulse candidates and private application fixture');
     const manifest = packageDirectory(pack);
     const app = manifest.packages.find(entry => entry.name === '@pulse-examples/13-mcp-resource-directory');
     for (const [file, bytes] of readTarEntries(path.join(pack, app.tarball))) {

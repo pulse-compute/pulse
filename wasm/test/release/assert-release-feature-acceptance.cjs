@@ -14,7 +14,9 @@ validateCoverage(tasks, expandProfile);
 assert.throws(() => validateCoverage({ ...tasks, 's3-body-installed': undefined }, expandProfile), /Missing installed feature gate/);
 assert.throws(() => validateCoverage(tasks, () => []), /lost cross-lane task/);
 assert.throws(() => validateCoverage(tasks, name => [...expandProfile(name), 'jwt-installed-workflow']), /remain separate/);
-assert.equal(SEPARATE_GATES.find(gate => gate.task === 'mcp-installed').classification, 'private');
+assert(REQUIRED_TASKS.includes('mcp-installed'));
+assert(!SEPARATE_GATES.some(gate => gate.task === 'mcp-installed'));
+assert.throws(() => validateCoverage(tasks, expandProfile, ['mcp-installed']), /remain separate from fast/);
 assert.equal(SEPARATE_GATES.find(gate => gate.task === 'kv-conditional-acceptance').classification, 'external-required');
 assert.equal(SEPARATE_GATES.find(gate => gate.task === 'str03c-bounded-transforms').classification, 'experimental');
 assert.equal(installedAcceptanceReport('/focused.json', {}), '/focused.json');
@@ -33,7 +35,7 @@ const reports = Object.fromEntries(REQUIRED_TASKS.map(task => [task, {
   workingDiffSha256: crypto.createHash('sha256').update('').digest('hex'), acceptanceScriptSha256: 'c'.repeat(64),
   packages: [{ name: '@pulse-compute/pulse', version: RELEASE_VERSION, sha256: 'd'.repeat(64) }]
 }]));
-assert.equal(validateAcceptance(runner, reports, identity).gates.length, 10);
+assert.equal(validateAcceptance(runner, reports, identity).gates.length, 11);
 const summary = validateAcceptance(runner, reports, identity);
 assert.equal(validateSummary(summary, identity.sourceRevision), summary);
 assert.throws(() => validateSummary(undefined, identity.sourceRevision), /Missing installed feature acceptance/);
@@ -60,7 +62,7 @@ reject(x => x.reports[first].workingDiffSha256 = 'e'.repeat(64), /diff differs/)
 reject(x => delete x.reports[first].acceptanceScriptSha256, /Missing oracle identity/);
 reject(x => delete x.reports[first], /differ from gate set/);
 reject(x => x.reports[first].packages = [], /Missing installed tarball/);
-reject(x => x.reports[first].packages[0].name = '@pulse-compute/mcp', /Non-published package/);
+reject(x => x.reports[first].packages[0].name = '@pulse-compute/api', /Non-published package/);
 reject(x => x.reports[first].packages[0].version = '1.0.0-beta.4', /Mixed installed version/);
 reject(x => x.reports[first].packages[0].sha256 = '', /Missing tarball hash/);
 reject(x => x.reports[first].packages[0].sha256 = 'e'.repeat(64), /Mixed candidate tarball/);
@@ -123,7 +125,7 @@ async function verifySealOrchestration() {
     process.stdout.write = originalWrite;
     delete require.cache[sealModule];
   }
-  console.log('ok - ten separate installed gates, cross-lane coverage and fail-closed candidate/report identity');
+  console.log('ok - eleven separate installed gates, cross-lane coverage and fail-closed candidate/report identity');
 
 }
 verifySealOrchestration().catch(error => { console.error(error); process.exitCode = 1; });

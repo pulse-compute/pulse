@@ -238,7 +238,7 @@ function documentationOwners(policy) {
   return classifyDocumentation(inventory, repoRoot).entries
     .filter((entry) => accepted.has(entry.classification))
     // Release evidence records observed artifact identities, never the next candidate.
-    .filter((entry) => !entry.path.startsWith('wasm/test/release/'))
+    .filter((entry) => !['wasm/test/release/', 'docs/internal/'].some(prefix => entry.path.startsWith(prefix)))
     .map((entry) => path.join(repoRoot, entry.path));
 }
 

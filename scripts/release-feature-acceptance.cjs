@@ -22,12 +22,12 @@ const GATES = Object.freeze([
   { task: 'ast01-installed', feature: 'Assets signing facade' },
   { task: 'ast02b-installed', feature: 'JavaScript embedded Assets bytes' },
   { task: 'ast02d-installed', feature: 'Native embedded Assets bytes' },
+  { task: 'mcp-installed', feature: 'Public MCP host extension over installed governed HTTP' },
   { task: 's3-body-installed', feature: 'S3 opaque binary bodies on advertised target cells' }
 ].map(Object.freeze));
 const REQUIRED_TASKS = Object.freeze(GATES.map(gate => gate.task));
 const SEPARATE_GATES = Object.freeze([
   { task: 'str03c-bounded-transforms', classification: 'experimental', disposition: 'Workspace evidence only; installed transform qualification pending' },
-  { task: 'mcp-installed', classification: 'private', disposition: 'Explicit private adapter coverage; outside npm publication' },
   { task: 'kv-conditional-acceptance', classification: 'external-required', disposition: 'Separate local K4 execution; documented Viceroy 0.21.0/0.21.1 missing-key CAS discrepancy is non-blocking by human direction (2026-10-04). Other failures and deployed Pulse cross-location acceptance remain required; B6-05' }
 ].map(Object.freeze));
 
@@ -42,10 +42,11 @@ function candidateIdentity(root = ROOT) {
   return { sourceRevision: git(root, ['rev-parse', 'HEAD']), sourceTree: git(root, ['rev-parse', 'HEAD^{tree}']), workingTree };
 }
 
-function validateCoverage(tasks, expandProfile) {
+function validateCoverage(tasks, expandProfile, fastTasks = require('./maintainer-fast-validation.cjs').FAST_TASKS) {
   const release = expandProfile('release');
   for (const task of REQUIRED_TASKS) {
     assert(tasks[task], `Missing installed feature gate: ${task}`);
+    assert(!fastTasks.includes(task), `Installed gate must remain separate from fast profile: ${task}`);
     assert(!release.includes(task), `Installed gate must remain separate from aggregate profile: ${task}`);
   }
   for (const gate of SEPARATE_GATES) assert(tasks[gate.task], `Missing separate gate: ${gate.task}`);
