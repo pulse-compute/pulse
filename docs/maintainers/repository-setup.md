@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-07
+review-by: 2027-04-07
 pulse-doc-meta:end -->
 
 # Repository setup
@@ -116,6 +116,16 @@ npm-publish
 Allow deployment only from release tags and require a human release-authority reviewer. Do not add `NPM_TOKEN` or `NODE_AUTH_TOKEN` to the repository or environment.
 
 For every package in `release/pulse-release-manifest.json`, first confirm that the package name exists under the intended npm owner. Missing names need a one-time human 2FA-protected bootstrap publication. Then configure npm trusted publishing with the exact repository, `npm-publish.yml` workflow filename, and `npm-publish` environment.
+
+In the npm form, use GitHub organization/user `pulse-compute`, repository
+`pulse`, filename `npm-publish.yml`, and environment `npm-publish`. Explicitly
+permit direct `npm publish` under **Allowed actions**; staging permission alone
+does not authorize Pulse's workflow. Confirm existing matching publishers
+without recreating them. Retain a dated owner review of the complete manifest
+package set, tag-only environment rules and human reviewer; source validation
+cannot prove private settings. Revoke/remove the temporary bootstrap credential
+after setup, keeping human account recovery and 2FA intact. See
+[trusted publishing](npm-publishing.md#trusted-publishing) for the full handoff.
 
 Select the exact `v<releaseVersion>` tag as the workflow ref, then run **npm
 publication** manually. Confirm that the protected job receives OIDC only after
