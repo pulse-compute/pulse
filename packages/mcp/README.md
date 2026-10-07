@@ -1,10 +1,22 @@
 # Pulse MCP HTTP adapter
 
+<!-- pulse-package-status:start -->
+> **Support tier:** Supported provider/extension surface<br>
+> **Audience:** Host applications exposing bounded MCP HTTP tools over a governed Entities endpoint.<br>
+> **Install directly:** Yes, when a host application exposes MCP HTTP; use outside Pulse guest handlers.<br>
+> **Supported entry points:** `@pulse-compute/mcp`, `@pulse-compute/mcp/node`<br>
+> **Stability:** The root Fetch handler and /node HTTP bridge are supported Beta host APIs with zero runtime dependencies. Implementation subpaths are private; no guest lowering, stdio, execution or workspace access is exposed.<br>
+> **npm:** [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp)<br>
+> **Canonical documentation:** [Package guide](https://pulsecompute.io/v1.0.0-beta.7/packages/mcp/)
+>
+> This release-status block is generated from the synchronized `Pulse 1.0.0-beta.7` package policy.
+<!-- pulse-package-status:end -->
+
 `@pulse-compute/mcp` provides bounded **MCP 2026-07-28** HTTP integration for
 host applications outside the entity engine. It has zero runtime dependencies.
 The package surface is the root and `/node`; implementation files are private.
 
-The canonical [Pulse context MCP example](../../examples/12-pulse-context-mcp/)
+The canonical [Pulse context MCP example](https://pulsecompute.io/v1.0.0-beta.7/examples/12-pulse-context-mcp/)
 uses a versioned, immutable corpus and five read-only Entities operations for
 starter plans, search, contract reads, maintained examples and public diagnostic
 help. Its standalone host composes the public Node launcher and `/mcp/node` over
@@ -12,10 +24,10 @@ a fixed loopback HTTP boundary. The app is shipped with the CLI examples, not
 inside the generic adapter tarball; its runtime needs no repository or upstream.
 See its README for installation status, client requests and three walkthroughs.
 
-Release status: still private, version `0.0.0`, and excluded from the release
-manifest. PMCP-01 prepares and qualifies the packed host surface; PMCP-06 owns
-release membership and publication readiness. These are host APIs, used outside
-Pulse guest handlers and schemas.
+Release status: supported Beta host extension in the synchronized
+`1.0.0-beta.7` candidate package set. Registry publication is pending the
+release-owner bootstrap and trusted-publisher handoff. These host APIs are used
+outside Pulse guest handlers and schemas; no guest lowering is provided.
 
 `server/discover` always works. Configuring `tools` enables `tools/list` and
 `tools/call`, and advertises `{ tools: { listChanged: false } }`. Otherwise the
@@ -46,7 +58,7 @@ Until publication, pack the package and install that tarball in the host project
 # From the Pulse checkout; no build or lifecycle script is needed.
 npm pack ./packages/mcp --ignore-scripts --pack-destination /tmp
 # From a separate host project:
-npm install /tmp/pulse-compute-mcp-0.0.0.tgz --ignore-scripts
+npm install /tmp/pulse-compute-mcp-1.0.0-beta.7.tgz --ignore-scripts
 ```
 
 CommonJS host:
@@ -451,11 +463,14 @@ fixture and adapter identities plus wire records are retained under
 `wasm/.test-results/mcp-tools-sdk-*`. MCP-05 adds independent installed acceptance through
 the private authorization fixture at `packages/mcp/examples/resource-directory`. Run
 `node wasm/scripts/run-wasm-tests.cjs --task mcp-installed` with lifecycle scripts
-disabled (`npm_config_ignore_scripts=true`). It packs the app and private adapter,
+disabled (`npm_config_ignore_scripts=true`). It packs the private fixture and standard public release packages,
 installs exact Pulse candidates outside the checkout, and exercises the pinned
 OAuth client against ordinary `pulse dev` and real local directory HTTP effects.
-The explicit external task does not change the fast beta workflow, release
-package membership, or production-launcher support.
+This is the single mandatory installed MCP gate owned by release-feature
+acceptance, outside both fast PR and aggregate release profiles. Independent SDK
+and intended-client qualifications remain explicit selections. PMCP-07 will
+replace its onboarding journey with the canonical context app while preserving
+separate authorization-negative fixture coverage.
 
 `mcp-authorization` covers metadata/challenges, audience/issuer/expiry/scope
 rejection, deny-before-effects, catalog isolation, revoked tokens, verifier

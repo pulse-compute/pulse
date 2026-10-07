@@ -180,7 +180,8 @@ async function boundsAndHttp() {
   // This component has no dependency on Entities, application handlers, SDKs,
   // compiler internals or a dynamic method registry.
   const manifest = require('../../../packages/mcp/package.json');
-  assert.equal(manifest.private, true); assert.equal(manifest.dependencies, undefined);
+  assert.notEqual(manifest.private, true);
+  assert.equal(manifest.version, require('../../../scripts/package-support.cjs').RELEASE_VERSION); assert.equal(manifest.dependencies, undefined);
   for (const file of ['index.js', 'node.js']) assert.doesNotMatch(fs.readFileSync(require.resolve('../../../packages/mcp/src/' + file), 'utf8'), /@pulse-compute\/entities|@modelcontextprotocol|registerTool|import\(/);
   console.log(`ok - MCP-02 ${cases} protocol exchanges plus bounded streams, deadlines, disconnects and real Node HTTP`);
 }

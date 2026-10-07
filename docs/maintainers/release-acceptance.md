@@ -7,8 +7,8 @@ pulse-doc-meta:end -->
 
 # Release packages and clean-consumer acceptance
 
-The current Beta candidate contains nineteen publishable packages
-synchronized at version `1.0.0-beta.6`. The product-facing packages are:
+The current Beta candidate contains twenty publishable packages
+synchronized at version `1.0.0-beta.7`. The product-facing packages are:
 
 ```text
 @pulse-compute/pulse
@@ -61,7 +61,7 @@ node scripts/release-feature-acceptance.cjs
 ```
 
 Run from a clean, committed candidate after restoring lockfile-pinned dependencies
-and building the workspace. The command selects all ten gates through the registered
+and building the workspace. The command selects all eleven gates through the registered
 runner with fresh report paths. Within a recovery-aware seal, verified
 same-candidate checkpoints may supply completed gates; every result records
 whether it executed or was reused. It requires complete terminal passing coverage,
@@ -81,6 +81,7 @@ change requires another replay on the new candidate.
 | `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
 | `ast01-installed` | Assets signing facade and installed declarations |
 | `ast02b-installed`, `ast02d-installed` | Embedded binary Assets on JavaScript and Native, bounds, HTTP subsets and deterministic manifest identity |
+| `mcp-installed` | Standard public MCP package, installed governed HTTP fixture, OAuth admission and pinned client; root and `/node` host APIs |
 | `s3-body-installed` | S3 binary bodies, GET/HEAD, range/conditional outcomes, length failures, cancellation and cleanup on Node Native/JavaScript and Fastly Native ABI fixtures |
 
 These gates qualify their existing target cells. They do not expand production
@@ -91,11 +92,11 @@ fixtures remain injected evidence, distinct from local-engine and deployed proof
 | Separate coverage | Disposition |
 | --- | --- |
 | `str03c-bounded-transforms` | Experimental workspace Native/JavaScript proof in the aggregate profile; installed transform qualification remains pending |
-| `mcp-installed` | Explicit private adapter coverage; MCP remains outside the published package set |
 | `kv-conditional-acceptance` | Separately mandatory local K4 proof plus deployed Pulse cross-location evidence, as described below |
 
-The generic seal and installed feature report do not waive K4. Private MCP and
-independent SDK proofs remain explicit selections. Fast PR CI keeps its existing
+The generic seal and installed feature report do not waive K4. Independent MCP
+SDK and intended-client proofs remain explicit selections; installed MCP has one
+mandatory release owner above. Fast PR CI keeps its existing
 bounded selection; these dependency-bound installs belong to release acceptance.
 
 ## Conditional KV acceptance
@@ -185,7 +186,7 @@ From the source workspace:
 pnpm release:pack
 ```
 
-This builds the workspace and writes nineteen package tarballs plus `pulse-release-manifest.json` under `.pulse-release/`. It prepares release artifacts; it does not publish them to a registry.
+This builds the workspace and writes twenty package tarballs plus `pulse-release-manifest.json` under `.pulse-release/`. It prepares release artifacts; it does not publish them to a registry.
 
 Packing fails when:
 
@@ -249,7 +250,7 @@ as byte-reproducible. The candidate report distinguishes that toolchain-owned
 property from Pulse-owned deterministic input and metadata. It also records zero
 provider-reality runs, zero deployments, and zero publications.
 
-The task owns the nineteen publishable Pulse packages, not the packages in the
+The task owns the twenty publishable Pulse packages, not the packages in the
 development installation. It installs every exact Pulse tarball into clean
 consumer projects and verifies the installed name, version, and real path. An
 ephemeral server bound to `127.0.0.1` is the fail-closed registry for the
@@ -357,7 +358,7 @@ Before the first trusted publication, every package name must exist and authoriz
 
 ## Publication hold points
 
-Before publication, confirm the repository, final documentation host/base path, package policy, and issue-tracker values centralized in `release/pulse-release-manifest.json`. Pulse is licensed under Apache-2.0: the release gate requires the exact root `LICENSE`, SPDX metadata in the workspace and all nineteen publishable packages, and the same license text in every npm tarball. A dependency-license audit and its dispositions remain separate release evidence.
+Before publication, confirm the repository, final documentation host/base path, package policy, and issue-tracker values centralized in `release/pulse-release-manifest.json`. Pulse is licensed under Apache-2.0: the release gate requires the exact root `LICENSE`, SPDX metadata in the workspace and all twenty publishable packages, and the same license text in every npm tarball. A dependency-license audit and its dispositions remain separate release evidence.
 
 A human release authority must approve `npm-publish`. Codex may diagnose or prepare a patch but cannot publish, approve the environment, bootstrap package names, or mutate dist-tags.
 
@@ -369,7 +370,7 @@ The release owns a versioned hosted-documentation gate:
 pnpm docs:site:check
 ```
 
-The check builds the exact `v1.0.0-beta.6` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
+The check builds the exact `v1.0.0-beta.7` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
 
 The **Documentation** workflow repeats those checks for pull requests and `main`, seals a preview deployment manifest, and uploads artifacts without production credentials. It does not deploy to GitHub Pages.
 
@@ -377,7 +378,7 @@ Production delivery uses the manually dispatched **Documentation deployment** wo
 
 ```text
 build and seal
-→ upload/verify v1.0.0-beta.6 and its receipt immutably
+→ upload/verify v1.0.0-beta.7 and its receipt immutably
 → verify all matching npm packages and configured dist-tags
 → promote root and latest
 → verify representative URLs through Fastly

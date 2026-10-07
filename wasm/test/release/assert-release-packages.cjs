@@ -50,7 +50,8 @@ const required = [
   '@pulse-compute/provider-fastly',
   '@pulse-compute/grip',
   '@pulse-compute/assets',
-  '@pulse-compute/s3'
+  '@pulse-compute/s3',
+  '@pulse-compute/mcp'
 ];
 for (const name of required) assert.ok(result.manifest.packages.some((entry) => entry.name === name), `release is missing ${name}`);
 for (const name of ['@pulse-compute/api']) assert.equal(result.manifest.packages.some((entry) => entry.name === name), false, `pre-public package ${name} must not be published`);

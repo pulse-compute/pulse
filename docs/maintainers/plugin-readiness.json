@@ -1,6 +1,6 @@
 {
   "schemaVersion": "pulse.plugin-readiness.v1",
-  "releaseVersion": "1.0.0-beta.6",
+  "releaseVersion": "1.0.0-beta.7",
   "publicPluginApi": false,
   "decision": "deferred",
   "requirements": {

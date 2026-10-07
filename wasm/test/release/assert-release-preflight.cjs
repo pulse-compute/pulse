@@ -101,6 +101,7 @@ const publishedHistory = changelog.slice(changelog.indexOf(`\n## ${releaseManife
 assert.ok(docsPlan.writes.get(path.join(repoRoot, 'CHANGELOG.md')).endsWith(publishedHistory));
 assert.equal([...docsPlan.writes.keys()].some(file => file.includes('documentation-site-archives')), false);
 assert.equal([...docsPlan.writes.keys()].some(file => file.includes('wasm/test/release/')), false, 'recorded package and hosted evidence must retain its original identities');
+assert.equal([...docsPlan.writes.keys()].some(file => file.includes('docs/internal/')), false, 'historical measurements and their package hashes must retain observed release versions');
 assert.throws(() => planRelease(docsManifest, documentationVersions,
   parsePreparationArgs(['9.9.9-beta.1', '--replace-unpublished']), assertManifestConsistency(docsManifest, documentationVersions)), /shipped on npm/);
 const undecided = structuredClone(releaseManifest);
@@ -193,7 +194,7 @@ assert.deepEqual(result.snapshot, {
   channel: 'beta',
   releasedAt: releaseManifest.releasedAt,
   packages: releaseManifest.packages.length,
-  dependencyRanges: 60
+  dependencyRanges: 63
 });
 assert.deepEqual(result.audits.noticeDisposition, {
   schemaVersion: 'pulse.release-notice-disposition.v1',

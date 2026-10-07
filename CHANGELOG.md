@@ -4,6 +4,15 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.7 — Beta (2026-10-07)
+
+- Add `@pulse-compute/mcp` to the synchronized release package set as a supported
+  host extension with root and `/node` imports and no runtime dependencies.
+- Ship the bounded, read-only Pulse context MCP example with exact candidate
+  dependencies; preserve the beta.6 documentation snapshot from its release tag.
+- Give installed MCP acceptance one mandatory release owner and prepare an inert
+  bootstrap artifact without publishing or adding dependency installs to fast CI.
+
 ## 1.0.0-beta.6 — Beta (2026-10-04)
 
 - Combine bounded Node request forwarding, experimental finite generated output

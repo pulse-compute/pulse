@@ -9,7 +9,7 @@ const crypto = require('node:crypto');
 const { createRequire } = require('node:module');
 const { execFileSync } = require('node:child_process');
 const { pnpmInvocation } = require('../../../scripts/pnpm-toolchain.cjs');
-const { readTarEntries } = require('../../../scripts/pack-release.cjs');
+const { readTarEntries, RELEASE_VERSION, PACKAGE_SET } = require('../../../scripts/pack-release.cjs');
 const root = path.resolve(__dirname, '../../..');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-mcp-package-'));
 const evidenceRoot = path.join(root, 'wasm/.test-results');
@@ -23,8 +23,27 @@ function run(command, args, cwd = temp, timeout = 30000) {
     env: { ...process.env, NODE_PATH: '', NODE_OPTIONS: '', npm_config_ignore_scripts: 'true', npm_config_fetch_retries: '0' } });
 }
 try {
-  const [pack] = JSON.parse(run('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', temp], path.join(root, 'packages/mcp')));
-  const tarball = path.join(temp, pack.filename);
+  let tarball;
+  if (process.argv.length > 2) {
+    assert.equal(process.argv.length, 4, 'Usage: assert-mcp-package.cjs [--pack-dir <standard-release-pack>]');
+    assert.equal(process.argv[2], '--pack-dir');
+    const directory = path.resolve(process.argv[3]);
+    const packed = JSON.parse(fs.readFileSync(path.join(directory, 'pulse-release-manifest.json')));
+    assert.equal(packed.releaseVersion, RELEASE_VERSION);
+    assert.equal(packed.packageCount, PACKAGE_SET.length);
+    assert.equal(packed.sourceCatalog.sha256, crypto.createHash('sha256')
+      .update(fs.readFileSync(path.join(root, 'release/pulse-release-manifest.json'))).digest('hex'));
+    const matches = packed.packages.filter(entry => entry.name === '@pulse-compute/mcp');
+    assert.equal(matches.length, 1, 'Standard release pack contains MCP exactly once');
+    assert.equal(matches[0].version, RELEASE_VERSION);
+    assert.equal(path.basename(matches[0].tarball), matches[0].tarball);
+    tarball = path.join(directory, matches[0].tarball);
+    assert.equal(crypto.createHash('sha256').update(fs.readFileSync(tarball)).digest('hex'), matches[0].sha256);
+    report.checks.push('selected exact MCP tarball from the standard release package set');
+  } else {
+    const [pack] = JSON.parse(run('npm', ['pack', '--json', '--ignore-scripts', '--pack-destination', temp], path.join(root, 'packages/mcp')));
+    tarball = path.join(temp, pack.filename);
+  }
   const entries = readTarEntries(tarball);
   report.tarball = { sha256: crypto.createHash('sha256').update(fs.readFileSync(tarball)).digest('hex'),
     bytes: fs.statSync(tarball).size, files: [...entries.keys()].sort() };
@@ -33,6 +52,10 @@ try {
   assert.deepEqual([...entries.keys()].sort(), expected.map(file => `package/${file}`).sort());
   for (const file of ['LICENSE', 'NOTICE']) assert.deepEqual(entries.get(`package/${file}`), fs.readFileSync(path.join(root, file)));
   const manifest = JSON.parse(entries.get('package/package.json'));
+  assert.equal(manifest.name, '@pulse-compute/mcp');
+  assert.equal(manifest.version, RELEASE_VERSION);
+  assert.notEqual(manifest.private, true);
+  assert.equal(manifest.publishConfig.access, 'public');
   assert.equal(manifest.license, 'Apache-2.0');
   assert.deepEqual(Object.keys(manifest.exports).sort(), ['.', './node']);
   for (const key of ['dependencies', 'optionalDependencies', 'peerDependencies', 'bundledDependencies']) {

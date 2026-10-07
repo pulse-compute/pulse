@@ -43,7 +43,9 @@ async function main() {
   }
   assert.ok(corpus.records.some(record => record.id === 'diagnostic/PULSE_SCHEMA_COMPILE_FAILED'));
   assert.ok(corpus.records.some(record => record.id === 'contract/managed-async'));
-  assert.ok(!corpus.records.some(record => record.id.startsWith('package/mcp')), 'unreleased adapter is not promoted into the release package set');
+  const mcp = corpus.records.find(record => record.id === 'package/mcp');
+  assert.deepEqual(mcp.applicability, [{ provider: 'node', target: 'javascript' }], 'MCP is a host extension, not a Native guest capability');
+  assert.deepEqual(JSON.parse(mcp.content).entryPoints, ['@pulse-compute/mcp', '@pulse-compute/mcp/node']);
   assert.deepEqual(corpus.records.find(record => record.id === 'node/javascript').applicability, [{ provider: 'node', target: 'javascript' }]);
   assert.deepEqual(section('# Root\n```ts\n## Hidden\n```\n## Actual\nhello\n### Child\nchild\n## End\n', 'Actual'),
     { content: '## Actual\nhello\n### Child\nchild\n', startLine: 5, endLine: 8 });

@@ -1,23 +1,41 @@
 {
   "name": "@pulse-compute/mcp",
-  "version": "0.0.0",
-  "private": true,
+  "version": "1.0.0-beta.7",
   "license": "Apache-2.0",
   "type": "commonjs",
   "description": "Bounded MCP HTTP adapter for Pulse host applications.",
-  "engines": { "node": "^22.14.0 || ^24.0.0" },
+  "engines": {
+    "node": "^22.14.0 || ^24.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pulse-compute/pulse.git",
     "directory": "packages/mcp"
   },
-  "bugs": { "url": "https://github.com/pulse-compute/pulse/issues" },
-  "homepage": "https://github.com/pulse-compute/pulse/tree/latest/packages/mcp#readme",
+  "bugs": {
+    "url": "https://github.com/pulse-compute/pulse/issues"
+  },
+  "homepage": "https://pulsecompute.io/v1.0.0-beta.7/packages/mcp/",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
-  "files": ["src/*.js", "src/*.d.ts", "README.md", "LICENSE", "NOTICE"],
+  "files": [
+    "src/*.js",
+    "src/*.d.ts",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
   "exports": {
-    ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
-    "./node": { "types": "./src/node.d.ts", "default": "./src/node.js" }
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./node": {
+      "types": "./src/node.d.ts",
+      "default": "./src/node.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
