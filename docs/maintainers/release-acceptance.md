@@ -81,7 +81,7 @@ change requires another replay on the new candidate.
 | `str03b-installed` | Enabled experimental Node generated output, slow writers and disconnects; no support promotion |
 | `ast01-installed` | Assets signing facade and installed declarations |
 | `ast02b-installed`, `ast02d-installed` | Embedded binary Assets on JavaScript and Native, bounds, HTTP subsets and deterministic manifest identity |
-| `mcp-installed` | Standard public MCP package, installed governed HTTP fixture, OAuth admission and pinned client; root and `/node` host APIs |
+| `mcp-installed` | Exact CLI-shipped context app and public MCP package; production Node host, pinned official client/Codex onboarding and client-side starter CLI proof |
 | `s3-body-installed` | S3 binary bodies, GET/HEAD, range/conditional outcomes, length failures, cancellation and cleanup on Node Native/JavaScript and Fastly Native ABI fixtures |
 
 These gates qualify their existing target cells. They do not expand production
@@ -95,7 +95,8 @@ fixtures remain injected evidence, distinct from local-engine and deployed proof
 | `kv-conditional-acceptance` | Separately mandatory local K4 proof plus deployed Pulse cross-location evidence, as described below |
 
 The generic seal and installed feature report do not waive K4. Independent MCP
-SDK and intended-client proofs remain explicit selections; installed MCP has one
+SDK and generic intended-client/auth proofs remain explicit selections. The installed
+context journey includes pinned official-client and Codex calls in its one
 mandatory release owner above. Fast PR CI keeps its existing
 bounded selection; these dependency-bound installs belong to release acceptance.
 

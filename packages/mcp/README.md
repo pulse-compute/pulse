@@ -447,8 +447,8 @@ performs repeated discovery over TCP against this adapter. The reference server
 SDK is not used. Source/fixture identities, wire records and terminal status are
 saved under `wasm/.test-results/mcp-http-sdk-*`. It remains explicit external
 evidence. Node JavaScript is measured; Native/Fastly MCP and complete
-live deployed application acceptance remain unclaimed. MCP-05 adds local installed
-Node JavaScript acceptance in the private resource-directory fixture. The MCP-01 reference-server
+live deployed application acceptance remain unclaimed. PMCP-07 qualifies the installed
+Node JavaScript context application shipped in the CLI tarball. The MCP-01 reference-server
 wire proof is separate evidence.
 
 `mcp-tools` covers projection, mutation isolation, metadata filtering, protocol
@@ -460,17 +460,30 @@ typed fixture handler. Emitted catalog and schema files drive discovery and one
 successful invocation; the backend records exactly one request. This is Node
 JavaScript source-workspace evidence, not installed/deployed acceptance. Source,
 fixture and adapter identities plus wire records are retained under
-`wasm/.test-results/mcp-tools-sdk-*`. MCP-05 adds independent installed acceptance through
-the private authorization fixture at `packages/mcp/examples/resource-directory`. Run
-`node wasm/scripts/run-wasm-tests.cjs --task mcp-installed` with lifecycle scripts
-disabled (`npm_config_ignore_scripts=true`). It packs the private fixture and standard public release packages,
-installs exact Pulse candidates outside the checkout, and exercises the pinned
-OAuth client against ordinary `pulse dev` and real local directory HTTP effects.
-This is the single mandatory installed MCP gate owned by release-feature
-acceptance, outside both fast PR and aggregate release profiles. Independent SDK
-and intended-client qualifications remain explicit selections. PMCP-07 will
-replace its onboarding journey with the canonical context app while preserving
-separate authorization-negative fixture coverage.
+`wasm/.test-results/mcp-tools-sdk-*`.
+
+`node wasm/scripts/run-wasm-tests.cjs --task mcp-installed` is the single
+mandatory installed MCP gate owned by release-feature acceptance, outside fast
+PR and aggregate release profiles. It reuses the verified standard release pack,
+extracts `examples/12-pulse-context-mcp` from the exact CLI tarball, and installs
+its exact dependency graph outside the checkout with lifecycle scripts disabled.
+The production Node host starts from built artifacts after source/configuration
+removal. The pinned official client 2.2.0 and Codex 0.160.1 exercise discovery and
+all five onboarding tools, with version/provenance, pagination, bounds, invalid
+IDs, client cancellation and graceful shutdown. Codex uses the explicitly enabled
+2025-06-18 path, an isolated account-free configuration and no inference.
+A returned starter is written and tested/built by the acceptance client through
+the ordinary installed CLI; the server gains no execution tool or workspace access.
+Terminal reports retain package, application, build, catalog, schema and corpus
+identities, command timings, startup time and response sizes. These measurements
+are baselines, not performance gates. The private resource-directory fixture's
+scope/write/schema negatives remain a small workspace check in
+`mcp-authorization`, without another packed application campaign.
+
+After release-owner bootstrap, trusted-publisher setup and exact-version
+publication, run the narrow registry install/build/start smoke documented in the
+[npm publication handoff](https://pulsecompute.io/v1.0.0-beta.7/maintainers/npm-publishing/).
+Local packed acceptance does not establish registry publication or deployment.
 
 `mcp-authorization` covers metadata/challenges, audience/issuer/expiry/scope
 rejection, deny-before-effects, catalog isolation, revoked tokens, verifier
