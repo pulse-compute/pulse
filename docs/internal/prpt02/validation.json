@@ -1,0 +1,736 @@
+{
+  "version": "pulse.prpt02.validation.v1",
+  "base": "0fcc88120f000fcd813aa918172e39302d993228",
+  "branch": "codex/prpt-02-retained-evidence",
+  "classification": "scope-expansion",
+  "humanDirection": "Implement PRPT-02; PRs against latest.",
+  "evidenceKind": "Bounded development task receipts, not release acceptance or a release seal",
+  "environment": {
+    "node": "v24.19.0",
+    "dependencies": "lockfile-pinned pnpm bundle restored with lifecycle scripts disabled",
+    "externalViceroy": "not configured; optional exact-artifact Viceroy replay skipped"
+  },
+  "sourceIdentity": {
+    "note": "SHA-256 identifies final implementation/test bytes on an uncommitted worktree. Unit/CLI portions precede the final conservative snapshot fallback. Focused lifecycle, Native/JavaScript workflow and four-mode regression receipts identify final-change coverage; this is not a single immutable full-profile run. Documentation was finalized afterward.",
+    "sha256": {
+      "wasm/packages/cli/src/internal/report/capsule.js": "fbaf2378e5a4b11d56551b7e4f043ef7b584f5da30ac13155ba492f142d75918",
+      "wasm/packages/cli/src/internal/report/capsule.schema.json": "75709471b65e7691c3f2e9630238d07129824a4e2791da2831edb9732187969b",
+      "wasm/packages/cli/src/internal/report/files.js": "45a8d493bd0e95aaac88c368c4f8c87ac639337b3a0860416b4f8bf75fa032a1",
+      "wasm/packages/cli/src/internal/report/inventory.js": "71d9e1fc1d4a62477fdeebbe23170b9a81f284d50a33be2bdfdb3daac72ff8e9",
+      "wasm/packages/cli/src/internal/report/model.d.ts": "13b305009a48f4b58566926bdea06b9e4417fee8a55c77699c737977dd462efa",
+      "wasm/packages/cli/src/internal/report/retained.d.ts": "b9e8057aeaa01dfc8a2475f98aa9bc9baeb3986571c3c38a848040a19f4ab05a",
+      "wasm/packages/cli/src/internal/report/retained.js": "4fe3b165fa63f0338e4be50576d707aeec57b05df962f3097d70ff12a0ea870b",
+      "wasm/packages/cli/src/internal/report/schema.js": "ecbdc54803c044e3fa62ca0cf3e6b3be99f6d3c3cbd1b7fd39b6b2a4b8f7f807",
+      "wasm/packages/cli/src/internal/report/snapshot.js": "327effbb8f8519f83736a152267f8712ef5c8d4164e0ea7775ccb795d319da52",
+      "wasm/packages/cli/src/project-config.js": "b3a86d6ea53841f5add22e6491962d400d788947af1db9a266a2f5b267513ae1",
+      "wasm/packages/cli/src/project-execution.js": "4c5be473267e2aa6481f4b5ad3f7e9638ca843077f05a5ce78268910385fa91f",
+      "wasm/test/assert-import-boundaries.cjs": "437faa95ca2f9d0d2d700961c207de5c06b4c0ecd96f8402006984b91e7bb7dc",
+      "wasm/test/cli/assert-report-capsule-contract.cjs": "3a6feb4bd0cbbda421222ece479fac63d8f307fb4c9a79a831a831eccdb8dafe",
+      "wasm/test/cli/assert-report-retained-evidence.cjs": "ab5e46e7249f7f1266d8b13faab989ec2ba84da04bb1445c6d435739c473b11d",
+      "wasm/test/cli/report-inventory-cases.cjs": "8d2b1aa08dfbece33d0956e6f4e2b4b9222b096b9c459bd5844e8a9ef41dd697",
+      "wasm/test/fixtures/report/typecheck.ts": "28c6580a486d39ce7bb76fe66278ee21374c5e045c74f66a644231aba64bce39",
+      "wasm/test/suite/registry.cjs": "a03b3d453393a732afcb4244fdd29b9a621058d2f9f38762ecb21c2c54e33d9b"
+    }
+  },
+  "preexistingNativeFixture": {
+    "base": "0fcc88120f000fcd813aa918172e39302d993228",
+    "method": "Same minimal failing frontend call with original base CLI config/execution modules; compiler/helper/example files are unchanged from base. No Native rebuild.",
+    "current": [
+      {
+        "name": "hello",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "schema",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "fetchComposition",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "fastlyCapabilities",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "opaqueProxy",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "router",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "pulseContextMcp",
+        "ok": false,
+        "error": "loadCanonicalModule requires a successful canonical compilation."
+      }
+    ],
+    "originalCli": [
+      {
+        "name": "hello",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "schema",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "fetchComposition",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "fastlyCapabilities",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "opaqueProxy",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "router",
+        "target": "native",
+        "ok": true
+      },
+      {
+        "name": "pulseContextMcp",
+        "ok": false,
+        "error": "loadCanonicalModule requires a successful canonical compilation."
+      }
+    ]
+  },
+  "proof": {
+    "inventoryCases": [
+      {
+        "fixture": "examples/11-events",
+        "routes": 1,
+        "entries": 3,
+        "schemas": 2
+      },
+      {
+        "fixture": "wasm/test/fixtures/projects/canonical-integration",
+        "routes": 1,
+        "entries": 3,
+        "schemas": 0
+      },
+      {
+        "fixture": "wasm/test/fixtures/projects/catalog-router-methods",
+        "routes": 20,
+        "entries": 23,
+        "schemas": 0
+      },
+      {
+        "fixture": "wasm/test/fixtures/projects/canonical-workspace",
+        "routes": 0,
+        "entries": 1,
+        "schemas": 0
+      }
+    ],
+    "status": "passed",
+    "negativeCases": 17,
+    "nativeCompiles": 3,
+    "portableGuestUnchanged": true,
+    "routes": 5,
+    "entries": 6,
+    "schemas": 1,
+    "bindings": 1,
+    "resources": 1,
+    "providerArtifacts": 2,
+    "buildMs": 3149,
+    "reportMs": 370,
+    "capsuleBytes": 18728,
+    "inputSidecarBytes": 9349,
+    "portableSha256": "81150a8d908fc2ecf805c8242fb791fc18560766a90e9698473b88af71819411",
+    "providerSha256": "4fc27b5746cfc93f5b3370834bdd4e6185956204858650844159092db0b31c15"
+  },
+  "contract": {
+    "status": "passed",
+    "negativeCases": 64,
+    "goldenCapsules": 2,
+    "registeredSchemas": 2,
+    "attributionProofCells": 3,
+    "sameCapsuleHtmlRoundTrip": true,
+    "completedWasmAndHistoricalReplay": true,
+    "noIoOrToolchainImports": true
+  },
+  "profiles": {
+    "unit": {
+      "expectedTasks": 51,
+      "passedTasks": 51,
+      "missingTasks": []
+    },
+    "cli": {
+      "expectedTasks": 26,
+      "passedTasks": 26,
+      "missingTasks": []
+    }
+  },
+  "checks": {
+    "maintenance": {
+      "status": "passed",
+      "logSha256": "597f324b132d2ea4a0e392e5524a9d6a7f16ac23a259902af630daab77b272e8"
+    },
+    "documentation": {
+      "status": "passed",
+      "logSha256": "55a2eea8b865af94217bab032b358ab5a6d8e038c5d540f2c7d875e4ba2d521e"
+    },
+    "documentationRelease": {
+      "status": "passed",
+      "logSha256": "4c28bfb70f960157be06f1e5868a2a909292c4b7f9f8c1fcbdf8aeecaa25ca86"
+    },
+    "typescriptBuild": {
+      "status": "passed",
+      "logSha256": "7dc6c9c94341ef8eac08330e76386a77235fcfc4769ce1e7bc1fac86e28bb6a6"
+    },
+    "scope": {
+      "status": "declaration-valid; human boundary review remains required",
+      "protectedBoundaries": [
+        "configuration-contract",
+        "runtime-target-fluidity"
+      ],
+      "logSha256": "37f1da9de680ed2c252e06aeeaea930dfe6d0491393c5de27e389cba6972229b"
+    }
+  },
+  "attempts": [
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --no-report",
+      "status": "failed",
+      "note": "Missing narrow import-boundary declaration; added the existing static config parser for the new CLI collector.",
+      "terminalSummary": true,
+      "logSha256": "78976872a02ba7d2fcb0956817ba44a7ccba95559faaef635159264ade2e687a",
+      "tasks": [
+        {
+          "id": "report-capsule-contract",
+          "status": "passed",
+          "duration": "1.37s"
+        },
+        {
+          "id": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "16.63s"
+        },
+        {
+          "id": "multifile-source-indexes",
+          "status": "passed",
+          "duration": "291ms"
+        },
+        {
+          "id": "guest-json-roundtrip",
+          "status": "passed",
+          "duration": "140ms"
+        },
+        {
+          "id": "pure-helper-contract",
+          "status": "passed",
+          "duration": "1.09s"
+        },
+        {
+          "id": "suite-shape",
+          "status": "passed",
+          "duration": "138ms"
+        },
+        {
+          "id": "test-orchestration",
+          "status": "passed",
+          "duration": "7.42s"
+        },
+        {
+          "id": "package-exports",
+          "status": "passed",
+          "duration": "182ms"
+        },
+        {
+          "id": "boundaries",
+          "status": "failed",
+          "duration": "161ms"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --from boundaries --no-report",
+      "status": "passed",
+      "note": null,
+      "terminalSummary": true,
+      "logSha256": "0c0ccd68e0683d69af575598e3b94e439063b1da1552aae17b069dc1d5f9d0e1",
+      "tasks": [
+        {
+          "id": "boundaries",
+          "status": "passed",
+          "duration": "377ms"
+        },
+        {
+          "id": "workspace-hygiene",
+          "status": "passed",
+          "duration": "230ms"
+        },
+        {
+          "id": "hidden-contracts",
+          "status": "passed",
+          "duration": "287ms"
+        },
+        {
+          "id": "release-feature-acceptance",
+          "status": "passed",
+          "duration": "625ms"
+        },
+        {
+          "id": "release-runtime-policy",
+          "status": "passed",
+          "duration": "1.31s"
+        },
+        {
+          "id": "release-seal-lifecycle",
+          "status": "passed",
+          "duration": "3.68s"
+        },
+        {
+          "id": "release-checkpoints",
+          "status": "passed",
+          "duration": "234ms"
+        },
+        {
+          "id": "release-recovery-runner",
+          "status": "passed",
+          "duration": "15.01s"
+        },
+        {
+          "id": "release-recovery",
+          "status": "passed",
+          "duration": "2.09s"
+        },
+        {
+          "id": "release-tag",
+          "status": "passed",
+          "duration": "572ms"
+        },
+        {
+          "id": "api-surface",
+          "status": "passed",
+          "duration": "893ms"
+        },
+        {
+          "id": "logging-contract",
+          "status": "passed",
+          "duration": "138ms"
+        },
+        {
+          "id": "s3-design-contract",
+          "status": "passed",
+          "duration": "1.25s"
+        },
+        {
+          "id": "kv-design-contract",
+          "status": "passed",
+          "duration": "1.20s"
+        },
+        {
+          "id": "kv-conditional-runtime",
+          "status": "passed",
+          "duration": "1.22s"
+        },
+        {
+          "id": "kv-conditional-gates",
+          "status": "passed",
+          "duration": "494ms"
+        },
+        {
+          "id": "s3-read-contract",
+          "status": "passed",
+          "duration": "2.09s"
+        },
+        {
+          "id": "s3-write-contract",
+          "status": "passed",
+          "duration": "360ms"
+        },
+        {
+          "id": "crypto-config-planning",
+          "status": "passed",
+          "duration": "684ms"
+        },
+        {
+          "id": "crypto-es256-signing",
+          "status": "passed",
+          "duration": "141ms"
+        },
+        {
+          "id": "crypto-rs256",
+          "status": "passed",
+          "duration": "1.72s"
+        },
+        {
+          "id": "crypto-digest-text-contract",
+          "status": "passed",
+          "duration": "508ms"
+        },
+        {
+          "id": "reachable-graph",
+          "status": "passed",
+          "duration": "172ms"
+        },
+        {
+          "id": "project-modules",
+          "status": "passed",
+          "duration": "947ms"
+        },
+        {
+          "id": "package-reachability",
+          "status": "passed",
+          "duration": "944ms"
+        },
+        {
+          "id": "provider-toolchain",
+          "status": "passed",
+          "duration": "144ms"
+        },
+        {
+          "id": "schema-registry",
+          "status": "passed",
+          "duration": "943ms"
+        },
+        {
+          "id": "continuation-registry",
+          "status": "passed",
+          "duration": "126ms"
+        },
+        {
+          "id": "entities-contracts",
+          "status": "passed",
+          "duration": "176ms"
+        },
+        {
+          "id": "entities-schema-bridge",
+          "status": "passed",
+          "duration": "338ms"
+        },
+        {
+          "id": "entities-javascript-runtime",
+          "status": "passed",
+          "duration": "754ms"
+        },
+        {
+          "id": "entities-json-rpc-corpus",
+          "status": "passed",
+          "duration": "123ms"
+        },
+        {
+          "id": "mcp-http",
+          "status": "passed",
+          "duration": "354ms"
+        },
+        {
+          "id": "pulse-context-corpus",
+          "status": "passed",
+          "duration": "799ms"
+        },
+        {
+          "id": "pulse-context-application",
+          "status": "passed",
+          "duration": "5.19s"
+        },
+        {
+          "id": "pulse-context-host",
+          "status": "passed",
+          "duration": "3.06s"
+        },
+        {
+          "id": "mcp-compatibility",
+          "status": "passed",
+          "duration": "251ms"
+        },
+        {
+          "id": "mcp-tools",
+          "status": "passed",
+          "duration": "285ms"
+        },
+        {
+          "id": "mcp-authorization",
+          "status": "passed",
+          "duration": "2.96s"
+        },
+        {
+          "id": "entities-package-owned-lowering",
+          "status": "passed",
+          "duration": "346ms"
+        },
+        {
+          "id": "entities-catalog",
+          "status": "passed",
+          "duration": "346ms"
+        },
+        {
+          "id": "entities-inspection",
+          "status": "passed",
+          "duration": "11.03s"
+        },
+        {
+          "id": "entities-orchestration-demo",
+          "status": "passed",
+          "duration": "6.02s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile cli --no-report",
+      "status": "failed",
+      "note": "Persistent lease rejected rebuild after dev; replaced PID/exclusive lock with superseding writer generation checks.",
+      "terminalSummary": true,
+      "logSha256": "1597b77b6d946d4042ba9ab58ea3c9aea8871c8dc6f8148ab4c4623cbe8cb082",
+      "tasks": [
+        {
+          "id": "report-capsule-contract",
+          "status": "passed",
+          "duration": "1.38s"
+        },
+        {
+          "id": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "16.36s"
+        },
+        {
+          "id": "cli-command-spec",
+          "status": "passed",
+          "duration": "123ms"
+        },
+        {
+          "id": "cli-init-workflow",
+          "status": "passed",
+          "duration": "19.70s"
+        },
+        {
+          "id": "cli-project-workflow",
+          "status": "passed",
+          "duration": "61.30s"
+        },
+        {
+          "id": "cli-expansion-doctor",
+          "status": "passed",
+          "duration": "9.30s"
+        },
+        {
+          "id": "cli-project-guards",
+          "status": "passed",
+          "duration": "8.00s"
+        },
+        {
+          "id": "cli-dev-workflow",
+          "status": "passed",
+          "duration": "10.35s"
+        },
+        {
+          "id": "cli-schema-json-workflow",
+          "status": "passed",
+          "duration": "54.46s"
+        },
+        {
+          "id": "entities-node-native-workflow",
+          "status": "failed",
+          "duration": "14.54s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task cli-report-retained-evidence --task entities-node-native-workflow --no-report",
+      "status": "passed",
+      "note": "Final workspace-control binding and generation behavior passed.",
+      "terminalSummary": true,
+      "logSha256": "dfdc68266b2fc7b231443b15f72111822951404e00d524e0b5b4332cc3900661",
+      "tasks": [
+        {
+          "id": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "16.65s"
+        },
+        {
+          "id": "entities-node-native-workflow",
+          "status": "passed",
+          "duration": "18.36s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile cli --from fastly-entities-native-workflow --no-report",
+      "status": "incomplete",
+      "note": "Runner exited zero before docs-example-10 emitted a task receipt or terminal summary; resumed the unfinished selection only.",
+      "terminalSummary": false,
+      "logSha256": "f91dc5a9db00a287c0a36328fa07effd6fd149b69f2dc09e7c0ab55d275bc038",
+      "tasks": [
+        {
+          "id": "fastly-entities-native-workflow",
+          "status": "passed",
+          "duration": "64.81s"
+        },
+        {
+          "id": "events-cli-workflow",
+          "status": "passed",
+          "duration": "47.78s"
+        },
+        {
+          "id": "cli-diagnostics",
+          "status": "passed",
+          "duration": "5.07s"
+        },
+        {
+          "id": "docs-executable-contracts",
+          "status": "passed",
+          "duration": "25.46s"
+        },
+        {
+          "id": "docs-executable-init-dev",
+          "status": "passed",
+          "duration": "6.42s"
+        },
+        {
+          "id": "docs-migration-schema-lowering",
+          "status": "passed",
+          "duration": "118ms"
+        },
+        {
+          "id": "docs-example-01-hello-json",
+          "status": "passed",
+          "duration": "7.78s"
+        },
+        {
+          "id": "docs-example-02-request-schema",
+          "status": "passed",
+          "duration": "12.19s"
+        },
+        {
+          "id": "docs-example-03-fetch-composition",
+          "status": "passed",
+          "duration": "8.56s"
+        },
+        {
+          "id": "docs-example-05-fastly-capabilities",
+          "status": "passed",
+          "duration": "17.06s"
+        },
+        {
+          "id": "docs-example-07-opaque-proxy",
+          "status": "passed",
+          "duration": "14.52s"
+        },
+        {
+          "id": "docs-example-09-router-lowering",
+          "status": "passed",
+          "duration": "10.16s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --profile cli --from docs-example-10-entities-tools --no-report",
+      "status": "passed",
+      "note": null,
+      "terminalSummary": true,
+      "logSha256": "3643774563fcc1214ab94bcbaae3b433dbf49aab877e025857382e0dc64d35a7",
+      "tasks": [
+        {
+          "id": "docs-example-10-entities-tools",
+          "status": "passed",
+          "duration": "8.31s"
+        },
+        {
+          "id": "docs-example-11-events",
+          "status": "passed",
+          "duration": "13.84s"
+        },
+        {
+          "id": "docs-example-12-pulse-context-mcp",
+          "status": "passed",
+          "duration": "4.45s"
+        },
+        {
+          "id": "docs-example-13-jwt-es256",
+          "status": "passed",
+          "duration": "26.67s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task canonical-native-wasm --task cli-javascript-target-compilation --task four-mode-conformance --no-report",
+      "status": "failed",
+      "note": "Existing default-JavaScript example cannot be loaded as a generated canonical module; minimal failure reproduced with original base CLI modules.",
+      "terminalSummary": true,
+      "logSha256": "b03d83c072e14d5f172fa9fe2708ec9c2856ca2ec0b1535aabddbcfdf49288ac",
+      "tasks": [
+        {
+          "id": "canonical-native-wasm",
+          "status": "failed",
+          "duration": "18.60s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task canonical-router-terminal-middleware --task cli-javascript-target-compilation --task four-mode-conformance --no-report",
+      "status": "failed",
+      "note": "Native middleware and JavaScript target tasks passed. Four-mode reused old resolved project objects after other profile outputs changed; Report snapshot mismatch incorrectly rejected the ordinary build.",
+      "terminalSummary": true,
+      "logSha256": "32190ce2dd69695ce3268e29b15c1dab235ce245b21f932e65c46c94c7da9e0a",
+      "tasks": [
+        {
+          "id": "canonical-router-terminal-middleware",
+          "status": "passed",
+          "duration": "6.51s"
+        },
+        {
+          "id": "cli-javascript-target-compilation",
+          "status": "passed",
+          "duration": "15.09s"
+        },
+        {
+          "id": "four-mode-conformance",
+          "status": "failed",
+          "duration": "22.29s"
+        }
+      ]
+    },
+    {
+      "command": "node wasm/scripts/run-wasm-tests.cjs --task cli-report-retained-evidence --task four-mode-conformance --no-report",
+      "status": "passed",
+      "note": "Conservative snapshot mismatch now disables completion and preserves ordinary build admission. Both final regressions passed.",
+      "terminalSummary": true,
+      "logSha256": "2f2962bb584f36adb3bdf55361d195b9dc86c69f8dd0151e5424b7b3cc26f3d2",
+      "tasks": [
+        {
+          "id": "cli-report-retained-evidence",
+          "status": "passed",
+          "duration": "16.64s"
+        },
+        {
+          "id": "four-mode-conformance",
+          "status": "passed",
+          "duration": "30.82s"
+        }
+      ]
+    }
+  ],
+  "developmentFindings": [
+    "Source-checkout first-party manifests required exact release-catalog binding in addition to Node resolution.",
+    "Asset payload facts come from canonical Native effect inputs, not the redacted metadata summary.",
+    "HTTP continuation termination must not fall through into appended event entries.",
+    "Required sidecars, wire-normalized legacy manifests and final artifact hashes are admitted before completion.",
+    "Persistent lease recovery was replaced after focused/CLI stale-lease failures; no manual PID reclamation is needed.",
+    "Ancestor workspace controls and exact config read tokens are part of local matching.",
+    "Stale/concurrent snapshot receipts suppress Report completion without rejecting otherwise-valid ordinary builds."
+  ],
+  "limits": [
+    "Generated helper/validator inventory is partial; retained payload and function/section attribution await PRPT-03.",
+    "Binding realization and inferred authorization are not claimed; dynamic binding names remain partial.",
+    "Composition with middleware/mounts is bounded, not a path-sensitive execution trace.",
+    "Git revision/dirty state and public source fingerprint are unknown.",
+    "Concurrent same-output builds are unsupported; generation/read checks reject detected overlap, not a universal cross-file transaction.",
+    "canonical-native-wasm remains failed on an unchanged default-JavaScript fixture; original-base minimal reproduction is retained.",
+    "No full native/javascript/conformance profiles, packed-install, supported-Node-floor, deployment, external Fastly reality or full release campaign was run."
+  ]
+}

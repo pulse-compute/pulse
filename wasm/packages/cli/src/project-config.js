@@ -481,6 +481,10 @@ function conventionalProjectProjection(plan, options = {}) {
 }
 
 function loadConventionalProject(workspace, options = {}) {
+  const reportSnapshot = require('./internal/report/snapshot');
+  let configReceipt;
+  try { configReceipt = require('./internal/report/files').readFile(workspace.root, relative(workspace.configFile, workspace.root)); }
+  catch { /* Unsupported report input does not change existing project resolution. */ }
   const sourceName = relative(workspace.configFile, workspace.root);
   const environmentProfile = options.environmentProfile !== undefined
     ? options.environmentProfile
@@ -495,18 +499,22 @@ function loadConventionalProject(workspace, options = {}) {
   let evaluated;
   try {
     compiled = compileProjectConfigFile(workspace.configFile, { source: sourceName, selection });
-    const loaded = require('./typescript-module-loader.js').loadTypescriptModule(workspace.configFile, {
-      workspaceRoot: workspace.configInsideWorkspace === false ? path.dirname(workspace.configFile) : workspace.root,
-      allowedPackages: {
-        '@pulse-compute/pulse': Object.freeze({ defineConfig: configRuntime.defineConfig })
-      }
-    });
-    const exported = require('./typescript-module-loader.js').moduleDefault(loaded.exports);
-    evaluated = configRuntime.evaluateConfigFactory(exported, {
-      source: sourceName,
-      cliProfile: selection.cliProfile,
-      environmentProfile: selection.environmentProfile
-    });
+    if (options.metadataOnly === true) {
+      evaluated = compiled;
+    } else {
+      const loaded = require('./typescript-module-loader.js').loadTypescriptModule(workspace.configFile, {
+        workspaceRoot: workspace.configInsideWorkspace === false ? path.dirname(workspace.configFile) : workspace.root,
+        allowedPackages: {
+          '@pulse-compute/pulse': Object.freeze({ defineConfig: configRuntime.defineConfig })
+        }
+      });
+      const exported = require('./typescript-module-loader.js').moduleDefault(loaded.exports);
+      evaluated = configRuntime.evaluateConfigFactory(exported, {
+        source: sourceName,
+        cliProfile: selection.cliProfile,
+        environmentProfile: selection.environmentProfile
+      });
+    }
   } catch (error) {
     throw projectErrorFrom(error);
   }
@@ -524,9 +532,14 @@ function loadConventionalProject(workspace, options = {}) {
   }
 
   const plan = compiled.plan;
+  const reportReceipt = reportSnapshot.resolutionStart(workspace.root, workspace.configFile,
+    options.outDir || plan.fragments?.outDir || 'dist');
+  if (configReceipt && reportReceipt.snapshot && reportReceipt.snapshot.tokens.get(sourceName) !== configReceipt.token) {
+    reportReceipt.error = 'REPORT_CONCURRENT_CHANGE';
+  }
   const testsFile = resolveWorkspaceFile(workspace.root, plan.pulse.tests, 'pulse.tests');
   const schemaFile = resolveWorkspaceFile(workspace.root, plan.pulse.schema, 'pulse.schema');
-  const tests = loadProjectHarness(testsFile, workspace.root);
+  const tests = options.metadataOnly === true ? Object.freeze([]) : loadProjectHarness(testsFile, workspace.root);
   const projected = conventionalProjectProjection(plan, { projectRoot: workspace.root });
   const project = normalizeProject(projected, {
     ...options,
@@ -562,7 +575,7 @@ function loadConventionalProject(workspace, options = {}) {
         dependencies: Object.freeze([])
       });
 
-  return Object.freeze({
+  return reportSnapshot.retainResolution(Object.freeze({
     ...project,
     schemas,
     workspace,
@@ -578,7 +591,7 @@ function loadConventionalProject(workspace, options = {}) {
     projectHash: compiled.declaration.projectHash,
     planHash: plan.planHash,
     configParity: Object.freeze({
-      status: 'matched',
+      status: options.metadataOnly === true ? 'not-evaluated' : 'matched',
       projectHash: compiled.declaration.projectHash,
       planHash: plan.planHash
     }),
@@ -588,7 +601,7 @@ function loadConventionalProject(workspace, options = {}) {
     schemaFile,
     testsFile,
     tests
-  });
+  }), reportReceipt);
 }
 
 function validateResolvedProject(project) {

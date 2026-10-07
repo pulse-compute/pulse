@@ -1126,6 +1126,19 @@ guarantee. Native inspection compiles the source
 independently under Native rules. Its failure is advisory for a selected
 JavaScript target; `pulse compile` still requires a real Native compilation.
 
+Native build/compile orchestration retains optional Report v1 evidence without
+changing executable emission. Safe-output orchestration invalidates previous
+completion before work; completion is published last and binds exact inputs,
+selected profile, recipe, toolchain and portable/final artifact hashes. Missing,
+unsupported, stale or failed completion cannot be repaired by reporting. An
+internal collector uses the existing static configuration parser for current
+snapshot matching; artifact and historical replay do not import project code,
+providers or compilers. Report inventories remain declaration/evidence records,
+not authorization or parity claims. Unknown binding realization, generated
+resource coverage and byte attribution stay explicit. This adds no public CLI
+command; see the [PRPT-02 packet](../internal/prpt02/README.md) for lifecycle,
+redaction, coverage and remaining integration gates.
+
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target
 support policy. The compiler owns the neutral bootstrap, contract validation,
