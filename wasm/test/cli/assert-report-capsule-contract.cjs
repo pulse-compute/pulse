@@ -49,6 +49,7 @@ assert.notEqual(capsule.stableReportId('route', 'canonical-entry'), capsule.stab
 const localeScript = `process.stdout.write(require(${JSON.stringify(path.join(__dirname, 'report-fixtures.cjs'))}).createCapsule(require(${JSON.stringify(path.join(__dirname, 'report-fixtures.cjs'))}).fixture()).evidenceHash.value)`;
 assert.equal(execFileSync(process.execPath, ['-e', localeScript], { cwd: '/', env: { ...process.env, LANG: 'tr_TR.UTF-8', TZ: 'Pacific/Auckland' }, encoding: 'utf8' }), rich.evidenceHash.value);
 
+rejects(mutate(value => { value.entries[0].flow = { nextEntryId: 'missing', childEntryId: null, parentContinueEntryId: null, routerPath: ['app'], path: null, method: null, scoped: false, conditional: false }; }), 'REPORT_REFERENCE');
 rejects(mutate(value => value.routes.reverse()), 'REPORT_ORDER');
 rejects(mutate(value => value.routes[1].id = value.routes[0].id), 'REPORT_DUPLICATE');
 rejects(mutate(value => value.routes[0].entryId = 'missing'), 'REPORT_REFERENCE');

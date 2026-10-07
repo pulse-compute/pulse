@@ -84,6 +84,9 @@ function check(capsule) {
     references([route.entryId, ...route.composition], maps.entries);
     ensure(maps.entries.get(route.entryId).handlerId === route.handlerId, 'REPORT_REFERENCE');
   }
+  for (const entry of capsule.entries) if (entry.flow) {
+    references([entry.flow.nextEntryId, entry.flow.childEntryId, entry.flow.parentContinueEntryId].filter(id => id !== null), maps.entries);
+  }
   for (const name of ['schemas', 'bindings']) {
     const key = name === 'schemas' ? 'schemaIds' : 'bindingIds', reverseRoutes = new Map(), reverseEntries = new Map();
     for (const [records, reverse] of [[capsule.routes, reverseRoutes], [capsule.entries, reverseEntries]])

@@ -3,7 +3,10 @@
 This packet implements the data contract from the [v2 plan](../prpt00/feature-spec-v2.md)
 and [00C attribution proof](../prpt00c/README.md). The pure implementation lives in
 `wasm/packages/cli/src/internal/report/`. It adds no command, collector, build
-hook, renderer, provider behavior or package export. Those remain 02–05.
+hook, renderer, provider behavior or package export. [PRPT-02](../prpt02/README.md)
+now provides the collector and completion lifecycle. Rendering remains 04–05.
+02 adds optional entry flow and route composition coverage fields; original
+v1 golden capsules and their identities remain unchanged.
 Entry point: none; ordinary root/wasm/CLI instruction chain. Human direction is
 the explicit request to implement PRPT-01 against `latest`, following merged
 PR #221. Model/effort recommendation remains Sol / high.
