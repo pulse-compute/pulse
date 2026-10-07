@@ -7,14 +7,14 @@ const os = require('node:os');
 const path = require('node:path');
 const http = require('node:http');
 const net = require('node:net');
-const { spawn } = require('node:child_process');
+const { spawn, execFileSync } = require('node:child_process');
 const { createRequire } = require('node:module');
 const { once } = require('node:events');
 const { setTimeout: delay } = require('node:timers/promises');
 const { resolveProject } = require('../../packages/cli/src/project-config.js');
 const { buildProject } = require('../../packages/cli/src/project-execution.js');
 const root = path.resolve(__dirname, '../../..');
-const fixture = path.join(root, 'packages/mcp/examples/pulse-context');
+const fixture = path.join(root, 'examples/12-pulse-context-mcp');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-context-host-'));
 const runtime = path.join(temp, 'runtime'), source = path.join(temp, 'source');
 const children = new Set(), hosts = new Set(), sockets = new Set();
@@ -74,6 +74,8 @@ async function main() {
   assert.deepEqual(prepareHostBuild(built), manifest);
   fs.cpSync(built, path.join(runtime, 'dist-node-javascript'), { recursive: true });
   fs.cpSync(path.join(fixture, 'host'), path.join(runtime, 'host'), { recursive: true });
+  fs.cpSync(path.join(fixture, 'client'), path.join(runtime, 'client'), { recursive: true });
+  fs.copyFileSync(path.join(fixture, 'README.md'), path.join(runtime, 'README.md'));
   fs.copyFileSync(path.join(fixture, 'package.json'), path.join(runtime, 'package.json'));
   // Copy candidate package bytes, not source-checkout links. PMCP-07 owns tarball installation.
   const packageMap = new Map();
@@ -108,15 +110,40 @@ async function main() {
   const listed = await rpc(ready.endpoint, 'tools/list', {});
   assert.equal(listed.status, 200); assert.equal(listed.reply.result.tools.length, 5);
   const version = ready.corpus.pulseVersion;
-  const cases = [['pulse.start', { goal: 'json-api', provider: 'node', target: 'javascript' }],
-    ['pulse.search', { query: 'schema' }], ['pulse.read', { id: 'schema/registry' }],
-    ['pulse.example', { id: '01-hello-json' }], ['pulse.explain_diagnostic', { code: 'PULSE_SCHEMA_COMPILE_FAILED' }]];
-  for (const [name, args] of cases) {
-    const result = await rpc(ready.endpoint, 'tools/call', { name, arguments: { version, ...args } });
-    assert.equal(result.status, 200); assert.equal(result.reply.result.isError, false);
-    assert.equal(result.reply.result.structuredContent.meta.corpusHash, ready.corpus.corpusHash);
-    assert.equal(result.reply.result.structuredContent.status, 'ok');
-  }
+  // Replay the public README's exact requests using its included client outside the checkout.
+  // This extends the existing one-build host proof rather than adding a campaign.
+  const readme = fs.readFileSync(path.join(runtime, 'README.md'), 'utf8');
+  const requests = [...readme.matchAll(/^node client\/request\.cjs (\S+)(?: '([^'\n]+)')?$/gm)];
+  assert.equal(requests.length, 12, 'Public client walkthrough selection changed.');
+  const results = requests.map(([, operation, json]) => {
+    const result = JSON.parse(execFileSync(process.execPath,
+      [path.join(runtime, 'client/request.cjs'), '--url', ready.endpoint, operation, ...(json ? [json] : [])], {
+        cwd: runtime, encoding: 'utf8', timeout: 10000,
+        env: { ...process.env, NODE_PATH: '', NODE_OPTIONS: '' },
+      }));
+    if (operation.startsWith('pulse.')) {
+      assert.equal(result.isError, false);
+      assert.equal(result.structuredContent.meta.corpusHash, ready.corpus.corpusHash);
+      assert.equal(result.structuredContent.meta.pulseVersion, version);
+      assert.equal(result.structuredContent.status, 'ok');
+    }
+    return result.structuredContent || result;
+  });
+  assert.equal(results[1].tools.length, 5);
+  assert.equal(results[2].plan.exampleId, '01-hello-json');
+  assert.ok(results[2].plan.contracts.every(record => record.source.url && record.source.sha256));
+  assert.equal(results[3].totalRecords, 6);
+  assert.equal(results[3].truncated, true);
+  assert.deepEqual(results[4].plan.configuration.changedFields, []);
+  assert.deepEqual(results[5].plan.configuration.changedFields, ['local.target: native -> javascript']);
+  assert.ok(results[8].explanation.contracts.some(record => record.id === 'schema/boundaries'));
+  assert.equal(results[10].explanation.code, 'PULSE_PACKAGE_LOWERING_FAILED');
+  assert.equal(results[11].record.id, 'contract/effects');
+  // Search is also exercised through the public helper, though not a separate walkthrough.
+  const { request } = require(path.join(runtime, 'client/request.cjs'));
+  const search = await request(ready.endpoint, 'pulse.search', { version, query: 'schema' });
+  assert.equal(search.structuredContent.status, 'ok');
+  assert.ok(search.structuredContent.results.length > 0);
   assert.equal((await rpc(ready.endpoint, 'tools/list', {}, false, { origin: 'https://untrusted.example' })).status, 403);
   assert.equal((await rpc(ready.endpoint, 'tools/call', { name: 'pulse.search', arguments: { version, query: 'x'.repeat(32768) } })).status, 413);
   assert.notEqual((await rpc(ready.endpoint, 'tools/list', {}, true)).status, 200);

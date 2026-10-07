@@ -13,7 +13,7 @@ const { buildProject } = require('../../packages/cli/src/project-execution.js');
 const { createMcpHttpHandler, PROTOCOL_VERSION } = require('../../../packages/mcp/src/index.js');
 const { run, parseJson } = require('../cli/helpers.cjs');
 const root = path.resolve(__dirname, '../../..');
-const fixture = path.join(root, 'packages/mcp/examples/pulse-context');
+const fixture = path.join(root, 'examples/12-pulse-context-mcp');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-context-app-'));
 const sha = text => crypto.createHash('sha256').update(text).digest('hex');
 let launcher;
