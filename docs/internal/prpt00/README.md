@@ -26,7 +26,7 @@ the read-only proof against an already compiled fixture.
 | 00A interactive exercise | Source/data/previews checked; browser unavailable in this environment | Browser interaction, keyboard and narrow-screen execution are unverified, not passed; retain explicit PRPT-05/06 acceptance |
 | 00B inventory/physical sizes | Proven bounded producer paths and one real compiled artifact | PRPT-01 can freeze the capsule with explicit coverage states |
 | 00B fresh-report eligibility | Existing manifests contain useful identity but do not meet the complete Report lifecycle contract | PRPT-02A is required; do not treat legacy manifests as fully eligible merely because `status` says built |
-| 00B route-body mapping | 0/3 fixture routes have a trustworthy retained final-index map | Scope decision: accept unavailable C/D for initial delivery, or commission a separately bounded post-optimizer mapping proof before promising them |
+| 00B route-body mapping | 0/3 fixture routes have a trustworthy retained final-index map in the original artifact | Follow-up [00C](../prpt00c/README.md) now proves same-build capture on a five-route fixture; legacy artifacts still lack the sidecar |
 
 This packet completes the bounded investigation. The attribution decision is
 submitted for human review, not silently approved. No optimizer redesign,
@@ -201,12 +201,13 @@ no custom name section. The retention transform runs before final optimization;
 merging and final emission still matter. Capturing its pre-optimization names
 or assigning final functions by positional coincidence would not prove identity.
 
-**Recommended scope disposition:** ship A/B and structural route/schema views,
+**Original 00B recommendation, superseded by [00C](../prpt00c/README.md):** ship A/B and structural route/schema views,
 keep handler/Own/Reachable/Shared metrics explicitly unavailable where mapping
 is absent, and retain the size selector/coverage UX. If route bytes are required
 for the first release, first prove a small final-emission mapping hook that
 records identity after all optimization/linking and leaves executable bytes
-identical. That follow-up is not approved or implemented here. O-08's matching
+identical. That follow-up was subsequently approved and completed as the bounded
+00C proof; production integration remains PRPT-02A/03. O-08's matching
 names companion is a valid research technique but forbidden automatic Report
 work. No proportional allocation or source-length surrogate is acceptable.
 

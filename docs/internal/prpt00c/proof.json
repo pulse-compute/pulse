@@ -1,0 +1,5123 @@
+{
+  "version": "pulse.prpt00c.proof.v1",
+  "status": "passed",
+  "sourceRevision": "7337be683c7f8d90c12f6b47349a7185ba3cad0d",
+  "workingTree": "M docs/internal/prpt00c/capture-transform.cjs\n M docs/internal/prpt00c/proof.cjs",
+  "sourceFiles": [
+    {
+      "file": "docs/internal/prpt00c/proof.cjs",
+      "sha256": "79c97b77ddcc0118dd6bb79bb21893ff5074ac8a4ea1e4abd0d0fc2d840ff848"
+    },
+    {
+      "file": "docs/internal/prpt00c/capture-transform.cjs",
+      "sha256": "735b7ce57a6892a2e976b1fadca5a32bebf762d661b4d8b161b561f6ade26783"
+    },
+    {
+      "file": "docs/internal/prpt00c/attribution.cjs",
+      "sha256": "34e7134efc317238cc9b7965f031276f9f0eb2d7316c954ef3c3fe51cd6fd55e"
+    },
+    {
+      "file": "docs/internal/prpt00c/direct-graph.cjs",
+      "sha256": "613f3cbdaa2a9511d1bd073a3d1ba6370e2aaaee8cc3f9ac916f5ccf5a7d3b12"
+    },
+    {
+      "file": "docs/internal/prpt00c/shared-router.ts",
+      "sha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6"
+    },
+    {
+      "file": "wasm/packages/compiler/src/canonical-native-compiler.js",
+      "sha256": "a99e63a068d22798dc76985b6d8c07a7ed0c574ee97d15963decdc5f9f2e978d"
+    },
+    {
+      "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native.js",
+      "sha256": "052d6f4252127c2c44853962e9694a2f126be60d6055d8898a100be8f868c375"
+    },
+    {
+      "file": "wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js",
+      "sha256": "61d2e4eaa4d66594b5e50e859f19129ac900473386bbe4e1b59f2de445f94750"
+    },
+    {
+      "file": "wasm/packages/build-support/src/native-optimization.js",
+      "sha256": "f21423427df332f0311a23076546a3b9175f5059e363ba3fe5be643961925d68"
+    },
+    {
+      "file": "wasm/packages/build-support/src/native-retention-transform.cjs",
+      "sha256": "261464678386aedb9ac93776093583331a1ebb35d25b5b9ecef85306fe74e14d"
+    },
+    {
+      "file": "wasm/test/runtime/compiler-efficiency/o08-wasm-census.cjs",
+      "sha256": "e46889e2c99d0d3185973fd0989e6fe3711d61ee11e9da44e66b4f756e49e1ba"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/native-platform-capabilities.js",
+      "sha256": "b19da0923612c715012c5ed6194a1a6859e95b3caf98e44758e5263e05a5d319"
+    },
+    {
+      "file": "packages/provider-fastly/src/build/canonical-target.js",
+      "sha256": "b97a9805e2b8eed5955aeeeabd9dbebd22ee1c783f604790c8d1aaf643c0586f"
+    }
+  ],
+  "node": "v24.19.0",
+  "lockfileSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3",
+  "attributionControls": {
+    "status": "passed",
+    "controls": [
+      "missing-name",
+      "partial-map",
+      "bad-artifact-hash",
+      "shared-body-deduplication",
+      "multiple-authored-registrations",
+      "handler-owner-mismatch"
+    ]
+  },
+  "directGraphControls": {
+    "status": "passed",
+    "checks": 12
+  },
+  "cells": [
+    {
+      "id": "portable",
+      "target": "portable",
+      "optimization": "default",
+      "builds": [
+        {
+          "fixtureSha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6",
+          "sourceSha256": "d9976123d785ef56a88fcf1d21d610861e7aefb70a4e457e07347d0a39933da7",
+          "artifactSha256": "3c43329d98671f50f0d60bb50ed91b43c50d99872888763c7e94f966e6e379c4",
+          "artifactBytes": 2545,
+          "ascCalls": 1,
+          "generatorCalls": 1,
+          "recipe": [
+            "canonical-native.as.ts",
+            "--outFile",
+            "<temporary>/canonical-native.wasm",
+            "--runtime",
+            "stub",
+            "--noAssert",
+            "--optimize",
+            "--transform",
+            "wasm/packages/build-support/src/native-retention-transform.cjs",
+            "--runPasses",
+            "merge-similar-functions"
+          ],
+          "elapsedMs": 904,
+          "packaged": null,
+          "runtimeChecks": [
+            {
+              "route": "/shared-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/shared-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/distinct",
+              "status": 201,
+              "passed": true
+            }
+          ],
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          }
+        },
+        {
+          "fixtureSha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6",
+          "sourceSha256": "d9976123d785ef56a88fcf1d21d610861e7aefb70a4e457e07347d0a39933da7",
+          "artifactSha256": "3c43329d98671f50f0d60bb50ed91b43c50d99872888763c7e94f966e6e379c4",
+          "artifactBytes": 2545,
+          "ascCalls": 1,
+          "generatorCalls": 1,
+          "recipe": [
+            "canonical-native.as.ts",
+            "--outFile",
+            "<temporary>/canonical-native.wasm",
+            "--runtime",
+            "stub",
+            "--noAssert",
+            "--optimize",
+            "--transform",
+            "wasm/packages/build-support/src/native-retention-transform.cjs",
+            "--runPasses",
+            "merge-similar-functions"
+          ],
+          "elapsedMs": 1243,
+          "packaged": null,
+          "runtimeChecks": [
+            {
+              "route": "/shared-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/shared-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/distinct",
+              "status": 201,
+              "passed": true
+            }
+          ],
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          }
+        }
+      ],
+      "wholeArtifactIdentical": true,
+      "capture": {
+        "version": "pulse.prpt00c.emission-capture.v1",
+        "artifactSha256": "3c43329d98671f50f0d60bb50ed91b43c50d99872888763c7e94f966e6e379c4",
+        "artifactBytes": 2545,
+        "convergenceEmissions": 0,
+        "nonCustomSectionsIdentical": true,
+        "restoredSerializationIdentical": true,
+        "importedFunctions": 12,
+        "functions": [
+          {
+            "index": 12,
+            "name": "canonical-native.as/__pulse_ex_75$k",
+            "bytes": 52
+          },
+          {
+            "index": 13,
+            "name": "canonical-native.as/pulse_start",
+            "bytes": 80
+          },
+          {
+            "index": 14,
+            "name": "canonical-native.as/pulse_set_effect_result",
+            "bytes": 8
+          },
+          {
+            "index": 15,
+            "name": "canonical-native.as/pulse_resume",
+            "bytes": 8
+          },
+          {
+            "index": 16,
+            "name": "canonical-native.as/pulse_result_handle",
+            "bytes": 4
+          },
+          {
+            "index": 17,
+            "name": "canonical-native.as/pulse_program_counter",
+            "bytes": 4
+          },
+          {
+            "index": 18,
+            "name": "canonical-native.as/pulse_plan_hash_ptr",
+            "bytes": 5
+          },
+          {
+            "index": 19,
+            "name": "canonical-native.as/pulse_plan_hash_length",
+            "bytes": 11
+          },
+          {
+            "index": 20,
+            "name": "canonical-native.as/pulse_pending_count",
+            "bytes": 4
+          },
+          {
+            "index": 21,
+            "name": "canonical-native.as/pulse_last_error_code",
+            "bytes": 4
+          },
+          {
+            "index": 22,
+            "name": "canonical-native.as/pulse_abi_version",
+            "bytes": 4
+          },
+          {
+            "index": 23,
+            "name": "canonical-native.as/__pulse_step",
+            "bytes": 114
+          },
+          {
+            "index": 24,
+            "name": "canonical-native.as/__pulse_chunk_9",
+            "bytes": 14
+          },
+          {
+            "index": 25,
+            "name": "canonical-native.as/__pulse_chunk_8",
+            "bytes": 36
+          },
+          {
+            "index": 26,
+            "name": "canonical-native.as/__pulse_chunk_7",
+            "bytes": 14
+          },
+          {
+            "index": 27,
+            "name": "canonical-native.as/__pulse_chunk_6",
+            "bytes": 36
+          },
+          {
+            "index": 28,
+            "name": "canonical-native.as/__pulse_chunk_5",
+            "bytes": 14
+          },
+          {
+            "index": 29,
+            "name": "canonical-native.as/__pulse_chunk_4",
+            "bytes": 36
+          },
+          {
+            "index": 30,
+            "name": "canonical-native.as/__pulse_chunk_3",
+            "bytes": 14
+          },
+          {
+            "index": 31,
+            "name": "canonical-native.as/__pulse_chunk_2",
+            "bytes": 36
+          },
+          {
+            "index": 32,
+            "name": "canonical-native.as/__pulse_chunk_10",
+            "bytes": 186
+          },
+          {
+            "index": 33,
+            "name": "canonical-native.as/__pulse_chunk_1",
+            "bytes": 101
+          },
+          {
+            "index": 34,
+            "name": "canonical-native.as/__pulse_chunk_0",
+            "bytes": 182
+          },
+          {
+            "index": 35,
+            "name": null,
+            "bytes": 108
+          },
+          {
+            "index": 36,
+            "name": null,
+            "bytes": 68
+          }
+        ],
+        "graph": {
+          "status": "available",
+          "method": "verified-final-binary-direct-calls",
+          "importedFunctions": 12,
+          "definedFunctions": 25,
+          "functions": [
+            {
+              "index": 12,
+              "bytes": 52,
+              "name": "canonical-native.as/__pulse_ex_75$k"
+            },
+            {
+              "index": 13,
+              "bytes": 80,
+              "name": "canonical-native.as/pulse_start"
+            },
+            {
+              "index": 14,
+              "bytes": 8,
+              "name": "canonical-native.as/pulse_set_effect_result"
+            },
+            {
+              "index": 15,
+              "bytes": 8,
+              "name": "canonical-native.as/pulse_resume"
+            },
+            {
+              "index": 16,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_result_handle"
+            },
+            {
+              "index": 17,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_program_counter"
+            },
+            {
+              "index": 18,
+              "bytes": 5,
+              "name": "canonical-native.as/pulse_plan_hash_ptr"
+            },
+            {
+              "index": 19,
+              "bytes": 11,
+              "name": "canonical-native.as/pulse_plan_hash_length"
+            },
+            {
+              "index": 20,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_pending_count"
+            },
+            {
+              "index": 21,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_last_error_code"
+            },
+            {
+              "index": 22,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_abi_version"
+            },
+            {
+              "index": 23,
+              "bytes": 114,
+              "name": "canonical-native.as/__pulse_step"
+            },
+            {
+              "index": 24,
+              "bytes": 14,
+              "name": "canonical-native.as/__pulse_chunk_9"
+            },
+            {
+              "index": 25,
+              "bytes": 36,
+              "name": "canonical-native.as/__pulse_chunk_8"
+            },
+            {
+              "index": 26,
+              "bytes": 14,
+              "name": "canonical-native.as/__pulse_chunk_7"
+            },
+            {
+              "index": 27,
+              "bytes": 36,
+              "name": "canonical-native.as/__pulse_chunk_6"
+            },
+            {
+              "index": 28,
+              "bytes": 14,
+              "name": "canonical-native.as/__pulse_chunk_5"
+            },
+            {
+              "index": 29,
+              "bytes": 36,
+              "name": "canonical-native.as/__pulse_chunk_4"
+            },
+            {
+              "index": 30,
+              "bytes": 14,
+              "name": "canonical-native.as/__pulse_chunk_3"
+            },
+            {
+              "index": 31,
+              "bytes": 36,
+              "name": "canonical-native.as/__pulse_chunk_2"
+            },
+            {
+              "index": 32,
+              "bytes": 186,
+              "name": "canonical-native.as/__pulse_chunk_10"
+            },
+            {
+              "index": 33,
+              "bytes": 101,
+              "name": "canonical-native.as/__pulse_chunk_1"
+            },
+            {
+              "index": 34,
+              "bytes": 182,
+              "name": "canonical-native.as/__pulse_chunk_0"
+            },
+            {
+              "index": 35,
+              "bytes": 108,
+              "name": "23"
+            },
+            {
+              "index": 36,
+              "bytes": 68,
+              "name": "24"
+            }
+          ],
+          "imports": [
+            {
+              "index": 0,
+              "name": "fimport$0"
+            },
+            {
+              "index": 1,
+              "name": "fimport$1"
+            },
+            {
+              "index": 2,
+              "name": "fimport$2"
+            },
+            {
+              "index": 3,
+              "name": "fimport$3"
+            },
+            {
+              "index": 4,
+              "name": "fimport$4"
+            },
+            {
+              "index": 5,
+              "name": "fimport$5"
+            },
+            {
+              "index": 6,
+              "name": "fimport$6"
+            },
+            {
+              "index": 7,
+              "name": "fimport$7"
+            },
+            {
+              "index": 8,
+              "name": "fimport$8"
+            },
+            {
+              "index": 9,
+              "name": "fimport$9"
+            },
+            {
+              "index": 10,
+              "name": "fimport$10"
+            },
+            {
+              "index": 11,
+              "name": "fimport$11"
+            }
+          ],
+          "edges": [
+            {
+              "caller": 12,
+              "callee": 0,
+              "sites": 1
+            },
+            {
+              "caller": 12,
+              "callee": 3,
+              "sites": 2
+            },
+            {
+              "caller": 12,
+              "callee": 1,
+              "sites": 1
+            },
+            {
+              "caller": 12,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 12,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 23,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 34,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 33,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 31,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 30,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 29,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 28,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 27,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 25,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 24,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 32,
+              "sites": 1
+            },
+            {
+              "caller": 24,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 25,
+              "callee": 35,
+              "sites": 1
+            },
+            {
+              "caller": 26,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 27,
+              "callee": 35,
+              "sites": 1
+            },
+            {
+              "caller": 28,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 29,
+              "callee": 35,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 31,
+              "callee": 35,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 1,
+              "sites": 4
+            },
+            {
+              "caller": 32,
+              "callee": 0,
+              "sites": 3
+            },
+            {
+              "caller": 32,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 7,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 8,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 3,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 5,
+              "sites": 1
+            },
+            {
+              "caller": 33,
+              "callee": 4,
+              "sites": 1
+            },
+            {
+              "caller": 33,
+              "callee": 2,
+              "sites": 2
+            },
+            {
+              "caller": 33,
+              "callee": 9,
+              "sites": 1
+            },
+            {
+              "caller": 33,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 33,
+              "callee": 1,
+              "sites": 1
+            },
+            {
+              "caller": 33,
+              "callee": 6,
+              "sites": 1
+            },
+            {
+              "caller": 34,
+              "callee": 2,
+              "sites": 4
+            },
+            {
+              "caller": 34,
+              "callee": 9,
+              "sites": 2
+            },
+            {
+              "caller": 34,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 34,
+              "callee": 1,
+              "sites": 3
+            },
+            {
+              "caller": 34,
+              "callee": 0,
+              "sites": 1
+            },
+            {
+              "caller": 34,
+              "callee": 3,
+              "sites": 1
+            },
+            {
+              "caller": 34,
+              "callee": 4,
+              "sites": 1
+            },
+            {
+              "caller": 35,
+              "callee": 1,
+              "sites": 2
+            },
+            {
+              "caller": 35,
+              "callee": 0,
+              "sites": 3
+            },
+            {
+              "caller": 35,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 35,
+              "callee": 7,
+              "sites": 1
+            },
+            {
+              "caller": 35,
+              "callee": 8,
+              "sites": 1
+            },
+            {
+              "caller": 35,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 35,
+              "callee": 3,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 4,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 5,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 6,
+              "sites": 1
+            }
+          ],
+          "tables": 0,
+          "indirectCalls": 0,
+          "interpretation": "Static direct-call closure includes every conditional callee and shared runtime body; excludes imported implementation bytes, data, section framing, and execution frequency.",
+          "namedCompanionSha256": "e89d043dc3c9b3f3510601d278fa274ab5a8ce5195c3581036e062156e205594"
+        },
+        "sections": [
+          {
+            "id": 1,
+            "offset": 8,
+            "bytes": 56,
+            "payloadBytes": 54,
+            "sha256": "0c38b71131b7aad1fc4c00da4a7e75571c6a82ba2a79d0885f6274278a16e307"
+          },
+          {
+            "id": 2,
+            "offset": 64,
+            "bytes": 327,
+            "payloadBytes": 324,
+            "sha256": "8682e5449197e00b7a8e8a205dbdabfbe11fffba97568da14cf0349336e3adbf"
+          },
+          {
+            "id": 3,
+            "offset": 391,
+            "bytes": 28,
+            "payloadBytes": 26,
+            "sha256": "30c887df6b49c3fd733badbd660e882268e16a479b257cea12c93dd1d8524dea"
+          },
+          {
+            "id": 5,
+            "offset": 419,
+            "bytes": 5,
+            "payloadBytes": 3,
+            "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+          },
+          {
+            "id": 6,
+            "offset": 424,
+            "bytes": 33,
+            "payloadBytes": 31,
+            "sha256": "aaccb3dd9c21fa15e4633359593955ccccc35ab8f49a3817597b74641304cfbf"
+          },
+          {
+            "id": 7,
+            "offset": 457,
+            "bytes": 254,
+            "payloadBytes": 251,
+            "sha256": "70d380f1aaa90dfb3f5a76c0c1ed573821fb02b1a8cf4a89ece046ce90acb321"
+          },
+          {
+            "id": 12,
+            "offset": 711,
+            "bytes": 3,
+            "payloadBytes": 1,
+            "sha256": "f393b868bf16fbd288bc294f184cd042c087db0f5473c260c09ada35a91e8545"
+          },
+          {
+            "id": 10,
+            "offset": 714,
+            "bytes": 1174,
+            "payloadBytes": 1171,
+            "sha256": "3d5b46e048ee17c783d03b90168e0713e4109983b7c9e260c1d4d71dbb9e0770"
+          },
+          {
+            "id": 11,
+            "offset": 1888,
+            "bytes": 657,
+            "payloadBytes": 654,
+            "sha256": "13014012fd042a02bba720a2d93239f15e7247f2da1427781e1f4d5f33fcc6ed"
+          }
+        ]
+      },
+      "attribution": {
+        "version": "pulse.prpt00c.attribution.v1",
+        "artifactSha256": "3c43329d98671f50f0d60bb50ed91b43c50d99872888763c7e94f966e6e379c4",
+        "planHash": "9f6c7cec53133466f3b7211c0794b7feeab221279c308f06dd74e0f82ad68038",
+        "generatorPrefix": "canonical-native.as/",
+        "routes": [
+          {
+            "routeId": "route_cf8b8b8acb070332460c706d",
+            "method": "GET",
+            "path": "/shared-a",
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "routerEntryStableId": "router_entry_b384d425b437c6444f1a5110",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 14,
+            "mappedDirectBodyBytes": 14,
+            "functionIndices": [
+              24
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                24
+              ],
+              "bodyIndices": [
+                24,
+                36
+              ],
+              "bodyBytes": 82,
+              "importedFunctionIndices": [
+                2,
+                4,
+                5,
+                6
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_cf581c5c7cc996ae5fe2b317",
+            "method": "GET",
+            "path": "/shared-b",
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "routerEntryStableId": "router_entry_aeb8e66e732f832e4b543dc2",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 14,
+            "mappedDirectBodyBytes": 14,
+            "functionIndices": [
+              26
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                26
+              ],
+              "bodyIndices": [
+                26,
+                36
+              ],
+              "bodyBytes": 82,
+              "importedFunctionIndices": [
+                2,
+                4,
+                5,
+                6
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_961dc8229d466123b7a41ca8",
+            "method": "GET",
+            "path": "/duplicate-a",
+            "handlerId": "handler_5f475d9c3184f72f20b159dc",
+            "routerEntryStableId": "router_entry_07c04bd84c1a0bf9747cf184",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 14,
+            "mappedDirectBodyBytes": 14,
+            "functionIndices": [
+              28
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                28
+              ],
+              "bodyIndices": [
+                28,
+                36
+              ],
+              "bodyBytes": 82,
+              "importedFunctionIndices": [
+                2,
+                4,
+                5,
+                6
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_755790a4f3c1326619878ece",
+            "method": "GET",
+            "path": "/duplicate-b",
+            "handlerId": "handler_d98aa1b521a783f0cb50ecfd",
+            "routerEntryStableId": "router_entry_11f6a9ccd6975acf16ee5be4",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 14,
+            "mappedDirectBodyBytes": 14,
+            "functionIndices": [
+              30
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                30
+              ],
+              "bodyIndices": [
+                30,
+                36
+              ],
+              "bodyBytes": 82,
+              "importedFunctionIndices": [
+                2,
+                4,
+                5,
+                6
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_372929235c43617ebca7e077",
+            "method": "GET",
+            "path": "/distinct",
+            "handlerId": "handler_03cd983ebd4c2d95f2d17297",
+            "routerEntryStableId": "router_entry_334e6983cda5395593ae30ab",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 101,
+            "mappedDirectBodyBytes": 101,
+            "functionIndices": [
+              33
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                33
+              ],
+              "bodyIndices": [
+                33
+              ],
+              "bodyBytes": 101,
+              "importedFunctionIndices": [
+                1,
+                2,
+                4,
+                6,
+                9,
+                10
+              ],
+              "additiveAcrossRoutes": false
+            }
+          }
+        ],
+        "applicationDirectBody": {
+          "status": "complete",
+          "completeRoutes": 5,
+          "expectedRoutes": 5,
+          "uniqueMappedFunctions": 5,
+          "directBodyBytes": 157,
+          "mappedDirectBodyBytes": 157,
+          "routeSumBytes": 157,
+          "routeSumIsAdditive": true
+        },
+        "authoredHandlerRegistrations": [
+          {
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "registrationCount": 2,
+            "routeIds": [
+              "route_cf8b8b8acb070332460c706d",
+              "route_cf581c5c7cc996ae5fe2b317"
+            ],
+            "functionIndices": [
+              24,
+              26
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_5f475d9c3184f72f20b159dc",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_961dc8229d466123b7a41ca8"
+            ],
+            "functionIndices": [
+              28
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_d98aa1b521a783f0cb50ecfd",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_755790a4f3c1326619878ece"
+            ],
+            "functionIndices": [
+              30
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_03cd983ebd4c2d95f2d17297",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_372929235c43617ebca7e077"
+            ],
+            "functionIndices": [
+              33
+            ],
+            "binarySharingInferredFromHandlerId": false
+          }
+        ],
+        "bodyOverlaps": [],
+        "bodyCensus": {
+          "categoryBasis": "generated-symbol-name heuristic; not authored ownership or reachability",
+          "definedFunctions": 25,
+          "bodyBytes": 1143,
+          "namedFunctions": 23,
+          "unnamedFunctions": 2,
+          "categories": [
+            {
+              "category": "handler chunks",
+              "functions": 11,
+              "bodyBytes": 669
+            },
+            {
+              "category": "portable dispatcher",
+              "functions": 4,
+              "bodyBytes": 210
+            },
+            {
+              "category": "optimizer-created or unnamed",
+              "functions": 2,
+              "bodyBytes": 176
+            },
+            {
+              "category": "expression helpers",
+              "functions": 1,
+              "bodyBytes": 52
+            },
+            {
+              "category": "other named functions",
+              "functions": 7,
+              "bodyBytes": 36
+            }
+          ]
+        },
+        "limitations": [
+          "Direct handler chunks only; excludes callees, shared dependencies, data and section framing.",
+          "Missing chunk identity has unknown bytes; mapped bytes remain available as partial evidence.",
+          "Special stage/helper attribution and post-link remapping are unsupported.",
+          "Route byte rows may overlap; application totals deduplicate final function indices.",
+          "Authored handler reuse does not establish binary body sharing."
+        ]
+      }
+    },
+    {
+      "id": "fastly",
+      "target": "fastly",
+      "optimization": "default",
+      "builds": [
+        {
+          "fixtureSha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6",
+          "sourceSha256": "c2edc498c73c5246fd3a35d6c2fa28141957f6cd2d3621e698822de4c26a0bd3",
+          "artifactSha256": "f3d5aa5858d0e1196d3e67d77a40804ed6b362587cf42e69c20cb103cd229775",
+          "artifactBytes": 31466,
+          "ascCalls": 1,
+          "generatorCalls": 1,
+          "recipe": [
+            "fastly-native-platform-capabilities.as.ts",
+            "--outFile",
+            "<temporary>/fastly-native-platform-capabilities.wasm",
+            "--runtime",
+            "stub",
+            "--noAssert",
+            "--optimize",
+            "--transform",
+            "wasm/packages/build-support/src/native-retention-transform.cjs",
+            "--runPasses",
+            "merge-similar-functions",
+            "--use",
+            "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort"
+          ],
+          "elapsedMs": 1619,
+          "packaged": {
+            "bytes": 31466,
+            "sha256": "f3d5aa5858d0e1196d3e67d77a40804ed6b362587cf42e69c20cb103cd229775",
+            "byteIdentical": true
+          },
+          "runtimeChecks": [
+            {
+              "route": "/shared-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/shared-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/distinct",
+              "status": 201,
+              "passed": true
+            }
+          ],
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          }
+        },
+        {
+          "fixtureSha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6",
+          "sourceSha256": "c2edc498c73c5246fd3a35d6c2fa28141957f6cd2d3621e698822de4c26a0bd3",
+          "artifactSha256": "f3d5aa5858d0e1196d3e67d77a40804ed6b362587cf42e69c20cb103cd229775",
+          "artifactBytes": 31466,
+          "ascCalls": 1,
+          "generatorCalls": 1,
+          "recipe": [
+            "fastly-native-platform-capabilities.as.ts",
+            "--outFile",
+            "<temporary>/fastly-native-platform-capabilities.wasm",
+            "--runtime",
+            "stub",
+            "--noAssert",
+            "--optimize",
+            "--transform",
+            "wasm/packages/build-support/src/native-retention-transform.cjs",
+            "--runPasses",
+            "merge-similar-functions",
+            "--use",
+            "abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort"
+          ],
+          "elapsedMs": 1857,
+          "packaged": {
+            "bytes": 31466,
+            "sha256": "f3d5aa5858d0e1196d3e67d77a40804ed6b362587cf42e69c20cb103cd229775",
+            "byteIdentical": true
+          },
+          "runtimeChecks": [
+            {
+              "route": "/shared-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/shared-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/distinct",
+              "status": 201,
+              "passed": true
+            }
+          ],
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          }
+        }
+      ],
+      "wholeArtifactIdentical": true,
+      "capture": {
+        "version": "pulse.prpt00c.emission-capture.v1",
+        "artifactSha256": "f3d5aa5858d0e1196d3e67d77a40804ed6b362587cf42e69c20cb103cd229775",
+        "artifactBytes": 31466,
+        "convergenceEmissions": 0,
+        "nonCustomSectionsIdentical": true,
+        "restoredSerializationIdentical": true,
+        "importedFunctions": 10,
+        "functions": [
+          {
+            "index": 10,
+            "name": "~lib/rt/stub/__new",
+            "bytes": 173
+          },
+          {
+            "index": 11,
+            "name": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push",
+            "bytes": 43
+          },
+          {
+            "index": 12,
+            "name": "fastly-native-platform-capabilities.as/host_value_number",
+            "bytes": 194
+          },
+          {
+            "index": 13,
+            "name": "fastly-native-platform-capabilities.as/host_value_truthy",
+            "bytes": 120
+          },
+          {
+            "index": 14,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_number",
+            "bytes": 86
+          },
+          {
+            "index": 15,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_value",
+            "bytes": 63
+          },
+          {
+            "index": 16,
+            "name": "fastly-native-platform-capabilities.as/host_value_boolean",
+            "bytes": 30
+          },
+          {
+            "index": 17,
+            "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values",
+            "bytes": 102
+          },
+          {
+            "index": 18,
+            "name": "fastly-native-platform-capabilities.as/host_value_string",
+            "bytes": 476
+          },
+          {
+            "index": 19,
+            "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text",
+            "bytes": 152
+          },
+          {
+            "index": 20,
+            "name": "~lib/staticarray/StaticArray<i32>#constructor",
+            "bytes": 39
+          },
+          {
+            "index": 21,
+            "name": "~lib/array/Array<~lib/string/String>#constructor",
+            "bytes": 6
+          },
+          {
+            "index": 22,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_string",
+            "bytes": 109
+          },
+          {
+            "index": 23,
+            "name": "fastly-native-platform-capabilities.as/host_value_binary",
+            "bytes": 1164
+          },
+          {
+            "index": 24,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_string_value",
+            "bytes": 158
+          },
+          {
+            "index": 25,
+            "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers",
+            "bytes": 102
+          },
+          {
+            "index": 26,
+            "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor",
+            "bytes": 169
+          },
+          {
+            "index": 27,
+            "name": "~lib/string/String.__eq",
+            "bytes": 70
+          },
+          {
+            "index": 28,
+            "name": "~lib/string/String#indexOf",
+            "bytes": 112
+          },
+          {
+            "index": 29,
+            "name": "fastly-native-platform-capabilities.as/host_router_match",
+            "bytes": 282
+          },
+          {
+            "index": 30,
+            "name": "fastly-native-platform-capabilities.as/__pulse_ex_75$k",
+            "bytes": 70
+          },
+          {
+            "index": 31,
+            "name": "~lib/util/string/compareImpl",
+            "bytes": 142
+          },
+          {
+            "index": 32,
+            "name": "~lib/util/number/utoa32_dec_lut",
+            "bytes": 192
+          },
+          {
+            "index": 33,
+            "name": "~lib/util/hash/HASH<~lib/string/String>",
+            "bytes": 382
+          },
+          {
+            "index": 34,
+            "name": "~lib/rt/__newArray",
+            "bytes": 53
+          },
+          {
+            "index": 35,
+            "name": "~lib/arraybuffer/ArrayBuffer#constructor",
+            "bytes": 34
+          },
+          {
+            "index": 36,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar",
+            "bytes": 65
+          },
+          {
+            "index": 37,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_response",
+            "bytes": 247
+          },
+          {
+            "index": 38,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_find",
+            "bytes": 90
+          },
+          {
+            "index": 39,
+            "name": "~lib/string/String.UTF8.encode@varargs",
+            "bytes": 479
+          },
+          {
+            "index": 40,
+            "name": "~lib/rt/stub/__renew",
+            "bytes": 350
+          },
+          {
+            "index": 41,
+            "name": "~lib/map/Map<~lib/string/String,i32>#find",
+            "bytes": 74
+          },
+          {
+            "index": 42,
+            "name": "~lib/array/ensureCapacity",
+            "bytes": 134
+          },
+          {
+            "index": 43,
+            "name": "fastly-native-platform-capabilities.as/host_value_object_set",
+            "bytes": 207
+          },
+          {
+            "index": 44,
+            "name": "fastly-native-platform-capabilities.as/host_value_object",
+            "bytes": 36
+          },
+          {
+            "index": 45,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts",
+            "bytes": 368
+          },
+          {
+            "index": 46,
+            "name": "~lib/string/String.__lt",
+            "bytes": 85
+          },
+          {
+            "index": 47,
+            "name": "~lib/string/String.__gt",
+            "bytes": 86
+          },
+          {
+            "index": 48,
+            "name": "~lib/string/String#substring",
+            "bytes": 137
+          },
+          {
+            "index": 49,
+            "name": "~lib/math/ipow32",
+            "bytes": 258
+          },
+          {
+            "index": 50,
+            "name": "~lib/math/NativeMath.scalbn",
+            "bytes": 164
+          },
+          {
+            "index": 51,
+            "name": "~lib/arraybuffer/ArrayBufferView#constructor",
+            "bytes": 96
+          },
+          {
+            "index": 52,
+            "name": "~lib/array/Array<~lib/string/String>#join",
+            "bytes": 286
+          },
+          {
+            "index": 53,
+            "name": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#constructor",
+            "bytes": 6
+          },
+          {
+            "index": 54,
+            "name": "fastly-native-platform-capabilities.as/pulse_start",
+            "bytes": 80
+          },
+          {
+            "index": 55,
+            "name": "fastly-native-platform-capabilities.as/__pulse_router_segments",
+            "bytes": 511
+          },
+          {
+            "index": 56,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result",
+            "bytes": 346
+          },
+          {
+            "index": 57,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string",
+            "bytes": 402
+          },
+          {
+            "index": 58,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote",
+            "bytes": 977
+          },
+          {
+            "index": 59,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_number_string",
+            "bytes": 147
+          },
+          {
+            "index": 60,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_is_unpaired",
+            "bytes": 282
+          },
+          {
+            "index": 61,
+            "name": "fastly-native-platform-capabilities.as/__pulse_ex_111$i",
+            "bytes": 12
+          },
+          {
+            "index": 62,
+            "name": "fastly-native-platform-capabilities.as/__pulse_ex_105$i",
+            "bytes": 12
+          },
+          {
+            "index": 63,
+            "name": "~start",
+            "bytes": 104
+          },
+          {
+            "index": 64,
+            "name": "~setArgumentsLength",
+            "bytes": 6
+          },
+          {
+            "index": 65,
+            "name": "~lib/util/string/strtod",
+            "bytes": 1452
+          },
+          {
+            "index": 66,
+            "name": "~lib/util/number/prettify",
+            "bytes": 602
+          },
+          {
+            "index": 67,
+            "name": "~lib/util/number/itoa64",
+            "bytes": 499
+          },
+          {
+            "index": 68,
+            "name": "~lib/util/number/genDigits",
+            "bytes": 776
+          },
+          {
+            "index": 69,
+            "name": "~lib/util/number/dtoa_core",
+            "bytes": 517
+          },
+          {
+            "index": 70,
+            "name": "~lib/string/String#toLowerCase",
+            "bytes": 1219
+          },
+          {
+            "index": 71,
+            "name": "fastly-native-platform-capabilities.as/pulse_set_effect_result",
+            "bytes": 8
+          },
+          {
+            "index": 72,
+            "name": "fastly-native-platform-capabilities.as/pulse_resume",
+            "bytes": 8
+          },
+          {
+            "index": 73,
+            "name": "fastly-native-platform-capabilities.as/pulse_result_handle",
+            "bytes": 4
+          },
+          {
+            "index": 74,
+            "name": "fastly-native-platform-capabilities.as/pulse_program_counter",
+            "bytes": 4
+          },
+          {
+            "index": 75,
+            "name": "fastly-native-platform-capabilities.as/pulse_plan_hash_ptr",
+            "bytes": 5
+          },
+          {
+            "index": 76,
+            "name": "fastly-native-platform-capabilities.as/pulse_plan_hash_length",
+            "bytes": 11
+          },
+          {
+            "index": 77,
+            "name": "fastly-native-platform-capabilities.as/pulse_pending_count",
+            "bytes": 4
+          },
+          {
+            "index": 78,
+            "name": "fastly-native-platform-capabilities.as/pulse_last_error_code",
+            "bytes": 4
+          },
+          {
+            "index": 79,
+            "name": "fastly-native-platform-capabilities.as/pulse_fastly_last_error",
+            "bytes": 4
+          },
+          {
+            "index": 80,
+            "name": "fastly-native-platform-capabilities.as/pulse_fastly_error_stage",
+            "bytes": 4
+          },
+          {
+            "index": 81,
+            "name": "fastly-native-platform-capabilities.as/pulse_fastly_error_effect",
+            "bytes": 4
+          },
+          {
+            "index": 82,
+            "name": "fastly-native-platform-capabilities.as/pulse_abi_version",
+            "bytes": 4
+          },
+          {
+            "index": 83,
+            "name": "fastly-native-platform-capabilities.as/_start",
+            "bytes": 73
+          },
+          {
+            "index": 84,
+            "name": "fastly-native-platform-capabilities.as/__pulse_step",
+            "bytes": 114
+          },
+          {
+            "index": 85,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation",
+            "bytes": 718
+          },
+          {
+            "index": 86,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options",
+            "bytes": 418
+          },
+          {
+            "index": 87,
+            "name": "fastly-native-platform-capabilities.as/__pulse_fastly_abort@varargs",
+            "bytes": 22
+          },
+          {
+            "index": 88,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_9",
+            "bytes": 8
+          },
+          {
+            "index": 89,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_8",
+            "bytes": 38
+          },
+          {
+            "index": 90,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_7",
+            "bytes": 8
+          },
+          {
+            "index": 91,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_6",
+            "bytes": 38
+          },
+          {
+            "index": 92,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_5",
+            "bytes": 8
+          },
+          {
+            "index": 93,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_4",
+            "bytes": 38
+          },
+          {
+            "index": 94,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_3",
+            "bytes": 8
+          },
+          {
+            "index": 95,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_2",
+            "bytes": 38
+          },
+          {
+            "index": 96,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_10",
+            "bytes": 215
+          },
+          {
+            "index": 97,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1",
+            "bytes": 115
+          },
+          {
+            "index": 98,
+            "name": "fastly-native-platform-capabilities.as/__pulse_chunk_0",
+            "bytes": 188
+          },
+          {
+            "index": 99,
+            "name": null,
+            "bytes": 54
+          },
+          {
+            "index": 100,
+            "name": null,
+            "bytes": 120
+          },
+          {
+            "index": 101,
+            "name": null,
+            "bytes": 54
+          },
+          {
+            "index": 102,
+            "name": null,
+            "bytes": 56
+          },
+          {
+            "index": 103,
+            "name": null,
+            "bytes": 83
+          }
+        ],
+        "graph": {
+          "status": "available",
+          "method": "verified-final-binary-direct-calls",
+          "importedFunctions": 10,
+          "definedFunctions": 94,
+          "functions": [
+            {
+              "index": 10,
+              "bytes": 173,
+              "name": "~lib/rt/stub/__new"
+            },
+            {
+              "index": 11,
+              "bytes": 43,
+              "name": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#push"
+            },
+            {
+              "index": 12,
+              "bytes": 194,
+              "name": "fastly-native-platform-capabilities.as/host_value_number"
+            },
+            {
+              "index": 13,
+              "bytes": 120,
+              "name": "fastly-native-platform-capabilities.as/host_value_truthy"
+            },
+            {
+              "index": 14,
+              "bytes": 86,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_number"
+            },
+            {
+              "index": 15,
+              "bytes": 63,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_value"
+            },
+            {
+              "index": 16,
+              "bytes": 30,
+              "name": "fastly-native-platform-capabilities.as/host_value_boolean"
+            },
+            {
+              "index": 17,
+              "bytes": 102,
+              "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:values"
+            },
+            {
+              "index": 18,
+              "bytes": 476,
+              "name": "fastly-native-platform-capabilities.as/host_value_string"
+            },
+            {
+              "index": 19,
+              "bytes": 152,
+              "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:text"
+            },
+            {
+              "index": 20,
+              "bytes": 39,
+              "name": "~lib/staticarray/StaticArray<i32>#constructor"
+            },
+            {
+              "index": 21,
+              "bytes": 6,
+              "name": "~lib/array/Array<~lib/string/String>#constructor"
+            },
+            {
+              "index": 22,
+              "bytes": 109,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_string"
+            },
+            {
+              "index": 23,
+              "bytes": 1164,
+              "name": "fastly-native-platform-capabilities.as/host_value_binary"
+            },
+            {
+              "index": 24,
+              "bytes": 158,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_string_value"
+            },
+            {
+              "index": 25,
+              "bytes": 102,
+              "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#get:headers"
+            },
+            {
+              "index": 26,
+              "bytes": 169,
+              "name": "fastly-native-platform-capabilities.as/__PulseFastlyValue#constructor"
+            },
+            {
+              "index": 27,
+              "bytes": 70,
+              "name": "~lib/string/String.__eq"
+            },
+            {
+              "index": 28,
+              "bytes": 112,
+              "name": "~lib/string/String#indexOf"
+            },
+            {
+              "index": 29,
+              "bytes": 282,
+              "name": "fastly-native-platform-capabilities.as/host_router_match"
+            },
+            {
+              "index": 30,
+              "bytes": 70,
+              "name": "fastly-native-platform-capabilities.as/__pulse_ex_75$k"
+            },
+            {
+              "index": 31,
+              "bytes": 142,
+              "name": "~lib/util/string/compareImpl"
+            },
+            {
+              "index": 32,
+              "bytes": 192,
+              "name": "~lib/util/number/utoa32_dec_lut"
+            },
+            {
+              "index": 33,
+              "bytes": 382,
+              "name": "~lib/util/hash/HASH<~lib/string/String>"
+            },
+            {
+              "index": 34,
+              "bytes": 53,
+              "name": "~lib/rt/__newArray"
+            },
+            {
+              "index": 35,
+              "bytes": 34,
+              "name": "~lib/arraybuffer/ArrayBuffer#constructor"
+            },
+            {
+              "index": 36,
+              "bytes": 65,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_scalar"
+            },
+            {
+              "index": 37,
+              "bytes": 247,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_response"
+            },
+            {
+              "index": 38,
+              "bytes": 90,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_find"
+            },
+            {
+              "index": 39,
+              "bytes": 479,
+              "name": "~lib/string/String.UTF8.encode@varargs"
+            },
+            {
+              "index": 40,
+              "bytes": 350,
+              "name": "~lib/rt/stub/__renew"
+            },
+            {
+              "index": 41,
+              "bytes": 74,
+              "name": "~lib/map/Map<~lib/string/String,i32>#find"
+            },
+            {
+              "index": 42,
+              "bytes": 134,
+              "name": "~lib/array/ensureCapacity"
+            },
+            {
+              "index": 43,
+              "bytes": 207,
+              "name": "fastly-native-platform-capabilities.as/host_value_object_set"
+            },
+            {
+              "index": 44,
+              "bytes": 36,
+              "name": "fastly-native-platform-capabilities.as/host_value_object"
+            },
+            {
+              "index": 45,
+              "bytes": 368,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_json_parts"
+            },
+            {
+              "index": 46,
+              "bytes": 85,
+              "name": "~lib/string/String.__lt"
+            },
+            {
+              "index": 47,
+              "bytes": 86,
+              "name": "~lib/string/String.__gt"
+            },
+            {
+              "index": 48,
+              "bytes": 137,
+              "name": "~lib/string/String#substring"
+            },
+            {
+              "index": 49,
+              "bytes": 258,
+              "name": "~lib/math/ipow32"
+            },
+            {
+              "index": 50,
+              "bytes": 164,
+              "name": "~lib/math/NativeMath.scalbn"
+            },
+            {
+              "index": 51,
+              "bytes": 96,
+              "name": "~lib/arraybuffer/ArrayBufferView#constructor"
+            },
+            {
+              "index": 52,
+              "bytes": 286,
+              "name": "~lib/array/Array<~lib/string/String>#join"
+            },
+            {
+              "index": 53,
+              "bytes": 6,
+              "name": "~lib/array/Array<fastly-native-platform-capabilities.as/__PulseFastlyValue>#constructor"
+            },
+            {
+              "index": 54,
+              "bytes": 80,
+              "name": "fastly-native-platform-capabilities.as/pulse_start"
+            },
+            {
+              "index": 55,
+              "bytes": 511,
+              "name": "fastly-native-platform-capabilities.as/__pulse_router_segments"
+            },
+            {
+              "index": 56,
+              "bytes": 346,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_send_result"
+            },
+            {
+              "index": 57,
+              "bytes": 402,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_read_req_string"
+            },
+            {
+              "index": 58,
+              "bytes": 977,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_quote"
+            },
+            {
+              "index": 59,
+              "bytes": 147,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_number_string"
+            },
+            {
+              "index": 60,
+              "bytes": 282,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_is_unpaired"
+            },
+            {
+              "index": 61,
+              "bytes": 12,
+              "name": "fastly-native-platform-capabilities.as/__pulse_ex_111$i"
+            },
+            {
+              "index": 62,
+              "bytes": 12,
+              "name": "fastly-native-platform-capabilities.as/__pulse_ex_105$i"
+            },
+            {
+              "index": 63,
+              "bytes": 104,
+              "name": "~start"
+            },
+            {
+              "index": 64,
+              "bytes": 6,
+              "name": "~setArgumentsLength"
+            },
+            {
+              "index": 65,
+              "bytes": 1452,
+              "name": "~lib/util/string/strtod"
+            },
+            {
+              "index": 66,
+              "bytes": 602,
+              "name": "~lib/util/number/prettify"
+            },
+            {
+              "index": 67,
+              "bytes": 499,
+              "name": "~lib/util/number/itoa64"
+            },
+            {
+              "index": 68,
+              "bytes": 776,
+              "name": "~lib/util/number/genDigits"
+            },
+            {
+              "index": 69,
+              "bytes": 517,
+              "name": "~lib/util/number/dtoa_core"
+            },
+            {
+              "index": 70,
+              "bytes": 1219,
+              "name": "~lib/string/String#toLowerCase"
+            },
+            {
+              "index": 71,
+              "bytes": 8,
+              "name": "fastly-native-platform-capabilities.as/pulse_set_effect_result"
+            },
+            {
+              "index": 72,
+              "bytes": 8,
+              "name": "fastly-native-platform-capabilities.as/pulse_resume"
+            },
+            {
+              "index": 73,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_result_handle"
+            },
+            {
+              "index": 74,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_program_counter"
+            },
+            {
+              "index": 75,
+              "bytes": 5,
+              "name": "fastly-native-platform-capabilities.as/pulse_plan_hash_ptr"
+            },
+            {
+              "index": 76,
+              "bytes": 11,
+              "name": "fastly-native-platform-capabilities.as/pulse_plan_hash_length"
+            },
+            {
+              "index": 77,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_pending_count"
+            },
+            {
+              "index": 78,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_last_error_code"
+            },
+            {
+              "index": 79,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_fastly_last_error"
+            },
+            {
+              "index": 80,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_fastly_error_stage"
+            },
+            {
+              "index": 81,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_fastly_error_effect"
+            },
+            {
+              "index": 82,
+              "bytes": 4,
+              "name": "fastly-native-platform-capabilities.as/pulse_abi_version"
+            },
+            {
+              "index": 83,
+              "bytes": 73,
+              "name": "fastly-native-platform-capabilities.as/_start"
+            },
+            {
+              "index": 84,
+              "bytes": 114,
+              "name": "fastly-native-platform-capabilities.as/__pulse_step"
+            },
+            {
+              "index": 85,
+              "bytes": 718,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_run_invocation"
+            },
+            {
+              "index": 86,
+              "bytes": 418,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_headers_from_options"
+            },
+            {
+              "index": 87,
+              "bytes": 22,
+              "name": "fastly-native-platform-capabilities.as/__pulse_fastly_abort@varargs"
+            },
+            {
+              "index": 88,
+              "bytes": 8,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_9"
+            },
+            {
+              "index": 89,
+              "bytes": 38,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_8"
+            },
+            {
+              "index": 90,
+              "bytes": 8,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_7"
+            },
+            {
+              "index": 91,
+              "bytes": 38,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_6"
+            },
+            {
+              "index": 92,
+              "bytes": 8,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_5"
+            },
+            {
+              "index": 93,
+              "bytes": 38,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_4"
+            },
+            {
+              "index": 94,
+              "bytes": 8,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_3"
+            },
+            {
+              "index": 95,
+              "bytes": 38,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_2"
+            },
+            {
+              "index": 96,
+              "bytes": 215,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_10"
+            },
+            {
+              "index": 97,
+              "bytes": 115,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_1"
+            },
+            {
+              "index": 98,
+              "bytes": 188,
+              "name": "fastly-native-platform-capabilities.as/__pulse_chunk_0"
+            },
+            {
+              "index": 99,
+              "bytes": 54,
+              "name": "89"
+            },
+            {
+              "index": 100,
+              "bytes": 120,
+              "name": "90"
+            },
+            {
+              "index": 101,
+              "bytes": 54,
+              "name": "91"
+            },
+            {
+              "index": 102,
+              "bytes": 56,
+              "name": "92"
+            },
+            {
+              "index": 103,
+              "bytes": 83,
+              "name": "93"
+            }
+          ],
+          "imports": [
+            {
+              "index": 0,
+              "name": "fimport$0"
+            },
+            {
+              "index": 1,
+              "name": "fimport$1"
+            },
+            {
+              "index": 2,
+              "name": "fimport$2"
+            },
+            {
+              "index": 3,
+              "name": "fimport$3"
+            },
+            {
+              "index": 4,
+              "name": "fimport$4"
+            },
+            {
+              "index": 5,
+              "name": "fimport$5"
+            },
+            {
+              "index": 6,
+              "name": "fimport$6"
+            },
+            {
+              "index": 7,
+              "name": "fimport$7"
+            },
+            {
+              "index": 8,
+              "name": "fimport$8"
+            },
+            {
+              "index": 9,
+              "name": "fimport$9"
+            }
+          ],
+          "edges": [
+            {
+              "caller": 11,
+              "callee": 42,
+              "sites": 1
+            },
+            {
+              "caller": 12,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 12,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 14,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 14,
+              "callee": 65,
+              "sites": 1
+            },
+            {
+              "caller": 14,
+              "callee": 19,
+              "sites": 1
+            },
+            {
+              "caller": 15,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 16,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 17,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 18,
+              "callee": 41,
+              "sites": 3
+            },
+            {
+              "caller": 18,
+              "callee": 33,
+              "sites": 4
+            },
+            {
+              "caller": 18,
+              "callee": 24,
+              "sites": 1
+            },
+            {
+              "caller": 18,
+              "callee": 35,
+              "sites": 2
+            },
+            {
+              "caller": 19,
+              "callee": 53,
+              "sites": 1
+            },
+            {
+              "caller": 19,
+              "callee": 21,
+              "sites": 1
+            },
+            {
+              "caller": 19,
+              "callee": 11,
+              "sites": 4
+            },
+            {
+              "caller": 19,
+              "callee": 52,
+              "sites": 1
+            },
+            {
+              "caller": 20,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 21,
+              "callee": 103,
+              "sites": 1
+            },
+            {
+              "caller": 22,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 22,
+              "callee": 19,
+              "sites": 1
+            },
+            {
+              "caller": 22,
+              "callee": 59,
+              "sites": 1
+            },
+            {
+              "caller": 22,
+              "callee": 45,
+              "sites": 1
+            },
+            {
+              "caller": 22,
+              "callee": 21,
+              "sites": 1
+            },
+            {
+              "caller": 22,
+              "callee": 52,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 15,
+              "sites": 7
+            },
+            {
+              "caller": 23,
+              "callee": 16,
+              "sites": 10
+            },
+            {
+              "caller": 23,
+              "callee": 27,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 19,
+              "sites": 10
+            },
+            {
+              "caller": 23,
+              "callee": 13,
+              "sites": 3
+            },
+            {
+              "caller": 23,
+              "callee": 23,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 24,
+              "sites": 2
+            },
+            {
+              "caller": 23,
+              "callee": 22,
+              "sites": 2
+            },
+            {
+              "caller": 23,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 23,
+              "callee": 12,
+              "sites": 5
+            },
+            {
+              "caller": 23,
+              "callee": 14,
+              "sites": 18
+            },
+            {
+              "caller": 23,
+              "callee": 46,
+              "sites": 2
+            },
+            {
+              "caller": 23,
+              "callee": 47,
+              "sites": 2
+            },
+            {
+              "caller": 24,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 24,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 25,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 26,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 27,
+              "callee": 31,
+              "sites": 1
+            },
+            {
+              "caller": 28,
+              "callee": 31,
+              "sites": 1
+            },
+            {
+              "caller": 29,
+              "callee": 16,
+              "sites": 1
+            },
+            {
+              "caller": 29,
+              "callee": 55,
+              "sites": 2
+            },
+            {
+              "caller": 29,
+              "callee": 22,
+              "sites": 2
+            },
+            {
+              "caller": 29,
+              "callee": 27,
+              "sites": 2
+            },
+            {
+              "caller": 30,
+              "callee": 13,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 23,
+              "sites": 2
+            },
+            {
+              "caller": 30,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 24,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 18,
+              "sites": 1
+            },
+            {
+              "caller": 34,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 35,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 38,
+              "sites": 2
+            },
+            {
+              "caller": 37,
+              "callee": 14,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 17,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 86,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 22,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 25,
+              "sites": 3
+            },
+            {
+              "caller": 37,
+              "callee": 27,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 70,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 11,
+              "sites": 2
+            },
+            {
+              "caller": 37,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 38,
+              "callee": 21,
+              "sites": 2
+            },
+            {
+              "caller": 38,
+              "callee": 27,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 41,
+              "callee": 27,
+              "sites": 1
+            },
+            {
+              "caller": 42,
+              "callee": 40,
+              "sites": 1
+            },
+            {
+              "caller": 43,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 43,
+              "callee": 38,
+              "sites": 1
+            },
+            {
+              "caller": 43,
+              "callee": 22,
+              "sites": 1
+            },
+            {
+              "caller": 43,
+              "callee": 17,
+              "sites": 2
+            },
+            {
+              "caller": 43,
+              "callee": 42,
+              "sites": 2
+            },
+            {
+              "caller": 43,
+              "callee": 21,
+              "sites": 1
+            },
+            {
+              "caller": 43,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 44,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 44,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 45,
+              "callee": 11,
+              "sites": 13
+            },
+            {
+              "caller": 45,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 45,
+              "callee": 59,
+              "sites": 1
+            },
+            {
+              "caller": 45,
+              "callee": 58,
+              "sites": 2
+            },
+            {
+              "caller": 45,
+              "callee": 19,
+              "sites": 1
+            },
+            {
+              "caller": 45,
+              "callee": 17,
+              "sites": 3
+            },
+            {
+              "caller": 45,
+              "callee": 45,
+              "sites": 2
+            },
+            {
+              "caller": 45,
+              "callee": 21,
+              "sites": 2
+            },
+            {
+              "caller": 46,
+              "callee": 31,
+              "sites": 1
+            },
+            {
+              "caller": 47,
+              "callee": 31,
+              "sites": 1
+            },
+            {
+              "caller": 48,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 51,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 52,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 53,
+              "callee": 103,
+              "sites": 1
+            },
+            {
+              "caller": 54,
+              "callee": 84,
+              "sites": 1
+            },
+            {
+              "caller": 55,
+              "callee": 21,
+              "sites": 1
+            },
+            {
+              "caller": 55,
+              "callee": 48,
+              "sites": 1
+            },
+            {
+              "caller": 55,
+              "callee": 34,
+              "sites": 4
+            },
+            {
+              "caller": 55,
+              "callee": 10,
+              "sites": 3
+            },
+            {
+              "caller": 55,
+              "callee": 28,
+              "sites": 1
+            },
+            {
+              "caller": 55,
+              "callee": 11,
+              "sites": 5
+            },
+            {
+              "caller": 56,
+              "callee": 15,
+              "sites": 1
+            },
+            {
+              "caller": 56,
+              "callee": 0,
+              "sites": 2
+            },
+            {
+              "caller": 56,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 56,
+              "callee": 20,
+              "sites": 3
+            },
+            {
+              "caller": 56,
+              "callee": 8,
+              "sites": 1
+            },
+            {
+              "caller": 56,
+              "callee": 1,
+              "sites": 1
+            },
+            {
+              "caller": 56,
+              "callee": 25,
+              "sites": 2
+            },
+            {
+              "caller": 56,
+              "callee": 39,
+              "sites": 3
+            },
+            {
+              "caller": 56,
+              "callee": 3,
+              "sites": 1
+            },
+            {
+              "caller": 56,
+              "callee": 19,
+              "sites": 1
+            },
+            {
+              "caller": 56,
+              "callee": 7,
+              "sites": 1
+            },
+            {
+              "caller": 57,
+              "callee": 51,
+              "sites": 1
+            },
+            {
+              "caller": 57,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 57,
+              "callee": 20,
+              "sites": 1
+            },
+            {
+              "caller": 57,
+              "callee": 4,
+              "sites": 1
+            },
+            {
+              "caller": 57,
+              "callee": 5,
+              "sites": 1
+            },
+            {
+              "caller": 57,
+              "callee": 40,
+              "sites": 1
+            },
+            {
+              "caller": 58,
+              "callee": 60,
+              "sites": 2
+            },
+            {
+              "caller": 58,
+              "callee": 51,
+              "sites": 1
+            },
+            {
+              "caller": 58,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 59,
+              "callee": 67,
+              "sites": 1
+            },
+            {
+              "caller": 59,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 59,
+              "callee": 69,
+              "sites": 1
+            },
+            {
+              "caller": 61,
+              "callee": 102,
+              "sites": 1
+            },
+            {
+              "caller": 62,
+              "callee": 102,
+              "sites": 1
+            },
+            {
+              "caller": 63,
+              "callee": 20,
+              "sites": 5
+            },
+            {
+              "caller": 63,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 63,
+              "callee": 35,
+              "sites": 2
+            },
+            {
+              "caller": 63,
+              "callee": 53,
+              "sites": 1
+            },
+            {
+              "caller": 65,
+              "callee": 49,
+              "sites": 2
+            },
+            {
+              "caller": 65,
+              "callee": 50,
+              "sites": 2
+            },
+            {
+              "caller": 66,
+              "callee": 32,
+              "sites": 2
+            },
+            {
+              "caller": 67,
+              "callee": 32,
+              "sites": 2
+            },
+            {
+              "caller": 67,
+              "callee": 10,
+              "sites": 2
+            },
+            {
+              "caller": 69,
+              "callee": 66,
+              "sites": 1
+            },
+            {
+              "caller": 69,
+              "callee": 68,
+              "sites": 1
+            },
+            {
+              "caller": 70,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 70,
+              "callee": 40,
+              "sites": 1
+            },
+            {
+              "caller": 83,
+              "callee": 85,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 98,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 97,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 95,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 94,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 93,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 92,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 91,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 90,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 89,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 88,
+              "sites": 1
+            },
+            {
+              "caller": 84,
+              "callee": 96,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 9,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 6,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 20,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 57,
+              "sites": 2
+            },
+            {
+              "caller": 85,
+              "callee": 28,
+              "sites": 4
+            },
+            {
+              "caller": 85,
+              "callee": 48,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 54,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 56,
+              "sites": 2
+            },
+            {
+              "caller": 85,
+              "callee": 26,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 11,
+              "sites": 2
+            },
+            {
+              "caller": 85,
+              "callee": 25,
+              "sites": 1
+            },
+            {
+              "caller": 85,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 86,
+              "callee": 38,
+              "sites": 1
+            },
+            {
+              "caller": 86,
+              "callee": 15,
+              "sites": 3
+            },
+            {
+              "caller": 86,
+              "callee": 17,
+              "sites": 10
+            },
+            {
+              "caller": 86,
+              "callee": 21,
+              "sites": 2
+            },
+            {
+              "caller": 86,
+              "callee": 11,
+              "sites": 3
+            },
+            {
+              "caller": 86,
+              "callee": 25,
+              "sites": 3
+            },
+            {
+              "caller": 86,
+              "callee": 22,
+              "sites": 4
+            },
+            {
+              "caller": 86,
+              "callee": 10,
+              "sites": 3
+            },
+            {
+              "caller": 88,
+              "callee": 101,
+              "sites": 1
+            },
+            {
+              "caller": 89,
+              "callee": 100,
+              "sites": 1
+            },
+            {
+              "caller": 90,
+              "callee": 101,
+              "sites": 1
+            },
+            {
+              "caller": 91,
+              "callee": 100,
+              "sites": 1
+            },
+            {
+              "caller": 92,
+              "callee": 99,
+              "sites": 1
+            },
+            {
+              "caller": 93,
+              "callee": 100,
+              "sites": 1
+            },
+            {
+              "caller": 94,
+              "callee": 99,
+              "sites": 1
+            },
+            {
+              "caller": 95,
+              "callee": 100,
+              "sites": 1
+            },
+            {
+              "caller": 96,
+              "callee": 12,
+              "sites": 4
+            },
+            {
+              "caller": 96,
+              "callee": 13,
+              "sites": 3
+            },
+            {
+              "caller": 96,
+              "callee": 30,
+              "sites": 1
+            },
+            {
+              "caller": 96,
+              "callee": 29,
+              "sites": 1
+            },
+            {
+              "caller": 96,
+              "callee": 24,
+              "sites": 1
+            },
+            {
+              "caller": 96,
+              "callee": 18,
+              "sites": 1
+            },
+            {
+              "caller": 96,
+              "callee": 23,
+              "sites": 1
+            },
+            {
+              "caller": 96,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 97,
+              "callee": 18,
+              "sites": 2
+            },
+            {
+              "caller": 97,
+              "callee": 43,
+              "sites": 1
+            },
+            {
+              "caller": 97,
+              "callee": 44,
+              "sites": 1
+            },
+            {
+              "caller": 97,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 97,
+              "callee": 37,
+              "sites": 1
+            },
+            {
+              "caller": 97,
+              "callee": 16,
+              "sites": 1
+            },
+            {
+              "caller": 98,
+              "callee": 18,
+              "sites": 4
+            },
+            {
+              "caller": 98,
+              "callee": 43,
+              "sites": 2
+            },
+            {
+              "caller": 98,
+              "callee": 44,
+              "sites": 2
+            },
+            {
+              "caller": 98,
+              "callee": 12,
+              "sites": 3
+            },
+            {
+              "caller": 98,
+              "callee": 13,
+              "sites": 1
+            },
+            {
+              "caller": 98,
+              "callee": 23,
+              "sites": 1
+            },
+            {
+              "caller": 98,
+              "callee": 37,
+              "sites": 1
+            },
+            {
+              "caller": 99,
+              "callee": 61,
+              "sites": 1
+            },
+            {
+              "caller": 99,
+              "callee": 16,
+              "sites": 1
+            },
+            {
+              "caller": 100,
+              "callee": 12,
+              "sites": 2
+            },
+            {
+              "caller": 100,
+              "callee": 13,
+              "sites": 3
+            },
+            {
+              "caller": 100,
+              "callee": 30,
+              "sites": 1
+            },
+            {
+              "caller": 100,
+              "callee": 29,
+              "sites": 1
+            },
+            {
+              "caller": 100,
+              "callee": 24,
+              "sites": 1
+            },
+            {
+              "caller": 100,
+              "callee": 18,
+              "sites": 1
+            },
+            {
+              "caller": 100,
+              "callee": 23,
+              "sites": 1
+            },
+            {
+              "caller": 101,
+              "callee": 62,
+              "sites": 1
+            },
+            {
+              "caller": 101,
+              "callee": 16,
+              "sites": 1
+            },
+            {
+              "caller": 102,
+              "callee": 18,
+              "sites": 1
+            },
+            {
+              "caller": 102,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 102,
+              "callee": 37,
+              "sites": 1
+            },
+            {
+              "caller": 103,
+              "callee": 10,
+              "sites": 2
+            }
+          ],
+          "tables": 0,
+          "indirectCalls": 0,
+          "interpretation": "Static direct-call closure includes every conditional callee and shared runtime body; excludes imported implementation bytes, data, section framing, and execution frequency.",
+          "namedCompanionSha256": "ce1d1e7c58e13c348b220a29fe3f11d0fac630078a38fa0f815a6c2260cd2275"
+        },
+        "sections": [
+          {
+            "id": 1,
+            "offset": 8,
+            "bytes": 109,
+            "payloadBytes": 107,
+            "sha256": "e949452b329698dac9f17bf56f54f5e9910d9c6dbf37ee4a8ba97a9f25b873db"
+          },
+          {
+            "id": 2,
+            "offset": 117,
+            "bytes": 284,
+            "payloadBytes": 281,
+            "sha256": "8cadf51a6a9e67661c6a688d1338c395818678532763a3d5c2eb05a140f2c12a"
+          },
+          {
+            "id": 3,
+            "offset": 401,
+            "bytes": 97,
+            "payloadBytes": 95,
+            "sha256": "defc3070b5373ad9e8e1759e9e7023f9d71045bbdefef19f5e64f89f6f0d9c24"
+          },
+          {
+            "id": 5,
+            "offset": 498,
+            "bytes": 5,
+            "payloadBytes": 3,
+            "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+          },
+          {
+            "id": 6,
+            "offset": 503,
+            "bytes": 162,
+            "payloadBytes": 159,
+            "sha256": "6f2346c5c6c22ec0310f95fea6a888b132705d1139058f908cc04da15899d197"
+          },
+          {
+            "id": 7,
+            "offset": 665,
+            "bytes": 542,
+            "payloadBytes": 539,
+            "sha256": "2ae242cc24ea64f81c282465300deb47575f1f42f5be74c59c0c2c74dcfcc43f"
+          },
+          {
+            "id": 8,
+            "offset": 1207,
+            "bytes": 3,
+            "payloadBytes": 1,
+            "sha256": "93a12357ab30831b55536358df72f6339688e1acbc9585ac29604d25f382e4c6"
+          },
+          {
+            "id": 12,
+            "offset": 1210,
+            "bytes": 4,
+            "payloadBytes": 2,
+            "sha256": "5861f06259e5bedf7a9e3f7ce43bf7ce8272446fa519e8af643482dc2b565695"
+          },
+          {
+            "id": 10,
+            "offset": 1214,
+            "bytes": 18249,
+            "payloadBytes": 18245,
+            "sha256": "b77847d6fb73756c22188dbae7987db0624532e3d6673f68b1e8074fbed9fdbc"
+          },
+          {
+            "id": 11,
+            "offset": 19463,
+            "bytes": 12003,
+            "payloadBytes": 12000,
+            "sha256": "4481c68b02463bee98982a90964a6e51a5aa86c8f243a79d862365bc9d42e26f"
+          }
+        ]
+      },
+      "attribution": {
+        "version": "pulse.prpt00c.attribution.v1",
+        "artifactSha256": "f3d5aa5858d0e1196d3e67d77a40804ed6b362587cf42e69c20cb103cd229775",
+        "planHash": "9f6c7cec53133466f3b7211c0794b7feeab221279c308f06dd74e0f82ad68038",
+        "generatorPrefix": "fastly-native-platform-capabilities.as/",
+        "routes": [
+          {
+            "routeId": "route_cf8b8b8acb070332460c706d",
+            "method": "GET",
+            "path": "/shared-a",
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "routerEntryStableId": "router_entry_b384d425b437c6444f1a5110",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              88
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                88
+              ],
+              "bodyIndices": [
+                10,
+                11,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                21,
+                22,
+                24,
+                25,
+                26,
+                27,
+                31,
+                32,
+                33,
+                35,
+                36,
+                37,
+                38,
+                40,
+                41,
+                42,
+                45,
+                49,
+                50,
+                51,
+                52,
+                53,
+                58,
+                59,
+                60,
+                62,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                86,
+                88,
+                101,
+                102,
+                103
+              ],
+              "bodyBytes": 11729,
+              "importedFunctionIndices": [],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_cf581c5c7cc996ae5fe2b317",
+            "method": "GET",
+            "path": "/shared-b",
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "routerEntryStableId": "router_entry_aeb8e66e732f832e4b543dc2",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              90
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                90
+              ],
+              "bodyIndices": [
+                10,
+                11,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                21,
+                22,
+                24,
+                25,
+                26,
+                27,
+                31,
+                32,
+                33,
+                35,
+                36,
+                37,
+                38,
+                40,
+                41,
+                42,
+                45,
+                49,
+                50,
+                51,
+                52,
+                53,
+                58,
+                59,
+                60,
+                62,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                86,
+                90,
+                101,
+                102,
+                103
+              ],
+              "bodyBytes": 11729,
+              "importedFunctionIndices": [],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_961dc8229d466123b7a41ca8",
+            "method": "GET",
+            "path": "/duplicate-a",
+            "handlerId": "handler_5f475d9c3184f72f20b159dc",
+            "routerEntryStableId": "router_entry_07c04bd84c1a0bf9747cf184",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              92
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                92
+              ],
+              "bodyIndices": [
+                10,
+                11,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                21,
+                22,
+                24,
+                25,
+                26,
+                27,
+                31,
+                32,
+                33,
+                35,
+                36,
+                37,
+                38,
+                40,
+                41,
+                42,
+                45,
+                49,
+                50,
+                51,
+                52,
+                53,
+                58,
+                59,
+                60,
+                61,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                86,
+                92,
+                99,
+                102,
+                103
+              ],
+              "bodyBytes": 11729,
+              "importedFunctionIndices": [],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_755790a4f3c1326619878ece",
+            "method": "GET",
+            "path": "/duplicate-b",
+            "handlerId": "handler_d98aa1b521a783f0cb50ecfd",
+            "routerEntryStableId": "router_entry_11f6a9ccd6975acf16ee5be4",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              94
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                94
+              ],
+              "bodyIndices": [
+                10,
+                11,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                21,
+                22,
+                24,
+                25,
+                26,
+                27,
+                31,
+                32,
+                33,
+                35,
+                36,
+                37,
+                38,
+                40,
+                41,
+                42,
+                45,
+                49,
+                50,
+                51,
+                52,
+                53,
+                58,
+                59,
+                60,
+                61,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                86,
+                94,
+                99,
+                102,
+                103
+              ],
+              "bodyBytes": 11729,
+              "importedFunctionIndices": [],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_372929235c43617ebca7e077",
+            "method": "GET",
+            "path": "/distinct",
+            "handlerId": "handler_03cd983ebd4c2d95f2d17297",
+            "routerEntryStableId": "router_entry_334e6983cda5395593ae30ab",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 115,
+            "mappedDirectBodyBytes": 115,
+            "functionIndices": [
+              97
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                97
+              ],
+              "bodyIndices": [
+                10,
+                11,
+                12,
+                14,
+                15,
+                16,
+                17,
+                18,
+                19,
+                21,
+                22,
+                24,
+                25,
+                26,
+                27,
+                31,
+                32,
+                33,
+                35,
+                36,
+                37,
+                38,
+                40,
+                41,
+                42,
+                43,
+                44,
+                45,
+                49,
+                50,
+                51,
+                52,
+                53,
+                58,
+                59,
+                60,
+                65,
+                66,
+                67,
+                68,
+                69,
+                70,
+                86,
+                97,
+                103
+              ],
+              "bodyBytes": 12151,
+              "importedFunctionIndices": [],
+              "additiveAcrossRoutes": false
+            }
+          }
+        ],
+        "applicationDirectBody": {
+          "status": "complete",
+          "completeRoutes": 5,
+          "expectedRoutes": 5,
+          "uniqueMappedFunctions": 5,
+          "directBodyBytes": 147,
+          "mappedDirectBodyBytes": 147,
+          "routeSumBytes": 147,
+          "routeSumIsAdditive": true
+        },
+        "authoredHandlerRegistrations": [
+          {
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "registrationCount": 2,
+            "routeIds": [
+              "route_cf8b8b8acb070332460c706d",
+              "route_cf581c5c7cc996ae5fe2b317"
+            ],
+            "functionIndices": [
+              88,
+              90
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_5f475d9c3184f72f20b159dc",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_961dc8229d466123b7a41ca8"
+            ],
+            "functionIndices": [
+              92
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_d98aa1b521a783f0cb50ecfd",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_755790a4f3c1326619878ece"
+            ],
+            "functionIndices": [
+              94
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_03cd983ebd4c2d95f2d17297",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_372929235c43617ebca7e077"
+            ],
+            "functionIndices": [
+              97
+            ],
+            "binarySharingInferredFromHandlerId": false
+          }
+        ],
+        "bodyOverlaps": [],
+        "bodyCensus": {
+          "categoryBasis": "generated-symbol-name heuristic; not authored ownership or reachability",
+          "definedFunctions": 94,
+          "bodyBytes": 18113,
+          "namedFunctions": 89,
+          "unnamedFunctions": 5,
+          "categories": [
+            {
+              "category": "AssemblyScript runtime and standard library",
+              "functions": 29,
+              "bodyBytes": 8466
+            },
+            {
+              "category": "other generated Fastly and portable support",
+              "functions": 39,
+              "bodyBytes": 7446
+            },
+            {
+              "category": "Fastly invocation driver",
+              "functions": 1,
+              "bodyBytes": 718
+            },
+            {
+              "category": "handler chunks",
+              "functions": 11,
+              "bodyBytes": 702
+            },
+            {
+              "category": "optimizer-created or unnamed",
+              "functions": 5,
+              "bodyBytes": 367
+            },
+            {
+              "category": "portable dispatcher",
+              "functions": 4,
+              "bodyBytes": 210
+            },
+            {
+              "category": "other named functions",
+              "functions": 2,
+              "bodyBytes": 110
+            },
+            {
+              "category": "expression helpers",
+              "functions": 3,
+              "bodyBytes": 94
+            }
+          ]
+        },
+        "limitations": [
+          "Direct handler chunks only; excludes callees, shared dependencies, data and section framing.",
+          "Missing chunk identity has unknown bytes; mapped bytes remain available as partial evidence.",
+          "Special stage/helper attribution and post-link remapping are unsupported.",
+          "Route byte rows may overlap; application totals deduplicate final function indices.",
+          "Authored handler reuse does not establish binary body sharing."
+        ]
+      }
+    },
+    {
+      "id": "portable-converge",
+      "target": "portable",
+      "optimization": "experimental-native-size",
+      "builds": [
+        {
+          "fixtureSha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6",
+          "sourceSha256": "d9976123d785ef56a88fcf1d21d610861e7aefb70a4e457e07347d0a39933da7",
+          "artifactSha256": "bfab4eb9747f72ec468c3f7a738011983e1ff95cc9e280faad697264f7b19352",
+          "artifactBytes": 2464,
+          "ascCalls": 1,
+          "generatorCalls": 1,
+          "recipe": [
+            "canonical-native.as.ts",
+            "--outFile",
+            "<temporary>/canonical-native.wasm",
+            "--runtime",
+            "stub",
+            "--noAssert",
+            "--optimize",
+            "--transform",
+            "wasm/packages/build-support/src/native-retention-transform.cjs",
+            "--runPasses",
+            "merge-similar-functions",
+            "--optimizeLevel",
+            "3",
+            "--shrinkLevel",
+            "2",
+            "--converge"
+          ],
+          "elapsedMs": 939,
+          "packaged": null,
+          "runtimeChecks": [
+            {
+              "route": "/shared-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/shared-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/distinct",
+              "status": 201,
+              "passed": true
+            }
+          ],
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          }
+        },
+        {
+          "fixtureSha256": "7c5c28d2664e65cd9fbd1b24424176b421b13b7fe5eaa9cb3bd5ec8b8c626ca6",
+          "sourceSha256": "d9976123d785ef56a88fcf1d21d610861e7aefb70a4e457e07347d0a39933da7",
+          "artifactSha256": "bfab4eb9747f72ec468c3f7a738011983e1ff95cc9e280faad697264f7b19352",
+          "artifactBytes": 2464,
+          "ascCalls": 1,
+          "generatorCalls": 1,
+          "recipe": [
+            "canonical-native.as.ts",
+            "--outFile",
+            "<temporary>/canonical-native.wasm",
+            "--runtime",
+            "stub",
+            "--noAssert",
+            "--optimize",
+            "--transform",
+            "wasm/packages/build-support/src/native-retention-transform.cjs",
+            "--runPasses",
+            "merge-similar-functions",
+            "--optimizeLevel",
+            "3",
+            "--shrinkLevel",
+            "2",
+            "--converge"
+          ],
+          "elapsedMs": 1685,
+          "packaged": null,
+          "runtimeChecks": [
+            {
+              "route": "/shared-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/shared-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-a",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/duplicate-b",
+              "status": 200,
+              "passed": true
+            },
+            {
+              "route": "/distinct",
+              "status": 201,
+              "passed": true
+            }
+          ],
+          "assemblyScript": {
+            "package": "assemblyscript",
+            "version": "0.28.18"
+          }
+        }
+      ],
+      "wholeArtifactIdentical": true,
+      "capture": {
+        "version": "pulse.prpt00c.emission-capture.v1",
+        "artifactSha256": "bfab4eb9747f72ec468c3f7a738011983e1ff95cc9e280faad697264f7b19352",
+        "artifactBytes": 2464,
+        "convergenceEmissions": 3,
+        "nonCustomSectionsIdentical": true,
+        "restoredSerializationIdentical": true,
+        "importedFunctions": 12,
+        "functions": [
+          {
+            "index": 12,
+            "name": "canonical-native.as/__pulse_string",
+            "bytes": 10
+          },
+          {
+            "index": 13,
+            "name": null,
+            "bytes": 98
+          },
+          {
+            "index": 14,
+            "name": "~lib/string/String#get:length",
+            "bytes": 13
+          },
+          {
+            "index": 15,
+            "name": "canonical-native.as/pulse_pending_count",
+            "bytes": 4
+          },
+          {
+            "index": 16,
+            "name": "canonical-native.as/__pulse_ex_75$k",
+            "bytes": 43
+          },
+          {
+            "index": 17,
+            "name": "canonical-native.as/__pulse_ex_113$i",
+            "bytes": 7
+          },
+          {
+            "index": 18,
+            "name": null,
+            "bytes": 11
+          },
+          {
+            "index": 19,
+            "name": null,
+            "bytes": 11
+          },
+          {
+            "index": 20,
+            "name": null,
+            "bytes": 57
+          },
+          {
+            "index": 21,
+            "name": "canonical-native.as/pulse_start",
+            "bytes": 79
+          },
+          {
+            "index": 22,
+            "name": "canonical-native.as/pulse_set_effect_result",
+            "bytes": 8
+          },
+          {
+            "index": 23,
+            "name": "canonical-native.as/pulse_resume",
+            "bytes": 8
+          },
+          {
+            "index": 24,
+            "name": "canonical-native.as/pulse_result_handle",
+            "bytes": 4
+          },
+          {
+            "index": 25,
+            "name": "canonical-native.as/pulse_program_counter",
+            "bytes": 4
+          },
+          {
+            "index": 26,
+            "name": "canonical-native.as/pulse_plan_hash_ptr",
+            "bytes": 5
+          },
+          {
+            "index": 27,
+            "name": "canonical-native.as/pulse_plan_hash_length",
+            "bytes": 7
+          },
+          {
+            "index": 28,
+            "name": "canonical-native.as/pulse_last_error_code",
+            "bytes": 4
+          },
+          {
+            "index": 29,
+            "name": "canonical-native.as/pulse_abi_version",
+            "bytes": 4
+          },
+          {
+            "index": 30,
+            "name": "canonical-native.as/__pulse_step",
+            "bytes": 114
+          },
+          {
+            "index": 31,
+            "name": "canonical-native.as/__pulse_chunk_9",
+            "bytes": 8
+          },
+          {
+            "index": 32,
+            "name": "canonical-native.as/__pulse_chunk_8",
+            "bytes": 33
+          },
+          {
+            "index": 33,
+            "name": "canonical-native.as/__pulse_chunk_7",
+            "bytes": 8
+          },
+          {
+            "index": 34,
+            "name": "canonical-native.as/__pulse_chunk_6",
+            "bytes": 33
+          },
+          {
+            "index": 35,
+            "name": "canonical-native.as/__pulse_chunk_5",
+            "bytes": 8
+          },
+          {
+            "index": 36,
+            "name": "canonical-native.as/__pulse_chunk_4",
+            "bytes": 33
+          },
+          {
+            "index": 37,
+            "name": "canonical-native.as/__pulse_chunk_3",
+            "bytes": 8
+          },
+          {
+            "index": 38,
+            "name": "canonical-native.as/__pulse_chunk_2",
+            "bytes": 33
+          },
+          {
+            "index": 39,
+            "name": "canonical-native.as/__pulse_chunk_10",
+            "bytes": 177
+          },
+          {
+            "index": 40,
+            "name": "canonical-native.as/__pulse_chunk_1",
+            "bytes": 80
+          },
+          {
+            "index": 41,
+            "name": "canonical-native.as/__pulse_chunk_0",
+            "bytes": 146
+          }
+        ],
+        "graph": {
+          "status": "available",
+          "method": "verified-final-binary-direct-calls",
+          "importedFunctions": 12,
+          "definedFunctions": 30,
+          "functions": [
+            {
+              "index": 12,
+              "bytes": 10,
+              "name": "canonical-native.as/__pulse_string"
+            },
+            {
+              "index": 13,
+              "bytes": 98,
+              "name": "1"
+            },
+            {
+              "index": 14,
+              "bytes": 13,
+              "name": "~lib/string/String#get:length"
+            },
+            {
+              "index": 15,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_pending_count"
+            },
+            {
+              "index": 16,
+              "bytes": 43,
+              "name": "canonical-native.as/__pulse_ex_75$k"
+            },
+            {
+              "index": 17,
+              "bytes": 7,
+              "name": "canonical-native.as/__pulse_ex_113$i"
+            },
+            {
+              "index": 18,
+              "bytes": 11,
+              "name": "6"
+            },
+            {
+              "index": 19,
+              "bytes": 11,
+              "name": "7"
+            },
+            {
+              "index": 20,
+              "bytes": 57,
+              "name": "8"
+            },
+            {
+              "index": 21,
+              "bytes": 79,
+              "name": "canonical-native.as/pulse_start"
+            },
+            {
+              "index": 22,
+              "bytes": 8,
+              "name": "canonical-native.as/pulse_set_effect_result"
+            },
+            {
+              "index": 23,
+              "bytes": 8,
+              "name": "canonical-native.as/pulse_resume"
+            },
+            {
+              "index": 24,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_result_handle"
+            },
+            {
+              "index": 25,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_program_counter"
+            },
+            {
+              "index": 26,
+              "bytes": 5,
+              "name": "canonical-native.as/pulse_plan_hash_ptr"
+            },
+            {
+              "index": 27,
+              "bytes": 7,
+              "name": "canonical-native.as/pulse_plan_hash_length"
+            },
+            {
+              "index": 28,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_last_error_code"
+            },
+            {
+              "index": 29,
+              "bytes": 4,
+              "name": "canonical-native.as/pulse_abi_version"
+            },
+            {
+              "index": 30,
+              "bytes": 114,
+              "name": "canonical-native.as/__pulse_step"
+            },
+            {
+              "index": 31,
+              "bytes": 8,
+              "name": "canonical-native.as/__pulse_chunk_9"
+            },
+            {
+              "index": 32,
+              "bytes": 33,
+              "name": "canonical-native.as/__pulse_chunk_8"
+            },
+            {
+              "index": 33,
+              "bytes": 8,
+              "name": "canonical-native.as/__pulse_chunk_7"
+            },
+            {
+              "index": 34,
+              "bytes": 33,
+              "name": "canonical-native.as/__pulse_chunk_6"
+            },
+            {
+              "index": 35,
+              "bytes": 8,
+              "name": "canonical-native.as/__pulse_chunk_5"
+            },
+            {
+              "index": 36,
+              "bytes": 33,
+              "name": "canonical-native.as/__pulse_chunk_4"
+            },
+            {
+              "index": 37,
+              "bytes": 8,
+              "name": "canonical-native.as/__pulse_chunk_3"
+            },
+            {
+              "index": 38,
+              "bytes": 33,
+              "name": "canonical-native.as/__pulse_chunk_2"
+            },
+            {
+              "index": 39,
+              "bytes": 177,
+              "name": "canonical-native.as/__pulse_chunk_10"
+            },
+            {
+              "index": 40,
+              "bytes": 80,
+              "name": "canonical-native.as/__pulse_chunk_1"
+            },
+            {
+              "index": 41,
+              "bytes": 146,
+              "name": "canonical-native.as/__pulse_chunk_0"
+            }
+          ],
+          "imports": [
+            {
+              "index": 0,
+              "name": "fimport$0"
+            },
+            {
+              "index": 1,
+              "name": "fimport$1"
+            },
+            {
+              "index": 2,
+              "name": "fimport$2"
+            },
+            {
+              "index": 3,
+              "name": "fimport$3"
+            },
+            {
+              "index": 4,
+              "name": "fimport$4"
+            },
+            {
+              "index": 5,
+              "name": "fimport$5"
+            },
+            {
+              "index": 6,
+              "name": "fimport$6"
+            },
+            {
+              "index": 7,
+              "name": "fimport$7"
+            },
+            {
+              "index": 8,
+              "name": "fimport$8"
+            },
+            {
+              "index": 9,
+              "name": "fimport$9"
+            },
+            {
+              "index": 10,
+              "name": "fimport$10"
+            },
+            {
+              "index": 11,
+              "name": "fimport$11"
+            }
+          ],
+          "edges": [
+            {
+              "caller": 12,
+              "callee": 9,
+              "sites": 1
+            },
+            {
+              "caller": 12,
+              "callee": 14,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 0,
+              "sites": 2
+            },
+            {
+              "caller": 13,
+              "callee": 1,
+              "sites": 3
+            },
+            {
+              "caller": 13,
+              "callee": 16,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 7,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 8,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 13,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 16,
+              "callee": 1,
+              "sites": 1
+            },
+            {
+              "caller": 16,
+              "callee": 2,
+              "sites": 2
+            },
+            {
+              "caller": 16,
+              "callee": 0,
+              "sites": 1
+            },
+            {
+              "caller": 16,
+              "callee": 11,
+              "sites": 1
+            },
+            {
+              "caller": 16,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 17,
+              "callee": 10,
+              "sites": 1
+            },
+            {
+              "caller": 18,
+              "callee": 20,
+              "sites": 1
+            },
+            {
+              "caller": 19,
+              "callee": 20,
+              "sites": 1
+            },
+            {
+              "caller": 20,
+              "callee": 5,
+              "sites": 1
+            },
+            {
+              "caller": 20,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 20,
+              "callee": 6,
+              "sites": 1
+            },
+            {
+              "caller": 20,
+              "callee": 17,
+              "sites": 1
+            },
+            {
+              "caller": 21,
+              "callee": 30,
+              "sites": 1
+            },
+            {
+              "caller": 27,
+              "callee": 14,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 41,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 40,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 38,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 37,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 36,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 35,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 34,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 33,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 32,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 31,
+              "sites": 1
+            },
+            {
+              "caller": 30,
+              "callee": 39,
+              "sites": 1
+            },
+            {
+              "caller": 31,
+              "callee": 18,
+              "sites": 1
+            },
+            {
+              "caller": 32,
+              "callee": 13,
+              "sites": 1
+            },
+            {
+              "caller": 33,
+              "callee": 18,
+              "sites": 1
+            },
+            {
+              "caller": 34,
+              "callee": 13,
+              "sites": 1
+            },
+            {
+              "caller": 35,
+              "callee": 19,
+              "sites": 1
+            },
+            {
+              "caller": 36,
+              "callee": 13,
+              "sites": 1
+            },
+            {
+              "caller": 37,
+              "callee": 19,
+              "sites": 1
+            },
+            {
+              "caller": 38,
+              "callee": 13,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 0,
+              "sites": 4
+            },
+            {
+              "caller": 39,
+              "callee": 1,
+              "sites": 3
+            },
+            {
+              "caller": 39,
+              "callee": 16,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 7,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 8,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 12,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 39,
+              "callee": 6,
+              "sites": 1
+            },
+            {
+              "caller": 40,
+              "callee": 5,
+              "sites": 1
+            },
+            {
+              "caller": 40,
+              "callee": 12,
+              "sites": 2
+            },
+            {
+              "caller": 40,
+              "callee": 3,
+              "sites": 1
+            },
+            {
+              "caller": 40,
+              "callee": 4,
+              "sites": 1
+            },
+            {
+              "caller": 40,
+              "callee": 0,
+              "sites": 1
+            },
+            {
+              "caller": 40,
+              "callee": 17,
+              "sites": 1
+            },
+            {
+              "caller": 41,
+              "callee": 12,
+              "sites": 4
+            },
+            {
+              "caller": 41,
+              "callee": 3,
+              "sites": 2
+            },
+            {
+              "caller": 41,
+              "callee": 4,
+              "sites": 2
+            },
+            {
+              "caller": 41,
+              "callee": 0,
+              "sites": 3
+            },
+            {
+              "caller": 41,
+              "callee": 1,
+              "sites": 1
+            },
+            {
+              "caller": 41,
+              "callee": 2,
+              "sites": 1
+            },
+            {
+              "caller": 41,
+              "callee": 5,
+              "sites": 1
+            }
+          ],
+          "tables": 0,
+          "indirectCalls": 0,
+          "interpretation": "Static direct-call closure includes every conditional callee and shared runtime body; excludes imported implementation bytes, data, section framing, and execution frequency.",
+          "namedCompanionSha256": "89572f834844df13d0b018c953b79057eecccb1d68749b18eb7bb954c09317f2"
+        },
+        "sections": [
+          {
+            "id": 1,
+            "offset": 8,
+            "bytes": 50,
+            "payloadBytes": 48,
+            "sha256": "27ec9ac0002cfa19c2bd8fe444dcbd50bd3221a069562f9b3be73eef141bed8b"
+          },
+          {
+            "id": 2,
+            "offset": 58,
+            "bytes": 327,
+            "payloadBytes": 324,
+            "sha256": "3633de731913eb823a65dabf04248cc3870900a912fac1e80b683101ab8fdc9c"
+          },
+          {
+            "id": 3,
+            "offset": 385,
+            "bytes": 33,
+            "payloadBytes": 31,
+            "sha256": "09c1351e2d2cf63cbe85218c1eec55abb2a2de77cbf0aae987868d1b5a2179d9"
+          },
+          {
+            "id": 5,
+            "offset": 418,
+            "bytes": 5,
+            "payloadBytes": 3,
+            "sha256": "2f8101088fa8439344dc6b0cbc1c350c791f1c65a77a295e456cf424f13f798c"
+          },
+          {
+            "id": 6,
+            "offset": 423,
+            "bytes": 33,
+            "payloadBytes": 31,
+            "sha256": "aaccb3dd9c21fa15e4633359593955ccccc35ab8f49a3817597b74641304cfbf"
+          },
+          {
+            "id": 7,
+            "offset": 456,
+            "bytes": 254,
+            "payloadBytes": 251,
+            "sha256": "d156242d39a1a00a42b6a3bcbeb59b27d2ed5d3f4abbb12a4e8c864eafde1f94"
+          },
+          {
+            "id": 12,
+            "offset": 710,
+            "bytes": 3,
+            "payloadBytes": 1,
+            "sha256": "f393b868bf16fbd288bc294f184cd042c087db0f5473c260c09ada35a91e8545"
+          },
+          {
+            "id": 10,
+            "offset": 713,
+            "bytes": 1094,
+            "payloadBytes": 1091,
+            "sha256": "348551842080359bbcf0ca2b3ec760ca78c088e9e51d0d35d10a76e670b560b3"
+          },
+          {
+            "id": 11,
+            "offset": 1807,
+            "bytes": 657,
+            "payloadBytes": 654,
+            "sha256": "13014012fd042a02bba720a2d93239f15e7247f2da1427781e1f4d5f33fcc6ed"
+          }
+        ]
+      },
+      "attribution": {
+        "version": "pulse.prpt00c.attribution.v1",
+        "artifactSha256": "bfab4eb9747f72ec468c3f7a738011983e1ff95cc9e280faad697264f7b19352",
+        "planHash": "9f6c7cec53133466f3b7211c0794b7feeab221279c308f06dd74e0f82ad68038",
+        "generatorPrefix": "canonical-native.as/",
+        "routes": [
+          {
+            "routeId": "route_cf8b8b8acb070332460c706d",
+            "method": "GET",
+            "path": "/shared-a",
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "routerEntryStableId": "router_entry_b384d425b437c6444f1a5110",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              31
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                31
+              ],
+              "bodyIndices": [
+                12,
+                14,
+                17,
+                18,
+                20,
+                31
+              ],
+              "bodyBytes": 106,
+              "importedFunctionIndices": [
+                5,
+                6,
+                9,
+                10
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_cf581c5c7cc996ae5fe2b317",
+            "method": "GET",
+            "path": "/shared-b",
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "routerEntryStableId": "router_entry_aeb8e66e732f832e4b543dc2",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              33
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                33
+              ],
+              "bodyIndices": [
+                12,
+                14,
+                17,
+                18,
+                20,
+                33
+              ],
+              "bodyBytes": 106,
+              "importedFunctionIndices": [
+                5,
+                6,
+                9,
+                10
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_961dc8229d466123b7a41ca8",
+            "method": "GET",
+            "path": "/duplicate-a",
+            "handlerId": "handler_5f475d9c3184f72f20b159dc",
+            "routerEntryStableId": "router_entry_07c04bd84c1a0bf9747cf184",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              35
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                35
+              ],
+              "bodyIndices": [
+                12,
+                14,
+                17,
+                19,
+                20,
+                35
+              ],
+              "bodyBytes": 106,
+              "importedFunctionIndices": [
+                5,
+                6,
+                9,
+                10
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_755790a4f3c1326619878ece",
+            "method": "GET",
+            "path": "/duplicate-b",
+            "handlerId": "handler_d98aa1b521a783f0cb50ecfd",
+            "routerEntryStableId": "router_entry_11f6a9ccd6975acf16ee5be4",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 8,
+            "mappedDirectBodyBytes": 8,
+            "functionIndices": [
+              37
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                37
+              ],
+              "bodyIndices": [
+                12,
+                14,
+                17,
+                19,
+                20,
+                37
+              ],
+              "bodyBytes": 106,
+              "importedFunctionIndices": [
+                5,
+                6,
+                9,
+                10
+              ],
+              "additiveAcrossRoutes": false
+            }
+          },
+          {
+            "routeId": "route_372929235c43617ebca7e077",
+            "method": "GET",
+            "path": "/distinct",
+            "handlerId": "handler_03cd983ebd4c2d95f2d17297",
+            "routerEntryStableId": "router_entry_334e6983cda5395593ae30ab",
+            "status": "complete",
+            "expectedChunks": 1,
+            "mappedChunks": 1,
+            "directBodyBytes": 80,
+            "mappedDirectBodyBytes": 80,
+            "functionIndices": [
+              40
+            ],
+            "gaps": [],
+            "directCallReachable": {
+              "status": "available",
+              "rootIndices": [
+                40
+              ],
+              "bodyIndices": [
+                12,
+                14,
+                17,
+                40
+              ],
+              "bodyBytes": 110,
+              "importedFunctionIndices": [
+                0,
+                3,
+                4,
+                5,
+                9,
+                10
+              ],
+              "additiveAcrossRoutes": false
+            }
+          }
+        ],
+        "applicationDirectBody": {
+          "status": "complete",
+          "completeRoutes": 5,
+          "expectedRoutes": 5,
+          "uniqueMappedFunctions": 5,
+          "directBodyBytes": 112,
+          "mappedDirectBodyBytes": 112,
+          "routeSumBytes": 112,
+          "routeSumIsAdditive": true
+        },
+        "authoredHandlerRegistrations": [
+          {
+            "handlerId": "handler_f5995eebf2c2dafef175a453",
+            "registrationCount": 2,
+            "routeIds": [
+              "route_cf8b8b8acb070332460c706d",
+              "route_cf581c5c7cc996ae5fe2b317"
+            ],
+            "functionIndices": [
+              31,
+              33
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_5f475d9c3184f72f20b159dc",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_961dc8229d466123b7a41ca8"
+            ],
+            "functionIndices": [
+              35
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_d98aa1b521a783f0cb50ecfd",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_755790a4f3c1326619878ece"
+            ],
+            "functionIndices": [
+              37
+            ],
+            "binarySharingInferredFromHandlerId": false
+          },
+          {
+            "handlerId": "handler_03cd983ebd4c2d95f2d17297",
+            "registrationCount": 1,
+            "routeIds": [
+              "route_372929235c43617ebca7e077"
+            ],
+            "functionIndices": [
+              40
+            ],
+            "binarySharingInferredFromHandlerId": false
+          }
+        ],
+        "bodyOverlaps": [],
+        "bodyCensus": {
+          "categoryBasis": "generated-symbol-name heuristic; not authored ownership or reachability",
+          "definedFunctions": 30,
+          "bodyBytes": 1058,
+          "namedFunctions": 26,
+          "unnamedFunctions": 4,
+          "categories": [
+            {
+              "category": "handler chunks",
+              "functions": 11,
+              "bodyBytes": 567
+            },
+            {
+              "category": "portable dispatcher",
+              "functions": 4,
+              "bodyBytes": 209
+            },
+            {
+              "category": "optimizer-created or unnamed",
+              "functions": 4,
+              "bodyBytes": 177
+            },
+            {
+              "category": "expression helpers",
+              "functions": 2,
+              "bodyBytes": 50
+            },
+            {
+              "category": "other named functions",
+              "functions": 8,
+              "bodyBytes": 42
+            },
+            {
+              "category": "AssemblyScript runtime and standard library",
+              "functions": 1,
+              "bodyBytes": 13
+            }
+          ]
+        },
+        "limitations": [
+          "Direct handler chunks only; excludes callees, shared dependencies, data and section framing.",
+          "Missing chunk identity has unknown bytes; mapped bytes remain available as partial evidence.",
+          "Special stage/helper attribution and post-link remapping are unsupported.",
+          "Route byte rows may overlap; application totals deduplicate final function indices.",
+          "Authored handler reuse does not establish binary body sharing."
+        ]
+      }
+    }
+  ]
+}
