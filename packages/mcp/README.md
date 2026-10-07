@@ -4,14 +4,13 @@
 host applications outside the entity engine. It has zero runtime dependencies.
 The package surface is the root and `/node`; implementation files are private.
 
-PMCP-02/03/04 prepare a versioned, immutable Pulse context corpus and a read-only
-Entities application in the private `examples/pulse-context` area. Its five
-operations provide starter plans, search, reads, maintained examples and public
-diagnostic explanations. This application and its generator/source inputs are
-excluded from the generic adapter tarball. Its standalone host composes the public
-Node launcher and `/mcp/node` over a fixed loopback HTTP boundary. See the private
-`examples/pulse-context/README.md` in the source checkout;
-the public example and synchronized release membership remain PMCP-05/06.
+The canonical [Pulse context MCP example](../../examples/12-pulse-context-mcp/)
+uses a versioned, immutable corpus and five read-only Entities operations for
+starter plans, search, contract reads, maintained examples and public diagnostic
+help. Its standalone host composes the public Node launcher and `/mcp/node` over
+a fixed loopback HTTP boundary. The app is shipped with the CLI examples, not
+inside the generic adapter tarball; its runtime needs no repository or upstream.
+See its README for installation status, client requests and three walkthroughs.
 
 Release status: still private, version `0.0.0`, and excluded from the release
 manifest. PMCP-01 prepares and qualifies the packed host surface; PMCP-06 owns
@@ -437,7 +436,7 @@ SDK is not used. Source/fixture identities, wire records and terminal status are
 saved under `wasm/.test-results/mcp-http-sdk-*`. It remains explicit external
 evidence. Node JavaScript is measured; Native/Fastly MCP and complete
 live deployed application acceptance remain unclaimed. MCP-05 adds local installed
-Node JavaScript acceptance in the private resource-directory app. The MCP-01 reference-server
+Node JavaScript acceptance in the private resource-directory fixture. The MCP-01 reference-server
 wire proof is separate evidence.
 
 `mcp-tools` covers projection, mutation isolation, metadata filtering, protocol
@@ -450,7 +449,7 @@ successful invocation; the backend records exactly one request. This is Node
 JavaScript source-workspace evidence, not installed/deployed acceptance. Source,
 fixture and adapter identities plus wire records are retained under
 `wasm/.test-results/mcp-tools-sdk-*`. MCP-05 adds independent installed acceptance through
-the repository app at `packages/mcp/examples/resource-directory`. Run
+the private authorization fixture at `packages/mcp/examples/resource-directory`. Run
 `node wasm/scripts/run-wasm-tests.cjs --task mcp-installed` with lifecycle scripts
 disabled (`npm_config_ignore_scripts=true`). It packs the app and private adapter,
 installs exact Pulse candidates outside the checkout, and exercises the pinned

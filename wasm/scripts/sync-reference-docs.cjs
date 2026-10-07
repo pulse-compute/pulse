@@ -845,6 +845,7 @@ function buildExpectedFiles() {
     const segments = relative(file).split('/');
     return !segments.includes('node_modules')
       && !segments.includes('dist')
+      && !segments.some((segment) => segment.startsWith('dist-'))
       && !segments.some((segment) => segment.startsWith('.pulse-'))
       && !(segments.includes('.pulse') && segments.includes('guests'));
   });

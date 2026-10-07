@@ -104,12 +104,17 @@ const examples = Object.freeze([
     })
   }),
   Object.freeze({
-    id: '12-mcp-proxy',
+    id: '12-pulse-context-mcp',
+    runtimePackages: ['entities'],
     provider: 'node',
-    guestWasmBytes: 2694,
-    optimizedGuestWasmBytes: 2523,
-    capabilities: ['fetch', 'request.text'],
-    opaque: true
+    target: 'javascript',
+    noApplicationWasm: true,
+    capabilities: ['schema.decode', 'schema.encode'],
+    schemas: ['context.StartInput', 'context.StartOutput'],
+    entities: ['pulse.example', 'pulse.explain_diagnostic', 'pulse.read', 'pulse.search', 'pulse.start'],
+    handlerEffects: 0,
+    doctorWarnings: ['canonical-native-plan'],
+    prepareHost: true
   }),
   Object.freeze({
     id: '13-jwt-es256',
@@ -177,6 +182,7 @@ function assertExampleFormatting() {
         if (
           entry.name === 'node_modules'
           || entry.name === 'dist'
+          || entry.name.startsWith('dist-')
           || entry.name.startsWith('.pulse-')
           || (entry.name === 'guests' && path.basename(directory) === '.pulse')
         ) {
@@ -192,6 +198,9 @@ function assertExampleFormatting() {
   visit(examplesRoot);
   for (const file of files) {
     const relativeFile = slash(path.relative(repoRoot, file));
+    // Generated snapshot strings preserve complete canonical document/file bytes.
+    // Determinism and content budgets are checked by pulse-context-corpus.
+    if (relativeFile === 'examples/12-pulse-context-mcp/context-corpus.ts') continue;
     const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
     for (let index = 0; index < lines.length; index += 1) {
       assert.ok(
@@ -431,7 +440,8 @@ function assertExampleReadme(example, project, syncResult) {
     if (new RegExp(`^pulse ${command}$`, 'm').test(text)) continue;
     assert.match(text, new RegExp(`^npm (?:run ${command}${command === 'test' ? '|test' : ''})$`, 'm'), `${example.id} README must document pulse ${command} or its installed npm script`);
     const manifest = JSON.parse(fs.readFileSync(path.join(project.root, 'package.json'), 'utf8'));
-    assert.equal(manifest.scripts[command], `pulse ${command}`, `${example.id} documented script must invoke the ordinary CLI`);
+    assert.equal(manifest.scripts[command], example.prepareHost && command === 'build'
+      ? 'pulse build && node host/prepare.cjs' : `pulse ${command}`, `${example.id} documented script must invoke the ordinary CLI`);
   }
   assert.match(text, /^## Wasm size$/m, `${example.id} README must document its Wasm size baseline`);
   if (example.noApplicationWasm) {
@@ -626,7 +636,7 @@ function verifyExampleWorkflow(example, syncResult) {
       `${example.id} entity catalog mismatch`
     );
     assert.equal(inspection.summary.declaredHandlers, example.entities.length, `${example.id} declared-handler count mismatch`);
-    assert.equal(inspection.summary.handlerEffects, 1, `${example.id} managed-handler effect count mismatch`);
+    assert.equal(inspection.summary.handlerEffects, example.handlerEffects ?? 1, `${example.id} managed-handler effect count mismatch`);
   }
   if (example.events) {
     assert.equal(inspect.json.events.version, 'pulse.event-inspection.v1', `${example.id} event inspection version mismatch`);
@@ -690,6 +700,16 @@ function verifyExampleWorkflow(example, syncResult) {
   if (example.events) {
     assert.equal(manifest.events.targetSupport.status, 'eligible', `${example.id} build must retain event target eligibility`);
     assert.deepEqual(manifest.events.files, { catalog: 'event-catalog.json', inspection: 'event-inspection.json' });
+  }
+  if (example.prepareHost) {
+    const packageJson = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf8'));
+    assert.equal(packageJson.scripts.build, 'pulse build && node host/prepare.cjs');
+    assert.equal(packageJson.scripts.start, 'node host/start.cjs');
+    const prepared = JSON.parse(runNode([path.join(projectDir, 'host/prepare.cjs'), buildDir], {
+      cwd: projectDir
+    }).stdout);
+    assert.equal(prepared.event, 'prepared');
+    assert.ok(fs.existsSync(path.join(buildDir, 'pulse-context-host.json')));
   }
   const { guestWasmBytes, wasmBytes } = verifyDefaultNativeSizes(example, buildDir, build);
   if ((example.schemas || []).length > 0) {
