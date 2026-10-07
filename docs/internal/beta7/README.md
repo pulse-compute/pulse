@@ -12,9 +12,10 @@ Inspected base: `latest` at `e98d34b9494899f5b588f921aab093631bb3b386`, tree
 the final release candidate. Preparation commits and the eventual main/tag
 identity need their own checks and final qualification.
 
-**Preparation is reviewable; release readiness is incomplete.** The beta.7
-KV/CAS owner decision remains blocked. B7-02 through B7-11 retain their own
-setup, workflow and final-candidate obligations. This ledger is a review record,
+**Preparation is reviewable; release readiness is incomplete.** The release owner
+selected explicit KV/CAS qualification with a later human gate. Its evidence is
+pending, not waived. B7-02 through B7-11 retain their own setup, workflow and
+final-candidate obligations. This ledger is a review record,
 not an executable waiver or a replacement for preflight and terminal evidence.
 
 ## Applied snapshot and inventory
@@ -63,8 +64,8 @@ remains the machine-owned stage contract; this ledger adds current beta.7 contex
 | --- | --- | --- | --- |
 | Version/channel/package selection, support boundaries and legal-file policy | proven | Release engineering / B7-01 | Preserve the 20-package manifest and root legal files; preflight/docs checks establish preparation consistency |
 | beta.6 archive and released changelog history | proven | Documentation / B7-01 | Preserve exact prior bytes; final docs deployment must not replace immutable objects |
-| beta.7 KV/CAS qualification or exception | blocked | Nathan White, release owner / B7-01 | Decide the candidate-specific option below before tag freeze; retain the exact statement and candidate/evidence identity |
-| npm package-name bootstrap | pending | Release owner / B7-02 | Use fresh `release:audit-npm` evidence; bootstrap only missing names, then retain a compliant catalog audit |
+| beta.7 KV/CAS qualification and human gate | pending | Nathan White + release engineering / B7-07 | Explicit qualification selected by owner; retain dedicated local/deployed K4 evidence and human review before publication |
+| npm package-name bootstrap | pending | Release owner / B7-02 | [Inert MCP artifact and owner handoff](bootstrap.md) prepared and verified; human 2FA reservation and subsequent compliant catalog audit still required |
 | Trusted publishers, organization recovery/access and protected environment | pending | Release owner / B7-03 | Confirm all existing settings and configure MCP after bootstrap; match repo/workflow/environment and direct publish permission |
 | One candidate, blocking audit, protected approval and mandatory Fastly lane | pending | Release engineering / B7-04 | Land focused workflow/runbook changes before tagging; retain read-only authority before approval |
 | Published CLI/context smoke wiring | pending | Release engineering / B7-05 | Use the existing narrow registry script and retain terminal reports; no second full client/starter acceptance campaign |
@@ -80,7 +81,12 @@ Registry observations belong in the generated
 registry audit and beta.6 OIDC success do not prove current private settings.
 Freshness and final candidate identity must be checked when those stages execute.
 
-## KV/CAS owner decision — pending
+## KV/CAS direction — qualification selected, evidence pending
+
+On October 6, 2026 at 22:17:14 Denver time (October 7 UTC), the release owner
+directed: "we will explicitly prove with human gate later." This closes the
+B7-01 choice in favor of qualification, not a beta.7 exception. The frozen
+candidate's dedicated evidence and explicit human review remain required later.
 
 The October 4 direction covers the documented missing-key discrepancy on
 evidence-backed Viceroy 0.21.0/0.21.1, with raw results retained. It does not cover
@@ -92,21 +98,18 @@ only for sealed source `0da09bba3a806b04ee6ef0e6f98d196e3a2232c1`.
 Its raw local result was `failed`; deployed qualification was `not-run`.
 Neither result qualifies the future beta.7 tag or supplies inherited authority.
 
-The concrete options for release-owner review are:
+Qualify the dedicated local and deployed Pulse cross-location K4 lanes for the
+frozen beta.7 candidate under the existing policy, and present their terminal
+results at the explicit human gate before publication. Retain candidate
+revision/tree, raw reports, provider/toolchain identities and the review outcome.
+No local or deployed run is claimed by this preparation. Failed, missing or
+not-run evidence remains unresolved and blocking until the existing policy is
+satisfied or the release owner supplies a separate explicit disposition.
 
-1. Qualify the dedicated local and deployed Pulse cross-location K4 lanes for
-   the frozen beta.7 candidate under the existing policy.
-2. Explicitly accept the known local Viceroy CAS failures as non-blocking and
-   defer deployed Pulse cross-location K4 for beta.7 only. Record that direction
-   with its exact candidate/source/evidence identities before release closeout;
-   preserve any failed/not-run status and keep unrelated failures blocking.
-
-**No beta.7 exception is approved or applied by this PR.** The decision owner is
-Nathan White. The exact beta.7 candidate is not yet frozen. Once decided, retain
-the owner statement, scope, date, candidate revision/tree and raw evidence;
-do not alter the historical beta.6 record, weaken assertions, infer a semantic
-pass or change the public CAS contract. Generic Fastly reality, portable corpus
-or standalone SDK evidence does not satisfy the separate K4 requirement. See
+**No beta.7 exception is approved or applied.** Do not alter the historical
+beta.6 record, weaken assertions, infer a semantic pass or change the public CAS
+contract. Generic Fastly reality, portable corpus or standalone SDK evidence
+does not satisfy the separate K4 requirement. See
 [K4](../../../wasm/test/kv/K4.md).
 
 ## Advisory and license disposition policy
@@ -133,9 +136,11 @@ performance, client or packed-consumer campaign and no new automatic gate.
 ## Closeout rule
 
 B7-01 preparation is complete after focused preflight, maintainer, publication
-and documentation checks pass and this diff is reviewable. The ticket's owner
-decision remains open until the beta.7 KV/CAS choice is explicit. Do not describe
-the release as ready, or freeze B7-06, while that choice is unresolved.
+and documentation checks pass and this diff is reviewable. The owner has now
+selected explicit KV/CAS qualification with later human review. B7-06 may freeze
+the reviewed source once its other preparation prerequisites close; B7-07 must
+produce the dedicated evidence and complete that human gate before publication.
+The direction closes the preparation choice, not the qualification itself.
 
 One final tagged publication run should qualify the candidate, perform a
 blocking read-only audit/plan, wait for protected owner approval, then publish
