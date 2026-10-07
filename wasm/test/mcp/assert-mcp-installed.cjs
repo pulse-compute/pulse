@@ -10,7 +10,7 @@ const { spawn, execFileSync } = require('node:child_process');
 const { readTarEntries } = require('../../../scripts/pack-release.cjs');
 const { catalogFromTarballs, createReadOnlyRegistry } = require('../release/read-only-npm-registry.cjs');
 
-const { packageDirectory } = require('./package-directory.cjs');
+const { packageContext } = require('./package-context.cjs');
 const { pnpmInvocation } = require('../../../scripts/pnpm-toolchain.cjs');
 const root = path.resolve(__dirname, '../../..');
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-mcp-installed-'));
@@ -29,13 +29,14 @@ const clean = text => text.replaceAll(temporary, '<acceptance>').replaceAll(root
 const env = { ...process.env, NO_COLOR: '1', FORCE_COLOR: '0', npm_config_audit: 'false', npm_config_fund: 'false',
   npm_config_cache: path.join(temporary, 'npm-cache'), npm_config_fetch_retries: '0' };
 for (const key of ['NODE_PATH', 'NODE_OPTIONS', 'PULSE_PROFILE', 'npm_config_registry', 'NPM_CONFIG_REGISTRY']) delete env[key];
-const report = { version: 'pulse.mcp-installed-acceptance.v1', status: 'running',
+const startedAt = performance.now();
+const report = { version: 'pulse.mcp-installed-acceptance.v2', status: 'running',
   source: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
   sourceTree: execFileSync('git', ['rev-parse', 'HEAD^{tree}'], { cwd: root, encoding: 'utf8' }).trim(),
   workingTree: execFileSync('git', ['status', '--porcelain'], { cwd: root, encoding: 'utf8' }).trim(),
   workingDiffSha256: hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })),
   acceptanceScriptSha256: hash(fs.readFileSync(__filename)),
-  node: process.version, fixture: 'packages/mcp/examples/resource-directory', lifecycleScripts: false,
+  node: process.version, fixture: 'examples/12-pulse-context-mcp', applicationDelivery: 'exact-cli-tarball', lifecycleScripts: false,
   providerRealityValidated: false, results: [] };
 
 function saveReport() {
@@ -52,6 +53,7 @@ function run(command, args, { timeout = 120000, onOutput, cwd = consumer } = {})
       failure ||= error;
       try { process.platform === 'win32' ? child.kill('SIGKILL') : process.kill(-child.pid, 'SIGKILL'); } catch {}
     };
+    const commandStart = performance.now();
     const timer = setTimeout(() => stop(new Error(`command timed out after ${timeout}ms`)), timeout);
     child.stdout.on('data', chunk => {
       stdout += chunk;
@@ -65,7 +67,7 @@ function run(command, args, { timeout = 120000, onOutput, cwd = consumer } = {})
     child.once('error', error => { clearTimeout(timer); reject(error); });
     child.once('close', (code, signal) => {
       clearTimeout(timer);
-      const record = { command: path.basename(command), args: args.map(clean), code, signal, stdout: clean(stdout), stderr: clean(stderr) };
+      const record = { elapsedMs: performance.now() - commandStart, command: path.basename(command), args: args.map(clean), code, signal, stdout: clean(stdout), stderr: clean(stderr) };
       report.results.push(record); saveReport();
       if (failure || code !== 0 || signal) reject(new Error(`${failure?.message || 'command failed'}: ${JSON.stringify(record)}`));
       else resolve({ stdout, stderr });
@@ -100,16 +102,23 @@ function verifyInstalled(manifest) {
 async function main() {
   try {
     saveReport();
-    console.log('mcp-installed - pack standard public Pulse candidates and private application fixture');
-    const manifest = packageDirectory(pack);
-    const app = manifest.packages.find(entry => entry.name === '@pulse-examples/13-mcp-resource-directory');
+    console.log('mcp-installed - reuse standard public candidates and extract CLI-shipped context app');
+    const manifest = packageContext(pack);
+    const app = manifest.packages.find(entry => entry.name === '@pulse-compute/cli');
+    const prefix = 'package/examples/12-pulse-context-mcp/';
+    const files = [];
     for (const [file, bytes] of readTarEntries(path.join(pack, app.tarball))) {
-      if (!file.startsWith('package/') || file.endsWith('/')) continue;
-      const destination = path.resolve(consumer, file.slice(8));
+      if (!file.startsWith(prefix) || file.endsWith('/')) continue;
+      files.push({ file: file.slice(prefix.length), sha256: hash(bytes) });
+      const destination = path.resolve(consumer, file.slice(prefix.length));
       assert.ok(destination.startsWith(consumer + path.sep));
       fs.mkdirSync(path.dirname(destination), { recursive: true }); fs.writeFileSync(destination, bytes);
     }
-    report.applicationPackage = app;
+    assert.ok(files.some(item => item.file === '.pulse/config.ts'));
+    assert.ok(files.some(item => item.file === 'host/start.cjs'));
+    assert.ok(files.some(item => item.file === 'context-corpus.ts'));
+    report.applicationPackage = { ...app, prefix, files };
+    assert.equal(readJson(path.join(consumer, 'package.json')).name, '@pulse-examples/pulse-context-mcp');
     const registry = createReadOnlyRegistry(catalogFromTarballs(manifest.packages.map(entry => path.join(pack, entry.tarball))));
     await new Promise((resolve, reject) => { registry.server.once('error', reject); registry.server.listen(0, '127.0.0.1', resolve); });
     try {
@@ -121,22 +130,30 @@ async function main() {
     } finally { await new Promise(resolve => registry.server.close(resolve)); }
     const before = verifyInstalled(manifest); report.installed = before;
     const client = path.join(temporary, 'client'); fs.mkdirSync(client);
-    for (const file of ['package.json', 'pnpm-lock.yaml', 'directory-proof.mjs']) {
+    for (const file of ['package.json', 'pnpm-lock.yaml', 'context-proof.mjs', 'context-agent-proof.cjs']) {
       fs.copyFileSync(path.join(__dirname, 'reference', file), path.join(client, file));
     }
-    fs.copyFileSync(path.join(__dirname, 'authorization-fixture.cjs'), path.join(consumer, 'authorization-fixture.cjs'));
-    report.fixtureFiles = Object.fromEntries(['authorization-fixture.cjs', 'reference/directory-proof.mjs', 'reference/pnpm-lock.yaml', 'package-directory.cjs']
+    report.fixtureFiles = Object.fromEntries(['reference/context-proof.mjs', 'reference/context-agent-proof.cjs', 'reference/pnpm-lock.yaml', 'codex-reference/pnpm-lock.yaml', 'package-context.cjs']
       .map(file => [file, hash(fs.readFileSync(path.join(__dirname, file)))]));
     const pnpm = pnpmInvocation(root);
     await run(pnpm.command, [...pnpm.prefix, 'install', '--frozen-lockfile', '--ignore-scripts'], { cwd: client });
     assert.equal(readJson(path.join(client, 'node_modules/@modelcontextprotocol/client/package.json')).version, '2.2.0');
-    console.log('mcp-installed - ordinary CLI and independent OAuth client over real HTTP');
-    await run(process.execPath, [path.join(client, 'directory-proof.mjs'), consumer, path.join(reportDir, 'wire.json')], { cwd: client, timeout: 105000 });
+    const agent = path.join(temporary, 'agent'); fs.mkdirSync(agent);
+    for (const file of ['package.json', 'pnpm-lock.yaml']) fs.copyFileSync(path.join(__dirname, 'codex-reference', file), path.join(agent, file));
+    await run(pnpm.command, [...pnpm.prefix, 'install', '--frozen-lockfile', '--ignore-scripts'], { cwd: agent });
+    assert.equal(readJson(path.join(agent, 'node_modules/@openai/codex/package.json')).version, '0.160.1');
+    const executable = path.join(agent, 'node_modules/.bin', process.platform === 'win32' ? 'codex.cmd' : 'codex');
+    console.log('mcp-installed - production host, official client, pinned Codex and client-side starter CLI');
+    await run(process.execPath, [path.join(client, 'context-proof.mjs'), consumer, path.join(reportDir, 'wire.json'), executable], { cwd: client, timeout: 150000 });
     report.wire = readJson(path.join(reportDir, 'wire.json')); assert.equal(report.wire.status, 'passed');
     assert.deepEqual(verifyInstalled(manifest), before); report.installed.unchanged = true;
     assert.equal(hash(execFileSync('git', ['diff', 'HEAD'], { cwd: root })), report.workingDiffSha256, 'packaging modified tracked source');
-    report.status = 'passed'; console.log('ok - packaged installed MCP directory acceptance');
+    report.status = 'passed'; console.log('ok - exact packed installed Pulse context journey');
   } catch (error) { report.status = 'failed'; report.error = clean(error.stack || String(error)); throw error; }
-  finally { saveReport(); fs.rmSync(temporary, { recursive: true, force: true }); console.log(`acceptance report - ${reportFile}`); }
+  finally {
+    try { fs.rmSync(temporary, { recursive: true, force: true }); report.cleanup = 'passed'; }
+    catch (error) { report.status = 'failed'; report.cleanup = 'failed'; report.cleanupError = clean(String(error)); process.exitCode = 1; }
+    report.elapsedMs = performance.now() - startedAt; saveReport(); console.log(`acceptance report - ${reportFile}`);
+  }
 }
 main().catch(error => { console.error(clean(error.stack || String(error))); process.exitCode = 1; });

@@ -267,6 +267,51 @@ bootstrap credential after setup. Keep first publication blocked until that
 handoff and the final tagged-source release qualification complete; package
 membership and local acceptance do not establish registry readiness.
 
+
+The single `mcp-installed` release-feature gate qualifies the exact CLI-shipped
+context app using the standard candidate tarballs, production Node composition,
+official client 2.2.0 and Codex 0.160.1. It records source/tree and oracle hashes,
+installed package tarball/file hashes, extracted app files, build/catalog/schema/
+corpus identities, terminal cleanup, startup time, response sizes and elapsed
+commands. A starter supplied through MCP is tested/built locally by the acceptance
+client. Scope/write-path negatives remain in the focused `mcp-authorization`
+fixture. Do not add this installed gate to fast PR or aggregate release profiles,
+or require a full seal for each PMCP ticket.
+
+Once the release owner completes bootstrap, trusted-publisher setup, final tagged
+qualification and publication/registry integrity verification, use the checkout
+for that exact release to run:
+
+```bash
+node wasm/test/mcp/smoke-context-registry.cjs 1.0.0-beta.7
+```
+
+This smoke installs the exact published CLI into a fresh temporary directory,
+copies its bundled context example, installs exact dependencies with lifecycle
+scripts disabled, builds/prepares the app and starts its production host. It
+checks discovery, five-tool listing, a starter response's version/corpus identity
+and graceful shutdown. It retains registry URLs/integrities, package/build/corpus
+identities, cleanup, startup/response/elapsed measurements in
+`wasm/.test-results/context-registry-smoke.json`. It does not repack, publish, deploy
+or replace final release qualification. Missing versions fail; no candidate or
+floating-version fallback is used.
+
+Carry these statuses separately in the release handoff:
+
+| Step | Owner / evidence |
+| --- | --- |
+| Packed context journey | `mcp-installed` terminal report for the final immutable candidate |
+| MCP name bootstrap | Human owner; inert `0.0.0` plus `bootstrap` tag and registry audit |
+| Trusted publisher | Human owner; exact repository/workflow/environment configuration |
+| Final tagged release qualification | Release controller's seal and installed-feature reports |
+| Exact package publication | Protected publication run and registry integrity verification |
+| Published context smoke | Command above, terminal report after publication |
+
+Bootstrap, trusted-publisher setup, publication and the published smoke remain
+pending until their actual evidence exists. Local candidate results do not close
+those rows. Startup, reply-size and focused-test timings are initial baselines;
+no latency threshold is introduced.
+
 ## Sealed candidate
 
 After `pnpm release:pack`, prepare the candidate:
