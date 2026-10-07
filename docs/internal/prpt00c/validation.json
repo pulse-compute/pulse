@@ -1,0 +1,86 @@
+{
+  "version": "pulse.prpt00c.validation.v1",
+  "base": "6a58d8eb0064b90d9c516dfc1ee7a51b138fa1b9",
+  "branch": "codex/prpt-00c-final-byte-attribution",
+  "classification": "evidence-only",
+  "productSourceChanged": false,
+  "proof": {
+    "status": "passed",
+    "cells": 3,
+    "controlBuilds": 3,
+    "observedBuilds": 3,
+    "ascCallsPerBuild": 1,
+    "generatorCallsPerBuild": 1,
+    "routesPerBuild": 5,
+    "wholeWasmByteIdentity": true,
+    "fastlyPackagedByteIdentity": true,
+    "sourceFileHashesVerified": true,
+    "artifactDirectory": "wasm/.test-results/prpt00c-qualified-final",
+    "sourceRevisionScope": "Local harness checkpoint; public product base is the base field above. Individual proof and producer hashes in proof.json identify the exact tested files."
+  },
+  "developmentAttempts": [
+    {
+      "result": "rejected-before-native-compilation",
+      "reason": "Initial synthetic Pulse(auto) fixture required normalized project context; replaced with an explicit Router fixture."
+    },
+    {
+      "result": "passed",
+      "nativeCompiles": 4,
+      "scope": "Initial default portable/Fastly final-emission noninterference proof."
+    },
+    {
+      "result": "passed",
+      "nativeCompiles": 6,
+      "scope": "Added existing-generation ownership, Fastly packaging, runtime checks and convergence."
+    },
+    {
+      "result": "passed",
+      "nativeCompiles": 6,
+      "scope": "First authentic bounded graph capture, all controls passed; subsequently repeated only after the harness environment namespace fix."
+    },
+    {
+      "result": "documentation-release-failed",
+      "reason": "Proof-only capture variable used the product PULSE_ environment namespace. Changed to PRPT00C_CAPTURE_FILE; no production environment surface or catalog added."
+    },
+    {
+      "result": "passed",
+      "nativeCompiles": 6,
+      "scope": "Final three paired cells after namespace fix; all prior artifact hashes unchanged. Retained as proof.json."
+    }
+  ],
+  "checks": {
+    "maintenance": "passed",
+    "docsSync": "passed; no generated diff",
+    "docsCheck": "passed; 83 versioned pages, 20503 links",
+    "documentationRelease": "passed after proof-only environment namespace correction",
+    "scope": "passed; evidence-only, low risk, documentation and maintenance-policy checks required",
+    "diffWhitespace": "passed; staged files",
+    "syntax": "passed; four CJS files"
+  },
+  "notRun": [
+    "Full unit/native/javascript/conformance or release suites: no production mutation; bounded evidence only.",
+    "ARC/Catalog, schema-heavy and guest-linked compilation.",
+    "Viceroy/deployed Fastly/browser qualification."
+  ],
+  "remaining": [
+    "PRPT-01 contract; PRPT-02A/03 production integration.",
+    "Guest-linked final attribution, special stages/helpers and complete exclusive ownership.",
+    "Real-app capture overhead and other profiles in PRPT-06."
+  ],
+  "independentReview": {
+    "status": "passed",
+    "sourceHashesMatched": true,
+    "artifactHashesMatched": true,
+    "rawBinaryDisassemblyDirectCalls": [
+      74,
+      385,
+      80
+    ],
+    "recordedGraphDirectCalls": [
+      74,
+      385,
+      80
+    ],
+    "unmodeledCalls": 0
+  }
+}
