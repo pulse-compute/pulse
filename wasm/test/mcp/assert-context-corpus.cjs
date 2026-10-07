@@ -109,7 +109,7 @@ async function main() {
   const app = path.join(temp, 'standalone'); fs.mkdirSync(app);
   fs.writeFileSync(path.join(app, 'package.json'), '{"type":"module"}');
   for (const file of ['context-corpus', 'corpus-version']) {
-    const source = file === 'context-corpus' ? rendered : fs.readFileSync(path.join(root, 'packages/mcp/examples/pulse-context/corpus-version.ts'), 'utf8');
+    const source = file === 'context-corpus' ? rendered : fs.readFileSync(path.join(root, 'examples/12-pulse-context-mcp/corpus-version.ts'), 'utf8');
     const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
     fs.writeFileSync(path.join(app, file + '.js'), output);
   }

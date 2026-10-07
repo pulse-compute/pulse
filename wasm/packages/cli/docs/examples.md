@@ -2,11 +2,10 @@
 
 Every top-level example is a complete Pulse project with a handler, config,
 tests, TypeScript config, and package metadata. The executable documentation
-lane runs every example except 10 through `doctor`, `inspect`, `test`, and
-`build`; it also starts the hello project with `dev`, sends a request, and
-verifies shutdown. Example 10 uses its focused orchestration proof while
-ordinary package-loader and Native-intrinsic integration remain candidate
-blockers.
+lane runs the documented `doctor`, `inspect`, `test`, and `build` workflows; it
+also starts the hello project with `dev`, sends a request, and verifies shutdown.
+The context MCP example additionally exercises its standalone host and client
+walkthroughs through the focused host test.
 
 | Example | Demonstrates |
 |---|---|
@@ -18,7 +17,7 @@ blockers.
 | [`09-router-lowering`](../examples/09-router-lowering/) | Mounted routes, scoped terminal middleware, fallthrough, error transfer, parameters, wildcards, and entry-aware effects. |
 | [`10-entities-tools`](../examples/10-entities-tools/) | Experimental schema-bound entities, deterministic catalog discovery, JSON-RPC dispatch, and an external tools facade. |
 | [`11-events`](../examples/11-events/) | Static event ingress, schema/no-payload frames, exact outbound acceptance, and separate HTTP/event entries. |
-| [`12-mcp-proxy`](../examples/12-mcp-proxy/) | A bounded JSON-RPC request seam and opaque upstream response pass-through. |
+| [`12-pulse-context-mcp`](../examples/12-pulse-context-mcp/) | A read-only MCP server for project starters, cited contracts, examples and diagnostic help. |
 | [`13-jwt-es256`](../examples/13-jwt-es256/) | ES256 bearer verification with an explicit guest-linked Native realization. |
 
 ## Wasm size at a glance
@@ -37,7 +36,7 @@ sizes; each example page includes exact byte counts.
 | `09-router-lowering` | 9.0 KiB | 8.4 KiB | 6.6% | — |
 | `10-entities-tools` | — | — | Not applicable | JavaScript-first candidate |
 | `11-events` | 39.6 KiB | 31.6 KiB | 20.2% | — |
-| `12-mcp-proxy` | 2.5 KiB | 2.4 KiB | 6.6% | — |
+| `12-pulse-context-mcp` | — | — | Not applicable | Node JavaScript |
 | `13-jwt-es256` | 38.4 KiB | 38.2 KiB | 0.5% | — |
 
 Run the normal workflow from any example directory:
@@ -53,22 +52,24 @@ Use `pulse inspect` when you need to examine the plan; it is not required before
 `build`. Each example README contains exact source-bound handler/config blocks
 and executable evidence selected by the docs lane. Every page also records the
 default and experimental size-optimized Wasm outputs; Fastly pages separate the
-provider-neutral guest from the deployable module, and the JavaScript-first
-Entities page explicitly records that no comparable application Wasm is
+provider-neutral guest from the deployable module, and the JavaScript
+Entities and context MCP pages explicitly records that no comparable application Wasm is
 emitted. The same gate rebuilds and verifies every exact byte count. See
 [Project lifecycle](./guides/project-lifecycle.md).
 
-Examples 01, 02, 03, 05, 07, 11, 12, and 13 use current package-root application
-surfaces. Example 09 retains the lower-level Router surface. Example 10 uses
+Examples 01, 02, 03, 05, 07, 11, and 13 use current package-root application
+surfaces. Example 09 retains the lower-level Router surface. Examples 10 and 12 use
 the synchronized `@pulse-compute/entities` Beta package; executable examples do
 not themselves authorize publication. Example 11 is executable only through
 the Node JavaScript/Native reference adapter. It does not claim a public
 listener, delivery, or Fastly/browser/ESP32 event support; see
 [Static events and outbound emission](./guides/events.md).
 
-Example 12 is an MCP-shaped HTTP proxy, not an MCP server. The incoming body is
-materialized once as bounded text because Pulse has no opaque incoming-body
-forwarding contract; the fetched response remains opaque.
+Example 12 selects Node JavaScript explicitly. Its built-in context needs no
+upstream server. Use its `npm run build` and `npm start` scripts for the MCP
+listener; `pulse dev` serves only the app's JSON-RPC boundary. The README records
+candidate dependency availability and the installed release qualification still
+required before registry installation is supported.
 
 Example 13 pins the guest-linked ES256 realization for Native. Its harness
 executes valid, invalid-signature, and disallowed-algorithm cases against the

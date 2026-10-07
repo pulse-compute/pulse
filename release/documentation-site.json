@@ -455,7 +455,7 @@
       "examples/11-events/README.md": {
         "order": 110
       },
-      "examples/12-mcp-proxy/README.md": {
+      "examples/12-pulse-context-mcp/README.md": {
         "order": 120
       },
       "examples/13-jwt-es256/README.md": {

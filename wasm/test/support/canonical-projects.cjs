@@ -16,7 +16,7 @@ const EXAMPLES = Object.freeze({
   fastlyCapabilities: '05-fastly-capabilities',
   opaqueProxy: '07-opaque-proxy',
   router: '09-router-lowering',
-  mcpProxy: '12-mcp-proxy'
+  pulseContextMcp: '12-pulse-context-mcp'
 });
 
 function exampleRoot(id) {

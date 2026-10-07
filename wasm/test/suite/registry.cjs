@@ -1063,7 +1063,7 @@ const tasks = Object.freeze({
     ['09-router-lowering', 240000],
     ['10-entities-tools', 240000],
     ['11-events', 300000],
-    ['12-mcp-proxy', 240000],
+    ['12-pulse-context-mcp', 240000],
     ['13-jwt-es256', 300000]
   ].map(([name, timeoutMs]) => [
     `docs-example-${name}`,
@@ -1413,7 +1413,7 @@ const profiles = Object.freeze({
     'docs-example-09-router-lowering',
     'docs-example-10-entities-tools',
     'docs-example-11-events',
-    'docs-example-12-mcp-proxy',
+    'docs-example-12-pulse-context-mcp',
     'docs-example-13-jwt-es256'
   ]),
   providers: Object.freeze([
