@@ -12,6 +12,10 @@ const SEAL_REVIEWED_FILES = new Set([
   'docs/maintainers/testing.md',
   'docs/maintainers/release-acceptance.md'
 ]);
+const PUBLICATION_REVIEWED_FILES = new Set([
+  'docs/maintainers/npm-publishing.md',
+  'docs/maintainers/repository-setup.md'
+]);
 const GENERATED_MAINTAINER_DOCS = new Set([
   'docs/maintainers/maintenance-policy.md',
   'docs/maintainers/plugin-readiness.md',
@@ -54,7 +58,9 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function policyFor(relativeFile) {
   const file = slash(relativeFile);
-  const reviewed = SEAL_REVIEWED_FILES.has(file)
+  const reviewed = PUBLICATION_REVIEWED_FILES.has(file)
+    ? { lastReviewed: '2026-10-07', reviewBy: '2027-04-07' }
+    : SEAL_REVIEWED_FILES.has(file)
     ? { lastReviewed: '2026-10-06', reviewBy: '2027-04-06' }
     : AUTHORITY_REVIEWED_FILES.has(file)
     ? { lastReviewed: AUTHORITY_REVIEWED_ON, reviewBy: AUTHORITY_REVIEW_BY }

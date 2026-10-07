@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-07
+review-by: 2027-04-07
 pulse-doc-meta:end -->
 
 # npm publishing
@@ -200,10 +200,36 @@ Local release seals accept Node `^24.0.0` and record the exact patch used. The p
 Every manifest-owned npm package setting must authorize exactly:
 
 ```text
+provider:   GitHub Actions
+owner:      pulse-compute
 repository: pulse-compute/pulse
 workflow:   npm-publish.yml
 environment: npm-publish
 ```
+
+In npm's form, enter organization/user `pulse-compute`, repository `pulse`,
+workflow filename `npm-publish.yml` (without `.github/workflows/`), and
+environment `npm-publish`. Explicitly allow direct `npm publish` in **Allowed
+actions**. Current new configurations allow staging by default; staging alone
+does not authorize this direct-publication workflow. Separate dist-tag management
+permission is not needed for `npm publish --tag latest`. Confirm every existing
+publisher's identity and direct-publication permission; preserve valid settings
+instead of recreating them. See [npm trusted publishers](https://docs.npmjs.com/trusted-publishers/).
+
+The repository owner must also confirm the actual GitHub `npm-publish`
+environment: tag-only deployment rules, a human release-authority reviewer,
+and no long-lived npm publish credential. Inspect rules of type **Tag**;
+"Protected branches only" is not a release-tag restriction. Record the selected
+tag pattern and reviewer, including the existing self-review/bypass choices,
+without inferring those settings from the checked-in workflow. Revoke/remove
+temporary bootstrap credentials after setup; preserve human account recovery
+and 2FA access. Registry name audits do not inspect these private settings.
+
+Retain a dated owner-reviewed settings receipt for the manifest's complete
+package set and environment. Saving a trusted publisher is setup evidence,
+not successful OIDC publication: the later protected exact-tag job supplies
+that proof. Do not publish a throwaway version just to test setup. The
+release record keeps settings review separate from publication receipts.
 
 The workflow publishes public packages directly under the dist-tag in the
 release manifest, now explicitly `latest` for future releases. The release
