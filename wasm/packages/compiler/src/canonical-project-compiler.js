@@ -1043,6 +1043,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     try {
       managedHandlers = compileManagedHandlerDescriptors({
         graphBuild,
+        target: options.target,
         descriptors: packageOperationRecognition.managedHandlers,
         packageOperationRecognition
       });

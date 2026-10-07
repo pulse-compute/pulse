@@ -337,6 +337,12 @@ describe('I6 effectful managed handlers', () => {
       descriptorFor('directManagedCall'),
       descriptorFor('lookupCustomer', 'negative:lookup-target'),
     ], ['PULSE_MANAGED_HANDLER_DIRECT_CALL_UNSUPPORTED']);
+    const javascriptAwait = managed.compileManagedHandlerDescriptors({
+      graphBuild: positive.graphBuild, descriptors: [descriptorFor('dynamicPromise')], target: 'javascript',
+    });
+    expect(javascriptAwait.handlers[0].eligibility.javascript.eligible).toBe(true);
+    expect(javascriptAwait.handlers[0].eligibility.native.eligible).toBe(false);
+    expect(() => managed.compileManagedHandlerNativeBundle(javascriptAwait)).toThrow();
     expectCodes(positive, [descriptorFor('dynamicPromise')], [
       'PULSE_NATIVE_AWAIT_UNSUPPORTED',
     ]);
