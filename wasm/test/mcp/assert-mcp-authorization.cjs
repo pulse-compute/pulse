@@ -118,4 +118,4 @@ async function main() {
     console.log('ok - MCP-04 metadata/challenges, issuer/audience/expiry/scopes, deny-before-effects, backend isolation and cancellation');
   } finally { await f.close(); }
 }
-main().catch(error => { console.error(error); process.exitCode = 1; });
+main().then(() => require('./assert-directory-authorization.cjs').directoryAuthorization()).catch(error => { console.error(error); process.exitCode = 1; });
