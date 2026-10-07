@@ -50,8 +50,8 @@ The five tools are `pulse.start`, `pulse.search`, `pulse.read`, `pulse.example`
 and `pulse.explain_diagnostic`. Returned starter commands are client-side
 instructions; the server does not execute them. The example is bundled with the
 CLI, uses exact matching Pulse versions and runs from built artifacts outside
-the source checkout. MCP name reservation, OIDC setup and publication are pending
-external actions, not features implemented by the adapter.
+the source checkout. MCP name reservation is complete; OIDC setup and beta.7
+publication remain pending external actions.
 
 ## Readiness ledger
 
@@ -65,7 +65,7 @@ remains the machine-owned stage contract; this ledger adds current beta.7 contex
 | Version/channel/package selection, support boundaries and legal-file policy | proven | Release engineering / B7-01 | Preserve the 20-package manifest and root legal files; preflight/docs checks establish preparation consistency |
 | beta.6 archive and released changelog history | proven | Documentation / B7-01 | Preserve exact prior bytes; final docs deployment must not replace immutable objects |
 | beta.7 KV/CAS qualification and human gate | pending | Nathan White + release engineering / B7-07 | Explicit qualification selected by owner; retain dedicated local/deployed K4 evidence and human review before publication |
-| npm package-name bootstrap | pending | Release owner / B7-02 | [Inert MCP artifact and owner handoff](bootstrap.md) prepared and verified; human 2FA reservation and subsequent compliant catalog audit still required |
+| npm package-name bootstrap | proven | Release owner / B7-02 | [Post-bootstrap verification](bootstrap.md#post-bootstrap-verification) confirms all 20 names compliant and published MCP bytes identical to the reviewed placeholder; refresh registry evidence before publication |
 | Trusted publishers, organization recovery/access and protected environment | pending | Release owner / B7-03 | Confirm all existing settings and configure MCP after bootstrap; match repo/workflow/environment and direct publish permission |
 | One candidate, blocking audit, protected approval and mandatory Fastly lane | pending | Release engineering / B7-04 | Land focused workflow/runbook changes before tagging; retain read-only authority before approval |
 | Published CLI/context smoke wiring | pending | Release engineering / B7-05 | Use the existing narrow registry script and retain terminal reports; no second full client/starter acceptance campaign |
