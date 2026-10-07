@@ -122,6 +122,7 @@ The public `1.0.0-beta.7` catalog is defined by the release manifest.
 | [`@pulse-compute/crypto`](https://www.npmjs.com/package/@pulse-compute/crypto) | Bounded provider-neutral HS256 and ES256 verification. |
 | [`@pulse-compute/jwt`](https://www.npmjs.com/package/@pulse-compute/jwt) | Bounded provider-neutral JWT verification and claims validation. |
 | [`@pulse-compute/entities`](https://www.npmjs.com/package/@pulse-compute/entities) | Statically declared schema-backed operations with the first-party JSON-RPC adapter. |
+| [`@pulse-compute/mcp`](https://www.npmjs.com/package/@pulse-compute/mcp) | Bounded MCP HTTP host integration through the root Fetch handler and `/node` bridge. |
 | [`@pulse-compute/s3`](https://www.npmjs.com/package/@pulse-compute/s3) | Bounded exact-key object reads and writes on supported Node and Fastly Native targets. |
 
 `@pulse-compute/pulse` and `@pulse-compute/runtime` are layered public
