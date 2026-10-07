@@ -1,9 +1,9 @@
 # Pulse context corpus
 
-PMCP-02 prepares the immutable data for Pulse's read-only context application.
+PMCP-02 prepares the immutable data and PMCP-03 adds Pulse's read-only context application.
 This directory is a private application preparation area, excluded from the
-generic MCP package tarball. It has no listener or runnable server yet; PMCP-03
-adds the Entities operations and PMCP-04 adds the standalone host composition.
+generic MCP package tarball. Its ordinary Pulse Entities app selects Node
+JavaScript explicitly. PMCP-04 adds the standalone MCP host composition.
 PMCP-05 owns the public example replacement.
 
 The canonical selection owner is `scripts/pulse-context-inputs.json`. The
@@ -60,7 +60,7 @@ const unavailable = selectContextCorpus('latest');
 
 The application consumes only the emitted data and version selector. It never
 loads the generator, source repository or CLI catalogs at runtime. Unknown
-IDs, lexical search, starter plans and bounded tool responses belong to PMCP-03.
+versions and IDs return explicit statuses in the application.
 Described command side effects and example configuration are context, not
 server permission to execute commands or write client files. The selected
 examples retain their exact Node Native profiles; the Node JavaScript guide
@@ -70,3 +70,64 @@ When canonical inputs change, regenerate the snapshot in the same PR. Missing
 files/headings, duplicate IDs, out-of-budget content, mismatched example versions
 or profile annotations, and stale generated output fail the focused unit check.
 No full release seal or live MCP client is needed for corpus regeneration.
+
+## Context application
+
+With this checkout's exact candidate dependencies/tooling, the ordinary app workflow is
+`npm run doctor`, `npm test`, `npm run inspect` and `npm run build`. The private
+app needs no MCP adapter import; its emitted Entities catalog and schema registry
+are consumed by the host added in PMCP-04. `npm run dev -- --no-watch` serves the
+JSON-RPC app on loopback for local development, with outbound fetch disabled.
+
+The new JavaScript Entities target-propagation correction belongs to this
+candidate; support by the already published beta.6 CLI is not claimed. The
+private dependency declarations identify the candidate graph. PMCP-06 selects
+the next unpublished synchronized release version, and PMCP-07 qualifies its
+installed journey.
+
+Every operation requires `version: '1.0.0-beta.6'`. Every application reply,
+including lookup/selection errors, carries the exact Pulse version, candidate
+status, corpus schema/hash, requested version and application contract version.
+Schema/protocol admission failures use the existing JSON-RPC error boundary.
+
+| Operation | Inputs and result |
+| --- | --- |
+| `pulse.start` | `goal` is `json-api`, `schema-api`, `fetch-api` or `router-api`; `provider: 'node'` and explicit `target: 'native'` or `'javascript'`. Returns imports, exact dependencies, configuration, contract citations, example ID, local command sequence and unresolved choices. |
+| `pulse.search` | `query`, optional `category`, paired `provider`/`target`, `limit` and result `offset`. Matches all whitespace-separated terms against ID/title/tags/content, weighted 8/6/4/1; ties use ordinal ID order. Returns short excerpts, citations and total match count. |
+| `pulse.read` | One exact corpus `id`, optional paired applicability filter and content `offset`. Returns section/file content with its complete source/content hashes. |
+| `pulse.example` | A maintained example `id`, optional `files` array of exact corpus IDs from `availableIds`, optional paired filter and record `offset`. Returns whole maintained file/workflow records; never resolves paths. |
+| `pulse.explain_diagnostic` | One exact public `code`. Returns source evidence, summary/remediation, related contracts and a suggested local check. An entry without a textual canonical summary explicitly returns `summaryAvailable: false`. |
+
+Application replies are at most 24 KiB of serialized UTF-8 JSON. Search accepts
+at most 256 UTF-8 query bytes/eight terms and returns at most five excerpts of
+384 bytes. Reads return at most 12 KiB raw content and 16 KiB JSON-escaped content
+per page. `nextOffset` is a UTF-16 content position, preserving Unicode code-point
+boundaries. Search offsets index ranked results; example offsets index the
+selected record list, with at most five records per reply. Reuse the same version,
+query and selection with the returned offset. `truncated` and `nextOffset` make
+continuation explicit; source/content hashes always identify the complete record.
+If a whole example file cannot fit, use its ID with `pulse.read`.
+
+Starter configuration is derived from the selected maintained example, including
+its schema limits and harness path. A JavaScript plan explicitly reports the
+`local.target` change; the example's original Native applicability is preserved.
+Other starter providers are unsupported in v1, even when their broader contracts
+are searchable. The client chooses its directory, copies the selected example
+files/configuration and runs commands locally. These steps have not been executed
+by a tool call. There is no filesystem/process/config/fetch effect in the handlers.
+
+Example application request:
+
+```json
+{"jsonrpc":"2.0","id":1,"method":"pulse.start","params":{"version":"1.0.0-beta.6","goal":"schema-api","provider":"node","target":"javascript"}}
+```
+
+Focused app qualification (one build, typed schemas, all bundled records/codes,
+real Node HTTP execution and generic MCP catalog projection):
+
+```sh
+node wasm/scripts/run-wasm-tests.cjs --task pulse-context-application --no-report
+```
+
+No standalone MCP startup script, remote deployment or public proxy-example
+replacement is part of PMCP-03.

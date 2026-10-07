@@ -1113,6 +1113,10 @@ const tasks = Object.freeze({
     evidence: 'unit', timeoutMs: 30000,
     description: 'PMCP-02 immutable bounded context snapshot, deterministic generation, source identity and version mismatch'
   }),
+  'pulse-context-application': nodeTask('test/mcp/assert-context-application.cjs', {
+    evidence: 'unit', timeoutMs: 30000,
+    description: 'PMCP-03 five read-only Entities context operations, real Node JavaScript build, schemas/catalog and bounded MCP projection'
+  }),
   'mcp-tools': nodeTask('test/mcp/assert-mcp-tools.cjs', {
     evidence: 'unit', timeoutMs: 30000,
     description: 'MCP-03 catalog/schema projection, governed HTTP invocation and bounded tool failures'
@@ -1282,6 +1286,7 @@ const profiles = Object.freeze({
     'entities-json-rpc-corpus',
     'mcp-http',
     'pulse-context-corpus',
+    'pulse-context-application',
     'mcp-compatibility',
     'mcp-tools',
     'mcp-authorization',

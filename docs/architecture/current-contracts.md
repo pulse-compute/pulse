@@ -81,6 +81,14 @@ their own topology while normalizing handler bodies into the same canonical IR.
 Provider realization begins only after the complete reachable program and its
 capability requirements are known.
 
+Explicit JavaScript Entities operations retain their original static source
+graph, including ordinary helpers and callbacks. Declared-handler inspection
+records recognized Pulse effects; it does not prove ordinary helper or dependency
+internals. Schema admission, Pulse effect-await rules and static dispatch remain
+in force. Native handler restrictions are separate eligibility blockers during
+JavaScript inspection and remain errors when Native is selected. A JavaScript
+inspection body is never substituted for a Native generator.
+
 HTTP Router authoring supports static `get`, `head`, `post`, `put`, `patch`,
 and `delete` registrations, inherited by `Pulse`. The owned Router API registry
 defines compiler admission; topology and lifecycle method catalogs derive from
