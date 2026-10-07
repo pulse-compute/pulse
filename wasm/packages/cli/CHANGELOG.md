@@ -6,12 +6,34 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## 1.0.0-beta.7 — Beta (2026-10-07)
 
+- Share exact package construction across release consumers, consolidate repeated
+  JWT and installed-corpus checks, and bound candidate work with terminal evidence
+  and supervised cleanup.
+- Recover verified same-candidate work and add bounded isolated seal workers with
+  separate compiler admission and memory budgets. Keep checkpoint qualification
+  manual and preserve failed attempts and exact source/artifact identities.
+- Retire frozen O-10/O-11 optimization qualification replays while retaining their
+  current regression owners and recoverable historical observations.
+- Add a small manual Node performance baseline and guarded comparisons. Split
+  final Native emission into private owners without changing measured artifact
+  bytes; the cleanup establishes no compiler speed or Wasm-size improvement.
 - Add `@pulse-compute/mcp` to the synchronized release package set as a supported
   host extension with root and `/node` imports and no runtime dependencies.
-- Ship the bounded, read-only Pulse context MCP example with exact candidate
-  dependencies; preserve the beta.6 documentation snapshot from its release tag.
-- Give installed MCP acceptance one mandatory release owner and prepare an inert
-  bootstrap artifact without publishing or adding dependency installs to fast CI.
+- Qualify modern MCP HTTP with the official client and Claude Code, and provide
+  explicit stateless compatibility for the measured Codex client.
+- Replace the proxy example with a bundled, read-only Pulse context application:
+  starter plans, search, cited contracts, maintained examples and diagnostic help.
+  Its standalone Node host runs the built app without workspace execution access.
+- Give the installed context journey one mandatory release owner, retain the
+  bounded authorization checks, and prepare an inert MCP name bootstrap. Registry
+  publication still requires release-owner setup and final tagged qualification.
+- Purge the documentation CDN after promotion and before public verification;
+  preserve the beta.6 documentation snapshot from its exact release tag.
+
+Conditional KV remains a separate release qualification. Beta.6's accepted local
+Viceroy CAS failures and deployed cross-location deferral apply only to that
+candidate. Beta.7 requires its own qualification or explicit owner disposition;
+raw failed/not-run results remain unresolved, and public CAS semantics are unchanged.
 
 ## 1.0.0-beta.6 — Beta (2026-10-04)
 
