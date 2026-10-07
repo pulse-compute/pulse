@@ -41,6 +41,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'mcp-http',
       'pulse-context-corpus',
       'pulse-context-application',
+      'pulse-context-host',
       'mcp-compatibility',
       'mcp-tools',
       'mcp-authorization'
