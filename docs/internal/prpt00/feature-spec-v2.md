@@ -40,11 +40,11 @@ The viewer must not re-interpret source code, reconstruct authorization policy, 
 
 ## 2. Boundaries and non-goals
 
-Report is **Wasm-only observability tooling** inside the existing CLI package. It must not add a runtime dependency, change the application programming model, or become a new compiler optimization project. Node remains a valid Pulse deployment target, but is deliberately **not a Report target**; `inspect` and `doctor` retain their own target contracts.
+Report is **Wasm-only observability tooling** inside the existing CLI package. It must not add a runtime dependency, change the application programming model, or become a new compiler optimization project. Node Native is a valid Report host; the JavaScript target is unsupported. Eligibility follows the produced representation, as established by PRPT-00B and frozen in [PRPT-01](../prpt01/README.md).
 
 | In scope | Explicitly out of scope for v1 |
 |---|---|
-| Inventory and provenance from a successfully compiled, matched Wasm build. | Source-only or Node-target report generation; reporting a failed, stale, or missing Wasm build as successful. |
+| Inventory and provenance from a successfully compiled, matched Wasm build. | Source-only or JavaScript-target report generation; reporting a failed, stale, or missing Wasm build as successful. |
 | Resolved application inventory and source provenance. | Inferring business policy, scoring security, or recommending architecture. |
 | Explicit declarations and already-produced diagnostics. | A second doctor implementation, new RBAC heuristics, or automatic remediation. |
 | Exact artifact totals and honest, supported attribution. | Counterfactual savings estimates, per-route rebuilds, general whole-program analysis, or optimizing to make reporting easier. |
@@ -100,7 +100,7 @@ Resolve output paths using existing physical-containment and symlink protections
 | Input state | Required behavior |
 |---|---|
 | Completed Wasm build, matching source/profile/recipe and artifact | Generate terminal, JSON, or HTML report from retained evidence. |
-| Node/JavaScript target (even if functioning perfectly) | Unsupported target; **no report**. `inspect`/`doctor` remain available separately. |
+| JavaScript target/source package (even if functioning perfectly) | Unsupported target; **no report**. Node Native remains eligible. `inspect`/`doctor` remain available separately. |
 | Wasm target selected, compile failed or incomplete | Error with existing compile/build diagnostics; **no report**. |
 | Wasm target selected, compiled artifact absent or mismatched/stale | Error identifying missing/mismatched evidence; **no fresh report**. |
 | Previously saved, validated Wasm report capsule | Render/export as a historical snapshot; no rebuild and no claim about the current project. |
@@ -117,7 +117,7 @@ Report does not run an additional native/provider build to obtain missing number
 
 ### 4.2 Artifact mode
 
-Read supported JSON records and safe, explicitly referenced sidecars. **An eligible build manifest must prove completed Wasm output and its matching identity; a Node build manifest is unsupported.** A saved Wasm report capsule may be replayed without revalidating a current project. Do not evaluate TypeScript configuration, import application modules, execute handlers, load executable plugins, or invoke a toolchain.
+Read supported JSON records and safe, explicitly referenced sidecars. **An eligible build manifest must prove completed Wasm output and its matching identity; a JavaScript build manifest is unsupported.** A saved Wasm report capsule may be replayed without revalidating a current project. Do not evaluate TypeScript configuration, import application modules, execute handlers, load executable plugins, or invoke a toolchain.
 
 A saved capsule is replayed as a historical snapshot. Rendering it with a newer CLI must preserve the evidence identity; it must not merge in today's project state. **A manifest that lacks proof of an eligible, matching completed Wasm build is not sufficient input**—do not render a partial whole-application report. An eligible manifest may still omit optional measurements: disclose their coverage rather than manufacturing missing routes or declarations.
 
@@ -264,7 +264,7 @@ Its names-enabled companion workflow checked all non-custom section bytes before
 
 ## 9. Canonical capsule and provenance
 
-The payload has an independently versioned public schema, separate from npm release versions and existing compiler artifact protocols. Its context/provenance/artifact records must carry the validated Wasm representation and completed-build artifact identity; there is no Node report capsule in v1. PRPT-01 should freeze the concrete types and golden fixtures before renderers are written.
+The payload has an independently versioned public schema, separate from npm release versions and existing compiler artifact protocols. Its context/provenance/artifact records must carry the validated Wasm representation and completed-build artifact identity; JavaScript source-package capsules are excluded. [PRPT-01](../prpt01/README.md) freezes the concrete schemas, generated types, golden fixtures, and completion/attribution adapters before renderers are written. It adds explicit declaration, body and root-set inventories to the conceptual outline below.
 
 The conceptual shape is:
 
@@ -400,7 +400,7 @@ The executable artifact must remain byte-identical in a controlled comparison wi
 | A12 — package integration | Installed command/help/completions/reference agree; template/schema are included in the packed CLI; existing inspect/doctor contracts remain unchanged. |
 | A13 — practical corpus | Use a minimal fixture, a real smaller app with assets, and a pinned Catalog-scale application/evidence snapshot. Record actual counts/sizes; do not hardcode conversational estimates. |
 | A14 — bounded cost | Retain report generation/RSS/output-size measurements and verify unchanged guest bytes. Document unsupported attribution instead of expanding compiler scope. |
-| A15 — Wasm eligibility | Positive: matching successful Wasm build reports. Negative: Node target, build error, absent/stale/mismatched artifact return no new report; historical verified Wasm capsule replays without building. |
+| A15 — Wasm eligibility | Positive: matching successful Wasm build reports, including Node Native. Negative: JavaScript target, build error, absent/stale/mismatched artifact return no new report; historical verified Wasm capsule replays without building. |
 | A16 — design baseline | Use the exact Library ARC fixture and mock (§19) as the interaction/visual reference; table-first route view, filters, size-mode sorting, three route detail tabs, schema metrics/expansion, resources, provenance/JSON, offline and mobile flows are retained. Fixture labels remain synthetic. |
 | A17 — schema accounting | Canonical descriptor byte counts are deterministic and provenance-labeled; top-level/required counts agree with structural descriptors; non-object/unknown keys are not treated as zero; unknown required status is not optional; descriptor size is never presented as compiled Wasm size. Exercise recursive/reference/union forms and sensitive defaults/examples against the frozen descriptor/projection contract. |
 | A18 — build-evidence lifecycle | Sidecars attest only completed output, bind exact source/profile/recipe/artifact inputs, and cannot revive a failed/interrupted/stale build. Detect inconsistent concurrent reads; unchanged successful builds retain stable identity. Missing new metadata in older builds yields an actionable error; report never repairs it by building. |

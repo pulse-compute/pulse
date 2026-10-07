@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pulse:report:completion:v1",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "const": "pulse.report-completion"
+    },
+    "completionVersion": {
+      "const": 1
+    },
+    "status": {
+      "const": "complete"
+    },
+    "operation": {
+      "enum": [
+        "compile",
+        "native-build"
+      ]
+    },
+    "manifestVersion": {
+      "const": "pulse.project-execution.v10"
+    },
+    "context": {
+      "$ref": "#/$defs/Context"
+    },
+    "snapshot": {
+      "type": "object",
+      "properties": {
+        "inputsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "profileSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "recipeSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "inputsSha256",
+        "profileSha256",
+        "recipeSha256"
+      ],
+      "additionalProperties": false
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "maxLength": 1048576,
+            "minLength": 1
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "stage": {
+            "enum": [
+              "final",
+              "prelink"
+            ]
+          }
+        },
+        "required": [
+          "file",
+          "bytes",
+          "sha256",
+          "id",
+          "stage"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100000
+    },
+    "sidecars": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "maxLength": 1048576,
+            "minLength": 1
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "kind": {
+            "enum": [
+              "inventory",
+              "attribution"
+            ]
+          },
+          "version": {
+            "const": 1
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "file",
+          "bytes",
+          "sha256",
+          "kind",
+          "version",
+          "required"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100000
+    }
+  },
+  "required": [
+    "kind",
+    "completionVersion",
+    "status",
+    "operation",
+    "manifestVersion",
+    "context",
+    "snapshot",
+    "artifacts",
+    "sidecars"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "Context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "host": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "target": {
+          "const": "native"
+        },
+        "representation": {
+          "const": "canonical-native-wasm"
+        },
+        "primaryArtifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        }
+      },
+      "required": [
+        "profile",
+        "host",
+        "target",
+        "representation",
+        "primaryArtifactId"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
