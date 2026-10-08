@@ -3,7 +3,7 @@
 Implements the HTML renderer in the [v2 plan](../prpt00/feature-spec-v2.md),
 using the frozen [capsule](../prpt01/README.md), [retained evidence](../prpt02/README.md)
 and [size adapter](../prpt03/README.md). It closes PRPT-04's renderer and generated
-output snapshot gaps. **A09/A16 real-browser qualification is still open**;
+output snapshot gaps. **A09/A16 browser qualification remains partial**;
 implementation and portable assertions are not a claim that mobile, file opening,
 focus behavior or visual fidelity passed in a browser. See [validation](validation.md).
 
@@ -40,8 +40,10 @@ It is not shipped or converted into fabricated application facts.
   binding/availability filters, reset, visible/total counts and safe internal
   anchors. Path-prefix groups are labeled as such; no inferred authorization or
   middleware grouping. Handler body / Own / Reachable / Shared sort by raw bytes
-  for one primary artifact/stage, with unknown values last and coverage visible. Multiple records for the same
-  subject/metric are left unavailable rather than silently selecting one.
+  for one primary artifact/stage, with unknown values last and coverage visible. Equivalent repeated measurements
+  retain one display value and all evidence references. Distinct values, methods,
+  coverage or root scopes show “Multiple measurements”; Size attribution exposes
+  every variant without silently choosing or summing. Full export keeps all records.
 - The route drawer has Resolved facts / Size attribution / Evidence trail tabs.
   Declaration evidence does not imply effective permissions; shared sizes are
   nonadditive and unavailable measurements do not become zero or removal savings.
@@ -50,8 +52,14 @@ It is not shipped or converted into fabricated application facts.
   representation, source, producer evidence and referencing routes. N/A and
   unavailable states stay distinct. The descriptor is explicitly not compiled
   validator/Wasm size. Collapsed schemas defer detail construction.
-- Resource details distinguish input from retained payload; physical section and
-  code/data ledgers stay separate from route attribution. Bindings, coverage,
+- Artifact composition uses a proportional, labeled SVG ledger for complete
+  section inventories, including the Wasm header exactly once. Incomplete section
+  coverage stays explicit. Summary counts show measured handler/reachability
+  availability over route registrations, independent of inventory completeness.
+- Resource tables distinguish input from retained payload, with expandable facts
+  and evidence; artifact cards show physical section and code/data ledgers. Route
+  Size attribution uses a compact four-metric grid and expandable evidence.
+  Bindings, coverage,
   observations, entry records and provenance expose retained evidence only.
 - Raw JSON and Blob download contain the complete deterministic capsule, including
   records hidden by filters. Theme and navigation do not alter evidence.
@@ -102,9 +110,13 @@ approval review; the user subsequently authorized synthetic reports and the ARC
 fixture. The authorized attempt reached separate environment limits: the remote
 browser could not reach the workspace localhost server, and its URL policy
 prohibits `file://` navigation and workarounds. Authorization is no longer missing.
-No report DOM, browser interactions or screenshots are claimed. The merge gate is to perform
-the [browser checklist](validation.md#browser-qualification-checklist) against
-this implementation and the locked fixture, then record outcomes and fix findings.
+The user subsequently opened the generated HTML in conversation preview and
+reported that tabs and expansions, including schemas, worked. They identified
+missing composition/count displays and poor size layouts. The follow-up fixes
+those findings and records the narrower evidence in
+[validation](validation.md#preview-feedback-and-corrections). Updated visual
+appearance, file opening, keyboard behavior and downloads remain to be observed.
+These are explicit follow-up checks, not a blanket draft or merge gate.
 
 PRPT-06 still owns installed-package/real ARC/Catalog, cost and final acceptance
 matrix closure. Runtime parity, external provider reality, release sealing,
