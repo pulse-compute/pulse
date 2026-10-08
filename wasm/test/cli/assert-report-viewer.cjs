@@ -53,8 +53,78 @@ assert.throws(() => renderReport(wrong), {code:'REPORT_HASH'});
 const input = f.fixture(), route = input.routes[0];
 input.routes = [9, 100, null, 2000].map((value, i) => ({...route, id:'view-'+i, order:i, method:i===1?'POST':'GET', path:i===1?'/api/update':'/api/items', handlerName:'handler-'+i, compositionCoverage:i===0?'complete':'bounded', declarationIds:i===1?['decl']:[], bindingIds:i===0?[input.bindings[0].id]:[]}));
 input.measurements = [9, 100, null, 2000].map((value,i)=>({id:'measurement-'+i, subjectId:'view-'+i, artifactId:f.aid, stage:'final',metric:'handler-body',fact:value===null?f.unavailable('unsupported-mapping'):f.fact(value)}));
-const duplicate = structuredClone(input); duplicate.measurements.push({...duplicate.measurements[0],id:'another'});
-const dm=createReportViewModel(duplicate); assert.equal(dm.measurement(duplicate.routes[0],'handler-body'),undefined); assert.match(dm.measurementIssue(duplicate.routes[0],'handler-body'),/multiple measurement records/);
+const duplicate = structuredClone(input); duplicate.measurements.push({...structuredClone(duplicate.measurements[0]),id:'another'});
+const dm=createReportViewModel(duplicate); assert.equal(dm.measurement(duplicate.routes[0],'handler-body').fact.value,9);
+assert.deepEqual(dm.measurement(duplicate.routes[0],'handler-body').recordIds,['measurement-0','another']);
+assert.equal(JSON.parse(dm.canonicalJson).measurements.length,5,'equivalent records remain in full export');
+for (const change of [row=>row.fact.value++,row=>row.method='different-method',row=>row.rootSetId='different-scope',row=>row.fact.coverage='bounded',row=>row.fact=f.unavailable('missing-evidence')]) {
+  const conflicting=structuredClone(duplicate); change(conflicting.measurements.at(-1));
+  const cm=createReportViewModel(conflicting);
+  assert.equal(cm.measurement(conflicting.routes[0],'handler-body'),undefined);
+  assert.equal(cm.measurementResolution(conflicting.routes[0],'handler-body').variants.length,2);
+  assert.match(cm.measurementIssue(conflicting.routes[0],'handler-body'),/2 distinct measurements/);
+}
+const extraEvidence=structuredClone(duplicate);extraEvidence.measurements.at(-1).fact={...extraEvidence.measurements.at(-1).fact,evidenceIds:['second-evidence']};
+assert.deepEqual(createReportViewModel(extraEvidence).measurement(extraEvidence.routes[0],'handler-body').fact.evidenceIds,[f.buildId,'second-evidence'].sort());
+const richCapsule=f.createCapsule(f.fixture()),richModel=createReportViewModel(richCapsule);
+assert.deepEqual(richModel.mappingCoverage('handler-body'),{available:2,total:2});
+assert.deepEqual(richModel.mappingCoverage('reachable'),{available:1,total:2});
+assert.deepEqual(richModel.mappingCoverage('own'),{available:0,total:2});
+assert.equal(richModel.composition(richModel.A).reduce((n,p)=>n+p.bytes,0),richModel.A.bytes);
+assert.equal(richModel.composition(richModel.A).find(p=>p.id==='other').bytes,20,'header and non-code sections count once');
+assert.equal(richModel.composition({...richModel.A,sectionCoverage:{status:'partial'}}),null,'incomplete sections cannot imply a complete composition');
+const allSections={...richModel.A,bytes:66,sections:[...richModel.A.sections,{id:11,bytes:20},{id:0,bytes:10}]};
+assert.deepEqual(richModel.composition(allSections).map(p=>p.bytes),[16,20,10,20]);
+// Exercise the real rendering functions with a small element recorder. This
+// checks generated structure and text, not layout, CSP enforcement or a browser.
+function renderedTree(capsule) {
+  class Element {
+    constructor(tag,namespaceURI) {this.tag=tag;this.namespaceURI=namespaceURI;this.attrs={};this.children=[];this.events={};}
+    setAttribute(k,v){this.attrs[k]=String(v);}
+    set id(v){this.attrs.id=v;} get id(){return this.attrs.id;}
+    set className(v){this.attrs.class=v;}
+    set textContent(v){this.children=[String(v)];}
+    get textContent(){return this.children.map(n=>typeof n==='string'?n:n.textContent).join('');}
+    append(...nodes){this.children.push(...nodes);}
+    replaceChildren(...nodes){this.children=nodes;}
+    addEventListener(event,fn){this.events[event]=fn;}
+    focus(){}
+  }
+  const shell=fs.readFileSync(path.join(f.reportRoot,'viewer/shell.html'),'utf8');
+  const roots=[...shell.matchAll(/\bid="([^"]+)"/g)].map(m=>{const n=new Element('div');n.id=m[1];return n;});
+  const descendants=node=>[node,...node.children.filter(n=>n instanceof Element).flatMap(descendants)];
+  const nodes=()=>roots.flatMap(descendants);
+  const get=id=>nodes().find(n=>n.id===id);
+  const data=new Element('script');data.id='pulse-report-data';data.textContent=JSON.stringify(capsule);roots.push(data);
+  const document={querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):{content:'historical'},createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
+  const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
+  const context={document,Node:Element,createReportViewModel};
+  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderResources,renderDrawer,state};\n})();",context);
+  context.renderers.drawSummary();context.renderers.renderResources();
+  Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
+  return {get,nodes,renderers:context.renderers};
+}
+const tree=renderedTree(richCapsule);
+assert.match(tree.get('compact-coverage').textContent,/2 \/ 2Handler mappings1 \/ 2Reachability roots/);
+assert.equal(tree.nodes().filter(n=>n.tag==='svg'&&n.attrs.class==='ledger-bar').length,2,'composition chart in summary and resources');
+for(const chart of tree.nodes().filter(n=>n.tag==='svg'&&n.attrs.class==='ledger-bar')) {
+  assert.equal(chart.children.reduce((sum,r)=>sum+Number(r.attrs.width),0),richModel.A.bytes);
+  assert.ok(chart.children.every(r=>r.tag==='rect'&&r.attrs.style===undefined));
+}
+assert.equal(tree.nodes().filter(n=>n.attrs.class==='size-grid')[0].children.length,4);
+assert.match(tree.get('view-resources').textContent,/Input bytesRetained payload/);
+assert.match(tree.get('view-resources').textContent,/Physical total36 B36 bytes/);
+tree.get('resource-expand-0').events.click();
+assert.equal(tree.get('resource-expand-0').attrs['aria-expanded'],'true');
+assert.match(tree.get('resource-detail-0').textContent,/unsupported-mapping/);
+const conflictCapsule=structuredClone(richCapsule);
+const original=conflictCapsule.measurements.find(m=>m.subjectId===conflictCapsule.routes[0].id&&m.metric==='handler-body');
+conflictCapsule.measurements.push({...original,id:f.id('measurement','second-body'),fact:{...original.fact,value:2},bodyIds:['body:'+f.hash+':2']});
+const conflictTree=renderedTree(f.createCapsule(conflictCapsule));
+assert.match(conflictTree.get('drawer-content').textContent,/Multiple measurements/);
+assert.match(conflictTree.get('drawer-content').textContent,/2 bytes/);
+assert.match(conflictTree.get('drawer-content').textContent,/4 bytes/);
+assert.equal(conflictTree.nodes().filter(n=>n.attrs.class==='measurement-record').length,4,'both conflicting handler records remain inspectable alongside reachable and own');
 const m = createReportViewModel(input), ids = () => m.filteredRoutes().map(r=>r.id);
 Object.assign(m.state,{sort:'size',dir:'asc'}); assert.deepEqual(ids(), ['view-0','view-1','view-3','view-2']);
 m.state.dir='desc'; assert.deepEqual(ids(), ['view-3','view-1','view-0','view-2']);
