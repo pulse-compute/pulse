@@ -13,6 +13,7 @@ const { validate } = require('./validate');
 const COMPLETION_FILE = 'pulse-report-completion.json';
 const INVENTORY_FILE = 'pulse-report-inventory.json';
 const INPUTS_FILE = 'pulse-report-inputs.json';
+const ATTRIBUTION_FILE = 'pulse-report-attribution.json';
 const UNAVAILABLE_SNAPSHOT = new Set(['REPORT_INPUT_UNBOUND', 'REPORT_INPUT_SYMLINK', 'REPORT_LIMIT', 'REPORT_STALE_INPUTS', 'REPORT_CONCURRENT_CHANGE']);
 const ensure = (condition, code) => { if (!condition) fail(code); };
 function invalidate(outDir) {
@@ -84,13 +85,29 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
     context: capsule.context, snapshot: retained.snapshot,
     artifacts: artifacts.map(({ target, ...row }) => row),
     sidecars: [{ ...fileLink(INVENTORY_FILE, inventory), kind: 'inventory', version: 1, required: true }] };
+  let attributionBytes;
+  // v1 binds one optional attribution sidecar. Prefer the primary artifact;
+  // a portable fallback remains explicitly prelink when final capture is absent.
+  for (const capture of [prepared.providerReportAttribution, prepared.native.reportAttribution]) {
+    if (!capture) continue;
+    const artifact = artifacts.find(row => row.sha256 === capture.artifactSha256);
+    if (!artifact) continue;
+    try {
+      const validated = require('./size').verifyAttribution({ ...capture, stage: artifact.stage }, artifact, readFile(outDir, artifact.file).bytes);
+      attributionBytes = Buffer.from(canonicalJson(validated) + '\n');
+      completion.sidecars.push({ ...fileLink(ATTRIBUTION_FILE, attributionBytes), kind: 'attribution', version: 1, required: false });
+      break;
+    } catch { /* Unsupported capture never changes ordinary build admission. */ }
+  }
   const completionBytes = Buffer.from(canonicalJson(completion) + '\n');
   const result = Object.freeze({ ...manifest, reportInputs: Object.freeze(fileLink(INPUTS_FILE, inputs)),
     reportCompletion: Object.freeze(fileLink(COMPLETION_FILE, completionBytes)) });
   const files = new Map(artifacts.map(row => [row.file, readFile(outDir, row.file).bytes])); files.set(INVENTORY_FILE, inventory);
+  if (attributionBytes) files.set(ATTRIBUTION_FILE, attributionBytes);
   // Existing execution manifests contain optional undefined properties in
   // memory. Admit their actual JSON wire representation, as replay will do.
   admitCompletedBuild(JSON.parse(JSON.stringify(result)), completionBytes, { files });
+  if (attributionBytes) atomicWrite(outDir, ATTRIBUTION_FILE, attributionBytes);
   atomicWrite(outDir, INVENTORY_FILE, inventory); atomicWrite(outDir, INPUTS_FILE, inputs);
   atomicWrite(outDir, path.basename(manifestFile), Buffer.from(JSON.stringify(result, null, 2) + '\n'));
   // Revalidate after every required write; marker publication is the commit.
@@ -123,7 +140,11 @@ function readCompleted(manifestFile) {
   }
   const admitted = admitCompletedBuild(manifest, completionBytes, { files });
   const inventory = completion.sidecars.find(row => row.kind === 'inventory');
-  const capsule = parseCapsule(files.get(inventory.file));
+  const seed = parseCapsule(files.get(inventory.file));
+  const attribution = completion.sidecars.find(row => row.kind === 'attribution');
+  const capture = attribution && files.has(attribution.file) ? parseJson(files.get(attribution.file)) : null;
+  const capsule = require('./size').addSizeEvidence(seed,
+    new Map(completion.artifacts.map(row => [row.id, files.get(row.file)])), capture);
   function verifyReads() {
     for (const [file, expected] of reads) {
       const current = readFile(root, file);
@@ -184,4 +205,4 @@ function collectProjectReport(options = {}) {
   return freeze({ kind: 'completed-wasm', capsule: collected.capsule, currentSnapshotMatched: true,
     missingOptionalSidecars: collected.missingOptionalSidecars });
 }
-module.exports = { COMPLETION_FILE, INVENTORY_FILE, INPUTS_FILE, invalidate, acquireBuildLock, beginBuild, publishBuild, collectArtifactReport, collectProjectReport };
+module.exports = { ATTRIBUTION_FILE, COMPLETION_FILE, INVENTORY_FILE, INPUTS_FILE, invalidate, acquireBuildLock, beginBuild, publishBuild, collectArtifactReport, collectProjectReport };

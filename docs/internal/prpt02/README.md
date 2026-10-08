@@ -85,6 +85,9 @@ config values, secret values, embedded asset bodies and arbitrary package
 metadata are not. Declarations are names/capability references, never inferred
 authorization. Tests are not inferred from successful compilation.
 
+[PRPT-03](../prpt03/README.md) now adds the physical ledger and passive final-emission
+capture; the list below records the boundaries of this original packet.
+
 ## Explicit remaining gaps
 
 - Composition is a bounded candidate sequence when middleware/mounts apply;

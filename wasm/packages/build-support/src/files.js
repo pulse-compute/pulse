@@ -78,6 +78,7 @@ function fileRecord(filePath, cwd, kind) {
 }
 
 module.exports = {
+  inspectWasm: require('./wasm-evidence').inspectWasm,
   normalizeSlash,
   sha256Buffer,
   sha256Text,

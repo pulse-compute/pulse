@@ -364,6 +364,7 @@ function compileNativeProjectInMemory(project, options = {}) {
     synchronizedPackages: releaseCatalog.packages.map(({ name, version }) => Object.freeze({ name, version })),
     timeoutMs: options.timeoutMs,
     emitWat: options.emitWat,
+    reportCapture: options.reportCapture,
     nativeOptimization: options.experimentalNativeBoundedSize === true
       ? 'experimental-native-bounded-size'
       : options.experimentalNativeSize === true
@@ -1040,7 +1041,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
     ...(eventInspection ? { events: eventManifestProjection(eventInspection) } : {})
   });
   const manifestFile = path.join(outDir, BUILD_MANIFEST);
-  manifest = require('./internal/report/retained').publishBuild(project, prepared, manifest, manifestFile, outDir, reportAttempt);
+  manifest = require('./internal/report/retained').publishBuild(project, { ...prepared, providerReportAttribution: providerBuildMetadata?.reportAttribution }, manifest, manifestFile, outDir, reportAttempt);
   return Object.freeze({
     status: 'built',
     version: PROJECT_EXECUTION_VERSION,
