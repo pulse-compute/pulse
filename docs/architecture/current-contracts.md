@@ -209,6 +209,14 @@ without application-error handlers do not emit the helper. Partition budgeting
 charges the original inline guard footprint so sharing does not silently pack
 more states into each optimizer unit.
 
+Literal error-boundary `(cursor, next block)` pairs use deterministic retained
+zero-argument wrappers around that same guard. Each distinct pair has one
+private wrapper; the original sites still consume an error exactly once and
+perform the same transfer. Shared-stage and helper boundaries keep their dynamic
+cursor and return-block arguments. Binding does not change guard positions,
+partition budgets, state IDs, run allowances or optimizer settings, and does not
+require an experimental size flag.
+
 For modules without guests, AssemblyScript runs Binaryen's similar-function
 merge after its normal optimization. Guest-linked modules instead merge after
 composition in the guest-link stage. In both cases the pass reuses function
