@@ -16,7 +16,7 @@ on:
           - audit
           - publish
       run_smoke:
-        description: Run the published CLI clean-install smoke after publication
+        description: Run the published CLI clean-install smoke (context smoke is always required)
         required: true
         default: true
         type: boolean
@@ -366,6 +366,22 @@ jobs:
             args+=(--smoke --smoke-json-out npm-publication-smoke.json)
           fi
           node scripts/verify-npm-release.cjs "${args[@]}"
+      - name: Smoke the published Pulse context app
+        timeout-minutes: 15
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./release/pulse-release-manifest.json').releaseVersion")"
+          node wasm/test/mcp/smoke-context-registry.cjs "$version"
+          node - "$version" <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const report = JSON.parse(fs.readFileSync('wasm/.test-results/context-registry-smoke.json', 'utf8'));
+          assert.equal(report.schemaVersion, 'pulse.context-registry-smoke.v1');
+          assert.equal(report.status, 'passed');
+          assert.equal(report.version, process.argv[2]);
+          assert.equal(report.cleanup, 'passed');
+          NODE
       - name: Upload publication verification
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -374,5 +390,7 @@ jobs:
           path: |
             npm-publication-verification.json
             npm-publication-smoke.json
+            wasm/.test-results/context-registry-smoke.json
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 90

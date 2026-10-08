@@ -353,6 +353,63 @@ esac
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 
+function validatePublishedContextSmoke(source) {
+  const verify = workflowJob(source, 'verify');
+  const name = 'Smoke the published Pulse context app';
+  const start = verify.indexOf(`      - name: ${name}\n`);
+  const upload = verify.indexOf('      - name: Upload publication verification\n');
+  if (start < verify.indexOf('node scripts/verify-npm-release.cjs') || upload <= start) fail('published context smoke must follow registry verification and precede evidence upload');
+  const step = verify.slice(start, upload);
+  excludes(step, '\n        if:', 'required published context smoke');
+  excludes(verify, 'continue-on-error:', 'blocking publication verification');
+  includes(step, 'timeout-minutes: 15', 'bounded context smoke');
+  includes(step, "require('./release/pulse-release-manifest.json').releaseVersion", 'manifest-selected context version');
+  includes(step, 'node wasm/test/mcp/smoke-context-registry.cjs "$version"', 'existing narrow registry smoke');
+  includes(verify.slice(upload), 'if: always()', 'terminal verification evidence');
+  includes(verify.slice(upload), 'wasm/.test-results/context-registry-smoke.json', 'context evidence upload');
+  includes(verify.slice(upload), 'include-hidden-files: true', 'hidden context report directory');
+
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-context-flow-check-'));
+  try {
+    const bin = path.join(directory, 'bin');
+    ensureDirectory(bin);
+    ensureDirectory(path.join(directory, 'release'));
+    // A different fixture version rejects a hardcoded beta.7 invocation.
+    const version = '9.8.7-beta.smoke';
+    fs.writeFileSync(path.join(directory, 'release/pulse-release-manifest.json'), stableJson({ releaseVersion: version }));
+    fs.writeFileSync(path.join(bin, 'node'), `#!${process.execPath}
+const fs = require('node:fs'), path = require('node:path'), { spawnSync } = require('node:child_process');
+const args = process.argv.slice(2), scenario = process.env.SCENARIO;
+if (args[0] === '-p' || args[0] === '-') process.exit(spawnSync(process.execPath, args, { stdio: 'inherit' }).status ?? 1);
+fs.appendFileSync('calls.jsonl', JSON.stringify(args) + '\\n');
+if (args[0] === 'scripts/verify-npm-release.cjs') {
+  process.exit(scenario === 'registry-failure' || (scenario === 'cli-failure' && args.includes('--smoke')) ? 1 : 0);
+}
+if (args[0] !== 'wasm/test/mcp/smoke-context-registry.cjs' || args.length !== 2 || args[1] !== ${JSON.stringify(version)}) process.exit(90);
+if (scenario !== 'missing-report') {
+  fs.mkdirSync('wasm/.test-results', { recursive: true });
+  fs.writeFileSync('wasm/.test-results/context-registry-smoke.json', JSON.stringify({ schemaVersion: 'pulse.context-registry-smoke.v1',
+    status: scenario === 'context-failure' ? 'failed' : 'passed', version: scenario === 'wrong-version' ? '0.0.0' : args[1],
+    cleanup: scenario === 'cleanup-failure' ? 'failed' : 'passed' }));
+}
+process.exit(scenario === 'context-failure' ? 1 : 0);
+`, { mode: 0o755 });
+    const scripts = workflowStepScript(verify, 'Verify registry integrity, dist-tags, and the published CLI') + '\n' + workflowStepScript(verify, name);
+    for (const [runSmoke, scenario] of [['true', 'ready'], ['false', 'ready'], ...['registry-failure', 'cli-failure', 'context-failure', 'missing-report', 'wrong-version', 'cleanup-failure'].map(scenario => ['true', scenario])]) {
+      fs.rmSync(path.join(directory, 'calls.jsonl'), { force: true });
+      fs.rmSync(path.join(directory, 'wasm'), { recursive: true, force: true });
+      const result = spawnSync('bash', ['-c', scripts], { cwd: directory, encoding: 'utf8', timeout: 10000,
+        env: { ...process.env, PATH: `${bin}${path.delimiter}${process.env.PATH}`, RUN_SMOKE: runSmoke, SCENARIO: scenario } });
+      if (result.error || (result.status === 0) !== (scenario === 'ready')) fail(`published context ${runSmoke}/${scenario} probe failed`);
+      const calls = fs.readFileSync(path.join(directory, 'calls.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+      if (calls[0].includes('--smoke') !== (runSmoke === 'true')) fail('existing CLI smoke selection changed');
+      const upstreamFailure = ['registry-failure', 'cli-failure'].includes(scenario);
+      if (calls.length !== (upstreamFailure ? 1 : 2)) fail('context smoke ran before registry/CLI success or was skipped');
+      if (scenario === 'context-failure' && JSON.parse(fs.readFileSync(path.join(directory, 'wasm/.test-results/context-registry-smoke.json'), 'utf8')).status !== 'failed') fail('failed context evidence was lost');
+    }
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+}
+
 function validateWorkflows() {
   const required = [
     '.github/workflows/documentation.yml',
@@ -390,6 +447,7 @@ function validateWorkflows() {
   includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
   includes(npm, 'pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly', 'npm publication workflow');
   validateNpmCandidateFlowProbes(npm);
+  validatePublishedContextSmoke(npm);
   const candidate = npm.slice(npm.indexOf('\n  candidate:'), npm.indexOf('\n  audit:'));
   includes(candidate, 'timeout-minutes: 60\n', 'npm candidate job');
   includes(candidate, 'id: deadline', 'npm candidate deadline');
