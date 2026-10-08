@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XTA5HFLW6CVawzrmTPLSgf5bfP/PPjn+n5dfuSwqyw0='; style-src 'sha256-Lh1kspqkBI8CSLYJVmBn7BghY3QPju/KdM50ow54dcM='; style-src-attr 'none'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';"><meta name="pulse-report-viewer" content="1"><meta name="pulse-report-snapshot" content="current"><title>Pulse Report</title><style>:root{color-scheme:dark;--bg:#11151b;--sidebar:#13181f;--surface:#191f27;--surface2:#202833;--surface3:#273140;--line:#2c3541;--line-soft:#242c37;--text:#e7edf4;--muted:#a0adbd;--faint:#8594a6;--accent:#96dfcc;--accent-bg:#203c37;--accent-line:#3e655b;--amber:#e9c28d;--amber-bg:#352d23;--blue:#a5c5f0;--blue-bg:#243449;--violet:#c4b6ed;--violet-bg:#332e45;--danger:#e9b2a9;--shadow:0 22px 85px #0007;--code:#121820;--row-hover:#202933;--row-selected:#233830;--code-fill:#87aab6;--data-fill:#738594;--custom-fill:#b2a18b;--other-fill:#455261;--radius:10px;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-synthesis:none;font-size:14px;-webkit-font-smoothing:antialiased}
+
+:root[data-theme=light]{color-scheme:light;--bg:#f5f6f8;--sidebar:#fcfcfd;--surface:#fff;--surface2:#f2f5f7;--surface3:#e8edf1;--line:#dce2e8;--line-soft:#e9edf1;--text:#182432;--muted:#546476;--faint:#627286;--accent:#196d59;--accent-bg:#e5f3ed;--accent-line:#a4c9ba;--amber:#8a5d21;--amber-bg:#f8f0e4;--blue:#365e8f;--blue-bg:#edf3fc;--violet:#705294;--violet-bg:#f1edf8;--danger:#a84837;--shadow:0 22px 85px #172b4626;--code:#f4f6f8;--row-hover:#f5f8f8;--row-selected:#ebf5ef;--code-fill:#5b919b;--data-fill:#9aabb5;--custom-fill:#c5b699;--other-fill:#d4dce2}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit}
+button,a,input,select,summary{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer;color:inherit}
+button:disabled{opacity:.4;cursor:default}
+button{background:none;border:none}
+a{color:inherit;text-decoration:none}
+svg{display:block;width:18px;height:18px;flex-shrink:0}
+[data-icon]{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+button,a{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,[tabindex="0"]:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+input,select{color:var(--text)}
+[hidden]{display:none!important}
+code,kbd,pre,.mono,.number{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+h1,h2,h3,p{margin:0}
+h2{font-size:19px;letter-spacing:-.4px;font-weight:650}
+h3{font-size:15px}
+strong{font-weight:600}
+.dim{color:var(--faint)}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0)}
+.skip-link{position:fixed;top:8px;left:8px;background:var(--accent);color:var(--bg);padding:12px;z-index:100;transform:translateY(-150%)}
+.skip-link:focus{transform:none}
+.sidebar{position:fixed;inset:0 auto 0 0;width:218px;background:var(--sidebar);border-right:1px solid var(--line);padding:26px 16px 18px;z-index:20;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:10px;margin:0 12px 32px;font-size:24px;letter-spacing:-.6px;font-weight:680}
+.brand-symbol{width:34px;height:36px;color:var(--accent);display:flex;align-items:center}
+.brand-symbol svg{width:30px;height:30px}
+.brand-sub{display:inline-block;font-size:13px;font-weight:450;letter-spacing:0;color:var(--muted);margin-left:7px}
+.app-switch{display:flex;align-items:center;gap:10px;padding:11px 10px;background:var(--surface);border:1px solid var(--line);border-radius:9px;margin-bottom:32px}
+.app-monogram{height:33px;width:33px;background:var(--surface3);border:1px solid var(--line);border-radius:8px;font-size:25px;line-height:1;text-align:center;position:relative;font-weight:500;padding-top:0}
+.app-monogram>span{position:absolute;right:4px;top:1px;font-size:11px;color:var(--accent)}
+.app-switch strong{display:block;font-size:13px}
+.app-switch div>span:not(.app-monogram span){font-size:10.5px;color:var(--muted);display:block;margin-top:4px}
+.fixture-dot{height:5px;width:5px;border-radius:100%;background:var(--amber);margin-left:auto}
+.nav-label{padding:0 14px;margin-bottom:12px;font-size:10px;letter-spacing:1.5px;font-weight:650;color:var(--faint)}
+.nav-list{display:flex;flex-direction:column;gap:6px}
+.nav-link{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:520;color:var(--muted);padding:11px 13px;border:1px solid transparent;border-radius:7px}
+.nav-link svg{width:17px;height:17px}
+.nav-link .nav-count{margin-left:auto;font-size:10px;min-width:21px;text-align:center;line-height:20px;color:var(--faint)}
+.nav-link:hover{background:var(--surface)}
+.nav-link.active{background:var(--accent-bg);border-color:var(--accent-line);color:var(--accent)}
+.nav-link.active .nav-count{color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent);border-radius:4px}
+.sidebar-note{margin:35px 14px 0;font-size:11px;color:var(--muted);line-height:1.7}
+.sidebar-note strong{font-size:11.5px;font-weight:550;color:var(--text)}
+.sidebar-note p{margin-top:5px}
+.side-rule{display:block;width:24px;height:2px;background:var(--line);margin-bottom:14px}
+.sidebar-bottom{margin-top:auto;padding-top:35px}
+.design-button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;padding:10px 7px;border:1px solid var(--line);border-radius:7px}
+.small-icon svg{width:14px;height:14px}
+.design-button:hover{background:var(--surface2)}
+.offline-label{display:flex;align-items:center;justify-content:center;gap:6px;color:var(--faint);font-size:10px;margin-top:15px}
+.tiny-dot{width:4px;height:4px;background:var(--muted);border-radius:50%}
+.workspace{margin-left:218px}
+.masthead{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 36px;border-bottom:1px solid var(--line);gap:16px}
+.breadcrumbs{display:flex;align-items:center;gap:11px;font-size:12px;color:var(--faint);white-space:nowrap}
+.breadcrumbs strong{color:var(--muted);font-weight:450}
+.crumb-divider{color:var(--line)}
+.top-actions{display:flex;align-items:center;gap:9px}
+.icon-button{width:33px;height:33px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;color:var(--muted);padding:0}
+.icon-button:hover{background:var(--surface2);color:var(--text)}
+.action-divider{height:17px;border-left:1px solid var(--line);margin:0 3px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:7px 11px;font-weight:520;font-size:12px;border:1px solid var(--line);border-radius:6px;white-space:nowrap;transition:background .15s}
+.button svg{width:15px;height:15px}
+.button:hover{background:var(--surface2)}
+.button.ghost{border-color:transparent;color:var(--muted)}
+.button.export{background:var(--surface2);color:var(--text)}
+.button.export:hover{background:var(--surface3);border-color:var(--faint)}
+.button.subtle{background:var(--surface);color:var(--muted)}
+.mobile-brand,.mobile-nav{display:none}
+main{max-width:1710px;margin:0 auto;outline:none}
+.report-heading{padding:29px 36px 23px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.eyebrow{font-size:10px;letter-spacing:1.5px;color:var(--faint);font-weight:650;line-height:1.5}
+.eyebrow-divider{margin:0 7px;color:var(--line)}
+.title-line{display:flex;align-items:center;gap:16px;margin:7px 0}
+.title-line h1{font-size:42px;letter-spacing:-1.8px;font-weight:620;line-height:1.12}
+.fixture-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;border-radius:5px;background:var(--amber-bg);color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 20%,transparent);padding:4px 7px;font-weight:550}
+.fixture-badge svg{width:12px;height:12px}
+.report-description{font-size:13px;color:var(--muted);margin-top:9px}
+.snapshot-meta{font-size:11px;align-self:flex-end;padding-bottom:3px}
+.snapshot-meta>div{display:flex;align-items:center;gap:8px;margin-top:11px}
+.meta-label{color:var(--faint);font-size:9px;letter-spacing:1px;width:57px}
+.snapshot-meta code{font-size:11px}
+.meta-separator{color:var(--faint)}
+.target-tag{font-size:10px;background:var(--surface2);padding:3px 5px;border-radius:4px;color:var(--muted)}
+.hash-link{font-size:11px;font-family:Consolas,monospace;color:var(--accent);padding:0}
+.hash-link:hover{text-decoration:underline}
+.fixture-notice{margin:0 36px 20px;padding:10px 12px;display:flex;align-items:center;gap:9px;color:var(--muted);border:1px solid var(--line);border-radius:7px;font-size:11px;background:color-mix(in srgb,var(--surface) 65%,transparent);line-height:1.5}
+.fixture-notice>span[data-icon]{color:var(--amber)}
+.fixture-notice svg{width:14px;height:14px}
+.fixture-notice strong{font-weight:520;color:var(--text)}
+.fixture-notice>button{margin-left:auto;font-size:10.5px;color:var(--muted);padding:0;display:flex;align-items:center;gap:3px;white-space:nowrap}
+.fixture-notice>button:hover{color:var(--accent)}
+.fixture-notice button svg{width:12px;height:12px}
+.summary-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 36px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.summary-item{padding:18px 20px 17px;position:relative;text-align:left;border-right:1px solid var(--line)}
+.summary-item:last-child{border:0}
+.summary-item.clickable:hover{background:var(--row-hover)}
+.summary-top{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:9px}
+.summary-top svg{width:14px;height:14px;color:var(--faint)}
+.summary-value{font-size:29px;letter-spacing:-.8px;font-weight:560;line-height:1.16}
+.summary-value .unit{font-size:16px;letter-spacing:0;font-weight:450;margin-left:5px;color:var(--muted)}
+.summary-sub{font-size:10.5px;color:var(--faint);margin-top:7px}
+.summary-sub .accent{color:var(--accent)}
+.content-area{padding:29px 36px 0}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:18px}
+.section-heading h2{display:flex;align-items:center;gap:8px}
+.section-heading p{font-size:12px;line-height:1.6;color:var(--muted);margin-top:6px}
+.count-pill{display:inline-flex;align-items:center;justify-content:center;min-width:24px;font-family:Consolas,monospace;font-size:10px;font-weight:450;letter-spacing:0;line-height:20px;border:1px solid var(--line);border-radius:5px;color:var(--muted);padding:0 5px}
+.subtle-label{font-size:11px;color:var(--faint);white-space:nowrap;display:flex;align-items:center;gap:5px}
+.subtle-label svg{width:14px;height:14px}
+.surface{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.table-surface{overflow:hidden}
+.table-toolbar{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:0 9px;color:var(--faint);min-height:36px;width:350px;max-width:100%}
+.search-box:focus-within{border-color:var(--accent-line)}
+.search-box svg{width:15px;height:15px}
+.search-box input{background:none;border:0;outline:none!important;width:100%;font-size:12px;height:34px;min-width:0}
+.search-box input::placeholder{color:var(--faint)}
+kbd{font-size:10px;border:1px solid var(--line);border-radius:3px;min-width:17px;text-align:center;line-height:17px;color:var(--faint)}
+.toolbar-actions{display:flex;align-items:center;gap:9px}
+.metric-picker{display:flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:6px;padding:0 8px 0 10px;min-height:34px;font-size:11px}
+.metric-picker>span{color:var(--faint);margin-right:1px}
+.metric-picker select{border:0;background:var(--surface);font-size:11px;max-width:142px;padding:7px 2px;color:var(--text);outline-offset:0}
+.filter-count{border-radius:3px;background:var(--accent-bg);color:var(--accent);font-size:9px;line-height:16px;min-width:16px}
+.filter-tray{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:0 16px 16px}
+.filter-tray label{font-size:10px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+.filter-tray select{width:100%;padding:7px 6px;background:var(--bg);border:1px solid var(--line);border-radius:5px;font-size:11px}
+.table-context{display:flex;align-items:center;justify-content:space-between;padding:0 16px 13px;gap:10px}
+.scope-tabs{display:flex;align-items:center;gap:5px;overflow:auto}
+.scope-tab{padding:5px 8px;font-size:10px;border:1px solid transparent;border-radius:5px;color:var(--faint);white-space:nowrap}
+.scope-tab .tab-count{font-size:9px;margin-left:5px;color:var(--faint)}
+.scope-tab.active{color:var(--text);background:var(--surface2);border-color:var(--line)}
+.scope-tab:hover{color:var(--text)}
+.text-button{font-size:11px;color:var(--accent);padding:4px;white-space:nowrap}
+.text-button:hover{text-decoration:underline}
+.route-scroll{max-height:562px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent;border-top:1px solid var(--line);position:relative}
+.route-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px;table-layout:fixed;min-width:880px}
+.route-table thead th{position:sticky;top:0;z-index:2;background:var(--surface2);color:var(--muted);font-size:10px;font-weight:500;text-align:left;height:38px;border-bottom:1px solid var(--line);padding:0 10px;white-space:nowrap}
+.route-table th button{font-size:inherit;color:inherit;padding:0;display:inline-flex;align-items:center;gap:4px;min-height:30px}
+.sort-mark{display:inline-flex;min-width:10px}
+.sort-mark svg{width:11px;height:11px}
+.route-table th[aria-sort] button{color:var(--text)}
+.order-col{width:42px}
+.method-col{width:76px}
+.route-col{width:auto}
+.declaration-col{width:133px}
+.schema-col{width:69px}
+.binding-col{width:84px}
+.size-col{width:132px;text-align:right!important}
+.size-col>button{width:100%;justify-content:flex-end}
+.open-col{width:35px}
+.route-table td{padding:11px 10px 10px;border-bottom:1px solid var(--line-soft);vertical-align:middle;height:62px}
+.route-table tr:last-child td{border-bottom:0}
+.route-table tr.data-row{cursor:pointer}
+.route-table tr.data-row:hover td{background:var(--row-hover)}
+.route-table tr.selected td{background:var(--row-selected)}
+.registration{color:var(--faint);font:10px Consolas,monospace}
+.method{display:inline-flex;align-items:center;justify-content:center;padding:3px 5px;border-radius:4px;min-width:43px;font-size:9px;font-family:Consolas,monospace;font-weight:600;letter-spacing:.2px;border:1px solid color-mix(in srgb,var(--muted) 13%,transparent);color:var(--muted);background:var(--surface2)}
+.method-GET{color:var(--blue);background:var(--blue-bg);border-color:color-mix(in srgb,var(--blue) 12%,transparent)}
+.method-POST{color:var(--accent);background:var(--accent-bg);border-color:color-mix(in srgb,var(--accent) 12%,transparent)}
+.method-PATCH{color:var(--violet);background:var(--violet-bg);border-color:color-mix(in srgb,var(--violet) 12%,transparent)}
+.method-DELETE{color:var(--amber);background:var(--amber-bg);border-color:color-mix(in srgb,var(--amber) 12%,transparent)}
+.route-link{font:11.5px "SFMono-Regular",Consolas,monospace;letter-spacing:-.13px;text-align:left;padding:0;max-width:100%;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.6}
+.handler-sub{font:10px Consolas,monospace;color:var(--faint);margin-top:3px;display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.handler-sub svg{width:11px;height:11px;color:var(--faint)}
+.declaration{font-size:10px;color:var(--muted);display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.declaration svg{width:12px;height:12px;color:var(--faint)}
+.declaration.unavailable,.declaration.not-declared{color:var(--faint)}
+.ref-count{font-size:10px;color:var(--muted);display:inline-flex;align-items:center;gap:4px}
+.ref-count svg{width:12px;height:12px;color:var(--faint)}
+.size-cell{text-align:right}
+.size-value{font:11px Consolas,monospace;letter-spacing:-.2px}
+.size-value .size-unit{font-size:9px;color:var(--faint);margin-left:2px}
+.size-bar-track{width:76px;height:2px;background:var(--surface3);border-radius:2px;margin-top:7px;margin-left:auto;overflow:hidden}
+.size-bar-fill{height:100%;background:var(--code-fill);border-radius:2px}
+.size-unknown{font-size:17px;line-height:1;color:var(--faint)}
+.size-unknown-label{display:block;font-size:8px;color:var(--faint);margin-top:4px}
+.row-chevron{color:var(--faint)}
+.row-chevron svg{width:13px;height:13px}
+.table-footer{display:flex;justify-content:space-between;gap:15px;padding:11px 16px;border-top:1px solid var(--line);font-size:10px;color:var(--faint)}
+.reading-note{display:flex;gap:8px;color:var(--muted);font-size:10.5px;line-height:1.7;margin:15px 0 22px}
+.reading-note>span{align-self:flex-start;margin-top:2px;color:var(--faint)}
+.reading-note svg{width:14px;height:14px}
+.reading-note strong{font-weight:520;color:var(--muted)}
+.inline-link{font-size:inherit;display:inline-flex;align-items:center;gap:3px;color:var(--accent);padding:0}
+.inline-link:hover{text-decoration:underline}
+.inline-link svg{width:11px;height:11px}
+.route-bottom-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:16px}
+.mini-panel{border-top:1px solid var(--line);padding:18px 0 0}
+.mini-title{display:flex;align-items:center;justify-content:space-between;font-size:9px;letter-spacing:1px;color:var(--faint);margin-bottom:16px}
+.mini-title a{font-size:10px;letter-spacing:0;display:inline-flex;gap:5px;align-items:center;color:var(--muted)}
+.mini-title a svg{width:12px;height:12px}
+.mini-title a:hover{color:var(--accent)}
+.ledger-bar{height:9px;border-radius:3px;display:flex;overflow:hidden;gap:2px}
+.ledger-segment{min-width:1px;display:block}
+.segment-code{background:var(--code-fill)}
+.segment-data{background:var(--data-fill)}
+.segment-custom{background:var(--custom-fill)}
+.segment-other,.segment-header{background:var(--other-fill)}
+svg.ledger-bar{width:100%;display:block;flex-shrink:1}
+.ledger-bar .segment-code{fill:var(--code-fill)}
+.ledger-bar .segment-data{fill:var(--data-fill)}
+.ledger-bar .segment-custom{fill:var(--custom-fill)}
+.ledger-bar .segment-other{fill:var(--other-fill)}
+.ledger-legend{display:flex;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-top:12px;font-size:10px;color:var(--muted)}
+.legend-item{display:flex;gap:5px;align-items:center}
+.swatch{height:6px;width:6px;display:inline-block;border-radius:2px;flex-shrink:0}
+.compact-coverage{display:flex;gap:19px}
+.coverage-mini{flex:1}
+.coverage-mini .number{font-size:16px;color:var(--text);font-weight:450}
+.coverage-mini .number>span{color:var(--faint);font-size:12px}
+.coverage-mini .coverage-label{display:block;font-size:10px;color:var(--faint);margin-top:7px}
+.coverage-mini .coverage-state{font-size:12px;line-height:19px}
+.compact-coverage{flex-wrap:wrap}
+.coverage-mini{min-width:95px}
+.page-footer{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:9px;color:var(--faint);margin:34px 36px 0;padding:18px 0 22px;border-top:1px solid var(--line)}
+.page-footer strong{color:var(--muted);font-weight:500}
+.footer-dot{margin:0 8px;color:var(--line)}
+.empty-state{padding:58px 20px;text-align:center;color:var(--faint)}
+.empty-state>span{margin-bottom:13px}
+.empty-state>span svg{width:25px;height:25px}
+.empty-state h3{color:var(--text);font-size:14px;margin-bottom:8px}
+.empty-state p{font-size:12px;margin-bottom:16px}
+
+/* Secondary inventory views */
+.panel-pad{padding:22px}
+.panel-topline{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:20px}
+.panel-topline h3{font-size:14px;font-weight:550;margin-bottom:6px}
+.panel-topline p{font-size:11px;color:var(--muted);line-height:1.6}
+.artifact-big{font-size:30px;font-weight:550;letter-spacing:-1px;white-space:nowrap}
+.artifact-big span{font-size:15px;letter-spacing:0;color:var(--faint);margin-left:5px}
+.ledger-large .ledger-bar{height:20px}
+.ledger-table{margin-top:19px;width:100%;border-collapse:collapse;font-size:11px}
+.ledger-table td{padding:10px 0;border-bottom:1px solid var(--line-soft)}
+.ledger-table td:last-child{text-align:right;font-family:Consolas,monospace;color:var(--muted)}
+.ledger-table td:nth-child(2){text-align:right;color:var(--faint);font:10px Consolas,monospace;padding-right:20px}
+.ledger-table .total td{border-bottom:0;font-weight:600;padding-top:14px}
+.ledger-table .legend-item{font-size:11px}
+.evidence-label{display:inline-flex;gap:5px;align-items:center;font-size:9px;color:var(--faint);border:1px solid var(--line);border-radius:4px;padding:3px 6px;white-space:nowrap}
+.subsection{margin-top:25px}
+.subheading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.subheading h3{font-size:15px;font-weight:550}
+.subheading p{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6}
+.table-wrap{overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.inventory-table{border-collapse:collapse;width:100%;min-width:680px;font-size:12px}
+.inventory-table th{font-size:10px;text-align:left;padding:13px 16px;background:var(--surface2);color:var(--muted);font-weight:500;border-bottom:1px solid var(--line)}
+.inventory-table td{padding:14px 16px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+.inventory-table tr:last-child td{border-bottom:0}
+.inventory-table .numeric{text-align:right;font:11px Consolas,monospace}
+.inventory-table th.numeric{font-family:inherit}
+.inventory-table th button{font-size:10px;display:inline-flex;align-items:center;gap:4px;padding:0}
+.inventory-table th button svg{width:12px;height:12px}
+.resource-name{display:flex;align-items:center;gap:8px}
+.resource-icon{height:28px;width:28px;border-radius:6px;background:var(--surface2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--faint)}
+.resource-icon svg{width:14px;height:14px}
+.resource-name button{font:11px Consolas,monospace;text-align:left;padding:0}
+.resource-name button:hover{color:var(--accent)}
+.secondary{font-size:10px;color:var(--faint);margin-top:5px;line-height:1.5}
+.kind-tag{display:inline-flex;align-items:center;border:1px solid var(--line);color:var(--muted);border-radius:4px;line-height:20px;font-size:9px;padding:0 6px;white-space:nowrap}
+.inventory-search{margin-bottom:17px;max-width:390px}
+.fold-row>td{background:var(--bg);padding:0!important}
+.resource-detail{padding:20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.resource-detail h4{font-size:10px;letter-spacing:.6px;color:var(--faint);font-weight:550;text-transform:uppercase;margin:0 0 9px}
+.resource-detail p{font-size:11px;line-height:1.75;color:var(--muted)}
+.code-location{font:10px Consolas,monospace;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.route-chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.route-chip{display:inline-flex;font:9px Consolas,monospace;border:1px solid var(--line);border-radius:4px;padding:5px 7px;color:var(--muted);background:var(--surface)}
+.route-chip:hover{border-color:var(--accent-line);color:var(--accent)}
+.binding-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.binding-card{padding:21px}
+.binding-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+.binding-title{display:flex;gap:9px;align-items:center}
+.binding-title h3{font:12px Consolas,monospace}
+.binding-card p{font-size:12px;line-height:1.7;color:var(--muted);min-height:42px}
+.binding-state{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:17px 0;border-top:1px solid var(--line-soft);padding-top:15px}
+.binding-state>div{font-size:10px;color:var(--faint)}
+.binding-state span{display:block;color:var(--muted);font-size:11px;margin-top:6px}
+.plain-note{padding:13px 16px;background:var(--surface2);border:1px solid var(--line);border-radius:7px;font-size:11px;color:var(--muted);line-height:1.75;display:flex;gap:10px;margin-bottom:20px}
+.plain-note svg{width:15px;height:15px;margin-top:2px}
+.plain-note p{margin:0}
+.two-column{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.kv-list{margin:0}
+.kv-row{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid var(--line-soft);padding:12px 0;font-size:11px;line-height:1.6}
+.kv-row:last-child{border:0}
+.kv-row dt{color:var(--faint);flex-shrink:0;max-width:48%}
+.kv-row dd{margin:0;color:var(--text);text-align:right;overflow-wrap:anywhere;min-width:0}
+.kv-row dd code{font-size:10px;word-break:break-all}
+.coverage-line{padding:13px 0;border-bottom:1px solid var(--line-soft)}
+.coverage-line:last-child{border:0}
+.coverage-line>div{display:flex;justify-content:space-between;align-items:center;font-size:11px;gap:12px}
+.coverage-line p{margin-top:7px;font-size:10.5px;color:var(--faint);line-height:1.6}
+.coverage-status{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:3px 5px;white-space:nowrap}
+.observations{display:grid;gap:10px}
+.observation{padding:18px 20px;display:flex;gap:12px}
+.observation>span{margin-top:2px;color:var(--faint)}
+.observation h3{font-size:12px;font-weight:550}
+.observation p{font-size:11px;color:var(--muted);line-height:1.7;margin-top:7px}
+.observation .observation-meta{font:9px Consolas,monospace;color:var(--faint);margin-top:9px}
+.details-block{border:1px solid var(--line);border-radius:7px;overflow:hidden;margin-top:17px}
+.details-block summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;font-size:11px;padding:13px 16px;background:var(--surface)}
+.details-block summary::-webkit-details-marker{display:none}
+.details-block summary::after{content:'+';color:var(--faint);font-size:16px}
+.details-block[open] summary::after{content:'−'}
+.details-body{border-top:1px solid var(--line);padding:15px 16px;background:var(--bg)}
+.details-body pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font-size:10px;line-height:1.7;color:var(--muted)}
+
+/* Drawer, evidence details and dialogs */
+.drawer-backdrop{position:fixed;inset:0;z-index:39;background:#03081055;backdrop-filter:blur(1px)}
+.route-drawer{position:fixed;right:0;top:0;bottom:0;width:535px;max-width:100%;background:var(--bg);z-index:40;box-shadow:var(--shadow);border-left:1px solid var(--line);display:flex;flex-direction:column;outline:none}
+.drawer-topbar{min-height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:var(--surface);border-bottom:1px solid var(--line)}
+.drawer-topbar>div{display:flex;align-items:center;gap:3px}
+.drawer-content{padding:25px 26px 35px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.drawer-method-line{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.drawer-method-line .kind-tag{font-size:9px}
+.drawer-title{font:20px "SFMono-Regular",Consolas,monospace;line-height:1.4;letter-spacing:-.5px;overflow-wrap:anywhere;margin-bottom:10px}
+.drawer-handler{font:11px Consolas,monospace;color:var(--muted);display:flex;gap:7px;align-items:center}
+.drawer-handler svg{width:13px;height:13px}
+.drawer-tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-top:27px;margin-bottom:22px}
+.drawer-tab{font-size:11px;color:var(--faint);padding:0 0 12px;border-bottom:2px solid transparent;margin-bottom:-1px}
+.drawer-tab.active{color:var(--accent);border-color:var(--accent)}
+.detail-label{font-size:10px;font-weight:550;letter-spacing:.6px;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
+.detail-section{margin-bottom:25px}
+.detail-section p{font-size:11px;line-height:1.75;color:var(--muted)}
+.detail-section .kv-row{font-size:11px}
+.declaration-card{padding:16px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+.declaration-card .declaration{font-size:12px;color:var(--text)}
+.declaration-card p{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.65}
+.step-list{list-style:none;margin:0;padding:0}
+.step-list li{display:flex;align-items:center;gap:11px;padding:8px 0;position:relative;font:11px Consolas,monospace;color:var(--muted)}
+.step-num{position:relative;font:9px Consolas,monospace;line-height:21px;text-align:center;width:22px;min-width:22px;border:1px solid var(--line);border-radius:5px;background:var(--surface);color:var(--faint);z-index:1}
+.step-list li:not(:last-child)::after{content:'';position:absolute;left:10px;top:30px;bottom:-9px;width:1px;background:var(--line)}
+.step-list li:last-child{color:var(--accent)}
+.step-list li:last-child .step-num{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-line)}
+.small-note{font-size:10px!important;color:var(--faint)!important;line-height:1.65!important;margin-top:12px!important}
+.detail-ref{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;border:1px solid var(--line);border-radius:6px;background:var(--surface);margin-top:7px;min-width:0}
+.detail-ref .ref-main{font:11px Consolas,monospace;overflow-wrap:anywhere}
+.detail-ref .ref-sub{font-size:9px;color:var(--faint);margin-top:5px}
+.detail-ref>button{font-size:10px;color:var(--accent);padding:5px}
+.detail-ref>button svg{width:14px;height:14px}
+.size-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.size-grid>div{padding:17px;background:var(--surface);border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.size-grid>div:nth-child(2n){border-right:0}
+.size-grid>div:nth-child(n+3){border-bottom:0}
+.size-grid-label{font-size:10px;color:var(--faint);margin-bottom:8px}
+.size-grid-value{font:22px Consolas,monospace;letter-spacing:-.8px}
+.size-grid-value .unit{font-size:12px;letter-spacing:0;color:var(--muted);margin-left:5px}
+.size-grid-value.size-unavailable{font-family:inherit;font-size:12px;line-height:1.6;letter-spacing:0;color:var(--muted);overflow-wrap:anywhere}
+.size-grid{margin:18px 0;grid-template-columns:repeat(2,minmax(0,1fr))}
+.size-grid>div{min-width:0}
+.metric-details{margin:12px 0;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
+.metric-details>summary{padding:13px;cursor:pointer;font-size:11px;line-height:1.6}
+.measurement-record{padding:16px;border-top:1px solid var(--line)}
+.metric-details>.plain-note{margin:12px}
+.metric-details>.small-note{padding:0 13px 13px}
+.metric-cell .metric-value{font:11px/1.5 Consolas,monospace}
+.metric-cell .secondary{font-size:9px;line-height:1.5;overflow-wrap:anywhere}
+.resource-expand{font-size:11px;text-align:left;color:var(--text);overflow-wrap:anywhere;max-width:100%}
+.resource-expand:hover{color:var(--accent)}
+.resource-table .secondary{font-family:inherit;font-size:10px;line-height:1.5;color:var(--faint);margin-top:5px;max-width:180px;margin-left:auto;overflow-wrap:anywhere}
+.resource-table .resource-detail{font-size:11px}
+.resource-table .resource-detail h3{font-size:12px}
+.two-column>*{min-width:0}
+.ledger-table td{overflow-wrap:anywhere}
+.ledger-table td:first-child{padding-right:12px}
+.panel-topline{flex-wrap:wrap}
+.size-grid-exact{font:9px Consolas,monospace;color:var(--faint);margin-top:7px;line-height:1.5}
+.size-explanation{margin-top:18px}
+.size-definition{padding:13px 0;border-bottom:1px solid var(--line-soft)}
+.size-definition h4{font-size:11px;font-weight:550;margin:0 0 6px}
+.size-definition p{font-size:11px;color:var(--muted);line-height:1.7}
+.evidence-record{padding:15px;border:1px solid var(--line);background:var(--surface);border-radius:7px;margin-bottom:12px}
+.evidence-record h4{font:11px Consolas,monospace;margin:0 0 9px;color:var(--accent)}
+.evidence-record p{font-size:11px;color:var(--muted);line-height:1.7;overflow-wrap:anywhere}
+.evidence-record .secondary{font-size:9px}
+.source-trail{padding-left:14px;border-left:2px solid var(--line);margin-top:10px}
+.source-trail .trail-label{font-size:9px;letter-spacing:.5px;color:var(--faint);margin-bottom:6px}
+.source-trail .trail-value{font:11px Consolas,monospace;line-height:1.6;overflow-wrap:anywhere}
+.modal-backdrop{position:fixed;inset:0;background:#02070bbb;backdrop-filter:blur(3px);z-index:49}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:50;max-width:860px;width:calc(100% - 48px);max-height:86vh;background:var(--bg);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);display:flex;flex-direction:column;outline:none}
+.modal-header{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:23px 26px 20px;border-bottom:1px solid var(--line);background:var(--surface);border-radius:12px 12px 0 0}
+.modal-header h2{font-size:22px;margin-top:7px}
+.modal-content{padding:23px 26px 28px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.modal-content p{font-size:12px;line-height:1.8;color:var(--muted)}
+.modal-content h3{font-size:14px;margin-top:23px;margin-bottom:9px}
+.modal-content .lead{font-size:14px;line-height:1.8;color:var(--text)}
+.modal-content .plain-note{margin-top:18px}
+.raw-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:17px}
+.raw-toolbar p{font-size:10px}
+.raw-actions{display:flex;gap:7px}
+.raw-json{font:10px/1.7 Consolas,monospace;color:var(--muted);padding:19px;background:var(--code);border:1px solid var(--line);border-radius:7px;overflow:auto;margin:0;max-height:53vh;white-space:pre}
+.design-principles{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:20px 0}
+.design-principle{padding:15px;background:var(--surface);border:1px solid var(--line);border-radius:7px}
+.design-principle>span{font:10px Consolas,monospace;color:var(--accent)}
+.design-principle h3{font-size:12px;margin:9px 0 6px}
+.design-principle p{font-size:11px}
+.design-footer{margin-top:21px;border-top:1px solid var(--line);padding-top:17px;font-size:11px;line-height:1.75;color:var(--muted)}
+.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:var(--surface3);color:var(--text);padding:12px 18px;font-size:12px;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:7px;z-index:70;max-width:90vw}
+.noscript{position:fixed;inset:20%;z-index:90;background:var(--surface);border:1px solid var(--line);padding:30px;line-height:1.8}
+.noscript h2{margin-bottom:18px}
+
+@media(min-width:1500px){.route-col{width:auto}
+.route-table{font-size:13px}
+.route-link{font-size:12px}
+.declaration-col{width:148px}
+.binding-col{width:100px}
+.schema-col{width:82px}
+.size-col{width:145px}
+.route-scroll{max-height:620px}
+.content-area{padding-top:32px}
+.report-heading{padding-top:34px;padding-bottom:26px}
+.summary-item{padding:20px 23px}
+}
+
+@media(max-width:1170px){.sidebar{width:192px;padding-left:12px;padding-right:12px}
+.workspace{margin-left:192px}
+.brand{margin-left:9px}
+.brand-sub{font-size:11px}
+.app-switch{padding:9px 7px}
+.app-switch div>span:not(.app-monogram span){font-size:9px}
+.sidebar-note{margin-left:10px}
+.masthead{padding:0 25px}
+.report-heading{padding-left:25px;padding-right:25px}
+.fixture-notice,.summary-strip{margin-left:25px;margin-right:25px}
+.content-area{padding-left:25px;padding-right:25px}
+.page-footer{margin-left:25px;margin-right:25px}
+.snapshot-meta{font-size:10px}
+.snapshot-meta>div{gap:6px}
+.snapshot-meta .meta-label{width:46px;font-size:8px}
+.fixture-notice>button{display:none}
+.search-box{width:310px}
+.metric-picker{padding-left:7px;padding-right:3px}
+.summary-item{padding:17px 15px}
+.table-toolbar{gap:10px}
+.scope-tab{padding-left:6px;padding-right:6px}
+.compact-coverage{gap:10px}
+.summary-sub{font-size:9.5px}
+.route-table{min-width:865px}
+.route-bottom-grid{gap:22px}
+}
+
+@media(max-width:980px){.sidebar{display:none}
+.workspace{margin-left:0}
+.mobile-brand{display:inline;color:var(--text);font-size:15px;letter-spacing:-.3px;font-weight:650}
+.mobile-brand span{font-size:11px;font-weight:400;color:var(--muted);letter-spacing:0}
+.desktop-crumb{display:none}
+.mobile-nav{display:flex;gap:6px;padding:10px 22px;border-bottom:1px solid var(--line);overflow:auto;background:var(--sidebar)}
+.mobile-nav .nav-link{font-size:11px;padding:7px 10px;gap:6px;white-space:nowrap}
+.mobile-nav .nav-link svg{width:14px;height:14px}
+.mobile-nav .nav-count{font-size:9px;line-height:16px;min-width:15px}
+.masthead{height:60px}
+.report-heading{padding-top:23px}
+.snapshot-meta{font-size:11px}
+.route-scroll{max-height:600px}
+.design-button{display:none}
+}
+
+@media(max-width:690px){.masthead{padding:0 16px;height:57px;gap:8px}
+.breadcrumbs{font-size:10px;gap:8px}
+.breadcrumbs strong,.breadcrumbs .crumb-divider:last-of-type{display:none}
+.top-actions{gap:4px}
+.top-actions .button{padding:7px;width:31px;min-height:31px}
+.action-label{display:none}
+.icon-button{width:31px;height:31px}
+.top-actions .action-divider{margin:0 2px}
+.mobile-nav{padding:8px 12px;gap:2px}
+.mobile-nav .nav-link{font-size:10px;padding:7px 8px}
+.mobile-nav .nav-link .nav-count{display:none}
+.report-heading{padding:22px 17px 18px;display:block}
+.title-line{gap:12px}
+.title-line h1{font-size:37px}
+.eyebrow{font-size:9px}
+.report-description{font-size:12px;margin-top:8px}
+.snapshot-meta{margin-top:18px;padding:0;display:flex;gap:14px;flex-wrap:wrap;font-size:10px}
+.snapshot-meta>div{margin-top:0;gap:6px}
+.snapshot-meta>div:last-child{display:none}
+.snapshot-meta .meta-label{width:auto;font-size:8px;margin-right:4px}
+.snapshot-meta code{font-size:10px}
+.target-tag{font-size:9px}
+.fixture-notice{margin:0 17px 17px;padding:9px 10px;font-size:10px;align-items:flex-start;gap:7px}
+.fixture-notice>span[data-icon]{margin-top:2px}
+.summary-strip{margin:0 17px;grid-template-columns:1fr 1fr}
+.summary-item{padding:14px 16px}
+.summary-item:nth-child(2){border-right:0}
+.summary-item:nth-child(-n+2){border-bottom:1px solid var(--line)}
+.summary-top{font-size:10px;margin-bottom:8px}
+.summary-value{font-size:26px}
+.summary-value .unit{font-size:14px}
+.summary-sub{font-size:9px;margin-top:6px}
+.content-area{padding:23px 17px 0}
+.section-heading{gap:10px;align-items:flex-start;margin-bottom:14px}
+.section-heading h2{font-size:17px}
+.section-heading p{font-size:10.5px;max-width:245px}
+.subtle-label{font-size:9px;max-width:88px;white-space:normal;line-height:1.6;justify-content:flex-end;text-align:right}
+.subtle-label svg{display:none}
+.table-toolbar{padding:12px;display:flex;flex-wrap:wrap;gap:10px}
+.search-box{width:100%;min-height:35px}
+.search-box input{height:33px;font-size:11px}
+.toolbar-actions{width:100%;justify-content:space-between}
+.toolbar-actions>.button{font-size:11px;padding:6px 9px;min-height:31px}
+.metric-picker{font-size:10px;min-height:31px}
+.metric-picker select{font-size:10px;padding:6px 2px}
+.table-context{padding:0 12px 12px}
+.scope-tabs{gap:3px}
+.scope-tab{font-size:9px;padding:4px 6px}
+.scope-tab .tab-count{display:none}
+.route-table{min-width:868px}
+.route-scroll{max-height:540px}
+.route-table td{height:60px}
+.filter-tray{grid-template-columns:1fr 1fr;padding:0 12px 13px;gap:10px}
+.table-footer{font-size:9px;padding:10px 12px;gap:8px}
+.reading-note{font-size:10px;margin-bottom:20px}
+.route-bottom-grid{grid-template-columns:1fr;gap:24px}
+.compact-coverage{gap:25px}
+.mini-title{font-size:9px}
+.page-footer{display:block;margin:27px 17px 0;font-size:9px;padding-bottom:20px;line-height:1.8}
+.page-footer>span{display:block}
+.page-footer>span+span{margin-top:4px}
+.resource-detail{grid-template-columns:1fr;padding:18px}
+.two-column,.binding-grid{grid-template-columns:1fr}
+.panel-pad{padding:17px}
+.panel-topline{gap:13px}
+.panel-topline h3{font-size:12px}
+.artifact-big{font-size:26px}
+.artifact-big span{font-size:12px}
+.ledger-legend{font-size:9px;gap:8px}
+.panel-topline p{font-size:10px}
+.subheading{align-items:flex-start}
+.subheading p{font-size:10px}
+.subheading h3{font-size:14px}
+.subheading .button{font-size:10px}
+.inventory-search{max-width:100%}
+.binding-card{padding:18px}
+.route-drawer{width:100%;border:0}
+.drawer-content{padding:22px 20px 30px}
+.drawer-topbar{padding:0 17px;min-height:57px}
+.drawer-title{font-size:18px}
+.drawer-tabs{margin-top:24px}
+.size-grid-value{font-size:20px}
+.modal{width:calc(100% - 22px);max-height:92vh;border-radius:9px}
+.modal-header{padding:18px 19px;border-radius:9px 9px 0 0}
+.modal-header h2{font-size:19px}
+.modal-content{padding:18px 19px 23px}
+.raw-toolbar{align-items:flex-start;flex-direction:column}
+.raw-toolbar p{font-size:10px}
+.raw-json{font-size:9px;padding:13px;max-height:52vh}
+.design-principles{grid-template-columns:1fr}
+.design-principle{padding:13px}
+.modal-content .lead{font-size:13px}
+.plain-note{font-size:10px;padding:11px 12px}
+.kv-row{font-size:10px}
+.modal-content .kv-row dd code{font-size:9px}
+}
+
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}
+}
+
+@media print{body{background:white;color:#111}
+.sidebar,.masthead,.mobile-nav,.top-actions,.table-toolbar,.table-context,.page-footer,.drawer-backdrop,.route-drawer,.modal,.modal-backdrop,.toast,.fixture-notice button{display:none!important}
+.workspace{margin:0}
+.route-scroll{max-height:none!important;overflow:visible!important}
+.route-table{min-width:0;font-size:9px}
+.route-table th{position:static}
+.route-table td{height:45px}
+.view[hidden]{display:none!important}
+.summary-strip,.surface,.fixture-notice{border-color:#bbb;background:white}
+.summary-item,.route-table td,.route-table th{background:white!important;color:#111!important}
+.route-link{font-size:9px}
+.handler-sub,.declaration{font-size:8px}
+.route-col{width:auto}
+.route-table{table-layout:auto}
+.section-heading,.report-heading{break-after:avoid}
+.reading-note{font-size:8px}
+.snapshot-meta{font-size:9px}
+.content-area{padding-top:20px}
+.fixture-badge{color:#555;background:#eee}
+.route-bottom-grid{break-inside:avoid}
+.size-bar-track{display:none}
+}
+
+
+.size-explanation + .detail-section{margin-top:24px}
+.mobile-table-hint{display:none}
+.fixture-badge[role=button]{cursor:pointer}
+.fixture-badge[role=button]:hover{border-color:var(--amber)}
+@media(max-width:690px){.mobile-table-hint{display:block;font-size:9px;color:var(--faint);padding:0 12px 10px;text-align:right}
+}
+
+
+/* Schema structure: comparable but explicitly not code-byte attribution. */
+.schema-metric-strip{display:flex;gap:14px;flex-wrap:wrap;margin:0 0 16px}
+
+.schema-metric-strip>div{background:var(--surface);border:1px solid var(--line);padding:12px 17px;border-radius:8px;min-width:132px;display:flex;align-items:baseline;gap:17px}
+
+.schema-metric-label{font-size:10px;color:var(--muted)}
+
+.schema-metric-strip strong{font:18px Consolas,monospace;font-weight:500;color:var(--text)}
+
+.schema-table{min-width:820px;table-layout:auto}
+
+.schema-table td:first-child{min-width:245px;max-width:410px}
+
+.schema-table .schema-sort-button{color:var(--muted);font-size:10px;display:inline-flex;align-items:center;gap:6px;padding:0;white-space:nowrap}
+
+.schema-table .schema-sort-button:hover,.schema-table th[aria-sort=ascending] .schema-sort-button,.schema-table th[aria-sort=descending] .schema-sort-button{color:var(--accent)}
+
+.schema-table .sort-caret{font:12px Consolas,monospace;color:var(--faint)}
+
+.schema-table .schema-expand{display:inline-flex;align-items:center;gap:8px;padding:2px 0;font-size:11px;max-width:100%;text-align:left}
+
+.schema-table .schema-expand:hover{color:var(--accent)}
+
+.schema-table .schema-expand svg{width:13px;height:13px;color:var(--faint)}
+
+.schema-summary{padding-left:21px;max-width:430px}
+
+.schema-row-open td{background:var(--row-selected)}
+
+.schema-byte-value{font:11px Consolas,monospace;white-space:nowrap}
+
+.schema-bar{margin:7px 0 0 auto;height:4px;width:90px;max-width:100%;border-radius:3px;background:var(--surface3);overflow:hidden}
+
+.schema-bar span{display:block;height:100%;background:var(--code-fill);border-radius:3px}
+
+.schema-detail{padding:23px 25px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:35px}
+
+.schema-detail h4{font-size:10px;letter-spacing:.7px;color:var(--faint);font-weight:600;margin:0 0 12px}
+
+.schema-detail .schema-detail-desc{font-size:11px;line-height:1.5;color:var(--muted);margin-bottom:14px}
+
+.schema-property-table{width:100%;border-collapse:collapse;font-size:11px}
+
+.schema-property-table th{font-size:10px;color:var(--faint);text-align:left;padding:9px 10px 9px 0;background:transparent;border-bottom:1px solid var(--line)}
+
+.schema-property-table td{padding:9px 10px 9px 0!important;background:transparent!important;border-bottom:1px solid var(--line-soft)!important;font-size:11px;max-width:none!important}
+
+.schema-property-table code{font-size:10.5px}
+
+.schema-detail .kv-row{font-size:10.5px;padding:10px 0}
+
+.schema-detail .schema-routes-label{margin-top:22px}
+
+.required-key{font-size:10px;color:var(--accent)}
+
+@media(max-width:800px){.schema-detail{grid-template-columns:1fr;gap:23px}
+}
+
+@media(max-width:690px){.schema-metric-strip{gap:7px}
+.schema-metric-strip>div{flex:1;min-width:95px;display:block;padding:10px}
+.schema-metric-strip strong{display:block;margin-top:6px}
+}
+
+
+progress{appearance:none;border:0;height:4px;width:76px;display:block;margin:5px 0 0 auto;background:var(--surface3)}progress::-webkit-progress-bar{background:var(--surface3)}progress::-webkit-progress-value{background:var(--code-fill)}progress::-moz-progress-bar{background:var(--code-fill)}.ledger-sections{display:flex;gap:8px;flex-wrap:wrap}.ledger-sections>span{border-left:3px solid var(--code-fill);padding-left:7px}.record-text{overflow-wrap:anywhere;white-space:pre-wrap}.schema-table .schema-property-table{min-width:0}.source-trail,.snapshot-meta,.ref-main{overflow-wrap:anywhere}.schema-detail pre{max-height:240px;overflow:auto}.inventory-table th{text-align:left}.numeric{text-align:right!important}.section-heading h2{overflow-wrap:anywhere}#app-name{overflow-wrap:anywhere}.app-switch strong{overflow-wrap:anywhere;max-width:130px}.snapshot-meta code{overflow-wrap:anywhere}.summary-value.small{font-size:20px}.inline-list{display:flex;gap:6px;flex-wrap:wrap}.report-description{max-width:650px}.drawer-title{overflow-wrap:anywhere}button.route-link{text-align:left}.schema-expand{overflow-wrap:anywhere;text-align:left}.empty-state{display:block}.table-wrap{overflow:auto}.evidence-record{overflow-wrap:anywhere}.details-body pre,.raw-json{white-space:pre-wrap;overflow-wrap:anywhere}#view-resources details summary{padding:14px;cursor:pointer}#view-resources details>div{padding:0 14px 14px}.schema-detail-desc{line-height:1.6}.route-group-select{max-width:260px}.schema-summary{max-width:450px}.surface.panel-pad{overflow-wrap:anywhere}.snapshot-meta>div{flex-wrap:wrap}.drawer-method-line{flex-wrap:wrap}.route-drawer{max-width:100vw}.route-table .route-link{max-width:100%;overflow-wrap:anywhere}.mobile-table-hint{font-size:12px}@media(max-width:700px){.title-line{flex-wrap:wrap}.snapshot-meta{max-width:100%}.schema-detail{display:block}.schema-detail>div+div{margin-top:20px}.two-column{grid-template-columns:1fr}.summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.route-group-select{max-width:100%}.report-heading{min-width:0}}
+
+body.overlay-open{overflow:hidden}
+</style></head><body>
+<a class="skip-link" href="#main">Skip to report</a>
+<aside class="sidebar" aria-label="Report navigation">
+  <a class="brand" href="#routes" aria-label="Pulse report routes"><span class="brand-symbol" aria-hidden="true"><svg viewBox="0 0 28 28" fill="none"><path d="M3 15h5l3-8 5 15 3-10 2 3h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>pulse<span class="brand-sub">report</span></span></a>
+  <div class="app-switch"><div class="app-monogram">P</div><div><strong id="sidebar-app"></strong><span>Application snapshot</span></div></div>
+  <div class="nav-label">EXPLORE</div>
+  <nav id="desktop-nav" class="nav-list"></nav>
+  <div class="sidebar-note"><span class="side-rule"></span><strong>Evidence, not inference.</strong><p>A static view of declarations,<br>resources, and recorded facts.</p></div>
+  <div class="sidebar-bottom"><button id="design-button" class="design-button"><span class="small-icon" data-icon="sliders"></span><span>About this report</span><span class="small-icon" data-icon="arrow-up-right"></span></button><div class="offline-label"><span class="tiny-dot"></span>Self-contained · Offline</div></div>
+</aside>
+<div class="workspace">
+  <header class="masthead"><div class="breadcrumbs"><span class="mobile-brand">pulse <span>report</span></span><span class="desktop-crumb">Reports</span><span class="crumb-divider">/</span><span id="crumb-app"></span><span class="crumb-divider">/</span><strong>Application</strong></div><div class="top-actions"><button id="theme-button" class="icon-button" aria-label="Switch theme" title="Switch theme"><span data-icon="sun"></span></button><span class="action-divider"></span><button id="raw-button" class="button ghost" aria-label="View complete JSON capsule" title="View JSON"><span data-icon="code"></span><span class="action-label">View JSON</span></button><button id="export-button" class="button export" aria-label="Export complete capsule" title="Export capsule"><span data-icon="download"></span><span class="action-label">Export capsule</span></button></div></header>
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Report sections"></nav>
+  <main id="main" tabindex="-1">
+    <div class="report-heading"><div><div class="eyebrow">APPLICATION REPORT</div><div class="title-line"><h1 id="app-name"></h1><span class="target-tag">Native Wasm</span></div><p class="report-description" id="snapshot-label"></p></div><div class="snapshot-meta"><div><span class="meta-label">PROFILE</span><code id="profile-name"></code><span class="meta-separator">·</span><span id="host-name"></span></div><div><span class="meta-label">CAPSULE</span><button id="hash-button" class="hash-link" title="View capsule provenance"></button></div><div id="revision-label"></div></div></div>
+    <div class="fixture-notice"><span data-icon="info"></span><span><strong>Build-review artifact.</strong> Declarations and measurements describe retained evidence. Review metadata before sharing publicly.</span><button id="fixture-about">Reading this report <span data-icon="arrow-up-right"></span></button></div>
+    <div class="summary-strip" id="summary-strip"></div>
+    <div class="content-area">
+      <section id="view-routes" class="view" aria-label="Route inventory">
+        <div class="section-heading"><div><h2>Route inventory <span class="count-pill" id="route-total"></span></h2><p>Follow a route from its declaration to the evidence behind it.</p></div><span class="subtle-label" id="mapping-label"></span></div>
+        <div class="surface table-surface">
+          <div class="table-toolbar"><label class="search-box"><span data-icon="search"></span><input id="route-search" type="search" placeholder="Find a route, handler or binding…" aria-label="Search routes, handlers or bindings" autocomplete="off"><kbd>/</kbd></label><div class="toolbar-actions"><button id="filter-toggle" class="button subtle" aria-expanded="false" aria-controls="route-filters"><span data-icon="filter"></span>Filters<span id="filter-count" class="filter-count" hidden></span></button><label class="metric-picker"><span>Size</span><select id="size-metric" aria-label="Displayed route size metric"><option value="handler-body">Handler body</option><option value="own">Own · exclusive</option><option value="reachable">Reachable</option><option value="shared">Shared</option></select></label></div></div>
+          <div id="route-filters" class="filter-tray" hidden><label>Method<select id="filter-method"><option value="all">All methods</option></select></label><label>Declarations<select id="filter-declaration"><option value="all">All declarations</option></select></label><label>Binding reference<select id="filter-binding"><option value="all">All bindings</option></select></label><label>Size evidence<select id="filter-size"><option value="all">All availability</option><option value="available">Available</option><option value="unavailable">Unavailable</option></select></label></div>
+          <div class="table-context"><div class="scope-tabs" id="route-groups" aria-label="Route groups"></div><button id="reset-routes" class="text-button" hidden>Reset view</button></div>
+          <div class="mobile-table-hint">Swipe the table to view declarations &amp; sizes →</div>
+          <div class="route-scroll" tabindex="0" role="region" aria-label="Scrollable route inventory"><table class="route-table"><caption class="sr-only">Retained route registrations. Activate a route to inspect its facts and supporting evidence.</caption><thead><tr><th class="order-col" id="th-order" aria-sort="ascending"><button data-sort="order" aria-label="Sort by registration order">#<span class="sort-mark"></span></button></th><th class="method-col" id="th-method"><button data-sort="method">Method<span class="sort-mark"></span></button></th><th class="route-col" id="th-path"><button data-sort="path">Route / handler<span class="sort-mark"></span></button></th><th class="declaration-col">Declarations</th><th class="schema-col">Schemas</th><th class="binding-col">Bindings</th><th class="size-col" id="th-size"><button data-sort="size"><span id="size-column-label">Handler body</span><span class="sort-mark"></span></button></th><th class="open-col"><span class="sr-only">Details</span></th></tr></thead><tbody id="route-body"></tbody></table><div id="route-empty" class="empty-state" hidden><span data-icon="search"></span><h3>No matching routes</h3><p>Try a broader search or reset the filters.</p><button id="empty-reset" class="button subtle">Reset view</button></div></div>
+          <div class="table-footer"><span id="route-result-count" role="status" aria-live="polite"></span><span id="sort-description">Registration order</span></div>
+        </div>
+        <div class="reading-note"><span data-icon="info"></span><p><strong>Read the numbers in context.</strong> Handler bodies can be shared; row sizes are not additive. A declaration is not a proof of effective permission. <button class="inline-link" id="size-help">How sizes are shown <span data-icon="arrow-up-right"></span></button></p></div>
+        <div class="route-bottom-grid"><div class="mini-panel"><div class="mini-title"><span>ARTIFACT COMPOSITION</span><a href="#resources">Explore resources <span data-icon="arrow-right"></span></a></div><div id="compact-ledger"></div></div><div class="mini-panel"><div class="mini-title"><span>EVIDENCE COVERAGE</span><a href="#evidence">View evidence <span data-icon="arrow-right"></span></a></div><div id="compact-coverage" class="compact-coverage"></div></div></div>
+      </section>
+      <section id="view-resources" class="view" aria-label="Resources and artifact sizes" hidden></section>
+      <section id="view-schemas" class="view" aria-label="Schema inventory" hidden></section>
+      <section id="view-bindings" class="view" aria-label="Binding inventory" hidden></section>
+      <section id="view-evidence" class="view" aria-label="Evidence and provenance" hidden></section>
+    </div>
+    <footer class="page-footer"><span><strong>pulse report</strong><span class="footer-dot">·</span>Facts travel with the artifact.</span><span>Report v1<span class="footer-dot">·</span>Offline viewer<span class="footer-dot">·</span>No network requests</span></footer>
+  </main>
+</div>
+<div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+<aside id="route-drawer" class="route-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1" hidden><div class="drawer-topbar"><span class="eyebrow" id="drawer-kicker">ROUTE DETAIL</span><div><button id="drawer-previous" class="icon-button" aria-label="Previous visible route" title="Previous visible route"><span data-icon="arrow-left"></span></button><button id="drawer-next" class="icon-button" aria-label="Next visible route" title="Next visible route"><span data-icon="arrow-right"></span></button><span class="action-divider"></span><button id="drawer-close" class="icon-button" aria-label="Close route details" title="Close · Escape"><span data-icon="close"></span></button></div></div><div id="drawer-content" class="drawer-content"></div></aside>
+<div id="modal-backdrop" class="modal-backdrop" hidden></div><section id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1" hidden><div class="modal-header"><div><div class="eyebrow" id="modal-eyebrow">PULSE REPORT</div><h2 id="modal-title"></h2></div><button id="modal-close" class="icon-button" aria-label="Close dialog"><span data-icon="close"></span></button></div><div id="modal-content" class="modal-content"></div></section>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<noscript><div class="noscript"><h2>This evidence viewer uses local JavaScript.</h2><p>Enable JavaScript to explore the embedded capsule. No network access or external dependencies are required. The complete capsule is retained in the file.</p></div></noscript>
+<script id="pulse-report-data" type="application/json">{"application":{"name":"minimal"},"artifacts":[{"bytes":2353,"evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be","evidence:ec59557bea4f974083a3a194c9f92284f48b8db777e19529ba9a980d1eca89aa"],"host":"node","id":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","ledger":{"codeBodyBytes":1048,"codeFramingBytes":27,"dataPayloadBytes":{"basis":"measured","coverage":"exact","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":400},"headerBytes":8,"unattributedDataPayloadBytes":{"basis":"measured","coverage":"exact","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":400}},"representation":"canonical-native-wasm","sectionCoverage":{"expected":9,"observed":9,"reason":null,"status":"complete"},"sections":[{"bytes":48,"id":1,"index":0,"payloadBytes":46},{"bytes":354,"id":2,"index":1,"payloadBytes":351},{"bytes":24,"id":3,"index":2,"payloadBytes":22},{"bytes":5,"id":5,"index":3,"payloadBytes":3},{"bytes":33,"id":6,"index":4,"payloadBytes":31},{"bytes":254,"id":7,"index":5,"payloadBytes":251},{"bytes":3,"id":12,"index":6,"payloadBytes":1},{"bytes":1075,"id":10,"index":7,"payloadBytes":1072},{"bytes":549,"id":11,"index":8,"payloadBytes":546}],"sha256":"9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","stage":"final","target":"node-native-host"}],"bindings":[],"bodies":[{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":52,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:13","index":13},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":37,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:14","index":14},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":80,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:15","index":15},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":8,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:16","index":16},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":8,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:17","index":17},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":4,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:18","index":18},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":4,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:19","index":19},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":5,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:20","index":20},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":11,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:21","index":21},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":4,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:22","index":22},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":4,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:23","index":23},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":4,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:24","index":24},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":70,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:25","index":25},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":186,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:26","index":26},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":82,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:27","index":27},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":36,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:28","index":28},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":92,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:29","index":29},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":36,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:30","index":30},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":70,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:31","index":31},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":147,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:32","index":32},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bytes":108,"id":"body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:33","index":33}],"context":{"host":"node","primaryArtifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","profile":"local","representation":"canonical-native-wasm","target":"native"},"coverage":{"bindings":{"expected":0,"observed":0,"reason":null,"status":"complete"},"entries":{"expected":3,"observed":3,"reason":null,"status":"complete"},"resources":{"expected":null,"observed":0,"reason":"incomplete-mapping","status":"partial"},"routes":{"expected":3,"observed":3,"reason":null,"status":"complete"},"schemas":{"expected":0,"observed":0,"reason":null,"status":"complete"}},"declarations":[{"evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"id":"declaration:3e55345cef4d9865c92491ebeded3369e4587b45b284fdd2aa95f78e2b30193b","kind":"capability-reference","name":"response.json"},{"evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"id":"declaration:86970b0f4775f579b3b1bfc9336a683af8239eb2833a719aaced56d3b29d77e6","kind":"capability-reference","name":"response.text"}],"entries":[{"bindingIds":[],"canonicalId":"router_entry_68ab1cf381cc39de19254523","declarationIds":[],"evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"flow":{"childEntryId":null,"conditional":false,"method":"GET","nextEntryId":"entry:b693d7b21615a382ab8b52436dd77c71ce6fc6841af2636ec8cc24bd641ce836","parentContinueEntryId":null,"path":"/health","routerPath":["app"],"scoped":false},"handlerId":"handler:45e3aa2659528b1e845f6e7c4fce6768db838141e9c8b11aaf08936882fce951","id":"entry:9fb1b71314150672def40cb22ff6047a539d1e3224833940365a80718b715fb6","kind":"route","name":"route","order":0,"schemaIds":[],"source":{"column":20,"file":"src/index.ts","line":5}},{"bindingIds":[],"canonicalId":"router_entry_98033b6283b032caf3d28445","declarationIds":[],"evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"flow":{"childEntryId":null,"conditional":false,"method":"GET","nextEntryId":"entry:3fa1ad56baee2461dc0269b316d81816da15071286b6798ac036521f76b8b469","parentContinueEntryId":null,"path":"/hello","routerPath":["app"],"scoped":false},"handlerId":"handler:09941fe8ec6de80b5ce99c92514c3f47af70db36e6f63ecb98a30040f779c5ce","id":"entry:b693d7b21615a382ab8b52436dd77c71ce6fc6841af2636ec8cc24bd641ce836","kind":"route","name":"route","order":1,"schemaIds":[],"source":{"column":19,"file":"src/index.ts","line":6}},{"bindingIds":[],"canonicalId":"router_entry_08a32a843f737a04a5aef2f9","declarationIds":[],"evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"flow":{"childEntryId":null,"conditional":false,"method":"GET","nextEntryId":null,"parentContinueEntryId":null,"path":"/*","routerPath":["app"],"scoped":false},"handlerId":"handler:dcd8044df6d86151d91f80d38097fd3aa9438777410bc2556c9fa1b702e13251","id":"entry:3fa1ad56baee2461dc0269b316d81816da15071286b6798ac036521f76b8b469","kind":"route","name":"route","order":2,"schemaIds":[],"source":{"column":15,"file":"src/index.ts","line":7}}],"evidence":[{"artifactIds":["artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479"],"id":"evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c","kind":"source","method":"canonical-build-inventory-v1","producer":{"name":"pulse-report-collector","version":"1"},"recordedAt":null,"result":"observed","scope":{"cases":[],"corpus":null,"targets":["native"]},"source":null,"subjectIds":[]},{"artifactIds":["artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479"],"id":"evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be","kind":"measurement","method":"retained-wasm-ledger-and-attribution-v1","producer":{"name":"pulse-report-size","version":"1"},"recordedAt":null,"result":"observed","scope":{"cases":[],"corpus":null,"targets":["native"]},"source":null,"subjectIds":[]},{"artifactIds":["artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479"],"id":"evidence:ec59557bea4f974083a3a194c9f92284f48b8db777e19529ba9a980d1eca89aa","kind":"build","method":"completed-native-build-v1","producer":{"name":"pulse-report-collector","version":"1"},"recordedAt":null,"result":"passed","scope":{"cases":[],"corpus":null,"targets":["native"]},"source":null,"subjectIds":[]}],"evidenceHash":{"algorithm":"sha256","value":"683b9cb96debbe8723b1e817cf0e07a6d0c6c09799ba374e82c4785288cfd510"},"kind":"pulse.application-report","measurements":[{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":[],"expectedChunks":1,"fact":{"basis":"measured","coverage":"partial","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":"incomplete-root-universe","state":"unavailable","value":null},"id":"measurement:07d20f2a1d30149cbc6764d51d3a27cf16208b00720c9b97504864d7b04561bc","mappedChunks":1,"method":"unavailable","metric":"shared","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:4cb7e5aa51f413a5d94cfe5d25da64efa4390ac95e717c48ad01cb19565d3344"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:29"],"expectedChunks":1,"fact":{"basis":"measured","coverage":"exact","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":92},"id":"measurement:2a7970a02305ac35c5b8c3079a9463f9df0fae5d41f38859d37efb0a20104602","mappedChunks":1,"method":"final-body-map-v1","metric":"handler-body","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:de963e3bba7d6045c31d366288ec1e0e564b7f46bdebd48deb1f17e89d56419a"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":[],"expectedChunks":1,"fact":{"basis":"measured","coverage":"partial","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":"incomplete-root-universe","state":"unavailable","value":null},"id":"measurement:3ad9776e30e92775431a14dba81f1b338cb5a9a9cf783ccafb1190cf91fe9317","mappedChunks":1,"method":"unavailable","metric":"shared","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:de963e3bba7d6045c31d366288ec1e0e564b7f46bdebd48deb1f17e89d56419a"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":[],"expectedChunks":1,"fact":{"basis":"measured","coverage":"partial","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":"incomplete-root-universe","state":"unavailable","value":null},"id":"measurement:3b15ccae24857b901d7ab88a4eeb1bca3ac0c63111f14586bbdfb72c1cc8538d","mappedChunks":1,"method":"unavailable","metric":"shared","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:77487b93c276388bbe132fb2f35afc0907cc00cc01c55000a674e95f5344ab2c"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":[],"expectedChunks":1,"fact":{"basis":"measured","coverage":"partial","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":"incomplete-root-universe","state":"unavailable","value":null},"id":"measurement:3fbfa35c7f884a3ee234a854e1587141ea5e8a466caef78ceb992803c0657b28","mappedChunks":1,"method":"unavailable","metric":"own","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:de963e3bba7d6045c31d366288ec1e0e564b7f46bdebd48deb1f17e89d56419a"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:31"],"expectedChunks":1,"fact":{"basis":"measured","coverage":"exact","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":70},"id":"measurement:53770fb1faa60da97445a45af6135e6ed482305cd13f65fed962754a79ead4b4","mappedChunks":1,"method":"final-body-map-v1","metric":"handler-body","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:77487b93c276388bbe132fb2f35afc0907cc00cc01c55000a674e95f5344ab2c"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:27"],"expectedChunks":1,"fact":{"basis":"measured","coverage":"bounded","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":82},"id":"measurement:5961a342cece055ca15cf5ebf59e39e3d04c60163c08982e200e024c7033d35e","mappedChunks":1,"method":"static-direct-calls-v1","metric":"reachable","rootId":"root:7f7b6182dc98174db8020329b9c1fd3297e8fa1264efd1498b5158192f8f8721","rootSetId":"root-set:8e3552ba9cd2a42f6999c732b2cb66bca7c7e3db3d9827736e504ae67837828f","stage":"final","subjectId":"route:4cb7e5aa51f413a5d94cfe5d25da64efa4390ac95e717c48ad01cb19565d3344"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:14","body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:31"],"expectedChunks":1,"fact":{"basis":"measured","coverage":"bounded","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":107},"id":"measurement:8d9eaf8822f050587e5cfe2024f45887c0bbf804e894b7ac38cfd46fca8e8caf","mappedChunks":1,"method":"static-direct-calls-v1","metric":"reachable","rootId":"root:e72020f7cd06395d6d30d432d363d6ae82ad7b36b0e291cfbbfff4512546ca5e","rootSetId":"root-set:8e3552ba9cd2a42f6999c732b2cb66bca7c7e3db3d9827736e504ae67837828f","stage":"final","subjectId":"route:77487b93c276388bbe132fb2f35afc0907cc00cc01c55000a674e95f5344ab2c"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":[],"expectedChunks":1,"fact":{"basis":"measured","coverage":"partial","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":"incomplete-root-universe","state":"unavailable","value":null},"id":"measurement:9041c8a1cc58bcee4a1230aa461e68b64ccdc69f94691ed311dfda99e3636f92","mappedChunks":1,"method":"unavailable","metric":"own","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:77487b93c276388bbe132fb2f35afc0907cc00cc01c55000a674e95f5344ab2c"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":[],"expectedChunks":1,"fact":{"basis":"measured","coverage":"partial","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":"incomplete-root-universe","state":"unavailable","value":null},"id":"measurement:9fdcdde0b304f9dafb22b089976285c5d85c4869a71b525e5b02b7126f40e55e","mappedChunks":1,"method":"unavailable","metric":"own","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:4cb7e5aa51f413a5d94cfe5d25da64efa4390ac95e717c48ad01cb19565d3344"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:29"],"expectedChunks":1,"fact":{"basis":"measured","coverage":"bounded","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":92},"id":"measurement:b982607aec2a7752271bb2432514c6862452653130d78ac141b98904b3eb40fb","mappedChunks":1,"method":"static-direct-calls-v1","metric":"reachable","rootId":"root:49724779474e3330b70aef12b41ad6ad84c188e92b240833d8cfc18d83055210","rootSetId":"root-set:8e3552ba9cd2a42f6999c732b2cb66bca7c7e3db3d9827736e504ae67837828f","stage":"final","subjectId":"route:de963e3bba7d6045c31d366288ec1e0e564b7f46bdebd48deb1f17e89d56419a"},{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:27"],"expectedChunks":1,"fact":{"basis":"measured","coverage":"exact","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"reason":null,"state":"available","value":82},"id":"measurement:bb445621c153cc5704a6c88bd52969a4a22ec2cc158236696c0fc066d7ffda15","mappedChunks":1,"method":"final-body-map-v1","metric":"handler-body","rootId":null,"rootSetId":null,"stage":"final","subjectId":"route:4cb7e5aa51f413a5d94cfe5d25da64efa4390ac95e717c48ad01cb19565d3344"}],"observations":[{"code":"REPORT_AUTHORIZATION_NOT_INFERRED","evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"id":"evidence:3df6a2cd9fb3cc6304eda3835b2c0c5e30750aa549f2b9544f027e8811c5124d","producer":{"name":"pulse-report-collector","version":"1"},"severity":"info","subjectIds":[]},{"code":"REPORT_TESTS_NOT_RECORDED","evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"id":"evidence:8623884c2dc73c5c05389696b33a275d1bdfcb1815bd6eab56bb5b9b4b7e4786","producer":{"name":"pulse-report-collector","version":"1"},"severity":"info","subjectIds":[]},{"code":"REPORT_SIZE_NONADDITIVE_CODE_ONLY_INCOMPLETE_ROOTS","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"id":"evidence:901b8c8bc751d164f015dba190231c9287bbb4142ed07ffc7aa57f846e4846ff","producer":{"name":"pulse-report-size","version":"1"},"severity":"info","subjectIds":["artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479"]},{"code":"REPORT_GENERATED_RESOURCE_INVENTORY_UNAVAILABLE","evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"id":"evidence:9d6591d2b5d00d689351db4a5be6423310fcf3f1744028f208457e8b07581b6f","producer":{"name":"pulse-report-collector","version":"1"},"severity":"info","subjectIds":[]}],"producer":{"pulseVersion":"1.0.0-beta.7","reporterVersion":"1"},"provenance":{"buildEvidenceId":"evidence:ec59557bea4f974083a3a194c9f92284f48b8db777e19529ba9a980d1eca89aa","dirty":null,"recipe":{"guestLinked":false,"name":"pulse-native","optimization":"default","version":"pulse.canonical-native-wasm.v2"},"revision":null,"sourceFingerprint":null,"toolchain":[{"name":"AssemblyScript","version":"0.28.18"},{"name":"pulse","version":"1.0.0-beta.7"}]},"reportVersion":1,"resources":[],"rootSets":[{"artifactId":"artifact:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479","evidenceIds":["evidence:514701bbe054bda98a7e50bee9b03ba9fcce9fa4bceb56daf52a3dfc340bb6be"],"graph":"static-direct-calls","id":"root-set:8e3552ba9cd2a42f6999c732b2cb66bca7c7e3db3d9827736e504ae67837828f","roots":[{"bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:29"],"id":"root:49724779474e3330b70aef12b41ad6ad84c188e92b240833d8cfc18d83055210","kind":"route","subjectId":"route:de963e3bba7d6045c31d366288ec1e0e564b7f46bdebd48deb1f17e89d56419a"},{"bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:27"],"id":"root:7f7b6182dc98174db8020329b9c1fd3297e8fa1264efd1498b5158192f8f8721","kind":"route","subjectId":"route:4cb7e5aa51f413a5d94cfe5d25da64efa4390ac95e717c48ad01cb19565d3344"},{"bodyIds":["body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:14","body:9ea79658959e83d19353f73e73f16b1f9634a11dec962823aa50dfadf3af8479:31"],"id":"root:e72020f7cd06395d6d30d432d363d6ae82ad7b36b0e291cfbbfff4512546ca5e","kind":"route","subjectId":"route:77487b93c276388bbe132fb2f35afc0907cc00cc01c55000a674e95f5344ab2c"}],"universeComplete":false}],"routes":[{"bindingIds":[],"canonicalId":"route_082d572d95327b0d973ed399","composition":["entry:9fb1b71314150672def40cb22ff6047a539d1e3224833940365a80718b715fb6"],"compositionCoverage":"complete","declarationIds":[],"entryId":"entry:9fb1b71314150672def40cb22ff6047a539d1e3224833940365a80718b715fb6","evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"handlerId":"handler:45e3aa2659528b1e845f6e7c4fce6768db838141e9c8b11aaf08936882fce951","handlerName":"\u003cinline:route:app:0\u003e","id":"route:4cb7e5aa51f413a5d94cfe5d25da64efa4390ac95e717c48ad01cb19565d3344","method":"GET","order":0,"path":"/health","schemaIds":[],"source":{"column":20,"file":"src/index.ts","line":5}},{"bindingIds":[],"canonicalId":"route_e833ce2a4b57856a6482b50a","composition":["entry:b693d7b21615a382ab8b52436dd77c71ce6fc6841af2636ec8cc24bd641ce836"],"compositionCoverage":"complete","declarationIds":[],"entryId":"entry:b693d7b21615a382ab8b52436dd77c71ce6fc6841af2636ec8cc24bd641ce836","evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"handlerId":"handler:09941fe8ec6de80b5ce99c92514c3f47af70db36e6f63ecb98a30040f779c5ce","handlerName":"\u003cinline:route:app:1\u003e","id":"route:de963e3bba7d6045c31d366288ec1e0e564b7f46bdebd48deb1f17e89d56419a","method":"GET","order":1,"path":"/hello","schemaIds":[],"source":{"column":19,"file":"src/index.ts","line":6}},{"bindingIds":[],"canonicalId":"route_472d311ab7a5c8956ceb6a3d","composition":["entry:3fa1ad56baee2461dc0269b316d81816da15071286b6798ac036521f76b8b469"],"compositionCoverage":"complete","declarationIds":[],"entryId":"entry:3fa1ad56baee2461dc0269b316d81816da15071286b6798ac036521f76b8b469","evidenceIds":["evidence:1590926b6516fe4e25fe61c9a4d9134a84f78c206c74a990829fb03febcd796c"],"handlerId":"handler:dcd8044df6d86151d91f80d38097fd3aa9438777410bc2556c9fa1b702e13251","handlerName":"\u003cinline:route:app:2\u003e","id":"route:77487b93c276388bbe132fb2f35afc0907cc00cc01c55000a674e95f5344ab2c","method":"GET","order":2,"path":"/*","schemaIds":[],"source":{"column":15,"file":"src/index.ts","line":7}}],"schemas":[]}
+</script><script>'use strict';
+// Shared pure view projection: filters never mutate or truncate capsule records.
+function createReportViewModel(P) {
+  const canonical = value => value === null || typeof value !== 'object' ? JSON.stringify(value)
+    : Array.isArray(value) ? '[' + value.map(canonical).join(',') + ']'
+      : '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}';
+  const canonicalJson = canonical(P) + '\n';
+  const A = P.artifacts.find(a => a.id === P.context.primaryArtifactId);
+  const byId = rows => new Map(rows.map(row => [row.id, row]));
+  const routes = byId(P.routes), schemas = byId(P.schemas), bindings = byId(P.bindings), evidence = byId(P.evidence), declarations = byId(P.declarations);
+  const routeIndex = new Map(P.routes.map((r, i) => [r.id, i]));
+  const schemaIndex = new Map(P.schemas.map((s, i) => [s.id, i]));
+  const metrics = {'handler-body':'Handler body', own:'Own (exclusive)', reachable:'Reachable', shared:'Shared'};
+  const measurementIndex = new Map();
+  for (const m of P.measurements) if (m.artifactId === A.id && m.stage === A.stage) {
+    const key = m.subjectId + ':' + m.metric;
+    if (!measurementIndex.has(key)) measurementIndex.set(key, []);
+    measurementIndex.get(key).push(m);
+  }
+  // Repeated evidence for the same measurement is not missing data. Coalesce
+  // only equivalent claims; equal byte counts with different scopes still differ.
+  const resolutions = new Map();
+  for (const [key, records] of measurementIndex) {
+    const groups = new Map();
+    for (const row of records) {
+      const {id, fact, ...claim} = row, {evidenceIds, ...value} = fact;
+      const signature = canonical({...claim, bodyIds:[...(claim.bodyIds || [])].sort(), fact:value});
+      if (!groups.has(signature)) groups.set(signature, {...row, fact:{...fact, evidenceIds:[]}, recordIds:[]});
+      const group = groups.get(signature);
+      group.recordIds.push(id);
+      group.fact.evidenceIds = [...new Set([...group.fact.evidenceIds, ...evidenceIds])].sort();
+    }
+    const variants = [...groups.values()];
+    resolutions.set(key, {records, variants, measurement:variants.length === 1 ? variants[0] : undefined});
+  }
+  const measurementResolution = (r, metric) => resolutions.get(r.id + ':' + metric) || {records:[], variants:[], measurement:undefined};
+  const measurement = (r, metric) => measurementResolution(r, metric).measurement;
+  const measurementIssue = (r, metric) => {
+    const result = measurementResolution(r, metric);
+    return result.variants.length > 1 ? result.variants.length + ' distinct measurements; compare values, methods and scope in Size attribution' : 'missing-evidence';
+  };
+  const factValue = f => f?.state === 'available' ? f.value : null;
+  const qualifier = f => f ? [f.state, f.basis, f.coverage, f.reason].filter(Boolean).join(' · ') : 'unavailable · missing-evidence';
+  const metricValue = r => factValue(measurement(r, state.metric)?.fact);
+  const sourceText = source => source ? `${source.file}:${source.line}:${source.column}` : 'Not recorded';
+  const inventoryCount = name => P.coverage[name].status === 'not-applicable' ? 'N/A' : P.coverage[name].status === 'unavailable' && !P[name].length ? 'Unavailable' : String(P[name].length);
+  const prefix = r => '/' + r.path.split('/').filter(Boolean).slice(0, 2).join('/');
+  const declarationState = r => r.declarationIds.length ? 'recorded' : r.compositionCoverage === 'complete' ? 'not-declared' : 'unavailable';
+  const declarationLabels = {recorded:'Declarations recorded', 'not-declared':'Not declared', unavailable:'Unavailable'};
+  const state = {view:'routes', search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', expandedSchemas:new Set(), expandedResources:new Set()};
+  function compareValues(a,b,direction) { if(a==null)return b==null?0:1;if(b==null)return -1;return (a===b?0:a<b?-1:1)*(direction==='asc'?1:-1); }
+  function filteredRoutes() {
+    return P.routes.filter(r => {
+      const search = [r.path,r.method,r.handlerName,...r.bindingIds.map(id=>bindings.get(id)?.name)].join(' ').toLowerCase();
+      return search.includes(state.search) && (state.group==='all'||prefix(r)===state.group) && (state.method==='all'||r.method===state.method)
+        && (state.declaration==='all'||declarationState(r)===state.declaration) && (state.binding==='all'||r.bindingIds.includes(state.binding))
+        && (state.availability==='all'||(metricValue(r)===null?'unavailable':'available')===state.availability);
+    }).sort((a,b)=>compareValues(state.sort==='size'?metricValue(a):a[state.sort],state.sort==='size'?metricValue(b):b[state.sort],state.dir)||a.order-b.order);
+  }
+  function filteredSchemas() {
+    const key=state.schemaSort, get=s=>key==='name'?s.schemaId:key==='keys'?s.structure.topLevelKeys:key==='required'?s.structure.requiredKeys:key==='descriptor'?s.structure.descriptorBytes:s.routeIds.length;
+    return P.schemas.filter(s=>[s.schemaId,...s.structure.properties.map(p=>p.name+' '+p.type)].join(' ').toLowerCase().includes(state.schemaSearch)).sort((a,b)=>compareValues(get(a),get(b),state.schemaDir)||schemaIndex.get(a.id)-schemaIndex.get(b.id));
+  }
+  function composition(artifact) {
+    if (artifact.sectionCoverage.status !== 'complete') return null;
+    const parts = [{id:'code',label:'Code',bytes:0},{id:'data',label:'Data',bytes:0},{id:'custom',label:'Custom',bytes:0},{id:'other',label:'Other + header',bytes:8}];
+    for (const s of artifact.sections) parts[s.id===10?0:s.id===11?1:s.id===0?2:3].bytes += s.bytes;
+    return parts;
+  }
+  const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
+  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,composition,mappingCoverage};
+}
+if (typeof module !== 'undefined') module.exports = { createReportViewModel };
+
+'use strict';
+(() => {
+  const $ = (selector, root=document) => root.querySelector(selector);
+  const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
+  const P = JSON.parse($('#pulse-report-data').textContent);
+  const glyphs = {
+    routes:['M4 6h7M4 12h11M4 18h7','m15 3 4 3-4 3','m19 9 4 3-4 3','m15 15 4 3-4 3'],
+    box:['m12 3 9 5-9 5-9-5 9-5Z','m3 8 0 9 9 5 9-5V8','M12 13v9','m7 5 9 5'],
+    layers:['m12 3 10 5-10 5L2 8l10-5Z','m2 12 10 5 10-5','m2 16 10 5 10-5'],
+    link:['M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-2 2','M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l2-2'],
+    evidence:['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z','M14 2v6h6','M8 13h8M8 17h5'],
+    code:['m8 7-5 5 5 5','m16 7 5 5-5 5','m14 4-4 16'],
+    download:['M12 3v12','m7 10 5 5 5-5','M4 16v4h16v-4'],
+    sun:['M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8','M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5'],
+    moon:['M21 13A9 9 0 0 1 11 3a9 9 0 1 0 10 10Z'],
+    search:['M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15','m16 16 5 5'],
+    filter:['M4 6h16M7 12h10M10 18h4'],
+    sliders:['M4 7h6M14 7h6M4 17h10M18 17h2','M10 4v6M14 14v6'],
+    info:['M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20','M12 11v6M12 7h.01'],
+    flask:['M9 3h6M10 3v6l-6 10a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3L14 9V3','M8 14h8'],
+    'arrow-up-right':['M6 18 18 6M6 6h12v12'],
+    'arrow-right':['M4 12h16','m14 6 6 6-6 6'],
+    'arrow-left':['M20 12H4','m10 6-6 6 6 6'],
+    'arrow-down':['M12 4v16','m6 14 6 6 6-6'],
+    'arrow-up':['M12 20V4','m6 10 6-6 6 6'],
+    'chevron-right':['m9 5 7 7-7 7'],
+    'chevron-down':['m5 9 7 7 7-7'],
+    close:['m6 6 12 12M6 18 18 6'],
+    lock:['M5 10h14v11H5Z','M8 10V6a4 4 0 0 1 8 0v4','M12 14v3'],
+    globe:['M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20','M2 12h20','M12 2c6 6 6 14 0 20-6-6-6-14 0-20'],
+    key:['M8 3a5 5 0 1 0 0 10A5 5 0 0 0 8 3','m12 12 9 9M17 17l3-3M14 14l3-3'],
+    dash:['M5 12h14'],
+    question:['M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20','M9.5 8a2.5 2.5 0 1 1 4 2c-1.5 1-1.5 1.5-1.5 3M12 17h.01'],
+    file:['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z','M14 2v6h6'],
+    database:['M3 6c0-5 18-5 18 0s-18 5-18 0Z','M3 6v12c0 5 18 5 18 0V6','M3 12c0 5 18 5 18 0'],
+    chip:['M7 7h10v10H7Z','M9 2v5M15 2v5M9 17v5M15 17v5M2 9h5M2 15h5M17 9h5M17 15h5'],
+    copy:['M9 9h12v12H9Z','M15 9V3H3v12h6'],
+    git:['M6 3v12a3 3 0 1 0 3 3','M6 9h8a4 4 0 0 0 4-4','M18 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6','M6 15a3 3 0 1 0 0 6 3 3 0 0 0 0-6'],
+    check:['m5 12 4 4L19 6'],
+    terminal:['m4 6 6 6-6 6M13 18h7'],
+  };
+  function icon(name) {
+    const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    for(const [k,v] of Object.entries({viewBox:'0 0 24 24',fill:'none',stroke:'currentColor','stroke-width':'1.6','stroke-linecap':'round','stroke-linejoin':'round','aria-hidden':'true'}))svg.setAttribute(k,v);
+    for(const d of glyphs[name]||glyphs.file){const path=document.createElementNS(svg.namespaceURI,'path');path.setAttribute('d',d);svg.append(path);}
+    return svg;
+  }
+  function el(tag, attrs={}, ...children) {
+    const node=document.createElement(tag);
+    for(const [key,value] of Object.entries(attrs)){
+      if(value===null||value===undefined||(value===false&&!key.startsWith('aria-')))continue;
+      if(key==='class')node.className=value;
+      else if(key==='text')node.textContent=value;
+      else if(key==='on')for(const [event,fn] of Object.entries(value))node.addEventListener(event,fn);
+      else if(key==='checked')node.checked=!!value;
+      else node.setAttribute(key,typeof value==='boolean'&&key.startsWith('aria-')?String(value):value===true?'':String(value));
+    }
+    for(const child of children.flat(Infinity))if(child!==undefined&&child!==null)node.append(child instanceof Node?child:document.createTextNode(String(child)));
+    return node;
+  }
+  function replace(node,...children){node.replaceChildren(...children.flat(Infinity).filter(value=>value!==null&&value!==undefined));return node;}
+  function bytes(value, precision=1){
+    if(value===null||value===undefined)return '—';
+    if(value<1024)return value+' B';
+    if(value<1048576)return (value/1024).toFixed(precision).replace(/\.0$/,'')+' KiB';
+    return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
+  }
+  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,composition,mappingCoverage} = createReportViewModel(P);
+  const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
+  const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
+  let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
+  const navigation = [['routes','Routes','routes'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
+  const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
+  const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
+  const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
+  const sectionHeading = (title, desc, count) => el('div',{class:'section-heading'},el('div',{},el('h2',{},title,count == null ? null : el('span',{class:'count-pill'},count)),el('p',{},desc)));
+  const methodTag = method => el('span',{class:'method ' + (['GET','POST','PUT','PATCH','DELETE','OPTIONS','HEAD'].includes(method) ? 'method-' + method : '')},method);
+  const tag = text => el('span',{class:'evidence-label'},text);
+  const byteDisplay = (value, cls='size-grid-value') => {
+    if (value == null) return el('div',{class:cls+' size-unavailable'},'Unavailable');
+    const [amount,unit] = bytes(value).split(' ');
+    return el('div',{class:cls},amount,el('span',{class:'unit'},unit));
+  };
+  const measurementText = (r,metric) => measurementResolution(r,metric).variants.length > 1 ? 'Multiple measurements' : factText(measurement(r,metric)?.fact);
+  const routeChips = ids => el('div',{class:'route-chips'},ids.map(id => {
+    const r = routes.get(id); return r ? el('a',{class:'route-chip',href:'#routes/' + routeIndex.get(id)},r.method + ' ' + r.path) : el('span',{},'Unknown route reference');
+  }));
+  function toast(text) { $('#toast').textContent = text; $('#toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => {$('#toast').hidden = true;}, 3000); }
+  function downloadCapsule() {
+    const url = URL.createObjectURL(new Blob([canonicalJson],{type:'application/json;charset=utf-8'}));
+    const a = el('a',{href:url,download:'pulse-report.json'}); document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url),1500); toast('Complete capsule exported. View filters do not change evidence.');
+  }
+  function buildNavigation() {
+    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},P[id].length))));
+  }
+  function ledger(artifact, large=false) {
+    const parts=composition(artifact);
+    if (!parts) return note('Composition unavailable: section coverage is '+artifact.sectionCoverage.status+'. Physical total: '+exact(artifact.bytes)+'.');
+    // Numeric SVG geometry preserves exact proportions without inline styles,
+    // which the fixed content policy deliberately prohibits.
+    const chart=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    for(const [key,value] of Object.entries({class:'ledger-bar',viewBox:'0 0 '+artifact.bytes+' 20',preserveAspectRatio:'none',role:'img','aria-label':'Artifact composition: '+parts.map(p=>p.label+' '+exact(p.bytes)).join(', ')})) chart.setAttribute(key,value);
+    let x=0;
+    for(const part of parts) {
+      if(!part.bytes) continue;
+      const rect=document.createElementNS(chart.namespaceURI,'rect');
+      for(const [key,value] of Object.entries({x,y:0,width:part.bytes,height:20,class:'segment-'+part.id})) rect.setAttribute(key,value);
+      const title=document.createElementNS(chart.namespaceURI,'title');title.textContent=part.label+': '+exact(part.bytes);rect.append(title);chart.append(rect);x+=part.bytes;
+    }
+    return el('div',{class:large?'ledger-large':''},chart,el('div',{class:'ledger-legend'},parts.map(p=>el('span',{class:'legend-item'},el('span',{class:'swatch segment-'+p.id}),p.label,el('span',{class:'mono'},bytes(p.bytes))))));
+  }
+  function drawSummary() {
+    for (const id of ['app-name','sidebar-app','crumb-app']) $('#'+id).textContent = P.application.name;
+    document.title = P.application.name + ' · Pulse Report';
+    $('#profile-name').textContent = P.context.profile; $('#host-name').textContent = P.context.host + ' · native';
+    const mode = $('meta[name="pulse-report-snapshot"]').content;
+    $('#snapshot-label').textContent = mode === 'current' ? 'Retained completed build · current inputs matched.' : mode === 'artifact' ? 'Completed artifact verified · current project not checked.' : 'Historical capsule replay · current project and original artifact bytes not checked.';
+    $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
+    $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
+    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+new Set(P.entries.map(e=>e.handlerId).filter(Boolean)).size+' recorded handlers','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),'Input bytes and retained payload stay distinct','resources']];
+    replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
+    $('#route-total').textContent = P.routes.length;
+    const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
+    $('#mapping-label').textContent = `${mapped} / ${P.routes.length} handler mappings · ${A.stage}`;
+    replace($('#compact-ledger'),ledger(A));
+    const tests=P.evidence.filter(e=>e.kind==='test'&&e.artifactIds.includes(A.id));
+    replace($('#compact-coverage'),[['handler-body','Handler mappings'],['reachable','Reachability roots']].map(([metric,label])=>{
+      const c=mappingCoverage(metric);
+      return el('div',{class:'coverage-mini'},el('div',{class:'number'},c.available,el('span',{},' / '+c.total)),el('span',{class:'coverage-label'},label));
+    }),el('div',{class:'coverage-mini'},el('div',{class:'number coverage-state'},tests.length?String(tests.length):'Not recorded'),el('span',{class:'coverage-label'},'Scoped test records')));
+  }
+  function populateFilters() {
+    const add = (id, rows) => rows.forEach(([value,label])=>$('#'+id).append(el('option',{value},label)));
+    add('filter-method',[...new Set(P.routes.map(r=>r.method))].map(x=>[x,x]));
+    add('filter-declaration',Object.entries(declarationLabels)); add('filter-binding',P.bindings.map(b=>[b.id,b.name]));
+    const groups = [...new Set(P.routes.map(prefix))].sort();
+    const select = el('select',{id:'filter-group',class:'route-group-select','aria-label':'Filter by route path prefix',on:{change:e=>{state.group=e.target.value;renderRoutes();}}},el('option',{value:'all'},'All path prefixes'),groups.map(x=>el('option',{value:x},x)));
+    replace($('#route-groups'),el('label',{},'Path prefix ',select));
+  }
+  function readRouteFilters() {
+    state.search = $('#route-search').value.trim().toLowerCase(); state.method = $('#filter-method').value; state.declaration = $('#filter-declaration').value;
+    state.binding = $('#filter-binding').value; state.availability = $('#filter-size').value; renderRoutes();
+  }
+  function resetRoutes() {
+    Object.assign(state,{search:'',group:'all',method:'all',declaration:'all',binding:'all',availability:'all',metric:'handler-body',sort:'order',dir:'asc'});
+    $('#route-search').value=''; for(const id of ['filter-group','filter-method','filter-declaration','filter-binding','filter-size']) $('#'+id).value='all'; $('#size-metric').value='handler-body';renderRoutes();
+  }
+  function renderRoutes() {
+    visibleRoutes = filteredRoutes();
+    replace($('#route-body'),visibleRoutes.map(r => {
+      const m=measurement(r,state.metric),value=factValue(m?.fact);
+      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable')),
+        el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{class:'metric-value'},measurementText(r,state.metric)),el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
+    }));
+    $('#route-empty').hidden = visibleRoutes.length!==0;
+    $('#route-result-count').textContent = `${visibleRoutes.length} of ${P.routes.length} registrations · ${P.coverage.routes.status} inventory`;
+    $('#size-column-label').textContent = metrics[state.metric];
+    $('#sort-description').textContent = (state.sort==='size'?metrics[state.metric]:state.sort)+' · '+state.dir+' · unavailable last';
+    for(const key of ['order','method','path','size']) $('#th-'+key).setAttribute('aria-sort',state.sort===key?(state.dir==='asc'?'ascending':'descending'):'none');
+    $('#reset-routes').hidden = false;
+  }
+  const detailSection = (label,...nodes) => el('section',{class:'detail-section'},el('div',{class:'detail-label'},label),...nodes);
+  const evidenceCards = ids => ids.length ? ids.map(id => {const e=evidence.get(id);return el('article',{class:'evidence-record'},el('h4',{},e.id),kv([['Producer',e.producer.name+' '+e.producer.version],['Result',e.result],['Method',e.method],['Scope',JSON.stringify(e.scope)],['Source',sourceText(e.source)],['Recorded at',e.recordedAt??'Not recorded']]),el('div',{class:'secondary'},e.artifactIds.join(', ')));}) : [el('p',{},'No evidence references recorded.')];
+  function openSchema(id) { state.expandedSchemas.add(id); state.schemaSearch=schemas.get(id).schemaId.toLowerCase(); location.hash='schemas/'+schemaIndex.get(id); }
+  function renderDrawer() {
+    const r=routes.get(state.selected);if(!r)return;
+    const index=visibleRoutes.findIndex(x=>x.id===r.id);$('#drawer-previous').disabled=index<=0;$('#drawer-next').disabled=index<0||index===visibleRoutes.length-1;
+    $('#drawer-kicker').textContent='REGISTRATION '+(r.order+1)+' · '+A.stage+' artifact';
+    const ids=['facts','size','evidence'];
+    const tabs=el('div',{class:'drawer-tabs',role:'tablist','aria-label':'Route detail views'},[['facts','Resolved facts'],['size','Size attribution'],['evidence','Evidence trail']].map(([id,label])=>el('button',{class:'drawer-tab'+(state.drawerTab===id?' active':''),role:'tab',id:'drawer-tab-'+id,tabindex:state.drawerTab===id?0:-1,'aria-selected':state.drawerTab===id,'aria-controls':'drawer-panel',on:{click:()=>{state.drawerTab=id;renderDrawer();$('#drawer-tab-'+id).focus();}}},label)));
+    tabs.addEventListener('keydown',e=>{let i=ids.indexOf(state.drawerTab);if(e.key==='ArrowRight')i=(i+1)%3;else if(e.key==='ArrowLeft')i=(i+2)%3;else if(e.key==='Home')i=0;else if(e.key==='End')i=2;else return;e.preventDefault();state.drawerTab=ids[i];renderDrawer();$('#drawer-tab-'+ids[i]).focus();});
+    const panel=el('div',{id:'drawer-panel',role:'tabpanel','aria-labelledby':'drawer-tab-'+state.drawerTab,tabindex:0});
+    if(state.drawerTab==='facts') panel.append(
+      detailSection('Declarations',el('p',{},declarationLabels[declarationState(r)]),...r.declarationIds.map(id=>{const d=declarations.get(id);return el('p',{},d.kind+': '+d.name);}),note('Recorded declarations are not proof of effective permissions.')),
+      detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},el('code',{},id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
+      detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
+      detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.')),
+      detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
+    else if(state.drawerTab==='size') {
+      panel.append(note('Shared bodies are nonadditive. Code bytes are not execution cost or guaranteed removal savings.'));
+      panel.append(el('div',{class:'size-grid'},Object.entries(metrics).map(([metric,label])=>{
+        const m=measurement(r,metric),value=factValue(m?.fact);
+        return el('div',{},el('div',{class:'size-grid-label'},label),value===null?el('div',{class:'size-grid-value size-unavailable'},measurementText(r,metric)):byteDisplay(value),el('div',{class:'size-grid-exact'},m?(value===null?m.fact.reason??m.fact.state:exact(value)+' · '+m.fact.coverage):measurementIssue(r,metric)));
+      })));
+      for(const [metric,label] of Object.entries(metrics)) {
+        const resolution=measurementResolution(r,metric);
+        panel.append(el('details',{class:'details-block metric-details'},el('summary',{},label+' · '+measurementText(r,metric)),
+          resolution.variants.length>1?note('These records differ in value, method, coverage or root scope. Compare them below; no single value is selected or added.'):null,
+          resolution.variants.length?resolution.variants.map(m=>el('section',{class:'measurement-record'},byteDisplay(factValue(m.fact)),kv([['Exact bytes',exact(factValue(m.fact))],['Evidence',qualifier(m.fact)],['Method',m.method],['Mapped chunks',`${m.mappedChunks} / ${m.expectedChunks??'unknown'}`],['Physical artifact',A.id+' · '+A.stage],['Root set',m.rootSetId??'Not applicable'],['Root',m.rootId??'Not applicable'],['Body identities',m.bodyIds.join(', ')||'Not recorded'],['Measurement records',m.recordIds.join(', ')]]),...evidenceCards(m.fact.evidenceIds))):el('p',{class:'small-note'},'No measurement record was retained for this metric.')));
+      }
+    } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
+    replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},r.handlerName??'Name unavailable'),tabs,panel);
+  }
+  function renderResources() {
+    const sectionNames={0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
+    const factCell=f=>el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(f)),el('div',{class:'secondary'},f.state==='available'?f.basis+' · '+f.coverage:f.reason??f.state));
+    const resourceRows=[];
+    P.resources.forEach((r,i)=>{
+      const open=state.expandedResources.has(r.id);
+      const expand=button((open?'▾ ':'▸ ')+r.name,()=>{open?state.expandedResources.delete(r.id):state.expandedResources.add(r.id);renderResources();$('#resource-expand-'+i).focus({preventScroll:true});},'resource-expand mono');
+      expand.id='resource-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','resource-detail-'+i);
+      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand),el('td',{},r.kind),factCell(r.inputBytes),factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' routes')));
+      resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:5},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
+        el('div',{},el('h3',{},'Resource facts'),kv([['Input bytes',exact(factValue(r.inputBytes))],['Input evidence',qualifier(r.inputBytes)],['Retained payload',exact(factValue(r.retainedPayloadBytes))],['Retained evidence',qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Not recorded'],['Physical artifact',r.artifactId??'Not mapped']]),routeChips(r.routeIds)),
+        el('div',{},el('h3',{},'Evidence'),...evidenceCards(r.evidenceIds))]:[])))));
+    });
+    const artifactPanels=P.artifacts.map(a=>{
+      const rows=[{name:'Header',bytes:8},...a.sections.map(s=>({name:sectionNames[s.id]||'Section '+s.id,bytes:s.bytes}))]
+        .map(s=>el('tr',{},el('td',{},s.name),el('td',{},bytes(s.bytes)),el('td',{},exact(s.bytes))));
+      rows.push(el('tr',{class:'total'},el('td',{},'Physical total'),el('td',{},bytes(a.bytes)),el('td',{},exact(a.bytes))));
+      const physical=el('div',{class:'surface panel-pad'},
+        el('div',{class:'panel-topline'},el('div',{},el('h3',{},a.host+' · '+a.stage),el('p',{},'Physical file accounting')),byteDisplay(a.bytes,'artifact-big')),
+        ledger(a,true),el('table',{class:'ledger-table'},el('caption',{class:'sr-only'},'Physical artifact sections'),el('tbody',{},rows)));
+      const inside=el('div',{class:'surface panel-pad'},el('h3',{},'Inside the artifact'),
+        a.ledger?kv([['Code bodies',exact(a.ledger.codeBodyBytes)],['Code framing',exact(a.ledger.codeFramingBytes)],['Data payload',factText(a.ledger.dataPayloadBytes)+' · '+qualifier(a.ledger.dataPayloadBytes)],['Unattributed data payload',factText(a.ledger.unattributedDataPayloadBytes)+' · '+qualifier(a.ledger.unattributedDataPayloadBytes)]]):note('Detailed code/data ledger unavailable.'),
+        el('p',{class:'small-note'},'Section coverage: '+a.sectionCoverage.status+'. Sections include framing; resource payloads are subsets of these bytes.'),
+        el('p',{class:'small-note mono record-text'},'SHA-256 '+a.sha256),
+        el('details',{class:'details-block'},el('summary',{},'Physical section records'),el('pre',{class:'record-text'},JSON.stringify(a.sections,null,2))));
+      return el('section',{class:'two-column subsection'},physical,inside);
+    });
+    const resourceTable=el('table',{class:'inventory-table resource-table'},
+      el('caption',{class:'sr-only'},'Resource input and retained sizes'),
+      el('thead',{},el('tr',{},['Resource','Kind / section','Input bytes','Retained payload','References'].map(label=>el('th',{},label)))),
+      el('tbody',{},resourceRows));
+    replace($('#view-resources'),
+      sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),
+      note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),artifactPanels,
+      el('div',{class:'subsection'},sectionHeading('Resource inventory','Input bytes describe source resources; retained payload requires its own measured mapping.',P.resources.length),
+        P.resources.length?el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable resource inventory'},resourceTable))
+          :note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')));
+  }
+
+  function schemaSortHead(key,label) {return el('th',{'data-schema-sort':key,'aria-sort':state.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none'},button(label+' ↕',()=>{state.schemaDir=state.schemaSort===key?(state.schemaDir==='asc'?'desc':'asc'):(key==='name'?'asc':'desc');state.schemaSort=key;renderSchemaRows();},'schema-sort-button'));}
+  function renderSchemas() {
+    const search=el('input',{id:'schema-search',type:'search',value:state.schemaSearch,placeholder:'Find schemas or field names…','aria-label':'Search schemas and fields',on:{input:e=>{state.schemaSearch=e.target.value.toLowerCase();renderSchemaRows();}}});
+    replace($('#view-schemas'),sectionHeading('Schema inventory','Compare structural facts and follow their recorded route references.',P.schemas.length),note('Descriptor bytes = canonical UTF-8 JSON of the normalized schema descriptor. This is not generated validator or Wasm size. Unknown and not-applicable metrics are not zero.'),el('label',{class:'search-box inventory-search'},icon('search'),search),
+      el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable schema inventory'},el('table',{class:'inventory-table schema-table'},el('caption',{class:'sr-only'},'Schema structure, normalized descriptor size and recorded route references.'),el('thead',{},el('tr',{},schemaSortHead('name','Schema'),schemaSortHead('keys','Top-level keys'),schemaSortHead('required','Required keys'),schemaSortHead('descriptor','Descriptor bytes'),schemaSortHead('refs','Routes'))),el('tbody',{id:'schema-body'}))),el('div',{class:'table-footer'},el('span',{id:'schema-count',role:'status','aria-live':'polite'}),el('span',{},'Descriptor size ≠ executable contribution'))));renderSchemaRows();
+  }
+  function renderSchemaRows() {
+    const key=state.schemaSort, list=filteredSchemas();
+    const value=(s,n)=>s.structure.keyCountsState==='not-applicable'?'N/A':s.structure[n]??'Unavailable';
+    const rows=[];
+    for(const s of list) {
+      const i=schemaIndex.get(s.id),open=state.expandedSchemas.has(s.id),structure=s.structure;
+      const expand=button((open?'▾ ':'▸ ')+s.schemaId,()=>{open?state.expandedSchemas.delete(s.id):state.expandedSchemas.add(s.id);renderSchemaRows();$('#schema-expand-'+i).focus({preventScroll:true});},'schema-expand mono');
+      expand.id='schema-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','schema-detail-'+i);
+      rows.push(el('tr',{'data-schema-index':i,class:open?'schema-row-open':''},el('td',{},expand,el('div',{class:'secondary schema-summary'},structure.state+(structure.reason?' · '+structure.reason:''))),el('td',{class:'numeric'},value(s,'topLevelKeys')),el('td',{class:'numeric'},value(s,'requiredKeys')),el('td',{class:'numeric',title:exact(structure.descriptorBytes)},structure.descriptorBytes===null?'Unavailable':bytes(structure.descriptorBytes)),el('td',{class:'numeric'},s.routeIds.length)));
+      const detail=el('div',{class:'schema-detail',id:'schema-detail-'+i,hidden:!open},...(open?[
+        el('div',{},el('h4',{},'TOP-LEVEL SHAPE'),el('p',{class:'schema-detail-desc'},'Normalized property names, types and required state. Full nesting is retained in the descriptor.'),
+          structure.properties.length?el('table',{class:'schema-property-table'},el('caption',{class:'sr-only'},s.schemaId+' properties'),el('thead',{},el('tr',{},el('th',{scope:'col'},'Property'),el('th',{scope:'col'},'Type'),el('th',{scope:'col'},'Required'))),el('tbody',{},structure.properties.map(p=>el('tr',{},el('td',{},el('code',{},p.name)),el('td',{},el('code',{},p.type)),el('td',{},p.required===null?'Unavailable':p.required?'Required':'Optional'))))):el('p',{},structure.keyCountsState==='not-applicable'?'Not an object shape.':structure.state==='unavailable'?'Property structure unavailable.':'No top-level properties.'),
+          el('details',{class:'details-block'},el('summary',{},'Normalized descriptor'),el('pre',{class:'record-text'},structure.descriptor===null?'Unavailable':JSON.stringify(structure.descriptor,null,2)))),
+        el('div',{},el('h4',{},'REFERENCE & PROVENANCE'),kv([['Source',sourceText(s.source)],['Registry',s.registryVersion],['Representation',structure.representation],['Descriptor bytes',exact(structure.descriptorBytes)],['Generated validator bytes','Unavailable; descriptor bytes do not establish Wasm attribution']]),el('h4',{},'RECORDED ROUTE REFERENCES'),routeChips(s.routeIds),...evidenceCards(s.evidenceIds))]:[]));
+      rows.push(el('tr',{hidden:!open},el('td',{colspan:5},detail)));
+    }
+    if(!list.length) rows.push(el('tr',{},el('td',{colspan:5},'No matching schemas. Inventory coverage: '+P.coverage.schemas.status+'.')));
+    replace($('#schema-body'),rows);$('#schema-count').textContent=`${list.length} of ${P.schemas.length} schemas · ${P.coverage.schemas.status} inventory`;
+    for(const th of $$('[data-schema-sort]'))th.setAttribute('aria-sort',th.dataset.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none');
+  }
+  function renderBindings() {
+    replace($('#view-bindings'),sectionHeading('Binding inventory','Logical names and retained resolution state; no secret values or inferred grants.',P.bindings.length),note('A reference describes usage. Bound does not establish per-route authority or current deployment health.'),
+      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{},b.name),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
+      P.bindings.length?null:note('No binding records. Inventory coverage: '+P.coverage.bindings.status+'.'));
+  }
+  function renderEvidence() {
+    replace($('#view-evidence'),sectionHeading('Evidence & provenance','Recorded scope, availability and producer identity. No security grade or inferred pass.'),
+      el('div',{class:'two-column'},el('div',{class:'surface panel-pad'},el('h3',{},'Capsule identity'),kv([['SHA-256',P.evidenceHash.value],['Profile / host',P.context.profile+' / '+P.context.host],['Recipe',P.provenance.recipe.name+' '+P.provenance.recipe.version],['Optimization',P.provenance.recipe.optimization],['Revision',P.provenance.revision??'Unknown'],['Dirty',P.provenance.dirty===null?'Unknown':String(P.provenance.dirty)]]),note('This digest identifies evidence; it is not a signature or security attestation.')),
+      el('div',{class:'surface panel-pad'},el('h3',{},'Inventory coverage'),...Object.entries(P.coverage).map(([name,c])=>el('div',{class:'coverage-line'},el('div',{},name+' · '+c.status),el('p',{},`${c.observed} observed / ${c.expected??'unknown'} expected${c.reason?' · '+c.reason:''}`))))),
+      sectionHeading('Recorded observations','Original producer, severity and code are retained.',P.observations.length),...P.observations.map(o=>el('article',{class:'surface panel-pad subsection'},el('h3',{},o.code),el('p',{},o.severity+' · '+o.producer.name+' '+o.producer.version),routeChips(o.subjectIds.filter(id=>routes.has(id))),...evidenceCards(o.evidenceIds))),P.observations.length?null:note('No observations recorded. Absence is not a pass.'),
+      sectionHeading('Evidence records','A completed build is not a runtime parity or external-deployment claim.',P.evidence.length),...evidenceCards(P.evidence.map(e=>e.id)),
+      el('details',{class:'details-block'},el('summary',{},'Provenance'),el('pre',{class:'record-text'},JSON.stringify(P.provenance,null,2))),el('details',{class:'details-block'},el('summary',{},'All entry records · '+P.entries.length),el('pre',{class:'record-text'},JSON.stringify(P.entries,null,2))));
+  }
+  function setPageInert(value) { $('.workspace').inert=value;$('.sidebar').inert=value; }
+  function closeDrawer(update=true) {
+    const id=state.selected;$('#route-drawer').hidden=true;$('#drawer-backdrop').hidden=true;state.selected=null;setPageInert(false);document.body.classList.remove('overlay-open');
+    if(update) {history.replaceState(null,'','#routes');const row=id===null?null:$('[data-route-index="'+routeIndex.get(id)+'"] .route-link');(row??(lastDrawerFocus?.isConnected?lastDrawerFocus:$('#route-search')))?.focus({preventScroll:true});}
+  }
+  function displayDrawer(r) {
+    if($('#route-drawer').hidden)lastDrawerFocus=document.activeElement;
+    state.selected=r.id;renderDrawer();$('#route-drawer').hidden=false;$('#drawer-backdrop').hidden=false;setPageInert(true);document.body.classList.add('overlay-open');$('#drawer-close').focus({preventScroll:true});
+  }
+  function showView(view) {
+    state.view=view;for(const [id] of navigation)$('#view-'+id).hidden=id!==view;
+    for(const a of $$('[data-view]')){a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
+    if(view==='routes')renderRoutes();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
+  }
+  function onHash() {
+    if(location.hash==='#main')return;
+    const match=/^#(routes|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
+    closeModal();closeDrawer(false);showView(view);
+    if(view==='routes'&&index!==null&&P.routes[index])displayDrawer(P.routes[index]);
+    if(view==='schemas'&&index!==null&&P.schemas[index]){const s=P.schemas[index];state.expandedSchemas.add(s.id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+index).focus();}
+  }
+  function openModal(title,content) {
+    lastModalFocus=document.activeElement;$('#modal-title').textContent=title;replace($('#modal-content'),content);$('#modal').hidden=false;$('#modal-backdrop').hidden=false;setPageInert(true);$('#route-drawer').inert=true;document.body.classList.add('overlay-open');$('#modal-close').focus();
+  }
+  function closeModal() {
+    if($('#modal').hidden)return;$('#modal').hidden=true;$('#modal-backdrop').hidden=true;$('#route-drawer').inert=false;const open=!$('#route-drawer').hidden;setPageInert(open);document.body.classList.toggle('overlay-open',open);if(lastModalFocus?.isConnected)lastModalFocus.focus({preventScroll:true});
+  }
+  function openRaw() {openModal('The complete evidence capsule',[el('p',{},'One authoritative payload. Search, filters and theme never change these records.'),button('Export JSON',downloadCapsule),el('pre',{class:'raw-json',tabindex:0,'aria-label':'Complete capsule JSON'},canonicalJson)]);}
+  function about() {openModal('Reading this report',[note('Build-review metadata can be operationally sensitive. Review it before public sharing.'),el('p',{},'This offline viewer consumes the embedded Report v1 capsule. The snapshot label distinguishes current matching, verified manifest replay and historical replay. No network requests, tests or live checks run here.'),el('p',{},'Declarations describe retained metadata, not effective permissions. Unavailable evidence is not zero or a pass. Normalized schema descriptor sizes are separate from generated code sizes.')]);}
+  function sizeHelp() {openModal('One artifact. Different size views.',Object.entries(metrics).map(([metric,label])=>el('section',{class:'detail-section'},el('h3',{},label),el('p',{},({'handler-body':'Final mapped handler code bodies. Shared implementations may appear in several rows.',own:'Reachable bodies exclusive to one root, only when the root universe and graph are complete.',reachable:'Distinct bodies reachable under the recorded static call-graph method, including shared code.',shared:'Reachable bodies shared with other roots. Values across routes are nonadditive.'})[metric]))).concat(note('Numeric sorting uses raw bytes, keeps unavailable values last in both directions, and shows evidence coverage. No size is a guarantee of deletion savings.')));}
+  function applyTheme(theme) {document.documentElement.dataset.theme=theme;replace($('#theme-button'),icon(theme==='dark'?'sun':'moon'));$('#theme-button').setAttribute('aria-label','Switch to '+(theme==='dark'?'light':'dark')+' theme');}
+  $$('[data-icon]').forEach(n=>replace(n,icon(n.dataset.icon)));
+  buildNavigation();drawSummary();populateFilters();applyTheme(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  $('#theme-button').addEventListener('click',()=>applyTheme(document.documentElement.dataset.theme==='dark'?'light':'dark'));
+  $('#raw-button').addEventListener('click',openRaw);$('#export-button').addEventListener('click',downloadCapsule);$('#hash-button').addEventListener('click',()=>{location.hash='evidence';});
+  $('#design-button').addEventListener('click',about);$('#fixture-about').addEventListener('click',about);$('#size-help').addEventListener('click',sizeHelp);
+  $('#filter-toggle').addEventListener('click',()=>{const open=$('#route-filters').hidden;$('#route-filters').hidden=!open;$('#filter-toggle').setAttribute('aria-expanded',String(open));});
+  $('#route-search').addEventListener('input',readRouteFilters);for(const id of ['filter-method','filter-declaration','filter-binding','filter-size'])$('#'+id).addEventListener('change',readRouteFilters);
+  $('#size-metric').addEventListener('change',e=>{state.metric=e.target.value;renderRoutes();});
+  for(const b of $$('[data-sort]'))b.addEventListener('click',()=>{const key=b.dataset.sort;state.dir=state.sort===key?(state.dir==='asc'?'desc':'asc'):(key==='size'?'desc':'asc');state.sort=key;renderRoutes();});
+  $('#reset-routes').addEventListener('click',resetRoutes);$('#empty-reset').addEventListener('click',resetRoutes);
+  $('#drawer-close').addEventListener('click',()=>closeDrawer());$('#drawer-backdrop').addEventListener('click',()=>closeDrawer());
+  for(const [id,offset] of [['drawer-previous',-1],['drawer-next',1]])$('#'+id).addEventListener('click',()=>{const r=visibleRoutes[visibleRoutes.findIndex(r=>r.id===state.selected)+offset];if(r)location.hash='routes/'+routeIndex.get(r.id);});
+  $('#modal-close').addEventListener('click',closeModal);$('#modal-backdrop').addEventListener('click',closeModal);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();}
+    const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):null;
+    if(e.key==='Tab'&&active){const nodes=$$('button:not([disabled]),a[href],input,select,summary,[tabindex="0"]',active).filter(n=>!n.hidden&&n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&(document.activeElement===first||!active.contains(document.activeElement))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&(document.activeElement===last||!active.contains(document.activeElement))){e.preventDefault();first?.focus();}}
+    if(e.key==='/'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();if(state.view!=='routes'){location.hash='routes';setTimeout(()=>$('#route-search').focus(),0);}else $('#route-search').focus();}
+  });
+  window.addEventListener('hashchange',onHash);onHash();
+})();
+</script></body></html>

@@ -1,0 +1,28 @@
+{
+  "kind": "pulse.report-installed-command-proof.v1",
+  "status": "passed",
+  "version": "1.0.0-beta.7",
+  "checks": [
+    "installed help equals source catalog",
+    "machine specs equal source catalog",
+    "Report reference contains public invocations",
+    "three shell completions equal installed files and source catalog",
+    "installed version matches candidate"
+  ],
+  "helpSha256": "7013bdf8671e3933833d2af52e4602b6389d3ccca09cc227a6cd51dc6e17c574",
+  "specSha256": "db058d7017ff7d69df80eb93c6b5d3faa36ad88fbfd6cb71d5909afd61ab4bb2",
+  "completions": [
+    {
+      "shell": "bash",
+      "sha256": "9611ee04cb3f003d7ac137c1a0f7ddfe5aba0f59295539a0d4d78669c6105503"
+    },
+    {
+      "shell": "zsh",
+      "sha256": "7156c8a12b29d6f56699ee211eb68a5d0734e9e31d56e2a4a21e64a3079ef265"
+    },
+    {
+      "shell": "fish",
+      "sha256": "e6952459b63cbbf8e04981bac6406162eb466bade5cf1015635ed3eba6b10cc9"
+    }
+  ]
+}
