@@ -675,5 +675,21 @@
     "Source maps, real ARC/Catalog scale, capture memory overhead and installed-package qualification remain PRPT-06.",
     "Full native/javascript/conformance/provider profiles, Node floor, packed installation and external Viceroy/deployed reality were not run.",
     "No full release campaign, seal, merge, publication or deployment."
-  ]
+  ],
+  "documentationFollowup": {
+    "originalHead": "066817d0f5441e8b9cb2214e50662b6cb0d71da0",
+    "failedJob": 113096963586,
+    "failure": "Packaged MCP context corpus was stale; canonical corpus had been regenerated after docs sync/check.",
+    "fix": "Ran canonical docs synchronization after corpus generation; packaged corpus is byte-identical to its source.",
+    "generatedFile": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+    "sha256": "517bd8c1b7d7a3acda1561f7a11338b695ea9c04d628c2f5ce43dc8ad589c4a0",
+    "checks": [
+      "npm run docs:sync",
+      "npm run docs:check",
+      "node scripts/documentation-release.cjs",
+      "npm run maintainer:check"
+    ],
+    "result": "passed",
+    "scope": "Generated documentation copy and evidence record only; implementation unchanged."
+  }
 }
