@@ -242,16 +242,11 @@ to execute this investigation. No sub-agents were launched.
 - **Embedded-resource fixture:** the existing `assets-native-embedded` task and its
   source-owned fixture in `wasm/test/assets/assert-native-embedded.cjs` are the bounded asset producer proof
   for PRPT-02/03; use a completed real app with assets in PRPT-06 as A13 requires.
-- **Real smaller app:** ARC remains the intended consumer; the four ARC design
-  files are synthetic and cannot satisfy real-app acceptance. Pin actual ARC
-  source/profile/artifact identity before PRPT-06. No ARC build is claimed here.
-- **Large source snapshot:** `nw/catalog` main at
-  `54a5bb5876f228a5778b66fb9beb2b2007cf5d18`, tree
-  `8ef4cf60cf16f92c95418800db1d4f64eefc0ee2`, resolved read-only during this task.
-  No private source, route names or application payload was imported. This is
-  a source pin, not a completed artifact: PRPT-06 must retain matched completed
-  Wasm/sidecars, selected profile/recipe and compiler dependency identity before
-  measuring. The small in-repo Catalog routing subset is not Catalog-scale proof.
+- **Real smaller app:** the four reviewed design files are synthetic and cannot
+  satisfy real-app acceptance. Consumer owners qualify real applications externally.
+- **Large private consumer:** source pins, completed artifacts and matching
+  measurements remain outside this public repository. Synthetic routing fixtures
+  prove the producer contract, not large-app acceptance.
 
 PRPT-06 measures report generation versus artifact replay/rendering separately,
 records elapsed time/RSS/output size and actual inventory counts, and proves

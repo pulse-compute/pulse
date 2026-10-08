@@ -39,32 +39,17 @@ PRPT-04/05 and the unchanged-product preview correction run.
 These archives identify the qualified candidate; a later release candidate must
 be matched or qualified by its release owner. Local packing is not publication.
 
-## Corpus and reproducibility
+## Public fixture and reproducibility
 
-| Corpus | Pinned source | Preparation |
-|---|---|---|
-| Minimal | `examples/01-hello-json` at the base above | Copy authored source, tests, configuration and manifests into an isolated installed consumer; build the default Node Native profile. |
-| ARC | `nw/arc@0f70a7fd7c05251d7eb0833f91b327419924a2ef`, tree `5dac5324b3c38c403fd4762404ee6dd763a19cce` | Retrieve 23 selected app/build/asset/harness files; run its `scripts/embed-assets.mjs`; build the default Fastly Native profile. |
-| Catalog | `nw/catalog@54a5bb5876f228a5778b66fb9beb2b2007cf5d18`, tree `8ef4cf60cf16f92c95418800db1d4f64eefc0ee2` | Retrieve 367 selected API/contracts/workspace files; preserve authored source/configuration; build Node Native with the beta.7 candidate installed inside the workspace boundary. |
+The retained corpus is `examples/01-hello-json` at the base above, copied into an
+isolated installed consumer and built with its default Node Native profile.
+[Measurements](measurements.md) and [acceptance](acceptance.md) describe this
+public fixture and the reusable producer/renderer checks.
 
-All 390 retrieved ARC/Catalog files were verified against their Git blob IDs and
-byte sizes before use. Source manifests retain their historical beta.5/beta.6
-pins; the explicit qualification override is the installed beta.7 package set.
-No application behavior was rewritten. Private app source, configuration, raw
-build logs and capsules are not included in this public packet or npm package.
-Only aggregate qualification receipts and source identities are retained here.
-
-ARC's actual frontend generator emits four asset routes using literal response
-bodies, including `/`, `/admin`, CSS and JavaScript. The authored asset inputs are
-402, 15,610 and 47,702 bytes. This is a real app with assets, but those literals do
-not create Report resource records. **Zero recorded resources has partial
-coverage with unknown expected count**, not proof that no assets exist or that
-their shipped byte cost is zero. Do not treat input file sizes as Wasm payload
-ownership. No extra parser or resource mapping was added to hide this gap.
-
-See [measurements](measurements.md) for actual counts, artifacts and costs, and
-[acceptance](acceptance.md) for the complete A01–A18 disposition. Catalog's bounded
-attempt and remaining scope are recorded there.
+Private consumer source pins, application inventories, artifact hashes, build
+costs and replay receipts are excluded from this repository. Their measurements
+must remain with the application's authorized owner. Removing those records does
+not turn the public minimal fixture into real-app or large-app acceptance.
 
 ## Focused proof
 
@@ -88,11 +73,9 @@ For each successful build, the helper checks:
 - Three fresh processes per measured mode retain elapsed time, maximum RSS,
   output size and hashes. Builds are separate from report timings.
 
-Additional checks found five private configuration-value/path canaries absent
-from minimal/ARC JSON and HTML, and four credential/endpoint/path canaries absent
-from Catalog exports. This complements the adversarial synthetic
-redaction cases; it is not a claim that an arbitrary application report is safe
-to publish without review.
+The minimal fixture and adversarial synthetic cases test configuration-value and
+path redaction. Passing those cases does not make an arbitrary application's
+report safe to publish without review.
 
 The earlier PRPT-03 paired build/capture proof establishes unchanged guest bytes
 with and without passive capture. The new before/after report hash checks have a
@@ -101,11 +84,11 @@ retained artifacts. Neither proof is a measurement of total build overhead.
 
 ## Run the qualification
 
-Use a fresh work directory outside the repository and source inputs. Resolve
-private source pins with authorized repository access, verify Git blob identity,
-and preserve source/configuration bytes. For a nested workspace such as Catalog,
-put the installed candidate dependencies inside its workspace boundary; contract
-discovery deliberately does not scan an ancestor outside that boundary.
+Use a fresh work directory outside the repository and source inputs. Verify
+source/dependency identity and preserve authored bytes. Place installed candidate
+dependencies inside any explicit application workspace boundary; contract
+discovery does not scan ancestors outside that boundary. Keep private application
+inputs, measurements and receipts outside this public repository.
 
 ```sh
 node node_modules/typescript/bin/tsc -b tsconfig.workspace.json
