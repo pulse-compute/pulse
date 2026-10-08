@@ -1,0 +1,215 @@
+{
+  "kind": "pulse.ds04.integration-evidence.v1",
+  "status": "passed",
+  "base": "4859e531019e831113ae6b92aa60039a8374b8c0",
+  "catalogCommit": "54a5bb5876f228a5778b66fb9beb2b2007cf5d18",
+  "sourceFilesVerified": 367,
+  "defaultRecipe": "local Node Native, default O3/shrink0, unchanged retention/merge settings",
+  "baseline": {
+    "wasmBytes": 3315675,
+    "gzipBytes": 654387,
+    "sha256": "730561a283f74e6e90f1bcfd7918aa52593fe34bccad91f5bc8373a142b550e3"
+  },
+  "candidate": {
+    "bytes": 2964228,
+    "gzipBytes": 646478,
+    "reductionPercent": 10.599561175326288,
+    "wrapperPairs": 255,
+    "staticSourceCalls": 30570,
+    "dynamicSourceCalls": 5321,
+    "planHash": "011ac605d9fc90c3895dcf28139ac2e0a6ed2c888bd315be1185e6b2017c92ee",
+    "samePlanHash": true,
+    "sameSourceHash": true,
+    "sameProjectSourceHash": true,
+    "sha256": "7aac59d9ddcdfeb27f03f19e26e255b982556ff7ef8cac571b8c7d9be633f0e7",
+    "retainedWrappers": 255,
+    "wrapperBodyBytes": 4241,
+    "wrapperSharedTargetIndex": 36,
+    "dataSectionByteIdentical": true
+  },
+  "build": {
+    "wallSeconds": 257.089,
+    "peakRssKiB": 2102488,
+    "cpuSeconds": 283.410774,
+    "exitCode": 0
+  },
+  "pairedReplay": {
+    "kind": "pulse.ds04.catalog-paired-replay.v1",
+    "status": "passed",
+    "pairedCases": 137,
+    "controlSha256": "730561a283f74e6e90f1bcfd7918aa52593fe34bccad91f5bc8373a142b550e3",
+    "candidateSha256": "7aac59d9ddcdfeb27f03f19e26e255b982556ff7ef8cac571b8c7d9be633f0e7",
+    "harnessSha256": "023d9bf2251b5001ac2d84ce186ef24f4de800b803fa220aa2f4d09621eee8e0",
+    "completedOutcomes": 137,
+    "errorOutcomes": 0,
+    "differences": [],
+    "normalization": "Only artifact/plan IDs excluded. Independent processes preserve host invocation-ID sequences. Exact responses, ordered effects/traces, continuation states, provider metadata, value and memory accounting compared by hashes."
+  },
+  "productFiles": {
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js": "8f3d408e3d83de6983916776e37a67e529c02e1bdb21176d905fa0b92d13e294",
+    "wasm/packages/build-support/src/native-retention-transform.cjs": "d261e6e0a4d983fc351ba9ce6b87be65dedf608c6c60fedb5d3fd42f6fc5663f"
+  },
+  "packageCandidates": [
+    {
+      "name": "@pulse-compute/assets",
+      "sha256": "5a4dfb14a3a01ab70ad0048a24e7b8812c7281012b641253b105320b2c6d5498",
+      "file": "pulse-compute-assets-1.0.0-beta.7.tgz",
+      "verifiedFiles": 58
+    },
+    {
+      "name": "@pulse-compute/cli",
+      "sha256": "7db6aef6335765fbb7aacec9335f46a6992d6300a26af96f852f9dd4c10a3f66",
+      "file": "pulse-compute-cli-1.0.0-beta.7.tgz",
+      "verifiedFiles": 242
+    },
+    {
+      "name": "@pulse-compute/crypto",
+      "sha256": "d339b1c227bd17971778aafbd6cdd6fb0b8fa560a8b25cd6a37fa52cc5463efb",
+      "file": "pulse-compute-crypto-1.0.0-beta.7.tgz",
+      "verifiedFiles": 105
+    },
+    {
+      "name": "@pulse-compute/entities",
+      "sha256": "2b077ed4106d62da68248574c995d86ed895a8e2ce25ae05859084e1bf9bfbcf",
+      "file": "pulse-compute-entities-1.0.0-beta.7.tgz",
+      "verifiedFiles": 39
+    },
+    {
+      "name": "@pulse-compute/grip",
+      "sha256": "e8e850f4ffc1a8e0b336968047255dca1a2ddaf1a2d1b3f546851cdf713da9be",
+      "file": "pulse-compute-grip-1.0.0-beta.7.tgz",
+      "verifiedFiles": 19
+    },
+    {
+      "name": "@pulse-compute/jwt",
+      "sha256": "9df59dc963d271df970da206a8c07135fbd67b9a78f8eca22e1b8d983c4c7702",
+      "file": "pulse-compute-jwt-1.0.0-beta.7.tgz",
+      "verifiedFiles": 67
+    },
+    {
+      "name": "@pulse-compute/mcp",
+      "sha256": "9667f742b77f5a9e47364166f8bcc4c96ce73f1a4c1e1cee3a3fdcbd17571c92",
+      "file": "pulse-compute-mcp-1.0.0-beta.7.tgz",
+      "verifiedFiles": 12
+    },
+    {
+      "name": "@pulse-compute/provider-fastly",
+      "sha256": "6eb8b759a014f9b781316821b4e6d48bbc7ffeeb950413557c3c53c3c7ffe469",
+      "file": "pulse-compute-provider-fastly-1.0.0-beta.7.tgz",
+      "verifiedFiles": 89
+    },
+    {
+      "name": "@pulse-compute/provider-node",
+      "sha256": "caeb1eb80e359eb8ffc9e7612af95e56ab6a5b62ce7a0b08d927c209b20e37ae",
+      "file": "pulse-compute-provider-node-1.0.0-beta.7.tgz",
+      "verifiedFiles": 53
+    },
+    {
+      "name": "@pulse-compute/pulse",
+      "sha256": "1cd5597d101bace7e9e253e0cb417313ff5893adddaffac62b17ff6ede82c0ca",
+      "file": "pulse-compute-pulse-1.0.0-beta.7.tgz",
+      "verifiedFiles": 11
+    },
+    {
+      "name": "@pulse-compute/runtime",
+      "sha256": "5507dee18e34b805de4685cb9fecadef753cc5320e78ee3d7d549fb4fcd38684",
+      "file": "pulse-compute-runtime-1.0.0-beta.7.tgz",
+      "verifiedFiles": 33
+    },
+    {
+      "name": "@pulse-compute/s3",
+      "sha256": "5388b7146e553df8ffe7b59d58594d014527462e1949d3c76fe362c9203df9b0",
+      "file": "pulse-compute-s3-1.0.0-beta.7.tgz",
+      "verifiedFiles": 17
+    },
+    {
+      "name": "@pulse-compute/wasm-build-support",
+      "sha256": "91c5e41d7b3b6a892eeef47c0c2a4e0bfdc396578be8da53f223c781f3e5e528",
+      "file": "pulse-compute-wasm-build-support-1.0.0-beta.7.tgz",
+      "verifiedFiles": 14
+    },
+    {
+      "name": "@pulse-compute/wasm-compiler",
+      "sha256": "9ad67845e498e6da07c00e3cce15466e350c28bbd8b85fd381d17034c2676529",
+      "file": "pulse-compute-wasm-compiler-1.0.0-beta.7.tgz",
+      "verifiedFiles": 114
+    },
+    {
+      "name": "@pulse-compute/wasm-contracts",
+      "sha256": "a005b3288c5459b7c4284ccf564c63438d9bf24d7d7152143f1951aade4ff433",
+      "file": "pulse-compute-wasm-contracts-1.0.0-beta.7.tgz",
+      "verifiedFiles": 103
+    },
+    {
+      "name": "@pulse-compute/wasm-guest-link",
+      "sha256": "3673981f057f3a6e382b41b76323e1a7fb33fdeabc0209222919bc82e6d7c954",
+      "file": "pulse-compute-wasm-guest-link-1.0.0-beta.7.tgz",
+      "verifiedFiles": 15
+    },
+    {
+      "name": "@pulse-compute/wasm-host-runtime",
+      "sha256": "7bf087b154b10d192f753ac11c73a67b6f9757a733d347f34707ebbd8fe041f7",
+      "file": "pulse-compute-wasm-host-runtime-1.0.0-beta.7.tgz",
+      "verifiedFiles": 25
+    },
+    {
+      "name": "@pulse-compute/wasm-library-kit",
+      "sha256": "2e4f22f105793e0cae032cede94c1e1c752b39e30002f1b6105ed14e59e39682",
+      "file": "pulse-compute-wasm-library-kit-1.0.0-beta.7.tgz",
+      "verifiedFiles": 12
+    },
+    {
+      "name": "@pulse-compute/wasm-runtime-core-as",
+      "sha256": "4783e197bbb2a6313afcd6d48e62b779a97cff7d2f684e248bea6d81dd8c4125",
+      "file": "pulse-compute-wasm-runtime-core-as-1.0.0-beta.7.tgz",
+      "verifiedFiles": 30
+    },
+    {
+      "name": "@pulse-compute/wasm-schema-json",
+      "sha256": "a9837708d39f1f4d0ed09a09632aba8641a8dda4213e4fb10623161d95546e0d",
+      "file": "pulse-compute-wasm-schema-json-1.0.0-beta.7.tgz",
+      "verifiedFiles": 14
+    }
+  ],
+  "qualification": {
+    "functionalReportSha256": "500374d34eaaf0bc8167fddecb1c9b88a62561c6b178739e739c2d507e202545",
+    "functionalTasks": [
+      "canonical-native-wasm",
+      "canonical-native-plan",
+      "application-errors",
+      "application-error-boundaries",
+      "reusable-stage-o18",
+      "pure-source-helpers",
+      "node-cross-target-conformance",
+      "javascript-effect-adapter"
+    ],
+    "unitAttemptReportSha256": "b8b54206678a1ad8f6fa1e2e21e6e0093deacc3dbd325cd494959389a1d042bb",
+    "functionalPassed": 8,
+    "unitProfileTasks": 55,
+    "unitProfilePassed": 55,
+    "unitAttemptStatus": "failed after all 55 unit-profile tasks passed; Native example target selection corrected, then focused functional selection passed",
+    "repositoryChecks": [
+      "maintainer:check",
+      "docs:check",
+      "documentation-release",
+      "build",
+      "pack-release: 20 packages and packed documentation"
+    ],
+    "finalPackReportSha256": "89eaff2c34c1376f3b2266e69240f3f3ba4aaa26ef32f6b7dae27c911f2f6035",
+    "measurementPack": "ds04-pack-final; final docs/corpus synchronization affects documentation payload only; measured product-file hashes verified",
+    "integratedLatest": "8e9e7918a11745e207bc08a253075bf9425031ac",
+    "postMergeChecks": [
+      "maintainer:check",
+      "docs:check",
+      "documentation-release",
+      "maintainer-scope"
+    ]
+  },
+  "limits": [
+    "Development evidence, not a clean-candidate release seal",
+    "Catalog paired corpus is current 137-case route/schema harness; original DS-04 authenticated/storage supplement is not rerun here",
+    "Node local reference host and modeled Fastly checks; no deployed guarantee",
+    "Build timing and RSS are one observation; no throughput or latency improvement claim",
+    "Report attribution gaps remain unchanged"
+  ]
+}

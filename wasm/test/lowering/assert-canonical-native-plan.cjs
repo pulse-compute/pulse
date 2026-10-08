@@ -24,6 +24,7 @@ const {
 const {
   EXAMPLES,
   compileExample,
+  resolveExample,
   internalFixture
 } = require('../support/canonical-projects.cjs');
 
@@ -85,6 +86,8 @@ assert.equal(nativePlanContract.CANONICAL_NATIVE_PLAN_POLICY.asyncify, false);
 
 const plans = new Map();
 for (const [name, example] of Object.entries(EXAMPLES)) {
+  // JavaScript-only host examples are qualified by their original-source lanes.
+  if (resolveExample(example).target !== 'native') continue;
   const compiled = compileExample(example).compiled;
   const first = buildCanonicalNativePlan(compiled);
   const second = buildCanonicalNativePlan(compiled);

@@ -233,6 +233,26 @@ function layoutNativeControl({
     '}'
   ] : [];
 
+  // Bind only compiler-owned literal pairs. Shared stages/helpers carry their
+  // caller's boundary in globals and must keep passing those dynamic values.
+  // Intern before either rendering pass so names and partitioning are stable.
+  const staticBoundaries = new Map();
+  const boundaryKey = boundary => JSON.stringify([boundary.nextIndex, boundary.nextBlock]);
+  if (applicationErrors) for (const { boundary } of blocks) {
+    if (!boundary || typeof boundary.nextIndex !== 'number' || typeof boundary.nextBlock !== 'number') continue;
+    const key = boundaryKey(boundary);
+    if (!staticBoundaries.has(key)) staticBoundaries.set(key, {
+      name: `__pulse_static_error_${staticBoundaries.size}`,
+      nextIndex: boundary.nextIndex, nextBlock: boundary.nextBlock
+    });
+  }
+  for (const { name, nextIndex, nextBlock } of staticBoundaries.values()) errorGuard.push(
+    '@noinline',
+    `function ${name}(): i32 {`,
+    `  return __pulse_route_error(${nextIndex}.0, ${nextBlock})`,
+    '}'
+  );
+
   // Charge the pre-sharing guard footprint to the partition budget. Shrinking
   // guards must not pack more states into each optimizer unit as a side effect.
   // These lines are measured only; the shared helper is the emitted code.
@@ -254,10 +274,13 @@ function layoutNativeControl({
     const emit = (line) => lines.push(`      ${line}`);
     const checkError = () => {
       if (!item.boundary) return;
+      const bound = staticBoundaries.get(boundaryKey(item.boundary));
+      const call = bound ? `${bound.name}()`
+        : `__pulse_route_error(${typeof item.boundary.nextIndex === 'number' ? item.boundary.nextIndex + '.0' : '<f64>' + item.boundary.nextIndex}, ${item.boundary.nextBlock})`;
       // Chunks propagate the existing routed status directly; decoding and
       // re-encoding it here repeats branches at every guard site.
       const guard = [
-        `{ const routed = __pulse_route_error(${typeof item.boundary.nextIndex === 'number' ? item.boundary.nextIndex + '.0' : '<f64>' + item.boundary.nextIndex}, ${item.boundary.nextBlock})`,
+        `{ const routed = ${call}`,
         ...(partitioned ? [
           '  if (routed != 0) return routed',
           '}'
