@@ -54,10 +54,14 @@ owners; the existing project modules re-export/use those same implementations.
 All existing commands retain their operations through lazy delegation. Public
 help, completions, CLI spec and diagnostics derive from canonical catalogs.
 
-## Explicit remaining gates
+## Original handoff gates
 
-**PRPT-05 has not landed.** The ticket graph requires it for final HTML integration.
-`--html` currently returns `PULSE_REPORT_HTML_UNAVAILABLE` (exit 3), creates no file
+The implementation and output-snapshot gaps below are addressed by the
+[PRPT-05 implementation](../prpt05/README.md). This section preserves the PRPT-04
+handoff state; see that packet for current browser qualification limits.
+
+**At the PRPT-04 handoff, PRPT-05 had not landed.** The ticket graph requires it for final HTML integration.
+At that handoff, `--html` returned `PULSE_REPORT_HTML_UNAVAILABLE` (exit 3), creates no file
 and never opens a browser. Its plan and safe-output path are available. The writer
 is exercised with a test-only renderer through an internal executor seam; this is
 not a supported plugin API or proof of a production HTML report.

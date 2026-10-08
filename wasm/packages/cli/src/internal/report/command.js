@@ -24,7 +24,7 @@ function planReport(request, { cwd }) {
   return Object.freeze({ ok: true, command: 'report', mode: artifact ? 'artifact' : 'retained-project',
     root, ...(artifact ? { artifact } : { directory: workspace.root, profile: request.profile ?? null, profileSelection: 'on-collection' }),
     format: request.html ? 'html' : request.json ? 'json' : 'terminal',
-    ...(request.html ? { output: outputPath(root, request.outDir), renderer: 'unavailable' } : {}),
+    ...(request.html ? { output: outputPath(root, request.outDir), renderer: 'pulse.report-viewer.v1' } : {}),
     collectOnExecution: true, backgroundWork: false, build: false, executeProjectCode: false });
 }
 function publicReportError(error) {
@@ -39,12 +39,15 @@ function publicReportError(error) {
 }
 function executeReport(plan, request, options = {}) {
   try {
-    // PRPT-05 supplies this internal seam. No generic JSON-dump viewer is shipped.
-    if (request.html && typeof options.reportRenderer !== 'function') throw diagnostic('PULSE_REPORT_HTML_UNAVAILABLE');
     const retained = require('./retained');
     const collected = plan.artifact ? retained.collectArtifactReport(plan.artifact)
       : retained.collectProjectReport({ cwd: plan.root, profile: request.profile, env: options.environment });
-    if (request.html) return Object.freeze({ file: writeHtml(plan.root, plan.output, options.reportRenderer(collected.capsule)) });
+    if (request.html) {
+      const render = options.reportRenderer || require('./viewer').renderReport;
+      const snapshot = collected.currentSnapshotMatched ? 'current' : collected.kind === 'historical-capsule' ? 'historical' : 'artifact';
+      if (plan.output === plan.artifact) throw diagnostic('PULSE_REPORT_OUTPUT_UNSAFE');
+      return Object.freeze({ file: writeHtml(plan.root, plan.output, render(collected.capsule, { snapshot }), { recordOutput: true, inputFiles: collected.inputFiles }) });
+    }
     return collected;
   } catch (error) { throw publicReportError(error); }
 }
