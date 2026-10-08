@@ -16,6 +16,7 @@ exact v<version> tag
 → dependency-complete build and acceptance
 → .pulse-release tarballs
 → sealed .pulse-publication bundle
+→ blocking read-only name audit and publication plan
 → protected human approval
 → npm trusted publishing
 → registry integrity and configured dist-tag verification
@@ -88,8 +89,9 @@ commit before protected publication approval.
 
 After review and merge, the release owner tags the final `main` commit and runs
 **npm publication** from that tag. Its candidate job automatically runs
-`release:seal`, packs the release, and seals the exact publication bundle before
-protected publishing approval. A local seal is useful development evidence but
+`release:seal --require-fastly` once, copies its accepted package bytes and
+seals the exact publication bundle. A read-only audit of that bundle must pass
+before protected publishing approval becomes available. A local seal is useful development evidence but
 is not a prerequisite that must be committed before tagging. Reconcile `main`
 back into `latest` after the release so development starts from the new version.
 
@@ -122,18 +124,42 @@ as the workflow dispatch ref and supply the identical `release_tag` input:
 
 ```bash
 RELEASE_TAG=v<version>
-gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=audit
-gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=false
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish -f run_smoke=true
 ```
 
-Stop and inspect the candidate, seal, and exact-version results. Only after
-the audit passes and the human release owner authorizes publication, dispatch
-the protected publish job. After npm verification and the human deployment
-approval, dispatch promotion from the same tag:
+This one run seals and packs once, performs a blocking read-only package-name
+audit and publication plan, then waits at `npm-publish` for human approval.
+Review the terminal seal, dedicated KV/CAS evidence/disposition and audit/plan
+before approving. The audit report is retained per run attempt, including
+failures. Its manifest digest binds publication to the reviewed sealed bundle;
+publication also rechecks live registry state before uploading. A missing name
+or an integrity/dist-tag conflict blocks the approval path. Owner-reviewed
+trusted-publisher and protected-environment setup remains a prerequisite;
+saving those settings is not proof of successful OIDC publication.
+
+The candidate uses Ubuntu 24.04, two isolated workers, one compiler slot and a
+6,144 MiB admission budget. It preserves the 50-minute candidate work deadline,
+supervised cleanup and same-checkout recovery rules. The Fastly CLI 16.1.0
+archive is checksum-pinned, and the seal requires its real local Compute
+lifecycle. Missing tooling or a failed lifecycle cannot become an optional skip.
+The accepted package checkpoint and artifact hashes are verified before copying
+those bytes into `.pulse-release`; there is no post-acceptance rebuild or repack.
+
+`operation=audit` remains an informational, read-only mode for discovering
+bootstrap/conflict work. It never starts the protected publish job. It constructs
+its own candidate, so do not routinely dispatch it before `operation=publish`;
+that would duplicate the seal. For an audit failure, retry the failed audit job
+in the same run while its candidate artifact remains available. Publication-only
+retries similarly reuse the original bundle, rather than dispatching again.
+
+Documentation can be uploaded and verified without promotion while npm awaits
+approval. After npm verification and human deployment approval, promote from
+the same tag:
 
 ```bash
 RELEASE_TAG=v<version>
-gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish
+gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=false
+# After npm verification and review:
 gh workflow run documentation-deploy.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f promote_latest=true
 ```
 
@@ -177,10 +203,11 @@ For example:
 gh workflow run npm-publish.yml \
   --ref v1.0.0-beta.7 \
   -f release_tag=v1.0.0-beta.7 \
-  -f operation=audit
+  -f operation=publish -f run_smoke=true
 ```
 
-Use `operation=publish` only after the audit and external package settings are complete.
+Complete external package settings before dispatch. This run performs the
+blocking audit before protected approval; a separate audit dispatch is optional.
 
 A human release authority must approve that environment. Codex may inspect failures and prepare bounded patches, but it may not dispatch the release, approve the environment, publish a package, change a dist-tag, or rotate registry credentials.
 

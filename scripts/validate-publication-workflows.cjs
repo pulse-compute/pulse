@@ -240,6 +240,119 @@ fs.writeFileSync(value('--output'), JSON.stringify({ status: process.env.PURGE_P
   }
 }
 
+function workflowJob(source, name) {
+  const match = source.match(new RegExp(`^  ${name}:\\n[\\s\\S]*?(?=^  [a-z][a-z0-9_-]*:|$(?![\\s\\S]))`, 'm'));
+  if (!match) fail(`npm publication workflow is missing job ${name}`);
+  return match[0];
+}
+
+function workflowStepScript(job, name) {
+  const start = job.indexOf(`      - name: ${name}\n`);
+  if (start < 0) fail(`npm publication workflow is missing step ${name}`);
+  const next = job.indexOf('\n      - ', start + 1);
+  const step = job.slice(start, next < 0 ? job.length : next);
+  const runAt = step.indexOf('        run: |\n');
+  if (runAt < 0) fail(`npm step ${name} must have a shell body`);
+  return step.slice(runAt + '        run: |\n'.length).split('\n').map(line => line.replace(/^          /, '')).join('\n');
+}
+
+function validateNpmCandidateFlow(source) {
+  const candidate = workflowJob(source, 'candidate');
+  const audit = workflowJob(source, 'audit');
+  const publish = workflowJob(source, 'publish');
+  const verify = workflowJob(source, 'verify');
+  includes(audit, '    needs: candidate\n', 'pre-approval audit dependency');
+  excludes(audit, '\n    if:', 'mandatory pre-approval audit');
+  includes(publish, '    needs: [candidate, audit]\n', 'protected publication dependencies');
+  includes(publish, "    if: inputs.operation == 'publish'\n", 'protected publication condition');
+  includes(verify, '    needs: [candidate, publish]\n', 'registry verification dependencies');
+  for (const job of [candidate, audit, publish]) {
+    excludes(job, 'continue-on-error:', 'blocking candidate flow');
+    excludes(job, '\n    if: always()', 'blocking job condition');
+  }
+  for (const job of [candidate, audit, verify]) {
+    excludes(job, 'environment:', 'read-only release stage');
+    excludes(job, 'id-token: write', 'read-only release stage');
+    excludes(job, 'contents: write', 'read-only release stage');
+    excludes(job, 'publish-release.cjs publish', 'read-only release stage');
+  }
+  if ((source.match(/pnpm run release:seal /g) || []).length !== 1) fail('npm workflow must seal exactly once');
+  excludes(source, 'pnpm run release:pack', 'single accepted package construction');
+  includes(candidate, '--require-fastly', 'mandatory Fastly seal');
+  includes(candidate, 'validateRecoveryEvidence(seal)', 'accepted package provenance');
+  includes(candidate, 'shared.copySharedPack(', 'accepted package reuse');
+  includes(audit, 'manifest_sha256:', 'audited manifest output');
+  includes(audit, 'name: Upload audit reports\n        if: always()', 'failed audit evidence');
+  includes(audit, 'pulse-npm-audit-${{ github.run_id }}-${{ github.run_attempt }}', 'attempt-specific audit evidence');
+  includes(publish, '${{ needs.audit.outputs.artifact_name }}', 'review packet transfer');
+  includes(publish, 'AUDITED_MANIFEST_SHA256: ${{ needs.audit.outputs.manifest_sha256 }}', 'approved artifact binding');
+  return { candidate, audit, publish };
+}
+
+function validateNpmCandidateFlowProbes(source) {
+  const { audit, publish } = validateNpmCandidateFlow(source);
+  for (const [from, to] of [
+    ['needs: [candidate, audit]', 'needs: candidate'],
+    ['  audit:\n', "  audit:\n    if: inputs.operation == 'audit'\n"],
+    ['  audit:\n', '  audit:\n    continue-on-error: true\n'],
+    ['  audit:\n', '  audit:\n    permissions:\n      id-token: write\n'],
+    ["if: inputs.operation == 'publish'", "if: always() && inputs.operation == 'publish'"]
+  ]) expectFailure(() => validateNpmCandidateFlow(source.replace(from, to)), undefined, 'audit/approval dependency bypass');
+
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-npm-flow-check-'));
+  try {
+    const bin = path.join(directory, 'bin');
+    ensureDirectory(bin);
+    fs.writeFileSync(path.join(bin, 'node'), `#!/bin/bash
+set -euo pipefail
+echo "$*" >> calls.log
+command="$2"
+shift 2
+for arg in "$@"; do
+  if [ "$arg" = '--json-out' ]; then write_report=true; continue; fi
+  if [ "\${write_report:-false}" = true ]; then echo "$SCENARIO" > "$arg"; write_report=false; fi
+done
+case "$command:$SCENARIO" in
+  audit:missing) [[ " $* " == *' --allow-missing '* ]] || exit 1 ;;
+  plan:conflict) [[ " $* " == *' --report-only '* ]] || exit 1 ;;
+esac
+`, { mode: 0o755 });
+    const script = workflowStepScript(audit, 'Audit package names and prepare the publication plan');
+    for (const operation of ['audit', 'publish']) for (const scenario of ['ready', 'missing', 'conflict']) {
+      fs.rmSync(path.join(directory, 'calls.log'), { force: true });
+      for (const report of ['npm-package-name-audit.json', 'npm-publication-plan.json']) fs.rmSync(path.join(directory, report), { force: true });
+      const result = spawnSync('bash', ['-c', script], { cwd: directory, encoding: 'utf8', timeout: 10000,
+        env: { ...process.env, PATH: `${bin}${path.delimiter}${process.env.PATH}`, OPERATION: operation, SCENARIO: scenario } });
+      const blocked = operation === 'publish' && scenario !== 'ready';
+      if (result.error || (result.status !== 0) !== blocked) fail(`pre-approval ${operation}/${scenario} probe failed`);
+      const calls = fs.readFileSync(path.join(directory, 'calls.log'), 'utf8');
+      if (blocked && scenario === 'missing' && calls.includes(' plan ')) fail('failed name audit reached the publication plan');
+      if (operation === 'publish' && /--allow-missing|--report-only/.test(calls)) fail('publish audit used informational flags');
+      if (!fs.existsSync(path.join(directory, 'npm-package-name-audit.json'))) fail('failed audit report was not retained');
+      if (scenario !== 'missing' && !fs.existsSync(path.join(directory, 'npm-publication-plan.json'))) fail('publication plan report was not retained');
+    }
+    const binding = workflowStepScript(publish, 'Bind publication authority to the audited release tag').match(/node <<'NODE'\n([\s\S]*?)\nNODE/);
+    if (!binding) fail('publication authority must bind the reviewed manifest');
+    ensureDirectory(path.join(directory, 'release'));
+    ensureDirectory(path.join(directory, '.pulse-publication'));
+    ensureDirectory(path.join(directory, '.pulse-publication-audit'));
+    fs.writeFileSync(path.join(directory, 'release/pulse-release-manifest.json'), stableJson({ releaseVersion: RELEASE_VERSION }));
+    const manifest = { releaseVersion: RELEASE_VERSION, source: { commit: 'a'.repeat(40), ref: `refs/tags/v${RELEASE_VERSION}` } };
+    const manifestBytes = stableJson(manifest);
+    fs.writeFileSync(path.join(directory, '.pulse-publication/pulse-publication-manifest.json'), manifestBytes);
+    for (const scenario of ['ready', 'changed-manifest', 'blocked-plan', 'foreign-plan', 'foreign-source']) {
+      const plan = { status: scenario === 'blocked-plan' ? 'conflict' : 'ready', releaseVersion: RELEASE_VERSION,
+        source: { ...manifest.source, ...(scenario === 'foreign-plan' ? { commit: 'b'.repeat(40) } : {}) } };
+      fs.writeFileSync(path.join(directory, '.pulse-publication-audit/npm-publication-plan.json'), stableJson(plan));
+      const result = spawnSync(process.execPath, ['-e', binding[1]], { cwd: directory, encoding: 'utf8', timeout: 10000,
+        env: { ...process.env, AUDITED_MANIFEST_SHA256: scenario === 'changed-manifest' ? '0'.repeat(64) : sha256(manifestBytes),
+          GITHUB_REF: manifest.source.ref, GITHUB_SHA: scenario === 'foreign-source' ? 'b'.repeat(40) : manifest.source.commit,
+          GITHUB_ENV: path.join(directory, 'github-env') } });
+      if (result.error || (result.status === 0) !== (scenario === 'ready')) fail(`approved candidate ${scenario} probe failed`);
+    }
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+}
+
 function validateWorkflows() {
   const required = [
     '.github/workflows/documentation.yml',
@@ -275,7 +388,8 @@ function validateWorkflows() {
   includes(npm, 'publication.pnpmVersion', 'npm publication workflow');
   includes(npm, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'npm publication workflow');
   includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
-  includes(npm, 'pnpm run release:seal --skip-install --timeout-minutes "$remaining"\n', 'npm publication workflow');
+  includes(npm, 'pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly', 'npm publication workflow');
+  validateNpmCandidateFlowProbes(npm);
   const candidate = npm.slice(npm.indexOf('\n  candidate:'), npm.indexOf('\n  audit:'));
   includes(candidate, 'timeout-minutes: 60\n', 'npm candidate job');
   includes(candidate, 'id: deadline', 'npm candidate deadline');
@@ -288,9 +402,14 @@ function validateWorkflows() {
   excludes(npm, 'release:seal --skip-install --no-report', 'npm publication workflow');
   includes(npm, 'name: Preserve seal status and terminal evidence\n        if: always()', 'npm publication workflow');
   includes(npm, 'name: pulse-npm-seal-${{ github.run_id }}-${{ github.run_attempt }}', 'npm publication workflow');
-  const sealEvidence = candidate.slice(candidate.indexOf('name: Preserve seal status'), candidate.indexOf('name: Pack the exact release candidate'));
+  includes(candidate, 'runs-on: ubuntu-24.04', 'npm candidate runner');
+  includes(candidate, "SEAL_WORKERS: '2'", 'bounded candidate workers');
+  includes(candidate, "SEAL_MEMORY_MIB: '6144'", 'bounded candidate memory');
+  includes(candidate, "SEAL_COMPILER_WORKERS: '1'", 'bounded compiler admission');
+  for (const flag of ['--workers "$SEAL_WORKERS"', '--memory-budget-mib "$SEAL_MEMORY_MIB"', '--compiler-workers "$SEAL_COMPILER_WORKERS"']) includes(candidate, flag, 'seal admission');
+  for (const pin of ['v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz', '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad', 'sha256sum --check', 'PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly']) includes(candidate, pin, 'release Fastly toolchain');
+  const sealEvidence = candidate.slice(candidate.indexOf('name: Preserve seal status'), candidate.indexOf('name: Reuse the exact packages accepted by the seal'));
   includes(sealEvidence, '            .pulse-seal\n', 'durable seal evidence upload');
-  includes(npm, 'pnpm run release:pack', 'npm publication workflow');
   includes(npm, 'release-candidate.cjs prepare', 'npm publication workflow');
   includes(npm, 'publish-release.cjs audit', 'npm publication workflow');
   includes(npm, 'publish-release.cjs publish', 'npm publication workflow');
@@ -667,12 +786,17 @@ function validatePublicationBundle() {
     const missingAudit = auditPackageNames({ repoRoot, bundleDir, fixtureFile: missing, allowMissing: true });
     const missingPlan = publicationPlan({ repoRoot, bundleDir, fixtureFile: missing, check: false });
     if (missingAudit.status !== 'bootstrap-required' || missingPlan.status !== 'bootstrap-required') fail('missing package name did not require bootstrap');
+    expectFailure(() => auditPackageNames({ repoRoot, bundleDir, fixtureFile: missing }), 'PULSE_NPM_BOOTSTRAP_REQUIRED', 'blocking name audit');
+    expectFailure(() => publicationPlan({ repoRoot, bundleDir, fixtureFile: missing }), 'PULSE_NPM_BOOTSTRAP_REQUIRED', 'blocking bootstrap plan');
 
     const integrityFixture = fixtureFromBundle(verified.manifest, 'published');
     integrityFixture.packages[verified.manifest.packages[0].name].versions[RELEASE_VERSION].integrity = 'sha512-invalid';
     const integrityFile = writeFixture(path.join(temp, 'integrity.json'), integrityFixture);
     const integrityPlan = publicationPlan({ repoRoot, bundleDir, fixtureFile: integrityFile, check: false });
     if (integrityPlan.status !== 'conflict' || integrityPlan.packages[0].action !== 'integrity-conflict') fail('same-version integrity conflict was not rejected');
+    const conflictReport = path.join(temp, 'blocked-plan.json');
+    expectFailure(() => publicationPlan({ repoRoot, bundleDir, fixtureFile: integrityFile, jsonFile: conflictReport }), 'PULSE_NPM_PUBLICATION_CONFLICT', 'blocking immutable conflict plan');
+    if (JSON.parse(fs.readFileSync(conflictReport, 'utf8')).status !== 'conflict') fail('blocking publication plan lost its failure report');
 
     const tagFixture = fixtureFromBundle(verified.manifest, 'published');
     tagFixture.packages[verified.manifest.packages[0].name].distTags[PUBLICATION.distTag] = '0.0.0';
