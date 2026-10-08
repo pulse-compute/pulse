@@ -20,7 +20,7 @@ exact v<version> tag
 → protected human approval
 → npm trusted publishing
 → registry integrity and configured dist-tag verification
-→ clean published-CLI smoke test
+→ clean published-CLI and context-app smoke tests
 ```
 
 The machine-readable publication contract is the `publication` object in `release/pulse-release-manifest.json`. The production workflow is `.github/workflows/npm-publish.yml`.
@@ -331,9 +331,11 @@ client. Scope/write-path negatives remain in the focused `mcp-authorization`
 fixture. Do not add this installed gate to fast PR or aggregate release profiles,
 or require a full seal for each PMCP ticket.
 
-Once the release owner completes bootstrap, trusted-publisher setup, final tagged
-qualification and publication/registry integrity verification, use the checkout
-for that exact release to run:
+After publication/registry integrity verification, the workflow runs the existing
+narrow context smoke using the selected release manifest version. It is required
+even when `run_smoke=false` skips the separate CLI journey; a normal beta.7
+release selects `run_smoke=true` to execute both. For a manual replay, use the
+checkout for the exact published release:
 
 ```bash
 node wasm/test/mcp/smoke-context-registry.cjs 1.0.0-beta.7
@@ -348,6 +350,12 @@ identities, cleanup, startup/response/elapsed measurements in
 `wasm/.test-results/context-registry-smoke.json`. It does not repack, publish, deploy
 or replace final release qualification. Missing versions fail; no candidate or
 floating-version fallback is used.
+
+The verification job requires a terminal passing report for the selected version
+and passing cleanup. It retains the context report with registry and CLI reports
+on success or failure. A failed smoke, missing report or failed cleanup leaves
+verification incomplete. Retry verification in the same publication run against
+the original bundle; no new candidate seal is required.
 
 Carry these statuses separately in the release handoff:
 
@@ -431,8 +439,10 @@ The protected publish job waits for the uploaded set and verifies the complete r
 
 - every manifest-owned `name@version` record exists;
 - registry `dist.integrity` equals the sealed tarball integrity;
-- the configured dist-tag points to the release version; and
-- the published canonical CLI installs in a clean prefix and completes version, init, install, doctor, test, and Node build smoke checks.
+- the configured dist-tag points to the release version;
+- with `run_smoke=true`, the published canonical CLI installs in a clean prefix and completes version, init, install, doctor, test, and Node build smoke checks; and
+- the exact published CLI's bundled context example builds and starts, discovers
+  its five tools, returns matching starter metadata and shuts down cleanly.
 
 The registry report uses schema `pulse.npm-publication-verification.v1`. The documentation deployment accepts that schema as evidence that matching packages are publicly available before it promotes root and `latest`.
 
