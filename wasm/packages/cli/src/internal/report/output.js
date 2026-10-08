@@ -30,6 +30,10 @@ function outputPath(root, requested) {
     || selected.split(/[\\/]/).includes('..')) unsafe();
   const file = path.resolve(root, selected);
   if (!contained(path.resolve(root), file) || path.extname(file).toLowerCase() !== '.html') unsafe();
+  // Generated files must also be readable by the retained-input verifier.
+  // Reject control/URL-escape characters before writing an unusable receipt.
+  try { require('./data').relativePath(path.relative(root, file).split(path.sep).join('/')); }
+  catch { unsafe(); }
   try { inspectChain(file); }
   catch (error) {
     if (error instanceof PulseProjectError) throw error;
@@ -37,8 +41,10 @@ function outputPath(root, requested) {
   }
   return file;
 }
-function writeHtml(root, requested, html) {
+function writeHtml(root, requested, html, options = {}) {
   const file = outputPath(root, requested);
+  const relativeFile = path.relative(root, file).split(path.sep).join('/');
+  if (options.inputFiles?.includes(relativeFile)) unsafe();
   if (typeof html !== 'string') throw new TypeError('Report renderer must return HTML text');
   let temporary, fd;
   try {
@@ -52,6 +58,7 @@ function writeHtml(root, requested, html) {
       try { fs.mkdirSync(parent); } catch (error) { if (error.code !== 'EEXIST') throw error; }
       outputPath(root, file);
     }
+    if (options.recordOutput) require('./output-receipts').prepareOutputReceipt(file, html);
     const chain = inspectChain(file);
     temporary = path.join(path.dirname(file), '.pulse-report-' + crypto.randomBytes(12).toString('hex'));
     fd = fs.openSync(temporary, 'wx', 0o600);

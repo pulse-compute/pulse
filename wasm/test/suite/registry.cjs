@@ -34,11 +34,12 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-size-evidence': nodeTask('test/cli/assert-report-size-evidence.cjs', { description: 'PRPT-03 physical size reconciliation and attribution rejection' }),
   'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
-    description: 'PRPT-02 completion lifecycle, canonical inventory, safe replay and unchanged Wasm'
+    description: 'PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm', timeoutMs: 60000
   }),
   'report-capsule-contract': nodeTask('test/cli/assert-report-capsule-contract.cjs', {
     description: 'PRPT-01 capsule identity, schema projection, completion and attribution contracts'
@@ -1261,6 +1262,7 @@ const profiles = Object.freeze({
   unit: Object.freeze([
     'report-capsule-contract',
     'cli-report-workflow',
+    'cli-report-viewer',
     'cli-report-retained-evidence',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
@@ -1407,6 +1409,7 @@ const profiles = Object.freeze({
   cli: Object.freeze([
     'report-capsule-contract',
     'cli-report-workflow',
+    'cli-report-viewer',
     'cli-report-retained-evidence',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
