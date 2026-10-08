@@ -81,5 +81,38 @@ The original experiment's authenticated/storage supplement was not rerun: this
 packet qualifies the current 137-case harness and focused compiler tests. It is
 not deployed Fastly acceptance or a latency/throughput claim. Report attribution
 still maps 12 of 100 routes and establishes reachability for 0 of 100; those gaps
-remain visible. No combined DS-04/experimental-size optimization result is claimed.
+remain visible. The bounded-size combination is recorded below; converging-size was not rerun.
 The release owner still runs the immutable candidate's required release gates.
+
+## Bounded-size follow-up
+
+Human direction: measure the combination. Using the same installed DS-04 packages
+and pinned Catalog source, only add `--experimental-native-bounded-size`.
+The completed artifact records O3/shrink2 with convergence disabled.
+
+| Recipe | Wasm bytes | gzip9 bytes |
+| --- | ---: | ---: |
+| Original default | 3,315,675 | 654,387 |
+| Original bounded-size (prior measurement) | 3,042,029 | 662,449 |
+| DS-04 default | 2,964,228 | 646,478 |
+| DS-04 bounded-size | 2,690,561 | 654,324 |
+
+Combined bounded-size saves another 273,667 raw bytes (9.23%) versus DS-04 default,
+or 625,114 bytes (18.85%) versus the original default. It adds 7,846 gzip bytes
+(1.21%) versus DS-04 default; compressed size is only 63 bytes below the original
+default. DS-04 default therefore remains the smallest gzip artifact of these four.
+
+The build completed successfully in 235.122 seconds with 2,052,112 KiB peak RSS
+(one observation). All 255 wrappers remain retained, with the same 4,241 total body
+bytes and shared router target. Generated source and plan files are byte-identical
+to DS-04 default. Bounded-size changes the optimized data-section representation
+(250,212 versus 256,535 section payload bytes), so binary section identity is not
+claimed for this comparison.
+
+The completed 137-case candidate replay matches both original-default and
+DS-04-default receipts exactly under the same observable comparison. It covers
+responses, ordered effects/traces, continuations, provider metadata and value/memory
+accounting. The original bounded-size row is prior size evidence; that artifact was
+not replayed in this follow-up. See [bounded-size.json](./bounded-size.json) for
+artifact, recipe, report and package identity hashes. No product code or default
+recipe changes were needed. The experiment remains opt-in.
