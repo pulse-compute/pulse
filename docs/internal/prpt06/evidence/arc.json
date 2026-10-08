@@ -1,0 +1,295 @@
+{
+  "kind": "pulse.report-qualification.v1",
+  "status": "passed",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "arch": "x64",
+    "kernel": "6.18.44",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalCpus": 9
+  },
+  "profile": "fastly",
+  "samples": [
+    {
+      "label": "project-json",
+      "exitCode": 0,
+      "elapsedMs": 1083.925662,
+      "peakRssKiB": 194200,
+      "finalRssBytes": 141475840,
+      "blocked": [],
+      "wallMs": 1159.623968,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "project-json",
+      "exitCode": 0,
+      "elapsedMs": 994.228642,
+      "peakRssKiB": 208140,
+      "finalRssBytes": 141557760,
+      "blocked": [],
+      "wallMs": 1064.886486,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "project-json",
+      "exitCode": 0,
+      "elapsedMs": 1063.240349,
+      "peakRssKiB": 220860,
+      "finalRssBytes": 142274560,
+      "blocked": [],
+      "wallMs": 1142.258425,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "artifact-json",
+      "exitCode": 0,
+      "elapsedMs": 392.791076,
+      "peakRssKiB": 71700,
+      "finalRssBytes": 71356416,
+      "blocked": [],
+      "wallMs": 478.467595,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "artifact-json",
+      "exitCode": 0,
+      "elapsedMs": 462.324134,
+      "peakRssKiB": 73684,
+      "finalRssBytes": 72957952,
+      "blocked": [],
+      "wallMs": 531.367414,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "artifact-json",
+      "exitCode": 0,
+      "elapsedMs": 430.022567,
+      "peakRssKiB": 72692,
+      "finalRssBytes": 71999488,
+      "blocked": [],
+      "wallMs": 509.28021,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "historical-json",
+      "exitCode": 0,
+      "elapsedMs": 221.081158,
+      "peakRssKiB": 70900,
+      "finalRssBytes": 70733824,
+      "blocked": [],
+      "wallMs": 275.701423,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "historical-json",
+      "exitCode": 0,
+      "elapsedMs": 235.308168,
+      "peakRssKiB": 67848,
+      "finalRssBytes": 67833856,
+      "blocked": [],
+      "wallMs": 294.923324,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "historical-json",
+      "exitCode": 0,
+      "elapsedMs": 222.019036,
+      "peakRssKiB": 70092,
+      "finalRssBytes": 69885952,
+      "blocked": [],
+      "wallMs": 282.707131,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "terminal",
+      "exitCode": 0,
+      "elapsedMs": 266.436857,
+      "peakRssKiB": 71080,
+      "finalRssBytes": 70975488,
+      "blocked": [],
+      "wallMs": 350.207004,
+      "stdoutBytes": 622,
+      "stdoutSha256": "04ce8c01305de6aeb029faaba79ea087f0db1daa1df662baebccda7fef733adb",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "project-html",
+      "exitCode": 0,
+      "elapsedMs": 1054.055434,
+      "peakRssKiB": 211420,
+      "finalRssBytes": 142766080,
+      "blocked": [],
+      "wallMs": 1114.970545,
+      "stdoutBytes": 89,
+      "stdoutSha256": "2b0011150b212c94a3ce8f1a255242f402e921229be64ff5b4ceaac23bce005b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "project-html",
+      "exitCode": 0,
+      "elapsedMs": 1106.953243,
+      "peakRssKiB": 212004,
+      "finalRssBytes": 143314944,
+      "blocked": [],
+      "wallMs": 1173.577362,
+      "stdoutBytes": 89,
+      "stdoutSha256": "2b0011150b212c94a3ce8f1a255242f402e921229be64ff5b4ceaac23bce005b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "project-html",
+      "exitCode": 0,
+      "elapsedMs": 948.862694,
+      "peakRssKiB": 211676,
+      "finalRssBytes": 142221312,
+      "blocked": [],
+      "wallMs": 1009.217859,
+      "stdoutBytes": 89,
+      "stdoutSha256": "2b0011150b212c94a3ce8f1a255242f402e921229be64ff5b4ceaac23bce005b",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "project-after-html",
+      "exitCode": 0,
+      "elapsedMs": 958.889457,
+      "peakRssKiB": 236044,
+      "finalRssBytes": 132988928,
+      "blocked": [],
+      "wallMs": 1023.002006,
+      "stdoutBytes": 347222,
+      "stdoutSha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "historical-html",
+      "exitCode": 0,
+      "elapsedMs": 216.284978,
+      "peakRssKiB": 69572,
+      "finalRssBytes": 68141056,
+      "blocked": [],
+      "wallMs": 269.673051,
+      "stdoutBytes": 70,
+      "stdoutSha256": "52a37e71ab946b0162acfa9d78181d1db18364e5439d243a561856ff428d7303",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "historical-html",
+      "exitCode": 0,
+      "elapsedMs": 223.418191,
+      "peakRssKiB": 71764,
+      "finalRssBytes": 70111232,
+      "blocked": [],
+      "wallMs": 279.934633,
+      "stdoutBytes": 70,
+      "stdoutSha256": "52a37e71ab946b0162acfa9d78181d1db18364e5439d243a561856ff428d7303",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "historical-html",
+      "exitCode": 0,
+      "elapsedMs": 209.880346,
+      "peakRssKiB": 70144,
+      "finalRssBytes": 68743168,
+      "blocked": [],
+      "wallMs": 267.810955,
+      "stdoutBytes": 70,
+      "stdoutSha256": "52a37e71ab946b0162acfa9d78181d1db18364e5439d243a561856ff428d7303",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "checks": [
+    "canonical JSON equals HTML payload",
+    "project/artifact/historical JSON byte-identical",
+    "repeat generation deterministic",
+    "project remains fresh after HTML writes",
+    "terminal artifact size and evidence identity agree",
+    "canary config not executed in historical replay",
+    "native compiler/provider/subprocess/network imports blocked; project static config parser allowed",
+    "exact guest hashes unchanged by reporting",
+    "physical sections reconcile",
+    "private config-value canaries and absolute scratch path absent from JSON and HTML"
+  ],
+  "costMethod": "Three sequential fresh CLI processes per mode; OS caches are not flushed. Elapsed includes CLI startup/import/collection/rendering; Linux maxRSS is KiB. Build time is excluded.",
+  "capsule": {
+    "sha256": "65046492a62a0a22893d7fd509ba79c851406815ddfb136ab9a2ff9b9cbaea11",
+    "evidenceHash": "f7d12039122b93e311cc20b4800566b769d2590a22e5b4ed0e796ee2015a8b69",
+    "jsonBytes": 347222,
+    "htmlBytes": 451668,
+    "counts": {
+      "routes": 18,
+      "entries": 23,
+      "schemas": 17,
+      "bindings": 4,
+      "resources": 0
+    },
+    "coverage": {
+      "bindings": {
+        "expected": 4,
+        "observed": 4,
+        "reason": null,
+        "status": "complete"
+      },
+      "entries": {
+        "expected": 23,
+        "observed": 23,
+        "reason": null,
+        "status": "complete"
+      },
+      "resources": {
+        "expected": null,
+        "observed": 0,
+        "reason": "incomplete-mapping",
+        "status": "partial"
+      },
+      "routes": {
+        "expected": 18,
+        "observed": 18,
+        "reason": null,
+        "status": "complete"
+      },
+      "schemas": {
+        "expected": 17,
+        "observed": 17,
+        "reason": null,
+        "status": "complete"
+      }
+    },
+    "artifacts": [
+      {
+        "id": "artifact:102ef61fd01f9284c08ad8634e90db3de613d515314fef530d0236266b40d4a7",
+        "stage": "prelink",
+        "bytes": 321751,
+        "sha256": "102ef61fd01f9284c08ad8634e90db3de613d515314fef530d0236266b40d4a7",
+        "sectionBytes": 321751
+      },
+      {
+        "id": "artifact:7887d17bf59a39f7338883458de36df867ed8a2d08832ba3d40b9598b3cc67fd",
+        "stage": "final",
+        "bytes": 383744,
+        "sha256": "7887d17bf59a39f7338883458de36df867ed8a2d08832ba3d40b9598b3cc67fd",
+        "sectionBytes": 383744
+      }
+    ],
+    "mappedRoutes": 18,
+    "reachableRoutes": 0
+  }
+}

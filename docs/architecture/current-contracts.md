@@ -1135,7 +1135,7 @@ internal collector uses the existing static configuration parser for current
 snapshot matching; artifact and historical replay do not import project code,
 providers or compilers. Report inventories remain declaration/evidence records,
 not authorization or parity claims. Unknown binding realization, generated
-resource coverage and byte attribution stay explicit. See the [PRPT-02 packet](../internal/prpt02/README.md) for lifecycle,
+resource coverage and byte attribution stay explicit. See the [PRPT-02 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt02/README.md) for lifecycle,
 redaction, coverage and remaining integration gates.
 
 Report size collection reads exact retained Wasm sections and function bodies.
@@ -1146,7 +1146,7 @@ Report never compiles or disassembles. Missing/unsupported capture preserves the
 physical ledger with unavailable attribution. Partial route measurements and
 shared bodies are nonadditive; exclusive ownership and resource-payload mapping
 remain unavailable. Final-link hash changes cannot reuse prelink indices. See the
-[PRPT-03 packet](../internal/prpt03/README.md) for the pinned observer, unchanged
+[PRPT-03 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt03/README.md) for the pinned observer, unchanged
 byte proof and qualification ceiling.
 
 `pulse report` exposes this retained collector as a bounded terminal overview or
@@ -1168,7 +1168,7 @@ source hashes and compiler watch-file binding still fail closed. Package inputs
 never use receipt exclusions. HTML cannot overwrite a recorded build input.
 The existing 20,000-file/256 MiB scan budget includes generated HTML verification;
 receipts are bounded to 256 per destination directory, 4 KiB each and 20,000 per
-scan. See the [PRPT-05 packet](../internal/prpt05/README.md) for implementation,
+scan. See the [PRPT-05 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt05/README.md) for implementation,
 exact design-fixture identities and the outstanding real-browser qualification.
 
 
