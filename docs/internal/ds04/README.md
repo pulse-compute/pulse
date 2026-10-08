@@ -116,3 +116,41 @@ accounting. The original bounded-size row is prior size evidence; that artifact 
 not replayed in this follow-up. See [bounded-size.json](./bounded-size.json) for
 artifact, recipe, report and package identity hashes. No product code or default
 recipe changes were needed. The experiment remains opt-in.
+
+## ARC optimization matrix
+
+Human direction: run the new matrix on ARC. Source is the unchanged PRPT-06
+fixture `nw/arc@0f70a7fd7c05251d7eb0833f91b327419924a2ef` (23 selected authored
+files verified against Git blob IDs). All four isolated consumers regenerate the
+same frontend assets and use the default Fastly Native profile. Original and
+DS-04 package graphs are explicitly installed beta.7 overrides to the fixture's
+historical beta.6 manifest pins.
+
+| Compiler / recipe | Final Fastly Wasm bytes | gzip9 bytes | Build seconds |
+| --- | ---: | ---: | ---: |
+| Original / default | 383,744 | 98,018 | 19.107 |
+| Original / bounded-size | 344,763 | 89,784 | 17.469 |
+| DS-04 / default | 378,186 | 97,992 | 18.492 |
+| DS-04 / bounded-size | 338,912 | 89,696 | 15.922 |
+
+The combination saves 44,832 raw bytes (11.68%) and 8,322 gzip bytes (8.49%)
+versus original default. DS-04 alone saves 5,558 raw bytes (1.45%); bounded-size
+provides most of ARC's reduction. These are final provider artifact measurements,
+not only portable prelink sizes. Prelink sizes are 321,751 / 298,503 / 316,130 /
+292,548 bytes in table order. Each build is one sequential observation.
+
+All 52 ARC harness cases pass expected status/text/JSON/header assertions in each
+row. Exact final artifacts execute through the installed Fastly fixture ABI with
+fresh config, secret, KV and fetch fixtures. All three rows match original default
+for full response bytes, ordered hostcall traces, logs, outbound requests, store
+effects, request memory/value accounting and final continuation/pending state.
+The plan files are byte-identical across the matrix. All 23 DS-04 wrappers remain
+retained in both portable and final provider artifacts (365 total body bytes).
+
+The first original-bounded replay process logged success for 52 cases but retained
+a partial 49-case running receipt. That receipt and its logs were preserved and
+excluded; a sequential retry produced a terminal passing 52-case receipt.
+See [arc-matrix.json](./arc-matrix.json) for exact artifact, source, package graph
+and replay report identities. This is the pinned fixture, not current upstream
+HEAD qualification, Viceroy acceptance, or deployed Fastly evidence. No product
+code, application behavior or default recipe changed.

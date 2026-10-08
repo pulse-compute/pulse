@@ -1,0 +1,459 @@
+{
+  "kind": "pulse.ds04.arc-optimization-matrix.v1",
+  "status": "passed",
+  "identity": {
+    "kind": "pulse.ds04.arc-matrix.v1",
+    "arcCommit": "0f70a7fd7c05251d7eb0833f91b327419924a2ef",
+    "sourceFilesVerified": 23,
+    "sourceManifestSha256": "d7bceb862c699bbf7409690a61d7facc728efc8d949e691212954ccd769c7612",
+    "profile": "fastly",
+    "target": "Fastly Native",
+    "pulseDs04Commit": "7a9388da906e27aaf45ff68495023498135482ad",
+    "packageSets": {
+      "original": [
+        {
+          "name": "assets",
+          "filesDigest": "afd0c25e79424d92fdea59310284b75f58384b784b0bac7b271b21a904e70458"
+        },
+        {
+          "name": "cli",
+          "filesDigest": "0fa794f18b4c3b6b690b62f3a19a73f231cf117a705a66645f37c8888ab9adc7"
+        },
+        {
+          "name": "crypto",
+          "filesDigest": "76b5e82648efef4bb56a1019c4bcfbb3ea969fcf84b5c8c592ccd84bcf4a8b54"
+        },
+        {
+          "name": "entities",
+          "filesDigest": "b39c6819ea3cf4248b44344d1df07182a516a51fb459c492c27a37efb8011316"
+        },
+        {
+          "name": "grip",
+          "filesDigest": "3b24a48320bf14f7ed927d2b70a295bfe8fde28c2b45b4c30aab5f0cb5732ec1"
+        },
+        {
+          "name": "jwt",
+          "filesDigest": "b2db75a949c99fb8c668919939104f5521aed110f74f8ec545eba287648a2234"
+        },
+        {
+          "name": "mcp",
+          "filesDigest": "3a2d3735292b66fe17fa275bc5eefaf944c95fed87be34971b767fd9fc79aaa0"
+        },
+        {
+          "name": "provider-fastly",
+          "filesDigest": "89fee52eb76a4a29b0ada442457adcf6eb193cf169c6ba25c791cd4b9ebc97cb"
+        },
+        {
+          "name": "provider-node",
+          "filesDigest": "411c0e914d9bc8a1dd595eefd44d4d18ec91f82e22a2bff8b517e6010319b03c"
+        },
+        {
+          "name": "pulse",
+          "filesDigest": "579115098e10c761cb9e41f4ee55812f0e08b125b7f8f2ab3a42524248ce77e4"
+        },
+        {
+          "name": "runtime",
+          "filesDigest": "a0bb3dd0fc5efbe6b4270a42d6abe03efb91325b4d5ee5a0169f9d57a655d0eb"
+        },
+        {
+          "name": "s3",
+          "filesDigest": "c5af28d172cd3f177c10815d8e77312fa7c513fa3dca77f48b1932e0ddb4f324"
+        },
+        {
+          "name": "wasm-build-support",
+          "filesDigest": "a3a8e50e88d91825afb625c770d2364d5f2577c813635d7794640bc1a2d01fcf"
+        },
+        {
+          "name": "wasm-compiler",
+          "filesDigest": "66269b4d6bfc3b70a307e2720d444cbe08a752b85ba72448a91fe3bad5e06aa9"
+        },
+        {
+          "name": "wasm-contracts",
+          "filesDigest": "6e03724955b670de28b8ce79cf42f9c07be5d8e28a5e89d1405134fd7bbe1a4f"
+        },
+        {
+          "name": "wasm-guest-link",
+          "filesDigest": "910e5f7ae099a50ff1ebba79839b5ed389aad976a230d3fd5f3d0ad01d7e8636"
+        },
+        {
+          "name": "wasm-host-runtime",
+          "filesDigest": "b990dc62f466eda4b12674da01952845bac01c949ff6fd617d9ea6004146b480"
+        },
+        {
+          "name": "wasm-library-kit",
+          "filesDigest": "363520babda1a52042a909f8cbd62c854b6bfc971000490bd480553104c18950"
+        },
+        {
+          "name": "wasm-runtime-core-as",
+          "filesDigest": "a0214ced2235593187ff3dee4f7d4acac6e6e6d8bfba9d9da1da5949b13b5d47"
+        },
+        {
+          "name": "wasm-schema-json",
+          "filesDigest": "7f5c84e90c353266f93125ed4174bfedcdcae1ef6416781dabbbbcbd34aba6fe"
+        }
+      ],
+      "ds04": [
+        {
+          "name": "assets",
+          "filesDigest": "afd0c25e79424d92fdea59310284b75f58384b784b0bac7b271b21a904e70458"
+        },
+        {
+          "name": "cli",
+          "filesDigest": "fee5d0c03ab912b33a793b796888953ccab2c269309f03b277bccdfe97ca979a"
+        },
+        {
+          "name": "crypto",
+          "filesDigest": "76b5e82648efef4bb56a1019c4bcfbb3ea969fcf84b5c8c592ccd84bcf4a8b54"
+        },
+        {
+          "name": "entities",
+          "filesDigest": "b39c6819ea3cf4248b44344d1df07182a516a51fb459c492c27a37efb8011316"
+        },
+        {
+          "name": "grip",
+          "filesDigest": "3b24a48320bf14f7ed927d2b70a295bfe8fde28c2b45b4c30aab5f0cb5732ec1"
+        },
+        {
+          "name": "jwt",
+          "filesDigest": "b2db75a949c99fb8c668919939104f5521aed110f74f8ec545eba287648a2234"
+        },
+        {
+          "name": "mcp",
+          "filesDigest": "3a2d3735292b66fe17fa275bc5eefaf944c95fed87be34971b767fd9fc79aaa0"
+        },
+        {
+          "name": "provider-fastly",
+          "filesDigest": "89fee52eb76a4a29b0ada442457adcf6eb193cf169c6ba25c791cd4b9ebc97cb"
+        },
+        {
+          "name": "provider-node",
+          "filesDigest": "411c0e914d9bc8a1dd595eefd44d4d18ec91f82e22a2bff8b517e6010319b03c"
+        },
+        {
+          "name": "pulse",
+          "filesDigest": "579115098e10c761cb9e41f4ee55812f0e08b125b7f8f2ab3a42524248ce77e4"
+        },
+        {
+          "name": "runtime",
+          "filesDigest": "a0bb3dd0fc5efbe6b4270a42d6abe03efb91325b4d5ee5a0169f9d57a655d0eb"
+        },
+        {
+          "name": "s3",
+          "filesDigest": "c5af28d172cd3f177c10815d8e77312fa7c513fa3dca77f48b1932e0ddb4f324"
+        },
+        {
+          "name": "wasm-build-support",
+          "filesDigest": "ceea1bfda23d6569e9a5ea81f194fdb253df74cc0f7787e2164125e39b0edc87"
+        },
+        {
+          "name": "wasm-compiler",
+          "filesDigest": "66269b4d6bfc3b70a307e2720d444cbe08a752b85ba72448a91fe3bad5e06aa9"
+        },
+        {
+          "name": "wasm-contracts",
+          "filesDigest": "6e03724955b670de28b8ce79cf42f9c07be5d8e28a5e89d1405134fd7bbe1a4f"
+        },
+        {
+          "name": "wasm-guest-link",
+          "filesDigest": "910e5f7ae099a50ff1ebba79839b5ed389aad976a230d3fd5f3d0ad01d7e8636"
+        },
+        {
+          "name": "wasm-host-runtime",
+          "filesDigest": "b990dc62f466eda4b12674da01952845bac01c949ff6fd617d9ea6004146b480"
+        },
+        {
+          "name": "wasm-library-kit",
+          "filesDigest": "363520babda1a52042a909f8cbd62c854b6bfc971000490bd480553104c18950"
+        },
+        {
+          "name": "wasm-runtime-core-as",
+          "filesDigest": "ff459d88e8e8bcb61660470860717b1fdcfacdcf1571fb9c9309eed3aee4f56f"
+        },
+        {
+          "name": "wasm-schema-json",
+          "filesDigest": "7f5c84e90c353266f93125ed4174bfedcdcae1ef6416781dabbbbcbd34aba6fe"
+        }
+      ]
+    },
+    "generatedAssetsSha256": "757918d0a564d9cb9bd23c595ce433a9129121760ba09e74ac25184a1600afed",
+    "sourceAndPackageOverrides": "Unmodified pinned ARC authored files retain beta.6 pins; isolated consumers explicitly use byte-digested beta.7 packages. Original/DS-04 package sets are preserved above."
+  },
+  "rows": [
+    {
+      "mode": "original-default",
+      "exitCode": 0,
+      "timedOut": false,
+      "wallSeconds": 19.508,
+      "cost": {
+        "wallSeconds": 19.107,
+        "peakRssKiB": 455408,
+        "cpuSeconds": 26.730041,
+        "exitCode": 0
+      },
+      "prelink": {
+        "wasmBytes": 321751,
+        "gzipBytes": 77780,
+        "sha256": "dba6175728611d6c693b0395adb7c640466068245f6f2005db2f6e581b15d6fe",
+        "file": "consumer/arc/dist/canonical-native.wasm"
+      },
+      "final": {
+        "wasmBytes": 383744,
+        "gzipBytes": 98018,
+        "sha256": "49a94bcc055dfcf7247c0c94787ec9d7818f35c8e22fddd3ba683b209cf44459",
+        "file": "consumer/arc/dist/bin/main.wasm"
+      },
+      "status": "passed",
+      "planHash": "0345f8975f2628b997422c6c4ad160d073c9e567dfbc4efb4f5f731aed7fd05b",
+      "sourceHash": "31700a38089f2f005f4205f0f598d30058f37fa64a80d9b19e092c3072802396",
+      "optimization": "default",
+      "planFileByteIdentical": true,
+      "emittedWrappers": 0,
+      "retention": {
+        "prelink": {
+          "retainedWrappers": 0,
+          "wrapperBodyBytes": 0,
+          "sharedTargetIndices": []
+        },
+        "final": {
+          "retainedWrappers": 0,
+          "wrapperBodyBytes": 0,
+          "sharedTargetIndices": []
+        }
+      },
+      "replayReportSha256": "45cf31db54aaa9c75daa12f0db0f72e277ac43622c66157c9690960a6e1aae96",
+      "command": [
+        "build",
+        "--profile",
+        "fastly",
+        "--json"
+      ],
+      "replayCases": 52
+    },
+    {
+      "mode": "original-bounded",
+      "exitCode": 0,
+      "timedOut": false,
+      "wallSeconds": 17.506,
+      "cost": {
+        "wallSeconds": 17.469,
+        "peakRssKiB": 412784,
+        "cpuSeconds": 25.269962,
+        "exitCode": 0
+      },
+      "prelink": {
+        "wasmBytes": 298503,
+        "gzipBytes": 70151,
+        "sha256": "d347d5b25a1a16b19b57a811e0d95d21fa0b76f45ffe5c10b8b03d58cffaf979",
+        "file": "consumer/arc/dist/canonical-native.wasm"
+      },
+      "final": {
+        "wasmBytes": 344763,
+        "gzipBytes": 89784,
+        "sha256": "cf8ebec419d2d518bcab0c1992ff0d50f128d8a08624806292e12bb9faa3d334",
+        "file": "consumer/arc/dist/bin/main.wasm"
+      },
+      "status": "passed",
+      "planHash": "0345f8975f2628b997422c6c4ad160d073c9e567dfbc4efb4f5f731aed7fd05b",
+      "sourceHash": "31700a38089f2f005f4205f0f598d30058f37fa64a80d9b19e092c3072802396",
+      "optimization": {
+        "assemblyScript": {
+          "converge": false,
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2
+        },
+        "experimental": true,
+        "goal": "size",
+        "mode": "experimental-native-bounded-size",
+        "version": "pulse.native-optimization.v1"
+      },
+      "planFileByteIdentical": true,
+      "emittedWrappers": 0,
+      "retention": {
+        "prelink": {
+          "retainedWrappers": 0,
+          "wrapperBodyBytes": 0,
+          "sharedTargetIndices": []
+        },
+        "final": {
+          "retainedWrappers": 0,
+          "wrapperBodyBytes": 0,
+          "sharedTargetIndices": []
+        }
+      },
+      "replayReportSha256": "584da168c5a0755d0a50eb26666f10ec34821f21d6b5014925785276655a9c52",
+      "command": [
+        "build",
+        "--profile",
+        "fastly",
+        "--experimental-native-bounded-size",
+        "--json"
+      ],
+      "replayCases": 52
+    },
+    {
+      "mode": "ds04-default",
+      "exitCode": 0,
+      "timedOut": false,
+      "wallSeconds": 19.006,
+      "cost": {
+        "wallSeconds": 18.492,
+        "peakRssKiB": 437940,
+        "cpuSeconds": 25.856399,
+        "exitCode": 0
+      },
+      "prelink": {
+        "wasmBytes": 316130,
+        "gzipBytes": 77659,
+        "sha256": "a203a60e58bbf0616d152987668c110e834260c6d8840a41fbe0e4d8e859f53f",
+        "file": "consumer/arc/dist/canonical-native.wasm"
+      },
+      "final": {
+        "wasmBytes": 378186,
+        "gzipBytes": 97992,
+        "sha256": "2b28bcacfdf13a501d549f7ad655dde678138bf68e47a39d4f00e78bffb3d860",
+        "file": "consumer/arc/dist/bin/main.wasm"
+      },
+      "status": "passed",
+      "planHash": "0345f8975f2628b997422c6c4ad160d073c9e567dfbc4efb4f5f731aed7fd05b",
+      "sourceHash": "5808fa9529ed3995494bc680760b0b86bc02974af5b07d93018e0ee045de3136",
+      "optimization": "default",
+      "planFileByteIdentical": true,
+      "emittedWrappers": 23,
+      "retention": {
+        "prelink": {
+          "retainedWrappers": 23,
+          "wrapperBodyBytes": 365,
+          "sharedTargetIndices": [
+            56
+          ]
+        },
+        "final": {
+          "retainedWrappers": 23,
+          "wrapperBodyBytes": 365,
+          "sharedTargetIndices": [
+            78
+          ]
+        }
+      },
+      "replayReportSha256": "b0a489edde063f4e0a7f928de5a46cfb7946e6eb944e9259f108b4302f8d2402",
+      "command": [
+        "build",
+        "--profile",
+        "fastly",
+        "--json"
+      ],
+      "replayCases": 52
+    },
+    {
+      "mode": "ds04-bounded",
+      "exitCode": 0,
+      "timedOut": false,
+      "wallSeconds": 16.009,
+      "cost": {
+        "wallSeconds": 15.922,
+        "peakRssKiB": 421556,
+        "cpuSeconds": 23.015798,
+        "exitCode": 0
+      },
+      "prelink": {
+        "wasmBytes": 292548,
+        "gzipBytes": 69918,
+        "sha256": "eaf3c2467fb18c42d5b179309f1be5ba9ce082a1343d074a2ce3126a05f129b9",
+        "file": "consumer/arc/dist/canonical-native.wasm"
+      },
+      "final": {
+        "wasmBytes": 338912,
+        "gzipBytes": 89696,
+        "sha256": "8252bf12038ab2af67178c3486d39c6771aca7fbee0a5f525b376a8f23e8de5d",
+        "file": "consumer/arc/dist/bin/main.wasm"
+      },
+      "status": "passed",
+      "planHash": "0345f8975f2628b997422c6c4ad160d073c9e567dfbc4efb4f5f731aed7fd05b",
+      "sourceHash": "5808fa9529ed3995494bc680760b0b86bc02974af5b07d93018e0ee045de3136",
+      "optimization": {
+        "assemblyScript": {
+          "converge": false,
+          "optimize": true,
+          "optimizeLevel": 3,
+          "shrinkLevel": 2
+        },
+        "experimental": true,
+        "goal": "size",
+        "mode": "experimental-native-bounded-size",
+        "version": "pulse.native-optimization.v1"
+      },
+      "planFileByteIdentical": true,
+      "emittedWrappers": 23,
+      "retention": {
+        "prelink": {
+          "retainedWrappers": 23,
+          "wrapperBodyBytes": 365,
+          "sharedTargetIndices": [
+            61
+          ]
+        },
+        "final": {
+          "retainedWrappers": 23,
+          "wrapperBodyBytes": 365,
+          "sharedTargetIndices": [
+            90
+          ]
+        }
+      },
+      "replayReportSha256": "7489c0936f405c2c4560b4ddc3424e4c96e6a38b8c5e6a1f13f62a720a9585c2",
+      "command": [
+        "build",
+        "--profile",
+        "fastly",
+        "--experimental-native-bounded-size",
+        "--json"
+      ],
+      "replayCases": 52
+    }
+  ],
+  "pairedReplay": {
+    "status": "passed",
+    "baseline": "original-default",
+    "harnessSha256": "b49b1d13d80c8bf14ec8068c6747000c498089424065bce1d36b4bc6dd3e87b6",
+    "comparisons": [
+      {
+        "mode": "original-bounded",
+        "pairedCases": 52,
+        "differences": [],
+        "status": "passed"
+      },
+      {
+        "mode": "ds04-default",
+        "pairedCases": 52,
+        "differences": [],
+        "status": "passed"
+      },
+      {
+        "mode": "ds04-bounded",
+        "pairedCases": 52,
+        "differences": [],
+        "status": "passed"
+      }
+    ]
+  },
+  "replay": "Exact final Fastly artifacts executed through the installed fixture ABI, fresh request/config/secret/KV/fetch fixtures per case. Harness status/text/JSON/header assertions verified. Full responses, ordered hostcall traces, logs, outbound requests, store effects, request value/memory accounting and final continuation/pending state compared by hashes. No live network or rebuild during replay.",
+  "retry": "Initial original-bounded process logged passed 52 but retained a running 49-case receipt; that attempt is preserved separately and excluded. Sequential retry produced terminal passed receipt with all 52 cases.",
+  "limits": [
+    "Local Fastly fixture ABI, not Viceroy or deployed acceptance",
+    "Four sequential single build observations; no runtime latency or throughput claim",
+    "Pinned ARC snapshot from PRPT-06, not a claim about current upstream HEAD",
+    "Optimization matrix covers default and bounded-size; converging-size was not requested or rerun"
+  ],
+  "matrixReportSha256": "c394cf86726c0977bfd0801fa2148003e3d97869fe9f27ff90dd28f752c21715",
+  "productFiles": {
+    "wasm/packages/runtime-core-as/src/compiler/canonical-native-control.js": "8f3d408e3d83de6983916776e37a67e529c02e1bdb21176d905fa0b92d13e294",
+    "wasm/packages/build-support/src/native-retention-transform.cjs": "d261e6e0a4d983fc351ba9ce6b87be65dedf608c6c60fedb5d3fd42f6fc5663f"
+  },
+  "relativeToOriginalDefault": {
+    "wasmBytesSaved": 44832,
+    "wasmReductionPercent": 11.682788525683788,
+    "gzipBytesSaved": 8322,
+    "gzipReductionPercent": 8.490277296006855
+  }
+}
