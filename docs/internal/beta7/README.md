@@ -1,11 +1,11 @@
-# B7-01: beta.7 release readiness
+# beta.7 release readiness
 
-Repository-only release-owner review ledger, reviewed October 7, 2026 UTC
-(October 6 in Denver). Human direction: implement B7-01. Entry point:
-`release-readiness`; the task also authorizes the canonical changelog and this
-candidate-specific ledger under the documentation owner. Class: documentation.
-Protected boundaries: package publication and release authority. Preparation
-does not authorize merge, tag, settings changes, publication or deployment.
+Repository-only release-owner review ledger, initially prepared for B7-01 on
+October 7, 2026 UTC (October 6 in Denver), refreshed October 8 for B7-06 and the
+requested small readiness refresh. The release notes and versioned copies use
+`documentation-release`; this ledger and setup attestation are documentation-owner
+scope. Preparation does not authorize merge, tag, settings changes, publication
+or deployment.
 
 Inspected base: `latest` at `e98d34b9494899f5b588f921aab093631bb3b386`, tree
 `e06c01826d643ab61ad7fbd8f344189e2806a3da`. This identifies the inventory, not
@@ -29,14 +29,15 @@ not an executable waiver or a replacement for preflight and terminal evidence.
 - Apache-2.0 and the exact root LICENSE/NOTICE remain the legal contract.
   `release/documentation-site-archives/v1.0.0-beta.6` is the preserved exact-tag
   documentation archive; do not regenerate or rewrite it for beta.7.
-- The current [changelog](../../../CHANGELOG.md) inventories PS and MCP work;
+- The current [changelog](../../../CHANGELOG.md) inventories Report, the Native
+  boundary improvement, PS, MCP and publication-flow work;
   earlier released entries remain unchanged.
 
 | Work since beta.6 | Retained implementation/development evidence | Release limit |
 | --- | --- | --- |
 | PS-01/02 test-cost attribution, candidate deadline and shared construction | [Cost ledger](../ps01/README.md), `a48c8dfd2ced3ba286315bbcb635d1e555e962a4` | Cost observations are not a beta.7 full-seal speedup claim |
 | PS-03 JWT thinning and installed corpus ownership | [Coverage/measurements](../ps03/README.md) | Installed semantic owners remain required; workspace replays cannot substitute |
-| PS-04/05 same-candidate recovery and bounded workers | [Recovery](../ps04/README.md), [worker qualification](../ps05/README.md), current release controller | Defaults remain serial; compiler/worker/memory admission and verified cleanup still apply |
+| PS-04/05 same-candidate recovery and bounded workers | [Recovery](../ps04/README.md), [worker qualification](../ps05/README.md), current release controller | Local controller defaults remain serial; publication selects two workers and one compiler slot. Memory admission, source identity and verified cleanup still apply |
 | PS-06 checkpoint qualification | [Retained checkpoint history](../ps06/README.md), manual `seal-checkpoint.yml` | Earlier reports remain bound to their sources; ordinary PRs do not acquire another seal gate |
 | PS-07 retired historical O-10/O-11 replay cluster | [Deletion and surviving-owner ledger](../ps07/README.md) | Historical failures/regressions remain recoverable; current semantic owners survive |
 | PS-08 manual performance baseline | [Protocol and initial results](../ps08/README.md) | Small Node fixtures; no CI/seal threshold or broad performance promise |
@@ -44,14 +45,17 @@ not an executable waiver or a replacement for preflight and terminal evidence.
 | PMCP-01/01A/01B adapter and actual client compatibility | `packages/mcp/README.md`, client tasks under `wasm/test/mcp/` | Modern profile is default; measured Codex legacy profile is explicit; no blanket client/environment promise |
 | PMCP-02 through PMCP-05 immutable corpus, Entities operations, built host and public example | `examples/12-pulse-context-mcp/README.md`, context source/host tests | Five read-only tools; no inspect/build/doctor execution, workspace access or hosted deployment |
 | PMCP-06/07 public package and exact installed onboarding | PRs [#214](https://github.com/pulse-compute/pulse/pull/214)/[#215](https://github.com/pulse-compute/pulse/pull/215), `mcp-installed` release-feature owner | Development acceptance is not final tag qualification or registry installation evidence |
+| PRPT-00 through PRPT-06 Report capsules, retained evidence, CLI and offline viewer | [Installed qualification](../prpt06/README.md), [acceptance matrix](../prpt06/acceptance.md), registered Report unit/CLI tasks | Final candidate identity must be matched or qualified. Resource/reachability attribution is scoped; Own/Shared is unavailable; browser qualification remains partial |
+| Native static error-boundary bindings | [Current contract](../../architecture/current-contracts.md#native-internal-helper-sharing), PR [#229](https://github.com/pulse-compute/pulse/pull/229), application-error regression owners | Literal pairs use retained wrappers; dynamic boundaries retain their arguments. No new optimizer flag or broad performance promise |
+| B7-04/05 single candidate and published context verification | PRs [#232](https://github.com/pulse-compute/pulse/pull/232)/[#233](https://github.com/pulse-compute/pulse/pull/233), [publishing runbook](../../maintainers/npm-publishing.md) | Workflow preparation is merged; final tagged seal, publication and registry replay remain pending |
 | Documentation promotion fix | `3c24d1a4e79a6c47df5241cdf9b773549b076e4c`, current `documentation-deploy.yml` | Purge precedes public verification; final beta.7 origin/storage/config still need owner verification |
 
 The five tools are `pulse.start`, `pulse.search`, `pulse.read`, `pulse.example`
 and `pulse.explain_diagnostic`. Returned starter commands are client-side
 instructions; the server does not execute them. The example is bundled with the
 CLI, uses exact matching Pulse versions and runs from built artifacts outside
-the source checkout. MCP name reservation is complete; OIDC setup and beta.7
-publication remain pending external actions.
+the source checkout. MCP name reservation and owner-confirmed publisher setup
+are complete; actual beta.7 OIDC publication remains pending.
 
 ## Readiness ledger
 
@@ -66,9 +70,10 @@ remains the machine-owned stage contract; this ledger adds current beta.7 contex
 | beta.6 archive and released changelog history | proven | Documentation / B7-01 | Preserve exact prior bytes; final docs deployment must not replace immutable objects |
 | beta.7 KV/CAS qualification and human gate | pending | Nathan White + release engineering / B7-07 | Explicit qualification selected by owner; retain dedicated local/deployed K4 evidence and human review before publication |
 | npm package-name bootstrap | proven | Release owner / B7-02 | [Post-bootstrap verification](bootstrap.md#post-bootstrap-verification) confirms all 20 names compliant and published MCP bytes identical to the reviewed placeholder; refresh registry evidence before publication |
-| Trusted publishers, organization recovery/access and protected environment | pending | Release owner / B7-03 | [Exact publisher/environment checklist](publisher-setup.md) prepared; owner must confirm all 20 saved settings, direct-publication permission, environment restrictions/reviewer and bootstrap-credential removal |
-| One candidate, blocking audit, protected approval and mandatory Fastly lane | pending | Release engineering / B7-04; execution / B7-07 | Workflow preparation now uses one seal and its accepted tarballs, a blocking read-only audit before approval, two bounded workers and required checksum-pinned Fastly tooling. Final tagged execution remains pending; see the [publishing runbook](../../maintainers/npm-publishing.md#release-handoff-record) |
-| Published CLI/context smoke wiring | pending | Release engineering / B7-05; execution / B7-09 | Verification now runs the existing narrow context smoke after registry/CLI verification, requires its passing exact-version/cleanup report and retains failures. Actual beta.7 registry replay remains pending; no second full client/starter acceptance campaign |
+| Trusted publishers, organization recovery/access and protected environment | proven | Release owner / B7-03 | Owner confirmed “Yes everything is setup” on October 7; [attestation](publisher-setup.md#owner-completion-attestation) closes setup. Private settings were not independently inspected; actual OIDC proof remains B7-08 |
+| One candidate, blocking audit, protected approval and mandatory Fastly lane wiring | proven | Release engineering / B7-04; execution / B7-07 | Merged #232 uses one seal and its accepted tarballs, a blocking read-only audit before approval, two bounded workers and required checksum-pinned Fastly tooling. Final tagged execution remains pending |
+| Published CLI/context smoke wiring | proven | Release engineering / B7-05; execution / B7-09 | Merged #233 requires the narrow context smoke and its exact-version/cleanup report after registry/CLI verification, retaining failures. Actual registry replay remains pending |
+| Report release scope and disclosed gaps | proven | Release owner / B7-06; final review / B7-07 | Ship existing Report coverage with disclosed gaps; richer compiler telemetry is beta.8 work. This disposition does not turn partial browser evidence into a pass or replace final candidate matching |
 | Release PR, frozen main source and exact tag | pending | Release owner / B7-06 | Complete required main PR checks, review and tag the final source |
 | Complete seal, installed gates, dependency closure, Fastly lifecycle and cleanup | pending | Release engineering / B7-07 | Qualify once from the final tag; complete ordered coverage and exact artifacts are required |
 | Production advisory/license closure and dispositions | pending | Release engineering + release owner / B7-07 | Refresh existing audits in the final seal; apply the policy below, retain reports and resolve any findings |
@@ -80,6 +85,27 @@ Registry observations belong in the generated
 `.pulse-release-preflight/npm-catalog-audit.json`, not source policy. A prior
 registry audit and beta.6 OIDC success do not prove current private settings.
 Freshness and final candidate identity must be checked when those stages execute.
+
+## B7-06 release preparation
+
+Refresh base: `latest` at `5ab8941aa21203a06f5e28314a892bc4e2fffcf8`;
+release base: `main` at `4410513f82378f1dc4f4abb868b70fd0673115c4`.
+The release PR carries that reviewed work plus this small notes/ledger refresh.
+Version selection, the 20-package set, toolchain pins, npm `latest` policy,
+`https://pulsecompute.io/` and the preserved beta.6 archive remain selected.
+
+The October 8 release direction is to cut beta.7 with existing Report coverage
+and disclosed gaps, and defer compiler telemetry expansion to beta.8. Retain
+the [partial browser criteria](../prpt06/acceptance.md) and attribution limits as
+such. Final release review must assess that scope and exact installed candidate
+identity; this refresh claims no new browser, application-scale or provider proof.
+
+The ordinary main-target PR checks run before merge; this preparation adds no
+seal checkpoint. After review and those checks pass, the release owner merges,
+checks out the resulting remote `main` commit and uses `release:tag` to check and
+create the annotated `v1.0.0-beta.7` tag. Record the actual merge/tag commit, tree,
+tag object and publication workflow run in the release PR/handoff. Those final
+identities cannot be substituted with this preparation branch's commit.
 
 ## KV/CAS direction — qualification selected, evidence pending
 
@@ -144,7 +170,7 @@ The direction closes the preparation choice, not the qualification itself.
 
 One final tagged publication run should qualify the candidate, perform a
 blocking read-only audit/plan, wait for protected owner approval, then publish
-and verify the same sealed bundle. B7-04 owns that change; this PR does not claim
-the existing workflow already does it. Reuse work only through the existing
+and verify the same sealed bundle. B7-04/05 wiring is merged; its final tagged
+execution remains pending. Reuse work only through the existing
 verified same-candidate/checkout recovery rules, preserve failed attempts, and
 do not combine foreign or partial proofs into a seal.
