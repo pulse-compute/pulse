@@ -18,7 +18,9 @@ let negative = 0;
 function rejects(fn, code) { negative++; assert.throws(fn, error => { if (code && error.code !== code) console.error(error.stack); return !code || error.code === code; }); }
 function write(file, text) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, text); }
 async function main() {
-  const directory = fs.mkdtempSync(path.join(root, 'wasm/.test-results/prpt02-'));
+  const results = path.join(root, 'wasm/.test-results');
+  fs.mkdirSync(results, { recursive: true });
+  const directory = fs.mkdtempSync(path.join(results, 'prpt02-'));
   try {
     const { createEmbeddedManifest } = await import(pathToFileURL(path.join(root, 'packages/assets/dist/embedded.js')));
     const embedded = await createEmbeddedManifest([{ path: '/logo.txt', bytes: Buffer.from('ASSET_BODY_CANARY'), contentType: 'text/plain' }]);
