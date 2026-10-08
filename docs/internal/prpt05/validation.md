@@ -35,7 +35,8 @@ Initial focused attempt: viewer passed; workflow stopped on a duplicate variable
 in the updated test. The test variable was renamed before retry. Preserve this
 failed attempt alongside successful terminal receipts in the machine record.
 
-A late review tightened duplicate-measurement handling: when a subject/metric has
+The initial implementation included a duplicate-measurement guard (superseded
+by the preview correction below): when a subject/metric has
 multiple records for the primary artifact, the viewer leaves the size unavailable
 and directs the reader to the full capsule instead of choosing one silently. A
 focused final rerun identifies the final renderer and integration bytes. A final
@@ -52,7 +53,7 @@ separately, without claiming that it type-checks the browser DOM code.
 
 ## Browser qualification checklist
 
-**Pending; not passed.** The local browser executable was absent and the official
+**Partial user preview evidence; full checklist not passed.** The local browser executable was absent and the official
 Playwright download returned invalid/truncated archives. Initial automatic approval
 review blocked transfer to the remote browser. The user subsequently explicitly
 authorized opening synthetic reports and the ARC design fixture there.
@@ -68,8 +69,9 @@ The authorized attempt on 2026-10-08 UTC exposed two environment limitations:
 
 Authorization is no longer missing. Browser execution requires an environment
 that supports these local files; this session cannot establish the checklist
-below. No report DOM, rendered screenshot, download, or browser interaction pass
-was observed. Portable model assertions are not DOM/layout proof.
+below through agent-driven browser inspection. The subsequent user preview
+observations are recorded below. No screenshot, download or full browser pass is
+claimed. Portable model/element assertions are not layout proof.
 
 Use the exact locked design HTML and route/expanded-schema previews from the
 [implementation packet](README.md#locked-design) as reference, plus minimal,
@@ -97,3 +99,48 @@ blocked, including direct `file://` opening:
    findings and screenshots, with source/fixture hashes and tested viewport sizes.
 
 A09/A16 and browser portions of A10 remain open until those observations exist.
+
+## Preview feedback and corrections
+
+Follow-up base: `a064182883df9d6717597abc9d35c7dae8c6b5c7` (`latest`, PR #226 merge).
+Classification: defect; ordinary root/wasm/CLI/docs instruction chain. Human
+feedback authorizes this correction; no compiler, collector or capsule contract
+changes and no new production dependencies.
+
+On 2026-10-08 UTC the user opened `Pulse-Report-PRPT05-Preview.html` in conversation
+preview. They reported all expansions and tabs working, including schemas, but
+found missing artifact graphs, status words replacing numeric evidence coverage,
+and poor resource/artifact size presentation. This is user-observed interactive
+preview evidence, not a claim about all browsers or the unobserved checklist.
+
+Corrections restore proportional composition bars using numeric SVG attributes
+under the existing CSP, handler/reachability counts, artifact section tables,
+resource input/retained columns with expansion, and route size summary cards.
+Counts derive from the capsule: the small synthetic preview has 2/2 handler
+mappings and 1/2 measured reachability roots. The locked ARC design's 20/24 is
+sample data, not a constant to copy into another application's report.
+
+The preview capsule contains no duplicate measurement keys. Its two `/same`
+registrations have different route IDs and equal 4-byte handler measurements.
+The first registration has a bounded 6-byte reachable measurement and an
+unavailable own measurement (`incomplete-root-universe`); other missing metrics
+remain missing. The collector emits one record per route/artifact/metric.
+Repeated route registrations are not conflicting measurement records.
+
+For replay capsules with repeated measurements, the viewer coalesces only
+semantically equivalent claims, ignoring record IDs and merging evidence IDs.
+Byte values alone are insufficient: method, coverage, mapped bodies/chunks and
+root scope must also match. Distinct variants are labeled “Multiple measurements”
+and displayed individually with values and provenance in Size attribution. All
+original records remain in exported JSON.
+
+The focused renderer task now records the actual generated element structure:
+summary/resource SVG bars and their byte totals, numeric coverage, the four-size
+grid, resource columns/expansion and visible competing measurements. This small
+element recorder is not a browser or layout engine. Existing CSP/export, unknown
+state, sorting and output-safety checks remain in the same task. The first test
+attempt exposed shared object references in the new conflict test fixture; the
+fixture was cloned before mutation and the focused rerun passed.
+
+The corrected HTML still needs visual feedback. No new automated browser pass,
+keyboard qualification, file-URL execution or download pass is claimed.

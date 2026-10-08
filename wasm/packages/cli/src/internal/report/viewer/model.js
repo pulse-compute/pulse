@@ -17,8 +17,28 @@ function createReportViewModel(P) {
     if (!measurementIndex.has(key)) measurementIndex.set(key, []);
     measurementIndex.get(key).push(m);
   }
-  const measurement = (r, metric) => {const rows=measurementIndex.get(r.id + ':' + metric);return rows?.length===1?rows[0]:undefined;};
-  const measurementIssue = (r, metric) => (measurementIndex.get(r.id + ':' + metric)?.length??0)>1 ? 'multiple measurement records; inspect full capsule' : 'missing-evidence';
+  // Repeated evidence for the same measurement is not missing data. Coalesce
+  // only equivalent claims; equal byte counts with different scopes still differ.
+  const resolutions = new Map();
+  for (const [key, records] of measurementIndex) {
+    const groups = new Map();
+    for (const row of records) {
+      const {id, fact, ...claim} = row, {evidenceIds, ...value} = fact;
+      const signature = canonical({...claim, bodyIds:[...(claim.bodyIds || [])].sort(), fact:value});
+      if (!groups.has(signature)) groups.set(signature, {...row, fact:{...fact, evidenceIds:[]}, recordIds:[]});
+      const group = groups.get(signature);
+      group.recordIds.push(id);
+      group.fact.evidenceIds = [...new Set([...group.fact.evidenceIds, ...evidenceIds])].sort();
+    }
+    const variants = [...groups.values()];
+    resolutions.set(key, {records, variants, measurement:variants.length === 1 ? variants[0] : undefined});
+  }
+  const measurementResolution = (r, metric) => resolutions.get(r.id + ':' + metric) || {records:[], variants:[], measurement:undefined};
+  const measurement = (r, metric) => measurementResolution(r, metric).measurement;
+  const measurementIssue = (r, metric) => {
+    const result = measurementResolution(r, metric);
+    return result.variants.length > 1 ? result.variants.length + ' distinct measurements; compare values, methods and scope in Size attribution' : 'missing-evidence';
+  };
   const factValue = f => f?.state === 'available' ? f.value : null;
   const qualifier = f => f ? [f.state, f.basis, f.coverage, f.reason].filter(Boolean).join(' · ') : 'unavailable · missing-evidence';
   const metricValue = r => factValue(measurement(r, state.metric)?.fact);
@@ -41,6 +61,13 @@ function createReportViewModel(P) {
     const key=state.schemaSort, get=s=>key==='name'?s.schemaId:key==='keys'?s.structure.topLevelKeys:key==='required'?s.structure.requiredKeys:key==='descriptor'?s.structure.descriptorBytes:s.routeIds.length;
     return P.schemas.filter(s=>[s.schemaId,...s.structure.properties.map(p=>p.name+' '+p.type)].join(' ').toLowerCase().includes(state.schemaSearch)).sort((a,b)=>compareValues(get(a),get(b),state.schemaDir)||schemaIndex.get(a.id)-schemaIndex.get(b.id));
   }
-  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas};
+  function composition(artifact) {
+    if (artifact.sectionCoverage.status !== 'complete') return null;
+    const parts = [{id:'code',label:'Code',bytes:0},{id:'data',label:'Data',bytes:0},{id:'custom',label:'Custom',bytes:0},{id:'other',label:'Other + header',bytes:8}];
+    for (const s of artifact.sections) parts[s.id===10?0:s.id===11?1:s.id===0?2:3].bytes += s.bytes;
+    return parts;
+  }
+  const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
+  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,composition,mappingCoverage};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

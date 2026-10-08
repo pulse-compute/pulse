@@ -65,7 +65,7 @@
     if(value<1048576)return (value/1024).toFixed(precision).replace(/\.0$/,'')+' KiB';
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
-  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas} = createReportViewModel(P);
+  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,composition,mappingCoverage} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
@@ -76,6 +76,12 @@
   const sectionHeading = (title, desc, count) => el('div',{class:'section-heading'},el('div',{},el('h2',{},title,count == null ? null : el('span',{class:'count-pill'},count)),el('p',{},desc)));
   const methodTag = method => el('span',{class:'method ' + (['GET','POST','PUT','PATCH','DELETE','OPTIONS','HEAD'].includes(method) ? 'method-' + method : '')},method);
   const tag = text => el('span',{class:'evidence-label'},text);
+  const byteDisplay = (value, cls='size-grid-value') => {
+    if (value == null) return el('div',{class:cls+' size-unavailable'},'Unavailable');
+    const [amount,unit] = bytes(value).split(' ');
+    return el('div',{class:cls},amount,el('span',{class:'unit'},unit));
+  };
+  const measurementText = (r,metric) => measurementResolution(r,metric).variants.length > 1 ? 'Multiple measurements' : factText(measurement(r,metric)?.fact);
   const routeChips = ids => el('div',{class:'route-chips'},ids.map(id => {
     const r = routes.get(id); return r ? el('a',{class:'route-chip',href:'#routes/' + routeIndex.get(id)},r.method + ' ' + r.path) : el('span',{},'Unknown route reference');
   }));
@@ -88,9 +94,21 @@
   function buildNavigation() {
     for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},P[id].length))));
   }
-  function ledger(artifact) {
-    const names = {0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
-    return el('div',{},el('div',{class:'ledger-sections'},el('span',{},'Header ',el('code',{},'8 B')),artifact.sections.map(s => el('span',{},names[s.id] || 'Section '+s.id, ' ',el('code',{title:exact(s.bytes)},bytes(s.bytes))))),el('p',{class:'small-note'},`Physical bytes: ${exact(artifact.bytes)} · section coverage: ${artifact.sectionCoverage.status}. Sections include framing; payload bytes are separate.`));
+  function ledger(artifact, large=false) {
+    const parts=composition(artifact);
+    if (!parts) return note('Composition unavailable: section coverage is '+artifact.sectionCoverage.status+'. Physical total: '+exact(artifact.bytes)+'.');
+    // Numeric SVG geometry preserves exact proportions without inline styles,
+    // which the fixed content policy deliberately prohibits.
+    const chart=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    for(const [key,value] of Object.entries({class:'ledger-bar',viewBox:'0 0 '+artifact.bytes+' 20',preserveAspectRatio:'none',role:'img','aria-label':'Artifact composition: '+parts.map(p=>p.label+' '+exact(p.bytes)).join(', ')})) chart.setAttribute(key,value);
+    let x=0;
+    for(const part of parts) {
+      if(!part.bytes) continue;
+      const rect=document.createElementNS(chart.namespaceURI,'rect');
+      for(const [key,value] of Object.entries({x,y:0,width:part.bytes,height:20,class:'segment-'+part.id})) rect.setAttribute(key,value);
+      const title=document.createElementNS(chart.namespaceURI,'title');title.textContent=part.label+': '+exact(part.bytes);rect.append(title);chart.append(rect);x+=part.bytes;
+    }
+    return el('div',{class:large?'ledger-large':''},chart,el('div',{class:'ledger-legend'},parts.map(p=>el('span',{class:'legend-item'},el('span',{class:'swatch segment-'+p.id}),p.label,el('span',{class:'mono'},bytes(p.bytes))))));
   }
   function drawSummary() {
     for (const id of ['app-name','sidebar-app','crumb-app']) $('#'+id).textContent = P.application.name;
@@ -101,12 +119,16 @@
     $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
     $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
     const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+new Set(P.entries.map(e=>e.handlerId).filter(Boolean)).size+' recorded handlers','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),'Input bytes and retained payload stay distinct','resources']];
-    replace($('#summary-strip'),items.map(([label,value,sub,view])=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
+    replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
     $('#route-total').textContent = P.routes.length;
     const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
     $('#mapping-label').textContent = `${mapped} / ${P.routes.length} handler mappings · ${A.stage}`;
     replace($('#compact-ledger'),ledger(A));
-    replace($('#compact-coverage'),['routes','schemas','resources'].map(name=>el('div',{class:'coverage-mini'},el('div',{class:'number'},P.coverage[name].status),el('span',{class:'coverage-label'},name+' inventory'))));
+    const tests=P.evidence.filter(e=>e.kind==='test'&&e.artifactIds.includes(A.id));
+    replace($('#compact-coverage'),[['handler-body','Handler mappings'],['reachable','Reachability roots']].map(([metric,label])=>{
+      const c=mappingCoverage(metric);
+      return el('div',{class:'coverage-mini'},el('div',{class:'number'},c.available,el('span',{},' / '+c.total)),el('span',{class:'coverage-label'},label));
+    }),el('div',{class:'coverage-mini'},el('div',{class:'number coverage-state'},tests.length?String(tests.length):'Not recorded'),el('span',{class:'coverage-label'},'Scoped test records')));
   }
   function populateFilters() {
     const add = (id, rows) => rows.forEach(([value,label])=>$('#'+id).append(el('option',{value},label)));
@@ -129,7 +151,7 @@
     replace($('#route-body'),visibleRoutes.map(r => {
       const m=measurement(r,state.metric),value=factValue(m?.fact);
       return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable')),
-        el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{},value===null?factText(m?.fact):bytes(value)),el('div',{class:'secondary'},value===null?(m?.fact.reason??measurementIssue(r,state.metric)):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
+        el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{class:'metric-value'},measurementText(r,state.metric)),el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
     }));
     $('#route-empty').hidden = visibleRoutes.length!==0;
     $('#route-result-count').textContent = `${visibleRoutes.length} of ${P.routes.length} registrations · ${P.coverage.routes.status} inventory`;
@@ -157,16 +179,58 @@
       detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
     else if(state.drawerTab==='size') {
       panel.append(note('Shared bodies are nonadditive. Code bytes are not execution cost or guaranteed removal savings.'));
-      for(const [metric,label] of Object.entries(metrics)) {const m=measurement(r,metric);panel.append(detailSection(label,el('div',{class:'size-grid-value'},factText(m?.fact)),kv([['Exact bytes',exact(factValue(m?.fact))],['Evidence',m?qualifier(m.fact):measurementIssue(r,metric)],['Method',m?.method??'unavailable'],['Mapped chunks',m?`${m.mappedChunks} / ${m.expectedChunks??'unknown'}`:'unavailable'],['Physical artifact',A.id+' · '+A.stage],['Shared body identity',m?.bodyIds.join(', ')||'unavailable']]),...evidenceCards(m?.fact.evidenceIds??[])));}
+      panel.append(el('div',{class:'size-grid'},Object.entries(metrics).map(([metric,label])=>{
+        const m=measurement(r,metric),value=factValue(m?.fact);
+        return el('div',{},el('div',{class:'size-grid-label'},label),value===null?el('div',{class:'size-grid-value size-unavailable'},measurementText(r,metric)):byteDisplay(value),el('div',{class:'size-grid-exact'},m?(value===null?m.fact.reason??m.fact.state:exact(value)+' · '+m.fact.coverage):measurementIssue(r,metric)));
+      })));
+      for(const [metric,label] of Object.entries(metrics)) {
+        const resolution=measurementResolution(r,metric);
+        panel.append(el('details',{class:'details-block metric-details'},el('summary',{},label+' · '+measurementText(r,metric)),
+          resolution.variants.length>1?note('These records differ in value, method, coverage or root scope. Compare them below; no single value is selected or added.'):null,
+          resolution.variants.length?resolution.variants.map(m=>el('section',{class:'measurement-record'},byteDisplay(factValue(m.fact)),kv([['Exact bytes',exact(factValue(m.fact))],['Evidence',qualifier(m.fact)],['Method',m.method],['Mapped chunks',`${m.mappedChunks} / ${m.expectedChunks??'unknown'}`],['Physical artifact',A.id+' · '+A.stage],['Root set',m.rootSetId??'Not applicable'],['Root',m.rootId??'Not applicable'],['Body identities',m.bodyIds.join(', ')||'Not recorded'],['Measurement records',m.recordIds.join(', ')]]),...evidenceCards(m.fact.evidenceIds))):el('p',{class:'small-note'},'No measurement record was retained for this metric.')));
+      }
     } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
     replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},r.handlerName??'Name unavailable'),tabs,panel);
   }
   function renderResources() {
-    replace($('#view-resources'),sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),
-      ...P.artifacts.map(a=>el('section',{class:'surface panel-pad subsection'},el('h3',{},a.host+' · '+a.stage+' · '+bytes(a.bytes)),el('p',{class:'small-note mono record-text'},'SHA-256 '+a.sha256),ledger(a),a.ledger?kv([['Code bodies',exact(a.ledger.codeBodyBytes)],['Code framing',exact(a.ledger.codeFramingBytes)],['Data payload',factText(a.ledger.dataPayloadBytes)+' · '+qualifier(a.ledger.dataPayloadBytes)],['Unattributed data payload',factText(a.ledger.unattributedDataPayloadBytes)+' · '+qualifier(a.ledger.unattributedDataPayloadBytes)]]):note('Detailed code/data ledger unavailable.'),el('details',{class:'details-block'},el('summary',{},'Physical section records'),el('pre',{class:'record-text'},JSON.stringify(a.sections,null,2))))),
-      sectionHeading('Resource inventory','Input bytes describe source resources; retained payload requires its own measured mapping.',P.resources.length),
-      ...(P.resources.length ? P.resources.map((r,i)=>el('details',{class:'surface subsection',open:state.expandedResources.has(r.id),on:{toggle:e=>{e.target.open?state.expandedResources.add(r.id):state.expandedResources.delete(r.id);}}},el('summary',{'data-resource-index':i},r.name+' · '+r.kind+' · retained '+factText(r.retainedPayloadBytes)),el('div',{},kv([['Input bytes',factText(r.inputBytes)+' · '+qualifier(r.inputBytes)],['Retained payload',factText(r.retainedPayloadBytes)+' · '+qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Unavailable'],['Physical artifact',r.artifactId??'Unavailable']]),routeChips(r.routeIds),...evidenceCards(r.evidenceIds)))):[note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')]));
+    const sectionNames={0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
+    const factCell=f=>el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(f)),el('div',{class:'secondary'},f.state==='available'?f.basis+' · '+f.coverage:f.reason??f.state));
+    const resourceRows=[];
+    P.resources.forEach((r,i)=>{
+      const open=state.expandedResources.has(r.id);
+      const expand=button((open?'▾ ':'▸ ')+r.name,()=>{open?state.expandedResources.delete(r.id):state.expandedResources.add(r.id);renderResources();$('#resource-expand-'+i).focus({preventScroll:true});},'resource-expand mono');
+      expand.id='resource-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','resource-detail-'+i);
+      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand),el('td',{},r.kind),factCell(r.inputBytes),factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' routes')));
+      resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:5},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
+        el('div',{},el('h3',{},'Resource facts'),kv([['Input bytes',exact(factValue(r.inputBytes))],['Input evidence',qualifier(r.inputBytes)],['Retained payload',exact(factValue(r.retainedPayloadBytes))],['Retained evidence',qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Not recorded'],['Physical artifact',r.artifactId??'Not mapped']]),routeChips(r.routeIds)),
+        el('div',{},el('h3',{},'Evidence'),...evidenceCards(r.evidenceIds))]:[])))));
+    });
+    const artifactPanels=P.artifacts.map(a=>{
+      const rows=[{name:'Header',bytes:8},...a.sections.map(s=>({name:sectionNames[s.id]||'Section '+s.id,bytes:s.bytes}))]
+        .map(s=>el('tr',{},el('td',{},s.name),el('td',{},bytes(s.bytes)),el('td',{},exact(s.bytes))));
+      rows.push(el('tr',{class:'total'},el('td',{},'Physical total'),el('td',{},bytes(a.bytes)),el('td',{},exact(a.bytes))));
+      const physical=el('div',{class:'surface panel-pad'},
+        el('div',{class:'panel-topline'},el('div',{},el('h3',{},a.host+' · '+a.stage),el('p',{},'Physical file accounting')),byteDisplay(a.bytes,'artifact-big')),
+        ledger(a,true),el('table',{class:'ledger-table'},el('caption',{class:'sr-only'},'Physical artifact sections'),el('tbody',{},rows)));
+      const inside=el('div',{class:'surface panel-pad'},el('h3',{},'Inside the artifact'),
+        a.ledger?kv([['Code bodies',exact(a.ledger.codeBodyBytes)],['Code framing',exact(a.ledger.codeFramingBytes)],['Data payload',factText(a.ledger.dataPayloadBytes)+' · '+qualifier(a.ledger.dataPayloadBytes)],['Unattributed data payload',factText(a.ledger.unattributedDataPayloadBytes)+' · '+qualifier(a.ledger.unattributedDataPayloadBytes)]]):note('Detailed code/data ledger unavailable.'),
+        el('p',{class:'small-note'},'Section coverage: '+a.sectionCoverage.status+'. Sections include framing; resource payloads are subsets of these bytes.'),
+        el('p',{class:'small-note mono record-text'},'SHA-256 '+a.sha256),
+        el('details',{class:'details-block'},el('summary',{},'Physical section records'),el('pre',{class:'record-text'},JSON.stringify(a.sections,null,2))));
+      return el('section',{class:'two-column subsection'},physical,inside);
+    });
+    const resourceTable=el('table',{class:'inventory-table resource-table'},
+      el('caption',{class:'sr-only'},'Resource input and retained sizes'),
+      el('thead',{},el('tr',{},['Resource','Kind / section','Input bytes','Retained payload','References'].map(label=>el('th',{},label)))),
+      el('tbody',{},resourceRows));
+    replace($('#view-resources'),
+      sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),
+      note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),artifactPanels,
+      el('div',{class:'subsection'},sectionHeading('Resource inventory','Input bytes describe source resources; retained payload requires its own measured mapping.',P.resources.length),
+        P.resources.length?el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable resource inventory'},resourceTable))
+          :note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')));
   }
+
   function schemaSortHead(key,label) {return el('th',{'data-schema-sort':key,'aria-sort':state.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none'},button(label+' ↕',()=>{state.schemaDir=state.schemaSort===key?(state.schemaDir==='asc'?'desc':'asc'):(key==='name'?'asc':'desc');state.schemaSort=key;renderSchemaRows();},'schema-sort-button'));}
   function renderSchemas() {
     const search=el('input',{id:'schema-search',type:'search',value:state.schemaSearch,placeholder:'Find schemas or field names…','aria-label':'Search schemas and fields',on:{input:e=>{state.schemaSearch=e.target.value.toLowerCase();renderSchemaRows();}}});
