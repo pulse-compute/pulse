@@ -108,6 +108,14 @@ function check(capsule) {
     coverage(artifact.sectionCoverage, artifact.sections.length);
     artifact.sections.forEach((section, index) => ensure(section.index === index && section.payloadBytes <= section.bytes));
     if (artifact.sectionCoverage.status === 'complete') ensure(8 + artifact.sections.reduce((n, s) => n + s.bytes, 0) === artifact.bytes, 'REPORT_LEDGER');
+    if (artifact.ledger) {
+      const ledger = artifact.ledger; fact(ledger.dataPayloadBytes); fact(ledger.unattributedDataPayloadBytes);
+      ensure(ledger.codeBodyBytes + ledger.codeFramingBytes === artifact.sections.filter(row => row.id === 10).reduce((n, row) => n + row.bytes, 0), 'REPORT_LEDGER');
+      if (ledger.dataPayloadBytes.state === 'available') {
+        ensure(ledger.dataPayloadBytes.value <= artifact.sections.filter(row => row.id === 11).reduce((n, row) => n + row.payloadBytes, 0), 'REPORT_LEDGER');
+        if (ledger.unattributedDataPayloadBytes.state === 'available') ensure(ledger.unattributedDataPayloadBytes.value <= ledger.dataPayloadBytes.value, 'REPORT_LEDGER');
+      } else ensure(ledger.unattributedDataPayloadBytes.state !== 'available', 'REPORT_LEDGER');
+    }
   }
   const primary = maps.artifacts.get(capsule.context.primaryArtifactId);
   ensure(primary && primary.stage === 'final' && primary.host === capsule.context.host, 'REPORT_ELIGIBILITY');
@@ -134,6 +142,7 @@ function check(capsule) {
     const maximum = artifact.sectionCoverage.status === 'complete'
       ? artifact.sections.filter(section => section.id === 10).reduce((sum, section) => sum + section.payloadBytes, 0) : artifact.bytes;
     ensure((bodyTotals.get(artifact.id) || 0) <= maximum, 'REPORT_LEDGER');
+    if (artifact.ledger) ensure((bodyTotals.get(artifact.id) || 0) === artifact.ledger.codeBodyBytes, 'REPORT_LEDGER');
   }
   const rootLookups = new Map();
   for (const set of capsule.rootSets) {

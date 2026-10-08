@@ -22,6 +22,7 @@ const {
 } = require('@pulse-compute/wasm-contracts/package/package-contract');
 const {
   EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION,
+  prepareReportCapture,
   appendAssemblyScriptOptimizationArgs
 } = require('@pulse-compute/wasm-build-support/native-optimization');
 
@@ -2087,6 +2088,10 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     portableGeneratorVersion: portable.version,
     portableSourceHash: portable.sourceHash,
     schemaCodecs: portable.manifest.schemaCodecs,
+    handlerBodies: portable.manifest.handlerBodies,
+    dispatcher: portable.manifest.dispatcher,
+    stages: portable.manifest.stages,
+    helperBodies: portable.manifest.helperBodies,
     crypto: portable.manifest.crypto,
     jwt: jwtSource
       ? Object.freeze({
@@ -2299,6 +2304,8 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         '--path', jsonAs.dependencyRoot
       );
     }
+    const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
+      require(path.join(asc.packageRoot, 'package.json')).version, 'fastly-native-platform-capabilities.as/');
     const startedAt = Date.now();
     const result = spawnSync(asc.executable, args, {
       cwd: stagingDir,
@@ -2471,6 +2478,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     return Object.freeze({
       version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
+      reportAttribution: readReportCapture(wasm),
       plan,
       generated,
       source: generated.source,
