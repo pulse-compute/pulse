@@ -7,13 +7,10 @@
   "qualifiedVersion": "1.0.0-beta.7",
   "packageProof": "evidence/installed-packages.json",
   "installedCommandProof": "evidence/installed-command.json",
-  "corpusSourceProof": "evidence/corpus.json",
   "corpora": [
-    "evidence/minimal.json",
-    "evidence/arc.json",
-    "evidence/catalog.json"
+    "evidence/minimal.json"
   ],
-  "reportCommandsPassed": 51,
+  "reportCommandsPassed": 17,
   "acceptance": "acceptance.md",
   "costs": "measurements.md",
   "fullSuiteRepeated": false,
@@ -86,12 +83,11 @@
   "checks": {
     "officialPack": "passed, all 20 packages, repository-only packets excluded",
     "installedFileIdentity": "passed, 1072 files, lifecycle scripts disabled, no workspace package links",
-    "sourceIdentity": "390 files / 3210542 bytes verified against Git blob IDs",
     "installedPublicSurfaces": "passed, help/spec/reference/three completions",
-    "corpus": "minimal Node Native, ARC Fastly Native, Catalog Node Native passed",
+    "corpus": "retained minimal Node Native fixture passed; private consumer acceptance is external",
     "canonicalRoundTrip": "JSON/HTML/terminal identity, repeated output, isolated replay and guest hash checks passed",
     "exampleReplay": "committed minimal capsule replays byte-identically through installed CLI",
-    "redaction": "five config-value/path canaries for minimal/ARC; four credential/endpoint/path canaries for Catalog",
+    "redaction": "minimal fixture and adversarial synthetic cases; private consumer receipts excluded",
     "build": "workspace TypeScript build passed",
     "documentation": "sync/corpus regeneration, docs check and documentation-release passed",
     "maintainer": "sync/check passed",
@@ -108,105 +104,13 @@
       "operation": "minimal qualification helper",
       "status": "initial helper failures corrected",
       "reason": "guard initially blocked allowed static config parser; terminal expectation assumed thousands separators; helper corrected to the actual public contract"
-    },
-    {
-      "operation": "Catalog build",
-      "status": "initial setup failure then passed",
-      "reason": "132 native-contract import blockers caused by dependencies above workspace boundary; byte-identical dependency copy inside workspace resolved them"
-    },
-    {
-      "operation": "Catalog report receipt",
-      "status": "successful commands but incomplete saved progress receipt; final sequential rerun passed",
-      "reason": "initial saved file lacked terminal status despite successful console result; final independent receipt has all 17 samples, passed checks, identical JSON and HTML"
     }
   ],
   "remaining": [
     "full browser offline/mobile/keyboard/focus/Blob download and corrected visual-layout qualification",
     "resource payload inventory/ownership remains partial",
-    "Catalog binding inventory partial; handler mapping 12/100; reachability unavailable",
     "Own/Shared attribution unavailable due incomplete ownership root universe",
     "only selected corpus profiles measured; no all-profile, deployed-provider, or total build-overhead claim"
   ],
-  "files": [
-    {
-      "file": "docs/architecture/current-contracts.md",
-      "sha256": "30e733abab310f69a41f61b80d12ffe9c1bb9f531ba76f81fbed2220dd6ed262"
-    },
-    {
-      "file": "docs/internal/prpt00/feature-spec-v2.md",
-      "sha256": "acdc8293ab4214fd924af3ee1c94cc7be038c8290d4a41e688d83fdbab18d878"
-    },
-    {
-      "file": "docs/internal/prpt06/README.md",
-      "sha256": "485a0ee31b5d2c6087174ae6d9d11a09fc592df4b337cc904acf1303fa596617"
-    },
-    {
-      "file": "docs/internal/prpt06/acceptance.md",
-      "sha256": "28fa4544378fe78435ac2becbc44c6adb7aeb15a7cd975ad8c74416a0c9eba0a"
-    },
-    {
-      "file": "docs/internal/prpt06/check-installed.cjs",
-      "sha256": "849ce5ee612b5abf1662f6d38c774b7c76c71a7ef8c47cde54da155b8596b7a1"
-    },
-    {
-      "file": "docs/internal/prpt06/evidence/arc.json",
-      "sha256": "b11ea5ebd748600acd15f12285f37b6d6498bc457f78cbb6fab510d99e48229c"
-    },
-    {
-      "file": "docs/internal/prpt06/evidence/catalog.json",
-      "sha256": "9f441025970524b1d1899912087dc72ababfd61f2968e45f421cad4aa82068e6"
-    },
-    {
-      "file": "docs/internal/prpt06/evidence/corpus.json",
-      "sha256": "5be3cb3dd0e43b6c24f2bfd7f1322e3341c434f314ba284b1e0ca5949987b4fd"
-    },
-    {
-      "file": "docs/internal/prpt06/evidence/installed-command.json",
-      "sha256": "d152bfebc6c37d3903abb74bd02d32ae8cc4493f3a6d2b05d705ab64e8d2ff2d"
-    },
-    {
-      "file": "docs/internal/prpt06/evidence/installed-packages.json",
-      "sha256": "82d29a215d4b1d9ef90c9eb10a93ffb2ed6e476b0fabbe647e1f23d3825d663c"
-    },
-    {
-      "file": "docs/internal/prpt06/evidence/minimal.json",
-      "sha256": "92616f6d135fe7ae3ae44eb6c360385404159a9957a7e643091fd24d44997c4d"
-    },
-    {
-      "file": "docs/internal/prpt06/examples/minimal.html",
-      "sha256": "dabdacd05256c9a4d5867a6314b47f8428965ad48316d3587b68ebec965af855"
-    },
-    {
-      "file": "docs/internal/prpt06/examples/minimal.json",
-      "sha256": "4ce1a15d73c5aceb1dbe6832873223debb0527a585b80dbb0647cde075647c47"
-    },
-    {
-      "file": "docs/internal/prpt06/install.cjs",
-      "sha256": "f23048016f2bb838d117376d4ca4956d2e46ebfe9fd023fe2d361de392995c92"
-    },
-    {
-      "file": "docs/internal/prpt06/measure-worker.cjs",
-      "sha256": "e706792892997a20f5faebd55213e332ea45613a2ac41b3a374dadace31f2d82"
-    },
-    {
-      "file": "docs/internal/prpt06/measurements.md",
-      "sha256": "46e74e54b2826ce9d3e6ba9e6867e5fbce7fe71b3b71fc2f8aaa2ca0303169d4"
-    },
-    {
-      "file": "docs/internal/prpt06/qualify.cjs",
-      "sha256": "072ca1d36d0d395a37552b1ce708a569dc107618e591d014d0a1159ee4c03b08"
-    },
-    {
-      "file": "examples/12-pulse-context-mcp/context-corpus.ts",
-      "sha256": "e510e5c4e78822a7ef8db2aae9d620ec25e400bd1098c3d936697c7f66ff7466"
-    },
-    {
-      "file": "wasm/packages/cli/docs/architecture/current-contracts.md",
-      "sha256": "30e733abab310f69a41f61b80d12ffe9c1bb9f531ba76f81fbed2220dd6ed262"
-    },
-    {
-      "file": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
-      "sha256": "e510e5c4e78822a7ef8db2aae9d620ec25e400bd1098c3d936697c7f66ff7466"
-    }
-  ]
+  "retention": "Public minimal fixture and package/producer checks only; private consumer evidence and source pins excluded."
 }
