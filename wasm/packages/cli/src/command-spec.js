@@ -1,8 +1,8 @@
 'use strict';
 
 const COMMAND_SPEC_VERSION = 'pulse.cli-command-spec.v5';
-const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor']);
-const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build']);
+const COMMANDS = Object.freeze(['init', 'dev', 'test', 'inspect', 'compile', 'build', 'doctor', 'report']);
+const PUBLIC_COMMAND_ORDER = Object.freeze(['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
 
 function freezeOption(value) {
   return Object.freeze({
@@ -15,6 +15,7 @@ function freezeOption(value) {
 }
 
 const OPTION_SPECS = Object.freeze([
+  freezeOption({ id: 'html', key: 'html', flags: ['--html'], kind: 'boolean', commands: ['report'], visibility: 'public', description: 'Request an offline HTML report (not yet available); mutually exclusive with --json.' }),
   freezeOption({ id: 'help', key: 'help', flags: ['--help', '-h'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Print public CLI help and exit.' }),
   freezeOption({ id: 'json', key: 'json', flags: ['--json'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Emit machine-readable JSON. pulse dev emits one JSON event per line.' }),
   freezeOption({ id: 'dry-run', key: 'dryRun', flags: ['--dry-run', '--plan'], kind: 'boolean', commands: 'all', visibility: 'public', description: 'Resolve and report the command plan without executing it.' }),
@@ -27,11 +28,11 @@ const OPTION_SPECS = Object.freeze([
   freezeOption({ id: 'experimental-native-bounded-size', key: 'experimentalNativeBoundedSize', flags: ['--experimental-native-bounded-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag.' }),
   freezeOption({ id: 'experimental-native-size', key: 'experimentalNativeSize', flags: ['--experimental-native-size'], kind: 'boolean', commands: ['compile', 'build'], visibility: 'public', description: 'Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.' }),
 
-  freezeOption({ id: 'profile', key: 'profile', flags: ['--profile'], kind: 'value', valueName: '<profile>', commands: ['doctor', 'inspect', 'test', 'dev', 'compile', 'build'], visibility: 'public', description: 'Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.' }),
-  freezeOption({ id: 'out', key: 'outDir', flags: ['--out'], kind: 'value', valueName: '<dir>', commands: ['compile', 'build'], visibility: 'public', description: 'Override the project-relative artifact output directory.' }),
+  freezeOption({ id: 'profile', key: 'profile', flags: ['--profile'], kind: 'value', valueName: '<profile>', commands: ['doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report'], visibility: 'public', description: 'Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.' }),
+  freezeOption({ id: 'out', key: 'outDir', flags: ['--out'], kind: 'value', valueName: '<dir>', valueNameByCommand: { report: '<file.html>' }, descriptionByCommand: { report: 'HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.' }, commands: ['compile', 'build', 'report'], visibility: 'public', description: 'Override the project-relative artifact output directory.' }),
   freezeOption({ id: 'host', key: 'host', flags: ['--host'], kind: 'value', valueName: '<host>', commands: ['dev'], visibility: 'public', description: 'Override the development listen host.' }),
   freezeOption({ id: 'port', key: 'port', flags: ['--port'], kind: 'value', valueName: '<port>', parse: 'number', commands: ['dev'], visibility: 'public', description: 'Override the development listen port. Use 0 to request an ephemeral port.' }),
-  freezeOption({ id: 'artifact', key: 'artifact', flags: ['--artifact'], kind: 'value', valueName: '<file.json>', commands: ['inspect'], visibility: 'public', description: 'Inspect an existing JSON build or compiler artifact instead of a project.' }),
+  freezeOption({ id: 'artifact', key: 'artifact', flags: ['--artifact'], kind: 'value', valueName: '<file.json>', descriptionByCommand: { report: 'Replay a saved Report capsule or supported completed-Wasm manifest without loading project code.' }, commands: ['inspect', 'report'], visibility: 'public', description: 'Inspect an existing JSON build or compiler artifact instead of a project.' }),
   freezeOption({ id: 'case', key: 'caseName', flags: ['--case'], kind: 'value', valueName: '<name>', commands: ['test'], visibility: 'public', description: 'Run one named project test case.' }),
   freezeOption({ id: 'name', key: 'name', flags: ['--name'], kind: 'value', valueName: '<package-name>', commands: ['init'], visibility: 'public', description: 'Set the generated npm package name.' })
 ]);
@@ -50,6 +51,18 @@ function freezeCommand(value) {
 }
 
 const COMMAND_SPECS = Object.freeze({
+  report: freezeCommand({
+    name: 'report',
+    summary: 'Review retained evidence from a completed Native build without rebuilding or executing project code.',
+    usage: ['pulse report [directory] [--profile <name>] [--json | --html] [--out <file.html>]', 'pulse report --artifact <file.json> [--json | --html] [--out <file.html>]'],
+    positionals: [{ name: 'directory', key: 'directory', description: 'Project discovery start. Defaults to the current directory.' }],
+    optionIds: ['profile', 'artifact', 'html', 'out'],
+    examples: ['pulse report ./my-pulse-app', 'pulse report --artifact ./dist/pulse-compile.json --json'],
+    diagnostics: ['PULSE_REPORT_INPUT_INVALID', 'PULSE_REPORT_EVIDENCE_MISSING', 'PULSE_REPORT_STALE', 'PULSE_REPORT_INCOMPATIBLE', 'PULSE_REPORT_OUTPUT_UNSAFE', 'PULSE_REPORT_HTML_UNAVAILABLE'],
+    outputs: ['Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.', 'Historical capsule replay preserves evidence identity without claiming current-project freshness.', '--html is reserved for the offline viewer and currently fails explicitly without writing a file.'],
+    sideEffects: ['Reads retained local evidence only; does not build, run tests, load project code, access secrets or contact the network.', '--plan and --dry-run describe intent without collecting or writing a report.', '--out requires --html; destinations must be contained regular .html files. Artifact roots are the input JSON parent directory.', 'Reports are build-review artifacts; review contents before sharing publicly.'],
+    exit: '0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence and the pending HTML renderer.'
+  }),
   init: freezeCommand({
     name: 'init',
     summary: 'Create a conventional .pulse workspace with an async Pulse application and dedicated test harness.',

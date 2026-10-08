@@ -1135,8 +1135,7 @@ internal collector uses the existing static configuration parser for current
 snapshot matching; artifact and historical replay do not import project code,
 providers or compilers. Report inventories remain declaration/evidence records,
 not authorization or parity claims. Unknown binding realization, generated
-resource coverage and byte attribution stay explicit. This adds no public CLI
-command; see the [PRPT-02 packet](../internal/prpt02/README.md) for lifecycle,
+resource coverage and byte attribution stay explicit. See the [PRPT-02 packet](../internal/prpt02/README.md) for lifecycle,
 redaction, coverage and remaining integration gates.
 
 Report size collection reads exact retained Wasm sections and function bodies.
@@ -1149,6 +1148,16 @@ shared bodies are nonadditive; exclusive ownership and resource-payload mapping
 remain unavailable. Final-link hash changes cannot reuse prelink indices. See the
 [PRPT-03 packet](../internal/prpt03/README.md) for the pinned observer, unchanged
 byte proof and qualification ceiling.
+
+`pulse report` exposes this retained collector as a bounded terminal overview or
+one complete authoritative JSON capsule. Artifact replay preserves historical
+identity without claiming current-input matching. Planning does not collect or
+write; CLI startup and artifact errors do not load project/compiler/provider code.
+The HTML switches and contained atomic writer are integrated, but `--html` fails
+with `PULSE_REPORT_HTML_UNAVAILABLE` until PRPT-05 supplies the locked ARC viewer,
+including expandable schema views. No placeholder viewer is shipped. See the
+[PRPT-04 packet](../internal/prpt04/README.md) for the remaining renderer and output
+snapshot integration gates.
 
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target

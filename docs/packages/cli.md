@@ -33,6 +33,7 @@ pulse build
 ```
 
 - `doctor` validates project, provider, dependencies, and external toolchain readiness.
+- `report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` currently reports that its offline viewer is pending.
 - `inspect` compiles and reports effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility, and provider lowering without executing cases.
 - `test` executes configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime.
 - `dev` runs a foreground local server and watches the project by default.

@@ -15,6 +15,14 @@ function entry(category, options = {}) {
 }
 
 const DIAGNOSTIC_DEFINITIONS = Object.freeze({
+  PULSE_REPORT_INPUT_INVALID: entry('report', { exitCode: 3, remediation: ['Use an unmodified supported Report capsule or a completed-Wasm manifest with its matching local files.'] }),
+  PULSE_REPORT_EVIDENCE_MISSING: entry('report', { exitCode: 3, remediation: ['Run pulse compile or pulse build with the selected Native profile, then retry report; report never builds automatically.'] }),
+  PULSE_REPORT_STALE: entry('report', { exitCode: 3, remediation: ['Rebuild the selected Native profile after inputs settle, or replay a saved capsule explicitly as historical evidence.'] }),
+  PULSE_REPORT_INCOMPATIBLE: entry('report', { exitCode: 3, remediation: ['Use a supported Report v1 capsule or completed Native Wasm manifest; bare Wasm and JavaScript builds are not Report inputs.'] }),
+  PULSE_REPORT_OUTPUT_UNSAFE: entry('report', { exitCode: 2, remediation: ['Choose a .html file within the selected project root or artifact JSON parent, without symbolic links or parent traversal.'] }),
+  PULSE_REPORT_OUTPUT_FAILED: entry('report', { exitCode: 3, remediation: ['Check destination permissions and available disk space, then retry with a safe .html path.'] }),
+  PULSE_REPORT_HTML_UNAVAILABLE: entry('report', { exitCode: 3, remediation: ['Use the terminal overview or --json; HTML output requires a build with the offline viewer.'] }),
+
   PULSE_COMMAND_UNKNOWN: entry('usage', { exitCode: 2, remediation: ['Run `pulse --help` and choose one of the documented commands.'] }),
   PULSE_ARGUMENT_MISSING: entry('usage', { exitCode: 2, remediation: ['Provide the missing flag value and rerun the command.', 'Run `pulse --help` for the command signature.'] }),
   PULSE_ARGUMENT_UNEXPECTED: entry('usage', { exitCode: 2, remediation: ['Remove the unsupported argument or use the documented flag.', 'Run `pulse --help` for the command signature.'] }),
@@ -167,6 +175,14 @@ const DIAGNOSTIC_DEFINITIONS = Object.freeze({
  });
 
 const DIAGNOSTIC_SUMMARIES = Object.freeze({
+  PULSE_REPORT_INPUT_INVALID: 'Report evidence is malformed, unsafe, or fails integrity validation.',
+  PULSE_REPORT_EVIDENCE_MISSING: 'A matching completed Wasm build and its required retained evidence are missing.',
+  PULSE_REPORT_STALE: 'Retained Report evidence does not match the selected inputs or changed during collection.',
+  PULSE_REPORT_INCOMPATIBLE: 'The Report input version or output representation is unsupported.',
+  PULSE_REPORT_OUTPUT_UNSAFE: 'The HTML output path is not a contained regular .html file.',
+  PULSE_REPORT_OUTPUT_FAILED: 'The HTML report could not be written atomically.',
+  PULSE_REPORT_HTML_UNAVAILABLE: 'The offline Report HTML renderer is not available in this build.',
+
   PULSE_COMMAND_UNKNOWN: 'The requested pulse command is not part of the supported CLI.',
   PULSE_ARGUMENT_MISSING: 'A command-line option that requires a value was supplied without one.',
   PULSE_ARGUMENT_UNEXPECTED: 'The command received an option or positional argument it does not accept.',
