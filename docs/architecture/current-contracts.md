@@ -1139,6 +1139,17 @@ resource coverage and byte attribution stay explicit. This adds no public CLI
 command; see the [PRPT-02 packet](../internal/prpt02/README.md) for lifecycle,
 redaction, coverage and remaining integration gates.
 
+Report size collection reads exact retained Wasm sections and function bodies.
+A passive build-support observer of the same optimized final emission supplies
+optional artifact-bound handler mappings and a bounded static direct-call graph.
+The reader verifies function indices/lengths and joins canonical entry identities;
+Report never compiles or disassembles. Missing/unsupported capture preserves the
+physical ledger with unavailable attribution. Partial route measurements and
+shared bodies are nonadditive; exclusive ownership and resource-payload mapping
+remain unavailable. Final-link hash changes cannot reuse prelink indices. See the
+[PRPT-03 packet](../internal/prpt03/README.md) for the pinned observer, unchanged
+byte proof and qualification ceiling.
+
 Provider packages own descriptors, configuration normalization, local
 execution, target generation, source packaging, deployment bindings, and target
 support policy. The compiler owns the neutral bootstrap, contract validation,

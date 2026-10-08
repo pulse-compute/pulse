@@ -24,6 +24,7 @@ const eventContract = require('@pulse-compute/wasm-contracts/events');
 const { resolveAsc } = require('@pulse-compute/wasm-build-support/assemblyscript-compile');
 const { memoryAbi } = require('@pulse-compute/wasm-guest-link');
 const {
+  prepareReportCapture,
   appendAssemblyScriptOptimizationArgs,
   resolveNativeOptimization
 } = require('@pulse-compute/wasm-build-support/native-optimization');
@@ -220,6 +221,8 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
         '--path', jsonAs.dependencyRoot
       );
     }
+    const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
+      require(path.join(asc.packageRoot, 'package.json')).version, 'canonical-native.as/');
     const startedAt = Date.now();
     const result = spawnSync(asc.executable, args, {
       cwd: stagingDir,
@@ -242,13 +245,15 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
         durationMs
       });
     }
+    const wasm = fs.readFileSync(wasmFile);
     return Object.freeze({
       plan,
       validation,
       realizationArtifacts,
       guestUnits,
       generated,
-      wasm: fs.readFileSync(wasmFile),
+      reportAttribution: readReportCapture(wasm),
+      wasm,
       wat: emitWat ? fs.readFileSync(watFile, 'utf8') : '',
       textEmitted: emitWat,
       assemblyScriptVersion: require(path.join(asc.packageRoot, 'package.json')).version,
@@ -305,6 +310,7 @@ function verifyCanonicalNativeRealization(realization) {
     compilerVersion: runtimeContract.CANONICAL_NATIVE_COMPILER_VERSION,
     plan: realization.plan,
     validation: realization.validation,
+    reportAttribution: realization.reportAttribution && realization.reportAttribution.artifactSha256 === sha256(realization.wasm) ? realization.reportAttribution : null,
     generated: realization.generated,
     source: realization.generated.source,
     sourceHash: realization.generated.sourceHash,
