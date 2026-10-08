@@ -6,6 +6,17 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## 1.0.0-beta.7 — Beta (2026-10-07)
 
+- Add `pulse report` for completed Native build evidence: terminal summaries,
+  deterministic JSON capsules and offline HTML views of routes, schemas and
+  physical Wasm sizes. Historical replay uses retained evidence without running
+  project handlers, rebuilding or contacting providers.
+- Keep Report's attribution gaps explicit: incomplete reachability/resource
+  provenance is labeled, Own/Shared ownership remains unavailable, and byte
+  totals do not imply exclusive ownership or removal savings. Richer compiler
+  telemetry is deferred to beta.8; full browser qualification remains partial.
+- Retain literal Native error-boundary bindings through private wrappers while
+  preserving dynamic shared-stage/helper boundaries and error transfer behavior.
+  This improvement applies without an experimental size flag.
 - Share exact package construction across release consumers, consolidate repeated
   JWT and installed-corpus checks, and bound candidate work with terminal evidence
   and supervised cleanup.
@@ -25,8 +36,13 @@ Pulse follows semantic versioning for public releases. The repository begins its
   starter plans, search, cited contracts, maintained examples and diagnostic help.
   Its standalone Node host runs the built app without workspace execution access.
 - Give the installed context journey one mandatory release owner, retain the
-  bounded authorization checks, and prepare an inert MCP name bootstrap. Registry
-  publication still requires release-owner setup and final tagged qualification.
+  bounded authorization checks, and complete the inert MCP name bootstrap and
+  owner-confirmed publisher setup. Final tagged qualification and actual OIDC
+  publication remain separate release steps.
+- Qualify and audit one publication candidate before protected approval, reuse
+  its accepted package bytes, require the Fastly lifecycle and bound isolated
+  worker/compiler admission. Verify the published context app after registry
+  checks and retain its terminal report, including failures.
 - Purge the documentation CDN after promotion and before public verification;
   preserve the beta.6 documentation snapshot from its exact release tag.
 
