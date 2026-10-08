@@ -435,7 +435,7 @@ These packets are the reviewed execution plan for the intended beta.7 feature. T
 | **PRPT-03 — size evidence adapter** | Exact artifact/section/resource ledger and supported final handler mapping; optional direct-call reachability only within the explicit [00C ceiling](../prpt00c/README.md). Consume the frozen artifact/sidecar interfaces. [Implementation and qualification ceiling](../prpt03/README.md). | **Sol / high** | Own A07/A08; contribute unchanged-guest proof to A14. Stop attribution expansion at the approved ceiling; no companion build or optimizer work. |
 | **PRPT-04 — CLI integration** | Command specification, terminal overview, JSON/HTML/artifact switches, dry-run/plan behavior, safe atomic output, stable errors and generated help/completions. [CLI implementation and original HTML handoff](../prpt04/README.md). | **Sol / medium** | Own command portions of A06/A10–A12/A15. Eligibility and replay delegate to their owners; no duplicate collector in CLI. |
 | **PRPT-05 — HTML viewer** | Locked slate/offline shell, route-first navigation, size modes, three route tabs, searchable/sortable schemas with expansion, resources/bindings/evidence, full-capsule export, mobile/keyboard/theme behavior and hostile-data handling. [Implementation and browser qualification gap](../prpt05/README.md). | **Sol / high** | Own A09/A16 and renderer parts of A01/A10/A17. Use capsule fixtures from 01; no collector dependencies or inferred facts in viewer JS. Medium-high was underspecified and too light for this combined surface. |
-| **PRPT-06 — qualification and handoff** | Packed-install proof, focused acceptance closure, retained small/real-app/Catalog evidence, measured overhead, docs/example reports, and beta.7 release handoff. [Installed qualification and scoped acceptance](../prpt06/README.md). Reuse ticket proof records. | **Sol / high** | Own final A12–A14 plus matrix reconciliation. Confirm A01–A18 are closed or explicitly scoped; one real-capsule end-to-end check. No seal/publish in this ticket and no repeated full suite. |
+| **PRPT-06 — qualification and handoff** | Packed-install proof, focused acceptance closure, retained public-fixture evidence and externally held private-consumer results, measured overhead, docs/example reports, and beta.7 release handoff. [Installed qualification and scoped acceptance](../prpt06/README.md). Reuse ticket proof records. | **Sol / high** | Own final A12–A14 plus matrix reconciliation. Confirm A01–A18 are closed or explicitly scoped; one real-capsule end-to-end check. No seal/publish in this ticket and no repeated full suite. |
 
 Execution order: **00A → 00B → 00C → 01 → {02, 03, 05} → 04 → 06.** The approved 00C closes the bounded feasibility follow-up before freezing 01. Braces identify dependency independence, not an instruction to launch parallel agents. With one agent, use **00/00C → 01 → 02 → 03 → 05 → 04 → 06**. PRPT-05 can use frozen golden capsules immediately after 01; it need not wait for the collectors. PRPT-03 can start its parser/ledger after 01 but integrates with 02A’s persisted metadata where required. CLI scaffolding may begin after 01; its final integration depends on 02/03/05.
 
@@ -475,6 +475,10 @@ Repository references below are pinned to the planning commit. They establish cu
 
 **[S5]** OWASP DOM-based XSS Prevention Cheat Sheet; accessed 7 October 2026. Supports safe text sinks and context-safe JSON embedding.
 [Open guidance](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html)
+
+Private consumer source pins, inventories, artifacts and measurement/replay receipts
+must remain outside this public repository. Retain reusable synthetic and minimal
+fixtures here; assess private real-app and scale qualification externally.
 
 ## 19. Locked ARC design baseline and Library asset manifest
 
