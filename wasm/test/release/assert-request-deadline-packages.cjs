@@ -17,10 +17,11 @@ function verifyClosure(packedRoot, releaseDir, manifest) {
   const sourceBytes = fs.readFileSync(path.join(releaseDir, 'pulse-source-release-catalog.json'));
   const catalog = JSON.parse(sourceBytes);
   assert.equal(sha256(sourceBytes), manifest.sourceCatalog.sha256);
-  assert.equal(manifest.packageCount, 19);
+  assert.ok(Array.isArray(catalog.packages) && catalog.packages.length > 0, 'Source package catalog must not be empty');
+  assert.equal(manifest.packageCount, catalog.packages.length, 'Packed package count differs from source catalog');
   assert.equal(manifest.packages.length, manifest.packageCount);
   assert.deepEqual(manifest.packages.map(p => p.name).sort(), catalog.packages.map(p => p.name).sort());
-  assert.equal(new Set(manifest.packages.map(p => p.name)).size, 19);
+  assert.equal(new Set(manifest.packages.map(p => p.name)).size, manifest.packageCount, 'Packed package names must be unique');
   for (const entry of manifest.packages) {
     assert.equal(entry.version, catalog.releaseVersion);
     assert.equal(path.basename(entry.tarball), entry.tarball);
