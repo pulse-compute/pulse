@@ -31,7 +31,11 @@ concurrency:
 jobs:
   candidate:
     name: candidate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    env:
+      SEAL_WORKERS: '2'
+      SEAL_MEMORY_MIB: '6144'
+      SEAL_COMPILER_WORKERS: '1'
     outputs:
       artifact_name: ${{ steps.identity.outputs.candidate_artifact }}
     timeout-minutes: 60
@@ -90,6 +94,14 @@ jobs:
           export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
           echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
+          mkdir -p .validation-tools/fastly
+          curl --fail --location --retry 3 --max-time 120 \
+            https://github.com/fastly/cli/releases/download/v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz \
+            --output .validation-tools/fastly/cli.tar.gz
+          echo '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad  .validation-tools/fastly/cli.tar.gz' | sha256sum --check
+          tar -xzf .validation-tools/fastly/cli.tar.gz -C .validation-tools/fastly fastly
+          .validation-tools/fastly/fastly version
+          echo "PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly" >> "$GITHUB_ENV"
       - name: Build and validate the release source
         timeout-minutes: 52
         shell: bash
@@ -99,7 +111,9 @@ jobs:
           set -euo pipefail
           remaining=$(( (CANDIDATE_DEADLINE_SECONDS - $(date +%s)) / 60 ))
           [ "$remaining" -ge 1 ] || { echo 'Candidate work deadline exhausted before seal' >&2; exit 1; }
-          pnpm run release:seal --skip-install --timeout-minutes "$remaining"
+          pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly \
+            --workers "$SEAL_WORKERS" --memory-budget-mib "$SEAL_MEMORY_MIB" \
+            --compiler-workers "$SEAL_COMPILER_WORKERS"
       - name: Preserve seal status and terminal evidence
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -108,14 +122,30 @@ jobs:
           path: |
             wasm/.test-results
             .pulse-seal
+            !.pulse-seal/workspaces
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14
-      - name: Pack the exact release candidate
+      - name: Reuse the exact packages accepted by the seal
         shell: bash
         run: |
           set -euo pipefail
-          pnpm run release:pack
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const seal = JSON.parse(fs.readFileSync('wasm/.test-results/release-seal.json', 'utf8'));
+          const candidate = require('./scripts/release-feature-acceptance.cjs').candidateIdentity(process.cwd());
+          assert.equal(seal.schemaVersion, 'pulse.release-seal.v1');
+          assert(seal.completedAt, 'Seal must be terminal');
+          assert.deepEqual(seal.candidate, candidate, 'Seal belongs to another source');
+          assert.equal(seal.recovery?.context.options.requireFastly, true, 'Fastly lane must be required');
+          assert.equal(seal.externalFastly.status, 'passed', 'Fastly reality must pass');
+          require('./scripts/release-evidence-bundle.cjs').validateRecoveryEvidence(seal);
+          const pack = path.join(seal.recovery.directory, 'packages');
+          const shared = require('./scripts/release-shared-pack.cjs');
+          shared.copySharedPack({ repoRoot: process.cwd(), outDir: '.pulse-release' }, shared.sharedPackEnv(pack));
+          NODE
       - name: Seal the exact npm publication candidate
         shell: bash
         env:
@@ -146,6 +176,7 @@ jobs:
           path: |
             wasm/.test-results
             .pulse-seal
+            !.pulse-seal/workspaces
             .pulse-release
             .pulse-publication
             npm-candidate-verification.json
@@ -155,8 +186,10 @@ jobs:
 
   audit:
     name: audit
-    if: inputs.operation == 'audit'
     needs: candidate
+    outputs:
+      artifact_name: ${{ steps.approval.outputs.artifact_name }}
+      manifest_sha256: ${{ steps.approval.outputs.manifest_sha256 }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -177,26 +210,41 @@ jobs:
         with:
           name: ${{ needs.candidate.outputs.artifact_name }}
           path: .pulse-publication
-      - name: Verify and audit package-name bootstrap status
+      - name: Verify and bind the review packet to the sealed candidate
+        id: approval
         shell: bash
         run: |
           set -euo pipefail
           node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication --require-release-ref
+          echo "manifest_sha256=$(sha256sum .pulse-publication/pulse-publication-manifest.json | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=pulse-npm-audit-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
+      - name: Audit package names and prepare the publication plan
+        shell: bash
+        env:
+          OPERATION: ${{ inputs.operation }}
+        run: |
+          set -euo pipefail
+          audit_args=()
+          plan_args=()
+          if [ "$OPERATION" = 'audit' ]; then
+            audit_args+=(--allow-missing)
+            plan_args+=(--report-only)
+          fi
           node scripts/publish-release.cjs audit \
             --bundle-dir .pulse-publication \
             --require-release-ref \
-            --allow-missing \
+            "${audit_args[@]}" \
             --json-out npm-package-name-audit.json
           node scripts/publish-release.cjs plan \
             --bundle-dir .pulse-publication \
             --require-release-ref \
-            --report-only \
+            "${plan_args[@]}" \
             --json-out npm-publication-plan.json
       - name: Upload audit reports
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: pulse-npm-audit-${{ inputs.release_tag }}
+          name: pulse-npm-audit-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             npm-package-name-audit.json
             npm-publication-plan.json
@@ -206,7 +254,7 @@ jobs:
   publish:
     name: publish
     if: inputs.operation == 'publish'
-    needs: candidate
+    needs: [candidate, audit]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: npm-publish
@@ -233,15 +281,28 @@ jobs:
         with:
           name: ${{ needs.candidate.outputs.artifact_name }}
           path: .pulse-publication
-      - name: Bind publication authority to the sealed release tag
+      - name: Download the pre-approval audit and publication plan
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ needs.audit.outputs.artifact_name }}
+          path: .pulse-publication-audit
+      - name: Bind publication authority to the audited release tag
         shell: bash
+        env:
+          AUDITED_MANIFEST_SHA256: ${{ needs.audit.outputs.manifest_sha256 }}
         run: |
           set -euo pipefail
           node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication --require-release-ref
           node <<'NODE'
           const fs = require('node:fs');
+          const crypto = require('node:crypto');
+          const digest = crypto.createHash('sha256').update(fs.readFileSync('.pulse-publication/pulse-publication-manifest.json')).digest('hex');
+          if (digest !== process.env.AUDITED_MANIFEST_SHA256) throw new Error('publication candidate differs from the pre-approval audit');
+          const plan = JSON.parse(fs.readFileSync('.pulse-publication-audit/npm-publication-plan.json', 'utf8'));
+          if (plan.status !== 'ready') throw new Error('pre-approval publication plan is not ready');
           const release = require('./release/pulse-release-manifest.json');
           const manifest = JSON.parse(fs.readFileSync('.pulse-publication/pulse-publication-manifest.json', 'utf8'));
+          if (JSON.stringify(plan.source) !== JSON.stringify(manifest.source) || plan.releaseVersion !== manifest.releaseVersion) throw new Error('pre-approval plan source differs from the sealed candidate');
           const expectedRef = `refs/tags/v${release.releaseVersion}`;
           if (manifest.source.ref !== expectedRef) throw new Error(`sealed candidate source ref must be ${expectedRef}; found ${manifest.source.ref}`);
           if (!/^[0-9a-f]{40}$/.test(manifest.source.commit)) throw new Error('sealed candidate source commit is invalid');
@@ -253,10 +314,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/publish-release.cjs plan \
-            --bundle-dir .pulse-publication \
-            --require-release-ref \
-            --json-out npm-publication-plan.json
           node scripts/publish-release.cjs publish \
             --bundle-dir .pulse-publication \
             --require-release-ref \
@@ -267,8 +324,10 @@ jobs:
         with:
           name: pulse-npm-publish-${{ inputs.release_tag }}
           path: |
-            npm-publication-plan.json
+            .pulse-publication-audit/npm-package-name-audit.json
+            .pulse-publication-audit/npm-publication-plan.json
             npm-publication-report.json
+          include-hidden-files: true
           if-no-files-found: warn
           retention-days: 90
 
