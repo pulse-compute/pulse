@@ -1,4 +1,4 @@
-export type PulseCliCommand = 'init' | 'doctor' | 'inspect' | 'test' | 'dev' | 'compile' | 'build';
+export type PulseCliCommand = 'init' | 'doctor' | 'inspect' | 'test' | 'dev' | 'compile' | 'build' | 'report';
 
 export interface CommonNormalizedRequest {
   readonly kind: 'command';
@@ -21,6 +21,7 @@ export type NormalizedCommandRequest = Readonly<CommonNormalizedRequest & {
   readonly force?: boolean;
   readonly strict?: boolean;
   readonly artifact?: string;
+  readonly html?: boolean;
   readonly caseName?: string;
   readonly host?: string;
   readonly port?: number;

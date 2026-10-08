@@ -58,6 +58,16 @@ export default app;`;
     const reportStarted = Date.now(), collected = report.collectProjectReport({ cwd: directory });
     const reportMs = Date.now() - reportStarted;
     const saved = capsule.serializeCapsule(collected.capsule), c = collected.capsule;
+    // Exercise the public command on a real completed build, including existing
+    // profile selection and artifact replay, without any second native build.
+    const binary = path.join(cli, '../bin/pulse.js');
+    const json = args => JSON.parse(execFileSync(process.execPath, [binary, 'report', ...args, '--json'], {
+      cwd: directory, encoding: 'utf8', env: { ...process.env, PULSE_PROFILE: 'native' }
+    }));
+    assert.deepEqual(json([]), c);
+    assert.deepEqual(json(['--profile', 'native']), c);
+    assert.deepEqual(json(['--artifact', path.join(directory, 'dist/pulse-compile.json')]), c);
+
     assert.equal(collected.currentSnapshotMatched, true);
     assert.ok(c.artifacts.every(row => row.sectionCoverage.status === 'complete'));
     assert.ok(c.measurements.some(row => row.metric === 'handler-body' && row.fact.state === 'available'));

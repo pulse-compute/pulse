@@ -7,7 +7,7 @@ _pulse_completion() {
   command="${COMP_WORDS[1]}"
 
   if (( COMP_CWORD == 1 )); then
-    COMPREPLY=( $(compgen -W "init doctor inspect test dev compile build completion help version --help -h --version -v" -- "$cur") )
+    COMPREPLY=( $(compgen -W "init doctor inspect test dev compile build report completion help version --help -h --version -v" -- "$cur") )
     return 0
   fi
 
@@ -24,7 +24,8 @@ _pulse_completion() {
     dev) words="--help -h --json --dry-run --plan --once --watch --no-watch --profile --host --port" ;;
     compile) words="--help -h --json --dry-run --plan --clean --no-clean --emit-wat --experimental-native-bounded-size --experimental-native-size --profile --out" ;;
     build) words="--help -h --json --dry-run --plan --clean --no-clean --emit-wat --experimental-native-bounded-size --experimental-native-size --profile --out" ;;
-    *) words="init doctor inspect test dev compile build completion help version --help -h --version -v" ;;
+    report) words="--html --help -h --json --dry-run --plan --profile --out --artifact" ;;
+    *) words="init doctor inspect test dev compile build report completion help version --help -h --version -v" ;;
   esac
   COMPREPLY=( $(compgen -W "$words" -- "$cur") )
 }

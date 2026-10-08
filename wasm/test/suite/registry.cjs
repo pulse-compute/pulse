@@ -34,6 +34,7 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-size-evidence': nodeTask('test/cli/assert-report-size-evidence.cjs', { description: 'PRPT-03 physical size reconciliation and attribution rejection' }),
   'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
@@ -1259,6 +1260,7 @@ const installedCorpusOwners = Object.freeze({
 const profiles = Object.freeze({
   unit: Object.freeze([
     'report-capsule-contract',
+    'cli-report-workflow',
     'cli-report-retained-evidence',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
@@ -1404,6 +1406,7 @@ const profiles = Object.freeze({
   ]),
   cli: Object.freeze([
     'report-capsule-contract',
+    'cli-report-workflow',
     'cli-report-retained-evidence',
     'cli-report-size-evidence',
     'cli-report-capture-proof',

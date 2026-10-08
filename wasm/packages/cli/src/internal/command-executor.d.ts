@@ -12,7 +12,7 @@ export interface CommandExecutionResult {
   readonly result?: Readonly<Record<string, any>>;
 }
 
-export declare const EXECUTOR_IDS: readonly ['meta', 'init', 'artifact', 'compile', 'build', 'test', 'inspect', 'doctor', 'dev'];
+export declare const EXECUTOR_IDS: readonly ['meta', 'init', 'report', 'artifact', 'compile', 'build', 'test', 'inspect', 'doctor', 'dev'];
 export declare function executeCommandPlan(
   plan: CommandPlan,
   request: NormalizedCommandRequest | MetaCommandRequest,
@@ -20,6 +20,7 @@ export declare function executeCommandPlan(
     projectContext?: ProjectContext;
     cliVersion?: string;
     environment?: NodeJS.ProcessEnv;
+    reportRenderer?: (capsule: import('./report/model').ReportCapsule) => string;
     operations?: Readonly<Record<string, (...args: any[]) => any>>;
     onEvent?: (event: Readonly<Record<string, any>>) => void;
     signalSource?: NodeJS.Process;
