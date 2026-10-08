@@ -81,13 +81,16 @@ function assertRetentionPatterns() {
   const declaration = name => ({ name: { text: name }, decorators: [{ name: { text: 'noinline' } }] });
   const guarded = new NativeRetentionTransform();
   guarded.afterParse({ sources: [
-    { internalPath: 'ordinary', statements: [declaration('__pulse_expr_0'), declaration('__pulse_ex_0$k')] },
+    { internalPath: 'ordinary', statements: [declaration('__pulse_expr_0'), declaration('__pulse_ex_0$k'), declaration('__pulse_static_error_0')] },
     { internalPath: 'canonical-native.as', statements: [declaration('ordinary'), declaration('__pulse_expr_0'),
-      declaration('__pulse_ex_2$k'), { name: { text: '__pulse_ex_3$k' } }] },
+      declaration('__pulse_ex_2$k'), { name: { text: '__pulse_ex_3$k' } },
+      declaration('__pulse_static_error_0'), { name: { text: '__pulse_static_error_1' } },
+      declaration('__pulse_static_error_foreign')] },
     { internalPath: 'fastly-native-platform-capabilities.as', statements: [declaration('__pulse_chunk_0')] }
   ] });
   assert.deepEqual(guarded.retainedNames, [
     'canonical-native.as/__pulse_expr_0', 'canonical-native.as/__pulse_ex_2$k',
+    'canonical-native.as/__pulse_static_error_0',
     'fastly-native-platform-capabilities.as/__pulse_chunk_0'
   ], 'only existing compiler-owned annotation names grant retention');
 }

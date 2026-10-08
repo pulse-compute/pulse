@@ -8,6 +8,7 @@ const path = require('node:path');
 const {
   EXAMPLES,
   compileExample,
+  resolveExample,
   internalFixture
 } = require('../support/canonical-projects.cjs');
 const {
@@ -72,7 +73,12 @@ async function main() {
   await require('./native-dispatcher-partitions.cjs').main();
   await require('../runtime/request-budget.cjs').main();
   const plans = new Map();
-  for (const name of Object.keys(EXAMPLES)) plans.set(name, planForExample(name));
+  for (const name of Object.keys(EXAMPLES)) {
+    // The shared catalog also contains a JavaScript-only MCP host example.
+    // Its original-source proof belongs to pulse-context-application/host.
+    if (resolveExample(EXAMPLES[name]).target !== 'native') continue;
+    plans.set(name, planForExample(name));
+  }
   for (const name of ['branching', 'continuation-chain', 'structured-body']) plans.set(name, planForFixture(name));
 
   const modules = new Map();
