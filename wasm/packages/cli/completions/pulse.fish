@@ -79,7 +79,7 @@ complete -c pulse -n '__fish_seen_subcommand_from build' -l experimental-native-
 complete -c pulse -n '__fish_seen_subcommand_from build' -l experimental-native-size -d 'Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.'
 complete -c pulse -n '__fish_seen_subcommand_from build' -l profile -r -d 'Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.'
 complete -c pulse -n '__fish_seen_subcommand_from build' -l out -r -d 'Override the project-relative artifact output directory.'
-complete -c pulse -n '__fish_seen_subcommand_from report' -l html -d 'Request an offline HTML report (not yet available); mutually exclusive with --json.'
+complete -c pulse -n '__fish_seen_subcommand_from report' -l html -d 'Write a self-contained offline HTML report; mutually exclusive with --json.'
 complete -c pulse -n '__fish_seen_subcommand_from report' -l help -d 'Print public CLI help and exit.'
 complete -c pulse -n '__fish_seen_subcommand_from report' -s h -d 'Print public CLI help and exit.'
 complete -c pulse -n '__fish_seen_subcommand_from report' -l json -d 'Emit machine-readable JSON. pulse dev emits one JSON event per line.'

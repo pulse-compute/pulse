@@ -37,6 +37,7 @@ app.post('/schema',async ctx=>{const input=await ctx.req.json<Input>('app.Input'
 app.get('/asset',async ctx=>{const asset=await assets.lookup(ctx,'embedded','/logo.txt',{embeddedManifest:${JSON.stringify(JSON.stringify(embedded))}});return asset;});
 export default app;`;
     write(entryFile, source);
+    write(path.join(directory, 'input.html'), '<p>build input</p>');
     const resolve = (options = {}) => resolveProject({ cwd: directory, metadataOnly: true, ...options });
     const project = resolve();
     assert.equal(project.tests.length, 0); assert.equal(project.configParity.status, 'not-evaluated');
@@ -67,6 +68,21 @@ export default app;`;
     assert.deepEqual(json([]), c);
     assert.deepEqual(json(['--profile', 'native']), c);
     assert.deepEqual(json(['--artifact', path.join(directory, 'dist/pulse-compile.json')]), c);
+
+    const html = out => execFileSync(process.execPath, [binary, 'report', '--html', ...(out ? ['--out', out] : [])], {cwd:directory,encoding:'utf8',env:{...process.env,PULSE_PROFILE:'native'}});
+    for (const destination of ['.pulse/reports/pulse-report.html', 'reviews/custom.html']) {
+      html(destination); html(destination);
+      const file=path.join(directory,destination), original=fs.readFileSync(file,'utf8');
+      assert.deepEqual(JSON.parse(original.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]), c);
+      assert.deepEqual(json([]),c,'generated HTML does not stale current report');
+      fs.appendFileSync(file,'edited'); rejects(()=>report.collectProjectReport({cwd:directory}),'REPORT_STALE_INPUTS');
+      fs.writeFileSync(file,original);
+    }
+    const output = require(path.join(cli,'internal/report/output'));
+    rejects(()=>output.writeHtml(directory,'input.html','overwrite',{recordOutput:true,inputFiles:collected.inputFiles}),'PULSE_REPORT_OUTPUT_UNSAFE');
+    // Receipt exclusion never authorizes an actual compiler watch-file omission.
+    const outputAttempt=snapshots.beginSnapshot(resolve(),{},built.outDir);
+    rejects(()=>snapshots.finishSnapshot(resolve(),outputAttempt,{watchFiles:[path.join(directory,'reviews/custom.html')]}),'REPORT_INPUT_UNBOUND');
 
     assert.equal(collected.currentSnapshotMatched, true);
     assert.ok(c.artifacts.every(row => row.sectionCoverage.status === 'complete'));
@@ -146,6 +162,8 @@ export default app;`;
     assert.ok(!JSON.stringify(provider.capsule).includes('__pulse_chunk_'));
     assert.equal(provider.capsule.artifacts.length, 2);
     assert.equal(provider.capsule.artifacts.find(row => row.id === provider.capsule.context.primaryArtifactId).sha256, fastly.manifest.providerTarget.wasm.sha256);
+    // The later build retained matching output receipts and remains repeatable.
+    execFileSync(process.execPath,[binary,'report','--profile','fastly','--html','--out','reviews/custom.html'],{cwd:directory,encoding:'utf8'});
     const repeated = report.collectProjectReport({ cwd: directory, profile: 'fastly' });
     assert.equal(repeated.capsule.evidenceHash.value, provider.capsule.evidenceHash.value);
     // Artifact replay has no compiler, provider, harness, subprocess or network

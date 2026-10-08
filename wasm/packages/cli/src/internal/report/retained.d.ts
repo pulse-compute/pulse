@@ -3,6 +3,7 @@ export interface CollectedReport {
   readonly kind: 'historical-capsule' | 'completed-wasm';
   readonly capsule: ReportCapsule;
   readonly currentSnapshotMatched: boolean;
+  readonly inputFiles?: readonly string[];
   readonly missingOptionalSidecars: readonly string[];
 }
 export function collectArtifactReport(file: string): CollectedReport;

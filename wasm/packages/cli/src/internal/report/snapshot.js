@@ -10,9 +10,12 @@ const MAX_FILES = 20000, MAX_BYTES = 256 * 1024 * 1024;
 const slash = file => file.split(path.sep).join('/');
 const digest = value => sha256(canonicalJson(value));
 function scan(root, { excluded = [], packageFiles = false } = {}) {
-  const records = [], tokens = new Map(); let bytes = 0;
+  const records = [], tokens = new Map(); let bytes = 0, files = 0, receipts = 0;
   const exclusions = excluded.map(file => path.resolve(root, file));
   function visit(directory) {
+    const generated = packageFiles ? new Map() : require('./output-receipts').generatedOutputs(directory);
+    receipts += generated.size;
+    if (receipts > MAX_FILES) fail('REPORT_LIMIT');
     const entries = fs.readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name < b.name ? -1 : 1);
     for (const entry of entries) {
       const file = path.join(directory, entry.name), relative = slash(path.relative(root, file));
@@ -25,7 +28,8 @@ function scan(root, { excluded = [], packageFiles = false } = {}) {
       if (!entry.isFile()) fail('REPORT_PATH');
       const read = readFile(root, relative);
       bytes += read.size;
-      if (records.length >= MAX_FILES || bytes > MAX_BYTES) fail('REPORT_LIMIT');
+      if (++files > MAX_FILES || bytes > MAX_BYTES) fail('REPORT_LIMIT');
+      if (generated.get(entry.name)?.includes(read.sha256)) continue;
       records.push({ file: relative, bytes: read.size, sha256: read.sha256 }); tokens.set(relative, read.token);
     }
   }

@@ -65,9 +65,13 @@ try {
     assert.equal(publicReportError({ code: internal, message: 'SECRET' }).code, 'PULSE_REPORT_' + stable);
     check(!publicReportError({ code: internal, message: 'SECRET' }).message.includes('SECRET'), 'no internal diagnostic payload');
   }
-  const html = run(['--artifact', 'saved.json', '--html']); assert.equal(html.status, 3); check(html.stderr.includes('PULSE_REPORT_HTML_UNAVAILABLE'), 'renderer dependency explicit');
-  check(!fs.existsSync(path.join(directory, '.pulse/reports')), 'unavailable renderer never writes');
-  for (const out of ['../escape.html', 'saved.json', 'bad.txt', path.join(os.tmpdir(), 'escape.html')]) {
+  const html = run(['--artifact', 'saved.json', '--html']); assert.equal(html.status, 0, html.stderr);
+  const htmlOutput = fs.readFileSync(path.join(directory, '.pulse/reports/pulse-report.html'), 'utf8');
+  check(htmlOutput.includes('pulse-report-viewer'), 'production offline viewer emitted');
+  assert.deepEqual(JSON.parse(htmlOutput.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]), capsule);
+  const repeat = run(['--artifact', 'saved.json', '--html']); assert.equal(repeat.status, 0, repeat.stderr);
+  assert.equal(fs.readFileSync(path.join(directory, '.pulse/reports/pulse-report.html'), 'utf8'), htmlOutput);
+  for (const out of ['../escape.html', 'saved.json', 'bad.txt', 'bad%.html', 'bad:name.html', 'bad\nname.html', path.join(os.tmpdir(), 'escape.html')]) {
     const result = run(['--artifact', 'saved.json', '--html', '--out', out, '--plan']);
     assert.equal(result.status, 2, result.stderr); check(result.stderr.includes('PULSE_REPORT_OUTPUT_UNSAFE'), 'unsafe path rejected during plan');
   }
@@ -83,12 +87,12 @@ try {
   fs.writeFileSync(path.join(directory, 'nested/unrelated.txt'), 'keep');
   writeHtml(directory, 'nested/view.html', '<!doctype html>replacement');
   assert.equal(fs.readFileSync(rendered.file, 'utf8'), '<!doctype html>replacement');
-  assert.deepEqual(fs.readdirSync(path.dirname(rendered.file)).sort(), ['unrelated.txt', 'view.html']);
+  assert.deepEqual(fs.readdirSync(path.dirname(rendered.file)).sort(), ['.pulse-report-outputs', 'unrelated.txt', 'view.html']);
   // A failed commit leaves the old designated file intact and cleans only its temporary.
   const rename = fs.renameSync; fs.renameSync = () => { throw new Error('injected rename failure'); };
   try { assert.throws(() => writeHtml(directory, 'nested/view.html', 'new'), { code: 'PULSE_REPORT_OUTPUT_FAILED' }); } finally { fs.renameSync = rename; }
   assert.equal(fs.readFileSync(rendered.file, 'utf8'), '<!doctype html>replacement');
-  assert.deepEqual(fs.readdirSync(path.dirname(rendered.file)).sort(), ['unrelated.txt', 'view.html']);
+  assert.deepEqual(fs.readdirSync(path.dirname(rendered.file)).sort(), ['.pulse-report-outputs', 'unrelated.txt', 'view.html']);
   const lstat = fs.lstatSync; fs.lstatSync = () => { const error = new Error('permission denied'); error.code = 'EACCES'; throw error; };
   try { assert.throws(() => writeHtml(directory, 'nested/view.html', 'new'), { code: 'PULSE_REPORT_OUTPUT_FAILED' }); } finally { fs.lstatSync = lstat; }
   // Guard the real binary process, including its startup imports, against toolchain loading.
@@ -96,7 +100,9 @@ try {
   fs.writeFileSync(guard, `const Module=require('node:module'),load=Module._load;Module._load=function(id,...rest){if(/compiler|provider|project-config\\.js|project-execution|typescript|child_process|node:https|node:http$|node:net$/.test(id))throw Error('FORBIDDEN_IMPORT:'+id);return load.call(this,id,...rest)};`);
   const guarded = run(['--artifact', 'saved.json', '--json'], { env: { ...process.env, NODE_OPTIONS: '--require=' + guard } });
   assert.equal(guarded.status, 0, guarded.stderr); assert.equal(guarded.stdout, text);
+  const guardedHtml = run(['--artifact', 'saved.json', '--html'], { env: { ...process.env, NODE_OPTIONS: '--require=' + guard } });
+  assert.equal(guardedHtml.status, 0, guardedHtml.stderr);
   const guardedError = run(['--artifact', 'bad.json', '--json'], { env: { ...process.env, NODE_OPTIONS: '--require=' + guard } });
   assert.equal(guardedError.status, 3, guardedError.stderr); check(!guardedError.stderr.includes('FORBIDDEN_IMPORT'), 'diagnostics avoid executable imports too');
-  console.log(`ok - PRPT-04 CLI replay, planning, diagnostics, hostile terminal text, guarded imports and atomic HTML seam (${checks} checks)`);
+  console.log(`ok - PRPT-04/05 CLI replay, planning, diagnostics, hostile terminal text, guarded imports and atomic offline HTML (${checks} checks)`);
 } finally { fs.rmSync(directory, { recursive: true, force: true }); }

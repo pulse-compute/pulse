@@ -1,0 +1,681 @@
+{
+  "ticket": "PRPT-05",
+  "plan": "docs/internal/prpt00/feature-spec-v2.md",
+  "base": "246247af471fae6e7a1fa8faa86980cbc015cca7",
+  "sourceState": "implementation working tree; final file hashes below (validation record excluded)",
+  "files": [
+    {
+      "file": "docs/architecture/current-contracts.md",
+      "sha256": "a89ef7d10e5aed754c6e2a173d085a1bad7307a7d61b1c5e139490fa1a35333d"
+    },
+    {
+      "file": "docs/internal/prpt00/feature-spec-v2.md",
+      "sha256": "19dac18cdc069c211e07598ed9e32aa745e4ae321593f0de282e696e121e900d"
+    },
+    {
+      "file": "docs/internal/prpt04/README.md",
+      "sha256": "d932a4cc3570817acc7950e5d30075f40666a74e1e60fcd4a7596dba8d7dff72"
+    },
+    {
+      "file": "docs/internal/prpt05/README.md",
+      "sha256": "9a6d9e5db4224d4899c8d14ff59b261d8dd3c433a24142f4e74ef915a3e3635a"
+    },
+    {
+      "file": "docs/packages/cli.md",
+      "sha256": "db5cbabc85c23c00a0fe6b7d455cf592872f49576a35fd792d833d96dec93a7e"
+    },
+    {
+      "file": "docs/reference/cli-spec.json",
+      "sha256": "db058d7017ff7d69df80eb93c6b5d3faa36ad88fbfd6cb71d5909afd61ab4bb2"
+    },
+    {
+      "file": "docs/reference/cli.md",
+      "sha256": "76978fd30ea9b7d977c8eb48ce1bb776f46d25b73da5231b28ffb5e4e7ae90fd"
+    },
+    {
+      "file": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "b981cc12cc2e06d2698695e845686036311a52c70298b72d83e52844d794306c"
+    },
+    {
+      "file": "wasm/packages/cli/cli-spec.json",
+      "sha256": "db058d7017ff7d69df80eb93c6b5d3faa36ad88fbfd6cb71d5909afd61ab4bb2"
+    },
+    {
+      "file": "wasm/packages/cli/completions/_pulse",
+      "sha256": "7156c8a12b29d6f56699ee211eb68a5d0734e9e31d56e2a4a21e64a3079ef265"
+    },
+    {
+      "file": "wasm/packages/cli/completions/pulse.fish",
+      "sha256": "e6952459b63cbbf8e04981bac6406162eb466bade5cf1015635ed3eba6b10cc9"
+    },
+    {
+      "file": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "sha256": "a89ef7d10e5aed754c6e2a173d085a1bad7307a7d61b1c5e139490fa1a35333d"
+    },
+    {
+      "file": "wasm/packages/cli/docs/packages/cli.md",
+      "sha256": "db5cbabc85c23c00a0fe6b7d455cf592872f49576a35fd792d833d96dec93a7e"
+    },
+    {
+      "file": "wasm/packages/cli/docs/reference/cli-spec.json",
+      "sha256": "db058d7017ff7d69df80eb93c6b5d3faa36ad88fbfd6cb71d5909afd61ab4bb2"
+    },
+    {
+      "file": "wasm/packages/cli/docs/reference/cli.md",
+      "sha256": "76978fd30ea9b7d977c8eb48ce1bb776f46d25b73da5231b28ffb5e4e7ae90fd"
+    },
+    {
+      "file": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "b981cc12cc2e06d2698695e845686036311a52c70298b72d83e52844d794306c"
+    },
+    {
+      "file": "wasm/packages/cli/src/command-spec.js",
+      "sha256": "544a50c02f3217c99cdee07b89a12621186a05222510867ee9216ce8ca2ae6a2"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/command.js",
+      "sha256": "d63f8a8a7fa01da66c7cca4a720481c808bbcc8a430faf6586b6e5ce79b94e44"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/output-receipts.js",
+      "sha256": "a6f7ff6a3632b7e10a05ba386b6e17ef67ed622aeb8aa509db125a1086cf9062"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/output.js",
+      "sha256": "b95b13bea808fff2a937cd2103073f34e059d946bdb0018e9e525791931cc053"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/retained.d.ts",
+      "sha256": "30e69342df4b22a648df2cc27bdfc0aa3332f9bde6ac8c9ff36a1b22e16a372a"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/retained.js",
+      "sha256": "30c969c41b3f56db5950a33c8e94cf97c86edf6ec548468b12a29242320deda1"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/snapshot.js",
+      "sha256": "560976f03b24504645e7708ff9a4dfe52faac4ab09b58677899f0c96bf81e2d1"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/viewer.js",
+      "sha256": "1859ab6b5e06be8cb8558374b510d5db89f1e71481a20e94479d2554f8a2a92e"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/viewer/model.js",
+      "sha256": "9a84660b4b2618eaaefae7da1e0bdf4936e7cd1e259033d3a735d7b6d34d472b"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/viewer/shell.html",
+      "sha256": "7b1df1649eb6404032e726e7eb450b036e1460506556a6643be47b7e9571b927"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/viewer/viewer.css",
+      "sha256": "6bb5f263000413413c1fbef41dceee7764856d77b6cbb34e8aad51ff61f66031"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/viewer/viewer.js",
+      "sha256": "2f335d33d9f29beb1706b8d8f5edef991646b85aba01fb024f8a170eb7428991"
+    },
+    {
+      "file": "wasm/test/cli/assert-report-cli-workflow.cjs",
+      "sha256": "e0729ef46747ba37907c20e2debf98f5b5e61d53f3293dfed03749fe224d36e5"
+    },
+    {
+      "file": "wasm/test/cli/assert-report-retained-evidence.cjs",
+      "sha256": "0f997597b439ecb0c71ca70382955b2f50589eb3fc8cae885030cb4be0ceb0de"
+    },
+    {
+      "file": "wasm/test/cli/assert-report-viewer.cjs",
+      "sha256": "51c149b605daefedaee62caa4cd6d69cbf51c02962168f94522d2ed8502dc082"
+    },
+    {
+      "file": "wasm/test/suite/registry.cjs",
+      "sha256": "1485c5f5eacbea041268257de45954e933cb1cff58a6a05f8640152542ed4386"
+    }
+  ],
+  "designFixtures": [
+    {
+      "file": "Pulse-Report-ARC-Design.html",
+      "sha256": "4fb0dbdfb90f20bebb3e702eb50f1cd30f8e4b8cb38bb0a1ec7e1394717874f9",
+      "verified": true
+    },
+    {
+      "file": "Pulse-Report-ARC-Fixture.json",
+      "sha256": "1833a078007104fee92e81154245237036666c896d991dfe8a129094103ba481",
+      "verified": true
+    },
+    {
+      "file": "Pulse-Report-ARC-Preview.png",
+      "sha256": "525d32959c1418a6c3dcef5902f8d36cde0e494df022958110e2239377ad2c2e",
+      "verified": true
+    },
+    {
+      "file": "Pulse-Report-ARC-Schemas-Preview.png",
+      "sha256": "6e661cc7aaa63e905de1bf1fe3c1e11d2483176807e30fc924f0215adf990990",
+      "verified": true
+    }
+  ],
+  "reports": [
+    {
+      "file": "prpt05-unit-cli.json",
+      "sha256": "6ae56e0745b20882403abe346fe49a6dc7655bfd9afd661f6154f4353a9d76d6",
+      "runId": "2026-10-08T02-17-39-421Z--6",
+      "status": "passed",
+      "selected": 79,
+      "completed": 79,
+      "durationMs": 605479,
+      "tasks": [
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "durationMs": 1579
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "durationMs": 2304
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "durationMs": 275
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "durationMs": 25777
+        },
+        {
+          "name": "cli-report-size-evidence",
+          "status": "passed",
+          "durationMs": 420
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "status": "passed",
+          "durationMs": 7371
+        },
+        {
+          "name": "multifile-source-indexes",
+          "status": "passed",
+          "durationMs": 318
+        },
+        {
+          "name": "guest-json-roundtrip",
+          "status": "passed",
+          "durationMs": 148
+        },
+        {
+          "name": "pure-helper-contract",
+          "status": "passed",
+          "durationMs": 1231
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "durationMs": 145
+        },
+        {
+          "name": "test-orchestration",
+          "status": "passed",
+          "durationMs": 7499
+        },
+        {
+          "name": "package-exports",
+          "status": "passed",
+          "durationMs": 207
+        },
+        {
+          "name": "boundaries",
+          "status": "passed",
+          "durationMs": 382
+        },
+        {
+          "name": "workspace-hygiene",
+          "status": "passed",
+          "durationMs": 318
+        },
+        {
+          "name": "hidden-contracts",
+          "status": "passed",
+          "durationMs": 365
+        },
+        {
+          "name": "release-feature-acceptance",
+          "status": "passed",
+          "durationMs": 598
+        },
+        {
+          "name": "release-runtime-policy",
+          "status": "passed",
+          "durationMs": 1343
+        },
+        {
+          "name": "release-seal-lifecycle",
+          "status": "passed",
+          "durationMs": 3469
+        },
+        {
+          "name": "release-checkpoints",
+          "status": "passed",
+          "durationMs": 304
+        },
+        {
+          "name": "release-recovery-runner",
+          "status": "passed",
+          "durationMs": 15021
+        },
+        {
+          "name": "release-recovery",
+          "status": "passed",
+          "durationMs": 2109
+        },
+        {
+          "name": "release-tag",
+          "status": "passed",
+          "durationMs": 548
+        },
+        {
+          "name": "api-surface",
+          "status": "passed",
+          "durationMs": 860
+        },
+        {
+          "name": "logging-contract",
+          "status": "passed",
+          "durationMs": 131
+        },
+        {
+          "name": "s3-design-contract",
+          "status": "passed",
+          "durationMs": 1205
+        },
+        {
+          "name": "kv-design-contract",
+          "status": "passed",
+          "durationMs": 1172
+        },
+        {
+          "name": "kv-conditional-runtime",
+          "status": "passed",
+          "durationMs": 1180
+        },
+        {
+          "name": "kv-conditional-gates",
+          "status": "passed",
+          "durationMs": 506
+        },
+        {
+          "name": "s3-read-contract",
+          "status": "passed",
+          "durationMs": 1826
+        },
+        {
+          "name": "s3-write-contract",
+          "status": "passed",
+          "durationMs": 337
+        },
+        {
+          "name": "crypto-config-planning",
+          "status": "passed",
+          "durationMs": 674
+        },
+        {
+          "name": "crypto-es256-signing",
+          "status": "passed",
+          "durationMs": 160
+        },
+        {
+          "name": "crypto-rs256",
+          "status": "passed",
+          "durationMs": 1719
+        },
+        {
+          "name": "crypto-digest-text-contract",
+          "status": "passed",
+          "durationMs": 504
+        },
+        {
+          "name": "reachable-graph",
+          "status": "passed",
+          "durationMs": 181
+        },
+        {
+          "name": "project-modules",
+          "status": "passed",
+          "durationMs": 1205
+        },
+        {
+          "name": "package-reachability",
+          "status": "passed",
+          "durationMs": 1074
+        },
+        {
+          "name": "provider-toolchain",
+          "status": "passed",
+          "durationMs": 142
+        },
+        {
+          "name": "schema-registry",
+          "status": "passed",
+          "durationMs": 941
+        },
+        {
+          "name": "continuation-registry",
+          "status": "passed",
+          "durationMs": 132
+        },
+        {
+          "name": "entities-contracts",
+          "status": "passed",
+          "durationMs": 165
+        },
+        {
+          "name": "entities-schema-bridge",
+          "status": "passed",
+          "durationMs": 322
+        },
+        {
+          "name": "entities-javascript-runtime",
+          "status": "passed",
+          "durationMs": 796
+        },
+        {
+          "name": "entities-json-rpc-corpus",
+          "status": "passed",
+          "durationMs": 129
+        },
+        {
+          "name": "mcp-http",
+          "status": "passed",
+          "durationMs": 371
+        },
+        {
+          "name": "pulse-context-corpus",
+          "status": "passed",
+          "durationMs": 863
+        },
+        {
+          "name": "pulse-context-application",
+          "status": "passed",
+          "durationMs": 5822
+        },
+        {
+          "name": "pulse-context-host",
+          "status": "passed",
+          "durationMs": 3267
+        },
+        {
+          "name": "mcp-compatibility",
+          "status": "passed",
+          "durationMs": 257
+        },
+        {
+          "name": "mcp-tools",
+          "status": "passed",
+          "durationMs": 298
+        },
+        {
+          "name": "mcp-authorization",
+          "status": "passed",
+          "durationMs": 3008
+        },
+        {
+          "name": "entities-package-owned-lowering",
+          "status": "passed",
+          "durationMs": 344
+        },
+        {
+          "name": "entities-catalog",
+          "status": "passed",
+          "durationMs": 336
+        },
+        {
+          "name": "entities-inspection",
+          "status": "passed",
+          "durationMs": 11397
+        },
+        {
+          "name": "entities-orchestration-demo",
+          "status": "passed",
+          "durationMs": 6663
+        },
+        {
+          "name": "cli-command-spec",
+          "status": "passed",
+          "durationMs": 157
+        },
+        {
+          "name": "cli-init-workflow",
+          "status": "passed",
+          "durationMs": 21449
+        },
+        {
+          "name": "cli-project-workflow",
+          "status": "passed",
+          "durationMs": 65429
+        },
+        {
+          "name": "cli-expansion-doctor",
+          "status": "passed",
+          "durationMs": 9622
+        },
+        {
+          "name": "cli-project-guards",
+          "status": "passed",
+          "durationMs": 8537
+        },
+        {
+          "name": "cli-dev-workflow",
+          "status": "passed",
+          "durationMs": 10813
+        },
+        {
+          "name": "cli-schema-json-workflow",
+          "status": "passed",
+          "durationMs": 57962
+        },
+        {
+          "name": "entities-node-native-workflow",
+          "status": "passed",
+          "durationMs": 19875
+        },
+        {
+          "name": "fastly-entities-native-workflow",
+          "status": "passed",
+          "durationMs": 70718
+        },
+        {
+          "name": "events-cli-workflow",
+          "status": "passed",
+          "durationMs": 51984
+        },
+        {
+          "name": "cli-diagnostics",
+          "status": "passed",
+          "durationMs": 4611
+        },
+        {
+          "name": "docs-executable-contracts",
+          "status": "passed",
+          "durationMs": 27326
+        },
+        {
+          "name": "docs-executable-init-dev",
+          "status": "passed",
+          "durationMs": 7517
+        },
+        {
+          "name": "docs-migration-schema-lowering",
+          "status": "passed",
+          "durationMs": 153
+        },
+        {
+          "name": "docs-example-01-hello-json",
+          "status": "passed",
+          "durationMs": 8773
+        },
+        {
+          "name": "docs-example-02-request-schema",
+          "status": "passed",
+          "durationMs": 12826
+        },
+        {
+          "name": "docs-example-03-fetch-composition",
+          "status": "passed",
+          "durationMs": 9394
+        },
+        {
+          "name": "docs-example-05-fastly-capabilities",
+          "status": "passed",
+          "durationMs": 17769
+        },
+        {
+          "name": "docs-example-07-opaque-proxy",
+          "status": "passed",
+          "durationMs": 15894
+        },
+        {
+          "name": "docs-example-09-router-lowering",
+          "status": "passed",
+          "durationMs": 10293
+        },
+        {
+          "name": "docs-example-10-entities-tools",
+          "status": "passed",
+          "durationMs": 8521
+        },
+        {
+          "name": "docs-example-11-events",
+          "status": "passed",
+          "durationMs": 14735
+        },
+        {
+          "name": "docs-example-12-pulse-context-mcp",
+          "status": "passed",
+          "durationMs": 4711
+        },
+        {
+          "name": "docs-example-13-jwt-es256",
+          "status": "passed",
+          "durationMs": 26579
+        }
+      ]
+    },
+    {
+      "file": "prpt05-focused-final.json",
+      "sha256": "f782df0af9b91001f42a98cc6075e1a02ac25a98b6c34615a2ef4b8160cd885c",
+      "runId": "2026-10-08T02-20-29-641Z--5",
+      "status": "passed",
+      "selected": 3,
+      "completed": 3,
+      "durationMs": 30705,
+      "tasks": [
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "durationMs": 254
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "durationMs": 2236
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "durationMs": 28208
+        }
+      ]
+    },
+    {
+      "file": "prpt05-catalogs-final.json",
+      "sha256": "ff7ea68d8ce4d51661bec55c0ac670507ebc8ce7d8f7032ccc8122b2a125eddc",
+      "runId": "2026-10-08T02-22-32-205Z--97",
+      "status": "passed",
+      "selected": 2,
+      "completed": 2,
+      "durationMs": 4810,
+      "tasks": [
+        {
+          "name": "cli-command-spec",
+          "status": "passed",
+          "durationMs": 154
+        },
+        {
+          "name": "cli-diagnostics",
+          "status": "passed",
+          "durationMs": 4651
+        }
+      ]
+    },
+    {
+      "file": "prpt05-output-final.json",
+      "sha256": "984b4d2a4401a89352f6dd58bd0b5190fa552cad708db86e6f316f396e0282d9",
+      "runId": "2026-10-08T02-24-29-187Z--6",
+      "status": "passed",
+      "selected": 2,
+      "completed": 2,
+      "durationMs": 2770,
+      "tasks": [
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "durationMs": 255
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "durationMs": 2511
+        }
+      ]
+    }
+  ],
+  "gates": {
+    "maintainer": "passed",
+    "scope": "passed declaration check; scope-expansion authorized by explicit user implementation request; human merge/review separate",
+    "documentation": "sync, corpus regeneration, second sync, check and documentation-release passed",
+    "build": "direct lockfile-installed TypeScript workspace build passed; pnpm wrapper not repeated (environment 11.25.0 versus required ^12.4.2)",
+    "browser": "BLOCKED by remote localhost connectivity and file URL policy after explicit user authorization; no browser qualification claimed"
+  },
+  "attempts": [
+    {
+      "file": "prpt05-focused-initial.log",
+      "status": "failed",
+      "reason": "viewer passed; CLI workflow test duplicate variable; corrected and focused rerun passed"
+    },
+    {
+      "file": "prpt05-focused-retry.log",
+      "status": "passed",
+      "tasks": 3
+    },
+    {
+      "file": "prpt05-browser-install.log",
+      "status": "blocked",
+      "reason": "browser executable absent; official Playwright browser archives invalid/truncated"
+    },
+    {
+      "status": "blocked",
+      "reason": "automatic approval review denied local report transfer to remote browser without explicit authorization; no alternative browser transfer attempted"
+    },
+    {
+      "file": "prpt05-viewer-static-review.log",
+      "status": "not a passing gate",
+      "reason": "exploratory separate-file DOM type check; missing DOM.Iterable, concatenated model global and fixed tuple inference; actual combined script parsed by registered test"
+    },
+    {
+      "status": "blocked",
+      "authorization": "User explicitly approved synthetic reports and ARC design fixture in the remote browser.",
+      "httpAttempt": "net::ERR_CONNECTION_REFUSED at dedicated localhost report server",
+      "fileAttempt": "Documented shared-file path rejected by browser URL policy: only HTTP/HTTPS allowed; workarounds prohibited",
+      "outcome": "No report DOM, screenshot or browser interaction pass observed; no bypass attempted; server stopped."
+    }
+  ],
+  "lateChanges": "Final focused renderer/CLI/retained rerun covers duplicate-measurement selection after broad run start; final catalog rerun covers addition of output-write failure to report command diagnostics. A final writer/CLI rerun covers output-name alignment with retained-reader rules. Final source hashes identify these bytes.",
+  "remaining": [
+    "A09/A16 browser file opening, desktop/mobile/theme, keyboard/focus and locked-fixture comparison",
+    "Browser portions of A10 and actual Blob download byte identity",
+    "PRPT-06 installed-package, real ARC/Catalog and cost/final acceptance qualification"
+  ],
+  "evidenceFollowup": "Browser-attempt documentation only, based on unchanged implementation commit 846d4e65953e8f9ba8da0124b6514355827fea07; existing portable results retained."
+}

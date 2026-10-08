@@ -106,7 +106,7 @@ case $words[2] in
       '--out[Override the project-relative artifact output directory.]:directory:_directories'
       ;;
     report)
-      _arguments -s       '--html[Request an offline HTML report (not yet available); mutually exclusive with --json.]' \
+      _arguments -s       '--html[Write a self-contained offline HTML report; mutually exclusive with --json.]' \
       '--help[Print public CLI help and exit.]' \
       '-h[Print public CLI help and exit.]' \
       '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \

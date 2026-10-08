@@ -203,6 +203,7 @@ function collectProjectReport(options = {}) {
   ensure(marker.token === readFile(outDir, COMPLETION_FILE).token, 'REPORT_CONCURRENT_CHANGE');
   collected.verifyReads();
   return freeze({ kind: 'completed-wasm', capsule: collected.capsule, currentSnapshotMatched: true,
+    inputFiles: inputs.files.map(row => row.file),
     missingOptionalSidecars: collected.missingOptionalSidecars });
 }
 module.exports = { ATTRIBUTION_FILE, COMPLETION_FILE, INVENTORY_FILE, INPUTS_FILE, invalidate, acquireBuildLock, beginBuild, publishBuild, collectArtifactReport, collectProjectReport };
