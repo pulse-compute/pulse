@@ -18,7 +18,7 @@
     },
     {
       "file": "docs/internal/prpt05/README.md",
-      "sha256": "49d191e8605bc76d6c622ad8b2b98fa4712acd44cb3bbe15e4579e3d06fb34fc"
+      "sha256": "9a6d9e5db4224d4899c8d14ff59b261d8dd3c433a24142f4e74ef915a3e3635a"
     },
     {
       "file": "docs/packages/cli.md",
@@ -636,7 +636,7 @@
     "scope": "passed declaration check; scope-expansion authorized by explicit user implementation request; human merge/review separate",
     "documentation": "sync, corpus regeneration, second sync, check and documentation-release passed",
     "build": "direct lockfile-installed TypeScript workspace build passed; pnpm wrapper not repeated (environment 11.25.0 versus required ^12.4.2)",
-    "browser": "BLOCKED; no browser qualification claimed"
+    "browser": "BLOCKED by remote localhost connectivity and file URL policy after explicit user authorization; no browser qualification claimed"
   },
   "attempts": [
     {
@@ -662,6 +662,13 @@
       "file": "prpt05-viewer-static-review.log",
       "status": "not a passing gate",
       "reason": "exploratory separate-file DOM type check; missing DOM.Iterable, concatenated model global and fixed tuple inference; actual combined script parsed by registered test"
+    },
+    {
+      "status": "blocked",
+      "authorization": "User explicitly approved synthetic reports and ARC design fixture in the remote browser.",
+      "httpAttempt": "net::ERR_CONNECTION_REFUSED at dedicated localhost report server",
+      "fileAttempt": "Documented shared-file path rejected by browser URL policy: only HTTP/HTTPS allowed; workarounds prohibited",
+      "outcome": "No report DOM, screenshot or browser interaction pass observed; no bypass attempted; server stopped."
     }
   ],
   "lateChanges": "Final focused renderer/CLI/retained rerun covers duplicate-measurement selection after broad run start; final catalog rerun covers addition of output-write failure to report command diagnostics. A final writer/CLI rerun covers output-name alignment with retained-reader rules. Final source hashes identify these bytes.",
@@ -669,5 +676,6 @@
     "A09/A16 browser file opening, desktop/mobile/theme, keyboard/focus and locked-fixture comparison",
     "Browser portions of A10 and actual Blob download byte identity",
     "PRPT-06 installed-package, real ARC/Catalog and cost/final acceptance qualification"
-  ]
+  ],
+  "evidenceFollowup": "Browser-attempt documentation only, based on unchanged implementation commit 846d4e65953e8f9ba8da0124b6514355827fea07; existing portable results retained."
 }

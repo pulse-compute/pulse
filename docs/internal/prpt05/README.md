@@ -97,9 +97,12 @@ and real Native build → repeated HTML/JSON → edit rejection → rebuild → 
 They do not run a layout engine or establish browser enforcement of the policy.
 
 The local Playwright executable was absent; its official download returned an
-invalid/truncated archive. Automatic approval review denied sending the generated
-report to the available remote browser without explicit destination authorization.
-No browser interactions or screenshots are claimed. The merge gate is to perform
+invalid/truncated archive. The initial remote transfer was denied by automatic
+approval review; the user subsequently authorized synthetic reports and the ARC
+fixture. The authorized attempt reached separate environment limits: the remote
+browser could not reach the workspace localhost server, and its URL policy
+prohibits `file://` navigation and workarounds. Authorization is no longer missing.
+No report DOM, browser interactions or screenshots are claimed. The merge gate is to perform
 the [browser checklist](validation.md#browser-qualification-checklist) against
 this implementation and the locked fixture, then record outcomes and fix findings.
 

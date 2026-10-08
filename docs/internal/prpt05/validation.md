@@ -53,10 +53,23 @@ separately, without claiming that it type-checks the browser DOM code.
 ## Browser qualification checklist
 
 **Pending; not passed.** The local browser executable was absent and the official
-Playwright download returned invalid/truncated archives. Automatic approval review
-blocked the remote browser request because transferring report contents to that
-destination was not explicitly authorized. No alternative browser transfer was
-attempted after that denial. Portable model assertions are not DOM/layout proof.
+Playwright download returned invalid/truncated archives. Initial automatic approval
+review blocked transfer to the remote browser. The user subsequently explicitly
+authorized opening synthetic reports and the ARC design fixture there.
+
+The authorized attempt on 2026-10-08 UTC exposed two environment limitations:
+
+- The remote browser returned `net::ERR_CONNECTION_REFUSED` for the workspace's
+  dedicated localhost server, which served only the authorized synthetic files.
+- Following the documented shared-file mapping, direct `file://` navigation was
+  rejected by the browser URL policy, which allows only HTTP/HTTPS and explicitly
+  prohibited workarounds. No alternate transfer/control mechanism was attempted
+  after that rejection. The temporary server was stopped.
+
+Authorization is no longer missing. Browser execution requires an environment
+that supports these local files; this session cannot establish the checklist
+below. No report DOM, rendered screenshot, download, or browser interaction pass
+was observed. Portable model assertions are not DOM/layout proof.
 
 Use the exact locked design HTML and route/expanded-schema previews from the
 [implementation packet](README.md#locked-design) as reference, plus minimal,
