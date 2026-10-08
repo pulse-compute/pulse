@@ -423,6 +423,65 @@ pulse build ./edge-app --experimental-native-bounded-size
 
 0 on success; 2–5 according to the emitted stable diagnostic.
 
+## `pulse report`
+
+Review retained evidence from a completed Native build without rebuilding or executing project code.
+
+Supported signatures:
+
+```text
+pulse report [directory] [--profile <name>] [--json | --html] [--out <file.html>]
+pulse report --artifact <file.json> [--json | --html] [--out <file.html>]
+```
+
+### Positionals
+
+- `directory` — Project discovery start. Defaults to the current directory.
+
+### Options
+
+| Option | Behavior |
+|---|---|
+| `--html` | Request an offline HTML report (not yet available); mutually exclusive with --json. |
+| `--profile <profile>` | Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile. |
+| `--out <file.html>` | HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html. |
+| `--artifact <file.json>` | Replay a saved Report capsule or supported completed-Wasm manifest without loading project code. |
+
+### Examples
+
+```bash
+pulse report ./my-pulse-app
+pulse report --artifact ./dist/pulse-compile.json --json
+```
+
+
+### Related diagnostics
+
+- [`PULSE_REPORT_INPUT_INVALID`](diagnostics.md#pulse-report-input-invalid) — Report evidence is malformed, unsafe, or fails integrity validation.
+- [`PULSE_REPORT_EVIDENCE_MISSING`](diagnostics.md#pulse-report-evidence-missing) — A matching completed Wasm build and its required retained evidence are missing.
+- [`PULSE_REPORT_STALE`](diagnostics.md#pulse-report-stale) — Retained Report evidence does not match the selected inputs or changed during collection.
+- [`PULSE_REPORT_INCOMPATIBLE`](diagnostics.md#pulse-report-incompatible) — The Report input version or output representation is unsupported.
+- [`PULSE_REPORT_OUTPUT_UNSAFE`](diagnostics.md#pulse-report-output-unsafe) — The HTML output path is not a contained regular .html file.
+- [`PULSE_REPORT_HTML_UNAVAILABLE`](diagnostics.md#pulse-report-html-unavailable) — The offline Report HTML renderer is not available in this build.
+
+
+### Output
+
+- Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.
+- Historical capsule replay preserves evidence identity without claiming current-project freshness.
+- --html is reserved for the offline viewer and currently fails explicitly without writing a file.
+
+### Side effects
+
+- Reads retained local evidence only; does not build, run tests, load project code, access secrets or contact the network.
+- --plan and --dry-run describe intent without collecting or writing a report.
+- --out requires --html; destinations must be contained regular .html files. Artifact roots are the input JSON parent directory.
+- Reports are build-review artifacts; review contents before sharing publicly.
+
+### Exit behavior
+
+0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence and the pending HTML renderer.
+
 ## Configuration discovery and command precedence
 
 Project commands start discovery from their optional positional `[directory]` or the current directory, then search upward for the single configuration entrypoint:

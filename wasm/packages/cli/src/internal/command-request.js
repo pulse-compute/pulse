@@ -1,6 +1,6 @@
 'use strict';
 
-const { PulseProjectError } = require('../project-config.js');
+const { PulseProjectError } = require('./project-error.js');
 const { COMPLETION_SHELLS } = require('../completion.js');
 const {
   COMMANDS,
@@ -34,6 +34,7 @@ function allowedRequestKeys(command) {
 }
 
 function finishCommandRequest(request) {
+  if (request.command === 'report') require('./report/command.js').validateReportRequest(request);
   if (request.experimentalNativeSize === true && request.experimentalNativeBoundedSize === true) {
     throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'Select only one experimental Native size mode.', { flags: ['--experimental-native-size', '--experimental-native-bounded-size'] });
   }
@@ -131,7 +132,8 @@ function isMetaRequest(value) {
 
 function normalizeCommandRequest(value) {
   if (Array.isArray(value)) return parseCommandRequest(value);
-  if (isCommandRequest(value) || isMetaRequest(value)) return value;
+  if (isMetaRequest(value)) return value;
+  if (isCommandRequest(value)) return finishCommandRequest(value);
   if (!value || typeof value !== 'object') throw new TypeError('CLI command request must be argv or a parsed request object');
 
   if (value.help && !value.command) return metaRequest('help');

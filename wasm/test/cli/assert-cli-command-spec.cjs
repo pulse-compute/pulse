@@ -15,14 +15,7 @@ const commandSpecPath = path.join(cliRoot, 'src', 'command-spec.js');
 const referencePath = path.resolve(__dirname, '..', '..', '..', 'docs', 'reference', 'cli.md');
 const machineSpecPath = path.resolve(__dirname, '..', '..', '..', 'docs', 'reference', 'cli-spec.json');
 
-class PulseProjectError extends Error {
-  constructor(code, message, detail) {
-    super(message);
-    this.name = 'PulseProjectError';
-    this.code = code;
-    this.detail = detail;
-  }
-}
+const { PulseProjectError } = require(path.join(cliRoot, 'src/internal/project-error.js'));
 
 function unavailable(name) {
   return () => { throw new Error(`${name} is not available in the parser-only contract test`); };
@@ -88,8 +81,8 @@ const reference = fs.readFileSync(referencePath, 'utf8');
 const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'public');
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
-assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build']);
-assert.equal(publicOptions.length, 18, 'the CLI must expose exactly 18 documented option contracts');
+assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
+assert.equal(publicOptions.length, 19, 'the CLI must expose exactly 19 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
 for (const command of PUBLIC_COMMAND_ORDER) {

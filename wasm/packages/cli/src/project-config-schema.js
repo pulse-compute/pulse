@@ -68,7 +68,7 @@ const CONFIG_FIELDS = Object.freeze([
   ...providerConfigFields.map(field)
 ]);
 
-const CONFIG_DISCOVERY = Object.freeze(['.pulse/config.ts']);
+const { CONFIG_DISCOVERY } = require('./workspace.js');
 
 const CONFIG_PRECEDENCE = Object.freeze([
   'Discovery starts at the positional directory or the current working directory and searches upward for .pulse/config.ts.',

@@ -1,10 +1,8 @@
 'use strict';
 
 const path = require('node:path');
-const {
-  CONFIG_FILE_NAMES,
-  PulseProjectError
-} = require('./project-config.js');
+const { CONFIG_DISCOVERY: CONFIG_FILE_NAMES } = require('./workspace.js');
+const { PulseProjectError } = require('./internal/project-error.js');
 const { exitCodeForDiagnostic } = require('./diagnostics.js');
 const { COMMANDS, renderUsage } = require('./command-spec.js');
 const { parseCommandRequest, normalizeCommandRequest } = require('./internal/command-request.js');

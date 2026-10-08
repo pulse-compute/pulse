@@ -1,7 +1,7 @@
 'use strict';
 
 const path = require('node:path');
-const { PulseProjectError } = require('../project-config.js');
+const { PulseProjectError } = require('./project-error.js');
 const { normalizeCommandRequest } = require('./command-request.js');
 const { isProjectContext, projectDocumentForContext } = require('./project-context.js');
 
@@ -32,6 +32,7 @@ function createCommandPlan(requestValue, options = {}) {
     if (request.invocation === 'version') return Object.freeze({ ok: true, command: 'version', version });
     return Object.freeze({ ok: true, command: 'completion', shell: request.shell, generatedFrom: 'pulse.command-spec' });
   }
+  if (request.command === 'report') return require('./report/command.js').planReport(request, { cwd });
   if (request.command === 'init') {
     return Object.freeze({ ok: true, command: 'init', target: path.resolve(cwd, request.target || '.'), backgroundWork: false });
   }

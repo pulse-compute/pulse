@@ -618,6 +618,94 @@
         "Refuses absolute, parent-traversal, and symbolic-link traversal outside the project root."
       ],
       "exit": "0 on success; 2–5 according to the emitted stable diagnostic."
+    },
+    {
+      "name": "report",
+      "summary": "Review retained evidence from a completed Native build without rebuilding or executing project code.",
+      "usage": [
+        "pulse report [directory] [--profile <name>] [--json | --html] [--out <file.html>]",
+        "pulse report --artifact <file.json> [--json | --html] [--out <file.html>]"
+      ],
+      "positionals": [
+        {
+          "name": "directory",
+          "key": "directory",
+          "description": "Project discovery start. Defaults to the current directory."
+        }
+      ],
+      "options": [
+        {
+          "id": "html",
+          "key": "html",
+          "flags": [
+            {
+              "name": "--html"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Request an offline HTML report (not yet available); mutually exclusive with --json."
+        },
+        {
+          "id": "profile",
+          "key": "profile",
+          "flags": [
+            {
+              "name": "--profile"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<profile>",
+          "description": "Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile."
+        },
+        {
+          "id": "out",
+          "key": "outDir",
+          "flags": [
+            {
+              "name": "--out"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<file.html>",
+          "description": "HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html."
+        },
+        {
+          "id": "artifact",
+          "key": "artifact",
+          "flags": [
+            {
+              "name": "--artifact"
+            }
+          ],
+          "kind": "value",
+          "valueName": "<file.json>",
+          "description": "Replay a saved Report capsule or supported completed-Wasm manifest without loading project code."
+        }
+      ],
+      "examples": [
+        "pulse report ./my-pulse-app",
+        "pulse report --artifact ./dist/pulse-compile.json --json"
+      ],
+      "diagnostics": [
+        "PULSE_REPORT_INPUT_INVALID",
+        "PULSE_REPORT_EVIDENCE_MISSING",
+        "PULSE_REPORT_STALE",
+        "PULSE_REPORT_INCOMPATIBLE",
+        "PULSE_REPORT_OUTPUT_UNSAFE",
+        "PULSE_REPORT_HTML_UNAVAILABLE"
+      ],
+      "outputs": [
+        "Default output is a bounded terminal overview; --json emits one complete authoritative Report capsule.",
+        "Historical capsule replay preserves evidence identity without claiming current-project freshness.",
+        "--html is reserved for the offline viewer and currently fails explicitly without writing a file."
+      ],
+      "sideEffects": [
+        "Reads retained local evidence only; does not build, run tests, load project code, access secrets or contact the network.",
+        "--plan and --dry-run describe intent without collecting or writing a report.",
+        "--out requires --html; destinations must be contained regular .html files. Artifact roots are the input JSON parent directory.",
+        "Reports are build-review artifacts; review contents before sharing publicly."
+      ],
+      "exit": "0 for an eligible report even when optional evidence is unavailable; 2 for usage or unsafe output; 3 for invalid, missing, stale or incompatible evidence and the pending HTML renderer."
     }
   ]
 }

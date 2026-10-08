@@ -1,10 +1,6 @@
 'use strict';
 
 const path = require('node:path');
-const {
-  projectJson,
-  resolveProject
-} = require('../project-config.js');
 const { normalizeCommandRequest } = require('./command-request.js');
 
 const INVOCATION_OVERRIDE_KEYS = Object.freeze([
@@ -20,7 +16,7 @@ function deepFreeze(value) {
 
 function commandRequiresProjectContext(value) {
   const request = normalizeCommandRequest(value);
-  if (request.kind !== 'command' || request.help || request.command === 'init') return false;
+  if (request.kind !== 'command' || request.help || (request.command === 'init' || request.command === 'report')) return false;
   if (request.command === 'inspect' && request.artifact) return false;
   return true;
 }
@@ -89,7 +85,7 @@ function createProjectContext(requestValue, project, options = {}) {
   if (request.kind !== 'command') throw new TypeError('ProjectContext requires a command request');
   if (!project || typeof project !== 'object') throw new TypeError('ProjectContext requires a resolved Pulse project');
   const profile = selectedProfileDocument(project);
-  const projectDocument = projectJson(project);
+  const projectDocument = require('../project-config.js').projectJson(project);
   const context = deepFreeze({
     cwd: path.resolve(options.cwd || process.cwd()),
     workspace: projectDocument.workspace || workspaceDocument(project),
@@ -120,7 +116,7 @@ function resolveProjectContext(requestValue, options = {}) {
     throw new TypeError(`Pulse ${name} does not use a project context`);
   }
   const cwd = path.resolve(options.cwd || process.cwd());
-  const project = resolveProject({
+  const project = require('../project-config.js').resolveProject({
     cwd,
     directory: request.directory,
     profile: request.profile,

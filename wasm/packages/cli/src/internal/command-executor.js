@@ -1,38 +1,19 @@
 'use strict';
 
 const fs = require('node:fs');
-const { PulseProjectError } = require('../project-config.js');
-const {
-  compileNativeProject,
-  buildProject,
-  runProjectTests,
-  inspectProject,
-  doctorProject,
-  startDevServer,
-  initProject,
-  errorSummary
-} = require('../project-execution.js');
+const { PulseProjectError } = require('./project-error.js');
+const { errorSummary } = require('./execution-error.js');
 const { normalizeCommandRequest } = require('./command-request.js');
 const { isCommandPlan } = require('./command-plan.js');
 const { resolvedProjectForContext, isProjectContext } = require('./project-context.js');
 
-const EXECUTOR_IDS = Object.freeze(['meta', 'init', 'artifact', 'compile', 'build', 'test', 'inspect', 'doctor', 'dev']);
+const EXECUTOR_IDS = Object.freeze(['meta', 'init', 'report', 'artifact', 'compile', 'build', 'test', 'inspect', 'doctor', 'dev']);
 
-const defaultOperations = Object.freeze({
-  compileNativeProject,
-  buildProject,
-  runProjectTests,
-  inspectProject,
-  doctorProject,
-  startDevServer,
-  initProject
-});
-
-function selectOperations(overrides) {
-  if (!overrides) return defaultOperations;
+function selectOperations(overrides = {}) {
   const selected = {};
-  for (const [name, operation] of Object.entries(defaultOperations)) {
-    selected[name] = typeof overrides[name] === 'function' ? overrides[name] : operation;
+  for (const name of ['compileNativeProject', 'buildProject', 'runProjectTests', 'inspectProject', 'doctorProject', 'startDevServer', 'initProject']) {
+    selected[name] = typeof overrides[name] === 'function' ? overrides[name]
+      : (...args) => require('../project-execution.js')[name](...args);
   }
   return Object.freeze(selected);
 }
@@ -96,6 +77,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
     if (invocation === 'version') return { status: 0, version: cliVersion };
     return { status: 0, completion: request.shell };
   }
+  if (request.command === 'report') return { status: 0, result: require('./report/command.js').executeReport(plan, request, options) };
   if (request.command === 'init') {
     return { status: 0, result: operations.initProject(plan.target, { name: request.name, force: request.force }) };
   }

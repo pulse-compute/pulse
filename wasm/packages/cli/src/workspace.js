@@ -71,6 +71,7 @@ module.exports = Object.freeze({
   WORKSPACE_DISCOVERY_VERSION,
   PROJECT_WORKSPACE_VERSION,
   CONVENTIONAL_CONFIG,
+  CONFIG_DISCOVERY: Object.freeze([CONVENTIONAL_CONFIG.split(path.sep).join('/')]),
   PulseWorkspaceError,
   fileExists,
   directoryExists,

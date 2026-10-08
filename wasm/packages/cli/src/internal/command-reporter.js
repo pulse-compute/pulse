@@ -83,7 +83,10 @@ function createCommandReporter(options = {}) {
     const request = normalizeCommandRequest(requestValue);
     if (request.kind !== 'command') return;
     if (request.json) writeJson(stdout, { status: 'ok', version: cliVersion, plan });
-    else stdout.write(`${plan.command}: ${plan.mode || 'ready'}\n`);
+    else if (request.command === 'report') {
+      const safe = require('./report/command').terminalText;
+      stdout.write(`report: ${plan.mode}; ${plan.format}\n  input: ${safe(plan.artifact || plan.directory, 4096)}\n${plan.output ? '  output: ' + safe(plan.output, 4096) + '\n' : ''}  No collection or writes; profile selection and evidence validation occur on execution.\n`);
+    } else stdout.write(`${plan.command}: ${plan.mode || 'ready'}\n`);
   }
 
   function reportEvent(requestValue, event) {
@@ -109,6 +112,13 @@ function createCommandReporter(options = {}) {
       }
       return execution;
     }
+    if (request.command === 'report') {
+      const report = require('./report/command');
+      if (request.json) stdout.write(require('./report/capsule').serializeCapsule(execution.result.capsule));
+      else if (request.html) stdout.write(report.terminalText(execution.result.file, 4096) + '\n');
+      else stdout.write(report.terminalOverview(execution.result));
+      return execution;
+    }
     if (plan.mode === 'artifact') {
       if (request.json) writeJson(stdout, execution.result);
       else stdout.write(`${execution.result.file}: ok\n`);
@@ -129,7 +139,9 @@ function createCommandReporter(options = {}) {
       writeJson(stderr, { status: 'error', version: cliVersion, error: summary });
       return;
     }
-    stderr.write(`pulse: ${summary.code ? `${summary.code}: ` : ''}${summary.message}\n`);
+    const safe = request?.command === 'report' || String(context.argv?.[0]).toLowerCase() === 'report'
+      ? require('./report/command').terminalText : value => value;
+    stderr.write(`pulse: ${summary.code ? `${safe(summary.code)}: ` : ''}${safe(summary.message, 1000)}\n`);
     for (const step of summary.remediation || []) stderr.write(`  help: ${step}\n`);
     if (summary.docs) stderr.write(`  docs: ${summary.docs}\n`);
   }

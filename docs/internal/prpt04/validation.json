@@ -1,0 +1,852 @@
+{
+  "ticket": "PRPT-04",
+  "plan": "docs/internal/prpt00/feature-spec-v2.md",
+  "base": "f22d5a9bf1217d4c786769c5c6e38d5d724b49bc",
+  "sourceState": "implementation working tree; final file hashes below (validation packet excluded)",
+  "files": [
+    {
+      "file": "docs/architecture/current-contracts.md",
+      "sha256": "e8c1e0599a53c79b2ee9e2f65e77fb2f985509e1529d62162ea281fd35ebf3c3"
+    },
+    {
+      "file": "docs/internal/prpt00/feature-spec-v2.md",
+      "sha256": "95bffbde18ba00ef02031acdd425a324af9f1d93ab0203137c26a5c4001d5565"
+    },
+    {
+      "file": "docs/packages/cli.md",
+      "sha256": "de48a607e8bd51583e58a9f8562ea7c0e67edaa2c27e491097fad60f220d549e"
+    },
+    {
+      "file": "docs/reference/cli-spec.json",
+      "sha256": "930331bdf9359ba1c4884f905ec6590a58f5a084b906e30f3c79cb16797a9981"
+    },
+    {
+      "file": "docs/reference/cli.md",
+      "sha256": "dac1b587fccdbcd61dc382ee00f7abd625624a9a80107f79c1e62a87b7f0c2a9"
+    },
+    {
+      "file": "docs/reference/diagnostics.md",
+      "sha256": "14167c89292a5da4506da544a804ab8204837d70a26b878b802a95c76a2b17f8"
+    },
+    {
+      "file": "examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "8122f5a984327958bb67609ff911681dd0a8e99f45c50838c8e7e98a9ea5abe9"
+    },
+    {
+      "file": "wasm/packages/cli/cli-spec.json",
+      "sha256": "930331bdf9359ba1c4884f905ec6590a58f5a084b906e30f3c79cb16797a9981"
+    },
+    {
+      "file": "wasm/packages/cli/completions/_pulse",
+      "sha256": "8c42eafada806aa6f47f1794c8b60b0fabc555954b653f2cabd7f568bdeadcf3"
+    },
+    {
+      "file": "wasm/packages/cli/completions/pulse.bash",
+      "sha256": "9611ee04cb3f003d7ac137c1a0f7ddfe5aba0f59295539a0d4d78669c6105503"
+    },
+    {
+      "file": "wasm/packages/cli/completions/pulse.fish",
+      "sha256": "759af0b6f475324f5ed05af0abede767a7343c080c3814f6618f6ec839f8621e"
+    },
+    {
+      "file": "wasm/packages/cli/docs/architecture/current-contracts.md",
+      "sha256": "e8c1e0599a53c79b2ee9e2f65e77fb2f985509e1529d62162ea281fd35ebf3c3"
+    },
+    {
+      "file": "wasm/packages/cli/docs/packages/cli.md",
+      "sha256": "de48a607e8bd51583e58a9f8562ea7c0e67edaa2c27e491097fad60f220d549e"
+    },
+    {
+      "file": "wasm/packages/cli/docs/reference/cli-spec.json",
+      "sha256": "930331bdf9359ba1c4884f905ec6590a58f5a084b906e30f3c79cb16797a9981"
+    },
+    {
+      "file": "wasm/packages/cli/docs/reference/cli.md",
+      "sha256": "dac1b587fccdbcd61dc382ee00f7abd625624a9a80107f79c1e62a87b7f0c2a9"
+    },
+    {
+      "file": "wasm/packages/cli/docs/reference/diagnostics.md",
+      "sha256": "14167c89292a5da4506da544a804ab8204837d70a26b878b802a95c76a2b17f8"
+    },
+    {
+      "file": "wasm/packages/cli/examples/12-pulse-context-mcp/context-corpus.ts",
+      "sha256": "8122f5a984327958bb67609ff911681dd0a8e99f45c50838c8e7e98a9ea5abe9"
+    },
+    {
+      "file": "wasm/packages/cli/src/command-spec.js",
+      "sha256": "a47275b1d76c03732a1e2a9d2bdc5f3eccb60c651b28aed243029832ff6867cb"
+    },
+    {
+      "file": "wasm/packages/cli/src/diagnostics.js",
+      "sha256": "6d8d0d7f2a46511ac6bac5955d5c971fa5ee63cd26f5ec095a0495664878bf17"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/command-executor.d.ts",
+      "sha256": "a7d282d3b3c315c74def60070b63366e694683c738f152de5929512123429c9b"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/command-executor.js",
+      "sha256": "7f63a0a61134cccafc4177386c8afe22cab6472774b369f215ac76864a27ae20"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/command-plan.js",
+      "sha256": "4cd8174845e78e2711f4839112eaca9636f91ce522687a919e7a6970ab1a999b"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/command-reporter.js",
+      "sha256": "0f895f5420b4edcf7b1fecd803af2c812ae47b1018158eaac6048116f20c2c37"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/command-request.d.ts",
+      "sha256": "d1e213a3d8b00541d83ed14917768872c5b9d34bbdb508e60c6a8cb63735cbb3"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/command-request.js",
+      "sha256": "356814eaba752a6ec0012cb759a2cb04d61a0f0b8478eb3d84339726cdbe547d"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/execution-error.js",
+      "sha256": "46d4d7b6e68265497fcf85b7afe18425e82c0cd1f5da4d6d6d3ebb6a79369e9a"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/project-context.js",
+      "sha256": "4fb21f3dba601e4cdf64d45ec8ca75bad306d69a5fd973bfbe06729f13d97033"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/project-error.js",
+      "sha256": "dc21832e47677332cf5c9028c716b44be93cf5296cb2fdac74c6c7623638987f"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/command.js",
+      "sha256": "af96d1fa6f8f5d14664e487e468a7957c1827956d1f1b8460c2d0c7eee99a169"
+    },
+    {
+      "file": "wasm/packages/cli/src/internal/report/output.js",
+      "sha256": "a5177dd5ba494066b836bc389cdbbc11acb6ca0a52e02116f3db8ff5d44ffbae"
+    },
+    {
+      "file": "wasm/packages/cli/src/project-config-schema.js",
+      "sha256": "2147c70dfbf1a3ad842dd44b8f6976df7ff8f4f596e974164da09487d3b9a59b"
+    },
+    {
+      "file": "wasm/packages/cli/src/project-config.js",
+      "sha256": "3e314cef0cfd89527402c76f4ae743817543db6ee56b9f955a39aded5010b55b"
+    },
+    {
+      "file": "wasm/packages/cli/src/project-execution.js",
+      "sha256": "bc18116ee61e9874f22ed392c0c12a57b4fce335402ce973ecf2d5e36404b5e2"
+    },
+    {
+      "file": "wasm/packages/cli/src/workflow.js",
+      "sha256": "4245ba8a61422ef4b9fe6c2085d204ecd790975381930bd7b5297444b1f43e28"
+    },
+    {
+      "file": "wasm/packages/cli/src/workspace.js",
+      "sha256": "845f23fa5d707860fb16ac6c887e96ffe288e3e8ea02dfa03d7023bff951768b"
+    },
+    {
+      "file": "wasm/test/cli/assert-cli-command-spec.cjs",
+      "sha256": "b5af78b7724a38810860e091404a29021c13b3b52b0445a0578f88db87c67677"
+    },
+    {
+      "file": "wasm/test/cli/assert-report-cli-workflow.cjs",
+      "sha256": "4bcf69cae60a7c2b7cbe38214adb12590a69afa692ca679f6d107ce7906c0ca6"
+    },
+    {
+      "file": "wasm/test/cli/assert-report-retained-evidence.cjs",
+      "sha256": "434366bfd395f63984fc2480ff94d77d753131044b28c0fc9ccafdcb0f8689bf"
+    },
+    {
+      "file": "wasm/test/suite/registry.cjs",
+      "sha256": "5f5be8aa7efa83846f2a738ad4b6cf260a67a02edb10494930ea8139008b936e"
+    }
+  ],
+  "distinctPassingTasks": 80,
+  "taskExecutions": 86,
+  "runs": [
+    {
+      "receipt": "prpt04-unit-cli.json",
+      "runId": "2026-10-08T01-34-58-089Z--5",
+      "status": "passed",
+      "durationMs": 603279,
+      "selected": [
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo",
+        "cli-command-spec",
+        "cli-init-workflow",
+        "cli-project-workflow",
+        "cli-expansion-doctor",
+        "cli-project-guards",
+        "cli-dev-workflow",
+        "cli-schema-json-workflow",
+        "entities-node-native-workflow",
+        "fastly-entities-native-workflow",
+        "events-cli-workflow",
+        "cli-diagnostics",
+        "docs-executable-contracts",
+        "docs-executable-init-dev",
+        "docs-migration-schema-lowering",
+        "docs-example-01-hello-json",
+        "docs-example-02-request-schema",
+        "docs-example-03-fetch-composition",
+        "docs-example-05-fastly-capabilities",
+        "docs-example-07-opaque-proxy",
+        "docs-example-09-router-lowering",
+        "docs-example-10-entities-tools",
+        "docs-example-11-events",
+        "docs-example-12-pulse-context-mcp",
+        "docs-example-13-jwt-es256"
+      ],
+      "results": [
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1547
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1856
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 20945
+        },
+        {
+          "name": "cli-report-size-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 398
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7470
+        },
+        {
+          "name": "multifile-source-indexes",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 288
+        },
+        {
+          "name": "guest-json-roundtrip",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 144
+        },
+        {
+          "name": "pure-helper-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1199
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 164
+        },
+        {
+          "name": "test-orchestration",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7441
+        },
+        {
+          "name": "package-exports",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 194
+        },
+        {
+          "name": "boundaries",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 336
+        },
+        {
+          "name": "workspace-hygiene",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 239
+        },
+        {
+          "name": "hidden-contracts",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 322
+        },
+        {
+          "name": "release-feature-acceptance",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 511
+        },
+        {
+          "name": "release-runtime-policy",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1164
+        },
+        {
+          "name": "release-seal-lifecycle",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3415
+        },
+        {
+          "name": "release-checkpoints",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 232
+        },
+        {
+          "name": "release-recovery-runner",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 15169
+        },
+        {
+          "name": "release-recovery",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2156
+        },
+        {
+          "name": "release-tag",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 558
+        },
+        {
+          "name": "api-surface",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 866
+        },
+        {
+          "name": "logging-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 159
+        },
+        {
+          "name": "s3-design-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1218
+        },
+        {
+          "name": "kv-design-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1079
+        },
+        {
+          "name": "kv-conditional-runtime",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1175
+        },
+        {
+          "name": "kv-conditional-gates",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 517
+        },
+        {
+          "name": "s3-read-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1978
+        },
+        {
+          "name": "s3-write-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 417
+        },
+        {
+          "name": "crypto-config-planning",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 611
+        },
+        {
+          "name": "crypto-es256-signing",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 145
+        },
+        {
+          "name": "crypto-rs256",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1684
+        },
+        {
+          "name": "crypto-digest-text-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 444
+        },
+        {
+          "name": "reachable-graph",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 160
+        },
+        {
+          "name": "project-modules",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 983
+        },
+        {
+          "name": "package-reachability",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1014
+        },
+        {
+          "name": "provider-toolchain",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 135
+        },
+        {
+          "name": "schema-registry",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 951
+        },
+        {
+          "name": "continuation-registry",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 133
+        },
+        {
+          "name": "entities-contracts",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 196
+        },
+        {
+          "name": "entities-schema-bridge",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 325
+        },
+        {
+          "name": "entities-javascript-runtime",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 820
+        },
+        {
+          "name": "entities-json-rpc-corpus",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 128
+        },
+        {
+          "name": "mcp-http",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 369
+        },
+        {
+          "name": "pulse-context-corpus",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 802
+        },
+        {
+          "name": "pulse-context-application",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 5931
+        },
+        {
+          "name": "pulse-context-host",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3802
+        },
+        {
+          "name": "mcp-compatibility",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 285
+        },
+        {
+          "name": "mcp-tools",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 311
+        },
+        {
+          "name": "mcp-authorization",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3104
+        },
+        {
+          "name": "entities-package-owned-lowering",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 424
+        },
+        {
+          "name": "entities-catalog",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 357
+        },
+        {
+          "name": "entities-inspection",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 12706
+        },
+        {
+          "name": "entities-orchestration-demo",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 6505
+        },
+        {
+          "name": "cli-command-spec",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 129
+        },
+        {
+          "name": "cli-init-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 21452
+        },
+        {
+          "name": "cli-project-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 63297
+        },
+        {
+          "name": "cli-expansion-doctor",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 10266
+        },
+        {
+          "name": "cli-project-guards",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 9181
+        },
+        {
+          "name": "cli-dev-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 11604
+        },
+        {
+          "name": "cli-schema-json-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 58742
+        },
+        {
+          "name": "entities-node-native-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 19723
+        },
+        {
+          "name": "fastly-entities-native-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 68390
+        },
+        {
+          "name": "events-cli-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 49952
+        },
+        {
+          "name": "cli-diagnostics",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 4437
+        },
+        {
+          "name": "docs-executable-contracts",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 27084
+        },
+        {
+          "name": "docs-executable-init-dev",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7288
+        },
+        {
+          "name": "docs-migration-schema-lowering",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 118
+        },
+        {
+          "name": "docs-example-01-hello-json",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 8355
+        },
+        {
+          "name": "docs-example-02-request-schema",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 12796
+        },
+        {
+          "name": "docs-example-03-fetch-composition",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 9859
+        },
+        {
+          "name": "docs-example-05-fastly-capabilities",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 17982
+        },
+        {
+          "name": "docs-example-07-opaque-proxy",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 16474
+        },
+        {
+          "name": "docs-example-09-router-lowering",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 10687
+        },
+        {
+          "name": "docs-example-10-entities-tools",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 8917
+        },
+        {
+          "name": "docs-example-11-events",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 16276
+        },
+        {
+          "name": "docs-example-12-pulse-context-mcp",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 5765
+        },
+        {
+          "name": "docs-example-13-jwt-es256",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 28785
+        }
+      ]
+    },
+    {
+      "receipt": "prpt04-regressions.json",
+      "runId": "2026-10-08T01-36-19-306Z--5",
+      "status": "passed",
+      "durationMs": 18132,
+      "selected": [
+        "cli-javascript-target-compilation",
+        "config-secrets-kv-redaction"
+      ],
+      "results": [
+        {
+          "name": "cli-javascript-target-compilation",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 17443
+        },
+        {
+          "name": "config-secrets-kv-redaction",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 684
+        }
+      ]
+    },
+    {
+      "receipt": "prpt04-final-cli.json",
+      "runId": "2026-10-08T01-36-41-930Z--6",
+      "status": "passed",
+      "durationMs": 2164,
+      "selected": [
+        "cli-report-workflow"
+      ],
+      "results": [
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2160
+        }
+      ]
+    },
+    {
+      "receipt": "prpt04-final-catalogs.json",
+      "runId": "2026-10-08T01-38-17-053Z--7",
+      "status": "passed",
+      "durationMs": 3198,
+      "selected": [
+        "cli-report-workflow",
+        "cli-command-spec",
+        "pulse-context-corpus"
+      ],
+      "results": [
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2090
+        },
+        {
+          "name": "cli-command-spec",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 167
+        },
+        {
+          "name": "pulse-context-corpus",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 936
+        }
+      ]
+    },
+    {
+      "receipt": "prpt04-final-output.json",
+      "runId": "2026-10-08T01-39-05-992Z--6",
+      "status": "passed",
+      "durationMs": 1956,
+      "selected": [
+        "cli-report-workflow"
+      ],
+      "results": [
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1951
+        }
+      ]
+    },
+    {
+      "receipt": "prpt04-final-overview.json",
+      "runId": "2026-10-08T01-43-11-778Z--6",
+      "status": "passed",
+      "durationMs": 2257,
+      "selected": [
+        "cli-report-workflow"
+      ],
+      "results": [
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2253
+        }
+      ]
+    }
+  ],
+  "lateChanges": "The main run started before final public wording and HTML writer inspection/platform handling. Final-catalogs reruns CLI/spec/corpus; final-output reruns the CLI writer contract; final-overview reruns the complete CLI contract after preserving unavailable inventory counts. No other implementation changes followed.",
+  "checks": {
+    "maintainer": "passed",
+    "documentationSync": "passed; corpus generated then docs synchronized again",
+    "docsCheck": "passed; 83 versioned pages, 6 releases, 20548 local links",
+    "documentationRelease": "passed, status ok",
+    "scope": "consistent declaration; human implementation direction supplied, merge review required",
+    "typescript": "passed: node node_modules/typescript/bin/tsc -b tsconfig.workspace.json",
+    "pnpmBuild": "blocked: pnpm 11.25.0 does not satisfy ^12.4.2; no engine policy or dependencies changed"
+  },
+  "developmentCorrections": [
+    "Missing .cjs fixture import corrected before registered suite execution.",
+    "Parser command/option expectations and generated references synchronized.",
+    "Output destination inspection failures mapped to a stable public diagnostic; focused rerun passed."
+  ],
+  "remaining": [
+    "PRPT-05 actual offline viewer and generated-output snapshot policy; HTML currently exits 3 without writing.",
+    "Expanded/collapsed schema, responsive/keyboard/offline and hostile HTML qualification against locked v2 fixtures.",
+    "PRPT-06 installed-package, real ARC/Catalog and cost/acceptance closure.",
+    "No full Native/JavaScript/conformance profiles or release seal; selected CLI tasks exercise both targets.",
+    "PULSE_VICEROY_BIN absent: optional exact-artifact Viceroy replay skipped; no external provider reality claim."
+  ]
+}

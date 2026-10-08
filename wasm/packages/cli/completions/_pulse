@@ -9,6 +9,7 @@ commands=(
     'dev:Start the foreground local server with the selected provider conformance runtime.'
     'compile:Compile the canonical project into provider-neutral Pulse-owned WebAssembly.'
     'build:Compile the canonical project and realize the deployment provider selected by the active project profile.'
+    'report:Review retained evidence from a completed Native build without rebuilding or executing project code.'
     'completion:Print a generated shell completion script'
     'help:Print public help'
     'version:Print the installed CLI version'
@@ -103,6 +104,17 @@ case $words[2] in
       '--experimental-native-size[Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag.]' \
       '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
       '--out[Override the project-relative artifact output directory.]:directory:_directories'
+      ;;
+    report)
+      _arguments -s       '--html[Request an offline HTML report (not yet available); mutually exclusive with --json.]' \
+      '--help[Print public CLI help and exit.]' \
+      '-h[Print public CLI help and exit.]' \
+      '--json[Emit machine-readable JSON. pulse dev emits one JSON event per line.]' \
+      '--dry-run[Resolve and report the command plan without executing it.]' \
+      '--plan[Resolve and report the command plan without executing it.]' \
+      '--profile[Select a project profile. Precedence: --profile, PULSE_PROFILE, pulse.defaultProfile.]:value:' \
+      '--out[HTML destination under the selected root; requires --html. Defaults to .pulse/reports/pulse-report.html.]:directory:_directories' \
+      '--artifact[Replay a saved Report capsule or supported completed-Wasm manifest without loading project code.]:file:_files'
       ;;
   *)
     _describe 'pulse command' commands

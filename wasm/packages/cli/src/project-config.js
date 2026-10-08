@@ -31,14 +31,7 @@ const PROJECT_CONFIG_VERSION = 'pulse.project-config.v4';
 const CONFIG_FILE_NAMES = CONFIG_DISCOVERY;
 const PROJECT_PROVIDERS = providerIds();
 
-class PulseProjectError extends Error {
-  constructor(code, message, detail = {}) {
-    super(message);
-    this.name = 'PulseProjectError';
-    this.code = code;
-    this.detail = Object.freeze({ ...detail });
-  }
-}
+const { PulseProjectError } = require('./internal/project-error.js');
 
 function slash(value) {
   return String(value).replace(/\\/g, '/');
