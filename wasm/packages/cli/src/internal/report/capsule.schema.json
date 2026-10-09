@@ -389,7 +389,10 @@
                 "unsupported-schema-shape",
                 "unsupported-schema-version",
                 "unsupported-constraint",
-                "upstream-partial"
+                "upstream-partial",
+                "entry-ownership-not-retained",
+                "dispatcher-carrier",
+                "final-symbol-not-surviving"
               ]
             },
             {
@@ -886,7 +889,10 @@
                 "unsupported-schema-shape",
                 "unsupported-schema-version",
                 "unsupported-constraint",
-                "upstream-partial"
+                "upstream-partial",
+                "entry-ownership-not-retained",
+                "dispatcher-carrier",
+                "final-symbol-not-surviving"
               ]
             },
             {
@@ -1458,7 +1464,10 @@
                 "unsupported-schema-shape",
                 "unsupported-schema-version",
                 "unsupported-constraint",
-                "upstream-partial"
+                "upstream-partial",
+                "entry-ownership-not-retained",
+                "dispatcher-carrier",
+                "final-symbol-not-surviving"
               ]
             },
             {

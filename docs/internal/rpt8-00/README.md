@@ -4,6 +4,11 @@ Repository-only implementation handoff. This is a synthetic producer proof, not
 a new Report contract or production coverage claim. The active contracts remain
 in [current-contracts.md](../../architecture/current-contracts.md).
 
+RPT8-01 follow-up: the task below now checks production v2 attribution and runs in
+the unit/CLI profiles. It adds bounded-size cells, multi-body handlers, shared
+route stages, and shared helper consumers. The original findings below describe
+the RPT8-00 baseline; current behavior is owned by the architecture contract.
+
 ## Result and reproduction
 
 Two repeated, transfer-capable middleware registrations can be joined to one
@@ -18,8 +23,8 @@ Run from the repository root with lockfile-pinned workspace dependencies:
 node wasm/scripts/run-wasm-tests.cjs --task cli-report-entry-proof --no-report
 ```
 
-This explicitly selected feasibility task is outside aggregate/release profiles.
-The existing Report acceptance tasks remain unchanged. It reuses the
+At RPT8-00 this was an explicitly selected feasibility task outside aggregate
+profiles; RPT8-01 promotes it to production regression coverage. It reuses the
 [PRPT-00C final-emission observer](../prpt00c/capture-transform.cjs) and the
 [PRPT-03 capture boundaries](../prpt03/README.md), rather than starting another
 capture implementation or evidence campaign.

@@ -19,7 +19,9 @@ const object = (properties, optional = []) => ({ type: 'object', properties,
 const ids = array(id);
 const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping', 'incomplete-root-universe',
   'unsupported-call-graph', 'prelink-only', 'not-recorded', 'not-applicable', 'unsupported-schema-shape',
-  'unsupported-schema-version', 'unsupported-constraint', 'upstream-partial'];
+  'unsupported-schema-version', 'unsupported-constraint', 'upstream-partial',
+  'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving'];
+const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const defs = {
   Source: object({ file: text, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 },
     endLine: { ...uint, minimum: 1 }, endColumn: { ...uint, minimum: 1 } }, ['endLine', 'endColumn']),
@@ -97,7 +99,10 @@ const completion = object({ kind: fixed('pulse.report-completion'), completionVe
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),
   artifacts: array(object({ ...defs.File.properties, id, stage: en('final', 'prelink') })),
-  sidecars: array(object({ ...defs.File.properties, kind: en('inventory', 'attribution'), version: fixed(1), required: bool })) });
+  sidecars: array({ oneOf: [
+    object({ ...defs.File.properties, kind: fixed('inventory'), version: fixed(1), required: bool }),
+    object({ ...defs.File.properties, kind: fixed('attribution'), version: en(1, 2), required: bool })
+  ] }) });
 const attribution = object({ kind: fixed('pulse.report-attribution'), attributionVersion: fixed(1),
   artifactId: id, artifactSha256: hash, stage: en('final', 'prelink'), importedFunctions: uint,
   functions: array(object({ index: uint, bytes: { ...uint, minimum: 1 } })),
@@ -105,6 +110,14 @@ const attribution = object({ kind: fixed('pulse.report-attribution'), attributio
   chunkMappings: array(object({ chunk: uint, functionIndex: nullable(uint), reason: nullable(en(...REASONS)) })),
   graph: object({ state: en('available', 'unavailable'), reason: nullable(en(...REASONS)),
     method: fixed('static-direct-calls-v1'), edges: array(object({ caller: uint, callee: uint, sites: { ...uint, minimum: 1 } })) }) });
+const attributionV2 = object({ ...attribution.properties, attributionVersion: fixed(2),
+  entries: array(object({ entryId: text, handlerId: nullable(text),
+    bodies: array(object({ chunk: uint, relation: en(...BODY_KINDS) })),
+    reason: nullable(en('entry-ownership-not-retained')) })),
+  chunkMappings: array(object({ chunk: uint, kind: en(...BODY_KINDS), implementationId: nullable(text),
+    functionIndex: nullable(uint), reason: nullable(en('final-symbol-not-surviving')) })) });
+delete attributionV2.properties.handlerBodies;
+attributionV2.required = attributionV2.required.filter(key => key !== 'handlerBodies');
 function document(name, shape) {
   const used = {};
   function visit(node) {
@@ -120,4 +133,5 @@ function document(name, shape) {
     $id: `urn:pulse:report:${name}:v1`, ...shape, $defs: used });
 }
 module.exports = { capsuleSchema: document('capsule', capsule), completionSchema: document('completion', completion),
-  attributionSchema: document('attribution', attribution), fileSchema: freeze(defs.File), REASONS: Object.freeze(REASONS) };
+  attributionSchema: document('attribution', { oneOf: [attribution, attributionV2] }),
+  fileSchema: freeze(defs.File), REASONS: Object.freeze(REASONS) };

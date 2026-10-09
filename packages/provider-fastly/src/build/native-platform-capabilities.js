@@ -2089,6 +2089,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     portableSourceHash: portable.sourceHash,
     schemaCodecs: portable.manifest.schemaCodecs,
     handlerBodies: portable.manifest.handlerBodies,
+    ...(portable.manifest.reportOwnership ? { reportOwnership: portable.manifest.reportOwnership } : {}),
     dispatcher: portable.manifest.dispatcher,
     stages: portable.manifest.stages,
     helperBodies: portable.manifest.helperBodies,
