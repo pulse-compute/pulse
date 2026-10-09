@@ -1,7 +1,7 @@
 'use strict';
 
 const { copyData, parseJson, canonicalJson, sha256, relativePath, fail, freeze } = require('./data');
-const { completionSchema, attributionSchema, fileSchema } = require('./schema');
+const { completionSchema, attributionSchema, fileSchema, GRAPH_DIAGNOSTICS } = require('./schema');
 const { validate } = require('./validate');
 const { artifactId, validateCapsule, parseCapsule } = require('./capsule');
 const ensure = (value, code) => { if (!value) fail(code); };
@@ -68,11 +68,19 @@ function validateAttribution(input) {
   }
   if (value.graph.state === 'available') {
     ensure(value.graph.reason === null, 'REPORT_ATTRIBUTION');
+    ensure(value.graph.diagnostic === undefined, 'REPORT_GRAPH_DIAGNOSTIC');
     for (const edge of value.graph.edges) {
       ensure(edge.caller >= value.importedFunctions && edge.caller < last && edge.callee < last, 'REPORT_ATTRIBUTION');
       const key = `${edge.caller}:${edge.callee}`; ensure(!edges.has(key), 'REPORT_DUPLICATE'); edges.add(key);
     }
   } else ensure(value.graph.reason !== null && value.graph.edges.length === 0, 'REPORT_ATTRIBUTION');
+  if (Object.values(GRAPH_DIAGNOSTICS).includes(value.graph.reason)
+    && !['missing-evidence', 'prelink-only'].includes(value.graph.reason)) ensure(value.graph.diagnostic, 'REPORT_GRAPH_DIAGNOSTIC');
+  if (value.graph.diagnostic) {
+    require('./graph-diagnostic').checkGraphDiagnostic(value.graph.diagnostic, last);
+    ensure(value.graph.reason === value.graph.diagnostic.reason
+      && !['capture-absent', 'prelink-evidence-only', 'traversal-work-limit'].includes(value.graph.diagnostic.code), 'REPORT_GRAPH_DIAGNOSTIC');
+  }
   return freeze(value);
 }
 function admitCompletedBuild(input, completionBytes, options) {

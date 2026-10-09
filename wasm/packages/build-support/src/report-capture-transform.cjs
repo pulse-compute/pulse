@@ -57,7 +57,8 @@ module.exports = class ReportCapture {
         const capture = { kind: 'pulse.report-attribution', ...entryCapture,
           artifactId: 'artifact:' + artifactSha256, artifactSha256, stage: 'final',
           importedFunctions: parsed.importedFunctions, functions: parsed.functions,
-          graph: { state: graph.status, reason: graph.status === 'available' ? null : 'unsupported-call-graph',
+          graph: { state: graph.status, reason: graph.status === 'available' ? null : graph.reason,
+            ...(graph.diagnostic ? { diagnostic: graph.diagnostic } : {}),
             method: 'static-direct-calls-v1', edges: graph.status === 'available' ? graph.edges : [] } };
         const wire = JSON.stringify(capture); assert.ok(Buffer.byteLength(wire) <= 16 * 1024 * 1024);
         fs.writeFileSync(config.file, wire);

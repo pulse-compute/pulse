@@ -42,6 +42,18 @@ function addSizeEvidence(input, files, attribution = null) {
       dataPayloadBytes: dataFact, unattributedDataPayloadBytes: { ...dataFact } };
     capsule.bodies.push(...physical.functions.map(row => ({ ...row, id: bodyId(artifact.sha256, row.index), artifactId: artifact.id })));
     const capture = attribution?.artifactId === artifact.id ? verifyAttribution(attribution, artifact, bytes) : null;
+    function graphObservation(diagnostic) {
+      const key = id('evidence', 'graph:' + artifact.id + ':' + diagnostic.code);
+      if (!capsule.observations.some(row => row.id === key)) capsule.observations.push({ id: key,
+        code: 'REPORT_GRAPH_UNAVAILABLE', severity: 'info', producer, subjectIds: [artifact.id], evidenceIds,
+        graphDiagnostic: diagnostic });
+    }
+    if (capture?.graph.diagnostic) graphObservation(capture.graph.diagnostic);
+    if (!capture) {
+      const prelink = attribution?.stage === 'prelink' && artifact.stage === 'final';
+      graphObservation({ reason: prelink ? 'prelink-only' : 'missing-evidence', code: prelink ? 'prelink-evidence-only' : 'capture-absent',
+        functionIndex: null, observed: null, expected: null });
+    }
     const owners = new Map((capture?.attributionVersion === 2 ? capture.entries : (capture?.handlerBodies || []).map(row => ({
       ...row, bodies: row.chunks.map(chunk => ({ chunk, relation: 'terminal-body' })), reason: null
     }))).map(row => [row.entryId, row]));
@@ -60,7 +72,11 @@ function addSizeEvidence(input, files, attribution = null) {
     function closure(roots) {
       const visited = new Set(), queue = [...roots];
       for (let i = 0; i < queue.length; i++) {
-        if (++work > 1000000) return null;
+        if (++work > 1000000) {
+          graphObservation({ reason: 'graph-budget-exhausted', code: 'traversal-work-limit',
+            functionIndex: null, observed: work, expected: 1000000 });
+          return null;
+        }
         const index = queue[i]; if (visited.has(index) || index < physical.importedFunctions) continue;
         visited.add(index); queue.push(...(outgoing.get(index) || []));
       }
@@ -101,7 +117,9 @@ function addSizeEvidence(input, files, attribution = null) {
       const root = reached ? { id: id('root', subject.id + ':' + artifact.id), kind: subject.entryId ? 'route' : 'other', subjectId: subject.id,
         bodyIds: reached.map(index => bodyId(artifact.sha256, index)) } : null;
       if (root) set.roots.push(root);
-      measurement('reachable', reached, 'bounded', complete ? 'unsupported-call-graph' : reason, root);
+      measurement('reachable', reached, 'bounded', complete
+        ? capture.graph.state === 'available' ? 'graph-budget-exhausted' : capture.graph.reason
+        : reason, root);
       measurement('own', null, 'partial', 'incomplete-root-universe');
       measurement('shared', null, 'partial', 'incomplete-root-universe');
     }
