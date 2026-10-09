@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # Public site and documentation presentation
@@ -109,14 +109,9 @@ The Markdown renderer folds an explicit anchor immediately before a heading into
 
 ## Build and inspect
 
-```bash
-pnpm docs:sync
-pnpm docs:site
-pnpm docs:site:check
-node scripts/documentation-release.cjs
-```
-
-`pnpm docs:site` writes `.pulse-docs-site/`. `docs:site:check` builds into a temporary directory and validates the complete route graph.
+Follow the [documentation update loop](./documentation-system.md#update-loop)
+for synchronization and required checks. `npm run docs:site` retains the generated
+artifact under `.pulse-docs-site/` for inspection.
 
 For normal local development, use the preview adapter instead of manually reproducing the production mount:
 

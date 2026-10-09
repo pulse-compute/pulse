@@ -897,6 +897,7 @@ async function main() {
     }
 
     if (options.section === 'contracts') {
+      require('./assert-documentation-sources.cjs').assertDocumentationSources();
       const syncResult = verifySourceContracts();
       console.log('docs - verify CLI reference and flags');
       assertDocumentedCommands();

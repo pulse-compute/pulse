@@ -271,60 +271,24 @@ node wasm/scripts/run-wasm-tests.cjs --task provider-fastly-compute-reality --no
 
 The task records the Fastly CLI version, invokes `fastly compute serve --file`, and lets the CLI own its local Compute engine. It then sends real HTTP requests through the generated native module. `PULSE_VICEROY_BIN` remains available only as an explicit lower-level reproduction override. The fixture covers schemas, configuration, secrets, KV persistence, named-backend fetch, opaque bytes, repeated headers, and GRIP hold/publish. It does not deploy or activate a Fastly service.
 
-The aggregate candidate seal is:
+## Aggregate seal and evidence
 
-```bash
-npm run release:seal
-```
+[Testing Pulse](./testing.md#aggregate-release-seal) owns execution, deadlines,
+shared packing, recovery and cleanup. The seal runs source checks before the
+TypeScript build, the complete release profile, mandatory installed features,
+and external Fastly proof when required. Workspace and installed checks cannot
+be pooled manually into a passing release claim.
 
-Before restoring dependencies, the seal checks that every release-profile task
-maps to an evidence shard and every explicit shard task is in that profile.
-It also requires the supported release Node line, a clean Git candidate with
-matching source identity, the supplied dependency bundle when selected, and
-Fastly CLI availability when `--require-fastly` is selected. These checks have
-an attempt report even when startup fails. Packaging dependencies load after
-restoration, and source identity is checked again before package qualification.
-The complete example workflows check the existing README baselines,
-guest/provider bytes and guest-link input sizes in default and experimental
-Native-size modes. The seal runs those assertions once, within the full release
-profile. A size-only diagnostic remains available separately:
+Complete example workflows include default and experimental Native-size
+assertions. Run the size-only command for diagnosis, not as a replacement:
 
 ```bash
 node wasm/test/docs/assert-executable-documentation.cjs --section sizes
 ```
 
-Seal steps report start, completion, elapsed time and failure; size checks report
-the example and build mode; packing reports each package on stderr so `--json`
-stdout remains machine-readable. A successful preflight is development evidence.
-The full example workflows and exact-source complete release replay remain
-mandatory; preflight results cannot replace or be pooled into the final seal.
-
-The `source-checks` step runs maintainer/publication controls, package/catalog
-consistency, generated documentation, source links and the site before the
-TypeScript build. It replaces the separate maintainer/publication/documentation
-invocations with one fresh pass. Its local receipt pins the clean source, actual
-dependency bytes, Node executable and environment; shared packing checks the
-receipt again instead of repeating source validation. This receipt is local to
-the attempt and is not a substitute for complete qualification. Standalone
-packing continues to validate documentation itself.
-
-The seal builds one shared package set after workspace and documentation checks.
-Every consumer gets private copies verified against a source-bound, hash-pinned
-receipt; clean installs and behavioral coverage remain separate. Determinism
-still requires a second independent construction from source. The shared set and completed task proofs are retained in the attempt directory
-for seven days. A new attempt may recover them only after verifying the identical
-clean candidate, checkout, restored dependencies, toolchain, rebuilt outputs,
-options/provider context, prerequisite proofs, task definitions, artifact bytes
-and successful cleanup. Reuse never extends a checkpoint's original expiry. See
-[testing](testing.md#aggregate-release-seal) for the reuse and isolation rules.
-
-It restores dependencies, validates the repository and generated documentation, runs the complete release profile, and adds the external Fastly task when the Fastly CLI can start its managed local Compute lifecycle. Use `--require-fastly` to make that host proof mandatory.
-
-The seal also regenerates the production vulnerability and installed-platform
-license closure. It does not depend on mutable npm trusted-publisher settings,
-GitHub publication environments, public repository administration, or the
-production documentation origin. Those remain blocking at publication or
-documentation deployment, where the corresponding authority is actually used.
+The seal refreshes vulnerability and license evidence. Mutable npm publisher
+settings, GitHub environments and production documentation availability remain
+blocking where those authorities are used, at publication or deployment.
 
 With a clean passing seal, create the release evidence delivery:
 
@@ -348,23 +312,10 @@ remain human-authority operations.
 
 ## Publication workflow
 
-After all dependency-bound acceptance passes, seal the exact tarballs:
-
-```bash
-npm run release:candidate
-npm run release:verify-bundle
-npm run publication:check
-```
-
-Production publication is performed only by the manually dispatched **npm
-publication** workflow at the exact release tag. Its protected `npm-publish` job
-uses npm trusted publishing through GitHub OIDC, publishes the tarballs from
-the qualified publication bundle in dependency-safe order, accepts an already-published
-version only when registry integrity matches, and verifies every configured
-dist-tag. A separate job installs the published CLI in a clean prefix and
-completes init, install, doctor, test, and build smoke checks.
-
-Before the first trusted publication, every package name must exist and authorize the exact repository, `npm-publish.yml` workflow, and `npm-publish` environment. Use the package-name audit and a one-time human 2FA bootstrap for any missing names. No long-lived npm token is part of the normal workflow.
+The [npm publishing runbook](./npm-publishing.md) owns release preparation,
+pre-main qualification, merge/tag binding, package-name bootstrap, protected
+publication, retries and registry verification. It consumes the exact qualified
+tarballs; a local acceptance run alone does not authorize publication.
 
 ## Publication hold points
 
@@ -374,28 +325,12 @@ A human release authority must approve `npm-publish`. Codex may diagnose or prep
 
 ## Versioned documentation artifact
 
-The release owns a versioned hosted-documentation gate:
-
-```bash
-pnpm docs:site:check
-```
-
-The check builds the exact `v1.0.0-beta.7` site and `latest` tree in a temporary directory, creates one search entry per public page, validates local hosted links, verifies release/version manifests, and requires the search, version, owner, and review UI on every page.
-
-The **Documentation** workflow repeats those checks for pull requests and `main`, seals a preview deployment manifest, and uploads artifacts without production credentials. It does not deploy to GitHub Pages.
-
-Production delivery uses the manually dispatched **Documentation deployment** workflow and Fastly Object Storage. The workflow:
-
-```text
-resolve and verify the pre-main candidate and merge binding
-→ upload/verify v1.0.0-beta.7 and its receipt immutably
-→ verify all matching npm packages and configured dist-tags
-→ promote root and latest
-→ purge the documentation CDN
-→ verify representative URLs through Fastly
-```
-
-The deployment never deletes bucket objects. A pre-existing immutable key with different SHA-256 fails before promotion. The `documentation-production` environment, Object Storage credentials, VCL service, final public origin, and service activation remain under human release/infrastructure authority.
+The [documentation update loop](./documentation-system.md#update-loop) owns
+source and hosted-site checks. Qualification retains the validated versioned
+site alongside the exact package candidate. The
+[deployment runbook](./documentation-deployment.md) owns immutable Object Storage
+uploads, registry gating, promotion and public URL verification. The
+[versioning procedure](./documentation-versioning.md) owns preserved history.
 
 Release packing also checks the installed CLI command specification,
 configuration schema bundle, release/version manifests, shell completions,

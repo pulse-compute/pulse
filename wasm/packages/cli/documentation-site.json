@@ -9,6 +9,10 @@
     "description": "Start with readable async-shaped TypeScript, inspect the exact execution plan, and choose Native or JavaScript deliberately."
   },
   "documents": {
+    "maintainer-testing": {
+      "source": "docs/maintainers/testing.md",
+      "label": "Testing Pulse"
+    },
     "documentation": {
       "source": "docs/README.md",
       "label": "Documentation"
@@ -154,7 +158,8 @@
     "examples/README.md": "docs/examples.md"
   },
   "routeAliases": {
-    "alpha-scope": "preview-scope"
+    "alpha-scope": "preview-scope",
+    "maintainers/compiler-efficiency-p01": "maintainer-testing"
   },
   "header": {
     "navigation": [

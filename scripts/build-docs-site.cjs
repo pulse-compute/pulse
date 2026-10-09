@@ -14,6 +14,7 @@ const {
 } = require('./package-support.cjs');
 const {
   DOCUMENTATION_VERSIONS,
+  isPublicDocumentationSource,
   cleanBasePath,
   sourceToRoute,
   documentationUrl
@@ -146,27 +147,25 @@ function filesUnder(root, predicate = () => true, out = []) {
   return out;
 }
 
-function publicPageSources() {
+function publicPageSources(sourceRoot = repoRoot) {
   const pages = [
-    path.join(repoRoot, 'README.md'),
-    path.join(repoRoot, 'CHANGELOG.md'),
-    path.join(repoRoot, 'API.md'),
-    ...filesUnder(path.join(repoRoot, 'docs'), (file) => file.endsWith('.md')
-      && path.basename(file) !== 'AGENTS.md'
-      && !file.includes(`${path.sep}internal${path.sep}`)
-      && !file.includes(`${path.sep}architecture${path.sep}decisions${path.sep}`)),
-    ...filesUnder(path.join(repoRoot, 'examples'), (file) => path.basename(file) === 'README.md')
+    path.join(sourceRoot, 'README.md'),
+    path.join(sourceRoot, 'CHANGELOG.md'),
+    path.join(sourceRoot, 'API.md'),
+    ...filesUnder(path.join(sourceRoot, 'docs'), (file) => file.endsWith('.md')
+      && isPublicDocumentationSource(path.relative(sourceRoot, file))),
+    ...filesUnder(path.join(sourceRoot, 'examples'), (file) => path.basename(file) === 'README.md')
   ];
   return [...new Set(pages)]
     .sort()
-    .map((file) => slash(path.relative(repoRoot, file)))
+    .map((file) => slash(path.relative(sourceRoot, file)))
     .filter((sourcePath) => !HOSTED_SOURCE_ALIASES.has(sourcePath));
 }
 
-function publicAssetSources() {
-  return filesUnder(path.join(repoRoot, 'docs'), (file) => !file.endsWith('.md') && path.basename(file) !== 'AGENTS.md' && !file.includes(`${path.sep}internal${path.sep}`))
+function publicAssetSources(sourceRoot = repoRoot) {
+  return filesUnder(path.join(sourceRoot, 'docs'), (file) => !file.endsWith('.md') && isPublicDocumentationSource(path.relative(sourceRoot, file)))
     .sort()
-    .map((file) => slash(path.relative(repoRoot, file)));
+    .map((file) => slash(path.relative(sourceRoot, file)));
 }
 
 function sourceAssetRoute(sourcePath) {

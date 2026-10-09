@@ -44,135 +44,10 @@ instructions, this guide, release acceptance commands and maintenance-policy
 commands are checked against it by `npm run maintainer:check`. Use explicit
 runner commands for named selections so stale references are detectable.
 
-The release selection runs six shared corpus tasks once through exact installed
-packages in `clean-machine-acceptance`. The full workspace tasks remain in their
-functional profiles and are directly selectable for development:
-
-| Workspace task | Installed corpus owner |
-|---|---|
-| `s3-native-read`, `s3-write-conformance` | S3 read/write acceptance |
-| `request-budget-transport` | Request-deadline acceptance |
-| `multifile-source-identity` | Multifile and shared-handler acceptance |
-| `http-input-outcomes` | HTTP-input acceptance |
-| `kv-conditional-adversarial` | Conditional-KV acceptance without external Compute |
-
-`multifile-source-indexes` separately retains the workspace-only source-range,
-intrinsic and generated-call assertions in `unit` and `release`. Clean-machine
-acceptance retains public typing, exact tarball bytes, isolated resolution and
-additional artifact checks. Its atomic `clean-machine-*/corpora.json` report
-records every corpus outcome, elapsed time, source identity and candidate
-package hashes, including failed and not-run cells. All corpora must complete;
-partial reports never qualify a release. The existing evidence shards require
-the installed owner. External provider qualification remains separate.
-
-JWT workflows keep all algorithms, RSA widths, semantic target cells and
-composition outcomes. Installed `doctor` and `inspect` use RS256 on all four
-targets; each algorithm still runs `test`, `build` and `dev`, with independent
-signature verification and secret-leak checks. The 4096-bit workspace workflow
-inspects the combined form once per target and still builds and tests all three
-forms. Focused reports include command elapsed time and actual AssemblyScript
-subprocess counts; those counts include attempted compilations, not frontend
-planning or guest linking.
-
-Finite generated output has a separate installed-consumer acceptance task:
-
-```bash
-node wasm/scripts/run-wasm-tests.cjs --task str03b-installed
-```
-
-It needs the lockfile-pinned build/pack dependencies and npm registry access for
-non-Pulse dependencies. All Pulse packages come from exact local candidate
-tarballs served by a read-only loopback registry; lifecycle scripts are disabled.
-The consumer and its copied fixture run outside the checkout without workspace
-package links. Every installed Pulse file is verified against its tarball before
-and after both targets' CLI and wire tests. Atomic acceptance reports under
-`wasm/.test-results/str03b-installed-*/` record terminal status, source/tree/diff,
-package and fixture hashes, installed-file digests, Wasm identities, workflow
-results, cleanup and memory observations. Keep failed attempts distinct from
-final clean-source evidence. This task is explicitly selected, like the STR-02
-installed tasks; it is not implicitly part of the portable or aggregate release
-profiles and does not authorize publication or promote experimental output.
-
-The event mechanism has focused provider-neutral tasks, plus one project-level
-workflow task included in the `cli` and `release` profiles:
-
-```bash
-node wasm/scripts/run-wasm-tests.cjs --task events-static-topology --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-javascript-runtime --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-emit-javascript --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-native-runtime --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-node-reference --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-cli-workflow --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-conformance --no-report
-node wasm/scripts/run-wasm-tests.cjs --task events-candidate-seal --no-report
-```
-
-`events-native-runtime` proves exact event dispatch, schema payload handles,
-effect/continuation resume, event-only and mixed artifacts, conditional ABI
-shape, two-build reproducibility, and HTTP-only byte identity. It is a
-provider-neutral runtime proof and does not activate provider event transport.
-`events-node-reference` proves Node JavaScript/Native direct parity, Native emit
-suspension/resume, exact accepted frames, bounded FIFO ingress, cancellation,
-failure categories, instance isolation, no loopback, zero JavaScript/Asyncify
-imports, and zero fallback. It does not exercise a public listener or Fastly.
-`events-cli-workflow` proves mixed HTTP/event harness cases, exact emitted-frame
-expectations, Node JavaScript/Native project parity, event catalog packaging,
-compile-only inspection, and the exact Fastly fail-closed eligibility boundary.
-`events-conformance` drives the canonical bounded corpus through Node
-JavaScript and Native and compares every semantic projection exactly, including
-limits, queues, cancellation, redaction, state isolation, completion, and the
-absence of loopback or a call surface. `events-candidate-seal` packs the
-event-facing public package closure, installs it offline, type-checks author and
-host consumers, verifies deterministic tarballs, and emits the EV9 candidate
-decision plus blocker ledger. The candidate seal is evidence-only and does not
-assign a release or publish anything.
-
-Replay the existing Fastly HTTP regression through an explicitly selected
-workspace-local Viceroy 0.20.1 binary; this does not claim Fastly event support:
-
-```bash
-PULSE_VICEROY_BIN=/path/to/viceroy-0.20.1/viceroy \
-node wasm/scripts/run-wasm-tests.cjs \
-  --task provider-fastly-compute-reality \
-  --no-report
-```
-
-Event cases are an explicit harness discriminant; existing request cases remain
-unchanged:
-
-```ts
-export default [
-  {
-    name: 'health',
-    request: { method: 'GET', path: '/health' },
-    expect: { status: 200, text: 'ok' },
-  },
-  {
-    name: 'ingress',
-    kind: 'event',
-    event: {
-      type: 'input.received',
-      schema: 'events.Input',
-      payload: { sequence: 7 },
-    },
-    expect: {
-      status: 'completed',
-      emitted: [{
-        type: 'output.accepted',
-        schema: 'events.Output',
-        payload: { accepted: true, sequence: 7 },
-      }],
-    },
-  },
-]
-```
-
-`expect.emitted` is ordered and exact. It proves host acceptance only; it does
-not imply delivery, automatic loopback, or a public injection command.
-
-The source-bound [`examples/11-events`](../../examples/11-events/) project runs
-the same mixed HTTP/event topology through `doctor`, `inspect`, `test`, and
-`build`. Its `dev` command remains HTTP-only.
+[Release acceptance](./release-acceptance.md) owns packed-consumer coverage,
+installed feature gates and provider-proof boundaries. Select focused task IDs
+from the registry for diagnosis; a focused result does not qualify a release.
+The [events guide](../guides/events.md) owns mixed HTTP/event harness syntax.
 
 Maintainers may bound a diagnostic rerun:
 
@@ -204,10 +79,11 @@ not replace the complete installed replay or the final release seal.
 npm run release:seal
 ```
 
-The seal restores the lockfile-pinned dependency graph, regenerates production
-vulnerability and license evidence, validates maintenance and source publication
-controls, builds and unit-tests the workspace, checks synchronized documentation,
-runs the complete release selection, and records revision-bound evidence under
+The seal restores the lockfile-pinned dependency graph, runs source checks
+(maintenance/publication controls, catalogs, generated docs, links and site)
+before the TypeScript build, refreshes production vulnerability and license
+evidence, unit-tests the workspace, runs the complete release and installed-feature
+selections, and records revision-bound evidence under
 `.pulse-seal/attempts/<run-id>/`. This durable directory survives the ordinary
 workspace clean command; task scratch space remains under `wasm/.test-results/`.
 The release profile creates deterministic Fastly
@@ -226,8 +102,8 @@ Standalone packing and focused tasks still construct their own packages.
 This replaces fifteen full package constructions with two during a fresh complete
 seal. Verified recovery can reuse the exact shared set and completed task proofs
 from the same immutable candidate. Every attempt has its own copies and reports.
-Tasks still run serially because some fixtures and cleanup own workspace build
-outputs. Documented default and
+Execution is serial by default; the bounded worker mode below overlaps only
+independent tasks. Documented default and
 optimized size assertions run in the complete example workflows; the separate
 size-only command remains available for focused diagnosis.
 
@@ -259,17 +135,15 @@ Step deadlines terminate the supervised process tree, escalating from TERM to
 KILL after ten seconds, with one further second to settle output. Temporary
 cleanup has a separate thirty-second deadline; failure or interruption cannot
 produce a passing receipt. A terminal result and report path are printed before
-any separate evidence-bundle command. npm publication retains the reports on
+any separate evidence-bundle command. Pre-main qualification retains the reports on
 success and failure. A missing terminal receipt after an uncatchable kill or
 machine loss remains incomplete evidence, never an implied pass.
 
-The npm candidate job keeps its 60-minute limit. Its work budget starts at the
-first step and ends after 50 minutes; setup consumes that same budget. The seal
-receives the remaining whole minutes, with a 52-minute workflow step ceiling.
-This reserves ten minutes for bounded cleanup, evidence upload and publication
-candidate preparation. Toolchain restoration has a separate ten-minute limit.
-These deadlines bound recovery; they do not predict a faster fresh seal. Recovery
-still requires the complete ordered selection and a terminal passing aggregate.
+The [pre-main qualification workflow](./npm-publishing.md#pre-main-qualification)
+owns the hosted work budget and artifact handoff. Publication consumes that
+qualified artifact; it does not start another seal. Workflow deadlines bound
+recovery, not the expected duration of a fresh seal. Qualification still requires
+the complete ordered selection and a terminal passing aggregate.
 
 ### Recovering the same candidate
 
@@ -292,7 +166,7 @@ actual dependency/toolchain bytes and versions, freshly built outputs, options,
 provider/environment hashes, task definition, prerequisite proof identities and
 exact retained artifact bytes. Checkpoints expire after seven days; reusing one
 does not extend its original expiry. There is no foreign-checkout or remote cache.
-Publication CI archives `.pulse-seal/` for diagnosis; those uploads do not enable
+Qualification CI archives `.pulse-seal/` for diagnosis; those uploads do not enable
 remote reuse. Environment values enter the context as hashes, not plaintext credentials.
 
 Bootstrap, source and prerequisite checks, dependency restoration (unless the
@@ -416,79 +290,21 @@ Source-backed blocks use:
 &lt;!-- /pulse-doc-source --&gt;
 ```
 
-Synchronize or check generated documentation with:
-
-```bash
-pnpm docs:sync
-pnpm docs:check
-```
+Use the [documentation update loop](./documentation-system.md#update-loop)
+for synchronization and source/site checks.
 
 Command/result blocks use `pulse-doc-run` metadata and compare stable semantic fields rather than durations or absolute paths.
 
 ## Package and consumer evidence
 
-The release profile:
-
-- constructs all publishable package tarballs from the canonical release catalog;
-- checks package metadata, exports, exact versions, dependency rewriting, and payload hygiene;
-- builds release packages and the documentation site twice and compares byte identities;
-- installs every exact Pulse candidate while a loopback-only read-only registry keeps the `@pulse-compute` scope fail-closed;
-- resolves third-party dependencies from the canonical npm registry instead of repacking development-install artifacts;
-- exercises fresh Native Node, JavaScript Node, Native Fastly, GRIP, and Router projects without workspace links;
-- builds the representative Fastly JavaScript source closure twice, compiles one exact closure with the pinned runtime toolchain, and records the no-deploy/no-publish boundary.
-
-Run a focused package or consumer proof when diagnosing:
+[Release acceptance](./release-acceptance.md) owns the required package,
+determinism, clean-consumer and offline-deployment coverage. For focused diagnosis:
 
 ```bash
 node wasm/scripts/run-wasm-tests.cjs --task release-packages --no-report
 node wasm/scripts/run-wasm-tests.cjs --task clean-machine-acceptance --no-report
 node wasm/scripts/run-wasm-tests.cjs --task deployment-candidates --no-report
 ```
-
-## JWT and crypto proof seals
-
-The `1.0.0-beta.7` JWT/crypto packages build on the focused crypto seal,
-which replays the
-configuration, JavaScript runtime, Native guest-source, shared cross-target
-corpus, and real Fastly Compute proofs. First record the one phase-boundary
-aggregate replay, then run the seal:
-
-```bash
-node wasm/scripts/run-wasm-tests.cjs \
-  --profile unit \
-  --profile native \
-  --profile javascript \
-  --profile conformance \
-  --profile providers \
-  --report .test-results/crypto-c4/relevant-aggregate.json
-node wasm/scripts/run-wasm-tests.cjs --task crypto-verification-seal --no-report
-```
-
-The seal writes `wasm/.test-results/crypto-c4/phase-c-seal.json` and the shared
-corpus proof writes
-`wasm/.test-results/crypto-c4/crypto-cross-target-conformance.json`. Both
-reports contain status, target realization, toolchain, boundary, and size
-evidence; neither contains keys, messages, authenticators, or ambient backend
-errors. The preserved Phase C seal records the earlier package boundary. JWT
-composition is now sealed in
-`wasm/.test-results/jwt-d4/jwt-phase-d-seal.json`, and the complete four-cell
-target proof is sealed in
-`wasm/.test-results/jwt-e4/jwt-phase-e-seal.json`.
-
-Consolidate those records with the guest-memory decision, guest-link pipeline,
-current documentation, and synchronized package identity using:
-
-```bash
-node wasm/scripts/run-wasm-tests.cjs \
-  --task jwt-evidence-consolidation \
-  --no-report
-```
-
-The task writes
-`wasm/.test-results/jwt-f0/jwt-f0-evidence-consolidation.json`, verifies
-preserved hashes, and proves the JWT/crypto implementation evidence remains
-internally consistent. It does not publish, promote, deploy, or activate
-anything.
 
 ## Runner evidence
 
@@ -512,18 +328,13 @@ back to an older passing report. The aggregate artifact records task counts,
 attempts, durations and tested SHA. This remains portable CI evidence; the
 separate release seal still requires its complete candidate replay.
 
-C02's three hosted PR samples completed in 7m59s, 7m58s and 7m37s,
-compared with W01's 20m15s serial run. Queue time and total runner usage
-are separate from task duration. Each shard still builds its own pinned
-workspace; there is no dependency cache.
-
 ## Branch validation tiers
 
 | Event target | Required validation |
 | --- | --- |
 | PR into any non-`main` branch | Scope declaration, documentation, maintenance, Node 22 smoke, fast portable |
 | Push to any non-`main` branch | Advisory scope classification, documentation, maintenance, Node 22 smoke, fast portable |
-| PR into `main` | Scope declaration, documentation, maintenance and release preparation, Node 22 support floor, all four portable profiles |
+| PR into `main` | Scope declaration, documentation, maintenance and release preparation, Node 22 support floor, all four portable profiles, pre-main release qualification |
 | Push to `main` | Advisory scope classification, documentation, maintenance, Node 22 support floor, all four portable profiles |
 | Manual branch dispatch | The same tier as a push to that branch |
 

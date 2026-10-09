@@ -8,11 +8,13 @@ const META_END = 'pulse-doc-meta:end -->';
 const REVIEWED_ON = '2026-07-16';
 const AUTHORITY_REVIEWED_ON = '2026-07-25';
 const AUTHORITY_REVIEW_BY = '2027-01-25';
-const SEAL_REVIEWED_FILES = new Set([
+const CURRENT_REVIEWED_FILES = new Set([
   'docs/maintainers/testing.md',
-  'docs/maintainers/release-acceptance.md'
-]);
-const PUBLICATION_REVIEWED_FILES = new Set([
+  'docs/maintainers/release-acceptance.md',
+  'docs/contributing/README.md',
+  'docs/maintainers/README.md',
+  'docs/maintainers/documentation-system.md',
+  'docs/maintainers/public-site.md',
   'docs/maintainers/npm-publishing.md',
   'docs/maintainers/repository-setup.md'
 ]);
@@ -58,9 +60,7 @@ function filesUnder(root, predicate = () => true, out = []) {
 
 function policyFor(relativeFile) {
   const file = slash(relativeFile);
-  const reviewed = PUBLICATION_REVIEWED_FILES.has(file)
-    ? { lastReviewed: '2026-10-09', reviewBy: '2027-04-09' }
-    : SEAL_REVIEWED_FILES.has(file)
+  const reviewed = CURRENT_REVIEWED_FILES.has(file)
     ? { lastReviewed: '2026-10-09', reviewBy: '2027-04-09' }
     : AUTHORITY_REVIEWED_FILES.has(file)
     ? { lastReviewed: AUTHORITY_REVIEWED_ON, reviewBy: AUTHORITY_REVIEW_BY }

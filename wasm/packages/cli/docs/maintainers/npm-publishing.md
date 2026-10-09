@@ -354,29 +354,13 @@ Any missing package name requires a one-time human, 2FA-protected bootstrap publ
 
 The production workflow fails rather than silently performing first publication with a broader credential.
 
-### MCP package handoff
+<a id="mcp-package-handoff"></a>
 
-`@pulse-compute/mcp` joins the twenty-package `1.0.0-beta.7` candidate. The
-2026-10-07 registry check returned E404 for this name. Existing-package-name
-policy remains enabled; prepare its inert placeholder without registry mutation:
+### Published context verification
 
-```bash
-scripts/npm_bootstrap.sh --prepare-only @pulse-compute/mcp .pulse-release-preflight/mcp-bootstrap
-```
-
-The destination must not exist. Inspect the resulting `0.0.0` tarball: only
-`package.json`, `README.md`, the root `LICENSE` and `NOTICE` are allowed. It has
-no exports, executable entry points, scripts or dependencies, and declares the
-`bootstrap` tag. The real adapter is a separate synchronized release artifact.
-
-The human release owner then runs `scripts/npm_bootstrap.sh @pulse-compute/mcp`
-with the one-time 2FA credential, reruns `npm run release:audit-npm`, and configures
-this package's trusted publisher for GitHub owner `pulse-compute`, repository
-`pulse`, workflow `npm-publish.yml`, environment `npm-publish`. Remove the
-bootstrap credential after setup. Keep first publication blocked until that
-handoff and the final tagged-source release qualification complete; package
-membership and local acceptance do not establish registry readiness.
-
+The package-name audit and one-time bootstrap procedure above apply to every
+release package, including `@pulse-compute/mcp`. A past registry observation is
+not evidence of current readiness.
 
 The single `mcp-installed` release-feature gate qualifies the exact CLI-shipped
 context app using the standard candidate tarballs, production Node composition,
@@ -386,11 +370,11 @@ corpus identities, terminal cleanup, startup time, response sizes and elapsed
 commands. A starter supplied through MCP is tested/built locally by the acceptance
 client. Scope/write-path negatives remain in the focused `mcp-authorization`
 fixture. Do not add this installed gate to fast PR or aggregate release profiles,
-or require a full seal for each PMCP ticket.
+or require a full seal for routine adapter changes.
 
 After publication/registry integrity verification, the workflow runs the existing
 narrow context smoke using the selected release manifest version. It is required
-even when `run_smoke=false` skips the separate CLI journey; a normal beta.7
+even when `run_smoke=false` skips the separate CLI journey; a normal
 release selects `run_smoke=true` to execute both. For a manual replay, use the
 checkout for the exact published release:
 
@@ -414,21 +398,10 @@ on success or failure. A failed smoke, missing report or failed cleanup leaves
 verification incomplete. Retry verification in the same publication run against
 the original bundle; no new candidate seal is required.
 
-Carry these statuses separately in the release handoff:
-
-| Step | Owner / evidence |
-| --- | --- |
-| Packed context journey | `mcp-installed` terminal report for the final immutable candidate |
-| MCP name bootstrap | Human owner; inert `0.0.0` plus `bootstrap` tag and registry audit |
-| Trusted publisher | Human owner; exact repository/workflow/environment configuration |
-| Final tagged release qualification | Release controller's seal and installed-feature reports |
-| Exact package publication | Protected publication run and registry integrity verification |
-| Published context smoke | Command above, terminal report after publication |
-
-Bootstrap, trusted-publisher setup, publication and the published smoke remain
-pending until their actual evidence exists. Local candidate results do not close
-those rows. Startup, reply-size and focused-test timings are initial baselines;
-no latency threshold is introduced.
+Keep installed-candidate acceptance, package bootstrap/publisher readiness,
+publication integrity and the published context smoke separate in the release
+handoff. None establishes the others. Timings are observations, not latency
+thresholds.
 
 ## Sealed candidate
 

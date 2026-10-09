@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-16
-review-by: 2027-01-16
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # Documentation system and release workflow
@@ -27,25 +27,63 @@ Pulse documentation and the public product site have three synchronized delivery
 
 Do not hand-edit generated copies under `wasm/packages/cli/docs`, `wasm/packages/cli/completions`, or `.pulse-docs-site`. Edit the editorial manifest, canonical catalogs, Markdown, or shared site assets instead. The site directory is an ignored build artifact, not a source tree. Prior exact releases are the exception: `release/documentation-site-archives/v<version>/` contains a byte-preserved site subtree created while that release is still current.
 
+## Procedure owners
+
+| Task | Authoritative procedure |
+| --- | --- |
+| Contribute a change | [Contributor workflow](../contributing/README.md) |
+| Edit and validate docs | Update loop below |
+| Inspect site presentation | [Public site](./public-site.md#build-and-inspect) |
+| Run tests or recover a seal | [Testing Pulse](./testing.md) |
+| Understand release coverage | [Release acceptance](./release-acceptance.md) |
+| Prepare, qualify and publish a release | [npm publishing](./npm-publishing.md) |
+| Preserve exact-version history | [Documentation versions](./documentation-versioning.md) |
+| Upload and promote hosted docs | [Documentation deployment](./documentation-deployment.md) |
+
+Keep commands and recovery instructions with their owner; link to that page
+from other guides. Historical task packets and raw run evidence belong in Git
+history or retained run artifacts, not active procedures.
+
 ## Update loop
 
 ```bash
-npm run maintainer:sync
-pnpm docs:sync
-pnpm docs:check
-pnpm docs:site:check
+npm run docs:sync
+npm run maintainer:check
+npm run docs:check
 node scripts/documentation-release.cjs
 ```
 
-`maintainer:sync` refreshes generated governance outputs. `docs:sync` refreshes references, package metadata, shell completions, installed documentation, ownership metadata, and source-bound examples. `docs:check` fails when any checked-in generated surface is stale. `docs:site:check` builds and validates the hosted artifact in a temporary directory; `docs:site` writes `.pulse-docs-site/` for inspection or deployment.
+`docs:sync` also runs maintenance-policy synchronization. It refreshes references,
+package metadata, shell completions, installed documentation, ownership metadata
+and source-bound examples, regenerates the allowlisted MCP context corpus before
+copying bundled examples, and removes retired generated copies.
+`maintainer:check` validates the control plane and registered test commands.
+`docs:check` checks generated-file drift and builds/validates the hosted site in
+a temporary directory. `documentation-release.cjs` additionally checks package,
+CLI, configuration, source-link and documentation-delivery contracts. Source-link
+validation includes the root contributor entry point and PR template, so stale
+links there fail the same gate.
 
-For local presentation work, `pnpm docs:preview` performs the synchronization and build, mounts the artifact at `/`, and serves it at `http://127.0.0.1:4173/`. The preview adapter does not rewrite production HTTPS origins or release manifests. `pnpm docs:preview -- --smoke` exercises the local HTTP surface and exits, while `--watch` rebuilds when documentation or presentation sources change. Preview roots are symlink-checked and carry a generator ownership marker; populated unowned directories are rejected, and `--no-build` can only reuse a complete owned artifact.
+`docs:site:check` is the standalone hosted-site check already included in
+`docs:check`; it need not be added to this sequence. Use `npm run docs:site` to
+retain a local artifact or [the preview adapter](./public-site.md#build-and-inspect)
+for presentation work.
 
-## Publishing the site
+## Delivery boundaries
 
-The Pages workflow builds `.pulse-docs-site/` for pull requests and main-branch changes, but those events are validation-only. The base route is a generated product homepage; `latest` remains a documentation redirect tree. Publication requires an explicit manual dispatch or a `v<version>` tag that exactly matches `release/pulse-release-manifest.json`. The canonical documentation release lives under `/v<version>/`; `/latest/` contains redirects to the version marked latest. The homepage uses the current release’s exact-version CSS and JavaScript so its shipped presentation is archived with that release. Every exact subtree owns its HTML, assets, search index, release manifest, and version-site manifest.
+Repository-only material under `docs/internal/`, retired architecture decisions,
+and `AGENTS.md` files are excluded from hosted pages, hosted assets and installed
+CLI docs by the shared source policy in `scripts/documentation-system.cjs`.
+Generated references remain derived from their catalogs; deleting a canonical
+page removes its installed copy on synchronization. Immutable prior-version
+archives are preserved, not regenerated during current-document cleanup.
 
-Before changing the release version, run `pnpm docs:site -- --snapshot` while the old release is still current and commit the resulting `release/documentation-site-archives/v<version>/` directory. Add the new version entry only after the archive exists. The builder imports and validates every non-current archive; missing or mismatched history is a release error rather than a Pages deployment that drops old URLs.
+The **Documentation** workflow validates changes and uploads previews. Production
+delivery is a manual exact-tag operation consuming the pre-main qualified
+artifact; it does not rebuild or deploy through GitHub Pages. The
+[deployment runbook](./documentation-deployment.md) owns verification, immutable
+uploads, npm gating and promotion. The [versioning procedure](./documentation-versioning.md)
+owns snapshots from the exact published source before advancing the version.
 
 ## Ownership and review dates
 

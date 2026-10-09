@@ -9,7 +9,7 @@ const crypto = require('node:crypto');
 const { execFileSync, spawnSync } = require('node:child_process');
 const { pathToFileURL } = require('node:url');
 const ts = require('typescript');
-const { buildCorpus, render, canonical, section, OUTPUT, INPUTS, LIMITS } = require('../../../scripts/pulse-context-corpus.cjs');
+const { buildCorpus, render, synchronizeContextCorpus, canonical, section, OUTPUT, INPUTS, LIMITS } = require('../../../scripts/pulse-context-corpus.cjs');
 const root = path.resolve(__dirname, '../../..');
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-context-corpus-'));
@@ -98,6 +98,11 @@ async function main() {
   assert.ok(updated.records.find(record => record.id === 'diagnostic/PULSE_SCHEMA_COMPILE_FAILED').content.includes('New schema diagnostic explanation.'), 'catalog evaluation cannot use stale require-cache values');
   assert.notEqual(updated.corpusHash, corpus.corpusHash);
   write(metadataPath, metadata);
+
+  assert.throws(() => synchronizeContextCorpus({ repoRoot: temp }), /Stale context corpus/);
+  assert.equal(synchronizeContextCorpus({ repoRoot: temp, write: true }).changedFiles, 1);
+  assert.equal(synchronizeContextCorpus({ repoRoot: temp }).changedFiles, 0);
+  assert.equal(fs.readFileSync(path.join(temp, OUTPUT), 'utf8'), rendered);
 
   // Stale output is a real nonzero CLI result, not a documentation-only claim.
   write('scripts/pulse-context-corpus.cjs', fs.readFileSync(path.join(root, 'scripts/pulse-context-corpus.cjs')));

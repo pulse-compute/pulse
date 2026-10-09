@@ -49,6 +49,7 @@ const {
 } = require('../../scripts/environment-reference.cjs');
 const {
   DOCUMENTATION_VERSIONS,
+  isPublicDocumentationSource,
   documentationUrl,
   renderInstalledDocumentationModule
 } = require('../../scripts/documentation-system.cjs');
@@ -820,12 +821,10 @@ function buildExpectedFiles() {
 
   const publicDocRelatives = new Set(
     filesUnder(path.join(repoRoot, 'docs'), (file) => (file.endsWith('.md') || file.endsWith('.json'))
-      && path.basename(file) !== 'AGENTS.md'
-      && !file.includes(`${path.sep}internal${path.sep}`)
-      && !file.includes(`${path.sep}architecture${path.sep}decisions${path.sep}`)).map(relative)
+      && isPublicDocumentationSource(relative(file))).map(relative)
   );
   for (const sourceRelative of generatedCanonical.keys()) {
-    if (sourceRelative.startsWith('docs/') && !sourceRelative.startsWith('docs/internal/')) publicDocRelatives.add(sourceRelative);
+    if (isPublicDocumentationSource(sourceRelative)) publicDocRelatives.add(sourceRelative);
   }
   for (const sourceRelative of [...publicDocRelatives].sort()) {
     const targetRelative = `wasm/packages/cli/${sourceRelative}`;

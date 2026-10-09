@@ -23,6 +23,18 @@ function cleanAnchor(value) {
   return `#${String(value).replace(/^#/, '')}`;
 }
 
+// Repository-only instructions and evidence are never delivery inputs, regardless
+// of whether the file would otherwise become a page, asset, or installed copy.
+function isPublicDocumentationSource(sourcePath) {
+  const source = slash(sourcePath).replace(/^\.\//, '');
+  const parts = source.split('/');
+  return source.startsWith('docs/')
+    && !parts.includes('..')
+    && !parts.includes('internal')
+    && parts.at(-1) !== 'AGENTS.md'
+    && !source.startsWith('docs/architecture/decisions/');
+}
+
 function sourceToRoute(sourcePath) {
   const source = slash(sourcePath).replace(/^\.\//, '');
   if (source === 'docs/README.md') return '';
@@ -188,6 +200,7 @@ module.exports = Object.freeze({
   DOCUMENTATION_BASE_URL,
   VERSIONS_FILE,
   cleanBasePath,
+  isPublicDocumentationSource,
   sourceToRoute,
   routeToSource,
   parseDocumentationUrl,
