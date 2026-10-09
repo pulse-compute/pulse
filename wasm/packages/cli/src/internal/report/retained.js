@@ -86,7 +86,7 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
     artifacts: artifacts.map(({ target, ...row }) => row),
     sidecars: [{ ...fileLink(INVENTORY_FILE, inventory), kind: 'inventory', version: 1, required: true }] };
   let attributionBytes;
-  // v1 binds one optional attribution sidecar. Prefer the primary artifact;
+  // Completion binds one versioned optional attribution sidecar. Prefer the primary artifact;
   // a portable fallback remains explicitly prelink when final capture is absent.
   for (const capture of [prepared.providerReportAttribution, prepared.native.reportAttribution]) {
     if (!capture) continue;
@@ -95,7 +95,7 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
     try {
       const validated = require('./size').verifyAttribution({ ...capture, stage: artifact.stage }, artifact, readFile(outDir, artifact.file).bytes);
       attributionBytes = Buffer.from(canonicalJson(validated) + '\n');
-      completion.sidecars.push({ ...fileLink(ATTRIBUTION_FILE, attributionBytes), kind: 'attribution', version: 1, required: false });
+      completion.sidecars.push({ ...fileLink(ATTRIBUTION_FILE, attributionBytes), kind: 'attribution', version: validated.attributionVersion, required: false });
       break;
     } catch { /* Unsupported capture never changes ordinary build admission. */ }
   }

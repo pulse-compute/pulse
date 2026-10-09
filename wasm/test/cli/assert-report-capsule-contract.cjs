@@ -173,6 +173,20 @@ const withAttribution = f.completed(), attributeBytes = Buffer.from(JSON.stringi
 Object.assign(withAttribution.completion.sidecars[1], { bytes: attributeBytes.length, sha256: data.sha256(attributeBytes) });
 withAttribution.files.set('attribution.json', attributeBytes);
 assert.deepEqual(admit(repoint(withAttribution)).availableSidecars, ['inventory', 'attribution']);
+const attributionV2 = { ...rawAttribution, attributionVersion: 2,
+  entries: [{ entryId: 'entry-0', handlerId: 'handler-0', bodies: [{ chunk: 0, relation: 'terminal-body' }], reason: null }],
+  chunkMappings: [{ chunk: 0, kind: 'terminal-body', implementationId: 'entry-0', functionIndex: 0, reason: null }] };
+delete attributionV2.handlerBodies;
+const v2Bytes = Buffer.from(JSON.stringify(attributionV2));
+const completedV2 = f.completed();
+Object.assign(completedV2.completion.sidecars[1], { version: 2, bytes: v2Bytes.length, sha256: data.sha256(v2Bytes) });
+completedV2.files.set('attribution.json', v2Bytes);
+assert.deepEqual(admit(repoint(completedV2)).availableSidecars, ['inventory', 'attribution']);
+completedV2.completion.sidecars[1].version = 1;
+rejects(() => admit(repoint(completedV2)), 'REPORT_INPUT_VERSION');
+withAttribution.completion.sidecars[1].version = 2;
+rejects(() => admit(repoint(withAttribution)), 'REPORT_INPUT_VERSION');
+withAttribution.completion.sidecars[1].version = 1;
 const partialAttribution = structuredClone(rawAttribution);
 partialAttribution.chunkMappings[0] = { chunk: 0, functionIndex: null, reason: 'unsupported-mapping' };
 partialAttribution.graph = { state: 'unavailable', reason: 'unsupported-call-graph', method: 'static-direct-calls-v1', edges: [] };

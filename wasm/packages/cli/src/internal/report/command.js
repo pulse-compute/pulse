@@ -60,7 +60,8 @@ function terminalText(value, maximum = 100) {
 }
 function terminalOverview(collected) {
   const c = collected.capsule, artifact = c.artifacts.find(row => row.id === c.context.primaryArtifactId);
-  const mappings = c.measurements.filter(row => row.artifactId === artifact.id && row.metric === 'handler-body');
+  const routeIds = new Set(c.routes.map(row => row.id));
+  const mappings = c.measurements.filter(row => routeIds.has(row.subjectId) && row.artifactId === artifact.id && row.metric === 'handler-body');
   const available = mappings.filter(row => row.fact.state === 'available').length;
   const exact = mappings.filter(row => row.fact.state === 'available' && row.fact.coverage === 'exact').length;
   const gaps = Object.values(c.coverage).filter(row => row.status !== 'complete' && row.status !== 'not-applicable').length;

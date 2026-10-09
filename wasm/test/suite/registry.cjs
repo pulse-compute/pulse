@@ -40,7 +40,7 @@ const tasks = Object.freeze({
   'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
   'cli-report-entry-proof': nodeTask('test/cli/assert-report-entry-proof.cjs', {
     evidence: 'native', timeoutMs: 120000,
-    description: 'RPT8-00 synthetic entry/shared-stage final-body identity proof (explicit selection)'
+    description: 'RPT8-01 production entry/stage/helper attribution and byte-preserving capture'
   }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
     description: 'PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm', timeoutMs: 60000
@@ -1270,6 +1270,7 @@ const profiles = Object.freeze({
     'cli-report-retained-evidence',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
+    'cli-report-entry-proof',
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
@@ -1417,6 +1418,7 @@ const profiles = Object.freeze({
     'cli-report-retained-evidence',
     'cli-report-size-evidence',
     'cli-report-capture-proof',
+    'cli-report-entry-proof',
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',

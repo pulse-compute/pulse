@@ -1156,6 +1156,22 @@ remain unavailable. Final-link hash changes cannot reuse prelink indices. See th
 [PRPT-03 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt03/README.md) for the pinned observer, unchanged
 byte proof and qualification ceiling.
 
+Native generators retain observational `pulse.native-report-ownership.v1`
+metadata separately from the executable plan hash. Attribution sidecar v2 joins
+canonical entries to exact emitted symbols for terminal bodies, shared stages,
+and shared state-machine helpers. Helper consumers come from validated canonical
+call sites. One entry may map to several bodies, and distinct registrations may
+share bodies; physical code is counted once by final artifact hash and function
+index. Missing final symbols remain `final-symbol-not-surviving`; surviving
+subsets have partial coverage and cannot establish complete reachability.
+Inline transfer/error ownership identifies dispatcher carriers, whose whole-body
+bytes cannot be presented as individual handler sizes. Those measurements remain
+unavailable with `dispatcher-carrier`, or `entry-ownership-not-retained` when no
+authoritative join exists. Non-route entry measurements retain their own subjects.
+Completion binds the actual attribution version; v1 sidecars and v1 historical
+capsules remain readable. This does not qualify package-root application bodies,
+pure expression helpers, post-link aliases, or a complete execution-root universe.
+
 `pulse report` exposes this retained collector as a bounded terminal overview or
 one complete authoritative JSON capsule. Artifact replay preserves historical
 identity without claiming current-input matching. Planning does not collect or

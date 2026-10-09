@@ -43,15 +43,28 @@ function validateAttribution(input) {
   ensure(value.artifactId === artifactId(value.artifactSha256), 'REPORT_IDENTITY');
   const last = value.importedFunctions + value.functions.length;
   value.functions.forEach((fn, index) => ensure(fn.index === value.importedFunctions + index, 'REPORT_ATTRIBUTION'));
-  const chunks = new Set(), entries = new Set(), edges = new Set();
+  const chunks = new Map(), entries = new Set(), edges = new Set();
   for (const row of value.chunkMappings) {
-    ensure(!chunks.has(row.chunk), 'REPORT_DUPLICATE'); chunks.add(row.chunk);
+    ensure(!chunks.has(row.chunk), 'REPORT_DUPLICATE'); chunks.set(row.chunk, row);
     ensure(row.functionIndex === null ? row.reason !== null
       : row.reason === null && row.functionIndex >= value.importedFunctions && row.functionIndex < last, 'REPORT_ATTRIBUTION');
   }
-  for (const row of value.handlerBodies) {
+  for (const row of value.handlerBodies || []) {
     ensure(!entries.has(row.entryId) && new Set(row.chunks).size === row.chunks.length, 'REPORT_DUPLICATE'); entries.add(row.entryId);
     ensure(row.chunks.every(chunk => chunks.has(chunk)), 'REPORT_ATTRIBUTION');
+  }
+  if (value.attributionVersion === 2) {
+    for (const row of value.chunkMappings) ensure((row.kind === 'dispatcher-carrier') === (row.implementationId === null), 'REPORT_ATTRIBUTION');
+    for (const row of value.entries) {
+      ensure(!entries.has(row.entryId), 'REPORT_DUPLICATE'); entries.add(row.entryId);
+      ensure(new Set(row.bodies.map(body => body.chunk)).size === row.bodies.length, 'REPORT_DUPLICATE');
+      ensure(row.bodies.some(body => body.relation !== 'shared-helper-body') ? row.reason === null : row.reason !== null, 'REPORT_ATTRIBUTION');
+      for (const body of row.bodies) {
+        const mapping = chunks.get(body.chunk);
+        ensure(mapping && mapping.kind === body.relation, 'REPORT_ATTRIBUTION');
+        if (mapping.kind === 'terminal-body') ensure(mapping.implementationId === row.entryId, 'REPORT_IDENTITY');
+      }
+    }
   }
   if (value.graph.state === 'available') {
     ensure(value.graph.reason === null, 'REPORT_ATTRIBUTION');
@@ -111,6 +124,7 @@ function admitCompletedBuild(input, completionBytes, options) {
           && row.bytes === artifact.bytes && row.sha256 === artifact.sha256 && row.stage === artifact.stage), 'REPORT_IDENTITY');
       } else {
         const attribution = validateAttribution(bytes);
+        ensure(sidecar.version === attribution.attributionVersion, 'REPORT_INPUT_VERSION');
         ensure(completion.artifacts.some(row => row.id === attribution.artifactId && row.stage === attribution.stage), 'REPORT_IDENTITY');
       }
       availableSidecars.push(sidecar.kind);
