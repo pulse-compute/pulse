@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '../../..');
 const cli = path.join(root, 'wasm/packages/cli/src');
 const execution = require(path.join(cli, 'project-execution'));
 const { resolveProject } = require(path.join(cli, 'project-config'));
-const { collectCanonicalReportReferences } = require('../../packages/compiler/src/canonical-native-plan');
+const { buildCanonicalNativePlan, collectCanonicalReportReferences } = require('../../packages/compiler/src/canonical-native-plan');
 const { collectInventory } = require(path.join(cli, 'internal/report/inventory'));
 const capsule = require(path.join(cli, 'internal/report/capsule'));
 const retained = require(path.join(cli, 'internal/report/retained'));
@@ -159,7 +159,23 @@ app.get('/asset-a',asset);app.get('/asset-b',asset);export default app;`);
     assert.ok(replay.references.length > 0);
     assert.equal(replay.bindings.length, 4);
     assert.equal(replay.coverage.bindings.expected, null);
-    console.log(JSON.stringify({ status: 'passed', cells, retainedReplay: true, foreignOffsetRejected: true, redacted: true }));
+    // Package-owned bindings are already resolved by the trusted lowerer. Read
+    // just that canonical field, without exporting the resource's runtime key.
+    const s3File = path.join(directory, 'src/s3.ts');
+    write(s3File, `import {Pulse} from '@pulse-compute/pulse';import {s3} from '@pulse-compute/s3';
+const app=new Pulse({auto:true});app.get('/object',async ctx=>{
+const first=await s3.getText(ctx,'objects','PRIVATE_OBJECT_KEY_CANARY');
+const second=await s3.head(ctx,'objects','PRIVATE_OBJECT_KEY_CANARY');return ctx.json(second);});export default app;`);
+    const configFile = path.join(directory, '.pulse/config.ts');
+    write(configFile, fs.readFileSync(configFile, 'utf8').replace("strict:false,defaultProfile", "strict:false,crypto:['SHA-256','HMAC-SHA256'],defaultProfile"));
+    const s3Compiled = execution.compileProject({ ...resolveProject({ cwd: directory, metadataOnly: true }), entryFile: s3File });
+    const s3Plan = buildCanonicalNativePlan(s3Compiled);
+    const s3Projection = collectCanonicalReportReferences(s3Compiled, s3Plan);
+    const s3References = s3Projection.references.filter(row => row.bindingKind === 's3');
+    assert.equal(s3References.length, 1); assert.equal(s3References[0].canonicalId, 'objects');
+    assert.equal(s3References[0].state, 'resolved'); assert.equal(s3References[0].entryIds.length, 1);
+    assert.ok(!JSON.stringify(s3Projection).includes('PRIVATE_OBJECT_KEY_CANARY'));
+    console.log(JSON.stringify({ status: 'passed', cells, retainedReplay: true, foreignOffsetRejected: true, packageBinding: true, redacted: true }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error.stack || error); if (error.diagnostics) console.error(JSON.stringify(error.diagnostics)); process.exitCode = 1; });

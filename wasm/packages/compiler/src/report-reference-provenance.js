@@ -45,10 +45,13 @@ function collectCanonicalReportReferences(compiled, plan) {
   for (const effect of plan.effects || []) {
     const consumers = owners(effect), kind = effect.providerKind;
     if (['config', 'secret', 'kv', 's3'].includes(kind)) {
-      const expression = input(effect, kind === 'kv' ? 'store' : 'name');
+      const expression = kind === 's3' ? field(input(effect, 'resource'), 'binding')
+        : input(effect, kind === 'kv' ? 'store' : 'name');
       const resolved = literal(expression);
       const name = resolved ?? (effect.resource?.kind === 'literal' && typeof effect.resource.value === 'string' ? effect.resource.value : null);
-      add('binding', name, kind, consumers, effect.id, { dynamic: Boolean(expression && expression.kind !== 'literal') });
+      add('binding', name, kind, consumers, effect.id, {
+        dynamic: effect.resource?.kind === 'dynamic' || Boolean(expression && expression.kind !== 'literal')
+      });
     }
     if (effect.kind === 'event.emit') {
       const schema = literal(field(input(effect, 'emission'), 'schema'));
