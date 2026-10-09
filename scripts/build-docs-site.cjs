@@ -148,24 +148,11 @@ function filesUnder(root, predicate = () => true, out = []) {
 }
 
 function publicPageSources(sourceRoot = repoRoot) {
-  const pages = [
-    path.join(sourceRoot, 'README.md'),
-    path.join(sourceRoot, 'CHANGELOG.md'),
-    path.join(sourceRoot, 'API.md'),
-    ...filesUnder(path.join(sourceRoot, 'docs'), (file) => file.endsWith('.md')
-      && isPublicDocumentationSource(path.relative(sourceRoot, file))),
-    ...filesUnder(path.join(sourceRoot, 'examples'), (file) => path.basename(file) === 'README.md')
-  ];
-  return [...new Set(pages)]
-    .sort()
-    .map((file) => slash(path.relative(sourceRoot, file)))
-    .filter((sourcePath) => !HOSTED_SOURCE_ALIASES.has(sourcePath));
+  return require('./documentation-sources.cjs').collectDocumentationSources(sourceRoot).pages;
 }
 
 function publicAssetSources(sourceRoot = repoRoot) {
-  return filesUnder(path.join(sourceRoot, 'docs'), (file) => !file.endsWith('.md') && isPublicDocumentationSource(path.relative(sourceRoot, file)))
-    .sort()
-    .map((file) => slash(path.relative(sourceRoot, file)));
+  return require('./documentation-sources.cjs').collectDocumentationSources(sourceRoot).assets;
 }
 
 function sourceAssetRoute(sourcePath) {

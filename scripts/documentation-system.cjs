@@ -3,6 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { DOCUMENTATION, RELEASE_VERSION, RELEASE_MANIFEST } = require('./package-support.cjs');
+const { isPublicDocumentationSource, sourceToRoute } = require('./documentation-sources.cjs');
 
 const VERSIONS_FILE = path.resolve(__dirname, '..', 'release', 'documentation-versions.json');
 
@@ -22,36 +23,6 @@ function cleanAnchor(value) {
   if (!value) return '';
   return `#${String(value).replace(/^#/, '')}`;
 }
-
-// Repository-only instructions and evidence are never delivery inputs, regardless
-// of whether the file would otherwise become a page, asset, or installed copy.
-function isPublicDocumentationSource(sourcePath) {
-  const source = slash(sourcePath).replace(/^\.\//, '');
-  const parts = source.split('/');
-  return source.startsWith('docs/')
-    && !parts.includes('..')
-    && !parts.includes('internal')
-    && parts.at(-1) !== 'AGENTS.md'
-    && !source.startsWith('docs/architecture/decisions/');
-}
-
-function sourceToRoute(sourcePath) {
-  const source = slash(sourcePath).replace(/^\.\//, '');
-  if (source === 'docs/README.md') return '';
-  if (source === 'README.md') return 'project/';
-  if (source === 'CHANGELOG.md') return 'changelog/';
-  if (source === 'API.md') return 'api/';
-  if (source === 'examples/README.md') return 'examples/';
-  const example = /^examples\/(.+)\/README\.md$/.exec(source);
-  if (example) return `examples/${example[1]}/`;
-  if (source.startsWith('docs/')) {
-    const relative = source.slice('docs/'.length);
-    if (relative.endsWith('/README.md')) return `${relative.slice(0, -'README.md'.length)}`;
-    if (relative.endsWith('.md')) return `${relative.slice(0, -3)}/`;
-  }
-  throw new Error(`No hosted documentation route for ${sourcePath}`);
-}
-
 
 function routeToSource(routeValue, options = {}) {
   const route = trimSlashes(routeValue);
