@@ -131,6 +131,16 @@ function check(capsule) {
       && row.structure.topLevelKeys === null && row.structure.requiredKeys === null && row.structure.properties.length === 0
       && row.structure.keyCountsState === 'unavailable', 'REPORT_SCHEMA_METRICS');
   }
+  for (const row of capsule.observations) if (row.graphDiagnostic) {
+    ensure(row.code === 'REPORT_GRAPH_UNAVAILABLE' && row.evidenceIds.length > 0
+      && row.subjectIds.length === 1 && maps.artifacts.has(row.subjectIds[0]), 'REPORT_GRAPH_DIAGNOSTIC');
+    require('./graph-diagnostic').checkGraphDiagnostic(row.graphDiagnostic);
+    if (row.graphDiagnostic.functionIndex !== null) {
+      // Function imports have no code bodies, so the retained census does not
+      // provide a general index upper bound. Capture validates its own census.
+      ensure(!['capture-absent', 'prelink-evidence-only'].includes(row.graphDiagnostic.code), 'REPORT_GRAPH_DIAGNOSTIC');
+    }
+  }
   for (const artifact of capsule.artifacts) {
     ensure(artifact.id === artifactId(artifact.sha256), 'REPORT_IDENTITY');
     coverage(artifact.sectionCoverage, artifact.sections.length);

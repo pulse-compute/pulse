@@ -17,12 +17,31 @@ const array = items => ({ type: 'array', items, maxItems: LIMITS.records });
 const object = (properties, optional = []) => ({ type: 'object', properties,
   required: Object.keys(properties).filter(key => !optional.includes(key)), additionalProperties: false });
 const ids = array(id);
+// Report-local failure vocabulary; capture emits only these codes and counters.
+const GRAPH_DIAGNOSTICS = Object.freeze({
+  'table': 'unsupported-table-control', 'element-segment': 'unsupported-table-control',
+  'indirect-call': 'unsupported-indirect-control', 'reference-control': 'unsupported-reference-control',
+  'tail-call': 'unsupported-tail-call',
+  'import-name': 'unresolved-function-identity', 'function-index': 'unresolved-function-identity',
+  'function-name': 'unresolved-function-identity', 'duplicate-name': 'unresolved-function-identity',
+  'direct-target': 'unresolved-function-identity',
+  'malformed-text': 'graph-parser-mismatch', 'import-count': 'graph-parser-mismatch',
+  'definition-count': 'graph-parser-mismatch', 'direct-call-shape': 'graph-parser-mismatch',
+  'direct-call-scope': 'graph-parser-mismatch', 'binaryen-read': 'graph-parser-mismatch',
+  'binaryen-text': 'graph-parser-mismatch', 'unexpected-parser-failure': 'graph-parser-mismatch',
+  'text-byte-limit': 'graph-budget-exhausted', 'function-limit': 'graph-budget-exhausted',
+  'edge-limit': 'graph-budget-exhausted', 'traversal-work-limit': 'graph-budget-exhausted',
+  'capture-absent': 'missing-evidence', 'prelink-evidence-only': 'prelink-only'
+});
 const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping', 'incomplete-root-universe',
   'unsupported-call-graph', 'prelink-only', 'not-recorded', 'not-applicable', 'unsupported-schema-shape',
   'unsupported-schema-version', 'unsupported-constraint', 'upstream-partial',
-  'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving', 'dynamic-reference', 'unresolved-reference'];
+  'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving', 'dynamic-reference', 'unresolved-reference',
+  ...new Set(Object.values(GRAPH_DIAGNOSTICS).filter(reason => !['missing-evidence', 'prelink-only'].includes(reason)))];
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const defs = {
+  GraphDiagnostic: object({ reason: en(...new Set(Object.values(GRAPH_DIAGNOSTICS))), code: en(...Object.keys(GRAPH_DIAGNOSTICS)),
+    functionIndex: nullable(uint), observed: nullable(uint), expected: nullable(uint) }),
   Source: object({ file: text, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 },
     endLine: { ...uint, minimum: 1 }, endColumn: { ...uint, minimum: 1 } }, ['endLine', 'endColumn']),
   Coverage: object({ status: en('complete', 'partial', 'unavailable', 'not-applicable'),
@@ -82,7 +101,8 @@ const defs = {
   Measurement: object({ id, subjectId: id, artifactId: id, stage: en('final', 'prelink'),
     metric: en('handler-body', 'reachable', 'own', 'shared'), method: en('final-body-map-v1', 'static-direct-calls-v1', 'unavailable'),
     fact: ref('Fact'), mappedChunks: uint, expectedChunks: nullable(uint), bodyIds: ids, rootSetId: nullable(id), rootId: nullable(id) }),
-  Observation: object({ id, code: text, severity: en('info', 'warning', 'error'), producer: ref('Producer'), subjectIds: ids, evidenceIds: ids }),
+  Observation: object({ id, code: text, severity: en('info', 'warning', 'error'), producer: ref('Producer'), subjectIds: ids, evidenceIds: ids,
+    graphDiagnostic: ref('GraphDiagnostic') }, ['graphDiagnostic']),
   Evidence: object({ id, kind: en('build', 'source', 'declaration', 'measurement', 'test'), producer: ref('Producer'),
     method: text, artifactIds: ids, source: nullable(ref('Source')), subjectIds: ids,
     result: en('passed', 'failed', 'warning', 'observed', 'not-run'),
@@ -113,7 +133,8 @@ const attribution = object({ kind: fixed('pulse.report-attribution'), attributio
   handlerBodies: array(object({ entryId: text, handlerId: text, chunks: array(uint) })),
   chunkMappings: array(object({ chunk: uint, functionIndex: nullable(uint), reason: nullable(en(...REASONS)) })),
   graph: object({ state: en('available', 'unavailable'), reason: nullable(en(...REASONS)),
-    method: fixed('static-direct-calls-v1'), edges: array(object({ caller: uint, callee: uint, sites: { ...uint, minimum: 1 } })) }) });
+    method: fixed('static-direct-calls-v1'), edges: array(object({ caller: uint, callee: uint, sites: { ...uint, minimum: 1 } })),
+    diagnostic: ref('GraphDiagnostic') }, ['diagnostic']) });
 const attributionV2 = object({ ...attribution.properties, attributionVersion: fixed(2),
   entries: array(object({ entryId: text, handlerId: nullable(text),
     bodies: array(object({ chunk: uint, relation: en(...BODY_KINDS) })),
@@ -138,4 +159,4 @@ function document(name, shape) {
 }
 module.exports = { capsuleSchema: document('capsule', capsule), completionSchema: document('completion', completion),
   attributionSchema: document('attribution', { oneOf: [attribution, attributionV2] }),
-  fileSchema: freeze(defs.File), REASONS: Object.freeze(REASONS) };
+  fileSchema: freeze(defs.File), REASONS: Object.freeze(REASONS), GRAPH_DIAGNOSTICS };
