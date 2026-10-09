@@ -19,6 +19,7 @@ const {
 } = require('./package-support.cjs');
 const {
   DOCUMENTATION_VERSIONS,
+  isPublicDocumentationSource,
   VERSIONS_FILE,
   parseDocumentationUrl,
   documentationUrl,
@@ -356,11 +357,10 @@ function validateAnchor(markdown, anchor, context) {
 }
 
 function sourceMarkdownFiles(repoRoot) {
-  const files = [path.join(repoRoot, 'README.md'), path.join(repoRoot, 'CHANGELOG.md'), path.join(repoRoot, 'API.md')];
+  const files = ['README.md', 'CHANGELOG.md', 'API.md', 'CONTRIBUTING.md', '.github/PULL_REQUEST_TEMPLATE.md']
+    .map((file) => path.join(repoRoot, file));
   files.push(...filesUnder(path.join(repoRoot, 'docs'), (file) => file.endsWith('.md')
-    && path.basename(file) !== 'AGENTS.md'
-    && !file.includes(`${path.sep}internal${path.sep}`)
-    && !file.includes(`${path.sep}architecture${path.sep}decisions${path.sep}`)));
+    && isPublicDocumentationSource(path.relative(repoRoot, file))));
   files.push(...filesUnder(path.join(repoRoot, 'examples'), (file) => path.basename(file) === 'README.md'));
   for (const entry of PACKAGE_SET) files.push(path.join(repoRoot, entry.dir, 'README.md'));
   return [...new Set(files)].sort();

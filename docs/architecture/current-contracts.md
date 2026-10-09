@@ -459,8 +459,7 @@ inspect both the dispatcher and private bodies.
 
 Plan and generator identities change; the host ABI remains v2. This is an
 internal Router representation, with no public callable-function syntax or
-change to JavaScript's original-source execution. See the
-[B02 evidence](../maintainers/compiler-efficiency-p01.md#b02-terminal-http-route-bodies-24-september-2026).
+change to JavaScript's original-source execution.
 
 ### Shared effectful HTTP stages (O-19)
 

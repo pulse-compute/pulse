@@ -162,13 +162,21 @@ function render(corpus) {
     + `export const contextCorpus = freeze(${serialize(corpus)} as const);\n`;
 }
 
+function synchronizeContextCorpus(options = {}) {
+  const root = options.repoRoot || ROOT;
+  const corpus = buildCorpus(root);
+  const output = render(corpus), target = path.join(root, OUTPUT);
+  const stale = !fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== output;
+  if (stale && !options.write) throw new Error('Stale context corpus; run npm run docs:sync');
+  if (stale) { fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, output); }
+  return Object.freeze({ status: 'ok', records: corpus.records.length, moduleBytes: Buffer.byteLength(output),
+    corpusHash: corpus.corpusHash, changedFiles: stale ? 1 : 0 });
+}
+
 function main(args = process.argv.slice(2)) {
   if (args.length !== 1 || !['--write', '--check'].includes(args[0])) throw new Error('Usage: node scripts/pulse-context-corpus.cjs --write|--check');
-  const corpus = buildCorpus();
-  const output = render(corpus), target = path.join(ROOT, OUTPUT);
-  if (args[0] === '--write') { fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, output); }
-  else if (!fs.existsSync(target) || fs.readFileSync(target, 'utf8') !== output) throw new Error('Stale context corpus; run node scripts/pulse-context-corpus.cjs --write');
-  console.log(`ok - ${corpus.records.length} context records, ${Buffer.byteLength(output)} module bytes, ${corpus.corpusHash}`);
+  const result = synchronizeContextCorpus({ write: args[0] === '--write' });
+  console.log(`ok - ${result.records} context records, ${result.moduleBytes} module bytes, ${result.corpusHash}`);
 }
-module.exports = { buildCorpus, render, section, canonical, SCHEMA_VERSION, LIMITS, INPUTS, OUTPUT };
+module.exports = { buildCorpus, render, synchronizeContextCorpus, section, canonical, SCHEMA_VERSION, LIMITS, INPUTS, OUTPUT };
 if (require.main === module) { try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; } }
