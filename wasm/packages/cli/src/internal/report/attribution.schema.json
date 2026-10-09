@@ -128,7 +128,9 @@
                       "upstream-partial",
                       "entry-ownership-not-retained",
                       "dispatcher-carrier",
-                      "final-symbol-not-surviving"
+                      "final-symbol-not-surviving",
+                      "dynamic-reference",
+                      "unresolved-reference"
                     ]
                   },
                   {
@@ -173,7 +175,9 @@
                     "upstream-partial",
                     "entry-ownership-not-retained",
                     "dispatcher-carrier",
-                    "final-symbol-not-surviving"
+                    "final-symbol-not-surviving",
+                    "dynamic-reference",
+                    "unresolved-reference"
                   ]
                 },
                 {
@@ -383,7 +387,9 @@
                     "upstream-partial",
                     "entry-ownership-not-retained",
                     "dispatcher-carrier",
-                    "final-symbol-not-surviving"
+                    "final-symbol-not-surviving",
+                    "dynamic-reference",
+                    "unresolved-reference"
                   ]
                 },
                 {

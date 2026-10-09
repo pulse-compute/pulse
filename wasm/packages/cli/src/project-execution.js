@@ -16,7 +16,7 @@ const {
 } = require('@pulse-compute/wasm-compiler/canonical-project-compiler');
 const { createCanonicalSchemaCodecs } = require('@pulse-compute/wasm-schema-json/compiler/canonical-schema-codecs');
 const { buildJavascriptApplicationPlan } = require('@pulse-compute/wasm-compiler/javascript-application-plan');
-const { buildCanonicalNativePlan, CanonicalNativePlanError } = require('@pulse-compute/wasm-compiler/canonical-native-plan');
+const { buildCanonicalNativePlan, collectCanonicalReportReferences, CanonicalNativePlanError } = require('@pulse-compute/wasm-compiler/canonical-native-plan');
 const {
   compileCanonicalNativePlan,
   writeCanonicalNativeModule
@@ -371,7 +371,8 @@ function compileNativeProjectInMemory(project, options = {}) {
         ? 'experimental-native-size'
         : options.nativeOptimization
   });
-  return Object.freeze({ compiled, plan, native });
+  const reportReferences = collectCanonicalReportReferences(compiled, plan);
+  return Object.freeze({ compiled, plan, native, reportReferences });
 }
 
 function providerDriver(project) {

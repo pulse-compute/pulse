@@ -20,6 +20,7 @@ function source(value, root, zeroBasedColumn = false) {
 }
 function collectInventory(project, prepared, artifacts, primaryId, optimization) {
   const { compiled, plan, native } = prepared;
+  const references = prepared.reportReferences?.version === 'pulse.compiler-report-references.v1' ? prepared.reportReferences : null;
   const buildId = id('evidence', 'completed:' + primaryId), resolvedId = id('evidence', 'inventory:' + primaryId);
   const evidenceIds = [resolvedId], artifactIds = artifacts.map(row => row.id);
   const capsule = {
@@ -36,7 +37,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
     bodies: [], rootSets: [], measurements: [], observations: [],
     evidence: [
       { id: buildId, kind: 'build', producer, method: 'completed-native-build-v1', artifactIds, source: null, subjectIds: [], result: 'passed', scope: { corpus: null, cases: [], targets: ['native'] }, recordedAt: null },
-      { id: resolvedId, kind: 'source', producer, method: 'canonical-build-inventory-v1', artifactIds, source: null, subjectIds: [], result: 'observed', scope: { corpus: null, cases: [], targets: ['native'] }, recordedAt: null }
+      { id: resolvedId, kind: 'source', producer, method: references ? 'canonical-build-inventory-v2' : 'canonical-build-inventory-v1', artifactIds, source: null, subjectIds: [], result: 'observed', scope: { corpus: null, cases: [], targets: ['native'] }, recordedAt: null }
     ], coverage: {}
   };
   function observe(code, subjectIds = []) {
@@ -85,13 +86,13 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
     if (schema && entry) entry.schemaIds.push(schema.id);
     else observe('REPORT_SCHEMA_LINK_UNAVAILABLE');
   }
-  for (const reference of compiled.metadata.schemaReferences || []) {
+  for (const reference of references ? [] : compiled.metadata.schemaReferences || []) {
     const offset = reference.position?.offset;
     const owners = raw.filter(row => Number.isInteger(offset) && row.generatedRange && offset >= row.generatedRange.start && offset < row.generatedRange.end);
     const entry = raw.length ? owners.length === 1 && entries.get(owners[0].stableId) : capsule.entries[0];
     linkSchema(reference.id, entry);
   }
-  for (const [stableId, event] of events) if (event.schemaId) linkSchema(event.schemaId, entries.get(stableId));
+  if (!references) for (const [stableId, event] of events) if (event.schemaId) linkSchema(event.schemaId, entries.get(stableId));
   const bindings = new Map();
   function binding(kind, name, declared, entry) {
     const key = kind + ':' + name;
@@ -112,6 +113,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
   for (const effect of effects) {
     const entry = entries.get(effect.applicationEntryStableId || effect.routerEntryStableId) || (!raw.length ? capsule.entries[0] : null);
     if (effect.capability) declaration('capability-reference', effect.capability, entry);
+    if (references) continue;
     if (['config', 'secret', 'kv', 's3', 'assets'].includes(effect.providerKind) && effect.resource?.kind === 'literal') {
       const name = effect.resource.value;
       if (typeof name === 'string' && effect.providerKind !== 'assets') binding(effect.providerKind, name, false, entry);
@@ -122,7 +124,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
       if (schema?.kind === 'literal') linkSchema(schema.value, entry);
     }
   }
-  for (const effect of effects) {
+  for (const effect of references ? [] : effects) {
     const fields = effect.inputs?.find(input => input.name === 'payload')?.value?.entries || [];
     const payload = Object.fromEntries(fields.filter(field => field.key?.kind === 'literal' && field.value?.kind === 'literal'
       && ['embeddedId', 'embeddedFound', 'embeddedLength', 'embeddedType', 'key'].includes(field.key.value))
@@ -139,6 +141,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
     const owner = entries.get(effect.applicationEntryStableId || effect.routerEntryStableId) || (!raw.length ? capsule.entries[0] : null);
     if (owner) resource.entryIds.push(owner.id); else observe('REPORT_RESOURCE_LINK_UNAVAILABLE', [key]);
   }
+  if (references) require('./reference-provenance').applyReferenceProvenance(capsule, references, { binding, evidenceIds, observe });
   // Package-owned declarations are deliberately narrow: entity names and their
   // schema IDs, never arbitrary metadata, auth inference or policy booleans.
   for (const artifact of compiled.packageInspection?.artifacts || []) if (artifact.data?.version === 'pulse.entities-inspection.v1') {
@@ -165,7 +168,8 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
   // The canonical inventory exposes selected embedded assets. It does not
   // enumerate every generated helper, validator or retained data segment.
   capsule.coverage.resources = { status: 'partial', observed: capsule.resources.length, expected: null, reason: 'incomplete-mapping' };
-  if (capsule.observations.some(row => row.code === 'REPORT_DYNAMIC_BINDING_REFERENCE')) {
+  if (capsule.observations.some(row => row.code === 'REPORT_DYNAMIC_BINDING_REFERENCE')
+    || capsule.references?.some(row => row.kind === 'binding' && row.state !== 'resolved')) {
     capsule.coverage.bindings = { status: 'partial', observed: capsule.bindings.length, expected: null, reason: 'incomplete-mapping' };
   }
   observe('REPORT_GENERATED_RESOURCE_INVENTORY_UNAVAILABLE');
