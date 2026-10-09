@@ -28,19 +28,35 @@ module.exports = class ReportCapture {
         const byName = new Map(functions.filter(row => row.name !== null).map(row => [row.name, row.index]));
         assert.equal(byName.size, functions.filter(row => row.name !== null).length);
         const ownership = config.ownership;
-        const handlerBodies = (ownership.handlerBodies || []).map(row => ({ entryId: row.id, handlerId: row.handlerId, chunks: row.chunks }));
-        const special = new Set([...(ownership.stages || []), ...(ownership.helperBodies || [])].flatMap(row => row.chunks || []));
-        const bounded = ownership.dispatcher?.strategy === 'bounded-state-chunks';
-        const chunkMappings = [...new Set(handlerBodies.flatMap(row => row.chunks))].map(chunk => {
-          const supported = bounded && !special.has(chunk);
-          const index = supported ? byName.get(config.prefix + '__pulse_chunk_' + chunk) : undefined;
-          return { chunk, functionIndex: index ?? null, reason: index !== undefined ? null : supported ? 'incomplete-mapping' : 'unsupported-mapping' };
-        });
         const graph = captureGraph(binaryen, named, functions, parsed.importedFunctions);
         const artifactSha256 = hash(production);
-        const capture = { kind: 'pulse.report-attribution', attributionVersion: 1,
+        let entryCapture;
+        if (ownership.reportOwnership) {
+          const report = ownership.reportOwnership;
+          assert.equal(report.version, 'pulse.native-report-ownership.v1');
+          entryCapture = { attributionVersion: 2,
+            entries: report.entries.map(row => ({ entryId: row.entryId, handlerId: row.handlerId,
+              bodies: row.bodies.map(body => ({ chunk: body.chunk, relation: body.relation })), reason: row.reason })),
+            chunkMappings: report.bodies.map(body => {
+              const index = byName.get(config.prefix + body.symbol);
+              return { chunk: body.chunk, kind: body.kind, implementationId: body.implementationId,
+                functionIndex: index ?? null, reason: index === undefined ? 'final-symbol-not-surviving' : null };
+            }) };
+        } else {
+          // Explicit legacy producer adapter; never guess aliases for v2 bodies.
+          const handlerBodies = (ownership.handlerBodies || []).map(row => ({ entryId: row.id, handlerId: row.handlerId, chunks: row.chunks }));
+          const special = new Set([...(ownership.stages || []), ...(ownership.helperBodies || [])].flatMap(row => row.chunks || []));
+          const bounded = ownership.dispatcher?.strategy === 'bounded-state-chunks';
+          const chunkMappings = [...new Set(handlerBodies.flatMap(row => row.chunks))].map(chunk => {
+            const supported = bounded && !special.has(chunk);
+            const index = supported ? byName.get(config.prefix + '__pulse_chunk_' + chunk) : undefined;
+            return { chunk, functionIndex: index ?? null, reason: index !== undefined ? null : supported ? 'incomplete-mapping' : 'unsupported-mapping' };
+          });
+          entryCapture = { attributionVersion: 1, handlerBodies, chunkMappings };
+        }
+        const capture = { kind: 'pulse.report-attribution', ...entryCapture,
           artifactId: 'artifact:' + artifactSha256, artifactSha256, stage: 'final',
-          importedFunctions: parsed.importedFunctions, functions: parsed.functions, handlerBodies, chunkMappings,
+          importedFunctions: parsed.importedFunctions, functions: parsed.functions,
           graph: { state: graph.status, reason: graph.status === 'available' ? null : 'unsupported-call-graph',
             method: 'static-direct-calls-v1', edges: graph.status === 'available' ? graph.edges : [] } };
         const wire = JSON.stringify(capture); assert.ok(Buffer.byteLength(wire) <= 16 * 1024 * 1024);

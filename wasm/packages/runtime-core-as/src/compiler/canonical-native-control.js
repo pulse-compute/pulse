@@ -1,6 +1,7 @@
 'use strict';
 
 const { runtimeContract } = require('./canonical-native-context.js');
+const RUN_SYMBOL = '__pulse_run';
 
 // Only this builder mutates blocks, entry maps and traversal state. Consumers
 // receive completed results after loop targets and resume requirements resolve.
@@ -12,13 +13,15 @@ function buildNativeControl({
   const stageEntries = new Map();
   const blocks = [];
   const helperEntries = new Map();
+  const helperConsumers = new Map();
   const protectedEntries = new Set();
   let activeBoundary;
   let activeHandler;
+  let activeEntry;
   let activeVisitWeight = 1;
   function block(kind, data = {}) {
     const id = blocks.length;
-    blocks.push({ id, kind, boundary: activeBoundary, handlerId: activeHandler, visitWeight: activeVisitWeight, ...data });
+    blocks.push({ id, kind, boundary: activeBoundary, handlerId: activeHandler, entryId: activeEntry, visitWeight: activeVisitWeight, ...data });
     return id;
   }
 
@@ -110,6 +113,9 @@ function buildNativeControl({
       const statement = statements[index];
       if (statement.kind === 'helper-call') {
         const helper = helpers.get(statement.helperId);
+        // callerEntryId is already checked by the canonical plan validator.
+        if (!helperConsumers.has(helper.id)) helperConsumers.set(helper.id, new Set());
+        helperConsumers.get(helper.id).add(statement.callerEntryId);
         const resume = block('action', { lines: [`${localName(statement.localId)} = __pulse_helper_result`, '__pulse_helper_result = 0'], next });
         const lines = [`__pulse_helper_return = ${resume}`, '__pulse_helper_result = 0',
           ...statement.arguments.map((arg, i) => `const helper_arg_${i} = ${exprName(arg)}()`),
@@ -145,11 +151,19 @@ function buildNativeControl({
         next = block(helpers.has(activeHandler) ? 'helper-return' : 'return', { expression: exprName(statement.value) });
       } else if (statement.kind === 'if') {
         const test = statement.test;
+        // Observe the canonical cursor admission at its existing lowering seam.
+        // This annotation never participates in boundaries or chunk partitioning.
+        const reportEntry = !activeEntry && routerCursor && test.kind === 'binary' && test.operator === '==='
+          && test.left.kind === 'local' && test.left.id === routerCursor && test.right.kind === 'literal'
+          && plan.routing?.entries.find(entry => entry.index === test.right.value);
         const entry = applicationErrors && !boundary && test.kind === 'binary' && test.operator === '==='
           && test.left.kind === 'local' && test.left.id === routerCursor && test.right.kind === 'literal'
           && plan.routing.entries.find(entry => entry.index === test.right.value);
         if (entry) protectedEntries.add(entry.index);
+        const previousEntry = activeEntry;
+        if (reportEntry) activeEntry = reportEntry.stableId;
         const thenBlock = compileSequence(statement.then || [], next, entry ? { nextBlock: next, nextIndex: entry.nextIndex } : boundary, loopTargets);
+        activeEntry = previousEntry;
         const elseBlock = compileSequence(statement.else || [], next, boundary, loopTargets);
         next = block('branch', { test: exprName(statement.test), thenBlock, elseBlock });
       } else if (statement.kind === 'effect') {
@@ -205,7 +219,7 @@ function buildNativeControl({
   const resumeRequirements = new Map();
   for (const item of blocks) if (item.kind === 'resume' || item.kind === 'resume-return') resumeRequirements.set(item.id, item.required);
 
-  return { blocks, entryBlock, stageEntries, helperEntries, resumeRequirements };
+  return { blocks, entryBlock, stageEntries, helperEntries, helperConsumers, resumeRequirements };
 }
 
 function layoutNativeControl({
@@ -372,9 +386,10 @@ function layoutNativeControl({
   const stageChunks = chunks.flatMap((chunk, index) => stages.has(chunk[0].handlerId) ? [index] : []);
   const helperChunks = chunks.flatMap((chunk, index) => helpers.has(chunk[0].handlerId) ? [index] : []);
   const chunkName = index => helperChunks.includes(index) ? `__pulse_shared_helper_${helperChunks.indexOf(index)}` : stageChunks.includes(index) ? `__pulse_shared_stage_${stageChunks.indexOf(index)}` : `__pulse_chunk_${index}`;
+  const bodySymbols = partitioned ? chunks.map((_, chunk) => ({ chunk, symbol: chunkName(chunk) })) : [{ chunk: 0, symbol: RUN_SYMBOL }];
   const dispatcherFunctions = chunks.flatMap((chunk, index) => [
     '@noinline',
-    `function ${chunkName(index)}(): i32 {`,
+    `function ${bodySymbols[index].symbol}(): i32 {`,
     '  switch (__pulse_pc) {',
     ...chunk.map(block => block.source),
     `    default: ${invalidProgramCounter}`,
@@ -402,7 +417,7 @@ function layoutNativeControl({
   );
 
   return {
-    errorGuard, dispatcherFunctions, renderedBlocks, partitioned, chunks,
+    errorGuard, dispatcherFunctions, renderedBlocks, partitioned, chunks, bodySymbols,
     maxChunkStates, maxChunkCharacters, invalidProgramCounter
   };
 }
@@ -429,7 +444,7 @@ function countNativeGuardStates({ plan, blocks, handlers, helpers, stages, fail 
 
 function renderNativeRun({ guardStateCount, partitioned, renderedBlocks, invalidProgramCounter }) {
   return [
-    'function __pulse_run(): i32 {',
+    `function ${RUN_SYMBOL}(): i32 {`,
     `  let guard: i32 = ${Math.max(64, guardStateCount * 8)}`,
     '  while (guard > 0) {',
     '    guard -= 1',

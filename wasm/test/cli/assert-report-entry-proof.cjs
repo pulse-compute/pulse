@@ -1,7 +1,7 @@
 'use strict';
 
-// RPT8-00: test-only observation of the existing generator and final emission.
-// Production Report still consumes its retained v1 sidecar, not this proof.
+// RPT8-00/01: independently check production ownership against the actual
+// generated declarations and verified final emission. Raw names stay test-only.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -154,13 +154,39 @@ function entryProof(plan, ownership, symbols, capture, prefix) {
   });
 }
 
-async function execute(artifact, target) {
-  const cases = [
+function prepareAdditional(directory) {
+  const cwd = path.join(directory, 'application');
+  fs.mkdirSync(path.join(cwd, 'src'), { recursive: true });
+  fs.mkdirSync(path.join(cwd, '.pulse'));
+  fs.mkdirSync(path.join(cwd, 'node_modules/@pulse-compute'), { recursive: true });
+  for (const name of ['pulse', 'runtime']) fs.symlinkSync(path.join(root, 'packages', name), path.join(cwd, 'node_modules/@pulse-compute', name), 'dir');
+  fs.writeFileSync(path.join(cwd, '.pulse/config.ts'), `import {defineConfig} from '@pulse-compute/pulse';
+export default defineConfig((_scope)=>({pulse:{entry:'src/index.ts',strict:false},node:{host:'node',target:'native'}}));`);
+  fs.writeFileSync(path.join(cwd, 'src/helper.ts'), `export const lookup=async(ctx,input:string)=>{
+let value=await ctx.fetch('https://fixture.test/value').text();for(let i=0;i<8;i++){value=value+':'+i;}return value+input;};`);
+  fs.writeFileSync(path.join(cwd, 'src/index.ts'), `import {Pulse} from '@pulse-compute/pulse';import {lookup} from './helper';
+const app=new Pulse({auto:true});
+app.get('/helper-a',async ctx=>{const value=await lookup(ctx,'a');return ctx.text(value);});
+app.get('/helper-b',async ctx=>{const value=await lookup(ctx,'b');return ctx.text(value);});
+app.get('/many',async ctx=>{let value=ctx.req.header('x-value')||'a';${"value=value+'b';".repeat(70)}return ctx.text(value);});
+const forward=async(ctx,next)=>{const value=await ctx.fetch('https://fixture.test/value').text();ctx.state.set('extra',value);return next();};
+app.get('/stage-a',forward);app.get('/stage-b',forward);
+app.get('/stage-a',async ctx=>ctx.text(ctx.state.get('extra')));
+app.get('/stage-b',async ctx=>ctx.text(ctx.state.get('extra')));
+export default app;`);
+  const tc = require('../s3/acceptance-toolchain.cjs').acceptanceToolchain();
+  const compiled = tc.compileProject(tc.resolveProject({ cwd, profile: 'node' }));
+  const plan = buildCanonicalNativePlan(compiled);
+  assert.equal(plan.helpers.length, 1); assert.equal(plan.stages.length, 1);
+  return { compiled, plan, cwd };
+}
+
+async function execute(artifact, target, cases = [
     ['/ordinary', {}, 200, 'ordinary', 0], ['/next', {}, 200, 'fallback', 0],
     ['/next', { 'x-stop': 'yes' }, 200, 'stopped', 0], ['/error', {}, 418, 'FIXTURE', 0],
     ['/duplicate/a', {}, 200, 'xx', 2], ['/duplicate/b', {}, 200, 'xx', 2],
     ['/missing', {}, 404, 'Not Found', 0]
-  ];
+  ]) {
   for (const [pathname, headers, status, body, expectedFetches] of cases) {
     let fetches = 0;
     const adapter = target === 'portable'
@@ -192,7 +218,8 @@ async function main() {
   const { compiled, plan } = prepare(), cells = [];
   const planBefore = JSON.stringify(plan);
   try {
-    for (const [target, optimization] of [['portable', undefined], ['fastly', undefined], ['portable', 'experimental-native-size']]) {
+    for (const [target, optimization] of [['portable', undefined], ['fastly', undefined], ['portable', 'experimental-native-size'],
+      ['portable', 'experimental-native-bounded-size'], ['fastly', 'experimental-native-bounded-size']]) {
       const control = build(plan, target, false, optimization, directory);
       const observed = build(plan, target, true, optimization, directory);
       const { artifact, capture, generated, layout } = observed;
@@ -205,21 +232,40 @@ async function main() {
       const symbols = chunkSymbols(generated.source, layout);
       const prefix = target === 'portable' ? 'canonical-native.as/' : 'fastly-native-platform-capabilities.as/';
       const rows = entryProof(plan, generated.manifest, symbols, capture, prefix);
+      const production = artifact.reportAttribution;
+      assert.equal(production.attributionVersion, 2);
+      assert.equal(production.entries.length, plan.routing.entries.length);
+      for (const body of generated.manifest.reportOwnership.bodies) {
+        assert.equal(body.symbol, symbols[body.chunk], 'metadata names the actual declaration');
+        const mapped = production.chunkMappings.find(row => row.chunk === body.chunk);
+        assert.equal(mapped.functionIndex, capture.functions.find(row => row.name === prefix + body.symbol)?.index ?? null);
+      }
+      for (const row of rows.filter(row => row.complete)) {
+        const owner = production.entries.find(entry => entry.entryId === row.entryId);
+        assert.equal(owner.handlerId, row.handlerId); assert.equal(owner.reason, null);
+        assert.deepEqual(owner.bodies.map(body => production.chunkMappings.find(item => item.chunk === body.chunk).functionIndex), row.indices);
+      }
       assert.equal(rows.filter(row => row.complete).length, 6, 'four terminal entries and two shared middleware registrations');
       const shared = rows.filter(row => row.relation === 'shared-stage-body');
       assert.deepEqual(shared[0].indices, shared[1].indices, 'duplicate registrations share the same physical stage body');
       assert.ok(shared[0].indices.length > 0);
       assert.equal(rows.filter(row => row.relation === 'dispatcher-carrier').length, 3);
-      assert.ok(observed.control.blocks.some(row => row.boundary && row.handlerId === undefined), 'transfer/error states lack an entry owner');
+      assert.ok(observed.control.blocks.some(row => row.boundary && row.handlerId === undefined && row.entryId), 'transfer/error states retain observational entry ownership');
+      assert.equal(production.entries.filter(row => row.bodies.some(body => body.relation === 'dispatcher-carrier')).length, 3);
       assert.equal(generated.manifest.stages[0].registrations, 2, 'manifest currently retains only the registration count');
       const record = { id: 'artifact:' + capture.artifactSha256, sha256: capture.artifactSha256,
         bytes: artifact.wasm.length, stage: 'final', target };
       const seed = collectInventory({ root, provider: target === 'portable' ? 'node' : 'fastly' },
         { compiled, plan, native: artifact }, [record], record.id, optimization || 'default');
       const capsule = addSizeEvidence(seed, new Map([[record.id, artifact.wasm]]), artifact.reportAttribution);
-      const direct = capsule.measurements.filter(row => row.metric === 'handler-body');
+      const routeIds = new Set(capsule.routes.map(row => row.id));
+      const direct = capsule.measurements.filter(row => row.metric === 'handler-body' && routeIds.has(row.subjectId));
       assert.equal(direct.length, 6); assert.equal(direct.filter(row => row.fact.state === 'available').length, 4);
-      assert.ok(direct.filter(row => row.fact.state === 'unavailable').every(row => row.fact.reason === 'unsupported-mapping'));
+      assert.ok(direct.filter(row => row.fact.state === 'unavailable').every(row => row.fact.reason === 'dispatcher-carrier'));
+      const middleware = capsule.entries.filter(row => row.kind === 'middleware');
+      const stageSizes = middleware.map(entry => capsule.measurements.find(row => row.subjectId === entry.id && row.metric === 'handler-body'));
+      assert.ok(stageSizes.every(row => row.fact.state === 'available' && row.fact.coverage === 'exact'));
+      assert.deepEqual(stageSizes[0].bodyIds, stageSizes[1].bodyIds);
       assert.ok(capsule.measurements.filter(row => ['own', 'shared'].includes(row.metric)).every(row => row.fact.value === null));
       const missing = { ...capture, functions: capture.functions.filter(row => !shared[0].indices.includes(row.index)) };
       assert.ok(entryProof(plan, generated.manifest, symbols, missing, prefix)
@@ -231,12 +277,65 @@ async function main() {
       cells.push({ target, optimization: optimization || 'default', entries: rows.length, provenEntries: 6,
         productionMappedRoutes: 4, productionExpectedRoutes: 6, sharedRegistrations: shared.length,
         sharedPhysicalBodies: shared[0].indices.length, sharedPhysicalBytes: shared[0].indices.reduce((n, index) => n + sizes.get(index), 0),
-        dispatcherEntriesUnavailable: 3, wholeExecutableUnchanged: true, generatorCalls: 2, ascCalls: 2, requests,
+        dispatcherCarrierEntries: 3, wholeExecutableUnchanged: true, generatorCalls: 2, ascCalls: 2, requests,
         graph: artifact.reportAttribution.graph.state, convergenceEmissions: capture.convergenceEmissions });
     }
     assert.equal(JSON.stringify(plan), planBefore, 'observation never mutates the executable plan');
+    const additional = prepareAdditional(directory), extraCells = [];
+    for (const target of ['portable', 'fastly']) for (const optimization of [undefined, 'experimental-native-bounded-size']) {
+      const control = build(additional.plan, target, false, optimization, directory);
+      const observed = build(additional.plan, target, true, optimization, directory);
+      const { artifact, generated, capture, layout } = observed, attribution = artifact.reportAttribution;
+      assert.deepEqual(artifact.wasm, control.artifact.wasm); assert.equal(artifact.source, control.artifact.source);
+      assert.deepEqual(observed.recipe, control.recipe);
+      const symbols = chunkSymbols(generated.source, layout);
+      const prefix = target === 'portable' ? 'canonical-native.as/' : 'fastly-native-platform-capabilities.as/';
+      for (const body of generated.manifest.reportOwnership.bodies) {
+        assert.equal(body.symbol, symbols[body.chunk]);
+        assert.equal(attribution.chunkMappings.find(row => row.chunk === body.chunk).functionIndex,
+          capture.functions.find(row => row.name === prefix + body.symbol)?.index ?? null);
+      }
+      const helperBodies = attribution.chunkMappings.filter(row => row.kind === 'shared-helper-body');
+      assert.ok(helperBodies.length > 0);
+      assert.ok(helperBodies.every(row => row.functionIndex === null ? row.reason === 'final-symbol-not-surviving' : row.reason === null));
+      assert.equal(helperBodies.filter(row => row.functionIndex !== null).length,
+        optimization === 'experimental-native-bounded-size' ? 1 : 0, 'pinned surviving/optimized-away helper cases; never force retention');
+      assert.ok(helperBodies.every(row => row.implementationId === additional.plan.helpers[0].id));
+      const helperCallers = attribution.entries.filter(row => row.bodies.some(body => body.relation === 'shared-helper-body'));
+      assert.equal(helperCallers.length, 2);
+      assert.deepEqual(helperCallers[0].bodies.filter(body => body.relation === 'shared-helper-body'),
+        helperCallers[1].bodies.filter(body => body.relation === 'shared-helper-body'));
+      const manyEntry = additional.plan.routing.entries.find(row => row.path === '/many');
+      assert.ok(attribution.entries.find(row => row.entryId === manyEntry.stableId).bodies.length > 1, 'one entry spans multiple surviving bodies');
+      const record = { id: attribution.artifactId, sha256: attribution.artifactSha256, bytes: artifact.wasm.length, stage: 'final', target };
+      const seed = collectInventory({ root: additional.cwd, provider: target === 'portable' ? 'node' : 'fastly' },
+        { compiled: additional.compiled, plan: additional.plan, native: artifact }, [record], record.id, optimization || 'default');
+      const capsule = addSizeEvidence(seed, new Map([[record.id, artifact.wasm]]), attribution);
+      const direct = capsule.measurements.filter(row => row.metric === 'handler-body');
+      assert.equal(direct.length, 7); assert.ok(direct.every(row => row.fact.state === 'available'));
+      for (const route of capsule.routes) {
+        const entry = capsule.entries.find(row => row.id === route.entryId);
+        const owner = attribution.entries.find(row => row.entryId === entry.canonicalId);
+        const expected = owner.bodies.length;
+        const mapped = owner.bodies.filter(body => attribution.chunkMappings.find(row => row.chunk === body.chunk).functionIndex !== null).length;
+        const measurement = direct.find(row => row.subjectId === route.id);
+        assert.equal(measurement.expectedChunks, expected); assert.equal(measurement.mappedChunks, mapped);
+        assert.equal(measurement.fact.coverage, mapped === expected ? 'exact' : 'partial');
+        if (mapped !== expected) assert.equal(capsule.measurements.find(row => row.subjectId === route.id && row.metric === 'reachable').fact.value, null);
+      }
+      assert.equal(new Set(capsule.bodies.map(row => row.id)).size, capsule.bodies.length);
+      assert.equal(capsule.bodies.reduce((total, row) => total + row.bytes, 0), capsule.artifacts[0].ledger.codeBodyBytes);
+      const cases = [['/helper-a', {}, 200, 'x:0:1:2:3:4:5:6:7a', 1], ['/helper-b', {}, 200, 'x:0:1:2:3:4:5:6:7b', 1],
+        ['/many', {}, 200, 'a' + 'b'.repeat(70), 0], ['/stage-a', {}, 200, 'x', 1], ['/stage-b', {}, 200, 'x', 1]];
+      const requests = await execute(control.artifact, target, cases) + await execute(artifact, target, cases);
+      extraCells.push({ target, optimization: optimization || 'default', mappedRoutes: direct.length,
+        exactRoutes: direct.filter(row => row.fact.coverage === 'exact').length,
+        sharedHelperConsumers: helperCallers.length, helperBodies: helperBodies.length,
+        survivingHelperBodies: helperBodies.filter(row => row.functionIndex !== null).length, requests, wholeExecutableUnchanged: true });
+    }
     console.log(JSON.stringify({ status: 'passed', fixture: 'transfer-router', cells,
-      scope: 'Synthetic final-body identity proof; shared-stage joins are test-only. No production coverage or exclusive ownership expansion.' }));
+      additional: extraCells,
+      scope: 'Production entry/stage capture; dispatcher carriers are explicit, not handler sizes. No exclusive ownership claim.' }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

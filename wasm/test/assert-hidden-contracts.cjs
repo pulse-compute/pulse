@@ -314,6 +314,8 @@ const allowedLocalIdentifierDefinitions = new Map(Object.entries({
   // versions; they do not redefine compiler/schema producer contracts.
   'packages/cli/src/internal/report/completion.js': ['MANIFEST_VERSION'],
   'packages/cli/src/internal/report/schema-projection.js': ['REGISTRY_VERSION'],
+  // CLI-owned retained attribution wire vocabulary, not an execution policy.
+  'packages/cli/src/internal/report/schema.js': ['BODY_KINDS'],
   // Internal inference vocabulary, consumed only inside wasm-compiler.
   'packages/compiler/src/pure-helper-values.js': [
     'SCALAR_TYPES', 'FORBIDDEN_FIELDS', 'BINARY_RULES', 'UNARY_TYPES'

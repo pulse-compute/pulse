@@ -42,7 +42,16 @@ function addSizeEvidence(input, files, attribution = null) {
       dataPayloadBytes: dataFact, unattributedDataPayloadBytes: { ...dataFact } };
     capsule.bodies.push(...physical.functions.map(row => ({ ...row, id: bodyId(artifact.sha256, row.index), artifactId: artifact.id })));
     const capture = attribution?.artifactId === artifact.id ? verifyAttribution(attribution, artifact, bytes) : null;
-    const owners = new Map((capture?.handlerBodies || []).map(row => [row.entryId, row]));
+    const owners = new Map((capture?.attributionVersion === 2 ? capture.entries : (capture?.handlerBodies || []).map(row => ({
+      ...row, bodies: row.chunks.map(chunk => ({ chunk, relation: 'terminal-body' })), reason: null
+    }))).map(row => [row.entryId, row]));
+    if (capture?.attributionVersion === 2) {
+      const canonicalEntries = new Map(capsule.entries.map(row => [row.canonicalId, row]));
+      for (const owner of owners.values()) {
+        const entry = canonicalEntries.get(owner.entryId);
+        if (!entry || entry.handlerId !== (owner.handlerId === null ? null : id('handler', owner.handlerId))) fail('REPORT_IDENTITY');
+      }
+    }
     const mappings = new Map((capture?.chunkMappings || []).map(row => [row.chunk, row]));
     const sizes = new Map(physical.functions.map(row => [row.index, row.bytes]));
     const outgoing = new Map();
@@ -59,21 +68,29 @@ function addSizeEvidence(input, files, attribution = null) {
     }
     const set = { id: id('root-set', artifact.id), artifactId: artifact.id, universeComplete: false,
       graph: capture?.graph.state === 'available' ? 'static-direct-calls' : 'unsupported', roots: [], evidenceIds };
-    for (const route of capsule.routes) {
-      const entry = entries.get(route.entryId), owner = owners.get(entry.canonicalId);
-      if (owner && id('handler', owner.handlerId) !== route.handlerId) fail('REPORT_IDENTITY');
-      const chunks = owner?.chunks || [], mapped = chunks.map(chunk => mappings.get(chunk)).filter(row => row.functionIndex !== null);
+    // Route rows retain their historical subjects. v2 also exposes measurements
+    // for middleware/error/etc. entries without duplicating route measurements.
+    const routeEntries = new Set(capsule.routes.map(row => row.entryId));
+    const subjects = [...capsule.routes, ...(capture?.attributionVersion === 2
+      ? capsule.entries.filter(row => !routeEntries.has(row.id)) : [])];
+    for (const subject of subjects) {
+      const entry = subject.entryId ? entries.get(subject.entryId) : subject, owner = owners.get(entry.canonicalId);
+      if (owner && (owner.handlerId === null ? null : id('handler', owner.handlerId)) !== subject.handlerId) fail('REPORT_IDENTITY');
+      const chunks = owner?.bodies || [], carrier = chunks.some(body => body.relation === 'dispatcher-carrier');
+      const mapped = chunks.filter(body => body.relation !== 'dispatcher-carrier')
+        .map(body => mappings.get(body.chunk)).filter(row => row.functionIndex !== null);
       const indices = unique(mapped.map(row => row.functionIndex));
-      const complete = chunks.length > 0 && mapped.length === chunks.length;
-      const unsupported = !owner || !chunks.length || chunks.some(chunk => mappings.get(chunk).reason === 'unsupported-mapping');
+      const complete = chunks.length > 0 && mapped.length === chunks.length && !carrier && owner.reason === null;
+      const unsupported = !owner || !chunks.length || chunks.some(body => mappings.get(body.chunk).reason === 'unsupported-mapping');
       const reason = !capture
         ? attribution?.stage === 'prelink' && artifact.stage === 'final' ? 'prelink-only' : 'missing-evidence'
-        : unsupported ? 'unsupported-mapping' : 'incomplete-mapping';
-      const base = { subjectId: route.id, artifactId: artifact.id, stage: artifact.stage, mappedChunks: mapped.length,
-        expectedChunks: owner ? chunks.length : null, rootSetId: null, rootId: null };
+        : owner?.reason || (carrier ? 'dispatcher-carrier' : unsupported ? 'unsupported-mapping'
+          : capture.attributionVersion === 2 ? 'final-symbol-not-surviving' : 'incomplete-mapping');
+      const base = { subjectId: subject.id, artifactId: artifact.id, stage: artifact.stage, mappedChunks: mapped.length,
+        expectedChunks: owner && !owner.reason ? chunks.length : null, rootSetId: null, rootId: null };
       function measurement(metric, selected, coverage, why, root = null) {
         const available = selected !== null;
-        capsule.measurements.push({ ...base, id: id('measurement', route.id + ':' + artifact.id + ':' + metric), metric,
+        capsule.measurements.push({ ...base, id: id('measurement', subject.id + ':' + artifact.id + ':' + metric), metric,
           method: available ? metric === 'handler-body' ? 'final-body-map-v1' : 'static-direct-calls-v1' : 'unavailable',
           fact: available ? measured(selected.reduce((n, index) => n + sizes.get(index), 0), evidenceIds, coverage) : unavailable(why, evidenceIds),
           bodyIds: available ? selected.map(index => bodyId(artifact.sha256, index)) : [],
@@ -81,7 +98,7 @@ function addSizeEvidence(input, files, attribution = null) {
       }
       measurement('handler-body', indices.length ? indices : null, complete ? 'exact' : 'partial', reason);
       const reached = complete && capture.graph.state === 'available' ? closure(indices) : null;
-      const root = reached ? { id: id('root', route.id + ':' + artifact.id), kind: 'route', subjectId: route.id,
+      const root = reached ? { id: id('root', subject.id + ':' + artifact.id), kind: subject.entryId ? 'route' : 'other', subjectId: subject.id,
         bodyIds: reached.map(index => bodyId(artifact.sha256, index)) } : null;
       if (root) set.roots.push(root);
       measurement('reachable', reached, 'bounded', complete ? 'unsupported-call-graph' : reason, root);

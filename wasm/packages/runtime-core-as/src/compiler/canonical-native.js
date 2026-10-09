@@ -5,6 +5,7 @@ const {
   stableHash, quote, prepareNativePlan, prepareNativeEmissionInputs, prepareNativeFlow
 } = require('./canonical-native-context.js');
 const { nativeSchemaCodecSource } = require('./canonical-native-schema.js');
+const { nativeReportOwnership } = require('./canonical-native-report.js');
 const { buildNativeCryptoGuestSources } = require('./crypto-guest-source.js');
 const {
   prepareNativeRuntimeSupport, renderNativeValueSupport,
@@ -106,6 +107,7 @@ function assembleNativeResult({
     planVersion: plan.version,
     planHash: plan.planHash,
     sourceHash: stableHash(source),
+    reportOwnership: nativeReportOwnership({ plan, blocks, layout, handlers, stages, helpers, helperConsumers: control.helperConsumers }),
     entryBlock,
     blockCount: blocks.length,
     guardStateCount,
