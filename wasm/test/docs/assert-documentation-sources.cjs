@@ -8,8 +8,27 @@ const path = require('node:path');
 const { isPublicDocumentationSource } = require('../../../scripts/documentation-system.cjs');
 const { publicPageSources, publicAssetSources } = require('../../../scripts/build-docs-site.cjs');
 const { buildExpectedFiles } = require('../../scripts/sync-reference-docs.cjs');
+const { SOURCE_CONTRACT, sourceToRoute } = require('../../../scripts/documentation-sources.cjs');
+const { PUBLIC_SITE_MANIFEST } = require('../../../scripts/documentation-site-config.cjs');
 
 function assertDocumentationSources() {
+  assert.deepEqual(SOURCE_CONTRACT.sourceAliases, PUBLIC_SITE_MANIFEST.sourceAliases, 'legacy CLI site-export source aliases must stay compatible');
+  assert.deepEqual(SOURCE_CONTRACT.routeAliases, Object.fromEntries(Object.entries(PUBLIC_SITE_MANIFEST.routeAliases)
+    .map(([route, id]) => [route.replace(/\/$/, '') + '/', sourceToRoute(PUBLIC_SITE_MANIFEST.documents[id].source)])));
+  assert.deepEqual(SOURCE_CONTRACT.hiddenPrefixes, PUBLIC_SITE_MANIFEST.navigation.sections
+    .filter((section) => section.hiddenInNavigation && section.hiddenInSearch).flatMap((section) => section.prefixes || []));
+  const routes = new Map();
+  for (const source of publicPageSources()) {
+    const route = sourceToRoute(source);
+    assert.equal(routes.has(route), false, `duplicate source route: ${source}`);
+    routes.set(route, source);
+    assert.equal(sourceToRoute(source.replaceAll('/', '\\')), route);
+  }
+  for (const target of Object.values(SOURCE_CONTRACT.sourceAliases)) assert.ok(publicPageSources().includes(target));
+  for (const [route, target] of Object.entries(SOURCE_CONTRACT.routeAliases)) {
+    assert.equal(routes.has(route), false, `alias collides with a live page: ${route}`);
+    assert.ok(routes.has(target), `missing route alias target: ${target}`);
+  }
   const excluded = [
     'docs/AGENTS.md',
     'docs/contributing/AGENTS.md',
