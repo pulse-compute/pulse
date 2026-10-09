@@ -226,7 +226,13 @@ a tested merge/squash binding. It consolidates control-plane and docs validation
 into one fresh source-check pass before compilation, with same-attempt verified
 reuse by shared packing. Full ordered coverage and recovery rules remain.
 
-REL8-02 still owns automatic artifact selection, authenticated consumption,
-prebuilt docs transfer and retirement of tagged post-main qualification. Do not
-feed a PR run ID to the current tag-only resolver. The human release owner must
-install the main-only required gate with strict up-to-date branch protection.
+REL8-02 completes automatic artifact selection, authenticated consumption and
+prebuilt docs transfer. Publication and deployment consume the latest eligible
+pre-main qualification without manual run IDs or post-main build/pack/seal.
+The retained docs candidate comes from the same validated site build. Both
+consumers pin run/attempt/job/artifact provenance and recheck eligibility after
+approval, preserving original source identities in a separate merge binding.
+Focused fixtures reject missing, ambiguous, expired, superseded and mismatched
+proofs; publication/deployment simulations preserve partial-release retries,
+immutable conflicts and interrupted promotion recovery. The human release owner
+must install the main-only gate with strict up-to-date branch protection.

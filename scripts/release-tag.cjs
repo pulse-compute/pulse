@@ -41,9 +41,9 @@ function prepareTag({ root = process.cwd(), version, write = false }) {
   return { status: 'passed', version, tag, commit, mode: write ? 'write' : 'dry-run',
     localTagCreated: write && !local && !remote.size, remoteTagExists: remote.size > 0,
     sealed: false, published: false,
-    next: remote.size ? [`gh workflow run npm-publish.yml --ref ${tag} -f release_tag=${tag} -f operation=qualify`]
+    next: remote.size ? [`gh workflow run npm-publish.yml --ref ${tag} -f release_tag=${tag} -f operation=publish`]
       : [...(write || local ? [] : [`npm run release:tag -- ${version} --write`]), `git push origin ${ref}`,
-        `gh workflow run npm-publish.yml --ref ${tag} -f release_tag=${tag} -f operation=qualify`] };
+        `gh workflow run npm-publish.yml --ref ${tag} -f release_tag=${tag} -f operation=publish`] };
 }
 function main(argv = process.argv.slice(2)) {
   if (argv.length === 1 && ['--help', '-h'].includes(argv[0])) {

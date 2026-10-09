@@ -22,7 +22,7 @@ try {
  write('CHANGELOG.md', `# Changelog\n\n## ${version} — Beta (2026-09-16)\n`);
  run(root, ['add', '.']); run(root, ['commit', '-m', 'fixture']); run(root, ['push', 'origin', 'main']);
  const check = write => prepareTag({ root, version, write });
- assert(check(false).next.at(-1).endsWith('-f operation=qualify'), 'tag helper must direct the owner to qualification first');
+ assert(check(false).next.at(-1).endsWith('-f operation=publish'), 'tag helper must direct the owner to qualified artifact consumption');
  assert.equal(check(false).mode, 'dry-run'); assert.equal(run(root, ['tag', '--list']), '');
  assert.throws(() => prepareTag({ root, version: previous }), /does not match/);
  write('untracked.txt', 'dirty'); assert.throws(() => check(true), /clean checkout/); fs.unlinkSync(path.join(root, 'untracked.txt'));

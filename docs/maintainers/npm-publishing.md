@@ -12,11 +12,10 @@ Pulse publishes the exact tarballs produced by `pnpm release:pack`. Publication 
 The release path is:
 
 ```text
-exact v<version> tag
-→ operation=qualify: dependency-complete build and acceptance
-→ .pulse-release tarballs
-→ sealed .pulse-publication bundle
-→ operation=publish with qualification_run_id
+prepared release PR into main
+→ Release qualification: build, acceptance and retained docs candidate
+→ review, merge/squash and exact v<version> tag
+→ operation=publish: automatic qualified artifact discovery
 → blocking read-only name audit and publication plan
 → protected human approval
 → npm trusted publishing
@@ -85,19 +84,18 @@ local `v1.0.0-beta.7` tag and prints the exact push and workflow commands for th
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
-commands only after review. The qualification operation seals the final tagged
-commit once and retains its accepted bundle for publication.
+commands only after review. The PR qualification retains the accepted package and docs bytes before merge.
+The tagged consumer verifies a separate binding to the reviewed merge commit.
 
 After review and merge, the release owner tags the final `main` commit and runs
-**npm publication** from that tag with `operation=qualify`. It runs
-`release:seal --require-fastly`, copies the accepted package bytes and uploads
-the exact publication bundle. Once qualification succeeds, use its run ID for
-`operation=publish`. A read-only audit of that bundle must pass before protected
-publishing approval becomes available. Audit and publication never build, pack
-or seal. A local seal remains development evidence. Reconcile `main` back into
-`latest` after release so development starts from the new version.
+**npm publication** from that tag with `operation=publish`. Automatic discovery
+resolves its merged release PR and current successful qualification, then
+verifies the package and docs manifests, original source, seal and merge binding.
+A fresh read-only audit must pass before protected publishing approval.
+Audit and publication never build, pack or seal. A local seal remains development
+evidence. Reconcile `main` back into `latest` after release.
 
-## Pre-main qualification (REL8-01)
+## Pre-main qualification
 
 Ready release PRs into `main` now run **Release qualification / qualification**.
 The credential-free workflow checks the exact PR merge commit and its base/head
@@ -110,6 +108,8 @@ without running the expensive seal. Product changes without a new version fail.
 The controller runs one fresh `source-checks` stage after dependency setup and
 before compilation: maintainer and publication controls, package/catalog and
 source documentation validation, generated snippets/references and the site.
+It seals and retains that validated site before removing its temporary build;
+there is no second docs build for capture or deployment.
 Packing verifies this attempt's pinned result against the same clean source,
 Node and dependency bytes. Standalone packing still performs its own validation.
 Build, audit/license refresh, workspace tests, all release tasks, installed
@@ -117,8 +117,9 @@ feature gates, required Fastly reality and cleanup retain their coverage.
 
 Successful release qualification uploads
 `pulse-pr-release-qualification-<run-id>-<attempt>` for 30 days. It contains the
-accepted publication bundle, original seal report and `qualification.json` with
-PR/base/head/merge/tree identity, run/attempt, bundle and seal hashes, the full
+accepted publication bundle, prebuilt documentation candidate, original seal
+report and `qualification.json` with
+PR/base/head/merge/tree identity, run/attempt, package/docs manifest and seal hashes, the full
 qualification-context digest, and separate feature-gate status. The full seal
 and recovery evidence is retained in the matching evidence artifact. Qualification
 is not permission to publish and does not waive dedicated K4 evidence or review.
@@ -131,12 +132,17 @@ reports and bundles stays unchanged; a consumer records a separate merge binding
 A different base, tree, head or tag fails even when some file contents match.
 Multi-commit rebase chains and merge queues are outside this contract.
 
-**Rollout boundary:** REL8-01 produces the PR qualification and tests its merge
-binding. The current tagged publication resolver still accepts only its existing
-manual `qualify` artifacts; do not pass a PR run ID to it. REL8-02 implements
-verified consumption and retires the post-main qualification step. The tagged
-commands above/below remain the operational publication path until that change
-lands. Capturing and consuming a prebuilt docs candidate is also REL8-02 work.
+Both tagged consumers resolve the merged PR automatically. The latest run and
+its current attempt must pass; an older success never masks a newer failure.
+The run must belong to this repository and `release-qualify.yml`, with both
+candidate and qualification jobs passing and one unexpired accepted artifact.
+Selection records run/attempt/job/artifact IDs and the Actions digest. After
+download and again after protected approval, the consumer rechecks eligibility
+and verifies both candidates against the original receipt. `qualification-binding.json`
+records the original qualified source separately from the merged/tagged authority.
+The dispatch and checkout must match the exact release tag. Missing, ambiguous,
+expired, superseded, failed or mismatched evidence blocks consumption; there is
+no post-main rebuild fallback. Historical tags retain their historical workflows.
 
 The release owner must add the new check to the `main` ruleset and require the
 branch to be up to date before merging. A base push after the last live-source
@@ -159,7 +165,7 @@ Step                  Status     Evidence / run, report, or blocker
 PR checks             ____       <full main PR checks at merge SHA>
 Release seal          ____       <qualify run ID / terminal seal report>
 npm publish           ____       <protected publish run / exact package receipts>
-Docs candidate        ____       <tagged docs candidate / manifest digest>
+Docs candidate        ____       <qualified docs candidate / manifest digest>
 Immutable upload      ____       <deploy + verify-storage reports / object count>
 npm gate              ____       <registry-catalog verification / package count>
 Alias promotion       ____       <root/latest deployment + storage verification>
@@ -173,18 +179,12 @@ as the workflow dispatch ref and supply the identical `release_tag` input:
 
 ```bash
 RELEASE_TAG=v<version>
-gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=qualify
-# After qualification succeeds, copy its run ID from the Actions run URL:
-QUALIFICATION_RUN_ID=<successful-qualify-run-id>
-gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish -f qualification_run_id="$QUALIFICATION_RUN_ID" -f run_smoke=true
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish -f run_smoke=true
 ```
 
-Publication checks that the selected run and its candidate job completed
-successfully in this repository's publication workflow, on the same tag and
-commit. It downloads the accepted artifact from that run's successful attempt
-by immutable artifact ID and verifies its package hashes and source identity.
-Missing, expired, failed, foreign-source and old-attempt candidates fail before
-protected approval. A moved tag requires new qualification.
+Publication selects and downloads the PR qualification by immutable artifact ID.
+The operator supplies only the release tag and operation; run IDs remain machine
+provenance. The review packet includes the merge binding and manifest digest.
 
 Review the terminal seal, dedicated KV/CAS evidence/disposition and audit/plan
 before approving `npm-publish`. The audit report is retained per publication
@@ -201,14 +201,13 @@ remain unchanged. Fastly CLI 16.1.0 is checksum-pinned and its real local Comput
 lifecycle is mandatory. Accepted package checkpoints and artifact hashes are
 verified before copying bytes; there is no post-acceptance rebuild or repack.
 
-The accepted bundle is retained for 30 days. `operation=audit` takes the same
-`qualification_run_id` for informational package-name/conflict checks and never
-starts protected publishing. Every new audit or publish dispatch can reuse the
-same successful qualification. Retry failed publication jobs in the same run,
-or dispatch publish again with that qualification run ID. Already-published
-packages are skipped only when their registry integrity matches. If the bundle
-has expired or been deleted, qualification must run again; partial failure
-reports cannot substitute for a completed bundle.
+The accepted bundle is retained for 30 days. `operation=audit` performs
+informational package-name/conflict checks without protected publishing.
+Retry failed publication jobs or dispatch publish again from the same tag;
+eligibility is checked again and only matching registry bytes are skipped.
+Expired/deleted evidence blocks retries, including partial releases. Preserve
+the original qualification artifact through completion; a partial failure report
+cannot substitute for it and the workflow will not reconstruct lost bytes.
 
 Documentation can be uploaded and verified without promotion while npm awaits
 approval. After npm verification and human deployment approval, promote from
@@ -253,7 +252,7 @@ then correct the unpublished tag before starting publication.
 
 ## Authority and trigger
 
-The workflow is manually dispatched **from the exact release tag**, and the `release_tag` input must name that same tag. Qualification, publication tooling, GitHub's native source identity, and npm provenance therefore all refer to one commit. A branch-dispatched run is rejected. The candidate job has no publication authority. The `publish` job is attached to the protected `npm-publish` environment and is the only job granted `id-token: write`.
+The workflow is manually dispatched **from the exact release tag**, and the `release_tag` input must name that same tag. Publication tooling, GitHub's native source identity and npm provenance refer to the tagged commit. The artifact retains its original PR merge source, linked through the verified merge binding. A branch-dispatched run is rejected. The audit job has no publication authority. The `publish` job is attached to the protected `npm-publish` environment and is the only job granted `id-token: write`.
 
 For example:
 
@@ -261,10 +260,9 @@ For example:
 gh workflow run npm-publish.yml \
   --ref v1.0.0-beta.7 \
   -f release_tag=v1.0.0-beta.7 \
-  -f operation=publish -f qualification_run_id="$QUALIFICATION_RUN_ID" -f run_smoke=true
+  -f operation=publish -f run_smoke=true
 ```
 
-Set `QUALIFICATION_RUN_ID` to the successful qualification run for this tag.
 Complete external package settings before dispatch. Publication performs the
 blocking audit before protected approval; a separate audit dispatch is optional.
 
