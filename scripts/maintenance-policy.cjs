@@ -98,7 +98,8 @@ function validateMaintenancePolicy(value) {
     const entry = github.validationTiers?.[branch];
     if (entry?.tier !== tier) fail(`github.validationTiers.${branch} must use ${tier} validation`);
     const checks = stringArray(entry.additionalRequiredStatusChecks, `github.validationTiers.${branch}.additionalRequiredStatusChecks`);
-    if (checks.length !== 1 || checks[0] !== `Repository validation / ${tier} portable`) fail(`github.validationTiers.${branch} must require its stable portable tier check`);
+    const expected = [`Repository validation / ${tier} portable`, ...(branch === 'main' ? ['Release qualification / qualification'] : [])];
+    if (JSON.stringify(checks) !== JSON.stringify(expected)) fail(`github.validationTiers.${branch} must require its stable portable tier and release qualification checks`);
   }
   nonEmpty(github.codexMode, 'github.codexMode');
   if (!github.protectedEnvironments || typeof github.protectedEnvironments !== 'object' || Array.isArray(github.protectedEnvironments) || Object.keys(github.protectedEnvironments).length === 0) fail('github.protectedEnvironments must be a non-empty object');

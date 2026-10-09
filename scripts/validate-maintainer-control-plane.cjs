@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { spawnSync } = require('node:child_process');
 const {
   MAINTENANCE_POLICY,
   BOUNDARY_BY_ID,
@@ -337,6 +338,10 @@ function validateWorkflowSecurity() {
   validateRoutingWorkflow(validation);
   validateRoutingWorkflow(scope, 'scope');
   validateRoutingWorkflow(read('.github/workflows/documentation.yml'), 'documentation');
+  require('./release-pr-qualification.cjs').validateWorkflow(read('.github/workflows/release-qualify.yml'));
+  const qualificationTest = spawnSync(process.execPath, ['wasm/test/release/assert-release-pr-qualification.cjs'],
+    { cwd: repoRoot, encoding: 'utf8', timeout: 30000 });
+  if (qualificationTest.error || qualificationTest.status !== 0) fail(`release PR qualification probes failed: ${qualificationTest.stderr || qualificationTest.error}`);
   includes(validation, 'Upload Node 22 failure evidence', 'repository validation workflow');
   includes(validation, 'Upload portable failure evidence and success reports', 'repository validation workflow');
   includes(validation, 'path: wasm/.test-results', 'repository validation workflow');

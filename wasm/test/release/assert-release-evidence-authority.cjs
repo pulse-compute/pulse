@@ -114,11 +114,9 @@ const releaseSeal = {
   featureAcceptance,
   status: 'passed',
   steps: [
-    'maintainer',
-    'publication',
+    'source-checks',
     'build',
     'workspace-unit',
-    'documentation',
     'release',
     'installed-features'
   ].map((id) => ({ id, status: 'passed' })),

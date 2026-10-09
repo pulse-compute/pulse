@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-07
-review-by: 2027-04-07
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # Repository setup
@@ -58,7 +58,7 @@ Add the tier check listed in `github.validationTiers` as well:
 
 | Ruleset target | Additional required check |
 | --- | --- |
-| `main` | `Repository validation / full portable` |
+| `main` | `Repository validation / full portable`, `Release qualification / qualification` |
 | Maintained non-main branches, including `latest` | `Repository validation / fast portable` |
 
 Human-owned rollout order:
@@ -73,7 +73,18 @@ The existing `Repository validation / maintenance` check also rejects PRs into
 `main` that change publishable code without preparing a newer release version.
 It checks package/documentation identity, previous-version archival and the
 new changelog section. Documentation and workflow-only changes need no version
-bump. Final sealing runs on the tagged commit in the publication workflow.
+bump. REL8-01 adds the separate `Release qualification / qualification` gate for
+ready release PRs before merge. Install that required check on `main` only after
+observing it, and require branches to be up to date before merging. It rejects
+stale base/head/merge identities and fails if its candidate job fails, is
+cancelled or is skipped. A validated non-release PR can pass without a seal.
+Reopen or synchronize a PR retargeted to `main` to start the qualification workflow.
+This lane supports ordinary PR merge/squash, not merge queues or a multi-commit
+rebase chain. Keep the ordinary validation checks too.
+
+The consumer transition is separate: until REL8-02 lands, publication still uses
+its existing tagged qualification. Do not present the PR artifact as eligible
+for the current tagged resolver. See [npm publishing](npm-publishing.md#pre-main-qualification-rel8-01).
 
 ## 4. Create the protected Codex environment
 

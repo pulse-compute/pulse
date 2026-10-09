@@ -42,6 +42,7 @@ pulse-deps-*.tar.zst.sha256
 
 # Sealed publication and production-deployment candidates
 .pulse-publication/
+.pulse-qualification/
 .pulse-documentation-deployment/
 .pulse-documentation-preview/
 .pulse-release-preflight/

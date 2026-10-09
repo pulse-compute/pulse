@@ -59,9 +59,9 @@ function filesUnder(root, predicate = () => true, out = []) {
 function policyFor(relativeFile) {
   const file = slash(relativeFile);
   const reviewed = PUBLICATION_REVIEWED_FILES.has(file)
-    ? { lastReviewed: '2026-10-07', reviewBy: '2027-04-07' }
+    ? { lastReviewed: '2026-10-09', reviewBy: '2027-04-09' }
     : SEAL_REVIEWED_FILES.has(file)
-    ? { lastReviewed: '2026-10-06', reviewBy: '2027-04-06' }
+    ? { lastReviewed: '2026-10-09', reviewBy: '2027-04-09' }
     : AUTHORITY_REVIEWED_FILES.has(file)
     ? { lastReviewed: AUTHORITY_REVIEWED_ON, reviewBy: AUTHORITY_REVIEW_BY }
     : { lastReviewed: REVIEWED_ON, reviewBy: '2027-01-16' };

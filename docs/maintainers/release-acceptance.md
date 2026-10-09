@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-06
-review-by: 2027-04-06
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # Release packages and clean-consumer acceptance
@@ -298,6 +298,15 @@ the example and build mode; packing reports each package on stderr so `--json`
 stdout remains machine-readable. A successful preflight is development evidence.
 The full example workflows and exact-source complete release replay remain
 mandatory; preflight results cannot replace or be pooled into the final seal.
+
+The `source-checks` step runs maintainer/publication controls, package/catalog
+consistency, generated documentation, source links and the site before the
+TypeScript build. It replaces the separate maintainer/publication/documentation
+invocations with one fresh pass. Its local receipt pins the clean source, actual
+dependency bytes, Node executable and environment; shared packing checks the
+receipt again instead of repeating source validation. This receipt is local to
+the attempt and is not a substitute for complete qualification. Standalone
+packing continues to validate documentation itself.
 
 The seal builds one shared package set after workspace and documentation checks.
 Every consumer gets private copies verified against a source-bound, hash-pinned
