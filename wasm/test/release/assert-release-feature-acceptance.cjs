@@ -92,6 +92,7 @@ async function verifySealOrchestration() {
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push(args);
+      if (args.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(args[args.indexOf('--out') + 1], '{}');
       if (args.includes('scripts/release-shared-pack.cjs')) {
         const directory = args[args.indexOf('--out') + 1];
         fs.mkdirSync(directory, { recursive: true });

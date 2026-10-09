@@ -1,0 +1,125 @@
+name: Release qualification
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: release-qualification-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  candidate:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 100
+    env:
+      SEAL_WORKERS: '2'
+      SEAL_MEMORY_MIB: '6144'
+      SEAL_COMPILER_WORKERS: '1'
+    steps:
+      - name: Start candidate work deadline
+        id: deadline
+        run: echo "seconds=$(( $(date +%s) + 90 * 60 ))" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '24.18.0'
+          package-manager-cache: false
+      - name: Reject stale source or release preparation before installing tools
+        id: identity
+        run: node scripts/release-pr-qualification.cjs identify .pulse-qualification/identity.json
+      - name: Check current PR and main before qualification
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const identity = require('./.pulse-qualification/identity.json');
+            await require('./scripts/release-pr-qualification.cjs').assertCurrent({ github, context, identity });
+      - name: Install the release-owned toolchain
+        if: steps.identity.outputs.required == 'true'
+        timeout-minutes: 10
+        shell: bash
+        env:
+          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
+        run: |
+          set -euo pipefail
+          npm install --global npm@11.15.0
+          test "$(npm --version)" = "11.15.0"
+          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
+          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
+          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
+          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
+          pnpm install --frozen-lockfile --ignore-scripts
+          mkdir -p .validation-tools/fastly
+          curl --fail --location --retry 3 --max-time 120 \
+            https://github.com/fastly/cli/releases/download/v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz \
+            --output .validation-tools/fastly/cli.tar.gz
+          echo '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad  .validation-tools/fastly/cli.tar.gz' | sha256sum --check
+          tar -xzf .validation-tools/fastly/cli.tar.gz -C .validation-tools/fastly fastly
+          .validation-tools/fastly/fastly version
+          echo "PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly" >> "$GITHUB_ENV"
+      - name: Build and validate the release source
+        if: steps.identity.outputs.required == 'true'
+        timeout-minutes: 92
+        shell: bash
+        env:
+          CANDIDATE_DEADLINE_SECONDS: ${{ steps.deadline.outputs.seconds }}
+        run: |
+          set -euo pipefail
+          remaining=$(( (CANDIDATE_DEADLINE_SECONDS - $(date +%s)) / 60 ))
+          [ "$remaining" -ge 1 ] || { echo 'Candidate work deadline exhausted before seal' >&2; exit 1; }
+          pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly \
+            --workers "$SEAL_WORKERS" --memory-budget-mib "$SEAL_MEMORY_MIB" \
+            --compiler-workers "$SEAL_COMPILER_WORKERS"
+      - name: Reject a changed PR or main after qualification
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const identity = require('./.pulse-qualification/identity.json');
+            await require('./scripts/release-pr-qualification.cjs').assertCurrent({ github, context, identity });
+      - name: Capture accepted bytes and original qualification identity
+        if: steps.identity.outputs.required == 'true'
+        run: node scripts/release-pr-qualification.cjs capture .pulse-qualification/identity.json .pulse-qualification/accepted
+      - name: Upload accepted qualification
+        if: steps.identity.outputs.required == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-pr-release-qualification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .pulse-qualification/accepted
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+      - name: Preserve terminal evidence including failed attempts
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: pulse-pr-release-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .pulse-qualification/identity.json
+            wasm/.test-results
+            .pulse-seal
+            !.pulse-seal/workspaces
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 30
+
+  qualification:
+    name: qualification
+    if: always()
+    needs: candidate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require terminal candidate success
+        env:
+          CANDIDATE_RESULT: ${{ needs.candidate.result }}
+        run: test "$CANDIDATE_RESULT" = success

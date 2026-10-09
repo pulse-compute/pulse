@@ -82,10 +82,14 @@ function copySharedPack({ repoRoot, outDir }, env = process.env) {
 }
 
 function main(argv = process.argv.slice(2)) {
-  assert(argv.length === 2 && argv[0] === '--out', 'Usage: node scripts/release-shared-pack.cjs --out <directory>');
+  assert((argv.length === 2 || (argv.length === 6 && argv[2] === '--source-checks' && argv[4] === '--source-checks-sha256'))
+    && argv[0] === '--out', 'Usage: release-shared-pack.cjs --out <directory> [--source-checks <file> --source-checks-sha256 <digest>]');
+  const sourceChecks = argv.length === 6 ? { file: argv[3], sha256: argv[5] } : undefined;
+  if (sourceChecks) assert.equal(path.dirname(path.resolve(sourceChecks.file)), path.dirname(path.resolve(argv[1])),
+    'Source checks and shared pack must belong to the same attempt directory');
   const repoRoot = path.resolve(__dirname, '..');
   const identity = candidateIdentity(repoRoot);
-  const packed = require('./pack-release.cjs').packRelease({ repoRoot, outDir: argv[1], build: false, fresh: true });
+  const packed = require('./pack-release.cjs').packRelease({ repoRoot, outDir: argv[1], build: false, fresh: true, sourceChecks });
   recordPack(packed, identity);
 }
 

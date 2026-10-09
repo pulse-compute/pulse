@@ -99,6 +99,7 @@ async function verifySealOrchestration() {
   const commands = [];
   let output = '';
   let failPack = true;
+  let failSource = true;
   try {
     // A controller fixture must not claim the enclosing seal's checkout lock.
     recovery.acquireSealLock = (_root, directory) => originalAcquire(lockRoot, directory);
@@ -109,6 +110,7 @@ async function verifySealOrchestration() {
     supervisor.runCommand = async (command, args, options) => {
       if (args[0] === '-e') return originalRun(command, args, options); // real bounded cleanup
       commands.push([command, ...args]);
+      if (args.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(args[args.indexOf('--out') + 1], '{}');
       if (command !== process.execPath && (args.includes('version') || args.includes('--version'))) return { status: 1, stdout: '', stderr: '' };
       if (!failPack && args.includes('scripts/release-shared-pack.cjs')) {
         const directory = args[args.indexOf('--out') + 1];
@@ -119,15 +121,22 @@ async function verifySealOrchestration() {
         assert(options.env.PULSE_RELEASE_SHARED_PACK);
         assert.match(options.env.PULSE_RELEASE_SHARED_PACK_SHA256, /^[a-f0-9]{64}$/);
       }
-      const fail = failPack ? args.includes('scripts/release-shared-pack.cjs') : args.includes('--profile');
+      const fail = failSource ? args.includes('scripts/release-source-checks.cjs') : failPack ? args.includes('scripts/release-shared-pack.cjs') : args.includes('--profile');
       return { status: fail ? 1 : 0, signal: null };
     };
     process.stdout.write = (chunk) => { output += chunk; return true; };
     delete require.cache[sealModule];
     const seal = require(sealModule);
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
+      error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'source-checks');
+    assert(!commands.some(args => args.includes('build') || args.includes('--profile') || args.includes('scripts/release-shared-pack.cjs')));
+    commands.length = 0; failSource = false;
+    await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
       (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'shared-pack');
     assert.ok(commands.some((args) => args.includes('build')));
+    assert.equal(commands.filter(args => args.includes('scripts/release-source-checks.cjs')).length, 1);
+    assert(commands.findIndex(args => args.includes('scripts/release-source-checks.cjs')) < commands.findIndex(args => args.includes('build')));
+    assert(!commands.some(args => args.includes('scripts/validate-maintainer-control-plane.cjs') || args.includes('scripts/validate-publication-workflows.cjs') || args.includes('docs:check')));
     assert.ok(!commands.some((args) => args.includes('sizes') || args.includes('--profile')));
     assert.match(output, /failed: shared-pack/);
     commands.length = 0;

@@ -241,7 +241,9 @@ function packRelease(options = {}) {
   const progress = (message) => process.stderr.write(`[pulse:pack] ${message}\n`);
   try {
     progress('Checking documentation source');
-    validateDocumentationSource({ repoRoot });
+    if (options.sourceChecks) {
+      require('./release-source-checks.cjs').verify(repoRoot, options.sourceChecks.file, options.sourceChecks.sha256);
+    } else validateDocumentationSource({ repoRoot });
     const legalBytes = new Map();
     for (const legalFile of LEGAL.packageFiles) {
       const source = path.join(repoRoot, legalFile);

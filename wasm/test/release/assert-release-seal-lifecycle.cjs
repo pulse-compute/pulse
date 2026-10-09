@@ -187,7 +187,7 @@ async function verifyBootstrap(root) {
     supervisor.runCommand = async (command, argv, options) => {
       if (argv[0] === '-e') return original.run(command, argv, options);
       calls.push({ argv });
-      if (argv.includes('docs:check')) fs.writeFileSync(path.join(candidateRoot, 'source'), 'changed during checks');
+      if (argv.includes('scripts/release-source-checks.cjs')) fs.writeFileSync(path.join(candidateRoot, 'source'), 'changed during checks');
       return { status: 0, signal: null };
     };
   });
