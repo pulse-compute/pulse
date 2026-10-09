@@ -20,7 +20,7 @@ const ids = array(id);
 const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping', 'incomplete-root-universe',
   'unsupported-call-graph', 'prelink-only', 'not-recorded', 'not-applicable', 'unsupported-schema-shape',
   'unsupported-schema-version', 'unsupported-constraint', 'upstream-partial',
-  'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving'];
+  'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving', 'dynamic-reference', 'unresolved-reference'];
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const defs = {
   Source: object({ file: text, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 },
@@ -63,6 +63,9 @@ const defs = {
     structure: ref('Structure'), routeIds: ids, entryIds: ids, evidenceIds: ids }),
   Binding: object({ id, name: text, kind: text, declared: bool, referenced: bool,
     resolution: en('bound', 'unbound', 'unavailable'), routeIds: ids, entryIds: ids, evidenceIds: ids }),
+  Reference: object({ id, kind: en('binding', 'schema', 'resource'), bindingKind: nullable(en('config', 'secret', 'kv', 's3')),
+    canonicalId: nullable(text), state: en('resolved', 'dynamic', 'unknown'), reason: nullable(en(...REASONS)),
+    targetId: nullable(id), entryIds: ids, entryCoverage: ref('Coverage'), evidenceIds: ids }),
   Resource: object({ id, name: text, kind: en('embedded-asset', 'schema-validator', 'helper', 'other'),
     mediaType: nullable(text), artifactId: nullable(id), inputBytes: ref('Fact'), retainedPayloadBytes: ref('Fact'),
     routeIds: ids, entryIds: ids, evidenceIds: ids }),
@@ -89,12 +92,13 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   producer: object({ pulseVersion: text, reporterVersion: text }), context: ref('Context'),
   provenance: object({ revision: nullable({ type: 'string', pattern: '^[a-f0-9]{40,64}$' }), dirty: nullable(bool),
     sourceFingerprint: nullable(hash), buildEvidenceId: id, toolchain: array(ref('Producer')), recipe: ref('Recipe') }),
-  coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources'].map(key => [key, ref('Coverage')]))),
+  coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources', 'references'].map(key => [key, ref('Coverage')])), ['references']),
   application: object({ name: text }), routes: array(ref('Route')), entries: array(ref('Entry')),
   declarations: array(ref('Declaration')), schemas: array(ref('Schema')), bindings: array(ref('Binding')),
   resources: array(ref('Resource')), artifacts: array(ref('Artifact')), bodies: array(ref('Body')),
+  references: array(ref('Reference')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) });
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),
