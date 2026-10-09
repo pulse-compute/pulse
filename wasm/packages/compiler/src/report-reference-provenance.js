@@ -62,11 +62,13 @@ function collectCanonicalReportReferences(compiled, plan) {
     const key = literal(field(payload, 'key'));
     const found = field(payload, 'embeddedFound')?.value === true;
     const bytes = field(payload, 'embeddedLength')?.value;
+    const encoded = literal(field(payload, 'embeddedData'));
     const known = embeddedId !== null && key !== null && found && Number.isSafeInteger(bytes) && bytes >= 0;
     add('resource', embeddedId !== null && key !== null ? embeddedId + ':' + key : null, null, consumers, effect.id, {
       unresolved: !known,
       dynamic: Boolean(field(payload, 'key') && field(payload, 'key').kind !== 'literal'),
-      ...(known ? { resource: { name: key, mediaType: literal(field(payload, 'embeddedType')), inputBytes: bytes } } : {})
+      ...(known ? { resource: { name: key, mediaType: literal(field(payload, 'embeddedType')), inputBytes: bytes,
+        encodedBytes: encoded === null ? null : Buffer.byteLength(encoded, 'utf8') } } : {})
     });
   }
   // These offsets are compiler-generated ownership ranges, not a reader's source

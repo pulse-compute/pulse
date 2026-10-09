@@ -10,6 +10,10 @@ function createReportViewModel(P) {
   const routes = byId(P.routes), schemas = byId(P.schemas), bindings = byId(P.bindings), evidence = byId(P.evidence), declarations = byId(P.declarations);
   const routeIndex = new Map(P.routes.map((r, i) => [r.id, i]));
   const schemaIndex = new Map(P.schemas.map((s, i) => [s.id, i]));
+  const resourceIndex = new Map(P.resources.map((r, i) => [r.id, i]));
+  const representationLabels = {'base64-text':'Packed base64 text', 'pulse.report-schema-shape.v1':'Normalized descriptor', 'package-guest-unit':'Package guest unit'};
+  const resourceScopes = {'selected-embedded-assets':'Selected embedded assets', 'schema-codecs':'Generated schema codecs',
+    'package-guest-units':'Package guest units', 'package-realizations':'Package realization records', 'generated-support':'Other generated support'};
   const metrics = {'handler-body':'Handler body', own:'Own (exclusive)', reachable:'Reachable', shared:'Shared'};
   const measurementIndex = new Map();
   for (const m of P.measurements) if (m.artifactId === A.id && m.stage === A.stage) {
@@ -47,7 +51,7 @@ function createReportViewModel(P) {
   const prefix = r => '/' + r.path.split('/').filter(Boolean).slice(0, 2).join('/');
   const declarationState = r => r.declarationIds.length ? 'recorded' : r.compositionCoverage === 'complete' ? 'not-declared' : 'unavailable';
   const declarationLabels = {recorded:'Declarations recorded', 'not-declared':'Not declared', unavailable:'Unavailable'};
-  const state = {view:'routes', search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', expandedSchemas:new Set(), expandedResources:new Set()};
+  const state = {view:'routes', search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set()};
   function compareValues(a,b,direction) { if(a==null)return b==null?0:1;if(b==null)return -1;return (a===b?0:a<b?-1:1)*(direction==='asc'?1:-1); }
   function filteredRoutes() {
     return P.routes.filter(r => {
@@ -61,6 +65,11 @@ function createReportViewModel(P) {
     const key=state.schemaSort, get=s=>key==='name'?s.schemaId:key==='keys'?s.structure.topLevelKeys:key==='required'?s.structure.requiredKeys:key==='descriptor'?s.structure.descriptorBytes:s.routeIds.length;
     return P.schemas.filter(s=>[s.schemaId,...s.structure.properties.map(p=>p.name+' '+p.type)].join(' ').toLowerCase().includes(state.schemaSearch)).sort((a,b)=>compareValues(get(a),get(b),state.schemaDir)||schemaIndex.get(a.id)-schemaIndex.get(b.id));
   }
+  function sortedResources() {
+    const value = r => state.resourceSort === 'name' ? r.name : state.resourceSort === 'input' ? factValue(r.inputBytes)
+      : state.resourceSort === 'representation' ? factValue(r.generator?.representationBytes) : factValue(r.retainedPayloadBytes);
+    return [...P.resources].sort((a,b)=>compareValues(value(a),value(b),state.resourceDir)||resourceIndex.get(a.id)-resourceIndex.get(b.id));
+  }
   function composition(artifact) {
     if (artifact.sectionCoverage.status !== 'complete') return null;
     const parts = [{id:'code',label:'Code',bytes:0},{id:'data',label:'Data',bytes:0},{id:'custom',label:'Custom',bytes:0},{id:'other',label:'Other + header',bytes:8}];
@@ -68,6 +77,6 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,composition,mappingCoverage};
+  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

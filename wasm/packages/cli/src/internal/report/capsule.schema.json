@@ -200,6 +200,13 @@
       },
       "maxItems": 100000
     },
+    "resourceProducers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ResourceProducer"
+      },
+      "maxItems": 100000
+    },
     "rootSets": {
       "type": "array",
       "items": {
@@ -1424,6 +1431,9 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
           },
           "maxItems": 100000
+        },
+        "generator": {
+          "$ref": "#/$defs/ResourceGenerator"
         }
       },
       "required": [
@@ -1528,6 +1538,56 @@
         "value",
         "reason",
         "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceGenerator": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "enum": [
+            "selected-embedded-assets",
+            "schema-codecs",
+            "package-guest-units",
+            "package-realizations",
+            "generated-support"
+          ]
+        },
+        "producer": {
+          "$ref": "#/$defs/Producer"
+        },
+        "representation": {
+          "enum": [
+            "base64-text",
+            "pulse.report-schema-shape.v1",
+            "package-guest-unit"
+          ]
+        },
+        "representationBytes": {
+          "$ref": "#/$defs/Fact"
+        },
+        "schemaId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entryCoverage": {
+          "$ref": "#/$defs/Coverage"
+        }
+      },
+      "required": [
+        "scope",
+        "producer",
+        "representation",
+        "representationBytes",
+        "schemaId",
+        "entryCoverage"
       ],
       "additionalProperties": false
     },
@@ -1817,6 +1877,50 @@
         "targetId",
         "entryIds",
         "entryCoverage",
+        "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "ResourceProducer": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "enum": [
+            "selected-embedded-assets",
+            "schema-codecs",
+            "package-guest-units",
+            "package-realizations",
+            "generated-support"
+          ]
+        },
+        "producer": {
+          "$ref": "#/$defs/Producer"
+        },
+        "coverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "resourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "scope",
+        "producer",
+        "coverage",
+        "resourceIds",
         "evidenceIds"
       ],
       "additionalProperties": false
