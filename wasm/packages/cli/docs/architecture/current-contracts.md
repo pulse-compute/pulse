@@ -1164,7 +1164,37 @@ contains no binding values, resource bodies or arbitrary provider metadata.
 Historical capsules without reference records keep their original identity.
 The projection never enters the executable plan/hash, recipe or provider
 configuration; replay reads the retained capsule without loading the compiler.
-Generated-resource expansion and payload attribution remain separate work.
+Final payload attribution remains a separate proof obligation.
+
+Report retains optional `resourceProducers` coverage and per-resource `generator`
+metadata. The build collector enumerates selected embedded-asset lookups, schema
+codecs named by the Native generator, and package guest-unit contributions.
+Each scope has its own observed/expected counts and producer. A complete empty
+scope is `0 / 0`; a missing producer has a null expected count. Selected assets
+do not enumerate unused files in an embedded manifest. Other generated support
+remains unavailable, so the overall resource inventory is explicitly partial.
+Package realization records can contain signing material: only the independent
+manifest count is retained, without their IDs, hashes, values or descriptors.
+
+Resource inputs and representations are distinct from physical artifact bytes.
+Embedded assets retain the original byte length and, when recorded, the UTF-8
+length of their validated base64 build input. Schema-codec resources join the
+existing allowlisted normalized descriptor and its byte count; source input size
+is not applicable. Package guest units retain safe identity and producer fields,
+with unavailable byte sizes and consumer coverage where no join exists. Known
+entry consumers and reverse route references survive sharing without adding
+bytes to the physical ledger. No asset bodies, raw schemas, generated source,
+private realization contents or manifest paths enter this metadata.
+
+The viewer labels input, packed/descriptor representation, and retained payload
+separately, exposes producer coverage, and sorts available byte values numerically
+with unknowns last. Schema structure remains expandable. Handler-body and
+Reachable metrics measure code bodies, excluding CSS/JavaScript payloads and
+schema data: a tiny handler can serve a large asset. Final retained payload values
+stay unavailable without final-byte identity proof; source or encoded lengths
+are never substituted. Historical capsules without producer metadata remain
+readable without changes to their evidence identity. Collection only observes
+completed compiler records; replay never loads a compiler or package generator.
 
 Report size collection reads exact retained Wasm sections and function bodies.
 A passive build-support observer of the same optimized final emission supplies

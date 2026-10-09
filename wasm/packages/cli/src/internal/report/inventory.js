@@ -159,20 +159,21 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
     row.entryIds = capsule.entries.filter(entry => entry[key].includes(row.id)).map(entry => entry.id);
     row.routeIds = capsule.routes.filter(route => route[key].includes(row.id)).map(route => route.id);
   }
+  require('./resource-inventory').addResourceInventory(capsule, prepared, evidenceIds);
   for (const resource of capsule.resources) {
     resource.entryIds = unique(resource.entryIds);
     resource.routeIds = capsule.routes.filter(route => route.composition.some(entry => resource.entryIds.includes(entry))).map(route => route.id);
   }
   if (capsule.bindings.some(row => row.resolution === 'unavailable')) observe('REPORT_BINDING_REALIZATION_UNAVAILABLE');
   for (const key of ['routes', 'entries', 'schemas', 'bindings', 'resources']) capsule.coverage[key] = coverage(capsule[key].length);
-  // The canonical inventory exposes selected embedded assets. It does not
-  // enumerate every generated helper, validator or retained data segment.
+  // Producer-scoped counts are independent. Other generated support and final
+  // payload identity remain unknown, so this is never a whole-program census.
   capsule.coverage.resources = { status: 'partial', observed: capsule.resources.length, expected: null, reason: 'incomplete-mapping' };
   if (capsule.observations.some(row => row.code === 'REPORT_DYNAMIC_BINDING_REFERENCE')
     || capsule.references?.some(row => row.kind === 'binding' && row.state !== 'resolved')) {
     capsule.coverage.bindings = { status: 'partial', observed: capsule.bindings.length, expected: null, reason: 'incomplete-mapping' };
   }
-  observe('REPORT_GENERATED_RESOURCE_INVENTORY_UNAVAILABLE');
+  observe('REPORT_GENERATED_RESOURCE_INVENTORY_PARTIAL');
   observe('REPORT_AUTHORIZATION_NOT_INFERRED'); observe('REPORT_ATTRIBUTION_NOT_RECORDED'); observe('REPORT_TESTS_NOT_RECORDED');
   if (registry?.version && registry.version !== 'pulse.schema-registry-ir.v5') observe('REPORT_SCHEMA_ADAPTER_UNAVAILABLE');
   return createCapsule(capsule);
