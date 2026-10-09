@@ -13,9 +13,10 @@ The release path is:
 
 ```text
 exact v<version> tag
-→ dependency-complete build and acceptance
+→ operation=qualify: dependency-complete build and acceptance
 → .pulse-release tarballs
 → sealed .pulse-publication bundle
+→ operation=publish with qualification_run_id
 → blocking read-only name audit and publication plan
 → protected human approval
 → npm trusted publishing
@@ -84,16 +85,17 @@ local `v1.0.0-beta.7` tag and prints the exact push and workflow commands for th
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
-commands only after review. The publication workflow seals the final tagged
-commit before protected publication approval.
+commands only after review. The qualification operation seals the final tagged
+commit once and retains its accepted bundle for publication.
 
 After review and merge, the release owner tags the final `main` commit and runs
-**npm publication** from that tag. Its candidate job automatically runs
-`release:seal --require-fastly` once, copies its accepted package bytes and
-seals the exact publication bundle. A read-only audit of that bundle must pass
-before protected publishing approval becomes available. A local seal is useful development evidence but
-is not a prerequisite that must be committed before tagging. Reconcile `main`
-back into `latest` after the release so development starts from the new version.
+**npm publication** from that tag with `operation=qualify`. It runs
+`release:seal --require-fastly`, copies the accepted package bytes and uploads
+the exact publication bundle. Once qualification succeeds, use its run ID for
+`operation=publish`. A read-only audit of that bundle must pass before protected
+publishing approval becomes available. Audit and publication never build, pack
+or seal. A local seal remains development evidence. Reconcile `main` back into
+`latest` after release so development starts from the new version.
 
 ## Release handoff record
 
@@ -108,7 +110,7 @@ separate, approved promotion run.
 Tag: v<version>    Tag commit: <40-character SHA>    Release PR: <URL>
 Step                  Status     Evidence / run, report, or blocker
 PR checks             ____       <full main PR checks at merge SHA>
-Release seal          ____       <npm candidate run / terminal seal report>
+Release seal          ____       <qualify run ID / terminal seal report>
 npm publish           ____       <protected publish run / exact package receipts>
 Docs candidate        ____       <tagged docs candidate / manifest digest>
 Immutable upload      ____       <deploy + verify-storage reports / object count>
@@ -120,37 +122,49 @@ Human release owner: <name>    Next action: <one concrete action>
 ```
 
 After the human has reviewed and pushed the annotated tag, select that **tag**
-as the workflow dispatch ref and supply the identical `release_tag` input:
+as the workflow dispatch ref and supply the identical `release_tag` input.
+The form defaults to `qualify`; leave `qualification_run_id` blank for that
+first run. Its successful job summary prints the run ID and the complete
+publication command:
 
 ```bash
 RELEASE_TAG=v<version>
-gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish -f run_smoke=true
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=qualify
+# After qualification succeeds, copy its run ID from the Actions run URL:
+QUALIFICATION_RUN_ID=<successful-qualify-run-id>
+gh workflow run npm-publish.yml --ref "$RELEASE_TAG" -f release_tag="$RELEASE_TAG" -f operation=publish -f qualification_run_id="$QUALIFICATION_RUN_ID" -f run_smoke=true
 ```
 
-This one run seals and packs once, performs a blocking read-only package-name
-audit and publication plan, then waits at `npm-publish` for human approval.
+Publication checks that the selected run and its candidate job completed
+successfully in this repository's publication workflow, on the same tag and
+commit. It downloads the accepted artifact from that run's successful attempt
+by immutable artifact ID and verifies its package hashes and source identity.
+Missing, expired, failed, foreign-source and old-attempt candidates fail before
+protected approval. A moved tag requires new qualification.
+
 Review the terminal seal, dedicated KV/CAS evidence/disposition and audit/plan
-before approving. The audit report is retained per run attempt, including
-failures. Its manifest digest binds publication to the reviewed sealed bundle;
-publication also rechecks live registry state before uploading. A missing name
-or an integrity/dist-tag conflict blocks the approval path. Owner-reviewed
-trusted-publisher and protected-environment setup remains a prerequisite;
-saving those settings is not proof of successful OIDC publication.
+before approving `npm-publish`. The audit report is retained per publication
+attempt, including failures. Its manifest digest binds publication to the
+reviewed bundle; publication rechecks live registry state before uploading.
+A missing name or integrity/dist-tag conflict blocks approval. Owner-reviewed
+trusted-publisher and protected-environment setup remains a prerequisite.
 
-The candidate uses Ubuntu 24.04, two isolated workers, one compiler slot and a
-6,144 MiB admission budget. It preserves the 50-minute candidate work deadline,
-supervised cleanup and same-checkout recovery rules. The Fastly CLI 16.1.0
-archive is checksum-pinned, and the seal requires its real local Compute
-lifecycle. Missing tooling or a failed lifecycle cannot become an optional skip.
-The accepted package checkpoint and artifact hashes are verified before copying
-those bytes into `.pulse-release`; there is no post-acceptance rebuild or repack.
+Qualification uses Ubuntu 24.04, two isolated workers, one compiler slot and a
+6,144 MiB admission budget. Its work deadline is 90 minutes, with additional
+step/job time for supervised cleanup and evidence upload. This budget permits
+completion; it is not a performance improvement. Same-checkout recovery rules
+remain unchanged. Fastly CLI 16.1.0 is checksum-pinned and its real local Compute
+lifecycle is mandatory. Accepted package checkpoints and artifact hashes are
+verified before copying bytes; there is no post-acceptance rebuild or repack.
 
-`operation=audit` remains an informational, read-only mode for discovering
-bootstrap/conflict work. It never starts the protected publish job. It constructs
-its own candidate, so do not routinely dispatch it before `operation=publish`;
-that would duplicate the seal. For an audit failure, retry the failed audit job
-in the same run while its candidate artifact remains available. Publication-only
-retries similarly reuse the original bundle, rather than dispatching again.
+The accepted bundle is retained for 30 days. `operation=audit` takes the same
+`qualification_run_id` for informational package-name/conflict checks and never
+starts protected publishing. Every new audit or publish dispatch can reuse the
+same successful qualification. Retry failed publication jobs in the same run,
+or dispatch publish again with that qualification run ID. Already-published
+packages are skipped only when their registry integrity matches. If the bundle
+has expired or been deleted, qualification must run again; partial failure
+reports cannot substitute for a completed bundle.
 
 Documentation can be uploaded and verified without promotion while npm awaits
 approval. After npm verification and human deployment approval, promote from
@@ -195,7 +209,7 @@ then correct the unpublished tag before starting publication.
 
 ## Authority and trigger
 
-The workflow is manually dispatched **from the exact release tag**, and the `release_tag` input must name that same tag. Candidate construction, publication tooling, GitHub's native source identity, and npm provenance therefore all refer to one commit. A branch-dispatched run fails before artifacts are built. The candidate job has no publication authority. The `publish` job is attached to the protected `npm-publish` environment and is the only job granted `id-token: write`.
+The workflow is manually dispatched **from the exact release tag**, and the `release_tag` input must name that same tag. Qualification, publication tooling, GitHub's native source identity, and npm provenance therefore all refer to one commit. A branch-dispatched run is rejected. The candidate job has no publication authority. The `publish` job is attached to the protected `npm-publish` environment and is the only job granted `id-token: write`.
 
 For example:
 
@@ -203,10 +217,11 @@ For example:
 gh workflow run npm-publish.yml \
   --ref v1.0.0-beta.7 \
   -f release_tag=v1.0.0-beta.7 \
-  -f operation=publish -f run_smoke=true
+  -f operation=publish -f qualification_run_id="$QUALIFICATION_RUN_ID" -f run_smoke=true
 ```
 
-Complete external package settings before dispatch. This run performs the
+Set `QUALIFICATION_RUN_ID` to the successful qualification run for this tag.
+Complete external package settings before dispatch. Publication performs the
 blocking audit before protected approval; a separate audit dispatch is optional.
 
 A human release authority must approve that environment. Codex may inspect failures and prepare bounded patches, but it may not dispatch the release, approve the environment, publish a package, change a dist-tag, or rotate registry credentials.

@@ -80,7 +80,7 @@ pulse test --json
 
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
-| `canonical-native.wasm` | 8.9 KiB (9,157 bytes) | 8.5 KiB (8,753 bytes) | 4.4% |
+| `canonical-native.wasm` | 7.8 KiB (8,014 bytes) | 7.2 KiB (7,407 bytes) | 7.6% |
 
 The executable documentation gate rebuilds and measures both variants on
 `1.0.0-beta.7`. These are uncompressed on-disk sizes, not transfer sizes or

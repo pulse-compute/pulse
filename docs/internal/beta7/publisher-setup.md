@@ -6,12 +6,22 @@ canonical setup guides. Source inspected: `latest` at
 `621be9d5750f77d6540877ff3a5f87e1b4c86a2e`, tree
 `5ccc03d6921df15d4a8c6a104418eb36765ffcb8`.
 
-**Status: preparation complete; private settings review pending.** B7-02 is
+**Status: setup complete by owner attestation; actual OIDC publication pending.** B7-02 is
 [complete](bootstrap.md#post-bootstrap-verification): all 20 names exist and
 satisfy bootstrap policy. Those registry observations do not expose trusted
 publishers, access/recovery controls or GitHub environment protection. This
 task prepares the exact owner actions and receipt; it does not change settings,
 dispatch a release or prove successful OIDC publication.
+
+## Owner completion attestation
+
+After B7-03, the release owner confirmed on October 7, 2026: “Yes everything is
+setup.” The B7-06 readiness refresh records that direction as completion of this
+setup handoff, covering the publisher/environment and credential checklist.
+Private administrative settings were not independently inspected by the agent;
+successful OIDC publication and provenance require the later exact-tag run.
+The unchecked rows and pending fields below are the original reusable checklist
+and receipt template, not reopened beta.7 setup blockers.
 
 ## One exact publisher identity
 
@@ -33,8 +43,9 @@ authorize direct publication. Pulse uses `npm publish --tag latest`, so separate
 dist-tag-management permission is not required. Do not switch to staged
 publication or broaden publisher identities for this ticket.
 
-The existing workflow uses GitHub-hosted `ubuntu-latest`, Node `24.18.0`, npm
-`11.15.0` and pnpm `12.4.2`. Only the protected `publish` job requests
+The publication candidate uses GitHub-hosted Ubuntu 24.04; audit/publish/verify
+use `ubuntu-latest`, with Node `24.18.0`, npm `11.15.0` and pnpm `12.4.2` selected
+by the release contract. Only the protected `publish` job requests
 `id-token: write`; candidate/audit/verify jobs have no npm publication authority.
 Source checks validate that wiring, not its private administrative settings.
 

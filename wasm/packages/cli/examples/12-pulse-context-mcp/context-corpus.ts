@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "0357b1013f12b35072229d7911b63e4692b7fdc504b7d675c9e304331c7204fc",
+  "corpusHash": "b1a5bad31d9636aeab9c8b526ef951902767ef5d9367d26478f9ef498ad48927",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -8002,9 +8002,9 @@ export const contextCorpus = freeze({
         "endLine": 78,
         "path": "examples/09-router-lowering/README.md",
         "selection": "heading:Workflow",
-        "sha256": "245d65801fa03d70c3a4b62081a234218fd2898b7377635d135ddd9b85ca2777",
+        "sha256": "9f851f7aa00f83bfe564f6d59378073b1d77708ebcce8ba65271d97796f7860d",
         "startLine": 8,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1b5d7dbcce7db1450c0f62c7b86751cd000318bf"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1a6ac935bb56a2359d444d636edd268c02c15158"
       },
       "status": "candidate",
       "tags": [
@@ -9219,8 +9219,8 @@ export const contextCorpus = freeze({
     },
     {
       "path": "examples/09-router-lowering/README.md",
-      "sha256": "245d65801fa03d70c3a4b62081a234218fd2898b7377635d135ddd9b85ca2777",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1b5d7dbcce7db1450c0f62c7b86751cd000318bf"
+      "sha256": "9f851f7aa00f83bfe564f6d59378073b1d77708ebcce8ba65271d97796f7860d",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/1a6ac935bb56a2359d444d636edd268c02c15158"
     },
     {
       "path": "examples/09-router-lowering/package.json",

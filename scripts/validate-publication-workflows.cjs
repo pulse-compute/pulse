@@ -257,15 +257,18 @@ function workflowStepScript(job, name) {
 }
 
 function validateNpmCandidateFlow(source) {
+  includes(source, '        default: qualify\n', 'first-run qualification default');
+  includes(source, 'Leave blank for qualify;', 'optional qualification ID guidance');
   const candidate = workflowJob(source, 'candidate');
   const audit = workflowJob(source, 'audit');
   const publish = workflowJob(source, 'publish');
   const verify = workflowJob(source, 'verify');
-  includes(audit, '    needs: candidate\n', 'pre-approval audit dependency');
-  excludes(audit, '\n    if:', 'mandatory pre-approval audit');
-  includes(publish, '    needs: [candidate, audit]\n', 'protected publication dependencies');
+  includes(candidate, "    if: inputs.operation == 'qualify'\n", 'explicit qualification only');
+  includes(audit, "    if: inputs.operation == 'audit' || inputs.operation == 'publish'\n", 'pre-approval audit condition');
+  excludes(audit, '\n    needs:', 'audit must consume an existing qualification');
+  includes(publish, '    needs: audit\n', 'protected publication dependencies');
   includes(publish, "    if: inputs.operation == 'publish'\n", 'protected publication condition');
-  includes(verify, '    needs: [candidate, publish]\n', 'registry verification dependencies');
+  includes(verify, '    needs: [audit, publish]\n', 'registry verification dependencies');
   for (const job of [candidate, audit, publish]) {
     excludes(job, 'continue-on-error:', 'blocking candidate flow');
     excludes(job, '\n    if: always()', 'blocking job condition');
@@ -286,14 +289,34 @@ function validateNpmCandidateFlow(source) {
   includes(audit, 'pulse-npm-audit-${{ github.run_id }}-${{ github.run_attempt }}', 'attempt-specific audit evidence');
   includes(publish, '${{ needs.audit.outputs.artifact_name }}', 'review packet transfer');
   includes(publish, 'AUDITED_MANIFEST_SHA256: ${{ needs.audit.outputs.manifest_sha256 }}', 'approved artifact binding');
+  for (const job of [audit, publish, verify]) {
+    for (const forbidden of ['release:seal', 'release:pack', 'release-candidate.cjs prepare', 'pnpm install', 'pnpm build']) excludes(job, forbidden, 'publication must reuse accepted bytes');
+    includes(job, 'actions: read', 'cross-run artifact permission');
+    includes(job, 'github-token: ${{ github.token }}', 'cross-run artifact access');
+  }
+  includes(audit, "require('./scripts/release-qualification.cjs').resolveQualification(", 'qualification source verification');
+  includes(audit, 'QUALIFICATION_RUN_ID: ${{ inputs.qualification_run_id }}', 'explicit qualification selection');
+  includes(audit, 'REQUESTED_TAG: ${{ inputs.release_tag }}', 'qualification tag selection');
+  includes(audit, 'artifact-ids: ${{ steps.qualification.outputs.artifact_id }}', 'resolved artifact download');
+  includes(audit, 'run-id: ${{ steps.qualification.outputs.run_id }}', 'resolved run download');
+  for (const job of [publish, verify]) {
+    includes(job, 'artifact-ids: ${{ needs.audit.outputs.candidate_artifact_id }}', 'audited artifact reuse');
+    includes(job, 'run-id: ${{ needs.audit.outputs.qualification_run_id }}', 'audited run reuse');
+  }
+  includes(candidate, 'candidate_artifact=$artifact_prefix-$expected-$GITHUB_RUN_ATTEMPT', 'attempt-specific accepted artifact');
+  includes(publish, 'name: pulse-npm-publish-${{ inputs.release_tag }}-${{ github.run_attempt }}', 'retry-safe publish report');
+  includes(verify, 'name: pulse-npm-verification-${{ inputs.release_tag }}-${{ github.run_attempt }}', 'retry-safe verification report');
   return { candidate, audit, publish };
 }
 
 function validateNpmCandidateFlowProbes(source) {
-  const { audit, publish } = validateNpmCandidateFlow(source);
+  const { candidate, audit, publish } = validateNpmCandidateFlow(source);
   for (const [from, to] of [
-    ['needs: [candidate, audit]', 'needs: candidate'],
-    ['  audit:\n', "  audit:\n    if: inputs.operation == 'audit'\n"],
+    ['needs: audit', 'needs: candidate'],
+    ["if: inputs.operation == 'qualify'", "if: inputs.operation == 'publish'"],
+    ["if: inputs.operation == 'audit' || inputs.operation == 'publish'", "if: inputs.operation == 'audit'"],
+    ['    name: audit\n', '    name: audit\n    needs: candidate\n'],
+    ['artifact-ids: ${{ needs.audit.outputs.candidate_artifact_id }}', 'name: arbitrary-bundle'],
     ['  audit:\n', '  audit:\n    continue-on-error: true\n'],
     ['  audit:\n', '  audit:\n    permissions:\n      id-token: write\n'],
     ["if: inputs.operation == 'publish'", "if: always() && inputs.operation == 'publish'"]
@@ -301,6 +324,14 @@ function validateNpmCandidateFlowProbes(source) {
 
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-npm-flow-check-'));
   try {
+    const summary = path.join(directory, 'summary.md');
+    if (candidate.indexOf('name: Show the next publication command') < candidate.indexOf('name: Upload the sealed npm candidate')) fail('publication command must follow accepted artifact upload');
+    const next = spawnSync('bash', ['-c', workflowStepScript(candidate, 'Show the next publication command')], {
+      cwd: directory, encoding: 'utf8', timeout: 10000,
+      env: { ...process.env, RELEASE_TAG: 'v9.8.7-beta.test', GITHUB_RUN_ID: '123456', GITHUB_STEP_SUMMARY: summary }
+    });
+    if (next.error || next.status !== 0) fail('qualification next-command summary failed');
+    includes(fs.readFileSync(summary, 'utf8'), 'gh workflow run npm-publish.yml --ref v9.8.7-beta.test -f release_tag=v9.8.7-beta.test -f operation=publish -f qualification_run_id=123456 -f run_smoke=true', 'copyable publication command');
     const bin = path.join(directory, 'bin');
     ensureDirectory(bin);
     fs.writeFileSync(path.join(bin, 'node'), `#!/bin/bash
@@ -351,6 +382,71 @@ esac
       if (result.error || (result.status === 0) !== (scenario === 'ready')) fail(`approved candidate ${scenario} probe failed`);
     }
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+}
+
+function validateQualificationSelection() {
+  // Exercise the actual asynchronous resolver with read-only GitHub fixtures.
+  const result = spawnSync(process.execPath, ['-e', `
+    const assert = require('node:assert/strict');
+    const { resolveQualification } = require('./scripts/release-qualification.cjs');
+    const release = require('./release/pulse-release-manifest.json');
+    const tag = 'v' + release.releaseVersion, sha = 'a'.repeat(40);
+    const context = { repo: { owner: 'pulse-compute', repo: 'pulse' }, ref: 'refs/tags/' + tag, sha };
+    async function probe(scenario) {
+      const run = { repository: { full_name: 'pulse-compute/pulse' }, head_repository: { full_name: 'pulse-compute/pulse' },
+        path: '.github/workflows/npm-publish.yml', event: 'workflow_dispatch', head_branch: tag,
+        head_sha: sha, status: 'completed', conclusion: 'success', run_attempt: 2 };
+      const jobs = [{ name: 'candidate', status: 'completed', conclusion: 'success' }];
+      const artifacts = [{ id: 456, name: release.publication.candidateArtifact + '-' + tag + '-2', expired: false,
+        workflow_run: { id: 123, head_sha: sha } }];
+      const args = { context: structuredClone(context), runId: '123', releaseTag: tag };
+      switch (scenario) {
+        case 'missing-id': args.runId = ''; break;
+        case 'invalid-id': args.runId = '123; echo bad'; break;
+        case 'unsafe-id': args.runId = '999999999999999999999'; break;
+        case 'branch-dispatch': args.context.ref = 'refs/heads/main'; break;
+        case 'wrong-input-tag': args.releaseTag = 'v0.0.0'; break;
+        case 'wrong-repository': run.repository.full_name = 'other/repo'; break;
+        case 'fork-source': run.head_repository.full_name = 'other/repo'; break;
+        case 'wrong-workflow': run.path = '.github/workflows/validate.yml'; break;
+        case 'wrong-event': run.event = 'pull_request'; break;
+        case 'wrong-tag': run.head_branch = 'main'; break;
+        case 'moved-tag': run.head_sha = 'b'.repeat(40); break;
+        case 'running': run.status = 'in_progress'; break;
+        case 'failed-run': run.conclusion = 'failure'; break;
+        case 'invalid-attempt': run.run_attempt = 0; break;
+        case 'skipped-candidate': jobs[0].conclusion = 'skipped'; break;
+        case 'failed-candidate': jobs[0].conclusion = 'failure'; break;
+        case 'missing-candidate': jobs.length = 0; break;
+        case 'duplicate-candidate': jobs.push({ ...jobs[0] }); break;
+        case 'old-attempt': artifacts[0].name = artifacts[0].name.replace(/-2$/, '-1'); break;
+        case 'missing-artifact': artifacts.length = 0; break;
+        case 'duplicate-artifact': artifacts.push({ ...artifacts[0] }); break;
+        case 'expired-artifact': artifacts[0].expired = true; break;
+        case 'foreign-artifact-run': artifacts[0].workflow_run.id = 999; break;
+        case 'foreign-artifact-source': artifacts[0].workflow_run.head_sha = 'b'.repeat(40); break;
+        case 'invalid-artifact-id': artifacts[0].id = 0; break;
+      }
+      const github = { rest: { actions: {
+        getWorkflowRun: async params => { assert.deepEqual(params, { ...context.repo, run_id: 123 }); return { data: run }; },
+        listJobsForWorkflowRunAttempt: 'jobs', listWorkflowRunArtifacts: 'artifacts'
+      } }, paginate: async (method, params) => {
+        assert.deepEqual(params, { ...context.repo, run_id: 123, per_page: 100, ...(method === 'jobs' ? { attempt_number: 2 } : {}) });
+        return method === 'jobs' ? jobs : artifacts;
+      } };
+      const call = () => resolveQualification({ ...args, github });
+      if (scenario === 'ready') assert.deepEqual(await call(), { runId: 123, attempt: 2, artifactId: 456 });
+      else await assert.rejects(call, undefined, scenario);
+    }
+    (async () => {
+      for (const scenario of ['ready', 'missing-id', 'invalid-id', 'unsafe-id', 'branch-dispatch', 'wrong-input-tag',
+        'wrong-repository', 'fork-source', 'wrong-workflow', 'wrong-event', 'wrong-tag', 'moved-tag', 'running',
+        'failed-run', 'invalid-attempt', 'skipped-candidate', 'failed-candidate', 'missing-candidate', 'duplicate-candidate',
+        'old-attempt', 'missing-artifact', 'duplicate-artifact', 'expired-artifact', 'foreign-artifact-run',
+        'foreign-artifact-source', 'invalid-artifact-id']) await probe(scenario);
+    })().catch(error => { console.error(error); process.exitCode = 1; });
+  `], { cwd: repoRoot, encoding: 'utf8', timeout: 10000 });
+  if (result.error || result.status !== 0) fail(`qualification selection probes failed: ${result.stderr || result.error}`);
 }
 
 function validatePublishedContextSmoke(source) {
@@ -447,13 +543,14 @@ function validateWorkflows() {
   includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
   includes(npm, 'pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly', 'npm publication workflow');
   validateNpmCandidateFlowProbes(npm);
+  validateQualificationSelection();
   validatePublishedContextSmoke(npm);
   const candidate = npm.slice(npm.indexOf('\n  candidate:'), npm.indexOf('\n  audit:'));
-  includes(candidate, 'timeout-minutes: 60\n', 'npm candidate job');
+  includes(candidate, 'timeout-minutes: 100\n', 'npm candidate job');
   includes(candidate, 'id: deadline', 'npm candidate deadline');
-  includes(candidate, '$(date +%s) + 50 * 60', 'npm candidate deadline');
+  includes(candidate, '$(date +%s) + 90 * 60', 'npm candidate deadline');
   includes(candidate, 'timeout-minutes: 10\n', 'npm toolchain step');
-  includes(candidate, 'timeout-minutes: 52\n', 'npm seal step');
+  includes(candidate, 'timeout-minutes: 92\n', 'npm seal step');
   includes(candidate, 'CANDIDATE_DEADLINE_SECONDS: ${{ steps.deadline.outputs.seconds }}', 'npm seal step');
   includes(candidate, 'remaining=$(( (CANDIDATE_DEADLINE_SECONDS - $(date +%s)) / 60 ))', 'npm seal step');
   includes(candidate, '[ "$remaining" -ge 1 ]', 'npm seal step');
