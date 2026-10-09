@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # Maintainer documentation
@@ -24,15 +24,12 @@ artifacts, not application-author reference material.
 
 - [Release manifest and package policy](./release-manifest.md) — synchronized version, package set, support tiers, and target inventory.
 - [Testing Pulse](./testing.md) — focused tasks, profiles, dependency restoration, and evidence expectations.
-- [Compiler-efficiency P01 baseline](./compiler-efficiency-p01.md) — the pinned
-  `latest` environment proof, baseline replay, remaining R01 question, and the
-  review packets for P02 and P03.
 - [Release packages and clean-consumer acceptance](./release-acceptance.md) — package construction, packed-consumer checks, and seal evidence.
 - [npm publishing](./npm-publishing.md) — sealed tarballs, trusted publishing, dependency-safe retries, and registry verification.
 
 ## Documentation operations
 
-- [Documentation system and release workflow](./documentation-system.md) — canonical sources, synchronization, ownership, and release snapshots.
+- [Documentation system and release workflow](./documentation-system.md) — canonical sources, the procedure-owner map, synchronization, and ownership.
 - [Public site and documentation presentation](./public-site.md) — editorial manifest, navigation, rendering, accessibility, and site validation.
 - [Documentation versions](./documentation-versioning.md) — exact snapshots, the moving alias, search, and installed copies.
 - [Documentation deployment](./documentation-deployment.md) — immutable Object Storage releases, root/latest promotion, and Fastly VCL delivery.
@@ -44,20 +41,7 @@ artifacts, not application-author reference material.
 
 ## Authority model
 
-Pulse uses a resident-maintainer control plane to keep the public Beta
-supportable without transferring product authority to automation. The control
-plane combines machine-readable scope policy, deterministic path
-classification, repository-local Codex instructions, GitHub ownership, and
-human approval.
-
-The system is deliberately asymmetric:
-
-```text
-repository invariants and deterministic checks
-                    ↓
-       Codex analysis and patch preparation
-                    ↓
-        human architecture and release authority
-```
+The [maintainer charter](./maintainer-charter.md) owns the division of authority;
+the [scope policy](./scope-policy.md) owns classification and declarations.
 
 Codex is a resident maintainer, not a repository principal. It may inspect, classify, reproduce, review, document, and prepare bounded changes. It may not merge, publish, change repository settings, or approve a change to a protected boundary.

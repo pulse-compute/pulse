@@ -4,6 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { synchronizeReferenceDocs } = require('./sync-reference-docs.cjs');
+const { synchronizeContextCorpus } = require('../../scripts/pulse-context-corpus.cjs');
 const { synchronizeDocumentationMetadata, validateDocumentationMetadata } = require('../../scripts/documentation-ownership.cjs');
 const { synchronizeMaintenancePolicy } = require('../../scripts/maintenance-policy.cjs');
 
@@ -131,12 +132,13 @@ function main() {
     const metadata = synchronizeDocumentationMetadata({ repoRoot, write });
     const maintenance = synchronizeMaintenancePolicy({ repoRoot, write });
     const snippets = synchronizeDocSnippets({ write });
+    const contextCorpus = synchronizeContextCorpus({ repoRoot, write });
     const references = synchronizeReferenceDocs({ write });
     const ownership = validateDocumentationMetadata({ repoRoot, today: '2026-07-16' });
-    const result = Object.freeze({ status: 'ok', metadata, maintenance, snippets, references, ownership });
+    const result = Object.freeze({ status: 'ok', metadata, maintenance, snippets, contextCorpus, references, ownership });
     if (args.has('--json')) console.log(JSON.stringify(result, null, 2));
     else {
-      const changed = metadata.changedFiles + maintenance.changedFiles + snippets.changedFiles + references.changedFiles;
+      const changed = metadata.changedFiles + maintenance.changedFiles + snippets.changedFiles + contextCorpus.changedFiles + references.changedFiles;
       console.log(`ok - ${references.expectedFiles} generated documentation/package file(s), ${maintenance.expectedFiles} maintenance-policy output(s), ${snippets.blockCount} source block(s), and ${metadata.files} owned page(s) are synchronized${changed ? `; updated ${changed} file(s)` : ''}`);
     }
   } catch (error) {

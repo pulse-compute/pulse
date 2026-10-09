@@ -1,13 +1,36 @@
 <!-- pulse-doc-meta:start
 owner: docs-platform
 status: active
-last-reviewed: 2026-07-25
-review-by: 2027-01-25
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
-# Contributing documentation
+# Contributing to Pulse
 
 These pages describe changes to the synchronized Pulse repository. They are not application-author extension APIs.
+
+## Contributor workflow
+
+1. Choose the owning contract and read the root and nearest `AGENTS.md`.
+   Use the [architecture overview](../architecture/overview.md) when ownership is unclear.
+2. Classify the change with the [scope policy](../maintainers/scope-policy.md).
+   That page owns the PR declaration and protected-boundary rules. Obtain human
+   direction before widening a contract; record existing direction in the PR.
+3. Make the smallest coherent change in canonical sources. For documentation,
+   use the [documentation update loop](../maintainers/documentation-system.md#update-loop)
+   to regenerate installed copies and references.
+4. Run `npm run maintainer:check` and the focused checks selected for the diff.
+   [Testing Pulse](../maintainers/testing.md) owns task selection, dependency
+   requirements and evidence rules. Ordinary changes do not require a local
+   aggregate release seal.
+5. Open a PR with the scope declaration, what changed, checks completed, and
+   any dependency-bound checks still outstanding. Include the tested revision
+   and working-tree state; an interrupted check is incomplete evidence.
+
+Use the repository-pinned Node and pnpm versions and restore the frozen lockfile
+with lifecycle scripts disabled before dependency-bound checks. The
+[release manifest](../maintainers/release-manifest.md) owns the supported package
+and target set. Human maintainers retain merge, settings and release authority.
 
 ## Choose the extension boundary
 
