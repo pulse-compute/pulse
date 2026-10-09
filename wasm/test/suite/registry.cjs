@@ -38,6 +38,10 @@ const tasks = Object.freeze({
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-size-evidence': nodeTask('test/cli/assert-report-size-evidence.cjs', { description: 'PRPT-03 physical size reconciliation and attribution rejection' }),
   'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
+  'cli-report-entry-proof': nodeTask('test/cli/assert-report-entry-proof.cjs', {
+    evidence: 'native', timeoutMs: 120000,
+    description: 'RPT8-00 synthetic entry/shared-stage final-body identity proof (explicit selection)'
+  }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
     description: 'PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm', timeoutMs: 60000
   }),
