@@ -1177,6 +1177,34 @@ remain unavailable. Final-link hash changes cannot reuse prelink indices. See th
 [PRPT-03 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt03/README.md) for the pinned observer, unchanged
 byte proof and qualification ceiling.
 
+The pinned graph adapter reconciles every defined function and direct-call site
+against the final census before accepting edges. Module framing handles compact
+and empty function bodies; quoted data and comments cannot introduce control or
+calls. Tables/elements, indirect calls, function references and tail calls remain
+outside this proof. No table target set is inferred. Unsupported instruction
+categories take precedence over their supporting table declarations.
+
+Attribution v1/v2 can retain an optional `graph.diagnostic`: an allowlisted reason
+and code, optional function index, and observed/expected counters. Reasons
+distinguish unsupported table, indirect, reference and tail control, unresolved
+function identity, parser mismatch and budget exhaustion. Raw errors, names,
+paths, WAT and payloads are excluded. The reader preserves these records in
+`REPORT_GRAPH_UNAVAILABLE` observations with `graphDiagnostic`, and exposes the
+reason on unavailable reachable measurements. Absent and prelink-only capture
+remain distinct from a rejected graph. Historical sidecars without diagnostics
+retain their previous generic reason; historical capsules remain readable.
+
+Graph failure preserves verified direct-body metrics and the physical ledger.
+Capture enforces 32 MiB graph text and 100,000 defined functions/direct edges;
+the reader retains its one-million-operation traversal budget per artifact.
+Budget exhaustion never returns an unfinished reachable subset. Earlier complete
+closures remain bounded, code-only, nonadditive measurements; cycles and shared
+callees contribute each physical body once per closure. Parser/output bounds are
+not a hard memory or time sandbox around Binaryen serialization. Capture timing
+and sidecar size are recorded by the paired regression fixtures, not presented as
+a production performance guarantee. Own/Shared and the complete execution-root
+universe remain separate proof obligations.
+
 Native generators retain observational `pulse.native-report-ownership.v1`
 metadata separately from the executable plan hash. Attribution sidecar v2 joins
 canonical entries to exact emitted symbols for terminal bodies, shared stages,

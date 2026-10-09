@@ -36,6 +36,9 @@ function vitestTask(files, options = {}) {
 const tasks = Object.freeze({
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
+  'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
+    description: 'RPT8-03 bounded graph diagnostics, exhaustive direct-call joins, privacy and passive replay', timeoutMs: 60000
+  }),
   'cli-report-size-evidence': nodeTask('test/cli/assert-report-size-evidence.cjs', { description: 'PRPT-03 physical size reconciliation and attribution rejection' }),
   'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
   'cli-report-entry-proof': nodeTask('test/cli/assert-report-entry-proof.cjs', {
@@ -1276,6 +1279,7 @@ const profiles = Object.freeze({
     'cli-report-capture-proof',
     'cli-report-entry-proof',
     'cli-report-reference-provenance',
+    'cli-report-graph-diagnostics',
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
@@ -1425,6 +1429,7 @@ const profiles = Object.freeze({
     'cli-report-capture-proof',
     'cli-report-entry-proof',
     'cli-report-reference-provenance',
+    'cli-report-graph-diagnostics',
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',

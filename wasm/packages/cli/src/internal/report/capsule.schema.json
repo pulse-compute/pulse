@@ -404,7 +404,14 @@
                 "dispatcher-carrier",
                 "final-symbol-not-surviving",
                 "dynamic-reference",
-                "unresolved-reference"
+                "unresolved-reference",
+                "unsupported-table-control",
+                "unsupported-indirect-control",
+                "unsupported-reference-control",
+                "unsupported-tail-call",
+                "unresolved-function-identity",
+                "graph-parser-mismatch",
+                "graph-budget-exhausted"
               ]
             },
             {
@@ -906,7 +913,14 @@
                 "dispatcher-carrier",
                 "final-symbol-not-surviving",
                 "dynamic-reference",
-                "unresolved-reference"
+                "unresolved-reference",
+                "unsupported-table-control",
+                "unsupported-indirect-control",
+                "unsupported-reference-control",
+                "unsupported-tail-call",
+                "unresolved-function-identity",
+                "graph-parser-mismatch",
+                "graph-budget-exhausted"
               ]
             },
             {
@@ -1483,7 +1497,14 @@
                 "dispatcher-carrier",
                 "final-symbol-not-surviving",
                 "dynamic-reference",
-                "unresolved-reference"
+                "unresolved-reference",
+                "unsupported-table-control",
+                "unsupported-indirect-control",
+                "unsupported-reference-control",
+                "unsupported-tail-call",
+                "unresolved-function-identity",
+                "graph-parser-mismatch",
+                "graph-budget-exhausted"
               ]
             },
             {
@@ -1740,7 +1761,14 @@
                 "dispatcher-carrier",
                 "final-symbol-not-surviving",
                 "dynamic-reference",
-                "unresolved-reference"
+                "unresolved-reference",
+                "unsupported-table-control",
+                "unsupported-indirect-control",
+                "unsupported-reference-control",
+                "unsupported-tail-call",
+                "unresolved-function-identity",
+                "graph-parser-mismatch",
+                "graph-budget-exhausted"
               ]
             },
             {
@@ -2024,6 +2052,9 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
           },
           "maxItems": 100000
+        },
+        "graphDiagnostic": {
+          "$ref": "#/$defs/GraphDiagnostic"
         }
       },
       "required": [
@@ -2033,6 +2064,96 @@
         "producer",
         "subjectIds",
         "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "GraphDiagnostic": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "enum": [
+            "unsupported-table-control",
+            "unsupported-indirect-control",
+            "unsupported-reference-control",
+            "unsupported-tail-call",
+            "unresolved-function-identity",
+            "graph-parser-mismatch",
+            "graph-budget-exhausted",
+            "missing-evidence",
+            "prelink-only"
+          ]
+        },
+        "code": {
+          "enum": [
+            "table",
+            "element-segment",
+            "indirect-call",
+            "reference-control",
+            "tail-call",
+            "import-name",
+            "function-index",
+            "function-name",
+            "duplicate-name",
+            "direct-target",
+            "malformed-text",
+            "import-count",
+            "definition-count",
+            "direct-call-shape",
+            "direct-call-scope",
+            "binaryen-read",
+            "binaryen-text",
+            "unexpected-parser-failure",
+            "text-byte-limit",
+            "function-limit",
+            "edge-limit",
+            "traversal-work-limit",
+            "capture-absent",
+            "prelink-evidence-only"
+          ]
+        },
+        "functionIndex": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observed": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reason",
+        "code",
+        "functionIndex",
+        "observed",
+        "expected"
       ],
       "additionalProperties": false
     },
