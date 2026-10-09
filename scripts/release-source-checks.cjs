@@ -27,11 +27,18 @@ function check(root, file) {
   // source links, metadata, package/catalog consistency and the site build.
   require('./documentation-ownership.cjs').synchronizeDocumentationMetadata({ repoRoot: root, write: false });
   const snippets = require('../wasm/scripts/sync-doc-snippets.cjs').synchronizeDocSnippets({ write: false });
-  const documentation = require('./documentation-release.cjs').validateDocumentationSource({ repoRoot: root });
+  let documentationCandidate;
+  const documentation = require('./documentation-release.cjs').validateDocumentationSource({ repoRoot: root,
+    onValidatedSite(siteDir) {
+      const candidateDir = path.join(path.dirname(file), 'documentation');
+      require('./documentation-deployment.cjs').sealDocumentationCandidate({ repoRoot: root, siteDir, outDir: candidateDir,
+        sourceCommit: candidate.sourceRevision, sourceRef: process.env.GITHUB_REF || `refs/commits/${candidate.sourceRevision}` });
+      documentationCandidate = { directory: candidateDir, ...require('./release-recovery.cjs').describeArtifact(candidateDir) };
+    } });
   assert.deepEqual(candidateIdentity(root), candidate, 'Source changed during source checks');
   assert.deepEqual(inputs(root), identity, 'Inputs changed during source checks');
   const report = { schemaVersion: SCHEMA, status: 'passed', repoRoot: fs.realpathSync(root),
-    candidate, inputs: identity, snippets, documentation, durationMs: Date.now() - started };
+    candidate, inputs: identity, snippets, documentation, documentationCandidate, durationMs: Date.now() - started };
   atomicJson(file, report);
   return report;
 }
@@ -50,6 +57,10 @@ function verify(root, file, expectedSha256) {
   for (const result of [report.snippets, report.documentation, report.documentation?.maintenance,
     report.documentation?.maintenance?.publication]) assert.equal(result?.status, 'ok', 'Incomplete source checks');
   assert(report.documentation.site?.generatedFiles > 0, 'Source checks must include the site');
+  const docs = report.documentationCandidate;
+  assert(docs, 'Source checks must retain the validated docs candidate');
+  assert.deepEqual(require('./release-recovery.cjs').describeArtifact(docs.directory),
+    { kind: docs.kind, sha256: docs.sha256 }, 'Validated documentation changed');
   return report;
 }
 

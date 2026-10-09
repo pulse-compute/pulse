@@ -4,22 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       release_tag:
-        description: Existing release tag to qualify, audit, or publish
+        description: Existing release tag to audit or publish
         required: true
         type: string
       operation:
-        description: Qualify once, then audit or publish the accepted bundle
+        description: Audit or publish the automatically selected PR qualification
         required: true
         default: audit
         type: choice
         options:
-          - qualify
           - audit
           - publish
-      qualification_run_id:
-        description: Successful qualify run ID for this exact tag (required for audit/publish)
-        required: false
-        type: string
       run_smoke:
         description: Run the published CLI clean-install smoke (context smoke is always required)
         required: true
@@ -34,171 +29,19 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  candidate:
-    name: candidate
-    if: inputs.operation == 'qualify'
-    runs-on: ubuntu-24.04
-    env:
-      SEAL_WORKERS: '2'
-      SEAL_MEMORY_MIB: '6144'
-      SEAL_COMPILER_WORKERS: '1'
-    timeout-minutes: 100
-    steps:
-      - name: Start candidate work deadline
-        id: deadline
-        shell: bash
-        run: echo "seconds=$(( $(date +%s) + 90 * 60 ))" >> "$GITHUB_OUTPUT"
-      - name: Check out the selected release tag
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          ref: ${{ inputs.release_tag }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version: '24.18.0'
-          package-manager-cache: false
-      - name: Verify the release tag and source identity
-        id: identity
-        shell: bash
-        env:
-          REQUESTED_TAG: ${{ inputs.release_tag }}
-        run: |
-          set -euo pipefail
-          fail() {
-            echo "::error title=Release source identity::$*" >&2
-            exit 1
-          }
-          expected="v$(node -p "require('./release/pulse-release-manifest.json').releaseVersion")"
-          expected_ref="refs/tags/$expected"
-          [ "$REQUESTED_TAG" = "$expected" ] || fail "Requested tag $REQUESTED_TAG does not match release manifest tag $expected."
-          [ "$GITHUB_REF" = "$expected_ref" ] || fail "Run this workflow from the $expected tag; GitHub dispatched $GITHUB_REF."
-          [ "$GITHUB_REF_TYPE" = "tag" ] || fail "The workflow dispatch ref must be a tag, found $GITHUB_REF_TYPE."
-          commit="$(git rev-parse HEAD)"
-          tag_commit="$(git rev-parse "${expected_ref}^{commit}")"
-          [ "$tag_commit" = "$commit" ] || fail "$expected resolves to $tag_commit, but the checkout is $commit."
-          [ "$GITHUB_SHA" = "$commit" ] || fail "GitHub source $GITHUB_SHA does not match the checked-out release commit $commit."
-          [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || fail "Release commit is not a full lowercase SHA: $commit."
-          artifact_prefix="$(node -p "require('./release/pulse-release-manifest.json').publication.candidateArtifact")"
-          echo "release_tag=$expected" >> "$GITHUB_OUTPUT"
-          echo "source_commit=$commit" >> "$GITHUB_OUTPUT"
-          echo "source_ref=refs/tags/$expected" >> "$GITHUB_OUTPUT"
-          echo "candidate_artifact=$artifact_prefix-$expected-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
-      - name: Install the release-owned toolchain
-        timeout-minutes: 10
-        shell: bash
-        env:
-          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
-        run: |
-          set -euo pipefail
-          npm install --global npm@11.15.0
-          test "$(npm --version)" = "11.15.0"
-          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
-          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
-          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
-          pnpm install --frozen-lockfile --ignore-scripts
-          mkdir -p .validation-tools/fastly
-          curl --fail --location --retry 3 --max-time 120 \
-            https://github.com/fastly/cli/releases/download/v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz \
-            --output .validation-tools/fastly/cli.tar.gz
-          echo '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad  .validation-tools/fastly/cli.tar.gz' | sha256sum --check
-          tar -xzf .validation-tools/fastly/cli.tar.gz -C .validation-tools/fastly fastly
-          .validation-tools/fastly/fastly version
-          echo "PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly" >> "$GITHUB_ENV"
-      - name: Build and validate the release source
-        timeout-minutes: 92
-        shell: bash
-        env:
-          CANDIDATE_DEADLINE_SECONDS: ${{ steps.deadline.outputs.seconds }}
-        run: |
-          set -euo pipefail
-          remaining=$(( (CANDIDATE_DEADLINE_SECONDS - $(date +%s)) / 60 ))
-          [ "$remaining" -ge 1 ] || { echo 'Candidate work deadline exhausted before seal' >&2; exit 1; }
-          pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly \
-            --workers "$SEAL_WORKERS" --memory-budget-mib "$SEAL_MEMORY_MIB" \
-            --compiler-workers "$SEAL_COMPILER_WORKERS"
-      - name: Preserve seal status and terminal evidence
-        if: always()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: pulse-npm-seal-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            wasm/.test-results
-            .pulse-seal
-            !.pulse-seal/workspaces
-          include-hidden-files: true
-          if-no-files-found: warn
-          retention-days: 30
-      - name: Reuse the exact packages accepted by the seal
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const assert = require('node:assert/strict');
-          const fs = require('node:fs');
-          const path = require('node:path');
-          const seal = JSON.parse(fs.readFileSync('wasm/.test-results/release-seal.json', 'utf8'));
-          const candidate = require('./scripts/release-feature-acceptance.cjs').candidateIdentity(process.cwd());
-          assert.equal(seal.schemaVersion, 'pulse.release-seal.v1');
-          assert(seal.completedAt, 'Seal must be terminal');
-          assert.deepEqual(seal.candidate, candidate, 'Seal belongs to another source');
-          assert.equal(seal.recovery?.context.options.requireFastly, true, 'Fastly lane must be required');
-          assert.equal(seal.externalFastly.status, 'passed', 'Fastly reality must pass');
-          require('./scripts/release-evidence-bundle.cjs').validateRecoveryEvidence(seal);
-          const pack = path.join(seal.recovery.directory, 'packages');
-          const shared = require('./scripts/release-shared-pack.cjs');
-          shared.copySharedPack({ repoRoot: process.cwd(), outDir: '.pulse-release' }, shared.sharedPackEnv(pack));
-          NODE
-      - name: Seal the exact npm publication candidate
-        shell: bash
-        env:
-          SOURCE_COMMIT: ${{ steps.identity.outputs.source_commit }}
-          SOURCE_REF: ${{ steps.identity.outputs.source_ref }}
-        run: |
-          set -euo pipefail
-          node scripts/release-candidate.cjs prepare \
-            --pack-dir .pulse-release \
-            --out .pulse-publication \
-            --source-commit "$SOURCE_COMMIT" \
-            --source-ref "$SOURCE_REF" \
-            --require-release-ref \
-            --json-out npm-candidate-verification.json
-      - name: Upload the sealed npm candidate
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: ${{ steps.identity.outputs.candidate_artifact }}
-          path: .pulse-publication
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 30
-      - name: Upload candidate failure evidence
-        if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: pulse-npm-candidate-failure-${{ github.run_id }}-${{ github.run_attempt }}
-          path: |
-            wasm/.test-results
-            .pulse-seal
-            !.pulse-seal/workspaces
-            .pulse-release
-            .pulse-publication
-            npm-candidate-verification.json
-          include-hidden-files: true
-          if-no-files-found: warn
-          retention-days: 14
-
   audit:
     name: audit
     if: inputs.operation == 'audit' || inputs.operation == 'publish'
     permissions:
       contents: read
       actions: read
+      pull-requests: read
     outputs:
       artifact_name: ${{ steps.approval.outputs.artifact_name }}
       manifest_sha256: ${{ steps.approval.outputs.manifest_sha256 }}
       candidate_artifact_id: ${{ steps.qualification.outputs.artifact_id }}
       qualification_run_id: ${{ steps.qualification.outputs.run_id }}
+      selection: ${{ steps.qualification.outputs.selection }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -214,40 +57,47 @@ jobs:
           package-manager-cache: false
       - name: Install the release-owned npm CLI
         run: npm install --global npm@11.15.0
-      - name: Resolve the successful qualification run
+      - name: Resolve the qualified release PR
         id: qualification
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
-          QUALIFICATION_RUN_ID: ${{ inputs.qualification_run_id }}
           REQUESTED_TAG: ${{ inputs.release_tag }}
         with:
           script: |
             const result = await require('./scripts/release-qualification.cjs').resolveQualification({
-              github, context, runId: process.env.QUALIFICATION_RUN_ID, releaseTag: process.env.REQUESTED_TAG
+              github, context, releaseTag: process.env.REQUESTED_TAG
             });
             core.setOutput('artifact_id', result.artifactId);
             core.setOutput('run_id', result.runId);
+            core.setOutput('selection', JSON.stringify(result));
             core.info(`Using qualification ${result.runId}, attempt ${result.attempt}, artifact ${result.artifactId}`);
       - name: Download the sealed npm candidate
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
+          merge-multiple: true
           artifact-ids: ${{ steps.qualification.outputs.artifact_id }}
           run-id: ${{ steps.qualification.outputs.run_id }}
           github-token: ${{ github.token }}
-          path: .pulse-publication
+          path: .pulse-qualified
+      - name: Authenticate the qualified artifacts and merge binding
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+          QUALIFICATION_SELECTION: ${{ steps.qualification.outputs.selection }}
+        with:
+          script: |
+            await require('./scripts/release-qualification.cjs').consume({
+              github, context, releaseTag: process.env.REQUESTED_TAG,
+              selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
+              directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
+            });
       - name: Verify and bind the review packet to the sealed candidate
         id: approval
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication --require-release-ref
-          node <<'NODE'
-          const assert = require('node:assert/strict');
-          const manifest = require('./.pulse-publication/pulse-publication-manifest.json');
-          assert.equal(manifest.source.commit, process.env.GITHUB_SHA, 'Qualification bundle belongs to another commit');
-          assert.equal(manifest.source.ref, process.env.GITHUB_REF, 'Qualification bundle belongs to another tag');
-          NODE
-          echo "manifest_sha256=$(sha256sum .pulse-publication/pulse-publication-manifest.json | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+          node scripts/release-candidate.cjs verify --bundle-dir .pulse-qualified/publication --require-release-ref --qualification-binding qualification-binding.json
+          echo "manifest_sha256=$(sha256sum .pulse-qualified/publication/pulse-publication-manifest.json | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
           echo "artifact_name=pulse-npm-audit-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" >> "$GITHUB_OUTPUT"
       - name: Audit package names and prepare the publication plan
         shell: bash
@@ -262,13 +112,13 @@ jobs:
             plan_args+=(--report-only)
           fi
           node scripts/publish-release.cjs audit \
-            --bundle-dir .pulse-publication \
-            --require-release-ref \
+            --bundle-dir .pulse-qualified/publication \
+            --require-release-ref --qualification-binding qualification-binding.json \
             "${audit_args[@]}" \
             --json-out npm-package-name-audit.json
           node scripts/publish-release.cjs plan \
-            --bundle-dir .pulse-publication \
-            --require-release-ref \
+            --bundle-dir .pulse-qualified/publication \
+            --require-release-ref --qualification-binding qualification-binding.json \
             "${plan_args[@]}" \
             --json-out npm-publication-plan.json
       - name: Upload audit reports
@@ -277,6 +127,7 @@ jobs:
         with:
           name: pulse-npm-audit-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
+            qualification-binding.json
             npm-package-name-audit.json
             npm-publication-plan.json
           if-no-files-found: warn
@@ -293,6 +144,7 @@ jobs:
       contents: read
       id-token: write
       actions: read
+      pull-requests: read
     steps:
       - name: Check out the sealed release tag publication tooling
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -311,46 +163,57 @@ jobs:
       - name: Download the sealed npm candidate
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
+          merge-multiple: true
           artifact-ids: ${{ needs.audit.outputs.candidate_artifact_id }}
           run-id: ${{ needs.audit.outputs.qualification_run_id }}
           github-token: ${{ github.token }}
-          path: .pulse-publication
+          path: .pulse-qualified
       - name: Download the pre-approval audit and publication plan
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ needs.audit.outputs.artifact_name }}
           path: .pulse-publication-audit
+      - name: Authenticate the qualified artifacts and merge binding
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+          QUALIFICATION_SELECTION: ${{ needs.audit.outputs.selection }}
+        with:
+          script: |
+            await require('./scripts/release-qualification.cjs').consume({
+              github, context, releaseTag: process.env.REQUESTED_TAG,
+              selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
+              directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
+            });
       - name: Bind publication authority to the audited release tag
         shell: bash
         env:
           AUDITED_MANIFEST_SHA256: ${{ needs.audit.outputs.manifest_sha256 }}
         run: |
           set -euo pipefail
-          node scripts/release-candidate.cjs verify --bundle-dir .pulse-publication --require-release-ref
+          node scripts/release-candidate.cjs verify --bundle-dir .pulse-qualified/publication --require-release-ref --qualification-binding qualification-binding.json
           node <<'NODE'
           const fs = require('node:fs');
           const crypto = require('node:crypto');
-          const digest = crypto.createHash('sha256').update(fs.readFileSync('.pulse-publication/pulse-publication-manifest.json')).digest('hex');
+          const digest = crypto.createHash('sha256').update(fs.readFileSync('.pulse-qualified/publication/pulse-publication-manifest.json')).digest('hex');
           if (digest !== process.env.AUDITED_MANIFEST_SHA256) throw new Error('publication candidate differs from the pre-approval audit');
           const plan = JSON.parse(fs.readFileSync('.pulse-publication-audit/npm-publication-plan.json', 'utf8'));
           if (plan.status !== 'ready') throw new Error('pre-approval publication plan is not ready');
           const release = require('./release/pulse-release-manifest.json');
-          const manifest = JSON.parse(fs.readFileSync('.pulse-publication/pulse-publication-manifest.json', 'utf8'));
+          const manifest = JSON.parse(fs.readFileSync('.pulse-qualified/publication/pulse-publication-manifest.json', 'utf8'));
           if (JSON.stringify(plan.source) !== JSON.stringify(manifest.source) || plan.releaseVersion !== manifest.releaseVersion) throw new Error('pre-approval plan source differs from the sealed candidate');
           const expectedRef = `refs/tags/v${release.releaseVersion}`;
-          if (manifest.source.ref !== expectedRef) throw new Error(`sealed candidate source ref must be ${expectedRef}; found ${manifest.source.ref}`);
           if (!/^[0-9a-f]{40}$/.test(manifest.source.commit)) throw new Error('sealed candidate source commit is invalid');
           if (process.env.GITHUB_REF !== expectedRef) throw new Error(`publication job must run from ${expectedRef}; found ${process.env.GITHUB_REF}`);
-          if (manifest.source.commit !== process.env.GITHUB_SHA) throw new Error(`sealed candidate commit ${manifest.source.commit} differs from GitHub source ${process.env.GITHUB_SHA}`);
-          fs.appendFileSync(process.env.GITHUB_ENV, `PULSE_RELEASE_REF=${manifest.source.ref}\nPULSE_RELEASE_SHA=${manifest.source.commit}\n`);
+          fs.appendFileSync(process.env.GITHUB_ENV, `PULSE_RELEASE_REF=${process.env.GITHUB_REF}\nPULSE_RELEASE_SHA=${process.env.GITHUB_SHA}\n`);
           NODE
       - name: Publish or resume the dependency-ordered release
         shell: bash
         run: |
           set -euo pipefail
           node scripts/publish-release.cjs publish \
-            --bundle-dir .pulse-publication \
-            --require-release-ref \
+            --bundle-dir .pulse-qualified/publication \
+            --require-release-ref --qualification-binding qualification-binding.json \
             --json-out npm-publication-report.json
       - name: Upload publication report
         if: always()
@@ -360,6 +223,7 @@ jobs:
           path: |
             .pulse-publication-audit/npm-package-name-audit.json
             .pulse-publication-audit/npm-publication-plan.json
+            qualification-binding.json
             npm-publication-report.json
           include-hidden-files: true
           if-no-files-found: warn
@@ -369,6 +233,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+      pull-requests: read
     name: verify
     if: inputs.operation == 'publish'
     needs: [audit, publish]
@@ -390,17 +255,30 @@ jobs:
       - name: Download the sealed npm candidate
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
+          merge-multiple: true
           artifact-ids: ${{ needs.audit.outputs.candidate_artifact_id }}
           run-id: ${{ needs.audit.outputs.qualification_run_id }}
           github-token: ${{ github.token }}
-          path: .pulse-publication
+          path: .pulse-qualified
+      - name: Authenticate the qualified artifacts and merge binding
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+          QUALIFICATION_SELECTION: ${{ needs.audit.outputs.selection }}
+        with:
+          script: |
+            await require('./scripts/release-qualification.cjs').consume({
+              github, context, releaseTag: process.env.REQUESTED_TAG,
+              selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
+              directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
+            });
       - name: Verify registry integrity, dist-tags, and the published CLI
         shell: bash
         env:
           RUN_SMOKE: ${{ inputs.run_smoke }}
         run: |
           set -euo pipefail
-          args=(--bundle-dir .pulse-publication --require-release-ref --json-out npm-publication-verification.json)
+          args=(--bundle-dir .pulse-qualified/publication --require-release-ref --qualification-binding qualification-binding.json --json-out npm-publication-verification.json)
           if [ "$RUN_SMOKE" = "true" ]; then
             args+=(--smoke --smoke-json-out npm-publication-smoke.json)
           fi
@@ -427,6 +305,7 @@ jobs:
         with:
           name: pulse-npm-verification-${{ inputs.release_tag }}-${{ github.run_attempt }}
           path: |
+            qualification-binding.json
             npm-publication-verification.json
             npm-publication-smoke.json
             wasm/.test-results/context-registry-smoke.json

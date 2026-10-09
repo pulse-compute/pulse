@@ -359,7 +359,7 @@ npm run publication:check
 Production publication is performed only by the manually dispatched **npm
 publication** workflow at the exact release tag. Its protected `npm-publish` job
 uses npm trusted publishing through GitHub OIDC, publishes the tarballs from
-`.pulse-publication` in dependency-safe order, accepts an already-published
+the qualified publication bundle in dependency-safe order, accepts an already-published
 version only when registry integrity matches, and verifies every configured
 dist-tag. A separate job installs the published CLI in a clean prefix and
 completes init, install, doctor, test, and build smoke checks.
@@ -387,10 +387,11 @@ The **Documentation** workflow repeats those checks for pull requests and `main`
 Production delivery uses the manually dispatched **Documentation deployment** workflow and Fastly Object Storage. The workflow:
 
 ```text
-build and seal
+resolve and verify the pre-main candidate and merge binding
 → upload/verify v1.0.0-beta.7 and its receipt immutably
 → verify all matching npm packages and configured dist-tags
 → promote root and latest
+→ purge the documentation CDN
 → verify representative URLs through Fastly
 ```
 

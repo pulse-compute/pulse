@@ -5,7 +5,7 @@
 Pulse uses a machine-readable maintenance policy so repository automation and Codex receive the same scope boundaries. The policy is advisory about product direction and mandatory about process: Codex may analyze, review, and prepare bounded patches, while a human retains architecture, merge, repository-setting, and release authority.
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
-- **Policy version:** `12`
+- **Policy version:** `13`
 - **Release:** `1.0.0-beta.7`
 - **Reviewed:** `2026-10-09`
 - **Resident maintainer:** Codex

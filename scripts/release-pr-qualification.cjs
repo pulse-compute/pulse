@@ -102,7 +102,19 @@ function capture(root, identity, output) {
   const sealBytes = fs.readFileSync(sealFile), seal = JSON.parse(sealBytes);
   assertSeal(seal, identity);
   require('./release-evidence-bundle.cjs').validateRecoveryEvidence(seal);
-  // Never rebuild or relabel accepted bytes. The future publication consumer
+  assert.equal(hash(fs.readFileSync(seal.sourceChecks.file)), seal.sourceChecks.sha256, 'Source-check receipt changed');
+  const checked = JSON.parse(fs.readFileSync(seal.sourceChecks.file));
+  assert.deepEqual(checked.candidate, identity.candidate, 'Docs source checks differ');
+  const docs = checked.documentationCandidate;
+  assert(docs, 'Qualification has no prebuilt documentation candidate');
+  assert.deepEqual(require('./release-recovery.cjs').describeArtifact(docs.directory),
+    { kind: docs.kind, sha256: docs.sha256 }, 'Validated documentation changed');
+  const documentationDir = path.join(output, 'documentation');
+  assert(!fs.existsSync(documentationDir), 'Capture output already contains documentation');
+  fs.cpSync(docs.directory, documentationDir, { recursive: true, errorOnExist: true });
+  const documentation = require('./documentation-deployment.cjs').verifyDocumentationCandidate({ repoRoot: root, candidateDir: documentationDir });
+  assert.deepEqual(documentation.source, { commit: identity.candidate.sourceRevision, ref: identity.sourceRef });
+  // Never rebuild or relabel accepted bytes. The publication consumer
   // must verify the merge binding separately and retain this original source.
   const pack = path.join(root, '.pulse-release');
   const shared = require('./release-shared-pack.cjs');
@@ -116,6 +128,7 @@ function capture(root, identity, output) {
   fs.writeFileSync(path.join(output, 'release-seal.json'), sealBytes);
   const receipt = { ...identity, status: 'passed', completedAt: new Date().toISOString(),
     artifact: `${ARTIFACT}-${identity.runId}-${identity.attempt}`,
+    documentationManifestSha256: hash(fs.readFileSync(path.join(documentationDir, 'documentation-deployment-manifest.json'))),
     sealSha256: hash(sealBytes), bundleManifestSha256: hash(fs.readFileSync(path.join(bundleDir, 'pulse-publication-manifest.json'))),
     // Contains only hashes/tool identities/options; environment values stay private.
     qualificationContextSha256: seal.recovery.contextSha256,
@@ -125,7 +138,7 @@ function capture(root, identity, output) {
   return receipt;
 }
 
-// REL8-02 calls this only after authenticating the Actions run/attempt/artifact
+// Consumption calls this only after authenticating the Actions run/attempt/artifact
 // and verifying the bundle and receipt hashes. It creates a separate binding,
 // never mutates the qualified source identity or any published bytes.
 function verifyMergeBinding({ root, receipt, pullRequest, repository, tag }) {

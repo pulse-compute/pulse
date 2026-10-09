@@ -462,7 +462,9 @@ function verifyDocumentationCandidate(options = {}) {
   const manifest = readJson(manifestFile);
   if (manifest.schemaVersion !== CANDIDATE_SCHEMA || manifest.releaseVersion !== RELEASE_VERSION || manifest.releaseTag !== `v${RELEASE_VERSION}`) fail('documentation candidate schema or release identity is invalid');
   validateSourceIdentity(manifest.source || {});
-  if (options.requireReleaseRef) validateReleaseIdentity(manifest.source || {});
+  if (options.bindingFile) require('./release-qualification.cjs').validateBoundSource({ root: repoRoot,
+    bindingFile: options.bindingFile, manifestFile: path.join(candidateDir, 'documentation-deployment-manifest.json'), source: manifest.source, kind: 'documentation' });
+  else if (options.requireReleaseRef) validateReleaseIdentity(manifest.source || {});
   if (manifest.provider !== config.provider || manifest.objectPrefix !== config.objectPrefix || manifest.workflowFile !== config.workflowFile || manifest.environment !== config.environment) fail('documentation candidate authority differs from release/documentation-deployment.json');
   if (manifest.documentation.origin !== DOCUMENTATION.origin || manifest.documentation.basePath !== DOCUMENTATION.basePath || manifest.documentation.version !== DOCUMENTATION.version) fail('documentation candidate route differs from the release manifest');
   if (!Array.isArray(manifest.objects) || manifest.objectCount !== manifest.objects.length) fail('documentation candidate object count is invalid');
@@ -541,7 +543,9 @@ function assertProductionDeploymentEnvironment(manifest, options = {}) {
   const nativeIdentity = Object.freeze({ commit: process.env.GITHUB_SHA || '', ref: process.env.GITHUB_REF || '' });
   validateReleaseIdentity(nativeIdentity);
   if (process.env.GITHUB_REF_TYPE && process.env.GITHUB_REF_TYPE !== 'tag') fail('documentation deployment must be dispatched from the release tag');
-  if (!manifest || manifest.source.commit !== nativeIdentity.commit || manifest.source.ref !== nativeIdentity.ref) fail('documentation candidate source does not match the GitHub release-tag run');
+  if (options.bindingFile) require('./release-qualification.cjs').validateBoundSource({ root: options.repoRoot || DEFAULT_REPO_ROOT,
+    bindingFile: options.bindingFile, manifestFile: path.join(options.candidateDir, 'documentation-deployment-manifest.json'), source: manifest.source, kind: 'documentation' });
+  else if (!manifest || manifest.source.commit !== nativeIdentity.commit || manifest.source.ref !== nativeIdentity.ref) fail('documentation candidate source does not match the GitHub release-tag run');
 
   const configuredOrigin = process.env[config.publicRoute.originVariable] || '';
   const configuredBasePath = process.env[config.publicRoute.basePathVariable] || '';
@@ -929,6 +933,7 @@ function parseArgs(argv) {
     if (token.startsWith('--source-commit=')) { out.sourceCommit = token.slice(16); continue; }
     if (token === '--source-ref') { out.sourceRef = value(); continue; }
     if (token.startsWith('--source-ref=')) { out.sourceRef = token.slice(13); continue; }
+    if (token === '--qualification-binding') { out.bindingFile = value(); continue; }
     if (token === '--require-release-ref') { out.requireReleaseRef = true; continue; }
     if (token === '--driver') { out.driver = value(); continue; }
     if (token.startsWith('--driver=')) { out.driver = token.slice(9); continue; }

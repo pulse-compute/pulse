@@ -1165,7 +1165,7 @@ function validateDocumentationLayers(repoRoot) {
   });
 }
 
-function validateDocumentationSiteBuild(repoRoot) {
+function validateDocumentationSiteBuild(repoRoot, onValidatedSite) {
   if (repoRoot !== defaultRepoRoot) fail('documentation site validation currently requires the repository containing this release script');
   const output = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-docsite-validation-'));
   try {
@@ -1242,6 +1242,7 @@ function validateDocumentationSiteBuild(repoRoot) {
     const publicSiteCopy = readJson(path.join(output, 'public-site-manifest.json'));
     if (!isDeepEqual(publicSiteCopy, PUBLIC_SITE_MANIFEST)) fail('generated root public-site manifest is stale');
 
+    if (onValidatedSite) onValidatedSite(output);
     return Object.freeze({
       pages: result.pages,
       assets: result.assets,
@@ -1278,7 +1279,7 @@ function validateDocumentationSource(options = {}) {
   const pluginReadiness = validatePluginReadiness(repoRoot);
   const metadata = validateDocumentationMetadata({ repoRoot, today: options.today });
   const layers = validateDocumentationLayers(repoRoot);
-  const site = options.site === false ? undefined : validateDocumentationSiteBuild(repoRoot);
+  const site = options.site === false ? undefined : validateDocumentationSiteBuild(repoRoot, options.onValidatedSite);
   return Object.freeze({ status: 'ok', releaseVersion: RELEASE_VERSION, maintenance, packagePolicy, releaseManifest, publicSite, links, diagnostics, cli, config, environment, pluginReadiness, metadata, layers, site });
 }
 

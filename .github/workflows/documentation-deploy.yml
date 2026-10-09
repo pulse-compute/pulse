@@ -22,10 +22,16 @@ concurrency:
 
 jobs:
   candidate:
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
     name: candidate
     runs-on: ubuntu-latest
     outputs:
-      artifact_name: ${{ steps.identity.outputs.candidate_artifact }}
+      candidate_artifact_id: ${{ steps.qualification.outputs.artifact_id }}
+      qualification_run_id: ${{ steps.qualification.outputs.run_id }}
+      selection: ${{ steps.qualification.outputs.selection }}
     timeout-minutes: 30
     steps:
       - name: Check out the selected release tag
@@ -38,73 +44,40 @@ jobs:
         with:
           node-version: '24.18.0'
           package-manager-cache: false
-      - name: Install lockfile-pinned workspace dependencies
-        shell: bash
-        env:
-          COREPACK_ENABLE_DOWNLOAD_PROMPT: '0'
-        run: |
-          set -euo pipefail
-          pnpm_version="$(node -p "require('./release/pulse-release-manifest.json').publication.pnpmVersion")"
-          node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"
-          export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
-          echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
-          pnpm install --frozen-lockfile --ignore-scripts
-      - name: Verify the release tag and source identity
-        id: identity
-        shell: bash
+      - name: Resolve the qualified release PR
+        id: qualification
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           REQUESTED_TAG: ${{ inputs.release_tag }}
-        run: |
-          set -euo pipefail
-          fail() {
-            echo "::error title=Documentation source identity::$*" >&2
-            exit 1
-          }
-          expected="v$(node -p "require('./release/pulse-release-manifest.json').releaseVersion")"
-          expected_ref="refs/tags/$expected"
-          [ "$REQUESTED_TAG" = "$expected" ] || fail "Requested tag $REQUESTED_TAG does not match release manifest tag $expected."
-          [ "$GITHUB_REF" = "$expected_ref" ] || fail "Run this workflow from the $expected tag; GitHub dispatched $GITHUB_REF."
-          [ "$GITHUB_REF_TYPE" = "tag" ] || fail "The workflow dispatch ref must be a tag, found $GITHUB_REF_TYPE."
-          commit="$(git rev-parse HEAD)"
-          tag_commit="$(git rev-parse "${expected_ref}^{commit}")"
-          [ "$tag_commit" = "$commit" ] || fail "$expected resolves to $tag_commit, but the checkout is $commit."
-          [ "$GITHUB_SHA" = "$commit" ] || fail "GitHub source $GITHUB_SHA does not match the checked-out release commit $commit."
-          [[ "$commit" =~ ^[0-9a-f]{40}$ ]] || fail "Release commit is not a full lowercase SHA: $commit."
-          artifact_prefix="$(node -p "require('./release/documentation-deployment.json').candidateArtifact")"
-          echo "source_commit=$commit" >> "$GITHUB_OUTPUT"
-          echo "source_ref=refs/tags/$expected" >> "$GITHUB_OUTPUT"
-          echo "candidate_artifact=$artifact_prefix-$expected" >> "$GITHUB_OUTPUT"
-      - name: Validate and build documentation
-        shell: bash
-        run: |
-          set -euo pipefail
-          pnpm run docs:check
-          node scripts/documentation-release.cjs
-          pnpm run docs:site --json
-      - name: Seal the documentation deployment candidate
-        shell: bash
-        env:
-          SOURCE_COMMIT: ${{ steps.identity.outputs.source_commit }}
-          SOURCE_REF: ${{ steps.identity.outputs.source_ref }}
-        run: |
-          set -euo pipefail
-          node scripts/documentation-deployment.cjs seal \
-            --site-dir .pulse-docs-site \
-            --out .pulse-documentation-deployment \
-            --source-commit "$SOURCE_COMMIT" \
-            --source-ref "$SOURCE_REF" \
-            --require-release-ref \
-            --json-out documentation-candidate-verification.json
-      - name: Upload the sealed documentation candidate
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: ${{ steps.identity.outputs.candidate_artifact }}
-          path: |
-            .pulse-documentation-deployment
-            documentation-candidate-verification.json
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 14
+          script: |
+            const result = await require('./scripts/release-qualification.cjs').resolveQualification({
+              github, context, releaseTag: process.env.REQUESTED_TAG
+            });
+            core.setOutput('artifact_id', result.artifactId);
+            core.setOutput('run_id', result.runId);
+            core.setOutput('selection', JSON.stringify(result));
+            core.info(`Using qualification ${result.runId}, attempt ${result.attempt}, artifact ${result.artifactId}`);
+      - name: Download the qualified documentation candidate
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          merge-multiple: true
+          artifact-ids: ${{ steps.qualification.outputs.artifact_id }}
+          run-id: ${{ steps.qualification.outputs.run_id }}
+          github-token: ${{ github.token }}
+          path: .pulse-qualified
+      - name: Authenticate the qualified artifacts and merge binding
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+          QUALIFICATION_SELECTION: ${{ steps.qualification.outputs.selection }}
+        with:
+          script: |
+            await require('./scripts/release-qualification.cjs').consume({
+              github, context, releaseTag: process.env.REQUESTED_TAG,
+              selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
+              directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
+            });
 
   deploy:
     name: deploy
@@ -114,6 +87,8 @@ jobs:
     environment: documentation-production
     permissions:
       contents: read
+      actions: read
+      pull-requests: read
     env:
       AWS_REQUEST_CHECKSUM_CALCULATION: when_required
       AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
@@ -133,8 +108,23 @@ jobs:
       - name: Download the sealed documentation candidate
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: ${{ needs.candidate.outputs.artifact_name }}
-          path: .pulse-deployment-artifact
+          merge-multiple: true
+          artifact-ids: ${{ needs.candidate.outputs.candidate_artifact_id }}
+          run-id: ${{ needs.candidate.outputs.qualification_run_id }}
+          github-token: ${{ github.token }}
+          path: .pulse-qualified
+      - name: Authenticate the qualified artifacts and merge binding
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          REQUESTED_TAG: ${{ inputs.release_tag }}
+          QUALIFICATION_SELECTION: ${{ needs.candidate.outputs.selection }}
+        with:
+          script: |
+            await require('./scripts/release-qualification.cjs').consume({
+              github, context, releaseTag: process.env.REQUESTED_TAG,
+              selection: JSON.parse(process.env.QUALIFICATION_SELECTION),
+              directory: '.pulse-qualified', bindingFile: 'qualification-binding.json'
+            });
       - name: Verify protected deployment configuration
         shell: bash
         env:
@@ -161,8 +151,8 @@ jobs:
           if (process.env.PULSE_DOCUMENTATION_BASE_PATH !== manifest.documentation.basePath) throw new Error('PULSE_DOCUMENTATION_BASE_PATH differs from the release manifest');
           NODE
           node scripts/documentation-deployment.cjs verify-candidate \
-            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
-            --require-release-ref
+            --candidate-dir .pulse-qualified/documentation \
+            --require-release-ref --qualification-binding qualification-binding.json
       - name: Upload and verify the immutable exact-version tree
         shell: bash
         env:
@@ -176,14 +166,14 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/documentation-deployment.cjs deploy \
-            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
-            --require-release-ref \
+            --candidate-dir .pulse-qualified/documentation \
+            --require-release-ref --qualification-binding qualification-binding.json \
             --driver aws \
             --phase immutable \
             --json-out documentation-immutable-deployment.json
           node scripts/documentation-deployment.cjs verify-storage \
-            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
-            --require-release-ref \
+            --candidate-dir .pulse-qualified/documentation \
+            --require-release-ref --qualification-binding qualification-binding.json \
             --driver aws \
             --phase immutable \
             --json-out documentation-immutable-verification.json
@@ -217,15 +207,15 @@ jobs:
         run: |
           set -euo pipefail
           node scripts/documentation-deployment.cjs deploy \
-            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
-            --require-release-ref \
+            --candidate-dir .pulse-qualified/documentation \
+            --require-release-ref --qualification-binding qualification-binding.json \
             --driver aws \
             --phase promote \
             --npm-verification npm-release-availability.json \
             --json-out documentation-promotion-deployment.json
           node scripts/documentation-deployment.cjs verify-storage \
-            --candidate-dir .pulse-deployment-artifact/.pulse-documentation-deployment \
-            --require-release-ref \
+            --candidate-dir .pulse-qualified/documentation \
+            --require-release-ref --qualification-binding qualification-binding.json \
             --driver aws \
             --phase promote \
             --json-out documentation-promotion-verification.json
@@ -268,6 +258,7 @@ jobs:
         with:
           name: pulse-documentation-production-${{ inputs.release_tag }}
           path: |
+            qualification-binding.json
             npm-release-availability.json
             documentation-immutable-deployment.json
             documentation-immutable-verification.json

@@ -24,6 +24,7 @@ function parseArgs(argv) {
     if (token === '--json-out') { out.jsonFile = value(); continue; }
     if (token.startsWith('--json-out=')) { out.jsonFile = token.slice(11); continue; }
     if (token === '--catalog-only') { out.catalogOnly = true; continue; }
+    if (token === '--qualification-binding') { out.bindingFile = value(); continue; }
     if (token === '--require-release-ref') { out.requireReleaseRef = true; continue; }
     if (token === '--smoke') { out.smoke = true; continue; }
     if (token === '--smoke-json-out') { out.smokeJsonFile = value(); continue; }

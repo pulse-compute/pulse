@@ -555,7 +555,9 @@ function verifyPublicationBundle(options = {}) {
   })) if (manifest[field] !== expected) fail(`publication bundle ${field} differs from the release manifest`);
   if (manifest.channel !== RELEASE_MANIFEST.channel || manifest.releaseTag !== `v${RELEASE_VERSION}`) fail('publication bundle release identity is invalid');
   validateSourceIdentity(manifest.source || {});
-  if (options.requireReleaseRef) validateReleaseIdentity(manifest.source || {});
+  if (options.bindingFile) require('./release-qualification.cjs').validateBoundSource({ root: repoRoot,
+    bindingFile: options.bindingFile, manifestFile: path.join(bundleDir, 'pulse-publication-manifest.json'), source: manifest.source, kind: 'publication' });
+  else if (options.requireReleaseRef) validateReleaseIdentity(manifest.source || {});
   if (!Array.isArray(manifest.packages) || manifest.packageCount !== PACKAGE_SET.length || manifest.packages.length !== PACKAGE_SET.length) fail(`publication bundle must contain ${PACKAGE_SET.length} packages`);
   if (!Array.isArray(bundledPackManifest.packages) || bundledPackManifest.packageCount !== PACKAGE_SET.length || bundledPackManifest.packages.length !== PACKAGE_SET.length) fail(`bundled packed release must contain ${PACKAGE_SET.length} packages`);
   const expectedNames = new Set(PACKAGE_SET.map((entry) => entry.name));
@@ -822,7 +824,9 @@ function assertTrustedPublishingEnvironment(manifest, options = {}) {
   });
   validateReleaseIdentity(authorizedIdentity);
   if (authorizedIdentity.commit !== nativeIdentity.commit || authorizedIdentity.ref !== nativeIdentity.ref) fail('explicit publication authority differs from the GitHub release-tag run');
-  if (manifest.source.commit !== nativeIdentity.commit || manifest.source.ref !== nativeIdentity.ref) fail('publication bundle source does not match the GitHub release-tag run');
+  if (options.bindingFile) require('./release-qualification.cjs').validateBoundSource({ root: options.repoRoot || DEFAULT_REPO_ROOT,
+    bindingFile: options.bindingFile, manifestFile: path.join(options.bundleDir, 'pulse-publication-manifest.json'), source: manifest.source, kind: 'publication' });
+  else if (manifest.source.commit !== nativeIdentity.commit || manifest.source.ref !== nativeIdentity.ref) fail('publication bundle source does not match the GitHub release-tag run');
   const present = new Set(TOKEN_ENVIRONMENT_VARIABLES.filter((name) => process.env[name]));
   for (const [name, value] of Object.entries(process.env)) {
     if (!value) continue;

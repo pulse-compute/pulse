@@ -40,6 +40,7 @@ function parseArgs(argv) {
     if (token.startsWith('--json-out=')) { out.jsonFile = token.slice(11); continue; }
     if (token === '--allow-missing') { out.allowMissing = true; continue; }
     if (token === '--report-only') { out.check = false; continue; }
+    if (token === '--qualification-binding') { out.bindingFile = value(); continue; }
     if (token === '--require-release-ref') { out.requireReleaseRef = true; continue; }
     if (token === '--quiet') { out.inherit = false; continue; }
     fail(`unknown option ${token}`);

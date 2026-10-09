@@ -28,6 +28,7 @@ function parseArgs(argv) {
     if (token.startsWith('--source-commit=')) { out.sourceCommit = token.slice(16); continue; }
     if (token === '--source-ref') { out.sourceRef = value(); continue; }
     if (token.startsWith('--source-ref=')) { out.sourceRef = token.slice(13); continue; }
+    if (token === '--qualification-binding') { out.bindingFile = value(); continue; }
     if (token === '--require-release-ref') { out.requireReleaseRef = true; continue; }
     if (token === '--json-out') { out.jsonFile = value(); continue; }
     if (token.startsWith('--json-out=')) { out.jsonFile = token.slice(11); continue; }

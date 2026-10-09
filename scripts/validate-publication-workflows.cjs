@@ -257,31 +257,25 @@ function workflowStepScript(job, name) {
 }
 
 function validateNpmCandidateFlow(source) {
-  const candidate = workflowJob(source, 'candidate');
   const audit = workflowJob(source, 'audit');
   const publish = workflowJob(source, 'publish');
   const verify = workflowJob(source, 'verify');
-  includes(candidate, "    if: inputs.operation == 'qualify'\n", 'explicit qualification only');
   includes(audit, "    if: inputs.operation == 'audit' || inputs.operation == 'publish'\n", 'pre-approval audit condition');
   excludes(audit, '\n    needs:', 'audit must consume an existing qualification');
   includes(publish, '    needs: audit\n', 'protected publication dependencies');
   includes(publish, "    if: inputs.operation == 'publish'\n", 'protected publication condition');
   includes(verify, '    needs: [audit, publish]\n', 'registry verification dependencies');
-  for (const job of [candidate, audit, publish]) {
+  for (const job of [audit, publish]) {
     excludes(job, 'continue-on-error:', 'blocking candidate flow');
     excludes(job, '\n    if: always()', 'blocking job condition');
   }
-  for (const job of [candidate, audit, verify]) {
+  for (const job of [audit, verify]) {
     excludes(job, 'environment:', 'read-only release stage');
     excludes(job, 'id-token: write', 'read-only release stage');
     excludes(job, 'contents: write', 'read-only release stage');
     excludes(job, 'publish-release.cjs publish', 'read-only release stage');
   }
-  if ((source.match(/pnpm run release:seal /g) || []).length !== 1) fail('npm workflow must seal exactly once');
-  excludes(source, 'pnpm run release:pack', 'single accepted package construction');
-  includes(candidate, '--require-fastly', 'mandatory Fastly seal');
-  includes(candidate, 'validateRecoveryEvidence(seal)', 'accepted package provenance');
-  includes(candidate, 'shared.copySharedPack(', 'accepted package reuse');
+  for (const forbidden of ['  candidate:', '          - qualify', 'inputs.qualification_run_id']) excludes(source, forbidden, 'automatic PR consumption');
   includes(audit, 'manifest_sha256:', 'audited manifest output');
   includes(audit, 'name: Upload audit reports\n        if: always()', 'failed audit evidence');
   includes(audit, 'pulse-npm-audit-${{ github.run_id }}-${{ github.run_attempt }}', 'attempt-specific audit evidence');
@@ -290,10 +284,12 @@ function validateNpmCandidateFlow(source) {
   for (const job of [audit, publish, verify]) {
     for (const forbidden of ['release:seal', 'release:pack', 'release-candidate.cjs prepare', 'pnpm install', 'pnpm build']) excludes(job, forbidden, 'publication must reuse accepted bytes');
     includes(job, 'actions: read', 'cross-run artifact permission');
+    includes(job, 'pull-requests: read', 'merged PR lookup permission');
+    includes(job, 'merge-multiple: true', 'single artifact root layout');
     includes(job, 'github-token: ${{ github.token }}', 'cross-run artifact access');
   }
   includes(audit, "require('./scripts/release-qualification.cjs').resolveQualification(", 'qualification source verification');
-  includes(audit, 'QUALIFICATION_RUN_ID: ${{ inputs.qualification_run_id }}', 'explicit qualification selection');
+  includes(audit, 'selection: ${{ steps.qualification.outputs.selection }}', 'pinned qualification selection');
   includes(audit, 'REQUESTED_TAG: ${{ inputs.release_tag }}', 'qualification tag selection');
   includes(audit, 'artifact-ids: ${{ steps.qualification.outputs.artifact_id }}', 'resolved artifact download');
   includes(audit, 'run-id: ${{ steps.qualification.outputs.run_id }}', 'resolved run download');
@@ -301,17 +297,21 @@ function validateNpmCandidateFlow(source) {
     includes(job, 'artifact-ids: ${{ needs.audit.outputs.candidate_artifact_id }}', 'audited artifact reuse');
     includes(job, 'run-id: ${{ needs.audit.outputs.qualification_run_id }}', 'audited run reuse');
   }
-  includes(candidate, 'candidate_artifact=$artifact_prefix-$expected-$GITHUB_RUN_ATTEMPT', 'attempt-specific accepted artifact');
+  for (const job of [audit, publish, verify]) {
+    includes(job, "require('./scripts/release-qualification.cjs').consume({", 'authenticated artifact consumption');
+    includes(job, '--qualification-binding qualification-binding.json', 'separate merge binding');
+  }
+  for (const job of [publish, verify]) includes(job, 'QUALIFICATION_SELECTION: ${{ needs.audit.outputs.selection }}', 'pinned selection after approval');
   includes(publish, 'name: pulse-npm-publish-${{ inputs.release_tag }}-${{ github.run_attempt }}', 'retry-safe publish report');
   includes(verify, 'name: pulse-npm-verification-${{ inputs.release_tag }}-${{ github.run_attempt }}', 'retry-safe verification report');
-  return { candidate, audit, publish };
+  return { audit, publish };
 }
 
 function validateNpmCandidateFlowProbes(source) {
   const { audit, publish } = validateNpmCandidateFlow(source);
   for (const [from, to] of [
     ['needs: audit', 'needs: candidate'],
-    ["if: inputs.operation == 'qualify'", "if: inputs.operation == 'publish'"],
+    ['selection: ${{ steps.qualification.outputs.selection }}', 'selection: arbitrary'],
     ["if: inputs.operation == 'audit' || inputs.operation == 'publish'", "if: inputs.operation == 'audit'"],
     ['    name: audit\n', '    name: audit\n    needs: candidate\n'],
     ['artifact-ids: ${{ needs.audit.outputs.candidate_artifact_id }}', 'name: arbitrary-bundle'],
@@ -355,13 +355,13 @@ esac
     const binding = workflowStepScript(publish, 'Bind publication authority to the audited release tag').match(/node <<'NODE'\n([\s\S]*?)\nNODE/);
     if (!binding) fail('publication authority must bind the reviewed manifest');
     ensureDirectory(path.join(directory, 'release'));
-    ensureDirectory(path.join(directory, '.pulse-publication'));
+    ensureDirectory(path.join(directory, '.pulse-qualified/publication'));
     ensureDirectory(path.join(directory, '.pulse-publication-audit'));
     fs.writeFileSync(path.join(directory, 'release/pulse-release-manifest.json'), stableJson({ releaseVersion: RELEASE_VERSION }));
     const manifest = { releaseVersion: RELEASE_VERSION, source: { commit: 'a'.repeat(40), ref: `refs/tags/v${RELEASE_VERSION}` } };
     const manifestBytes = stableJson(manifest);
-    fs.writeFileSync(path.join(directory, '.pulse-publication/pulse-publication-manifest.json'), manifestBytes);
-    for (const scenario of ['ready', 'changed-manifest', 'blocked-plan', 'foreign-plan', 'foreign-source']) {
+    fs.writeFileSync(path.join(directory, '.pulse-qualified/publication/pulse-publication-manifest.json'), manifestBytes);
+    for (const scenario of ['ready', 'changed-manifest', 'blocked-plan', 'foreign-plan']) {
       const plan = { status: scenario === 'blocked-plan' ? 'conflict' : 'ready', releaseVersion: RELEASE_VERSION,
         source: { ...manifest.source, ...(scenario === 'foreign-plan' ? { commit: 'b'.repeat(40) } : {}) } };
       fs.writeFileSync(path.join(directory, '.pulse-publication-audit/npm-publication-plan.json'), stableJson(plan));
@@ -375,68 +375,9 @@ esac
 }
 
 function validateQualificationSelection() {
-  // Exercise the actual asynchronous resolver with read-only GitHub fixtures.
-  const result = spawnSync(process.execPath, ['-e', `
-    const assert = require('node:assert/strict');
-    const { resolveQualification } = require('./scripts/release-qualification.cjs');
-    const release = require('./release/pulse-release-manifest.json');
-    const tag = 'v' + release.releaseVersion, sha = 'a'.repeat(40);
-    const context = { repo: { owner: 'pulse-compute', repo: 'pulse' }, ref: 'refs/tags/' + tag, sha };
-    async function probe(scenario) {
-      const run = { repository: { full_name: 'pulse-compute/pulse' }, head_repository: { full_name: 'pulse-compute/pulse' },
-        path: '.github/workflows/npm-publish.yml', event: 'workflow_dispatch', head_branch: tag,
-        head_sha: sha, status: 'completed', conclusion: 'success', run_attempt: 2 };
-      const jobs = [{ name: 'candidate', status: 'completed', conclusion: 'success' }];
-      const artifacts = [{ id: 456, name: release.publication.candidateArtifact + '-' + tag + '-2', expired: false,
-        workflow_run: { id: 123, head_sha: sha } }];
-      const args = { context: structuredClone(context), runId: '123', releaseTag: tag };
-      switch (scenario) {
-        case 'missing-id': args.runId = ''; break;
-        case 'invalid-id': args.runId = '123; echo bad'; break;
-        case 'unsafe-id': args.runId = '999999999999999999999'; break;
-        case 'branch-dispatch': args.context.ref = 'refs/heads/main'; break;
-        case 'wrong-input-tag': args.releaseTag = 'v0.0.0'; break;
-        case 'wrong-repository': run.repository.full_name = 'other/repo'; break;
-        case 'fork-source': run.head_repository.full_name = 'other/repo'; break;
-        case 'wrong-workflow': run.path = '.github/workflows/validate.yml'; break;
-        case 'wrong-event': run.event = 'pull_request'; break;
-        case 'wrong-tag': run.head_branch = 'main'; break;
-        case 'moved-tag': run.head_sha = 'b'.repeat(40); break;
-        case 'running': run.status = 'in_progress'; break;
-        case 'failed-run': run.conclusion = 'failure'; break;
-        case 'invalid-attempt': run.run_attempt = 0; break;
-        case 'skipped-candidate': jobs[0].conclusion = 'skipped'; break;
-        case 'failed-candidate': jobs[0].conclusion = 'failure'; break;
-        case 'missing-candidate': jobs.length = 0; break;
-        case 'duplicate-candidate': jobs.push({ ...jobs[0] }); break;
-        case 'old-attempt': artifacts[0].name = artifacts[0].name.replace(/-2$/, '-1'); break;
-        case 'missing-artifact': artifacts.length = 0; break;
-        case 'duplicate-artifact': artifacts.push({ ...artifacts[0] }); break;
-        case 'expired-artifact': artifacts[0].expired = true; break;
-        case 'foreign-artifact-run': artifacts[0].workflow_run.id = 999; break;
-        case 'foreign-artifact-source': artifacts[0].workflow_run.head_sha = 'b'.repeat(40); break;
-        case 'invalid-artifact-id': artifacts[0].id = 0; break;
-      }
-      const github = { rest: { actions: {
-        getWorkflowRun: async params => { assert.deepEqual(params, { ...context.repo, run_id: 123 }); return { data: run }; },
-        listJobsForWorkflowRunAttempt: 'jobs', listWorkflowRunArtifacts: 'artifacts'
-      } }, paginate: async (method, params) => {
-        assert.deepEqual(params, { ...context.repo, run_id: 123, per_page: 100, ...(method === 'jobs' ? { attempt_number: 2 } : {}) });
-        return method === 'jobs' ? jobs : artifacts;
-      } };
-      const call = () => resolveQualification({ ...args, github });
-      if (scenario === 'ready') assert.deepEqual(await call(), { runId: 123, attempt: 2, artifactId: 456 });
-      else await assert.rejects(call, undefined, scenario);
-    }
-    (async () => {
-      for (const scenario of ['ready', 'missing-id', 'invalid-id', 'unsafe-id', 'branch-dispatch', 'wrong-input-tag',
-        'wrong-repository', 'fork-source', 'wrong-workflow', 'wrong-event', 'wrong-tag', 'moved-tag', 'running',
-        'failed-run', 'invalid-attempt', 'skipped-candidate', 'failed-candidate', 'missing-candidate', 'duplicate-candidate',
-        'old-attempt', 'missing-artifact', 'duplicate-artifact', 'expired-artifact', 'foreign-artifact-run',
-        'foreign-artifact-source', 'invalid-artifact-id']) await probe(scenario);
-    })().catch(error => { console.error(error); process.exitCode = 1; });
-  `], { cwd: repoRoot, encoding: 'utf8', timeout: 10000 });
-  if (result.error || result.status !== 0) fail(`qualification selection probes failed: ${result.stderr || result.error}`);
+  const result = spawnSync(process.execPath, ['wasm/test/release/assert-release-consumption.cjs'],
+    { cwd: repoRoot, encoding: 'utf8', timeout: 20000 });
+  if (result.error || result.status !== 0) fail(`qualification consumption probes failed: ${result.stderr || result.error}`);
 }
 
 function validatePublishedContextSmoke(source) {
@@ -528,14 +469,11 @@ function validateWorkflows() {
   includes(npm, 'environment: npm-publish', 'npm publication workflow');
   includes(npm, 'id-token: write', 'npm publication workflow');
   includes(npm, 'npm install --global npm@11.15.0', 'npm publication workflow');
-  includes(npm, 'publication.pnpmVersion', 'npm publication workflow');
-  includes(npm, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'npm publication workflow');
-  includes(npm, 'pnpm install --frozen-lockfile --ignore-scripts', 'npm publication workflow');
-  includes(npm, 'pnpm run release:seal --skip-install --timeout-minutes "$remaining" --require-fastly', 'npm publication workflow');
   validateNpmCandidateFlowProbes(npm);
   validateQualificationSelection();
   validatePublishedContextSmoke(npm);
-  const candidate = npm.slice(npm.indexOf('\n  candidate:'), npm.indexOf('\n  audit:'));
+  const candidate = read('.github/workflows/release-qualify.yml');
+  require('./release-pr-qualification.cjs').validateWorkflow(candidate);
   includes(candidate, 'timeout-minutes: 100\n', 'npm candidate job');
   includes(candidate, 'id: deadline', 'npm candidate deadline');
   includes(candidate, '$(date +%s) + 90 * 60', 'npm candidate deadline');
@@ -545,36 +483,23 @@ function validateWorkflows() {
   includes(candidate, 'remaining=$(( (CANDIDATE_DEADLINE_SECONDS - $(date +%s)) / 60 ))', 'npm seal step');
   includes(candidate, '[ "$remaining" -ge 1 ]', 'npm seal step');
   excludes(npm, 'release:seal --skip-install --no-report', 'npm publication workflow');
-  includes(npm, 'name: Preserve seal status and terminal evidence\n        if: always()', 'npm publication workflow');
-  includes(npm, 'name: pulse-npm-seal-${{ github.run_id }}-${{ github.run_attempt }}', 'npm publication workflow');
   includes(candidate, 'runs-on: ubuntu-24.04', 'npm candidate runner');
   includes(candidate, "SEAL_WORKERS: '2'", 'bounded candidate workers');
   includes(candidate, "SEAL_MEMORY_MIB: '6144'", 'bounded candidate memory');
   includes(candidate, "SEAL_COMPILER_WORKERS: '1'", 'bounded compiler admission');
   for (const flag of ['--workers "$SEAL_WORKERS"', '--memory-budget-mib "$SEAL_MEMORY_MIB"', '--compiler-workers "$SEAL_COMPILER_WORKERS"']) includes(candidate, flag, 'seal admission');
   for (const pin of ['v16.1.0/fastly_v16.1.0_linux-amd64.tar.gz', '48e8b1dcf9fbe44c21fac06e32c3f9f670c1e9c611776199bfe61990e6dbe7ad', 'sha256sum --check', 'PULSE_FASTLY_BIN=$PWD/.validation-tools/fastly/fastly']) includes(candidate, pin, 'release Fastly toolchain');
-  const sealEvidence = candidate.slice(candidate.indexOf('name: Preserve seal status'), candidate.indexOf('name: Reuse the exact packages accepted by the seal'));
-  includes(sealEvidence, '            .pulse-seal\n', 'durable seal evidence upload');
-  includes(npm, 'release-candidate.cjs prepare', 'npm publication workflow');
+  includes(candidate, '            .pulse-seal\n', 'durable seal evidence upload');
   includes(npm, 'publish-release.cjs audit', 'npm publication workflow');
   includes(npm, 'publish-release.cjs publish', 'npm publication workflow');
   includes(npm, 'verify-npm-release.cjs', 'npm publication workflow');
-  includes(npm, 'refs/tags/$expected', 'npm publication workflow');
-  includes(npm, '[ "$GITHUB_REF" = "$expected_ref" ] || fail', 'npm publication workflow');
-  includes(npm, '[ "$GITHUB_REF_TYPE" = "tag" ] || fail', 'npm publication workflow');
-  includes(npm, 'git rev-parse "${expected_ref}^{commit}"', 'npm publication workflow');
-  includes(npm, '[ "$GITHUB_SHA" = "$commit" ] || fail', 'npm publication workflow');
-  includes(npm, 'Upload candidate failure evidence', 'npm publication workflow');
   includes(npm, 'wasm/.test-results', 'npm publication workflow');
   includes(npm, 'github.run_attempt', 'npm publication workflow');
-  includes(npm, 'manifest.source.ref !== expectedRef', 'npm publication workflow');
-  includes(npm, 'manifest.source.commit !== process.env.GITHUB_SHA', 'npm publication workflow');
   excludes(npm, 'PULSEWASM_RETAIN_FAILED_TASK_ROOT', 'npm publication workflow');
   excludes(npm, '/tmp/pulse-suite-task-', 'npm publication workflow');
   excludes(npm, '^refs\\/tags\\/v\\d+\\.\\d+\\.\\d+$', 'npm publication workflow');
   excludes(npm, 'github.ref_name == github.event.repository.default_branch', 'npm publication workflow');
   includes(npm, 'include-hidden-files: true', 'npm publication workflow');
-  includes(npm, '--json-out npm-candidate-verification.json', 'npm publication workflow');
   excludes(npm, '.pulse-publication/candidate-verification.json', 'npm publication workflow');
   includes(npm, 'package-manager-cache: false', 'npm publication workflow');
   excludes(npm, 'NODE_AUTH_TOKEN', 'npm publication workflow');
@@ -620,7 +545,6 @@ function validateWorkflows() {
     'PULSE_DOCUMENTATION_ORIGIN',
     'PULSE_DOCUMENTATION_BASE_PATH'
   ]) includes(deploy, variable, 'documentation deployment workflow');
-  includes(deploy, 'include-hidden-files: true', 'documentation deployment workflow');
   includes(deploy, '--phase immutable', 'documentation deployment workflow');
   includes(deploy, 'verify-npm-release.cjs', 'documentation deployment workflow');
   includes(deploy, '--phase promote', 'documentation deployment workflow');
@@ -637,16 +561,21 @@ function validateWorkflows() {
   validateCdnPurgeWorkflow(deploy);
   includes(deploy, 'documentation-cdn-purge.json', 'documentation deployment evidence');
   includes(deploy, 'package-manager-cache: false', 'documentation deployment workflow');
-  includes(deploy, 'publication.pnpmVersion', 'documentation deployment workflow');
-  includes(deploy, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation deployment workflow');
-  includes(deploy, 'pnpm run docs:check', 'documentation deployment workflow');
-  includes(deploy, 'pnpm run docs:site --json', 'documentation deployment workflow');
   excludes(deploy, '          npm run docs:', 'documentation deployment workflow');
-  includes(deploy, '[ "$GITHUB_REF" = "$expected_ref" ] || fail', 'documentation deployment workflow');
-  includes(deploy, '[ "$GITHUB_REF_TYPE" = "tag" ] || fail', 'documentation deployment workflow');
-  includes(deploy, 'git rev-parse "${expected_ref}^{commit}"', 'documentation deployment workflow');
-  includes(deploy, '[ "$GITHUB_SHA" = "$commit" ] || fail', 'documentation deployment workflow');
   excludes(deploy, 'github.ref_name == github.event.repository.default_branch', 'documentation deployment workflow');
+  for (const forbidden of ['pnpm install', 'pnpm run docs:', 'documentation-deployment.cjs seal', 'release:seal', 'pnpm build']) excludes(deploy, forbidden, 'prebuilt docs consumption');
+  for (const job of ['candidate', 'deploy'].map(name => workflowJob(deploy, name))) {
+    includes(job, 'actions: read', 'cross-run documentation access');
+    includes(job, 'pull-requests: read', 'merged PR lookup permission');
+    includes(job, 'merge-multiple: true', 'single artifact root layout');
+    includes(job, "require('./scripts/release-qualification.cjs').consume({", 'authenticated docs consumption');
+    excludes(job, 'continue-on-error:', 'blocking docs consumption');
+  }
+  includes(deploy, 'QUALIFICATION_SELECTION: ${{ needs.candidate.outputs.selection }}', 'docs selection pinned through approval');
+  includes(deploy, 'artifact-ids: ${{ needs.candidate.outputs.candidate_artifact_id }}', 'docs artifact pinned through approval');
+  includes(deploy, 'run-id: ${{ needs.candidate.outputs.qualification_run_id }}', 'docs run pinned through approval');
+  includes(deploy, '--qualification-binding qualification-binding.json', 'docs merge binding');
+
   const deployJobStart = deploy.indexOf('\n  deploy:');
   const deployStepsStart = deploy.indexOf('\n    steps:', deployJobStart);
   if (deployJobStart < 0 || deployStepsStart < 0) fail('documentation deployment workflow must contain a protected deploy job');
@@ -1306,6 +1235,16 @@ function validateDocumentationBundle() {
       'PULSE_DOCUMENTATION_NPM_VERIFICATION_REQUIRED',
       'ungated documentation promotion'
     );
+    let mutableWrites = 0;
+    const interrupted = { ...adapter, put(key, ...args) {
+      if (++mutableWrites === 2) throw Object.assign(new Error('fixture interrupted promotion'), { code: 'FIXTURE_PROMOTION_INTERRUPTED' });
+      return adapter.put(key, ...args);
+    } };
+    expectFailure(() => deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter: interrupted,
+      phase: 'mutable', npmVerification: npmFile }), 'FIXTURE_PROMOTION_INTERRUPTED', 'partial mutable upload');
+    for (const relative of loaded.config.deployment.promotionCommitObjects) {
+      if (fs.existsSync(path.join(bucketB, loaded.config.objectPrefix, relative))) fail('interrupted upload committed an alias');
+    }
     const promotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
     const repeatPromotion = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'mutable', npmVerification: npmFile });
     const allRetry = deployDocumentation({ repoRoot, candidateDir, requireReleaseRef: true, adapter, phase: 'all', npmVerification: npmFile });
@@ -1315,7 +1254,7 @@ function validateDocumentationBundle() {
       if (!filesystem.read(key).equals(fs.readFileSync(historySource))
         || fs.readFileSync(path.join(bucketB, '.pulse-object-metadata', `${key}.json`), 'utf8') !== historicalMetadata[index]) fail('historical storage bytes or metadata changed');
     });
-    if (promotion.uploaded !== verified.mutableCount || repeatPromotion.alreadyPresent !== verified.mutableCount || !fs.existsSync(path.join(bucketB, 'unrelated-object.txt'))) fail('mutable documentation promotion is not idempotent or retained unrelated data');
+    if (promotion.uploaded + promotion.alreadyPresent !== verified.mutableCount || repeatPromotion.alreadyPresent !== verified.mutableCount || !fs.existsSync(path.join(bucketB, 'unrelated-object.txt'))) fail('mutable documentation promotion is not idempotent or retained unrelated data');
     const promotionTail = promotion.objects.slice(-loaded.config.deployment.promotionCommitObjects.length).map((entry) => entry.key.replace(`${loaded.config.objectPrefix}/`, ''));
     if (JSON.stringify(promotionTail) !== JSON.stringify(loaded.config.deployment.promotionCommitObjects)) fail('documentation promotion commit objects were not uploaded last in release-owned order');
     return Object.freeze({
@@ -1343,6 +1282,7 @@ function validateDocumentationBundle() {
       sourceOutputOverlapRejected: true,
       unrelatedOutputDirectoryRetained: true,
       promotionCommitObjectsLast: true,
+      interruptedPromotionResumed: true,
       promotionCommitOrder: Object.freeze([...loaded.config.deployment.promotionCommitObjects]),
       awsChecksumCalculation: loaded.config.storage.requestChecksumCalculation,
       awsChecksumValidation: loaded.config.storage.responseChecksumValidation,
