@@ -84,11 +84,19 @@ async function main() {
   const output = path.join(repo, '.pulse-qualification/accepted');
   const captureSeal = { ...seal, recovery: { ...seal.recovery, directory: path.join(root, 'attempt'), contextSha256: 'a'.repeat(64) },
     featureAcceptance: { separateGates: [{ task: 'kv-k4', status: 'not-run' }] } };
+  const docsDir = path.join(root, 'attempt/documentation');
+  fs.mkdirSync(docsDir, { recursive: true });
+  fs.writeFileSync(path.join(docsDir, 'documentation-deployment-manifest.json'), JSON.stringify({ source: { commit: merge, ref: identity.sourceRef } }));
+  const checksFile = path.join(root, 'attempt/source-checks.json');
+  fs.writeFileSync(checksFile, JSON.stringify({ candidate: identity.candidate,
+    documentationCandidate: { directory: docsDir, ...require('../../../scripts/release-recovery.cjs').describeArtifact(docsDir) } }));
+  captureSeal.sourceChecks = { file: checksFile, sha256: crypto.createHash('sha256').update(fs.readFileSync(checksFile)).digest('hex') };
   write('wasm/.test-results/release-seal.json', captureSeal);
   loader._load = function(request, parent, ...rest) {
     if (parent?.filename.endsWith('/scripts/release-pr-qualification.cjs')) {
       if (request === './release-evidence-bundle.cjs') return { validateRecoveryEvidence() { if (rejectEvidence) throw new Error('incomplete installed gate'); } };
       if (request === './release-shared-pack.cjs') return { sharedPackEnv() { return {}; }, copySharedPack() { copied++; } };
+      if (request === './documentation-deployment.cjs') return { verifyDocumentationCandidate() { return { source: { commit: merge, ref: identity.sourceRef } }; } };
       if (request === './release-publication.cjs') return {
         preparePublicationBundle(options) { assert.equal(options.sourceCommit, merge); assert.equal(options.sourceRef, identity.sourceRef);
           fs.mkdirSync(options.outDir, { recursive: true }); fs.writeFileSync(path.join(options.outDir, 'pulse-publication-manifest.json'), '{"fixture":true}'); },
@@ -148,9 +156,12 @@ async function main() {
   const calls = [];
   Module._load = function(request, parent, ...rest) {
     if (parent?.filename.endsWith('/scripts/release-source-checks.cjs')) {
+      if (request === './documentation-deployment.cjs') return { sealDocumentationCandidate(options) {
+        fs.mkdirSync(options.outDir, { recursive: true }); fs.writeFileSync(path.join(options.outDir, 'site.json'), '{}');
+      } };
       if (request === './documentation-ownership.cjs') return { synchronizeDocumentationMetadata() { calls.push('metadata'); } };
       if (request.endsWith('/sync-doc-snippets.cjs')) return { synchronizeDocSnippets() { calls.push('snippets'); return { status: 'ok' }; } };
-      if (request === './documentation-release.cjs') return { validateDocumentationSource() { calls.push('documentation'); return { status: 'ok', maintenance: { status: 'ok', publication: { status: 'ok' } }, site: { generatedFiles: 1 } }; } };
+      if (request === './documentation-release.cjs') return { validateDocumentationSource(options) { calls.push('documentation'); options.onValidatedSite(path.join(root, 'site'));  return { status: 'ok', maintenance: { status: 'ok', publication: { status: 'ok' } }, site: { generatedFiles: 1 } }; } };
     }
     return original.call(this, request, parent, ...rest);
   };
@@ -158,6 +169,9 @@ async function main() {
     const file = path.join(root, 'source-checks.json'); source.check(repo, file);
     const bytes = fs.readFileSync(file), digest = crypto.createHash('sha256').update(bytes).digest('hex');
     source.verify(repo, file, digest); assert.deepEqual(calls, ['metadata', 'snippets', 'documentation']);
+    const retained = path.join(root, 'documentation/site.json');
+    fs.writeFileSync(retained, 'tampered'); assert.throws(() => source.verify(repo, file, digest), /documentation changed/);
+    fs.writeFileSync(retained, '{}');
     fs.appendFileSync(file, ' '); assert.throws(() => source.verify(repo, file, digest), /receipt changed/); fs.writeFileSync(file, bytes);
     write('node_modules/input.js', 'two'); assert.throws(() => source.verify(repo, file, digest), /inputs changed/); write('node_modules/input.js', 'one');
     write('dirty.txt', 'dirty'); assert.throws(() => source.verify(repo, file, digest), /clean candidate/); fs.unlinkSync(path.join(repo, 'dirty.txt'));

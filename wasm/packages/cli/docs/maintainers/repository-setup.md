@@ -82,9 +82,10 @@ Reopen or synchronize a PR retargeted to `main` to start the qualification workf
 This lane supports ordinary PR merge/squash, not merge queues or a multi-commit
 rebase chain. Keep the ordinary validation checks too.
 
-The consumer transition is separate: until REL8-02 lands, publication still uses
-its existing tagged qualification. Do not present the PR artifact as eligible
-for the current tagged resolver. See [npm publishing](npm-publishing.md#pre-main-qualification-rel8-01).
+The tagged npm and docs consumers discover the qualified PR artifact automatically
+and recheck it after protected approval. They do not build, pack or seal after
+`main`. See [npm publishing](npm-publishing.md#pre-main-qualification) for the
+source binding, retention and retry contract.
 
 ## 4. Create the protected Codex environment
 

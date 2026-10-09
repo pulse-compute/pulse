@@ -304,6 +304,7 @@ async function main(argv = process.argv.slice(2)) {
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv });
     assertCandidateSource(sourceIdentity);
     const sourceChecksSha256 = require('node:crypto').createHash('sha256').update(fs.readFileSync(sourceChecksFile)).digest('hex');
+    progress.persist({ sourceChecks: { file: sourceChecksFile, sha256: sourceChecksSha256 } });
     await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
     await runStep(
       steps,

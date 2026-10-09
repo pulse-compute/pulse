@@ -10,9 +10,9 @@ pulse-doc-meta:end -->
 Pulse documentation is generated static output. It is not deployed as a Pulse Compute application. The production path stores exact-version and moving-alias objects in Fastly Object Storage, then serves them through a small VCL delivery layer.
 
 ```text
-source documentation + release catalogs
-→ generated site
-→ sealed object manifest
+release PR qualification
+→ validated site and sealed object manifest
+→ automatic artifact discovery and merge binding at the release tag
 → immutable exact-version upload
 → matching npm release verification
 → root/latest promotion
@@ -26,7 +26,7 @@ The machine-readable deployment contract is `release/documentation-deployment.js
 
 The **Documentation** workflow runs for pull requests and branch pushes. It validates generated documentation, builds the exact-version site, seals a preview object manifest, and uploads a short-lived Actions artifact. It has no storage secret and no deployment job.
 
-The **Documentation deployment** workflow is dispatched **from the exact release tag**, and its `release_tag` input must name the same tag. A branch-dispatched run fails before candidate construction. The candidate job builds and seals the site without credentials. Its `deploy` job is attached to the protected `documentation-production` environment, reuses the same tagged tooling and source identity, and receives credentials only after a human release/infrastructure authority approves the environment.
+The **Documentation deployment** workflow is dispatched **from the exact release tag**, and its `release_tag` input must name the same tag. Its credential-free candidate job discovers the merged PR qualification and verifies the retained docs and package candidates. It never installs workspace dependencies, builds or seals the site. The protected `deploy` job uses the same pinned artifact ID and selection, rechecks eligibility after human approval, and verifies the separate merge binding before receiving step-scoped storage credentials. The artifact's PR merge source remains unchanged; release authority belongs to the tagged commit. See [npm publishing](npm-publishing.md#pre-main-qualification) for eligibility and supported merge strategies.
 
 GitHub Pages deployment is no longer part of the repository workflow. The release catalog's current public origin must be changed to the final Fastly-served hostname before production activation; the deployment verifier rejects an environment-provided public origin that differs from `release/pulse-release-manifest.json`.
 
@@ -67,7 +67,7 @@ Mutable objects may be replaced during a deliberate promotion. Their cache lifet
 
 ## Sealed deployment candidate
 
-Build and inspect locally:
+Build and inspect development evidence locally (production consumes the pre-main candidate):
 
 ```bash
 npm run docs:site
@@ -83,7 +83,7 @@ A local adapter exercised by `npm run publication:check` proves:
 - preservation of historical storage bytes and metadata, even when preview copies differ;
 - rejection of altered historical candidate files and unexpected paths;
 - rejection of current immutable object, metadata, and receipt conflicts;
-- npm-gated mutable promotion; and
+- npm-gated mutable promotion, interrupted upload recovery and final alias commit order; and
 - preservation of unrelated objects without any delete operation.
 
 ## Object Storage credentials
