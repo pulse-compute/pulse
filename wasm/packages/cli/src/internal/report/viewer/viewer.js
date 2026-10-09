@@ -65,7 +65,7 @@
     if(value<1048576)return (value/1024).toFixed(precision).replace(/\.0$/,'')+' KiB';
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
-  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,composition,mappingCoverage} = createReportViewModel(P);
+  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
@@ -118,7 +118,7 @@
     $('#snapshot-label').textContent = mode === 'current' ? 'Retained completed build · current inputs matched.' : mode === 'artifact' ? 'Completed artifact verified · current project not checked.' : 'Historical capsule replay · current project and original artifact bytes not checked.';
     $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
     $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
-    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+new Set(P.entries.map(e=>e.handlerId).filter(Boolean)).size+' recorded handlers','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),'Input bytes and retained payload stay distinct','resources']];
+    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+new Set(P.entries.map(e=>e.handlerId).filter(Boolean)).size+' recorded handlers','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
     replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
     $('#route-total').textContent = P.routes.length;
     const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
@@ -183,6 +183,8 @@
         const m=measurement(r,metric),value=factValue(m?.fact);
         return el('div',{},el('div',{class:'size-grid-label'},label),value===null?el('div',{class:'size-grid-value size-unavailable'},measurementText(r,metric)):byteDisplay(value),el('div',{class:'size-grid-exact'},m?(value===null?m.fact.reason??m.fact.state:exact(value)+' · '+m.fact.coverage):measurementIssue(r,metric)));
       })));
+      panel.append(note('Handler body and Reachable measure code bodies only; embedded asset and schema data are excluded. A small handler may serve a large payload.'),
+        detailSection('Referenced resources',el('p',{},P.resources.filter(resource=>resource.routeIds.includes(r.id)).length+' recorded resources; consumer coverage may be partial.'),el('a',{href:'#resources'},'View resource inventory and byte representations')));
       for(const [metric,label] of Object.entries(metrics)) {
         const resolution=measurementResolution(r,metric);
         panel.append(el('details',{class:'details-block metric-details'},el('summary',{},label+' · '+measurementText(r,metric)),
@@ -196,13 +198,20 @@
     const sectionNames={0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
     const factCell=f=>el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(f)),el('div',{class:'secondary'},f.state==='available'?f.basis+' · '+f.coverage:f.reason??f.state));
     const resourceRows=[];
-    P.resources.forEach((r,i)=>{
+    sortedResources().forEach(r=>{
+      const i=resourceIndex.get(r.id),g=r.generator;
       const open=state.expandedResources.has(r.id);
       const expand=button((open?'▾ ':'▸ ')+r.name,()=>{open?state.expandedResources.delete(r.id):state.expandedResources.add(r.id);renderResources();$('#resource-expand-'+i).focus({preventScroll:true});},'resource-expand mono');
       expand.id='resource-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','resource-detail-'+i);
-      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand),el('td',{},r.kind),factCell(r.inputBytes),factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' routes')));
-      resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:5},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
-        el('div',{},el('h3',{},'Resource facts'),kv([['Input bytes',exact(factValue(r.inputBytes))],['Input evidence',qualifier(r.inputBytes)],['Retained payload',exact(factValue(r.retainedPayloadBytes))],['Retained evidence',qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Not recorded'],['Physical artifact',r.artifactId??'Not mapped']]),routeChips(r.routeIds)),
+      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand),el('td',{},r.kind),factCell(r.inputBytes),
+        el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(g?.representationBytes)),el('div',{class:'secondary'},g?representationLabels[g.representation]:'Not recorded')),
+        factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' recorded routes')));
+      resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:6},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
+        el('div',{},el('h3',{},'Resource facts'),kv([['Source input bytes',factText(r.inputBytes)],['Input evidence',qualifier(r.inputBytes)],
+          ['Representation',g?representationLabels[g.representation]:'Not recorded'],['Representation bytes',factText(g?.representationBytes)],['Representation evidence',qualifier(g?.representationBytes)],
+          ['Producer',g?g.producer.name+' · '+g.producer.version:'Not recorded'],['Entry coverage',g?`${g.entryCoverage.status} · ${g.entryCoverage.observed} / ${g.entryCoverage.expected??'unknown'}${g.entryCoverage.reason?' · '+g.entryCoverage.reason:''}`:'Not recorded'],
+          ['Retained payload',exact(factValue(r.retainedPayloadBytes))],['Retained evidence',qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Not recorded'],['Build artifact',r.artifactId??'Not mapped']]),
+          g?.schemaId?button('View schema structure',()=>openSchema(g.schemaId)):null,routeChips(r.routeIds)),
         el('div',{},el('h3',{},'Evidence'),...evidenceCards(r.evidenceIds))]:[])))));
     });
     const artifactPanels=P.artifacts.map(a=>{
@@ -219,14 +228,25 @@
         el('details',{class:'details-block'},el('summary',{},'Physical section records'),el('pre',{class:'record-text'},JSON.stringify(a.sections,null,2))));
       return el('section',{class:'two-column subsection'},physical,inside);
     });
+    const sortHead=(key,label)=>{
+      const control=button(label+' ↕',()=>{
+        state.resourceDir=state.resourceSort===key?(state.resourceDir==='asc'?'desc':'asc'):(key==='name'?'asc':'desc');state.resourceSort=key;renderResources();$('#resource-sort-'+key).focus({preventScroll:true});
+      },'schema-sort-button');control.id='resource-sort-'+key;
+      return el('th',{'aria-sort':state.resourceSort===key?(state.resourceDir==='asc'?'ascending':'descending'):'none'},control);
+    };
     const resourceTable=el('table',{class:'inventory-table resource-table'},
       el('caption',{class:'sr-only'},'Resource input and retained sizes'),
-      el('thead',{},el('tr',{},['Resource','Kind / section','Input bytes','Retained payload','References'].map(label=>el('th',{},label)))),
+      el('thead',{},el('tr',{},sortHead('name','Resource'),el('th',{},'Category'),sortHead('input','Input bytes'),sortHead('representation','Representation bytes'),sortHead('retained','Retained payload'),el('th',{},'References'))),
       el('tbody',{},resourceRows));
     replace($('#view-resources'),
       sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),
       note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),artifactPanels,
-      el('div',{class:'subsection'},sectionHeading('Resource inventory','Input bytes describe source resources; retained payload requires its own measured mapping.',P.resources.length),
+      el('div',{class:'subsection'},sectionHeading('Resource inventory','Source input, packed representation and final retained payload are separate facts.',P.resources.length),
+        note('Packed base64 text is the build input encoding, not Wasm data size. Normalized descriptor bytes describe schema structure, not generated validator code. Neither is added to the physical ledger.'),
+        P.resourceProducers?el('div',{class:'surface panel-pad'},el('h3',{},'Producer coverage'),P.resourceProducers.map(row=>el('div',{class:'coverage-line'},
+          el('div',{},resourceScopes[row.scope]+' · '+row.coverage.status),el('p',{},`${row.coverage.observed} recorded / ${row.coverage.expected??'unknown'} expected${row.coverage.reason?' · '+row.coverage.reason:''}`))),
+          el('p',{class:'small-note'},'Selected assets cover resolved lookups, not unused manifest files. Package realization records are counted without retaining private contents. Other generated support is not enumerated.'))
+          :note('Producer coverage was not recorded in this historical capsule.'),
         P.resources.length?el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable resource inventory'},resourceTable))
           :note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')));
   }
@@ -299,7 +319,7 @@
   }
   function openRaw() {openModal('The complete evidence capsule',[el('p',{},'One authoritative payload. Search, filters and theme never change these records.'),button('Export JSON',downloadCapsule),el('pre',{class:'raw-json',tabindex:0,'aria-label':'Complete capsule JSON'},canonicalJson)]);}
   function about() {openModal('Reading this report',[note('Build-review metadata can be operationally sensitive. Review it before public sharing.'),el('p',{},'This offline viewer consumes the embedded Report v1 capsule. The snapshot label distinguishes current matching, verified manifest replay and historical replay. No network requests, tests or live checks run here.'),el('p',{},'Declarations describe retained metadata, not effective permissions. Unavailable evidence is not zero or a pass. Normalized schema descriptor sizes are separate from generated code sizes.')]);}
-  function sizeHelp() {openModal('One artifact. Different size views.',Object.entries(metrics).map(([metric,label])=>el('section',{class:'detail-section'},el('h3',{},label),el('p',{},({'handler-body':'Final mapped handler code bodies. Shared implementations may appear in several rows.',own:'Reachable bodies exclusive to one root, only when the root universe and graph are complete.',reachable:'Distinct bodies reachable under the recorded static call-graph method, including shared code.',shared:'Reachable bodies shared with other roots. Values across routes are nonadditive.'})[metric]))).concat(note('Numeric sorting uses raw bytes, keeps unavailable values last in both directions, and shows evidence coverage. No size is a guarantee of deletion savings.')));}
+  function sizeHelp() {openModal('One artifact. Different size views.',Object.entries(metrics).map(([metric,label])=>el('section',{class:'detail-section'},el('h3',{},label),el('p',{},({'handler-body':'Final mapped handler code bodies only. Embedded CSS, JavaScript and other data payloads are excluded. A small handler body does not mean a small asset. Shared implementations may appear in several rows.',own:'Reachable bodies exclusive to one root, only when the root universe and graph are complete.',reachable:'Distinct bodies reachable under the recorded static call-graph method, including shared code.',shared:'Reachable bodies shared with other roots. Values across routes are nonadditive.'})[metric]))).concat(note('Numeric sorting uses raw bytes, keeps unavailable values last in both directions, and shows evidence coverage. No size is a guarantee of deletion savings.')));}
   function applyTheme(theme) {document.documentElement.dataset.theme=theme;replace($('#theme-button'),icon(theme==='dark'?'sun':'moon'));$('#theme-button').setAttribute('aria-label','Switch to '+(theme==='dark'?'light':'dark')+' theme');}
   $$('[data-icon]').forEach(n=>replace(n,icon(n.dataset.icon)));
   buildNavigation();drawSummary();populateFilters();applyTheme(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');

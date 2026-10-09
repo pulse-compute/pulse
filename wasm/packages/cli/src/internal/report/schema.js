@@ -39,7 +39,12 @@ const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping'
   'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving', 'dynamic-reference', 'unresolved-reference',
   ...new Set(Object.values(GRAPH_DIAGNOSTICS).filter(reason => !['missing-evidence', 'prelink-only'].includes(reason)))];
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
+const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support'];
 const defs = {
+  ResourceProducer: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'), coverage: ref('Coverage'), resourceIds: ids, evidenceIds: ids }),
+  ResourceGenerator: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'),
+    representation: en('base64-text', 'pulse.report-schema-shape.v1', 'package-guest-unit'),
+    representationBytes: ref('Fact'), schemaId: nullable(id), entryCoverage: ref('Coverage') }),
   GraphDiagnostic: object({ reason: en(...new Set(Object.values(GRAPH_DIAGNOSTICS))), code: en(...Object.keys(GRAPH_DIAGNOSTICS)),
     functionIndex: nullable(uint), observed: nullable(uint), expected: nullable(uint) }),
   Source: object({ file: text, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 },
@@ -87,7 +92,7 @@ const defs = {
     targetId: nullable(id), entryIds: ids, entryCoverage: ref('Coverage'), evidenceIds: ids }),
   Resource: object({ id, name: text, kind: en('embedded-asset', 'schema-validator', 'helper', 'other'),
     mediaType: nullable(text), artifactId: nullable(id), inputBytes: ref('Fact'), retainedPayloadBytes: ref('Fact'),
-    routeIds: ids, entryIds: ids, evidenceIds: ids }),
+    routeIds: ids, entryIds: ids, evidenceIds: ids, generator: ref('ResourceGenerator') }, ['generator']),
   Section: object({ index: uint, id: { ...uint, maximum: 13 }, bytes: uint, payloadBytes: uint }),
   Artifact: object({ id, representation: fixed('canonical-native-wasm'), stage: en('final', 'prelink'),
     host: text, target: text, bytes: { ...uint, minimum: 8 }, sha256: hash, sections: array(ref('Section')),
@@ -117,8 +122,9 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   declarations: array(ref('Declaration')), schemas: array(ref('Schema')), bindings: array(ref('Binding')),
   resources: array(ref('Resource')), artifacts: array(ref('Artifact')), bodies: array(ref('Body')),
   references: array(ref('Reference')),
+  resourceProducers: array(ref('ResourceProducer')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),
@@ -159,4 +165,4 @@ function document(name, shape) {
 }
 module.exports = { capsuleSchema: document('capsule', capsule), completionSchema: document('completion', completion),
   attributionSchema: document('attribution', { oneOf: [attribution, attributionV2] }),
-  fileSchema: freeze(defs.File), REASONS: Object.freeze(REASONS), GRAPH_DIAGNOSTICS };
+  fileSchema: freeze(defs.File), REASONS: Object.freeze(REASONS), GRAPH_DIAGNOSTICS, RESOURCE_SCOPES: Object.freeze(RESOURCE_SCOPES) };

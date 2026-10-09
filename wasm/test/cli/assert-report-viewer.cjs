@@ -98,7 +98,7 @@ function renderedTree(capsule) {
   const data=new Element('script');data.id='pulse-report-data';data.textContent=JSON.stringify(capsule);roots.push(data);
   const document={querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):{content:'historical'},createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
-  const context={document,Node:Element,createReportViewModel};
+  const context={document,Node:Element,createReportViewModel,location:{hash:''}};
   vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderResources,renderDrawer,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
@@ -112,11 +112,31 @@ for(const chart of tree.nodes().filter(n=>n.tag==='svg'&&n.attrs.class==='ledger
   assert.ok(chart.children.every(r=>r.tag==='rect'&&r.attrs.style===undefined));
 }
 assert.equal(tree.nodes().filter(n=>n.attrs.class==='size-grid')[0].children.length,4);
-assert.match(tree.get('view-resources').textContent,/Input bytesRetained payload/);
+assert.match(tree.get('view-resources').textContent,/Input bytes.*Representation bytes.*Retained payload/);
 assert.match(tree.get('view-resources').textContent,/Physical total36 B36 bytes/);
 tree.get('resource-expand-0').events.click();
 assert.equal(tree.get('resource-expand-0').attrs['aria-expanded'],'true');
 assert.match(tree.get('resource-detail-0').textContent,/unsupported-mapping/);
+assert.match(tree.get('drawer-content').textContent,/code bodies only; embedded asset and schema data are excluded/);
+const generated=f.fixture();
+require(path.join(f.reportRoot,'resource-inventory')).addResourceInventory(generated,{
+  reportReferences:{version:'pulse.compiler-report-references.v1',references:[{kind:'resource',state:'resolved',canonicalId:'asset',resource:{encodedBytes:16}}]},
+  native:{manifest:{schemaCodecs:{codecs:[{id:'app.UpdateInput'}]},packageRealizationArtifacts:{version:'pulse.package-realization-artifact-set.v1',count:0}},guestUnits:[]}
+},[f.buildId]);
+for(const resource of generated.resources)resource.routeIds=generated.routes.filter(route=>route.composition.some(id=>resource.entryIds.includes(id))).map(row=>row.id);
+generated.coverage.resources={status:'partial',observed:generated.resources.length,expected:null,reason:'incomplete-mapping'};
+const generatedCapsule=f.createCapsule(generated),generatedTree=renderedTree(generatedCapsule);
+assert.match(generatedTree.get('view-resources').textContent,/Packed base64 text/);
+assert.match(generatedTree.get('view-resources').textContent,/Normalized descriptor/);
+assert.match(generatedTree.get('view-resources').textContent,/Package realization records · complete0 recorded \/ 0 expected/);
+assert.match(generatedTree.get('view-resources').textContent,/Other generated support · unavailable0 recorded \/ unknown expected/);
+generatedTree.get('resource-sort-representation').events.click();
+assert.equal(generatedTree.renderers.state.resourceSort,'representation');
+const schemaResource=generatedCapsule.resources.findIndex(row=>row.kind==='schema-validator');
+generatedTree.get('resource-expand-'+schemaResource).events.click();
+assert.match(generatedTree.get('resource-detail-'+schemaResource).textContent,/Source input bytesNot applicable/);
+generatedTree.nodes().find(node=>node.tag==='button'&&node.textContent==='View schema structure').events.click();
+assert.ok(generatedTree.renderers.state.expandedSchemas.has(generatedCapsule.schemas[0].id));
 const conflictCapsule=structuredClone(richCapsule);
 const original=conflictCapsule.measurements.find(m=>m.subjectId===conflictCapsule.routes[0].id&&m.metric==='handler-body');
 conflictCapsule.measurements.push({...original,id:f.id('measurement','second-body'),fact:{...original.fact,value:2},bodyIds:['body:'+f.hash+':2']});

@@ -1,7 +1,7 @@
 'use strict';
 
 const { copyData, canonicalJson, parseJson, sha256, fail, relativePath, freeze } = require('./data');
-const { capsuleSchema } = require('./schema');
+const { capsuleSchema, RESOURCE_SCOPES } = require('./schema');
 const { validate, project } = require('./validate');
 const { structureFromDescriptor, REGISTRY_VERSION } = require('./schema-projection');
 const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'references', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
@@ -17,7 +17,7 @@ function stableReportId(kind, canonicalId) {
 }
 function normalize(input) {
   const value = copyData(input);
-  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'cases', 'targets']);
+  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets']);
   function walk(item, key) {
     if (Array.isArray(item)) {
       if (sets.has(key)) { ensure(new Set(item).size === item.length, 'REPORT_DUPLICATE'); item.sort(compare); }
@@ -27,6 +27,7 @@ function normalize(input) {
   walk(value, '');
   for (const name of collections.filter(name => !['routes', 'entries'].includes(name))) value[name]?.sort((a, b) => compare(a.id, b.id));
   value.provenance?.toolchain?.sort((a, b) => compare(a.name, b.name) || compare(a.version, b.version));
+  value.resourceProducers?.sort((a, b) => compare(a.scope, b.scope));
   for (const schema of value.schemas || []) if (schema.structure?.state === 'available') {
     ensure(schema.structure.reason === null && schema.registryVersion === REGISTRY_VERSION, 'REPORT_SCHEMA_METRICS');
     const canonical = structureFromDescriptor(schema.structure.descriptor);
@@ -235,6 +236,43 @@ function check(capsule) {
     if (resource.artifactId !== null) references([resource.artifactId], maps.artifacts);
     if (resource.retainedPayloadBytes.state === 'available') ensure(resource.artifactId !== null
       && resource.retainedPayloadBytes.value <= maps.artifacts.get(resource.artifactId).bytes, 'REPORT_LEDGER');
+    const generator = resource.generator;
+    if (!generator) continue;
+    ensure(capsule.resourceProducers && resource.retainedPayloadBytes.state === 'unavailable', 'REPORT_RESOURCE_METRICS');
+    fact(generator.representationBytes); coverage(generator.entryCoverage, resource.entryIds.length);
+    const routes = capsule.routes.filter(row => row.composition.some(entry => resource.entryIds.includes(entry))).map(row => row.id).sort(compare);
+    ensure(same(routes, resource.routeIds), 'REPORT_REVERSE_REFERENCE');
+    if (generator.scope === 'selected-embedded-assets') {
+      ensure(resource.kind === 'embedded-asset' && generator.representation === 'base64-text' && generator.schemaId === null, 'REPORT_RESOURCE_METRICS');
+      if (generator.representationBytes.state === 'available') ensure(resource.inputBytes.state === 'available'
+        && generator.representationBytes.value === 4 * Math.ceil(resource.inputBytes.value / 3), 'REPORT_RESOURCE_METRICS');
+    } else if (generator.scope === 'schema-codecs') {
+      ensure(resource.kind === 'schema-validator' && generator.representation === 'pulse.report-schema-shape.v1'
+        && resource.inputBytes.state === 'not-applicable', 'REPORT_RESOURCE_METRICS');
+      const schema = maps.schemas.get(generator.schemaId);
+      ensure(generator.schemaId === null || schema, 'REPORT_REFERENCE');
+      if (schema) ensure(same(resource.entryIds, schema.entryIds), 'REPORT_REVERSE_REFERENCE');
+      else ensure(resource.entryIds.length === 0, 'REPORT_REVERSE_REFERENCE');
+      ensure(generator.representationBytes.state === 'available' ? schema?.structure.state === 'available'
+        && generator.representationBytes.value === schema.structure.descriptorBytes : schema?.structure.state !== 'available', 'REPORT_RESOURCE_METRICS');
+    } else {
+      ensure(generator.scope === 'package-guest-units' && resource.kind === 'helper' && generator.representation === 'package-guest-unit'
+        && generator.schemaId === null && generator.representationBytes.state === 'unavailable'
+        && resource.inputBytes.state === 'unavailable' && resource.entryIds.length === 0, 'REPORT_RESOURCE_METRICS');
+    }
+  }
+  if (capsule.resourceProducers) {
+    ensure(same(capsule.resourceProducers.map(row => row.scope), [...RESOURCE_SCOPES].sort(compare)), 'REPORT_COVERAGE');
+    ensure(capsule.resources.every(row => row.generator), 'REPORT_COVERAGE');
+    for (const row of capsule.resourceProducers) {
+      references(row.resourceIds, maps.resources); references(row.evidenceIds, maps.evidence);
+      ensure(row.evidenceIds.length > 0, 'REPORT_REFERENCE');
+      const expected = capsule.resources.filter(resource => resource.generator.scope === row.scope).map(resource => resource.id).sort(compare);
+      ensure(same(row.resourceIds, expected), 'REPORT_COVERAGE'); coverage(row.coverage, expected.length);
+      if (row.scope === 'generated-support') ensure(row.coverage.status === 'unavailable' && row.coverage.expected === null, 'REPORT_COVERAGE');
+      if (row.scope === 'package-realizations') ensure(expected.length === 0, 'REPORT_COVERAGE');
+    }
+    ensure(capsule.coverage.resources.status === 'partial' && capsule.coverage.resources.expected === null, 'REPORT_COVERAGE');
   }
   return capsule;
 }
