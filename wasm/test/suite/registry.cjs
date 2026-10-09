@@ -42,6 +42,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-01 production entry/stage/helper attribution and byte-preserving capture'
   }),
+  'cli-report-reference-provenance': nodeTask('test/cli/assert-report-reference-provenance.cjs', {
+    evidence: 'native', timeoutMs: 120000,
+    description: 'RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture'
+  }),
   'cli-report-retained-evidence': nodeTask('test/cli/assert-report-retained-evidence.cjs', {
     description: 'PRPT-02/05 completion lifecycle, safe replay, repeatable HTML and unchanged Wasm', timeoutMs: 60000
   }),
@@ -1271,6 +1275,7 @@ const profiles = Object.freeze({
     'cli-report-size-evidence',
     'cli-report-capture-proof',
     'cli-report-entry-proof',
+    'cli-report-reference-provenance',
     'multifile-source-indexes',
     'guest-json-roundtrip',
     'pure-helper-contract',
@@ -1419,6 +1424,7 @@ const profiles = Object.freeze({
     'cli-report-size-evidence',
     'cli-report-capture-proof',
     'cli-report-entry-proof',
+    'cli-report-reference-provenance',
     'cli-command-spec',
     'cli-init-workflow',
     'cli-project-workflow',

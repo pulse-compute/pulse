@@ -109,6 +109,9 @@
         },
         "resources": {
           "$ref": "#/$defs/Coverage"
+        },
+        "references": {
+          "$ref": "#/$defs/Coverage"
         }
       },
       "required": [
@@ -187,6 +190,13 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/Body"
+      },
+      "maxItems": 100000
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Reference"
       },
       "maxItems": 100000
     },
@@ -392,7 +402,9 @@
                 "upstream-partial",
                 "entry-ownership-not-retained",
                 "dispatcher-carrier",
-                "final-symbol-not-surviving"
+                "final-symbol-not-surviving",
+                "dynamic-reference",
+                "unresolved-reference"
               ]
             },
             {
@@ -892,7 +904,9 @@
                 "upstream-partial",
                 "entry-ownership-not-retained",
                 "dispatcher-carrier",
-                "final-symbol-not-surviving"
+                "final-symbol-not-surviving",
+                "dynamic-reference",
+                "unresolved-reference"
               ]
             },
             {
@@ -1467,7 +1481,9 @@
                 "upstream-partial",
                 "entry-ownership-not-retained",
                 "dispatcher-carrier",
-                "final-symbol-not-surviving"
+                "final-symbol-not-surviving",
+                "dynamic-reference",
+                "unresolved-reference"
               ]
             },
             {
@@ -1653,6 +1669,127 @@
         "artifactId",
         "index",
         "bytes"
+      ],
+      "additionalProperties": false
+    },
+    "Reference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "kind": {
+          "enum": [
+            "binding",
+            "schema",
+            "resource"
+          ]
+        },
+        "bindingKind": {
+          "anyOf": [
+            {
+              "enum": [
+                "config",
+                "secret",
+                "kv",
+                "s3"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canonicalId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "enum": [
+            "resolved",
+            "dynamic",
+            "unknown"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "missing-evidence",
+                "unsupported-mapping",
+                "incomplete-mapping",
+                "incomplete-root-universe",
+                "unsupported-call-graph",
+                "prelink-only",
+                "not-recorded",
+                "not-applicable",
+                "unsupported-schema-shape",
+                "unsupported-schema-version",
+                "unsupported-constraint",
+                "upstream-partial",
+                "entry-ownership-not-retained",
+                "dispatcher-carrier",
+                "final-symbol-not-surviving",
+                "dynamic-reference",
+                "unresolved-reference"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "targetId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "entryIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "entryCoverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "bindingKind",
+        "canonicalId",
+        "state",
+        "reason",
+        "targetId",
+        "entryIds",
+        "entryCoverage",
+        "evidenceIds"
       ],
       "additionalProperties": false
     },

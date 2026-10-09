@@ -1145,6 +1145,27 @@ not authorization or parity claims. Unknown binding realization, generated
 resource coverage and byte attribution stay explicit. See the [PRPT-02 packet](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/prpt02/README.md) for lifecycle,
 redaction, coverage and remaining integration gates.
 
+Native compilation also returns an observational
+`pulse.compiler-report-references.v1` projection after executable emission. It
+retains allowlisted binding names, schema IDs, embedded-resource identities and
+canonical entry consumers from validated compiler records. Resolved references
+are deduplicated by semantic kind and identity; registrations remain distinct.
+Schema ownership uses compiler-generated entry ranges only in the matching
+generated file. Foreign or unassociated references retain incomplete consumer
+coverage instead of borrowing an unrelated source offset. Validated helper call
+sites and shared-stage registrations preserve the consumers the compiler knows.
+
+The required retained inventory can include an optional `references` collection
+and its coverage. Resolved references join inventory rows; dynamic expressions
+and unknown references remain observations with no target. Incomplete reference
+coverage has a null expected count. Declarations and static references remain
+separate from host binding realization, which stays unavailable. This allowlist
+contains no binding values, resource bodies or arbitrary provider metadata.
+Historical capsules without reference records keep their original identity.
+The projection never enters the executable plan/hash, recipe or provider
+configuration; replay reads the retained capsule without loading the compiler.
+Generated-resource expansion and payload attribution remain separate work.
+
 Report size collection reads exact retained Wasm sections and function bodies.
 A passive build-support observer of the same optimized final emission supplies
 optional artifact-bound handler mappings and a bounded static direct-call graph.

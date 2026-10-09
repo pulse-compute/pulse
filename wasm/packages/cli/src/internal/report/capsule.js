@@ -4,14 +4,14 @@ const { copyData, canonicalJson, parseJson, sha256, fail, relativePath, freeze }
 const { capsuleSchema } = require('./schema');
 const { validate, project } = require('./validate');
 const { structureFromDescriptor, REGISTRY_VERSION } = require('./schema-projection');
-const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
+const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'references', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
 const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const same = (a, b) => canonicalJson(a) === canonicalJson(b);
 const ensure = (condition, code = 'REPORT_INVARIANT') => { if (!condition) fail(code); };
 function artifactId(hash) { ensure(/^[a-f0-9]{64}$/.test(hash)); return `artifact:${hash}`; }
 function bodyId(hash, index) { ensure(Number.isSafeInteger(index) && index >= 0); return `body:${artifactId(hash).slice(9)}:${index}`; }
 function stableReportId(kind, canonicalId) {
-  ensure(['route', 'entry', 'schema', 'binding', 'resource', 'measurement', 'evidence', 'declaration', 'root-set', 'handler', 'root'].includes(kind));
+  ensure(['route', 'entry', 'schema', 'binding', 'resource', 'reference', 'measurement', 'evidence', 'declaration', 'root-set', 'handler', 'root'].includes(kind));
   ensure(typeof canonicalId === 'string' && canonicalId.length > 0);
   return `${kind}:${sha256(canonicalJson({ kind, canonicalId }))}`;
 }
@@ -43,7 +43,7 @@ function check(capsule) {
   const maps = {}, all = new Map();
   for (const name of collections) {
     maps[name] = new Map();
-    for (const row of capsule[name]) {
+    for (const row of capsule[name] || []) {
       ensure(!all.has(row.id), 'REPORT_DUPLICATE'); all.set(row.id, row); maps[name].set(row.id, row);
     }
   }
@@ -68,6 +68,7 @@ function check(capsule) {
     else ensure(value.reason !== null, 'REPORT_COVERAGE');
     if (['unavailable', 'not-applicable'].includes(value.status)) ensure(count === 0, 'REPORT_COVERAGE');
   }
+  ensure(Object.hasOwn(capsule, 'references') === Object.hasOwn(capsule.coverage, 'references'), 'REPORT_COVERAGE');
   for (const name of Object.keys(capsule.coverage)) coverage(capsule.coverage[name], capsule[name].length);
   for (const [name, rows] of Object.entries(maps)) for (const row of rows.values()) {
     source(row);
@@ -96,6 +97,33 @@ function check(capsule) {
     for (const row of capsule[name]) {
       ensure(same((reverseRoutes.get(row.id) || []).sort(compare), row.routeIds), 'REPORT_REVERSE_REFERENCE');
       ensure(same((reverseEntries.get(row.id) || []).sort(compare), row.entryIds), 'REPORT_REVERSE_REFERENCE');
+    }
+  }
+  const referenceTargets = new Set();
+  for (const row of capsule.references || []) {
+    ensure(row.evidenceIds.length > 0, 'REPORT_REFERENCE');
+    ensure((row.kind === 'binding') === (row.bindingKind !== null), 'REPORT_REFERENCE');
+    coverage(row.entryCoverage, row.entryIds.length);
+    if (row.state === 'resolved') {
+      const target = maps[{ binding: 'bindings', schema: 'schemas', resource: 'resources' }[row.kind]].get(row.targetId);
+      ensure(target && row.canonicalId !== null && row.reason === null, 'REPORT_REFERENCE');
+      const semantic = row.kind + ':' + row.targetId;
+      ensure(!referenceTargets.has(semantic), 'REPORT_DUPLICATE'); referenceTargets.add(semantic);
+      if (row.kind === 'binding') ensure(target.kind === row.bindingKind && target.name === row.canonicalId && target.referenced, 'REPORT_IDENTITY');
+      if (row.kind === 'schema') ensure(target.schemaId === row.canonicalId, 'REPORT_IDENTITY');
+      if (row.kind === 'resource') ensure(target.id === stableReportId('resource', row.canonicalId), 'REPORT_IDENTITY');
+      ensure(same(row.entryIds, target.entryIds), 'REPORT_REVERSE_REFERENCE');
+    } else {
+      ensure(row.targetId === null && row.reason === (row.state === 'dynamic' ? 'dynamic-reference' : 'unresolved-reference'), 'REPORT_REFERENCE');
+      if (row.state === 'dynamic') ensure(row.canonicalId === null, 'REPORT_REFERENCE');
+    }
+  }
+  if (capsule.references) {
+    if (capsule.references.some(row => row.state !== 'resolved' || row.entryCoverage.status !== 'complete')) {
+      ensure(capsule.coverage.references.status !== 'complete' && capsule.coverage.references.expected === null, 'REPORT_COVERAGE');
+    }
+    if (capsule.references.some(row => row.kind === 'binding' && row.state !== 'resolved')) {
+      ensure(capsule.coverage.bindings.status !== 'complete' && capsule.coverage.bindings.expected === null, 'REPORT_COVERAGE');
     }
   }
   for (const row of capsule.schemas) if (row.structure.state === 'unavailable') {

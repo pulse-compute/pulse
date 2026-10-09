@@ -1905,6 +1905,7 @@ module.exports = Object.freeze({
   CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION: contract.CANONICAL_NATIVE_PLAN_OWNERSHIP_VERSION,
   CanonicalNativePlanError,
   buildCanonicalNativePlan,
+  collectCanonicalReportReferences: require('./report-reference-provenance').collectCanonicalReportReferences,
   validateCanonicalNativePlan: assertCanonicalNativePlan,
   writeCanonicalNativePlan,
   stableStringify
