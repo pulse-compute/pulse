@@ -5,9 +5,9 @@
 Pulse uses a machine-readable maintenance policy so repository automation and Codex receive the same scope boundaries. The policy is advisory about product direction and mandatory about process: Codex may analyze, review, and prepare bounded patches, while a human retains architecture, merge, repository-setting, and release authority.
 
 - **Policy schema:** `pulse.maintenance-policy.v2`
-- **Policy version:** `11`
+- **Policy version:** `12`
 - **Release:** `1.0.0-beta.7`
-- **Reviewed:** `2026-10-05`
+- **Reviewed:** `2026-10-09`
 - **Resident maintainer:** Codex
 - **Merge authority:** human-only
 - **Release authority:** human-only
@@ -81,7 +81,7 @@ Common required checks: `Maintainer scope / scope`, `Repository validation / mai
 
 | PR target / branch push | Tier | Additional required check |
 |---|---|---|
-| main | full | `Repository validation / full portable` |
+| main | full | `Repository validation / full portable`, `Release qualification / qualification` |
 | Every non-main branch | fast | `Repository validation / fast portable` |
 
 The common portable gate independently verifies that the event's required tier succeeded. Human-owned rulesets retain the common checks and add the appropriate tier check; see repository setup for the rollout order. Fast success is development evidence, not full portable or release coverage.

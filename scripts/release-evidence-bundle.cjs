@@ -249,7 +249,7 @@ const SHARD_DEFINITIONS = Object.freeze([
     id: 'maintainer-publication-controls',
     title: 'Maintainer and publication control planes',
     tasks: Object.freeze(['release-feature-acceptance', 'release-runtime-policy', 'release-seal-lifecycle', 'release-checkpoints', 'release-recovery-runner', 'release-recovery', 'release-tag']),
-    releaseSteps: Object.freeze(['maintainer', 'publication', 'build', 'workspace-unit', 'documentation', 'release', 'installed-features'])
+    releaseSteps: Object.freeze(['source-checks', 'build', 'workspace-unit', 'release', 'installed-features'])
   })
 ]);
 
@@ -592,7 +592,7 @@ function validateRecoveryEvidence(releaseSeal, supplied = {}) {
   }
   const stepIds = releaseSeal.steps.map(step => step.id);
   assert.equal(new Set(stepIds).size, stepIds.length, 'Duplicate seal steps');
-  const freshSteps = ['maintainer', 'publication', 'build', 'production-dependency-audit', 'workspace-unit', 'documentation', 'release', 'installed-features'];
+  const freshSteps = ['source-checks', 'build', 'production-dependency-audit', 'workspace-unit', 'release', 'installed-features'];
   if (recovery.context.options.workers > 1) {
     freshSteps.push('workspaces');
     const { workerCount, compilerCount, workspaceRoot, WORKER_MIB } = require('./release-parallel.cjs');

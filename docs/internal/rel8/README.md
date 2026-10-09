@@ -217,3 +217,16 @@ Repository settings and production readiness are owner actions in the follow-ups
 verify the stable gate is actually required and confirm protected-environment
 configuration. REL8-00 changes no settings and authorizes no merge, tag,
 publication, deployment or provider activation.
+
+## REL8-01 implementation handoff
+
+REL8-01 adds the pre-main PR qualification producer and stable gate, exact
+base/head/merge/tree identity, live-source checks, accepted package capture and
+a tested merge/squash binding. It consolidates control-plane and docs validation
+into one fresh source-check pass before compilation, with same-attempt verified
+reuse by shared packing. Full ordered coverage and recovery rules remain.
+
+REL8-02 still owns automatic artifact selection, authenticated consumption,
+prebuilt docs transfer and retirement of tagged post-main qualification. Do not
+feed a PR run ID to the current tag-only resolver. The human release owner must
+install the main-only required gate with strict up-to-date branch protection.

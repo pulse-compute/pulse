@@ -1,8 +1,8 @@
 {
   "schemaVersion": "pulse.maintenance-policy.v2",
-  "policyVersion": 11,
+  "policyVersion": 12,
   "releaseVersion": "1.0.0-beta.7",
-  "reviewedAt": "2026-10-05",
+  "reviewedAt": "2026-10-09",
   "maintainerModel": {
     "residentMaintainer": "Codex",
     "architectureAuthority": "human",
@@ -91,7 +91,8 @@
       "main": {
         "tier": "full",
         "additionalRequiredStatusChecks": [
-          "Repository validation / full portable"
+          "Repository validation / full portable",
+          "Release qualification / qualification"
         ]
       },
       "nonMain": {
@@ -552,7 +553,12 @@
         "scripts/release-prepare.cjs",
         "scripts/release-prepare-pr.cjs",
         "scripts/release-pr-check.cjs",
-        "scripts/release-tag.cjs"
+        "scripts/release-tag.cjs",
+        "scripts/release-pr-qualification.cjs",
+        "scripts/release-source-checks.cjs",
+        "scripts/release-shared-pack.cjs",
+        "scripts/release-evidence-bundle.cjs",
+        ".github/workflows/release-qualify.yml"
       ],
       "areas": [
         "release"

@@ -298,8 +298,12 @@ async function main(argv = process.argv.slice(2)) {
       );
     }
 
-    await runStep(steps, 'maintainer', 'Validate the maintainer control plane', 'node', ['scripts/validate-maintainer-control-plane.cjs']);
-    await runStep(steps, 'publication', 'Validate publication and deployment controls', 'node', ['scripts/validate-publication-workflows.cjs']);
+    const sourceChecksFile = path.join(progress.directory || packageManagerCache, 'source-checks.json');
+    await runStep(steps, 'source-checks', 'Validate control planes, catalog, generated docs and site before compilation',
+      process.execPath, ['scripts/release-source-checks.cjs', '--out', sourceChecksFile],
+      { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv });
+    assertCandidateSource(sourceIdentity);
+    const sourceChecksSha256 = require('node:crypto').createHash('sha256').update(fs.readFileSync(sourceChecksFile)).digest('hex');
     await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
     await runStep(
       steps,
@@ -310,7 +314,6 @@ async function main(argv = process.argv.slice(2)) {
       { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv }
     );
     await runPackageManagerStep('workspace-unit', 'Run workspace unit tests', ['run', '-s', 'test'], 10 * 60 * 1000);
-    await runPackageManagerStep('documentation', 'Validate synchronized documentation and generated site output', ['run', '-s', 'docs:check'], 10 * 60 * 1000);
     const currentCandidate = assertCandidateSource(sourceIdentity);
     if (currentCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed before package qualification');
     const sharedPackDirectory = progress.directory ? path.join(progress.directory, 'packages') : path.join(packageManagerCache, 'packages');
@@ -342,8 +345,9 @@ async function main(argv = process.argv.slice(2)) {
       process.stdout.write('[pulse:release] Reused verified exact package set from the preceding attempt.\n');
     } else {
       const step = await runStep(steps, 'shared-pack', 'Construct the exact package set once for isolated consumers', process.execPath,
-        ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory],
-        { timeoutMs: 10 * 60 * 1000, env: identityEnv });
+        ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory,
+          '--source-checks', sourceChecksFile, '--source-checks-sha256', sourceChecksSha256],
+        { timeoutMs: 10 * 60 * 1000, env: packageManagerEnv });
       if (packStore) packProof = packStore.record({ ...packSpec, result: { ...step, cleanup: { status: 'passed' } } });
     }
     if (recovery) {

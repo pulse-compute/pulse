@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-06
-review-by: 2027-04-06
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # Testing Pulse

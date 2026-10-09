@@ -1,8 +1,8 @@
 <!-- pulse-doc-meta:start
 owner: maintainer-council
 status: active
-last-reviewed: 2026-10-07
-review-by: 2027-04-07
+last-reviewed: 2026-10-09
+review-by: 2027-04-09
 pulse-doc-meta:end -->
 
 # npm publishing
@@ -96,6 +96,53 @@ the exact publication bundle. Once qualification succeeds, use its run ID for
 publishing approval becomes available. Audit and publication never build, pack
 or seal. A local seal remains development evidence. Reconcile `main` back into
 `latest` after release so development starts from the new version.
+
+## Pre-main qualification (REL8-01)
+
+Ready release PRs into `main` now run **Release qualification / qualification**.
+The credential-free workflow checks the exact PR merge commit and its base/head
+parents, release version, package catalog, documentation archive and changelog
+before installing tools. It checks the live PR and `main` at both ends. A changed
+head, base or merge candidate requires a fresh run. Drafts do not qualify; a
+same-version documentation/workflow PR returns an explicit non-release result
+without running the expensive seal. Product changes without a new version fail.
+
+The controller runs one fresh `source-checks` stage after dependency setup and
+before compilation: maintainer and publication controls, package/catalog and
+source documentation validation, generated snippets/references and the site.
+Packing verifies this attempt's pinned result against the same clean source,
+Node and dependency bytes. Standalone packing still performs its own validation.
+Build, audit/license refresh, workspace tests, all release tasks, installed
+feature gates, required Fastly reality and cleanup retain their coverage.
+
+Successful release qualification uploads
+`pulse-pr-release-qualification-<run-id>-<attempt>` for 30 days. It contains the
+accepted publication bundle, original seal report and `qualification.json` with
+PR/base/head/merge/tree identity, run/attempt, bundle and seal hashes, the full
+qualification-context digest, and separate feature-gate status. The full seal
+and recovery evidence is retained in the matching evidence artifact. Qualification
+is not permission to publish and does not waive dedicated K4 evidence or review.
+
+The binding contract supports a reviewed merge commit or a single squash commit
+whose first parent is the qualified base and whose tree is the qualified merge
+tree. A two-parent merge also requires the qualified PR head as its second parent.
+The merged PR and tag must identify that exact commit. The original source in
+reports and bundles stays unchanged; a consumer records a separate merge binding.
+A different base, tree, head or tag fails even when some file contents match.
+Multi-commit rebase chains and merge queues are outside this contract.
+
+**Rollout boundary:** REL8-01 produces the PR qualification and tests its merge
+binding. The current tagged publication resolver still accepts only its existing
+manual `qualify` artifacts; do not pass a PR run ID to it. REL8-02 implements
+verified consumption and retires the post-main qualification step. The tagged
+commands above/below remain the operational publication path until that change
+lands. Capturing and consuming a prebuilt docs candidate is also REL8-02 work.
+
+The release owner must add the new check to the `main` ruleset and require the
+branch to be up to date before merging. A base push after the last live-source
+check must invalidate merge eligibility. No settings are changed by this patch.
+If an existing PR is retargeted to `main`, reopen or synchronize it to start this
+PR-only workflow; editing a title/body does not repeat a long qualification.
 
 ## Release handoff record
 
