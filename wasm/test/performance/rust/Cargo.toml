@@ -1,0 +1,23 @@
+[package]
+name = "pulse-perf8-rust"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+path = "lib.rs"
+
+[features]
+schemas = ["dep:serde", "dep:serde_json"]
+
+[dependencies]
+serde = { version = "=1.0.228", features = ["derive"], optional = true }
+serde_json = { version = "=1.0.145", optional = true }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
