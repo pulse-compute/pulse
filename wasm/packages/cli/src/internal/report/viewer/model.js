@@ -32,6 +32,26 @@ function createReportViewModel(P) {
       overlappingBodies:[...counts.values()].filter(count => count > 1).length };
   }
   const routeHelpers = route => helpers.filter(row => row.routeIds.includes(route.id));
+  const primaryImplementations = (P.implementations || []).filter(row => row.artifactId === A.id);
+  const dispatchers = primaryImplementations.filter(row => row.origin === 'dispatcher');
+  // Join consumers at the physical-body/chunk boundary, not the whole logical
+  // implementation: its other chunks may have different associated entries.
+  const bodyConsumers = new Map();
+  for (const row of primaryImplementations) for (const chunk of row.chunks) {
+    if (chunk.bodyId === null) continue;
+    if (!bodyConsumers.has(chunk.bodyId)) bodyConsumers.set(chunk.bodyId, new Set());
+    for (const id of chunk.entryIds) bodyConsumers.get(chunk.bodyId).add(id);
+  }
+  function routeDispatchers(route) {
+    const records = dispatchers.filter(row => row.routeIds.includes(route.id));
+    const size = helperSize(records);
+    return { records, size, bodies:size.bodyIds.map(id => {
+      const entryIds = [...bodyConsumers.get(id)].sort();
+      return { ...bodies.get(id), entryIds,
+        routeIds:P.routes.filter(row => row.composition.some(key => entryIds.includes(key))).map(row => row.id),
+        records:records.filter(row => row.bodyIds.includes(id)) };
+    }), missing:records.filter(row => !row.bodyIds.length) };
+  }
   const schemaReferences = new Map();
   for (const reference of P.references || []) if (reference.kind === 'schema' && reference.targetId) {
     if (!schemaReferences.has(reference.targetId)) schemaReferences.set(reference.targetId, []);
@@ -125,6 +145,6 @@ function createReportViewModel(P) {
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
   return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers};
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

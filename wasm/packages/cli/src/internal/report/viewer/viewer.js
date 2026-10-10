@@ -66,7 +66,7 @@
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
   const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers} = createReportViewModel(P);
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
@@ -177,7 +177,7 @@
       detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},el('code',{},id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
       detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
       detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.')),
-      helperLinks(r),
+      helperLinks(r),dispatcherDetails(r),
       detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
     else if(state.drawerTab==='size') {
       panel.append(note('Shared bodies are nonadditive. Code bytes are not execution cost or guaranteed removal savings.'));
@@ -186,7 +186,7 @@
         return el('div',{},el('div',{class:'size-grid-label'},label),value===null?el('div',{class:'size-grid-value size-unavailable'},measurementText(r,metric)):byteDisplay(value),el('div',{class:'size-grid-exact'},m?(value===null?m.fact.reason??m.fact.state:exact(value)+' · '+m.fact.coverage):measurementIssue(r,metric)));
       })));
       panel.append(note('Handler body and Reachable measure code bodies only; embedded asset and schema data are excluded. A small handler may serve a large payload.'),
-        helperLinks(r),
+        helperLinks(r),dispatcherDetails(r),
         detailSection('Referenced resources',el('p',{},P.resources.filter(resource=>resource.routeIds.includes(r.id)).length+' recorded resources; consumer coverage may be partial.'),el('a',{href:'#resources'},'View resource inventory and byte representations')));
       for(const [metric,label] of Object.entries(metrics)) {
         const resolution=measurementResolution(r,metric);
@@ -196,6 +196,35 @@
       }
     } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
     replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},r.handlerName??'Name unavailable'),tabs,panel);
+  }
+  function dispatcherDetails(route) {
+    const view=routeDispatchers(route);
+    const section=(...nodes)=>detailSection('Associated dispatcher bodies',...nodes);
+    if(helperState!=='recorded') return section(el('p',{class:'small-note'},helperState==='not-recorded'
+      ?'Dispatcher inventory was not recorded in this historical capsule. Physical associations cannot be reconstructed from unavailable route measurements.'
+      :'No implementation records for the primary artifact. Prelink dispatcher records cannot establish final body sizes.'));
+    if(!view.records.length) return section(el('p',{class:'small-note'},'No dispatcher associations recorded for this route. Inventory and composition coverage are incomplete; this does not prove absence.'));
+    const entryRecords=ids=>ids.map(id=>{const entry=entries.get(id);return el('div',{class:'helper-entry'},
+      el('strong',{},entryLabel(entry)),el('p',{class:'small-note'},sourceText(entry.source)),
+      el('code',{class:'record-text'},id),routeChips(P.routes.filter(row=>row.composition.includes(id)).map(row=>row.id)));});
+    return section(
+      note('A dispatcher can contain several entries in one physical function. Its whole-body size is not this route’s size. Per-route bytes inside the dispatcher remain unavailable.'),
+      kv([['Distinct mapped dispatcher code',exact(view.size.bytes)],['Physical bodies',String(view.size.bodyIds.length)],
+        ['Mapped carrier chunks',view.size.mapped+' / '+view.size.expected],['Artifact',A.stage+' · '+A.sha256]]),
+      el('p',{class:'small-note'},'These bytes are already in the artifact and may overlap helpers or other routes. Do not add them to Handler body, Reachable, or helper totals. Missing mappings contribute unknown bytes, not zero.'),
+      view.bodies.map(body=>el('details',{class:'details-block dispatcher-body'},el('summary',{},'Function '+body.index+' · '+bytes(body.bytes)+' · whole dispatcher body'),
+        el('div',{class:'dispatcher-detail'},kv([['Physical body',body.id],['Whole-body bytes',exact(body.bytes)],
+          ['Associated carrier chunks',body.records.flatMap(row=>row.chunks.map(chunk=>chunk.chunk)).join(', ')],
+          ['Known associated entries',String(body.entryIds.length)+' · partial coverage']]),
+          el('p',{class:'small-note'},'Entries below include other recorded implementations of this same physical body. Associations are static, not invocation counts or complete reachability.'),
+          routeChips(body.routeIds),entryRecords(body.entryIds),
+          el('details',{class:'details-block'},el('summary',{},'Carrier identity & evidence'),
+            ...body.records.map(row=>el('div',{class:'record-text'},row.id)),
+            ...evidenceCards([...new Set(body.records.flatMap(row=>row.evidenceIds))]))))),
+      view.missing.map(row=>el('details',{class:'details-block dispatcher-body'},el('summary',{},'Carrier chunk '+row.chunks[0].chunk+' · body unavailable'),
+        el('div',{class:'dispatcher-detail'},kv([['Reason',row.chunks[0].reason],['Physical size','Unavailable'],['Implementation',row.id]]),
+          el('p',{class:'small-note'},'Known entry associations survive the missing body mapping. They do not identify a final function.'),
+          entryRecords(row.entryIds),...evidenceCards(row.evidenceIds)))));
   }
   function helperCoverage(row) {
     const size=helperSize([row]);

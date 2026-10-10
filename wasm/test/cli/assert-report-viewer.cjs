@@ -106,6 +106,7 @@ function renderedTree(capsule) {
 }
 const tree=renderedTree(richCapsule);
 require('./report-helper-viewer-cases.cjs')({renderedTree});
+require('./report-dispatcher-viewer-cases.cjs')({renderedTree});
 const usageInput=structuredClone(richCapsule), usageSchema=usageInput.schemas[0];
 usageSchema.entryIds=[];
 assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'Usage tracing not recorded');
