@@ -39,6 +39,7 @@ const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping'
   'entry-ownership-not-retained', 'dispatcher-carrier', 'final-symbol-not-surviving', 'dynamic-reference', 'unresolved-reference',
   ...new Set(Object.values(GRAPH_DIAGNOSTICS).filter(reason => !['missing-evidence', 'prelink-only'].includes(reason)))];
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
+const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'];
 const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support'];
 const defs = {
   ResourceProducer: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'), coverage: ref('Coverage'), resourceIds: ids, evidenceIds: ids }),
@@ -62,7 +63,7 @@ const defs = {
     handlerName: nullable(str), entryId: id, source: nullable(ref('Source')), composition: ids,
     compositionCoverage: en('complete', 'bounded', 'unavailable'),
     schemaIds: ids, bindingIds: ids, declarationIds: ids, evidenceIds: ids }, ['compositionCoverage']),
-  Entry: object({ id, canonicalId: text, kind: en('route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'),
+  Entry: object({ id, canonicalId: text, kind: en(...ENTRY_ROLES),
     order: uint, handlerId: nullable(id), name: nullable(str), source: nullable(ref('Source')),
     schemaIds: ids, bindingIds: ids, declarationIds: ids, evidenceIds: ids,
     flow: object({ nextEntryId: nullable(id), childEntryId: nullable(id), parentContinueEntryId: nullable(id),
@@ -101,6 +102,14 @@ const defs = {
     ledger: object({ headerBytes: fixed(8), codeBodyBytes: uint, codeFramingBytes: uint,
       dataPayloadBytes: ref('Fact'), unattributedDataPayloadBytes: ref('Fact') }) }, ['ledger']),
   Body: object({ id, artifactId: id, index: uint, bytes: { ...uint, minimum: 1 } }),
+  Implementation: object({ id, artifactId: id, canonicalId: nullable(text),
+    origin: en('dedicated', 'authored-helper', 'consolidated-stage', 'dispatcher'),
+    roles: array(en(...ENTRY_ROLES, 'helper')),
+    consumerBasis: fixed('compiler-entry-association'), entryCoverage: ref('Coverage'),
+    entryIds: ids, routeIds: ids, bodyIds: ids, evidenceIds: ids,
+    chunks: { ...array(object({ chunk: uint, bodyId: nullable(id),
+      reason: nullable(en('final-symbol-not-surviving')), entryIds: ids })), minItems: 1 },
+    bodyCoverage: ref('Coverage') }),
   Root: object({ id, kind: en('route', 'event', 'startup', 'error', 'export', 'other'), subjectId: nullable(id), bodyIds: ids }),
   RootSet: object({ id, artifactId: id, universeComplete: bool, graph: en('static-direct-calls', 'unsupported'),
     roots: array(ref('Root')), evidenceIds: ids }),
@@ -118,14 +127,15 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   producer: object({ pulseVersion: text, reporterVersion: text }), context: ref('Context'),
   provenance: object({ revision: nullable({ type: 'string', pattern: '^[a-f0-9]{40,64}$' }), dirty: nullable(bool),
     sourceFingerprint: nullable(hash), buildEvidenceId: id, toolchain: array(ref('Producer')), recipe: ref('Recipe') }),
-  coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources', 'references'].map(key => [key, ref('Coverage')])), ['references']),
+  coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources', 'references', 'implementations'].map(key => [key, ref('Coverage')])), ['references', 'implementations']),
   application: object({ name: text }), routes: array(ref('Route')), entries: array(ref('Entry')),
   declarations: array(ref('Declaration')), schemas: array(ref('Schema')), bindings: array(ref('Binding')),
   resources: array(ref('Resource')), artifacts: array(ref('Artifact')), bodies: array(ref('Body')),
   references: array(ref('Reference')),
   resourceProducers: array(ref('ResourceProducer')),
+  implementations: array(ref('Implementation')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers', 'implementations']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),

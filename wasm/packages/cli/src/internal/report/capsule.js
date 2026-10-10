@@ -4,20 +4,20 @@ const { copyData, canonicalJson, parseJson, sha256, fail, relativePath, freeze }
 const { capsuleSchema, RESOURCE_SCOPES } = require('./schema');
 const { validate, project } = require('./validate');
 const { structureFromDescriptor, REGISTRY_VERSION } = require('./schema-projection');
-const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'references', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
+const collections = ['routes', 'entries', 'declarations', 'schemas', 'bindings', 'resources', 'references', 'implementations', 'artifacts', 'bodies', 'rootSets', 'measurements', 'observations', 'evidence'];
 const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const same = (a, b) => canonicalJson(a) === canonicalJson(b);
 const ensure = (condition, code = 'REPORT_INVARIANT') => { if (!condition) fail(code); };
 function artifactId(hash) { ensure(/^[a-f0-9]{64}$/.test(hash)); return `artifact:${hash}`; }
 function bodyId(hash, index) { ensure(Number.isSafeInteger(index) && index >= 0); return `body:${artifactId(hash).slice(9)}:${index}`; }
 function stableReportId(kind, canonicalId) {
-  ensure(['route', 'entry', 'schema', 'binding', 'resource', 'reference', 'measurement', 'evidence', 'declaration', 'root-set', 'handler', 'root'].includes(kind));
+  ensure(['route', 'entry', 'schema', 'binding', 'resource', 'reference', 'implementation', 'measurement', 'evidence', 'declaration', 'root-set', 'handler', 'root'].includes(kind));
   ensure(typeof canonicalId === 'string' && canonicalId.length > 0);
   return `${kind}:${sha256(canonicalJson({ kind, canonicalId }))}`;
 }
 function normalize(input) {
   const value = copyData(input);
-  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages']);
+  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages', 'roles']);
   function walk(item, key) {
     if (Array.isArray(item)) {
       if (sets.has(key)) { ensure(new Set(item).size === item.length, 'REPORT_DUPLICATE'); item.sort(compare); }
@@ -37,6 +37,7 @@ function normalize(input) {
     schema.structure = canonical;
   }
   for (const roots of value.rootSets || []) roots.roots.sort((a, b) => compare(a.id, b.id));
+  for (const row of value.implementations || []) row.chunks.sort((a, b) => a.chunk - b.chunk);
   return value;
 }
 function check(capsule) {
@@ -70,6 +71,7 @@ function check(capsule) {
     if (['unavailable', 'not-applicable'].includes(value.status)) ensure(count === 0, 'REPORT_COVERAGE');
   }
   ensure(Object.hasOwn(capsule, 'references') === Object.hasOwn(capsule.coverage, 'references'), 'REPORT_COVERAGE');
+  ensure(Object.hasOwn(capsule, 'implementations') === Object.hasOwn(capsule.coverage, 'implementations'), 'REPORT_COVERAGE');
   for (const name of Object.keys(capsule.coverage)) coverage(capsule.coverage[name], capsule[name].length);
   for (const [name, rows] of Object.entries(maps)) for (const row of rows.values()) {
     source(row);
@@ -171,6 +173,7 @@ function check(capsule) {
     const artifact = maps.artifacts.get(body.artifactId);
     ensure(artifact && body.id === bodyId(artifact.sha256, body.index), 'REPORT_IDENTITY');
   }
+  require('./implementations').checkImplementations(capsule, maps);
   function bodies(ids, artifact) {
     references(ids, maps.bodies);
     ensure(ids.every(id => maps.bodies.get(id).artifactId === artifact), 'REPORT_IDENTITY');

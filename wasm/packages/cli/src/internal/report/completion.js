@@ -54,7 +54,12 @@ function validateAttribution(input) {
     ensure(row.chunks.every(chunk => chunks.has(chunk)), 'REPORT_ATTRIBUTION');
   }
   if (value.attributionVersion === 2) {
+    const implementations = new Map();
     for (const row of value.chunkMappings) ensure((row.kind === 'dispatcher-carrier') === (row.implementationId === null), 'REPORT_ATTRIBUTION');
+    for (const row of value.chunkMappings) if (row.implementationId !== null) {
+      ensure(!implementations.has(row.implementationId) || implementations.get(row.implementationId) === row.kind, 'REPORT_ATTRIBUTION');
+      implementations.set(row.implementationId, row.kind);
+    }
     for (const row of value.entries) {
       ensure(!entries.has(row.entryId), 'REPORT_DUPLICATE'); entries.add(row.entryId);
       ensure(new Set(row.bodies.map(body => body.chunk)).size === row.bodies.length, 'REPORT_DUPLICATE');
