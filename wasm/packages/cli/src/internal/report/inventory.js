@@ -66,6 +66,7 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
     handlerId: id('handler', compiled.metadata.handler || 'default'), name: 'default',
     source: source(compiled.reachableGraph?.handlers?.[0]?.source, project.root), schemaIds: [], bindingIds: [], declarationIds: [], evidenceIds });
   const entries = new Map(capsule.entries.map(row => [row.canonicalId, row]));
+  const routeBehaviors = new Map((references?.routeBehaviors || []).map(row => [row.entryId, row]));
   for (const [order, route] of (routing?.routes || []).entries()) {
     const entry = entries.get(route.routerEntryStableId);
     if (!entry) throw new TypeError('Canonical route has no execution entry');
@@ -73,6 +74,9 @@ function collectInventory(project, prepared, artifacts, primaryId, optimization)
       && ['use', 'mount'].includes(row.kind));
     capsule.routes.push({ id: id('route', route.stableId), canonicalId: route.stableId, order, method: route.method, path: route.path,
       handlerId: entry.handlerId, handlerName: route.handlerName || null, entryId: entry.id, source: entry.source,
+      ...(routeBehaviors.has(entry.canonicalId) ? { behavior: {
+        kind: routeBehaviors.get(entry.canonicalId).kind, basis: routeBehaviors.get(entry.canonicalId).basis
+      } } : {}),
       composition: [...candidates.map(row => entryIds.get(row.stableId)), entry.id], compositionCoverage: candidates.length ? 'bounded' : 'complete',
       schemaIds: [], bindingIds: [], declarationIds: [], evidenceIds });
   }

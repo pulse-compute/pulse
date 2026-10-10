@@ -1097,6 +1097,17 @@ included. The service stays closed until the following evidence exists:
 P-01 freezes scope only. The older interrupted suite, earlier passing runtime
 checks and pre-final package attempts cannot satisfy G-DL or G-O2.
 
+## Report route behavior
+
+Optional route `behavior` records `terminal` or `continuing` from validated
+handler IR (`basis: canonical-handler-ir`), outside executable metadata/hashes.
+Continuing includes conditional and error transfers; historical missing facts
+stay unknown. Counts distinguish registrations from method/path pairs. Primary
+body associations diagnose mixed dispatcher ownership versus missing mappings,
+using the handler entry itself, never preceding composition entries. Diagnostics
+preserve measurements and historical identity; one observed consumer is not
+exclusive ownership. See [CLI guidance](../packages/cli.md).
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support

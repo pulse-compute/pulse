@@ -118,6 +118,7 @@ function executeCanonicalRouterSpine(sourceText, options = {}) {
   if (output && typeof output === 'object') {
     traces.set(output, result.trace);
     handlerIrBundles.set(output, bundle.handlers);
+    require('../report-route-behavior').retainRouteBehavior(output.metadata, bundle.handlers);
     surfaceFacts.set(output, Object.freeze({
       recognition: bundle.recognition,
       classification: bundle.classification,

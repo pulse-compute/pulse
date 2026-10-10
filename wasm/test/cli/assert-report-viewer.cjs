@@ -107,6 +107,7 @@ function renderedTree(capsule) {
 const tree=renderedTree(richCapsule);
 require('./report-helper-viewer-cases.cjs')({renderedTree});
 require('./report-dispatcher-viewer-cases.cjs')({renderedTree});
+require('./report-route-diagnostic-cases.cjs')({renderedTree});
 const reconciliation = require('./report-reconciliation-cases.cjs')({renderedTree});
 console.log('RPT8-12 combined reconciliation: ' + JSON.stringify(reconciliation));
 const responseCapsule=require('./report-response-payload-cases.cjs').responseFixture().capsule;

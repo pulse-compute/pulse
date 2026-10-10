@@ -12,7 +12,7 @@ const { createHash } = require('node:crypto');
 const ts = require('typescript');
 const { compileCanonicalRouterSource } = require('../../packages/compiler/src/canonical-router-compiler');
 const { compileCanonicalSource } = require('../../packages/compiler/src/canonical-api-compiler');
-const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
+const { buildCanonicalNativePlan, collectCanonicalReportReferences } = require('../../packages/compiler/src/canonical-native-plan');
 const { collectInventory } = require('../../packages/cli/src/internal/report/inventory');
 const { addSizeEvidence } = require('../../packages/cli/src/internal/report/size');
 const root = path.resolve(__dirname, '../../..');
@@ -33,6 +33,15 @@ function prepare() {
   const plan = buildCanonicalNativePlan(compiled);
   assert.equal(plan.routing.entries.length, 9);
   assert.equal(plan.handlers.length, 4);
+  const behaviors = collectCanonicalReportReferences(compiled, plan).routeBehaviors;
+  assert.equal(behaviors.length, 6);
+  assert.equal(behaviors.filter(row => row.kind === 'terminal').length, 4);
+  assert.equal(behaviors.filter(row => row.kind === 'continuing').length, 2);
+  const entryBehavior = entry => behaviors.find(row => row.entryId === entry.stableId)?.kind;
+  assert.equal(entryBehavior(plan.routing.entries.find(row => row.path === '/error')), 'continuing', 'error transfer is continuing');
+  assert.deepEqual(plan.routing.entries.filter(row => row.path === '/next').map(entryBehavior), ['continuing','terminal'], 'conditional early response remains transfer-capable');
+  assert.equal(collectCanonicalReportReferences({ ...compiled, metadata: JSON.parse(JSON.stringify(compiled.metadata)) }, plan).routeBehaviors,
+    undefined, 'deserialized compiler metadata must not invent IR facts');
   assert.equal(plan.stages.length, 1);
   const stage = plan.stages[0];
   assert.equal(stage.registrations.length, 2);

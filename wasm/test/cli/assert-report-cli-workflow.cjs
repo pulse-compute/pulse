@@ -44,7 +44,7 @@ try {
   for (const name of Object.keys(partial.coverage)) partial.coverage[name] = { status: 'unavailable', observed: 0, expected: null, reason: 'missing-evidence' };
   fs.writeFileSync(path.join(directory, 'partial.json'), serializeCapsule(createCapsule(partial)));
   const partialOutput = run(['--artifact', 'partial.json']); assert.equal(partialOutput.status, 0, partialOutput.stderr);
-  check(partialOutput.stdout.includes('routes: unavailable | handlers: unavailable'), 'unknown inventory is not presented as zero');
+  check(partialOutput.stdout.includes('route registrations: unavailable (unknown distinct method/path pairs) | handlers: unavailable'), 'unknown inventory is not presented as zero');
 
   for (const flag of ['--plan', '--dry-run']) {
     const plan = run(['--artifact', 'absent.json', flag, '--json']); assert.equal(plan.status, 0, plan.stderr);
