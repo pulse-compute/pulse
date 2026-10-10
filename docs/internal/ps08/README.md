@@ -1,5 +1,10 @@
 # PS-08: small manual performance baseline
 
+The opt-in [PERF8-01 suite](../perf8-01/README.md) extends this harness with runtime
+CPU/memory, retained BLD8 metadata and a larger compile-only fixture. The command
+below still selects PS-08/v1; use `--suite beta8 --out <new-file>` for v2. Historical
+v1 reports retain their original protocol/harness identity and comparison rules.
+
 Human direction: implement PS-08 from the next-stream plan. No named Entry Point
 matches this test-owned measurement harness; the root/Wasm instructions apply.
 Owners: `wasm/test/performance/` and this repository-only note. Class: evidence;
