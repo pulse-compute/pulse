@@ -57,21 +57,21 @@ function prepare() {
   return { compiled, plan };
 }
 
-function loadObserved(relative, intercept) {
+function loadObserved(relative, intercept, transform = source => source) {
   const file = path.join(root, relative), owner = new Module(file, module);
   owner.filename = file; owner.paths = Module._nodeModulePaths(path.dirname(file));
   const original = owner.require.bind(owner);
   owner.require = id => intercept(id, original(id));
-  owner._compile(fs.readFileSync(file, 'utf8'), file);
+  owner._compile(transform(fs.readFileSync(file, 'utf8')), file);
   return owner.exports;
 }
 
-function build(plan, target, capture, optimization, directory) {
+function build(plan, target, capture, optimization, directory, controlOverride) {
   let control, layout, generated, generatorCalls = 0, ascCalls = 0, recipe;
   const generator = loadObserved('wasm/packages/runtime-core-as/src/compiler/canonical-native.js', (id, value) =>
     id !== './canonical-native-control.js' ? value : { ...value,
-      buildNativeControl(...args) { control = value.buildNativeControl(...args); return control; },
-      layoutNativeControl(...args) { layout = value.layoutNativeControl(...args); return layout; }
+      buildNativeControl(...args) { control = (controlOverride || value).buildNativeControl(...args); return control; },
+      layoutNativeControl(...args) { layout = (controlOverride || value).layoutNativeControl(...args); return layout; }
     });
   const captureFile = path.join(directory, 'capture.json');
   fs.rmSync(captureFile, { force: true });
@@ -362,4 +362,5 @@ async function main() {
       scope: 'Production entry/stage capture; dispatcher carriers are explicit, not handler sizes. No exclusive ownership claim.' }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
-main().catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { prepare, build, execute, loadObserved, chunkSymbols };
+if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
