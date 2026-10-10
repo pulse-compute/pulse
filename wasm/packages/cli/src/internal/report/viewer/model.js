@@ -11,6 +11,27 @@ function createReportViewModel(P) {
   const routeIndex = new Map(P.routes.map((r, i) => [r.id, i]));
   const schemaIndex = new Map(P.schemas.map((s, i) => [s.id, i]));
   const resourceIndex = new Map(P.resources.map((r, i) => [r.id, i]));
+  const entries = byId(P.entries), bodies = byId(P.bodies);
+  const helpers = (P.implementations || []).filter(row => row.artifactId === A.id
+    && ['authored-helper', 'consolidated-stage'].includes(row.origin));
+  const helperIndex = new Map(helpers.map((row, i) => [row.id, i]));
+  const helperOrigins = {'authored-helper':'Authored helper', 'consolidated-stage':'Consolidated stage'};
+  const helperState = !P.implementations ? 'not-recorded'
+    : !P.implementations.some(row => row.artifactId === A.id) ? 'no-primary-records' : 'recorded';
+  const entryLabel = entry => `Entry ${entry.order + 1} · ${entry.kind}${entry.flow?.path ? ' · ' + (entry.flow.method || '') + ' ' + entry.flow.path : ''}`;
+  // Presentation ordinals are capsule-local links, not new authored identities.
+  const helperLabel = row => helperOrigins[row.origin] + ' ' + (helperIndex.get(row.id) + 1);
+  function helperSize(rows) {
+    const counts = new Map();
+    for (const row of rows) for (const id of row.bodyIds) counts.set(id, (counts.get(id) || 0) + 1);
+    const ids = [...counts.keys()];
+    const mapped = rows.reduce((n,row) => n + row.bodyCoverage.observed, 0);
+    const expected = rows.reduce((n,row) => n + row.bodyCoverage.expected, 0);
+    return { bodyIds:ids, bytes:ids.length ? ids.reduce((n,id) => n + bodies.get(id).bytes, 0) : null,
+      mapped, expected, partial:mapped !== expected,
+      overlappingBodies:[...counts.values()].filter(count => count > 1).length };
+  }
+  const routeHelpers = route => helpers.filter(row => row.routeIds.includes(route.id));
   const schemaReferences = new Map();
   for (const reference of P.references || []) if (reference.kind === 'schema' && reference.targetId) {
     if (!schemaReferences.has(reference.targetId)) schemaReferences.set(reference.targetId, []);
@@ -65,7 +86,8 @@ function createReportViewModel(P) {
   const prefix = r => '/' + r.path.split('/').filter(Boolean).slice(0, 2).join('/');
   const declarationState = r => r.declarationIds.length ? 'recorded' : r.compositionCoverage === 'complete' ? 'not-declared' : 'unavailable';
   const declarationLabels = {recorded:'Declarations recorded', 'not-declared':'Not declared', unavailable:'Unavailable'};
-  const state = {view:'routes', search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set()};
+  const state = {view:'routes', search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
+    helperSearch:'', helperOrigin:'all', helperRole:'all', helperSort:'name', helperDir:'asc', expandedHelpers:new Set()};
   function compareValues(a,b,direction) { if(a==null)return b==null?0:1;if(b==null)return -1;return (a===b?0:a<b?-1:1)*(direction==='asc'?1:-1); }
   function filteredRoutes() {
     return P.routes.filter(r => {
@@ -84,6 +106,17 @@ function createReportViewModel(P) {
       : state.resourceSort === 'representation' ? factValue(r.generator?.representationBytes) : factValue(r.retainedPayloadBytes);
     return [...P.resources].sort((a,b)=>compareValues(value(a),value(b),state.resourceDir)||resourceIndex.get(a.id)-resourceIndex.get(b.id));
   }
+  function filteredHelpers() {
+    const value = row => state.helperSort === 'size' ? helperSize([row]).bytes
+      : state.helperSort === 'consumers' ? row.entryIds.length : helperIndex.get(row.id);
+    return helpers.filter(row => (state.helperOrigin === 'all' || row.origin === state.helperOrigin)
+      && (state.helperRole === 'all' || row.roles.includes(state.helperRole))
+      && [helperLabel(row),row.canonicalId,...row.roles,
+        ...row.entryIds.map(id => entryLabel(entries.get(id))),
+        ...row.routeIds.map(id => {const route=routes.get(id);return route.method+' '+route.path;})]
+        .join(' ').toLowerCase().includes(state.helperSearch))
+      .sort((a,b) => compareValues(value(a),value(b),state.helperDir) || helperIndex.get(a.id)-helperIndex.get(b.id));
+  }
   function composition(artifact) {
     if (artifact.sectionCoverage.status !== 'complete') return null;
     const parts = [{id:'code',label:'Code',bytes:0},{id:'data',label:'Data',bytes:0},{id:'custom',label:'Custom',bytes:0},{id:'other',label:'Other + header',bytes:8}];
@@ -91,6 +124,7 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage};
+  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

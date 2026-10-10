@@ -1287,6 +1287,24 @@ are not inferred from names or sizes. Prelink identities cannot label final
 bodies. Legacy v1 attribution supplies no origin classification, and historical
 capsules without this optional inventory retain their serialized bytes and hash.
 
+The offline Helpers view displays authored state-machine helpers and consolidated
+stages from the primary artifact's implementation inventory. Semantic roles stay
+separate from origin. Capsule-local labels link route details to the implementation
+and its recorded entry/route consumers; canonical identities and chunk/evidence
+records remain available in disclosure details. Search, role/origin filters, and
+numeric sorting affect presentation only. Missing mapped sizes sort last in both
+directions, and the exported capsule remains complete and unchanged.
+
+Helper row sizes sum distinct mapped body IDs for that implementation. The shown
+total is the union across visible rows, with cross-row overlap identified; it is
+already included in physical artifact bytes and must not be added to route
+Handler-body or Reachable measurements. Partial mappings show known bytes and
+mapped/expected chunk counts. With no mapped bodies, size is unavailable, never
+zero. These associations do not establish complete consumer coverage, exclusive
+ownership, runtime execution cost, or deletion savings. Historical capsules
+without implementation records and capsules with only prelink records show an
+explicit unavailable state. Dispatcher carriers remain outside this Helpers view.
+
 Inline transfer/error ownership identifies dispatcher carriers, whose whole-body
 bytes cannot be presented as individual handler sizes. Those measurements remain
 unavailable with `dispatcher-carrier`, or `entry-ownership-not-retained` when no

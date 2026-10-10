@@ -81,4 +81,5 @@ module.exports = function implementationCases() {
   // New optional fields are never synthesized while replaying old capsules.
   const old = serializeCapsule(input); assert.equal(serializeCapsule(parseCapsule(old)), old);
   assert.equal(parseCapsule(old).implementations, undefined);
+  return result;
 };
