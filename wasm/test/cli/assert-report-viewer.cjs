@@ -109,6 +109,7 @@ function renderedTree(capsule) {
 const tree=renderedTree(richCapsule);
 require('./report-identity-viewer-cases.cjs')({renderedTree});
 require('./report-layout-viewer-cases.cjs')({renderedTree});
+require('./report-build-cases.cjs').viewerCases({renderedTree});
 require('./report-helper-viewer-cases.cjs')({renderedTree});
 require('./report-dispatcher-viewer-cases.cjs')({renderedTree});
 require('./report-route-diagnostic-cases.cjs')({renderedTree});

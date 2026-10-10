@@ -42,6 +42,14 @@ const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 
 const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'];
 const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses'];
 const defs = {
+  BuildCompiler: object({ phase: en('portable', 'provider'), artifactId: id, compilerVersion: text,
+    durationMs: uint, timeoutMs: nullable(uint), flags: array(object({ name: text, value: nullable(text) })), flagsComplete: bool,
+    optimization: object({ optimizeLevel: nullable(uint), shrinkLevel: nullable(uint), converge: bool }),
+    toolchain: array(ref('Producer')), cache: en('not-reused', 'reused', 'not-recorded') }),
+  Build: object({ version: fixed(1), operation: en('compile', 'native-build'),
+    timingScope: fixed('build-start-through-inventory-capture'), totalDurationMs: uint, compilationDurationMs: nullable(uint),
+    stages: array(object({ name: text, durationMs: uint })), compilers: array(ref('BuildCompiler')),
+    providerArtifactReuse: en('reused', 'not-reused', 'not-recorded', 'not-applicable'), cache: fixed('not-recorded') }),
   ResourceProducer: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'), coverage: ref('Coverage'), resourceIds: ids, evidenceIds: ids }),
   ResourceGenerator: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'),
     representation: en('base64-text', 'pulse.report-schema-shape.v1', 'package-guest-unit', 'native-string'),
@@ -125,7 +133,7 @@ const defs = {
     scope: object({ corpus: nullable(text), cases: array(text), targets: array(text) }), recordedAt: nullable(text) })
 };
 const capsule = object({ kind: fixed('pulse.application-report'), reportVersion: fixed(1),
-  producer: object({ pulseVersion: text, reporterVersion: text }), context: ref('Context'),
+  producer: object({ pulseVersion: text, reporterVersion: text }), context: ref('Context'), build: ref('Build'),
   provenance: object({ revision: nullable({ type: 'string', pattern: '^[a-f0-9]{40,64}$' }), dirty: nullable(bool),
     sourceFingerprint: nullable(hash), buildEvidenceId: id, toolchain: array(ref('Producer')), recipe: ref('Recipe') }),
   coverage: object(Object.fromEntries(['routes', 'entries', 'schemas', 'bindings', 'resources', 'references', 'implementations'].map(key => [key, ref('Coverage')])), ['references', 'implementations']),
@@ -136,7 +144,7 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   resourceProducers: array(ref('ResourceProducer')),
   implementations: array(ref('Implementation')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers', 'implementations']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers', 'implementations', 'build']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),

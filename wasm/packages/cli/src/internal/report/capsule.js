@@ -163,6 +163,19 @@ function check(capsule) {
   ensure(primary && primary.stage === 'final' && primary.host === capsule.context.host, 'REPORT_ELIGIBILITY');
   const build = maps.evidence.get(capsule.provenance.buildEvidenceId);
   ensure(build && build.kind === 'build' && build.result === 'passed' && build.artifactIds.includes(primary.id), 'REPORT_ELIGIBILITY');
+  if (capsule.build) {
+    const metadata = capsule.build;
+    ensure(metadata.stages.reduce((sum, row) => sum + row.durationMs, 0) === metadata.totalDurationMs, 'REPORT_BUILD');
+    ensure(new Set(metadata.compilers.map(row => row.phase)).size === metadata.compilers.length, 'REPORT_BUILD');
+    for (const compiler of metadata.compilers) {
+      ensure(build.artifactIds.includes(compiler.artifactId), 'REPORT_REFERENCE');
+      if (compiler.phase === 'provider') ensure(compiler.artifactId === primary.id && metadata.operation === 'native-build', 'REPORT_BUILD');
+    }
+    const complete = metadata.compilers.some(row => row.phase === 'portable') && (metadata.operation === 'compile'
+      || metadata.providerArtifactReuse === 'reused' || metadata.compilers.some(row => row.phase === 'provider'));
+    ensure(metadata.compilationDurationMs === (complete ? metadata.compilers.reduce((sum, row) => sum + row.durationMs, 0) : null), 'REPORT_BUILD');
+    ensure((metadata.operation === 'compile') === (metadata.providerArtifactReuse === 'not-applicable'), 'REPORT_BUILD');
+  }
   for (const evidence of capsule.evidence) {
     if (evidence.kind === 'test') ensure(evidence.artifactIds.length > 0 && evidence.scope.corpus
       && evidence.scope.cases.length > 0 && evidence.scope.targets.length > 0, 'REPORT_TEST_SCOPE');
