@@ -32,6 +32,9 @@
     "context": {
       "$ref": "#/$defs/Context"
     },
+    "build": {
+      "$ref": "#/$defs/Build"
+    },
     "provenance": {
       "type": "object",
       "properties": {
@@ -317,6 +320,230 @@
         "target",
         "representation",
         "primaryArtifactId"
+      ],
+      "additionalProperties": false
+    },
+    "Build": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "native-build"
+          ]
+        },
+        "timingScope": {
+          "const": "build-start-through-inventory-capture"
+        },
+        "totalDurationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "compilationDurationMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "name",
+              "durationMs"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "compilers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuildCompiler"
+          },
+          "maxItems": 100000
+        },
+        "providerArtifactReuse": {
+          "enum": [
+            "reused",
+            "not-reused",
+            "not-recorded",
+            "not-applicable"
+          ]
+        },
+        "cache": {
+          "const": "not-recorded"
+        }
+      },
+      "required": [
+        "version",
+        "operation",
+        "timingScope",
+        "totalDurationMs",
+        "compilationDurationMs",
+        "stages",
+        "compilers",
+        "providerArtifactReuse",
+        "cache"
+      ],
+      "additionalProperties": false
+    },
+    "BuildCompiler": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "enum": [
+            "portable",
+            "provider"
+          ]
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "compilerVersion": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "timeoutMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 1048576,
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "flagsComplete": {
+          "type": "boolean"
+        },
+        "optimization": {
+          "type": "object",
+          "properties": {
+            "optimizeLevel": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "shrinkLevel": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "converge": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "optimizeLevel",
+            "shrinkLevel",
+            "converge"
+          ],
+          "additionalProperties": false
+        },
+        "toolchain": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Producer"
+          },
+          "maxItems": 100000
+        },
+        "cache": {
+          "enum": [
+            "not-reused",
+            "reused",
+            "not-recorded"
+          ]
+        }
+      },
+      "required": [
+        "phase",
+        "artifactId",
+        "compilerVersion",
+        "durationMs",
+        "timeoutMs",
+        "flags",
+        "flagsComplete",
+        "optimization",
+        "toolchain",
+        "cache"
       ],
       "additionalProperties": false
     },

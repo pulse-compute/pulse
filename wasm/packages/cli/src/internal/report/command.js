@@ -81,7 +81,7 @@ function terminalOverview(collected) {
     `  revision: ${terminalText(c.provenance.revision ?? 'unknown')} | dirty: ${c.provenance.dirty === null ? 'unknown' : c.provenance.dirty ? 'yes' : 'no'}`,
     `  route registrations: ${count('routes')} (${view.routeCounts.distinctMethodPaths ?? 'unknown'} distinct method/path pairs) | handlers: ${count('entries', handlers)} | schemas: ${count('schemas')} | bindings: ${count('bindings')} | resources: ${count('resources')}`,
     `  route behavior: ${view.routeCounts.terminal} terminal | ${view.routeCounts.continuing} continuing | ${view.routeCounts.unknown} not recorded`,
-    `  primary Wasm: ${artifact.bytes} bytes (${artifact.stage}); ${c.artifacts.length} artifact(s)`,
+    `  primary Wasm: ${artifact.bytes} bytes (${artifact.stage}); ${c.artifacts.length} artifact(s) | build: ${c.build ? `${c.build.totalDurationMs} ms to capture; asc ${c.build.compilationDurationMs === null ? 'not recorded' : c.build.compilationDurationMs + ' ms'}` : 'not recorded'} | optimization: ${terminalText(c.provenance.recipe.optimization)}`,
     `  handler mapping: ${available}/${mappings.length} available (${exact} exact); ${c.routes.filter(row => view.handlerAttribution(row).code === 'mixed-dispatcher').length} mixed dispatcher ownership; nonadditive`,
     `  observations: ${c.observations.length} | inventory coverage gaps: ${gaps} | missing optional sidecars: ${collected.missingOptionalSidecars.length}`,
     '  Build-review artifact; review contents before sharing publicly.'

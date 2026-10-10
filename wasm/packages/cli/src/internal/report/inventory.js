@@ -18,13 +18,14 @@ function source(value, root, zeroBasedColumn = false) {
   if (!Number.isInteger(point.line) || point.line < 1) return null;
   return { file, line: point.line, column: Math.max(1, (point.column || 0) + (zeroBasedColumn ? 1 : 0)) };
 }
-function collectInventory(project, prepared, artifacts, primaryId, optimization) {
+function collectInventory(project, prepared, artifacts, primaryId, optimization, build) {
   const { compiled, plan, native } = prepared;
   const references = prepared.reportReferences?.version === 'pulse.compiler-report-references.v1' ? prepared.reportReferences : null;
   const buildId = id('evidence', 'completed:' + primaryId), resolvedId = id('evidence', 'inventory:' + primaryId);
   const evidenceIds = [resolvedId], artifactIds = artifacts.map(row => row.id);
   const capsule = {
     kind: 'pulse.application-report', reportVersion: 1,
+    ...(build ? { build } : {}),
     producer: { pulseVersion: version, reporterVersion: '1' },
     context: { profile: selectedProfile(project), host: project.provider, target: 'native', representation: 'canonical-native-wasm', primaryArtifactId: primaryId },
     provenance: { revision: null, dirty: null, sourceFingerprint: null, buildEvidenceId: buildId,

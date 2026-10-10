@@ -692,10 +692,13 @@ function cleanOutputDirectory(project, outDir) {
 function withReportBuild(project, options, operation, execute) {
   const report = require('./internal/report/retained');
   const outDir = resolveOutputDirectory(project, options.outDir || project.outDir);
+  const timing = require('./internal/report/build').startBuild();
   const release = report.acquireBuildLock(project, outDir);
   try {
     const attempt = report.beginBuild(project, { ...options, operation }, outDir);
     attempt.assertLease = release.verify;
+    attempt.timing = timing;
+    timing.mark('input snapshot');
     return execute(attempt);
   }
   catch (error) {
@@ -898,7 +901,9 @@ function buildProjectWithReport(project, options, reportAttempt) {
     });
   }
 
+  reportAttempt.timing.mark('preparation');
   const prepared = compileNativeProjectInMemory(project, options);
+  reportAttempt.timing.mark('portable compilation');
   const eventSupport = assertEventCommandEligible(project, prepared.compiled, 'build', descriptor);
   const requestedOutDir = options.outDir || project.outDir;
   const outDir = options.clean === false
@@ -911,6 +916,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
   const packageInspection = writePackageInspectionArtifacts(prepared.compiled, outDir);
   const eventInspection = writeEventInspectionArtifacts(project, prepared.compiled, outDir, eventSupport);
   const lowering = providerLoweringPlan(project, prepared.compiled.metadata);
+  reportAttempt.timing.mark('artifact emission');
   const providerBuild = driver.writeTarget
     ? normalizeProviderTargetResult(driver.writeTarget(providerTargetInvocation(
         project,
@@ -925,6 +931,7 @@ function buildProjectWithReport(project, options, reportAttempt) {
         }
       )), { action: 'write-native', provider: project.provider, target: 'native' })
     : undefined;
+  reportAttempt.timing.mark('provider realization');
   const providerFiles = providerBuild ? providerBuild.files : Object.freeze({});
   const providerBuildMetadata = providerBuild && providerBuild.build;
   const nativeManifest = prepared.native.manifest;
@@ -1042,7 +1049,8 @@ function buildProjectWithReport(project, options, reportAttempt) {
     ...(eventInspection ? { events: eventManifestProjection(eventInspection) } : {})
   });
   const manifestFile = path.join(outDir, BUILD_MANIFEST);
-  manifest = require('./internal/report/retained').publishBuild(project, { ...prepared, providerReportAttribution: providerBuildMetadata?.reportAttribution }, manifest, manifestFile, outDir, reportAttempt);
+  manifest = require('./internal/report/retained').publishBuild(project, { ...prepared, providerReportAttribution: providerBuildMetadata?.reportAttribution,
+    providerBuildObservation: providerBuildMetadata?.buildObservation, providerPortableReuse: providerBuildMetadata?.providerNeutralWasm === true }, manifest, manifestFile, outDir, reportAttempt);
   return Object.freeze({
     status: 'built',
     version: PROJECT_EXECUTION_VERSION,
@@ -1104,7 +1112,9 @@ function compileNativeProjectWithReport(project, options, reportAttempt) {
     : cleanOutputDirectory(project, requestedOutDir);
   fs.mkdirSync(outDir, { recursive: true });
 
+  reportAttempt.timing.mark('preparation');
   const prepared = compileNativeProjectInMemory(project, options);
+  reportAttempt.timing.mark('portable compilation');
   const javascriptApplication = (project.target || 'native') === 'javascript'
     ? prepareJavascriptApplication(project, { load: false, captureLoadError: true, allowedPackages: options.allowedPackages })
     : null;
@@ -1117,6 +1127,7 @@ function compileNativeProjectWithReport(project, options, reportAttempt) {
   const packageInspection = writePackageInspectionArtifacts(prepared.compiled, outDir);
   const eventInspection = writeEventInspectionArtifacts(project, prepared.compiled, outDir, eventSupport);
   const nativeManifest = prepared.native.manifest;
+  reportAttempt.timing.mark('artifact emission');
   let manifest = Object.freeze({
     version: PROJECT_EXECUTION_VERSION,
     status: 'compiled',

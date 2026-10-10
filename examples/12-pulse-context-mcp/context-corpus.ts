@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "04fd51d464cc7849ce13442b88dd0d648f3924251e4c597f4b933109c1366258",
+  "corpusHash": "1d80c68df1cd94e0a52cba8dc44afebdbe4eb7968c269ab271c78fde666f329f",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -372,9 +372,9 @@ export const contextCorpus = freeze({
         "endLine": 172,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "c63d6deed2c9d0694889a7a201f2ca0a39a651612bf3cbb5a81c94bc3e19ec42",
+        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
         "startLine": 56,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/21f16163103b313a0b9b5676486b963f298d45ad"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
       },
       "status": "candidate",
       "tags": [
@@ -426,6 +426,42 @@ export const contextCorpus = freeze({
         "handler"
       ],
       "title": "Application root"
+    },
+    {
+      "applicability": [
+        {
+          "provider": "fastly",
+          "target": "native"
+        },
+        {
+          "provider": "node",
+          "target": "native"
+        },
+        {
+          "provider": "none",
+          "target": "native"
+        }
+      ],
+      "category": "contract",
+      "content": "## Retained build metadata\n\nOptional Report v1 `build` metadata is captured during Native compile/build and\nbound by the existing inventory/completion hashes. It records monotonic elapsed\nstages from build entry through inventory capture, plus separate portable and\nprovider AssemblyScript invocation durations, effective flags and optimization\nlevels, compiler/toolchain versions, and observed provider artifact reuse.\nCompiler observations reference the exact retained artifacts. Adjacent stage\nintervals sum to the recorded total; compiler durations are nested within those\nintervals, not additive overhead. The total excludes prior configuration\nresolution, inventory serialization and final publication. No timing claim is\nmade for replay, internal asc subpasses, or unobserved caches. Node packaging\nreuses portable Wasm without a second compilation. Filesystem flag values are\nreplaced with role placeholders; only compiler-owned flags are captured, never\narbitrary argv, environment or provider binding values. Qualified asc defaults\nare resolved only for the known version; unknown defaults remain null. Metadata\nis outside source, plan and executable Wasm identity. Historical capsules without\nthis optional block remain unchanged and display **Not recorded**.\n",
+      "contentSha256": "def90544d79ee4b37fbc775a19a28d70333be002e24eaeb1cb33019c2cab6c19",
+      "id": "contract/build-metadata",
+      "pulseVersion": "1.0.0-beta.7",
+      "source": {
+        "endLine": 1155,
+        "path": "docs/architecture/current-contracts.md",
+        "selection": "heading:Retained build metadata",
+        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
+        "startLine": 1137,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
+      },
+      "status": "candidate",
+      "tags": [
+        "build",
+        "optimization",
+        "report"
+      ],
+      "title": "Retained build metadata"
     },
     {
       "applicability": [
@@ -499,12 +535,12 @@ export const contextCorpus = freeze({
       "id": "contract/eligibility",
       "pulseVersion": "1.0.0-beta.7",
       "source": {
-        "endLine": 1498,
+        "endLine": 1517,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "c63d6deed2c9d0694889a7a201f2ca0a39a651612bf3cbb5a81c94bc3e19ec42",
-        "startLine": 1137,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/21f16163103b313a0b9b5676486b963f298d45ad"
+        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
+        "startLine": 1156,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
       },
       "status": "candidate",
       "tags": [
@@ -673,12 +709,12 @@ export const contextCorpus = freeze({
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.7",
       "source": {
-        "endLine": 1544,
+        "endLine": 1563,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "c63d6deed2c9d0694889a7a201f2ca0a39a651612bf3cbb5a81c94bc3e19ec42",
-        "startLine": 1499,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/21f16163103b313a0b9b5676486b963f298d45ad"
+        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
+        "startLine": 1518,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
       },
       "status": "candidate",
       "tags": [
@@ -9065,12 +9101,12 @@ export const contextCorpus = freeze({
     }
   ],
   "schemaVersion": "pulse.context-corpus.v1",
-  "selectionSha256": "6cfcbc5358acef21411e0b4b636f998902981eadd56e43ffdd5f0dd0a3a8a11e",
+  "selectionSha256": "c6c45d94cf700a25cdd6eb1a8dc37ad63db6071acbbc4e680e5e957204421c98",
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "c63d6deed2c9d0694889a7a201f2ca0a39a651612bf3cbb5a81c94bc3e19ec42",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/21f16163103b313a0b9b5676486b963f298d45ad"
+      "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
     },
     {
       "path": "docs/concepts/bodies.md",

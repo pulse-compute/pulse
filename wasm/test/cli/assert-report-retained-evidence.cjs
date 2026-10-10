@@ -78,6 +78,24 @@ export default app;`;
     const reportStarted = Date.now(), collected = report.collectProjectReport({ cwd: directory });
     const reportMs = Date.now() - reportStarted;
     const saved = capsule.serializeCapsule(collected.capsule), c = collected.capsule;
+    assert.equal(c.build.operation, 'compile');
+    assert.equal(c.build.providerArtifactReuse, 'not-applicable');
+    assert.equal(c.build.cache, 'not-recorded');
+    assert.equal(c.build.totalDurationMs, c.build.stages.reduce((sum, row) => sum + row.durationMs, 0));
+    assert.ok(c.build.totalDurationMs <= buildMs);
+    assert.ok(c.build.compilationDurationMs > 0 && c.build.compilationDurationMs <= c.build.totalDurationMs);
+    assert.equal(c.build.compilers.length, 1);
+    const portableCompiler = c.build.compilers[0];
+    assert.equal(portableCompiler.artifactId, c.context.primaryArtifactId);
+    assert.equal(portableCompiler.cache, 'not-reused');
+    assert.equal(portableCompiler.flagsComplete, true);
+    assert.equal(portableCompiler.timeoutMs, 120000);
+    assert.ok(portableCompiler.toolchain.some(row => row.name === 'Binaryen (asc)'));
+    assert.deepEqual(portableCompiler.optimization, { optimizeLevel: 3, shrinkLevel: 0, converge: false });
+    assert.ok(portableCompiler.flags.some(row => row.name === '--transform' && row.value === 'native-retention-transform.cjs'));
+    assert.ok(portableCompiler.toolchain.some(row => row.name === 'json-as' && row.version === '1.5.0'));
+    assert.ok(!JSON.stringify(c.build).includes(directory));
+    assert.ok(!JSON.stringify(c.build).includes('SECRET_VALUE_CANARY'));
     // Exercise the public command on a real completed build, including existing
     // profile selection and artifact replay, without any second native build.
     const binary = path.join(cli, '../bin/pulse.js');
@@ -186,9 +204,24 @@ export default app;`;
     assert.equal(fs.existsSync(path.join(built.outDir, report.COMPLETION_FILE)), false);
     // The provider-final path is separately verified and never borrows the
     // portable hash. This build also proves recovery after the failed attempt.
-    const fastly = execution.buildProject(resolve({ profile: 'fastly' }));
+    execution.buildProject(resolve());
+    const nodeBuild = report.collectProjectReport({ cwd: directory }).capsule.build;
+    assert.equal(nodeBuild.providerArtifactReuse, 'reused');
+    assert.equal(nodeBuild.compilers.length, 1, 'Node packaging does not double-count portable compilation');
+    assert.equal(nodeBuild.compilationDurationMs, nodeBuild.compilers[0].durationMs);
+    const fastly = execution.buildProject(resolve({ profile: 'fastly' }), { experimentalNativeBoundedSize: true });
     const provider = report.collectProjectReport({ cwd: directory, profile: 'fastly' });
     assert.equal(provider.capsule.context.host, 'fastly');
+    const providerBuild = provider.capsule.build;
+    assert.equal(providerBuild.providerArtifactReuse, 'not-reused');
+    assert.equal(providerBuild.compilers.length, 2);
+    assert.equal(providerBuild.compilationDurationMs, providerBuild.compilers.reduce((sum, row) => sum + row.durationMs, 0));
+    for (const compiler of providerBuild.compilers) {
+      assert.equal(compiler.flagsComplete, true);
+      assert.deepEqual(compiler.optimization, { optimizeLevel: 3, shrinkLevel: 2, converge: false });
+      assert.ok(compiler.flags.some(row => row.name === '--shrinkLevel' && row.value === '2'));
+    }
+    assert.equal(providerBuild.compilers.find(row => row.phase === 'provider').artifactId, provider.capsule.context.primaryArtifactId);
     assert.ok(provider.capsule.measurements.some(row => row.artifactId === provider.capsule.context.primaryArtifactId && row.metric === 'handler-body' && row.fact.state === 'available'));
     assert.ok(!JSON.stringify(provider.capsule).includes('__pulse_chunk_'));
     assert.equal(provider.capsule.artifacts.length, 2);
@@ -206,7 +239,7 @@ export default app;`;
     // The in-memory inventory mutation corpus is a separate workspace test;
     // installed mode exercises the real build/collection/command path above.
     const inventoryCases = installed ? null : require('./report-inventory-cases.cjs')();
-    const summary = { mode: installed ? 'installed' : 'workspace', inventoryCases, status: 'passed', negativeCases: negative, nativeCompiles: 3, portableGuestUnchanged: true,
+    const summary = { mode: installed ? 'installed' : 'workspace', inventoryCases, status: 'passed', negativeCases: negative, nativeCompiles: 4, portableGuestUnchanged: true,
       routes: c.routes.length, entries: c.entries.length, schemas: c.schemas.length, bindings: c.bindings.length, resources: c.resources.length,
       providerArtifacts: provider.capsule.artifacts.length, buildMs, reportMs,
       capsuleBytes: Buffer.byteLength(saved), inputSidecarBytes: fs.statSync(path.join(fastly.outDir, report.INPUTS_FILE)).size,

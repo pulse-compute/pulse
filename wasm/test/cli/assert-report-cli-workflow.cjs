@@ -39,6 +39,7 @@ try {
   check(human.stdout.includes('historical replay; current project not checked'), 'historical disclosure');
   check(!/[\x00-\x09\x0b-\x1f\x7f-\x9f\u202e<>]/.test(human.stdout), 'terminal controls and markup escaped');
   check(human.stdout.split('\n').length <= 12, 'bounded overview');
+  check(human.stdout.includes('build: not recorded'), 'historical build metadata is not inferred');
   check(human.stdout.includes('36 bytes'), 'exact artifact bytes');
   const partial = f.fixture(false);
   for (const name of Object.keys(partial.coverage)) partial.coverage[name] = { status: 'unavailable', observed: 0, expected: null, reason: 'missing-evidence' };

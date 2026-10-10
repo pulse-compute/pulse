@@ -74,6 +74,7 @@ module.exports = Object.freeze({
   EXPERIMENTAL_NATIVE_BOUNDED_SIZE_MODE,
   EXPERIMENTAL_NATIVE_BOUNDED_SIZE_OPTIMIZATION,
   prepareReportCapture: require('./report-capture').prepareReportCapture,
+  observeAssemblyScript: require('./build-observation').observeAssemblyScript,
   resolveNativeOptimization,
   appendAssemblyScriptOptimizationArgs
 });
