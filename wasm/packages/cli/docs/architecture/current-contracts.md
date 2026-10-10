@@ -1134,6 +1134,25 @@ turning mixed record results into an overall pass. Full identities and scopes
 remain available on expansion and in the unchanged capsule export.
 
 
+## Retained build metadata
+
+Optional Report v1 `build` metadata is captured during Native compile/build and
+bound by the existing inventory/completion hashes. It records monotonic elapsed
+stages from build entry through inventory capture, plus separate portable and
+provider AssemblyScript invocation durations, effective flags and optimization
+levels, compiler/toolchain versions, and observed provider artifact reuse.
+Compiler observations reference the exact retained artifacts. Adjacent stage
+intervals sum to the recorded total; compiler durations are nested within those
+intervals, not additive overhead. The total excludes prior configuration
+resolution, inventory serialization and final publication. No timing claim is
+made for replay, internal asc subpasses, or unobserved caches. Node packaging
+reuses portable Wasm without a second compilation. Filesystem flag values are
+replaced with role placeholders; only compiler-owned flags are captured, never
+arbitrary argv, environment or provider binding values. Qualified asc defaults
+are resolved only for the known version; unknown defaults remain null. Metadata
+is outside source, plan and executable Wasm identity. Historical capsules without
+this optional block remain unchanged and display **Not recorded**.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support

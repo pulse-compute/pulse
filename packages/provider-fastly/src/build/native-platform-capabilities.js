@@ -2307,7 +2307,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
     }
     const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
       require(path.join(asc.packageRoot, 'package.json')).version, 'fastly-native-platform-capabilities.as/');
-    const startedAt = Date.now();
+    const startedAt = process.hrtime.bigint();
     const result = spawnSync(asc.executable, args, {
       cwd: stagingDir,
       encoding: 'utf8',
@@ -2317,7 +2317,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         ? { ...process.env, JSON_STRICT: 'true', JSON_USE_FAST_PATH: '0', JSON_MODE: 'NAIVE' }
         : process.env
     });
-    const assemblyScriptDurationMs = Date.now() - startedAt;
+    const assemblyScriptDurationMs = Math.round(Number(process.hrtime.bigint() - startedAt) / 1e6);
     if (result.error || result.status !== 0 || !fs.existsSync(assemblyScriptWasmFile)) {
       fail('AssemblyScript failed to compile the Fastly native platform capabilities module.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_ASC_FAILED', {
         status: result.status,
@@ -2475,11 +2475,17 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         providerPackaging: realization.guestLink.providerPackaging
       } : {})
     });
-    const durationMs = Date.now() - startedAt;
+    const durationMs = Math.round(Number(process.hrtime.bigint() - startedAt) / 1e6);
     return Object.freeze({
       version: FASTLY_NATIVE_PLATFORM_CAPABILITIES_VERSION,
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
       reportAttribution: readReportCapture(wasm),
+      buildObservation: require('@pulse-compute/wasm-build-support/native-optimization').observeAssemblyScript(args, {
+        version: require(path.join(asc.packageRoot, 'package.json')).version,
+        assemblyScriptRoot: asc.packageRoot, timeoutMs: Number(options.timeoutMs || 180000),
+        compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
+        durationMs: assemblyScriptDurationMs, jsonAsVersion: jsonAs && jsonAs.version
+      }),
       plan,
       generated,
       source: generated.source,

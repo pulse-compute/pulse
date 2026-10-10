@@ -223,7 +223,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
     }
     const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
       require(path.join(asc.packageRoot, 'package.json')).version, 'canonical-native.as/');
-    const startedAt = Date.now();
+    const startedAt = process.hrtime.bigint();
     const result = spawnSync(asc.executable, args, {
       cwd: stagingDir,
       encoding: 'utf8',
@@ -233,7 +233,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
         ? { ...process.env, JSON_STRICT: 'true', JSON_USE_FAST_PATH: '0', JSON_MODE: 'NAIVE' }
         : process.env
     });
-    const durationMs = Date.now() - startedAt;
+    const durationMs = Math.round(Number(process.hrtime.bigint() - startedAt) / 1e6);
     if (result.error || result.status !== 0 || !fs.existsSync(wasmFile)) {
       throw new CanonicalNativeCompileError('AssemblyScript failed to compile the canonical native plan.', {
         status: result.status,
@@ -253,6 +253,11 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       guestUnits,
       generated,
       reportAttribution: readReportCapture(wasm),
+      buildObservation: require('@pulse-compute/wasm-build-support/native-optimization').observeAssemblyScript(args, {
+        version: require(path.join(asc.packageRoot, 'package.json')).version,
+        assemblyScriptRoot: asc.packageRoot, timeoutMs: Number(options.timeoutMs || 120000),
+        compilerVersion: runtimeContract.CANONICAL_NATIVE_COMPILER_VERSION, durationMs, jsonAsVersion: jsonAs && jsonAs.version
+      }),
       wasm,
       wat: emitWat ? fs.readFileSync(watFile, 'utf8') : '',
       textEmitted: emitWat,
@@ -321,6 +326,7 @@ function verifyCanonicalNativeRealization(realization) {
     wat: realization.wat,
     inspection,
     manifest,
+    buildObservation: realization.buildObservation,
     durationMs: realization.durationMs,
     output: realization.output
   });

@@ -715,3 +715,14 @@ body.overlay-open{overflow:hidden}
   .route-drawer .size-grid>div{border-bottom:0;border-right:1px solid var(--line)}
   .route-drawer .size-grid>div:last-child{border-right:0}
 }
+
+/* Build metadata stays compact; native disclosure exposes the full invocation. */
+.build-summary{margin:18px 36px 0;padding:16px 20px}
+.build-summary h2{font-size:14px;margin:0 0 12px}
+.build-summary>.kv-list{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 24px}
+.build-summary>.kv-list .kv-row{display:block;border:0;padding:0}
+.build-summary>.kv-list dt{font-size:10px}
+.build-summary>.kv-list dd{margin:3px 0 0;font-size:12px}
+.build-summary .small-note{margin:12px 0 0}
+@media(max-width:1100px){.build-summary{margin-left:25px;margin-right:25px}}
+@media(max-width:640px){.build-summary>.kv-list{grid-template-columns:repeat(2,minmax(0,1fr))}.build-summary{margin-left:16px;margin-right:16px;padding:14px}}

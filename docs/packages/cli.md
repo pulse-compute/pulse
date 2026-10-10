@@ -55,6 +55,20 @@ pulse build
   Desktop route details use a wider panel; phones retain a full-width drawer and
   scrollable table. Evidence is collapsed by kind and exact producer version,
   with individual result counts visible and full record scopes available inside.
+
+  The report's **Build** summary retains elapsed time through inventory capture,
+  AssemblyScript compilation time, target/profile, Pulse/compiler versions and
+  effective optimization settings. Expand **Build details** for stage timings,
+  compiler/toolchain versions and effective invocation flags. File arguments use
+  role placeholders; arbitrary environment values, secrets and provider binding
+  values are excluded. Compilation time sums the portable and provider asc
+  invocations, is included in stage timings, and excludes source planning and
+  guest linking. Total time excludes configuration resolution before build entry,
+  report serialization and final publication. These are observations from that
+  build, not benchmark results. Node's reuse of portable Wasm is recorded separately
+  from compiler cache reuse; unobserved caches and older metadata say **Not recorded**.
+  The optional metadata lives in the hash-bound inventory, never in executable Wasm.
+
 - `inspect` compiles and reports effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility, and provider lowering without executing cases.
 - `test` executes configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime.
 - `dev` runs a foreground local server and watches the project by default.

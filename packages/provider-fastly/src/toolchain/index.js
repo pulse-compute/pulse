@@ -350,7 +350,7 @@ function createDriver() {
           providerPackage: providerBuild.packageFile,
           providerSourceEntry: providerBuild.sourceEntryFile
         }),
-        build: { ...providerBuild.build, reportAttribution: native.reportAttribution },
+        build: { ...providerBuild.build, reportAttribution: native.reportAttribution, buildObservation: native.buildObservation },
         realization: publicRealization,
         packaging: audit ? Object.freeze({
           version: PROVIDER_PACKAGING_AUDIT_VERSION,

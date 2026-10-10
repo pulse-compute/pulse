@@ -25,7 +25,7 @@ function build(target, capture, optimization) {
   const original=owner.require.bind(owner);let ascCalls=0,generatorCalls=0;
   owner.require=name=>name==='node:child_process'?{...original(name),spawnSync(executable,args,options){
     assert.match(args[0],/asc\.js$/);assert.ok(!args.includes('--debug'));ascCalls++;return spawnSync(executable,args,options);
-  }}:name==='@pulse-compute/wasm-runtime-core-as/compiler/canonical-native'?{...original(name),generateCanonicalNativeAssemblyScript(...args){generatorCalls++;return original(name).generateCanonicalNativeAssemblyScript(...args);}}:original(name);
+  }}:name==='@pulse-compute/wasm-build-support/native-optimization'?{...original(name),observeAssemblyScript: capture ? original(name).observeAssemblyScript : () => undefined}:name==='@pulse-compute/wasm-runtime-core-as/compiler/canonical-native'?{...original(name),generateCanonicalNativeAssemblyScript(...args){generatorCalls++;return original(name).generateCanonicalNativeAssemblyScript(...args);}}:original(name);
   owner._compile(fs.readFileSync(file,'utf8'),file);
   const options={cwd:root,reportCapture:capture,nativeOptimization:optimization,emitWat:false,bindings:{},canonicalBuild:true,requirePlatformCapability:false};
   const start=Date.now();
@@ -38,6 +38,8 @@ async function main(){
   for(const [target,optimization] of [['portable',undefined],['fastly',undefined],['portable','experimental-native-size']]){
     const control=build(target,false,optimization), observed=build(target,true,optimization), a=observed.artifact;
     assert.deepEqual(a.wasm,control.artifact.wasm,'all executable bytes unchanged, including custom sections');
+    assert.ok(a.buildObservation);assert.equal(control.artifact.buildObservation,undefined);
+    assert.equal(a.buildObservation.flagsComplete,true);
     assert.equal(a.source,control.artifact.source);assert.equal(control.artifact.reportAttribution,null);
     const capture=a.reportAttribution;assert.ok(capture,'passive capture available');
     const record={id:capture.artifactId,sha256:capture.artifactSha256,bytes:a.wasm.length,stage:'final',target};

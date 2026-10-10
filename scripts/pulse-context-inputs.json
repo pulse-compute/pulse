@@ -400,6 +400,12 @@
           ]
         },
         {
+          "id": "contract/build-metadata",
+          "heading": "Retained build metadata",
+          "targets": ["native"],
+          "tags": ["build", "report", "optimization"]
+        },
+        {
           "id": "contract/eligibility",
           "heading": "Providers, targets, and eligibility",
           "tags": [

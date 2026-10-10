@@ -117,7 +117,27 @@
     }
     return el('div',{class:large?'ledger-large':''},chart,el('div',{class:'ledger-legend'},parts.map(p=>el('span',{class:'legend-item'},el('span',{class:'swatch segment-'+p.id}),p.label,el('span',{class:'mono'},bytes(p.bytes))))));
   }
+  function drawBuild() {
+    const build=P.build, compilers=build?.compilers||[];
+    const duration=value=>value===null||value===undefined?'Not recorded':value<1000?value+' ms':(value/1000).toFixed(2)+' s';
+    const optimization=row=>'O'+(row.optimization.optimizeLevel??'?')+' / shrink '+(row.optimization.shrinkLevel??'?')+' / convergence '+(row.optimization.converge?'on':'off');
+    const compiler=compilers.find(row=>row.phase==='provider')||compilers.find(row=>row.phase==='portable');
+    replace($('#build-summary'),el('h2',{},'Build'),
+      kv([['Total to capture',duration(build?.totalDurationMs)],['AssemblyScript compilation',duration(build?.compilationDurationMs)],
+        ['Target / profile',P.context.target+' / '+P.context.profile],['Pulse',P.producer.pulseVersion],
+        ['Compiler',compiler?.compilerVersion??'Not recorded'],['Optimization',compiler?P.provenance.recipe.optimization+' · '+optimization(compiler):'Not recorded']]),
+      el('p',{class:'small-note'},build?'Elapsed build time ends at inventory capture; report serialization and final publication are excluded. Compilation counts AssemblyScript invocations only and is included in the stage times.':'Build timings, effective flags and cache reuse were not recorded for this artifact.'),
+      build?el('details',{class:'details-block'},el('summary',{},'Build details'),
+        detailSection('Stage timings',kv(build.stages.map(row=>[row.name,duration(row.durationMs)]))),
+        detailSection('Reuse',kv([['Build cache','Not recorded'],['Provider artifact',build.providerArtifactReuse.replaceAll('-',' ')]])),
+        compilers.map(row=>detailSection(row.phase+' compiler',kv([['Compiler',row.compilerVersion],['Artifact',row.artifactId],
+          ['Compilation',duration(row.durationMs)],['Compiler timeout',duration(row.timeoutMs)],['Optimization',optimization(row)],['Compiler cache',row.cache.replaceAll('-',' ')],
+          ...row.toolchain.map(tool=>[tool.name,tool.version])]),
+          el('p',{class:'small-note'},'Effective invocation flags · '+(row.flagsComplete?'complete':'partial')+' capture. Filesystem arguments use role placeholders.'),
+          el('pre',{class:'record-text'},row.flags.map(flag=>flag.name+(flag.value===null?'':' '+flag.value)).join('\n'))))) : null);
+  }
   function drawSummary() {
+    drawBuild();
     for (const id of ['app-name','sidebar-app','crumb-app']) $('#'+id).textContent = P.application.name;
     document.title = P.application.name + ' · Pulse Report';
     $('#profile-name').textContent = P.context.profile; $('#host-name').textContent = P.context.host + ' · native';
