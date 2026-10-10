@@ -1305,6 +1305,22 @@ ownership, runtime execution cost, or deletion savings. Historical capsules
 without implementation records and capsules with only prelink records show an
 explicit unavailable state. Dispatcher carriers remain outside this Helpers view.
 
+Route facts and size details expose associated dispatcher carriers from the
+primary artifact's retained implementation inventory. Expandable rows show each
+distinct physical function once, its whole-body bytes, carrier chunks, and known
+associated entries and routes. Other implementations of the same body contribute
+only the consumers recorded on that exact body/chunk association; consumers of
+their other chunks are not borrowed. Missing carrier mappings keep their known
+entries and explicit unavailable sizes. Historical or prelink-only inventory
+cannot reconstruct final dispatcher associations.
+
+The displayed dispatcher total is a union of known physical bodies, already
+included in the artifact, and may overlap helper or other route totals. It is
+never substituted for Handler-body, Reachable, Own, or Shared measurements.
+Per-route bytes inside a mixed dispatcher remain unavailable. Consumer lists
+are partial static associations through recorded composition, not invocation
+counts or complete reachability; no observed association does not prove absence.
+
 Inline transfer/error ownership identifies dispatcher carriers, whose whole-body
 bytes cannot be presented as individual handler sizes. Those measurements remain
 unavailable with `dispatcher-carrier`, or `entry-ownership-not-retained` when no
