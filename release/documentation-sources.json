@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "pulse.documentation-sources.v1",
+  "rootRoutes": {
+    "docs/README.md": "",
+    "README.md": "project/",
+    "API.md": "api/",
+    "CHANGELOG.md": "changelog/"
+  },
+  "documentationRoot": "docs/",
+  "examplesRoot": "examples/",
+  "excludedSegments": ["..", "internal"],
+  "excludedPrefixes": ["docs/architecture/decisions/"],
+  "excludedNames": ["AGENTS.md"],
+  "sourceAliases": { "examples/README.md": "docs/examples.md" },
+  "routeAliases": {
+    "alpha-scope/": "preview-scope/",
+    "maintainers/compiler-efficiency-p01/": "maintainers/testing/"
+  },
+  "hiddenPrefixes": ["docs/maintainers/"],
+  "assetPolicy": "eligible-documentation-non-markdown"
+}

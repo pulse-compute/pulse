@@ -1,0 +1,465 @@
+{
+  "schemaVersion": "pulse.website-migration-baseline.v1",
+  "repository": "pulse-compute/pulse",
+  "sourceCommit": "05e926830d940d53f08ebd5867ac939b9b291d6d",
+  "sourceTree": "960ff250cf259ae430d02861933ca6e3a27037fc",
+  "releaseVersion": "1.0.0-beta.7",
+  "documentation": {
+    "origin": "https://pulsecompute.io",
+    "basePath": "/",
+    "version": "v1.0.0-beta.7",
+    "latestAlias": "latest",
+    "source": "docs/README.md"
+  },
+  "evidence": "tracked source and local archive inspection; not production storage verification",
+  "currentLatestBehavior": "redirects to exact-version pages",
+  "ownerHashes": {
+    "scripts/build-docs-site.cjs": "acfb26cbafe5f07c17f534e99a6f99823da634f9951ef846f67b9ae5185218e4",
+    "scripts/documentation-system.cjs": "667ca151cb1672acd99608d5101720f21fea0dee6f58ef035fbcd47740abd48e",
+    "scripts/documentation-site-config.cjs": "78bbc3936c49fa4910281420c0551aa3c9fd97c2ff4e26f242b3c84fc15a7960",
+    "scripts/documentation-ownership.cjs": "eb7f2933504a6a7665e8a369756d9784f480d1bc0bdcd21475479bfbd47d1ae7",
+    "scripts/package-support.cjs": "0fc100aa482b633f63f1087e0ca92d1f37c8f6bf80c815a1bff86cc1fb168c76",
+    "release/pulse-release-manifest.json": "389ffca6e6c6e0ad2612f8ddc42533179ed14935ee99a17f2546bb1fd1cd9e0f",
+    "release/documentation-site.json": "61bfdef5f02c5f1a6031802c95133298fdf5969b9d90bffbe1442a65b5e5971a",
+    "release/documentation-versions.json": "8e3d62f5f14dd30fef68eb07290d86e4cdf406594f73dd8895162a5d9e820cd8",
+    "package.json": "9a7b77096fbbcc223ed48dd8313774e80591de1c3517f453ad6f03e5f29eba44"
+  },
+  "counts": {
+    "pages": 82,
+    "anchors": 1051,
+    "sourceAssets": 7,
+    "aliases": 2,
+    "archives": 5
+  },
+  "pages": [
+    {"source":"docs/README.md","route":"","sha256":"ae62be846ed7462946bb67b718ba9cf540a08916db1db8df9c934c2c49e827c6","section":"start","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-documentation","1-start-and-ship-a-first-project","2-follow-a-task-oriented-guide","3-understand-the-model","4-use-a-package-directly","5-look-up-exact-behavior","6-authors-and-contributors"]},
+    {"source":"API.md","route":"api/","sha256":"106b0161d2c3bd84fb481e6aa2d575bed869deec5f50c3605695deac47e8417d","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-runtime-contract","context-at-a-glance","handler","static-router","static-event-handlers","ctxreq","request-metadata-and-headers","ctxparam","ctxstate","ctxfetch","ctxparallel","ctxemit","ctxlog","fetch-responses","response-builders","ctxtime","config-and-secrets","kv","ctxencodejson","ctxdecodejson","explicit-json-schemas","grip","entities-api","project-workflow"]},
+    {"source":"docs/architecture/current-contracts.md","route":"architecture/current-contracts/","sha256":"90744636ca77f2bd4f51deecb3af94d6941f0e456798a73454f3499587347a93","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["current-architecture-contracts","contract-precedence","one-application-contract-and-one-compiler-spine","native-diagnostic-artifacts","native-internal-helper-sharing","synchronous-pure-source-helpers-pf-02pf-03pf-04pf-06","static-effectful-source-helpers-o-25","native-terminal-router-bodies","shared-effectful-http-stages-o-19","bounded-pure-control-flow","bounded-sequential-read-loops-ps1","read-loop-invocation-lifecycle-ps2","native-read-loop-memory-containment-ps3","execution-ownership","experimental-finite-generated-output","selected-bounded-http-deadline-contract","budget-and-authority","target-scope-and-response-handoff","writes-and-catalog-o2-acceptance","providers-targets-and-eligibility","package-owned-capabilities","internal-prebuilt-guest-units","jwt-verification","support-release-and-authority","changing-a-contract","jwt-issuance-and-canonical-guest-linking","experimental-bounded-request-transforms","ast-02d-native-embedded-assets","ast-02a-bounded-s3-response-ownership","ast-02c-fastly-opaque-s3-bodies","production-node-integration-node-01"]},
+    {"source":"docs/architecture/overview.md","route":"architecture/overview/","sha256":"c64a3dfc8f061e69d938e47c24ff6e9289f2fc02f07bbfcec5d23f06353e8da5","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["architecture-overview","canonical-api","whole-project-compiler","lifecycle","bodies","providers","package-extensions","maintenance-authority","current-architecture-and-extension-readiness"]},
+    {"source":"docs/architecture/vision.md","route":"architecture/vision/","sha256":"d1926a053e9c53b957f73c0dad086ad757457d25ad63280ac7be6e1a163c9642","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-vision","the-problem","the-thesis","familiar-typescript-is-the-migration-surface","native-target","javascript-target","a-small-control-flow-grammar","explicit-execution-targets","hosts-are-not-equal","pulse-owns","the-host-owns","containment-reduces-friction-later","schemas-are-optimization-and-validation-artifacts","native-execution","javascript-execution","eligibility-is-a-first-class-artifact","cross-target-semantics-must-be-enforced","esp32-as-a-boundary-witness","product-milestones","beta-explicit-execution-fluidity","10-compatibility-bearing-runtime-contract","what-pulse-refuses-to-promise","north-star"]},
+    {"source":"CHANGELOG.md","route":"changelog/","sha256":"c1648aac895594a22f944a7827e21fcdb824a2008c0e0237e4823deffe395dce","section":"start","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["changelog","unreleased","100-beta7-beta-2026-10-07","100-beta6-beta-2026-10-04","100-beta5-beta-2026-09-16","100-beta4-beta-2026-09-14","100-beta3-beta-2026-09-14","100-beta2-beta-2026-09-13","100-beta1-beta-2026-08-01"]},
+    {"source":"docs/concepts/bodies.md","route":"concepts/bodies/","sha256":"34a5d3bdf9036739b9f174770e781724a78c928937d0ca63f4c4d7d38c642797","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["structured-and-opaque-bodies","ownership-transitions","structured-request-bodies","structured-fetch-responses","opaque-response-pass-through","incoming-forwarding-on-node","experimental-generated-output-on-node","experimental-bounded-utf-8-transforms-on-node","current-transport-limits","why-the-distinction-matters","schema-encoding","grip-hold-responses-are-opaque","not-supported-in-the-beta","related-documentation"]},
+    {"source":"docs/concepts/compilation-and-lowering.md","route":"concepts/compilation-and-lowering/","sha256":"12caef9052365f2b3b59627e0f1c994cc8e0dbf9681f51ab3f506f502777a8b7","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["compilation-and-lowering","the-compilation-path","router-topology-and-middleware-use-the-same-downstream-plan","bounded-application-values","from-source-to-an-effect","keyed-parallel-lowering","synchronous-logging-lowering","what-the-compiler-owns","canonical-lowering-and-package-owned-lowering","canonical-handler-lowering","package-owned-lowering","provider-lowering-is-a-second-contract","why-source-restrictions-exist","reading-pulse-inspect","related-documentation","optional-native-text-artifacts"]},
+    {"source":"docs/concepts/contracts-and-providers.md","route":"concepts/contracts-and-providers/","sha256":"e77dd9cf02baa0825028ef478b5baa406ba5cc013a2a5fa9d65ad0eaeb137a3b","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["contracts-and-providers","contract-layers","a-package-owned-contract-in-source","provider-selection","capability-validation","bindings-are-configuration-not-userland-apis","local-conformance-versus-deployment-reality","current-extension-boundary","toolchain-and-target-boundary","related-documentation"]},
+    {"source":"docs/concepts/effects-and-continuations.md","route":"concepts/effects-and-continuations/","sha256":"e06b28aeeff248e805d8d4a189d0d9ba03659f80772afb8f64e85fb05ddcb091","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["effects-and-continuations","effect","continuation","bounded-sequential-reads","bounded-http-deadline-work","independent-effects-form-a-group","explicit-portable-groups-with-ctxparallel","one-way-outbound-events","dependencies-split-continuation-stages","failure-behavior","wall-time-and-deadlines","timeouts-have-two-scopes","managed-async-not-arbitrary-async","inspect-and-test-the-lifecycle","related-documentation","conditional-kv","native-dispatcher-containment"]},
+    {"source":"docs/concepts/entities-and-adapters.md","route":"concepts/entities-and-adapters/","sha256":"4c1758368a2574a81d07496fb0e39febe9367ee8e24126bab5f4d39a64e2e30f","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["entity-engine-adapters-and-facades","the-four-layers","why-the-catalog-is-protocol-neutral","authority-flow","mcptools-boundary","future-adapters"]},
+    {"source":"docs/concepts/package-owned-lowering.md","route":"concepts/package-owned-lowering/","sha256":"8bfddcf73ede8e2de2b107795cd0eff44956b076253e337160a67e7effee2308","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["package-owned-lowering","one-package-api-two-execution-paths","why-the-package-owns-the-lowerer","package-anatomy","discovery-and-trust","request-bound-package-effects","pure-package-operations","static-call-shapes","provider-completion","release-expectations"]},
+    {"source":"docs/concepts/targets-and-hosts.md","route":"concepts/targets-and-hosts/","sha256":"430e1fa6dd3dfed3a45957f60c8e4da6f8d97c2064126f7f2dc0d8ed109e250e","section":"concepts","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["targets-and-host-work","current-beta-targets","forward-boundary-witnesses","esp32","browser-event-conformance","where-provider-details-belong"]},
+    {"source":"docs/contributing/README.md","route":"contributing/","sha256":"0e5b2fcac377861639275f3e80d04b9e0b608f9006145f56c0e8c651059386cf","section":"authors","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["contributing-to-pulse","contributor-workflow","choose-the-extension-boundary","package-owned-lowering","providers","repository-context"]},
+    {"source":"docs/contributing/adding-core-provider.md","route":"contributing/adding-core-provider/","sha256":"b1dbf0859d44ed9e3e9235215b02ea45adec08014e0cd2412055870ff6bfdf18","section":"authors","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["add-a-provider-toolchain","provider-invariants","resolution-ownership","integration-map","1-define-provider-identity-and-scope","2-build-a-canonical-provider-descriptor","3-normalize-bindings-separately-from-source","4-implement-the-local-conformance-runtime","5-implement-target-generation-when-deployable","6-export-the-formal-toolchain","7-extend-project-configuration","8-extend-cli-behavior-and-help","9-add-public-diagnostics","10-publish-and-classify-the-package","11-test-equivalence-and-isolation","12-release-checklist","related-documentation"]},
+    {"source":"docs/contributing/adding-first-party-lowerer.md","route":"contributing/adding-first-party-lowerer/","sha256":"b5fa51b696beacb05987e30b6eacbb491608c9141a9e5d18bbd2b1dc633c01ac","section":"authors","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["add-a-first-party-package-owned-lowerer","what-belongs-where","end-to-end-data-flow","1-choose-stable-identity","2-create-a-real-package-root-api","3-declare-the-package-manifest","4-define-contract-owned-schemas-and-diagnostics","5-implement-the-package-compiler-builder","6-add-the-sidecar-contract-when-compiled-wasm-needs-one","7-verify-generic-discovery","8-add-provider-realization","9-add-public-diagnostics-and-documentation","10-required-verification","review-checklist","related-documentation"]},
+    {"source":"docs/contributing/entities-lowering.md","route":"contributing/entities-lowering/","sha256":"b3cc3c80e1f3686eddda6aacb4124861337eb2ca53db77cf2a70793e207df41e","section":"authors","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["entities-lowering-maintainer-reference","synchronized-surfaces","static-extraction-contract","managed-handlers-and-schemas","native-realization","catalog-and-evidence-invariants"]},
+    {"source":"docs/contributing/package-lowerer-contract.md","route":"contributing/package-lowerer-contract/","sha256":"e74d2f72766a2d27ac651c386550bc045347a0e7854c7f6feca417b25b25cfd2","section":"authors","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["package-lowerer-contract-reference","application-promise-versus-internal-protocol","canonical-owner-map","contract-pipeline","protocol-constants","package-discovery-declaration","required-manifest-fields","representative-manifest","validation-rules","builder-resolution","builder-result","terminal-native-application-contribution","canonical-package-effect","diagnostics","sidecar-lowering-declaration","compiler-core-separation","provider-contract","compatibility-status","related-documentation"]},
+    {"source":"docs/contributing/pulse-aware-packages.md","route":"contributing/pulse-aware-packages/","sha256":"9d6aa47c0feb293bbd15b72b23e236ba22d0e911b41ce877a1e101ccf09526fc","section":"authors","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-aware-package-authoring","choose-the-extension-boundary","1-design-the-package-root-first","2-define-the-native-subset-separately","3-keep-contract-and-execution-owners-distinct","4-understand-the-trust-boundary","5-prove-each-advertised-target","existing-first-party-patterns"]},
+    {"source":"docs/examples.md","route":"examples/","sha256":"eb2ba03d5c8d505df5a7057060f084b619696221919d3519ee20bf4c362abb60","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["canonical-examples","wasm-size-at-a-glance","verified-native-fastly-build"]},
+    {"source":"examples/01-hello-json/README.md","route":"examples/01-hello-json/","sha256":"f407cc3268604db8aa60584bae9ab04ce5477a21e81c7cb6ee2aa75d87e48578","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["hello-json","workflow","wasm-size","handler","project-config","test-harness"]},
+    {"source":"examples/02-request-schema/README.md","route":"examples/02-request-schema/","sha256":"a0053df1f3610c2a403494554befabafa0a36143070fa6bd96172026a4125dc6","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["request-schema","workflow","wasm-size","handler","project-config","test-harness"]},
+    {"source":"examples/03-fetch-composition/README.md","route":"examples/03-fetch-composition/","sha256":"67472f373b3b9d93862b5cc792c4c07d9fbd94ac5848b09aeb5bf185963c3e48","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["fetch-composition","workflow","wasm-size","handler","project-config","test-harness"]},
+    {"source":"examples/05-fastly-capabilities/README.md","route":"examples/05-fastly-capabilities/","sha256":"7e62052767ab60207b7f0cc07aecc94f699c623466e44e38a5b1b46d8025d62b","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["fastly-capabilities","workflow","wasm-size","handler","project-config","test-harness"]},
+    {"source":"examples/07-opaque-proxy/README.md","route":"examples/07-opaque-proxy/","sha256":"e42d480d6e31f5e539d2c0663bd0822c3e851212809628e5d1ca3dab58bea0fe","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["opaque-binary-proxy","workflow","wasm-size","handler","project-config","test-harness"]},
+    {"source":"examples/09-router-lowering/README.md","route":"examples/09-router-lowering/","sha256":"9f851f7aa00f83bfe564f6d59378073b1d77708ebcce8ba65271d97796f7860d","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["router-lowering","workflow","wasm-size","router-application","project-config","test-harness"]},
+    {"source":"examples/10-entities-tools/README.md","route":"examples/10-entities-tools/","sha256":"51963e2a9b5271b5b0e539c0076ca60642e8657a43a0c9bfd5a34dbae349c7ae","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["entities-tools-facade","javascript-workflow","node-native-workflow","fastly-profiles","clean-installed-acceptance","wasm-size","entity-application","project-config","test-harness","facade-boundary"]},
+    {"source":"examples/11-events/README.md","route":"examples/11-events/","sha256":"bbd067fd52c81f5eb32a4110a255a6646c4afb88ca555e1a28b18df7e1f81f86","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["static-events","workflow","wasm-size","application","schemas","project-config","test-harness"]},
+    {"source":"examples/12-pulse-context-mcp/README.md","route":"examples/12-pulse-context-mcp/","sha256":"30426c62b997f55172c3b7f0cd8d44852e89aea6f8e186b7e1f56e3634e91242","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-context-mcp-server","install","workflow","walkthrough-1-start-a-json-api","walkthrough-2-choose-native-or-javascript-explicitly","walkthrough-3-understand-a-schema-or-effect-diagnostic","tool-contract-and-limits","standalone-host","wasm-size","entity-application","project-config","test-harness","maintaining-the-snapshot"]},
+    {"source":"examples/13-jwt-es256/README.md","route":"examples/13-jwt-es256/","sha256":"90fa5b64bbfe38a83610672e5c42088d4f550e8c2014dfe0c9ffb150d53fb917","section":"examples","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["es256-bearer-verification","workflow","wasm-size","application","project-config","test-harness"]},
+    {"source":"docs/getting-started.md","route":"getting-started/","sha256":"a52a9412e7697d5fb35f53a4a509b2d0c608976b9a342489d3c5881abaca9027","section":"start","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["getting-started","requirements","create-a-project","verify-the-project","run-locally","advanced-compile-portable-pulse-wasm","build","diagnose-failures","next-steps"]},
+    {"source":"docs/guides/compatibility-imports.md","route":"guides/compatibility-imports/","sha256":"300c7825fb0d47935dc757fa473833b98980840a3fb103adcab599286b58043c","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["compatibility-imports-and-migration","assets","grip","internal-filenames-are-not-authoring-paths"]},
+    {"source":"docs/guides/deploying-fastly.md","route":"guides/deploying-fastly/","sha256":"7a3de4cbb515ecae9ea88ba7aefd83f3ccd9f882f6b0380ea1a08ef2d6d23c5e","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["fastly-deployment-candidates","configure-bindings-and-target","validate-locally","build-fastly-native","build-fastly-javascript","provider-reality-is-a-separate-gate","remote-deployment-and-activation","proof-level-checklist"]},
+    {"source":"docs/guides/deploying-node.md","route":"guides/deploying-node/","sha256":"58b5f0eb997cd170f06b407edf4ef390b85c0f9bf5e86ef5b6f46ae270abea2d","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["node-build-and-execution","configure-the-node-provider","validate-the-application","node-native-candidate","node-javascript-candidate","inspect-the-candidate","production-launcher-node-01","deployment-owner-boundary"]},
+    {"source":"docs/guides/events.md","route":"guides/events/","sha256":"258c18aa30e545574322855be44093f053642d8af848be23bb9135c511e8cca9","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["static-events-and-outbound-emission","declare-the-topology","event-context","canonical-frame-and-schema-rules","ctxemit-means-acceptance-not-delivery","harness-event-cases","target-eligibility","inspection-artifacts-and-diagnostics","native-extension","no-call-or-reflexive-routing"]},
+    {"source":"docs/guides/fastly-capabilities.md","route":"guides/fastly-capabilities/","sha256":"7be01142b92f222cb8fcdd3558973ace8c650bbac395826f3fd734ae7edd60a4","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["fastly-config-secrets-kv-and-backends"]},
+    {"source":"docs/guides/fetching-and-composition.md","route":"guides/fetching-and-composition/","sha256":"b80d8b1882c61e22e618fadcc00c53231cb3fe5bba96054d87f6b862a3a77f44","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["fetching-and-composing-data","one-project-three-composition-forms","dependent-requests","pass-through"]},
+    {"source":"docs/guides/grip.md","route":"guides/grip/","sha256":"e5ad88409bdbd905b1a87898826d8a0da1e6d0891de0eedc9d9678f03397b3e7","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["grip-and-fanout"]},
+    {"source":"docs/guides/json-schemas.md","route":"guides/json-schemas/","sha256":"d3fdb08564b21d4448043070db8226976434ed1653da64f46335a80c2af48ad0","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["explicit-json-schemas","declare-the-registry","optional-fields","bounded-scalar-records","typed-open-objects","configurable-nested-json","add-semantic-response-cases","point-project-configuration-at-the-registry","bind-every-json-boundary","encode-application-owned-text","decode-application-owned-text","understand-strict-mode","know-the-value-semantics","inspect-and-diagnose-the-contract","related-documentation"]},
+    {"source":"docs/guides/migrating-from-express.md","route":"guides/migrating-from-express/","sha256":"3e24709226665727cd9e970f721024e6df17ecc2258fdddb6c7f51954fe25d13","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["migrate-an-express-service","map-the-mental-model","translate-one-route","rewrite-middleware-as-terminal-control-flow","reduce-routing-to-the-static-topology","replace-ambient-server-capabilities","decide-what-code-can-move-unchanged","migrate-in-bounded-slices","continue-with"]},
+    {"source":"docs/guides/project-lifecycle.md","route":"guides/project-lifecycle/","sha256":"628efab0d0ec7e82c123254644ad8311783d2b6eb45a2e0dbd54ec28ee5a0c51","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["project-lifecycle","1-initialize","2-diagnose-the-configured-project","3-execute-the-test-harness","4-run-the-development-lifecycle","5-build-the-selected-target","inspect-when-you-need-the-plan","compile-when-you-need-the-provider-neutral-boundary","failure-path"]},
+    {"source":"docs/guides/routing.md","route":"guides/routing/","sha256":"c655586338ffe2a2339521ba8d31812f54196b29e0b63cd85f4becdb55808df7","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["static-router-authoring","supported-v2-surface","selected-groups","next-is-a-terminal-transfer","middleware-scope-and-effects","deliberately-outside-v2","inspect-the-lowering"]},
+    {"source":"docs/guides/troubleshooting.md","route":"guides/troubleshooting/","sha256":"4dc0a24cb624df8ce02357f4f5dcda617d201d2e37535505b3e17b3386e697a6","section":"guides","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["troubleshooting","compilation-failures","provider-failures","runtime-failures","event-eligibility-and-harness-failures"]},
+    {"source":"docs/maintainers/README.md","route":"maintainers/","sha256":"ad9c9b098a097744a817ae3105d63e786896a17ee4dcc310acd7a11ce56466b9","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["maintainer-documentation","governance-and-support","release-and-publication","documentation-operations","protected-implementation-boundaries","authority-model"]},
+    {"source":"docs/maintainers/codex-maintainer.md","route":"maintainers/codex-maintainer/","sha256":"b2a138d878a0df2398c6cd0d87c89ae5664990dca098bf74b4d12a2ec85db88b","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["codex-resident-maintainer","repository-instructions","native-github-code-review","manual-policy-review-workflow","trust-boundary-and-prompt-injection","secret-and-environment-protection","asking-codex-to-prepare-a-patch","failure-behavior"]},
+    {"source":"docs/maintainers/documentation-deployment.md","route":"maintainers/documentation-deployment/","sha256":"895b664022b4e5e3880179de2da7b47147c2971ddca091dae64bfb68d915e0da","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["documentation-deployment","validation-and-production-are-separate","object-classes","sealed-deployment-candidate","object-storage-credentials","vcl-delivery-boundary","promotion-and-public-verification"]},
+    {"source":"docs/maintainers/documentation-system.md","route":"maintainers/documentation-system/","sha256":"a6692dabfa5343b21ff5ba213677da4ca9fa65281f6b8f34143c289fefb7d209","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["documentation-system-and-release-workflow","canonical-owners","procedure-owners","update-loop","delivery-boundaries","ownership-and-review-dates"]},
+    {"source":"docs/maintainers/documentation-versioning.md","route":"maintainers/documentation-versioning/","sha256":"60f4a7d40ada87a11ae2429521ea522887ca6aafbef27b18fe69a887b40283c1","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["documentation-versions-search-and-installed-copies","public-product-homepage","exact-release-urls","the-latest-alias","search","installed-and-offline-documentation","adding-a-documentation-version","unpublished-hosted-docs-after-npm-publication"]},
+    {"source":"docs/maintainers/maintainer-charter.md","route":"maintainers/maintainer-charter/","sha256":"bf670b3190f53a5b6e45030b86d8541b0787020bf7b9a5c2ed577984a27440ca","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["maintainer-charter","roles","human-architecture-and-release-authority","codex-resident-maintainer","operating-principles","preserve-host-sovereignty","compile-only-what-can-be-proven","separate-evidence-from-promises","repair-canonical-owners","report-uncertainty-honestly","authority-matrix","revocation-and-override"]},
+    {"source":"docs/maintainers/maintenance-policy.md","route":"maintainers/maintenance-policy/","sha256":"aedd9206e4ac22166a0dcd489bab7cf69b4e65919470973768b4b9bea53911f7","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["maintenance-policy-reference","protected-environments","change-classes","protected-boundaries","validation-catalog","branch-validation-requirements","reviewed-github-actions","pull-request-declaration","issue-intake","codex-operation"]},
+    {"source":"docs/maintainers/npm-publishing.md","route":"maintainers/npm-publishing/","sha256":"5038a65243d94b42f9e83bfc4d402fbd0cf659c9f9316cd3f878d9e991bfd19e","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["npm-publishing","prepare-release-identity","pre-main-qualification","release-handoff-record","authority-and-trigger","trusted-publishing","one-time-package-bootstrap","mcp-package-handoff","sealed-candidate","dependency-safe-resumable-publication","verification","local-commands"]},
+    {"source":"docs/maintainers/plugin-readiness.md","route":"maintainers/plugin-readiness/","sha256":"d575bfb2a29d1e9ef2b8dcc484c4947c4712ceacc1b9e65d8a142cc89dbd9d9c","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["public-plugin-api-readiness","readiness-requirements"]},
+    {"source":"docs/maintainers/public-site.md","route":"maintainers/public-site/","sha256":"d942ec829d4f6ea521c006305573e20787012f75fb2d760d19911ec43cd74765","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["public-site-and-documentation-presentation","canonical-inputs","editorial-manifest","shared-presentation-layer","homepage-generation","documentation-shell","build-and-inspect","release-gates"]},
+    {"source":"docs/maintainers/release-acceptance.md","route":"maintainers/release-acceptance/","sha256":"8ea86a8f4d1af3631a3c8892418fbca77f28b299e61bdf5f927fe556877b03bc","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["release-packages-and-clean-consumer-acceptance","s3-candidate-acceptance","installed-feature-acceptance","conditional-kv-acceptance","event-experimental-candidate","check-documentation-release-integrity","pack-a-release-candidate","clean-consumer-acceptance","offline-deployment-candidates","aggregate-seal-and-evidence","publication-workflow","publication-hold-points","versioned-documentation-artifact"]},
+    {"source":"docs/maintainers/release-manifest.md","route":"maintainers/release-manifest/","sha256":"1a2b0c5e1711b7635711bfd79ccc84a106e98a5846e6fa837a4b417770bd51b3","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["release-manifest-and-generated-package-policy","beta-candidate","generated-consumers","runtime-targets","support-tiers","synchronized-packages"]},
+    {"source":"docs/maintainers/repository-setup.md","route":"maintainers/repository-setup/","sha256":"3fa44b4aa2c21c938db73c397ff5ee3e6639e585d584bf770be2e13edc64aa19","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["repository-setup","1-create-the-maintainer-team","2-restrict-actions-and-synchronize-labels","3-configure-branch-validation-rulesets","4-create-the-protected-codex-environment","5-configure-codex","6-enable-security-intake","7-configure-npm-trusted-publishing","8-configure-documentation-delivery","9-verify-the-installation"]},
+    {"source":"docs/maintainers/scope-policy.md","route":"maintainers/scope-policy/","sha256":"6bc1238ce51c826b0da9bde6672cc0355f2a3ef808228f19d81caf6bfaaa460b","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["scope-policy","classify-the-intent","declare-affected-boundaries","pull-request-declaration","update-current-contracts","select-validation","scope-requests-are-evidence-first"]},
+    {"source":"docs/maintainers/support-and-triage.md","route":"maintainers/support-and-triage/","sha256":"95689fd1cc89a51f74abd71e283ade7546038582fd4be57014e7647f2c8a1236","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["support-and-triage","intake-routes","first-response","quiet-launch-posture","patch-posture","closing-issues"]},
+    {"source":"docs/maintainers/testing.md","route":"maintainers/testing/","sha256":"ccf2f231e3dea5794e47f81d3cab08a6ff6fb9c0db9b3109bc711acc5697c7a5","section":"maintainers","hiddenInNavigation":true,"hiddenInSearch":true,"anchors":["testing-pulse","workspace-checks","functional-profiles","installed-feature-gates","aggregate-release-seal","recovering-the-same-candidate","bounded-local-seal-workers","executable-documentation","package-and-consumer-evidence","runner-evidence","branch-validation-tiers","provider-evidence-boundaries","redundancy-policy"]},
+    {"source":"docs/packages/README.md","route":"packages/","sha256":"001f4fd068fbba8aa7d69c2a3ac595aa26a4cf0e27ea37e74e6af2785a3e5a0e","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["package-support-policy","tier-definitions","canonical-application-surface","supported-providerextension-surface","implementationtransitive-surface","reading-package-readmes","extension-and-provider-boundary-in-100-beta7","installed-documentation"]},
+    {"source":"docs/packages/assets.md","route":"packages/assets/","sha256":"d7322a84cd8ab11801eb730cee6dba94b549246c553523f4887874cb5a18d035","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computeassets","install","portable-lookup-surface","javascript-middleware","opt-in-embedded-blobs-ast-02b","native-embedded-blobs-ast-02d","s3-protocol-ownership-and-compatibility","response-ownership","compatibility-subpath","package-owned-files","related-documentation"]},
+    {"source":"docs/packages/cli.md","route":"packages/cli/","sha256":"db5cbabc85c23c00a0fe6b7d455cf592872f49576a35fd792d833d96dec93a7e","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computecli","install-and-initialize","daily-workflow","project-configuration","machine-readable-contracts-and-shell-completion","public-entry-points","json-output","provider-behavior","installed-documentation-payload","safety-boundaries","related-documentation"]},
+    {"source":"docs/packages/crypto.md","route":"packages/crypto/","sha256":"2af50772c550570a89993f63fd4a1d45641003d07727ce35eab5db6a61730e74","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computecrypto","exact-text-digest","verification-surface","profiles-and-realization","boundary","related-material","rs256-signature-contract"]},
+    {"source":"docs/packages/entities.md","route":"packages/entities/","sha256":"b9d1e6a7b0f98286e1fed718e5e3b8231698f60269dfa7fb32e0df44a2e5df8f","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computeentities","declare-an-entity-router","json-rpc-behavior","javascript-workflow-and-inspection","target-status","diagnostics","related-material"]},
+    {"source":"docs/packages/grip.md","route":"packages/grip/","sha256":"b9316107a064b5a519aff9fb971b906e52b111bd8827278b08c47206ca19bf28","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computegrip","install","package-root-api","realization-boundary","compatibility-native-facade","related-documentation"]},
+    {"source":"docs/packages/implementation-packages.md","route":"packages/implementation-packages/","sha256":"fe72e8da804ae71e056af7b4450d366e0b77eabd9044a6c0c0016b15211280d6","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["implementation-packages","pulse-computewasm-build-support","supported-entry-points","pulse-computewasm-compiler","supported-entry-points-1","pulse-computewasm-guest-link","supported-entry-points-2","pulse-computewasm-contracts","supported-entry-points-3","pulse-computewasm-host-runtime","supported-entry-points-4","pulse-computewasm-library-kit","supported-entry-points-5","pulse-computeprovider-node","supported-entry-points-6","pulse-computewasm-runtime-core-as","supported-entry-points-7","pulse-computewasm-schema-json","supported-entry-points-8","support-boundary"]},
+    {"source":"docs/packages/jwt.md","route":"packages/jwt/","sha256":"8af41e3f4869ff2a3a1c833b8461d8760c5f38ded78e9b1811493778ac63f119","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computejwt","verify-a-bearer-token","algorithms-and-keys","issue-a-short-lived-worker-token","es256-issuance-and-key-rotation","boundary","related-material","rs256-issuance-and-verification","installed-workflow-qualification"]},
+    {"source":"docs/packages/mcp.md","route":"packages/mcp/","sha256":"6fa2c984fe05739552e50b7507332b7a6558411acd64e66a01d8e8daa86b1f8a","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computemcp","supported-host-imports","start-with-the-pulse-context-server"]},
+    {"source":"docs/packages/provider-fastly.md","route":"packages/provider-fastly/","sha256":"384492e169adb16895af0b5c691c6ac636f6eaaa2447b6835bba4c131add2525","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computeprovider-fastly","install","configure-a-project","configuration-groups","build-outputs","fastly-native","fastly-javascript","local-conformance-and-external-reality","public-entry-points","handler-isolation","current-limitations","related-documentation"]},
+    {"source":"docs/packages/pulse.md","route":"packages/pulse/","sha256":"7dd3490b8d51ac2240864c7617d03c34c6c9660574409322e7bf5fe61d2df2ea","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computepulse","install","application-root","project-configuration","schema-declarations","async-shaped-handlers-and-execution-state","ownership-boundary"]},
+    {"source":"docs/packages/runtime.md","route":"packages/runtime/","sha256":"be66a6cf946e0baec2ab999b1cadda6133356f5643210a3d60ffa568a9cec6e1","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computeruntime","install","minimal-handler","public-contract","static-router-applications","request-access","async-and-execution-state","event-context-and-native-ingress","outbound-events","logging","responses","wall-time","host-capabilities","structured-and-opaque-fetch-results","deliberate-exclusions","package-and-installed-references"]},
+    {"source":"docs/packages/s3.md","route":"packages/s3/","sha256":"6eb717e601777a0e4852cbe8ff871d3a0d85112adee8e778c8601a1346aa31de","section":"packages","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse-computes3","authoring-and-lowering","binding-map","results-and-bounds","bounded-binary-response-reads-ast-02ac","target-support-and-evidence","related-material"]},
+    {"source":"docs/preview-scope.md","route":"preview-scope/","sha256":"06076e8a47bb4c0d5472505f9fae551b78ed9f9bae6a7ba73b46ae926a208fd5","section":"start","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["beta-scope","supported-application-behavior","execution-contract","deliberately-unsupported","compatibility-authority","body-model","compatibility-and-release-signals"]},
+    {"source":"README.md","route":"project/","sha256":"122b87276625a9a0d4da2061f1d840a805fef95cadb8f66959a364d5f735ca9c","section":"start","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["pulse","start-here","implemented-beta-surface","public-packages","documentation","maintenance-and-support","examples","license"]},
+    {"source":"docs/reference/README.md","route":"reference/","sha256":"c2bcfea69bd6315399847572bd0f82ba07b4041bec6bc0e539beffeab5037223","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["reference"]},
+    {"source":"docs/reference/cli.md","route":"reference/cli/","sha256":"76978fd30ea9b7d977c8eb48ce1bb776f46d25b73da5231b28ffb5e4e7ae90fd","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["cli-reference","meta-invocations","global-options","shell-completion","bash","zsh","fish","pulse-init","positionals","options","examples","related-diagnostics","output","side-effects","exit-behavior","pulse-doctor","positionals-1","options-1","examples-1","related-diagnostics-1","output-1","side-effects-1","exit-behavior-1","pulse-inspect","positionals-2","options-2","examples-2","related-diagnostics-2","output-2","side-effects-2","exit-behavior-2","pulse-test","positionals-3","options-3","examples-3","related-diagnostics-3","output-3","side-effects-3","exit-behavior-3","pulse-dev","positionals-4","options-4","examples-4","related-diagnostics-4","output-4","side-effects-4","exit-behavior-4","pulse-compile","positionals-5","options-5","examples-5","related-diagnostics-5","output-5","side-effects-5","exit-behavior-5","pulse-build","positionals-6","options-6","examples-6","related-diagnostics-6","output-6","side-effects-6","exit-behavior-6","pulse-report","positionals-7","options-7","examples-7","related-diagnostics-7","output-7","side-effects-7","exit-behavior-7","configuration-discovery-and-command-precedence","json-and-stream-contracts","provider-restrictions-and-build-products","exit-classes"]},
+    {"source":"docs/reference/compatibility-matrix.md","route":"reference/compatibility-matrix/","sha256":"f41ed49df06278e2e87bfd224f2768d71d2cad56c580fd49199fe2bb91da8062","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["provider-and-target-compatibility","reading-the-matrix","source-form-compatibility","provider-and-target-realization","entities-beta-package","jwt-and-crypto-beta-packages","evidence-and-authority","related-reference"]},
+    {"source":"docs/reference/diagnostics.md","route":"reference/diagnostics/","sha256":"14167c89292a5da4506da544a804ab8204837d70a26b878b802a95c76a2b17f8","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["diagnostics-and-remediation","json-failure-envelope","fastly-local-execution-boundary","exit-codes","development-http-responses","executable-schema-failure-example","complete-public-catalog","report-diagnostics","pulse-report-input-invalid","pulse-report-evidence-missing","pulse-report-stale","pulse-report-incompatible","pulse-report-output-unsafe","pulse-report-output-failed","pulse-report-html-unavailable","usage-diagnostics","pulse-command-unknown","pulse-argument-missing","pulse-argument-unexpected","pulse-provider-flag-removed","pulse-source-only-removed","project-diagnostics","pulse-config-not-found","pulse-profile-selection-required","pulse-profile-unknown","pulse-config-plan-parity-failed","pulse-javascript-application-plan-invalid","pulse-javascript-application-entry-invalid","pulse-javascript-application-export-invalid","pulse-javascript-module-not-found","pulse-runtime-application-export-invalid","pulse-config-load-failed","pulse-entry-not-found","pulse-project-root-missing","pulse-init-not-empty","pulse-init-file-exists","pulse-config-implicit","pulse-request-duration-invalid","pulse-request-duration-unsupported","pulse-request-duration-artifact-mismatch","test-diagnostics","pulse-test-harness-not-found","pulse-test-harness-export-invalid","pulse-test-expect-invalid","pulse-test-event-invalid","capability-diagnostics","pulse-target-implementation-pending","pulse-javascript-application-unavailable","pulse-javascript-package-realization-unavailable","pulse-package-javascript-realization-not-implemented","pulse-javascript-package-esm-unsupported","pulse-javascript-package-module-unavailable","pulse-javascript-external-module-unavailable","pulse-native-text-unsupported","pulse-experimental-native-size-unsupported","pulse-provider-compile-only","pulse-test-provider-required","pulse-dev-provider-unsupported","pulse-provider-capability-missing","pulse-provider-capability-unsupported","pulse-event-target-unsupported","pulse-transform-unavailable","compile-diagnostics","pulse-javascript-application-graph-failed","pulse-javascript-import-not-in-graph","pulse-javascript-module-compile-failed","pulse-native-expansion-repeated","pulse-handler-async-required","pulse-project-compile-failed","pulse-canonical-compile-failed","pulse-canonical-pure-loop-unsupported","pulse-canonical-read-loop-unsupported","pulse-canonical-native-plan-failed","pulse-canonical-native-as-generation-failed","pulse-package-lowering-failed","pulse-native-import-unsupported","pulse-package-subpath-unsupported","pulse-package-reexport-lowering-deferred","pulse-application-entry-lifecycle-side-effect","pulse-package-binding-ownership-ambiguous","pulse-package-contract-not-recognized","pulse-request-forwarding-unavailable","pulse-request-forwarding-form-unsupported","internal-diagnostics","pulse-javascript-package-plan-missing","pulse-javascript-graph-edge-ambiguous","pulse-javascript-graph-module-missing","pulse-javascript-module-kind-unsupported","safety-diagnostics","pulse-javascript-module-outside-workspace","pulse-javascript-module-source-changed","pulse-build-out-unsafe","provider-diagnostics","pulse-provider-unsupported","pulse-provider-package-not-found","pulse-provider-toolchain-load-failed","pulse-provider-toolchain-invalid","pulse-build-provider-required","pulse-fastly-event-ingress-unsupported","pulse-fastly-event-emit-unsupported","pulse-fastly-backend-required","pulse-fastly-backend-bindings-invalid","pulse-fastly-kv-bindings-invalid","pulse-fastly-grip-fanout-backend-required","pulse-fastly-grip-publish-binding-required","toolchain-diagnostics","pulse-node-version-unsupported","pulse-fetch-implementation-unavailable","pulse-canonical-native-compile-failed","pulse-fastly-cli-unavailable","pulse-fastly-cli-inspection-failed","pulse-viceroy-unavailable","pulse-viceroy-inspection-failed","pulse-fastly-serve-start-failed","pulse-fastly-serve-start-timeout","pulse-fastly-request-timeout","schema-diagnostics","pulse-schema-compile-failed","pulse-schema-json-limits-invalid","pulse-schema-json-limit-literal-required","pulse-schema-json-depth-unsupported","pulse-canonical-schema-missing","pulse-schema-json-declarations-retired","pulse-schema-codec-realization-pending","pulse-canonical-schema-id-literal-required","pulse-schema-id-invalid","pulse-schema-required","pulse-schema-reference","pulse-schema-codecs-unavailable","pulse-response-case-missing","pulse-response-case-reference","pulse-response-descriptor-invalid","pulse-response-descriptor-literal-required","pulse-schema-id-duplicate","pulse-schema-source-required","pulse-schema-type-required","request-diagnostics","pulse-schema-content-type","pulse-schema-json-malformed","pulse-body-decode","pulse-request-body-invalid-utf8","pulse-schema-decode","pulse-body-too-large","pulse-request-deadline-exceeded","pulse-request-clock-invalid","pulse-request-body-ownership","pulse-transform-headers-invalid","pulse-transform-input-limit","pulse-transform-utf8-invalid","pulse-request-forwarding-headers-invalid","pulse-request-body-too-large","runtime-diagnostics","pulse-fetch-schema-without-json","pulse-transform-chunk-invalid","pulse-transform-output-limit","pulse-transform-read-limit","pulse-transform-closed","pulse-transform-eof-required","pulse-request-forwarding-chunk-invalid","pulse-request-forwarding-redirect","pulse-body-unavailable","pulse-opaque-body-inspection","pulse-response-encode","pulse-schema-encode","pulse-fetch-timeout","pulse-fetch-network","pulse-fetch-url-invalid","pulse-continuation-expired","pulse-continuation-double-resume","config-diagnostics","pulse-transform-config-invalid","pulse-request-forwarding-config-invalid"]},
+    {"source":"docs/reference/environment.md","route":"reference/environment/","sha256":"4bc44c47a99b2d72dd7a7bd7884a2730739e0dda9b4341e4eb7e00523b5fe0db","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["environment-variable-reference","index","supported-tooling-configuration","pulse-fastly-bin","pulse-viceroy-bin","pulse-profile","contributor-and-test-only-configuration","pulsewasm-seal-worker-layout","pulse-release-shared-pack","pulse-release-shared-pack-sha256","pulse-release-feature-report-dir","pulsewasm-suite-task","pulse-b02-baseline-root","pulse-b02-usage-dir","pulse-b03-usage-dir","pulse-release-ref","pulse-release-sha","pulsewasm-artifacts-dir","pulsewasm-test-tmp-root","pulse-fastly-reality-evidence","pulse-four-mode-evidence","pulse-source-revision","pulse-source-identity-kind","pulse-source-digest-sha256","pulse-source-file-count","pulse-fake-fastly-capture","pulse-fake-viceroy-capture","pulse-es256-reproduction-root","pulse-es256-reproduction-archive","pulse-rust-cargo","pulse-rustc","pulsewasm-mem03-base","standard-process-variables"]},
+    {"source":"docs/reference/handler-authoring.md","route":"reference/handler-authoring/","sha256":"c29bdf06a5d218027a4ad0c65a892e20bd52b282b8d4df136b1f5e3927d9f9b1","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["managed-handler-typescript-and-javascript","one-source-model","native-language-boundary","why-handlers-are-async-shaped","trusted-awaits","ctxparallel-is-an-explicit-portable-group","static-application-boundaries","router-topology-and-terminal-transfer","json-and-body-ownership","supported-imports-and-extension-boundaries","how-native-ineligibility-is-reported"]},
+    {"source":"docs/reference/project-config.md","route":"reference/project-config/","sha256":"e45d67a69a861b3a82a191ca30666d9c55e420d0df857c581f4b1643d503837e","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["project-configuration-reference","conventional-pulseconfigts","project-and-provider-selection","entry","provider","outdir","reporting","cryptographic-requirements","pulsecrypto","crypto","json-schema-policy","schemas","schemascontenttypepolicy","schemasmaxbytes","local-development","dev","devhost","devport","devwatch","devmaxbodybytes","devnetworkfetch","devconfig","devsecrets","devkv","devfetches","node-provider-options","nodebodytransform","nodegeneratedoutput","nodebodyforwarding","nodemaxdurationms","nodebindingss3","fastly-provider-options","fastlymaxwasmbytes","fastlybuildmaxwasmbytes","fastlymaxdurationms","fastlybindingss3","fastlyconfigstore","fastlysecretstore","fastlykv","fastlybackends","fastlydynamicbackends","fastlygrip","fastlygripfanoutbackend","fastlygrippublishendpoint","fastlygrippublishurl","fastlygrippublishbackend","fastlygripauthentication","fastlygripauthenticationscheme","fastlygripauthenticationsecretref","fastlygripdirecthold","fastlyname","fastlydescription","fastlyauthors","fastlylocal","fastlylocalnetworkfetch","fastly-profile-example","safety-invariants"]},
+    {"source":"docs/reference/shell-completion.md","route":"reference/shell-completion/","sha256":"4ccf965330762b54a94c0def90b6e57e9dfaf49b66ba827c6dded45e8ac592ed","section":"reference","hiddenInNavigation":false,"hiddenInSearch":false,"anchors":["shell-completion","generate-from-the-installed-cli","install-persistently"]}
+  ],
+  "sourceAliases": {
+    "examples/README.md": "docs/examples.md"
+  },
+  "routeAliases": [
+    {
+      "route": "alpha-scope/",
+      "target": "preview-scope/"
+    },
+    {
+      "route": "maintainers/compiler-efficiency-p01/",
+      "target": "maintainers/testing/"
+    }
+  ],
+  "sourceAssets": [
+    {
+      "source": "docs/fixtures/inspect-fetch-composition.selected.json",
+      "route": "fixtures/inspect-fetch-composition.selected.json",
+      "sha256": "f17b58333c389b402b58c687e4ac262c84e33062b6e99d84223f27871be9a7a5"
+    },
+    {
+      "source": "docs/maintainers/maintenance-policy.json",
+      "route": "maintainers/maintenance-policy.json",
+      "sha256": "2e30d78059551cc2d376ac6afec0b1a854aefe23e4c50bedaf0731b2dffac083"
+    },
+    {
+      "source": "docs/maintainers/plugin-readiness.json",
+      "route": "maintainers/plugin-readiness.json",
+      "sha256": "5af843a65cefa831bbb4d341457452d8bb237c988b9b9245aaeaf228a5ca9eac"
+    },
+    {
+      "source": "docs/reference/cli-spec.json",
+      "route": "reference/cli-spec.json",
+      "sha256": "db058d7017ff7d69df80eb93c6b5d3faa36ad88fbfd6cb71d5909afd61ab4bb2"
+    },
+    {
+      "source": "docs/reference/documentation-versions.json",
+      "route": "reference/documentation-versions.json",
+      "sha256": "8e3d62f5f14dd30fef68eb07290d86e4cdf406594f73dd8895162a5d9e820cd8"
+    },
+    {
+      "source": "docs/reference/project-config.schema.json",
+      "route": "reference/project-config.schema.json",
+      "sha256": "8b7786bdcac9cec3f08c2b79232a62cc661750c14220899374ad98adda4ce643"
+    },
+    {
+      "source": "docs/reference/release-manifest.json",
+      "route": "reference/release-manifest.json",
+      "sha256": "389ffca6e6c6e0ad2612f8ddc42533179ed14935ee99a17f2546bb1fd1cd9e0f"
+    }
+  ],
+  "siteAssets": [
+    {
+      "source": "scripts/documentation-site/boot.js",
+      "sha256": "ef97d12b7cd7f31c987a4e1294733cc314747816ae5aaf5568a1da911c885017"
+    },
+    {
+      "source": "scripts/documentation-site/favicon.svg",
+      "sha256": "2980fb7d0c1147bc3d53214201a54abfeffc3a210abd060b6b41f22ce74966d7"
+    },
+    {
+      "source": "scripts/documentation-site/network-field.js",
+      "sha256": "f9a5087c90aafe9de88554bacbfdc226f164e0a41a14dd0172b57652809499ea"
+    },
+    {
+      "source": "scripts/documentation-site/redirect.js",
+      "sha256": "5822233e07f0dde8fb931648038f2704fbbae97a045f84299018c28ec3b58c49"
+    },
+    {
+      "source": "scripts/documentation-site/site.css",
+      "sha256": "f706ce34a59002ba07b8ed4c4227bfb352e47b2c6d32ffdb1978a2183060ff49"
+    },
+    {
+      "source": "scripts/documentation-site/site.js",
+      "sha256": "faf5cae66a46d49f3bcd68cb4ff5d6317e57eef00890ef2f047c695777bbc739"
+    },
+    {
+      "source": "scripts/documentation-site/syntax-dark.css",
+      "sha256": "6f88160fffc0378766034d5c58bc7c42da7e17dc2385654f0b4781562aa8cba7"
+    },
+    {
+      "source": "scripts/documentation-site/tokens.css",
+      "sha256": "4bc3472b90a291b6767131e271e3736e496fafdd75c0fa1ab0cdb3a734d55fe1"
+    }
+  ],
+  "archives": [
+    {
+      "segment": "v1.0.0-beta.6",
+      "source": "release/documentation-site-archives/v1.0.0-beta.6",
+      "fileCount": 103,
+      "bytes": 4660748,
+      "treeSha256": "393727681e7139fe86ab89faa7e2382f876318ae66075f1b6f02b846d5228df6",
+      "pages": 82,
+      "localLinksValidated": 19733,
+      "siteAssets": [
+        "assets/tokens.css",
+        "assets/syntax-dark.css",
+        "assets/site.css",
+        "assets/boot.js",
+        "assets/redirect.js",
+        "assets/site.js",
+        "assets/network-field.js",
+        "assets/favicon.svg"
+      ],
+      "sourceAssets": [
+        {
+          "source": "docs/fixtures/inspect-fetch-composition.selected.json",
+          "output": "fixtures/inspect-fetch-composition.selected.json"
+        },
+        {
+          "source": "docs/maintainers/maintenance-policy.json",
+          "output": "maintainers/maintenance-policy.json"
+        },
+        {
+          "source": "docs/maintainers/plugin-readiness.json",
+          "output": "maintainers/plugin-readiness.json"
+        },
+        {
+          "source": "docs/reference/cli-spec.json",
+          "output": "reference/cli-spec.json"
+        },
+        {
+          "source": "docs/reference/documentation-versions.json",
+          "output": "reference/documentation-versions.json"
+        },
+        {
+          "source": "docs/reference/project-config.schema.json",
+          "output": "reference/project-config.schema.json"
+        },
+        {
+          "source": "docs/reference/release-manifest.json",
+          "output": "reference/release-manifest.json"
+        }
+      ],
+      "productionStorageVerified": false
+    },
+    {
+      "segment": "v1.0.0-beta.4",
+      "source": "release/documentation-site-archives/v1.0.0-beta.4",
+      "fileCount": 102,
+      "bytes": 3982257,
+      "treeSha256": "d8aa23be1eb515dff55a57007f6135f2328e0c979ade8f346c2d887b41b3137d",
+      "pages": 81,
+      "localLinksValidated": 19153,
+      "siteAssets": [
+        "assets/tokens.css",
+        "assets/syntax-dark.css",
+        "assets/site.css",
+        "assets/boot.js",
+        "assets/redirect.js",
+        "assets/site.js",
+        "assets/network-field.js",
+        "assets/favicon.svg"
+      ],
+      "sourceAssets": [
+        {
+          "source": "docs/fixtures/inspect-fetch-composition.selected.json",
+          "output": "fixtures/inspect-fetch-composition.selected.json"
+        },
+        {
+          "source": "docs/maintainers/maintenance-policy.json",
+          "output": "maintainers/maintenance-policy.json"
+        },
+        {
+          "source": "docs/maintainers/plugin-readiness.json",
+          "output": "maintainers/plugin-readiness.json"
+        },
+        {
+          "source": "docs/reference/cli-spec.json",
+          "output": "reference/cli-spec.json"
+        },
+        {
+          "source": "docs/reference/documentation-versions.json",
+          "output": "reference/documentation-versions.json"
+        },
+        {
+          "source": "docs/reference/project-config.schema.json",
+          "output": "reference/project-config.schema.json"
+        },
+        {
+          "source": "docs/reference/release-manifest.json",
+          "output": "reference/release-manifest.json"
+        }
+      ],
+      "productionStorageVerified": false
+    },
+    {
+      "segment": "v1.0.0-beta.3",
+      "source": "release/documentation-site-archives/v1.0.0-beta.3",
+      "fileCount": 102,
+      "bytes": 3960118,
+      "treeSha256": "d65a7c368a263b18a2eed444968336110bddf34d28236c36b41929f6b0a1e709",
+      "pages": 81,
+      "localLinksValidated": 19142,
+      "siteAssets": [
+        "assets/tokens.css",
+        "assets/syntax-dark.css",
+        "assets/site.css",
+        "assets/boot.js",
+        "assets/redirect.js",
+        "assets/site.js",
+        "assets/network-field.js",
+        "assets/favicon.svg"
+      ],
+      "sourceAssets": [
+        {
+          "source": "docs/fixtures/inspect-fetch-composition.selected.json",
+          "output": "fixtures/inspect-fetch-composition.selected.json"
+        },
+        {
+          "source": "docs/maintainers/maintenance-policy.json",
+          "output": "maintainers/maintenance-policy.json"
+        },
+        {
+          "source": "docs/maintainers/plugin-readiness.json",
+          "output": "maintainers/plugin-readiness.json"
+        },
+        {
+          "source": "docs/reference/cli-spec.json",
+          "output": "reference/cli-spec.json"
+        },
+        {
+          "source": "docs/reference/documentation-versions.json",
+          "output": "reference/documentation-versions.json"
+        },
+        {
+          "source": "docs/reference/project-config.schema.json",
+          "output": "reference/project-config.schema.json"
+        },
+        {
+          "source": "docs/reference/release-manifest.json",
+          "output": "reference/release-manifest.json"
+        }
+      ],
+      "productionStorageVerified": false
+    },
+    {
+      "segment": "v1.0.0-beta.2",
+      "source": "release/documentation-site-archives/v1.0.0-beta.2",
+      "fileCount": 102,
+      "bytes": 3949850,
+      "treeSha256": "4937ac6c8be8b7534abf2e6a8c97aa32e9b386cdc5d22e73436c194acfe71bac",
+      "pages": 81,
+      "localLinksValidated": 19140,
+      "siteAssets": [
+        "assets/tokens.css",
+        "assets/syntax-dark.css",
+        "assets/site.css",
+        "assets/boot.js",
+        "assets/redirect.js",
+        "assets/site.js",
+        "assets/network-field.js",
+        "assets/favicon.svg"
+      ],
+      "sourceAssets": [
+        {
+          "source": "docs/fixtures/inspect-fetch-composition.selected.json",
+          "output": "fixtures/inspect-fetch-composition.selected.json"
+        },
+        {
+          "source": "docs/maintainers/maintenance-policy.json",
+          "output": "maintainers/maintenance-policy.json"
+        },
+        {
+          "source": "docs/maintainers/plugin-readiness.json",
+          "output": "maintainers/plugin-readiness.json"
+        },
+        {
+          "source": "docs/reference/cli-spec.json",
+          "output": "reference/cli-spec.json"
+        },
+        {
+          "source": "docs/reference/documentation-versions.json",
+          "output": "reference/documentation-versions.json"
+        },
+        {
+          "source": "docs/reference/project-config.schema.json",
+          "output": "reference/project-config.schema.json"
+        },
+        {
+          "source": "docs/reference/release-manifest.json",
+          "output": "reference/release-manifest.json"
+        }
+      ],
+      "productionStorageVerified": false
+    },
+    {
+      "segment": "v1.0.0-beta.1",
+      "source": "release/documentation-site-archives/v1.0.0-beta.1",
+      "fileCount": 101,
+      "bytes": 3827263,
+      "treeSha256": "a550aa3385bd6a57e8d0a884b958ea76451b75c624bac2124931eb8c9bbe30b9",
+      "pages": 80,
+      "localLinksValidated": 18657,
+      "siteAssets": [
+        "assets/tokens.css",
+        "assets/syntax-dark.css",
+        "assets/site.css",
+        "assets/boot.js",
+        "assets/redirect.js",
+        "assets/site.js",
+        "assets/network-field.js",
+        "assets/favicon.svg"
+      ],
+      "sourceAssets": [
+        {
+          "source": "docs/fixtures/inspect-fetch-composition.selected.json",
+          "output": "fixtures/inspect-fetch-composition.selected.json"
+        },
+        {
+          "source": "docs/maintainers/maintenance-policy.json",
+          "output": "maintainers/maintenance-policy.json"
+        },
+        {
+          "source": "docs/maintainers/plugin-readiness.json",
+          "output": "maintainers/plugin-readiness.json"
+        },
+        {
+          "source": "docs/reference/cli-spec.json",
+          "output": "reference/cli-spec.json"
+        },
+        {
+          "source": "docs/reference/documentation-versions.json",
+          "output": "reference/documentation-versions.json"
+        },
+        {
+          "source": "docs/reference/project-config.schema.json",
+          "output": "reference/project-config.schema.json"
+        },
+        {
+          "source": "docs/reference/release-manifest.json",
+          "output": "reference/release-manifest.json"
+        }
+      ],
+      "productionStorageVerified": false
+    }
+  ],
+  "unpublishedDocumentationReleases": [
+    {
+      "version": "1.0.0-beta.5",
+      "sourceTag": "v1.0.0-beta.5",
+      "sourceCommit": "91cc3145e7ad4bec5d94c228d95016b0f77d04fd",
+      "npmPublished": true,
+      "exactLinkPolicy": "preserve-exact-no-redirect",
+      "evidence": "wasm/test/release/documentation-hosted-history-d01-2026-09-25.md",
+      "reason": "Recorded docs deployment stopped before the beta.5 exact tree; beta.5 is not a docs recovery target. Direct storage absence was not established. Preserve npm/Git history and use installed CLI docs or tagged source for unavailable exact links."
+    }
+  ]
+}
