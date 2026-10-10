@@ -241,6 +241,7 @@ function check(capsule) {
     if (resource.retainedPayloadBytes.state === 'available') ensure(resource.artifactId !== null
       && resource.retainedPayloadBytes.value <= maps.artifacts.get(resource.artifactId).bytes, 'REPORT_LEDGER');
     const generator = resource.generator;
+    if (resource.kind === 'response-payload') ensure(generator?.scope === 'canonical-text-responses', 'REPORT_RESOURCE_METRICS');
     if (!generator) continue;
     ensure(capsule.resourceProducers && resource.retainedPayloadBytes.state === 'unavailable', 'REPORT_RESOURCE_METRICS');
     fact(generator.representationBytes); coverage(generator.entryCoverage, resource.entryIds.length);
@@ -250,6 +251,13 @@ function check(capsule) {
       ensure(resource.kind === 'embedded-asset' && generator.representation === 'base64-text' && generator.schemaId === null, 'REPORT_RESOURCE_METRICS');
       if (generator.representationBytes.state === 'available') ensure(resource.inputBytes.state === 'available'
         && generator.representationBytes.value === 4 * Math.ceil(resource.inputBytes.value / 3), 'REPORT_RESOURCE_METRICS');
+    } else if (generator.scope === 'canonical-text-responses') {
+      ensure(resource.kind === 'response-payload' && resource.artifactId === null
+        && generator.representation === 'native-string' && generator.schemaId === null
+        && generator.representationBytes.state === 'unavailable', 'REPORT_RESOURCE_METRICS');
+      ensure(resource.inputBytes.state === 'available' ? resource.inputBytes.basis === 'resolved'
+        && resource.inputBytes.coverage === 'exact' : resource.inputBytes.state === 'unavailable'
+        && ['dynamic-reference', 'unresolved-reference'].includes(resource.inputBytes.reason), 'REPORT_RESOURCE_METRICS');
     } else if (generator.scope === 'schema-codecs') {
       ensure(resource.kind === 'schema-validator' && generator.representation === 'pulse.report-schema-shape.v1'
         && resource.inputBytes.state === 'not-applicable', 'REPORT_RESOURCE_METRICS');
@@ -266,8 +274,13 @@ function check(capsule) {
     }
   }
   if (capsule.resourceProducers) {
-    ensure(same(capsule.resourceProducers.map(row => row.scope), [...RESOURCE_SCOPES].sort(compare)), 'REPORT_COVERAGE');
-    ensure(capsule.resources.every(row => row.generator), 'REPORT_COVERAGE');
+    ensure(capsule.resourceProducers.filter(row => row.scope === 'canonical-text-responses').length <= 1, 'REPORT_COVERAGE');
+    // The new response producer is optional; historical five-scope capsules
+    // retain their exact serialized bytes and evidence identities.
+    ensure(same(capsule.resourceProducers.map(row => row.scope).filter(scope => scope !== 'canonical-text-responses'),
+      RESOURCE_SCOPES.filter(scope => scope !== 'canonical-text-responses').sort(compare)), 'REPORT_COVERAGE');
+    ensure(capsule.resources.every(row => row.generator
+      && capsule.resourceProducers.some(producer => producer.scope === row.generator.scope)), 'REPORT_COVERAGE');
     for (const row of capsule.resourceProducers) {
       references(row.resourceIds, maps.resources); references(row.evidenceIds, maps.evidence);
       ensure(row.evidenceIds.length > 0, 'REPORT_REFERENCE');
@@ -275,6 +288,8 @@ function check(capsule) {
       ensure(same(row.resourceIds, expected), 'REPORT_COVERAGE'); coverage(row.coverage, expected.length);
       if (row.scope === 'generated-support') ensure(row.coverage.status === 'unavailable' && row.coverage.expected === null, 'REPORT_COVERAGE');
       if (row.scope === 'package-realizations') ensure(expected.length === 0, 'REPORT_COVERAGE');
+      if (row.scope === 'canonical-text-responses') ensure(row.coverage.status === 'complete'
+        && row.coverage.expected === expected.length, 'REPORT_COVERAGE');
     }
     ensure(capsule.coverage.resources.status === 'partial' && capsule.coverage.resources.expected === null, 'REPORT_COVERAGE');
   }

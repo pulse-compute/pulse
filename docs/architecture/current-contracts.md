@@ -1187,6 +1187,26 @@ remains unavailable, so the overall resource inventory is explicitly partial.
 Package realization records can contain signing material: only the independent
 manifest count is retained, without their IDs, hashes, values or descriptors.
 
+The optional `pulse.report-text-responses.v1` projection observes canonical
+`response.text` sites after emission in entry, handler, stage and helper bodies.
+These become `response-payload` resources under `canonical-text-responses`.
+Identity uses owner and expression location, never contents or payload hashes.
+Literal strings and directly bound literal `const` strings have resolved UTF-8
+byte counts, including empty strings. Dynamic expressions have unavailable
+`dynamic-reference` sizes; unsupported non-string literals use
+`unresolved-reference`. No expressions are evaluated. Custom/JSON responses,
+arbitrary constant folding, execution frequency and reachability are excluded.
+Only recognized static text media types are retained; dynamic or unsupported
+header shapes remain unknown.
+
+Producer coverage counts sites, including unresolved payloads, independently of
+byte availability and consumer coverage. Stages retain registration consumers;
+helpers use recorded callers. Generated dispatcher sites may lack known entries.
+Routes follow existing bounded composition. Equal strings at separate sites do
+not prove separate or shared storage. No body, expression text or header values
+are retained beyond normalized allowlisted media types. Historical capsules
+preserve bytes and identity: an absent producer means not recorded, not empty.
+
 Resource inputs and representations are distinct from physical artifact bytes.
 Embedded assets retain the original byte length and, when recorded, the UTF-8
 length of their validated base64 build input. Schema-codec resources join the
@@ -1206,6 +1226,14 @@ stay unavailable without final-byte identity proof; source or encoded lengths
 are never substituted. Historical capsules without producer metadata remain
 readable without changes to their evidence identity. Collection only observes
 completed compiler records; replay never loads a compiler or package generator.
+
+For text-response sites the input metric is the resolved string's UTF-8 payload
+length, not TypeScript source-file bytes or literal spelling. Native string
+representation bytes and final retained Wasm payload bytes remain unavailable:
+the collector does not infer AssemblyScript storage, optimizer deduplication,
+encoding overhead or final data-segment identity from string length. Packed
+embedded assets keep their existing base64 representation measurements. Neither
+category adds bytes to the physical artifact ledger or changes route sizes.
 
 Report size collection reads exact retained Wasm sections and function bodies.
 A passive build-support observer of the same optimized final emission supplies
