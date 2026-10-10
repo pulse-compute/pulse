@@ -96,15 +96,32 @@ function renderedTree(capsule) {
   const nodes=()=>roots.flatMap(descendants);
   const get=id=>nodes().find(n=>n.id===id);
   const data=new Element('script');data.id='pulse-report-data';data.textContent=JSON.stringify(capsule);roots.push(data);
-  const document={querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):{content:'historical'},createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
+  const document={querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
   const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderResources,renderDrawer,state};\n})();",context);
+  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderResources,renderSchemas,renderDrawer,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
   return {get,nodes,renderers:context.renderers};
 }
 const tree=renderedTree(richCapsule);
+const usageInput=structuredClone(richCapsule), usageSchema=usageInput.schemas[0];
+usageSchema.entryIds=[];
+assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'Usage tracing not recorded');
+usageInput.references=[];
+assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'No observed use · not proven unused');
+usageInput.references=[{kind:'schema',targetId:usageSchema.id,entryCoverage:{status:'unavailable'},externalPackages:['@pulse-compute/jwt']}];
+assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'Referenced · consumer unresolved');
+const usageTree=renderedTree(usageInput);
+usageTree.renderers.renderSchemas();
+assert.match(usageTree.get('schema-body').textContent,/External dependency · @pulse-compute\/jwt/);
+assert.match(usageTree.get('schema-body').textContent,/Referenced · consumer unresolved/);
+usageTree.get('schema-expand-0').events.click();
+assert.match(usageTree.get('schema-detail-0').textContent,/Known consuming entries0/);
+usageSchema.entryIds=['known'];usageInput.references[0].entryCoverage.status='partial';
+assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'Used · consumer coverage incomplete');
+usageInput.references[0].entryCoverage.status='complete';
+assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'Used');
 assert.match(tree.get('compact-coverage').textContent,/2 \/ 2Handler mappings1 \/ 2Reachability roots/);
 assert.equal(tree.nodes().filter(n=>n.tag==='svg'&&n.attrs.class==='ledger-bar').length,2,'composition chart in summary and resources');
 for(const chart of tree.nodes().filter(n=>n.tag==='svg'&&n.attrs.class==='ledger-bar')) {

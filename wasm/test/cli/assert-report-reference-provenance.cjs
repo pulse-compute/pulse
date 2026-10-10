@@ -34,6 +34,7 @@ function inventory(project, prepared) {
   return collectInventory(project, prepared, [artifact], artifact.id, 'default');
 }
 async function main() {
+  require('./report-schema-consumer-cases.cjs')();
   const results = path.join(root, 'wasm/.test-results'); fs.mkdirSync(results, { recursive: true });
   const directory = fs.mkdtempSync(path.join(results, 'rpt8-references-'));
   try {
@@ -44,9 +45,10 @@ export default defineConfig(scope=>({pulse:{entry:'src/index.ts',schema:'src/sch
 native:{host:'node',target:'native',token:scope.secret('TOKEN'),region:scope.config('REGION'),unused:scope.config('UNUSED'),
 dev:{secrets:{TOKEN:'SECRET_VALUE_CANARY'},config:{REGION:'CONFIG_VALUE_CANARY'}},outDir:'dist'}}));`);
     write(path.join(directory, 'src/schemas.ts'), `import {defineSchemaRegistry,schema} from '@pulse-compute/pulse/schema';
-export interface Input{name:string};export default defineSchemaRegistry({schemas:{'app.Input':schema<Input>()}});`);
+export interface Input{name:string};export interface Helper{name:string};export interface Unused{name:string};export default defineSchemaRegistry({schemas:{'app.Input':schema<Input>(),'app.Helper':schema<Helper>(),'app.Unused':schema<Unused>()}});`);
+    write(path.join(directory, 'src/helper.ts'), `import type {Helper} from './schemas';export const lookup=async(ctx,input:string)=>{const text=await ctx.fetch('https://fixture.test/value').text();const decoded=ctx.decodeJson<Helper>(text,'app.Helper');let value=decoded.name;for(let i=0;i<8;i++){value=value+':'+i;}return value+input;};`);
     write(path.join(directory, 'src/index.ts'), `import {Pulse} from '@pulse-compute/pulse';import {assets} from '@pulse-compute/assets';
-import type {Input} from './schemas';const app=new Pulse({auto:true});
+import {lookup} from './helper';import type {Input} from './schemas';const app=new Pulse({auto:true});
 const schemaStage=async(ctx,next)=>{const stamp=await ctx.time.now();const value=ctx.decodeJson<Input>('{"name":"stage"}','app.Input');ctx.state.set('name',value.name);return next();};
 app.use(schemaStage);app.use(schemaStage);
 const binding=async ctx=>{const a=await ctx.config.get('REGION');const b=await ctx.config.get('REGION');const store=ctx.kv('cache');const item=await store.get('key');return ctx.text(a+b);};
@@ -56,7 +58,9 @@ const token=async ctx=>{const value=await ctx.secret.get('TOKEN');return ctx.tex
 app.get('/secret-a',token);app.get('/secret-b',token);
 app.post('/schema',async ctx=>{const value=await ctx.req.json<Input>('app.Input');return ctx.json(value,{schema:'app.Input'});});
 const asset=async ctx=>{const value=await assets.lookup(ctx,'embedded','/style.css',{embeddedManifest:${JSON.stringify(JSON.stringify(embedded))}});return value;};
-app.get('/asset-a',asset);app.get('/asset-b',asset);export default app;`);
+app.get('/asset-a',asset);app.get('/asset-b',asset);
+app.get('/helper-a',async ctx=>{const value=await lookup(ctx,'a');return ctx.text(value);});
+app.get('/helper-b',async ctx=>{const value=await lookup(ctx,'b');return ctx.text(value);});export default app;`);
     const project = resolveProject({ cwd: directory, metadataOnly: true });
     const controlOwner = withoutProjection(), cells = [];
     let saved, prepared;
@@ -78,6 +82,11 @@ app.get('/asset-a',asset);app.get('/asset-b',asset);export default app;`);
         assert.equal(result.response.status, 200); assert.equal(result.response.body, body); requests++;
       }
       const report = inventory(project, prepared);
+      assert.equal(prepared.plan.helpers.length, 1);
+      const helperSchema = report.references.find(row => row.canonicalId === 'app.Helper');
+      assert.equal(helperSchema.entryCoverage.status, 'complete');
+      assert.deepEqual(helperSchema.entryIds, report.routes.filter(row => row.path.startsWith('/helper-')).map(row => row.entryId).sort());
+      assert.equal(report.references.some(row => row.canonicalId === 'app.Unused'), false);
       assert.equal(report.bindings.length, 4, 'one row per kind/name, including an unused declaration');
       const binding = name => report.bindings.find(row => row.name === name);
       assert.ok(binding('REGION').declared && binding('REGION').referenced);
@@ -91,11 +100,11 @@ app.get('/asset-a',asset);app.get('/asset-b',asset);export default app;`);
       assert.equal(dynamic.length, 1); assert.equal(dynamic[0].canonicalId, null); assert.equal(dynamic[0].targetId, null);
       assert.ok(report.observations.some(row => row.code === 'REPORT_DYNAMIC_REFERENCE' && row.subjectIds.includes(dynamic[0].id)));
       const assetResource = report.resources.find(row => row.kind === 'embedded-asset');
-      assert.equal(report.resources.length, 2); assert.equal(assetResource.entryIds.length, 2);
+      assert.equal(report.resources.length, 4); assert.equal(assetResource.entryIds.length, 2);
       assert.equal(assetResource.inputBytes.value, 20); assert.equal(assetResource.retainedPayloadBytes.value, null);
       assert.equal(assetResource.generator.representationBytes.value, 28);
-      assert.equal(report.schemas.length, 1);
-      assert.equal(report.schemas[0].entryIds.length, 3, 'shared stage registrations and ordinary schema user remain distinct');
+      assert.equal(report.schemas.length, 3);
+      assert.equal(report.schemas.find(row => row.schemaId === 'app.Input').entryIds.length, 3, 'shared stage registrations and ordinary schema user remain distinct');
       assert.ok(prepared.plan.stages.some(row => row.registrations.length === 2), 'fixture exercises shared-stage lowering');
       const same = report.routes.filter(row => row.path === '/same');
       assert.equal(same.length, 2); assert.notEqual(same[0].id, same[1].id);
@@ -113,6 +122,18 @@ app.get('/asset-a',asset);app.get('/asset-b',asset);export default app;`);
     const partial = inventory(project, { ...prepared, reportReferences: projected });
     const schema = partial.references.find(row => row.kind === 'schema' && row.canonicalId === 'app.Input');
     assert.equal(schema.entryCoverage.status, 'partial'); assert.equal(schema.entryCoverage.expected, null);
+    const external = structuredClone(partial);
+    external.references.find(row => row.canonicalId === 'app.Input').externalPackages = ['@example/codec'];
+    const externalSaved = capsule.serializeCapsule(capsule.createCapsule(external));
+    assert.equal(capsule.serializeCapsule(capsule.parseCapsule(externalSaved)), externalSaved);
+    for (const packages of [[], ['@example/codec', '@example/codec']]) {
+      const bad = structuredClone(external);
+      bad.references.find(row => row.canonicalId === 'app.Input').externalPackages = packages;
+      assert.throws(() => capsule.createCapsule(bad));
+    }
+    const invalidKind = structuredClone(external);
+    invalidKind.references.find(row => row.kind === 'binding').externalPackages = ['@example/codec'];
+    assert.throws(() => capsule.createCapsule(invalidKind));
     assert.ok(partial.references.some(row => row.kind === 'schema' && row.state === 'unknown' && row.targetId === null));
     const literal = value => ({ kind: 'literal', value });
     const original = prepared.plan.effects.find(row => row.providerKind === 'config');

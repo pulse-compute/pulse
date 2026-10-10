@@ -374,6 +374,10 @@ try {
   assert.deepEqual(compiled.packageReachability.selectedContracts, ['pulse.jwt']);
   assert.equal(compiled.metadata.packageEffectCount, 1);
   const recognition = packageOperationRecognitionForCompiled(compiled);
+  const reportReferences = require('../../packages/compiler/src/report-reference-provenance').collectCanonicalReportReferences(
+    compiled, { entry: { body: [] }, effects: [] });
+  assert.deepEqual(reportReferences.references.find(row => row.canonicalId === 'auth.AccessClaims').externalPackages,
+    ['@pulse-compute/jwt'], 'Report obtains JWT provenance from actual package recognition');
   assert.deepEqual(recognition.operations[0].providerRequirements, [
     'jwt.verify',
     'jwt.verify.hs256',
