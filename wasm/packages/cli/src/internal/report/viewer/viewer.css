@@ -692,3 +692,7 @@ body.overlay-open{overflow:hidden}
 .helper-table .helper-row td::before{content:attr(data-label);display:block;font:10px Inter,Arial,sans-serif;color:var(--muted);margin-bottom:7px}
 .helper-table td[colspan]{padding:0}
 }
+
+/* Entry references remain visibly actionable in lists and identity details. */
+.entry-link{color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.entry-link:hover{text-decoration-thickness:2px}
