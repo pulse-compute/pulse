@@ -1236,8 +1236,11 @@ remain distinct from a rejected graph. Historical sidecars without diagnostics
 retain their previous generic reason; historical capsules remain readable.
 
 Graph failure preserves verified direct-body metrics and the physical ledger.
-Capture enforces 32 MiB graph text and 100,000 defined functions/direct edges;
+Capture enforces 160 MiB graph text and 100,000 defined functions/direct edges;
 the reader retains its one-million-operation traversal budget per artifact.
+The text ceiling accommodates named WAT expansion; it is not an artifact-size
+limit or support for indirect calls. Readers also accept historical 32 MiB
+text-budget diagnostics without changing their counters or capsule identities.
 Budget exhaustion never returns an unfinished reachable subset. Earlier complete
 closures remain bounded, code-only, nonadditive measurements; cycles and shared
 callees contribute each physical body once per closure. Parser/output bounds are

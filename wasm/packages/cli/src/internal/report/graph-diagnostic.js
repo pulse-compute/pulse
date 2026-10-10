@@ -11,8 +11,11 @@ function checkGraphDiagnostic(value, functionCount = null) {
   const mismatch = ['function-index', 'import-count', 'definition-count', 'direct-call-shape', 'direct-call-scope'].includes(value.code);
   if (budget || mismatch) {
     if (value.observed === null || value.expected === null || (budget ? value.observed <= value.expected : value.observed === value.expected)) fail('REPORT_GRAPH_DIAGNOSTIC');
-    if (budget && value.expected !== ({ 'text-byte-limit': 32 * 1024 * 1024, 'function-limit': 100000,
-      'edge-limit': 100000, 'traversal-work-limit': 1000000 })[value.code]) fail('REPORT_GRAPH_DIAGNOSTIC');
+    // Diagnostics record the producer's budget, not the current reader's. Keep
+    // the original ceiling valid for historical sidecars and capsule identities.
+    const limits = { 'text-byte-limit': [32 * 1024 * 1024, 160 * 1024 * 1024], 'function-limit': [100000],
+      'edge-limit': [100000], 'traversal-work-limit': [1000000] };
+    if (budget && !limits[value.code]?.includes(value.expected)) fail('REPORT_GRAPH_DIAGNOSTIC');
   } else if (value.observed !== null || value.expected !== null) fail('REPORT_GRAPH_DIAGNOSTIC');
 }
 module.exports = { checkGraphDiagnostic };
