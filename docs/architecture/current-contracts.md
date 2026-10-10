@@ -1257,6 +1257,36 @@ call sites. One entry may map to several bodies, and distinct registrations may
 share bodies; physical code is counted once by final artifact hash and function
 index. Missing final symbols remain `final-symbol-not-surviving`; surviving
 subsets have partial coverage and cannot establish complete reachability.
+
+The Report capsule can retain an optional `implementations` inventory derived
+only from verified attribution v2. Semantic `roles` and implementation `origin`
+are separate: dedicated bodies, authored state-machine helpers, consolidated
+stages, and dispatcher carriers do not change a registration's route,
+middleware, or error role. A stage or carrier can have several roles; helpers
+have the helper role and link to caller entries with their own roles. Empty role
+sets on unassociated non-helper implementations mean no observed semantic role.
+
+Each implementation is artifact-bound and retains its canonical implementation
+identity, per-chunk consumer entries, and surviving physical `bodyIds`. Dispatcher
+carriers have no canonical implementation identity and are keyed by artifact and
+chunk. Reverse route links follow recorded route composition, including its
+existing bounded coverage. `consumerBasis: compiler-entry-association` records
+static associations, not call counts, direct-call reachability, or a complete
+execution-root census; `entryCoverage` stays partial with a null expected count.
+An empty consumer list does not prove an implementation unused. Missing symbols
+remain explicit chunks with null body identity and partial `bodyCoverage`, never
+zero-byte bodies. Body coverage counts mapped chunks, not distinct functions.
+
+Several chunks or implementations may refer to the same physical body; sum only
+the distinct body IDs when measuring their union. This inventory adds no bytes
+to the physical ledger and establishes neither exclusive ownership nor a
+per-route share of a dispatcher. Existing Handler-body/Reachable/Own/Shared
+measurement semantics are unchanged. Overall implementation coverage remains
+partial: pure helpers, package/runtime support, and other unclassified functions
+are not inferred from names or sizes. Prelink identities cannot label final
+bodies. Legacy v1 attribution supplies no origin classification, and historical
+capsules without this optional inventory retain their serialized bytes and hash.
+
 Inline transfer/error ownership identifies dispatcher carriers, whose whole-body
 bytes cannot be presented as individual handler sizes. Those measurements remain
 unavailable with `dispatcher-carrier`, or `entry-ownership-not-retained` when no

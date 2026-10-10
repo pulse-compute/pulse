@@ -112,6 +112,9 @@
         },
         "references": {
           "$ref": "#/$defs/Coverage"
+        },
+        "implementations": {
+          "$ref": "#/$defs/Coverage"
         }
       },
       "required": [
@@ -204,6 +207,13 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/ResourceProducer"
+      },
+      "maxItems": 100000
+    },
+    "implementations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/Implementation"
       },
       "maxItems": 100000
     },
@@ -1933,6 +1943,166 @@
         "coverage",
         "resourceIds",
         "evidenceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Implementation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "canonicalId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "dedicated",
+            "authored-helper",
+            "consolidated-stage",
+            "dispatcher"
+          ]
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "route",
+              "middleware",
+              "fallback",
+              "error",
+              "event",
+              "startup",
+              "export",
+              "other",
+              "helper"
+            ]
+          },
+          "maxItems": 100000
+        },
+        "consumerBasis": {
+          "const": "compiler-entry-association"
+        },
+        "entryCoverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "entryIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "routeIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "bodyIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "evidenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "chunks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "chunk": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "bodyId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reason": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "final-symbol-not-surviving"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "entryIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                "maxItems": 100000
+              }
+            },
+            "required": [
+              "chunk",
+              "bodyId",
+              "reason",
+              "entryIds"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000,
+          "minItems": 1
+        },
+        "bodyCoverage": {
+          "$ref": "#/$defs/Coverage"
+        }
+      },
+      "required": [
+        "id",
+        "artifactId",
+        "canonicalId",
+        "origin",
+        "roles",
+        "consumerBasis",
+        "entryCoverage",
+        "entryIds",
+        "routeIds",
+        "bodyIds",
+        "evidenceIds",
+        "chunks",
+        "bodyCoverage"
       ],
       "additionalProperties": false
     },

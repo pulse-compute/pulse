@@ -266,6 +266,13 @@ async function main() {
       const stageSizes = middleware.map(entry => capsule.measurements.find(row => row.subjectId === entry.id && row.metric === 'handler-body'));
       assert.ok(stageSizes.every(row => row.fact.state === 'available' && row.fact.coverage === 'exact'));
       assert.deepEqual(stageSizes[0].bodyIds, stageSizes[1].bodyIds);
+      const stageInventory = capsule.implementations.filter(row => row.origin === 'consolidated-stage');
+      assert.equal(stageInventory.length, 1);
+      assert.deepEqual(stageInventory[0].roles, ['middleware']);
+      assert.deepEqual(stageInventory[0].entryIds, middleware.map(row => row.id).sort());
+      assert.deepEqual(stageInventory[0].bodyIds, stageSizes[0].bodyIds);
+      assert.equal(stageInventory[0].entryCoverage.status, 'partial');
+      assert.ok(capsule.implementations.some(row => row.origin === 'dispatcher'));
       assert.ok(capsule.measurements.filter(row => ['own', 'shared'].includes(row.metric)).every(row => row.fact.value === null));
       const missing = { ...capture, functions: capture.functions.filter(row => !shared[0].indices.includes(row.index)) };
       assert.ok(entryProof(plan, generated.manifest, symbols, missing, prefix)
@@ -311,6 +318,14 @@ async function main() {
       const seed = collectInventory({ root: additional.cwd, provider: target === 'portable' ? 'node' : 'fastly' },
         { compiled: additional.compiled, plan: additional.plan, native: artifact }, [record], record.id, optimization || 'default');
       const capsule = addSizeEvidence(seed, new Map([[record.id, artifact.wasm]]), attribution);
+      const helperInventory = capsule.implementations.filter(row => row.origin === 'authored-helper');
+      assert.equal(helperInventory.length, 1);
+      assert.deepEqual(helperInventory[0].roles, ['helper']);
+      assert.equal(helperInventory[0].entryIds.length, 2);
+      assert.equal(helperInventory[0].routeIds.length, 2);
+      assert.equal(helperInventory[0].bodyCoverage.observed, optimization === 'experimental-native-bounded-size' ? 1 : 0);
+      assert.equal(helperInventory[0].bodyCoverage.expected, helperBodies.length);
+      assert.ok(helperInventory[0].bodyIds.every(id => capsule.bodies.some(row => row.id === id)));
       const direct = capsule.measurements.filter(row => row.metric === 'handler-body');
       assert.equal(direct.length, 7); assert.ok(direct.every(row => row.fact.state === 'available'));
       for (const route of capsule.routes) {
