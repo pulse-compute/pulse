@@ -65,11 +65,12 @@
     if(value<1048576)return (value/1024).toFixed(precision).replace(/\.0$/,'')+' KiB';
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
-  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage} = createReportViewModel(P);
+  const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
-  const navigation = [['routes','Routes','routes'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
+  const navigation = [['routes','Routes','routes'],['helpers','Helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -92,7 +93,7 @@
     setTimeout(() => URL.revokeObjectURL(url),1500); toast('Complete capsule exported. View filters do not change evidence.');
   }
   function buildNavigation() {
-    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},P[id].length))));
+    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},id==='helpers'?(helperState==='recorded'?helpers.length:'—'):P[id].length))));
   }
   function ledger(artifact, large=false) {
     const parts=composition(artifact);
@@ -176,6 +177,7 @@
       detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},el('code',{},id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
       detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
       detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.')),
+      helperLinks(r),
       detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
     else if(state.drawerTab==='size') {
       panel.append(note('Shared bodies are nonadditive. Code bytes are not execution cost or guaranteed removal savings.'));
@@ -184,6 +186,7 @@
         return el('div',{},el('div',{class:'size-grid-label'},label),value===null?el('div',{class:'size-grid-value size-unavailable'},measurementText(r,metric)):byteDisplay(value),el('div',{class:'size-grid-exact'},m?(value===null?m.fact.reason??m.fact.state:exact(value)+' · '+m.fact.coverage):measurementIssue(r,metric)));
       })));
       panel.append(note('Handler body and Reachable measure code bodies only; embedded asset and schema data are excluded. A small handler may serve a large payload.'),
+        helperLinks(r),
         detailSection('Referenced resources',el('p',{},P.resources.filter(resource=>resource.routeIds.includes(r.id)).length+' recorded resources; consumer coverage may be partial.'),el('a',{href:'#resources'},'View resource inventory and byte representations')));
       for(const [metric,label] of Object.entries(metrics)) {
         const resolution=measurementResolution(r,metric);
@@ -193,6 +196,75 @@
       }
     } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
     replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},r.handlerName??'Name unavailable'),tabs,panel);
+  }
+  function helperCoverage(row) {
+    const size=helperSize([row]);
+    return size.bytes===null?'No surviving body mapping':size.partial?'Partial body mapping':'All recorded chunks mapped';
+  }
+  function helperLinks(route) {
+    const rows=routeHelpers(route),size=helperSize(rows);
+    return detailSection('Associated helpers & stages',
+      helperState!=='recorded'?el('p',{},helperState==='not-recorded'?'Helper inventory was not recorded in this capsule.':'No helper inventory records for the primary artifact.')
+        :rows.length?[
+          el('ul',{class:'helper-links'},rows.map(row=>el('li',{},el('a',{href:'#helpers/'+helperIndex.get(row.id)},helperLabel(row)),
+            el('span',{class:'secondary'},row.roles.join(', ')+' · '+(helperSize([row]).bytes===null?'Unavailable':bytes(helperSize([row]).bytes))+' · '+helperCoverage(row))))),
+          el('p',{class:'small-note'},'Associated mapped code: '+exact(size.bytes)+' · '+size.bodyIds.length+' distinct bodies. Missing mappings are excluded. These are shared associations, not an additional per-route size; do not add them to Handler body or Reachable.')
+        ]:el('p',{},'No helper or stage associations recorded for this route. Consumer coverage is incomplete.'),
+      el('a',{href:'#helpers'},'Explore Helpers'));
+  }
+  function helperSortHead(key,label) {
+    const control=button(label+' ↕',()=>{state.helperDir=state.helperSort===key?(state.helperDir==='asc'?'desc':'asc'):(key==='name'?'asc':'desc');state.helperSort=key;renderHelperRows();$('#helper-sort-'+key).focus({preventScroll:true});},'schema-sort-button');
+    control.id='helper-sort-'+key;
+    return el('th',{'data-helper-sort':key,'aria-sort':'none'},control);
+  }
+  function renderHelpers() {
+    const select=(id,label,values,key)=>el('label',{},label,el('select',{id,'aria-label':label,on:{change:e=>{state[key]=e.target.value;renderHelperRows();}}},
+      [['all','All'],...values].map(([value,text])=>el('option',{value,selected:state[key]===value},text))));
+    replace($('#view-helpers'),sectionHeading('Helpers','Authored helpers and consolidated stages in the primary '+A.stage+' artifact.',helperState==='recorded'?helpers.length:null),
+      note('Mapped code is already part of the artifact. Shared rows overlap; the total below counts each physical body once. It is not exclusive ownership, deletion savings, or execution cost.'),
+      helperState==='not-recorded'?note('Helper inventory was not recorded in this historical capsule. Sizes and consumers cannot be reconstructed from old measurements.')
+        :helperState==='no-primary-records'?note('No implementation records for the primary artifact. Prelink records cannot establish final helper sizes.')
+          :note('Inventory and consumer coverage are partial. Pure helpers and other generated support outside the captured inventory remain unknown. Middleware is a role; consolidation is an origin.'),
+      el('div',{class:'helper-toolbar'},el('label',{class:'search-box'},icon('search'),el('input',{id:'helper-search',type:'search',value:state.helperSearch,placeholder:'Find a helper, role or route…','aria-label':'Search helpers and consumers',on:{input:e=>{state.helperSearch=e.target.value.toLowerCase();renderHelperRows();}}})),
+        select('helper-origin','Implementation origin',Object.entries(helperOrigins),'helperOrigin'),
+        select('helper-role','Semantic role',[...new Set(helpers.flatMap(row=>row.roles))].sort().map(role=>[role,role]),'helperRole'),
+        el('label',{class:'helper-mobile-sort'},'Order',el('select',{id:'helper-order','aria-label':'Helper order',on:{change:e=>{const [key,dir]=e.target.value.split(':');state.helperSort=key;state.helperDir=dir;renderHelperRows();}}},
+          [['name:asc','Implementation ↑'],['name:desc','Implementation ↓'],['size:desc','Mapped code ↓'],['size:asc','Mapped code ↑'],['consumers:desc','Known entries ↓'],['consumers:asc','Known entries ↑']].map(([value,label])=>el('option',{value,selected:value===state.helperSort+':'+state.helperDir},label))))),
+      el('div',{id:'helper-summary',class:'schema-metric-strip'}),
+      el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable helper inventory'},
+        el('table',{class:'inventory-table helper-table'},el('caption',{class:'sr-only'},'Helper implementations, semantic roles, mapped code and known consumers'),
+          el('thead',{},el('tr',{},helperSortHead('name','Implementation'),el('th',{},'Role'),helperSortHead('size','Mapped code'),helperSortHead('consumers','Known entries'),el('th',{},'Routes'))),el('tbody',{id:'helper-body'}))),
+        el('div',{class:'table-footer'},el('span',{id:'helper-count',role:'status','aria-live':'polite'}),el('span',{},'Unavailable sizes stay last'))));
+    renderHelperRows();
+  }
+  function renderHelperRows() {
+    const list=filteredHelpers(),size=helperSize(list),rows=[];
+    replace($('#helper-summary'),list.length?[
+      [['Distinct mapped code',size.bytes===null?'Unavailable':bytes(size.bytes)],['Mapped bodies',size.bodyIds.length],['Bodies in multiple rows',size.overlappingBodies]].map(([label,value])=>el('div',{},el('span',{class:'schema-metric-label'},label),el('strong',{},value))),
+      el('p',{class:'small-note helper-total-note'},'Shown records only · '+size.mapped+' / '+size.expected+' recorded chunks mapped. Missing mappings contribute no known bytes, not zero-sized code.')
+    ]:el('p',{class:'small-note'},'No mapped total available for this view.'));
+    for(const row of list) {
+      const i=helperIndex.get(row.id),open=state.expandedHelpers.has(row.id),size=helperSize([row]);
+      const firstRoute=routes.get(row.routeIds[0]);
+      const consumerHint=firstRoute?firstRoute.method+' '+firstRoute.path+(row.routeIds.length>1?' · +'+(row.routeIds.length-1)+' routes':''):'No route consumers observed';
+      const expand=button((open?'▾ ':'▸ ')+helperLabel(row),()=>{open?state.expandedHelpers.delete(row.id):state.expandedHelpers.add(row.id);renderHelperRows();$('#helper-expand-'+i).focus({preventScroll:true});},'schema-expand');
+      expand.id='helper-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','helper-detail-'+i);
+      rows.push(el('tr',{'data-helper-index':i,class:'helper-row'+(open?' schema-row-open':'')},el('td',{'data-label':'Implementation'},expand,el('div',{class:'secondary record-text'},consumerHint)),el('td',{'data-label':'Role'},row.roles.join(', ')||'Not observed'),
+        el('td',{class:'numeric','data-label':'Mapped code'},size.bytes===null?'Unavailable':bytes(size.bytes),el('div',{class:'secondary'},helperCoverage(row))),
+        el('td',{class:'numeric','data-label':'Known entries'},row.entryIds.length,el('div',{class:'secondary'},'partial coverage')),el('td',{class:'numeric','data-label':'Routes'},row.routeIds.length)));
+      rows.push(el('tr',{hidden:!open},el('td',{colspan:5},el('div',{id:'helper-detail-'+i,class:'helper-detail'},...(open?[
+        el('div',{},el('h3',{},helperLabel(row)),kv([['Origin',helperOrigins[row.origin]],['Semantic roles',row.roles.join(', ')||'Not observed'],['Mapped code',exact(size.bytes)],['Mapping coverage',row.bodyCoverage.observed+' / '+row.bodyCoverage.expected+' chunks · '+row.bodyCoverage.status],['Physical bodies',String(size.bodyIds.length)],['Consumer coverage','Partial · expected count unknown'],['Artifact',A.stage+' · '+A.sha256]]),
+          el('p',{class:'small-note'},'Labels and entry numbers are local to this capsule. An empty consumer list does not prove unused code.'),
+          el('details',{class:'details-block'},el('summary',{},'Identity & body evidence'),kv([['Implementation',row.id],['Canonical identity',row.canonicalId??'Not recorded'],['Consumer basis',row.consumerBasis]]),el('pre',{class:'record-text'},JSON.stringify(row.chunks,null,2)),...evidenceCards(row.evidenceIds))),
+        el('div',{},el('h3',{},'Known consumers'),el('p',{class:'small-note'},'Static associations through recorded composition; not runtime calls or complete reachability.'),
+          routeChips(row.routeIds),el('details',{class:'details-block'},el('summary',{},'Consuming entries · '+row.entryIds.length),
+            row.entryIds.length?row.entryIds.map(id=>{const entry=entries.get(id);return el('div',{class:'helper-entry'},el('strong',{},entryLabel(entry)),el('p',{class:'small-note'},sourceText(entry.source)),routeChips(row.routeIds.filter(key=>routes.get(key).composition.includes(id))));}):el('p',{},'No entry consumers observed; not proven unused.')))
+      ]:[])))));
+    }
+    if(!list.length) rows.push(el('tr',{},el('td',{colspan:5},helpers.length?'No matching helpers. Clear the search or filters.':helperState==='recorded'?'No authored helper or consolidated stage records. Inventory is partial.':'Helper inventory unavailable.')));
+    replace($('#helper-body'),rows);$('#helper-count').textContent=list.length+' of '+helpers.length+' helper/stage records · '+(helperState==='recorded'?'partial inventory':'inventory unavailable');
+    $('#helper-order').value=state.helperSort+':'+state.helperDir;
+    for(const th of $$('[data-helper-sort]'))th.setAttribute('aria-sort',th.dataset.helperSort===state.helperSort?(state.helperDir==='asc'?'ascending':'descending'):'none');
   }
   function renderResources() {
     const sectionNames={0:'Custom',1:'Type',2:'Import',3:'Function',4:'Table',5:'Memory',6:'Global',7:'Export',8:'Start',9:'Element',10:'Code',11:'Data',12:'Data count',13:'Tag'};
@@ -302,14 +374,15 @@
   function showView(view) {
     state.view=view;for(const [id] of navigation)$('#view-'+id).hidden=id!==view;
     for(const a of $$('[data-view]')){a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
-    if(view==='routes')renderRoutes();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
+    if(view==='routes')renderRoutes();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
   }
   function onHash() {
     if(location.hash==='#main')return;
-    const match=/^#(routes|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
+    const match=/^#(routes|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
     closeModal();closeDrawer(false);showView(view);
     if(view==='routes'&&index!==null&&P.routes[index])displayDrawer(P.routes[index]);
     if(view==='schemas'&&index!==null&&P.schemas[index]){const s=P.schemas[index];state.expandedSchemas.add(s.id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+index).focus();}
+    if(view==='helpers'&&index!==null&&helpers[index]){state.helperSearch='';state.helperRole='all';state.helperOrigin='all';state.expandedHelpers.add(helpers[index].id);renderHelpers();$('#helper-expand-'+index).focus();}
   }
   function openModal(title,content) {
     lastModalFocus=document.activeElement;$('#modal-title').textContent=title;replace($('#modal-content'),content);$('#modal').hidden=false;$('#modal-backdrop').hidden=false;setPageInert(true);$('#route-drawer').inert=true;document.body.classList.add('overlay-open');$('#modal-close').focus();
