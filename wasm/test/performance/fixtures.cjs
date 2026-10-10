@@ -43,4 +43,16 @@ export default app;\n`,
     ],
   },
 ];
-module.exports = { fixtures };
+// Fixed scale fixture, not a substitute for Catalog or a production workload.
+// All 64 paths are correctness checked; this cell measures compilation only.
+const schemaCount = 16, routeCount = 64;
+const large = {
+  id: 'large-router-compile', targets: ['native'], runtime: false,
+  source: `import { Router } from '@pulse-compute/runtime';\nimport type { ${Array.from({ length: schemaCount }, (_, i) => 'Input' + i).join(', ')} } from './schemas';\nconst app = new Router();\n`
+    + Array.from({ length: routeCount }, (_, i) => `app.post('/items/${i}', async (ctx) => { const input = await ctx.req.json<Input${i % schemaCount}>('bench.Input${i % schemaCount}'); return ctx.json({ value: input.value, route: ${i} }, { schema: 'bench.Output${i % schemaCount}' }); });`).join('\n') + '\nexport default app;\n',
+  schema: `import { defineSchemaRegistry, schema } from '@pulse-compute/pulse/schema';\n`
+    + Array.from({ length: schemaCount }, (_, i) => `export interface Input${i} { value: string }\nexport interface Output${i} { value: string; route: number }`).join('\n')
+    + '\nexport default defineSchemaRegistry({ schemas: {\n' + Array.from({ length: schemaCount }, (_, i) => `'bench.Input${i}': schema<Input${i}>(), 'bench.Output${i}': schema<Output${i}>(),`).join('\n') + '\n} });\n',
+  cases: Array.from({ length: routeCount }, (_, i) => ({ request: { method: 'POST', path: '/items/' + i, headers: { 'content-type': 'application/json' }, body: '{"value":"sample"}' }, expected: { status: 200, json: { value: 'sample', route: i } } })),
+};
+module.exports = { fixtures, perf8Fixtures: [...fixtures, large] };

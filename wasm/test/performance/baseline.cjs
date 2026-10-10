@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const child = require('node:child_process');
 const { performance } = require('node:perf_hooks');
-const { fixtures } = require('./fixtures.cjs');
+const { fixtures, perf8Fixtures } = require('./fixtures.cjs');
 const { SCHEMA, hash, statistics, compare } = require('./report.cjs');
 const { runCommand } = require('../../../scripts/release-process.cjs');
 const { atomicJson } = require('../../../scripts/release-recovery.cjs');
@@ -30,6 +30,18 @@ const protocol = Object.freeze({
   runtime: 'workspace Node provider host, generated JavaScript source package / canonical Native Wasm',
   instrumentation: 'test-owned spawnSync wrapper preloads resourceUsage exit recorder into ASC; no production source hooks',
 });
+const perf8Protocol = Object.freeze({ ...protocol, version: 'pulse.performance-protocol.v2',
+  workerTimeoutMs: 180000,
+  timing: { ...protocol.timing,
+    firstRequestCpuUserUs: 'process.cpuUsage user delta around the first provider request; microseconds; assertions excluded',
+    firstRequestCpuSystemUs: 'process.cpuUsage system delta around the first provider request; microseconds; assertions excluded',
+    warmRequestCpuUserUs: 'per-request process.cpuUsage user deltas after warmup; microseconds; assertions excluded',
+    warmRequestCpuSystemUs: 'per-request process.cpuUsage system deltas after warmup; microseconds; assertions excluded',
+    runtimePeakRssBytes: 'runtime worker process high-water RSS after all requests, including imports/host/guest; not guest-only or a per-request peak' },
+  runtimeMemory: 'process.memoryUsage snapshots before/after load, after first request, after warmup and after warm samples; no forced GC; RSS is process-wide, heap fields are V8, external/arrayBuffers are not guest-exclusive',
+  buildMetadata: 'validated retained Native capsule build observations, read after the build timer; JavaScript has no Native report capsule',
+  largerFixture: '64 static routes and 32 declared schemas; Native compile-only timing, all 64 paths correctness checked',
+});
 
 function prepareProject(directory, fixture, target) {
   fs.mkdirSync(path.join(directory, '.pulse'), { recursive: true });
@@ -47,7 +59,8 @@ ${fixture.schema ? "schema: 'src/schemas.ts'," : ''} }, node: { host: 'node', ta
   }
 }
 
-function buildWorker(directory, outName, resultFile) {
+function buildWorker(directory, outName, resultFile, suite = 'ps08') {
+  resultFile = path.resolve(resultFile);
   const recipes = [];
   const original = child.spawnSync;
   // Install before production modules destructure spawnSync, as in O-03. Only
@@ -67,8 +80,10 @@ function buildWorker(directory, outName, resultFile) {
   };
   const started = performance.now();
   const execution = require('../../packages/cli/src/project-execution.js');
-  const project = require('../../packages/cli/src/project-config.js').resolveProject({ cwd: directory });
-  const built = execution.buildProject(project, { outDir: path.join(directory, outName), emitWat: false });
+  const outDir = suite === 'beta8' ? path.join(directory, 'dist', outName) : path.join(directory, outName);
+  // Resolve and build the same destination so BLD8 completion can bind it.
+  const project = require('../../packages/cli/src/project-config.js').resolveProject({ cwd: directory, ...(suite === 'beta8' ? { outDir } : {}) });
+  const built = execution.buildProject(project, { outDir, emitWat: false });
   const buildMs = performance.now() - started;
   assert.equal(built.status, 'built');
   const native = project.target === 'native';
@@ -87,14 +102,27 @@ function buildWorker(directory, outName, resultFile) {
   }
   let workerRss = null;
   try { const value = process.resourceUsage().maxRSS * 1024; if (value > 0) workerRss = value; } catch (_) { /* unavailable on this host */ }
+  let buildMetadata;
+  if (suite === 'beta8') {
+    if (native) {
+      const capsule = require('../../packages/cli/src/internal/report/retained').collectArtifactReport(path.join(built.outDir, 'pulse-build.json')).capsule;
+      assert(capsule.build?.compilers.length, 'PERF8 requires retained BLD8 build observations');
+      assert.equal(capsule.artifacts.find(row => row.id === capsule.context.primaryArtifactId).sha256, artifactSha256);
+      buildMetadata = { status: 'recorded', capsuleHash: capsule.evidenceHash.value, context: capsule.context, producer: capsule.producer, build: capsule.build };
+    } else buildMetadata = { status: 'unavailable', reason: 'Native build capsule does not apply to JavaScript source packages' };
+  }
   write(resultFile, { buildMs, compilerPeakRssBytes: native ? recipes[0].peakBytes : workerRss,
     artifactBytes, artifactSha256, outDir: built.outDir,
+    ...(buildMetadata ? { buildMetadata } : {}),
     settings: { provider: 'node', target: project.target, strict: true, reporting: project.reporting,
       emitWat: false, optimization: native ? (built.manifest.portable.optimization || { mode: 'default', assemblyScript: '--optimize' }) : { mode: 'source-package', minified: false },
       compiler: native ? { flags: recipes[0].flags, env: recipes[0].env } : { flags: [], env: {} } } });
 }
 
-async function runtimeWorker(outDir, fixture, target, mode, resultFile) {
+async function runtimeWorker(outDir, fixture, target, mode, resultFile, suite = 'ps08') {
+  const measured = suite === 'beta8' && mode !== 'check', memory = {};
+  const memorySnapshot = name => { if (measured) memory[name] = process.memoryUsage(); };
+  memorySnapshot('beforeLoad');
   const started = performance.now();
   const manifest = read(path.join(outDir, 'pulse-build.json'));
   let execute;
@@ -113,6 +141,7 @@ async function runtimeWorker(outDir, fixture, target, mode, resultFile) {
       new Request('https://bench.example.test' + request.path, request), { strict: true, schemaCodecs, fetchImplementation });
   }
   const coldLoadMs = performance.now() - started;
+  memorySnapshot('afterLoad');
   async function request(testCase) {
     const response = await execute(structuredClone(testCase.request));
     return target === 'native' ? response.response : { status: response.status, body: await response.text() };
@@ -128,17 +157,27 @@ async function runtimeWorker(outDir, fixture, target, mode, resultFile) {
     return;
   }
   const timedRequest = async () => {
+    const cpu = measured ? process.cpuUsage() : null;
     const before = performance.now();
     const response = await request(fixture.cases[0]);
     const ms = performance.now() - before;
+    const usage = measured ? process.cpuUsage(cpu) : null;
     check(response, fixture.cases[0]);
-    return ms;
+    return { ms, ...(usage ? { cpuUserUs: usage.user, cpuSystemUs: usage.system } : {}) };
   };
-  const firstRequestMs = await timedRequest();
+  const first = await timedRequest(), firstRequestMs = first.ms;
+  memorySnapshot('afterFirst');
   for (let n = 0; n < protocol.warmup; n++) await timedRequest();
-  const warmRequestMs = [];
-  for (let n = 0; n < protocol.warmSamplesPerProcess; n++) warmRequestMs.push(await timedRequest());
-  write(resultFile, { coldLoadMs, firstRequestMs, warmRequestMs });
+  memorySnapshot('afterWarmup');
+  const warm = [];
+  for (let n = 0; n < protocol.warmSamplesPerProcess; n++) warm.push(await timedRequest());
+  memorySnapshot('afterWarm');
+  let peak = null;
+  try { if (measured) peak = process.resourceUsage().maxRSS * 1024; } catch (_) { /* unavailable, not zero */ }
+  write(resultFile, { coldLoadMs, firstRequestMs, warmRequestMs: warm.map(row => row.ms),
+    ...(measured ? { firstRequestCpuUserUs: first.cpuUserUs, firstRequestCpuSystemUs: first.cpuSystemUs,
+      warmRequestCpuUserUs: warm.map(row => row.cpuUserUs), warmRequestCpuSystemUs: warm.map(row => row.cpuSystemUs),
+      runtimePeakRssBytes: peak > 0 ? peak : null, memory } : {}) });
 }
 
 function dependencies() {
@@ -162,7 +201,10 @@ function environment() {
 }
 function readLimit(file) { try { return fs.readFileSync(file, 'utf8').trim(); } catch (_) { return 'unavailable'; } }
 
-async function baseline(output) {
+async function baseline(output, suite = 'ps08') {
+  assert(['ps08', 'beta8'].includes(suite), 'Unknown benchmark suite');
+  const selectedFixtures = suite === 'beta8' ? perf8Fixtures : fixtures;
+  const selectedProtocol = suite === 'beta8' ? perf8Protocol : protocol;
   const campaignStarted = performance.now();
   assert(output, 'Usage: node wasm/test/performance/baseline.cjs --out <new-report.json> | --compare <before.json> <after.json>');
   output = path.resolve(output);
@@ -170,9 +212,9 @@ async function baseline(output) {
   assert(!fs.existsSync(output), 'Refusing to overwrite a report');
   const source = candidateIdentity(root); // Never silently time uncommitted source.
   const deps = dependencies();
-  const harnessSha256 = hash(JSON.stringify(['baseline.cjs', 'fixtures.cjs', 'report.cjs', 'compiler-rss.cjs'].map(name => [name, hash(fs.readFileSync(path.join(__dirname, name)))])));
-  const report = { schemaVersion: SCHEMA, status: 'running', createdAt: new Date().toISOString(), source,
-    dependencies: deps, environment: environment(), protocol: { ...protocol, harnessSha256 }, validation: [], cells: [] };
+  const harnessSha256 = hash(JSON.stringify(['baseline.cjs', 'fixtures.cjs', 'report.cjs', 'compiler-rss.cjs', ...(suite === 'beta8' ? ['perf8-report.cjs'] : [])].map(name => [name, hash(fs.readFileSync(path.join(__dirname, name)))])));
+  const report = { schemaVersion: suite === 'beta8' ? 'pulse.performance-baseline.v2' : SCHEMA, status: 'running', createdAt: new Date().toISOString(), source,
+    dependencies: deps, environment: environment(), protocol: { ...selectedProtocol, harnessSha256 }, validation: [], cells: [] };
   fs.mkdirSync(path.dirname(output), { recursive: true });
   const scratch = path.join(root, 'wasm/.test-results'); fs.mkdirSync(scratch, { recursive: true });
   const directory = fs.mkdtempSync(path.join(scratch, 'performance-'));
@@ -183,8 +225,11 @@ async function baseline(output) {
   const projects = [];
   fs.closeSync(fs.openSync(output + '.log', 'wx'));
   const persist = () => atomicJson(output, report);
+  // Measurement receipts are not application inputs. Keep them outside each
+  // beta.8 project, including the ASC recorder that writes during compilation.
+  const observationFile = (project, name) => suite === 'beta8' ? path.join(directory, path.basename(project) + '-' + name) : path.join(project, name);
   async function worker(args, file) {
-    const result = await runCommand(process.execPath, [__filename, '--worker', ...args, file], { cwd: root, signal: controller.signal,
+    const result = await runCommand(process.execPath, [__filename, '--worker', ...args, file, suite], { cwd: root, signal: controller.signal,
       timeoutMs: 180000, termGraceMs: 1000, killGraceMs: 1000,
       onOutput(stream, chunk) { fs.appendFileSync(output + '.log', chunk); } });
     assert(result.status === 0 && !result.timedOut && !result.interruptedBy && !result.error,
@@ -194,20 +239,20 @@ async function baseline(output) {
   try {
     persist();
     // Verify every semantic case on both targets before starting the timed campaign.
-    for (const fixture of fixtures) for (const target of ['javascript', 'native']) {
+    for (const fixture of selectedFixtures) for (const target of fixture.targets || ['javascript', 'native']) {
       const project = path.join(directory, fixture.id + '-' + target);
       prepareProject(project, fixture, target);
-      const built = await worker(['build', project, 'preflight'], path.join(project, 'preflight.json'));
-      const checked = await worker(['runtime', built.outDir, fixture.id, target, 'check'], path.join(project, 'check.json'));
+      const built = await worker(['build', project, 'preflight'], observationFile(project, 'preflight.json'));
+      const checked = await worker(['runtime', built.outDir, fixture.id, target, 'check'], observationFile(project, 'check.json'));
       report.validation.push({ fixture: fixture.id, target, ...checked });
       projects.push({ project, fixture, target }); persist();
     }
     for (const { project, fixture, target } of projects) {
       console.log(`Measuring ${fixture.id} / node-${target}`);
       const builds = [], runtimes = [];
-      for (let n = 0; n < protocol.buildSamples; n++) builds.push(await worker(['build', project, 'sample-' + n], path.join(project, `build-${n}.json`)));
+      for (let n = 0; n < protocol.buildSamples; n++) builds.push(await worker(['build', project, 'sample-' + n], observationFile(project, `build-${n}.json`)));
       for (const built of builds) assert.deepEqual(built.settings, builds[0].settings, 'Build settings drift');
-      for (let n = 0; n < protocol.coldProcesses; n++) runtimes.push(await worker(['runtime', builds.at(-1).outDir, fixture.id, target, 'measure'], path.join(project, `runtime-${n}.json`)));
+      if (fixture.runtime !== false) for (let n = 0; n < protocol.coldProcesses; n++) runtimes.push(await worker(['runtime', builds.at(-1).outDir, fixture.id, target, 'measure'], observationFile(project, `runtime-${n}.json`)));
       const cleanupStarted = performance.now(); fs.rmSync(project, { recursive: true, force: true });
       const cleanupMs = performance.now() - cleanupStarted;
       report.cells.push({ fixture: { id: fixture.id, sha256: hash(JSON.stringify(fixture)), verifiedCases: fixture.cases.length },
@@ -219,11 +264,25 @@ async function baseline(output) {
           cleanupMs: statistics([cleanupMs]), requestCleanupMs: statistics([], 'Mandatory request disposal is inside the provider invocation; no separate public timing hook') },
         coldSamples: { buildMs: builds.map(b => b.buildMs), coldLoadMs: runtimes.map(r => r.coldLoadMs), firstRequestMs: runtimes.map(r => r.firstRequestMs) },
         warmProcesses: runtimes.map(r => statistics(r.warmRequestMs)) });
+      if (suite === 'beta8') {
+        const cell = report.cells.at(-1);
+        cell.workload = fixture.runtime === false ? 'compile-only' : 'build-and-runtime';
+        cell.buildSamples = builds.map(({ outDir, ...sample }) => sample);
+        cell.runtimeSamples = runtimes;
+        for (const [name, field] of [['retainedBuildMs', 'totalDurationMs'], ['retainedCompilationMs', 'compilationDurationMs']]) {
+          cell.metrics[name] = statistics(builds.map(row => row.buildMetadata.build?.[field] ?? null), 'Native build timing not recorded for this target');
+        }
+        for (const name of ['firstRequestCpuUserUs', 'firstRequestCpuSystemUs', 'warmRequestCpuUserUs', 'warmRequestCpuSystemUs', 'runtimePeakRssBytes']) {
+          cell.metrics[name] = statistics(runtimes.flatMap(row => row[name]), fixture.runtime === false ? 'Compile-only fixture; runtime is not measured' : 'Runtime process RSS unavailable');
+        }
+        if (fixture.runtime === false) for (const name of ['coldLoadMs', 'firstRequestMs', 'warmRequestMs', 'requestCleanupMs']) cell.metrics[name] = statistics([], 'Compile-only fixture; runtime is not measured');
+      }
       persist();
     }
     assert.deepEqual(candidateIdentity(root), source, 'Source changed during baseline');
     assert.deepEqual(dependencies(), deps, 'Dependencies changed during baseline');
     report.status = 'passed';
+    if (suite === 'beta8') require('./perf8-report.cjs').validatePerf8(report);
   } catch (error) {
     report.status = controller.signal.aborted ? 'interrupted' : 'failed'; report.error = error.message; throw error;
   } finally {
@@ -236,11 +295,12 @@ async function baseline(output) {
 }
 async function main(args) {
   if (args[0] === '--worker') {
-    if (args[1] === 'build') return buildWorker(path.resolve(args[2]), args[3], args[4]);
+    if (args[1] === 'build') return buildWorker(path.resolve(args[2]), args[3], args[4], args[5]);
     assert.equal(args[1], 'runtime');
-    const fixture = fixtures.find(item => item.id === args[3]); assert(fixture);
-    return runtimeWorker(args[2], fixture, args[4], args[5], args[6]);
+    const fixture = (args[7] === 'beta8' ? perf8Fixtures : fixtures).find(item => item.id === args[3]); assert(fixture);
+    return runtimeWorker(args[2], fixture, args[4], args[5], args[6], args[7]);
   }
+  if (args[0] === '--suite') { assert.equal(args[1], 'beta8'); assert.equal(args[2], '--out'); assert.equal(args.length, 4); return baseline(args[3], 'beta8'); }
   if (args[0] === '--compare') {
     assert.equal(args.length, 3);
     console.log(JSON.stringify(compare(read(args[1]), read(args[2])), null, 2)); return;
@@ -249,4 +309,4 @@ async function main(args) {
   await baseline(args[1]);
 }
 if (require.main === module) main(process.argv.slice(2)).catch(error => { console.error(error.stack); process.exitCode = 1; });
-module.exports = { protocol, prepareProject, buildWorker, runtimeWorker, baseline, environment, dependencies };
+module.exports = { protocol, perf8Protocol, prepareProject, buildWorker, runtimeWorker, baseline, environment, dependencies };
