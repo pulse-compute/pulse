@@ -25,6 +25,7 @@ function addSizeEvidence(input, files, attribution = null) {
   }
   capsule.observations = capsule.observations.filter(row => row.code !== 'REPORT_ATTRIBUTION_NOT_RECORDED');
   capsule.bodies = []; capsule.measurements = []; capsule.rootSets = [];
+  delete capsule.implementations; delete capsule.coverage.implementations;
   for (const artifact of capsule.artifacts) {
     const bytes = files.get(artifact.id);
     if (!bytes || bytes.length !== artifact.bytes || sha256(bytes) !== artifact.sha256) fail('REPORT_ARTIFACT_HASH');
@@ -63,6 +64,9 @@ function addSizeEvidence(input, files, attribution = null) {
         const entry = canonicalEntries.get(owner.entryId);
         if (!entry || entry.handlerId !== (owner.handlerId === null ? null : id('handler', owner.handlerId))) fail('REPORT_IDENTITY');
       }
+      capsule.implementations = require('./implementations').collectImplementations(capsule, capture, artifact, evidenceIds);
+      capsule.coverage.implementations = { status: 'partial', observed: capsule.implementations.length,
+        expected: null, reason: 'incomplete-mapping' };
     }
     const mappings = new Map((capture?.chunkMappings || []).map(row => [row.chunk, row]));
     const sizes = new Map(physical.functions.map(row => [row.index, row.bytes]));

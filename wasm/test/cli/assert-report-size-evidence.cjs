@@ -53,7 +53,10 @@ const v2 = { ...structuredClone(capture), attributionVersion: 2,
     bodies: row.chunks.map(chunk => ({ chunk, relation: 'shared-stage-body' })), reason: null })),
   chunkMappings: capture.chunkMappings.map(row => ({ ...row, kind: 'shared-stage-body', implementationId: 'stage:shared' })) };
 delete v2.handlerBodies;
-assert.equal(serializeCapsule(addSizeEvidence(seed(), files, v2)), serializeCapsule(result), 'v1 and equivalent v2 maps retain capsule meaning');
+const v2Result = addSizeEvidence(seed(), files, v2);
+assert.deepEqual(v2Result.measurements, result.measurements, 'v2 implementation metadata does not change measurements');
+assert.equal(result.implementations, undefined, 'v1 does not infer implementation origins');
+require('./report-implementation-cases.cjs')();
 function badV2(change) { const value = structuredClone(v2); change(value); negativeCases++; assert.throws(() => addSizeEvidence(seed(), files, value)); }
 badV2(c => c.entries.push(c.entries[0]));
 badV2(c => c.entries[0].entryId = 'foreign');
@@ -110,7 +113,7 @@ negativeCases++; assert.throws(()=>createCapsule(invalidLedger));
 // A compiler-free reader must stay compiler-free after the adapter is added.
 const script = `const M=require('node:module'),load=M._load;M._load=function(name,...args){if(/compiler|provider-|binaryen|typescript|child_process|report-capture|report-direct-graph/.test(name))throw Error(name);return load.call(this,name,...args)};const f=require(${JSON.stringify(path.join(__dirname,'report-fixtures.cjs'))});const s=require(${JSON.stringify(path.join(f.reportRoot,'size'))});process.stdout.write(s.addSizeEvidence(f.createCapsule(f.fixture()),new Map([[f.aid,f.wasm]]),${JSON.stringify(capture)}).evidenceHash.value);`;
 assert.equal(execFileSync(process.execPath,['-e',script],{encoding:'utf8'}),result.evidenceHash.value);
-assert.equal(execFileSync(process.execPath,['-e',script.replace(JSON.stringify(capture), JSON.stringify(v2))],{encoding:'utf8'}),result.evidenceHash.value);
+assert.equal(execFileSync(process.execPath,['-e',script.replace(JSON.stringify(capture), JSON.stringify(v2))],{encoding:'utf8'}),v2Result.evidenceHash.value);
 // A retained portable/prelink map must never label the final artifact.
 const prelinkSeed=f.fixture(); prelinkSeed.measurements=[];prelinkSeed.rootSets=[];
 prelinkSeed.artifacts[0].stage='prelink';
@@ -121,6 +124,10 @@ prelinkSeed.context.primaryArtifactId=finalId;prelinkSeed.evidence[0].artifactId
 const prelinkReport=addSizeEvidence(createCapsule(prelinkSeed),new Map([[f.aid,f.wasm],[finalId,custom]]),{...capture,stage:'prelink'});
 assert.ok(prelinkReport.measurements.filter(row=>row.artifactId===finalId&&row.metric==='handler-body').every(row=>row.fact.value===null&&row.fact.reason==='prelink-only'));
 assert.ok(prelinkReport.measurements.filter(row=>row.artifactId===f.aid&&row.metric==='handler-body').every(row=>row.fact.value===4&&row.stage==='prelink'));
+const prelinkV2 = addSizeEvidence(createCapsule(prelinkSeed), new Map([[f.aid, f.wasm], [finalId, custom]]), { ...v2, stage: 'prelink' });
+assert.ok(prelinkV2.implementations.length > 0 && prelinkV2.implementations.every(row => row.artifactId === f.aid));
+assert.ok(prelinkV2.implementations.flatMap(row => row.bodyIds).every(id => id.startsWith('body:' + f.hash + ':')));
+assert.ok(prelinkV2.measurements.filter(row => row.artifactId === finalId).every(row => row.fact.value === null));
 const {parseGraph}=require('../../packages/build-support/src/report-direct-graph');
 for(const text of ['(module (table 1 funcref))','(module (call_indirect))','(module (return_call $a))']) {
   negativeCases++;assert.throws(()=>parseGraph(text,[],0));
