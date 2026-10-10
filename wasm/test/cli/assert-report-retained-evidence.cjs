@@ -7,7 +7,19 @@ const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 const { pathToFileURL } = require('node:url');
 const root = path.resolve(__dirname, '../../..');
-const cli = path.join(root, 'wasm/packages/cli/src');
+// Optional qualification mode reuses this lifecycle regression against an exact
+// installed candidate. Ordinary truth-suite runs keep their workspace mode.
+const [installedArg, outputArg] = process.argv.slice(2);
+assert(process.argv.length <= 4, 'Usage: assert-report-retained-evidence.cjs [INSTALLED_CONSUMER [OUTPUT_DIRECTORY]]');
+const installed = installedArg ? fs.realpathSync(path.resolve(installedArg)) : null;
+const qualificationOutput = outputArg ? path.resolve(outputArg) : null;
+assert(!qualificationOutput || installed, 'Retained qualification output requires an installed consumer');
+assert(!qualificationOutput || (qualificationOutput !== installed && !qualificationOutput.startsWith(installed + path.sep)), 'Evidence belongs outside project inputs');
+const cli = installed ? path.join(installed, 'node_modules/@pulse-compute/cli/src') : path.join(root, 'wasm/packages/cli/src');
+if (installed) for (const name of ['cli', 'pulse', 'assets', 'provider-node', 'provider-fastly']) {
+  const packageRoot = fs.realpathSync(path.join(installed, 'node_modules/@pulse-compute', name));
+  assert(packageRoot.startsWith(installed + path.sep), 'Installed qualification cannot use workspace package links');
+}
 const report = require(path.join(cli, 'internal/report/retained'));
 const snapshots = require(path.join(cli, 'internal/report/snapshot'));
 const capsule = require(path.join(cli, 'internal/report/capsule'));
@@ -19,10 +31,15 @@ function rejects(fn, code) { negative++; assert.throws(fn, error => { if (code &
 function write(file, text) { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, text); }
 async function main() {
   const results = path.join(root, 'wasm/.test-results');
-  fs.mkdirSync(results, { recursive: true });
-  const directory = fs.mkdtempSync(path.join(results, 'prpt02-'));
+  if (!installed) fs.mkdirSync(results, { recursive: true });
+  // The installed CLI and its application must share the exact workspace
+  // boundary. This mode owns only these fresh fixture paths, never the install.
+  const owned = ['.pulse', 'src', 'tests', 'input.html', 'dist', '.pulse-workspace-fixture', 'reviews', '.pulse-report-locks'];
+  if (installed) for (const name of owned) assert(!fs.existsSync(path.join(installed, name)), 'Use a fresh installed consumer: ' + name);
+  const directory = installed || fs.mkdtempSync(path.join(results, 'prpt02-'));
   try {
-    const { createEmbeddedManifest } = await import(pathToFileURL(path.join(root, 'packages/assets/dist/embedded.js')));
+    const assets = installed ? path.join(installed, 'node_modules/@pulse-compute/assets') : path.join(root, 'packages/assets');
+    const { createEmbeddedManifest } = await import(pathToFileURL(path.join(assets, 'dist/embedded.js')));
     const embedded = await createEmbeddedManifest([{ path: '/logo.txt', bytes: Buffer.from('ASSET_BODY_CANARY'), contentType: 'text/plain' }]);
     const configFile = path.join(directory, '.pulse/config.ts'), entryFile = path.join(directory, 'src/index.ts');
     const schemaFile = path.join(directory, 'src/schemas.ts'), testsFile = path.join(directory, 'tests/harness.ts');
@@ -99,6 +116,14 @@ export default app;`;
     const assetResource = c.resources.find(row => row.kind === 'embedded-asset');
     assert.equal(c.resources.length, 2); assert.equal(assetResource.inputBytes.value, 17);
     assert.equal(assetResource.retainedPayloadBytes.value, null);
+    assert.equal(assetResource.generator.representationBytes.value, 24);
+    assert.equal(c.resourceProducers.length, 5);
+    assert.equal(c.resourceProducers.find(row => row.scope === 'selected-embedded-assets').coverage.expected, 1);
+    assert.equal(c.resourceProducers.find(row => row.scope === 'generated-support').coverage.expected, null);
+    const schemaResource = c.resources.find(row => row.kind === 'schema-validator');
+    assert.equal(schemaResource.generator.schemaId, c.schemas[0].id);
+    assert.equal(schemaResource.generator.representationBytes.value, c.schemas[0].structure.descriptorBytes);
+    assert.ok(c.references.some(row => row.kind === 'binding' && row.state === 'resolved'));
     assert.equal(c.evidence.filter(row => row.kind === 'test').length, 0);
     assert.ok(!saved.includes('VALUE_CANARY') && !saved.includes('BODY_CANARY') && !saved.includes(directory));
     const manifestFile = path.join(built.outDir, 'pulse-compile.json');
@@ -178,14 +203,25 @@ export default app;`;
     assert.equal(execFileSync(process.execPath, ['-e', script, path.join(fastly.outDir, 'pulse-build.json')], { encoding: 'utf8' }), provider.capsule.evidenceHash.value);
     const projectScript = `const M=require('node:module'),load=M._load;M._load=function(name,...args){if(/canonical-(project|api|native)|provider-drivers|provider-.*toolchain|typescript-module-loader|project-execution|child_process|^(node:)?(http|https|net)$/.test(name))throw Error('Unexpected work: '+name);return load.call(this,name,...args);};const fs=require('node:fs');for(const key of ['writeFileSync','appendFileSync','unlinkSync','renameSync','mkdirSync','rmSync'])fs[key]=()=>{throw Error('Unexpected write: '+key)};const r=require(${JSON.stringify(path.join(cli, 'internal/report/retained'))});process.stdout.write(r.collectProjectReport({cwd:process.argv[1],profile:'fastly'}).capsule.evidenceHash.value);`;
     assert.equal(execFileSync(process.execPath, ['-e', projectScript, directory], { encoding: 'utf8' }), provider.capsule.evidenceHash.value);
-    const inventoryCases = require('./report-inventory-cases.cjs')();
-    const summary = { inventoryCases, status: 'passed', negativeCases: negative, nativeCompiles: 3, portableGuestUnchanged: true,
+    // The in-memory inventory mutation corpus is a separate workspace test;
+    // installed mode exercises the real build/collection/command path above.
+    const inventoryCases = installed ? null : require('./report-inventory-cases.cjs')();
+    const summary = { mode: installed ? 'installed' : 'workspace', inventoryCases, status: 'passed', negativeCases: negative, nativeCompiles: 3, portableGuestUnchanged: true,
       routes: c.routes.length, entries: c.entries.length, schemas: c.schemas.length, bindings: c.bindings.length, resources: c.resources.length,
       providerArtifacts: provider.capsule.artifacts.length, buildMs, reportMs,
       capsuleBytes: Buffer.byteLength(saved), inputSidecarBytes: fs.statSync(path.join(fastly.outDir, report.INPUTS_FILE)).size,
       portableSha256: built.native.wasm.sha256, providerSha256: fastly.manifest.providerTarget.wasm.sha256 };
-    console.log(JSON.stringify(summary));
+    if (qualificationOutput) {
+      fs.mkdirSync(qualificationOutput, { recursive: true });
+      fs.writeFileSync(path.join(qualificationOutput, 'capsule.json'), capsule.serializeCapsule(provider.capsule));
+      fs.copyFileSync(path.join(directory, 'reviews/custom.html'), path.join(qualificationOutput, 'report.html'));
+      fs.writeFileSync(path.join(qualificationOutput, 'acceptance.json'), JSON.stringify(summary, null, 2) + '\n');
+    }
     if (process.env.PRPT02_VALIDATION_FILE) fs.writeFileSync(process.env.PRPT02_VALIDATION_FILE, JSON.stringify(summary, null, 2) + '\n');
-  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+    console.log(JSON.stringify(summary));
+  } finally {
+    if (installed) for (const name of owned) fs.rmSync(path.join(directory, name), { recursive: true, force: true });
+    else fs.rmSync(directory, { recursive: true, force: true });
+  }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });
