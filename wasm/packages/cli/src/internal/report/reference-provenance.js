@@ -33,6 +33,7 @@ function applyReferenceProvenance(capsule, projection, { binding, evidenceIds, o
       kind: input.kind, bindingKind: input.bindingKind, canonicalId: input.canonicalId, state,
       reason: state === 'resolved' ? null : state === 'dynamic' ? 'dynamic-reference' : 'unresolved-reference',
       targetId: target?.id || null, entryIds, evidenceIds,
+      ...(input.externalPackages ? { externalPackages: input.externalPackages } : {}),
       entryCoverage: input.entriesComplete ? { status: 'complete', observed: entryIds.length, expected: entryIds.length, reason: null }
         : { status: entryIds.length ? 'partial' : 'unavailable', observed: entryIds.length, expected: null, reason: 'entry-ownership-not-retained' } };
     capsule.references.push(row);

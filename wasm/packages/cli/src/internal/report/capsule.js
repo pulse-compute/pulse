@@ -17,7 +17,7 @@ function stableReportId(kind, canonicalId) {
 }
 function normalize(input) {
   const value = copyData(input);
-  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets']);
+  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages']);
   function walk(item, key) {
     if (Array.isArray(item)) {
       if (sets.has(key)) { ensure(new Set(item).size === item.length, 'REPORT_DUPLICATE'); item.sort(compare); }
@@ -104,6 +104,7 @@ function check(capsule) {
   for (const row of capsule.references || []) {
     ensure(row.evidenceIds.length > 0, 'REPORT_REFERENCE');
     ensure((row.kind === 'binding') === (row.bindingKind !== null), 'REPORT_REFERENCE');
+    if (row.externalPackages) ensure(row.kind === 'schema' && row.externalPackages.length > 0, 'REPORT_REFERENCE');
     coverage(row.entryCoverage, row.entryIds.length);
     if (row.state === 'resolved') {
       const target = maps[{ binding: 'bindings', schema: 'schemas', resource: 'resources' }[row.kind]].get(row.targetId);

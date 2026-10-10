@@ -1865,6 +1865,17 @@
             "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
           },
           "maxItems": 100000
+        },
+        "externalPackages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 1048576,
+            "minLength": 1
+          },
+          "maxItems": 100000,
+          "minItems": 1,
+          "uniqueItems": true
         }
       },
       "required": [

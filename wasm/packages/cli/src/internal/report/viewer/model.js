@@ -11,6 +11,20 @@ function createReportViewModel(P) {
   const routeIndex = new Map(P.routes.map((r, i) => [r.id, i]));
   const schemaIndex = new Map(P.schemas.map((s, i) => [s.id, i]));
   const resourceIndex = new Map(P.resources.map((r, i) => [r.id, i]));
+  const schemaReferences = new Map();
+  for (const reference of P.references || []) if (reference.kind === 'schema' && reference.targetId) {
+    if (!schemaReferences.has(reference.targetId)) schemaReferences.set(reference.targetId, []);
+    schemaReferences.get(reference.targetId).push(reference);
+  }
+  function schemaUsage(schema) {
+    const refs = schemaReferences.get(schema.id) || [];
+    const incomplete = refs.some(row => row.entryCoverage.status !== 'complete');
+    const externalPackages = [...new Set(refs.flatMap(row => row.externalPackages || []))].sort();
+    const label = schema.entryIds.length ? 'Used' + (incomplete ? ' · consumer coverage incomplete' : '')
+      : refs.length ? 'Referenced · consumer unresolved'
+      : P.references ? 'No observed use · not proven unused' : 'Usage tracing not recorded';
+    return { label, externalPackages };
+  }
   const representationLabels = {'base64-text':'Packed base64 text', 'pulse.report-schema-shape.v1':'Normalized descriptor', 'package-guest-unit':'Package guest unit'};
   const resourceScopes = {'selected-embedded-assets':'Selected embedded assets', 'schema-codecs':'Generated schema codecs',
     'package-guest-units':'Package guest units', 'package-realizations':'Package realization records', 'generated-support':'Other generated support'};
@@ -77,6 +91,6 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage};
+  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };
