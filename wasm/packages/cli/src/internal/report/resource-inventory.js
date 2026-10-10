@@ -40,6 +40,28 @@ function addResourceInventory(capsule, prepared, evidenceIds) {
   record('selected-embedded-assets', assetProducer, assets,
     resolvedAssets && resolvedAssets.every(row => row.state === 'resolved') ? resolvedAssets.length : null, 'incomplete-mapping');
 
+  const responses = projection?.responsePayloads;
+  if (responses?.version === 'pulse.report-text-responses.v1') {
+    const responseProducer = { name: 'pulse-native-text-responses', version: '1' }, responseRows = [];
+    const entries = new Map(capsule.entries.map(row => [row.canonicalId, row.id]));
+    for (const [index, site] of responses.sites.entries()) {
+      if (!['resolved', 'dynamic', 'unknown'].includes(site.state) || typeof site.canonicalId !== 'string'
+        || (site.state === 'resolved' ? !Number.isSafeInteger(site.inputBytes) || site.inputBytes < 0 : site.inputBytes !== null)
+        || site.entryIds.some(key => !entries.has(key))) fail('REPORT_RESOURCE_METRICS');
+      const entryIds = [...new Set(site.entryIds.map(key => entries.get(key)))];
+      const resource = { id: id('resource', 'text-response:' + site.canonicalId), name: 'Text response ' + (index + 1),
+        kind: 'response-payload', mediaType: site.mediaType, artifactId: null,
+        inputBytes: site.state === 'resolved' ? measured(site.inputBytes, evidenceIds)
+          : unavailable(site.state === 'dynamic' ? 'dynamic-reference' : 'unresolved-reference'),
+        retainedPayloadBytes: unavailable(), routeIds: [], entryIds, evidenceIds,
+        generator: { scope: 'canonical-text-responses', producer: responseProducer, representation: 'native-string',
+          representationBytes: unavailable(), schemaId: null,
+          entryCoverage: site.entriesComplete ? complete(entryIds.length) : missing(entryIds.length, null, 'entry-ownership-not-retained') } };
+      responseRows.push(resource); capsule.resources.push(resource);
+    }
+    record('canonical-text-responses', responseProducer, responseRows, responses.sites.length);
+  }
+
   const schemaProducer = { name: 'pulse-native-schema-codecs', version: '1' };
   const codecs = native.manifest.schemaCodecs?.codecs, schemaRows = [];
   if (Array.isArray(codecs)) for (const codec of codecs) {

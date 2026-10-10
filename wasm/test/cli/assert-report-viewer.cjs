@@ -107,6 +107,20 @@ function renderedTree(capsule) {
 const tree=renderedTree(richCapsule);
 require('./report-helper-viewer-cases.cjs')({renderedTree});
 require('./report-dispatcher-viewer-cases.cjs')({renderedTree});
+const responseCapsule=require('./report-response-payload-cases.cjs').responseFixture().capsule;
+const responseTree=renderedTree(responseCapsule), responseModel=createReportViewModel(responseCapsule);
+assert.match(responseTree.get('view-resources').textContent,/Canonical text-response sites · complete/);
+assert.match(responseTree.get('view-resources').textContent,/Dynamic expressions are unresolved, not zero/);
+const responseIndex=responseCapsule.resources.findIndex(row=>row.kind==='response-payload'&&row.inputBytes.value===0);
+responseTree.get('resource-expand-'+responseIndex).events.click();
+assert.match(responseTree.get('resource-detail-'+responseIndex).textContent,/UTF-8 response payload bytes0 B/);
+assert.match(responseTree.get('resource-detail-'+responseIndex).textContent,/Native string storage \(unmapped\)/);
+assert.match(responseTree.get('resource-detail-'+responseIndex).textContent,/Retained payloadUnavailable/);
+for(const dir of ['asc','desc']) {
+  Object.assign(responseModel.state,{resourceSort:'input',resourceDir:dir});
+  assert.equal(responseModel.sortedResources().at(-1).inputBytes.value,null);
+}
+assert.equal(responseModel.canonicalJson,serializeCapsule(responseCapsule));
 const usageInput=structuredClone(richCapsule), usageSchema=usageInput.schemas[0];
 usageSchema.entryIds=[];
 assert.equal(createReportViewModel(usageInput).schemaUsage(usageSchema).label,'Usage tracing not recorded');

@@ -1386,7 +1386,8 @@
             "embedded-asset",
             "schema-validator",
             "helper",
-            "other"
+            "other",
+            "response-payload"
           ]
         },
         "mediaType": {
@@ -1560,7 +1561,8 @@
             "schema-codecs",
             "package-guest-units",
             "package-realizations",
-            "generated-support"
+            "generated-support",
+            "canonical-text-responses"
           ]
         },
         "producer": {
@@ -1570,7 +1572,8 @@
           "enum": [
             "base64-text",
             "pulse.report-schema-shape.v1",
-            "package-guest-unit"
+            "package-guest-unit",
+            "native-string"
           ]
         },
         "representationBytes": {
@@ -1911,7 +1914,8 @@
             "schema-codecs",
             "package-guest-units",
             "package-realizations",
-            "generated-support"
+            "generated-support",
+            "canonical-text-responses"
           ]
         },
         "producer": {

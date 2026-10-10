@@ -100,7 +100,7 @@ app.get('/helper-b',async ctx=>{const value=await lookup(ctx,'b');return ctx.tex
       assert.equal(dynamic.length, 1); assert.equal(dynamic[0].canonicalId, null); assert.equal(dynamic[0].targetId, null);
       assert.ok(report.observations.some(row => row.code === 'REPORT_DYNAMIC_REFERENCE' && row.subjectIds.includes(dynamic[0].id)));
       const assetResource = report.resources.find(row => row.kind === 'embedded-asset');
-      assert.equal(report.resources.length, 4); assert.equal(assetResource.entryIds.length, 2);
+      assert.equal(report.resources.filter(row=>row.kind!=='response-payload').length, 4); assert.equal(assetResource.entryIds.length, 2);
       assert.equal(assetResource.inputBytes.value, 20); assert.equal(assetResource.retainedPayloadBytes.value, null);
       assert.equal(assetResource.generator.representationBytes.value, 28);
       assert.equal(report.schemas.length, 3);
