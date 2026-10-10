@@ -202,3 +202,7 @@ The focused tests seed synthetic exact receipts and mocked npm/CDN responses to
 exercise docs pre-gates, checksum failures, metadata/byte collisions, interruption,
 retry, rollback, phase isolation, wrong authority, PR/fork/rerun/expired artifact
 rejection and purge-before-public ordering. They do not access production.
+
+The [WEB-06 preservation and cutover procedure](../web06/README.md) now owns
+recovery capture, durable backups, staging/rollback rehearsal, additive exact
+receipts and reviewed writer activation. Provider evidence remains a rollout gate.
