@@ -40,3 +40,9 @@ assert.throws(() => registry.resume('cancelled'), { name: 'ContinuationStateErro
 assert.ok(registry.trace().every((event, index) => event.sequence === index + 1));
 
 console.log('ok - continuation registry enforces waiting/resume/complete, double-resume, expiry, failure, cancellation, and ordered trace transitions');
+
+// Keep the collection foundation under the existing lifecycle unit/release task.
+require('./effect-collection-window.cjs').main().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});

@@ -919,6 +919,10 @@ const tasks = Object.freeze({
     evidence: 'unit',
     description: 'continuation state, expiry, and resume guards'
   }),
+  'effect-collection-window': nodeTask('test/runtime/effect-collection-window.cjs', {
+    evidence: 'unit',
+    description: 'internal bounded collection window, per-result handling and lifecycle guards'
+  }),
   'canonical-api-runtime': nodeTask('test/runtime/assert-canonical-api-runtime.cjs', {
     evidence: 'native',
     timeoutMs: 60000,
