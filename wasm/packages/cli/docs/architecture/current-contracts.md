@@ -1153,6 +1153,83 @@ are resolved only for the known version; unknown defaults remain null. Metadata
 is outside source, plan and executable Wasm identity. Historical capsules without
 this optional block remain unchanged and display **Not recorded**.
 
+## Report comparison contract
+
+CMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and
+`pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must
+consume that shared result rather than implement their own matching or arithmetic.
+This ticket adds the contract and engine; the HTML presentation and command/MCP
+adapters remain separate integration work. No new public CLI option or package
+export is introduced here.
+
+`compareCapsules(before, after)` admits two validated Report v1 capsules and
+returns immutable evidence without IO, project loading, compilation or execution.
+`parseComparison`, `validateComparison` and `serializeComparison` own bounded
+wire admission, canonical JSON and the comparison hash. Both input capsule
+hashes, project names, selected contexts, primary artifacts, producer versions,
+provenance and recorded build metadata remain available in `sources`. These are
+historical claims from the input capsules, not proof of current project freshness,
+common repository lineage, signatures, or original artifact-byte verification.
+Matching project names alone do not establish that two builds belong together.
+
+The summary always preserves primary artifact bytes and all inventory counts,
+including zero-net route/schema changes with separate added and removed counts.
+Details contain only changed fields and added, removed, modified, coverage-changed
+or unresolved records; unchanged records and empty sections are omitted. Build
+timing and provenance changes remain separate metadata changes. Sparse records
+retain full before/after capsule-local IDs for lookup in the original capsules.
+
+| Inventory | Matching policy |
+| --- | --- |
+| Routes | Unique exact method/path slot. Duplicate slots require a unique exact canonical ID; otherwise retain ambiguity. No matching by row ordinal, shortened ID or handler display name. |
+| Entries | Route entries follow the route match. Other entries use a unique recorded kind/name/source-file/router-scope/method/path key. Source line movement changes provenance without deleting the logical record. |
+| Schemas | Unique declared schema ID. |
+| Bindings and declarations | Unique kind/name pair. |
+| Resources | Unique kind/generator-scope/producer-name/resource-name key. Numbered response-payload labels are excluded as unstable identities. |
+| Implementations | Named compiler identity within artifact stage/host/target; dedicated bodies follow matched entries. Dispatcher chunk/function indices never establish cross-artifact identity. |
+| References | Recorded kind/binding-kind/canonical reference identity; unresolved references without a canonical identity remain unmatched. |
+| Evidence | Kind, producer name, method and exact corpus/cases/target scope. Result and producer-version changes are visible. |
+| Observations | Code, producer name and resolved comparison subject keys; unresolved subjects cannot establish identity. |
+
+A unique exact canonical ID may disambiguate a duplicated logical key, but never
+supplies a fuzzy rename or source-code equivalence claim. For records without a
+logical key, exact record IDs can join only inside the same primary artifact.
+Ambiguous or unavailable identities remain explicit unresolved groups containing
+every record ID. Relative ordering compares matched route/entry records, so
+inserting a new registration does not manufacture modifications to all later
+ordinals. Recorded composition, flow, consumers and declarations use the matched
+keys, not artifact-bound IDs. Handler IDs, physical function indices, evidence
+hash churn and timestamps on unrelated evidence do not imply code changes.
+Comparison describes retained facts; equal reported size or behavior labels
+cannot prove unchanged handler implementation.
+
+A missing row is an addition/removal only when the opposite inventory is complete.
+For generated resources, the exact producer scope may establish completeness even
+when aggregate resource coverage is partial. Missing optional telemetry, ambiguous
+identity, or partial inventories produce unresolved evidence, never a zero or a
+proven deletion. Coverage state is retained even when no detail row changes.
+
+Compatibility checks distinguish **compatible**, **different-build**,
+**incompatible**, and **unknown**. Host, target, representation and artifact-stage
+mismatches block size deltas. Profile, Pulse/reporter/toolchain versions, recipe
+and effective compiler-setting changes qualify the result as different-build;
+physical byte differences remain arithmetic, not attributed savings. Missing
+settings or unsupported defaults stay unknown. Changed checks and unknown checks
+remain individually visible even when another check determines the overall state.
+
+Per-subject byte deltas require available exact evidence with matching basis,
+method and stage, plus compatible artifact domains. Missing/conflicting measures,
+bounds, incomplete ownership or incompatible artifacts retain both observations
+and a null delta with its reason. Prelink-only evidence is never promoted to a
+primary final measurement. Whole containing-body measurements remain non-additive;
+the comparison does not sum route/helper deltas into an artifact total or infer
+performance regressions from one build duration.
+
+The canonical schema and generated TypeScript declaration share the report fixture
+writer. The report-capsule-contract task includes comparison regressions for
+identity churn, ambiguity, coverage loss/gain, settings/provenance, exact and
+unavailable deltas, sparse ordering, deterministic bytes and compiler-free replay.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support
