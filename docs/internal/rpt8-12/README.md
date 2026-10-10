@@ -125,3 +125,30 @@ Exact route-specific dispatcher attribution, complete execution roots and final
 payload identity remain open proof obligations. Later UI8 identity/navigation,
 BLD8 build metadata, CMP8 comparison and PERF8 baseline tickets remain separate.
 RPT8-12 neither implements nor silently qualifies those groups.
+
+## Beta.8 attribution closeout
+
+Decision recorded on 2026-10-10: retain the implemented reporting improvements
+that preserve executable output, and defer deeper route attribution work to the
+next release. RPT8-14 is already merged; it does not need a second implementation.
+
+| Work | Beta.8 disposition | Evidence and limit |
+| --- | --- | --- |
+| RPT8-13 route diagnostics | Retain | Observational terminal/continuing facts and mixed-dispatcher diagnostics preserve executable output. |
+| RPT8-14 containing-body view | Retain | Existing sidecar associations expose containing bodies, co-owners and deduplicated byte unions without changing compilation. Isolated handler bytes can still be unavailable. |
+| [RPT8-15 entry-boundary partitioning](../rpt8-15/README.md) | Evidence only; defer adoption | The bounded proof changes executable output and increases Wasm size. |
+| [RPT8-16 per-root graph containment](../rpt8-16/README.md) | Evidence only; defer integration | The analyzer recovers some direct-only body closures from unchanged artifacts. Production capture, schema and UI integration remain separate work; this is not complete endpoint reachability. |
+| [RPT8-17 source provenance proof](https://github.com/pulse-compute/pulse/pull/276) | Evidence only; defer integration | Source locations preserve executable bytes in the tested cells, with a source-map URL custom section and sideband maps. Merged functions lose distinct origins, so maps do not establish exclusive/shared byte ownership. |
+
+The retained Catalog replay confirms that RPT8-14 connects the existing
+unavailable handler registrations to their recorded containing bodies while
+preserving the historical capsule. This improves visibility without relabeling
+containing-body bytes as isolated handler bytes or rebuilding the application.
+Private consumer measurements and raw receipts remain outside this repository.
+
+For the next release, revisit per-root graph reporting, source-map navigation,
+and ownership through optimization as separate decisions with explicit evidence
+and overhead budgets. The current proofs do not justify another production
+change in this closeout. Preserve their findings and resume the remaining beta.8
+work; the UI8, BLD8, CMP8 and PERF8 groups remain separate. This decision is not
+a release seal or a claim that exact Catalog handler attribution is solved.
