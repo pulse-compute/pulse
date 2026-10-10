@@ -21,9 +21,9 @@ node wasm/test/performance/check-perf8.cjs wasm/.test-results/performance/beta8.
 Choose a new output filename for every run. The original `--out` invocation and
 v1 `--compare` remain available for PS-08. The beta.8 suite writes
 `pulse.performance-baseline.v2` and `pulse.performance-protocol.v2`; it cannot be
-silently compared by the legacy v1 comparator. PERF8-02 owns v2 baseline
-comparison, environment/variation analysis, production-log analysis and any
-eventual justified thresholds. This ticket introduces no performance gate.
+silently compared by the legacy v1 comparator. [PERF8-02](../perf8-02/README.md) adds v2 baseline comparison and
+environment/variation analysis, and records the outstanding production-log input.
+It establishes no regression threshold. This ticket introduces no performance gate.
 
 ## Fixed matrix
 

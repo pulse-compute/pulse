@@ -35,6 +35,7 @@ function synthetic() {
   }
   return report;
 }
+function main() {
 const source = synthetic(); validatePerf8(source);
 assert.equal(source.cells.length, 7); assert.equal(source.validation.at(-1).cases, 64);
 assert.equal(source.cells.at(-1).metrics.warmRequestMs.status, 'unavailable');
@@ -49,3 +50,7 @@ for (const mutate of [
 assert.throws(() => compare(source, source), /Unsupported report schema/, 'v2 does not silently enter legacy comparisons');
 if (process.argv[2]) validatePerf8(JSON.parse(fs.readFileSync(process.argv[2], 'utf8')));
 console.log('ok - PERF8-01 seven-cell coverage, raw/summary reconciliation, CPU units, memory snapshots, build metadata, compile-only and partial-report rejection');
+
+}
+if (require.main === module) main();
+module.exports = { synthetic };
