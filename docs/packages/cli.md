@@ -50,6 +50,11 @@ pulse build
   source locations, full canonical and handler IDs, recorded flow references and
   related registrations. Missing names or source locations stay explicit; labels
   and navigation never change the embedded capsule or exported JSON.
+  The compact route table separates handler measurements from containing-body
+  sizes and keeps coverage and non-additive qualifications beside those values.
+  Desktop route details use a wider panel; phones retain a full-width drawer and
+  scrollable table. Evidence is collapsed by kind and exact producer version,
+  with individual result counts visible and full record scopes available inside.
 - `inspect` compiles and reports effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility, and provider lowering without executing cases.
 - `test` executes configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime.
 - `dev` runs a foreground local server and watches the project by default.

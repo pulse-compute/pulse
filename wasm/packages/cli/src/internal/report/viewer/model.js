@@ -33,9 +33,9 @@ function createReportViewModel(P) {
     const name = route?.handlerName || entry.name || entry.kind;
     const path = entry.flow?.path ?? route?.path;
     const method = entry.flow?.method ?? route?.method;
-    return [entry.id, [entry.kind, name !== entry.kind ? name : null, path ? [method, path].filter(Boolean).join(' ') : null].filter(Boolean).join(' · ')];
+    return [entry.id, {name, full:[entry.kind, name !== entry.kind ? name : null, path ? [method, path].filter(Boolean).join(' ') : null].filter(Boolean).join(' · ')}];
   }));
-  const entryLabel = entry => entry ? entryNames.get(entry.id) + ' · ' + shortEntryIds.get(entry.id) : 'Unknown entry reference';
+  const entryLabel = (entry, compact=false) => entry ? entryNames.get(entry.id)[compact?'name':'full'] + ' · ' + shortEntryIds.get(entry.id) : 'Unknown entry reference';
   // Presentation ordinals are capsule-local links, not new authored identities.
   const helperLabel = row => helperOrigins[row.origin] + ' ' + (helperIndex.get(row.id) + 1);
   function helperSize(rows) {

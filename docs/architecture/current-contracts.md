@@ -1127,6 +1127,12 @@ handler identities, source locations when recorded, and static flow references.
 Own registrations and wider composition references remain distinct. Search and
 navigation do not alter the embedded or exported evidence capsule.
 
+Compact route rows and responsive detail layouts preserve adjacent measurement
+availability, coverage and non-additive qualifications. Evidence disclosures
+group records by kind and exact producer identity without merging claims or
+turning mixed record results into an overall pass. Full identities and scopes
+remain available on expansion and in the unchanged capsule export.
+
 
 ## Providers, targets, and eligibility
 
