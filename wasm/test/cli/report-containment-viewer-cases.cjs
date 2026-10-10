@@ -27,7 +27,7 @@ module.exports = function containmentViewerCases({renderedTree}) {
     assert.match(text,/cannot be added across routes/);
     const bodies=tree.nodes().filter(node=>node.attrs.class==='details-block containing-body');
     assert.equal(bodies.length,1);
-    assert.doesNotMatch(bodies[0].textContent,/Entry 5 · startup/);
+    assert.ok(!bodies[0].textContent.includes(model.entryLabel(capsule.entries.find(entry=>entry.order===4))));
     assert.ok(tree.nodes().some(node=>node.attrs.href==='#routes/'+model.routeIndex.get(other.id)));
   }
   tree.renderers.renderRoutes();

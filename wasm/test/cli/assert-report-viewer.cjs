@@ -88,7 +88,7 @@ function renderedTree(capsule) {
     append(...nodes){this.children.push(...nodes);}
     replaceChildren(...nodes){this.children=nodes;}
     addEventListener(event,fn){this.events[event]=fn;}
-    focus(){}
+    focus(){document.activeElement=this;}
   }
   const shell=fs.readFileSync(path.join(f.reportRoot,'viewer/shell.html'),'utf8');
   const roots=[...shell.matchAll(/\bid="([^"]+)"/g)].map(m=>{const n=new Element('div');n.id=m[1];return n;});
@@ -96,15 +96,18 @@ function renderedTree(capsule) {
   const nodes=()=>roots.flatMap(descendants);
   const get=id=>nodes().find(n=>n.id===id);
   const data=new Element('script');data.id='pulse-report-data';data.textContent=JSON.stringify(capsule);roots.push(data);
-  const document={querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
+  const surfaces={'.workspace':new Element('div'),'.sidebar':new Element('aside')};
+  const document={body:{classList:{add(){},remove(){},toggle(){}}},querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):surfaces[selector]??{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
   const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderDrawer,state};\n})();",context);
+  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderEntries,renderDrawer,onHash,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
-  return {get,nodes,renderers:context.renderers};
+  get('modal').hidden=true;get('route-drawer').hidden=true;
+  return {get,nodes,renderers:context.renderers,location:context.location,document,surfaces};
 }
 const tree=renderedTree(richCapsule);
+require('./report-identity-viewer-cases.cjs')({renderedTree});
 require('./report-helper-viewer-cases.cjs')({renderedTree});
 require('./report-dispatcher-viewer-cases.cjs')({renderedTree});
 require('./report-route-diagnostic-cases.cjs')({renderedTree});
