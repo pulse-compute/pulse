@@ -304,11 +304,13 @@
       const open=state.expandedResources.has(r.id);
       const expand=button((open?'▾ ':'▸ ')+r.name,()=>{open?state.expandedResources.delete(r.id):state.expandedResources.add(r.id);renderResources();$('#resource-expand-'+i).focus({preventScroll:true});},'resource-expand mono');
       expand.id='resource-expand-'+i;expand.setAttribute('aria-expanded',String(open));expand.setAttribute('aria-controls','resource-detail-'+i);
-      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand),el('td',{},r.kind),factCell(r.inputBytes),
+      const firstRoute=routes.get(r.routeIds[0]);
+      resourceRows.push(el('tr',{'data-resource-index':i},el('td',{},expand,r.kind==='response-payload'?el('div',{class:'secondary record-text'},
+        (r.mediaType??'Media type unresolved')+' · '+(firstRoute?firstRoute.method+' '+firstRoute.path:'Entry association unavailable')):null),el('td',{},r.kind),factCell(r.inputBytes),
         el('td',{class:'numeric'},el('div',{class:'metric-value'},factText(g?.representationBytes)),el('div',{class:'secondary'},g?representationLabels[g.representation]:'Not recorded')),
         factCell(r.retainedPayloadBytes),el('td',{},r.routeIds.length+' recorded routes')));
       resourceRows.push(el('tr',{hidden:!open},el('td',{colspan:6},el('div',{id:'resource-detail-'+i,class:'resource-detail'},...(open?[
-        el('div',{},el('h3',{},'Resource facts'),kv([['Source input bytes',factText(r.inputBytes)],['Input evidence',qualifier(r.inputBytes)],
+        el('div',{},el('h3',{},'Resource facts'),kv([[r.kind==='response-payload'?'UTF-8 response payload bytes':'Source input bytes',factText(r.inputBytes)],['Input evidence',qualifier(r.inputBytes)],
           ['Representation',g?representationLabels[g.representation]:'Not recorded'],['Representation bytes',factText(g?.representationBytes)],['Representation evidence',qualifier(g?.representationBytes)],
           ['Producer',g?g.producer.name+' · '+g.producer.version:'Not recorded'],['Entry coverage',g?`${g.entryCoverage.status} · ${g.entryCoverage.observed} / ${g.entryCoverage.expected??'unknown'}${g.entryCoverage.reason?' · '+g.entryCoverage.reason:''}`:'Not recorded'],
           ['Retained payload',exact(factValue(r.retainedPayloadBytes))],['Retained evidence',qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Not recorded'],['Build artifact',r.artifactId??'Not mapped']]),
@@ -343,10 +345,12 @@
       sectionHeading('Resources & artifact sizes','Exact physical ledgers, separate from resource inputs and attribution.',P.resources.length),
       note('Do not add route sizes or resource input sizes to artifact bytes. Shared data is counted once physically.'),artifactPanels,
       el('div',{class:'subsection'},sectionHeading('Resource inventory','Source input, packed representation and final retained payload are separate facts.',P.resources.length),
-        note('Packed base64 text is the build input encoding, not Wasm data size. Normalized descriptor bytes describe schema structure, not generated validator code. Neither is added to the physical ledger.'),
+        note('Packed base64 text is the build input encoding, not Wasm data size. Text-response input bytes measure the resolved string encoded as UTF-8; Native string storage and retained Wasm bytes remain unmapped. Normalized descriptor bytes describe schema structure, not generated validator code.'),
+        note('Text responses are canonical construction sites, not distinct physical assets or execution counts. Equal payloads at different sites remain separate. Dynamic expressions are unresolved, not zero. Only literal strings and directly bound const strings are measured; custom/JSON responses and arbitrary expression evaluation are outside this scope.'),
         P.resourceProducers?el('div',{class:'surface panel-pad'},el('h3',{},'Producer coverage'),P.resourceProducers.map(row=>el('div',{class:'coverage-line'},
           el('div',{},resourceScopes[row.scope]+' · '+row.coverage.status),el('p',{},`${row.coverage.observed} recorded / ${row.coverage.expected??'unknown'} expected${row.coverage.reason?' · '+row.coverage.reason:''}`))),
-          el('p',{class:'small-note'},'Selected assets cover resolved lookups, not unused manifest files. Package realization records are counted without retaining private contents. Other generated support is not enumerated.'))
+          el('p',{class:'small-note'},'Selected assets cover resolved lookups, not unused manifest files. Text-response producer coverage counts observed sites including dynamic sites, not resolved sizes or complete consumers. Generated dispatcher responses may have no known entry. Package realization records are counted without retaining private contents. Other generated support is not enumerated.'),
+          P.resourceProducers.some(row=>row.scope==='canonical-text-responses')?null:el('p',{class:'small-note'},'Text-response coverage was not recorded in this capsule; no payload census can be inferred.'))
           :note('Producer coverage was not recorded in this historical capsule.'),
         P.resources.length?el('div',{class:'surface table-surface'},el('div',{class:'table-wrap',tabindex:0,role:'region','aria-label':'Scrollable resource inventory'},resourceTable))
           :note('No resource records. Inventory coverage: '+P.coverage.resources.status+'.')));

@@ -110,6 +110,7 @@ function collectCanonicalReportReferences(compiled, plan) {
   // Only compact allowlisted data crosses into Report. No provider metadata,
   // effect payloads, binding values, resource bodies or expression text survives.
   return Object.freeze({ version: 'pulse.compiler-report-references.v1',
+    responsePayloads: require('./report-response-payloads').collectResponsePayloads(plan, entries, helpers),
     references: Object.freeze([...rows.values()].map(row => Object.freeze({ ...row, entryIds: Object.freeze(unique(row.entryIds)),
       ...(row.externalPackages ? { externalPackages: Object.freeze(row.externalPackages) } : {}),
       ...(row.resource ? { resource: Object.freeze(row.resource) } : {}) }))) });

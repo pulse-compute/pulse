@@ -40,11 +40,11 @@ const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping'
   ...new Set(Object.values(GRAPH_DIAGNOSTICS).filter(reason => !['missing-evidence', 'prelink-only'].includes(reason)))];
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'];
-const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support'];
+const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses'];
 const defs = {
   ResourceProducer: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'), coverage: ref('Coverage'), resourceIds: ids, evidenceIds: ids }),
   ResourceGenerator: object({ scope: en(...RESOURCE_SCOPES), producer: ref('Producer'),
-    representation: en('base64-text', 'pulse.report-schema-shape.v1', 'package-guest-unit'),
+    representation: en('base64-text', 'pulse.report-schema-shape.v1', 'package-guest-unit', 'native-string'),
     representationBytes: ref('Fact'), schemaId: nullable(id), entryCoverage: ref('Coverage') }),
   GraphDiagnostic: object({ reason: en(...new Set(Object.values(GRAPH_DIAGNOSTICS))), code: en(...Object.keys(GRAPH_DIAGNOSTICS)),
     functionIndex: nullable(uint), observed: nullable(uint), expected: nullable(uint) }),
@@ -92,7 +92,7 @@ const defs = {
     canonicalId: nullable(text), state: en('resolved', 'dynamic', 'unknown'), reason: nullable(en(...REASONS)),
     targetId: nullable(id), entryIds: ids, entryCoverage: ref('Coverage'), evidenceIds: ids,
     externalPackages: { ...array(text), minItems: 1, uniqueItems: true } }, ['externalPackages']),
-  Resource: object({ id, name: text, kind: en('embedded-asset', 'schema-validator', 'helper', 'other'),
+  Resource: object({ id, name: text, kind: en('embedded-asset', 'schema-validator', 'helper', 'other', 'response-payload'),
     mediaType: nullable(text), artifactId: nullable(id), inputBytes: ref('Fact'), retainedPayloadBytes: ref('Fact'),
     routeIds: ids, entryIds: ids, evidenceIds: ids, generator: ref('ResourceGenerator') }, ['generator']),
   Section: object({ index: uint, id: { ...uint, maximum: 13 }, bytes: uint, payloadBytes: uint }),

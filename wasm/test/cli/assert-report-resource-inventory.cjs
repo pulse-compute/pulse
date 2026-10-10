@@ -94,17 +94,26 @@ function withoutProjection() {
   owner._compile(fs.readFileSync(file, 'utf8'), file); return owner.exports;
 }
 async function main() {
+  const responseCases = require('./report-response-payload-cases.cjs')();
+  negatives += responseCases.negatives;
+  const responseJson = capsule.serializeCapsule(responseCases.capsule);
+  assert.equal(execFileSync(process.execPath, ['-e', passive], { encoding:'utf8', input:responseJson }), responseJson);
   const directory = fs.mkdtempSync(path.join(root, 'wasm/.test-results/rpt8-resources-'));
   const write = (file, text) => { const target=path.join(directory,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,text); };
   const css = Buffer.from('/* ASSET_BODY_CANARY */\n' + '.panel{color:blue}\n'.repeat(3000));
   const js = Buffer.from('/* JAVASCRIPT_BODY_CANARY */\n' + 'globalThis.ready=true;\n'.repeat(1000));
   const cells = [];
+  const inline = { css:'/* INLINE_CSS_CANARY */ body{color:blue} 😀é', js:'/* INLINE_JS_CANARY */ globalThis.ready=true;',
+    html:'<!doctype html><h1>INLINE_HTML_CANARY 😀</h1>', empty:'' };
   try {
     const { createEmbeddedManifest } = await import(pathToFileURL(path.join(root,'packages/assets/dist/embedded.js')));
     const manifest = await createEmbeddedManifest([{path:'/app.css',bytes:css,contentType:'text/css'}, {path:'/app.js',bytes:js,contentType:'text/javascript'}, {path:'/unused.txt',bytes:Buffer.from('UNUSED_BODY_CANARY'),contentType:'text/plain'}]);
     write('.pulse/config.ts', "import {defineConfig} from '@pulse-compute/pulse';export default defineConfig(scope=>({pulse:{entry:'src/index.ts',strict:false,defaultProfile:'native'},native:{host:'node',target:'native',outDir:'dist'}}));");
     const lookup = key => `async ctx=>{const asset=await assets.lookup(ctx,'embedded','${key}',{embeddedManifest:${JSON.stringify(JSON.stringify(manifest))}});return asset;}`;
-    write('src/index.ts', `import {Pulse} from '@pulse-compute/pulse';import {assets} from '@pulse-compute/assets';const app=new Pulse({auto:true});const style=${lookup('/app.css')};app.get('/a.css',style);app.get('/b.css',style);app.get('/app.js',${lookup('/app.js')});export default app;`);
+    const inlineRoutes=Object.entries(inline).map(([key,value])=>`app.get('/inline/${key}',async ctx=>ctx.text(${JSON.stringify(value)},{headers:{'content-type':${JSON.stringify(key==='empty'?'text/plain':key==='js'?'text/javascript':'text/'+key)}}}));`).join('');
+    write('src/index.ts', `import {Pulse} from '@pulse-compute/pulse';import {assets} from '@pulse-compute/assets';const app=new Pulse({auto:true});const style=${lookup('/app.css')};app.get('/a.css',style);app.get('/b.css',style);app.get('/app.js',${lookup('/app.js')});${inlineRoutes}
+app.get('/inline/const',async ctx=>{const payload=${JSON.stringify(inline.html)};return ctx.text(payload,{headers:{'content-type':'text/html; charset=utf-8'}});});
+app.get('/inline/dynamic',async ctx=>ctx.text(ctx.req.header('x-body')||''));export default app;`);
     const project = resolveProject({cwd:directory,metadataOnly:true}), controlOwner = withoutProjection();
     for (const optimization of ['default','experimental-native-bounded-size']) {
       const options = {emitWat:false,nativeOptimization:optimization==='default'?undefined:optimization};
@@ -114,15 +123,29 @@ async function main() {
         const response=(await executeCanonicalNativeModule(compiled.native,{request:{method:'GET',path:url},providerAdapter:createNodeProviderAdapter({})})).response;
         assert.equal(response.status,200);assert.deepEqual(Buffer.from(await new Response(response.bodyStream).arrayBuffer()),expected);
       }
+      for (const compiled of [control,observed]) for (const [key,expected] of [...Object.entries(inline),['const',inline.html],['dynamic','']]) {
+        const response=(await executeCanonicalNativeModule(compiled.native,{request:{method:'GET',path:'/inline/'+key},providerAdapter:createNodeProviderAdapter({})})).response;
+        assert.equal(response.status,200);assert.equal(response.body,expected);
+      }
       const physical = { ...observed.native.manifest.wasm, id:capsule.artifactId(observed.native.manifest.wasm.sha256), stage:'final',target:'portable-native-wasm' };
       const report=addSizeEvidence(collectInventory(project,observed,[physical],physical.id,optimization),new Map([[physical.id,observed.native.wasm]]),observed.native.reportAttribution);
-      assert.equal(report.resources.length,2);assert.equal(coverage(report)['selected-embedded-assets'].expected,2);
+      assert.equal(report.resources.filter(row=>row.kind==='embedded-asset').length,2);assert.equal(coverage(report)['selected-embedded-assets'].expected,2);
       const style=report.resources.find(row=>row.name==='/app.css');assert.equal(style.inputBytes.value,css.length);assert.equal(style.generator.representationBytes.value,css.toString('base64').length);assert.equal(style.routeIds.length,2);
+      const payloads=report.resources.filter(row=>row.kind==='response-payload');
+      for (const [key,value] of [...Object.entries(inline),['const',inline.html]]) {
+        const route=report.routes.find(row=>row.path==='/inline/'+key);
+        const payload=payloads.find(row=>row.routeIds.includes(route.id));
+        assert.ok(payload,'retained response site for '+key);assert.equal(payload.inputBytes.value,Buffer.byteLength(value,'utf8'));
+        assert.equal(payload.mediaType,key==='empty'?'text/plain':key==='const'?'text/html':key==='js'?'text/javascript':'text/'+key);
+      }
+      const dynamicRoute=report.routes.find(row=>row.path==='/inline/dynamic');
+      assert.equal(payloads.find(row=>row.routeIds.includes(dynamicRoute.id)).inputBytes.reason,'dynamic-reference');
+      assert.equal(coverage(report)['canonical-text-responses'].expected,payloads.length);
       assert.ok(report.resources.every(row=>row.retainedPayloadBytes.value===null));
       const artifact=report.artifacts[0];assert.equal(8+artifact.sections.reduce((n,row)=>n+row.bytes,0),physical.bytes);
       const bodies=report.measurements.filter(row=>row.metric==='handler-body');assert.ok(bodies.every(row=>row.fact.state==='available'&&row.fact.value<css.length));
-      const saved=capsule.serializeCapsule(report);assert.ok(!/BODY_CANARY|embeddedData|embeddedManifest/.test(saved));
-      cells.push({optimization,resources:report.resources.length,handlerBytes:bodies.map(row=>row.fact.value),inputBytes:css.length+js.length,physicalBytes:physical.bytes,unchanged:true});
+      const saved=capsule.serializeCapsule(report);assert.ok(!/BODY_CANARY|INLINE_.*CANARY|embeddedData|embeddedManifest/.test(saved));
+      cells.push({optimization,resources:report.resources.length,responseSites:payloads.length,handlerBytes:bodies.map(row=>row.fact.value),inputBytes:css.length+js.length,physicalBytes:physical.bytes,unchanged:true});
     }
   } finally { fs.rmSync(directory,{recursive:true,force:true}); }
   console.log(JSON.stringify({status:'passed',negativeCases:negatives,passiveReplay:true,cells}));
