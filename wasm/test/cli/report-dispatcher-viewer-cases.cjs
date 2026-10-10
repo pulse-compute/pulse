@@ -54,12 +54,12 @@ module.exports = function dispatcherViewerCases({renderedTree}) {
     assert.match(text,/whole-body size is not this route’s size/);
     assert.match(text,/Carrier chunk 2 · body unavailable/);
     assert.match(text,/final-symbol-not-surviving/);
-    assert.match(text,/Entry 4 · error/);
+    assert.ok(text.includes(model.entryLabel(capsule.entries.find(entry=>entry.order===3))));
     assert.ok(tree.nodes().some(node=>node.attrs.href==='#routes/'+model.routeIndex.get(other.id)));
     const bodies=tree.nodes().filter(node=>node.attrs.class==='details-block dispatcher-body');
     assert.equal(bodies.length,2,'one physical body and one unavailable chunk');
     assert.equal(bodies[0].attrs.open,undefined,'native disclosure starts collapsed');
-    assert.doesNotMatch(bodies[0].textContent,/Entry 5 · startup/);
+    assert.ok(!bodies[0].textContent.includes(model.entryLabel(capsule.entries.find(entry=>entry.order===4))));
   }
   const noMapping=structuredClone(capsule);
   noMapping.implementations=noMapping.implementations.filter(row=>row.origin!=='dispatcher'||!row.bodyIds.length);

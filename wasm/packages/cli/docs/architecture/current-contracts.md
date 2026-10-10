@@ -1119,6 +1119,14 @@ helper/stage links use the entry's recorded chunk associations. These partial st
 associations do not establish exclusive ownership or complete execution chains.
 The projection preserves capsule identity, measurements, and artifact ledgers.
 
+Viewer entry labels project recorded names, kinds and method/path metadata with
+short entry-ID prefixes that expand on collision. Links resolve full IDs through
+capsule-local indices; shortened labels are never canonical identities or
+cross-capsule comparison keys. Entry details retain full entry, canonical and
+handler identities, source locations when recorded, and static flow references.
+Own registrations and wider composition references remain distinct. Search and
+navigation do not alter the embedded or exported evidence capsule.
+
 
 ## Providers, targets, and eligibility
 
