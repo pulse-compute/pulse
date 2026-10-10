@@ -131,7 +131,17 @@ async function main() {
       bodies: row.chunks.map(chunk => ({ chunk, relation: 'terminal-body' })), reason: null })),
     chunkMappings: base.chunkMappings.map((row, i) => ({ ...row, kind: 'terminal-body', implementationId: 'entry-' + i })) };
   delete v2.handlerBodies;
-  assert.equal(addSizeEvidence(createCapsule(f.fixture()), files, v2).evidenceHash.value, report.evidenceHash.value);
+  const v2Report = addSizeEvidence(createCapsule(f.fixture()), files, v2);
+  assert.equal(report.implementations, undefined, 'v1 cannot invent implementation ownership');
+  assert.equal(v2Report.implementations.length, 2);
+  assert.ok(v2Report.implementations.every(row => row.origin === 'dedicated' && row.bodyIds.length === 1));
+  assert.notEqual(v2Report.evidenceHash.value, report.evidenceHash.value, 'additional retained evidence changes identity');
+  for (const key of ['artifacts', 'bodies', 'measurements', 'rootSets', 'observations'])
+    assert.deepEqual(v2Report[key], report[key], 'implementation inventory does not alter ' + key);
+  const withoutImplementations = structuredClone(v2Report);
+  delete withoutImplementations.implementations; delete withoutImplementations.coverage.implementations;
+  assert.equal(serializeCapsule(createCapsule(withoutImplementations)), serializeCapsule(report),
+    'v1/v2 differ only by the explicit implementation inventory');
   for (const reason of ['unsupported-call-graph', 'missing-evidence', 'prelink-only']) {
     const legacy = { ...base, graph: { state: 'unavailable', reason, method: 'static-direct-calls-v1', edges: [] } };
     assert.equal(validateAttribution(legacy).graph.reason, reason);
