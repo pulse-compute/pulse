@@ -1108,6 +1108,18 @@ using the handler entry itself, never preceding composition entries. Diagnostics
 preserve measurements and historical identity; one observed consumer is not
 exclusive ownership. See [CLI guidance](../packages/cli.md).
 
+The containing-body view projects primary-artifact dispatcher chunks associated
+with the registration's own entry, independently of preceding composition entries.
+Whole containing-body bytes remain separate from isolated handler measurements.
+Route rows and filtered summaries deduplicate physical body IDs; summaries union
+recorded chunks across shown registrations, never sum route sizes. Missing mappings
+remain unknown. Known co-owners join consumers at each physical chunk/body boundary;
+registration links use those entries directly, not their wider composition. Existing
+helper/stage links use the entry's recorded chunk associations. These partial static
+associations do not establish exclusive ownership or complete execution chains.
+The projection preserves capsule identity, measurements, and artifact ledgers.
+
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support

@@ -52,6 +52,30 @@ function createReportViewModel(P) {
         records:records.filter(row => row.bodyIds.includes(id)) };
     }), missing:records.filter(row => !row.bodyIds.length) };
   }
+  // Containment follows the registration's own entry, never its bounded
+  // composition. Union physical bodies independently of logical carrier chunks.
+  function containingBodies(selectedRoutes) {
+    const entryIds = new Set(selectedRoutes.map(row => row.entryId));
+    const chunks = [...new Map(dispatchers.flatMap(row => row.chunks)
+      .filter(chunk => chunk.entryIds.some(id => entryIds.has(id)))
+      .map(chunk => [chunk.chunk, chunk])).values()];
+    const bodyIds = [...new Set(chunks.map(chunk => chunk.bodyId).filter(id => id !== null))];
+    const contained = selectedRoutes.filter(route => chunks.some(chunk => chunk.entryIds.includes(route.entryId)));
+    return { chunks, bodyIds, bytes:bodyIds.length ? bodyIds.reduce((n,id) => n + bodies.get(id).bytes, 0) : null,
+      mapped:chunks.filter(chunk => chunk.bodyId !== null).length, expected:chunks.length,
+      registrations:contained.length, unrecorded:selectedRoutes.length - contained.length,
+      partial:chunks.some(chunk => chunk.bodyId === null),
+      bodies:bodyIds.map(id => {
+        const knownEntries = [...bodyConsumers.get(id)].sort();
+        return {...bodies.get(id), entryIds:knownEntries,
+          routeIds:P.routes.filter(route => knownEntries.includes(route.entryId)).map(route => route.id),
+          chunks:chunks.filter(chunk => chunk.bodyId === id),
+          evidenceIds:[...new Set(dispatchers.filter(row => row.chunks.some(chunk => chunk.bodyId === id
+            && chunk.entryIds.some(key => entryIds.has(key)))).flatMap(row => row.evidenceIds))]};
+      }), missing:chunks.filter(chunk => chunk.bodyId === null) };
+  }
+  const routeContainment = route => containingBodies([route]);
+  const entryHelpers = route => helpers.filter(row => row.chunks.some(chunk => chunk.entryIds.includes(route.entryId)));
   const schemaReferences = new Map();
   for (const reference of P.references || []) if (reference.kind === 'schema' && reference.targetId) {
     if (!schemaReferences.has(reference.targetId)) schemaReferences.set(reference.targetId, []);
@@ -172,6 +196,6 @@ function createReportViewModel(P) {
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
   return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
     entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
-    routeBehavior,routeCounts,handlerAttribution};
+    routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

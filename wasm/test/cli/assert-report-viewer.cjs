@@ -99,7 +99,7 @@ function renderedTree(capsule) {
   const document={querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
   const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderResources,renderSchemas,renderHelpers,renderDrawer,state};\n})();",context);
+  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderDrawer,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
   return {get,nodes,renderers:context.renderers};
@@ -108,6 +108,7 @@ const tree=renderedTree(richCapsule);
 require('./report-helper-viewer-cases.cjs')({renderedTree});
 require('./report-dispatcher-viewer-cases.cjs')({renderedTree});
 require('./report-route-diagnostic-cases.cjs')({renderedTree});
+require('./report-containment-viewer-cases.cjs')({renderedTree});
 const reconciliation = require('./report-reconciliation-cases.cjs')({renderedTree});
 console.log('RPT8-12 combined reconciliation: ' + JSON.stringify(reconciliation));
 const responseCapsule=require('./report-response-payload-cases.cjs').responseFixture().capsule;

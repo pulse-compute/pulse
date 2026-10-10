@@ -66,7 +66,7 @@
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
   const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution} = createReportViewModel(P);
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
@@ -151,10 +151,12 @@
   function renderRoutes() {
     visibleRoutes = filteredRoutes();
     replace($('#route-body'),visibleRoutes.map(r => {
-      const m=measurement(r,state.metric),value=factValue(m?.fact);
-      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable'),el('div',{class:'secondary'},routeBehavior(r))),
+      const m=measurement(r,state.metric),value=factValue(m?.fact),contained=routeContainment(r);
+      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable'),el('div',{class:'secondary'},routeBehavior(r)),contained.expected?el('div',{class:'secondary'},'Containing bodies: '+exact(contained.bytes)+(contained.partial?' · partial mapping':'')+' · whole-body, non-additive'):null),
         el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{class:'metric-value'},measurementText(r,state.metric)),el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
     }));
+    const union=containingBodies(visibleRoutes);
+    $('#route-containment-summary').textContent = `Shown registrations: ${union.registrations} with recorded carriers; ${union.unrecorded} without carrier evidence. Containing-body union: ${exact(union.bytes)} · ${union.bodyIds.length} distinct physical bodies · ${union.mapped} / ${union.expected} recorded chunks mapped. Counted once across shown registrations; not an additive route total or isolated handler bytes. Missing mappings remain unknown.`;
     $('#route-empty').hidden = visibleRoutes.length!==0;
     $('#route-result-count').textContent = `${visibleRoutes.length} of ${P.routes.length} registrations · ${P.coverage.routes.status} inventory`;
     $('#size-column-label').textContent = metrics[state.metric];
@@ -180,7 +182,7 @@
       detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},el('code',{},id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
       detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
       detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.')),
-      helperLinks(r),dispatcherDetails(r),
+      containmentDetails(r),helperLinks(r),dispatcherDetails(r),
       detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
     else if(state.drawerTab==='size') {
       panel.append(detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)));
@@ -190,7 +192,7 @@
         return el('div',{},el('div',{class:'size-grid-label'},label),value===null?el('div',{class:'size-grid-value size-unavailable'},measurementText(r,metric)):byteDisplay(value),el('div',{class:'size-grid-exact'},m?(value===null?m.fact.reason??m.fact.state:exact(value)+' · '+m.fact.coverage):measurementIssue(r,metric)));
       })));
       panel.append(note('Handler body and Reachable measure code bodies only; embedded asset and schema data are excluded. A small handler may serve a large payload.'),
-        helperLinks(r),dispatcherDetails(r),
+        containmentDetails(r),helperLinks(r),dispatcherDetails(r),
         detailSection('Referenced resources',el('p',{},P.resources.filter(resource=>resource.routeIds.includes(r.id)).length+' recorded resources; consumer coverage may be partial.'),el('a',{href:'#resources'},'View resource inventory and byte representations')));
       for(const [metric,label] of Object.entries(metrics)) {
         const resolution=measurementResolution(r,metric);
@@ -229,6 +231,31 @@
         el('div',{class:'dispatcher-detail'},kv([['Reason',row.chunks[0].reason],['Physical size','Unavailable'],['Implementation',row.id]]),
           el('p',{class:'small-note'},'Known entry associations survive the missing body mapping. They do not identify a final function.'),
           entryRecords(row.entryIds),...evidenceCards(row.evidenceIds)))));
+  }
+  function containmentDetails(route) {
+    const view=routeContainment(route), ownHelpers=entryHelpers(route);
+    return detailSection('This registration’s containing bodies',
+      note('Only carriers associated with this registration’s own entry. Whole containing-body bytes are separate from isolated Handler body bytes and cannot be added across routes. Known co-owners are observed entry associations, not proof of exclusive ownership or a complete execution chain.'),
+      kv([['Entry',entryLabel(entries.get(route.entryId))],['Containing-body union',exact(view.bytes)],
+        ['Distinct physical bodies',String(view.bodyIds.length)],['Mapped entry carrier chunks',view.mapped+' / '+view.expected],
+        ['Artifact',A.stage+' · '+A.sha256]]),
+      !view.expected?el('p',{class:'small-note'},helperState==='not-recorded'?'Containing-body inventory was not recorded. Unknown does not mean zero.'
+        :'No carriers recorded for this entry in the primary artifact. Prelink or preceding composition entries cannot establish its containing bodies.'):null,
+      view.partial?el('p',{class:'small-note'},'Partial mapping: the union includes known bodies only; missing body sizes remain unknown.'):null,
+      view.bodies.map(body=>el('details',{class:'details-block containing-body'},
+        el('summary',{},'Function '+body.index+' · '+bytes(body.bytes)+' · containing body'),
+        el('div',{class:'dispatcher-detail'},kv([['Physical body',body.id],['Whole-body bytes',exact(body.bytes)],
+          ['This entry’s carrier chunks',body.chunks.map(chunk=>chunk.chunk).join(', ')],['Known entry co-owners',String(body.entryIds.length)+' · partial coverage']]),
+          body.entryIds.map(id=>el('div',{class:'helper-entry'},el('strong',{},entryLabel(entries.get(id))),
+            el('p',{class:'small-note'},sourceText(entries.get(id).source)),
+            routeChips(body.routeIds.filter(key=>routes.get(key).entryId===id)))),
+          ...evidenceCards(body.evidenceIds)))),
+      view.missing.map(chunk=>el('p',{class:'small-note'},'Entry carrier chunk '+chunk.chunk+' · body unavailable · '+chunk.reason)),
+      el('h3',{},'This entry’s helpers & stages'),
+      ownHelpers.length?el('ul',{class:'helper-links'},ownHelpers.map(row=>el('li',{},
+        el('a',{href:'#helpers/'+helperIndex.get(row.id)},helperLabel(row)),el('span',{class:'secondary'},row.roles.join(', ')))))
+        :el('p',{class:'small-note'},'No helper or stage association recorded for this entry; inventory coverage is partial.'),
+      el('p',{class:'small-note'},'Helper links identify existing implementations. Their whole sizes may overlap containing bodies and other entries. Broader composition associations follow below.'));
   }
   function helperCoverage(row) {
     const size=helperSize([row]);

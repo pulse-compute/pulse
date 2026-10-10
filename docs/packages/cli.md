@@ -41,6 +41,10 @@ pulse build
   also respond early. Older reports show **Behavior not recorded**. Attribution
   details distinguish mixed dispatcher bodies from missing mappings; containing
   dispatcher bytes are not isolated handler bytes or a complete endpoint size.
+  The registration drawer shows its own entry's containing bodies, known co-owner
+  registrations, and recorded helper/stage links. The route list shows containing
+  bytes separately and unions distinct physical bodies across the current filter;
+  overlapping route sizes must not be summed. Missing body mappings stay unknown.
 - `inspect` compiles and reports effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility, and provider lowering without executing cases.
 - `test` executes configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime.
 - `dev` runs a foreground local server and watches the project by default.
