@@ -1158,9 +1158,8 @@ this optional block remain unchanged and display **Not recorded**.
 CMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and
 `pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must
 consume that shared result rather than implement their own matching or arithmetic.
-This ticket adds the contract and engine; the HTML presentation and command/MCP
-adapters remain separate integration work. No new public CLI option or package
-export is introduced here.
+CMP8-02 adds the offline HTML presentation. Command/MCP adapters remain separate
+integration work. No new public CLI option or package export is introduced here.
 
 `compareCapsules(before, after)` admits two validated Report v1 capsules and
 returns immutable evidence without IO, project loading, compilation or execution.
@@ -1229,6 +1228,31 @@ The canonical schema and generated TypeScript declaration share the report fixtu
 writer. The report-capsule-contract task includes comparison regressions for
 identity churn, ambiguity, coverage loss/gain, settings/provenance, exact and
 unavailable deltas, sparse ordering, deterministic bytes and compiler-free replay.
+
+The internal `renderComparison(result)` renderer consumes this validated result;
+it does not perform matching, recalculate deltas, compile or load projects. The
+self-contained HTML keeps project names, before/after artifact bytes, route and
+schema counts, zero-net additions/removals and artifact provenance visible.
+Both full capsule hashes, artifact identities, recorded recipes, compiler flags,
+toolchains and build metadata remain available in native disclosures. Compatibility
+is qualified next to the summaries, including unknown historical build settings.
+
+Only changed inventories and fields appear in detail, with text and `+`/`−`
+markers alongside color. Unresolved identities and coverage changes retain their
+reasons; partial counts are labeled observed and missing measurements never read
+as zero or measured savings. Whole-body measurements remain non-additive.
+Changed settings and provenance appear separately from application records.
+Unchanged details and empty inventory sections are omitted, while all inventory
+coverage stays inspectable even in a no-change comparison.
+
+The summary, provenance and native disclosure controls remain readable without
+JavaScript. Optional search/status filters, local anchors and theme changes are
+presentation state only; export retains the exact canonical comparison JSON,
+including hidden and filtered evidence. This is a comparison export, not either
+original capsule. Rendering escapes all retained text, admits a bounded validated
+comparison, uses hash-bound inline assets and makes no network requests. Mobile
+before/after fields stack in the same explicit order as the desktop columns.
+The `cli-report-viewer` task covers this renderer alongside the single-capsule view.
 
 ## Providers, targets, and eligibility
 

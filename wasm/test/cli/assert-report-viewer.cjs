@@ -107,6 +107,7 @@ function renderedTree(capsule) {
   return {get,nodes,renderers:context.renderers,location:context.location,document,surfaces};
 }
 const tree=renderedTree(richCapsule);
+require('./report-comparison-viewer-cases.cjs')();
 require('./report-identity-viewer-cases.cjs')({renderedTree});
 require('./report-layout-viewer-cases.cjs')({renderedTree});
 require('./report-build-cases.cjs').viewerCases({renderedTree});

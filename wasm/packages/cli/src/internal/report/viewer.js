@@ -15,4 +15,4 @@ function renderReport(capsule, options = {}) {
   if (Buffer.byteLength(html) > 64 * 1024 * 1024) fail('REPORT_LIMIT');
   return html;
 }
-module.exports = { renderReport };
+module.exports = { renderReport, renderComparison: require('./comparison-viewer').renderComparison };
