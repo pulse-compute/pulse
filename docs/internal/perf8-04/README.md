@@ -105,3 +105,85 @@ workloads. Payload sensitivity here covers only the stated string shapes.
 The implementing PR records the measured source, repeated campaign findings and
 remaining attribution uncertainty. A small post-GC RSS residual cannot by itself
 be assigned to compiler code, guest memory, host allocation or a leak.
+
+## Implementing evidence (2026-10-10)
+
+Two clean campaigns passed on Node 24.19.0 and Rust 1.99.0, measured at source
+`231b5cbfc24c5a0c8354936d9bb7d763d1526f83`, tree
+`f23eaea6c95564d498b01af6bf20425cc0343f09`. Source, environment, dependencies,
+toolchain, protocol and all four artifacts agree exactly across campaigns. The
+artifacts also match PERF8-03's final measured Wasm hashes. Subsequent README
+changes only record results; they do not change the measured harness.
+
+Each campaign completed 120 sweep workers (30,720 iterations), 12 unchanged
+reference workers (492 requests), and 10 paired preflight cases (20 observations).
+Every observed codec/full path checked its results; instantiation-only iterations
+intentionally do not execute a handler. Elapsed campaign times were 143.66 and
+152.06 seconds. Both report validators and all 18 negative admission checks passed.
+
+The table shows each campaign's median of three independent workers, in MiB.
+The sweep rows use the small schema/effect payload unless stated otherwise.
+
+| Observation | Pulse first / repeat | Rust first / repeat |
+| --- | --- | --- |
+| Unchanged reference, after 41 requests | 92.42 / 103.83 | 62.95 / 62.61 |
+| Unobserved sweep, natural GC, 41 requests | 100.69 / 100.39 | 61.32 / 60.52 |
+| Unobserved sweep, after forced GC, 41 requests | 56.01 / 56.84 | 56.99 / 56.57 |
+| Unobserved sweep, natural GC, 256 requests | 83.21 / 76.94 | 68.53 / 69.73 |
+| Unobserved sweep, after forced GC, 256 requests | 62.32 / 63.11 | 66.06 / 66.87 |
+| Instantiation only, natural GC, 41 iterations | 77.12 / 76.81 | 52.83 / 52.77 |
+| Instantiation only, after forced GC, 41 iterations | 52.32 / 52.86 | 52.29 / 52.43 |
+| Codec only, after forced GC, 256 iterations | 56.91 / 57.51 | 57.10 / 57.03 |
+| Observed long ASCII, after forced GC, 256 requests | 80.37 / 84.06 | 81.03 / 82.71 |
+| Observed escaped Unicode, after forced GC, 256 requests | 79.74 / 78.15 | 84.59 / 85.17 |
+
+The roughly 40 MiB gap is reproducible in the unobserved 41-request sweep. It
+largely disappears after host collection, and natural RSS is lower at 256 than
+41 requests in that same Pulse sweep. This is evidence of initialization and
+collection-timing sensitivity, not monotonic retention of 40 MiB of live guest
+state. The natural per-request-yield control varies (Pulse 61.51 / 85.20 MiB at
+41 requests); yielding alone is not a reliable remedy. Minimal unchanged
+reference workers remain close: Pulse 56.92 / 56.03, Rust 55.94 / 56.08 MiB.
+
+All 96 observed forced-GC workers across the two campaigns have **zero observed
+live Wasm memories at 256 iterations**. Twenty-five of 480 intermediate/final
+post-GC censuses retain one memory; this occurs in both implementations with
+larger payloads at 11 or 41 iterations. No census retains more than one after
+forced GC, and all are zero at 128 and 256. The experiment does not identify why
+those transient objects survive the earlier fixed collection passes. It does
+not prove general leak freedom or attribute the remaining process RSS.
+
+For the small complete request, Pulse starts and stays at 1,245,184 bytes of
+linear capacity; Rust starts at 1,114,112 and reaches 1,179,648 bytes. Larger
+Unicode requests can reach 2,490,368 bytes for Pulse and 1,245,184 for Rust.
+The small capacity difference cannot itself be equated with the 40 MiB process
+RSS difference; resident page touching and multiple uncollected instances matter.
+
+### Concrete initialization lead
+
+Disassembling the hash-matched 39,479-byte Pulse schema artifact with installed
+Binaryen 130 confirms that its Wasm start function `$35` calls the exported
+`__new` function `$1` with **1,048,576 bytes and ArrayBuffer type ID 1**. The
+allocator contains `memory.fill`, so this is a real initialized allocation before
+any handler or codec request. The installed `json-as@1.5.0/lib/as-bs.ts` declares
+`sc.arena = new ArrayBuffer(ARENA_SIZE)` at module scope; its default arena size
+is `1 << 20`, even though its default `CACHE_ENABLED` is false. The zero-length
+cache-entry allocation and the 1 MiB arena allocation both survive in this
+optimized artifact. The disassembly and source hashes are retained in the
+supplemental audit. No dependency files were patched.
+
+This is a concrete per-instance cost that can accumulate while fresh instances
+await collection, and it is consistent with the instantiation-only control. It
+is **not yet a measured counterfactual assigning every RSS byte to that arena**.
+The narrow optimization follow-up is to test conditional/lazy arena allocation
+when string caching is disabled, then rerun behavior and memory evidence. Do not
+change production GC or cache instances on the strength of this diagnostic run.
+
+An earlier attempt logged completion but its persisted report retained `running`
+status. It was rejected and retained as incomplete evidence. The two accepted
+reruns were executed without concurrent filesystem inspection and independently
+verified terminal status and full coverage. The cause of that first persistence
+discrepancy is not established; no status was manually repaired.
+
+Memory definitions follow Node's [process.memoryUsage documentation](https://nodejs.org/docs/latest-v24.x/api/process.html#processmemoryusage).
+The observer's yield rule follows ECMAScript's [WeakRef and kept-object semantics](https://tc39.es/ecma262/multipage/managing-memory.html#sec-weak-ref-objects).
