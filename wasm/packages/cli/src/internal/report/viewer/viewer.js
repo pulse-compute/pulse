@@ -86,9 +86,9 @@
   const routeChips = ids => el('div',{class:'route-chips'},ids.map(id => {
     const r = routes.get(id); return r ? el('a',{class:'route-chip',href:'#routes/' + routeIndex.get(id)},r.method + ' ' + r.path) : el('span',{},'Unknown route reference');
   }));
-  const entryLink = id => {
+  const entryLink = (id, compact=false) => {
     const entry = entries.get(id);
-    return entry ? el('a',{class:'entry-link record-text',href:'#entries/'+entryIndex.get(id),title:entry.id},entryLabel(entry))
+    return entry ? el('a',{class:'entry-link record-text',href:'#entries/'+entryIndex.get(id),title:entry.id},entryLabel(entry,compact))
       : el('span',{class:'record-text'},'Unknown entry reference',id ? ' · '+id : '');
   };
   const entryLinks = ids => el('div',{class:'entry-links'},ids.map(id=>el('div',{class:'helper-entry'},entryLink(id))));
@@ -158,8 +158,20 @@
     visibleRoutes = filteredRoutes();
     replace($('#route-body'),visibleRoutes.map(r => {
       const m=measurement(r,state.metric),value=factValue(m?.fact),contained=routeContainment(r);
-      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},entryLink(r.entryId)),el('div',{class:'secondary'},routeBehavior(r)),contained.expected?el('div',{class:'secondary'},'Containing bodies: '+exact(contained.bytes)+(contained.partial?' · partial mapping':'')+' · whole-body, non-additive'):null),
-        el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{class:'metric-value'},measurementText(r,state.metric)),el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
+      return el('tr',{'data-route-index':routeIndex.get(r.id)},
+        el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),
+        el('td',{class:'route-identity'},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id),title:r.path},r.path),
+          el('div',{class:'secondary mono'},entryLink(r.entryId,true))),
+        el('td',{},el('div',{class:'route-behavior'},routeBehavior(r)),el('div',{class:'secondary declaration'},declarationLabels[declarationState(r)])),
+        el('td',{class:'route-reference-counts'},el('div',{},r.schemaIds.length+' schemas'),el('div',{class:'secondary'},r.bindingIds.length+' bindings')),
+        el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},
+          el('div',{class:'metric-value'},measurementText(r,state.metric)),
+          el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),
+        el('td',{class:'numeric metric-cell containment-cell',title:exact(contained.bytes)},
+          el('div',{class:'metric-value'},contained.bytes===null?'Unavailable':bytes(contained.bytes)),
+          el('div',{class:'secondary'},contained.expected?(contained.partial?'Partial mapping':'Recorded chunks mapped'):'No carrier evidence'),
+          el('div',{class:'secondary'},'Whole bodies · non-additive')),
+        el('td',{},el('a',{class:'route-open',href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
     }));
     const union=containingBodies(visibleRoutes);
     $('#route-containment-summary').textContent = `Shown registrations: ${union.registrations} with recorded carriers; ${union.unrecorded} without carrier evidence. Containing-body union: ${exact(union.bytes)} · ${union.bodyIds.length} distinct physical bodies · ${union.mapped} / ${union.expected} recorded chunks mapped. Counted once across shown registrations; not an additive route total or isolated handler bytes. Missing mappings remain unknown.`;
@@ -171,7 +183,26 @@
     $('#reset-routes').hidden = false;
   }
   const detailSection = (label,...nodes) => el('section',{class:'detail-section'},el('div',{class:'detail-label'},label),...nodes);
-  const evidenceCards = ids => ids.length ? ids.map(id => {const e=evidence.get(id);return el('article',{class:'evidence-record'},el('h4',{},e.id),kv([['Producer',e.producer.name+' '+e.producer.version],['Result',e.result],['Method',e.method],['Scope',JSON.stringify(e.scope)],['Source',sourceText(e.source)],['Recorded at',e.recordedAt??'Not recorded']]),el('div',{class:'secondary'},e.artifactIds.join(', ')));}) : [el('p',{},'No evidence references recorded.')];
+  function evidenceCards(ids) {
+    if (!ids.length) return [el('p',{},'No evidence references recorded.')];
+    // Group presentation only: distinct records and their scopes remain intact.
+    const groups = new Map();
+    for (const id of new Set(ids)) {
+      const e=evidence.get(id), key=JSON.stringify([e.kind,e.producer.name,e.producer.version]);
+      if (!groups.has(key)) groups.set(key,[]);
+      groups.get(key).push(e);
+    }
+    return [...groups.values()].map(records=>{
+      const first=records[0], results=new Map();
+      for (const e of records) results.set(e.result,(results.get(e.result)||0)+1);
+      return el('details',{class:'details-block evidence-group'},
+        el('summary',{},el('span',{},el('span',{class:'evidence-group-title'},first.kind+' · '+first.producer.name+' '+first.producer.version),
+          el('span',{class:'secondary'},records.length+' record'+(records.length===1?'':'s')+' · '+[...results].map(([result,count])=>count+' '+result).join(' · ')))),
+        el('div',{class:'evidence-group-records'},records.map(e=>el('details',{class:'evidence-record','data-evidence-id':e.id},
+          el('summary',{},e.result+' · '+e.method),
+          kv([['Evidence ID',e.id],['Producer',e.producer.name+' '+e.producer.version],['Result',e.result],['Method',e.method],['Scope',JSON.stringify(e.scope)],['Source',sourceText(e.source)],['Recorded at',e.recordedAt??'Not recorded'],['Artifacts',e.artifactIds.join(', ')||'Not recorded']])))));
+    });
+  }
   function openSchema(id) { state.expandedSchemas.add(id); state.schemaSearch=schemas.get(id).schemaId.toLowerCase(); location.hash='schemas/'+schemaIndex.get(id); }
   function renderDrawer() {
     const r=routes.get(state.selected);if(!r)return;
@@ -181,13 +212,13 @@
     const tabs=el('div',{class:'drawer-tabs',role:'tablist','aria-label':'Route detail views'},[['facts','Resolved facts'],['size','Size attribution'],['evidence','Evidence trail']].map(([id,label])=>el('button',{class:'drawer-tab'+(state.drawerTab===id?' active':''),role:'tab',id:'drawer-tab-'+id,tabindex:state.drawerTab===id?0:-1,'aria-selected':state.drawerTab===id,'aria-controls':'drawer-panel',on:{click:()=>{state.drawerTab=id;renderDrawer();$('#drawer-tab-'+id).focus();}}},label)));
     tabs.addEventListener('keydown',e=>{let i=ids.indexOf(state.drawerTab);if(e.key==='ArrowRight')i=(i+1)%3;else if(e.key==='ArrowLeft')i=(i+2)%3;else if(e.key==='Home')i=0;else if(e.key==='End')i=2;else return;e.preventDefault();state.drawerTab=ids[i];renderDrawer();$('#drawer-tab-'+ids[i]).focus();});
     const panel=el('div',{id:'drawer-panel',role:'tabpanel','aria-labelledby':'drawer-tab-'+state.drawerTab,tabindex:0});
-    if(state.drawerTab==='facts') panel.append(
+    if(state.drawerTab==='facts') panel.append(el('div',{class:'drawer-facts-grid'},
       detailSection('Registration behavior',el('p',{},routeBehavior(r)),note(r.behavior ? 'Compiler handler IR · continuing includes conditional next() and error transfers. This is not a complete endpoint execution chain.' : 'Compiler behavior evidence was not retained. Router nesting, source names and dispatcher membership do not establish behavior.')),
       detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)),
       detailSection('Declarations',el('p',{},declarationLabels[declarationState(r)]),...r.declarationIds.map(id=>{const d=declarations.get(id);return el('p',{},d.kind+': '+d.name);}),note('Recorded declarations are not proof of effective permissions.')),
       detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},entryLink(id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
       detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
-      detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.')),
+      detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.'))),
       containmentDetails(r),helperLinks(r),dispatcherDetails(r),
       detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',entryLink(r.entryId)]])));
     else if(state.drawerTab==='size') {
