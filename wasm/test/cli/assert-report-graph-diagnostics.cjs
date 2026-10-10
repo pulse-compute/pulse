@@ -75,7 +75,19 @@ async function main() {
   checkFailure('(module)', 'import-count', [], 1);
   checkFailure('(module (import "x" "y" (func $same)) (import "x" "z" (func $same)))', 'duplicate-name', [], 2);
   checkFailure('(module (func $same) (func $same))', 'duplicate-name', [{ index: 0, bytes: 2, name: 'same' }, { index: 1, bytes: 2, name: 'same' }]);
-  checkFailure(' '.repeat(32 * 1024 * 1024 + 1), 'text-byte-limit');
+  // The large boundary cases run in a separate process so their temporary WAT
+  // allocation does not accumulate with Binaryen and the other graph fixtures.
+  const textBudget = JSON.parse(execFileSync(process.execPath, [path.join(__dirname, 'report-graph-budget-cases.cjs')],
+    { encoding: 'utf8', timeout: 30000 }));
+  assert.equal(textBudget.limitBytes, 160 * 1024 * 1024);
+  for (const expected of [32 * 1024 * 1024, textBudget.limitBytes]) {
+    const historical = { ...base, graph: { state: 'unavailable', reason: 'graph-budget-exhausted',
+      method: 'static-direct-calls-v1', edges: [], diagnostic: { reason: 'graph-budget-exhausted', code: 'text-byte-limit',
+        functionIndex: null, observed: expected + 1, expected } } };
+    validateAttribution(historical);
+    const saved = serializeCapsule(addSizeEvidence(createCapsule(f.fixture()), files, historical));
+    assert.equal(serializeCapsule(validateCapsule(JSON.parse(saved))), saved);
+  }
   checkFailure('(module)', 'function-limit', Array(100001).fill(funcs[0]));
   const calls = Array.from({ length: 317 }, (_, i) => '(call $' + i + ')').join('');
   const denseText = '(module' + Array.from({ length: 317 }, (_, i) => '(func $' + i + calls + ')').join('') + ')';
@@ -175,6 +187,6 @@ async function main() {
       } finally {binaryen.setDebugInfo(previous);module.dispose();}
     }
   } finally {fs.rmSync(directory,{recursive:true,force:true});}
-  console.log(JSON.stringify({status:'passed',negativeCases:negatives,cyclesAndSharing:true,passiveReplay:true,traversalBudget:1000000,costs}));
+  console.log(JSON.stringify({status:'passed',negativeCases:negatives,cyclesAndSharing:true,passiveReplay:true,traversalBudget:1000000,textBudget,costs}));
 }
 main().catch(error=>{console.error(error);process.exitCode=1;});

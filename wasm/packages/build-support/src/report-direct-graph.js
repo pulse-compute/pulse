@@ -2,7 +2,9 @@
 // Pinned Binaryen text subset; unsupported control never becomes a partial graph.
 const crypto = require('node:crypto');
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const MAX_TEXT_BYTES = 32 * 1024 * 1024, MAX_RECORDS = 100000;
+// Named WAT is substantially larger than its binary. This bounded ceiling
+// admits the observed ~128 MiB Catalog text; it does not widen graph semantics.
+const MAX_TEXT_BYTES = 160 * 1024 * 1024, MAX_RECORDS = 100000;
 const symbol = name => name.replace(/(?:\\[a-f0-9]{2})+/gi, escaped =>
   Buffer.from([...escaped.matchAll(/\\([a-f0-9]{2})/gi)].map(match => parseInt(match[1], 16))).toString('utf8'));
 class GraphProofError extends Error {
