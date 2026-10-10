@@ -166,8 +166,8 @@ for 1, 16 and 64 runtime items; source and static templates must stay unchanged.
 
 ## Current verification
 
-Run `node wasm/scripts/run-wasm-tests.cjs --task effect-collection-window --no-report`.
-The focused task and existing `continuation-registry` unit/release task exercise
+Run `node wasm/scripts/run-wasm-tests.cjs --task continuation-registry --no-report`.
+The existing lifecycle unit/release task exercises
 100 deterministic schedules plus a controlled
 asynchronous fixture with slow checks and slow persistence. It composes item
 leases with the existing effect-invocation registry. These are scheduler tests;
