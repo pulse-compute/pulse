@@ -1150,10 +1150,21 @@ Native compilation also returns an observational
 retains allowlisted binding names, schema IDs, embedded-resource identities and
 canonical entry consumers from validated compiler records. Resolved references
 are deduplicated by semantic kind and identity; registrations remain distinct.
-Schema ownership uses compiler-generated entry ranges only in the matching
-generated file. Foreign or unassociated references retain incomplete consumer
-coverage instead of borrowing an unrelated source offset. Validated helper call
-sites and shared-stage registrations preserve the consumers the compiler knows.
+Schema ownership uses compiler-generated entry or helper ranges only in the
+matching generated file. An unambiguous helper range joins its validated caller
+entry IDs; repeated calls are deduplicated and shared-stage registrations remain
+distinct. Missing callers, ambiguous ranges, and foreign or unassociated
+references retain incomplete consumer coverage instead of borrowing an unrelated
+source offset. This records static consumers, not runtime invocation counts.
+
+Schema references may retain optional `externalPackages` names, joined by exact
+reference identity from trusted package recognition. These label external
+dependency use without claiming complete entry ownership. JWT consumer tracing
+remains unresolved where the package reference lacks an entry join. Package names
+are provenance, not new lowerer authority; arbitrary recognition data is excluded.
+The schema viewer distinguishes known use, unresolved consumers, no observed use,
+and historical records without usage tracing. No observed use does not prove a
+schema unused or removable.
 
 The required retained inventory can include an optional `references` collection
 and its coverage. Resolved references join inventory rows; dynamic expressions
