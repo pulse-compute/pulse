@@ -546,6 +546,12 @@ lowering or uniform HTTP exception handling. See
 
 ### Bounded sequential read loops (PS1)
 
+An internal collection-window scheduler is tested separately from these read
+loops. It is not connected to authoring, lowering or provider execution and adds
+no current collection support. The repository-only proposal at
+`docs/internal/architecture/bounded-effect-collections.md` records
+its proposed integration and acceptance requirements.
+
 The additional `pulse.bounded-read-loop.v1` contract admits non-nested `for`
 loops whose `let` counter starts at zero, tests a literal cap from 0 through 64
 as the first conjunct, and advances by one. Each loop contains at least one
