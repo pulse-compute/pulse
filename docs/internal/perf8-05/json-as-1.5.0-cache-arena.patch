@@ -1,0 +1,11 @@
+--- a/lib/as-bs.ts
++++ b/lib/as-bs.ts
+@@ -368,7 +368,7 @@
+   export const MIN_CACHE_LEN: usize = 128;
+   /** Size of the circular arena buffer for cached strings */
+   export const ARENA_SIZE: usize =
+-    CACHE_BYTES >= MIN_CACHE_LEN ? CACHE_BYTES : MIN_CACHE_LEN;
++    CACHE_ENABLED ? (CACHE_BYTES >= MIN_CACHE_LEN ? CACHE_BYTES : MIN_CACHE_LEN) : 0;
+ 
+   /** Number of cache slots (power of 2 for efficient masking). Set to 0 when caching disabled. */
+   const CACHE_SIZE_BASE: i32 = CACHE_ENABLED
