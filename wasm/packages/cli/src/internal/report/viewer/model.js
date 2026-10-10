@@ -18,7 +18,24 @@ function createReportViewModel(P) {
   const helperOrigins = {'authored-helper':'Authored helper', 'consolidated-stage':'Consolidated stage'};
   const helperState = !P.implementations ? 'not-recorded'
     : !P.implementations.some(row => row.artifactId === A.id) ? 'no-primary-records' : 'recorded';
-  const entryLabel = entry => `Entry ${entry.order + 1} · ${entry.kind}${entry.flow?.path ? ' · ' + (entry.flow.method || '') + ' ' + entry.flow.path : ''}`;
+  const entryIndex = new Map(P.entries.map((row, i) => [row.id, i]));
+  // Short IDs are presentation only. Expand common prefixes until every entry
+  // is distinguishable; never use a shortened identity to resolve a reference.
+  const shortEntryIds = new Map(P.entries.map(entry => {
+    const value = entry.id.replace(/^entry:/, '');
+    let length = Math.min(8, value.length);
+    while (length < value.length && P.entries.some(other => other.id !== entry.id
+      && other.id.replace(/^entry:/, '').startsWith(value.slice(0, length)))) length++;
+    return [entry.id, value.slice(0, length)];
+  }));
+  const entryNames = new Map(P.entries.map(entry => {
+    const route = P.routes.find(row => row.entryId === entry.id);
+    const name = route?.handlerName || entry.name || entry.kind;
+    const path = entry.flow?.path ?? route?.path;
+    const method = entry.flow?.method ?? route?.method;
+    return [entry.id, [entry.kind, name !== entry.kind ? name : null, path ? [method, path].filter(Boolean).join(' ') : null].filter(Boolean).join(' · ')];
+  }));
+  const entryLabel = entry => entry ? entryNames.get(entry.id) + ' · ' + shortEntryIds.get(entry.id) : 'Unknown entry reference';
   // Presentation ordinals are capsule-local links, not new authored identities.
   const helperLabel = row => helperOrigins[row.origin] + ' ' + (helperIndex.get(row.id) + 1);
   function helperSize(rows) {
@@ -156,7 +173,7 @@ function createReportViewModel(P) {
   const prefix = r => '/' + r.path.split('/').filter(Boolean).slice(0, 2).join('/');
   const declarationState = r => r.declarationIds.length ? 'recorded' : r.compositionCoverage === 'complete' ? 'not-declared' : 'unavailable';
   const declarationLabels = {recorded:'Declarations recorded', 'not-declared':'Not declared', unavailable:'Unavailable'};
-  const state = {view:'routes', search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
+  const state = {view:'routes', entrySearch:'', selectedEntry:null, search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
     helperSearch:'', helperOrigin:'all', helperRole:'all', helperSort:'name', helperDir:'asc', expandedHelpers:new Set()};
   function compareValues(a,b,direction) { if(a==null)return b==null?0:1;if(b==null)return -1;return (a===b?0:a<b?-1:1)*(direction==='asc'?1:-1); }
   function filteredRoutes() {
@@ -195,7 +212,7 @@ function createReportViewModel(P) {
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
   return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
+    entries,entryIndex,entryLabel,helpers,helperIndex,helperOrigins,helperState,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
     routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

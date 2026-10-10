@@ -66,11 +66,11 @@
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
   const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers} = createReportViewModel(P);
+    entries,entryIndex,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
-  const navigation = [['routes','Routes','routes'],['helpers','Helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
+  const navigation = [['routes','Routes','routes'],['entries','Entries','code'],['helpers','Helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -86,6 +86,12 @@
   const routeChips = ids => el('div',{class:'route-chips'},ids.map(id => {
     const r = routes.get(id); return r ? el('a',{class:'route-chip',href:'#routes/' + routeIndex.get(id)},r.method + ' ' + r.path) : el('span',{},'Unknown route reference');
   }));
+  const entryLink = id => {
+    const entry = entries.get(id);
+    return entry ? el('a',{class:'record-text',href:'#entries/'+entryIndex.get(id),title:entry.id},entryLabel(entry))
+      : el('span',{class:'record-text'},'Unknown entry reference',id ? ' · '+id : '');
+  };
+  const entryLinks = ids => el('div',{class:'entry-links'},ids.map(id=>el('div',{class:'helper-entry'},entryLink(id))));
   function toast(text) { $('#toast').textContent = text; $('#toast').hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => {$('#toast').hidden = true;}, 3000); }
   function downloadCapsule() {
     const url = URL.createObjectURL(new Blob([canonicalJson],{type:'application/json;charset=utf-8'}));
@@ -152,7 +158,7 @@
     visibleRoutes = filteredRoutes();
     replace($('#route-body'),visibleRoutes.map(r => {
       const m=measurement(r,state.metric),value=factValue(m?.fact),contained=routeContainment(r);
-      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable'),el('div',{class:'secondary'},routeBehavior(r)),contained.expected?el('div',{class:'secondary'},'Containing bodies: '+exact(contained.bytes)+(contained.partial?' · partial mapping':'')+' · whole-body, non-additive'):null),
+      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},entryLink(r.entryId)),el('div',{class:'secondary'},routeBehavior(r)),contained.expected?el('div',{class:'secondary'},'Containing bodies: '+exact(contained.bytes)+(contained.partial?' · partial mapping':'')+' · whole-body, non-additive'):null),
         el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{class:'metric-value'},measurementText(r,state.metric)),el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
     }));
     const union=containingBodies(visibleRoutes);
@@ -179,11 +185,11 @@
       detailSection('Registration behavior',el('p',{},routeBehavior(r)),note(r.behavior ? 'Compiler handler IR · continuing includes conditional next() and error transfers. This is not a complete endpoint execution chain.' : 'Compiler behavior evidence was not retained. Router nesting, source names and dispatcher membership do not establish behavior.')),
       detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)),
       detailSection('Declarations',el('p',{},declarationLabels[declarationState(r)]),...r.declarationIds.map(id=>{const d=declarations.get(id);return el('p',{},d.kind+': '+d.name);}),note('Recorded declarations are not proof of effective permissions.')),
-      detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},el('code',{},id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
+      detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},entryLink(id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
       detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
       detailSection('Binding references',...r.bindingIds.map(id=>{const b=bindings.get(id);return el('div',{class:'detail-ref'},b.name+' · '+b.kind+' · '+b.resolution);}),el('p',{class:'small-note'},'References are usage evidence, not host-enforced per-route grants.')),
       containmentDetails(r),helperLinks(r),dispatcherDetails(r),
-      detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
+      detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',entryLink(r.entryId)]])));
     else if(state.drawerTab==='size') {
       panel.append(detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)));
       panel.append(note('Shared bodies are nonadditive. Code bytes are not execution cost or guaranteed removal savings.'));
@@ -201,7 +207,7 @@
           resolution.variants.length?resolution.variants.map(m=>el('section',{class:'measurement-record'},byteDisplay(factValue(m.fact)),kv([['Exact bytes',exact(factValue(m.fact))],['Evidence',qualifier(m.fact)],['Method',m.method],['Mapped chunks',`${m.mappedChunks} / ${m.expectedChunks??'unknown'}`],['Physical artifact',A.id+' · '+A.stage],['Root set',m.rootSetId??'Not applicable'],['Root',m.rootId??'Not applicable'],['Body identities',m.bodyIds.join(', ')||'Not recorded'],['Measurement records',m.recordIds.join(', ')]]),...evidenceCards(m.fact.evidenceIds))):el('p',{class:'small-note'},'No measurement record was retained for this metric.')));
       }
     } else panel.append(...evidenceCards(r.evidenceIds),detailSection('Traceability',kv([['Source',sourceText(r.source)],['Registration → handler',r.id+' → '+r.handlerId],['Capsule SHA-256',P.evidenceHash.value]])),el('details',{class:'details-block'},el('summary',{},'Raw route record'),el('pre',{class:'record-text'},JSON.stringify(r,null,2))));
-    replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},r.handlerName??'Name unavailable'),tabs,panel);
+    replace($('#drawer-content'),el('div',{class:'drawer-method-line'},methodTag(r.method),tag(prefix(r))),el('h2',{class:'drawer-title',id:'drawer-title'},r.path),el('div',{class:'drawer-handler mono'},entryLink(r.entryId)),tabs,panel);
   }
   function dispatcherDetails(route) {
     const view=routeDispatchers(route);
@@ -211,7 +217,7 @@
       :'No implementation records for the primary artifact. Prelink dispatcher records cannot establish final body sizes.'));
     if(!view.records.length) return section(el('p',{class:'small-note'},'No dispatcher associations recorded for this route. Inventory and composition coverage are incomplete; this does not prove absence.'));
     const entryRecords=ids=>ids.map(id=>{const entry=entries.get(id);return el('div',{class:'helper-entry'},
-      el('strong',{},entryLabel(entry)),el('p',{class:'small-note'},sourceText(entry.source)),
+      el('strong',{},entryLink(entry.id)),el('p',{class:'small-note'},sourceText(entry.source)),
       el('code',{class:'record-text'},id),routeChips(P.routes.filter(row=>row.composition.includes(id)).map(row=>row.id)));});
     return section(
       note('A dispatcher can contain several entries in one physical function. Its whole-body size is not this route’s size. Per-route bytes inside the dispatcher remain unavailable.'),
@@ -236,7 +242,7 @@
     const view=routeContainment(route), ownHelpers=entryHelpers(route);
     return detailSection('This registration’s containing bodies',
       note('Only carriers associated with this registration’s own entry. Whole containing-body bytes are separate from isolated Handler body bytes and cannot be added across routes. Known co-owners are observed entry associations, not proof of exclusive ownership or a complete execution chain.'),
-      kv([['Entry',entryLabel(entries.get(route.entryId))],['Containing-body union',exact(view.bytes)],
+      kv([['Entry',entryLink(route.entryId)],['Containing-body union',exact(view.bytes)],
         ['Distinct physical bodies',String(view.bodyIds.length)],['Mapped entry carrier chunks',view.mapped+' / '+view.expected],
         ['Artifact',A.stage+' · '+A.sha256]]),
       !view.expected?el('p',{class:'small-note'},helperState==='not-recorded'?'Containing-body inventory was not recorded. Unknown does not mean zero.'
@@ -246,7 +252,7 @@
         el('summary',{},'Function '+body.index+' · '+bytes(body.bytes)+' · containing body'),
         el('div',{class:'dispatcher-detail'},kv([['Physical body',body.id],['Whole-body bytes',exact(body.bytes)],
           ['This entry’s carrier chunks',body.chunks.map(chunk=>chunk.chunk).join(', ')],['Known entry co-owners',String(body.entryIds.length)+' · partial coverage']]),
-          body.entryIds.map(id=>el('div',{class:'helper-entry'},el('strong',{},entryLabel(entries.get(id))),
+          body.entryIds.map(id=>el('div',{class:'helper-entry'},el('strong',{},entryLink(id)),
             el('p',{class:'small-note'},sourceText(entries.get(id).source)),
             routeChips(body.routeIds.filter(key=>routes.get(key).entryId===id)))),
           ...evidenceCards(body.evidenceIds)))),
@@ -318,7 +324,7 @@
           el('details',{class:'details-block'},el('summary',{},'Identity & body evidence'),kv([['Implementation',row.id],['Canonical identity',row.canonicalId??'Not recorded'],['Consumer basis',row.consumerBasis]]),el('pre',{class:'record-text'},JSON.stringify(row.chunks,null,2)),...evidenceCards(row.evidenceIds))),
         el('div',{},el('h3',{},'Known consumers'),el('p',{class:'small-note'},'Static associations through recorded composition; not runtime calls or complete reachability.'),
           routeChips(row.routeIds),el('details',{class:'details-block'},el('summary',{},'Consuming entries · '+row.entryIds.length),
-            row.entryIds.length?row.entryIds.map(id=>{const entry=entries.get(id);return el('div',{class:'helper-entry'},el('strong',{},entryLabel(entry)),el('p',{class:'small-note'},sourceText(entry.source)),routeChips(row.routeIds.filter(key=>routes.get(key).composition.includes(id))));}):el('p',{},'No entry consumers observed; not proven unused.')))
+            row.entryIds.length?row.entryIds.map(id=>{const entry=entries.get(id);return el('div',{class:'helper-entry'},el('strong',{},entryLink(entry.id)),el('p',{class:'small-note'},sourceText(entry.source)),routeChips(row.routeIds.filter(key=>routes.get(key).composition.includes(id))));}):el('p',{},'No entry consumers observed; not proven unused.')))
       ]:[])))));
     }
     if(!list.length) rows.push(el('tr',{},el('td',{colspan:5},helpers.length?'No matching helpers. Clear the search or filters.':helperState==='recorded'?'No authored helper or consolidated stage records. Inventory is partial.':'Helper inventory unavailable.')));
@@ -345,7 +351,7 @@
           ['Representation',g?representationLabels[g.representation]:'Not recorded'],['Representation bytes',factText(g?.representationBytes)],['Representation evidence',qualifier(g?.representationBytes)],
           ['Producer',g?g.producer.name+' · '+g.producer.version:'Not recorded'],['Entry coverage',g?`${g.entryCoverage.status} · ${g.entryCoverage.observed} / ${g.entryCoverage.expected??'unknown'}${g.entryCoverage.reason?' · '+g.entryCoverage.reason:''}`:'Not recorded'],
           ['Retained payload',exact(factValue(r.retainedPayloadBytes))],['Retained evidence',qualifier(r.retainedPayloadBytes)],['Media type',r.mediaType??'Not recorded'],['Build artifact',r.artifactId??'Not mapped']]),
-          g?.schemaId?button('View schema structure',()=>openSchema(g.schemaId)):null,routeChips(r.routeIds)),
+          g?.schemaId?button('View schema structure',()=>openSchema(g.schemaId)):null,routeChips(r.routeIds),entryLinks(r.entryIds)),
         el('div',{},el('h3',{},'Evidence'),...evidenceCards(r.evidenceIds))]:[])))));
     });
     const artifactPanels=P.artifacts.map(a=>{
@@ -406,16 +412,41 @@
         el('div',{},el('h4',{},'TOP-LEVEL SHAPE'),el('p',{class:'schema-detail-desc'},'Normalized property names, types and required state. Full nesting is retained in the descriptor.'),
           structure.properties.length?el('table',{class:'schema-property-table'},el('caption',{class:'sr-only'},s.schemaId+' properties'),el('thead',{},el('tr',{},el('th',{scope:'col'},'Property'),el('th',{scope:'col'},'Type'),el('th',{scope:'col'},'Required'))),el('tbody',{},structure.properties.map(p=>el('tr',{},el('td',{},el('code',{},p.name)),el('td',{},el('code',{},p.type)),el('td',{},p.required===null?'Unavailable':p.required?'Required':'Optional'))))):el('p',{},structure.keyCountsState==='not-applicable'?'Not an object shape.':structure.state==='unavailable'?'Property structure unavailable.':'No top-level properties.'),
           el('details',{class:'details-block'},el('summary',{},'Normalized descriptor'),el('pre',{class:'record-text'},structure.descriptor===null?'Unavailable':JSON.stringify(structure.descriptor,null,2)))),
-        el('div',{},el('h4',{},'REFERENCE & PROVENANCE'),kv([['Usage',usage.label],['Known consuming entries',String(s.entryIds.length)],...(usage.externalPackages.length?[['External dependency',usage.externalPackages.join(', ')]]:[]),['Source',sourceText(s.source)],['Registry',s.registryVersion],['Representation',structure.representation],['Descriptor bytes',exact(structure.descriptorBytes)],['Generated validator bytes','Unavailable; descriptor bytes do not establish Wasm attribution']]),el('h4',{},'RECORDED ROUTE REFERENCES'),routeChips(s.routeIds),...evidenceCards(s.evidenceIds))]:[]));
+        el('div',{},el('h4',{},'REFERENCE & PROVENANCE'),kv([['Usage',usage.label],['Known consuming entries',String(s.entryIds.length)],...(usage.externalPackages.length?[['External dependency',usage.externalPackages.join(', ')]]:[]),['Source',sourceText(s.source)],['Registry',s.registryVersion],['Representation',structure.representation],['Descriptor bytes',exact(structure.descriptorBytes)],['Generated validator bytes','Unavailable; descriptor bytes do not establish Wasm attribution']]),el('h4',{},'RECORDED ROUTE REFERENCES'),routeChips(s.routeIds),el('h4',{},'RECORDED ENTRY REFERENCES'),entryLinks(s.entryIds),...evidenceCards(s.evidenceIds))]:[]));
       rows.push(el('tr',{hidden:!open},el('td',{colspan:5},detail)));
     }
     if(!list.length) rows.push(el('tr',{},el('td',{colspan:5},'No matching schemas. Inventory coverage: '+P.coverage.schemas.status+'.')));
     replace($('#schema-body'),rows);$('#schema-count').textContent=`${list.length} of ${P.schemas.length} schemas · ${P.coverage.schemas.status} inventory`;
     for(const th of $$('[data-schema-sort]'))th.setAttribute('aria-sort',th.dataset.schemaSort===key?(state.schemaDir==='asc'?'ascending':'descending'):'none');
   }
+  function renderEntries() {
+    const selected = entries.get(state.selectedEntry);
+    const search = el('input',{id:'entry-search',type:'search',placeholder:'Search names, IDs or source files',
+      'aria-label':'Search entries',value:state.entrySearch,on:{input:e=>{
+        state.entrySearch=e.target.value.toLowerCase();renderEntryList();
+      }}});
+    function renderEntryList() {
+      const shown = P.entries.filter(entry => [entryLabel(entry),entry.id,entry.canonicalId,entry.handlerId,sourceText(entry.source)]
+        .join(' ').toLowerCase().includes(state.entrySearch));
+      replace($('#entry-list'),shown.length ? shown.map(entry=>el('div',{class:'helper-entry'},entryLink(entry.id),
+        el('p',{class:'small-note record-text'},entry.kind+' · '+sourceText(entry.source)))) : el('p',{},'No matching entries.'));
+    }
+    replace($('#view-entries'),sectionHeading('Entry inventory','Recorded identities and static references. Links do not establish execution order.',P.entries.length),
+      selected ? el('article',{class:'surface panel-pad subsection'},el('h3',{id:'entry-title',tabindex:-1,class:'record-text'},entryLabel(selected)),
+        kv([['Kind',selected.kind],['Recorded name',selected.name??'Not recorded'],['Source',sourceText(selected.source)],['Entry ID',selected.id],['Canonical ID',selected.canonicalId],['Handler ID',selected.handlerId??'Not recorded']]),
+        detailSection('Recorded flow references',selected.flow ? kv([
+          ['Next',selected.flow.nextEntryId?entryLink(selected.flow.nextEntryId):'Not recorded'],
+          ['Child',selected.flow.childEntryId?entryLink(selected.flow.childEntryId):'Not recorded'],
+          ['Parent continuation',selected.flow.parentContinueEntryId?entryLink(selected.flow.parentContinueEntryId):'Not recorded']]) : el('p',{},'Not recorded')),
+        detailSection('Own route registrations',routeChips(P.routes.filter(r=>r.entryId===selected.id).map(r=>r.id))),
+        detailSection('Recorded composition references',routeChips(P.routes.filter(r=>r.composition.includes(selected.id)).map(r=>r.id))),
+        el('details',{class:'details-block'},el('summary',{},'Complete entry record'),el('pre',{class:'record-text'},JSON.stringify(selected,null,2)))) : null,
+      el('div',{class:'surface panel-pad'},el('label',{class:'search-box inventory-search'},icon('search'),search),el('div',{id:'entry-list'})));
+    renderEntryList();
+  }
   function renderBindings() {
     replace($('#view-bindings'),sectionHeading('Binding inventory','Logical names and retained resolution state; no secret values or inferred grants.',P.bindings.length),note('A reference describes usage. Bound does not establish per-route authority or current deployment health.'),
-      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{},b.name),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
+      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{},b.name),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),entryLinks(b.entryIds),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
       P.bindings.length?null:note('No binding records. Inventory coverage: '+P.coverage.bindings.status+'.'));
   }
   function renderEvidence() {
@@ -438,12 +469,13 @@
   function showView(view) {
     state.view=view;for(const [id] of navigation)$('#view-'+id).hidden=id!==view;
     for(const a of $$('[data-view]')){a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
-    if(view==='routes')renderRoutes();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
+    if(view==='routes')renderRoutes();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
   }
   function onHash() {
     if(location.hash==='#main')return;
-    const match=/^#(routes|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
-    closeModal();closeDrawer(false);showView(view);
+    const match=/^#(routes|entries|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
+    closeModal();closeDrawer(false);state.selectedEntry=view==='entries'&&index!==null?P.entries[index]?.id:null;showView(view);
+    if(state.selectedEntry)$('#entry-title').focus();
     if(view==='routes'&&index!==null&&P.routes[index])displayDrawer(P.routes[index]);
     if(view==='schemas'&&index!==null&&P.schemas[index]){const s=P.schemas[index];state.expandedSchemas.add(s.id);state.schemaSearch=s.schemaId.toLowerCase();renderSchemas();$('#schema-expand-'+index).focus();}
     if(view==='helpers'&&index!==null&&helpers[index]){state.helperSearch='';state.helperRole='all';state.helperOrigin='all';state.expandedHelpers.add(helpers[index].id);renderHelpers();$('#helper-expand-'+index).focus();}

@@ -45,6 +45,11 @@ pulse build
   registrations, and recorded helper/stage links. The route list shows containing
   bytes separately and unions distinct physical bodies across the current filter;
   overlapping route sizes must not be summed. Missing body mappings stay unknown.
+  Entry references use readable recorded names, kinds and method/path labels with
+  collision-safe shortened IDs. Follow a link to the searchable Entries view for
+  source locations, full canonical and handler IDs, recorded flow references and
+  related registrations. Missing names or source locations stay explicit; labels
+  and navigation never change the embedded capsule or exported JSON.
 - `inspect` compiles and reports effects, continuations, schemas, event registrations/callsites, capabilities, target eligibility, and provider lowering without executing cases.
 - `test` executes configured request and explicit `kind: 'event'` cases through the provider-owned local conformance runtime.
 - `dev` runs a foreground local server and watches the project by default.
