@@ -90,6 +90,14 @@ retain failed/interrupted status and logs, and clean up temporary projects in
 | Runtime RSS | Process high-water RSS including startup, harness imports, host and guest; not guest-only or per-request memory. |
 | Memory snapshots | Same five PERF8 phases with RSS, V8 heap, external and arrayBuffers; no forced GC. Raw values retained; no leak inference. |
 
+On Linux, [resource-usage counters survive exec](https://man7.org/linux/man-pages/man2/getrusage.2.html).
+A worker's high-water RSS can therefore include pre-exec memory history. These
+campaigns observed counters above every sampled runtime RSS value. Retain those
+raw counters, but do not interpret their percentage deltas as runtime-only peaks.
+For the result summary, compare the same `memory.afterWarm.rss` phase on both
+sides. That is a point-in-time process snapshot, not a peak, guest attribution or
+leak test; GC behavior remains uncontrolled.
+
 Within each fixture, build samples alternate Pulse/Rust and reverse order on the
 second sample; runtime workers do the same. Three fresh builds and three runtime
 workers per implementation, with ten warmups and thirty measured requests per
