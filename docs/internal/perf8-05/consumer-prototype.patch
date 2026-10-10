@@ -1,0 +1,109 @@
+diff --git a/packages/provider-fastly/src/build/entities-native.js b/packages/provider-fastly/src/build/entities-native.js
+index 0e25c70..ae626ef 100644
+--- a/packages/provider-fastly/src/build/entities-native.js
++++ b/packages/provider-fastly/src/build/entities-native.js
+@@ -493,6 +493,7 @@ function compileFastlyEntitiesNative(sourceArtifact, options = {}) {
+       '--use', 'abort=entities-native-fastly.as/__pulse_fastly_abort',
+       '--use', 'seed=entities-native-fastly.as/__pulse_fastly_seed',
+       '--transform', transform,
++      '--transform', path.join(path.dirname(require.resolve('@pulse-compute/wasm-build-support/native-optimization')), 'schema-cache-arena-transform.cjs'),
+       '--path', path.join(compilerFallback, 'node_modules'),
+       '--path', path.dirname(jsonAsRoot)
+     ];
+diff --git a/packages/provider-fastly/src/build/native-http-effects.js b/packages/provider-fastly/src/build/native-http-effects.js
+index 62022eb..1fa20d3 100644
+--- a/packages/provider-fastly/src/build/native-http-effects.js
++++ b/packages/provider-fastly/src/build/native-http-effects.js
+@@ -876,6 +876,7 @@ function compileFastlyNativeHttpEffectsPlan(plan, options = {}) {
+       args.push(
+         '--exportRuntime',
+         '--transform', jsonAs.transform,
++        '--transform', path.join(path.dirname(require.resolve('@pulse-compute/wasm-build-support/native-optimization')), 'schema-cache-arena-transform.cjs'),
+         '--path', path.join(compilerFallback, 'node_modules'),
+         '--path', jsonAs.dependencyRoot
+       );
+diff --git a/packages/provider-fastly/src/build/native-platform-capabilities.js b/packages/provider-fastly/src/build/native-platform-capabilities.js
+index d44eb5a..480a165 100644
+--- a/packages/provider-fastly/src/build/native-platform-capabilities.js
++++ b/packages/provider-fastly/src/build/native-platform-capabilities.js
+@@ -2301,6 +2301,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
+       args.push(
+         '--exportRuntime',
+         '--transform', jsonAs.transform,
++        '--transform', path.join(path.dirname(require.resolve('@pulse-compute/wasm-build-support/native-optimization')), 'schema-cache-arena-transform.cjs'),
+         '--path', path.join(compilerFallback, 'node_modules'),
+         '--path', jsonAs.dependencyRoot
+       );
+diff --git a/wasm/packages/build-support/src/build-observation.js b/wasm/packages/build-support/src/build-observation.js
+index 40e2032..e01c15a 100644
+--- a/wasm/packages/build-support/src/build-observation.js
++++ b/wasm/packages/build-support/src/build-observation.js
+@@ -19,7 +19,7 @@ function observeAssemblyScript(args, { version, compilerVersion, durationMs, jso
+       flags.push({ name, value: ['stub', 'incremental', 'minimal'].includes(value) ? value : '<provider-runtime>' });
+     } else if (name === '--transform') {
+       const file = args[++i], base = path.basename(file);
+-      const value = ['native-retention-transform.cjs', 'report-capture.cjs'].includes(base) ? base
++      const value = ['native-retention-transform.cjs', 'schema-cache-arena-transform.cjs', 'report-capture.cjs'].includes(base) ? base
+         : jsonAsVersion && file.includes('json-as') ? 'json-as' : '<transform>';
+       flags.push({ name, value });
+     } else if (values.has(name)) flags.push({ name, value: String(args[++i]) });
+diff --git a/wasm/packages/build-support/src/json-as-1.5.0-cache-arena.patch b/wasm/packages/build-support/src/json-as-1.5.0-cache-arena.patch
+new file mode 100644
+index 0000000..25ef4ba
+--- /dev/null
++++ b/wasm/packages/build-support/src/json-as-1.5.0-cache-arena.patch
+@@ -0,0 +1,11 @@
++--- a/lib/as-bs.ts
+++++ b/lib/as-bs.ts
++@@ -368,7 +368,7 @@
++   export const MIN_CACHE_LEN: usize = 128;
++   /** Size of the circular arena buffer for cached strings */
++   export const ARENA_SIZE: usize =
++-    CACHE_BYTES >= MIN_CACHE_LEN ? CACHE_BYTES : MIN_CACHE_LEN;
+++    CACHE_ENABLED ? (CACHE_BYTES >= MIN_CACHE_LEN ? CACHE_BYTES : MIN_CACHE_LEN) : 0;
++ 
++   /** Number of cache slots (power of 2 for efficient masking). Set to 0 when caching disabled. */
++   const CACHE_SIZE_BASE: i32 = CACHE_ENABLED
+diff --git a/wasm/packages/build-support/src/schema-cache-arena-transform.cjs b/wasm/packages/build-support/src/schema-cache-arena-transform.cjs
+new file mode 100644
+index 0000000..b0119a3
+--- /dev/null
++++ b/wasm/packages/build-support/src/schema-cache-arena-transform.cjs
+@@ -0,0 +1,25 @@
++'use strict';
++const { createHash } = require('node:crypto');
++
++// Private compatibility patch for the exact json-as 1.5.0 source shipped by
++// the compiler. Keep the upstream patch beside this file. Never edit an
++// installation or silently apply this mutation to an unreviewed dependency.
++const sourceSha256 = '337a8edd1df0907a8b41dd1f38b6204fba6f1b40d82b3edbad0a65852bc2b830';
++module.exports = class SchemaCacheArenaTransform {
++  afterParse(parser) {
++    const sources = parser.sources.filter(source => /(?:^|\/)json-as\/lib\/as-bs(?:\.ts)?$/.test(source.internalPath));
++    if (sources.length !== 1 || createHash('sha256').update(sources[0].text).digest('hex') !== sourceSha256) {
++      throw new Error('Pulse schema cache arena patch requires the pinned json-as 1.5.0 lib/as-bs.ts source; review the dependency before rebuilding.');
++    }
++    const scope = sources[0].statements.find(statement => statement.name?.text === 'sc');
++    const declarations = scope?.members.flatMap(statement => statement.declarations || []) || [];
++    const arena = declarations.find(declaration => declaration.name.text === 'ARENA_SIZE');
++    const cache = declarations.find(declaration => declaration.name.text === 'CACHE_SIZE_BASE')?.initializer;
++    if (!arena?.initializer || cache?.condition?.text !== 'CACHE_ENABLED' || !cache.ifElse) {
++      throw new Error('Pulse schema cache arena patch encountered an unexpected AssemblyScript AST.');
++    }
++    // Reuse the pinned AST's CACHE_ENABLED and zero expressions. Construct the
++    // conditional with asc's own node class; no second compiler is loaded.
++    arena.initializer = new cache.constructor(cache.condition, arena.initializer, cache.ifElse, arena.initializer.range);
++  }
++};
+diff --git a/wasm/packages/compiler/src/canonical-native-compiler.js b/wasm/packages/compiler/src/canonical-native-compiler.js
+index 1220393..46001fb 100644
+--- a/wasm/packages/compiler/src/canonical-native-compiler.js
++++ b/wasm/packages/compiler/src/canonical-native-compiler.js
+@@ -217,6 +217,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
+       args.push(
+         '--exportRuntime',
+         '--transform', jsonAs.transform,
++        '--transform', path.join(path.dirname(require.resolve('@pulse-compute/wasm-build-support/native-optimization')), 'schema-cache-arena-transform.cjs'),
+         '--path', path.join(compilerPackageRoot, 'node_modules'),
+         '--path', jsonAs.dependencyRoot
+       );

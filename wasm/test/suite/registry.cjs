@@ -495,6 +495,11 @@ const tasks = Object.freeze({
     timeoutMs: 60000,
     description: 'one-compile schema smoke with strict boundaries and cross-target parity'
   }),
+  // Opt-in experiment; production does not apply this dependency patch.
+  'schema-cache-arena': nodeTask('test/contracts/assert-schema-cache-arena.cjs', {
+    evidence: 'conformance', timeoutMs: 180000,
+    description: 'pinned json-as disabled arena removal and enabled artifact equivalence'
+  }),
   'schema-codecs': nodeTask('test/contracts/assert-schema-codecs.cjs', {
     evidence: 'conformance',
     timeoutMs: 180000,
