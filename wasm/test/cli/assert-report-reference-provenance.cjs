@@ -82,6 +82,12 @@ app.get('/helper-b',async ctx=>{const value=await lookup(ctx,'b');return ctx.tex
         assert.equal(result.response.status, 200); assert.equal(result.response.body, body); requests++;
       }
       const report = inventory(project, prepared);
+      const sameBehavior = report.routes.filter(row => row.path === '/same').map(row => row.behavior);
+      assert.deepEqual(sameBehavior, [
+        { kind: 'continuing', basis: 'canonical-handler-ir' }, { kind: 'terminal', basis: 'canonical-handler-ir' }
+      ], 'same path retains distinct continuing/terminal registrations');
+      assert.equal(report.routes.every(row => row.behavior), true, 'project compilation retains IR behavior');
+      assert.equal(inventory(project, control).routes.some(row => row.behavior), false, 'no projection means unknown, not inferred terminal');
       assert.equal(prepared.plan.helpers.length, 1);
       const helperSchema = report.references.find(row => row.canonicalId === 'app.Helper');
       assert.equal(helperSchema.entryCoverage.status, 'complete');
@@ -179,6 +185,8 @@ app.get('/helper-b',async ctx=>{const value=await lookup(ctx,'b');return ctx.tex
     // hash-bound through the existing required inventory sidecar.
     const built = execution.compileNativeProject(project, { emitWat: false });
     const replay = retained.collectArtifactReport(path.join(built.outDir, 'pulse-compile.json')).capsule;
+    assert.deepEqual(replay.routes.filter(row => row.path === '/same').map(row => row.behavior?.kind), ['continuing','terminal'],
+      'completed inventory persists compiler behavior for passive replay');
     assert.ok(replay.references.length > 0);
     assert.equal(replay.bindings.length, 4);
     assert.equal(replay.coverage.bindings.expected, null);

@@ -94,6 +94,32 @@ function createReportViewModel(P) {
   }
   const measurementResolution = (r, metric) => resolutions.get(r.id + ':' + metric) || {records:[], variants:[], measurement:undefined};
   const measurement = (r, metric) => measurementResolution(r, metric).measurement;
+  const routeBehavior = route => ({ terminal:'Terminal', continuing:'Continuing' })[route.behavior?.kind] || 'Behavior not recorded';
+  const routeCounts = { registrations:P.routes.length,
+    distinctMethodPaths:P.coverage.routes.status === 'unavailable' && !P.routes.length ? null
+      : new Set(P.routes.map(row => JSON.stringify([row.method, row.path]))).size,
+    terminal:P.routes.filter(row => row.behavior?.kind === 'terminal').length,
+    continuing:P.routes.filter(row => row.behavior?.kind === 'continuing').length,
+    unknown:P.routes.filter(row => !row.behavior).length };
+  function handlerAttribution(route) {
+    const resolution = measurementResolution(route, 'handler-body'), m = resolution.measurement;
+    if (resolution.variants.length > 1) return {code:'conflicting-evidence', label:'Conflicting measurements', detail:'Distinct measurement claims remain unresolved.'};
+    if (m?.fact.state === 'available' && m.fact.coverage === 'exact') return {code:'exact', label:'Exact handler bodies', detail:'Mapped handler bodies; excludes data and downstream execution.'};
+    // Only the registration's own entry establishes its containing carriers.
+    // A preceding middleware carrier in bounded composition is not its body.
+    const chunks = dispatchers.flatMap(row => row.chunks).filter(row => row.entryIds.includes(route.entryId));
+    const mixed = chunks.some(row => row.bodyId !== null && bodyConsumers.get(row.bodyId)?.size > 1);
+    const missing = chunks.some(row => row.bodyId === null);
+    if (mixed) return {code:'mixed-dispatcher', label:'Mixed dispatcher ownership',
+      detail:'Handler code shares containing bodies with other entries; isolated handler bytes are unavailable.'
+        + (missing ? ' Some containing symbols also lack final mappings.' : '')
+        + (m?.fact.state === 'available' ? ' The displayed partial value covers separately mapped code only.' : '')};
+    if (missing) return {code:'missing-final-symbol', label:'Final symbol not mapped', detail:'Compiler associations exist, but some containing symbols have no surviving final body mapping.'};
+    if (chunks.length) return {code:'dispatcher-contained', label:'Dispatcher-contained handler', detail:'Containing bodies are mapped. Association with one observed entry does not prove exclusive handler bytes.'};
+    if (m?.fact.reason === 'dispatcher-carrier') return {code:'dispatcher-unresolved', label:'Dispatcher attribution unresolved', detail:'The measurement records a carrier, but retained mappings cannot establish its containing bodies or co-owners.'};
+    return {code:m?.fact.reason || 'missing-evidence', label:m?.fact.state === 'available' ? 'Partial handler mapping' : 'Handler evidence unavailable',
+      detail:'Attribution evidence: ' + (m?.fact.reason || 'missing-evidence') + '. No mixed ownership is inferred.'};
+  }
   const measurementIssue = (r, metric) => {
     const result = measurementResolution(r, metric);
     return result.variants.length > 1 ? result.variants.length + ' distinct measurements; compare values, methods and scope in Size attribution' : 'missing-evidence';
@@ -145,6 +171,7 @@ function createReportViewModel(P) {
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
   return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers};
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
+    routeBehavior,routeCounts,handlerAttribution};
 }
 if (typeof module !== 'undefined') module.exports = { createReportViewModel };

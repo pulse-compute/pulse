@@ -60,6 +60,7 @@ function terminalText(value, maximum = 100) {
 }
 function terminalOverview(collected) {
   const c = collected.capsule, artifact = c.artifacts.find(row => row.id === c.context.primaryArtifactId);
+  const view = require('./viewer/model').createReportViewModel(c);
   const routeIds = new Set(c.routes.map(row => row.id));
   const mappings = c.measurements.filter(row => routeIds.has(row.subjectId) && row.artifactId === artifact.id && row.metric === 'handler-body');
   const available = mappings.filter(row => row.fact.state === 'available').length;
@@ -78,9 +79,10 @@ function terminalOverview(collected) {
     `  evidence: sha256:${c.evidenceHash.value}`,
     `  snapshot: ${collected.kind === 'historical-capsule' ? 'historical replay; current project not checked' : collected.currentSnapshotMatched ? 'current inputs matched' : 'completed artifact verified; current project not checked'}`,
     `  revision: ${terminalText(c.provenance.revision ?? 'unknown')} | dirty: ${c.provenance.dirty === null ? 'unknown' : c.provenance.dirty ? 'yes' : 'no'}`,
-    `  routes: ${count('routes')} | handlers: ${count('entries', handlers)} | schemas: ${count('schemas')} | bindings: ${count('bindings')} | resources: ${count('resources')}`,
+    `  route registrations: ${count('routes')} (${view.routeCounts.distinctMethodPaths ?? 'unknown'} distinct method/path pairs) | handlers: ${count('entries', handlers)} | schemas: ${count('schemas')} | bindings: ${count('bindings')} | resources: ${count('resources')}`,
+    `  route behavior: ${view.routeCounts.terminal} terminal | ${view.routeCounts.continuing} continuing | ${view.routeCounts.unknown} not recorded`,
     `  primary Wasm: ${artifact.bytes} bytes (${artifact.stage}); ${c.artifacts.length} artifact(s)`,
-    `  handler mapping: ${available}/${mappings.length} available (${exact} exact); shared bodies are nonadditive`,
+    `  handler mapping: ${available}/${mappings.length} available (${exact} exact); ${c.routes.filter(row => view.handlerAttribution(row).code === 'mixed-dispatcher').length} mixed dispatcher ownership; nonadditive`,
     `  observations: ${c.observations.length} | inventory coverage gaps: ${gaps} | missing optional sidecars: ${collected.missingOptionalSidecars.length}`,
     '  Build-review artifact; review contents before sharing publicly.'
   ].join('\n') + '\n';
