@@ -406,6 +406,12 @@
           "tags": ["build", "report", "optimization"]
         },
         {
+          "id": "contract/report-comparison",
+          "heading": "Report comparison contract",
+          "targets": ["native"],
+          "tags": ["report", "compare", "identity", "coverage"]
+        },
+        {
           "id": "contract/eligibility",
           "heading": "Providers, targets, and eligibility",
           "tags": [

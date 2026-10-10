@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "1d80c68df1cd94e0a52cba8dc44afebdbe4eb7968c269ab271c78fde666f329f",
+  "corpusHash": "9db1ea2ced77555cf1fef159bbc51fe2de3ebbe0f42fb222923c5726db02d054",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -372,9 +372,9 @@ export const contextCorpus = freeze({
         "endLine": 172,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
+        "sha256": "1ade9e8001bacbc062dca54f3eb1b926f055b7766a27a864c8a6fcc08309c4d8",
         "startLine": 56,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/5001b9e304e62f2677c56db9f6bcf6062b24b435"
       },
       "status": "candidate",
       "tags": [
@@ -451,9 +451,9 @@ export const contextCorpus = freeze({
         "endLine": 1155,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
+        "sha256": "1ade9e8001bacbc062dca54f3eb1b926f055b7766a27a864c8a6fcc08309c4d8",
         "startLine": 1137,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/5001b9e304e62f2677c56db9f6bcf6062b24b435"
       },
       "status": "candidate",
       "tags": [
@@ -535,12 +535,12 @@ export const contextCorpus = freeze({
       "id": "contract/eligibility",
       "pulseVersion": "1.0.0-beta.7",
       "source": {
-        "endLine": 1517,
+        "endLine": 1594,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
-        "startLine": 1156,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
+        "sha256": "1ade9e8001bacbc062dca54f3eb1b926f055b7766a27a864c8a6fcc08309c4d8",
+        "startLine": 1233,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/5001b9e304e62f2677c56db9f6bcf6062b24b435"
       },
       "status": "candidate",
       "tags": [
@@ -709,12 +709,12 @@ export const contextCorpus = freeze({
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.7",
       "source": {
-        "endLine": 1563,
+        "endLine": 1640,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
-        "startLine": 1518,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
+        "sha256": "1ade9e8001bacbc062dca54f3eb1b926f055b7766a27a864c8a6fcc08309c4d8",
+        "startLine": 1595,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/5001b9e304e62f2677c56db9f6bcf6062b24b435"
       },
       "status": "candidate",
       "tags": [
@@ -852,6 +852,43 @@ export const contextCorpus = freeze({
         "target"
       ],
       "title": "Provider and target realization"
+    },
+    {
+      "applicability": [
+        {
+          "provider": "fastly",
+          "target": "native"
+        },
+        {
+          "provider": "node",
+          "target": "native"
+        },
+        {
+          "provider": "none",
+          "target": "native"
+        }
+      ],
+      "category": "contract",
+      "content": "## Report comparison contract\n\nCMP8-01 owns the internal, pure `pulse.report-comparison` v1 result and\n`pulse.report-matching.v1` identity policy. The CLI, HTML and MCP adapters must\nconsume that shared result rather than implement their own matching or arithmetic.\nThis ticket adds the contract and engine; the HTML presentation and command/MCP\nadapters remain separate integration work. No new public CLI option or package\nexport is introduced here.\n\n`compareCapsules(before, after)` admits two validated Report v1 capsules and\nreturns immutable evidence without IO, project loading, compilation or execution.\n`parseComparison`, `validateComparison` and `serializeComparison` own bounded\nwire admission, canonical JSON and the comparison hash. Both input capsule\nhashes, project names, selected contexts, primary artifacts, producer versions,\nprovenance and recorded build metadata remain available in `sources`. These are\nhistorical claims from the input capsules, not proof of current project freshness,\ncommon repository lineage, signatures, or original artifact-byte verification.\nMatching project names alone do not establish that two builds belong together.\n\nThe summary always preserves primary artifact bytes and all inventory counts,\nincluding zero-net route/schema changes with separate added and removed counts.\nDetails contain only changed fields and added, removed, modified, coverage-changed\nor unresolved records; unchanged records and empty sections are omitted. Build\ntiming and provenance changes remain separate metadata changes. Sparse records\nretain full before/after capsule-local IDs for lookup in the original capsules.\n\n| Inventory | Matching policy |\n| --- | --- |\n| Routes | Unique exact method/path slot. Duplicate slots require a unique exact canonical ID; otherwise retain ambiguity. No matching by row ordinal, shortened ID or handler display name. |\n| Entries | Route entries follow the route match. Other entries use a unique recorded kind/name/source-file/router-scope/method/path key. Source line movement changes provenance without deleting the logical record. |\n| Schemas | Unique declared schema ID. |\n| Bindings and declarations | Unique kind/name pair. |\n| Resources | Unique kind/generator-scope/producer-name/resource-name key. Numbered response-payload labels are excluded as unstable identities. |\n| Implementations | Named compiler identity within artifact stage/host/target; dedicated bodies follow matched entries. Dispatcher chunk/function indices never establish cross-artifact identity. |\n| References | Recorded kind/binding-kind/canonical reference identity; unresolved references without a canonical identity remain unmatched. |\n| Evidence | Kind, producer name, method and exact corpus/cases/target scope. Result and producer-version changes are visible. |\n| Observations | Code, producer name and resolved comparison subject keys; unresolved subjects cannot establish identity. |\n\nA unique exact canonical ID may disambiguate a duplicated logical key, but never\nsupplies a fuzzy rename or source-code equivalence claim. For records without a\nlogical key, exact record IDs can join only inside the same primary artifact.\nAmbiguous or unavailable identities remain explicit unresolved groups containing\nevery record ID. Relative ordering compares matched route/entry records, so\ninserting a new registration does not manufacture modifications to all later\nordinals. Recorded composition, flow, consumers and declarations use the matched\nkeys, not artifact-bound IDs. Handler IDs, physical function indices, evidence\nhash churn and timestamps on unrelated evidence do not imply code changes.\nComparison describes retained facts; equal reported size or behavior labels\ncannot prove unchanged handler implementation.\n\nA missing row is an addition/removal only when the opposite inventory is complete.\nFor generated resources, the exact producer scope may establish completeness even\nwhen aggregate resource coverage is partial. Missing optional telemetry, ambiguous\nidentity, or partial inventories produce unresolved evidence, never a zero or a\nproven deletion. Coverage state is retained even when no detail row changes.\n\nCompatibility checks distinguish **compatible**, **different-build**,\n**incompatible**, and **unknown**. Host, target, representation and artifact-stage\nmismatches block size deltas. Profile, Pulse/reporter/toolchain versions, recipe\nand effective compiler-setting changes qualify the result as different-build;\nphysical byte differences remain arithmetic, not attributed savings. Missing\nsettings or unsupported defaults stay unknown. Changed checks and unknown checks\nremain individually visible even when another check determines the overall state.\n\nPer-subject byte deltas require available exact evidence with matching basis,\nmethod and stage, plus compatible artifact domains. Missing/conflicting measures,\nbounds, incomplete ownership or incompatible artifacts retain both observations\nand a null delta with its reason. Prelink-only evidence is never promoted to a\nprimary final measurement. Whole containing-body measurements remain non-additive;\nthe comparison does not sum route/helper deltas into an artifact total or infer\nperformance regressions from one build duration.\n\nThe canonical schema and generated TypeScript declaration share the report fixture\nwriter. The report-capsule-contract task includes comparison regressions for\nidentity churn, ambiguity, coverage loss/gain, settings/provenance, exact and\nunavailable deltas, sparse ordering, deterministic bytes and compiler-free replay.\n",
+      "contentSha256": "787189db14c914e9014941efec1e85ef125121ba9ffdb0566672cdda427544d7",
+      "id": "contract/report-comparison",
+      "pulseVersion": "1.0.0-beta.7",
+      "source": {
+        "endLine": 1232,
+        "path": "docs/architecture/current-contracts.md",
+        "selection": "heading:Report comparison contract",
+        "sha256": "1ade9e8001bacbc062dca54f3eb1b926f055b7766a27a864c8a6fcc08309c4d8",
+        "startLine": 1156,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/5001b9e304e62f2677c56db9f6bcf6062b24b435"
+      },
+      "status": "candidate",
+      "tags": [
+        "compare",
+        "coverage",
+        "identity",
+        "report"
+      ],
+      "title": "Report comparison contract"
     },
     {
       "applicability": [
@@ -9101,12 +9138,12 @@ export const contextCorpus = freeze({
     }
   ],
   "schemaVersion": "pulse.context-corpus.v1",
-  "selectionSha256": "c6c45d94cf700a25cdd6eb1a8dc37ad63db6071acbbc4e680e5e957204421c98",
+  "selectionSha256": "08f477d93c599b981fc23726003c0f5dab4c0c2424fb9ba3698ba7b901094dcc",
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "38e16ffcb23d3c2ee72ea850b0feb28e3005728c1699201c6a02362a1aab8b01",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/69430dacb1c785bb03b965ae3cd45184ed34ee83"
+      "sha256": "1ade9e8001bacbc062dca54f3eb1b926f055b7766a27a864c8a6fcc08309c4d8",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/5001b9e304e62f2677c56db9f6bcf6062b24b435"
     },
     {
       "path": "docs/concepts/bodies.md",
