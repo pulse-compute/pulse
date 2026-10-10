@@ -17,6 +17,7 @@ let assertions = 0;
 function rejects(fn, code) { assertions++; assert.throws(fn, error => code ? error.code === code : error instanceof TypeError); }
 function mutate(fn) { const value = f.fixture(); fn(value); return () => capsule.createCapsule(value); }
 require('./report-build-cases.cjs').contractCases();
+require('./report-comparison-cases.cjs')();
 const minimal = capsule.createCapsule(f.fixture(false)), rich = capsule.createCapsule(f.fixture());
 const goldens = { 'minimal.json': capsule.serializeCapsule(minimal), 'shared-routes.json': capsule.serializeCapsule(rich) };
 if (process.argv.includes('--write-fixtures')) {

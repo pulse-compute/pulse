@@ -1,0 +1,1047 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:pulse:report:comparison:v1",
+  "type": "object",
+  "properties": {
+    "kind": {
+      "const": "pulse.report-comparison"
+    },
+    "comparisonVersion": {
+      "const": 1
+    },
+    "matchingVersion": {
+      "const": "pulse.report-matching.v1"
+    },
+    "sources": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "$ref": "#/$defs/CompareSource"
+        },
+        "after": {
+          "$ref": "#/$defs/CompareSource"
+        }
+      },
+      "required": [
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "compatibility": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "compatible",
+            "different-build",
+            "incompatible",
+            "unknown"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompareCheck"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "status",
+        "checks"
+      ],
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "artifactBytes": {
+          "type": "object",
+          "properties": {
+            "before": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "after": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "delta": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": -9007199254740991,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "incompatible-artifacts"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "before",
+            "after",
+            "delta",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "inventories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompareInventory"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "artifactBytes",
+        "inventories"
+      ],
+      "additionalProperties": false
+    },
+    "metadataChanges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/CompareField"
+      },
+      "maxItems": 100000
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/CompareSection"
+      },
+      "maxItems": 100000
+    },
+    "comparisonHash": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "value": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "kind",
+    "comparisonVersion",
+    "matchingVersion",
+    "sources",
+    "compatibility",
+    "summary",
+    "metadataChanges",
+    "sections",
+    "comparisonHash"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "CompareSource": {
+      "type": "object",
+      "properties": {
+        "capsuleHash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "reportVersion": {
+          "const": 1
+        },
+        "producer": {
+          "type": "object",
+          "properties": {
+            "pulseVersion": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            "reporterVersion": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            }
+          },
+          "required": [
+            "pulseVersion",
+            "reporterVersion"
+          ],
+          "additionalProperties": false
+        },
+        "application": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "context": {
+          "$ref": "#/$defs/Context"
+        },
+        "provenance": {
+          "type": "object",
+          "properties": {
+            "revision": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{40,64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "dirty": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceFingerprint": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "buildEvidenceId": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+            },
+            "toolchain": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Producer"
+              },
+              "maxItems": 100000
+            },
+            "recipe": {
+              "$ref": "#/$defs/Recipe"
+            }
+          },
+          "required": [
+            "revision",
+            "dirty",
+            "sourceFingerprint",
+            "buildEvidenceId",
+            "toolchain",
+            "recipe"
+          ],
+          "additionalProperties": false
+        },
+        "artifact": {
+          "$ref": "#/$defs/CompareArtifact"
+        },
+        "build": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Build"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "capsuleHash",
+        "reportVersion",
+        "producer",
+        "application",
+        "context",
+        "provenance",
+        "artifact",
+        "build"
+      ],
+      "additionalProperties": false
+    },
+    "Context": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "host": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "target": {
+          "const": "native"
+        },
+        "representation": {
+          "const": "canonical-native-wasm"
+        },
+        "primaryArtifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        }
+      },
+      "required": [
+        "profile",
+        "host",
+        "target",
+        "representation",
+        "primaryArtifactId"
+      ],
+      "additionalProperties": false
+    },
+    "Producer": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "Recipe": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "version": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "optimization": {
+          "enum": [
+            "default",
+            "experimental-native-size",
+            "experimental-native-bounded-size",
+            "unavailable"
+          ]
+        },
+        "guestLinked": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "optimization",
+        "guestLinked"
+      ],
+      "additionalProperties": false
+    },
+    "CompareArtifact": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 9007199254740991
+        },
+        "representation": {
+          "const": "canonical-native-wasm"
+        },
+        "stage": {
+          "enum": [
+            "final",
+            "prelink"
+          ]
+        },
+        "host": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "target": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "sha256",
+        "bytes",
+        "representation",
+        "stage",
+        "host",
+        "target"
+      ],
+      "additionalProperties": false
+    },
+    "Build": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "operation": {
+          "enum": [
+            "compile",
+            "native-build"
+          ]
+        },
+        "timingScope": {
+          "const": "build-start-through-inventory-capture"
+        },
+        "totalDurationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "compilationDurationMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "durationMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "name",
+              "durationMs"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "compilers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/BuildCompiler"
+          },
+          "maxItems": 100000
+        },
+        "providerArtifactReuse": {
+          "enum": [
+            "reused",
+            "not-reused",
+            "not-recorded",
+            "not-applicable"
+          ]
+        },
+        "cache": {
+          "const": "not-recorded"
+        }
+      },
+      "required": [
+        "version",
+        "operation",
+        "timingScope",
+        "totalDurationMs",
+        "compilationDurationMs",
+        "stages",
+        "compilers",
+        "providerArtifactReuse",
+        "cache"
+      ],
+      "additionalProperties": false
+    },
+    "BuildCompiler": {
+      "type": "object",
+      "properties": {
+        "phase": {
+          "enum": [
+            "portable",
+            "provider"
+          ]
+        },
+        "artifactId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "compilerVersion": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "durationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "timeoutMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 1048576,
+                "minLength": 1
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "maxLength": 1048576,
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "flagsComplete": {
+          "type": "boolean"
+        },
+        "optimization": {
+          "type": "object",
+          "properties": {
+            "optimizeLevel": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "shrinkLevel": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "converge": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "optimizeLevel",
+            "shrinkLevel",
+            "converge"
+          ],
+          "additionalProperties": false
+        },
+        "toolchain": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Producer"
+          },
+          "maxItems": 100000
+        },
+        "cache": {
+          "enum": [
+            "not-reused",
+            "reused",
+            "not-recorded"
+          ]
+        }
+      },
+      "required": [
+        "phase",
+        "artifactId",
+        "compilerVersion",
+        "durationMs",
+        "timeoutMs",
+        "flags",
+        "flagsComplete",
+        "optimization",
+        "toolchain",
+        "cache"
+      ],
+      "additionalProperties": false
+    },
+    "CompareCheck": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1048576
+        },
+        "impact": {
+          "enum": [
+            "blocking",
+            "qualifying"
+          ]
+        },
+        "status": {
+          "enum": [
+            "same",
+            "changed",
+            "unknown"
+          ]
+        },
+        "before": {
+          "$ref": "#/$defs/CompareValue"
+        },
+        "after": {
+          "$ref": "#/$defs/CompareValue"
+        }
+      },
+      "required": [
+        "path",
+        "impact",
+        "status",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false
+    },
+    "CompareValue": {
+      "type": "object",
+      "properties": {
+        "recorded": {
+          "type": "boolean"
+        },
+        "value": {}
+      },
+      "required": [
+        "recorded",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "CompareInventory": {
+      "type": "object",
+      "properties": {
+        "collection": {
+          "enum": [
+            "routes",
+            "entries",
+            "schemas",
+            "bindings",
+            "resources",
+            "implementations",
+            "declarations",
+            "references",
+            "evidence",
+            "observations"
+          ]
+        },
+        "before": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "after": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "delta": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "counts": {
+          "$ref": "#/$defs/CompareCounts"
+        }
+      },
+      "required": [
+        "collection",
+        "before",
+        "after",
+        "delta",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "Coverage": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable",
+            "not-applicable"
+          ]
+        },
+        "observed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "missing-evidence",
+                "unsupported-mapping",
+                "incomplete-mapping",
+                "incomplete-root-universe",
+                "unsupported-call-graph",
+                "prelink-only",
+                "not-recorded",
+                "not-applicable",
+                "unsupported-schema-shape",
+                "unsupported-schema-version",
+                "unsupported-constraint",
+                "upstream-partial",
+                "entry-ownership-not-retained",
+                "dispatcher-carrier",
+                "final-symbol-not-surviving",
+                "dynamic-reference",
+                "unresolved-reference",
+                "unsupported-table-control",
+                "unsupported-indirect-control",
+                "unsupported-reference-control",
+                "unsupported-tail-call",
+                "unresolved-function-identity",
+                "graph-parser-mismatch",
+                "graph-budget-exhausted"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "observed",
+        "expected",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "CompareCounts": {
+      "type": "object",
+      "properties": {
+        "added": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "removed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "modified": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "coverageChanged": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unresolvedBefore": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unresolvedAfter": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "unchanged": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "added",
+        "removed",
+        "modified",
+        "coverageChanged",
+        "unresolvedBefore",
+        "unresolvedAfter",
+        "unchanged"
+      ],
+      "additionalProperties": false
+    },
+    "CompareField": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1048576
+        },
+        "kind": {
+          "enum": [
+            "value",
+            "coverage"
+          ]
+        },
+        "before": {
+          "$ref": "#/$defs/CompareValue"
+        },
+        "after": {
+          "$ref": "#/$defs/CompareValue"
+        },
+        "delta": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "deltaReason": {
+          "anyOf": [
+            {
+              "enum": [
+                "missing-evidence",
+                "incompatible-artifacts",
+                "incomparable-evidence",
+                "non-exact-evidence"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "path",
+        "kind",
+        "before",
+        "after",
+        "delta",
+        "deltaReason"
+      ],
+      "additionalProperties": false
+    },
+    "CompareSection": {
+      "type": "object",
+      "properties": {
+        "collection": {
+          "enum": [
+            "routes",
+            "entries",
+            "schemas",
+            "bindings",
+            "resources",
+            "implementations",
+            "declarations",
+            "references",
+            "evidence",
+            "observations"
+          ]
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompareChange"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "collection",
+        "changes"
+      ],
+      "additionalProperties": false
+    },
+    "CompareChange": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1048576
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1048576
+        },
+        "status": {
+          "enum": [
+            "added",
+            "removed",
+            "modified",
+            "coverage-changed",
+            "unresolved"
+          ]
+        },
+        "basis": {
+          "enum": [
+            "logical-key",
+            "canonical-id",
+            "same-artifact",
+            "unresolved"
+          ]
+        },
+        "beforeIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1048576
+          },
+          "maxItems": 100000
+        },
+        "afterIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1048576
+          },
+          "maxItems": 100000
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "enum": [
+                "ambiguous-identity",
+                "missing-identity",
+                "incomplete-inventory"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CompareField"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "status",
+        "basis",
+        "beforeIds",
+        "afterIds",
+        "reason",
+        "fields"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

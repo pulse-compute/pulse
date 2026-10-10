@@ -6,6 +6,7 @@ const { createCapsule, artifactId, bodyId, stableReportId, serializeCapsule } = 
 const { sha256 } = require(path.join(reportRoot, 'data'));
 const { projectSchema } = require(path.join(reportRoot, 'schema-projection'));
 const { capsuleSchema, completionSchema, attributionSchema } = require(path.join(reportRoot, 'schema'));
+const { comparisonSchema } = require(path.join(reportRoot, 'comparison-schema'));
 const wasm = Buffer.from([0,97,115,109,1,0,0,0, 1,4,1,96,0,0, 3,4,3,0,0,0, 10,14,3,4,0,16,2,11,4,0,16,2,11,2,0,11]);
 const hash = sha256(wasm), aid = artifactId(hash), buildId = stableReportId('evidence', 'synthetic-build');
 const id = (kind, key) => stableReportId(kind, key);
@@ -86,17 +87,18 @@ function ts(schema) {
   if (schema.type === 'object') return '{ ' + Object.entries(schema.properties).map(([key, value]) =>
     `readonly ${JSON.stringify(key)}${schema.required.includes(key) ? '' : '?'}: ${ts(value)};`).join(' ') + ' }';
   if (schema.type === 'array') return `ReadonlyArray<${ts(schema.items)}>`;
-  return schema.type === 'integer' ? 'number' : schema.type;
+  return schema.type === 'integer' ? 'number' : schema.type || 'unknown';
 }
 function generated() {
-  const definitions = { ...capsuleSchema.$defs, ...completionSchema.$defs };
+  const definitions = { ...capsuleSchema.$defs, ...completionSchema.$defs, ...comparisonSchema.$defs };
   return {
+    'comparison.schema.json': JSON.stringify(comparisonSchema, null, 2) + '\n',
     'capsule.schema.json': JSON.stringify(capsuleSchema, null, 2) + '\n',
     'completion.schema.json': JSON.stringify(completionSchema, null, 2) + '\n',
     'attribution.schema.json': JSON.stringify(attributionSchema, null, 2) + '\n',
     'model.d.ts': '// Generated from schema.js; regenerate with the report contract fixture task.\n'
       + Object.entries(definitions).map(([name, schema]) => `export type ${name} = ${ts(schema)};`).join('\n')
-      + `\nexport type ReportCapsule = ${ts(capsuleSchema)};\nexport type ReportCompletion = ${ts(completionSchema)};\nexport type ReportAttribution = ${ts(attributionSchema)};\n`
+      + `\nexport type ReportCapsule = ${ts(capsuleSchema)};\nexport type ReportCompletion = ${ts(completionSchema)};\nexport type ReportAttribution = ${ts(attributionSchema)};\nexport type ReportComparison = ${ts(comparisonSchema)};\n`
   };
 }
 module.exports = { fixture, completed, generated, reportRoot, wasm, hash, aid, buildId, id, coverage, fact, unavailable, createCapsule };
