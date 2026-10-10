@@ -88,7 +88,7 @@
   }));
   const entryLink = id => {
     const entry = entries.get(id);
-    return entry ? el('a',{class:'record-text',href:'#entries/'+entryIndex.get(id),title:entry.id},entryLabel(entry))
+    return entry ? el('a',{class:'entry-link record-text',href:'#entries/'+entryIndex.get(id),title:entry.id},entryLabel(entry))
       : el('span',{class:'record-text'},'Unknown entry reference',id ? ' · '+id : '');
   };
   const entryLinks = ids => el('div',{class:'entry-links'},ids.map(id=>el('div',{class:'helper-entry'},entryLink(id))));
