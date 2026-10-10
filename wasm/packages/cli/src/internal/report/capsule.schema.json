@@ -475,6 +475,25 @@
           "type": "string",
           "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
         },
+        "behavior": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "terminal",
+                "continuing"
+              ]
+            },
+            "basis": {
+              "const": "canonical-handler-ir"
+            }
+          },
+          "required": [
+            "kind",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
         "handlerName": {
           "anyOf": [
             {

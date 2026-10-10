@@ -66,7 +66,7 @@
     return (value/1048576).toFixed(precision).replace(/\.0$/,'')+' MiB';
   }
   const {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
-    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers} = createReportViewModel(P);
+    entries,helpers,helperIndex,helperOrigins,helperState,entryLabel,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,routeBehavior,routeCounts,handlerAttribution} = createReportViewModel(P);
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
@@ -119,9 +119,10 @@
     $('#snapshot-label').textContent = mode === 'current' ? 'Retained completed build · current inputs matched.' : mode === 'artifact' ? 'Completed artifact verified · current project not checked.' : 'Historical capsule replay · current project and original artifact bytes not checked.';
     $('#revision-label').textContent = 'Revision: ' + (P.provenance.revision ?? 'unknown') + ' · dirty: ' + (P.provenance.dirty === null ? 'unknown' : P.provenance.dirty ? 'yes' : 'no');
     $('#hash-button').textContent = P.evidenceHash.value.slice(0,12); $('#hash-button').title = 'SHA-256 ' + P.evidenceHash.value;
-    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+new Set(P.entries.map(e=>e.handlerId).filter(Boolean)).size+' recorded handlers','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
+    const items = [['Wasm artifact',bytes(A.bytes),exact(A.bytes)+' · '+A.stage,'resources'],['Route registrations',inventoryCount('routes'),P.coverage.routes.status+' inventory · '+(routeCounts.distinctMethodPaths??'unknown')+' distinct method/path pairs','routes'],['Schemas',inventoryCount('schemas'),P.coverage.schemas.status+' structural coverage','schemas'],['Resources',inventoryCount('resources'),P.coverage.resources.status+' inventory · input and retained bytes differ','resources']];
     replace($('#summary-strip'),items.map(([label,value,sub,view],i)=>el('a',{class:'summary-item clickable',href:'#'+view},el('div',{class:'summary-top'},label,icon(view === 'routes' ? 'routes' : 'box')),i===0?byteDisplay(A.bytes,'summary-value'):el('div',{class:'summary-value'+(value==='Unavailable'?' small':'')},value),el('div',{class:'summary-sub'},sub))));
     $('#route-total').textContent = P.routes.length;
+    $('#route-behavior-summary').textContent = `${routeCounts.terminal} terminal · ${routeCounts.continuing} continuing · ${routeCounts.unknown} behavior not recorded. Continuing means a handler can transfer control, including errors; it may also respond early.`;
     const mapped = P.routes.filter(r=>factValue(measurement(r,'handler-body')?.fact)!==null).length;
     $('#mapping-label').textContent = `${mapped} / ${P.routes.length} handler mappings · ${A.stage}`;
     replace($('#compact-ledger'),ledger(A));
@@ -151,7 +152,7 @@
     visibleRoutes = filteredRoutes();
     replace($('#route-body'),visibleRoutes.map(r => {
       const m=measurement(r,state.metric),value=factValue(m?.fact);
-      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable')),
+      return el('tr',{'data-route-index':routeIndex.get(r.id)},el('td',{class:'order-col mono'},r.order+1),el('td',{},methodTag(r.method)),el('td',{},el('a',{class:'route-link mono',href:'#routes/'+routeIndex.get(r.id)},r.path),el('div',{class:'secondary mono'},r.handlerName??'Handler name unavailable'),el('div',{class:'secondary'},routeBehavior(r))),
         el('td',{},el('span',{class:'declaration'},declarationLabels[declarationState(r)])),el('td',{},r.schemaIds.length+' refs'),el('td',{},r.bindingIds.length+' refs'),el('td',{class:'numeric metric-cell',title:m?qualifier(m.fact):measurementIssue(r,state.metric)},el('div',{class:'metric-value'},measurementText(r,state.metric)),el('div',{class:'secondary'},value===null?(m?.fact.reason??(measurementResolution(r,state.metric).variants.length>1?'Compare in size details':'missing-evidence')):m.fact.coverage)),el('td',{},el('a',{href:'#routes/'+routeIndex.get(r.id),'aria-label':'Open '+r.method+' '+r.path},icon('chevron-right'))));
     }));
     $('#route-empty').hidden = visibleRoutes.length!==0;
@@ -173,6 +174,8 @@
     tabs.addEventListener('keydown',e=>{let i=ids.indexOf(state.drawerTab);if(e.key==='ArrowRight')i=(i+1)%3;else if(e.key==='ArrowLeft')i=(i+2)%3;else if(e.key==='Home')i=0;else if(e.key==='End')i=2;else return;e.preventDefault();state.drawerTab=ids[i];renderDrawer();$('#drawer-tab-'+ids[i]).focus();});
     const panel=el('div',{id:'drawer-panel',role:'tabpanel','aria-labelledby':'drawer-tab-'+state.drawerTab,tabindex:0});
     if(state.drawerTab==='facts') panel.append(
+      detailSection('Registration behavior',el('p',{},routeBehavior(r)),note(r.behavior ? 'Compiler handler IR · continuing includes conditional next() and error transfers. This is not a complete endpoint execution chain.' : 'Compiler behavior evidence was not retained. Router nesting, source names and dispatcher membership do not establish behavior.')),
+      detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)),
       detailSection('Declarations',el('p',{},declarationLabels[declarationState(r)]),...r.declarationIds.map(id=>{const d=declarations.get(id);return el('p',{},d.kind+': '+d.name);}),note('Recorded declarations are not proof of effective permissions.')),
       detailSection('Resolved composition',el('ol',{class:'step-list'},r.composition.map(id=>el('li',{},el('code',{},id)))),el('p',{class:'small-note'},'Coverage: '+(r.compositionCoverage??'unavailable')+'. Static metadata is not an execution trace.')),
       detailSection('Schema references',...(r.schemaIds.length?r.schemaIds.map(id=>button(schemas.get(id).schemaId,()=>openSchema(id))):[el('p',{},'No references recorded.')])),
@@ -180,6 +183,7 @@
       helperLinks(r),dispatcherDetails(r),
       detailSection('Source and identity',kv([['Source',sourceText(r.source)],['Registration',r.id],['Handler',r.handlerId],['Entry',r.entryId]])));
     else if(state.drawerTab==='size') {
+      panel.append(detailSection('Handler attribution',el('strong',{},handlerAttribution(r).label),el('p',{},handlerAttribution(r).detail)));
       panel.append(note('Shared bodies are nonadditive. Code bytes are not execution cost or guaranteed removal savings.'));
       panel.append(el('div',{class:'size-grid'},Object.entries(metrics).map(([metric,label])=>{
         const m=measurement(r,metric),value=factValue(m?.fact);
