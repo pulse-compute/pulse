@@ -657,3 +657,36 @@ svg.ledger-bar{width:100%;display:block;flex-shrink:1}
 progress{appearance:none;border:0;height:4px;width:76px;display:block;margin:5px 0 0 auto;background:var(--surface3)}progress::-webkit-progress-bar{background:var(--surface3)}progress::-webkit-progress-value{background:var(--code-fill)}progress::-moz-progress-bar{background:var(--code-fill)}.ledger-sections{display:flex;gap:8px;flex-wrap:wrap}.ledger-sections>span{border-left:3px solid var(--code-fill);padding-left:7px}.record-text{overflow-wrap:anywhere;white-space:pre-wrap}.schema-table .schema-property-table{min-width:0}.source-trail,.snapshot-meta,.ref-main{overflow-wrap:anywhere}.schema-detail pre{max-height:240px;overflow:auto}.inventory-table th{text-align:left}.numeric{text-align:right!important}.section-heading h2{overflow-wrap:anywhere}#app-name{overflow-wrap:anywhere}.app-switch strong{overflow-wrap:anywhere;max-width:130px}.snapshot-meta code{overflow-wrap:anywhere}.summary-value.small{font-size:20px}.inline-list{display:flex;gap:6px;flex-wrap:wrap}.report-description{max-width:650px}.drawer-title{overflow-wrap:anywhere}button.route-link{text-align:left}.schema-expand{overflow-wrap:anywhere;text-align:left}.empty-state{display:block}.table-wrap{overflow:auto}.evidence-record{overflow-wrap:anywhere}.details-body pre,.raw-json{white-space:pre-wrap;overflow-wrap:anywhere}#view-resources details summary{padding:14px;cursor:pointer}#view-resources details>div{padding:0 14px 14px}.schema-detail-desc{line-height:1.6}.route-group-select{max-width:260px}.schema-summary{max-width:450px}.surface.panel-pad{overflow-wrap:anywhere}.snapshot-meta>div{flex-wrap:wrap}.drawer-method-line{flex-wrap:wrap}.route-drawer{max-width:100vw}.route-table .route-link{max-width:100%;overflow-wrap:anywhere}.mobile-table-hint{font-size:12px}@media(max-width:700px){.title-line{flex-wrap:wrap}.snapshot-meta{max-width:100%}.schema-detail{display:block}.schema-detail>div+div{margin-top:20px}.two-column{grid-template-columns:1fr}.summary-strip{grid-template-columns:repeat(2,minmax(0,1fr))}.route-group-select{max-width:100%}.report-heading{min-width:0}}
 
 body.overlay-open{overflow:hidden}
+
+/* Helpers reuse the physical ledger; identities stay in disclosure details. */
+.helper-toolbar{display:flex;align-items:end;flex-wrap:wrap;gap:14px;margin:20px 0}
+.helper-toolbar>.search-box{flex:1;min-width:220px}
+.helper-toolbar>label:not(.search-box){display:grid;gap:6px;color:var(--muted);font-size:11px}
+.helper-toolbar select{max-width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--text)}
+.helper-table{min-width:620px;table-layout:auto}
+.helper-table td:first-child{min-width:170px;max-width:290px}
+.helper-table .schema-sort-button{padding:0;text-align:left;color:var(--muted);font-size:11px}
+.helper-table .schema-expand{text-align:left;overflow-wrap:anywhere}
+.helper-detail{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;padding:24px}
+.helper-detail pre{max-height:260px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere}
+.helper-detail .details-block{margin-top:18px}
+.helper-entry{padding:12px 0;border-bottom:1px solid var(--line-soft);overflow-wrap:anywhere}
+.helper-links{padding-left:18px}
+.helper-links li{margin:10px 0}
+.helper-links .secondary{display:block;margin-top:4px}
+.helper-total-note{flex-basis:100%;margin:0}
+.helper-toolbar>.helper-mobile-sort{display:none!important}
+@media(max-width:700px){
+.helper-detail{grid-template-columns:1fr;padding:16px}
+.helper-toolbar{align-items:stretch}
+.helper-toolbar>.search-box{flex-basis:100%;min-width:0}
+.helper-toolbar>label:not(.search-box){flex:1;min-width:0}
+.helper-toolbar>.helper-mobile-sort{display:grid!important;flex-basis:100%}
+.helper-table,.helper-table tbody,.helper-table tr,.helper-table td{display:block;min-width:0;width:100%}
+.helper-table thead{display:none}
+.helper-table tr.helper-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line)}
+.helper-table .helper-row td:first-child{grid-column:1/-1;min-width:0;max-width:none}
+.helper-table .helper-row td{text-align:left!important;overflow-wrap:anywhere}
+.helper-table .helper-row td::before{content:attr(data-label);display:block;font:10px Inter,Arial,sans-serif;color:var(--muted);margin-bottom:7px}
+.helper-table td[colspan]{padding:0}
+}
