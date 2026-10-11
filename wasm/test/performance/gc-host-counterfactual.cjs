@@ -19,9 +19,10 @@ assert(!process.env.NODE_OPTIONS && !process.env.JSON_CACHE && process.execArgv.
 const baseline = validate(read(baselineFile)), source = candidateIdentity(root), deps = dependencies();
 assert.equal(source.workingTree, ''); assert.deepEqual(deps, baseline.dependencies);
 // Compare on the same experiment, host and production source. Only this new
-// counterfactual driver/internal documentation may differ from the measured base.
+// counterfactual driver, opt-in suite classification, and internal documentation
+// may differ from the measured base; none changes these runtime workers.
 const changed = execFileSync('git', ['diff', '--name-only', baseline.source.sourceRevision, 'HEAD'], { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(Boolean);
-assert(changed.every(file => file === 'wasm/test/performance/gc-host-counterfactual.cjs' || file.startsWith('docs/internal/perf8-06/')));
+assert(changed.every(file => file === 'wasm/test/performance/gc-host-counterfactual.cjs' || file === 'wasm/test/suite/assert-suite-shape.cjs' || file.startsWith('docs/internal/perf8-06/')));
 const report = { schemaVersion: 'pulse.host-nursery-counterfactual.v1', status: 'running', source, baselineSource: baseline.source,
   baselineReportSha256: hash(fs.readFileSync(baselineFile)), node: process.version, dependencies: deps,
   policy: '--max-semi-space-size=4 on both variants', rows: [] };

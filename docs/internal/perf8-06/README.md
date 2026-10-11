@@ -216,3 +216,12 @@ continuations; do not blindly mutate cached values or clear the handle table
 mid-request. Then requalify arena removal against the existing gate and both
 short/long host sweeps. Adding another collector, increasing limits or shipping
 these diagnostic GC policies is not supported by this evidence.
+
+Repository validation also found a PERF8-05 suite-registration omission: the
+opt-in `schema-cache-arena` task was excluded from release profiles but missing
+from the suite-shape check's explicit experiment list. PERF8-06 corrects that
+list and asserts exclusion from every default profile. No release work is added.
+The first unit attempt ended without a terminal summary and is unresolved;
+the structured rerun passed 13 tasks before reporting this exact suite-shape
+failure. Keep both attempts. Validation after the correction resumes at
+`suite-shape`; split development coverage is not a clean full release replay.

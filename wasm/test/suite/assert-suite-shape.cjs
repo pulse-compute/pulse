@@ -55,6 +55,8 @@ for (const name of Object.keys(profiles)) {
 
 const release = expandProfile('release');
 const externalTasks = new Set([
+  // Rejected dependency optimization: explicit experiment, never a release gate.
+  'schema-cache-arena',
   // Pre-snapshot upgrade and measurements are explicit qualification, not fast CI or a seal.
   'beta6-upgrade', 'beta6-measurements',
   'array-demand-n01',
@@ -199,6 +201,7 @@ for (const name of Object.keys(installedCorpusOwners)) {
 // The fast subset must not add a second copy of its proof to full/release lanes.
 for (const profile of Object.keys(profiles)) {
   assert.equal(expandProfile(profile).includes('schema-codecs-smoke'), false);
+  assert.equal(expandProfile(profile).includes('schema-cache-arena'), false);
 }
 assert.ok(expandProfile('conformance').includes('schema-codecs'));
 const releaseSet = new Set(release);
