@@ -200,7 +200,8 @@ Nursery intervention: clean local source `c1b15bb077e5274024e1f914af0de46b3fd430
 tree `2b747c4c5f641b6e6f300b24417e77287e3513f3`; public equivalent
 `aaf1b1f11cf90627aba9398b9c265bb9162e11e9`. Only the new counterfactual driver
 was added between them. Raw source identities are preserved. Node 24.19.0,
-AssemblyScript 0.28.18 and json-as 1.5.0. Later changes record results only.
+AssemblyScript 0.28.18 and json-as 1.5.0. Later changes record results and correct the opt-in suite classification;
+the measured runtime workers and production sources stay unchanged.
 
 The completed campaign contains 40 guest cases and 24 host workers/6144 requests;
 the nursery intervention contains 12 workers/3072 requests. Both original
@@ -225,3 +226,9 @@ The first unit attempt ended without a terminal summary and is unresolved;
 the structured rerun passed 13 tasks before reporting this exact suite-shape
 failure. Keep both attempts. Validation after the correction resumes at
 `suite-shape`; split development coverage is not a clean full release replay.
+
+The corrected 46-task remainder passes with a terminal report. Together with
+the earlier 13 passing tasks, this covers all 59 unit tasks across preserved
+split runs. Maintainer, documentation, documentation-release and declared scope
+checks also pass. The initial incomplete run and the diagnosed registration
+failure remain in the evidence bundle.
