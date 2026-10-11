@@ -363,6 +363,7 @@ function compileNativeProjectInMemory(project, options = {}) {
     targetDescriptor: { finalWasmPolicy: CANONICAL_NATIVE_FINAL_WASM_POLICY },
     synchronizedPackages: releaseCatalog.packages.map(({ name, version }) => Object.freeze({ name, version })),
     timeoutMs: options.timeoutMs,
+    elideJsonCacheArena: options.elideJsonCacheArena,
     emitWat: options.emitWat,
     reportCapture: options.reportCapture,
     nativeOptimization: options.experimentalNativeBoundedSize === true
@@ -721,6 +722,9 @@ function buildProjectWithReport(project, options, reportAttempt) {
       'pulse build --source-only was removed. Native builds always emit generated source and provider Wasm together.',
       { provider: project.provider, replacement: 'pulse build' }
     );
+  }
+  if (options.elideJsonCacheArena === true && (project.target || 'native') !== 'native') {
+    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'The --elide-json-cache-arena flag requires Native compilation.', { target: project.target });
   }
   if (options.emitWat === true && (project.target || 'native') !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: project.target || 'native' });

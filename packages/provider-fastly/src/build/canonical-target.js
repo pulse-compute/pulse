@@ -244,6 +244,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
           || (options.native && options.native.guestUnits),
         nativeOptimization: options.nativeOptimization
           || (options.experimentalNativeSize === true ? 'experimental-native-size' : undefined),
+        elideJsonCacheArena: options.elideJsonCacheArena,
         emitWat: options.emitWat,
         timeoutMs: options.compileTimeoutMs
       });
@@ -320,6 +321,7 @@ function writeFastlyCanonicalTarget(options = {}) {
         || (options.native && options.native.guestUnits),
       nativeOptimization: options.nativeOptimization
         || (options.experimentalNativeSize === true ? 'experimental-native-size' : undefined),
+      elideJsonCacheArena: options.elideJsonCacheArena,
       emitWat: options.emitWat,
       compileTimeoutMs: options.compileTimeoutMs
     });

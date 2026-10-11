@@ -590,6 +590,9 @@
         },
         "guestLinked": {
           "type": "boolean"
+        },
+        "elideJsonCacheArena": {
+          "type": "boolean"
         }
       },
       "required": [

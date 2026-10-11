@@ -46,6 +46,9 @@ function createCommandPlan(requestValue, options = {}) {
     throw new TypeError(`Pulse ${request.command} planning requires the authoritative ProjectContext`);
   }
   const project = projectDocumentForContext(projectContext);
+  if (request.elideJsonCacheArena === true && request.command === 'build' && projectContext.target !== 'native') {
+    throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'The --elide-json-cache-arena flag requires Native compilation.', { target: projectContext.target });
+  }
   if (request.emitWat === true && request.command === 'build' && projectContext.target !== 'native') {
     throw new PulseProjectError('PULSE_NATIVE_TEXT_UNSUPPORTED', 'The --emit-wat flag requires Native compilation.', { target: projectContext.target });
   }
@@ -71,7 +74,7 @@ function createCommandPlan(requestValue, options = {}) {
       : (request.command === 'build'
           ? ((projectContext.target || project.target || 'native') === 'javascript' ? 'javascript-source-package' : 'native-provider')
           : undefined),
-    ...(request.command === 'compile' || request.command === 'build' ? { textArtifacts: { wat: request.emitWat === true } } : {}),
+    ...(request.command === 'compile' || request.command === 'build' ? { textArtifacts: { wat: request.emitWat === true }, elideJsonCacheArena: request.elideJsonCacheArena === true } : {}),
     optimization: request.experimentalNativeBoundedSize === true
       ? EXPERIMENTAL_NATIVE_BOUNDED_SIZE_PLAN
       : request.experimentalNativeSize === true ? EXPERIMENTAL_NATIVE_SIZE_PLAN : undefined,

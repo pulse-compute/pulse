@@ -38,6 +38,7 @@ function finishCommandRequest(request) {
   if (request.experimentalNativeSize === true && request.experimentalNativeBoundedSize === true) {
     throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'Select only one experimental Native size mode.', { flags: ['--experimental-native-size', '--experimental-native-bounded-size'] });
   }
+  if (request.elideJsonCacheArena !== undefined && typeof request.elideJsonCacheArena !== 'boolean') throw new PulseProjectError('PULSE_ARGUMENT_UNEXPECTED', 'elideJsonCacheArena must be a boolean.');
   const allowed = allowedRequestKeys(request.command);
   for (const key of Object.keys(request)) {
     if (key === 'kind') continue;

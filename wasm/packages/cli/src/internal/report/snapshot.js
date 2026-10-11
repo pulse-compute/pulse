@@ -155,7 +155,7 @@ function beginSnapshot(project, options, outDir) {
   const current = scan(project.root, { excluded }); sameSnapshot(receipt.snapshot, current);
   const workspace = workspaceControls(project.root); sameSnapshot(receipt.workspace, workspace);
   const dependencies = toolchainSnapshot(project.root, project.providerSelector || project.provider);
-  return { receipt, current, workspace, dependencies, excluded, optimization: mode(options),
+  return { receipt, current, workspace, dependencies, excluded, elideJsonCacheArena: options.elideJsonCacheArena === true, optimization: mode(options),
     profileSha256: profileDigest(project.profilePlan) };
 }
 function finishSnapshot(project, attempt, compiled) {
@@ -174,7 +174,7 @@ function finishSnapshot(project, attempt, compiled) {
   const inputs = { kind: 'pulse.report-inputs', inputVersion: 1, excluded: attempt.excluded.map(file => {
     const relative = slash(path.relative(project.root, path.resolve(project.root, file))); relativePath(relative); return relative;
   }).sort(), files: current.records, workspace: attempt.workspace.records, dependencies: dependencyRecords(attempt.dependencies.groups) };
-  const recipe = { optimization: attempt.optimization, node: process.versions.node,
+  const recipe = { elideJsonCacheArena: attempt.elideJsonCacheArena, optimization: attempt.optimization, node: process.versions.node,
     dependencies: attempt.dependencies.groups.map(({ key, records }) => ({ key, sha256: digest(records) })) };
   inputs.recipe = recipe;
   return { inputs, recipe, snapshot: { inputsSha256: digest(inputs), profileSha256: attempt.profileSha256, recipeSha256: digest(recipe) } };

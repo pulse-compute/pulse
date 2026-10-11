@@ -209,7 +209,7 @@ export default app;`;
     assert.equal(nodeBuild.providerArtifactReuse, 'reused');
     assert.equal(nodeBuild.compilers.length, 1, 'Node packaging does not double-count portable compilation');
     assert.equal(nodeBuild.compilationDurationMs, nodeBuild.compilers[0].durationMs);
-    const fastly = execution.buildProject(resolve({ profile: 'fastly' }), { experimentalNativeBoundedSize: true });
+    const fastly = execution.buildProject(resolve({ profile: 'fastly' }), { experimentalNativeBoundedSize: true, elideJsonCacheArena: true });
     const provider = report.collectProjectReport({ cwd: directory, profile: 'fastly' });
     assert.equal(provider.capsule.context.host, 'fastly');
     const providerBuild = provider.capsule.build;
@@ -228,6 +228,8 @@ export default app;`;
     assert.equal(provider.capsule.artifacts.find(row => row.id === provider.capsule.context.primaryArtifactId).sha256, fastly.manifest.providerTarget.wasm.sha256);
     // The later build retained matching output receipts and remains repeatable.
     execFileSync(process.execPath,[binary,'report','--profile','fastly','--html','--out','reviews/custom.html'],{cwd:directory,encoding:'utf8'});
+    assert.equal(provider.capsule.provenance.recipe.elideJsonCacheArena, true);
+    for (const compiler of provider.capsule.build.compilers) assert(compiler.flags.some(f => f.value === 'schema-cache-arena-transform.cjs'));
     const repeated = report.collectProjectReport({ cwd: directory, profile: 'fastly' });
     assert.equal(repeated.capsule.evidenceHash.value, provider.capsule.evidenceHash.value);
     // Artifact replay has no compiler, provider, harness, subprocess or network

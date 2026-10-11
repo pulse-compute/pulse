@@ -48,6 +48,7 @@ const nativeArtifact = contracts.createProviderNativeArtifact(Object.freeze({
     compilerVersion: 'pulse.canonical-native-wasm-compiler.v3',
     assemblyScript: Object.freeze({ package: 'assemblyscript', version: '0.28.18' }),
     optimization: Object.freeze({ posture: 'native-size' }),
+    elideJsonCacheArena: true,
     wasm: Object.freeze({ bytes: wasm.byteLength, sha256: wasmHash, magic: '0061736d01000000' }),
     wat: Object.freeze({ bytes: 8, sha256: hash('(module)') }),
     importModules: Object.freeze([]),
@@ -96,6 +97,7 @@ const executionInvocation = contracts.createProviderTargetInvocation({ ...invoca
 assert.equal(executionInvocation.action, 'execute-native');
 assert.equal(executionInvocation.project.outDir, null);
 assert.equal(executionInvocation.nativeArtifact.finalArtifact.sha256, wasmHash);
+assert.equal(executionInvocation.nativeArtifact.manifest.elideJsonCacheArena, true);
 assert.throws(() => contracts.createProviderTargetInvocation({ ...invocationInput, action: 'execute-native', nativeArtifact: null }), /Native artifact/);
 
 const invocation = contracts.createProviderTargetInvocation(invocationInput);

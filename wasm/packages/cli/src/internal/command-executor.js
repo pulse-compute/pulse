@@ -92,6 +92,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
         outDir: request.outDir,
         experimentalNativeSize: request.experimentalNativeSize,
         experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
+        elideJsonCacheArena: request.elideJsonCacheArena,
         emitWat: request.emitWat
       })
     };
@@ -104,6 +105,7 @@ async function executeCommandPlan(plan, requestValue, options = {}) {
         outDir: request.outDir,
         experimentalNativeSize: request.experimentalNativeSize,
         experimentalNativeBoundedSize: request.experimentalNativeBoundedSize,
+        elideJsonCacheArena: request.elideJsonCacheArena,
         emitWat: request.emitWat
       })
     };
