@@ -120,10 +120,11 @@ const expiredGroup = mock.executeFastlyNativePlatformCapabilities(errorNative, {
 assert.equal(expiredGroup.response.status, 504);
 assert.equal(expiredGroup.instance.exports.pulse_fastly_request_expired(), 1);
 assert.equal(expiredGroup.trace.filter(x => x.module === 'fastly_http_resp' && x.name === 'send_downstream').length, 1);
-assert.throws(() => mock.executeFastlyNativePlatformCapabilities(errorNative, {
+const recoveredTransport = mock.executeFastlyNativePlatformCapabilities(errorNative, {
   ...errorOptions, fixtures: {'https://budget.example.invalid/one': {transportStatus: 1}}
-}), error => error.code === 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED'
-  && error.detail.lastError === 1006 && error.detail.errorStage === 81 && error.detail.errorEffect === 0);
+});
+assert.equal(recoveredTransport.response.status,422);
+assert.equal(recoveredTransport.response.body,'PULSE_FETCH_NETWORK');
 assert.equal(mock.executeFastlyNativePlatformCapabilities(errorNative, {
   ...errorOptions, fixtures: {'https://budget.example.invalid/one': {body: 'ready'}}
 }).response.status, 200);

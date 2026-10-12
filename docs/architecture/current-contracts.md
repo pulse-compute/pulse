@@ -977,6 +977,15 @@ VM traps and provider protocol faults do not gain application recovery. No
 transfer retries effects, rolls back writes or converts uncertain KV outcomes
 into proven non-writes.
 
+Fastly Native additionally admits ordinary fetch send/wait transport failures as
+`PULSE_FETCH_NETWORK`. The same settlement and forward-only recovery rules apply,
+including failures in an error handler. Without a registered error handler the
+provider sends an explicit `502 Bad Gateway`. An exhausted Router error lane
+retains its `500 Internal Server Error`. HTTP response status codes do not become
+transport failures; invalid ABI arguments and handles remain terminal. This
+provider-specific contract does not widen the portable data-error catalog or
+supply new timeout, retry or rollback guarantees.
+
 See [Effects and continuations](../concepts/effects-and-continuations.md),
 [routing](../guides/routing.md), and
 [structured and opaque bodies](../concepts/bodies.md).
