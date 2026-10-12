@@ -1,5 +1,12 @@
 # WEB-05: website artifacts and reviewed delivery
 
+> 2026-10-12 update: the approved [maintenance-window procedure](../web06/maintenance-window.md)
+> replaces mandatory staging, separate backup infrastructure and the multi-report
+> cutover gate. Downtime is accepted; preserve a verified operator backup and one
+> active writer. WEB-07 preparation can proceed before cutover; merge its removals
+> after successful production deployment and public checks. The detailed original
+> procedure below remains an optional staged migration path.
+
 This repository owns the operating procedure. The website repository owns
 `.github/workflows/checks.yml`, `website-deploy.yml`, `deployment.json` and the
 artifact/delivery scripts. Product source, release qualification and publication

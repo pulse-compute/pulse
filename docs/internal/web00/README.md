@@ -1,5 +1,12 @@
 # WEB-00 — Website ownership and migration contract
 
+> 2026-10-12 update: the approved [maintenance-window procedure](../web06/maintenance-window.md)
+> replaces mandatory staging, separate backup infrastructure and the multi-report
+> cutover gate. Downtime is accepted; preserve a verified operator backup and one
+> active writer. WEB-07 preparation can proceed before cutover; merge its removals
+> after successful production deployment and public checks. The detailed original
+> procedure below remains an optional staged migration path.
+
 Status: WEB-00 complete; implementation handoff for WEB-01 through WEB-07.
 Reviewed: 2026-10-09. Model/effort: Sol / high.
 

@@ -1,5 +1,12 @@
 # WEB-06: preservation, staging and single-writer cutover
 
+> 2026-10-12 update: the approved [maintenance-window procedure](maintenance-window.md)
+> replaces mandatory staging, separate backup infrastructure and the multi-report
+> cutover gate. Downtime is accepted; preserve a verified operator backup and one
+> active writer. WEB-07 preparation can proceed before cutover; merge its removals
+> after successful production deployment and public checks. The detailed original
+> procedure below remains an optional staged migration path.
+
 This is the canonical operating procedure for website recovery and migration.
 The website repo owns `recovery-plan.json`, `staging.json`, `deployment.json`,
 `scripts/recovery.mjs`, `recover.mjs`, `cutover.mjs`, `cdn-plan.mjs`, the manual
