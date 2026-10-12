@@ -4,6 +4,47 @@ Pulse follows semantic versioning for public releases. The repository begins its
 
 ## Unreleased
 
+## 1.0.0-beta.8 — Beta (2026-10-12)
+
+- Expand Native reports with entry and implementation identities, helper and
+  middleware consumer links, scoped resource and schema inventory, static
+  response payload observations, and containing-body views. Shared associations
+  remain nonadditive; missing evidence remains unavailable.
+- Add an internal report comparison contract, canonical JSON and offline HTML
+  renderer with compatible-evidence checks, explicit additions/removals, and
+  artifact provenance. Public CLI/MCP comparison adapters remain separate work.
+- Improve report navigation and compact route views; retain build-stage timings,
+  effective compiler settings, optimization flags and toolchain identities.
+- Add reproducible manual performance baselines and comparisons, including
+  Pulse/Rust and shared-ABI memory investigations. Measurements remain scoped to
+  their fixtures and environments; they are not universal performance claims.
+- Add the opt-in Native `--elide-json-cache-arena` build/compile flag. It omits the
+  json-as arena when string caching is disabled, preserves enabled caches, and
+  can increase peak memory for allocation-heavy workloads. Defaults are unchanged.
+- Correct absent versus empty Fastly request and fetched-response headers.
+  Recover fetch transport failures through application error handling, and enforce
+  bounded fetch header deadlines with explicit timeout/error responses and cleanup.
+- Preserve safe structured logging metadata during KV redaction while retaining
+  known-secret and KV-value protection.
+- Qualify release PRs before merge into main and let npm/docs publication consume
+  their verified package and documentation artifacts. Publication no longer repeats
+  build, pack and seal after main; exact source/artifact binding remains required.
+- Front-load cheap release checks and Fastly prerequisites, correct compiler
+  admission hints, and explain verified checkpoint reuse and rerun reasons.
+  Required coverage, deadlines and same-candidate recovery safeguards remain intact.
+- Consolidate documentation procedures, preserve the exact-tag beta.7 documentation
+  snapshot, and refresh measured Fastly example sizes after the correctness fixes.
+
+Exact per-route ownership and complete reachability remain limited; containing
+bodies are not isolated handler sizes. Deeper attribution proofs and source-map
+integration are deferred. Scalar-retention optimization and additional provider
+capabilities remain follow-up work.
+
+Conditional KV/CAS requires dedicated beta.8 evidence or an explicit disposition
+for the final candidate. The beta.6 exception does not carry forward; raw failed
+or not-run results remain visible. This preparation does not claim a release seal,
+registry publication, hosted deployment, or final-candidate tick acceptance.
+
 ## 1.0.0-beta.7 — Beta (2026-10-07)
 
 - Add `pulse report` for completed Native build evidence: terminal summaries,
