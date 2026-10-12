@@ -13,15 +13,16 @@ function __pulse_fetch_fail(status: i32, stage: i32, effect: i32): void {
   __pulse_fastly_fail(network ? PULSE_ERROR_TRANSPORT : PULSE_ERROR_HOSTCALL, stage, effect);
 }
 function __pulse_fetch_failed(): bool {
-  return (__pulse_fastly_last_error == PULSE_ERROR_TRANSPORT || __pulse_fastly_last_error == PULSE_ERROR_HOSTCALL)
-    && (__pulse_fastly_error_stage == 77 || __pulse_fastly_error_stage == 81)
+  return (__pulse_fastly_last_error == PULSE_ERROR_TRANSPORT || __pulse_fastly_last_error == PULSE_ERROR_HOSTCALL || __pulse_fastly_last_error == PULSE_ERROR_VALUE)
+    && (__pulse_fastly_error_stage == 77 || __pulse_fastly_error_stage == 81 || (__pulse_fastly_error_stage >= 270 && __pulse_fastly_error_stage <= 272))
     && __pulse_fastly_effect_kind(__pulse_fastly_error_effect) == 1;
 }
 function __pulse_fetch_send_error(): bool {
   if (!__pulse_fetch_failed()) return false;
   const output = new __PulseFastlyValue(); output.kind = PULSE_VALUE_RESPONSE;
   const network = __pulse_fastly_last_error == PULSE_ERROR_TRANSPORT;
-  output.status = network ? 502 : 500; output.text = network ? "Bad Gateway" : "Internal Server Error";
+  output.status = __pulse_fastly_error_stage == 270 ? 400 : __pulse_fastly_error_stage == 271 ? 504 : network ? 502 : 500;
+  output.text = __pulse_fastly_error_stage == 270 ? "Invalid fetch timeoutMs" : __pulse_fastly_error_stage == 271 ? "Gateway Timeout" : network ? "Bad Gateway" : "Internal Server Error";
   output.headers.push(new __PulseFastlyHeader("content-type", "text/plain; charset=utf-8"));
   __pulse_fastly_send_result(__pulse_fastly_put(output));
   return true;

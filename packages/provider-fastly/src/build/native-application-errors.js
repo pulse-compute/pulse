@@ -19,7 +19,7 @@ function runtimeSource(plan) {
 let __pulse_application_schema: i32 = 0
 let __pulse_application_failed_schema: i32 = 0
 function __pulse_application_code(): string {
-  if (__pulse_fastly_last_error == PULSE_ERROR_TRANSPORT && __pulse_fetch_failed()) return "PULSE_FETCH_NETWORK"
+  if (__pulse_fastly_last_error == PULSE_ERROR_TRANSPORT && __pulse_fetch_failed()) return __pulse_fastly_error_stage == 271 ? "PULSE_FETCH_TIMEOUT" : "PULSE_FETCH_NETWORK"
   if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY)
     return __pulse_fastly_error_stage == 21 ? "PULSE_BODY_TOO_LARGE" : "PULSE_REQUEST_BODY_INVALID_UTF8"
   if (__pulse_fastly_jwt_error > 0) {
@@ -58,7 +58,7 @@ function host_router_error_take(): i32 {
   const error = host_value_object()
   host_value_object_set(error, __pulse_fastly_string_value("code"), __pulse_fastly_string_value(code))
   host_value_object_set(error, __pulse_fastly_string_value("name"), __pulse_fastly_string_value("PulseApplicationError"))
-  host_value_object_set(error, __pulse_fastly_string_value("message"), __pulse_fastly_string_value(code == "PULSE_FETCH_NETWORK" ? "Fetch transport failed." : "Pulse application data validation failed."))
+  host_value_object_set(error, __pulse_fastly_string_value("message"), __pulse_fastly_string_value(code == "PULSE_FETCH_TIMEOUT" ? "Fetch header deadline exceeded." : code == "PULSE_FETCH_NETWORK" ? "Fetch transport failed." : "Pulse application data validation failed."))
   return error
 }
 `;
