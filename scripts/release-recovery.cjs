@@ -184,6 +184,62 @@ function previousAttempt(root, directory) {
   if (report.recovery) assert.equal(report.recovery.directory, resolved, 'Resume checkpoint owner differs from its attempt');
   return resolved;
 }
+
+function resumeDiagnostics(root, directory, candidate, options) {
+  // Only fixed paths inside a validated local attempt are read. Report-supplied
+  // artifact paths and environment values are never followed or printed.
+  const previousDirectory = previousAttempt(root, directory);
+  const report = JSON.parse(fs.readFileSync(ordinaryPath(path.join(previousDirectory, 'report.json')), 'utf8'));
+  const context = report.recovery?.context;
+  const reasons = [];
+  if (!context || context.schemaVersion !== SCHEMA) reasons.push('missing-or-invalid-context');
+  else {
+    if (context.candidate?.repoRoot !== fs.realpathSync(root)) reasons.push('checkout-changed');
+    if (context.candidate?.sourceRevision !== candidate.sourceRevision || context.candidate?.sourceTree !== candidate.sourceTree ||
+        context.candidate?.workingTree !== candidate.workingTree) reasons.push('candidate-changed');
+    const currentOptions = { requireFastly: options.requireFastly, install: options.install,
+      workers: options.workers || 1, memoryBudgetMiB: options.memoryBudgetMiB || 4096, compilerWorkers: options.compilerWorkers || 2 };
+    for (const [key, value] of Object.entries(currentOptions)) if (context.options?.[key] !== value) reasons.push(`option-changed:${key}`);
+  }
+  const selections = { release: require('../wasm/test/suite/registry.cjs').expandProfile('release'),
+    features: require('./release-feature-acceptance.cjs').REQUIRED_TASKS };
+  const { inspectCheckpointMetadata } = require('./release-checkpoints.cjs');
+  const inspect = (kind, ids) => {
+    const checkpoints = ids.map(id => ({ id, ...inspectCheckpointMetadata({
+      directory: path.join(previousDirectory, 'checkpoints', kind), id, context: context || {} }) }));
+    return { selected: ids.length, completed: checkpoints.filter(item => item.completed).length,
+      passed: checkpoints.filter(item => item.passed).length,
+      potentiallyReusable: reasons.length ? 0 : checkpoints.filter(item => item.eligible).length,
+      reasons: Object.fromEntries([...new Set(checkpoints.map(item => item.reason))]
+        .map(reason => [reason, checkpoints.filter(item => item.reason === reason).length])) };
+  };
+  return { stage: 'preliminary', previousDirectory, reasons,
+    pack: inspect('pack', ['shared-pack']),
+    tasks: Object.fromEntries(Object.entries(selections).map(([kind, names]) => [kind, inspect(kind, names.map(name => `task:${name}`))])),
+    verification: 'pending: complete context, task definitions, prerequisite proofs, artifact bytes and cleanup' };
+}
+
+function resumeContextChanges(previousDirectory, context) {
+  try {
+    const report = JSON.parse(fs.readFileSync(ordinaryPath(path.join(previousDirectory, 'report.json')), 'utf8'));
+    const previous = report.recovery?.context;
+    if (!previous || typeof previous !== 'object' || Array.isArray(previous)) return ['missing-or-invalid-context'];
+    // Report categories only; never expose environment values or raw context.
+    const fields = ['schemaVersion', 'candidate', 'lockfileSha256', 'toolchain', 'environmentSha256', 'options', 'selections', 'inputs', 'scheduling'];
+    const changed = fields.filter(key => fingerprint(previous[key] ?? null) !== fingerprint(context[key] ?? null));
+    if (!changed.length && fingerprint(previous) !== fingerprint(context)) changed.push('context-shape');
+    return changed;
+  } catch (_) { return ['unreadable-context']; }
+}
+
+function printResumeDiagnostics(diagnostics, output = text => process.stdout.write(text)) {
+  output(`[pulse:release] Resume from ${JSON.stringify(diagnostics.previousDirectory)} (preliminary; no outputs verified).\n`);
+  if (diagnostics.reasons.length) output(`[pulse:release] Resume incompatibilities: ${diagnostics.reasons.join(', ')}. Affected work will execute again.\n`);
+  for (const [kind, summary] of Object.entries({ pack: diagnostics.pack, ...diagnostics.tasks })) {
+    output(`[pulse:release] ${kind}: ${summary.completed}/${summary.selected} prior completions, ${summary.passed} passed, ${summary.potentiallyReusable} potentially reusable; metadata: ${JSON.stringify(summary.reasons)}.\n`);
+  }
+  output(`[pulse:release] Full verification still required; fresh prerequisite/build/provider stages run on every attempt.\n`);
+}
 function alive(pid, group = false) {
   if (!Number.isSafeInteger(pid) || pid <= 0) return false;
   try { process.kill(group && process.platform !== 'win32' ? -pid : pid, 0); return true; }
@@ -259,4 +315,5 @@ function pruneRecovery(root, now = Date.now()) {
 }
 
 module.exports = { SCHEMA, RETENTION_MS, atomicJson, describeArtifact, inputIdentity, createContext, artifactPaths,
-  recoveryTaskOptions, sharedPackDefinition, recoveryConfig, previousAttempt, acquireSealLock, pruneRecovery };
+  recoveryTaskOptions, sharedPackDefinition, recoveryConfig, previousAttempt, resumeDiagnostics, resumeContextChanges,
+  printResumeDiagnostics, acquireSealLock, pruneRecovery };

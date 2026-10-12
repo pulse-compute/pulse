@@ -92,6 +92,10 @@ async function verifySealOrchestration() {
   const originalRun = supervisor.runCommand;
   const recovery = require('../../../scripts/release-recovery.cjs');
   const originalAcquire = recovery.acquireSealLock;
+  const originalPrevious = recovery.previousAttempt;
+  const originalDiagnostics = recovery.resumeDiagnostics;
+  const sealStatus = require('../../../scripts/release-seal-status.cjs');
+  const originalStatus = sealStatus.createSealStatus;
   const lockRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-seal-fixture-lock-'));
   const acceptance = require('../../../scripts/release-feature-acceptance.cjs');
   const originalCandidate = acceptance.candidateIdentity;
@@ -112,6 +116,10 @@ async function verifySealOrchestration() {
     process.env.PULSE_FASTLY_BIN = fastlyBinary;
     // A controller fixture must not claim the enclosing seal's checkout lock.
     recovery.acquireSealLock = (_root, directory) => originalAcquire(lockRoot, directory);
+    recovery.previousAttempt = (_root, directory) => originalPrevious(lockRoot, directory);
+    recovery.resumeDiagnostics = (_root, ...args) => originalDiagnostics(lockRoot, ...args);
+    sealStatus.createSealStatus = options => originalStatus({ ...options,
+      resultsRoot: path.join(lockRoot, 'results'), attemptsRoot: path.join(lockRoot, '.pulse-seal/attempts') });
     acceptance.candidateIdentity = () => ({
       sourceRevision: require('../../../scripts/source-identity.cjs').resolveSourceIdentity(path.resolve(__dirname, '../../..')).sourceRevision,
       sourceTree: 'a'.repeat(40), workingTree: ''
@@ -140,6 +148,20 @@ async function verifySealOrchestration() {
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
       error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'source-checks');
     assert(!commands.some(args => args.includes('build') || args.includes('--profile') || args.includes('scripts/release-shared-pack.cjs')));
+    const priorDirectory = path.join(lockRoot, '.pulse-seal/attempts/previous');
+    fs.mkdirSync(priorDirectory, { recursive: true });
+    fs.writeFileSync(path.join(priorDirectory, 'report.json'), JSON.stringify({
+      schemaVersion: 'pulse.release-seal.v1', runDirectory: priorDirectory, status: 'failed' }));
+    commands.length = 0; output = '';
+    await assert.rejects(() => seal.main(['--skip-install', '--resume', priorDirectory]),
+      error => error.step?.id === 'source-checks');
+    const resumeReport = JSON.parse(fs.readFileSync(path.join(lockRoot, 'results/release-seal.json'), 'utf8'));
+    assert.equal(resumeReport.status, 'failed');
+    assert.equal(resumeReport.resumeDiagnostics.previousDirectory, priorDirectory);
+    assert.equal(resumeReport.resumeDiagnostics.stage, 'preliminary');
+    assert.match(output, /missing-or-invalid-context/);
+    assert(output.indexOf('preliminary; no outputs verified') < output.indexOf('source-checks'));
+    assert(!commands.some(args => args.includes('build') || args.includes('--profile')));
     commands.length = 0; failSource = false; failFastly = true;
     await assert.rejects(() => seal.main(['--skip-install', '--no-report', '--require-fastly']),
       error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'fastly-reality');
@@ -187,6 +209,9 @@ async function verifySealOrchestration() {
     require.cache[preflightModule].exports = originalPreflight;
     supervisor.runCommand = originalRun;
     recovery.acquireSealLock = originalAcquire;
+    recovery.previousAttempt = originalPrevious;
+    recovery.resumeDiagnostics = originalDiagnostics;
+    sealStatus.createSealStatus = originalStatus;
     fs.rmSync(lockRoot, { recursive: true, force: true });
     acceptance.candidateIdentity = originalCandidate;
     process.stdout.write = originalWrite;

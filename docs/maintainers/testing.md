@@ -153,6 +153,26 @@ To recover an interrupted or failed attempt, pass its durable directory:
 npm run release:seal -- --resume .pulse-seal/attempts/<run-id> --require-fastly
 ```
 
+Before dependency restoration and build, resume prints the prior attempt path
+and a read-only, **preliminary** summary for shared packing, release tasks and
+installed-feature tasks: prior completions, passes and potentially reusable
+checkpoints. It explains changed candidate, checkout or options, and counts
+missing, expired, failed or unreadable checkpoint metadata. This reads receipt
+metadata only; it neither restores outputs nor verifies retained artifact bytes.
+An ineligible or foreign attempt directory is still rejected by the existing
+same-checkout validation.
+
+After fresh setup, a context comparison names changed categories (such as
+toolchain, environment or dependency/build inputs) without printing their
+values. Matching context and preliminary eligibility never authorize reuse:
+each checkpoint still undergoes full proof, output and cleanup verification.
+Packing and task logs print the reason before rejected work executes again.
+Runner reports retain live `recovery.counts` for completed, verified reused,
+executed and remaining tasks, and print those counts at termination. Completed
+and executed counts include failures; they are not passing-coverage claims.
+The seal report retains `resumeDiagnostics` and `resumeContext` separately from
+verified checkpoint evidence.
+
 The controller creates a new attempt and reconstructs the entire ordered release
 and installed-feature selection. Each result says `executed` or `reused`, with
 its immutable receipt and original proof identity. Passed tasks become reusable
