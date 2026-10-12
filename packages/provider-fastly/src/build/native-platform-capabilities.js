@@ -126,6 +126,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_http_resp', 'new']),
   Object.freeze(['fastly_http_resp', 'header_append']),
   Object.freeze(['fastly_http_resp', 'header_value_get']),
+  Object.freeze(['fastly_http_resp', 'header_values_get']),
   Object.freeze(['fastly_http_resp', 'status_get']),
   Object.freeze(['fastly_http_resp', 'status_set']),
   Object.freeze(['fastly_http_resp', 'send_downstream']),
@@ -1768,8 +1769,8 @@ function __pulse_fastly_read_body(handle: i32, effectIndex: i32, requestText: bo
   if (requestText && !__pulse_request_utf8_valid(bytes)) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, 24, effectIndex); return "" }
   return __pulse_fastly_decode(bytes, total);
 }
-function __pulse_fastly_request_header_text(name: string): string { const nameBytes = __pulse_fastly_utf8(name); const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = fastly_http_req_header_value_get(__pulse_fastly_request_handle, changetype<usize>(nameBytes), nameBytes.byteLength, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status == FASTLY_STATUS_NONE) return ""; if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 22, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
-function __pulse_fastly_fetch_header_text(responseHandle: i32, name: string): string { const nameBytes = __pulse_fastly_utf8(name); const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES); const written = __pulse_fastly_out_i32(); const status = fastly_http_resp_header_value_get(responseHandle, changetype<usize>(nameBytes), nameBytes.byteLength, buffer.dataStart, PULSE_FASTLY_BUFFER_BYTES, changetype<usize>(written)); if (status == FASTLY_STATUS_NONE) return ""; if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 23, -1); return "" } return __pulse_fastly_decode(buffer, __pulse_fastly_out_value(written)) }
+function __pulse_fastly_request_header_text(name: string): string { const value = __pulse_header_lookup(__pulse_fastly_request_handle, name, false); return value === null ? "" : value }
+function __pulse_fastly_fetch_header_text(responseHandle: i32, name: string): string { const value = __pulse_header_lookup(responseHandle, name, true); return value === null ? "" : value }
 function __pulse_fastly_fetch_body(value: __PulseFastlyValue): string { if (value.bodyLoaded == 0) { value.text = __pulse_fastly_read_body(value.bodyHandle, -1); value.bodyLoaded = 1 } return value.text }
 
 function __pulse_fastly_scalar(kind: i32, boolean: i32, slot: i32): i32 {
@@ -1819,7 +1820,7 @@ function host_router_match(path: i32, pattern: i32): i32 { return host_value_boo
 function host_router_param(path: i32, pattern: i32, name: i32): i32 { const value = __pulse_router_param_text(__pulse_fastly_string(path), __pulse_fastly_string(pattern), __pulse_fastly_string(name)); return value === null ? host_value_undefined() : __pulse_fastly_string_value(value) }
 function host_request_path(): i32 { return __pulse_fastly_string_value(__pulse_fastly_request_path) }
 function host_request_headers(): i32 { return __pulse_request_headers_read() }
-function host_request_header(name: i32): i32 { const value = __pulse_fastly_request_header_text(__pulse_fastly_string(name)); return value.length == 0 ? host_value_undefined() : __pulse_fastly_string_value(value) }
+function host_request_header(name: i32): i32 { const value = __pulse_header_lookup(__pulse_fastly_request_handle, __pulse_fastly_string(name), false); return value === null ? host_value_undefined() : __pulse_fastly_string_value(value) }
 function host_request_text(): i32 { if (__pulse_request_body_failure != 0) { __pulse_fastly_fail(PULSE_ERROR_REQUEST_BODY, __pulse_request_body_failure, -1); return 0 } if (__pulse_fastly_request_body_loaded == 0) { __pulse_fastly_request_body = __pulse_fastly_read_body(__pulse_fastly_request_body_handle, -1, true); __pulse_fastly_request_body_loaded = 1; if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY) __pulse_request_body_failure = __pulse_fastly_error_stage } if (__pulse_fastly_last_error != 0) return 0; return __pulse_fastly_string_value(__pulse_fastly_request_body) }
 function host_request_json(schema: i32): i32 { const parsed = ${hasJsonAdmission(plan) ? '__pulse_fastly_schema_parse_json(__pulse_fastly_string(host_request_text()), schema)' : '__pulse_fastly_parse_json(__pulse_fastly_string(host_request_text()))'}; if (parsed <= 0) return 0; const schemaValue = __pulse_fastly_value(schema); return schemaValue.kind == PULSE_VALUE_STRING ? __pulse_fastly_schema_apply(schemaValue.text, parsed, false) : parsed }
 function __pulse_fastly_headers_from_options(options: __PulseFastlyValue, output: __PulseFastlyValue): void { const index = __pulse_fastly_find(options, "headers"); if (index < 0) return; const headers = __pulse_fastly_value(unchecked(options.values[index])); if (headers.kind == PULSE_VALUE_OBJECT) { for (let i = 0; i < headers.keys.length; i += 1) { const name = unchecked(headers.keys[i]); const value = __pulse_fastly_value(unchecked(headers.values[i])); if (value.kind == PULSE_VALUE_ARRAY) { for (let j = 0; j < value.values.length; j += 1) output.headers.push(new __PulseFastlyHeader(name, __pulse_fastly_string(unchecked(value.values[j])))) } else output.headers.push(new __PulseFastlyHeader(name, __pulse_fastly_string(unchecked(headers.values[i])))) } return } if (headers.kind == PULSE_VALUE_ARRAY) { for (let i = 0; i < headers.values.length; i += 1) { const pair = __pulse_fastly_value(unchecked(headers.values[i])); if (pair.kind != PULSE_VALUE_ARRAY || pair.values.length < 2) continue; output.headers.push(new __PulseFastlyHeader(__pulse_fastly_string(unchecked(pair.values[0])), __pulse_fastly_string(unchecked(pair.values[1])))) } } }
@@ -1858,7 +1859,7 @@ function host_grip_handoff(optionsHandle: i32): i32 { const options = __pulse_fa
 function host_kv_namespace(name: i32): i32 { return name }
 function host_fetch_text(responseHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 42, -1); return 0 } return __pulse_fastly_string_value(__pulse_fastly_fetch_body(response)) }
 function host_fetch_json(responseHandle: i32, schemaHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 43, -1); return 0 } if (__PULSE_SCHEMA_REQUIRE_JSON) { const contentType = __pulse_fastly_fetch_header_text(response.responseHandle, "content-type"); if (contentType.length == 0 || contentType.toLowerCase().indexOf("json") < 0) { __pulse_fastly_fail(PULSE_ERROR_SCHEMA, 44, -1); return 0 } } const parsed = ${hasJsonAdmission(plan) ? '__pulse_fastly_schema_parse_json(__pulse_fastly_fetch_body(response), schemaHandle)' : '__pulse_fastly_parse_json(__pulse_fastly_fetch_body(response))'}; if (parsed <= 0) return 0; const schema = __pulse_fastly_value(schemaHandle); return schema.kind == PULSE_VALUE_STRING ? __pulse_fastly_schema_apply(schema.text, parsed, false) : parsed }
-function host_fetch_header(responseHandle: i32, nameHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 45, -1); return 0 } const value = __pulse_fastly_fetch_header_text(response.responseHandle, __pulse_fastly_string(nameHandle)); return value.length == 0 ? host_value_undefined() : __pulse_fastly_string_value(value) }
+function host_fetch_header(responseHandle: i32, nameHandle: i32): i32 { const response = __pulse_fastly_value(responseHandle); if (response.kind != PULSE_VALUE_FETCH) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 45, -1); return 0 } const value = __pulse_header_lookup(response.responseHandle, __pulse_fastly_string(nameHandle), true); return value === null ? host_value_undefined() : __pulse_fastly_string_value(value) }
 function __pulse_fastly_payload_field(payload: __PulseFastlyValue, name: string): i32 { const index = __pulse_fastly_find(payload, name); return index < 0 ? host_value_undefined() : unchecked(payload.values[index]) }
 function __pulse_fastly_ready_effect(effectIndex: i32, handle: i32): void { unchecked(__pulse_fastly_ready[effectIndex] = handle); unchecked(__pulse_fastly_pending_mode[effectIndex] = PULSE_FASTLY_PENDING_READY) }
 function __pulse_fastly_open_config_store(effectIndex: i32): i32 { const nameBytes = __pulse_fastly_utf8(__pulse_fastly_config_store(effectIndex)); const out = __pulse_fastly_out_i32(); const status = fastly_config_store_open(changetype<usize>(nameBytes), nameBytes.byteLength, changetype<usize>(out)); if (status != FASTLY_STATUS_OK) { __pulse_fastly_fail(PULSE_ERROR_HOSTCALL, 110, effectIndex); return 0 } return __pulse_fastly_out_value(out) }
@@ -2052,6 +2053,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     conditionalKv.kvNativeSource(plan),
     require('./native-request-body.js').runtimeSource(),
     require('./native-request-headers.js').runtimeSource(),
+    require('./native-header-lookup.js').runtimeSource(),
     applicationErrors.enabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
     portableSource,
@@ -2060,6 +2062,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   ].join('\n');
   if (applicationErrors.enabled(plan)) source = applicationErrors.instrument(source);
   source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
+  source = require('./native-header-lookup.js').instrument(source);
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
