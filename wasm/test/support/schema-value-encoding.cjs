@@ -51,7 +51,9 @@ async function assertSchemaValueEncoding() {
   const fastlyPlatform = platform.compileFastlyNativePlatformCapabilitiesPlan(plan, providerOptions);
   assert.equal(native.manifest.policy.javascriptRuntime, false);
   for (const artifact of [fastlyHttp, fastlyPlatform]) {
-    assert.ok(!artifact.inspection.imports.some((entry) => /env|pulse_host|wasi|js[_-]?compute/.test(entry.module)));
+    assert.ok(!artifact.inspection.imports.some((entry) => /env|pulse_host|js[_-]?compute/.test(entry.module)));
+    assert.deepEqual(artifact.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
+      artifact === fastlyPlatform ? ['wasi_snapshot_preview1:clock_time_get'] : [], 'only the platform fetch deadline clock is permitted');
   }
 
   async function execute(lane, value, mode = '') {

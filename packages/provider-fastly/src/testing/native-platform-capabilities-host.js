@@ -255,14 +255,17 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const imports = {
     fastly_async_io: {
       select(handles, count, timeout, done) {
-        if (Number(count) !== 1 || Number(timeout) <= 0) return FASTLY_STATUS_ERROR;
-        const handle = view().getUint32(Number(handles), true);
-        const item = pending.get(handle) || bodies.get(handle);
-        if (!item) return FASTLY_STATUS_BADF;
-        const wait = Math.max(0, Number(item.readyAt || 0) - monotonicMs);
-        monotonicMs += Math.min(wait, Number(timeout));
-        writeU32(done, wait >= Number(timeout) ? 0xffffffff : 0);
-        trace.push({ module: 'fastly_async_io', name: 'select', timeout: Number(timeout), timedOut: wait >= Number(timeout) });
+        if (Number(count) < 1 || Number(timeout) <= 0) return FASTLY_STATUS_ERROR;
+        const selected = Array.from({length:Number(count)},(_,i) => view().getUint32(Number(handles)+4*i,true));
+        const items = selected.map(handle => pending.get(handle) || bodies.get(handle));
+        if (items.some(item => !item)) return FASTLY_STATUS_BADF;
+        const waits = items.map(item => Math.max(0, Number(item.readyAt || 0) - monotonicMs));
+        const wait = Math.min(...waits), timedOut = wait >= Number(timeout);
+        const fault = options.asyncSelectFault?.({handles:selected,timeout:Number(timeout),now:monotonicMs});
+        monotonicMs += fault?.advanceMs ?? Math.min(wait,Number(timeout));
+        writeU32(done, fault?.selected ?? (timedOut ? 0xffffffff : waits.indexOf(wait)));
+        trace.push({ module: 'fastly_async_io', name: 'select', handles:selected, timeout:Number(timeout), timedOut, now:monotonicMs });
+        if (fault?.status) return fault.status;
         return FASTLY_STATUS_OK;
       }
     },
@@ -415,6 +418,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       close(handle) { return requests.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
       pending_req_poll_v2(handle, detail, done, responseOut, bodyOut) {
         const item = pending.get(Number(handle)); if (!item) return FASTLY_STATUS_BADF;
+        trace.push({module:'fastly_http_req',name:'pending_req_poll_v2',pendingHandle:Number(handle)});
         if (monotonicMs < item.readyAt) { writeU32(done, 0); return FASTLY_STATUS_OK; }
         writeU32(done, 1); return imports.fastly_http_req.pending_req_wait(handle, responseOut, bodyOut);
       },
@@ -432,7 +436,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         }
         const pendingHandle = alloc('pending');
         const capturedBody = bodyBytes(bodyHandle);
-        pending.set(pendingHandle, { request: { ...request, headers: request.headers.map((entry) => [...entry]), body: capturedBody }, backend, fixture, readyAt: monotonicMs + Number(fixture.delayMs || 0) });
+        pending.set(pendingHandle, { request: { ...request, headers: request.headers.map((entry) => [...entry]), body: capturedBody }, backend, fixture, readyAt: fixture.neverHeaders ? Infinity : monotonicMs + Number(fixture.delayMs || 0) });
         if (typeof options.onOutboundRequest === 'function') options.onOutboundRequest({ ...request, backend, headers: request.headers.map((entry) => [...entry]), body: capturedBody });
         if (fixture.sendStatus) { pending.delete(pendingHandle); return Number(fixture.sendStatus); }
         if (request.headers.some(([name, value]) => name.toLowerCase() === 'authorization' && value.startsWith('AWS4-HMAC-SHA256 '))) privateUrls.add(request.url);
@@ -717,7 +721,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const handledTransportError = options.allowHandledTransportError === true
     && (errorStage === 77 || errorStage === 81)
     && ((lastError === 1006 && downstream?.status === 502) || (lastError === 1003 && downstream?.status === 500));
-  if (lastError !== FASTLY_STATUS_OK && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
+  const handledDeadlineError = options.allowHandledFetchDeadlineError === true
+    && ((lastError === 1006 && errorStage === 271 && downstream?.status === 504)
+      || (lastError === 1001 && errorStage === 270 && downstream?.status === 400)
+      || (lastError === 1003 && errorStage === 272 && downstream?.status === 500));
+  if (lastError !== FASTLY_STATUS_OK && !handledDeadlineError && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {
@@ -744,6 +752,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     outboundRequests: Object.freeze(outboundRequests),
     stores: Object.freeze({ config: snapshotStores(configStores), secrets: Object.fromEntries([...secretStores].map(([name, values]) => [name, Object.fromEntries([...values].map(([key]) => [key, '[REDACTED]']))])), kv: snapshotStores(kvStores, true) }),
     kvEvidence,
+    monotonicMs,
     transportResources: Object.freeze({pendingRequests: pending.size,
       outboundRequests: requests.size - Number(requests.has(downstreamRequestHandle))}),
     instance

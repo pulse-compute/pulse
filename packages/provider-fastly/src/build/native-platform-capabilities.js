@@ -989,6 +989,7 @@ function requiredImportsForPlan(plan, bindings) {
       'fastly_http_req:header_insert', 'fastly_http_req:send_async', 'fastly_http_req:pending_req_wait'
     ]) keys.add(key);
   }
+  if (kinds.has('fetch')) for (const key of ['wasi_snapshot_preview1:clock_time_get', 'fastly_async_io:select', 'fastly_http_req:pending_req_poll_v2', 'fastly_http_resp:close', 'fastly_http_body:close']) keys.add(key);
   if (planRequiresFetchBodyRead(plan)) keys.add('fastly_http_body:read');
   if (kinds.has('config.get')) for (const key of ['fastly_config_store:open', 'fastly_config_store:get']) keys.add(key);
   const gripAuthenticationRequired = kinds.has('grip.broadcast')
@@ -2055,6 +2056,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-request-headers.js').runtimeSource(),
     require('./native-header-lookup.js').runtimeSource(),
     require('./native-fetch-errors.js').runtimeSource(),
+    require('./native-fetch-deadlines.js').runtimeSource(plan),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
     portableSource,
@@ -2065,6 +2067,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = require('./native-request-headers.js').instrument(source, applicationErrors.enabled(plan), /\bhost_request_headers\(/.test(portableSource));
   source = require('./native-header-lookup.js').instrument(source);
   source = require('./native-fetch-errors.js').instrument(source);
+  source = require('./native-fetch-deadlines.js').instrument(source, plan);
   source = require('./native-request-body.js').instrument(source, applicationErrors.enabled(plan));
   if (packageApplication.enabled(plan)) source = packageApplication.instrument(source);
   source = effectInvocations.instrument(source);
@@ -2145,7 +2148,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       providerNeutralInput: true,
       javascriptRuntime: false,
       jsComputeRuntime: false,
-      wasi: bindings.maxDurationMs !== undefined || hasJwt || hasSign || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
+      wasi: plan.effects.some(effect => effect.kind === 'fetch') || bindings.maxDurationMs !== undefined || hasJwt || hasSign || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
       effects: FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.join(', '),
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',

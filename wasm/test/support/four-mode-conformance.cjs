@@ -730,7 +730,9 @@ async function buildFourModeProof() {
     { cwd: repoRoot, bindings }
   );
   assert.equal(targetCompiled.inspection.importModules.includes('fastly_log'), true);
-  assert.equal(targetCompiled.inspection.importModules.some((name) => /pulse_host|wasi|js/i.test(name)), false);
+  assert.equal(targetCompiled.inspection.importModules.some((name) => /pulse_host|js/i.test(name)), false);
+  assert.deepEqual(targetCompiled.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
+    ['wasi_snapshot_preview1:clock_time_get'], 'only the fetch deadline clock is permitted');
   const targetExecutions = [];
   for (const [index, testCase] of projects['node-native'].tests.entries()) {
     const result = assertTargetExecution(targetCompiled, testCase, cases[index].comparable, bindings);

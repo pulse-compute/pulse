@@ -984,7 +984,24 @@ provider sends an explicit `502 Bad Gateway`. An exhausted Router error lane
 retains its `500 Internal Server Error`. HTTP response status codes do not become
 transport failures; invalid ABI arguments and handles remain terminal. This
 provider-specific contract does not widen the portable data-error catalog or
-supply new timeout, retry or rollback guarantees.
+supply retry or rollback guarantees.
+
+Fastly Native `timeoutMs` additionally bounds a fetch's response-header wait and
+enters that error lane as `PULSE_FETCH_TIMEOUT` (unhandled: HTTP 504). It accepts
+positive numeric safe integers, defaults to disabled when omitted, starts at
+admission before preparation, and expires at `elapsed >= timeoutMs`. Invalid
+values fail before dispatch with HTTP 400. The provider observes parallel fetch
+headers independently, preserving timely later-slot responses while an earlier
+slot is pending. Group recovery still waits for other admitted members. Header
+arrival ends the fetch deadline; it does not implicitly read or await a body.
+The earlier whole-request budget remains terminal and wins over recovery.
+
+The Fastly pending-request ABI has no cancellation hostcall. Expired effects
+settle once; their handles are retained in a bounded invocation-owned retirement
+list and polled nonblocking at cleanup. Completed response/body handles are
+closed; unready handles remain host-owned and origin work may continue after
+the invocation. No guest background task, implicit retry, cancellation proof or
+rollback guarantee is introduced. See the [operation deadline contract](../concepts/effects-and-continuations.md#timeouts-have-two-scopes).
 
 See [Effects and continuations](../concepts/effects-and-continuations.md),
 [routing](../guides/routing.md), and

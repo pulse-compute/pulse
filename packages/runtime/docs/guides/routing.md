@@ -206,8 +206,12 @@ dispatch. Without a registered error handler, these failures return
 `502 Bad Gateway`; forwarding through an exhausted error lane returns the usual
 `500 Internal Server Error`. HTTP error status responses remain ordinary fetch
 results. Invalid ABI arguments or handles remain terminal provider faults.
-This provider-specific recovery does not add timeout classification or change
-other targets' recovery catalogs.
+A per-fetch `timeoutMs` header deadline enters the same error lane as
+`PULSE_FETCH_TIMEOUT`, with an explicit 504 when no error handler is registered.
+The whole-request `maxDurationMs` cutoff remains terminal. Invalid timeout options
+fail before dispatch with HTTP 400. See [fetch deadline semantics and resource
+ownership](../concepts/effects-and-continuations.md#timeouts-have-two-scopes).
+These Fastly-specific recoveries do not change other targets' recovery catalogs.
 
 Recovery moves forward in registration order, including through mounted
 routers. A failed handler never resumes. An error handler can return a response,
