@@ -94,6 +94,30 @@ function reusableResult(result) {
 
 const fingerprint = (value) => hash(canonical(value));
 
+// Read-only hints for the early resume explanation. Never restore outputs or
+// use this result to admit reuse: readCheckpointReceipt/tryReuse remain authoritative.
+function inspectCheckpointMetadata({ directory, id, context, now = Date.now() }) {
+  try {
+    const filename = ordinaryPath(path.join(directory, `${hash(id)}.json`));
+    const stat = fs.lstatSync(filename);
+    if (!stat.isFile() || stat.nlink !== 1 || stat.size > 8 * 1024 * 1024) throw new Error('Unreadable metadata');
+    const envelope = JSON.parse(fs.readFileSync(filename, 'utf8'));
+    const receipt = envelope.receipt;
+    if (!receipt || envelope.sha256 !== fingerprint(receipt) || receipt.schema !== SCHEMA || receipt.id !== id ||
+        receipt.contextHash !== fingerprint(context) || fingerprint(receipt.context) !== receipt.contextHash) throw new Error('Invalid metadata');
+    const completed = ['passed', 'failed', 'interrupted'].includes(receipt.result?.status);
+    const passed = receipt.result?.status === 'passed';
+    let reason = 'pending-full-verification';
+    const created = Date.parse(receipt.createdAt), expires = Date.parse(receipt.expiresAt);
+    if (!reusableResult(receipt.result)) reason = 'failed-or-incomplete-proof';
+    else if (!Number.isFinite(created) || !Number.isFinite(expires) || created > now || expires <= now || expires > created + RETENTION_MS) reason = 'expired-or-invalid-retention';
+    return { completed, passed, eligible: reason === 'pending-full-verification', reason };
+  } catch (error) {
+    return { completed: false, passed: false, eligible: false,
+      reason: error.code === 'ENOENT' ? 'missing-checkpoint' : 'invalid-or-unreadable-metadata' };
+  }
+}
+
 function readCheckpointReceipt({ receiptPath, context, definition, dependencies, requirePassed = true }) {
   object(context, 'Expected checkpoint context');
   if (typeof receiptPath !== 'string' || !path.isAbsolute(receiptPath)) throw new Error('Checkpoint receipt path must be absolute');
@@ -275,4 +299,4 @@ function createCheckpointStore({ directory, previousDirectory = null, context, e
   return { record, tryReuse, describe };
 }
 
-module.exports = { createCheckpointStore, readCheckpointReceipt, fingerprint, RETENTION_MS };
+module.exports = { createCheckpointStore, readCheckpointReceipt, inspectCheckpointMetadata, fingerprint, RETENTION_MS };

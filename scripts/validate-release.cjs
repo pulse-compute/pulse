@@ -263,6 +263,11 @@ async function main(argv = process.argv.slice(2)) {
     sealLock = recoveryTools.acquireSealLock(repoRoot, progress.directory);
     progress.claimLatest();
     const previousDirectory = options.resume ? recoveryTools.previousAttempt(repoRoot, options.resume) : null;
+    if (previousDirectory) {
+      const diagnostics = recoveryTools.resumeDiagnostics(repoRoot, previousDirectory, candidate, options);
+      progress.persist({ resumeDiagnostics: diagnostics });
+      recoveryTools.printResumeDiagnostics(diagnostics);
+    }
     progress.persist({ candidate, currentStep: 'prerequisites' });
     externalFastly = fastlyAvailability();
     progress.persist({ externalFastly });
@@ -361,6 +366,11 @@ async function main(argv = process.argv.slice(2)) {
       const { createCheckpointStore, fingerprint } = require('./release-checkpoints.cjs');
       const availability = externalFastly.status === 'passed' ? { ...externalFastly, status: 'available' } : externalFastly;
       const context = recoveryTools.createContext(repoRoot, candidate, options, availability);
+      if (previousDirectory) {
+        const changed = recoveryTools.resumeContextChanges(previousDirectory, context);
+        progress.persist({ resumeContext: { stage: 'after-fresh-setup', changed, taskVerification: 'pending' } });
+        process.stdout.write(`[pulse:release] Resume context: ${changed.length ? `changed (${changed.join(', ')}); checkpoints will be revalidated and work rerun` : 'matched; each task still requires full proof/output verification'}.\n`);
+      }
       if (qualifiedFastlyInput) assert.equal(context.toolchain.fastlySha256, qualifiedFastlyInput.binarySha256,
         'Fastly executable changed after early reality evidence');
       recovery = { schemaVersion: recoveryTools.SCHEMA, directory: progress.directory, previousDirectory,
@@ -380,6 +390,7 @@ async function main(argv = process.argv.slice(2)) {
       progress.persist({ steps });
       process.stdout.write('[pulse:release] Reused verified exact package set from the preceding attempt.\n');
     } else {
+      if (previousDirectory && reusedPack) process.stdout.write(`[pulse:release] shared-pack: executing again; ${JSON.stringify(reusedPack.reason)}.\n`);
       const step = await runStep(steps, 'shared-pack', 'Construct the exact package set once for isolated consumers', process.execPath,
         ['scripts/release-shared-pack.cjs', '--out', sharedPackDirectory,
           '--source-checks', sourceChecksFile, '--source-checks-sha256', sourceChecksSha256],

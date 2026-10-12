@@ -589,6 +589,9 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
     if (state.recovery) {
       state.recovery.reusedTasks = state.results.filter(item => item.execution === "reused").map(item => item.name);
       state.recovery.executedTasks = state.results.filter(item => item.execution === "executed").map(item => item.name);
+      state.recovery.counts = { selected: selection.selected.length, completed: state.results.length,
+        reused: state.recovery.reusedTasks.length, executed: state.recovery.executedTasks.length,
+        remaining: selection.selected.length - state.results.length };
     }
     persist();
   };
@@ -611,6 +614,7 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       state.recovery.reusedTasks.push(name);
       console.log(`[pulsewasm] ${name}: reused verified same-candidate checkpoint`);
     } else {
+      if (recoveryConfig?.previousDirectory) console.log(`[pulsewasm] ${name}: executing again; ${JSON.stringify(reuse.reason)}`);
       running.get(name).phase = 'execution';
       refresh();
       result = await runTask(name, task, {
@@ -705,6 +709,10 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
   } finally {
     signal?.removeEventListener('abort', abort);
     running.clear(); state.currentTaskPhase = null; refresh();
+    if (state.recovery) {
+      const counts = state.recovery.counts;
+      console.log(`[pulsewasm] Recovery: ${counts.completed}/${counts.selected} completed, ${counts.reused} verified reuses, ${counts.executed} executed, ${counts.remaining} remaining.`);
+    }
   }
   return state.results;
 }

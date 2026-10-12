@@ -5,7 +5,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { createCheckpointStore, readCheckpointReceipt, fingerprint, RETENTION_MS } = require('../../../scripts/release-checkpoints.cjs');
+const { createCheckpointStore, readCheckpointReceipt, inspectCheckpointMetadata, fingerprint, RETENTION_MS } = require('../../../scripts/release-checkpoints.cjs');
 
 const passed = { status: 'passed', exitCode: 0, cleanup: { status: 'passed' }, remainingProcessTree: [], error: null };
 let assertions = 0;
@@ -241,6 +241,35 @@ fixture(({ attempt, specification, context }) => {
   const first = attempt('first').record({ ...specification, result: passed });
   rewriteReceipt(first.receiptPath, (receipt) => { receipt.artifacts[0].key = '../escape'; }, true);
   assert.throws(() => readCheckpointReceipt({ receiptPath: first.receiptPath, context }), /artifact identity/);
+});
+
+fixture(({ root, attempt, specification, context }) => {
+  const first = attempt('first').record({ ...specification, result: passed });
+  const input = { directory: path.join(root, 'first'), id: specification.id, context };
+  const bytes = fs.readFileSync(first.receiptPath);
+  assert.deepEqual(inspectCheckpointMetadata(input), { completed: true, passed: true, eligible: true, reason: 'pending-full-verification' });
+  assert.deepEqual(fs.readFileSync(first.receiptPath), bytes);
+  // Metadata may look eligible even when retained bytes are bad. The actual
+  // reuse path must still reject them, with no diagnostic-to-proof shortcut.
+  fs.writeFileSync(snapshotPath(root, specification.id, 'output', 'module.wasm'), 'changed bytes');
+  assert.equal(inspectCheckpointMetadata(input).eligible, true);
+  assert.equal(attempt('second', 'first').tryReuse(specification).reused, false);
+  assert.equal(inspectCheckpointMetadata({ ...input, now: Date.parse(first.receipt.expiresAt) }).reason, 'expired-or-invalid-retention');
+  fs.writeFileSync(first.receiptPath, '{invalid');
+  assert.equal(inspectCheckpointMetadata(input).reason, 'invalid-or-unreadable-metadata');
+  fs.rmSync(first.receiptPath);
+  assert.equal(inspectCheckpointMetadata(input).reason, 'missing-checkpoint');
+  fs.symlinkSync(path.join(root, 'report.json'), first.receiptPath);
+  assert.equal(inspectCheckpointMetadata(input).reason, 'invalid-or-unreadable-metadata');
+});
+
+fixture(({ root, attempt, specification, context }) => {
+  attempt('first').record({ ...specification, result: { ...passed, cleanup: { status: 'failed' } } });
+  assert.equal(inspectCheckpointMetadata({ directory: path.join(root, 'first'), id: specification.id, context }).reason, 'failed-or-incomplete-proof');
+  assert.equal(attempt('second', 'first').tryReuse(specification).reused, false);
+  attempt('interrupted').record({ ...specification, result: { ...passed, status: 'interrupted', interruptedBy: 'SIGTERM' } });
+  assert.deepEqual(inspectCheckpointMetadata({ directory: path.join(root, 'interrupted'), id: specification.id, context }),
+    { completed: true, passed: false, eligible: false, reason: 'failed-or-incomplete-proof' });
 });
 
 assert.equal(fingerprint({ z: 1, a: { b: 2, a: 1 } }), fingerprint({ a: { a: 1, b: 2 }, z: 1 }));
