@@ -51,11 +51,12 @@ remains in the explicit reality profile.
 | Artifact | Default build | `--experimental-native-size` | Reduction |
 |---|---:|---:|---:|
 | `canonical-native.wasm` | 5.6 KiB (5,695 bytes) | 5.1 KiB (5,181 bytes) | 9.0% |
-| `bin/main.wasm` | 46.1 KiB (47,214 bytes) | 38.4 KiB (39,329 bytes) | 16.7% |
+| `bin/main.wasm` | 52.6 KiB (53,832 bytes) | 41.8 KiB (42,779 bytes) | 20.5% |
 
-The executable documentation gate rebuilds and measures both variants on
-`1.0.0-beta.7`. These are uncompressed on-disk sizes, not transfer sizes or
-platform limits.
+The executable documentation gate rebuilds and measures both variants from this
+checkout. The provider artifact includes the Fastly header, transport recovery,
+fetch deadline, and structured logging fixes. These are uncompressed on-disk
+sizes, not transfer sizes or platform limits.
 
 ## Handler
 
