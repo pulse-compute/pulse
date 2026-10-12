@@ -8,7 +8,7 @@ const { execFileSync } = require('node:child_process');
 const release = require('../release/pulse-release-manifest.json');
 const producer = require('./release-pr-qualification.cjs');
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const git = (root, args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', timeout: 10000 }).trim();
+const git = (root, args) => execFileSync('git', args, { cwd: root, encoding: 'utf8', timeout: 10000, stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 const positive = value => assert(Number.isSafeInteger(value) && value > 0, 'Invalid Actions identity');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const SCHEMA = 'pulse.release-consumption.v1';
@@ -78,11 +78,26 @@ async function resolveQualification({ github, context, releaseTag }) {
       base: { ref: pr.base.ref, repo: { full_name: repository } }, head: { sha: pr.head.sha, repo: { full_name: repository } } } };
 }
 
+function ensureQualifiedHead(root, head) {
+  assert.match(head || '', /^[a-f0-9]{40}$/, 'Invalid qualified PR head');
+  try { git(root, ['cat-file', '-e', `${head}^{commit}`]); }
+  catch {
+    // Rebase/squash and branch deletion can leave the original PR head outside
+    // the tagged checkout's reachable history. Fetch only the authenticated SHA;
+    // do not check out or execute that source or alter the release tag.
+    execFileSync('git', ['fetch', '--no-tags', 'origin', head], { cwd: root, encoding: 'utf8', timeout: 120000, stdio: ['ignore', 'pipe', 'pipe'] });
+    git(root, ['cat-file', '-e', `${head}^{commit}`]);
+  }
+}
+
 // Run after download, and again after protected approval. The pinned selection
 // must still be the current eligible run/attempt/artifact before any side effect.
 async function consume({ github, context, releaseTag, selection, directory, root = process.cwd(), bindingFile }) {
   const current = await resolveQualification({ github, context, releaseTag });
   assert.deepEqual(current, selection, 'Qualification was superseded or changed after selection');
+  const parents = git(root, ['show', '-s', '--format=%P', selection.commit]).split(' ');
+  const qualifiedBase = read(path.join(directory, 'qualification.json')).base;
+  if (parents.length === 1 && parents[0] !== qualifiedBase) ensureQualifiedHead(root, selection.pullRequest.head.sha);
   const binding = verifyConsumption({ root, directory, selection });
   fs.writeFileSync(bindingFile, `${JSON.stringify(binding, null, 2)}\n`, { flag: 'wx' });
   return binding;
@@ -142,4 +157,4 @@ function validateBoundSource({ root, bindingFile, manifestFile, source, kind, en
   return binding;
 }
 
-module.exports = { SCHEMA, resolveQualification, consume, verifyConsumption, validateBoundSource };
+module.exports = { SCHEMA, resolveQualification, ensureQualifiedHead, consume, verifyConsumption, validateBoundSource };

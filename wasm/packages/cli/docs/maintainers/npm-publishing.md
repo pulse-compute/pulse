@@ -14,7 +14,7 @@ The release path is:
 ```text
 prepared release PR into main
 → Release qualification: build, acceptance and retained docs candidate
-→ review, merge/squash and exact v<version> tag
+→ review, verified merge/squash/linear rebase and exact v<version> tag
 → operation=publish: automatic qualified artifact discovery
 → blocking read-only name audit and publication plan
 → protected human approval
@@ -105,6 +105,16 @@ head, base or merge candidate requires a fresh run. Drafts do not qualify; a
 same-version documentation/workflow PR returns an explicit non-release result
 without running the expensive seal. Product changes without a new version fail.
 
+For a release-control repair before publication, add exactly one standalone
+`Release qualification: required` line to the PR body before opening, reopening
+or synchronizing the PR. This opts a same-version PR into the complete seal and
+artifact capture; it never bypasses version-preparation checks or allows replacing
+published bytes. An ordinary body edit does not start qualification. The request
+is checked again at the end, so changing it during a run invalidates that run.
+Qualify the final repair tree and tag its reviewed merge result. An earlier seal
+cannot be relabeled to include the repair, and historical tags keep their original
+workflow code.
+
 The controller runs one fresh `source-checks` stage after dependency setup and
 before compilation: maintainer and publication controls, package/catalog and
 source documentation validation, generated snippets/references and the site.
@@ -127,10 +137,17 @@ is not permission to publish and does not waive dedicated K4 evidence or review.
 The binding contract supports a reviewed merge commit or a single squash commit
 whose first parent is the qualified base and whose tree is the qualified merge
 tree. A two-parent merge also requires the qualified PR head as its second parent.
+It also supports a linear rebase when both the original PR chain and the rewritten
+chain start at that exact base, have the same number of commits (at most 1000),
+and preserve every intermediate tree in order. Commit metadata and IDs may change;
+extra, dropped, reordered or content-modified commits fail. A one-commit rebase is
+verified by the same direct-parent rule as a squash. Consumers fetch the exact
+authenticated original PR head if it is absent from the tagged checkout, without
+checking out or executing it.
 The merged PR and tag must identify that exact commit. The original source in
 reports and bundles stays unchanged; a consumer records a separate merge binding.
 A different base, tree, head or tag fails even when some file contents match.
-Multi-commit rebase chains and merge queues are outside this contract.
+Rebases of merge-heavy PR histories and merge queues remain outside this contract.
 
 Both tagged consumers resolve the merged PR automatically. The latest run and
 its current attempt must pass; an older success never masks a newer failure.
