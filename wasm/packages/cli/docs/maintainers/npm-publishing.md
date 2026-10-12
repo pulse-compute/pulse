@@ -75,12 +75,12 @@ HEAD matches the current remote `main` commit and the checkout is clean:
 git fetch origin main --tags
 git switch main
 git pull --ff-only origin main
-npm run release:tag -- 1.0.0-beta.7
-npm run release:tag -- 1.0.0-beta.7 --write
+npm run release:tag -- 1.0.0-beta.8
+npm run release:tag -- 1.0.0-beta.8 --write
 ```
 
 The first invocation checks and prints the plan. `--write` creates an annotated
-local `v1.0.0-beta.7` tag and prints the exact push and workflow commands for the
+local `v1.0.0-beta.8` tag and prints the exact push and workflow commands for the
 release owner. It never pushes, dispatches publication, claims a seal, or replaces
 an existing tag. A matching tag is idempotent; conflicting commits, lightweight
 tags and differing local/remote tag objects fail closed. Run those printed
@@ -258,8 +258,8 @@ For example:
 
 ```bash
 gh workflow run npm-publish.yml \
-  --ref v1.0.0-beta.7 \
-  -f release_tag=v1.0.0-beta.7 \
+  --ref v1.0.0-beta.8 \
+  -f release_tag=v1.0.0-beta.8 \
   -f operation=publish -f run_smoke=true
 ```
 
@@ -379,7 +379,7 @@ release selects `run_smoke=true` to execute both. For a manual replay, use the
 checkout for the exact published release:
 
 ```bash
-node wasm/test/mcp/smoke-context-registry.cjs 1.0.0-beta.7
+node wasm/test/mcp/smoke-context-registry.cjs 1.0.0-beta.8
 ```
 
 This smoke installs the exact published CLI into a fresh temporary directory,
