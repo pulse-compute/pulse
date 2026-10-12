@@ -144,13 +144,16 @@ function assertManagedWorker(directory, owner, candidate, layoutFile) {
 // Scheduling hints affect order only. The registry remains coverage authority.
 // Ordering weights are not deadlines or reported durations. Check independent
 // worker packaging early, before spending the compiler lane.
+const EARLY_CHECKS = new Set(['suite-shape', 'package-exports', 'boundaries', 'workspace-hygiene',
+  'release-feature-acceptance', 'release-runtime-policy']);
 const ORDER_WEIGHT = { 'release-artifact-determinism': 1000, 'jwt-rs256': 284, 'jwt-installed-workflow': 250, 'clean-machine-acceptance': 190,
   'schema-codecs': 95, 'fastly-native-platform-capabilities': 75, 'cli-entities-installed-workflow': 69,
   'fastly-entities-native-workflow': 57, 'cli-project-workflow': 50, 'cli-schema-json-workflow': 47,
   'events-cli-workflow': 42, 'canonical-native-wasm': 40, 'bounded-read-loops': 36, 'pure-guarded-arguments': 34 };
 function scheduling(name, task) {
   const hints = task.scheduling || {};
-  return { cost: hints.cost || ORDER_WEIGHT[name] || 10, resources: hints.resources || [],
+  return { priority: EARLY_CHECKS.has(name) ? 2 : name === 'str02b-installed' ? 1 : 0,
+    cost: hints.cost || ORDER_WEIGHT[name] || 10, resources: hints.resources || [],
     compiler: hints.compiler === undefined ? !['unit', 'javascript'].includes(task.evidence) : hints.compiler,
     exclusive: hints.exclusive === true || /benchmark|measure|timing/i.test(`${name} ${task.description}`),
     after: hints.after || [] };

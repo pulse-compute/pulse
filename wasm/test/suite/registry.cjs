@@ -40,7 +40,7 @@ const tasks = Object.freeze({
     description: 'RPT8-03 bounded graph diagnostics, exhaustive direct-call joins, privacy and passive replay', timeoutMs: 60000
   }),
   'cli-report-size-evidence': nodeTask('test/cli/assert-report-size-evidence.cjs', { description: 'PRPT-03 physical size reconciliation and attribution rejection' }),
-  'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
+  'cli-report-capture-proof': nodeTask('test/cli/assert-report-capture-proof.cjs', { scheduling: { compiler: true }, description: 'PRPT-03 passive final capture noninterference', timeoutMs: 120000 }),
   'cli-report-entry-proof': nodeTask('test/cli/assert-report-entry-proof.cjs', {
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-01 production entry/stage/helper attribution and byte-preserving capture'
@@ -250,8 +250,8 @@ const tasks = Object.freeze({
     description: 'Finite UTF-8 transform Native/JavaScript ownership, bounds, demand and HTTP qualification',
     timeoutMs: 120000, evidence: 'native'
   }),
-  'node-launcher': nodeTask('test/runtime/assert-node-launcher.cjs', { timeoutMs: 180000, description: 'NODE-01 public Node launcher, budgets, readiness, drain and restart' }),
-  'node01-installed': nodeTask('test/runtime/node01-installed.cjs', { timeoutMs: 300000, description: 'NODE-01 exact installed public launcher acceptance' }),
+  'node-launcher': nodeTask('test/runtime/assert-node-launcher.cjs', { scheduling: { compiler: true }, timeoutMs: 180000, description: 'NODE-01 public Node launcher, budgets, readiness, drain and restart' }),
+  'node01-installed': nodeTask('test/runtime/node01-installed.cjs', { scheduling: { compiler: true }, timeoutMs: 300000, description: 'NODE-01 exact installed public launcher acceptance' }),
   'str03b-installed': nodeTask('test/runtime/str03b-installed.cjs', {
     timeoutMs: 360000, evidence: 'external',
     description: 'STR-03B exact installed Node Native/JavaScript output, CLI, real sockets and controlled writer qualification'
@@ -542,8 +542,8 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'Node/Fastly Native/JavaScript semantic parity and target integrity'
   }),
-  'ast02d-installed': nodeTask('test/assets/ast02d-installed.cjs', { timeoutMs: 300000, description: 'AST-02D isolated installed Native embedded blobs on Node and Fastly ABI fixtures' }),
-  'assets-native-embedded': nodeTask('test/assets/assert-native-embedded.cjs', { timeoutMs: 90000, description: 'AST-02D Native embedded manifest admission and binary HTTP semantics' }),
+  'ast02d-installed': nodeTask('test/assets/ast02d-installed.cjs', { scheduling: { compiler: true }, timeoutMs: 300000, description: 'AST-02D isolated installed Native embedded blobs on Node and Fastly ABI fixtures' }),
+  'assets-native-embedded': nodeTask('test/assets/assert-native-embedded.cjs', { scheduling: { compiler: true }, timeoutMs: 90000, description: 'AST-02D Native embedded manifest admission and binary HTTP semantics' }),
   'ast02b-installed': nodeTask('test/assets/ast02b-installed.cjs', {
     timeoutMs: 180000, evidence: 'external',
     description: 'Isolated exact-tarball embedded Assets manifest, HTTP and type acceptance'
@@ -1110,6 +1110,7 @@ const tasks = Object.freeze({
     description: 'publishable package manifests and tarballs'
   }),
   'release-artifact-determinism': nodeTask('test/release/assert-artifact-determinism.cjs', {
+    scheduling: { compiler: false }, // Independent packing/site builds use existing compiled outputs.
     evidence: 'release',
     timeoutMs: 600000,
     description: 'byte-identical package and documentation artifacts'
@@ -1237,7 +1238,7 @@ const tasks = Object.freeze({
     evidence: 'unit',
     description: 'installed feature gate coverage and exact candidate report rejection'
   }),
-  's3-body-installed': nodeTask('test/s3/s3-body-installed.cjs', {
+  's3-body-installed': nodeTask('test/s3/s3-body-installed.cjs', { scheduling: { compiler: true },
     timeoutMs: 300000, description: 'installed S3 binary bodies on Node Native/JavaScript and Fastly Native ABI fixtures'
   }),
   'release-seal-lifecycle': nodeTask('test/release/assert-release-seal-lifecycle.cjs', {
