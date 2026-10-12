@@ -134,6 +134,19 @@ Dynamic backends are disabled by default. Map every known origin to a named back
 
 Secret values are never included raw in trace output, errors, snapshots, or CLI project JSON.
 
+Fastly Native conditional KV reads and writes redact object field names as
+complete quoted JSON tokens in managed logs. A field named `id` therefore does
+not alter unrelated structured metric keys such as `considered` or `invalidAcks`,
+and numeric fields remain numeric. KV string values, lookup keys, generation
+tokens, and known Secret Store values retain substring redaction. Keep operational
+observations separate from private payloads: redacting a payload does not preserve
+its schema or distinguish fields that collapse to the same redacted name.
+
+Logging uses the provider-owned `stdout` endpoint on a best-effort basis. An
+unavailable or rejected endpoint is a separate sink failure; proving correct
+emitted log bytes with an injected Fastly ABI host does not prove that Viceroy or
+a deployed service accepts that endpoint.
+
 For `target: 'native'`, `pulse build` compiles the generated Compute package to
 direct-host-ABI `bin/main.wasm`. For `target: 'javascript'`, it emits the
 deterministic source/deployment closure consumed by the pinned Fastly JavaScript
