@@ -393,7 +393,9 @@ async function main() {
     assert.doesNotMatch(sourceEntry, /js-compute-runtime|Promise/);
     const fastlyImports = WebAssembly.Module.imports(new WebAssembly.Module(fastlyWasm));
     assert.ok(fastlyImports.some((entry) => entry.module === 'fastly_abi' && entry.name === 'init'));
-    assert.equal(fastlyImports.some((entry) => /pulse_host|wasi|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false);
+    assert.equal(fastlyImports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false);
+    assert.deepEqual(fastlyImports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
+      ['wasi_snapshot_preview1:clock_time_get'], 'only the fetch deadline clock is permitted');
 
     const experimentalFastlyBuild = parseJson(run([
       'build',

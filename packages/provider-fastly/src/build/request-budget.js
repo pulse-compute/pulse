@@ -23,7 +23,7 @@ function instrumentRequestBudget(input, duration, plan) {
   replace('function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {', `function __pulse_fastly_resolve_effect(effectIndex: i32): i32 {
   if (!__request_check(effectIndex)) return 0;
   const kind = __pulse_fastly_effect_kind(effectIndex);
-  if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && kind != 12 && kind != 13 && kind != 14 && kind != 21 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
+  if (unchecked(__pulse_fastly_pending_mode[effectIndex]) == PULSE_FASTLY_PENDING_ASYNC && !(kind == 1 && __pulse_fetch_has_deadlines()) && kind != 12 && kind != 13 && kind != 14 && kind != 21 && ${plan.effects.filter(e=>e.kind.startsWith('kv.')&&['kv.getVersioned','kv.insertIfAbsent','kv.compareAndSwap'].includes(e.kind)).map(e=>'effectIndex != '+plan.effects.indexOf(e)).join(' && ')||'true'}) {
     if (!__request_wait(unchecked(__pulse_fastly_pending[effectIndex]), effectIndex)) return 0;
   }`);
   replace('    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();', '    if (!__request_wait(handle, effectIndex)) return "";\n    const buffer = new Uint8Array(PULSE_FASTLY_BUFFER_BYTES), read = __pulse_fastly_out_i32();');
@@ -40,6 +40,8 @@ function instrumentRequestBudget(input, duration, plan) {
   if (source.includes('__kv_deadline[index] = start +')) replace('__kv_deadline[index] = start + i64(__KV_timeoutMs) * 1000000;', '__kv_deadline[index] = min<i64>(__request_deadline, start + i64(__KV_timeoutMs) * 1000000);');
   if (source.includes('__s3_deadlines[index] = start +')) replace('__s3_deadlines[index] = start + i64(binding.timeout) * 1000000;', '__s3_deadlines[index] = min<i64>(__request_deadline, start + i64(binding.timeout) * 1000000);');
   if (source.includes('function __pulse_fastly_write_binary(')) replace('const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) {', 'const written = new StaticArray<i32>(1); let offset = 0;\n  while (offset < data.length) { if (!__request_check()) return 1;');
+  replace('function __pulse_fetch_request_check(index: i32): bool { return true }', 'function __pulse_fetch_request_check(index: i32): bool { return __request_check(index) }');
+  replace('function __pulse_fetch_request_remaining(): i32 { return 2147483647 }', 'function __pulse_fetch_request_remaining(): i32 { return __request_remaining() }');
   return source + '\n' + fs.readFileSync(path.join(__dirname,'request-budget.as.ts'),'utf8');
 }
 module.exports = {instrumentRequestBudget};

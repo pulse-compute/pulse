@@ -28,11 +28,14 @@ function assertNativePlatformModule(name, compiled, expectedModules, forbiddenMo
   assert.equal(compiled.manifest.policy.platformCapabilities, options.platformCapabilities !== false, `${name} platform capability policy`);
   assert.equal(compiled.manifest.policy.javascriptRuntime, false, `${name} no JavaScript runtime`);
   assert.equal(compiled.manifest.policy.jsComputeRuntime, false, `${name} no js-compute-runtime`);
-  assert.equal(compiled.manifest.policy.wasi, false, `${name} no WASI`);
+  const fetchClock = compiled.plan.effects.some(effect => effect.kind === 'fetch');
+  assert.equal(compiled.manifest.policy.wasi, fetchClock ? 'clock_time_get only' : false, `${name} bounded WASI policy`);
   assert.equal(compiled.inspection.valid, true, `${name} valid Wasm`);
   assert.equal(compiled.inspection.magic, '0061736d01000000', `${name} Wasm magic`);
   assert.ok(compiled.wasm.length > 1024 && compiled.wasm.length < platform.FASTLY_NATIVE_PLATFORM_CAPABILITIES_MAX_WASM_BYTES, `${name} compact native Wasm`);
-  assert.equal(compiled.inspection.imports.some((entry) => entry.module === 'env' || /pulse_host|wasi|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${name} excludes env.abort, the portable host, WASI, and JavaScript runtime imports`);
+  assert.equal(compiled.inspection.imports.some((entry) => entry.module === 'env' || /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${name} excludes env.abort, the portable host, and JavaScript runtime imports`);
+  assert.deepEqual(compiled.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
+    fetchClock ? ['wasi_snapshot_preview1:clock_time_get'] : [], `${name} imports only the required fetch deadline clock`);
   for (const moduleName of expectedModules) assert.ok(compiled.inspection.importModules.includes(moduleName), `${name} imports ${moduleName}`);
   for (const moduleName of forbiddenModules) assert.equal(compiled.inspection.importModules.includes(moduleName), false, `${name} excludes unrelated ${moduleName} imports`);
   const exportNames = new Set(compiled.inspection.exports.map((entry) => entry.name));
@@ -418,4 +421,6 @@ try {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
 
-require('./assert-fastly-transport-recovery.cjs').main().catch(error => { console.error(error); process.exitCode = 1; });
+require('./assert-fastly-transport-recovery.cjs').main()
+  .then(() => require('./assert-fastly-fetch-deadlines.cjs').main())
+  .catch(error => { console.error(error); process.exitCode = 1; });

@@ -149,7 +149,9 @@ async function main() {
     const wasmModule = new WebAssembly.Module(wasmBytes);
     const wasmImports = WebAssembly.Module.imports(wasmModule);
     const wasmExports = WebAssembly.Module.exports(wasmModule);
-    assert.equal(wasmImports.some((entry) => entry.module === 'env' || /pulse_host|wasi|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, 'real Fastly module must not import env.abort, pulse_host, WASI, or a JavaScript runtime');
+    assert.equal(wasmImports.some((entry) => entry.module === 'env' || /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, 'real Fastly module must not import env.abort, pulse_host, or a JavaScript runtime');
+    assert.deepEqual(wasmImports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
+      ['wasi_snapshot_preview1:clock_time_get'], 'fetch deadlines require only the monotonic WASI clock');
     assert.ok(wasmExports.some((entry) => entry.name === '_start' && entry.kind === 'function'));
     assert.ok(wasmExports.some((entry) => entry.name === 'pulse_crypto_hs256_verify' && entry.kind === 'function'));
     assert.ok(wasmExports.some((entry) => entry.name === 'pulse_crypto_sha256_digest' && entry.kind === 'function'));

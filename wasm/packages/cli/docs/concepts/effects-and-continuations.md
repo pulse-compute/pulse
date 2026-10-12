@@ -273,6 +273,29 @@ A fetch can have an operation timeout through `PulseFetchInit.timeoutMs`. The re
 - the operation timeout bounds one host operation;
 - the continuation TTL bounds how long compiled execution may remain suspended before resumption is rejected.
 
+On Fastly Native, `timeoutMs` must be a positive numeric safe integer. Omission
+leaves the per-fetch deadline disabled; it does not disable a configured
+`maxDurationMs`. Invalid values terminate with HTTP 400 before dispatch.
+The deadline starts at fetch admission, includes outbound preparation, and
+expires at `elapsed >= timeoutMs`. It bounds arrival of response headers.
+Once headers arrive, status/header inspection does not wait for the body;
+explicit body reads remain separate work under the whole-request budget.
+
+A fetch deadline enters `app.error` as `PULSE_FETCH_TIMEOUT`; without an error
+handler it returns `504 Gateway Timeout`. The earlier whole-request deadline
+remains terminal and takes priority over application recovery. Parallel fetches
+keep independent admission times and header outcomes. Recovery waits for the
+other admitted group members to settle, so one member's timeout does not bound
+the entire group; configure each member or use the whole-request budget.
+
+Fastly's pending-request ABI has no cancellation operation. Pulse retires an
+expired pending handle, settles the effect once, and never waits on it again.
+Invocation cleanup polls retired handles once without blocking and closes any
+completed response/body handles. Unready handles remain host-owned; already
+sent origin work may continue after the timeout or invocation. Pulse starts no
+background guest task and issues no automatic retry. A timeout is neither an
+ACK nor proof that a remote write did not happen.
+
 Project tests can set `continuationTtlMs` in a case inside the dedicated `tests/pulse.harness.ts` module for deterministic failure coverage.
 
 ## Managed async, not arbitrary async
