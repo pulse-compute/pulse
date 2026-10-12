@@ -177,7 +177,11 @@ per-name order, including empty values. Enumeration is lazy and bounded to
 name and value. An incomplete, malformed or oversized host result fails the
 request before later effects or a success response; it never returns a partial
 snapshot. This is a provider read limit, not a configurable HTTP ingress limit.
-`ctx.req.header(name)` retains its single-value lookup behavior.
+`ctx.req.header(name)` and fetched `response.header(name)` return the first value
+using a case-insensitive name lookup. An absent header returns `undefined`; a
+present empty value returns `""`. Native lookup hostcall failures or malformed
+host results terminate the request with an explicit 500 response before later
+effects, while preserving the original hostcall error for diagnostics.
 
 ### Fastly JavaScript
 
