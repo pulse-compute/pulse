@@ -22,12 +22,12 @@
     "directory": "node directory-service.cjs"
   },
   "dependencies": {
-    "@pulse-compute/entities": "1.0.0-beta.7",
-    "@pulse-compute/pulse": "1.0.0-beta.7",
-    "@pulse-compute/mcp": "1.0.0-beta.7"
+    "@pulse-compute/entities": "1.0.0-beta.8",
+    "@pulse-compute/pulse": "1.0.0-beta.8",
+    "@pulse-compute/mcp": "1.0.0-beta.8"
   },
   "devDependencies": {
-    "@pulse-compute/cli": "1.0.0-beta.7",
+    "@pulse-compute/cli": "1.0.0-beta.8",
     "typescript": "5.9.3"
   }
 }

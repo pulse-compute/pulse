@@ -1,12 +1,12 @@
 # `@pulse-compute/mcp`
 
 `@pulse-compute/mcp` is a supported Beta host extension for bounded MCP HTTP
-integration. Its synchronized candidate version is `1.0.0-beta.7`; registry
+integration. Its synchronized candidate version is `1.0.0-beta.8`; registry
 publication awaits the [release-owner handoff](../maintainers/npm-publishing.md#mcp-package-handoff).
 It has zero runtime dependencies and does not depend on the Pulse CLI or corpus.
 
 ```bash
-npm install @pulse-compute/mcp@1.0.0-beta.7
+npm install @pulse-compute/mcp@1.0.0-beta.8
 ```
 
 Use this command once the candidate has been published. Before publication, use
@@ -31,7 +31,7 @@ effects and output authority. Optional OAuth resource-server admission uses an
 external authorization server and authenticated introspection; the adapter does
 not issue tokens. Its fixed limits and redacted errors remain in force.
 
-The [package contract](https://github.com/pulse-compute/pulse/blob/v1.0.0-beta.7/packages/mcp/README.md) documents construction,
+The [package contract](https://github.com/pulse-compute/pulse/blob/v1.0.0-beta.8/packages/mcp/README.md) documents construction,
 limits, authorization, protocol versions and supported client qualification.
 There is no stdio transport, resource/prompt API, filesystem access or execution
 service in this package.
