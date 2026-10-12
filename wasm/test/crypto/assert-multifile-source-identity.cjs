@@ -83,17 +83,57 @@ async function main(options = {}) {
   const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
   function artifactFiles(directory) {
     const files = [];
+    const contents = new Map();
     function visit(dir) {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
         const file = path.join(dir, entry.name);
         assert.equal(entry.isSymbolicLink(), false);
         if (entry.isDirectory()) visit(file);
-        else files.push({ path: path.relative(directory, file), sha256: sha256(fs.readFileSync(file)) });
+        else {
+          const relative = path.relative(directory, file), bytes = fs.readFileSync(file);
+          contents.set(relative, bytes);
+          files.push({ path: relative, sha256: sha256(bytes) });
+        }
       }
     }
     visit(directory);
     assert.ok(files.length > 0);
-    return files;
+    // PERF-08 records measured durations. Verify the original hash chain before
+    // normalizing only those observations and their dependent links for comparison.
+    // Keep raw hashes in the evidence; executable artifacts remain byte-exact.
+    if (contents.has('pulse-report-inventory.json')) {
+      const inventoryFile = 'pulse-report-inventory.json', completionFile = 'pulse-report-completion.json';
+      const manifestFile = 'pulse-build.json';
+      const inventory = JSON.parse(contents.get(inventoryFile));
+      // Retained inventory is canonical JSON (sorted keys); preserve that order
+      // while verifying/rebinding its own evidence digest as well as file links.
+      assert.equal(contents.get(inventoryFile).toString(), JSON.stringify(inventory) + '\n');
+      const { evidenceHash, ...payload } = inventory;
+      assert.equal(evidenceHash.algorithm, 'sha256');
+      assert.equal(evidenceHash.value, sha256(JSON.stringify(payload)));
+      const completion = JSON.parse(contents.get(completionFile));
+      const manifest = JSON.parse(contents.get(manifestFile));
+      const link = file => ({ file, bytes: contents.get(file).length, sha256: sha256(contents.get(file)) });
+      assert.deepEqual(manifest.reportCompletion, link(completionFile));
+      const sidecar = completion.sidecars.find(row => row.file === inventoryFile);
+      assert.ok(sidecar, 'completion binds inventory');
+      assert.equal(sidecar.bytes, link(inventoryFile).bytes);
+      assert.equal(sidecar.sha256, link(inventoryFile).sha256);
+      const duration = value => { assert.ok(Number.isInteger(value) && value >= 0); return 0; };
+      const build = inventory.build;
+      assert.equal(build.version, 1);
+      build.totalDurationMs = duration(build.totalDurationMs);
+      if (build.compilationDurationMs !== null) build.compilationDurationMs = duration(build.compilationDurationMs);
+      for (const row of [...build.stages, ...build.compilers]) row.durationMs = duration(row.durationMs);
+      inventory.evidenceHash.value = sha256(JSON.stringify(payload));
+      const replace = (file, value) => contents.set(file, Buffer.from(JSON.stringify(value) + '\n'));
+      replace(inventoryFile, inventory);
+      Object.assign(sidecar, link(inventoryFile));
+      replace(completionFile, completion);
+      manifest.reportCompletion = link(completionFile);
+      replace(manifestFile, manifest);
+    }
+    return files.map(file => ({ ...file, comparisonSha256: sha256(contents.get(file.path)) }));
   }
   try {
     fs.cpSync(path.join(__dirname, '../fixtures/projects/multifile-digest'), path.join(cwd, 'src'), { recursive: true });
@@ -140,10 +180,13 @@ async function main(options = {}) {
           fs.rmSync(firstBuild.outDir, { recursive: true, force: true });
           const secondBuild = tc.buildProject(project);
           assert.equal(secondBuild.status, 'built');
-          assert.deepEqual(artifactFiles(secondBuild.outDir), firstFiles, `${profile}: regenerated artifacts match`);
+          const comparison = files => files.map(({ path, comparisonSha256 }) => ({ path, comparisonSha256 }));
+          assert.deepEqual(comparison(artifactFiles(secondBuild.outDir)), comparison(firstFiles),
+            `${profile}: regenerated artifacts match except measured build durations and their hash links`);
           if (profile === 'fastly-native') assert.equal(sha256(fs.readFileSync(path.join(firstBuild.outDir, 'bin/main.wasm'))), sha256(fastly.wasm));
           assert.match(inspection.compiler.sourceHash, /^[a-f0-9]{64}$/);
-          artifacts.push({ profile, sourceOrder: names, sourceHash: inspection.compiler.sourceHash, files: firstFiles });
+          artifacts.push({ profile, sourceOrder: names, sourceHash: inspection.compiler.sourceHash,
+            comparisonNormalization: 'build durations and dependent inventory/completion links only', files: firstFiles });
         }
       }
       const sites = node.compiled.metadata.effectSites.filter(site => site.kind === 'crypto.digestText');

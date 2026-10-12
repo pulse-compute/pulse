@@ -24,7 +24,8 @@ The fixture asserts these independently specified outcomes:
 - Distinct successful values at every site, a second set of response values in
   fresh instances, missing configuration and a valid zero-valued pending handle.
 - Malformed JSON and wrong-schema recovery with exact public codes/statuses and
-  provider error/stage/effect tuples; transport wait and send failures remain fatal.
+  provider error/stage/effect tuples; transport wait and send failures recover as
+  `PULSE_FETCH_NETWORK` under #251. Protocol/ABI wait and send failures remain fatal.
 - Every admitted site receives one positive, unique invocation ticket, settles
   exactly once in site order, and consumes its ticket before the real guest setter.
 - Grouped siblings all begin before settlement and drain before continuation or
@@ -63,7 +64,8 @@ first recoverable failure survives, the first fatal failure overrides recoverabl
 failures, a later recoverable failure cannot replace a fatal one, and siblings
 still drain exactly once. They are fault-injection evidence, not claims about
 where normal Router JSON decoding runs. Real two-transport-failure cases retain
-the first fatal error.
+the first recoverable network error. The fatal-priority probes use host status 3
+(protocol/ABI failure), which remains terminal under #251.
 
 Private ticket probes use the actual generated slot globals, ticket helpers and
 guest setter. They reject duplicate admissions; zero, wrong, out-of-range and
@@ -83,11 +85,14 @@ node wasm/scripts/run-wasm-tests.cjs --task fastly-driver-behavior-o09 --no-repo
 node wasm/test/runtime/compiler-efficiency/o09-driver-behavior.cjs --record
 ```
 
-[o09-evidence.json](o09-evidence.json) records terminal status, source/test
+[o09-evidence.json](o09-evidence.json) retains the historical pre-#251 baseline
+and records terminal status, source/test
 identities, toolchain versions, each fixture's production/diagnostic hashes,
 scenario outcomes, trace/event hashes and ticket/priority-probe summaries.
-The recorded run passed all 42 HTTP scenarios, 14 injected-priority scenarios
+That historical run passed all 42 HTTP scenarios, 14 injected-priority scenarios
 and four ticket-probe suites (42 rejected operations, 11 accepted settlements).
+The current beta.8 gate has 52 HTTP scenarios, including explicit fatal protocol
+wait/send and first-fatal-priority cases, and preserves the same priority and ticket-probe coverage.
 Timestamped runs under `wasm/.test-results/compiler-efficiency/o09-*` retain both
 binaries, complete traces/events and a running/passed/failed report. Failed
 attempts are preserved. The runner asserts behavior rather than pinning binary
