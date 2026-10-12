@@ -4,8 +4,13 @@ function enabled(plan) {
   return (plan.routing?.entries || []).some(entry => entry.kind === 'error');
 }
 
+// Fetch-only applications also drain failed groups before their terminal response.
+function settlementEnabled(plan) {
+  return enabled(plan) || (!plan.packages?.application && (plan.effects || []).some(effect => effect.kind === 'fetch'));
+}
+
 // Capture provider diagnostics before clearing them. A failed continuation is
-// drained once; only its application data error can enter the next Router lane.
+// drained once; only an admitted application error can enter the next Router lane.
 function runtimeSource(plan) {
   const jwt = ['TOKEN_REQUIRED', 'BEARER_INVALID', 'MALFORMED', 'LIMIT_EXCEEDED',
     'ALGORITHM_NOT_ALLOWED', 'KEY_INVALID', 'SIGNATURE_INVALID', 'CLOCK_INVALID',
@@ -14,6 +19,7 @@ function runtimeSource(plan) {
 let __pulse_application_schema: i32 = 0
 let __pulse_application_failed_schema: i32 = 0
 function __pulse_application_code(): string {
+  if (__pulse_fastly_last_error == PULSE_ERROR_TRANSPORT && __pulse_fetch_failed()) return "PULSE_FETCH_NETWORK"
   if (__pulse_fastly_last_error == PULSE_ERROR_REQUEST_BODY)
     return __pulse_fastly_error_stage == 21 ? "PULSE_BODY_TOO_LARGE" : "PULSE_REQUEST_BODY_INVALID_UTF8"
   if (__pulse_fastly_jwt_error > 0) {
@@ -40,7 +46,7 @@ function __pulse_application_clear(): void {
   __pulse_fastly_last_error = 0; __pulse_fastly_error_stage = 0; __pulse_fastly_error_effect = -1
   __pulse_fastly_jwt_error = 0; __pulse_application_failed_schema = 0
 }
-${(plan?.effects || []).length > 0 ? settlementSource() : ''}
+${(plan?.effects || []).length > 0 ? settlementSource(plan) : ''}
 function host_router_error_take(): i32 {
   if (__pulse_fastly_last_error == 0) return 0
   const code = __pulse_application_code()
@@ -52,7 +58,7 @@ function host_router_error_take(): i32 {
   const error = host_value_object()
   host_value_object_set(error, __pulse_fastly_string_value("code"), __pulse_fastly_string_value(code))
   host_value_object_set(error, __pulse_fastly_string_value("name"), __pulse_fastly_string_value("PulseApplicationError"))
-  host_value_object_set(error, __pulse_fastly_string_value("message"), __pulse_fastly_string_value("Pulse application data validation failed."))
+  host_value_object_set(error, __pulse_fastly_string_value("message"), __pulse_fastly_string_value(code == "PULSE_FETCH_NETWORK" ? "Fetch transport failed." : "Pulse application data validation failed."))
   return error
 }
 `;
@@ -61,7 +67,7 @@ function host_router_error_take(): i32 {
 // The caller retains the static pending-slot guards. The shared body owns one
 // site's resolution and authenticated settlement; diagnostics carry the saved
 // failure between calls without allocating an accumulator or merging slot state.
-function settlementSource() {
+function settlementSource(plan) {
   return `
 // Returns 0 for recoverable/no failure, 1 for fatal, -1 for rejected settlement.
 function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
@@ -78,7 +84,7 @@ function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
     if (result <= 0 && __pulse_fastly_last_error == 0) __pulse_fastly_fail(PULSE_ERROR_STATE, 101, index)
   } else if (failure == 0) __pulse_fastly_fail(PULSE_ERROR_STATE, 101, index)
   if (__pulse_fastly_last_error != 0) {
-    const terminal = __pulse_application_code().length == 0
+    const terminal = ${enabled(plan) ? '__pulse_application_code().length == 0' : 'true'}
     if (failure == 0 || (!fatal && terminal)) {
       failure = __pulse_fastly_last_error; stage = __pulse_fastly_error_stage; effect = __pulse_fastly_error_effect
       jwt = __pulse_fastly_jwt_error; schema = __pulse_application_failed_schema; fatal = terminal
@@ -99,13 +105,13 @@ function __pulse_application_settle_effect(index: i32, fatal: bool): i32 {
 // Preserve the fatal-return boundary consumed by request-budget instrumentation.
 function driverLoop(plan) {
   return `  while (runStatus == 1) {
-    let fatal = __pulse_fastly_last_error != 0 && __pulse_application_code().length == 0
+    let fatal = __pulse_fastly_last_error != 0${enabled(plan) ? ' && __pulse_application_code().length == 0' : ''}
 ${(plan.effects || []).map((_, index) => `    if (__pulse_effect_pending_${index} != 0) {
       const settled = __pulse_application_settle_effect(${index}, fatal)
       if (settled < 0) return
       fatal = settled != 0
     }`).join('\n')}
-    if (fatal) return
+    ${enabled(plan) ? 'if (fatal) return' : 'if (fatal) { __pulse_fastly_jwt_send_error(); return }'}
     runStatus = pulse_resume()
   }`;
 }
@@ -137,4 +143,4 @@ function instrument(source) {
   return source;
 }
 
-module.exports = Object.freeze({ enabled, runtimeSource, driverLoop, instrument });
+module.exports = Object.freeze({ enabled, settlementEnabled, runtimeSource, driverLoop, instrument });

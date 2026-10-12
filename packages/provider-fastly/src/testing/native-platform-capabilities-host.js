@@ -714,7 +714,10 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     && Boolean(downstream);
   const handledHeaderError = options.allowHandledHeaderError === true
     && lastError === 1003 && (errorStage === 22 || errorStage === 23) && downstream?.status === 500;
-  if (lastError !== FASTLY_STATUS_OK && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
+  const handledTransportError = options.allowHandledTransportError === true
+    && (errorStage === 77 || errorStage === 81)
+    && ((lastError === 1006 && downstream?.status === 502) || (lastError === 1003 && downstream?.status === 500));
+  if (lastError !== FASTLY_STATUS_OK && !handledTransportError && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {
@@ -741,6 +744,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     outboundRequests: Object.freeze(outboundRequests),
     stores: Object.freeze({ config: snapshotStores(configStores), secrets: Object.fromEntries([...secretStores].map(([name, values]) => [name, Object.fromEntries([...values].map(([key]) => [key, '[REDACTED]']))])), kv: snapshotStores(kvStores, true) }),
     kvEvidence,
+    transportResources: Object.freeze({pendingRequests: pending.size,
+      outboundRequests: requests.size - Number(requests.has(downstreamRequestHandle))}),
     instance
   });
 }

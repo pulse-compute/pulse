@@ -199,10 +199,20 @@ when a secret, KV key or array index overlaps their spelling. Messages, stacks,
 causes, details and arbitrary provider error codes remain subject to redaction.
 This preserves the existing recovery catalog; it does not admit new failures.
 
+On Fastly Native, ordinary `ctx.fetch` send and wait transport failures also
+enter `app.error` as `PULSE_FETCH_NETWORK`. A handler can choose the response
+status, headers and body, including a healthy response that records a failed
+dispatch. Without a registered error handler, these failures return
+`502 Bad Gateway`; forwarding through an exhausted error lane returns the usual
+`500 Internal Server Error`. HTTP error status responses remain ordinary fetch
+results. Invalid ABI arguments or handles remain terminal provider faults.
+This provider-specific recovery does not add timeout classification or change
+other targets' recovery catalogs.
+
 Recovery moves forward in registration order, including through mounted
 routers. A failed handler never resumes. An error handler can return a response,
 forward with `return next(error)`, or clear the error lane with `return next()`.
-A data failure inside an error handler transfers to a later error handler.
+An admitted failure inside an error handler transfers to a later error handler.
 
 Already-started members of a failed effect group settle before application
 recovery. Pulse does not retry them, undo completed writes, or imply that a
