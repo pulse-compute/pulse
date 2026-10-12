@@ -1653,6 +1653,7 @@ const PULSE_FASTLY_PENDING_READY: i32 = 2
 @lazy const __pulse_fastly_ready = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 @lazy const __pulse_fastly_grip_channels = new Array<string>()
 @lazy const __pulse_fastly_redactions = new Array<string>()
+@lazy const __pulse_fastly_field_redactions = new Array<string>()
 let __pulse_fastly_request_handle: i32 = 0
 let __pulse_fastly_request_body_handle: i32 = 0
 let __pulse_fastly_request_method: string = ""
@@ -1697,9 +1698,31 @@ function __pulse_fastly_string_value(value: string): i32 {
 function __pulse_fastly_find(object: __PulseFastlyValue, key: string): i32 { for (let i = 0; i < object.keys.length; i += 1) if (unchecked(object.keys[i]) == key) return i; return -1 }
 function __pulse_fastly_number_string(value: f64): string { if (value >= -9007199254740991.0 && value <= 9007199254740991.0 && Math.floor(value) == value) return i64(value).toString(); return value.toString() }
 function __pulse_fastly_string(handle: i32): string { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_STRING) return value.text; if (value.kind == PULSE_VALUE_NUMBER) return __pulse_fastly_number_string(value.number); if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? "true" : "false"; if (value.kind == PULSE_VALUE_NULL) return "null"; if (value.kind == PULSE_VALUE_UNDEFINED) return "undefined"; return __pulse_fastly_json(handle, 0) }
-function __pulse_fastly_remember_secret(value: string): string { if (value.length == 0) return value; for (let i = 0; i < __pulse_fastly_redactions.length; i += 1) if (unchecked(__pulse_fastly_redactions[i]) == value) return value; __pulse_fastly_redactions.push(value); return value }
+function __pulse_fastly_remember_secret(value: string, field: bool = false): string { if (value.length == 0) return value; const values = field ? __pulse_fastly_field_redactions : __pulse_fastly_redactions; for (let i = 0; i < values.length; i += 1) if (unchecked(values[i]) == value) return value; values.push(value); return value }
 function __pulse_fastly_replace_secret(input: string, secret: string): string { if (secret.length == 0) return input; let source = input; let output = ""; while (true) { const index = source.indexOf(secret); if (index < 0) return output + source; output += source.substring(0, index) + "<redacted>"; source = source.substring(index + secret.length) } }
-function __pulse_fastly_redact(input: string): string { let output = input; for (let i = 0; i < __pulse_fastly_redactions.length; i += 1) output = __pulse_fastly_replace_secret(output, unchecked(__pulse_fastly_redactions[i])); return output }
+// Walk complete JSON string tokens, including escaped quotes. Substring matching
+// a quoted field would still corrupt an unrelated token such as "prefix\\\"id".
+function __pulse_fastly_redact_fields(input: string): string {
+  if (__pulse_fastly_field_redactions.length == 0) return input;
+  let output = "", start = 0, cursor = 0;
+  while (cursor < input.length) {
+    if (input.charCodeAt(cursor) != 34) { cursor += 1; continue; }
+    const begin = cursor++;
+    while (cursor < input.length) {
+      const code = input.charCodeAt(cursor++);
+      if (code == 92 && cursor < input.length) cursor += 1;
+      else if (code == 34) break;
+    }
+    const token = input.substring(begin, cursor);
+    for (let i = 0; i < __pulse_fastly_field_redactions.length; i += 1) {
+      if (token != unchecked(__pulse_fastly_field_redactions[i])) continue;
+      output += input.substring(start, begin) + __pulse_fastly_quote("<redacted>");
+      start = cursor; break;
+    }
+  }
+  return output + input.substring(start);
+}
+function __pulse_fastly_redact(input: string): string { let output = __pulse_fastly_redact_fields(input); for (let i = 0; i < __pulse_fastly_redactions.length; i += 1) output = __pulse_fastly_replace_secret(output, unchecked(__pulse_fastly_redactions[i])); return output }
 function host_log(level: i32, messageHandle: i32): void { let endpoint = __pulse_fastly_log_handle; if (endpoint == -2) return; if (endpoint == -1) { const name = __pulse_fastly_utf8("stdout"); const out = __pulse_fastly_out_i32(); if (fastly_log_endpoint_get(changetype<usize>(name), name.byteLength, changetype<usize>(out)) != FASTLY_STATUS_OK) { __pulse_fastly_log_handle = -2; return } endpoint = __pulse_fastly_out_value(out); __pulse_fastly_log_handle = endpoint } let label = "unknown"; if (level == 1) label = "error"; else if (level == 2) label = "warn"; else if (level == 3) label = "info"; else if (level == 4) label = "debug"; const bytes = __pulse_fastly_utf8("[pulse:" + label + "] " + __pulse_fastly_redact(__pulse_fastly_string(messageHandle)) + "\n"); const written = __pulse_fastly_out_i32(); fastly_log_write(endpoint, changetype<usize>(bytes), bytes.byteLength, changetype<usize>(written)) }
 function __pulse_fastly_number(handle: i32): f64 { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_NUMBER) return value.number; if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? 1.0 : 0.0; if (value.kind == PULSE_VALUE_STRING) return F64.parseFloat(value.text); return 0.0 }
 function __pulse_fastly_hex(value: i32): string { return String.fromCharCode(value < 10 ? 48 + value : 87 + value) }

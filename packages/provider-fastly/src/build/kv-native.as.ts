@@ -80,12 +80,16 @@ function __kv_number(value: f64): string {
   // Count the portable serialized value budget, including this boundary case.
   return text.endsWith('.0') ? text.substring(0, text.length - 2) : text;
 }
-// Return the same quoted form registered for redaction so validation and writes
-// do not allocate and scan a second representation of each string or key.
-function __kv_private(text: string): string {
-  __pulse_fastly_remember_secret(text);
+// Object field names are complete quoted tokens, not substring secrets: a field
+// named "id" must not corrupt "considered", "invalidAcks", or numeric metrics.
+// Values, lookup keys and generations retain raw and JSON-escaped protection.
+function __kv_private(text: string, field: bool = false): string {
   const encoded = __pulse_fastly_quote(text);
-  __pulse_fastly_remember_secret(encoded.substring(1, encoded.length - 1));
+  if (field) __pulse_fastly_remember_secret(encoded, true);
+  else {
+    __pulse_fastly_remember_secret(text);
+    __pulse_fastly_remember_secret(encoded.substring(1, encoded.length - 1));
+  }
   return encoded;
 }
 class __KvEncoder {
@@ -107,7 +111,7 @@ class __KvEncoder {
       const object = value.kind == PULSE_VALUE_OBJECT; this.add(object ? '{' : '[');
       for (let i = 0; i < value.values.length && !this.reason.length; i++) {
         if (i) this.add(',');
-        if (object) this.add(__kv_private(value.keys[i]) + ':');
+        if (object) this.add(__kv_private(value.keys[i], true) + ':');
         this.visit(value.values[i], depth + 1);
       }
       this.add(object ? '}' : ']');
