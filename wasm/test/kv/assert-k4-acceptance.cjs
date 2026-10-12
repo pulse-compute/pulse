@@ -54,7 +54,7 @@ async function main() {
     assert.equal(evidence.providerReality, true);
     assert.equal(evidence.installedBytesUnchanged, true); assert.equal(evidence.workspaceProductModules, 0);
     assert.equal(registry.requests.rejected, 0); assert.equal(registry.requests.missing, 0);
-    const acceptance = localAcceptance(evidence);
+    const acceptance = localAcceptance(evidence, manifest.packages.length);
     const output = { ...evidence, acceptance, registry: registry.requests, deployed: 'pending-T2' };
     if (process.env.PULSEWASM_TEST_TMP_ROOT) fs.writeFileSync(path.join(process.env.PULSEWASM_TEST_TMP_ROOT, 'kv-k4-acceptance.json'), JSON.stringify(output, null, 2) + '\n');
     console.log(JSON.stringify(output));
