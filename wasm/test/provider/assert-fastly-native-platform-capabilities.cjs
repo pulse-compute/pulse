@@ -417,3 +417,5 @@ try {
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }
+
+require('./assert-fastly-transport-recovery.cjs').main().catch(error => { console.error(error); process.exitCode = 1; });
