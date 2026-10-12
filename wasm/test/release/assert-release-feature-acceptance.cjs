@@ -69,7 +69,8 @@ reject(x => x.reports[first].packages[0].sha256 = 'e'.repeat(64), /Mixed candida
 reject(x => x.identity.workingTree = '?? fixture.ts', /Candidate must be clean/);
 
 // Exercise the owning release orchestration: successful aggregate replay must
-// still stop on a failing installed-feature gate before external host evidence.
+// still stop on a failing installed-feature gate. This fixture owns the
+// unavailable-Fastly case; runtime-policy covers the early available-host lane.
 async function verifySealOrchestration() {
   const supervisor = require('../../../scripts/release-process.cjs');
   const sealModule = require.resolve('../../../scripts/validate-release.cjs');
@@ -80,9 +81,16 @@ async function verifySealOrchestration() {
   const acceptance = require('../../../scripts/release-feature-acceptance.cjs');
   const originalCandidate = acceptance.candidateIdentity;
   const originalWrite = process.stdout.write;
+  const fastlyModule = require.resolve('../../../packages/provider-fastly/src/testing/fastly-cli.js');
+  const originalFastly = require(fastlyModule);
   const commands = [];
   let sharedEnvironment;
   try {
+    // The enclosing real seal supplies a CLI via env/PATH. Keep that ambient
+    // availability out of this mocked controller fixture, and restore it below.
+    require.cache[fastlyModule].exports = { ...originalFastly, inspectFastlyCli() {
+      throw Object.assign(new Error('Fastly unavailable in controller fixture'), { code: 'PULSE_FASTLY_CLI_UNAVAILABLE' });
+    } };
     // A controller fixture must not claim the enclosing seal's checkout lock.
     recovery.acquireSealLock = (_root, directory) => originalAcquire(lockRoot, directory);
     acceptance.candidateIdentity = () => ({
@@ -119,6 +127,7 @@ async function verifySealOrchestration() {
     assert(commands.some(args => args.includes('scripts/release-feature-acceptance.cjs')));
     assert(!commands.some(args => args.includes('provider-fastly-compute-reality')));
   } finally {
+    require.cache[fastlyModule].exports = originalFastly;
     supervisor.runCommand = originalRun;
     recovery.acquireSealLock = originalAcquire;
     fs.rmSync(lockRoot, { recursive: true, force: true });
