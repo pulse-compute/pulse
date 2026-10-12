@@ -416,7 +416,9 @@ function inspectWasm(file, exampleId) {
   assert.equal(WebAssembly.validate(bytes), true, `${exampleId} produced invalid WebAssembly`);
   const imports = WebAssembly.Module.imports(new WebAssembly.Module(bytes));
   assert.ok(imports.some((entry) => entry.module === 'fastly_abi' && entry.name === 'init'), `${exampleId} native Fastly Wasm is missing fastly_abi.init`);
-  assert.equal(imports.some((entry) => /pulse_host|wasi|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${exampleId} native Fastly Wasm contains a forbidden runtime import`);
+  assert.equal(imports.some((entry) => /pulse_host|js[_-]?compute/i.test(`${entry.module}:${entry.name}`)), false, `${exampleId} native Fastly Wasm contains a forbidden runtime import`);
+  assert.equal(imports.some(entry => /wasi/i.test(entry.module)
+    && !(entry.module === 'wasi_snapshot_preview1' && entry.name === 'clock_time_get')), false, `${exampleId} permits only the bounded WASI clock import`);
   return bytes.length;
 }
 
