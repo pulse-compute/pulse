@@ -123,10 +123,16 @@ async function main() {
       )
     );
     assert.equal(
-      imports.some((entry) => /pulse_host|wasi|js[_-]?compute/i.test(
+      imports.some((entry) => /pulse_host|js[_-]?compute/i.test(
         `${entry.module}:${entry.name}`
       )),
       false
+    );
+    assert.deepEqual(
+      imports.filter((entry) => /wasi/i.test(entry.module))
+        .map((entry) => `${entry.module}:${entry.name}`),
+      ['wasi_snapshot_preview1:clock_time_get'],
+      'the example fetch deadlines require only the monotonic WASI clock'
     );
 
     const program = require(path.join(dist, 'canonical-handler.cjs'));
