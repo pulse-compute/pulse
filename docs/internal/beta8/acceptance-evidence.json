@@ -1,0 +1,974 @@
+{
+  "schemaVersion": "pulse.beta8.step3-acceptance.v1",
+  "qualification": "development-only; not an aggregate release seal or deployed Fastly qualification",
+  "status": "blocked-on-deployed-k4",
+  "candidate": {
+    "releaseVersion": "1.0.0-beta.8",
+    "preparationCommit": "ba24253883e04aa99bfec770e72b0d9795704e65",
+    "testedLocalCommit": "56b75180b63c8554c48f2ae35b1b3ae4a316ecda",
+    "testedTree": "ddadcf75872cfb8fe77a7fa70755f0ce29580406",
+    "trackedChangesDuringAcceptance": false,
+    "changeFromPreparation": "K4 test harness package-count binding only; no packaged product changes",
+    "packageCount": 20,
+    "manifestSha256": "f026c12c30f8627d76c7708d3b48d3d8a4b28601829b87fcb7c8d8cd16d8e617"
+  },
+  "execution": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "pnpm": "12.4.2",
+    "exactReproducibleNodeAndNpmPinsUsed": false,
+    "npm_config_ignore_scripts": "true for K4 retry/build",
+    "computeLauncher": "viceroy-direct",
+    "fastlyCliExecuted": false
+  },
+  "localK4": {
+    "initialAttempt": {
+      "runner": {
+        "schemaVersion": 2,
+        "runId": "2026-10-12T19-34-32-623Z--5",
+        "sourceRevision": "ba24253883e04aa99bfec770e72b0d9795704e65",
+        "sourceIdentity": {
+          "sourceRevision": "ba24253883e04aa99bfec770e72b0d9795704e65",
+          "sourceIdentityKind": "git-commit",
+          "sourceDigestSha256": null,
+          "sourceFiles": null
+        },
+        "status": "failed",
+        "startedAt": "2026-10-12T19:34:32.629Z",
+        "updatedAt": "2026-10-12T19:35:21.309Z",
+        "finishedAt": "2026-10-12T19:35:21.309Z",
+        "durationMs": 48680,
+        "profiles": [],
+        "requestedTasks": [
+          "kv-conditional-acceptance"
+        ],
+        "selectedTasks": [
+          "kv-conditional-acceptance"
+        ],
+        "currentTask": null,
+        "currentTaskPhase": null,
+        "activeChildPid": null,
+        "activeChildPids": [],
+        "currentTasks": [],
+        "currentTaskPhases": {},
+        "completedTasks": 1,
+        "results": [
+          {
+            "name": "kv-conditional-acceptance",
+            "evidence": "external",
+            "description": "K4 exact packed consumers and mandatory Fastly CLI/Viceroy execution; no availability skip",
+            "commandSignature": "3dea691417fa2326b0bc3d4d6fd286eb0be74a4e857fb1b4d231b3f7bfab6063",
+            "timeoutMs": 1200000,
+            "durationMs": 48660,
+            "status": "failed",
+            "exitCode": 1,
+            "signal": null,
+            "timedOut": false,
+            "interruptedBy": null,
+            "error": null,
+            "cleanup": {
+              "status": "passed"
+            },
+            "logPath": "/workspace/scratch/20c3f201ec3b/runs/2026-10-12T19-34-32-623Z--5/tasks/kv-conditional-acceptance.log",
+            "retainedTaskRoot": null,
+            "diagnosticReports": [],
+            "failureArtifacts": [],
+            "processTree": [],
+            "remainingProcessTree": []
+          }
+        ],
+        "runDirectory": "/workspace/scratch/20c3f201ec3b/runs/2026-10-12T19-34-32-623Z--5"
+      },
+      "outcome": "Stopped during build before packing or local-engine scenarios: pnpm ERR_PNPM_IGNORED_BUILDS. Restored pnpm-generated workspace placeholder and retried with lifecycle scripts disabled."
+    },
+    "runner": {
+      "schemaVersion": 2,
+      "runId": "2026-10-12T19-36-18-681Z--5",
+      "sourceRevision": "56b75180b63c8554c48f2ae35b1b3ae4a316ecda",
+      "sourceIdentity": {
+        "sourceRevision": "56b75180b63c8554c48f2ae35b1b3ae4a316ecda",
+        "sourceIdentityKind": "git-commit",
+        "sourceDigestSha256": null,
+        "sourceFiles": null
+      },
+      "status": "passed",
+      "startedAt": "2026-10-12T19:36:18.699Z",
+      "updatedAt": "2026-10-12T19:37:46.168Z",
+      "finishedAt": "2026-10-12T19:37:46.168Z",
+      "durationMs": 87469,
+      "profiles": [],
+      "requestedTasks": [
+        "kv-conditional-acceptance"
+      ],
+      "selectedTasks": [
+        "kv-conditional-acceptance"
+      ],
+      "currentTask": null,
+      "currentTaskPhase": null,
+      "activeChildPid": null,
+      "activeChildPids": [],
+      "currentTasks": [],
+      "currentTaskPhases": {},
+      "completedTasks": 1,
+      "results": [
+        {
+          "name": "kv-conditional-acceptance",
+          "evidence": "external",
+          "description": "K4 exact packed consumers and mandatory Fastly CLI/Viceroy execution; no availability skip",
+          "commandSignature": "3dea691417fa2326b0bc3d4d6fd286eb0be74a4e857fb1b4d231b3f7bfab6063",
+          "timeoutMs": 1200000,
+          "durationMs": 87434,
+          "status": "passed",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "interruptedBy": null,
+          "error": null,
+          "cleanup": {
+            "status": "passed"
+          },
+          "logPath": "/workspace/scratch/20c3f201ec3b/runs/2026-10-12T19-36-18-681Z--5/tasks/kv-conditional-acceptance.log",
+          "retainedTaskRoot": null,
+          "diagnosticReports": [],
+          "failureArtifacts": [],
+          "processTree": [],
+          "remainingProcessTree": []
+        }
+      ],
+      "runDirectory": "/workspace/scratch/20c3f201ec3b/runs/2026-10-12T19-36-18-681Z--5"
+    },
+    "consumer": {
+      "version": "pulse.kv-k4-packed.v1",
+      "status": "failed",
+      "results": {
+        "node-native": {
+          "status": "passed",
+          "requests": 171,
+          "groups": [
+            {
+              "width": 2,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 8,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 16,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            }
+          ],
+          "keyedParallel": true,
+          "boundaryValues": 4,
+          "failures": [],
+          "ambiguousCompletion": "passed"
+        },
+        "node-javascript": {
+          "status": "passed",
+          "requests": 171,
+          "groups": [
+            {
+              "width": 2,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 8,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 16,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            }
+          ],
+          "keyedParallel": true,
+          "boundaryValues": 4,
+          "failures": [],
+          "ambiguousCompletion": "passed"
+        },
+        "fastly-compute": {
+          "status": "failed",
+          "requests": 171,
+          "groups": [
+            {
+              "width": 2,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 8,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            },
+            {
+              "width": 16,
+              "revisions": 3,
+              "createWinners": 1,
+              "casWinnersPerRevision": 1,
+              "retainedTombstone": true
+            }
+          ],
+          "keyedParallel": true,
+          "boundaryValues": 4,
+          "failures": [
+            {
+              "check": "missing-key-cas",
+              "expected": {
+                "acknowledgement": "conflict",
+                "subsequentRead": "not-found"
+              },
+              "actual": {
+                "acknowledgement": "stored",
+                "subsequentRead": "found"
+              }
+            }
+          ],
+          "lostResponse": {
+            "status": "passed",
+            "dispatchedRequests": 1,
+            "clientTransport": "connection-reset",
+            "committedReceiptObserved": true,
+            "typedKvUnknown": false
+          },
+          "toolchain": {
+            "launcher": "viceroy-direct",
+            "fastlyCli": null,
+            "viceroy": {
+              "version": "0.21.1",
+              "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9"
+            }
+          },
+          "manifestSha256": "e66b1535165813f1d92233de043878b0f42fe6010db895018f27c1c1bdb13e54"
+        }
+      },
+      "module": {
+        "sha256": "a92dcefd38bbd54edc1e4a288bba73e8a13960a40b8f1ef66645c957080cffc7",
+        "bytes": 49706,
+        "imports": [
+          {
+            "module": "fastly_http_body",
+            "name": "close",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "send_downstream",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "write",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "read",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_body",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "wasi_snapshot_preview1",
+            "name": "clock_time_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "open",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "lookup_wait_v2",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "lookup",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "insert_wait",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_kv_store",
+            "name": "insert",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_set",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "status_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "new",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_resp",
+            "name": "header_append",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "uri_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "method_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_http_req",
+            "name": "body_downstream_get",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_abi",
+            "name": "init",
+            "kind": "function"
+          },
+          {
+            "module": "fastly_async_io",
+            "name": "select",
+            "kind": "function"
+          }
+        ]
+      },
+      "providerReality": true,
+      "deployed": "pending-T2",
+      "publicTypes": "passed",
+      "workspaceProductModules": 0,
+      "installedBytesUnchanged": true,
+      "packageCount": 20,
+      "packages": [
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.8",
+          "sha256": "beef8a5fdbd23e594162452c7e4d88014bea11edb717b74c774ef1dde4e70e56"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.8",
+          "sha256": "474c6be4dd38507137c64a65c4d637d3e896db3f63384e587bbcd05618dd2223"
+        },
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.8",
+          "sha256": "af2467641619c900ec37300ea2dd89883c1e2ffd3ed6620b14b5bd6993ae91e1"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.8",
+          "sha256": "647ea882445e4baa254c0e652f54c964ddda1a796f349cca9c72c4bcd8f85636"
+        },
+        {
+          "name": "@pulse-compute/grip",
+          "version": "1.0.0-beta.8",
+          "sha256": "dec40f1854a6d410cb02e22f81fd34b506d16ceaa58c55b5431202d45e776c22"
+        },
+        {
+          "name": "@pulse-compute/assets",
+          "version": "1.0.0-beta.8",
+          "sha256": "4704497a3a0a02b07e9e2291dded1b3d30e42b4519333367c733e9c54f63e464"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.8",
+          "sha256": "dbad0d36ef7b653468831a81154989320593b7d7d56fa3bae7c9d44db8a5ceba"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.8",
+          "sha256": "72aa679100a5760b206293602ae19e4fdbd8842b828729638f0c07827e846a1b"
+        },
+        {
+          "name": "@pulse-compute/entities",
+          "version": "1.0.0-beta.8",
+          "sha256": "564b6db5784884c83445ead9ea2d899cbf78dc2d36d68007d85470e5db5a9b00"
+        },
+        {
+          "name": "@pulse-compute/mcp",
+          "version": "1.0.0-beta.8",
+          "sha256": "e6977b8087dbf4d2c5a2332e4743f2c628add7da82850dd8a1e52d8221c6abbe"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.8",
+          "sha256": "191ce4d1b0f8742cd0bd4eaba1ef768e54accef3427cc8e0b42f8569cfc0705b"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.8",
+          "sha256": "cf1ea94be6466cce9112fe3a7beecbc3f8341105b8f6d006f659c89d0b87e308"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.8",
+          "sha256": "14616c6c80415f922a7587b41d522169cc27f0a68a7cf526bfa9a9c7cd66ed85"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.8",
+          "sha256": "d03b73c61c39f7b41bd8120b53d6630d0139bcc99bae19769bbc32e687bc3d69"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.8",
+          "sha256": "d6b3d6350e43bf61186b649919dd55646d035eb9e895a55ef76f447727796901"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.8",
+          "sha256": "7f1ccd5d1dcdd58591dfe0f4ac72cb6bc4d54075633875d605854e88bf22b241"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.8",
+          "sha256": "3571c7eaa5e132f5ad3e9eb05c28ca700e5fecd19767819496f1ea30a1f19ed7"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.8",
+          "sha256": "e87451e1946cfda3259c88ca59d5c13cb5132d55988b18a9096ab4912e024824"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.8",
+          "sha256": "6d7449a983d938a7c791f96f72d95090f56f0d1fea8af143f36b050f94ded197"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.8",
+          "sha256": "1aca21ba109893a06683a14bf6ed0b259c585920c9e9e28e23d92f17f159948c"
+        }
+      ],
+      "acceptance": {
+        "semanticStatus": "failed",
+        "deployedPulseCrossLocationStillRequired": true,
+        "status": "accepted-with-known-viceroy-discrepancy",
+        "releaseBlocking": false,
+        "knownIssues": [
+          {
+            "check": "missing-key-cas",
+            "engine": "Viceroy",
+            "version": "0.21.1",
+            "disposition": "non-blocking by explicit human release direction on 2026-10-04",
+            "evidence": "wasm/test/kv/k4/viceroy-0.21.1-beta6-evidence.json"
+          }
+        ]
+      },
+      "registry": {
+        "total": 17,
+        "packuments": 17,
+        "tarballs": 0,
+        "rejected": 0,
+        "missing": 0,
+        "missingPackuments": {},
+        "missingTarballs": 0
+      }
+    }
+  },
+  "tick": {
+    "upstreamCommit": "24ef2132faad7f5691f7a2ce342e3810d4005c20",
+    "upstreamTree": "382027276ec000c422614abc5e63a21b923fcd29",
+    "testedLocalCommit": "0c34e0e53b0b92dedbd047c1d87c9737c765b411",
+    "testedLocalTree": "382027276ec000c422614abc5e63a21b923fcd29",
+    "trackedChangesDuringAcceptance": false,
+    "report": {
+      "schemaVersion": "fastly-tick.combined-acceptance.v1",
+      "status": "passed",
+      "qualification": "development-only",
+      "startedAt": "2026-10-12T19:37:30.265Z",
+      "node": "v24.19.0",
+      "manifestSha256": "f026c12c30f8627d76c7708d3b48d3d8a4b28601829b87fcb7c8d8cd16d8e617",
+      "inputs": [
+        {
+          "path": "src/index.ts",
+          "sha256": "841b0d78c2566e770433106d689d781b5bc21004114bdc10014d7f74cb0856c8"
+        },
+        {
+          "path": "src/schemas.ts",
+          "sha256": "9721e4190811bebdd72459cf287bbc3877312f112088de99acffbc1df99de7bf"
+        },
+        {
+          "path": "test/admission-fixture.mjs",
+          "sha256": "c52566a66fa0e64f5bd9e1e3bf4bbf5dc4fe026856855e3de25683a2be2f3653"
+        },
+        {
+          "path": "test/admission.test.mjs",
+          "sha256": "69d55f66e89dea1bc4265ced25ea53c357653398ec9308436f8d578fe7803282"
+        },
+        {
+          "path": "test/combined-acceptance.mjs",
+          "sha256": "7c2414265bce98eacb6e39365d6029fcb2ca5686c576515d82bc46bf9ba73403"
+        },
+        {
+          "path": "test/dispatch-fixture.mjs",
+          "sha256": "b7c1d9266e0e65a0a460944e9754bfa476e80a0389aabe0127e67cf50d89e450"
+        },
+        {
+          "path": "test/dispatch.test.mjs",
+          "sha256": "4e214e8a6925259a6b40cf2de70ebc4775d626dbe6fbdfb35af481c7f3ed46f8"
+        },
+        {
+          "path": "test/native-admission.mjs",
+          "sha256": "28cf1a68917c2ec53f71c458387f5b8490e0415d3bf5f89a71af620d71812b7a"
+        },
+        {
+          "path": "test/native-dispatch.mjs",
+          "sha256": "7b8f4790cb0a37ac0eb661a4aac74e6b69a40c7e5cc6b368fcb96cea0e0c031a"
+        },
+        {
+          "path": "test/native-registry.mjs",
+          "sha256": "abd4bb31ff8e6ab4bbf8914b9cd359b7c5ef06cef4ee506e7354ca94f136cb5d"
+        },
+        {
+          "path": "test/native.mjs",
+          "sha256": "6fee190da886cf7d0f11293684dab90cedfa0bf3fde5d0e0be01b5fb72ebca86"
+        },
+        {
+          "path": "test/observability.test.mjs",
+          "sha256": "f06a5ae27bb948bf1a40ebc61c8f05dfc8895cc1b93809a0ac1b341b249648d3"
+        },
+        {
+          "path": "test/pulse.harness.ts",
+          "sha256": "272d379ad424fbc4c1d7e7b34cf0e11820bec91b771fc11bc6f2f25e6fc175be"
+        },
+        {
+          "path": "test/redelivery.test.mjs",
+          "sha256": "e5bc79a15f688afcd636a72f93234d49f3f24865765a24aabac68b08ad375628"
+        },
+        {
+          "path": "test/registry-fixture.mjs",
+          "sha256": "babf22b2a1fe5aa6d0620a249a03653d504969e4ca7186e9f6522e97d35c6f4a"
+        },
+        {
+          "path": "test/registry.test.mjs",
+          "sha256": "366b3e5484898394413ac0353104361bf6d4178e4a19fb9fddf1b1ae0b484f93"
+        },
+        {
+          "path": "test/trigger.test.mjs",
+          "sha256": "305649100b6fb5f84cc36e7ca97c0e4f8e8f97da5bba4dab2f91522f875fcef4"
+        },
+        {
+          "path": "scripts/build-worker.mjs",
+          "sha256": "5f5dcbc01027da723d8c83198d716b59780663927ce8561d9dbefcdcea2affb5"
+        },
+        {
+          "path": "scripts/combined-acceptance.mjs",
+          "sha256": "cad4fc8c71b61663255ee358caf9810728588d282d3d4ff63b3190a48dc9fb23"
+        },
+        {
+          "path": "scripts/observe.mjs",
+          "sha256": "a761953b84c5f302e8338d39802af6a7f87020747cc698caf817cba888de497f"
+        },
+        {
+          "path": "scripts/package.mjs",
+          "sha256": "ada9ac8db2b43400ef4ee25e6b276aeded9cf52a8068ddee21a08c756dbee080"
+        },
+        {
+          "path": "scripts/report.mjs",
+          "sha256": "541fa3275507666470cbe7c827d39a09276de4eb80c6cffdc270c02c5778caff"
+        },
+        {
+          "path": "scripts/test-wasm.mjs",
+          "sha256": "d92d5bda684a055dd43fcdd5eb84a72583f164b10ce4c1acf20f34b3c2678179"
+        },
+        {
+          "path": "scripts/trigger.mjs",
+          "sha256": "5a9f4185e79a78f44b23a6dcf1063e770ec924b21079462569d8d7c79fd04379"
+        },
+        {
+          "path": ".pulse/config.ts",
+          "sha256": "aed13607faa8bc170e6d437ae3ada6531b254b2f9cf44a1ffe0ba90658453aa5"
+        },
+        {
+          "path": "fixtures/worker/src/index.ts",
+          "sha256": "3e676bf74a3c1b3d8ba195c8efaea19325b72854402f3aef7106cee3e513e4de"
+        },
+        {
+          "path": "fixtures/worker/src/schemas.ts",
+          "sha256": "ed5077de9efa6e39ede69e62053f4a72c2523d66a3dfb0be1f4ca19e21dd6fcc"
+        },
+        {
+          "path": "fixtures/worker/.pulse/config.ts",
+          "sha256": "d72e652038631dd3a7b5b4d39dd84a38e5175b9afa2241250488f135c7e968c2"
+        },
+        {
+          "path": "fixtures/worker/package.json",
+          "sha256": "92a593583d2cffa3ba16da80b4024fb458dd3c4849f51de4fa8f8829df422448"
+        },
+        {
+          "path": "package.json",
+          "sha256": "47a861da449b67a3db2c02bea102c99e88117bb4affc475f3c43e13b0f96e27f"
+        },
+        {
+          "path": "package-lock.json",
+          "sha256": "3af5003d93ce0e286a432fd00dd4b92be24e46cfe8e3c7cdd56b45d960faefb3"
+        },
+        {
+          "path": "tsconfig.json",
+          "sha256": "d936304fa7bddacf50aa32187466c47e64474201f398622863dedc9b77c7f792"
+        }
+      ],
+      "packages": [
+        {
+          "name": "@pulse-compute/runtime",
+          "version": "1.0.0-beta.8",
+          "sha256": "beef8a5fdbd23e594162452c7e4d88014bea11edb717b74c774ef1dde4e70e56"
+        },
+        {
+          "name": "@pulse-compute/pulse",
+          "version": "1.0.0-beta.8",
+          "sha256": "474c6be4dd38507137c64a65c4d637d3e896db3f63384e587bbcd05618dd2223"
+        },
+        {
+          "name": "@pulse-compute/cli",
+          "version": "1.0.0-beta.8",
+          "sha256": "af2467641619c900ec37300ea2dd89883c1e2ffd3ed6620b14b5bd6993ae91e1"
+        },
+        {
+          "name": "@pulse-compute/provider-fastly",
+          "version": "1.0.0-beta.8",
+          "sha256": "647ea882445e4baa254c0e652f54c964ddda1a796f349cca9c72c4bcd8f85636"
+        },
+        {
+          "name": "@pulse-compute/grip",
+          "version": "1.0.0-beta.8",
+          "sha256": "dec40f1854a6d410cb02e22f81fd34b506d16ceaa58c55b5431202d45e776c22"
+        },
+        {
+          "name": "@pulse-compute/assets",
+          "version": "1.0.0-beta.8",
+          "sha256": "4704497a3a0a02b07e9e2291dded1b3d30e42b4519333367c733e9c54f63e464"
+        },
+        {
+          "name": "@pulse-compute/crypto",
+          "version": "1.0.0-beta.8",
+          "sha256": "dbad0d36ef7b653468831a81154989320593b7d7d56fa3bae7c9d44db8a5ceba"
+        },
+        {
+          "name": "@pulse-compute/jwt",
+          "version": "1.0.0-beta.8",
+          "sha256": "72aa679100a5760b206293602ae19e4fdbd8842b828729638f0c07827e846a1b"
+        },
+        {
+          "name": "@pulse-compute/entities",
+          "version": "1.0.0-beta.8",
+          "sha256": "564b6db5784884c83445ead9ea2d899cbf78dc2d36d68007d85470e5db5a9b00"
+        },
+        {
+          "name": "@pulse-compute/mcp",
+          "version": "1.0.0-beta.8",
+          "sha256": "e6977b8087dbf4d2c5a2332e4743f2c628add7da82850dd8a1e52d8221c6abbe"
+        },
+        {
+          "name": "@pulse-compute/s3",
+          "version": "1.0.0-beta.8",
+          "sha256": "191ce4d1b0f8742cd0bd4eaba1ef768e54accef3427cc8e0b42f8569cfc0705b"
+        },
+        {
+          "name": "@pulse-compute/wasm-build-support",
+          "version": "1.0.0-beta.8",
+          "sha256": "cf1ea94be6466cce9112fe3a7beecbc3f8341105b8f6d006f659c89d0b87e308"
+        },
+        {
+          "name": "@pulse-compute/wasm-compiler",
+          "version": "1.0.0-beta.8",
+          "sha256": "14616c6c80415f922a7587b41d522169cc27f0a68a7cf526bfa9a9c7cd66ed85"
+        },
+        {
+          "name": "@pulse-compute/wasm-guest-link",
+          "version": "1.0.0-beta.8",
+          "sha256": "d03b73c61c39f7b41bd8120b53d6630d0139bcc99bae19769bbc32e687bc3d69"
+        },
+        {
+          "name": "@pulse-compute/wasm-contracts",
+          "version": "1.0.0-beta.8",
+          "sha256": "d6b3d6350e43bf61186b649919dd55646d035eb9e895a55ef76f447727796901"
+        },
+        {
+          "name": "@pulse-compute/wasm-host-runtime",
+          "version": "1.0.0-beta.8",
+          "sha256": "7f1ccd5d1dcdd58591dfe0f4ac72cb6bc4d54075633875d605854e88bf22b241"
+        },
+        {
+          "name": "@pulse-compute/wasm-library-kit",
+          "version": "1.0.0-beta.8",
+          "sha256": "3571c7eaa5e132f5ad3e9eb05c28ca700e5fecd19767819496f1ea30a1f19ed7"
+        },
+        {
+          "name": "@pulse-compute/provider-node",
+          "version": "1.0.0-beta.8",
+          "sha256": "e87451e1946cfda3259c88ca59d5c13cb5132d55988b18a9096ab4912e024824"
+        },
+        {
+          "name": "@pulse-compute/wasm-runtime-core-as",
+          "version": "1.0.0-beta.8",
+          "sha256": "6d7449a983d938a7c791f96f72d95090f56f0d1fea8af143f36b050f94ded197"
+        },
+        {
+          "name": "@pulse-compute/wasm-schema-json",
+          "version": "1.0.0-beta.8",
+          "sha256": "1aca21ba109893a06683a14bf6ed0b259c585920c9e9e28e23d92f17f159948c"
+        }
+      ],
+      "steps": [
+        {
+          "name": "install",
+          "status": "passed",
+          "exitCode": 0,
+          "elapsedMs": 17809,
+          "log": "install.log"
+        },
+        {
+          "name": "build",
+          "status": "passed",
+          "exitCode": 0,
+          "elapsedMs": 27459,
+          "log": "build.log"
+        },
+        {
+          "name": "build-worker",
+          "status": "passed",
+          "exitCode": 0,
+          "elapsedMs": 12210,
+          "log": "build-worker.log"
+        },
+        {
+          "name": "abi",
+          "status": "passed",
+          "exitCode": 0,
+          "elapsedMs": 208,
+          "log": "abi.log"
+        },
+        {
+          "name": "auth-http",
+          "status": "passed",
+          "exitCode": 0,
+          "elapsedMs": 892,
+          "log": "auth-http.log"
+        },
+        {
+          "name": "dispatch-http",
+          "status": "passed",
+          "exitCode": 0,
+          "elapsedMs": 2384,
+          "log": "dispatch-http.log"
+        }
+      ],
+      "viceroy": {
+        "sha256": "881dc618935b9d8c2f04bb8e3c2f2199d77f2a1415be141755fbe0cd7682e5b9",
+        "version": "viceroy 0.21.1"
+      },
+      "inputDigest": "0aaca91e44d3e8bb024808d7d18a95ed6a0449fb3fe30e8e8bf126e4e93840c1",
+      "artifacts": {
+        "receiver": "7794b95061b93eeeb8cde69fc434e539a754b485e0686ca1b752d3f1f7096cc7",
+        "worker": "38b944da341567c020480fd661987671ca69038cbe4692647c760fca140e3545",
+        "enabledReceiver": "d5b3950904b9c1b028ebd48b0212a3e10975aaac409e02fcba810abd49af1e30"
+      },
+      "installedBytesVerifiedBeforeAndAfter": true,
+      "npmExtractionPathRule": ".gitignore -> .npmignore when no packed .npmignore exists",
+      "completedAt": "2026-10-12T19:38:56.372Z"
+    },
+    "abi": {
+      "status": "passed",
+      "evidence": "actual-Native-injected-ABI",
+      "cases": [
+        {
+          "name": "missing probe auth rejects before KV or dispatch",
+          "status": "passed"
+        },
+        {
+          "name": "missing worker auth rejects before persistence",
+          "status": "passed"
+        },
+        {
+          "name": "missing ACK ID preserves strict structured observations",
+          "status": "passed"
+        },
+        {
+          "name": "valid ACK preserves strict structured observations",
+          "status": "passed"
+        },
+        {
+          "name": "transport send failure returns healthy without ACK, settlement, or retry",
+          "status": "passed"
+        },
+        {
+          "name": "transport reset after send returns healthy without ACK, settlement, or retry",
+          "status": "passed"
+        },
+        {
+          "name": "delayed headers returns healthy without ACK, settlement, or retry",
+          "status": "passed"
+        },
+        {
+          "name": "headers at exact deadline returns healthy without ACK, settlement, or retry",
+          "status": "passed"
+        },
+        {
+          "name": "headers before the deadline ACK without reading the body",
+          "status": "passed"
+        },
+        {
+          "name": "shipped dispatch remains disabled",
+          "status": "passed"
+        }
+      ]
+    },
+    "dispatch": {
+      "status": "passed",
+      "evidence": "Viceroy-loopback-HTTP",
+      "cases": [
+        {
+          "name": "valid",
+          "status": "passed"
+        },
+        {
+          "name": "generic-200",
+          "status": "passed"
+        },
+        {
+          "name": "missing-id",
+          "status": "passed"
+        },
+        {
+          "name": "wrong-id",
+          "status": "passed"
+        },
+        {
+          "name": "rejected",
+          "status": "passed"
+        },
+        {
+          "name": "slow-body",
+          "status": "passed"
+        },
+        {
+          "name": "independent-native-worker",
+          "status": "passed"
+        },
+        {
+          "name": "missing worker auth",
+          "status": "passed"
+        },
+        {
+          "name": "strict ACK deadline",
+          "status": "passed"
+        },
+        {
+          "name": "strict healthy transport failure",
+          "status": "passed"
+        }
+      ]
+    },
+    "authHttpLog": "ok - native authenticated-status\nok - native missing-status-token\nok - native post-is-not-status\nok - native healthcheck-tagged-probe\nok - native duplicate-token-rejected\nok - native header-scan-limit\nok - native authenticated-probe\nok - native missing-token\nok - native wrong-token\nok - native empty-token\nok - native unknown-route\nok - native post-is-not-a-probe\nok - native mixed-case-wire-header\nok - native empty-configured-secret-fails-closed\n14/14 emitted-Wasm HTTP tests passed\n",
+    "dispatchHttpLog": "{\"case\":\"valid\",\"status\":200,\"dispatch\":\"acked\",\"elapsedMs\":15,\"ackLatencyMs\":\"1\"}\nok - native valid\n{\"case\":\"generic-200\",\"status\":200,\"dispatch\":\"unacknowledged\",\"elapsedMs\":5,\"ackLatencyMs\":\"1\"}\nok - native generic-200\n{\"case\":\"missing-id\",\"status\":200,\"dispatch\":\"unacknowledged\",\"elapsedMs\":7,\"ackLatencyMs\":\"1\"}\nok - native missing-id\n{\"case\":\"wrong-id\",\"status\":200,\"dispatch\":\"unacknowledged\",\"elapsedMs\":9,\"ackLatencyMs\":\"2\"}\nok - native wrong-id\n{\"case\":\"rejected\",\"status\":200,\"dispatch\":\"unacknowledged\",\"elapsedMs\":5,\"ackLatencyMs\":\"1\"}\nok - native rejected\n{\"case\":\"slow-body\",\"status\":200,\"dispatch\":\"acked\",\"elapsedMs\":6,\"ackLatencyMs\":\"1\"}\nok - native slow-body\n{\"case\":\"independent-native-worker\",\"status\":200,\"dispatch\":\"acked\",\"elapsedMs\":8,\"ackLatencyMs\":\"2\"}\nok - native independent-native-worker\nok - native missing worker auth\n{\"case\":\"slow-headers\",\"status\":200,\"dispatch\":\"unacknowledged\",\"elapsedMs\":1029,\"ackLatencyMs\":null}\nok - native strict ACK deadline\n{\"case\":\"reset\",\"status\":200,\"dispatch\":\"unacknowledged\",\"elapsedMs\":4,\"ackLatencyMs\":null}\nok - native strict healthy transport failure\n10/10 local Native dispatch HTTP checks passed; live Fastly smoke remains deferred\n"
+  },
+  "deployedK4": {
+    "status": "not-run",
+    "releaseBlocking": true,
+    "reason": "No reviewed isolated T2 environment and independently located probe driver were available in this workspace. No provisioning or activation was performed.",
+    "requiredInputs": [
+      "reviewed isolated account/service/version and KV store binding",
+      "exact Native module digest and authenticated writes",
+      "reviewed driver with at least two independently located probes and verified POP/request identities"
+    ],
+    "ownerDecision": null
+  },
+  "dispositions": {
+    "missingKeyCas": "Existing October 4 direction applied to the exact recognized Viceroy 0.21.1 observation; raw semantic status remains failed.",
+    "multiWinnerCas": "Not observed in this run. No beta.6 exception inherited.",
+    "newExceptionGranted": false,
+    "releaseMayProceed": false
+  },
+  "finalQualification": {
+    "status": "not-run",
+    "next": "After the outstanding deployed K4 proof or explicit candidate-specific owner disposition, qualify the exact main PR merge candidate. Reconcile its final package hashes; do not pool these development reports into the seal."
+  },
+  "retainedFiles": [
+    {
+      "path": "release-step3-k4.json",
+      "sha256": "22b3c74400a9a8eb3a1204286ea754c93e79f2161251504dd013ec1b9fba8ab2"
+    },
+    {
+      "path": "release-step3-k4.log",
+      "sha256": "57f98a20bc3924c22cc62e00df07ccc52d8da20b40c7c698863d224a5e7a99a5"
+    },
+    {
+      "path": "release-step3-k4-retry.json",
+      "sha256": "d88c3e58c142936ae583c88faf4bb0efbeff8e45e543a221e1e5d6ef676a1810"
+    },
+    {
+      "path": "release-step3-k4-retry.log",
+      "sha256": "9debbf29d3755e8576e265cab4af0377349ec33a9b7fb4875013e8dd66160494"
+    },
+    {
+      "path": "release-step3-k4-consumer.json",
+      "sha256": "a5733d4816d21925bab93c46e400d0aedede8fc34bbb0b144b5e1cc88ac6a656"
+    },
+    {
+      "path": "release-step3-pack/pulse-release-manifest.json",
+      "sha256": "f026c12c30f8627d76c7708d3b48d3d8a4b28601829b87fcb7c8d8cd16d8e617"
+    },
+    {
+      "path": "release-step3-k4-artifacts/bin/main.wasm",
+      "sha256": "a92dcefd38bbd54edc1e4a288bba73e8a13960a40b8f1ef66645c957080cffc7"
+    },
+    {
+      "path": "release-step3-tick/report.json",
+      "sha256": "8d9aa18c3c78ea10aae776cfe2b19f951dd0a9555a3018d0247ea98e13f9dc09"
+    },
+    {
+      "path": "release-step3-tick/abi.json",
+      "sha256": "1ab59ae6ada55f9e0f5bab3cdb48c8c46b28a3ce0498339ce82adc411db3ede3"
+    },
+    {
+      "path": "release-step3-tick/dispatch.json",
+      "sha256": "d839260166d347e695173710e3671f3b5194fffe8652cd6734262698c802cdae"
+    },
+    {
+      "path": "release-step3-tick/auth-http.log",
+      "sha256": "72a371a6095025ff9e73b4c8be35a0617a94c422330dce8d84ba7521209053b9"
+    },
+    {
+      "path": "release-step3-tick/dispatch-http.log",
+      "sha256": "caf3809bd53684e4c15f6b90f00bb53f536de866695d40002337cfabbf6ee680"
+    }
+  ]
+}

@@ -11,12 +11,14 @@ const KNOWN_FAILURE = {
   actual: { acknowledgement: 'stored', subsequentRead: 'found' },
 };
 
-function localAcceptance(evidence) {
+function localAcceptance(evidence, expectedPackageCount) {
   const results = evidence?.results;
   const compute = results?.['fastly-compute'];
   const validInstall = evidence?.providerReality === true
     && evidence.installedBytesUnchanged === true && evidence.workspaceProductModules === 0
-    && evidence.publicTypes === 'passed' && evidence.packageCount === 19;
+    && evidence.publicTypes === 'passed'
+    && Number.isInteger(expectedPackageCount) && expectedPackageCount > 0
+    && evidence.packageCount === expectedPackageCount;
   const nodePassed = results?.['node-native']?.status === 'passed'
     && results?.['node-javascript']?.status === 'passed'
     && isDeepStrictEqual(results['node-native'].failures, [])

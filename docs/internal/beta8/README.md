@@ -38,8 +38,8 @@ integrated. Containing-body observations are not exclusive route sizes.
 | Published documentation and changelog history | preserved | beta.7 archive comes from its exact tag; beta.6 and older archive bytes and released notes are unchanged |
 | Release gate stabilization | merged | [Pass 1 #298](https://github.com/pulse-compute/pulse/pull/298), [Pass 2 #299](https://github.com/pulse-compute/pulse/pull/299); no reduced coverage or wider resume admission |
 | Fastly example size failures | resolved on preparation base | #300: 59/59 unit and 34/34 CLI, with both exact default/optimized provider baselines measured; these beta.7-versioned development results are not beta.8 seal evidence |
-| beta.8 conditional KV/CAS evidence or disposition | pending, required before release | Dedicated local K4 and deployed Pulse cross-location requirements remain explicit; preserve raw failed/not-run status and bind any owner disposition to the final candidate |
-| tick Combined Acceptance against final beta.8 packages | pending for a beta.8 compatibility claim | [fastly-tick #20](https://github.com/pulse-compute/fastly-tick/pull/20) is development acceptance against an earlier beta.7-versioned package set; rerun the focused app acceptance against final packed beta.8 bytes |
+| beta.8 conditional KV/CAS evidence or disposition | local accepted; deployed still blocking | Step 3 local K4 retained only the already-dispositioned missing-key CAS discrepancy; deployed Pulse cross-location proof or an explicit beta.8 owner disposition is still required |
+| tick Combined Acceptance against beta.8 packages | passed on Step 3 packed candidate | 10/10 injected Native ABI, 14/14 receiver HTTP and 10/10 strict dispatch HTTP; all 20 beta.8 package hashes match K4. Bind or replay against the final qualification artifacts before making a final release claim |
 | Required main qualification gate and protected settings | owner verification pending | Confirm the stable qualification gate is required and the existing publication/deployment environments are configured; this PR changes no settings |
 | Frozen candidate, complete seal and installed acceptance | pending | Open the prepared release PR into main and qualify its exact merge candidate, including mandatory Fastly CLI reality and cleanup |
 | Production advisory and license closure | pending | Refresh the existing final-seal reports; retain and resolve policy-required findings/dispositions |
@@ -51,6 +51,67 @@ policy; its static proven gates do not establish final candidate readiness.
 The historical beta.7 ledger stays historical rather than being relabeled as
 beta.8 evidence. No prior setup attestation is promoted to fresh private-settings
 verification here.
+
+## Step 3 acceptance — October 12, 2026
+
+The release owner's “Proceed with Release step 3” authorizes this acceptance
+replay, the bounded K4 harness repair and this evidence record. It supplies no
+new release exception. The [machine record](./acceptance-evidence.json) retains
+raw K4 results, terminal reports, tick cases, exact package/module hashes and the
+remaining blocking disposition.
+
+The merged preparation is `ba24253883e04aa99bfec770e72b0d9795704e65`.
+Acceptance ran on local commit `56b75180b63c8554c48f2ae35b1b3ae4a316ecda`, tree
+`ddadcf75872cfb8fe77a7fa70755f0ce29580406`, with no tracked edits during those
+runs. Its only source delta is the repository-only K4 harness repair: the local
+acceptance predicate now requires the count from the verified candidate pack,
+rather than the historical constant 19. Tests cover both 19- and 20-package
+inputs, missing/invalid/mismatched counts, and continued rejection of unrelated
+failures. No CAS assertion or exception is widened.
+
+All 20 packages are `1.0.0-beta.8`. The retained packed-manifest SHA-256 is
+`f026c12c30f8627d76c7708d3b48d3d8a4b28601829b87fcb7c8d8cd16d8e617`.
+The same tarballs fed K4 and tick; both verified installed package bytes before
+and after execution, without workspace product links. The ledger/evidence
+commit follows the tested source and is not itself a final qualified candidate.
+
+- **K4:** the dedicated task completed with passing cleanup and its existing
+  `accepted-with-known-viceroy-discrepancy` disposition. Raw semantics remain
+  `failed`: Viceroy 0.21.1 stores missing-key CAS where the contract requires
+  conflict. This is the exact October 4 non-blocking observation. Node Native
+  and JavaScript passed; the three targets each executed 171 scenario requests
+  across widths 2, 8 and 16. No multi-winner failure occurred in this run.
+  Public types, isolation and installed-byte checks passed, as did the 78 K2
+  target scenarios and 209 injected Fastly ABI cases. The retained K4 module is
+  `a92dcefd38bbd54edc1e4a288bba73e8a13960a40b8f1ef66645c957080cffc7`.
+- **tick:** the tested source tree exactly matches merged
+  [fastly-tick #20](https://github.com/pulse-compute/fastly-tick/pull/20), main
+  `24ef2132faad7f5691f7a2ce342e3810d4005c20`. All six acceptance steps passed:
+  install, receiver/worker builds, 10/10 actual-Native injected ABI cases,
+  14/14 receiver Viceroy HTTP cases and 10/10 strict dispatch HTTP cases.
+  Delayed headers returned healthy/unacknowledged at 1029 ms; reset at 4 ms.
+  Shipping dispatch and dependency pins remain unchanged. This is local
+  development acceptance, not deployed Fastly qualification.
+- **Toolchain/retry:** Node 24.19.0, npm 11.9.0, pnpm 12.4.2 and direct
+  Viceroy 0.21.1 were used. The first K4 attempt stopped before packing when
+  pnpm attempted dependency-build approval. Its report is retained; the retry
+  used `npm_config_ignore_scripts=true` and completed. No dependency build
+  approval was granted. This does not claim the exact release Node/npm pins
+  or the final mandatory Fastly CLI reality lane.
+
+**Remaining release blocker:** deployed Pulse cross-location K4 is `not-run`.
+No reviewed isolated T2 environment/probe driver was available. The release
+owner must supply the reviewed service/version, KV binding, exact Native module
+identity, authenticated writes and independently located probes described in
+[K4](../../../wasm/test/kv/K4.md), or explicitly disposition this beta.8
+candidate's deployed requirement. The beta.6-only exception does not apply.
+No new disposition, provisioning, activation or deployment is recorded here.
+
+The complete seal, installed release acceptance, advisory/license refresh,
+private settings verification and release actions remain outstanding. Step 4
+must qualify the exact main PR merge candidate and reconcile final package
+hashes with this record; source changes invalidate qualification. These focused
+reports cannot be pooled into the authoritative seal.
 
 ## Remaining acceptance and release sequence
 

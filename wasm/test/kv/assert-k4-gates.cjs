@@ -8,15 +8,26 @@ const { localAcceptance } = require('./k4/local-acceptance.cjs');
 
 async function main() {
   const recorded = require('./k4/viceroy-0.21.1-beta6-evidence.json').localK4.consumer;
-  const known = localAcceptance(recorded);
+  const known = localAcceptance(recorded, 19);
   assert.equal(known.status, 'accepted-with-known-viceroy-discrepancy');
   assert.equal(known.releaseBlocking, false); assert.equal(known.semanticStatus, 'failed');
   assert.equal(known.deployedPulseCrossLocationStillRequired, true);
-  assert.equal(localAcceptance(require('./k4/viceroy-0.21.0-evidence.json')).releaseBlocking, false);
+  assert.equal(localAcceptance(require('./k4/viceroy-0.21.0-evidence.json'), 19).releaseBlocking, false);
   const fixed = structuredClone(recorded);
   fixed.status = fixed.results['fastly-compute'].status = 'passed';
   fixed.results['fastly-compute'].failures = [];
-  assert.equal(localAcceptance(fixed).status, 'passed');
+  assert.equal(localAcceptance(fixed, 19).status, 'passed');
+  // Package closure belongs to the verified candidate pack, not the historical
+  // 19-package evidence. Both raw pass and known-discrepancy paths enforce it.
+  for (const source of [recorded, fixed]) {
+    const current = { ...structuredClone(source), packageCount: 20 };
+    assert.equal(localAcceptance(current, 20).releaseBlocking, false);
+    assert.equal(localAcceptance(current, 20).semanticStatus, source.status);
+    for (const count of [undefined, 0, -1, 19, 21, 20.5, '20']) {
+      assert.equal(localAcceptance(current, count).releaseBlocking, true);
+    }
+    assert.equal(localAcceptance(source, 20).releaseBlocking, true);
+  }
   for (const change of [
     e => { e.results['node-native'].status = 'failed'; },
     e => { e.results['node-javascript'].status = 'failed'; },
@@ -32,7 +43,9 @@ async function main() {
     e => { e.publicTypes = 'failed'; },
   ]) {
     const invalid = structuredClone(recorded); change(invalid);
-    assert.equal(localAcceptance(invalid).releaseBlocking, true, 'unrelated or unverified failures still block');
+    assert.equal(localAcceptance(invalid, 19).releaseBlocking, true, 'unrelated or unverified failures still block');
+    invalid.packageCount = 20;
+    assert.equal(localAcceptance(invalid, 20).releaseBlocking, true, 'current package closure does not waive other failures');
   }
   // Missing dependencies must fail before packing/installing, not pass/skip.
   const unavailable = spawnSync(process.execPath, [path.join(__dirname, 'assert-k4-acceptance.cjs')], {
