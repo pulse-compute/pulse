@@ -17,6 +17,8 @@ const json = file => JSON.parse(fs.readFileSync(file));
 async function main() {
   git('init', '-q'); git('config', 'user.email', 'fixture@example.invalid'); git('config', 'user.name', 'Fixture');
   write(path.join(repo, 'pnpm-lock.yaml'), 'fixture lock'); write(path.join(repo, 'source'), 'base'); git('add', '.'); git('commit', '-qm', 'base'); const base = git('rev-parse', 'HEAD');
+  write(path.join(repo, 'source'), 'intermediate'); git('add', '.'); git('commit', '-qm', 'intermediate');
+  const first = git('rev-parse', 'HEAD'), firstTree = git('rev-parse', 'HEAD^{tree}');
   write(path.join(repo, 'source'), 'qualified'); git('add', '.'); git('commit', '-qm', 'head'); const head = git('rev-parse', 'HEAD');
   const tree = git('rev-parse', 'HEAD^{tree}');
   const qualified = git('commit-tree', tree, '-p', base, '-p', head, '-m', 'qualified');
@@ -112,6 +114,33 @@ async function main() {
     good.artifacts[0].id = 457; await assert.rejects(consume, /superseded/); good.artifacts[0].id = 456;
     git('tag', '-f', tag, head); assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection })); git('tag', '-f', tag, merged);
     git('checkout', '-q', '--detach', head); assert.throws(() => owner.verifyConsumption({ root: repo, directory, selection }));
+
+    // Consume and recheck the same immutable artifacts through a real linear
+    // rebase binding, including the protected-phase bound-source verifier.
+    const rebasedFirst = git('commit-tree', firstTree, '-p', base, '-m', 'rebased intermediate');
+    const rebasedTip = git('commit-tree', tree, '-p', rebasedFirst, '-m', 'rebased head');
+    git('tag', '-f', tag, rebasedTip); git('checkout', '-q', '--detach', rebasedTip);
+    context.sha = rebasedTip; good.pr.merge_commit_sha = rebasedTip;
+    const rebaseSelection = await resolve(good);
+    const receiptBefore = fs.readFileSync(files.receipt);
+    const rebaseBinding = await owner.consume({ github: good.github, context, releaseTag: tag,
+      selection: rebaseSelection, directory, root: repo, bindingFile });
+    assert.equal(rebaseBinding.merge.strategy, 'rebase');
+    assert.deepEqual(rebaseBinding.merge.rebase.map(entry => entry.original), [first, head]);
+    owner.validateBoundSource({ root: repo, bindingFile, manifestFile: files.pub, source, kind: 'publication',
+      env: { GITHUB_REPOSITORY: repository, GITHUB_REF: context.ref, GITHUB_SHA: rebasedTip } });
+    assert.deepEqual(fs.readFileSync(files.receipt), receiptBefore);
+
+    // A tag-only checkout may not have the original head after branch deletion.
+    // Fetch that exact object without changing HEAD or tags; no network required.
+    git('branch', 'fetch-base', base);
+    const clone = path.join(repo, 'tag-only-clone');
+    execFileSync('git', ['clone', '-q', '--no-local', '--single-branch', '--branch', 'fetch-base', repo, clone]);
+    const cloneGit = (...args) => execFileSync('git', args, { cwd: clone, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+    assert.throws(() => cloneGit('cat-file', '-e', `${head}^{commit}`));
+    owner.ensureQualifiedHead(clone, head); cloneGit('cat-file', '-e', `${head}^{commit}`);
+    assert.equal(cloneGit('rev-parse', 'HEAD'), base); assert.equal(cloneGit('tag', '--list'), '');
+    assert.throws(() => owner.ensureQualifiedHead(clone, '--upload-pack=bad'), /Invalid qualified/);
   } finally { Module._load = load; }
   console.log('ok - automatic selection, supersession, authenticated source/digest rejection and immutable merge binding');
 }

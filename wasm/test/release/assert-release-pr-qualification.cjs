@@ -65,6 +65,7 @@ async function main() {
   await check(); mainSha = head; await assert.rejects(check, /Main moved/); mainSha = base;
   current.merge_commit_sha = head; await assert.rejects(check, /merge candidate changed/); current.merge_commit_sha = merge;
   current.head.sha = base; await assert.rejects(check, /head changed/); current.head.sha = head;
+  current.body = 'Release qualification: required'; await assert.rejects(check, /request changed/); delete current.body;
   current.state = 'closed'; await assert.rejects(check, /no longer open/); current.state = 'open';
 
   const seal = { schemaVersion: 'pulse.release-seal.v1', status: 'passed', completedAt: new Date().toISOString(),
@@ -127,7 +128,7 @@ async function main() {
   // Same-tree commits from another base are not eligible.
   const stale = git('commit-tree', tree, '-p', head, '-m', 'wrong base');
   git('tag', '-f', identity.releaseTag, stale); mergedPr.merge_commit_sha = stale;
-  assert.throws(bind, /base changed/);
+  assert.throws(bind, /Rebase commit count differs/);
   git('tag', '-f', identity.releaseTag, squash); mergedPr.merge_commit_sha = squash;
   for (const mutate of [r => { r.candidate.sourceTree = 'f'.repeat(40); }, r => { r.head = base; },
     r => { r.repository = 'foreign/pulse'; }, r => { r.workflow = '.github/workflows/validate.yml'; }, r => { r.status = 'failed'; }]) {
@@ -136,12 +137,51 @@ async function main() {
   assert.throws(() => bind(receipt, { ...mergedPr, merge_commit_sha: merge }), /Tag differs/);
   assert.throws(() => bind(receipt, { ...mergedPr, merged: false }), /must be merged/);
 
+  // Real Git objects: preserve every ordered tree, the exact base and both tips
+  // across a metadata-only rewrite of a linear two-commit PR.
+  git('checkout', '-q', '--detach', head); write('docs/rebase.md', 'second change');
+  const linearHead = commit('second original'), linearTree = git('rev-parse', 'HEAD^{tree}');
+  const linearMerge = git('commit-tree', linearTree, '-p', base, '-p', linearHead, '-m', 'linear PR candidate');
+  const linearReceipt = { ...receipt, head: linearHead,
+    candidate: { ...receipt.candidate, sourceRevision: linearMerge, sourceTree: linearTree } };
+  const rebasedFirst = git('commit-tree', tree, '-p', base, '-m', 'rewritten first');
+  const rebasedTip = git('commit-tree', linearTree, '-p', rebasedFirst, '-m', 'rewritten second');
+  const bindRebase = (tip, r = linearReceipt) => {
+    git('tag', '-f', identity.releaseTag, tip);
+    return bind(r, { ...mergedPr, head: { ...mergedPr.head, sha: r.head }, merge_commit_sha: tip });
+  };
+  const rebased = bindRebase(rebasedTip);
+  assert.equal(rebased.strategy, 'rebase'); assert.equal(rebased.qualifiedSource, linearMerge);
+  assert.deepEqual(rebased.rebase, [{ original: head, rebased: rebasedFirst, tree },
+    { original: linearHead, rebased: rebasedTip, tree: linearTree }]);
+  const changedFirst = git('commit-tree', git('rev-parse', `${base}^{tree}`), '-p', base, '-m', 'changed intermediate');
+  const sameFinalTree = git('commit-tree', linearTree, '-p', changedFirst, '-m', 'same final tree');
+  assert.throws(() => bindRebase(sameFinalTree), /ordered trees differ/);
+  const extraTip = git('commit-tree', linearTree, '-p', rebasedTip, '-m', 'extra main commit');
+  assert.throws(() => bindRebase(extraTip), /commit count differs/);
+  const mergedFirst = git('commit-tree', tree, '-p', base, '-p', head, '-m', 'nonlinear first');
+  const nonlinearTip = git('commit-tree', linearTree, '-p', mergedFirst, '-m', 'nonlinear final');
+  assert.throws(() => bindRebase(nonlinearTip), /must be linear/);
+  assert.throws(() => bindRebase(rebasedTip, { ...linearReceipt, head: linearMerge }), /must be linear/);
+  const wrongBase = git('commit-tree', tree, '-m', 'unrelated root');
+  const wrongBaseTip = git('commit-tree', linearTree, '-p', wrongBase, '-m', 'unrelated final');
+  assert.throws(() => bindRebase(wrongBaseTip), /must be linear/);
+  const droppedReceipt = { ...linearReceipt, head: extraTip };
+  assert.throws(() => bindRebase(rebasedTip, droppedReceipt), /commit count differs/);
+
   // Same-version docs-only changes produce an explicit non-release result.
   git('checkout', '-q', '--detach', base); write('docs/note.md', 'note'); const docs = commit('docs');
   const docsMerge = git('commit-tree', git('rev-parse', 'HEAD^{tree}'), '-p', base, '-p', docs, '-m', 'docs merge');
   git('checkout', '-q', '--detach', docsMerge);
   const docsEvent = structuredClone(event); docsEvent.pull_request.head.sha = docs;
   assert.equal(identify(docsEvent, { ...env, GITHUB_SHA: docsMerge }).required, false);
+  docsEvent.pull_request.body = 'Release qualification: required';
+  const requested = identify(docsEvent, { ...env, GITHUB_SHA: docsMerge });
+  assert.equal(requested.required, true); assert.equal(requested.qualificationRequested, true);
+  assert.equal(requested.preparation.preparedRelease, false);
+  for (const body of ['Release qualification: skip', 'Release qualification: required\nRelease qualification: required']) {
+    assert.throws(() => identify({ ...docsEvent, pull_request: { ...docsEvent.pull_request, body } }, { ...env, GITHUB_SHA: docsMerge }));
+  }
   write('packages/runtime/index.js', 'changed product'); const unprepared = commit('unprepared');
   const badMerge = git('commit-tree', git('rev-parse', 'HEAD^{tree}'), '-p', base, '-p', unprepared, '-m', 'bad merge');
   git('checkout', '-q', '--detach', badMerge); docsEvent.pull_request.head.sha = unprepared;
@@ -177,6 +217,6 @@ async function main() {
     write('dirty.txt', 'dirty'); assert.throws(() => source.verify(repo, file, digest), /clean candidate/); fs.unlinkSync(path.join(repo, 'dirty.txt'));
     assert.throws(() => source.verify(root, file, digest), /another checkout/);
   } finally { Module._load = original; }
-  console.log('ok - pre-main identity, live-source invalidation, terminal seal, merge/squash binding and pinned source checks');
+  console.log('ok - pre-main identity, explicit qualification, live-source invalidation, terminal seal, merge/squash/linear-rebase binding and pinned source checks');
 }
 main().finally(() => fs.rmSync(root, { recursive: true, force: true })).catch(error => { console.error(error.stack || error); process.exitCode = 1; });

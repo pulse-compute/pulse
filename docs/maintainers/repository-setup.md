@@ -79,8 +79,12 @@ observing it, and require branches to be up to date before merging. It rejects
 stale base/head/merge identities and fails if its candidate job fails, is
 cancelled or is skipped. A validated non-release PR can pass without a seal.
 Reopen or synchronize a PR retargeted to `main` to start the qualification workflow.
-This lane supports ordinary PR merge/squash, not merge queues or a multi-commit
-rebase chain. Keep the ordinary validation checks too.
+This lane supports ordinary PR merge/squash and linear rebases that preserve the
+qualified base and every ordered tree. Merge-heavy rebase histories and merge
+queues remain unsupported. Keep the ordinary validation checks too. A same-version
+release-control repair may opt into a fresh complete seal by including
+`Release qualification: required` in its body before opening, reopening or
+synchronizing the PR; version-preparation rules still apply.
 
 The tagged npm and docs consumers discover the qualified PR artifact automatically
 and recheck it after protected approval. They do not build, pack or seal after

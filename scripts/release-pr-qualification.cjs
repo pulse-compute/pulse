@@ -16,6 +16,15 @@ const git = (root, args) => execFileSync('git', args, { cwd: root, encoding: 'ut
 const sha = (value, label) => { assert.match(value || '', /^[a-f0-9]{40}$/, `Invalid ${label}`); return value; };
 const positive = (value, label) => { const n = Number(value); assert(Number.isSafeInteger(n) && n > 0, `Invalid ${label}`); return n; };
 
+// An opt-in can add a complete seal, never bypass version preparation or checks.
+function requestsQualification(body) {
+  const fields = [...(body || '').matchAll(/^Release qualification:[ \t]*(.*)$/gm)];
+  assert(fields.length <= 1, 'Duplicate release qualification request');
+  if (!fields.length) return false;
+  assert.equal(fields[0][1].trim(), 'required', 'Release qualification must be required when declared');
+  return true;
+}
+
 function validateWorkflow(source) {
   for (const value of ['name: Release qualification', 'branches: [main]', 'ready_for_review',
     'contents: read', 'pull-requests: read', 'ref: ${{ github.sha }}', 'persist-credentials: false',
@@ -61,10 +70,12 @@ function identify({ root, event, env = process.env }) {
     changedFiles: execFileSync('git', ['diff', '--name-only', '-z', base, candidate.sourceRevision], { cwd: root, encoding: 'utf8' }).split('\0').filter(Boolean),
     readHead: file => read(candidate.sourceRevision, file)
   });
+  const qualificationRequested = requestsQualification(pr.body);
   return { schemaVersion: SCHEMA, repository, workflow: WORKFLOW,
     runId: positive(env.GITHUB_RUN_ID, 'run ID'), attempt: positive(env.GITHUB_RUN_ATTEMPT, 'attempt'),
     pullRequest: number, base, head, sourceRef, candidate, preparation,
-    releaseTag: `v${preparation.version}`, required: preparation.preparedRelease };
+    releaseTag: `v${preparation.version}`, qualificationRequested,
+    required: preparation.preparedRelease || qualificationRequested };
 }
 
 // Query at both ends of qualification. Branch protection must also require an
@@ -79,6 +90,8 @@ async function assertCurrent({ github, context, identity }) {
   assert.equal(pr.head.repo?.full_name, identity.repository);
   assert.equal(pr.base.sha, identity.base, 'PR base changed; update the branch and requalify');
   assert.equal(pr.head.sha, identity.head, 'PR head changed; requalify');
+  assert.equal(requestsQualification(pr.body), identity.qualificationRequested ?? false,
+    'Qualification request changed; synchronize or reopen the PR to requalify');
   const { data: base } = await github.rest.git.getRef({ ...context.repo, ref: 'heads/main' });
   assert.equal(base.object.sha, identity.base, 'Main moved; update the branch and requalify');
   assert.equal(pr.merge_commit_sha, identity.candidate.sourceRevision, 'PR merge candidate changed or is not ready; requalify');
@@ -138,6 +151,25 @@ function capture(root, identity, output) {
   return receipt;
 }
 
+// A rebase may rewrite commit IDs and metadata, but must preserve every ordered
+// tree in a bounded linear PR rooted at the unchanged qualified base. Checking
+// only the final tree or ancestry would admit unrelated intervening main work.
+function linearCommits(root, base, tip) {
+  const rows = git(root, ['log', '--first-parent', '--format=%H %T %P', '--max-count=1001', `${base}..${tip}`]);
+  const commits = rows ? rows.split('\n').reverse().map(row => {
+    const [commit, tree, ...parents] = row.split(' ');
+    return { commit, tree, parents };
+  }) : [];
+  assert(commits.length > 0 && commits.length <= 1000, 'Rebase chain missing or exceeds 1000 commits');
+  let previous = base;
+  for (const entry of commits) {
+    assert.deepEqual(entry.parents, [previous], 'Rebase chain must be linear on the unchanged qualified base');
+    previous = entry.commit;
+  }
+  assert.equal(previous, tip, 'Rebase chain does not reach its bound tip');
+  return commits;
+}
+
 // Consumption calls this only after authenticating the Actions run/attempt/artifact
 // and verifying the bundle and receipt hashes. It creates a separate binding,
 // never mutates the qualified source identity or any published bytes.
@@ -165,11 +197,22 @@ function verifyMergeBinding({ root, receipt, pullRequest, repository, tag }) {
   assert.equal(git(root, ['rev-parse', `${commit}^{tree}`]), receipt.candidate.sourceTree, 'Merged tree differs');
   const parents = git(root, ['show', '-s', '--format=%P', commit]).split(' ');
   assert(parents.length === 1 || parents.length === 2, 'Unsupported merge strategy');
-  assert.equal(parents[0], receipt.base, 'Main base changed after qualification');
-  if (parents.length === 2) assert.equal(parents[1], receipt.head, 'Merge parent differs');
+  let strategy = parents.length === 2 ? 'merge' : 'squash';
+  let rebase;
+  if (parents.length === 1 && parents[0] !== receipt.base) {
+    const original = linearCommits(root, receipt.base, receipt.head);
+    const rebased = linearCommits(root, receipt.base, commit);
+    assert.equal(rebased.length, original.length, 'Rebase commit count differs');
+    assert.deepEqual(rebased.map(entry => entry.tree), original.map(entry => entry.tree), 'Rebase ordered trees differ');
+    strategy = 'rebase';
+    rebase = original.map((entry, index) => ({ original: entry.commit, rebased: rebased[index].commit, tree: entry.tree }));
+  } else {
+    assert.equal(parents[0], receipt.base, 'Main base changed after qualification');
+    if (parents.length === 2) assert.equal(parents[1], receipt.head, 'Merge parent differs');
+  }
   return { schemaVersion: 'pulse.release-merge-binding.v1', qualifiedSource: receipt.candidate.sourceRevision,
     sourceTree: receipt.candidate.sourceTree, commit, tag, pullRequest: receipt.pullRequest,
-    strategy: parents.length === 2 ? 'merge' : 'squash' };
+    strategy, ...(rebase ? { rebase } : {}) };
 }
 
 module.exports = { SCHEMA, WORKFLOW, ARTIFACT, validateWorkflow, identify, assertCurrent, assertSeal, capture, verifyMergeBinding };
