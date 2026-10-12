@@ -210,7 +210,7 @@ A per-fetch `timeoutMs` header deadline enters the same error lane as
 `PULSE_FETCH_TIMEOUT`, with an explicit 504 when no error handler is registered.
 The whole-request `maxDurationMs` cutoff remains terminal. Invalid timeout options
 fail before dispatch with HTTP 400. See [fetch deadline semantics and resource
-ownership](../concepts/effects-and-continuations.md#timeouts-have-two-scopes).
+ownership](https://pulsecompute.io/v1.0.0-beta.7/concepts/effects-and-continuations/#timeouts-have-two-scopes).
 These Fastly-specific recoveries do not change other targets' recovery catalogs.
 
 Recovery moves forward in registration order, including through mounted

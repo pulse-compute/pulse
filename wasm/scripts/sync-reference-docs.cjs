@@ -756,6 +756,7 @@ function transformApiCopy(sourceRelative, content) {
   }
   if (sourceRelative === 'docs/guides/routing.md') {
     return stable(content
+      .replaceAll('../concepts/effects-and-continuations.md', publicCliDoc('docs/concepts/effects-and-continuations.md'))
       .replaceAll('../reference/handler-authoring.md', publicCliDoc('docs/reference/handler-authoring.md'))
       .replaceAll('../reference/compatibility-matrix.md', publicCliDoc('docs/reference/compatibility-matrix.md')));
   }
