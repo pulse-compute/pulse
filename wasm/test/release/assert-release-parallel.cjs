@@ -20,9 +20,11 @@ async function verifyParallel() {
     assert.equal(compilerCount(4, 2), 2);
     assert.throws(() => compilerCount(0, 2), /compiler-workers/);
     const registry = require('../suite/registry.cjs').tasks;
-    for (const name of ['jwt-rs256', 'clean-machine-acceptance', 'schema-codecs', 'fastly-native-platform-capabilities']) {
+    for (const name of ['jwt-rs256', 'clean-machine-acceptance', 'schema-codecs', 'fastly-native-platform-capabilities',
+      'cli-report-capture-proof', 'node-launcher', 'node01-installed', 'ast02d-installed', 'assets-native-embedded', 's3-body-installed']) {
       assert.equal(scheduling(name, registry[name]).compiler, true, `${name} must consume a compiler slot`);
     }
+    assert.equal(scheduling('release-artifact-determinism', registry['release-artifact-determinism']).compiler, false);
     const candidateRoot = path.join(root, 'candidate');
     put(path.join(candidateRoot, '.gitignore'), 'node_modules/\ndist/\n.validation-tools/\n.pulse-seal/\n');
     put(path.join(candidateRoot, 'wasm/.keep'), '');
@@ -112,6 +114,45 @@ async function verifyParallel() {
         taskRunOptions: { terminationGraceMs: 25, killGraceMs: 25 } });
       return { state, config };
     }
+    // Use production names/hints with lightweight subprocesses: execution order
+    // may change, but report order, coverage, recovery and slot limits must not.
+    const hinted = name => task(name, { compiler: scheduling(name, registry[name]).compiler, ...registry[name].scheduling });
+    const early = { 'jwt-rs256': hinted('jwt-rs256'), 'suite-shape': hinted('suite-shape'),
+      'release-artifact-determinism': hinted('release-artifact-determinism'), 'boundaries': hinted('boundaries') };
+    for (const parallel of [false, true]) {
+      fs.writeFileSync(trace, '');
+      const result = await attempt(`priority-${parallel}`, early, null, parallel);
+      assert.deepEqual(result.state.results.map(item => item.name), Object.keys(early));
+      assert(result.state.results.every(item => item.status === 'passed'));
+      const rows = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+      const ended = Math.max(...rows.filter(row => ['suite-shape', 'boundaries'].includes(row.name) && row.event === 'end').map(row => row.at));
+      assert(rows.filter(row => !['suite-shape', 'boundaries'].includes(row.name) && row.event === 'start').every(row => row.at >= ended));
+      fs.writeFileSync(path.join(root, 'fail-suite-shape'), 'fail');
+      fs.writeFileSync(trace, '');
+      const failed = await attempt(`priority-failure-${parallel}`, early, null, parallel);
+      assert(failed.state.results.some(item => item.status === 'failed'));
+      assert(!fs.readFileSync(trace, 'utf8').includes('jwt-rs256'));
+      assert(!fs.readFileSync(trace, 'utf8').includes('release-artifact-determinism'));
+      fs.rmSync(path.join(root, 'fail-suite-shape'));
+    }
+    fs.writeFileSync(trace, '');
+    const installed = await attempt('installed-priority', { 'jwt-installed-workflow': hinted('jwt-installed-workflow'),
+      'str02b-installed': hinted('str02b-installed') });
+    assert.deepEqual(installed.state.results.map(item => item.name), ['jwt-installed-workflow', 'str02b-installed']);
+    const installedRows = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+    assert.equal(installedRows[0].name, 'str02b-installed');
+    assert.equal(installedRows[1].event, 'end');
+    fs.writeFileSync(trace, '');
+    const resources = { 'cli-report-capture-proof': hinted('cli-report-capture-proof'),
+      'ast02d-installed': hinted('ast02d-installed'), 'release-artifact-determinism': hinted('release-artifact-determinism') };
+    const resourceRun = await attempt('actual-resource-hints', resources);
+    assert(resourceRun.state.results.every(item => item.status === 'passed'));
+    const resourceRows = fs.readFileSync(trace, 'utf8').trim().split('\n').map(JSON.parse);
+    const eventAt = (name, event) => resourceRows.find(row => row.name === name && row.event === event).at;
+    assert(eventAt('cli-report-capture-proof', 'end') <= eventAt('ast02d-installed', 'start'));
+    assert(eventAt('release-artifact-determinism', 'start') < eventAt('cli-report-capture-proof', 'end'));
+    assert(eventAt('cli-report-capture-proof', 'start') < eventAt('release-artifact-determinism', 'end'));
+    fs.writeFileSync(trace, '');
     const tasks = { a: task('a', { compiler: true, resources: ['provider'] }), b: task('b', { compiler: true, resources: ['provider'] }),
       c: task('c'), d: task('d', { compiler: true, after: ['a'] }), benchmark: task('benchmark', { exclusive: true, cost: 100 }) };
     const parallel = await attempt('parallel', tasks);

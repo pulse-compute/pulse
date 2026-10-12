@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { parseArgs, observerSource, summarize } = require('../../../scripts/release-seal-measure.cjs');
+const { parseArgs, observerSource, summarize, readyToInterrupt } = require('../../../scripts/release-seal-measure.cjs');
 
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-measure-check-'));
 try {
@@ -18,6 +18,11 @@ try {
     ['--require-fastly', '--workers', '4', '--compiler-workers', '2', '--memory-budget-mib', '6144']);
   assert.throws(() => parseArgs(['--verify-resume', '--interrupt-at', 's3-body-installed']), /cannot be combined/);
   assert.deepEqual(parseArgs(['--out', 'result']).sealArgs, ['--require-fastly']);
+  assert.equal(readyToInterrupt('interrupted-resume', { currentStep: 'fastly-reality' }, { status: 'passed' }), false,
+    'Early provider reality must not masquerade as restored feature completion');
+  assert.equal(readyToInterrupt('interrupted-resume', { currentStep: 'final-validation' }, { status: 'running' }), false);
+  assert.equal(readyToInterrupt('interrupted-resume', { currentStep: 'final-validation' }, { status: 'passed' }), true);
+  assert.equal(readyToInterrupt('interrupted-fresh', {}, { currentTaskPhases: { 's3-body-installed': 'execution' } }, 's3-body-installed'), true);
   const events = path.join(temporary, 'events.jsonl'), preload = path.join(temporary, 'observer.cjs');
   fs.writeFileSync(events, '');
   fs.writeFileSync(preload, observerSource(events));

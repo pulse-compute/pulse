@@ -89,6 +89,12 @@ function summarize(report, wallMs, events) {
   };
 }
 
+function readyToInterrupt(phase, current, runner, task) {
+  return phase === 'interrupted-resume'
+    ? current.currentStep === 'final-validation' && runner.status === 'passed'
+    : (runner.currentTask === task && runner.currentTaskPhase === 'execution') || runner.currentTaskPhases?.[task] === 'execution';
+}
+
 async function main(argv = process.argv.slice(2)) {
   const options = parseArgs(argv);
   if (options.help) {
@@ -142,10 +148,7 @@ async function main(argv = process.argv.slice(2)) {
             const current = read(path.join(owner.directory, 'report.json'));
             if (current.runId === previousRunId || current.status !== 'running' || !current.recovery?.artifacts?.featureTasks) return;
             const runner = read(current.recovery.artifacts.featureTasks);
-            const ready = phase === 'interrupted-resume'
-              ? current.currentStep === 'fastly-reality' && runner.status === 'passed'
-              : (runner.currentTask === options.interruptAt && runner.currentTaskPhase === 'execution') ||
-                runner.currentTaskPhases?.[options.interruptAt] === 'execution';
+            const ready = readyToInterrupt(phase, current, runner, options.interruptAt);
             if (ready && child && !interrupted) {
               interrupted = true;
               child.kill('SIGTERM');
@@ -200,7 +203,7 @@ async function main(argv = process.argv.slice(2)) {
   const measurement = { schemaVersion: 'pulse.seal-measurement.v1', candidate, startedAt, completedAt: new Date().toISOString(),
     status: failure ? 'invalid' : final?.report.status || 'failed', qualificationPassed: !failure && final?.report.status === 'passed',
     error: failure || final?.report.error || null, attemptDirectory: final?.report.runDirectory || null,
-    commandOptions: options.sealArgs, interruptionRequested: options.verifyResume ? 'fastly-reality after checkpoint restoration' : options.interruptAt,
+    commandOptions: options.sealArgs, interruptionRequested: options.verifyResume ? 'final-validation after checkpoint restoration' : options.interruptAt,
     recoveryDemonstrated: !failure && final?.phase === 'resume' && final?.report.status === 'passed',
     environment: { node: process.version, platform: process.platform, arch: process.arch, osRelease: os.release(),
       dependencyProvenance: options.sealArgs.includes('--skip-install') ? 'Existing graph; provenance must be supplied by the operator' : 'Controller restoration',
@@ -218,5 +221,5 @@ async function main(argv = process.argv.slice(2)) {
   return measurement;
 }
 
-module.exports = { parseArgs, observerSource, summarize, main };
+module.exports = { parseArgs, observerSource, summarize, readyToInterrupt, main };
 if (require.main === module) main().catch(error => { console.error(error.stack || error); process.exitCode = 1; });
