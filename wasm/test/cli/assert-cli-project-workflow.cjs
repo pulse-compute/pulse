@@ -134,6 +134,8 @@ async function main() {
     assert.equal(fs.existsSync(path.join(nativeOut, 'canonical-native.wat')), false);
     const nativeSecond = parseJson(run(['compile', '--out', nativeOut, '--json'], projectRoot));
     assert.equal(nativeSecond.manifest.native.wasm.sha256, nativeFirstHash, 'pulse compile must be deterministic');
+    const noSchema = parseJson(run(['compile', '--out', nativeOut, '--elide-json-cache-arena', '--json'], projectRoot));
+    assert.equal(noSchema.native.wasm.sha256, nativeFirstHash, 'schema-free option must not alter Wasm');
     const expectedNativeSizeOptimization = {
       version: 'pulse.native-optimization.v1',
       mode: 'experimental-native-size',
@@ -253,6 +255,11 @@ async function main() {
       ], projectRoot));
       assert.equal(javascriptText.error.code, 'PULSE_NATIVE_TEXT_UNSUPPORTED');
     }
+    for (const planningFlags of [[], ['--dry-run']]) {
+      const failure = parseError(run(['build', '--profile', 'javascript', '--elide-json-cache-arena', ...planningFlags, '--json'], projectRoot));
+      assert.equal(failure.error.code, 'PULSE_ARGUMENT_UNEXPECTED');
+    }
+    assert.equal(parseJson(run(['compile', '--elide-json-cache-arena', '--dry-run', '--json'], projectRoot)).plan.elideJsonCacheArena, true);
     const textPlan = parseJson(run(['compile', '--emit-wat', '--dry-run', '--json'], projectRoot));
     assert.deepEqual(textPlan.plan.textArtifacts, { wat: true });
 

@@ -19,7 +19,7 @@ function observeAssemblyScript(args, { version, compilerVersion, durationMs, jso
       flags.push({ name, value: ['stub', 'incremental', 'minimal'].includes(value) ? value : '<provider-runtime>' });
     } else if (name === '--transform') {
       const file = args[++i], base = path.basename(file);
-      const value = ['native-retention-transform.cjs', 'report-capture.cjs'].includes(base) ? base
+      const value = ['native-retention-transform.cjs', 'schema-cache-arena-transform.cjs', 'report-capture.cjs'].includes(base) ? base
         : jsonAsVersion && file.includes('json-as') ? 'json-as' : '<transform>';
       flags.push({ name, value });
     } else if (values.has(name)) flags.push({ name, value: String(args[++i]) });

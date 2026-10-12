@@ -496,6 +496,7 @@ function compileFastlyEntitiesNative(sourceArtifact, options = {}) {
       '--path', path.join(compilerFallback, 'node_modules'),
       '--path', path.dirname(jsonAsRoot)
     ];
+    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, true);
     const startedAt = Date.now();
     const result = spawnSync(asc.executable, args, {
       cwd: staging,
@@ -546,6 +547,7 @@ function compileFastlyEntitiesNative(sourceArtifact, options = {}) {
         package: 'assemblyscript',
         version: JSON.parse(fs.readFileSync(path.join(asc.packageRoot, 'package.json'), 'utf8')).version,
         jsonAs: jsonAsManifest.version,
+        elideDisabledCacheArena: options.elideJsonCacheArena === true,
         durationMs: Date.now() - startedAt
       }),
       policy: generated.policy

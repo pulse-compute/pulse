@@ -82,7 +82,7 @@ const publicOptions = OPTION_SPECS.filter((option) => option.visibility === 'pub
 
 assert.deepEqual(workflow.COMMANDS, COMMANDS, 'workflow command surface must use the canonical command specification');
 assert.deepEqual(PUBLIC_COMMAND_ORDER, ['init', 'doctor', 'inspect', 'test', 'dev', 'compile', 'build', 'report']);
-assert.equal(publicOptions.length, 19, 'the CLI must expose exactly 19 documented option contracts');
+assert.equal(publicOptions.length, 20, 'the CLI must expose exactly 20 documented option contracts');
 assert.equal(OPTION_SPECS.every((option) => option.visibility === 'public'), true, 'the product parser must not retain repository-only controls');
 
 for (const command of PUBLIC_COMMAND_ORDER) {
@@ -162,6 +162,14 @@ assert.throws(() => parseCommandRequest(['build', '--experimental-native-size', 
 assert.equal(parseCommandRequest(['compile', 'examples/hello']).directory, 'examples/hello');
 assert.equal(parseCommandRequest(['compile', '--experimental-native-size']).experimentalNativeSize, true);
 assert.equal(parseCommandRequest(['compile', '--experimental-native-bounded-size']).experimentalNativeBoundedSize, true);
+for (const command of ['compile', 'build']) {
+  assert.equal(parseCommandRequest([command, '--elide-json-cache-arena']).elideJsonCacheArena, true);
+  assert.equal(parseCommandRequest([command]).elideJsonCacheArena, undefined, 'arena elision remains opt-in');
+}
+for (const command of ['init', 'doctor', 'inspect', 'test', 'dev', 'report']) {
+  assert.throws(() => parseCommandRequest([command, '--elide-json-cache-arena']),
+    error => error instanceof PulseProjectError && error.code === 'PULSE_ARGUMENT_UNEXPECTED');
+}
 assert.equal(parseCommandRequest(['test', '--profile=local']).profile, 'local');
 
 for (const removed of ['--project', '--workspace', '--entry', '--config', '--fixture', '--suite-profile', '--suite-task', '--report', '--no-report']) {
