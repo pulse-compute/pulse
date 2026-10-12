@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const FASTLY_STATUS_OK = 0;
+const FASTLY_STATUS_INVALID_ARGUMENT = 2;
 const FASTLY_STATUS_ERROR = 1;
 const FASTLY_STATUS_BADF = 3;
 const FASTLY_STATUS_BUFLEN = 4;
@@ -229,7 +230,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     new Uint8Array(memory().buffer, Number(buffer), output.length).set(output);
     return FASTLY_STATUS_OK;
   }
-  function requestHeaderList(values, buffer, size, cursor, end, written, kind) {
+  function requestHeaderList(values, buffer, size, cursor, end, written, kind, lookupKind) {
     const limit = Math.min(Number(size), options.requestHeaderPageBytes ?? Number(size));
     let index = Number(cursor), count = 0;
     if (index < 0 || index > values.length) return FASTLY_STATUS_ERROR;
@@ -245,7 +246,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     writeU32(written, count);
     view().setBigInt64(Number(end), index === values.length ? -1n : BigInt(index), true);
     // Fault injection is host-fixture-only; neither values nor faults enter traces.
-    const fault = options.requestHeaderFault?.({kind, cursor: Number(cursor)});
+    const fault = (lookupKind && options.headerLookupFault?.({kind:lookupKind})) || options.requestHeaderFault?.({kind, cursor: Number(cursor)});
     if (fault?.written !== undefined) writeU32(written, fault.written);
     if (fault?.cursor !== undefined) view().setBigInt64(Number(end), BigInt(fault.cursor), true);
     if (fault?.unterminated && count) new Uint8Array(memory().buffer)[Number(buffer) + count - 1] = 65;
@@ -360,7 +361,8 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         const request = requests.get(Number(handle));
         if (!request) return FASTLY_STATUS_BADF;
         const name = readUtf8(pointer, length).toLowerCase();
-        return requestHeaderList(request.headers.filter(([key]) => key.toLowerCase() === name).map(([, value]) => value), buffer, size, cursor, end, written, 'values');
+        if (!/^[!#$%&'*+.^_`|~0-9a-z-]+$/.test(name)) return FASTLY_STATUS_INVALID_ARGUMENT;
+        return requestHeaderList(request.headers.filter(([key]) => key.toLowerCase() === name).map(([, value]) => value), buffer, size, cursor, end, written, 'values', 'request');
       },
       header_value_get(handle, namePointer, nameLength, valuePointer, valueLength, writtenOut) {
         const request = requests.get(Number(handle));
@@ -368,7 +370,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         trace.push({ module: 'fastly_http_req', name: 'header_value_get', handle: Number(handle), header: name });
         if (!request) return FASTLY_STATUS_BADF;
         const value = headerValue(request.headers, name);
-        return value === undefined ? FASTLY_STATUS_NONE : writeUtf8(value, valuePointer, valueLength, writtenOut);
+        return value === undefined ? FASTLY_STATUS_INVALID_ARGUMENT : writeUtf8(value, valuePointer, valueLength, writtenOut);
       },
       new(handleOut) {
         const handle = alloc('request');
@@ -576,13 +578,21 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         trace.push({ module: 'fastly_http_resp', name: 'header_append', handle: Number(handle), header: [name, value] });
         return FASTLY_STATUS_OK;
       },
+      header_values_get(handle, pointer, length, buffer, size, cursor, end, written) {
+        trace.push({module:'fastly_http_resp', name:'header_values_get', cursor:Number(cursor)});
+        const response = responses.get(Number(handle));
+        if (!response) return FASTLY_STATUS_BADF;
+        const name = readUtf8(pointer, length).toLowerCase();
+        if (!/^[!#$%&'*+.^_`|~0-9a-z-]+$/.test(name)) return FASTLY_STATUS_INVALID_ARGUMENT;
+        return requestHeaderList(response.headers.filter(([key]) => key.toLowerCase() === name).map(([, value]) => value), buffer, size, cursor, end, written, 'response-values', 'response');
+      },
       header_value_get(handle, namePointer, nameLength, valuePointer, valueLength, writtenOut) {
         const response = responses.get(Number(handle));
         const name = readUtf8(namePointer, nameLength);
         trace.push({ module: 'fastly_http_resp', name: 'header_value_get', handle: Number(handle), header: name });
         if (!response) return FASTLY_STATUS_BADF;
         const value = headerValue(response.headers, name);
-        return value === undefined ? FASTLY_STATUS_NONE : writeUtf8(value, valuePointer, valueLength, writtenOut);
+        return value === undefined ? FASTLY_STATUS_INVALID_ARGUMENT : writeUtf8(value, valuePointer, valueLength, writtenOut);
       },
       status_get(handle, statusOut) {
         const response = responses.get(Number(handle));
@@ -702,7 +712,9 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const handledJwtError = options.allowHandledJwtError === true
     && lastError === 1008
     && Boolean(downstream);
-  if (lastError !== FASTLY_STATUS_OK && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
+  const handledHeaderError = options.allowHandledHeaderError === true
+    && lastError === 1003 && (errorStage === 22 || errorStage === 23) && downstream?.status === 500;
+  if (lastError !== FASTLY_STATUS_OK && !handledHeaderError && !handledJwtError && !(options.allowAbortedResponse === true && downstream?.aborted)) {
     throw new FastlyNativePlatformCapabilitiesMockError('Fastly native platform capabilities module reported an execution error.', 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_MOCK_EXECUTION_FAILED', { lastError, errorStage, errorEffect, pulseLastError, trace });
   }
   if (!downstream) {

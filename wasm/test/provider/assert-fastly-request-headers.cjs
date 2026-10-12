@@ -129,3 +129,8 @@ if (require.main === module) {
   }
 }
 module.exports = {main};
+
+// Keep singular lookup regressions in the existing provider/release header task.
+if (require.main === module && process.argv.length === 2) {
+  require('./assert-fastly-header-lookups.cjs').main().catch(error => {console.error(error); process.exitCode = 1;});
+}
