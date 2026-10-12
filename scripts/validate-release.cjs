@@ -141,6 +141,11 @@ function fastlyAvailability(env = process.env) {
   }
 }
 
+function fastlyInputIdentity(availability) {
+  return { availability, binarySha256: availability.fastlyCli?.binary
+    ? require('node:crypto').createHash('sha256').update(fs.readFileSync(availability.fastlyCli.binary)).digest('hex') : null };
+}
+
 function assertReleaseNode(version = process.versions.node) {
   const { PUBLICATION, versionSatisfiesCaretRange } = require('./package-support.cjs');
   if (!versionSatisfiesCaretRange(version, PUBLICATION.nodeReleaseRange)) {
@@ -233,6 +238,7 @@ async function main(argv = process.argv.slice(2)) {
   let cleanup = null;
   let recovery = null;
   let artifactFiles = null;
+  let qualifiedFastlyInput = null;
   const runPackageManagerStep = (id, description, args, timeoutMs) => {
     const invocation = packageManagerInvocation();
     return runStep(
@@ -306,6 +312,33 @@ async function main(argv = process.argv.slice(2)) {
     const sourceChecksSha256 = require('node:crypto').createHash('sha256').update(fs.readFileSync(sourceChecksFile)).digest('hex');
     progress.persist({ sourceChecks: { file: sourceChecksFile, sha256: sourceChecksSha256 } });
     await runPackageManagerStep('build', 'Build the TypeScript workspace', ['run', '-s', 'build'], 10 * 60 * 1000);
+    if (progress.directory) artifactFiles = recoveryTools.artifactPaths(progress.directory);
+    // Availability is a prerequisite, not reality evidence. Inspect it again
+    // immediately before the separately required local execution.
+    externalFastly = fastlyAvailability();
+    if (externalFastly.status === 'available') {
+      qualifiedFastlyInput = fastlyInputIdentity(externalFastly);
+      await runStep(
+        steps,
+        'fastly-reality',
+        'Run external Fastly Compute reality evidence',
+        'node',
+        ['wasm/scripts/run-wasm-tests.cjs', '--task', 'provider-fastly-compute-reality', '--no-report'],
+        {
+          timeoutMs: 10 * 60 * 1000,
+          env: { PULSE_FASTLY_REALITY_EVIDENCE: artifactFiles?.fastlyReality || path.join(resultsRoot, 'fastly-reality.json') }
+        }
+      );
+      externalFastly = Object.freeze({ ...externalFastly, status: 'passed' });
+      progress.persist({ externalFastly });
+    } else if (options.requireFastly) {
+      const error = new Error(`${externalFastly.message} Use the default optional mode or install the Fastly CLI with local Compute support.`);
+      error.code = externalFastly.code;
+      throw error;
+    } else {
+      process.stdout.write(`\n[pulse:release] External Fastly reality unavailable (${externalFastly.code}); recorded as not available.\n`);
+    }
+
     await runStep(
       steps,
       'production-dependency-audit',
@@ -326,8 +359,10 @@ async function main(argv = process.argv.slice(2)) {
     let packStore, packSpec;
     if (progress.directory) {
       const { createCheckpointStore, fingerprint } = require('./release-checkpoints.cjs');
-      const context = recoveryTools.createContext(repoRoot, candidate, options, externalFastly);
-      artifactFiles = recoveryTools.artifactPaths(progress.directory);
+      const availability = externalFastly.status === 'passed' ? { ...externalFastly, status: 'available' } : externalFastly;
+      const context = recoveryTools.createContext(repoRoot, candidate, options, availability);
+      if (qualifiedFastlyInput) assert.equal(context.toolchain.fastlySha256, qualifiedFastlyInput.binarySha256,
+        'Fastly executable changed after early reality evidence');
       recovery = { schemaVersion: recoveryTools.SCHEMA, directory: progress.directory, previousDirectory,
         context, contextSha256: fingerprint(context), artifacts: artifactFiles };
       progress.persist({ recovery });
@@ -389,29 +424,6 @@ async function main(argv = process.argv.slice(2)) {
       revision
     );
 
-    // Availability is a prerequisite, not reality evidence. Inspect it again
-    // immediately before the separately required local execution.
-    externalFastly = fastlyAvailability();
-    if (externalFastly.status === 'available') {
-      await runStep(
-        steps,
-        'fastly-reality',
-        'Run external Fastly Compute reality evidence',
-        'node',
-        ['wasm/scripts/run-wasm-tests.cjs', '--task', 'provider-fastly-compute-reality', '--no-report'],
-        {
-          timeoutMs: 10 * 60 * 1000,
-          env: { PULSE_FASTLY_REALITY_EVIDENCE: artifactFiles?.fastlyReality || path.join(resultsRoot, 'fastly-reality.json') }
-        }
-      );
-      externalFastly = Object.freeze({ ...externalFastly, status: 'passed' });
-    } else if (options.requireFastly) {
-      const error = new Error(`${externalFastly.message} Use the default optional mode or install the Fastly CLI with local Compute support.`);
-      error.code = externalFastly.code;
-      throw error;
-    } else {
-      process.stdout.write(`\n[pulse:release] External Fastly reality unavailable (${externalFastly.code}); recorded as not available.\n`);
-    }
     if (options.requireFastly || externalFastly.status === 'passed') {
       const provenGates = [
         'dependency-closure',
@@ -421,6 +433,9 @@ async function main(argv = process.argv.slice(2)) {
       if (externalFastly.status === 'passed') provenGates.push('fastly-cli');
       assertReleasePreflight(provenGates);
     }
+    progress.persist({ currentStep: 'final-validation' });
+    if (qualifiedFastlyInput) assert.deepEqual(fastlyInputIdentity(fastlyAvailability()), qualifiedFastlyInput,
+      'Fastly executable or availability changed after early reality evidence');
     const finalCandidate = assertCandidateSource(sourceIdentity);
     if (finalCandidate.sourceTree !== candidate.sourceTree) throw new Error('Candidate tree changed during qualification');
     if (recovery) {

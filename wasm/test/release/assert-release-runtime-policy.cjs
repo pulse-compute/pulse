@@ -96,11 +96,20 @@ async function verifySealOrchestration() {
   const acceptance = require('../../../scripts/release-feature-acceptance.cjs');
   const originalCandidate = acceptance.candidateIdentity;
   const originalWrite = process.stdout.write;
+  const originalFastly = process.env.PULSE_FASTLY_BIN;
+  const originalRead = fs.readFileSync;
+  const originalSummary = acceptance.validateSummary;
+  const preflightModule = require.resolve('../../../scripts/release-preflight.cjs');
+  const originalPreflight = require(preflightModule);
   const commands = [];
   let output = '';
   let failPack = true;
   let failSource = true;
+  let failFastly = false;
+  let failRelease = true;
+  let mutateFastly = false;
   try {
+    process.env.PULSE_FASTLY_BIN = fastlyBinary;
     // A controller fixture must not claim the enclosing seal's checkout lock.
     recovery.acquireSealLock = (_root, directory) => originalAcquire(lockRoot, directory);
     acceptance.candidateIdentity = () => ({
@@ -121,7 +130,8 @@ async function verifySealOrchestration() {
         assert(options.env.PULSE_RELEASE_SHARED_PACK);
         assert.match(options.env.PULSE_RELEASE_SHARED_PACK_SHA256, /^[a-f0-9]{64}$/);
       }
-      const fail = failSource ? args.includes('scripts/release-source-checks.cjs') : failPack ? args.includes('scripts/release-shared-pack.cjs') : args.includes('--profile');
+      if (mutateFastly && args.includes('scripts/release-feature-acceptance.cjs')) fs.appendFileSync(fastlyBinary, '\n// changed after early proof\n');
+      const fail = failSource ? args.includes('scripts/release-source-checks.cjs') : failFastly ? args.includes('provider-fastly-compute-reality') : failPack ? args.includes('scripts/release-shared-pack.cjs') : failRelease && args.includes('--profile');
       return { status: fail ? 1 : 0, signal: null };
     };
     process.stdout.write = (chunk) => { output += chunk; return true; };
@@ -130,7 +140,13 @@ async function verifySealOrchestration() {
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
       error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'source-checks');
     assert(!commands.some(args => args.includes('build') || args.includes('--profile') || args.includes('scripts/release-shared-pack.cjs')));
-    commands.length = 0; failSource = false;
+    commands.length = 0; failSource = false; failFastly = true;
+    await assert.rejects(() => seal.main(['--skip-install', '--no-report', '--require-fastly']),
+      error => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'fastly-reality');
+    assert(commands.some(args => args.includes('build')));
+    assert(!commands.some(args => args.includes('scripts/audit-production-dependencies.cjs') || args.includes('test') ||
+      args.includes('scripts/release-shared-pack.cjs') || args.includes('--profile') || args.includes('scripts/release-feature-acceptance.cjs')));
+    commands.length = 0; failFastly = false;
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
       (error) => error.code === 'PULSE_RELEASE_SEAL_STEP_FAILED' && error.step.id === 'shared-pack');
     assert.ok(commands.some((args) => args.includes('build')));
@@ -139,6 +155,8 @@ async function verifySealOrchestration() {
     assert(!commands.some(args => args.includes('scripts/validate-maintainer-control-plane.cjs') || args.includes('scripts/validate-publication-workflows.cjs') || args.includes('docs:check')));
     assert.ok(!commands.some((args) => args.includes('sizes') || args.includes('--profile')));
     assert.match(output, /failed: shared-pack/);
+    assert.equal(commands.filter(args => args.includes('provider-fastly-compute-reality')).length, 1);
+    assert(commands.findIndex(args => args.includes('provider-fastly-compute-reality')) < commands.findIndex(args => args.includes('scripts/release-shared-pack.cjs')));
     commands.length = 0;
     failPack = false;
     await assert.rejects(() => seal.main(['--skip-install', '--no-report']),
@@ -146,7 +164,27 @@ async function verifySealOrchestration() {
     const replay = commands.find((args) => args.includes('--profile'));
     assert.deepEqual(replay.slice(1), ['wasm/scripts/run-wasm-tests.cjs', '--profile', 'release', '--report', '.test-results/release-tasks.json']);
     assert.ok(commands.findIndex((args) => args.includes('scripts/release-shared-pack.cjs')) < commands.findIndex((args) => args.includes('--profile')));
+    assert.equal(commands.filter(args => args.includes('provider-fastly-compute-reality')).length, 1, 'Every attempt executes reality freshly');
+    // Finish a controller attempt with product execution isolated, then prove
+    // that changing the CLI after its early proof prevents terminal acceptance.
+    failRelease = false;
+    fs.readFileSync = (file, ...args) => String(file) === path.resolve(__dirname, '../../.test-results/release-feature-acceptance.json')
+      ? '{}' : originalRead(file, ...args);
+    acceptance.validateSummary = () => ({ status: 'passed' });
+    require.cache[preflightModule].exports = { ...originalPreflight, validatePreflight: () => ({ shards: 16 }) };
+    commands.length = 0;
+    const completed = await seal.main(['--skip-install', '--no-report', '--require-fastly']);
+    assert.equal(completed.status, 'passed');
+    assert.equal(completed.externalFastly.status, 'passed');
+    assert.equal(commands.filter(args => args.includes('provider-fastly-compute-reality')).length, 1);
+    mutateFastly = true;
+    await assert.rejects(() => seal.main(['--skip-install', '--no-report', '--require-fastly']), /Fastly executable or availability changed/);
+
   } finally {
+    if (originalFastly === undefined) delete process.env.PULSE_FASTLY_BIN; else process.env.PULSE_FASTLY_BIN = originalFastly;
+    fs.readFileSync = originalRead;
+    acceptance.validateSummary = originalSummary;
+    require.cache[preflightModule].exports = originalPreflight;
     supervisor.runCommand = originalRun;
     recovery.acquireSealLock = originalAcquire;
     fs.rmSync(lockRoot, { recursive: true, force: true });

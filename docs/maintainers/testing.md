@@ -190,8 +190,10 @@ the controller admits at most one worker per estimated 768 MiB. This limits
 concurrency, not operating-system memory use. Measure actual process-tree RSS
 before increasing the budget. `--compiler-workers` accepts 1–8, defaults to two
 and is capped by the admitted workers. Native, conformance, CLI, provider, release
-and external tasks use those compiler slots by default; registry hints can refine that
-classification. Lighter tasks may occupy the remaining worker slots. This avoids
+and external tasks use those compiler slots by default; explicit registry hints also
+cover Native compilation inside unit-classified report, launcher, Assets and S3
+checks. Independent package/site determinism uses existing compiled outputs and
+can overlap one compiler task. Lighter tasks may occupy the remaining worker slots. This avoids
 starting four heavy compilation pipelines together on a four-CPU runner.
 `--workers 1` is the serial fallback. Task deadlines are unchanged.
 
@@ -199,11 +201,18 @@ Each worker is a private Git worktree of the clean candidate, with copied
 dependencies and build outputs, worker-local workspace links and private task
 temporary roots. Absolute source/tool argv paths are rebased into that worker.
 The exact shared package set is constructed once before task scheduling;
-consumers receive verified private copies. External Fastly reality, bootstrap,
-build and other always-fresh controller stages remain serial. Registry scheduling
+consumers receive verified private copies. External Fastly reality runs freshly immediately after the workspace build, before
+packing and the long suites. CLI availability and executable bytes are checked
+again before terminal acceptance. Bootstrap, build and other always-fresh
+controller stages remain serial. Registry scheduling
 hints can declare dependencies, shared-resource locks and exclusive work;
-benchmarks and timing measurements execute alone. Historical task costs order
-ready tasks without changing coverage.
+benchmarks and timing measurements execute alone. Six short contract checks (suite shape, exports, boundaries, workspace hygiene,
+feature-gate coverage and release runtime policy) finish before other selected
+tasks. The installed Native rejection check also precedes the long JWT gate.
+These priorities apply to serial and parallel execution; reports retain canonical
+selection order and every selected task remains required. Remaining parallel
+tasks use historical ordering weights. The resume measurement helper interrupts
+at final validation, after feature checkpoints have been restored.
 
 Reports preserve canonical selection order, record every active child and bind
 each task to its worker. Failure or interruption cancels all active workers;

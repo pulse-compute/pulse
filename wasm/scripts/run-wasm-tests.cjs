@@ -651,7 +651,10 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
   }
   try {
     if (!parallel) {
-      for (const name of selection.selected) {
+      const { scheduling } = require('../../scripts/release-parallel.cjs');
+      const ordered = selection.selected.map((name, index) => ({ name, index, ...scheduling(name, taskMap[name]) }))
+        .sort((a, b) => b.priority - a.priority || a.index - b.index);
+      for (const { name } of ordered) {
         if (control.signal.aborted) break;
         if ((await execute(name, workspaces?.[0])).status !== 'passed') break;
       }
@@ -659,15 +662,18 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       const { scheduling, compilerCount } = require('../../scripts/release-parallel.cjs');
       const compilerLimit = compilerCount(compilerWorkers, workspaces.length);
       const queue = selection.selected.map((name, index) => ({ name, index, ...scheduling(name, taskMap[name]) }))
-        .sort((a, b) => b.cost - a.cost || a.index - b.index);
+        .sort((a, b) => b.priority - a.priority || b.cost - a.cost || a.index - b.index);
       const selected = new Set(selection.selected);
       for (const item of queue) for (const dependency of item.after) assert(selected.has(dependency), `Missing scheduling dependency: ${dependency}`);
       const free = [...workspaces], active = new Map(), held = new Set();
       while ((queue.length || active.size) && (!control.signal.aborted || active.size)) {
         let started = false;
         if (!control.signal.aborted) {
+          // Finish the bounded early checks before admitting lower-priority work.
+          const priority = Math.max(-1, ...queue.map(item => item.priority), ...[...active.values()].map(value => value.item.priority));
           for (let index = 0; index < queue.length && free.length; index++) {
             const item = queue[index];
+            if (item.priority !== priority) continue;
             if (item.compiler && [...active.values()].filter(value => value.item.compiler).length >= compilerLimit) continue;
             if (item.after.some(name => finished.get(name)?.status !== 'passed') || item.resources.some(resource => held.has(resource))) continue;
             if ((item.exclusive && active.size) || [...active.values()].some(value => value.item.exclusive)) continue;
