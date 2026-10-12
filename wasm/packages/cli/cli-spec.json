@@ -397,7 +397,7 @@
       "name": "compile",
       "summary": "Compile the canonical project into provider-neutral Pulse-owned WebAssembly.",
       "usage": [
-        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]"
+        "pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]"
       ],
       "positionals": [
         {
@@ -422,6 +422,17 @@
           ],
           "kind": "boolean-value",
           "description": "Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default."
+        },
+        {
+          "id": "elide-json-cache-arena",
+          "key": "elideJsonCacheArena",
+          "flags": [
+            {
+              "name": "--elide-json-cache-arena"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads."
         },
         {
           "id": "emit-wat",
@@ -509,7 +520,7 @@
       "name": "build",
       "summary": "Compile the canonical project and realize the deployment provider selected by the active project profile.",
       "usage": [
-        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]"
+        "pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]"
       ],
       "positionals": [
         {
@@ -534,6 +545,17 @@
           ],
           "kind": "boolean-value",
           "description": "Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default."
+        },
+        {
+          "id": "elide-json-cache-arena",
+          "key": "elideJsonCacheArena",
+          "flags": [
+            {
+              "name": "--elide-json-cache-arena"
+            }
+          ],
+          "kind": "boolean",
+          "description": "Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads."
         },
         {
           "id": "emit-wat",

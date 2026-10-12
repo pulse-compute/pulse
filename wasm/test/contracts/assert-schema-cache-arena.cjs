@@ -8,7 +8,7 @@ const { spawnSync } = require('node:child_process');
 const { prepareProject } = require('../performance/baseline.cjs');
 const { fixtures } = require('../performance/fixtures.cjs');
 const { verifyBehavior } = require('../performance/rust-behavior.cjs');
-const Transform = require('../performance/schema-cache-arena-transform.cjs');
+const Transform = require('../../packages/build-support/src/schema-cache-arena-transform.cjs');
 const read = file => JSON.parse(fs.readFileSync(file));
 async function assertSchemaCacheArena() {
   assert.throws(() => new Transform().afterParse({ sources: [] }), /pinned json-as/);
@@ -23,7 +23,7 @@ async function assertSchemaCacheArena() {
         prepareProject(project, fixture, 'native');
         const env = { ...process.env }; delete env.JSON_CACHE;
         if (cache !== null) env.JSON_CACHE = cache;
-        const child = spawnSync(process.execPath, [path.join(__dirname, '../performance/arena-build-worker.cjs'), variant, project, receipt], { env, encoding: 'utf8', timeout: 120000 });
+        const child = spawnSync(process.execPath, [path.join(__dirname, 'json-cache-flag-worker.cjs'), variant, project, receipt], { env, encoding: 'utf8', timeout: 120000 });
         assert.equal(child.status, 0, child.stderr || child.error?.message);
         const b = read(receipt), manifest = read(path.join(b.outDir, 'pulse-build.json'));
         const wasm = fs.readFileSync(path.join(b.outDir, manifest.portable.wasm.file));

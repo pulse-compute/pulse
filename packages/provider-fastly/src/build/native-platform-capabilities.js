@@ -2305,6 +2305,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
         '--path', jsonAs.dependencyRoot
       );
     }
+    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, schemaCodecsActive);
     const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
       require(path.join(asc.packageRoot, 'package.json')).version, 'fastly-native-platform-capabilities.as/');
     const startedAt = process.hrtime.bigint();
@@ -2455,7 +2456,7 @@ function compileFastlyNativePlatformCapabilitiesPlan(plan, options = {}) {
       compilerVersion: FASTLY_NATIVE_PLATFORM_CAPABILITIES_COMPILER_VERSION,
       assemblyScript: Object.freeze({ package: 'assemblyscript', version: require(path.join(asc.packageRoot, 'package.json')).version }),
       jsonAs: jsonAs
-        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false })
+        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false, elideDisabledCacheArena: options.elideJsonCacheArena === true })
         : undefined,
       optimization,
       wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),

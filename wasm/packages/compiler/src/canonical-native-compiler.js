@@ -221,6 +221,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
         '--path', jsonAs.dependencyRoot
       );
     }
+    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, schemaCodecsActive);
     const readReportCapture = options.reportCapture === false ? () => null : prepareReportCapture(args, stagingDir, generated.manifest,
       require(path.join(asc.packageRoot, 'package.json')).version, 'canonical-native.as/');
     const startedAt = process.hrtime.bigint();
@@ -261,6 +262,7 @@ function realizeCanonicalNativePlan(plan, options = {}, providerRequirements) {
       wasm,
       wat: emitWat ? fs.readFileSync(watFile, 'utf8') : '',
       textEmitted: emitWat,
+      elideJsonCacheArena: options.elideJsonCacheArena === true,
       assemblyScriptVersion: require(path.join(asc.packageRoot, 'package.json')).version,
       jsonAsVersion: jsonAs && jsonAs.version,
       optimization,
@@ -291,8 +293,9 @@ function verifyCanonicalNativeRealization(realization) {
     compilerVersion: runtimeContract.CANONICAL_NATIVE_COMPILER_VERSION,
     assemblyScript: Object.freeze({ package: 'assemblyscript', version: realization.assemblyScriptVersion }),
     optimization: resolveNativeOptimization(realization.optimization),
+    elideJsonCacheArena: realization.elideJsonCacheArena,
     jsonAs: realization.jsonAsVersion
-      ? Object.freeze({ package: 'json-as', version: realization.jsonAsVersion, transform: true, strict: true, mode: 'NAIVE', fastPath: false })
+      ? Object.freeze({ package: 'json-as', version: realization.jsonAsVersion, transform: true, strict: true, mode: 'NAIVE', fastPath: false, elideDisabledCacheArena: realization.elideJsonCacheArena })
       : null,
     wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),
     wat: Object.freeze(realization.textEmitted

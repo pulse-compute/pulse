@@ -67,7 +67,13 @@ function appendAssemblyScriptOptimizationArgs(args, value, options = {}) {
   return optimization;
 }
 
+function appendJsonCacheArenaArgs(args, value, schemaCodecsActive) {
+  if (value !== undefined && typeof value !== 'boolean') throw new TypeError('elideJsonCacheArena must be a boolean.');
+  if (value === true && schemaCodecsActive) args.push('--transform', path.join(__dirname, 'schema-cache-arena-transform.cjs'));
+}
+
 module.exports = Object.freeze({
+  appendJsonCacheArenaArgs,
   NATIVE_OPTIMIZATION_VERSION,
   EXPERIMENTAL_NATIVE_SIZE_MODE,
   EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION,
