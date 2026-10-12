@@ -880,6 +880,7 @@ function compileFastlyNativeHttpEffectsPlan(plan, options = {}) {
         '--path', jsonAs.dependencyRoot
       );
     }
+    require('@pulse-compute/wasm-build-support/native-optimization').appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, schemaCodecsActive);
     const startedAt = Date.now();
     const result = spawnSync(asc.executable, args, {
       cwd: stagingDir,
@@ -910,7 +911,7 @@ function compileFastlyNativeHttpEffectsPlan(plan, options = {}) {
       compilerVersion: FASTLY_NATIVE_HTTP_EFFECTS_COMPILER_VERSION,
       assemblyScript: Object.freeze({ package: 'assemblyscript', version: require(path.join(asc.packageRoot, 'package.json')).version }),
       jsonAs: jsonAs
-        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false })
+        ? Object.freeze({ package: 'json-as', version: jsonAs.version, transform: true, strict: true, mode: 'NAIVE', fastPath: false, elideDisabledCacheArena: options.elideJsonCacheArena === true })
         : undefined,
       wasm: Object.freeze({ bytes: inspection.bytes, sha256: inspection.sha256, magic: inspection.magic }),
       wat: Object.freeze({ bytes: Buffer.byteLength(wat), sha256: sha256(wat) }),

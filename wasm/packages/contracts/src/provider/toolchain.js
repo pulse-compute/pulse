@@ -560,6 +560,7 @@ function createProviderNativeArtifact(native) {
       compilerVersion: native.manifest.compilerVersion,
       assemblyScript: native.manifest.assemblyScript,
       optimization: native.manifest.optimization,
+      elideJsonCacheArena: native.manifest.elideJsonCacheArena === true,
       wasm: native.manifest.wasm,
       wat: native.manifest.wat,
       importModules: native.manifest.importModules,

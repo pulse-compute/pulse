@@ -184,6 +184,7 @@ function collectProjectReport(options = {}) {
   ensure(Array.isArray(inputs.files) && Array.isArray(inputs.workspace) && Array.isArray(inputs.dependencies) && inputs.recipe
     && typeof inputs.recipe === 'object' && typeof inputs.recipe.optimization === 'string', 'REPORT_INPUT_VERSION');
   mode({ nativeOptimization: inputs.recipe.optimization });
+  ensure(inputs.recipe.elideJsonCacheArena === undefined || typeof inputs.recipe.elideJsonCacheArena === 'boolean', 'REPORT_INPUT_VERSION');
   ensure(digest(inputs) === completion.snapshot.inputsSha256 && profileDigest(plan) === completion.snapshot.profileSha256, 'REPORT_STALE_INPUTS');
   ensure(canonicalJson(inputs.excluded) === canonicalJson([outRelative]), 'REPORT_INPUT_UNBOUND');
   const projectSnapshot = scan(root, { excluded: [outDir] });
@@ -192,7 +193,7 @@ function collectProjectReport(options = {}) {
   ensure(canonicalJson(workspaceSnapshot.records) === canonicalJson(inputs.workspace), 'REPORT_STALE_INPUTS');
   const dependencies = toolchainSnapshot(root, plan.profile.host);
   ensure(canonicalJson(dependencyRecords(dependencies.groups)) === canonicalJson(inputs.dependencies), 'REPORT_STALE_INPUTS');
-  const recipe = { optimization: inputs.recipe.optimization, node: process.versions.node,
+  const recipe = { ...(inputs.recipe.elideJsonCacheArena === undefined ? {} : { elideJsonCacheArena: inputs.recipe.elideJsonCacheArena }), optimization: inputs.recipe.optimization, node: process.versions.node,
     dependencies: dependencies.groups.map(({ key, records }) => ({ key, sha256: digest(records) })) };
   if (options.optimization !== undefined) ensure(mode({ nativeOptimization: options.optimization }) === recipe.optimization, 'REPORT_STALE_INPUTS');
   ensure(digest(recipe) === completion.snapshot.recipeSha256, 'REPORT_STALE_INPUTS');

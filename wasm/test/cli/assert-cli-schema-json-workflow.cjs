@@ -308,6 +308,10 @@ async function main() {
     assert.equal(WebAssembly.validate(nativeWasm), true);
     assert.equal(WebAssembly.Module.imports(new WebAssembly.Module(nativeWasm)).some((entry) => /fastly|wasi|js-compute/i.test(`${entry.module}:${entry.name}`)), false);
 
+    const elided = parseJson(run(['compile', '--profile', 'node', '--out', 'dist-native', '--elide-json-cache-arena', '--json'], projectRoot, { timeout: 60000 }));
+    assert.notEqual(elided.native.wasm.sha256, nativeCompiled.native.wasm.sha256);
+    assert.equal(JSON.parse(fs.readFileSync(path.join(projectRoot, 'dist-native/canonical-native-manifest.json'))).jsonAs.elideDisabledCacheArena, true);
+
     const tested = parseJson(run(['test', '--profile', 'node', '--json'], projectRoot, { timeout: 60000 }));
     assert.equal(tested.status, 'passed');
     assert.deepEqual(tested.summary, { total: 7, passed: 7, failed: 0 });
@@ -354,8 +358,11 @@ async function main() {
     assert.equal(fastlyTest.status, 'passed');
     assert.deepEqual(fastlyTest.summary, { total: 7, passed: 7, failed: 0 });
 
-    const fastlyBuild = parseJson(run(['build', '--profile', 'fastly', '--json'], projectRoot, { timeout: 120000 }));
+    const fastlyBuild = parseJson(run(['build', '--profile', 'fastly', '--elide-json-cache-arena', '--json'], projectRoot, { timeout: 120000 }));
     assert.equal(fastlyBuild.status, 'built');
+    for (const file of ['canonical-native-manifest.json', 'fastly-native-manifest.json']) {
+      assert.equal(JSON.parse(fs.readFileSync(path.join(projectRoot, 'dist-fastly', file))).jsonAs.elideDisabledCacheArena, true);
+    }
     for (const file of ['schema-json-registry.json', 'schema-json-codecs.cjs', 'canonical-handler.cjs', 'canonical-native-plan.json', 'canonical-native.wasm', 'src/main.as.ts', 'fastly-build.json', 'bin/main.wasm']) {
       assert.equal(fs.existsSync(path.join(projectRoot, 'dist-fastly', file)), true, `schema-aware Fastly build should emit ${file}`);
     }

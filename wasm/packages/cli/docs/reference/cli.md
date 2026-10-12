@@ -310,7 +310,7 @@ Compile the canonical project into provider-neutral Pulse-owned WebAssembly.
 Syntax:
 
 ```text
-pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]
+pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]
 ```
 
 ### Positionals
@@ -322,6 +322,7 @@ pulse compile [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] 
 | Option | Behavior |
 |---|---|
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
+| `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
 | `--experimental-native-bounded-size` | Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag. |
 | `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |
@@ -369,7 +370,7 @@ Compile the canonical project and realize the deployment provider selected by th
 Syntax:
 
 ```text
-pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat]
+pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [--experimental-native-size|--experimental-native-bounded-size] [--emit-wat] [--elide-json-cache-arena]
 ```
 
 ### Positionals
@@ -381,6 +382,7 @@ pulse build [directory] [--profile <name>] [--out <dir>] [--clean|--no-clean] [-
 | Option | Behavior |
 |---|---|
 | `--clean, --no-clean` | Remove or preserve the selected output directory before writing artifacts. Cleaning is enabled by default. |
+| `--elide-json-cache-arena` | Opt in to omitting the json-as arena when string caching is disabled. Native only; preserves enabled caches. May increase peak memory for allocation-heavy workloads. |
 | `--emit-wat` | Also emit diagnostic WebAssembly text (WAT). Native builds omit it by default; large text emission can exhaust compiler string capacity. |
 | `--experimental-native-bounded-size` | Experimentally optimize Native Wasm with shrink level 2 without convergence. JavaScript build targets reject this flag. |
 | `--experimental-native-size` | Experimentally optimize Native Wasm for size. JavaScript build targets reject this flag. |

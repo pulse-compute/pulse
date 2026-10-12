@@ -53,6 +53,13 @@ Generated references and installed CLI documentation must be regenerated from
 their canonical owners. An internal module, resolvable export, retained fixture,
 or historical implementation does not become a public compatibility promise.
 
+Native `build` and `compile` may explicitly opt in to
+`--elide-json-cache-arena`. The private build-support adapter changes only the
+disabled-cache arena allocation in pinned json-as 1.5.0. Defaults, enabled-cache
+behavior, schema semantics, GC policy and provider authority remain unchanged.
+The setting propagates from portable compilation to provider realization and is
+bound into retained report recipes; it is independent of scalar handle lifetime.
+
 ## One application contract and one compiler spine
 
 `@pulse-compute/runtime` owns the low-level portable handler, context, effect,
