@@ -70,10 +70,15 @@ async function main() {
       selectedTasks: selected, dependencies: options.dependencies || { 'shared-pack': 'fixture-pack-proof' }, taskOptions
     };
     const state = { results: [], runDir, sourceEnv: {}, currentTask: null, currentTaskPhase: null };
-    await runSelectedTasks({ state, selection: selections(selected), taskMap: options.tasks || tasks,
-      recoveryConfig: config, signal: options.signal, onChild: options.onChild, taskRunOptions: options.taskRunOptions });
+    const logs = [], counts = [], log = console.log;
+    try {
+      console.log = (...args) => { logs.push(args.join(' ')); log(...args); };
+      await runSelectedTasks({ state, selection: selections(selected), taskMap: options.tasks || tasks,
+        recoveryConfig: config, signal: options.signal, onChild: options.onChild, taskRunOptions: options.taskRunOptions,
+        persist() { if (state.recovery?.counts) counts.push({ ...state.recovery.counts }); } });
+    } finally { console.log = log; }
     for (const result of state.results) if (result.retainedTaskRoot) retained.push(result.retainedTaskRoot);
-    return { state, config };
+    return { state, config, logs, counts };
   }
   try {
     for (const forbidden of [['--from', 'first'], ['--through', 'first'], ['--no-report']]) {
@@ -105,12 +110,17 @@ async function main() {
     fs.writeFileSync(failure, 'fail this external fixture attempt');
     const initial = await attempt('initial');
     assert.deepEqual(initial.state.results.map(result => result.status), ['passed', 'failed']);
+    assert.deepEqual(initial.state.recovery.counts, { selected: 2, completed: 2, reused: 0, executed: 2, remaining: 0 });
     assert.deepEqual(executed(), ['first', 'second']);
     const firstReceipt = fs.readFileSync(initial.state.results[0].checkpoint.receiptPath);
     fs.rmSync(failure);
     const resumed = await attempt('resumed', initial);
     assert.deepEqual(resumed.state.results.map(result => result.status), ['passed', 'passed']);
     assert.deepEqual(resumed.state.results.map(result => result.execution), ['reused', 'executed']);
+    assert.deepEqual(resumed.state.recovery.counts, { selected: 2, completed: 2, reused: 1, executed: 1, remaining: 0 });
+    assert(resumed.counts.some(counts => counts.completed === 1 && counts.reused === 1 && counts.remaining === 1));
+    assert(resumed.logs.some(line => /second: executing again;.*did not pass/.test(line)));
+    assert(resumed.logs.some(line => /2\/2 completed, 1 verified reuses, 1 executed, 0 remaining/.test(line)));
     assert.deepEqual(executed(), ['first', 'second', 'second'], 'only the failed task should execute on resume');
     assert.equal(resumed.state.results[0].checkpoint.proofId, initial.state.results[0].checkpoint.proofId);
     assert.equal(resumed.state.results[0].originalResult.status, 'passed');
@@ -126,6 +136,7 @@ async function main() {
     const changed = await attempt('changed-definition', resumed, { tasks: { ...tasks, first: { ...tasks.first, timeoutMs: 4000 } } });
     assert.deepEqual(changed.state.results.map(result => result.execution), ['executed', 'reused']);
     assert.match(changed.state.results[0].recoveryReason, /definition changed/);
+    assert(changed.logs.some(line => /first: executing again;.*definition changed/.test(line)));
     const dependency = await attempt('changed-dependency', resumed, { dependencies: { 'shared-pack': 'replacement-pack-proof' } });
     assert.deepEqual(dependency.state.results.map(result => result.execution), ['executed', 'executed']);
     assert(dependency.state.results.every(result => /dependency proof changed/.test(result.recoveryReason)));
@@ -138,6 +149,7 @@ async function main() {
     const missing = await attempt('missing-retained-output', resumed);
     assert.deepEqual(missing.state.results.map(result => result.execution), ['executed', 'reused']);
     assert.match(missing.state.results[0].recoveryReason, /missing-checkpoint-or-artifact/);
+    assert(missing.logs.some(line => /first: executing again;.*missing-checkpoint-or-artifact/.test(line)));
 
     const failedCleanup = await attempt('failed-cleanup', null, { names: ['first'], taskRunOptions: {
       cleanupCommand: { command: process.execPath, args: ['-e', 'process.exit(7)'] }, cleanupTimeoutMs: 1000

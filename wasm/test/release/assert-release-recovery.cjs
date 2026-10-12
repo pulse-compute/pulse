@@ -7,7 +7,7 @@ const path = require('node:path');
 const { spawn, execFileSync } = require('node:child_process');
 const { once } = require('node:events');
 const recovery = require('../../../scripts/release-recovery.cjs');
-const { fingerprint } = require('../../../scripts/release-checkpoints.cjs');
+const { fingerprint, createCheckpointStore } = require('../../../scripts/release-checkpoints.cjs');
 const { parseArgs } = require('../../../scripts/validate-release.cjs');
 const { createSealStatus } = require('../../../scripts/release-seal-status.cjs');
 const { candidateIdentity, REQUIRED_TASKS } = require('../../../scripts/release-feature-acceptance.cjs');
@@ -44,6 +44,52 @@ async function fixture(run, initialize = false) {
 }
 
 async function main() {
+  await fixture(root => {
+    const candidate = candidateIdentity(root), options = { install: false, requireFastly: false };
+    const context = recovery.createContext(root, candidate, options, {}, { TOKEN: 'do-not-print-this-value' });
+    const directory = path.join(root, '.pulse-seal/attempts/prior');
+    const report = { schemaVersion: 'pulse.release-seal.v1', runDirectory: directory, status: 'interrupted', recovery: { directory, context } };
+    const writeReport = value => put(path.join(directory, 'report.json'), JSON.stringify(value));
+    writeReport(report);
+    const store = createCheckpointStore({ directory: path.join(directory, 'checkpoints/release'), context });
+    store.record({ id: 'task:api-surface', definition: { fixture: true }, result: { status: 'passed', exitCode: 0, cleanup: { status: 'passed' } } });
+    store.record({ id: 'task:suite-shape', definition: { fixture: true }, result: { status: 'failed', exitCode: 1, cleanup: { status: 'passed' } } });
+    const before = recovery.describeArtifact(directory);
+    const diagnostics = recovery.resumeDiagnostics(root, directory, candidate, options);
+    assert.equal(diagnostics.previousDirectory, directory);
+    assert.equal(diagnostics.stage, 'preliminary');
+    assert.deepEqual(diagnostics.reasons, []);
+    assert.equal(diagnostics.tasks.release.selected, expandProfile('release').length);
+    assert.equal(diagnostics.tasks.release.completed, 2);
+    assert.equal(diagnostics.tasks.release.passed, 1);
+    assert.equal(diagnostics.tasks.release.potentiallyReusable, 1);
+    assert.equal(diagnostics.tasks.features.potentiallyReusable, 0);
+    assert.equal(diagnostics.pack.potentiallyReusable, 0);
+    assert.deepEqual(recovery.describeArtifact(directory), before, 'Early diagnostics cannot mutate receipts or outputs');
+    let output = '';
+    recovery.printResumeDiagnostics(diagnostics, text => { output += text; });
+    assert.match(output, /preliminary; no outputs verified/);
+    assert.match(output, /1 potentially reusable/);
+    assert.match(output, /Full verification still required/);
+    assert(!output.includes('do-not-print-this-value'));
+    assert(recovery.resumeDiagnostics(root, directory, { ...candidate, sourceRevision: 'f'.repeat(40) }, options).reasons.includes('candidate-changed'));
+    const changedOptions = recovery.resumeDiagnostics(root, directory, candidate, { ...options, workers: 2 });
+    assert(changedOptions.reasons.includes('option-changed:workers'));
+    assert.equal(changedOptions.tasks.release.potentiallyReusable, 0);
+    writeReport({ ...report, recovery: { ...report.recovery, context: { ...context, candidate: { ...context.candidate, repoRoot: '/foreign-checkout' } } } });
+    assert(recovery.resumeDiagnostics(root, directory, candidate, options).reasons.includes('checkout-changed'));
+    writeReport(report);
+    assert.deepEqual(recovery.resumeContextChanges(directory, context), []);
+    for (const field of ['candidate', 'lockfileSha256', 'toolchain', 'environmentSha256', 'options', 'selections', 'inputs', 'scheduling']) {
+      assert.deepEqual(recovery.resumeContextChanges(directory, { ...context, [field]: 'changed' }), [field]);
+    }
+    writeReport({ ...report, recovery: undefined });
+    assert.deepEqual(recovery.resumeDiagnostics(root, directory, candidate, options).reasons, ['missing-or-invalid-context']);
+    assert.deepEqual(recovery.resumeContextChanges(directory, context), ['missing-or-invalid-context']);
+    put(path.join(directory, 'report.json'), '{invalid');
+    assert.deepEqual(recovery.resumeContextChanges(directory, context), ['unreadable-context']);
+  }, true);
+
   await fixture(root => {
     const candidate = candidateIdentity(root);
     const options = { install: false, requireFastly: false };
