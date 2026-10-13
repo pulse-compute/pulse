@@ -120,7 +120,17 @@ function normalizeModuleV2(input, index) {
   };
   if (kind === 'project') {
     common.path = identity.stableInput.path;
-    if (owner !== 'application' && owner !== 'pulse-runtime') throw new TypeError(`modules[${index}] project modules require application or pulse-runtime ownership.`);
+    if (input.packageName != null) {
+      const attribution = createModuleIdentity({ ...input, kind: 'package' }).stableInput;
+      if (!['pulse-package', 'third-party'].includes(owner)) throw new TypeError(`modules[${index}] npm source requires package ownership.`);
+      const prefix = `npm/${attribution.packageName}@${attribution.packageVersion}/${attribution.packageManifestHash}/`;
+      if (common.path !== prefix + attribution.packageSubpath.slice(2)) throw new TypeError(`modules[${index}] npm source path must match its package attribution.`);
+      common.packageName = attribution.packageName;
+      common.packageVersion = attribution.packageVersion;
+      common.packageSubpath = attribution.packageSubpath;
+      common.packageManifestHash = attribution.packageManifestHash;
+      if (common.packageContract !== null) throw new TypeError('Static npm source cannot grant package compiler authority.');
+    } else if (owner !== 'application' && owner !== 'pulse-runtime') throw new TypeError(`modules[${index}] project modules require application or pulse-runtime ownership.`);
   } else if (kind === 'package') {
     common.packageName = identity.stableInput.packageName;
     common.packageVersion = identity.stableInput.packageVersion;

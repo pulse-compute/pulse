@@ -2,6 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const TOOLCHAIN_VERSION = require('../../package.json').version;
 
 const { PACKAGE_VERSION, normalizeArtifact, normalizeDiagnostic } = loadContractsDiagnostics();
 const {
@@ -22,6 +23,7 @@ const {
 } = loadContractsLibraryContracts();
 const {
   LOWERABLE_LIBRARY_MANIFEST_VERSION,
+  TRUSTED_LOWERER_PACKAGES,
   validateLowerableLibraryManifest
 } = loadContractsLibraryManifest();
 const {
@@ -361,9 +363,14 @@ function discoverLowerableLibraryManifests(inputs = {}) {
   for (const packageDir of packageDirs) {
     const packageJsonPath = path.join(packageDir, 'package.json');
     const packageJson = readJsonIfExists(packageJsonPath);
+    if (!TRUSTED_LOWERER_PACKAGES.includes(packageJson && packageJson.name)) continue;
     const manifestRef = packageManifestPath(packageJson);
     if (!manifestRef) continue;
+    if (packageJson.version !== TOOLCHAIN_VERSION) throw new TypeError(`Trusted lowerer ${packageJson.name} must match toolchain version ${TOOLCHAIN_VERSION}.`);
+    if (manifestRef !== './pulsewasm.manifest.cjs') throw new TypeError(`Trusted lowerer ${packageJson.name} must use its canonical manifest.`);
     const manifestFile = path.resolve(packageDir, manifestRef);
+    const relativeManifest = path.relative(fs.realpathSync(packageDir), fs.realpathSync(manifestFile));
+    if (relativeManifest !== 'pulsewasm.manifest.cjs') throw new TypeError(`Trusted lowerer ${packageJson.name} manifest must remain in its package.`);
     const manifestKey = manifestFile;
     if (seenManifests.has(manifestKey)) continue;
     seenManifests.add(manifestKey);

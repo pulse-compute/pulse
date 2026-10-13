@@ -177,6 +177,44 @@ JavaScript during Native compilation.
 See [Compilation and lowering](../concepts/compilation-and-lowering.md) and the
 [architecture overview](./overview.md).
 
+## Declared npm source exports (IMP9-01)
+
+Native compilation can link installed, versioned npm exports into the same
+static source graph as local handlers/helpers. Exact root or subpath `exports`
+entries select one `.ts`, `.mts`, `.js` or `.mjs` source file. Conditional objects
+use declaration order with `pulse`, `import` and `default` active; `types` and
+unselected conditions confer no runtime eligibility. There is no `main`/`module`,
+wildcard, array, directory or extension-substitution fallback. Explicit CommonJS
+sources and declaration-only runtime exports are rejected.
+
+Package-relative links must name exact files within the real package root;
+package-root symlinks are supported, escaping source symlinks are not. Bare
+imports resolve from the dependency's installation, including self-references
+through its exports. Application tsconfig aliases do not redirect dependency
+imports. Distinct physical roots with the same package identity are rejected
+rather than silently conflated. Top-level source is limited to static imports,
+re-exports, types and function declarations or immutable function bindings.
+Module initialization, captured constants, factories, dynamic imports and
+CommonJS loading remain unsupported. Existing Native syntax, helper, effect and
+capability checks still apply; no source code is evaluated to obtain a handler.
+
+Graph package nodes retain the imported export subpath and package/version/
+manifest hash. Their explicit source edges point to attributed source nodes,
+whose `packageSubpath` is the authored package-relative filename. Portable
+`npm/<name>@<version>/<manifest-hash>/<file>` paths identify those source nodes
+and diagnostics; source content hashes and edges enter the graph hash. Source
+files and package manifests enter watch inputs. `static-source` package status
+means source admission, not lowerer trust or proof that every function compiles.
+Explicit JavaScript planning retains its existing opaque dependency graph.
+
+Compiler discovery reads executable manifests only for the reviewed
+`TRUSTED_LOWERER_PACKAGES` list in the shared library contract, at the synchronized
+toolchain version and canonical contained manifest path. An npm namespace,
+source export or package-supplied `pulse`/`pulsewasm` field cannot add an owner to
+that list. First-party package effects retain their existing realization path.
+IMP9-01 has repository fixtures with Node/Fastly Native execution;
+packed independent-consumer installation/update acceptance belongs to IMP9-02.
+
 ## Native diagnostic artifacts
 
 Executable Native Wasm and its verification do not depend on optional compiler

@@ -327,6 +327,11 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'recursive modules, handlers, Routers, cycles, and diagnostics'
   }),
+  'npm-source-imports': nodeTask('test/contracts/assert-npm-source-imports.cjs', {
+    evidence: 'native',
+    timeoutMs: 180000,
+    description: 'declared npm source exports, containment, attribution and Native handler/helper execution'
+  }),
   'package-reachability': nodeTask('test/contracts/assert-package-reachability.cjs', {
     evidence: 'unit',
     timeoutMs: 240000,
@@ -1361,6 +1366,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'npm-source-imports',
     'fastly-numeric-regions',
     'pure-helper-vocabulary',
     'pure-string-index',
