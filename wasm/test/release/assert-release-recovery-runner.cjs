@@ -186,6 +186,7 @@ async function main() {
     assert.equal(afterInterruption.state.results[0].execution, 'executed');
     assert.equal(afterInterruption.state.results[0].status, 'passed');
     await require('./assert-release-parallel.cjs').verifyParallel();
+    await require('../ci/assert-development-recovery.cjs').verifyDevelopmentRecovery();
     console.log('ok - real task recovery preserves late failures, changed inputs, lost outputs, interruption and failed cleanup; malformed configuration and checkpoint disk errors terminalize without invented passes');
   } finally {
     for (const directory of retained) fs.rmSync(directory, { recursive: true, force: true });

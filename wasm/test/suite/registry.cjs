@@ -1269,7 +1269,7 @@ const tasks = Object.freeze({
     description: 'Same-candidate receipt integrity, output retention and dependency invalidation'
   }),
   'release-recovery-runner': nodeTask('test/release/assert-release-recovery-runner.cjs', {
-    timeoutMs: 30000,
+    timeoutMs: 90000,
     description: 'Real subprocess late-failure recovery and fail-closed reruns'
   }),
   'release-recovery': nodeTask('test/release/assert-release-recovery.cjs', {

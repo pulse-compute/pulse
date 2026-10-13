@@ -53,3 +53,6 @@ pulse-deps-*.tar.zst.sha256
 
 # Documentation example build output
 .pulse-docs-build/
+
+# Durable checkout-local development recovery attempts
+.pulse-development/
