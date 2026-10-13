@@ -182,7 +182,22 @@ receipt or post-handoff cancellation. Fastly JavaScript remains ineligible.
 See [body transport limits](../concepts/bodies.md#current-transport-limits)
 for the initial shape restrictions and qualification boundary.
 
-`fastly-incoming-body-forwarding` checks the normal Native build and injected
-host ABI. Set `PULSE_VICEROY_BIN` to the reviewed Viceroy 0.21.1 executable to
-also replay binary HTTP, incremental upload and early response. This is local
-evidence; deployed Fastly and installed-consumer qualification remain separate.
+`fastly-incoming-body-forwarding` checks the normal Native build and adversarial
+host ABI cases. Set `PULSE_VICEROY_BIN` to the reviewed Viceroy 0.21.1 executable
+to also check real HTTP byte identity, caps, incremental upload/output, early
+responses, header filtering, bodyless statuses, disconnects and post-header
+aborts. The separate installed task requires that executable:
+
+```bash
+PULSE_VICEROY_BIN=/path/to/viceroy \
+node wasm/scripts/run-wasm-tests.cjs --task fwd9-03-installed --no-report
+```
+
+It packs exact candidates, installs outside the checkout with lifecycle scripts
+disabled, verifies installed bytes before and after the CLI workflows, and
+replays the emitted Wasm under both the ABI fixture and Viceroy. Its report binds
+package, Wasm, runner and engine identities. Additional builds exercise unequal
+request/response caps and an earlier total deadline. These are local and
+installed qualification results; deployed Fastly remains unqualified. Fixed
+guest storage and loopback timing samples do not prove a host queue bound,
+zero-copy forwarding or a Pulse-versus-Rust performance result.

@@ -2,16 +2,14 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const http = require('node:http');
-const {once} = require('node:events');
 const {createHash} = require('node:crypto');
+const {execFileSync} = require('node:child_process');
 const {resolveProject} = require('../../packages/cli/src/project-config.js');
-const {buildProject} = require('../../packages/cli/src/project-execution.js');
+const {buildProject,runProjectTests} = require('../../packages/cli/src/project-execution.js');
 const {compileCanonicalSource} = require('../../packages/compiler/src/canonical-api-compiler.js');
 const {buildCanonicalNativePlan} = require('../../packages/compiler/src/canonical-native-plan.js');
 const generator = require('../../../packages/provider-fastly/src/build/native-platform-capabilities.js');
 const {executeFastlyNativePlatformCapabilities: execute} = require('../../../packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
-const cli = require('../../../packages/provider-fastly/src/testing/fastly-cli.js');
 const {normalizeBodyForwarding} = require('../../../packages/provider-fastly/src/toolchain/body-forwarding.js');
 const root = path.resolve(__dirname, '../../..'), url = 'https://origin.example/upload';
 const config = {maxDurationMs:2000,bodyForwarding:{requestMaxBytes:1048576,responseMaxBytes:1048576},bindings:{backends:{'https://origin.example':'origin'}}};
@@ -29,59 +27,24 @@ function admission() {
   for(const body of [
     `return ctx.fetch('${url}',{method:'PUT',body:ctx.req.body()});`,
     `const first=ctx.req.body();return ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});`,
-    `const response=await ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});return ctx.text(await response.text());`
+    `const response=await ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});return ctx.text(await response.text());`,
+    `const body=ctx.req.body();return ctx.fetch('${url}',{method:'POST',body});`,
+    `await ctx.req.text();return ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});`,
+    `return ctx.parallel({a:ctx.fetch('${url}',{method:'POST',body:ctx.req.body()}),b:ctx.fetch('${url}',{method:'POST',body:ctx.req.body()})});`,
+    `await ctx.fetch('${url}');return ctx.fetch('${url}',{method:'POST',body:ctx.req.body()});`,
+    `return ctx.fetch('${url}',{method:'POST',body:ctx.req.body(),headers:{'content-length':'0'}});`
   ]) assert.throws(()=>generator.generateFastlyNativePlatformCapabilitiesAssemblyScript(planFor(body),{...config,requirePlatformCapability:false}));
-}
-async function replay(wasmFile, dir, report) {
-  if (!process.env.PULSE_VICEROY_BIN) { report.http='not-run'; console.log('skip - HTTP replay requires PULSE_VICEROY_BIN'); return; }
-  const launcher=cli.inspectFastlyComputeLauncher({viceroyBinary:process.env.PULSE_VICEROY_BIN,required:true});
-  assert.equal(launcher.inspection.version,'0.21.1','Review ABI sources before qualifying another engine.');
-  let firstResolve, received=0, mode='echo';
-  let first = new Promise(resolve=>{firstResolve=resolve;});
-  const origin=http.createServer((req,res)=>{
-    req.on('error',()=>{}); const chunks=[];
-    req.on('data',chunk=>{received+=chunk.length; chunks.push(chunk); firstResolve();});
-    req.on('end',()=>{res.writeHead(200,{'content-type':'application/octet-stream','x-origin':'opaque'});res.end(Buffer.concat(chunks));});
-    if(mode==='early'){res.writeHead(413);res.end('denied');}
-  });
-  origin.listen(0,'127.0.0.1');await once(origin,'listening');let server;
-  try{
-    const manifestFile=path.join(dir,'fastly.toml');
-    fs.writeFileSync(manifestFile,cli.renderFastlyLocalConfig({name:'fwd9-02-proof',backends:{origin:{url:`http://127.0.0.1:${origin.address().port}`,useSni:false}}}));
-    server=await cli.startFastlyComputeServe({launcher,packageRoot:dir,wasmFile,manifestFile,startTimeoutMs:15000,stopTimeoutMs:3000});
-    const cases=[];
-    for(const size of [0,1024,65536,1048576]){
-      const input=binary(size), response=await fetch(server.baseUrl,{method:'POST',body:input});
-      assert.equal(response.status,200);assert.equal(response.headers.get('x-origin'),'opaque');
-      const output=Buffer.from(await response.arrayBuffer());assert.deepEqual(output,input);
-      cases.push({size,sha256:hash(output)});
-    }
-    // The origin must receive the prefix before the caller supplies EOF.
-    first=new Promise(resolve=>{firstResolve=resolve;});received=0;
-    const result=new Promise((resolve,reject)=>{
-      const req=http.request(server.baseUrl,{method:'POST'},res=>{const chunks=[];res.on('data',c=>chunks.push(c));res.on('end',()=>resolve(Buffer.concat(chunks)));res.on('error',reject);});
-      req.on('error',reject);req.setTimeout(4000,()=>req.destroy(new Error('HTTP replay timeout')));
-      req.write(binary(1024));first.then(()=>req.end(binary(17)));
-    });
-    assert.deepEqual(await result,Buffer.concat([binary(1024),binary(17)]));assert.equal(received,1041);
-    mode='early';
-    const early=await new Promise((resolve,reject)=>{
-      const req=http.request(server.baseUrl,{method:'POST'},res=>{res.resume();res.on('end',()=>{req.destroy();resolve(res.statusCode);});});
-      req.on('error',reject);req.setTimeout(4000,()=>req.destroy(new Error('early response timeout')));req.flushHeaders();
-    });
-    assert.equal(early,413);
-    report.http={engine:launcher.inspection.version,engineSha256:hash(fs.readFileSync(launcher.inspection.binary)),cases,firstByteBeforeEof:true,earlyResponseBeforeEof:true,livePlatform:false};
-  }finally{if(server)await server.stop();origin.closeAllConnections();await new Promise(resolve=>origin.close(resolve));}
 }
 async function main(){
   admission();
   const dir=fs.mkdtempSync(path.join(root,'.fwd9-forwarding-'));
-  const report={version:'pulse.fwd9-02-proof.v1',status:'running',source:hash(fs.readFileSync(__filename))};
+  const report={version:'pulse.fwd9-03-proof.v1',status:'running',runnerSha256:hash(fs.readFileSync(__filename)),source:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),workingDiffSha256:hash(execFileSync('git',['diff','HEAD'],{cwd:root})),oracles:Object.fromEntries(['../support/fastly-forwarding-qualification.cjs','../support/fastly-forwarding-viceroy.cjs'].map(file=>[file,hash(fs.readFileSync(path.join(__dirname,file)))]))};
   try{
-    fs.mkdirSync(path.join(dir,'src'));fs.mkdirSync(path.join(dir,'.pulse'));
+    fs.mkdirSync(path.join(dir,'src'));fs.mkdirSync(path.join(dir,'.pulse'));fs.mkdirSync(path.join(dir,'tests'));
+    fs.writeFileSync(path.join(dir,'tests/pulse.harness.ts'),'export default '+JSON.stringify([{name:'opaque-forward',request:{method:'POST',path:'/',body:'opaque'},fetches:{[url]:{status:200,text:'received'}},expect:{status:200,text:'received',bodyClass:'opaque'}},{name:'precommit-denial',request:{method:'POST',path:'/',headers:{'content-length':'1048577'}},expect:{status:413,bodyClass:'structured'}}]));
     fs.writeFileSync(path.join(dir,'package.json'),JSON.stringify({name:'fwd9-forwarding-proof',private:true,type:'module'}));
     fs.writeFileSync(path.join(dir,'src/index.ts'),source);
-    fs.writeFileSync(path.join(dir,'.pulse/config.ts'),`import {defineConfig} from '@pulse-compute/pulse';export default defineConfig(_=>({pulse:{entry:'src/index.ts',strict:false,defaultProfile:'proof'},proof:{host:'fastly',target:'native',fastly:${JSON.stringify(config)}}}));`);
+    fs.writeFileSync(path.join(dir,'.pulse/config.ts'),`import {defineConfig} from '@pulse-compute/pulse';export default defineConfig(_=>({pulse:{entry:'src/index.ts',tests:'tests/pulse.harness.ts',strict:false,defaultProfile:'proof'},proof:{host:'fastly',target:'native',fastly:${JSON.stringify(config)}}}));`);
     const built=buildProject(resolveProject({cwd:dir,profile:'proof'}));assert.equal(built.status,'built');
     const wasmFile=path.join(built.outDir,'bin/main.wasm'), wasm=fs.readFileSync(wasmFile), native={wasm};
     report.wasm={bytes:wasm.length,sha256:hash(wasm),normalBuild:true};
@@ -115,11 +78,14 @@ async function main(){
       if(fault.bodyWriteChunkBytes)assert.deepEqual(result.response.bodyBytes,binary(31));
       else assert.ok(result.response.status===502||result.response.aborted);
     }
-    await replay(wasmFile,dir,report);report.status='passed';
-    console.log('ok - FWD9-02 admission, normal Native build, bounded binary pump, headers, early response, overflow and deadline checks');
+    const harness=await runProjectTests(resolveProject({cwd:dir,profile:'proof'}));assert.equal(harness.status,'passed',JSON.stringify(harness.cases));
+    report.qualification = require('../support/fastly-forwarding-qualification.cjs').qualifyAbi(wasm);
+    if(process.env.PULSE_VICEROY_BIN)report.viceroy=await require('../support/fastly-forwarding-viceroy.cjs').qualifyViceroy(wasmFile,dir);
+    report.status='passed';
+    console.log('ok - FWD9-03 admission, opaque harness classification, bounded ABI matrix and selected local wire qualification');
   }catch(error){report.status='failed';report.error=String(error.stack||error);throw error;}
   finally{
-    const reportDir=path.join(root,'wasm/.test-results');fs.mkdirSync(reportDir,{recursive:true});fs.writeFileSync(path.join(reportDir,'fwd9-02-proof.json'),JSON.stringify(report,null,2)+'\n');
+    const parent=path.join(root,'wasm/.test-results');fs.mkdirSync(parent,{recursive:true});const reportDir=fs.mkdtempSync(path.join(parent,'fwd9-03-workspace-'));const reportFile=path.join(reportDir,'proof.json');fs.writeFileSync(reportFile,JSON.stringify(report,null,2)+'\n');console.log('qualification report - '+reportFile);
     fs.rmSync(dir,{recursive:true,force:true});
   }
 }

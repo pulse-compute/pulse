@@ -908,8 +908,17 @@ handles and leaves unresolved host work to invocation teardown, without retries
 or rollback claims. Before downstream commitment, upload overflow attempts 413,
 deadline expiry 504, and origin/protocol/response-limit failure 502. After
 commitment, failure abandons the stream and never sends a second response.
-FWD9-02 has normal-build, injected-ABI and pinned local Viceroy evidence;
-installed, broader fault-matrix and deployed qualification remain FWD9-03 work.
+FWD9-03 qualifies normal builds and exact installed candidate packages with an
+adversarial injected-ABI matrix and pinned Viceroy 0.21.1 HTTP replay. The
+`fwd9-03-installed` task checks doctor/inspect/test/build/report, artifact identity,
+independent byte caps, operation/total deadlines and repeated invocations. The
+local wire cases include incremental input/output, early rejection, unknown
+lengths, overflow, bodyless responses and post-header aborts. Injected faults
+separately cover partial/failed writes, malformed ABI outputs and late results.
+Payload storage uses one 16 KiB scratch buffer; guest linear memory stays flat
+across tested payload sizes. Host queues and live Fastly resource accounting are
+not bounded by that observation. Deployed Fastly qualification remains separate;
+local and installed passes do not establish client receipt or live acceptance.
 
 `node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
 this path. Node adapts incoming HTTP lazily and keeps one provider read and one

@@ -306,8 +306,10 @@ The request deadline and any earlier fetch timeout cover both pumps until the
 final pre-close check. Fastly accepts queued delivery when close succeeds;
 Pulse cannot then await a drain receipt, cancel delivery, or guarantee client
 receipt. Failures after headers abandon the stream. This is a provider-specific
-host-handoff contract, with local Viceroy evidence and further qualification
-pending. Fastly JavaScript still rejects incoming forwarding.
+host-handoff contract. FWD9-03 checks exact installed packages and Viceroy 0.21.1
+with binary, limit, deadline, framing and abort cases. A fixed guest scratch
+buffer does not establish a bound on host queues. Deployed Fastly qualification
+remains separate. Fastly JavaScript still rejects incoming forwarding.
 
 Node Native forwarding uses
 the emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls

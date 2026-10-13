@@ -257,7 +257,9 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       is_ready(handle, out) {
         const item = pending.get(Number(handle)) || bodies.get(Number(handle));
         if (!item) return FASTLY_STATUS_BADF;
-        writeU32(out, monotonicMs >= (item.readyAt || 0) ? 1 : 0);
+        const ready = monotonicMs >= (item.readyAt || 0) ? 1 : 0;
+        writeU32(out, ready);
+        trace.push({module:'fastly_async_io',name:'is_ready',handle:Number(handle),ready,now:monotonicMs});
         return FASTLY_STATUS_OK;
       },
       select(handles, count, timeout, done) {
@@ -695,7 +697,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         body.readOffset = offset + count;
         body.readyAt = monotonicMs + Number(body.fixture && body.fixture.chunkDelayMs || 0);
         writeU32(readOut, count);
-        trace.push({ module: 'fastly_http_body', name: 'read', handle: Number(handle), bytes: count });
+        trace.push({ module: 'fastly_http_body', name: 'read', handle: Number(handle), bytes: count, ...(options.traceBodyIo === true ? {pointer:Number(buffer), capacity:Number(bufferLength), now:monotonicMs} : {}) });
         return FASTLY_STATUS_OK;
       },
       write(handle, buffer, bufferLength, end, writtenOut) {
@@ -703,13 +705,13 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         if (!body) return FASTLY_STATUS_BADF;
         if (downstream?.streaming && Number(handle) === downstream.bodyHandle && options.downstreamBodyWriteStatus) return Number(options.downstreamBodyWriteStatus);
         if ((requests.size > 1 || body.streamingUpload) && options.outboundBodyWriteStatus) return Number(options.outboundBodyWriteStatus);
-        const length = Math.min(Number(bufferLength), Number(options.bodyWriteChunkBytes || bufferLength));
+        const length = Math.min(Number(bufferLength), Number(options.bodyWriteChunkBytes ?? bufferLength));
         const bytes = readBytes(buffer, length);
         body.writes.push(bytes);
         if (body.streamingUpload) body.readyAt = monotonicMs + Number(options.uploadWriteDelayMs || 0);
         if (downstream?.streaming && downstream.bodyHandle === Number(handle)) body.readyAt = monotonicMs + Number(options.downstreamWriteDelayMs || 0);
         writeU32(writtenOut, bytes.length);
-        trace.push({ module: 'fastly_http_body', name: 'write', handle: Number(handle), bytes: bytes.length, end: Number(end) });
+        trace.push({ module: 'fastly_http_body', name: 'write', handle: Number(handle), bytes: bytes.length, end: Number(end), ...(options.traceBodyIo === true ? {pointer:Number(buffer), capacity:Number(bufferLength), now:monotonicMs} : {}) });
         return FASTLY_STATUS_OK;
       }
     }
@@ -724,11 +726,16 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   // Throwing stops the Wasm invocation; it never fabricates an effect result.
   const checkActive = () => { if (options.signal && options.signal.aborted) throw options.signal.reason || new Error('Request cancelled.'); };
   checkActive();
-  if (options.signal || options.hostcallDelayMs) for (const [moduleName, namespace] of Object.entries(imports)) {
+  // A test-only post-call hook can corrupt ABI outputs or advance the clock.
+  // It observes the real generated guest; it is never used by provider execution.
+  if (options.signal || options.hostcallDelayMs || options.afterHostcall) for (const [moduleName, namespace] of Object.entries(imports)) {
     for (const [name, hostcall] of Object.entries(namespace)) if (typeof hostcall === 'function') namespace[name] = (...args) => {
       checkActive(); const result = hostcall(...args);
       monotonicMs += Number(options.hostcallDelayMs?.[`${moduleName}.${name}`] || 0);
-      checkActive(); return result;
+      const replacement = options.afterHostcall?.({module:moduleName,name,args,result,trace,
+        writeU32,writeU64,readU32:pointer=>view().getUint32(Number(pointer),true),
+        advance:ms=>{monotonicMs+=ms;}});
+      checkActive(); return replacement ?? result;
     };
   }
   const module = new WebAssembly.Module(wasm);
@@ -803,6 +810,13 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     monotonicMs,
     transportResources: Object.freeze({pendingRequests: pending.size,
       outboundRequests: requests.size - Number(requests.has(downstreamRequestHandle))}),
+    // Non-streaming send transfers these two handles even though the fixture
+    // keeps their bytes for assertions. Pending work is counted separately:
+    // Fastly has no cancellation hostcall for an unresolved pending request.
+    forwardingResources: Object.freeze({
+      bodies: bodies.size - Number(!downstream?.streaming && bodies.has(downstream?.bodyHandle)),
+      responses: responses.size - Number(!downstream?.streaming && responses.has(downstream?.responseHandle))
+    }),
     instance
   });
 }

@@ -240,7 +240,11 @@ const tasks = Object.freeze({
   }),
   'fastly-incoming-body-forwarding': nodeTask('test/provider/assert-fastly-incoming-body-forwarding.cjs', {
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
-    description: 'FWD9-02 normal Native build, bounded binary pump and optional pinned Viceroy replay'
+    description: 'FWD9-03 normal Native build, adversarial ABI matrix and optional pinned Viceroy wire qualification'
+  }),
+  'fwd9-03-installed': nodeTask('test/runtime/fwd9-03-installed.cjs', {
+    timeoutMs: 600000, evidence: 'external',
+    description: 'FWD9-03 exact packed Fastly Native workflow, independent limits, deadlines and required pinned Viceroy'
   }),
   'str02c-fastly-feasibility': nodeTask('test/provider/assert-fastly-incoming-body-feasibility.cjs', {
     timeoutMs: 90000, evidence: 'external',

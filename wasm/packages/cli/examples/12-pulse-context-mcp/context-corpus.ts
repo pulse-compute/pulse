@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "8608c662248d6c67e5cd74aed06e836f44210e1612dde9814d7a4c3819dbdd42",
+  "corpusHash": "81c4ace5c7c3463fd79326033ee3214a253ca0f6db32ad2d22ebabc54d2c251e",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -372,9 +372,9 @@ export const contextCorpus = freeze({
         "endLine": 179,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "2b875c292c431944dfaf0186442350019c69533608bb569e9a37ce4b21abf70c",
+        "sha256": "d6b93081269fe8dbecf5526ea2608f79e21d84d9a79c6a75d1acbde15e9272aa",
         "startLine": 63,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4dbe1ce4a9b2bd8ed05d9fed398c142a4d52e1f7"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de296053ab11cd6478bef55b683e54219f14cc03"
       },
       "status": "candidate",
       "tags": [
@@ -448,12 +448,12 @@ export const contextCorpus = freeze({
       "id": "contract/build-metadata",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 1215,
+        "endLine": 1224,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "2b875c292c431944dfaf0186442350019c69533608bb569e9a37ce4b21abf70c",
-        "startLine": 1197,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4dbe1ce4a9b2bd8ed05d9fed398c142a4d52e1f7"
+        "sha256": "d6b93081269fe8dbecf5526ea2608f79e21d84d9a79c6a75d1acbde15e9272aa",
+        "startLine": 1206,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de296053ab11cd6478bef55b683e54219f14cc03"
       },
       "status": "candidate",
       "tags": [
@@ -535,12 +535,12 @@ export const contextCorpus = freeze({
       "id": "contract/eligibility",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 1678,
+        "endLine": 1687,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "2b875c292c431944dfaf0186442350019c69533608bb569e9a37ce4b21abf70c",
-        "startLine": 1317,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4dbe1ce4a9b2bd8ed05d9fed398c142a4d52e1f7"
+        "sha256": "d6b93081269fe8dbecf5526ea2608f79e21d84d9a79c6a75d1acbde15e9272aa",
+        "startLine": 1326,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de296053ab11cd6478bef55b683e54219f14cc03"
       },
       "status": "candidate",
       "tags": [
@@ -581,9 +581,9 @@ export const contextCorpus = freeze({
         "endLine": 107,
         "path": "docs/concepts/bodies.md",
         "selection": "heading:Structured fetch responses",
-        "sha256": "27a9fcd521a118de8573bdbd84c7b1a10b17ea6d52c0d9c2eb24a050b229a98b",
+        "sha256": "9485aa3e1ceaa5ff86d5ff1c63441c16361fb535fd8bc13273cd2d919d4a027a",
         "startLine": 92,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9d6595df31bc0574bba52be258583bf15379b9d3"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a50e73aa1ca6b69ff55ccc35494f237df3faa7a5"
       },
       "status": "candidate",
       "tags": [
@@ -669,9 +669,9 @@ export const contextCorpus = freeze({
         "endLine": 161,
         "path": "docs/concepts/bodies.md",
         "selection": "heading:Opaque response pass-through",
-        "sha256": "27a9fcd521a118de8573bdbd84c7b1a10b17ea6d52c0d9c2eb24a050b229a98b",
+        "sha256": "9485aa3e1ceaa5ff86d5ff1c63441c16361fb535fd8bc13273cd2d919d4a027a",
         "startLine": 108,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9d6595df31bc0574bba52be258583bf15379b9d3"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a50e73aa1ca6b69ff55ccc35494f237df3faa7a5"
       },
       "status": "candidate",
       "tags": [
@@ -709,12 +709,12 @@ export const contextCorpus = freeze({
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 1724,
+        "endLine": 1733,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "2b875c292c431944dfaf0186442350019c69533608bb569e9a37ce4b21abf70c",
-        "startLine": 1679,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4dbe1ce4a9b2bd8ed05d9fed398c142a4d52e1f7"
+        "sha256": "d6b93081269fe8dbecf5526ea2608f79e21d84d9a79c6a75d1acbde15e9272aa",
+        "startLine": 1688,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de296053ab11cd6478bef55b683e54219f14cc03"
       },
       "status": "candidate",
       "tags": [
@@ -874,12 +874,12 @@ export const contextCorpus = freeze({
       "id": "contract/report-comparison",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 1316,
+        "endLine": 1325,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Report comparison contract",
-        "sha256": "2b875c292c431944dfaf0186442350019c69533608bb569e9a37ce4b21abf70c",
-        "startLine": 1216,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4dbe1ce4a9b2bd8ed05d9fed398c142a4d52e1f7"
+        "sha256": "d6b93081269fe8dbecf5526ea2608f79e21d84d9a79c6a75d1acbde15e9272aa",
+        "startLine": 1225,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de296053ab11cd6478bef55b683e54219f14cc03"
       },
       "status": "candidate",
       "tags": [
@@ -922,9 +922,9 @@ export const contextCorpus = freeze({
         "endLine": 91,
         "path": "docs/concepts/bodies.md",
         "selection": "heading:Structured request bodies",
-        "sha256": "27a9fcd521a118de8573bdbd84c7b1a10b17ea6d52c0d9c2eb24a050b229a98b",
+        "sha256": "9485aa3e1ceaa5ff86d5ff1c63441c16361fb535fd8bc13273cd2d919d4a027a",
         "startLine": 35,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9d6595df31bc0574bba52be258583bf15379b9d3"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a50e73aa1ca6b69ff55ccc35494f237df3faa7a5"
       },
       "status": "candidate",
       "tags": [
@@ -1089,17 +1089,17 @@ export const contextCorpus = freeze({
         }
       ],
       "category": "contract",
-      "content": "## Current transport limits\n\nFastly Native has an experimental opt-in forwarding path. Configure\n`fastly.bodyForwarding: { requestMaxBytes: 1048576, responseMaxBytes: 1048576 }`\nand `fastly.maxDurationMs` (1–30,000). Each independent byte limit is required\nand may be 1–1,048,576. The initial application shape contains one terminal\n`return ctx.fetch(url, { method: 'POST', body: ctx.req.body() })` with a literal\nURL mapped to a static backend. Optional literal headers and `timeoutMs` are\naccepted. Additional effects, groups, duplicate consumers, dynamic backends,\nbody decoding and transforms are outside this initial path.\n\nThe provider meters actual bytes through fixed 16 KiB raw scratch, handles\npartial writes and early origin responses, and filters response framing and\nhop-by-hop headers within 64 pairs/16 KiB. Omitted limits never mean unbounded.\nThe request deadline and any earlier fetch timeout cover both pumps until the\nfinal pre-close check. Fastly accepts queued delivery when close succeeds;\nPulse cannot then await a drain receipt, cancel delivery, or guarantee client\nreceipt. Failures after headers abandon the stream. This is a provider-specific\nhost-handoff contract, with local Viceroy evidence and further qualification\npending. Fastly JavaScript still rejects incoming forwarding.\n\nNode Native forwarding uses\nthe emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls\nare synchronous, so a Native forwarding application cannot also declare\nstructured request reads; use a separate application for those endpoints.\nJavaScript retains per-request read/forward exclusion. Without the Node opt-in, existing\nbounded request buffering is unchanged. Input chunks remain opaque; the separate\nexperimental generated-output API above accepts only application-owned text.\n\nHandler completion, response-header commitment and stream completion are\ndifferent boundaries. The Node JavaScript response writer waits for its local\npipeline; the Native CLI opaque writer can return after starting a pipe. Neither\nfact alone establishes a portable queue bound, client receipt, or a deadline\ncovering post-handoff streaming. The\n[bounded HTTP deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)\nretains its explicit streaming exclusions for the pre-existing paths. The\nopted-in Node forwarding path above has its own completion-aware deadline.\n",
-      "contentSha256": "36690130100dc468a2deb2ae54137dc61f6503b2718b6b5cf1ff52313ace00ca",
+      "content": "## Current transport limits\n\nFastly Native has an experimental opt-in forwarding path. Configure\n`fastly.bodyForwarding: { requestMaxBytes: 1048576, responseMaxBytes: 1048576 }`\nand `fastly.maxDurationMs` (1–30,000). Each independent byte limit is required\nand may be 1–1,048,576. The initial application shape contains one terminal\n`return ctx.fetch(url, { method: 'POST', body: ctx.req.body() })` with a literal\nURL mapped to a static backend. Optional literal headers and `timeoutMs` are\naccepted. Additional effects, groups, duplicate consumers, dynamic backends,\nbody decoding and transforms are outside this initial path.\n\nThe provider meters actual bytes through fixed 16 KiB raw scratch, handles\npartial writes and early origin responses, and filters response framing and\nhop-by-hop headers within 64 pairs/16 KiB. Omitted limits never mean unbounded.\nThe request deadline and any earlier fetch timeout cover both pumps until the\nfinal pre-close check. Fastly accepts queued delivery when close succeeds;\nPulse cannot then await a drain receipt, cancel delivery, or guarantee client\nreceipt. Failures after headers abandon the stream. This is a provider-specific\nhost-handoff contract. FWD9-03 checks exact installed packages and Viceroy 0.21.1\nwith binary, limit, deadline, framing and abort cases. A fixed guest scratch\nbuffer does not establish a bound on host queues. Deployed Fastly qualification\nremains separate. Fastly JavaScript still rejects incoming forwarding.\n\nNode Native forwarding uses\nthe emitted Wasm, with no JavaScript fallback. Its request text/JSON host calls\nare synchronous, so a Native forwarding application cannot also declare\nstructured request reads; use a separate application for those endpoints.\nJavaScript retains per-request read/forward exclusion. Without the Node opt-in, existing\nbounded request buffering is unchanged. Input chunks remain opaque; the separate\nexperimental generated-output API above accepts only application-owned text.\n\nHandler completion, response-header commitment and stream completion are\ndifferent boundaries. The Node JavaScript response writer waits for its local\npipeline; the Native CLI opaque writer can return after starting a pipe. Neither\nfact alone establishes a portable queue bound, client receipt, or a deadline\ncovering post-handoff streaming. The\n[bounded HTTP deadline contract](../architecture/current-contracts.md#selected-bounded-http-deadline-contract)\nretains its explicit streaming exclusions for the pre-existing paths. The\nopted-in Node forwarding path above has its own completion-aware deadline.\n",
+      "contentSha256": "4303206952991794cf9c0323678250843d5027374d7f36e9de1990bbcedb896a",
       "id": "contract/transport-limits",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 328,
+        "endLine": 330,
         "path": "docs/concepts/bodies.md",
         "selection": "heading:Current transport limits",
-        "sha256": "27a9fcd521a118de8573bdbd84c7b1a10b17ea6d52c0d9c2eb24a050b229a98b",
+        "sha256": "9485aa3e1ceaa5ff86d5ff1c63441c16361fb535fd8bc13273cd2d919d4a027a",
         "startLine": 291,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9d6595df31bc0574bba52be258583bf15379b9d3"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a50e73aa1ca6b69ff55ccc35494f237df3faa7a5"
       },
       "status": "candidate",
       "tags": [
@@ -9142,13 +9142,13 @@ export const contextCorpus = freeze({
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "2b875c292c431944dfaf0186442350019c69533608bb569e9a37ce4b21abf70c",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/4dbe1ce4a9b2bd8ed05d9fed398c142a4d52e1f7"
+      "sha256": "d6b93081269fe8dbecf5526ea2608f79e21d84d9a79c6a75d1acbde15e9272aa",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/de296053ab11cd6478bef55b683e54219f14cc03"
     },
     {
       "path": "docs/concepts/bodies.md",
-      "sha256": "27a9fcd521a118de8573bdbd84c7b1a10b17ea6d52c0d9c2eb24a050b229a98b",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/9d6595df31bc0574bba52be258583bf15379b9d3"
+      "sha256": "9485aa3e1ceaa5ff86d5ff1c63441c16361fb535fd8bc13273cd2d919d4a027a",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/a50e73aa1ca6b69ff55ccc35494f237df3faa7a5"
     },
     {
       "path": "docs/concepts/effects-and-continuations.md",

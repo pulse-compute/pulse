@@ -59,7 +59,12 @@ function prepareFastlyNativeExecution(invocation) {
       response: Object.freeze({
         ...execution.response,
         kind: type.includes('application/json') || type.includes('+json') ? 'json' : type.startsWith('text/') ? 'text' : 'response',
-        bodyClass: execution.response.origin === true ? 'opaque' : 'structured'
+        // Forwarding filters origin metadata into a new response handle, so
+        // its streamed payload remains opaque even though origin is false.
+        // Pre-commit errors use ordinary non-streaming structured responses.
+        bodyClass: execution.response.origin === true
+          || (native.plan.capabilities.includes('request.body.forward') && execution.response.streaming === 1)
+          ? 'opaque' : 'structured'
       }),
       // The fixture ABI has hostcall traces, not canonical continuation telemetry.
       effectCount: null,
