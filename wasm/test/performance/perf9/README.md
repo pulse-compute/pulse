@@ -112,3 +112,7 @@ bounded load. Live Fastly evidence remains a separate environment. #272 and
 The PERF9-01B runner is documented in [local forwarding measurements](MEASUREMENTS.md).
 The [frozen results report](RESULTS.md) includes provenance, interpretation and
 commands to replay the retained evidence after relocation.
+
+The separate [PERF9-02 bounded-size experiment](BOUNDED.md) and
+[results](BOUNDED-RESULTS.md) retain the original baseline and add one selected
+three-artifact characterization.
