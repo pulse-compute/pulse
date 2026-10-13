@@ -17,6 +17,23 @@ async function main() {
     assert.deepEqual(result.canonicalEffects[0].runtimeInputs, [{ name: 'text', argumentIndex: 1, source: 'package-call-argument' }]);
   }
   assert.equal(lower("const r = await ctx.parallel({ a: crypto.digestText(ctx, ''), b: digestText(ctx, text) })").hasErrors, false);
+  for (const declaration of [
+    "export async function handler(ctx){const r=await crypto.digestText(ctx,'route');return ctx.text(r.status)}",
+    "export async function middleware(ctx,next){const r=await crypto.digestText(ctx,'middleware');return next()}",
+    "export async function helper(ctx,text){const r=await crypto.digestText(ctx,text);return r.sha256}",
+  ]) {
+    const result = buildCryptoLoweringPlan({ sourceText: "import {crypto} from '@pulse-compute/crypto';" + declaration });
+    assert.equal(result.hasErrors, false, JSON.stringify(result.diagnostics));
+    assert.equal(result.canonicalEffects.length, 1);
+  }
+  for (const declaration of [
+    "export async function helper(ctx,text){const r=await crypto.digestText(other,text)}",
+    "export async function handler(ctx){async function nested(other){const r=await crypto.digestText(ctx,'capture')}}",
+    "export async function handler(ctx){const nested={async run(other){const r=await crypto.digestText(ctx,'capture')}}}",
+  ]) {
+    const result = buildCryptoLoweringPlan({ sourceText: "import {crypto} from '@pulse-compute/crypto';" + declaration });
+    assert.ok(result.diagnostics.some(row => row.code === 'PULSEWASM_CRYPTO_DIGEST_ARGUMENTS'), declaration);
+  }
   for (const body of ["const r = await crypto.digestText(other, text)", "const r = await digestText(ctx)", "const r = await digestText(ctx, text, {})", "return await digestText(ctx, text)", "digestText(ctx, text)", "const r = digestText(ctx, text)", "const hash = crypto.digestText", "const hash = digestText", "const c = crypto; const r = await c.digestText(ctx, text)", "const r = await crypto['digestText'](ctx, text)", "const crypto = other; const r = await crypto.digestText(ctx, text)", "const { digestText } = other; const r = await digestText(ctx, text)"]) {
     assert.equal(lower(body).hasErrors, true, body);
   }

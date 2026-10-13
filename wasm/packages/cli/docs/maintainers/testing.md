@@ -49,6 +49,19 @@ installed feature gates and provider-proof boundaries. Select focused task IDs
 from the registry for diagnosis; a focused result does not qualify a release.
 The [events guide](../guides/events.md) owns mixed HTTP/event harness syntax.
 
+For declared npm source exports, run the independent installed-consumer check:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task npm-source-installed-workflow
+```
+
+This release-profile task packs the current candidate and a separate source
+dependency, pins and updates it through a local read-only registry, and verifies
+Node/Fastly Native execution, trusted effects, source attribution and rejected
+unsupported updates. It records a terminal acceptance report under
+`wasm/.test-results/`. Ordinary third-party toolchain dependencies still require
+npm access. The Fastly fixture ABI is development evidence, not live deployment.
+
 Maintainers may bound a diagnostic rerun:
 
 ```bash

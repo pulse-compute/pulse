@@ -212,8 +212,17 @@ Compiler discovery reads executable manifests only for the reviewed
 toolchain version and canonical contained manifest path. An npm namespace,
 source export or package-supplied `pulse`/`pulsewasm` field cannot add an owner to
 that list. First-party package effects retain their existing realization path.
-IMP9-01 has repository fixtures with Node/Fastly Native execution;
-packed independent-consumer installation/update acceptance belongs to IMP9-02.
+`npm-source-imports` covers resolver admission and rejection in repository
+fixtures. `npm-source-installed-workflow` packs the candidate toolchain and an
+independent dependency, installs exact versions outside the checkout, and tests
+Node/Fastly Native handlers, middleware and directly awaited scalar helpers.
+The installed cases combine fetch suspension with trusted Crypto digest effects,
+check authored source attribution and executable Wasm identity, and repeat after
+a pinned dependency update without copying or changing application source.
+An unsupported dependency update or undeclared crypto capability must fail
+explicitly. Third-party executable metadata grants no compiler authority.
+Fastly execution uses the fixture ABI;
+this qualification does not claim a deployed provider test.
 
 ## Native diagnostic artifacts
 

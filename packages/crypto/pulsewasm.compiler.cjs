@@ -56,8 +56,9 @@ function buildCryptoLoweringPlan(input = {}) {
       && (!ts.isCallExpression(node.parent) || node.parent.expression !== node)) error(node, 'DETACHED', 'Digest operations cannot be detached or aliased.');
     if (ts.isCallExpression(node) && isDigest(node.expression)) {
       let fn = node.parent;
-      while (fn && !ts.isArrowFunction(fn) && !ts.isFunctionExpression(fn)) fn = fn.parent;
-      const ctx = fn && fn.parameters[0] && fn.parameters[0].name;
+      while (fn && !ts.isFunctionLike(fn)) fn = fn.parent;
+      const supportedFunction = fn && (ts.isArrowFunction(fn) || ts.isFunctionExpression(fn) || ts.isFunctionDeclaration(fn));
+      const ctx = supportedFunction && fn.parameters[0] && fn.parameters[0].name;
       if (node.arguments.length !== 2 || !ctx || !ts.isIdentifier(ctx)
         || !ts.isIdentifier(node.arguments[0]) || node.arguments[0].text !== ctx.text) {
         error(node, 'ARGUMENTS', 'Digest requires the current handler context and one text input.'); return;
