@@ -72,6 +72,8 @@ const externalTasks = new Set([
   'str02-installed',
   'str02b-installed',
   'fwd9-03-installed',
+  // Beta.9 comparison preflight is explicitly selected, never a release gate.
+  'perf9-01a-parity',
   'str03b-installed', 'node01-installed', 'arc01-installed',
   'ast01-installed', 'ast02b-installed', 'ast02d-installed', 's3-body-installed',
   'str02c-fastly-feasibility',

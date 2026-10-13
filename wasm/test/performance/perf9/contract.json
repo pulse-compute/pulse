@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "pulse.perf9-forwarding-contract.v1",
+  "url": "https://origin.example/upload",
+  "backend": "origin",
+  "method": "POST",
+  "path": "/",
+  "headers": { "content-type": "application/octet-stream" },
+  "requestMaxBytes": 1048576,
+  "responseMaxBytes": 1048576,
+  "maxDurationMs": 2000,
+  "fetchTimeoutMs": 1500,
+  "payloadScratchBytes": 16384,
+  "headerMaxPairs": 64,
+  "headerMaxBytes": 16384,
+  "payloadSweep": [1024, 65536, 1048576],
+  "rust": { "version": "1.90.0", "target": "wasm32-unknown-unknown", "edition": "2021", "optLevel": 3, "lto": "thin", "codegenUnits": 1, "panic": "abort", "strip": "symbols" },
+  "viceroyVersion": "0.21.1",
+  "variants": [
+    { "id": "default" },
+    { "id": "unequal-caps", "requestMaxBytes": 33, "responseMaxBytes": 65 },
+    { "id": "earlier-total", "maxDurationMs": 1000 }
+  ]
+}
