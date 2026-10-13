@@ -1200,6 +1200,10 @@ const tasks = Object.freeze({
     evidence: 'external', timeoutMs: 180000,
     description: 'MCP-02 real pinned official client against the private first-party HTTP adapter'
   }),
+  'npm-source-installed-workflow': nodeTask('test/cli/assert-npm-source-installed-workflow.cjs', {
+    evidence: 'release', timeoutMs: 600000,
+    description: 'IMP9-02 independent npm pin/update, imported handlers/helpers and trusted effects on Node/Fastly Native'
+  }),
   'cli-entities-installed-workflow': nodeTask('test/cli/assert-cli-entities-installed-workflow.cjs', {
     evidence: 'release', timeoutMs: 600000,
     description: 'example 10 exact packed install and four-mode doctor/inspect/test/dev/build/artifact acceptance'
@@ -1519,6 +1523,7 @@ const profiles = Object.freeze({
     'release-artifact-determinism',
     'clean-machine-acceptance',
     'cli-entities-installed-workflow',
+    'npm-source-installed-workflow',
     'release-evidence-authority',
     'deployment-candidates'
   ])
