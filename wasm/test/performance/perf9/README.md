@@ -108,3 +108,5 @@ PERF9-01B must use these qualified semantics, pin the actual measured artifacts,
 and add randomized/alternating sampling, CPU/memory domains, uncertainty and
 bounded load. Live Fastly evidence remains a separate environment. #272 and
 #301 remain open; this task establishes only the local comparison preflight.
+
+The PERF9-01B runner is documented in [local forwarding measurements](MEASUREMENTS.md).
