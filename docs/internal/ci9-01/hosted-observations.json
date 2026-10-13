@@ -1,0 +1,124 @@
+{
+  "schemaVersion": "pulse.ci9-01-hosted-observations.v1",
+  "purpose": "planning-only",
+  "testedMerge": "a9578ea39938e52738da5b7dcacb56c741816809",
+  "samples": [
+    {
+      "name": "fast",
+      "runId": 38451955965,
+      "jobId": 115485008456,
+      "url": "https://github.com/pulse-compute/pulse/actions/runs/38451955965/job/115485008456",
+      "decodedLogSha256": "642081b4efac54292b7bb4ecf1aa872beeda5a7f70338c40603a2c7b8b86ae6f",
+      "hashEncoding": "UTF-8 decoded tool log, BOM removed, CRLF normalized to LF, exactly one final LF",
+      "commandIntervals": [
+        {
+          "command": "set -euo pipefail",
+          "startedAt": "2026-10-13T19:05:17.4379822Z",
+          "nextCommandAt": "2026-10-13T19:05:23.1792074Z",
+          "intervalSeconds": 5.741
+        },
+        {
+          "command": "pnpm run build",
+          "startedAt": "2026-10-13T19:05:23.1792074Z",
+          "nextCommandAt": "2026-10-13T19:05:25.2331850Z",
+          "intervalSeconds": 2.054
+        },
+        {
+          "command": "node scripts/maintainer-fast-validation.cjs --event --report wasm/.test-results/fast-run.json --run",
+          "startedAt": "2026-10-13T19:05:25.2331850Z",
+          "nextCommandAt": "2026-10-13T19:07:55.4944860Z",
+          "intervalSeconds": 150.261
+        }
+      ],
+      "method": "Successive top-level Run log timestamps; includes gaps between commands, excludes initial checkout/setup and final upload. Not official step durations or repeated-sample statistics.",
+      "taskDurations": [
+        {
+          "name": "package-exports",
+          "seconds": 0.173
+        },
+        {
+          "name": "api-surface",
+          "seconds": 0.934
+        },
+        {
+          "name": "canonical-api-lowering",
+          "seconds": 1.2
+        },
+        {
+          "name": "cli-command-spec",
+          "seconds": 0.102
+        },
+        {
+          "name": "cli-project-guards",
+          "seconds": 10.19
+        },
+        {
+          "name": "continuation-registry",
+          "seconds": 0.082
+        },
+        {
+          "name": "javascript-effect-adapter",
+          "seconds": 0.54
+        },
+        {
+          "name": "node-cross-target-conformance",
+          "seconds": 6.49
+        },
+        {
+          "name": "schema-codecs",
+          "seconds": 128.82
+        },
+        {
+          "name": "schema-registry",
+          "seconds": 1.07
+        },
+        {
+          "name": "target-support",
+          "seconds": 0.462
+        }
+      ],
+      "runnerTotalSeconds": 150.09
+    },
+    {
+      "name": "docs",
+      "runId": 38451955963,
+      "jobId": 115484911702,
+      "url": "https://github.com/pulse-compute/pulse/actions/runs/38451955963/job/115484911702",
+      "decodedLogSha256": "0c1d0aa970dd6cbe8c6eb5044e61d3afdf7c0769049e7b9fe066e2e6b2c9390d",
+      "hashEncoding": "UTF-8 decoded tool log, BOM removed, CRLF normalized to LF, exactly one final LF",
+      "commandIntervals": [
+        {
+          "command": "set -euo pipefail",
+          "startedAt": "2026-10-13T19:05:00.9146745Z",
+          "nextCommandAt": "2026-10-13T19:05:06.3662674Z",
+          "intervalSeconds": 5.452
+        },
+        {
+          "command": "pnpm run docs:check",
+          "startedAt": "2026-10-13T19:05:06.3662674Z",
+          "nextCommandAt": "2026-10-13T19:05:11.4106439Z",
+          "intervalSeconds": 5.044
+        },
+        {
+          "command": "node scripts/documentation-release.cjs",
+          "startedAt": "2026-10-13T19:05:11.4106439Z",
+          "nextCommandAt": "2026-10-13T19:05:20.9905540Z",
+          "intervalSeconds": 9.58
+        },
+        {
+          "command": "pnpm run docs:site --json",
+          "startedAt": "2026-10-13T19:05:20.9905540Z",
+          "nextCommandAt": "2026-10-13T19:05:25.5308796Z",
+          "intervalSeconds": 4.54
+        },
+        {
+          "command": "node scripts/documentation-deployment.cjs seal --site-dir .pulse-docs-site --out .pulse-documentation-preview",
+          "startedAt": "2026-10-13T19:05:25.5308796Z",
+          "nextCommandAt": "2026-10-13T19:05:26.2755306Z",
+          "intervalSeconds": 0.745
+        }
+      ],
+      "method": "Successive top-level Run log timestamps; includes gaps between commands, excludes initial checkout/setup and final upload. Not official step durations or repeated-sample statistics."
+    }
+  ]
+}
