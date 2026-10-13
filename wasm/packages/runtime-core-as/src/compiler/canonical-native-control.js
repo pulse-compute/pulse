@@ -8,7 +8,7 @@ const RUN_SYMBOL = '__pulse_run';
 function buildNativeControl({
   plan, stages, stageBindings, stageSites, effectIndex, continuationIndex,
   applicationErrors, helpers, handlers, routerLocal, routerCursor,
-  exprName, localName, stringHandle, fail
+  exprName, localName, stringHandle, fail, numeric
 }) {
   const stageEntries = new Map();
   const blocks = [];
@@ -109,9 +109,14 @@ function buildNativeControl({
     const previousBoundary = activeBoundary;
     activeBoundary = boundary;
     let next = nextBlock;
+    const numericStatements = !helpers.has(activeHandler) && !stages.has(activeHandler)
+      ? numeric.select(statements || []) : new Map();
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];
-      if (statement.kind === 'helper-call') {
+      const numericRegion = numericStatements.get(statement);
+      if (numericRegion) {
+        next = block('action', { lines: numeric.render(statement, numericRegion, () => `__pulse_iteration_${pureLoopIndex++}`), next });
+      } else if (statement.kind === 'helper-call') {
         const helper = helpers.get(statement.helperId);
         // callerEntryId is already checked by the canonical plan validator.
         if (!helperConsumers.has(helper.id)) helperConsumers.set(helper.id, new Set());
