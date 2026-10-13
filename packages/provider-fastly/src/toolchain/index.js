@@ -271,7 +271,7 @@ function createDriver() {
     execute: fastlyRuntime.executeCanonicalProgram,
     prepareNativeExecution: require('./native-execution.js').prepareFastlyNativeExecution,
     createLoweringPlan(metadata, providerConfig = {}) {
-      return createFastlyLoweringPlan(metadata, providerConfig.bindings || {});
+      return createFastlyLoweringPlan(metadata, providerConfig.bindings || {}, providerConfig);
     },
     inspectRealization(invocation) {
       const realization = inspectFastlyCanonicalTarget({

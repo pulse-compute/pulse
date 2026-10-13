@@ -21,6 +21,8 @@ const reviewedEngines=Object.freeze({
 const digest=b=>createHash('sha256').update(b).digest('hex');
 function deferred(){let resolve;const promise=new Promise(r=>resolve=r);return {promise,resolve};}
 async function bounded(promise,label){let timer;try{return await Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error(label+' timed out')),5000);})]);}finally{clearTimeout(timer);}}
+// FWD9-02 adds an explicit Native opt-in; this fixture verifies the default
+// remains closed and JavaScript remains ineligible.
 function assertAdmission(){
   const project=fs.mkdtempSync(path.join(os.tmpdir(),'pulse-str02c-admission-'));
   try{
@@ -43,7 +45,7 @@ async function main(){
   const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'pulse-str02c-'));
   fs.mkdirSync(path.join(root,'wasm/.test-results'),{recursive:true});
   const reportDir=fs.mkdtempSync(path.join(root,'wasm/.test-results/str02c-'));
-  const report={version:'pulse.str02c-feasibility.v1',status:'running',source:spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim(),tree:spawnSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).stdout.trim(),workingTree:spawnSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).stdout.trim(),applicationIntegration:false,livePlatform:false,engine:launcher.inspection.version,engineSha256:digest(fs.readFileSync(launcher.inspection.binary)),probeSourceSha256:digest(fs.readFileSync(source)),runnerSha256:digest(fs.readFileSync(__filename)),admission:{native:'blocked',javascript:'blocked'},cases:{}};
+  const report={version:'pulse.str02c-feasibility.v1',status:'running',source:spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim(),tree:spawnSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).stdout.trim(),workingTree:spawnSync('git',['status','--porcelain'],{cwd:root,encoding:'utf8'}).stdout.trim(),applicationIntegration:false,livePlatform:false,engine:launcher.inspection.version,engineSha256:digest(fs.readFileSync(launcher.inspection.binary)),probeSourceSha256:digest(fs.readFileSync(source)),runnerSha256:digest(fs.readFileSync(__filename)),admission:{nativeWithoutOptIn:'blocked',javascript:'blocked'},cases:{}};
   report.reviewedEngineSource=engineSource;
   report.nodeVersion=process.version;
   let server,first=deferred();const receipts=new Map(),receiptReady=new Map(['direct','close','abandon'].map(mode=>[mode,deferred()]));

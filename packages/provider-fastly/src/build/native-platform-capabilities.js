@@ -108,6 +108,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_BUFFER_BYTES = 65536;
 const FASTLY_NATIVE_SIZE_OPTIMIZATION = EXPERIMENTAL_NATIVE_SIZE_OPTIMIZATION;
 
 const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
+  ...require('./native-body-forwarding.js').IMPORTS.map(key => Object.freeze(key.split(':'))),
   ...conditionalKv.KV_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   ...require('./s3-native.js').S3_IMPORTS.map((key) => Object.freeze(key.split(':'))),
   Object.freeze(['fastly_abi', 'init']),
@@ -663,6 +664,7 @@ function fastlyGuestLinkedStartWrapperWat() {
 }
 
 function validatePlanBoundary(plan, options = {}) {
+  require('./native-body-forwarding.js').validate(plan, options);
   if (!plan || typeof plan !== 'object') throw new TypeError('Fastly native platform capability realization requires a canonical native plan.');
   if (plan.version !== CANONICAL_NATIVE_PLAN_VERSION) {
     fail(`Fastly native platform capability realization requires ${CANONICAL_NATIVE_PLAN_VERSION}.`, 'PULSE_FASTLY_NATIVE_PLATFORM_CAPABILITIES_PLAN_VERSION_UNSUPPORTED', { version: plan.version });
@@ -930,6 +932,7 @@ function resolveCapabilityBindings(plan, options = {}) {
 
   return Object.freeze({
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs),
+    bodyForwarding: require('../toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs),
     configStore,
     secretStore,
     s3: require('../toolchain/s3.js').resolveFastlyS3(effects.map((effect) => ({ ...effect, payload: Object.fromEntries(['contentType', 'method', 'range', 'ifNoneMatch'].map(name => [name, literalObjectField(inputExpression(effect, 'payload'), name) ?? undefined])) })), source.s3),
@@ -1013,6 +1016,11 @@ function requiredImportsForPlan(plan, bindings) {
     keys.add('fastly_log:write');
   }
   if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
+  if (require('./native-body-forwarding.js').enabled(plan)) {
+    keys.delete('fastly_http_req:send_async'); keys.delete('fastly_http_req:pending_req_wait');
+    for (const key of require('./native-body-forwarding.js').IMPORTS) keys.add(key);
+    keys.add('fastly_http_body:read');
+  }
   return Object.freeze([...keys].sort());
 }
 
@@ -2096,6 +2104,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
   source = effectInvocations.instrument(source);
   source = require('./request-budget.js').instrumentRequestBudget(source, bindings.maxDurationMs, plan);
   source = nativeValueBudget.instrument(source, plan);
+  source = require('./native-body-forwarding.js').instrument(source, plan, bindings);
   const effectKinds = Object.freeze((plan.effects || []).reduce((output, effect) => {
     output[effect.kind] = (output[effect.kind] || 0) + 1;
     return output;

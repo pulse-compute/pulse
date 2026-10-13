@@ -39,6 +39,7 @@ function fastly(options = {}) {
   const normalizedGrip = options.grip === undefined ? undefined : gripBindings(options.grip);
   return Object.freeze({
     kind: 'fastly',
+    ...(options.bodyForwarding === undefined ? {} : {bodyForwarding: require('./toolchain/body-forwarding.js').normalizeBodyForwarding(options.bodyForwarding, options.maxDurationMs)}),
     ...(options.maxDurationMs === undefined ? {} : { maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(options.maxDurationMs) }),
     version: FASTLY_PROVIDER_API_VERSION,
     bindings: Object.freeze({

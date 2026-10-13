@@ -82,6 +82,19 @@
     },
     "fastly.maxWasmBytes": {
       "kind": "positive-safe-integer"
+    },
+    "fastly.bodyForwarding": {
+      "kind": "object"
+    },
+    "fastly.bodyForwarding.requestMaxBytes": {
+      "kind": "integer",
+      "minimum": 1,
+      "maximum": 1048576
+    },
+    "fastly.bodyForwarding.responseMaxBytes": {
+      "kind": "integer",
+      "minimum": 1,
+      "maximum": 1048576
     }
   }
 }

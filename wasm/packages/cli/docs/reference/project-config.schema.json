@@ -402,6 +402,47 @@
       },
       {
         "required": false,
+        "default": "omitted",
+        "allowed": "—",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [
+          "PULSE_FASTLY_BODY_FORWARDING_INVALID"
+        ],
+        "description": "Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.",
+        "path": "fastly.bodyForwarding",
+        "scope": "experimental Fastly Native forwarding",
+        "section": "fastly",
+        "type": "object"
+      },
+      {
+        "required": false,
+        "default": "required with bodyForwarding",
+        "allowed": "1–1048576",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.",
+        "path": "fastly.bodyForwarding.requestMaxBytes",
+        "scope": "experimental Fastly Native forwarding",
+        "section": "fastly",
+        "type": "integer"
+      },
+      {
+        "required": false,
+        "default": "required with bodyForwarding",
+        "allowed": "1–1048576",
+        "precedence": "Configuration value.",
+        "security": "No special handling.",
+        "diagnostics": [],
+        "description": "Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.",
+        "path": "fastly.bodyForwarding.responseMaxBytes",
+        "scope": "experimental Fastly Native forwarding",
+        "section": "fastly",
+        "type": "integer"
+      },
+      {
+        "required": false,
         "default": "4194304 (4 MiB)",
         "allowed": "positive safe integer",
         "precedence": "Configuration value.",
@@ -1094,6 +1135,19 @@
         },
         "fastly.maxWasmBytes": {
           "kind": "positive-safe-integer"
+        },
+        "fastly.bodyForwarding": {
+          "kind": "object"
+        },
+        "fastly.bodyForwarding.requestMaxBytes": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 1048576
+        },
+        "fastly.bodyForwarding.responseMaxBytes": {
+          "kind": "integer",
+          "minimum": 1,
+          "maximum": 1048576
         }
       }
     }
