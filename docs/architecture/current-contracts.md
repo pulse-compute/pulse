@@ -1390,6 +1390,45 @@ comparison, uses hash-bound inline assets and makes no network requests. Mobile
 before/after fields stack in the same explicit order as the desktop columns.
 The `cli-report-viewer` task covers this renderer alongside the single-capsule view.
 
+## Report handler topology
+
+The optional `analytics` block (`pulse.report-analytics.v1`) retains first-class
+handler and linked-helper definitions plus distinct router registration/mount
+instances. AN9-01 projects these from the live canonical router topology after
+emission; no plan, executable source, runtime ID, recipe or Wasm bytes change.
+Definitions reuse compiler identity (and existing report handler IDs); helpers
+use a separate report ID derived from their canonical linker identity. Roles
+belong to registrations, so one handler reused twice remains one definition with
+two entries. Shared Native stages and dispatcher bodies are not authored handlers.
+
+Definition and registration spans are separate, hash-bound authored file ranges
+with UTF-16 offsets `[start,end)` and one-based line/column. They come from retained
+source nodes/locations, never generated effect offsets. Imported source package
+provenance joins exact reachable-graph module identities, without granting lowerer
+trust. Missing source remains unavailable. Synthetic routing nodes have no
+handler identity; implicit HTTP fallthrough does not invent an authored 404
+handler. Unsupported/non-router topology remains unavailable rather than claiming
+an empty definition universe.
+
+Registration order is the canonical execution index. Ordered mount paths retain
+instance identity through compiler child/parent-return boundaries, including a
+router mounted more than once and nested mounts. Next/child/parent-return links
+join existing report entries; HTTP termination never becomes an event entry.
+Existing entry flow retains scope/conditional candidate facts. These are static
+topology facts, not request traces or proof that every candidate middleware runs.
+Capability use sites, helper-call edges and derived associations remain empty
+with unavailable coverage until their producers and validators are implemented.
+Nonempty claims in these reserved tables are rejected.
+
+The schema/projection/graph validator and retained inventory admit this block
+together; passive artifact replay does not load the compiler or provider. Older
+capsules without analytics retain their exact bytes and evidence hashes, and
+absence means unavailable analytics. Older strict readers cannot consume the new
+block. Arbitrary npm source admission to completion snapshots remains the AN9-04
+gap identified in AN9-00; imported definition provenance in memory does not claim
+that imported-source passive completion is already available. Handler reporting
+has no new physical-size attribution or UI presentation contract.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support

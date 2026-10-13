@@ -263,9 +263,10 @@ async function main() {
       const saved = capsule.serializeCapsule(report);
       assert.equal(capsule.serializeCapsule(capsule.parseCapsule(saved)), saved);
       assert.throws(() => capsule.validateCapsule({ ...report, analytics: { version: 'pulse.report-analytics.v1' } }),
-        'old strict readers reject a proposed additive block; forward compatibility is not assumed');
-      // Projection is not validation: createCapsule silently drops unknown keys.
-      assert.equal(capsule.serializeCapsule(capsule.createCapsule({ ...report, analytics: {} })), saved);
+        'AN9-01 validates the optional block; an incomplete block is rejected');
+      // AN9-01 owns analytics now. Unknown future keys still project away.
+      assert.throws(() => capsule.createCapsule({ ...report, analytics: {} }));
+      assert.equal(capsule.serializeCapsule(capsule.createCapsule({ ...report, futureAnalytics: {} })), saved);
       const requests = await runRuntime(prepared.native, variant) + await runRuntime(control.native, variant);
       // The imported source graph is accepted by IMP9, but report snapshots do
       // not yet bind arbitrary npm source. Keep that failure visible.

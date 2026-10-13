@@ -41,7 +41,27 @@ const REASONS = ['missing-evidence', 'unsupported-mapping', 'incomplete-mapping'
 const BODY_KINDS = ['terminal-body', 'shared-stage-body', 'shared-helper-body', 'dispatcher-carrier'];
 const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'startup', 'export', 'other'];
 const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses'];
+const analyticsFact = value => object({ state: en('available', 'unavailable', 'not-applicable'),
+  value: nullable(value), reason: nullable(en('not-recorded', 'not-applicable')) });
+// Reserved tables cannot accept claims before their producers/validators ship.
+const unproducedAnalytics = { ...array(object({})), maxItems: 0 };
 const defs = {
+  AnalyticsPosition: object({ offset: uint, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 } }),
+  AnalyticsSpan: object({ file: text, sha256: hash, start: ref('AnalyticsPosition'), end: ref('AnalyticsPosition') }),
+  AnalyticsEvidence: object({ basis: en('handler-table', 'router-topology'),
+    producer: en('canonical-router-handler-table', 'canonical-router-linked-helper', 'canonical-router-execution-topology') }),
+  AnalyticsHandler: object({ id, canonicalId: text, kind: en('handler', 'helper'), name: nullable(text),
+    source: analyticsFact(ref('AnalyticsSpan')),
+    package: analyticsFact(object({ name: text, version: text, sourceIdentity: text })), evidence: array(ref('AnalyticsEvidence')) }),
+  AnalyticsRegistration: object({ id, canonicalId: text, handlerId: nullable(id),
+    kind: en('route', 'middleware', 'mount', 'error', 'event', 'fallback'), authored: bool,
+    source: analyticsFact(ref('AnalyticsSpan')), routerId: text, routerPath: array(text), mountPath: ids, order: uint,
+    match: analyticsFact(object({ method: nullable(text), path: nullable(str), eventType: nullable(text) })),
+    flow: object({ next: nullable(id), child: nullable(id), parentContinue: nullable(id) }), evidence: array(ref('AnalyticsEvidence')) }),
+  Analytics: object({ version: fixed('pulse.report-analytics.v1'), handlers: array(ref('AnalyticsHandler')),
+    registrations: array(ref('AnalyticsRegistration')), useSites: unproducedAnalytics,
+    helperCalls: unproducedAnalytics, associations: unproducedAnalytics,
+    coverage: object(Object.fromEntries(['handlers', 'registrations', 'useSites', 'helperCalls', 'associations'].map(key => [key, ref('Coverage')]))) }),
   BuildCompiler: object({ phase: en('portable', 'provider'), artifactId: id, compilerVersion: text,
     durationMs: uint, timeoutMs: nullable(uint), flags: array(object({ name: text, value: nullable(text) })), flagsComplete: bool,
     optimization: object({ optimizeLevel: nullable(uint), shrinkLevel: nullable(uint), converge: bool }),
@@ -144,7 +164,7 @@ const capsule = object({ kind: fixed('pulse.application-report'), reportVersion:
   resourceProducers: array(ref('ResourceProducer')),
   implementations: array(ref('Implementation')),
   rootSets: array(ref('RootSet')), measurements: array(ref('Measurement')), observations: array(ref('Observation')),
-  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }) }, ['references', 'resourceProducers', 'implementations', 'build']);
+  evidence: array(ref('Evidence')), evidenceHash: object({ algorithm: fixed('sha256'), value: hash }), analytics: ref('Analytics') }, ['references', 'resourceProducers', 'implementations', 'build', 'analytics']);
 const completion = object({ kind: fixed('pulse.report-completion'), completionVersion: fixed(1), status: fixed('complete'),
   operation: en('compile', 'native-build'), manifestVersion: fixed('pulse.project-execution.v10'), context: ref('Context'),
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),
