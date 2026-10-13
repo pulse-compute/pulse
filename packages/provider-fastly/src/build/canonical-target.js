@@ -233,6 +233,7 @@ function inspectFastlyCanonicalTarget(options = {}) {
         profile: options.profile,
         bindings,
         maxDurationMs: providerConfig.maxDurationMs,
+        bodyForwarding: providerConfig.bodyForwarding,
         maxWasmBytes,
         requirePlatformCapability: false,
         canonicalBuild: true,
@@ -251,6 +252,10 @@ function inspectFastlyCanonicalTarget(options = {}) {
   const duration = require('@pulse-compute/runtime/host').normalizeRequestDuration(providerConfig.maxDurationMs);
   if (native.manifest.bindings?.maxDurationMs !== duration) {
     throw providerBuildError('PULSE_REQUEST_DURATION_ARTIFACT_MISMATCH', 'Fastly artifact request deadline does not match the selected provider profile.');
+  }
+  const forwarding = require('../toolchain/body-forwarding.js').normalizeBodyForwarding(providerConfig.bodyForwarding, duration);
+  if (JSON.stringify(native.manifest.bindings?.bodyForwarding) !== JSON.stringify(forwarding)) {
+    throw providerBuildError('PULSE_FASTLY_BODY_FORWARDING_ARTIFACT_MISMATCH', 'Fastly artifact forwarding bounds do not match the selected provider profile.');
   }
   return Object.freeze({
     target: FASTLY_CANONICAL_TARGET,

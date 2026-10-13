@@ -254,6 +254,12 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   }
   const imports = {
     fastly_async_io: {
+      is_ready(handle, out) {
+        const item = pending.get(Number(handle)) || bodies.get(Number(handle));
+        if (!item) return FASTLY_STATUS_BADF;
+        writeU32(out, monotonicMs >= (item.readyAt || 0) ? 1 : 0);
+        return FASTLY_STATUS_OK;
+      },
       select(handles, count, timeout, done) {
         if (Number(count) < 1 || Number(timeout) <= 0) return FASTLY_STATUS_ERROR;
         const selected = Array.from({length:Number(count)},(_,i) => view().getUint32(Number(handles)+4*i,true));
@@ -425,6 +431,23 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         trace.push({module:'fastly_http_req',name:'pending_req_poll_v2',pendingHandle:Number(handle)});
         if (monotonicMs < item.readyAt) { writeU32(done, 0); return FASTLY_STATUS_OK; }
         writeU32(done, 1); return imports.fastly_http_req.pending_req_wait(handle, responseOut, bodyOut);
+      },
+      send_async_streaming(handle, bodyHandle, backendPointer, backendLength, pendingOut) {
+        const request = requests.get(Number(handle)), body = bodies.get(Number(bodyHandle));
+        if (!request || !body) return FASTLY_STATUS_BADF;
+        const backend = readUtf8(backendPointer, backendLength);
+        const fixture = resolveFixture(options.fixtures, backend, request.method, request.url);
+        requests.delete(Number(handle));
+        if (!fixture || fixture.sendStatus) { bodies.delete(Number(bodyHandle)); return Number(fixture?.sendStatus || 1); }
+        const pendingHandle = alloc('pending');
+        const record = {backend, method:request.method, url:redactText(request.url), headers:redactRuntimeHeaders(request.headers), bodyBytes:Buffer.alloc(0)};
+        outboundRequests.push(record);
+        const item = {request, backend, fixture, readyAt:fixture.earlyResponse ? monotonicMs + Number(fixture.delayMs || 0) : Infinity};
+        pending.set(pendingHandle, item);
+        body.streamingUpload = {item, record}; body.readyAt = monotonicMs + Number(options.uploadReadyDelayMs || 0);
+        writeU32(pendingOut, pendingHandle);
+        trace.push({module:'fastly_http_req',name:'send_async_streaming',bodyHandle:Number(bodyHandle),pendingHandle});
+        return FASTLY_STATUS_OK;
       },
       send_async(handle, bodyHandle, backendPointer, backendLength, pendingOut) {
         const request = requests.get(Number(handle));
@@ -630,11 +653,30 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
           responseHandle: Number(handle),
           bodyHandle: Number(bodyHandle)
         };
+        if (Number(streaming) === 1) responses.delete(Number(handle));
         return FASTLY_STATUS_OK;
       }
     },
     fastly_http_body: {
-      close(handle) { trace.push({ module: 'fastly_http_body', name: 'close', handle: Number(handle) }); if (downstream?.streaming && downstream.bodyHandle === Number(handle)) { downstream.bodyBytes = bodyBytes(handle); downstream.finished = true; } return bodies.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF; },
+      close(handle) {
+        trace.push({module:'fastly_http_body',name:'close',handle:Number(handle)});
+        const body = bodies.get(Number(handle));
+        if (body?.streamingUpload) {
+          const {item,record} = body.streamingUpload;
+          record.bodyBytes = bodyBytes(handle);
+          if (item.fixture.echoBody) item.fixture = {...item.fixture,body:record.bodyBytes};
+          item.readyAt = item.fixture.neverHeaders ? Infinity : monotonicMs + Number(item.fixture.delayMs || 0);
+        }
+        if (downstream?.streaming && downstream.bodyHandle === Number(handle)) { downstream.bodyBytes = bodyBytes(handle); downstream.finished = true; }
+        return bodies.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF;
+      },
+      abandon(handle) {
+        trace.push({module:'fastly_http_body',name:'abandon',handle:Number(handle)});
+        const body = bodies.get(Number(handle));
+        if (body?.streamingUpload) { body.streamingUpload.record.bodyBytes = bodyBytes(handle); body.streamingUpload.record.aborted = true; }
+        if (downstream?.streaming && downstream.bodyHandle === Number(handle)) { downstream.bodyBytes = bodyBytes(handle); downstream.aborted = true; }
+        return bodies.delete(Number(handle)) ? FASTLY_STATUS_OK : FASTLY_STATUS_BADF;
+      },
       new(handleOut) {
         const handle = alloc('body');
         bodies.set(handle, { bytes: Buffer.alloc(0), readOffset: 0, writes: [] });
@@ -660,10 +702,12 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
         const body = bodies.get(Number(handle));
         if (!body) return FASTLY_STATUS_BADF;
         if (downstream?.streaming && Number(handle) === downstream.bodyHandle && options.downstreamBodyWriteStatus) return Number(options.downstreamBodyWriteStatus);
-        if (requests.size > 1 && options.outboundBodyWriteStatus) return Number(options.outboundBodyWriteStatus);
+        if ((requests.size > 1 || body.streamingUpload) && options.outboundBodyWriteStatus) return Number(options.outboundBodyWriteStatus);
         const length = Math.min(Number(bufferLength), Number(options.bodyWriteChunkBytes || bufferLength));
         const bytes = readBytes(buffer, length);
         body.writes.push(bytes);
+        if (body.streamingUpload) body.readyAt = monotonicMs + Number(options.uploadWriteDelayMs || 0);
+        if (downstream?.streaming && downstream.bodyHandle === Number(handle)) body.readyAt = monotonicMs + Number(options.downstreamWriteDelayMs || 0);
         writeU32(writtenOut, bytes.length);
         trace.push({ module: 'fastly_http_body', name: 'write', handle: Number(handle), bytes: bytes.length, end: Number(end) });
         return FASTLY_STATUS_OK;
@@ -716,7 +760,7 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
   const pulseLastError = typeof instance.exports.pulse_last_error_code === 'function'
     ? Number(instance.exports.pulse_last_error_code())
     : undefined;
-  if (downstream?.streaming && !downstream.finished) { downstream.bodyBytes = bodyBytes(downstream.bodyHandle); downstream.aborted = true; }
+  if (downstream?.streaming && !downstream.finished) { downstream.bodyBytes = bodyBytes(downstream.bodyHandle) || downstream.bodyBytes; downstream.aborted = true; }
   const handledJwtError = options.allowHandledJwtError === true
     && lastError === 1008
     && Boolean(downstream);

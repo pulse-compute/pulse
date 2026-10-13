@@ -875,14 +875,41 @@ suspension group, before any provider dispatch. Native test/dev execute the
 emitted Wasm for this capability. Native forwarding applications reject
 structured request-read surfaces because those host calls remain synchronous.
 
-STR-02C leaves both Fastly targets ineligible. Local Viceroy ABI probes support
-incremental transfer, early origin responses and unsuccessful stream termination,
-but a successful streaming-body close relinquishes the handle and may hand
-queued completion to the host. That is not a drain receipt or retained
-cancellation authority. Fastly incoming forwarding requires a reviewed
-completion/handoff contract and a metered provider pump before admission; raw
-handle transfer alone does not enforce measured byte limits. Fastly JavaScript
-also retains its separate total-request-deadline restriction.
+FWD9-02 admits an experimental Fastly Native metered forwarding path with
+`fastly.bodyForwarding: { requestMaxBytes, responseMaxBytes }` and
+`fastly.maxDurationMs`. Both byte limits are explicit integers from 1 to
+1,048,576; the total deadline is 1–30,000 ms. The application may contain one
+terminal opaque POST fetch with inline `ctx.req.body()`, a static backend and
+optional literal request headers. Effect groups, additional effects, body
+inspection, transforms, duplicate consumers and dynamic backends are rejected.
+Existing Native structured-read exclusion applies. Fastly JavaScript remains
+ineligible, including its separate total-request-deadline restriction.
+
+The provider reserves the marker before dispatch, creates a streaming upload,
+and meters actual bytes through one reusable 16 KiB raw scratch buffer across
+sequential upload and response phases. No payload chunk becomes an application
+value. Reads follow writable demand; a partial write finishes before another
+read. Pending origin headers participate in upload waits and are polled first;
+early response closes incoming reads and abandons unfinished upload. Each cap
+requires EOF, with a one-byte sentinel read that is never forwarded on overflow.
+Declared oversize is rejected before transfer; declared length is not proof of
+actual length. Outbound request headers are explicit and bounded. Response
+header enumeration uses a 16 KiB raw arena with at most 64 pairs; hop-by-hop,
+framing and Connection-nominated fields are removed. Encoded payload bytes are
+preserved without automatic decompression or redirect following.
+
+The cooperative request deadline and any earlier fetch `timeoutMs` continue
+through response pumping and the final pre-close check. Successful streaming
+close relinquishes the writable handle and hands queued completion to Fastly;
+**it is not a drain receipt, client delivery guarantee, or retained cancellation
+authority**. This explicitly accepts the FWD9-01 host-handoff alternative.
+No pending-request cancellation ABI exists: cleanup polls once, discards late
+handles and leaves unresolved host work to invocation teardown, without retries
+or rollback claims. Before downstream commitment, upload overflow attempts 413,
+deadline expiry 504, and origin/protocol/response-limit failure 502. After
+commitment, failure abandons the stream and never sends a second response.
+FWD9-02 has normal-build, injected-ABI and pinned local Viceroy evidence;
+installed, broader fault-matrix and deployed qualification remain FWD9-03 work.
 
 `node.bodyForwarding.maxBytes` and `node.maxDurationMs` are both required for
 this path. Node adapts incoming HTTP lazily and keeps one provider read and one

@@ -238,6 +238,10 @@ const tasks = Object.freeze({
     args:['--native'], timeoutMs:300000, evidence:'external',
     description:'STR-02B exact installed Node Native forwarding, emitted Wasm identity and real incremental HTTP'
   }),
+  'fastly-incoming-body-forwarding': nodeTask('test/provider/assert-fastly-incoming-body-forwarding.cjs', {
+    timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
+    description: 'FWD9-02 normal Native build, bounded binary pump and optional pinned Viceroy replay'
+  }),
   'str02c-fastly-feasibility': nodeTask('test/provider/assert-fastly-incoming-body-feasibility.cjs', {
     timeoutMs: 90000, evidence: 'external',
     description: 'STR-02C pinned Viceroy ABI observations; not Pulse forwarding integration or live platform qualification'
@@ -1358,6 +1362,7 @@ const profiles = Object.freeze({
     'canonical-native-plan',
     'shared-stage-o19',
     'str02b-node-native',
+    'fastly-incoming-body-forwarding',
     'str03a-generated-output',
     'str03c-bounded-transforms',
     'bounded-app-logic',

@@ -34,6 +34,7 @@ function normalizeFastlyProviderConfig(value) {
     : {};
   return Object.freeze({
     kind: 'fastly',
+    bodyForwarding: require('./body-forwarding.js').normalizeBodyForwarding(input.bodyForwarding, input.maxDurationMs),
     maxDurationMs: require('@pulse-compute/runtime/host').normalizeRequestDuration(input.maxDurationMs),
     version: input.version ? String(input.version) : undefined,
     bindings: Object.freeze({
@@ -71,6 +72,7 @@ function fastlyProjectConfigDocument(config) {
     kind: 'fastly',
     bindings: config.bindings,
     maxDurationMs: config.maxDurationMs,
+    bodyForwarding: config.bodyForwarding,
     build: config.build,
     local: config.local,
     providerSpecificUserland: false
@@ -104,6 +106,8 @@ const FASTLY_PROJECT_CONFIG_REFERENCE = Object.freeze({
     })
   ]),
   fields: Object.freeze([
+    Object.freeze({section:'fastly',path:'fastly.bodyForwarding',type:'object',default:'omitted',scope:'experimental Fastly Native forwarding',description:'Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.',diagnostics:Object.freeze(['PULSE_FASTLY_BODY_FORWARDING_INVALID'])}),
+    ...['requestMaxBytes','responseMaxBytes'].map(name => Object.freeze({section:'fastly',path:`fastly.bodyForwarding.${name}`,type:'integer',allowed:'1–1048576',default:'required with bodyForwarding',scope:'experimental Fastly Native forwarding',description:'Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.'})),
     Object.freeze({section:'fastly',path:'fastly.maxWasmBytes',type:'integer',allowed:'positive safe integer',default:'4194304 (4 MiB)',scope:'fastly() facade',description:'Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.'}),
     Object.freeze({section:'fastly',path:'fastly.build.maxWasmBytes',type:'integer',allowed:'positive safe integer',default:'4194304 (4 MiB)',scope:'Native final Wasm artifact',description:'Inclusive byte budget checked for newly compiled and reused artifacts. Raising it does not increase runtime memory or change Fastly service limits. The fastly() facade accepts maxWasmBytes.'}),
     Object.freeze({section:'fastly',path:'fastly.maxDurationMs',type:'integer',allowed:'1–30000',default:'omitted',scope:'HTTP request execution',description:'One provider-owned monotonic budget through buffered response handoff; expiry attempts 504 before headers commit and never asserts rollback of dispatched writes. No CPU preemption or post-handoff delivery guarantee.'}),

@@ -352,6 +352,42 @@ Maps literal logical names to fixed HTTPS endpoint, bucket, region, accessKeyIdS
 
 Options passed to fastly(...) from @pulse-compute/provider-fastly.
 
+### `fastly.bodyForwarding`
+
+Opt in to one terminal opaque POST with inline req.body() and a static backend. Requires maxDurationMs and both byte limits. Final close hands queued delivery to Fastly; it is not a client receipt.
+
+- **Type:** object
+- **Required/default:** Optional; default omitted.
+- **Allowed values or constraints:** —
+- **Scope:** experimental Fastly Native forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** `PULSE_FASTLY_BODY_FORWARDING_INVALID` (family fallback; reference root)
+
+### `fastly.bodyForwarding.requestMaxBytes`
+
+Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.
+
+- **Type:** integer
+- **Required/default:** Optional; default required with bodyForwarding.
+- **Allowed values or constraints:** 1–1048576
+- **Scope:** experimental Fastly Native forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
+### `fastly.bodyForwarding.responseMaxBytes`
+
+Independent actual-byte bound, including EOF verification; no unbounded default. Fixed 16 KiB raw scratch is reused across the sequential upload and response pumps.
+
+- **Type:** integer
+- **Required/default:** Optional; default required with bodyForwarding.
+- **Allowed values or constraints:** 1–1048576
+- **Scope:** experimental Fastly Native forwarding
+- **Precedence:** Configuration value.
+- **Security and safety:** No special handling.
+- **Related diagnostics:** None specific.
+
 ### `fastly.maxWasmBytes`
 
 Facade option projected to build.maxWasmBytes. Conventional profiles configure fastly.build.maxWasmBytes.
