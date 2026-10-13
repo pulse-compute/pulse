@@ -2,44 +2,52 @@
 
 Pulse is a compiler-driven TypeScript application layer for small, portable edge and WebAssembly services.
 
-A conventional Pulse project is an async-shaped `Pulse` or low-level `Router`
-application plus a `.pulse/config.ts` workspace and dedicated test harness. The
-`pulse` CLI resolves the complete project, including explicit JSON schemas and
-package-owned capabilities, then realizes the exact provider and target selected
-by the active profile.
-
-```text
-canonical TypeScript
-→ pulse CLI
-├→ Native: whole-project lowering → effects/continuations → Node or Fastly Wasm
-└→ JavaScript: reachable source graph → live packages → Node or Fastly lifecycle
-```
+Write an application with `Pulse` or the low-level `Router`, configure it in
+`.pulse/config.ts`, and use one CLI to test, run, and build it. Each profile
+explicitly selects a provider and a Native or JavaScript target.
 
 ## Start here
 
+Use Node.js 22.14 or newer on the 22.x line, or Node.js 24.x, with npm.
+
+Create a project with the exact Beta CLI version:
+
 ```bash
-# From the repository checkout after restoring lockfile-pinned dependencies
-pnpm pulse -- init ./my-app
+npm exec --package=@pulse-compute/cli@1.0.0-beta.8 -- pulse init ./my-app
 cd ./my-app
 npm install
 npm run doctor
 npm test
+```
+
+`pulse init` creates the project and writes exact dependency versions.
+`npm install` installs them; the initializer itself does no network installation.
+The project scripts use its local CLI, so no global install is needed.
+
+Start the local server:
+
+```bash
 npm run dev
+```
+
+Open <http://127.0.0.1:8787/> to see `Pulse is running`, or
+<http://127.0.0.1:8787/health> for `{"ok":true}`.
+Stop the foreground server with Ctrl+C, then build:
+
+```bash
 npm run build
 ```
 
-`pulse init` writes exact package versions but does not perform network
-installation. Packed-package acceptance installs the synchronized release set
-and verifies this path without workspace links. Published package availability
-remains defined by the 19-package release manifest.
+From a repository checkout with lockfile-pinned dependencies restored, use
+`pnpm pulse -- init ./my-app` for the first command instead.
 
-This is the normal application lifecycle. Use `pulse inspect` when you need to
-examine the compiler/provider plan, and use the advanced provider-neutral
-`pulse compile` command when you specifically need the portable `pulse_host`
-Wasm boundary. Neither command is a prerequisite for `pulse build`. See the
-[project lifecycle guide](./docs/guides/project-lifecycle.md).
+Inspection and portable Wasm compilation are optional advanced workflows,
+not prerequisites for build. See the [project lifecycle guide](./docs/guides/project-lifecycle.md).
 
-A minimal managed handler is async-shaped and provider-neutral. Native lowering erases the wrapper and lowers only trusted Pulse effects; it does not add a Promise runtime or Asyncify. The source shown here is copied exactly from [`examples/01-hello-json/src/index.ts`](./examples/01-hello-json/src/index.ts):
+## Example
+
+This complete handler comes from
+[`examples/01-hello-json/src/index.ts`](./examples/01-hello-json/src/index.ts):
 
 <!-- pulse-doc-source: examples/01-hello-json/src/index.ts -->
 ```ts
@@ -55,7 +63,7 @@ export default app
 ```
 <!-- /pulse-doc-source -->
 
-The matching project configuration is source-bound as well:
+The matching configuration explicitly selects Node Native:
 
 <!-- pulse-doc-source: examples/01-hello-json/.pulse/config.ts -->
 ```ts
@@ -77,6 +85,17 @@ export default defineConfig((_scope) => ({
 }))
 ```
 <!-- /pulse-doc-source -->
+
+Native lowering erases the async wrapper and lowers only trusted Pulse effects;
+it does not add a Promise runtime or Asyncify. JavaScript executes the reachable
+source graph and live packages. See [compilation and lowering](./docs/concepts/compilation-and-lowering.md).
+
+```text
+canonical TypeScript
+→ pulse CLI
+├→ Native: whole-project lowering → effects/continuations → Node or Fastly Wasm
+└→ JavaScript: reachable source graph → live packages → Node or Fastly lifecycle
+```
 
 ## Implemented Beta surface
 
