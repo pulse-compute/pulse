@@ -34,6 +34,10 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
+  'compiler-analytics-an9-00': nodeTask('../docs/internal/an9-00/proof.cjs', {
+    evidence: 'external', timeoutMs: 180000, isolatedArtifacts: true, scheduling: { compiler: true },
+    description: 'AN9-00 bounded association/source-lineage feasibility and explicit current gaps'
+  }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
