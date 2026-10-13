@@ -35,7 +35,8 @@ class ReachableProjectGraphError extends Error {
   constructor(message, diagnostics = [], detail = {}) {
     super(message);
     this.name = 'ReachableProjectGraphError';
-    this.code = 'PULSE_PROJECT_GRAPH_FAILED';
+    this.code = diagnostics.length > 0 && diagnostics.every(entry => entry.code === 'PULSE_NATIVE_IMPORT_UNSUPPORTED')
+      ? 'PULSE_NATIVE_IMPORT_UNSUPPORTED' : 'PULSE_PROJECT_GRAPH_FAILED';
     this.diagnostics = Object.freeze([...diagnostics]);
     this.detail = Object.freeze({ ...detail });
   }
@@ -446,7 +447,7 @@ function packageModuleForSpecifier(context, importer, classification) {
   const productContract = productBinding && productBinding.contract || context.packageProductContractsByPackage.get(packageName) || null;
   const productRole = productBinding && productBinding.role || null;
   const trusted = CORE_AUTHORING_PACKAGES.has(packageName) || productContract || context.packageContractsByPackage.has(packageName);
-  let manifestPath = trusted && context.workspacePackages.get(packageName);
+  let manifestPath = (trusted || !context.nativePackageSources) && context.workspacePackages.get(packageName);
   if (!manifestPath && importer.packageSource && importer.packageSource.packageName === packageName) manifestPath = path.join(importer.packageSource.root, 'package.json');
   if (!manifestPath) manifestPath = searchNodeModulesPackage(importer.absolutePath, packageName, context.workspaceRoot);
   let manifest;

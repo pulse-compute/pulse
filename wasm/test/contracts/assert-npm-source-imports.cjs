@@ -79,7 +79,11 @@ async function main() {
  ];
  for(const [label,files] of negative) {
   const trial=path.join(temp,label);setup(trial);for(const [file,source] of Object.entries(files))write(trial,file,source);
-  assert.throws(()=>compile(trial),e=>{assert.ok(e.diagnostics?.length,`${label}: ${e.stack}`);return true;},label);
+  assert.throws(()=>compile(trial),e=>{
+   assert.ok(e.diagnostics?.length,`${label}: ${e.stack}`);
+   if(e.diagnostics.every(d=>d.code==='PULSE_NATIVE_IMPORT_UNSUPPORTED')) assert.equal(e.code,'PULSE_NATIVE_IMPORT_UNSUPPORTED','source rejection retains the public compile error and exit class');
+   return true;
+  },label);
  }
  assert.equal(globalThis.__PULSE_NPM_EXECUTED,undefined,'compilation never evaluates dependency source');
  const rootExport=path.join(temp,'root-export');setup(rootExport);
@@ -139,6 +143,11 @@ async function main() {
  write(javascript,'node_modules/@fixture/tick/worker.js','throw new Error("never evaluate while planning");');
  const jsGraph=buildReachableProjectGraph(path.join(javascript,'src/index.ts'),{...options(javascript),target:'javascript'});
  assert.equal(jsGraph.graph.modules.filter(m=>m.kind==='project').length,1);
+ const workspace=path.join(temp,'javascript-workspace');
+ write(workspace,'src/index.ts',"import handler from '@fixture/local';export default handler;");
+ write(workspace,'packages/local/package.json',JSON.stringify({name:'@fixture/local',version:'2.3.4',exports:'./index.js'}));
+ const workspaceGraph=buildReachableProjectGraph(path.join(workspace,'src/index.ts'),{rootDir:workspace,workspaceRoot:workspace,target:'javascript'});
+ assert.equal(workspaceGraph.graph.modules.find(m=>m.packageName==='@fixture/local').packageVersion,'2.3.4','JavaScript retains workspace package metadata lookup');
  const native=compileCanonicalNativePlan(plan,{cwd:repo,emitWat:false});
  const tc=acceptanceToolchain();const seen=[];
  const result=await tc.executeCanonicalNativeModule(native,{providerAdapter:{id:'npm-source',dispatchEffect(effect){seen.push(effect.parts.url);return {status:200,headers:{},body:'value'};}},request:{method:'GET',path:'/',url:'https://app.test/'}});
