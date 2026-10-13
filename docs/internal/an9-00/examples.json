@@ -1,0 +1,656 @@
+{
+  "format": "an9-00.producer-examples.v1",
+  "status": "selected-proof-records-not-a-report-capsule",
+  "handlers": [
+    {
+      "id": "handler_a84d24aadd25ddaeaaefa33a",
+      "kind": "handler",
+      "name": "reused",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 19,
+          "column": 7,
+          "offset": 630
+        },
+        "end": {
+          "line": 24,
+          "column": 2,
+          "offset": 840
+        }
+      },
+      "sourceTextHash": "c37e6ac9f4186d8a2de32895"
+    },
+    {
+      "id": "handler_d1c46355fc09e3f2803c829f",
+      "kind": "handler",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 34,
+          "column": 22,
+          "offset": 1176
+        },
+        "end": {
+          "line": 37,
+          "column": 2,
+          "offset": 1264
+        }
+      },
+      "sourceTextHash": "90b9702d61a925a5022f8275"
+    },
+    {
+      "id": "handler_8a7a3e1acb056bfe5bce768e",
+      "kind": "handler",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 38,
+          "column": 22,
+          "offset": 1288
+        },
+        "end": {
+          "line": 41,
+          "column": 2,
+          "offset": 1376
+        }
+      },
+      "sourceTextHash": "b7385ca239e0ef93e66aefb6"
+    },
+    {
+      "id": "handler_ae239ea6f640bb5bdaae8054",
+      "kind": "handler",
+      "name": "packageHandler",
+      "source": {
+        "file": "npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts",
+        "start": {
+          "line": 6,
+          "column": 1,
+          "offset": 148
+        },
+        "end": {
+          "line": 9,
+          "column": 2,
+          "offset": 274
+        }
+      },
+      "sourceTextHash": "0c72476ee4f9de50cac04092"
+    },
+    {
+      "id": "handler_b7bd53e43e44d5337170d0a3",
+      "kind": "handler",
+      "name": "scopedMiddleware",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 14,
+          "column": 7,
+          "offset": 474
+        },
+        "end": {
+          "line": 18,
+          "column": 2,
+          "offset": 622
+        }
+      },
+      "sourceTextHash": "c57bd75d697757e460d52447"
+    },
+    {
+      "id": "handler_cf606d5342ee27e6b815c3f4",
+      "kind": "handler",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 28,
+          "column": 22,
+          "offset": 929
+        },
+        "end": {
+          "line": 28,
+          "column": 81,
+          "offset": 988
+        }
+      },
+      "sourceTextHash": "b15d570124cd2ca73da8650b"
+    },
+    {
+      "id": "helper:npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts#sharedLookup",
+      "kind": "helper",
+      "name": "sharedLookup",
+      "source": {
+        "file": "npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts",
+        "start": {
+          "offset": 0,
+          "line": 1,
+          "column": 1
+        },
+        "end": {
+          "offset": 146,
+          "line": 4,
+          "column": 2
+        }
+      },
+      "sourceTextHash": null
+    }
+  ],
+  "registrations": [
+    {
+      "stableId": "router_entry_3fb0c1dfe430e329e06499d5",
+      "index": 1,
+      "nextIndex": 5,
+      "kind": "mount",
+      "order": 1,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app"
+      ],
+      "path": "/api",
+      "scoped": false,
+      "pattern": "/api/*",
+      "childRouter": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::child",
+      "childStartIndex": 2,
+      "parentContinueIndex": 5,
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 30,
+          "column": 1,
+          "offset": 1044
+        },
+        "end": {
+          "line": 30,
+          "column": 25,
+          "offset": 1068
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_10465b01172a41f582126663",
+      "index": 2,
+      "nextIndex": 3,
+      "kind": "use",
+      "order": 11,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::child",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::child"
+      ],
+      "path": "/api/scoped",
+      "scoped": true,
+      "pattern": "/api/scoped/*",
+      "handlerId": "handler_b7bd53e43e44d5337170d0a3",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 27,
+          "column": 1,
+          "offset": 868
+        },
+        "end": {
+          "line": 27,
+          "column": 39,
+          "offset": 906
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_66b0698815d78086574ce6ba",
+      "index": 3,
+      "nextIndex": 4,
+      "kind": "route",
+      "order": 12,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::child",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::child"
+      ],
+      "path": "/api/scoped",
+      "scoped": false,
+      "pattern": "/api/scoped",
+      "method": "GET",
+      "routeStableId": "route_d8f6fc8d580c13192d7012b5",
+      "routeRuntimeId": 0,
+      "handlerId": "handler_cf606d5342ee27e6b815c3f4",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 28,
+          "column": 1,
+          "offset": 908
+        },
+        "end": {
+          "line": 28,
+          "column": 82,
+          "offset": 989
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_a2f11be09a62aa095b2a4d45",
+      "index": 5,
+      "nextIndex": 9,
+      "kind": "mount",
+      "order": 2,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app"
+      ],
+      "path": "/v2",
+      "scoped": false,
+      "pattern": "/v2/*",
+      "childRouter": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::child",
+      "childStartIndex": 6,
+      "parentContinueIndex": 9,
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 31,
+          "column": 1,
+          "offset": 1070
+        },
+        "end": {
+          "line": 31,
+          "column": 24,
+          "offset": 1093
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_929cc7c205653d25c209f92f",
+      "index": 9,
+      "nextIndex": 10,
+      "kind": "route",
+      "order": 3,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app"
+      ],
+      "path": "/direct-a",
+      "scoped": false,
+      "pattern": "/direct-a",
+      "method": "GET",
+      "routeStableId": "route_738fc17846e51619a9be9523",
+      "routeRuntimeId": 4,
+      "handlerId": "handler_a84d24aadd25ddaeaaefa33a",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 32,
+          "column": 1,
+          "offset": 1095
+        },
+        "end": {
+          "line": 32,
+          "column": 29,
+          "offset": 1123
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_20b79f067ef5a44d54e47c24",
+      "index": 10,
+      "nextIndex": 11,
+      "kind": "route",
+      "order": 4,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app"
+      ],
+      "path": "/direct-b",
+      "scoped": false,
+      "pattern": "/direct-b",
+      "method": "GET",
+      "routeStableId": "route_757b187ab29164bc36b81ebe",
+      "routeRuntimeId": 5,
+      "handlerId": "handler_a84d24aadd25ddaeaaefa33a",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 33,
+          "column": 1,
+          "offset": 1125
+        },
+        "end": {
+          "line": 33,
+          "column": 29,
+          "offset": 1153
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_edfdc16d0a773d128f25508e",
+      "index": 11,
+      "nextIndex": 12,
+      "kind": "route",
+      "order": 5,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app"
+      ],
+      "path": "/helper-a",
+      "scoped": false,
+      "pattern": "/helper-a",
+      "method": "GET",
+      "routeStableId": "route_e6df5a078466ab4a828df082",
+      "routeRuntimeId": 6,
+      "handlerId": "handler_d1c46355fc09e3f2803c829f",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 34,
+          "column": 1,
+          "offset": 1155
+        },
+        "end": {
+          "line": 37,
+          "column": 3,
+          "offset": 1265
+        }
+      }
+    },
+    {
+      "stableId": "router_entry_ee9784ca87dd03c65842cd7b",
+      "index": 12,
+      "nextIndex": 13,
+      "kind": "route",
+      "order": 6,
+      "router": "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app",
+      "routerPath": [
+        "module_project_dc21f81d1da688e8aca8fdf85a794714::router::app"
+      ],
+      "path": "/helper-b",
+      "scoped": false,
+      "pattern": "/helper-b",
+      "method": "GET",
+      "routeStableId": "route_0e3c92145a8c8123f02d443e",
+      "routeRuntimeId": 7,
+      "handlerId": "handler_8a7a3e1acb056bfe5bce768e",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "line": 38,
+          "column": 1,
+          "offset": 1267
+        },
+        "end": {
+          "line": 41,
+          "column": 3,
+          "offset": 1377
+        }
+      }
+    }
+  ],
+  "useSites": [
+    {
+      "id": "use:1bab133f238bd81d906f1cf846d16f7fbdd3fa2a8c12409b71cb1441ddbf0d2a",
+      "ownerId": "handler_b7bd53e43e44d5337170d0a3",
+      "surfaceId": "ctx.config.get",
+      "operation": "effect.binding.config.get",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "offset": 532,
+          "line": 15,
+          "column": 17
+        },
+        "end": {
+          "offset": 562,
+          "line": 15,
+          "column": 47
+        }
+      },
+      "registrationIds": [
+        "router_entry_10465b01172a41f582126663",
+        "router_entry_e2b9e124cf8bb92431d62046"
+      ],
+      "binding": {
+        "kind": "config",
+        "name": "SCOPED",
+        "state": "resolved"
+      },
+      "basis": "canonical-recognition-node-identity"
+    },
+    {
+      "id": "use:4608690642ee7544fde4775aa47da57d730bc0ba734f6729ad5cb0a33f0a73e1",
+      "ownerId": "handler_a84d24aadd25ddaeaaefa33a",
+      "surfaceId": "ctx.config.get",
+      "operation": "effect.binding.config.get",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "offset": 670,
+          "line": 20,
+          "column": 17
+        },
+        "end": {
+          "offset": 700,
+          "line": 20,
+          "column": 47
+        }
+      },
+      "registrationIds": [
+        "router_entry_929cc7c205653d25c209f92f",
+        "router_entry_20b79f067ef5a44d54e47c24"
+      ],
+      "binding": {
+        "kind": "config",
+        "name": "REGION",
+        "state": "resolved"
+      },
+      "basis": "canonical-recognition-node-identity"
+    },
+    {
+      "id": "use:7040f525791936ad59e8b0b46477779fb2fad03170f84146f0f5fc76580eac71",
+      "ownerId": "handler_a84d24aadd25ddaeaaefa33a",
+      "surfaceId": "ctx.config.get",
+      "operation": "effect.binding.config.get",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "offset": 718,
+          "line": 21,
+          "column": 17
+        },
+        "end": {
+          "offset": 748,
+          "line": 21,
+          "column": 47
+        }
+      },
+      "registrationIds": [
+        "router_entry_929cc7c205653d25c209f92f",
+        "router_entry_20b79f067ef5a44d54e47c24"
+      ],
+      "binding": {
+        "kind": "config",
+        "name": "REGION",
+        "state": "resolved"
+      },
+      "basis": "canonical-recognition-node-identity"
+    },
+    {
+      "id": "use:bb57bfb69044fa5a18e0f3311748eceb4ec9a63b694d97c5a6d3eda051f3854c",
+      "ownerId": "handler_a84d24aadd25ddaeaaefa33a",
+      "surfaceId": "ctx.config.get",
+      "operation": "effect.binding.config.get",
+      "source": {
+        "file": "src/index.ts",
+        "start": {
+          "offset": 766,
+          "line": 22,
+          "column": 17
+        },
+        "end": {
+          "offset": 795,
+          "line": 22,
+          "column": 46
+        }
+      },
+      "registrationIds": [
+        "router_entry_929cc7c205653d25c209f92f",
+        "router_entry_20b79f067ef5a44d54e47c24"
+      ],
+      "binding": {
+        "kind": "config",
+        "name": "OTHER",
+        "state": "resolved"
+      },
+      "basis": "canonical-recognition-node-identity"
+    },
+    {
+      "id": "use:3bf5be1c59cef33c4a5e0d98d377df656c88760a2ff236725f6c6cda803635e1",
+      "ownerId": "handler_ae239ea6f640bb5bdaae8054",
+      "surfaceId": "ctx.config.get",
+      "operation": "effect.binding.config.get",
+      "source": {
+        "file": "npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts",
+        "start": {
+          "offset": 208,
+          "line": 7,
+          "column": 17
+        },
+        "end": {
+          "offset": 239,
+          "line": 7,
+          "column": 48
+        }
+      },
+      "registrationIds": [
+        "router_entry_7a3074381c4e9f37f8cc2abf"
+      ],
+      "binding": {
+        "kind": "config",
+        "name": "PACKAGE",
+        "state": "resolved"
+      },
+      "basis": "canonical-recognition-node-identity"
+    },
+    {
+      "id": "use:fd8659245527115492a717bb9af25a70bfc0a6d7ddbe3530b03db92a3f4c6a18",
+      "ownerId": "helper:npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts#sharedLookup",
+      "surfaceId": "ctx.secret.get",
+      "operation": "effect.binding.secret.get",
+      "source": {
+        "file": "npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts",
+        "start": {
+          "offset": 74,
+          "line": 2,
+          "column": 17
+        },
+        "end": {
+          "offset": 110,
+          "line": 2,
+          "column": 53
+        }
+      },
+      "basis": "diagnostic-recognition-replay",
+      "planUseSiteJoin": "unavailable"
+    }
+  ],
+  "helperCalls": [
+    {
+      "helperId": "helper:npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts#sharedLookup",
+      "callerEntryId": "router_entry_edfdc16d0a773d128f25508e",
+      "statementPath": "handlers.router_entry_edfdc16d0a773d128f25508e.body[1]"
+    },
+    {
+      "helperId": "helper:npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts#sharedLookup",
+      "callerEntryId": "router_entry_ee9784ca87dd03c65842cd7b",
+      "statementPath": "handlers.router_entry_ee9784ca87dd03c65842cd7b.body[1]"
+    }
+  ],
+  "derivedAssociations": [
+    {
+      "consumerRegistrationId": "router_entry_929cc7c205653d25c209f92f",
+      "useSiteId": "use:4608690642ee7544fde4775aa47da57d730bc0ba734f6729ad5cb0a33f0a73e1",
+      "via": [
+        {
+          "kind": "direct",
+          "id": "router_entry_929cc7c205653d25c209f92f"
+        }
+      ],
+      "lane": "normal",
+      "conditional": true,
+      "coverage": {
+        "status": "partial",
+        "observed": 1,
+        "expected": null,
+        "reason": "fixture-selected-paths-not-exhaustive"
+      },
+      "basis": "canonical-owner-links-and-fixture-paths"
+    },
+    {
+      "consumerRegistrationId": "router_entry_edfdc16d0a773d128f25508e",
+      "useSiteId": "use:fd8659245527115492a717bb9af25a70bfc0a6d7ddbe3530b03db92a3f4c6a18",
+      "via": [
+        {
+          "kind": "direct",
+          "id": "router_entry_edfdc16d0a773d128f25508e"
+        },
+        {
+          "kind": "helper",
+          "id": "helper:npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts#sharedLookup"
+        }
+      ],
+      "lane": "normal",
+      "conditional": true,
+      "coverage": {
+        "status": "partial",
+        "observed": 1,
+        "expected": null,
+        "reason": "fixture-selected-paths-not-exhaustive"
+      },
+      "basis": "canonical-owner-links-and-fixture-paths"
+    },
+    {
+      "consumerRegistrationId": "router_entry_ee9784ca87dd03c65842cd7b",
+      "useSiteId": "use:fd8659245527115492a717bb9af25a70bfc0a6d7ddbe3530b03db92a3f4c6a18",
+      "via": [
+        {
+          "kind": "direct",
+          "id": "router_entry_ee9784ca87dd03c65842cd7b"
+        },
+        {
+          "kind": "helper",
+          "id": "helper:npm/@fixture/analytics@1.0.0/319d7846bb9557c5687ab26331521179340583f3644a5e9fd37ef028f0940ff7/index.ts#sharedLookup"
+        }
+      ],
+      "lane": "normal",
+      "conditional": true,
+      "coverage": {
+        "status": "partial",
+        "observed": 1,
+        "expected": null,
+        "reason": "fixture-selected-paths-not-exhaustive"
+      },
+      "basis": "canonical-owner-links-and-fixture-paths"
+    },
+    {
+      "consumerRegistrationId": "router_entry_66b0698815d78086574ce6ba",
+      "useSiteId": "use:1bab133f238bd81d906f1cf846d16f7fbdd3fa2a8c12409b71cb1441ddbf0d2a",
+      "via": [
+        {
+          "kind": "mount",
+          "id": "router_entry_3fb0c1dfe430e329e06499d5"
+        },
+        {
+          "kind": "middleware",
+          "id": "router_entry_10465b01172a41f582126663"
+        }
+      ],
+      "lane": "normal",
+      "conditional": true,
+      "coverage": {
+        "status": "partial",
+        "observed": 1,
+        "expected": null,
+        "reason": "fixture-selected-paths-not-exhaustive"
+      },
+      "basis": "canonical-owner-links-and-fixture-paths"
+    }
+  ],
+  "unsupportedJoin": {
+    "authoredUseSiteToNativeEffect": "unavailable",
+    "reason": "generated-source-reparse-loses-node-identity"
+  }
+}
