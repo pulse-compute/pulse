@@ -3,7 +3,7 @@
 This is a bounded measurement campaign for #301, using PERF9-01A's qualified
 Pulse/Rust artifacts and the existing Fastly host-handoff contract. It does not
 change either guest, deploy to Fastly, change release gates or create a general
-benchmark framework. PERF9-01C owns the published results narrative.
+benchmark framework. PERF9-01C records the [frozen results and replay instructions](RESULTS.md).
 
 ## Run
 
@@ -148,5 +148,6 @@ cases intentionally have fewer blocks and remain descriptive. No performance
 threshold determines task success.
 
 Keep local Viceroy, injected-ABI memory observations and any later live Fastly
-measurements in separate domains. #301 remains open until PERF9-01C reports the
-reproducible results and limitations; deployment is a separate action.
+measurements in separate domains. The [PERF9-01C report](RESULTS.md) preserves
+the first campaign's reproducible results and limitations. Issue closure remains
+a human decision; deployment is a separate action.

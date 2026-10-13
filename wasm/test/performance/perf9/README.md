@@ -3,8 +3,8 @@
 This is the semantic preflight for #301, using the FWD9-01 host-handoff decision
 and merged FWD9-02/03 implementation (#307). It produces comparable artifacts
 and correctness evidence. It does **not** measure Rust/Pulse performance, qualify
-a deployed Fastly service, or change a release gate. The 1–3% hypothesis remains
-untested until PERF9-01B collects appropriately controlled samples.
+a deployed Fastly service, or change a release gate. The subsequent local
+campaign and its limitations are recorded in the [PERF9-01C baseline](RESULTS.md).
 
 ## Reproduce
 
@@ -110,3 +110,5 @@ bounded load. Live Fastly evidence remains a separate environment. #272 and
 #301 remain open; this task establishes only the local comparison preflight.
 
 The PERF9-01B runner is documented in [local forwarding measurements](MEASUREMENTS.md).
+The [frozen results report](RESULTS.md) includes provenance, interpretation and
+commands to replay the retained evidence after relocation.
