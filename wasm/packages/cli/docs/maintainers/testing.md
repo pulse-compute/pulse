@@ -447,6 +447,54 @@ replay or permit combining reports from different source trees. Only the release
 controller's verified same-candidate recovery described above can reuse task
 proofs in authoritative evidence.
 
+### Recoverable development runs
+
+CI9-02 adds an opt-in, checkout-local diagnostic command:
+
+```bash
+node scripts/development-recovery.cjs --profile unit --profile native
+node scripts/development-recovery.cjs --resume /absolute/path/to/checkout/.pulse-development/attempts/ATTEMPT
+```
+
+Commit the tested source and install/build dependencies before starting. A fresh
+run requires explicit `--profile` and/or `--task` selections. Resume accepts only
+the printed attempt directory; it preserves that selection and creates a new
+attempt. It never edits the earlier manifest, report, receipts or logs, even if
+the old progress report is missing or truncated. Each report records executed
+and reused tasks separately. Read the final status, selected/completed counts,
+task outcomes and process exit before claiming a recovered development pass.
+
+The manifest binds the clean revision/tree, actual tracked source bytes, checkout
+path, installed dependency and built output bytes, Node and discovered tool
+binaries, environment digest, selection and task definitions. Environment values
+are not written into the manifest. Full input checks run before every task/reuse,
+after executed-task cleanup and before terminal completion; `inputCheckMs`
+reports their overhead. Changed inputs reject resume: start a fresh run after
+source edits, dependency/tool updates or environment changes. This first version
+does not support dirty trees or restore arbitrary task outputs. It restores
+verified task logs and reuses diagnostic pass results only.
+
+Passed tasks with successful cleanup can be reused for seven days; reuse does not
+extend expiry. Missing, corrupt or expired receipts/logs rerun their task.
+Provider, external, release and measurement/exclusive tasks always execute fresh.
+Failed, interrupted and timed-out tasks also execute again. Input drift fails
+the attempt and prevents a new reusable pass. A test leaving untracked source
+residue can therefore stop the run; inspect and clear that residue before retrying.
+The controller shares the seal's checkout lock. A live previous controller or
+child process group blocks takeover; an unverifiable stale lock needs inspection.
+The command does not coordinate unrelated editors or ordinary test processes:
+keep this checkout idle while it runs.
+
+Attempts live under ignored `.pulse-development/attempts`, outside the ordinary
+test-result directory removed by `npm run clean`. There is no implicit lookup,
+automatic pruning, remote cache or foreign-checkout reuse. Retain attempts needed
+for diagnosis; remove unneeded attempts only when no controller is active.
+Reports use `pulse.development-run.v1`, explicitly mark `qualification: false`,
+and are rejected by the normal CI runner-report validator. A recovered development
+run cannot replace fresh performance measurements, hosted CI or a release seal.
+The `release-recovery-runner` unit task includes the development recovery probes,
+including 149 completed passes followed by one-task recovery.
+
 On an interruption or handoff, record the branch, base/head, uncommitted work,
 report/artifact paths, completed and running checks, blockers and the next action.
 A task handoff must distinguish implemented, validated, pushed and merged work.

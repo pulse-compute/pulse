@@ -554,7 +554,8 @@ function checkpointDefinition(name, task, options = {}) {
 }
 
 async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryConfig = null,
-  persist = () => {}, signal, onChild, taskRunOptions = {}, workspaces = null, compilerWorkers = 2 }) {
+  persist = () => {}, signal, onChild, taskRunOptions = {}, workspaces = null, compilerWorkers = 2,
+  verifyInputs = () => {}, allowReuse = () => true }) {
   let store = null;
   if (recoveryConfig) {
     validateRecoveryConfig(recoveryConfig, selection);
@@ -605,7 +606,8 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       dependencies: recoveryConfig.dependencies || {}, artifacts } : null;
     running.set(name, { workspace, phase: store ? 'checkpoint' : 'execution' });
     refresh();
-    const reuse = store?.tryReuse(spec);
+    await verifyInputs();
+    const reuse = store && (allowReuse(name, task) ? store.tryReuse(spec) : { reused: false, reason: 'task requires fresh development execution' });
     let result;
     if (reuse?.reused) {
       result = { ...reuse.result, execution: 'reused', durationMs: 0,
@@ -630,7 +632,7 @@ async function runSelectedTasks({ state, selection, taskMap = tasks, recoveryCon
       if (store) {
         state.recovery.executedTasks.push(name);
         let recorded;
-        try { recorded = store.record({ ...spec, result }); }
+        try { await verifyInputs(); recorded = store.record({ ...spec, result }); }
         catch (error) {
           // A zero-exit task with missing or changed output is not reusable or
           // qualified. Keep the failed attempt instead of losing its receipt.
