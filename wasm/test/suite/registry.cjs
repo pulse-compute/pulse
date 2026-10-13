@@ -242,6 +242,10 @@ const tasks = Object.freeze({
     timeoutMs: 120000, evidence: 'native', scheduling: { compiler: true },
     description: 'FWD9-03 normal Native build, adversarial ABI matrix and optional pinned Viceroy wire qualification'
   }),
+  'perf9-01b-measurements': nodeTask('test/performance/perf9/measure.cjs', {
+    timeoutMs: 900000, evidence: 'external',
+    description: 'PERF9-01B qualified Viceroy CPU/RSS, paired latency/throughput and bounded backpressure campaign'
+  }),
   'perf9-01a-parity': nodeTask('test/performance/perf9/qualify.cjs', {
     timeoutMs: 300000, evidence: 'external',
     description: 'PERF9-01A pinned Rust/Pulse Fastly forwarding semantic parity; required Viceroy, no performance claim'
