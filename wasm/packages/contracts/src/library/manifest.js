@@ -42,6 +42,13 @@ const LOWERABLE_LIBRARY_MANIFEST_POLICY = Object.freeze({
   thirdPartyManifestsRequireCorePr: false
 });
 
+// Compiler authority is reviewed here, not granted by package-supplied metadata
+// or by membership in the @pulse-compute npm namespace.
+const TRUSTED_LOWERER_PACKAGES = Object.freeze([
+  '@pulse-compute/assets', '@pulse-compute/crypto', '@pulse-compute/entities',
+  '@pulse-compute/grip', '@pulse-compute/jwt', '@pulse-compute/s3'
+]);
+
 function clone(value) {
   if (Array.isArray(value)) return value.map(clone);
   if (value && typeof value === 'object') {
@@ -316,6 +323,7 @@ function validateLowerableLibraryManifest(manifest) {
 }
 
 module.exports = {
+  TRUSTED_LOWERER_PACKAGES,
   LOWERABLE_LIBRARY_MANIFEST_VERSION,
   LOWERABLE_LIBRARY_MANIFEST_KIND,
   LOWERABLE_LIBRARY_PAYLOAD_MODE_STATUSES,

@@ -4,6 +4,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
+const npmSource = require('./npm-source-resolution.js');
 const { discoverPackageContractCatalog } = require('../spine/package-operation-seam.js');
 const {
   PackageReachabilityError,
@@ -444,20 +445,33 @@ function packageModuleForSpecifier(context, importer, classification) {
   const productBinding = context.packageProductContractsBySpecifier.get(specifier) || null;
   const productContract = productBinding && productBinding.contract || context.packageProductContractsByPackage.get(packageName) || null;
   const productRole = productBinding && productBinding.role || null;
-  let manifestPath = context.workspacePackages.get(packageName);
+  const trusted = CORE_AUTHORING_PACKAGES.has(packageName) || productContract || context.packageContractsByPackage.has(packageName);
+  let manifestPath = trusted && context.workspacePackages.get(packageName);
+  if (!manifestPath && importer.packageSource && importer.packageSource.packageName === packageName) manifestPath = path.join(importer.packageSource.root, 'package.json');
   if (!manifestPath) manifestPath = searchNodeModulesPackage(importer.absolutePath, packageName, context.workspaceRoot);
   let manifest;
   let manifestHash;
   if (manifestPath) {
-    const source = fs.readFileSync(manifestPath, 'utf8');
-    manifest = JSON.parse(source);
-    manifestHash = sha256(source);
+    try {
+      const source = fs.readFileSync(manifestPath, 'utf8');
+      manifest = JSON.parse(source);
+      if (!isPlainObject(manifest)) throw new TypeError('Expected a package manifest object.');
+      manifestHash = sha256(source);
+    } catch (_) {
+      throw new ReachableProjectGraphError(`Invalid package manifest for ${packageName}.`, [diagnostic(context.rootDir, importer.sourceFile, null,
+        'PULSE_NATIVE_IMPORT_UNSUPPORTED', `Cannot read a valid package manifest for ${packageName}.`, { packageName })]);
+    }
   } else {
     manifest = { name: packageName, version: 'unresolved' };
     manifestHash = sha256(JSON.stringify(manifest));
   }
   const packageSubpath = classification.packageSubpath || '.';
   const key = `package:${packageName}:${packageSubpath}:${manifestHash}`;
+  const existing = context.packageModules.get(key);
+  if (context.nativePackageSources && existing && existing.sourceCandidate && existing.manifestPath && manifestPath && existing.manifestPath !== fs.realpathSync(manifestPath)) {
+    throw new ReachableProjectGraphError(`Ambiguous installed copies of ${packageName}@${manifest.version}.`, [diagnostic(context.rootDir, importer.sourceFile, null,
+      'PULSE_NATIVE_IMPORT_UNSUPPORTED', 'Distinct installed package roots share one package identity; deduplicate the dependency.', { packageName, packageSubpath })]);
+  }
   if (!context.packageModules.has(key)) {
     context.packageModules.set(key, {
       key,
@@ -478,6 +492,9 @@ function packageModuleForSpecifier(context, importer, classification) {
       source: null,
       specifier,
       classification,
+      manifestPath: manifestPath && fs.realpathSync(manifestPath),
+      manifest,
+      sourceCandidate: !trusted && Boolean(manifestPath),
       contract,
       productContract,
       productRole,
@@ -485,6 +502,35 @@ function packageModuleForSpecifier(context, importer, classification) {
     });
   }
   return context.packageModules.get(key);
+}
+
+function loadPackageSource(context, packageModule, importer, relation) {
+  if (packageModule.sourceModule) return packageModule.sourceModule;
+  let owner;
+  try {
+    owner = npmSource.packageSource(packageModule.manifestPath, packageModule.manifest, packageModule.packageName,
+      packageModule.packageSubpath, packageModule.packageManifestHash);
+    const identity = `${owner.packageName}:${owner.packageManifestHash}`;
+    const priorRoot = context.packageSourceRoots.get(identity);
+    if (priorRoot && priorRoot !== owner.root) throw new Error('Distinct installed roots share this package identity; deduplicate the dependency.');
+    context.packageSourceRoots.set(identity, owner.root);
+  } catch (error) {
+    context.diagnostics.push(diagnostic(context.rootDir, importer.sourceFile, relation.statement, 'PULSE_NATIVE_IMPORT_UNSUPPORTED',
+      `Cannot resolve static source export ${relation.specifier}: ${error.message}`, { packageName: packageModule.packageName,
+        packageVersion: packageModule.packageVersion, packageSubpath: packageModule.packageSubpath, automaticFallback: false }));
+    return undefined;
+  }
+  const sourcePath = `${owner.prefix}/${portableFilePath(owner.root, owner.absolute)}`;
+  // Register before following imports so cycles are reported by the graph, not recursion.
+  packageModule.sourceModule = sourcePath;
+  packageModule.source = { file: sourcePath, line: 1, column: 1 };
+  const module = loadProjectModule(context, owner.absolute, sourcePath, owner);
+  packageModule.contentHash = sha256(`${packageModule.contentHash}:${module.contentHash}`);
+  packageModule.exports = exportedNamesForModule(module);
+  context.edges.push({ kind: 're-export', from: packageModule.key, to: sourcePath,
+    specifier: `./${portableFilePath(owner.root, owner.absolute)}`, resolutionKind: 'project-relative', runtime: true,
+    importedNames: [], exportedNames: packageModule.exports, packageContract: null, source: packageModule.source });
+  return sourcePath;
 }
 
 function generatedConfigModule(context) {
@@ -562,9 +608,19 @@ function scanUnsupportedBoundaries(context, module) {
 function resolveModuleEdges(context, module) {
   const relations = [...module.imports, ...module.reExports];
   for (const relation of relations) {
-    const classification = graph.classifyModuleSpecifier(relation.specifier, context.resolver);
+    const classification = graph.classifyModuleSpecifier(relation.specifier, module.packageSource ? graph.normalizeModuleResolverInput({ baseUrl: '.' }) : context.resolver);
     if (classification.kind === 'project-relative' || classification.kind === 'tsconfig-path') {
-      const resolved = resolveProjectSpecifier(context, module, relation.specifier);
+      let resolved;
+      if (module.packageSource) {
+        try {
+          const absolute = npmSource.relativeSource(module.packageSource, module.absolutePath, relation.specifier, relation.kind === 'type-import' || relation.typeOnly === true);
+          resolved = { status: 'resolved', absolute, portable: `${module.packageSource.prefix}/${portableFilePath(module.packageSource.root, absolute)}` };
+        } catch (error) {
+          context.diagnostics.push(diagnostic(context.rootDir, module.sourceFile, relation.statement, 'PULSE_NATIVE_IMPORT_UNSUPPORTED',
+            `Cannot resolve package source ${relation.specifier}: ${error.message}`, { automaticFallback: false }));
+          continue;
+        }
+      } else resolved = resolveProjectSpecifier(context, module, relation.specifier);
       if (resolved.status === 'missing') {
         context.diagnostics.push(diagnostic(context.rootDir, module.sourceFile, relation.statement, 'PULSE_PROJECT_MODULE_NOT_FOUND', `Unable to resolve project module ${JSON.stringify(relation.specifier)} from ${module.path}.`, { specifier: relation.specifier, candidates: resolved.candidates }));
         continue;
@@ -590,7 +646,7 @@ function resolveModuleEdges(context, module) {
         });
         continue;
       }
-      const target = loadProjectModule(context, resolved.absolute, resolved.portable);
+      const target = loadProjectModule(context, resolved.absolute, resolved.portable, module.packageSource);
       module.resolutions.push(Object.freeze({ relation, classification, targetKey: target.path }));
       context.edges.push({
         kind: relation.kind,
@@ -638,7 +694,9 @@ function resolveModuleEdges(context, module) {
     }
 
     const packageModule = packageModuleForSpecifier(context, module, classification);
-    module.resolutions.push(Object.freeze({ relation, classification, targetKey: packageModule.key }));
+    const sourceKey = context.nativePackageSources && relation.kind !== 'type-import' && relation.typeOnly !== true && packageModule.sourceCandidate
+      ? loadPackageSource(context, packageModule, module, relation) : undefined;
+    module.resolutions.push(Object.freeze({ relation, classification, targetKey: sourceKey || packageModule.key, packageKey: packageModule.key }));
     const packageContractEdge = relation.kind !== 'type-import' && packageModule.packageContract != null;
     context.edges.push({
       kind: packageContractEdge ? 'package-contract' : relation.kind,
@@ -655,13 +713,17 @@ function resolveModuleEdges(context, module) {
   }
 }
 
-function loadProjectModule(context, absolutePath, logicalPath) {
-  const contained = realContainedPath(context.rootDir, absolutePath);
+function loadProjectModule(context, absolutePath, logicalPath, packageSource) {
+  const contained = realContainedPath(packageSource ? packageSource.root : context.rootDir, absolutePath);
   if (!contained) throw new ReachableProjectGraphError(`Project module ${absolutePath} is outside the workspace or missing.`, [], { rootDir: context.rootDir, file: absolutePath });
   const key = logicalPath
     ? graph.normalizePortablePath(logicalPath, 'project module path')
     : portablePath(context.rootDir, path.resolve(absolutePath));
-  if (context.projectModules.has(key)) return context.projectModules.get(key);
+  if (context.projectModules.has(key)) {
+    const existing = context.projectModules.get(key);
+    if (existing.absolutePath !== contained) throw new ReachableProjectGraphError(`Source identity collision at ${key}.`);
+    return existing;
+  }
   const folded = key.toLocaleLowerCase('en-US');
   const collision = [...context.projectModules.keys()].find((existing) => existing.toLocaleLowerCase('en-US') === folded && existing !== key);
   if (collision) {
@@ -676,8 +738,15 @@ function loadProjectModule(context, absolutePath, logicalPath) {
     })], { rootDir: context.rootDir, existing: collision, candidate: key });
   }
   const module = parseModule(context.rootDir, contained, key);
+  module.packageSource = packageSource;
   context.projectModules.set(key, module);
   context.diagnostics.push(...module.parseDiagnostics);
+  if (packageSource) {
+    const unsupported = npmSource.unsupportedStatement(module.sourceFile);
+    if (unsupported) context.diagnostics.push(diagnostic(context.rootDir, module.sourceFile, unsupported, 'PULSE_NATIVE_IMPORT_UNSUPPORTED',
+      'Package source permits static imports/re-exports, types and function declarations only; module initialization and captured values are unsupported.',
+      { packageName: packageSource.packageName, packageVersion: packageSource.packageVersion, automaticFallback: false }));
+  }
   scanUnsupportedBoundaries(context, module);
   resolveModuleEdges(context, module);
   return module;
@@ -721,7 +790,9 @@ function moduleInputs(context) {
     modules.push({
       key: module.path,
       kind: 'project',
-      owner: 'application',
+      owner: module.packageSource ? packageOwner(module.packageSource.packageName) : 'application',
+      ...(module.packageSource ? { packageName: module.packageSource.packageName, packageVersion: module.packageSource.packageVersion,
+        packageManifestHash: module.packageSource.packageManifestHash, packageSubpath: `./${portableFilePath(module.packageSource.root, module.absolutePath)}` } : {}),
       format: module.format,
       runtime: module.runtime === true,
       path: module.path,
@@ -797,6 +868,7 @@ function createContext(entryFile, options = {}) {
       ? Object.freeze({ ...options.projectFragments })
       : Object.freeze({}),
     resolver: resolverInputFromProject(rootDir, options),
+    nativePackageSources: options.target !== 'javascript',
     workspacePackages: workspacePackageIndex(workspaceRoot),
     packageContractCatalog,
     packageContractsBySubpath,
@@ -805,6 +877,7 @@ function createContext(entryFile, options = {}) {
     packageProductContractsBySpecifier,
     projectModules: new Map(),
     packageModules: new Map(),
+    packageSourceRoots: new Map(),
     generatedModules: new Map(),
     externalModules: new Map(),
     edges: [],
@@ -915,6 +988,7 @@ function buildReachableProjectGraph(entryFile, options = {}) {
     entryKey: entry.path,
     graph: preliminary,
     projectFiles: Object.freeze([...context.projectModules.values()].map((module) => module.absolutePath).sort()),
+    packageSourceManifests: Object.freeze([...context.packageModules.values()].filter(module => module.sourceModule).map(module => module.manifestPath).sort()),
     runtimeProjectFiles: Object.freeze([...context.projectModules.values()].filter((module) => module.runtime).map((module) => module.absolutePath).sort()),
     projectModulePaths: Object.freeze([...context.projectModules.values()].map((module) => module.path).sort()),
     runtimeProjectModulePaths: Object.freeze([...context.projectModules.values()].filter((module) => module.runtime).map((module) => module.path).sort()),

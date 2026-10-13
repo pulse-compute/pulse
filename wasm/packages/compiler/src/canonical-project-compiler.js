@@ -995,6 +995,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
   try {
     graphBuild = buildReachableProjectGraph(absoluteEntry, {
       rootDir,
+      target: options.target,
       workspaceRoot: options.workspaceRoot,
       tsconfigFile: options.tsconfigFile,
       resolver: options.moduleResolver,
@@ -1230,6 +1231,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
     ...(applicationEnvelope ? { application: applicationEnvelope } : {}),
     watchFiles: Object.freeze([...new Set([
       ...graphBuild.projectFiles,
+      ...graphBuild.packageSourceManifests,
       ...schema.dependencies,
       ...(packageOperationRecognition.dependencies || [])
     ].map((file) => path.resolve(file)))])

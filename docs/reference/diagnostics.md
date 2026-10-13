@@ -1070,7 +1070,7 @@ A package-owned API call could not be lowered into its canonical effect contract
 <a id="pulse-native-import-unsupported"></a>
 ### `PULSE_NATIVE_IMPORT_UNSUPPORTED` — Native Import Unsupported
 
-A reachable runtime import has no trusted Pulse native contract.
+A reachable runtime import has neither supported static source nor a trusted Pulse native contract.
 
 - **Category:** `compile`
 - **CLI exit class:** `3`
@@ -1080,7 +1080,7 @@ A reachable runtime import has no trusted Pulse native contract.
 
 **Remediation**
 
-1. Remove or isolate the runtime dependency, use a trusted Pulse capability, or select an explicit JavaScript target when available.
+1. Use an exact declared ESM source export in the bounded handler/helper subset, a trusted Pulse capability, or an explicit JavaScript target.
 2. Pulse will not change targets automatically.
 
 <a id="pulse-package-subpath-unsupported"></a>

@@ -96,6 +96,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'pure-field-projection',
       'pure-guarded-arguments',
       'pure-source-helpers',
+      'npm-source-imports',
       'pure-record-helpers',
       'pure-argument-helpers',
       'pure-loop-helpers',

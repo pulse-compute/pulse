@@ -12,6 +12,7 @@ const {
   validatePackageContractCatalog
 } = loadPackageContractAuthority();
 const { discoverLowerableLibraryManifests } = require('./handler-library-contracts.js');
+const { TRUSTED_LOWERER_PACKAGES } = require('@pulse-compute/wasm-contracts/library/manifest');
 
 
 function loadPackageContractAuthority() {
@@ -180,6 +181,7 @@ function discoverPulsePackageContracts(inputs = {}) {
   for (const packageDir of packageDirs) {
     const packageJsonFile = path.join(packageDir, 'package.json');
     const packageJson = readJson(packageJsonFile);
+    if (!TRUSTED_LOWERER_PACKAGES.includes(packageJson && packageJson.name)) continue;
     const contractRef = packageContractPath(packageJson);
     if (!packageJson || !contractRef) continue;
     if (typeof packageJson.name !== 'string' || packageJson.name.trim().length === 0) {

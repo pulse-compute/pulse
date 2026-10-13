@@ -310,6 +310,9 @@ const allowedLocalVersionLiterals = new Map(Object.entries({
 // *_POLICY / *_CODES / *_CAPABILITIES style hidden contracts even when they do not
 // contain a pulsewasm version literal.
 const allowedLocalIdentifierDefinitions = new Map(Object.entries({
+  // Installed library-kit identity read from its own package.json, not a new
+  // wire contract. The reviewed lowerer package policy lives in wasm-contracts.
+  'packages/library-kit/src/compiler/handler-library-contracts.js': ['TOOLCHAIN_VERSION'],
   // Report input adapters are CLI-local, pinned readers of existing producer
   // versions; they do not redefine compiler/schema producer contracts.
   'packages/cli/src/internal/report/completion.js': ['MANIFEST_VERSION'],
