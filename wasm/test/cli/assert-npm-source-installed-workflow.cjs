@@ -157,13 +157,6 @@ async function main() {
       else await run('npm', ['install', '--save-exact', '--ignore-scripts', '--no-audit', '--no-fund', name + '@' + version], { timeout: 180000 });
       verifyClosure(consumer, packages, packed.manifest);
       const dependency = verifyFixture(fixtures[index], version, catalog);
-      if (index === 0) {
-        for (const host of ['node', 'fastly']) {
-          const failure = await pulse(['build', '--profile', host + '-denied'], 3);
-          assert.equal(failure.error.code, 'PULSE_CRYPTO_CONFIG_REQUIRED', 'source imports cannot grant undeclared crypto authority');
-          report.cells.push({ version, host: host + '-denied', status: 'rejected', code: failure.error.code });
-        }
-      }
       if (index === 2) {
         for (const host of ['node', 'fastly']) {
           const failure = await pulse(['build', '--profile', host], 3);
@@ -179,6 +172,13 @@ async function main() {
         request: { path: '/lookup', headers: { 'x-input': input } }, fetches: { 'https://source.test/value': { text: 'remote' } },
         expect: { status: 200, text: `${prefix}:${version}:${hash(hash(input + 'remote'))}` } });
       write(consumer, 'tests/pulse.harness.ts', 'export default ' + JSON.stringify({ cases }));
+      if (index === 0) {
+        for (const host of ['node', 'fastly']) {
+          const failure = await pulse(['build', '--profile', host + '-denied'], 3);
+          assert.equal(failure.error.code, 'PULSE_CRYPTO_CONFIG_REQUIRED', 'source imports cannot grant undeclared crypto authority');
+          report.cells.push({ version, host: host + '-denied', status: 'rejected', code: failure.error.code });
+        }
+      }
       for (const host of ['node', 'fastly']) {
         console.log(`IMP9-02: ${version} ${host} Native test/build`);
         const tests = await pulse(['test', '--profile', host]);
