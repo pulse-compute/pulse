@@ -1,6 +1,9 @@
 # AN9-00 — prove the compiler analytics association contract
 
-Status: evidence-only handoff; no production report fields or execution changes.
+Status: original evidence-only handoff. AN9-01 now implements definitions and
+registration retention in the optional analytics block; the other recorded gaps
+remain follow-up work. The proof rejects malformed current analytics rather than
+treating the now-owned key as an unknown field.
 Investigated against `latest` at `3bee78387f46d7933d987bbb3f8273bc7b711a37`
 (includes IMP9-01 and IMP9-02). This is repository-only investigation material,
 not a public support promise or hosted documentation page.
@@ -187,7 +190,7 @@ fields and inventories remain readable and keep their current meaning.
 
 New readers must accept legacy capsules without `analytics` and present
 analytics as unavailable. The existing strict reader rejects an unknown
-`analytics` key: AN9-00 tests this. `createCapsule` projects away unknown fields,
+`analytics` key at the investigated base (before AN9-01). `createCapsule` projects away unknown fields,
 so round-tripping through it is **not** forward-compatibility validation. Update
 schema/projection/validation together in AN9-01; update completion hash binding,
 passive replay and absent-data viewer handling in AN9-04. Do not claim old

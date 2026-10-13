@@ -26,6 +26,7 @@ function normalize(input) {
   }
   walk(value, '');
   for (const name of collections.filter(name => !['routes', 'entries'].includes(name))) value[name]?.sort((a, b) => compare(a.id, b.id));
+  value.analytics?.handlers.sort((a, b) => compare(a.id, b.id));
   value.provenance?.toolchain?.sort((a, b) => compare(a.name, b.name) || compare(a.version, b.version));
   value.resourceProducers?.sort((a, b) => compare(a.scope, b.scope));
   for (const schema of value.schemas || []) if (schema.structure?.state === 'available') {
@@ -306,6 +307,7 @@ function check(capsule) {
     }
     ensure(capsule.coverage.resources.status === 'partial' && capsule.coverage.resources.expected === null, 'REPORT_COVERAGE');
   }
+  require('./handler-topology').validateHandlerTopology(capsule);
   return capsule;
 }
 function evidenceDigest(capsule) { const { evidenceHash, ...payload } = capsule; return sha256(canonicalJson(payload)); }

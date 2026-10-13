@@ -49,6 +49,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-01 production entry/stage/helper attribution and byte-preserving capture'
   }),
+  'cli-report-handler-topology': nodeTask('test/cli/assert-report-handler-topology.cjs', {
+    evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000,
+    description: 'AN9-01 passive handler/helper definitions, mount instances, source spans and schema compatibility'
+  }),
   'cli-report-reference-provenance': nodeTask('test/cli/assert-report-reference-provenance.cjs', {
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-02 resolved reference identities, shared consumers, unknowns, privacy and byte-preserving capture'
@@ -1321,6 +1325,7 @@ const profiles = Object.freeze({
     'cli-report-capture-proof',
     'cli-report-entry-proof',
     'cli-report-reference-provenance',
+    'cli-report-handler-topology',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
     'multifile-source-indexes',
@@ -1475,6 +1480,7 @@ const profiles = Object.freeze({
     'cli-report-capture-proof',
     'cli-report-entry-proof',
     'cli-report-reference-provenance',
+    'cli-report-handler-topology',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
     'cli-command-spec',
