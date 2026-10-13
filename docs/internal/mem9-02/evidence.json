@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "pulse.mem9-02-handoff.v1",
+  "archive": "Pulse-MEM9-02-evidence.zip",
+  "archiveSha256": "13ab2ee809cd485ee633ccfad0cfd67b07586941c6f44ec26a6717eade1a2c4c",
+  "archiveBytes": 1747884,
+  "manifestSha256": "d7810850e0c839ba19a20532ae0214d3850783b7c9c6428059fa186f5d60a93e",
+  "files": 446,
+  "qualification": "149 passing results from interrupted run plus one passing recovery task; final focused task also passed",
+  "retentionReportSha256": "b5ed72ec7a0e924e12ee2efd2f2c38b576b8d2ab0a7c9efc18e36149e762206c",
+  "costReportSha256": "6b8573091a994980583179764d6b9940b277836f276774e956f25dd37a4e896c",
+  "regressionReportSha256": "34b47ac9ed204f8b5023a5f91d8b83d9c42577b2445e84ab334f2df8b09f3d9d"
+}

@@ -12,6 +12,7 @@ const {
   renderNativeResumeSupport, renderNativeExports
 } = require('./canonical-native-support.js');
 
+const { prepareNumericRegions } = require('./canonical-native-numeric.js');
 const { prepareNativeExpressions } = require('./canonical-native-expressions.js');
 const {
   buildNativeControl, layoutNativeControl, countNativeGuardStates, renderNativeRun
@@ -28,6 +29,9 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const nativeSchemaCodecs = nativeSchemaCodecSource(plan);
   const nativeCrypto = buildNativeCryptoGuestSources(plan);
   const { eventEntries, eventReachable } = prepareNativeEmissionInputs(plan);
+  const numeric = prepareNumericRegions({ plan, policy: options.numericRegions,
+    schemaActive: nativeSchemaCodecs.active,
+    budgeted: runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.some(c => ['response.output', 'request.body.transform'].includes(c)), localName });
   const expressionEmitter = prepareNativeExpressions({
     expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
     fail, localName, stringHandle
@@ -36,7 +40,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const control = buildNativeControl({
     plan, stages, stageBindings, stageSites, effectIndex, continuationIndex,
     applicationErrors, helpers, handlers, routerLocal, routerCursor,
-    exprName: expressionEmitter.exprName, localName, stringHandle, fail
+    exprName: expressionEmitter.exprName, localName, stringHandle, fail, numeric
   });
   const layout = layoutNativeControl({
     blocks: control.blocks, stages, helpers, handlers, applicationErrors,
@@ -51,19 +55,19 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     plan, blocks: control.blocks, handlers, helpers, stages, fail
   });
   const source = assembleNativeSource({
-    plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter,
+    plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric,
     stages, stageSites, stateEnabled, binaryIndex, eventReachable,
     entryBlock: control.entryBlock, layout, guardStateCount
   });
   return assembleNativeResult({
     plan, source, nativeSchemaCodecs, nativeCrypto, expressions, pureHelpers,
     stages, helpers, handlers, stateEnabled, eventReachable, eventEntries,
-    control, layout, guardStateCount
+    control, layout, guardStateCount, numericPolicy: options.numericRegions ? numeric.manifest() : undefined
   });
 }
 
 function assembleNativeSource({
-  plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter,
+  plan, nativeSchemaCodecs, nativeCrypto, support, expressionEmitter, numeric,
   stages, stageSites, stateEnabled, binaryIndex, eventReachable,
   entryBlock, layout, guardStateCount
 }) {
@@ -79,6 +83,7 @@ function assembleNativeSource({
     `const PULSE_ENTRY_PC: i32 = ${entryBlock}`,
     ...support.executionGlobals,
     ...support.globals,
+    ...numeric.globals,
     ...renderNativeValueSupport({ stages, stageSites, stateEnabled, binaryIndex }),
     ...nativeSchemaCodecs.declarations,
     ...(nativeCrypto.active ? [nativeCrypto.source] : []),
@@ -96,7 +101,7 @@ function assembleNativeSource({
 function assembleNativeResult({
   plan, source, nativeSchemaCodecs, nativeCrypto, expressions, pureHelpers,
   stages, helpers, handlers, stateEnabled, eventReachable, eventEntries,
-  control, layout, guardStateCount
+  control, layout, guardStateCount, numericPolicy
 }) {
   const { blocks, entryBlock, stageEntries, helperEntries } = control;
   const { partitioned, chunks, renderedBlocks, maxChunkStates, maxChunkCharacters } = layout;
@@ -107,6 +112,7 @@ function assembleNativeResult({
     planVersion: plan.version,
     planHash: plan.planHash,
     sourceHash: stableHash(source),
+    ...(numericPolicy ? { numericRegions: numericPolicy } : {}),
     reportOwnership: nativeReportOwnership({ plan, blocks, layout, handlers, stages, helpers, helperConsumers: control.helperConsumers }),
     entryBlock,
     blockCount: blocks.length,

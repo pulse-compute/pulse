@@ -1077,6 +1077,10 @@ const tasks = Object.freeze({
     evidence: 'providers', timeoutMs: 180000,
     description: 'Fastly Native bounded request-header snapshots, duplicates and fail-closed enumeration'
   }),
+  'fastly-numeric-regions': nodeTask('test/provider/assert-fastly-numeric-regions.cjs', {
+    evidence: 'native', timeoutMs: 180000, scheduling: { compiler: true },
+    description: 'MEM9-02 numeric-region proof, scalar aliases, IEEE values, control and effect parity'
+  }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -1357,6 +1361,7 @@ const profiles = Object.freeze({
     'entities-orchestration-demo'
   ]),
   native: Object.freeze([
+    'fastly-numeric-regions',
     'pure-helper-vocabulary',
     'pure-string-index',
     'pure-field-projection',

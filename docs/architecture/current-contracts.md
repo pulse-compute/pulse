@@ -187,6 +187,26 @@ on reuse. Required guest-link disassembly audits remain mandatory. This changes
 artifact policy, not handler admission, the effect ABI, optimizer posture, or
 provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
 
+## Fastly numeric loop regions
+
+Schema-active, non-guest-linked Fastly Native builds select a private canonical
+numeric-region policy. The canonical emitter proves numeric initialization and
+all reaching writes around bounded pure loops, using stable local IDs rather
+than type hints. Eligible regions use private f64 slots and box written values
+into the existing local handles before generic consumers or effects. Boxes
+already held by aliases, collections and state remain immutable. Zero-trip and
+conditional writes preserve untouched handles. Arithmetic order, IEEE values,
+loop caps, control-state IDs and guard weights remain unchanged.
+
+Unknown live-ins, coercive operations, nested assignment results, generic calls
+and collection writes decline this optimization. Helper/shared-stage bodies and package-owned application emitters,
+non-schema builds, linked guests, and entire read-loop/output/body-transform
+budgeted plans retain existing emission. Node Native and JavaScript are unchanged.
+No host ABI, allocation ceiling, cache default, GC policy, or reclamation protocol
+is added. Generic handle retention remains; deliberately retained snapshots
+still require storage. Generator manifests record the policy, selected regions
+and declined loop reasons, and source hashes bind the emitted strategy.
+
 ## Native internal helper sharing
 
 Native generation may share byte-identical internal expression-helper bodies

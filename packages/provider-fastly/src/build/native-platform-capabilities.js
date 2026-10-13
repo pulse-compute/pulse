@@ -2063,7 +2063,9 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     );
   }
   const bindings = resolveCapabilityBindings(plan, options);
-  const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, options);
+  const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, {
+    ...options, numericRegions: facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v1' : undefined
+  });
   const portableSource = stripPulseHostImports(portable.source);
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');
   const hasSign = plan.effects.some(effect => effect.kind === 'jwt.sign');
@@ -2128,6 +2130,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     portableGeneratorVersion: portable.version,
     portableSourceHash: portable.sourceHash,
     schemaCodecs: portable.manifest.schemaCodecs,
+    ...(portable.manifest.numericRegions ? { numericRegions: portable.manifest.numericRegions } : {}),
     handlerBodies: portable.manifest.handlerBodies,
     ...(portable.manifest.reportOwnership ? { reportOwnership: portable.manifest.reportOwnership } : {}),
     dispatcher: portable.manifest.dispatcher,
