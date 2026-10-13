@@ -78,7 +78,22 @@ Generated references remain derived from their catalogs; deleting a canonical
 page removes its installed copy on synchronization. Immutable prior-version
 archives are preserved, not regenerated during current-document cleanup.
 
-The **Documentation** workflow validates changes and uploads previews. Production
+The **Documentation** workflow runs `node scripts/documentation-preview.cjs`.
+It checks generated documentation, snippets, metadata and the MCP context corpus,
+then runs the full documentation release validator. That validator builds the
+site once and supplies its validated temporary directory directly to the existing
+preview sealer before cleanup. The workflow uploads only a successful fresh
+preview; it does not rebuild the site or consume a cached site directory.
+Package, CLI, configuration, source-link, metadata, site and deployment checks
+remain required. The output is `.pulse-documentation-preview`; this command
+performs no network delivery. Local parity qualification compares its manifest
+and object checksums with an independently built and sealed site:
+
+```bash
+node wasm/test/docs/assert-documentation-preview.cjs --integration
+```
+
+Production
 delivery is a manual exact-tag operation consuming the pre-main qualified
 artifact; it does not rebuild or deploy through GitHub Pages. The
 [deployment runbook](./documentation-deployment.md) owns verification, immutable

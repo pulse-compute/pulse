@@ -57,16 +57,13 @@ jobs:
           export PATH="$PWD/.validation-tools/pnpm/bin:$PATH"
           echo "$PWD/.validation-tools/pnpm/bin" >> "$GITHUB_PATH"
           pnpm install --frozen-lockfile --ignore-scripts
-      - name: Validate generated documentation
-        run: pnpm run docs:check
-      - name: Run documentation release gate
-        run: node scripts/documentation-release.cjs
-      - name: Build exact-version documentation site
-        run: pnpm run docs:site --json
-      - name: Seal a non-production documentation candidate
-        run: node scripts/documentation-deployment.cjs seal --site-dir .pulse-docs-site --out .pulse-documentation-preview
+      - name: Check preview orchestration contract
+        run: node wasm/test/docs/assert-documentation-preview.cjs
+      - name: Validate and seal documentation preview
+        id: preview
+        run: node scripts/documentation-preview.cjs
       - name: Upload generated preview
-        if: always()
+        if: always() && steps.preview.outcome == 'success'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: pulse-documentation-preview-${{ github.run_id }}

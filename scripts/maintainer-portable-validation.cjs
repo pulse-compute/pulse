@@ -10,8 +10,25 @@ const { expandProfile } = require('../wasm/test/suite/registry.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const PROFILES = Object.freeze(['unit', 'native', 'javascript', 'conformance']);
 const PREFIX = 'pulse-portable-shard';
+// CI9-01's recorded sample: 388,378ms / 388,099ms across two Native
+// groups (formerly 776,477ms in one job). This is a reviewed assignment,
+// not live timing-based selection. New tasks remain included in native-a.
+const NATIVE_B = Object.freeze([
+  'fastly-numeric-regions', 'pure-helper-vocabulary', 'pure-field-projection',
+  'pure-guarded-arguments', 'pure-source-helpers', 'pure-loop-helpers',
+  'fastly-driver-behavior-o09', 'kv-native-abi-feasibility', 's3-native-read',
+  's3-body-read', 's3-node-transport', 'canonical-native-plan', 'str02b-node-native',
+  'str03a-generated-output', 'bounded-app-logic', 'bounded-read-loops',
+  'bounded-loop-helpers', 'entities-envelope-feasibility', 'entities-node-native-workflow',
+  'crypto-native-guest-source', 'assets-native-embedded', 'jwt-package-owned-lowering',
+  'canonical-opaque-node-emission', 'grip-package-runtime', 'package-root-native'
+]);
 
 function shardPlan(expand = expandProfile) {
+  const native = expand('native');
+  for (const task of NATIVE_B) assert(native.includes(task), `Native shard anchor missing: ${task}`);
+  const nativeB = new Set(NATIVE_B);
+  assert.equal(nativeB.size, NATIVE_B.length, 'Duplicate Native shard anchor');
   const conformance = expand('conformance');
   const rsa = ['jwt-rs256'];
   const schema = ['schema-codecs', 'schema-kv-parity'];
@@ -19,7 +36,8 @@ function shardPlan(expand = expandProfile) {
   const isolated = new Set([...rsa, ...schema]);
   const plan = {
     unit: expand('unit'),
-    native: expand('native'),
+    'native-a': native.filter(task => !nativeB.has(task)),
+    'native-b': native.filter(task => nativeB.has(task)),
     javascript: expand('javascript'),
     'conformance-rsa': rsa,
     'conformance-schema': schema,
@@ -111,6 +129,7 @@ function aggregate(candidates, expected, jobsResult, plan = shardPlan()) {
     schemaVersion: 'pulse.portable-aggregate.v1', status: 'passed', ...expected,
     profiles: PROFILES, completedTasks: shards.reduce((sum, shard) => sum + shard.tasks.length, 0),
     shards,
+    taskElapsedSumMs: shards.reduce((sum, shard) => sum + shard.durationMs, 0),
     taskWallTimeMs: Math.max(...shards.map((shard) => Date.parse(shard.finishedAt))) - Math.min(...shards.map((shard) => Date.parse(shard.startedAt)))
   };
 }

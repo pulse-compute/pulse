@@ -10,6 +10,17 @@ const { PROFILES, shardPlan, aggregate, validateWorkflow } = require('../../../s
 const { expandProfile } = require('../suite/registry.cjs');
 
 const plan = shardPlan();
+assert.deepEqual(plan, shardPlan(), 'The reviewed shard plan must be deterministic');
+assert(plan['native-a'].includes('canonical-native-wasm'));
+assert(plan['native-b'].includes('bounded-read-loops'));
+for (const name of ['native-a', 'native-b']) {
+  assert.deepEqual(plan[name], expandProfile('native').filter(task => plan[name].includes(task)), 'Preserve registry order within each Native shard');
+}
+assert.throws(() => shardPlan(profile => expandProfile(profile).filter(task => task !== 'bounded-read-loops')), /Native shard anchor missing/);
+const newNative = shardPlan(profile => [...expandProfile(profile), ...(profile === 'native' ? ['future-native-task'] : [])]);
+assert(newNative['native-a'].includes('future-native-task'), 'New Native tasks must not fall out of coverage');
+assert(!newNative['native-b'].includes('future-native-task'));
+assert.throws(() => shardPlan(profile => [...expandProfile(profile), ...(profile === 'native' ? ['bounded-read-loops'] : [])]), /duplicate tasks/);
 assert.deepEqual(Object.values(plan).flat().sort(), PROFILES.flatMap((profile) => expandProfile(profile)).sort());
 assert.throws(() => shardPlan((profile) => expandProfile(profile).filter((task) => task !== 'jwt-rs256')), /anchor missing/);
 const expanded = shardPlan((profile) => [...expandProfile(profile), ...(profile === 'conformance' ? ['future-conformance-task'] : [])]);
@@ -27,6 +38,8 @@ const reports = Object.entries(plan).map(([shard, tasks]) => ({
 }));
 const copy = () => structuredClone(reports);
 assert.equal(aggregate(reports, expected, 'success').completedTasks, Object.values(plan).flat().length);
+assert.equal(aggregate(reports, expected, 'success').taskElapsedSumMs, Object.keys(plan).length * 1000);
+assert.equal(aggregate(reports, expected, 'success').taskWallTimeMs, 1000, 'Summed task occupancy is distinct from concurrent wall time');
 for (const result of ['failure', 'cancelled', 'skipped', undefined]) assert.throws(() => aggregate(reports, expected, result), /did not all succeed/);
 for (const mutate of [
   (rows) => rows.pop(),
@@ -62,6 +75,8 @@ assert.throws(() => aggregate(retried, expected, 'success'), /did not exit succe
 const workflow = fs.readFileSync(path.resolve(__dirname, '../../../.github/workflows/validate.yml'), 'utf8');
 validateWorkflow(workflow);
 for (const changed of [
+  workflow.replace('native-a, native-b', 'native'),
+  workflow.replace('native-a, native-b', 'native-a, native-a'),
   workflow.replace('conformance-schema, conformance-rest]', 'conformance-schema]'),
   workflow.replace('fail-fast: false', 'fail-fast: true'),
   workflow.replace('needs: [route, portable-shards]\n    if: always()', 'needs: [route, portable-shards]\n    if: success()'),
