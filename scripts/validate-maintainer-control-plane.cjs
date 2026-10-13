@@ -353,7 +353,7 @@ function validateWorkflowSecurity() {
   includes(documentation, 'build:', 'documentation workflow');
   includes(documentation, 'ready_for_review', 'release PR documentation activation');
   includes(documentation, 'Upload generated preview', 'documentation workflow');
-  includes(documentation, 'documentation-deployment.cjs seal', 'documentation workflow');
+  require('./documentation-preview.cjs').validatePreviewWorkflow(documentation);
   if (documentation.includes('deploy-pages') || documentation.includes('upload-pages-artifact') || documentation.includes('pages: write') || documentation.includes('github-pages')) fail('documentation validation workflow must not deploy to GitHub Pages');
 
   const preparation = read('.github/workflows/release-prepare.yml');

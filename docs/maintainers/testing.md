@@ -337,11 +337,15 @@ node wasm/scripts/run-wasm-tests.cjs --task deployment-candidates --no-report
 
 ## Runner evidence
 
-The full `Repository validation / full portable` gate aggregates six independent
-jobs: `unit`, `native`, `javascript`, `conformance-rsa`, `conformance-schema`,
+The full `Repository validation / full portable` gate aggregates seven independent
+jobs: `unit`, `native-a`, `native-b`, `javascript`, `conformance-rsa`, `conformance-schema`,
 and `conformance-rest`. The plan in
 `scripts/maintainer-portable-validation.cjs` expands the four existing portable
-profiles from the task registry. RSA isolates `jwt-rs256`; schema isolates
+profiles from the task registry. Native uses a reviewed assignment of 25 tasks
+to each group, based on the CI9-01 timing sample. It preserves registry order
+within each group; newly registered Native tasks enter `native-a`, while removal
+of a named `native-b` anchor requires updating the plan. CI never repartitions
+tasks using cached or live timings. RSA isolates `jwt-rs256`; schema isolates
 `schema-codecs` and `schema-kv-parity`; the remaining conformance tasks stay in
 registry order. Every registered portable task occurs exactly once.
 
@@ -354,7 +358,10 @@ same tested SHA and workflow run. Missing, failed, cancelled, incomplete,
 duplicate or mismatched evidence fails the gate. On a job retry it selects the
 latest attempt for each shard in that run; a newer failed attempt cannot fall
 back to an older passing report. The aggregate artifact records task counts,
-attempts, durations and tested SHA. This remains portable CI evidence; the
+attempts, durations and tested SHA. `taskElapsedSumMs` sums shard task durations;
+`taskWallTimeMs` spans their first start to last finish. Both exclude dependency
+setup and build steps. Compare hosted job start/end times and total worker time
+on the same candidate before claiming a CI speedup from the split. This remains portable CI evidence; the
 separate release seal still requires its complete candidate replay.
 
 ## Branch validation tiers

@@ -451,13 +451,11 @@ function validateWorkflows() {
   includes(docs, 'pull_request:', 'documentation validation workflow');
   includes(docs, "branches: ['**']", 'documentation validation workflow');
   includes(docs, 'Upload generated preview', 'documentation validation workflow');
-  includes(docs, 'documentation-deployment.cjs seal', 'documentation validation workflow');
+  require('./documentation-preview.cjs').validatePreviewWorkflow(docs);
   includes(docs, 'include-hidden-files: true', 'documentation validation workflow');
   includes(docs, 'package-manager-cache: false', 'documentation validation workflow');
   includes(docs, 'publication.pnpmVersion', 'documentation validation workflow');
   includes(docs, 'node scripts/pnpm-toolchain.cjs --install --version "$pnpm_version"', 'documentation validation workflow');
-  includes(docs, 'pnpm run docs:check', 'documentation validation workflow');
-  includes(docs, 'pnpm run docs:site --json', 'documentation validation workflow');
   excludes(docs, 'run: npm run docs:', 'documentation validation workflow');
   for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) excludes(docs, forbidden, 'documentation validation workflow');
 

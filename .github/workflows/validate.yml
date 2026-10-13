@@ -179,7 +179,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [unit, native, javascript, conformance-rsa, conformance-schema, conformance-rest]
+        shard: [unit, native-a, native-b, javascript, conformance-rsa, conformance-schema, conformance-rest]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

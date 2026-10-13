@@ -988,11 +988,11 @@ function validateDocumentationLayers(repoRoot) {
     workflowAction('actions/checkout'),
     workflowAction('actions/setup-node'),
     workflowAction('actions/upload-artifact'),
-    'documentation-deployment.cjs seal',
-    'docs:site',
+    'node scripts/documentation-preview.cjs',
     'include-hidden-files: true'
   ];
   for (const requiredText of workflowRequirements) if (!workflowText.includes(requiredText)) fail(`documentation workflow is missing ${requiredText}`);
+  require('./documentation-preview.cjs').validatePreviewWorkflow(workflowText);
   for (const forbidden of ['configure-pages', 'upload-pages-artifact', 'deploy-pages', 'pages: write', 'github-pages']) if (workflowText.includes(forbidden)) fail(`documentation validation workflow must not deploy through ${forbidden}`);
   const npmWorkflow = fs.readFileSync(path.join(repoRoot, '.github/workflows/npm-publish.yml'), 'utf8');
   for (const requiredText of ['workflow_dispatch:', 'environment: npm-publish', 'id-token: write', 'publish-release.cjs publish', 'verify-npm-release.cjs']) if (!npmWorkflow.includes(requiredText)) fail(`npm publication workflow is missing ${requiredText}`);
