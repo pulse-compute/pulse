@@ -92,6 +92,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'canonical-native-plan',
       'pure-helper-vocabulary',
       'fastly-numeric-regions',
+      'fastly-numeric-budgets',
       'pure-string-index',
       'pure-field-projection',
       'pure-guarded-arguments',

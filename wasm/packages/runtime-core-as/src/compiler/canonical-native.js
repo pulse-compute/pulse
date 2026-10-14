@@ -29,9 +29,11 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
   const nativeSchemaCodecs = nativeSchemaCodecSource(plan);
   const nativeCrypto = buildNativeCryptoGuestSources(plan);
   const { eventEntries, eventReachable } = prepareNativeEmissionInputs(plan);
+  const streamBudget = plan.capabilities.some(c => ['response.output', 'request.body.transform'].includes(c));
+  const readLoopBudget = runtimeContract.hasBoundedReadLoop(plan);
   const numeric = prepareNumericRegions({ plan, policy: options.numericRegions,
     schemaActive: nativeSchemaCodecs.active,
-    budgeted: runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.some(c => ['response.output', 'request.body.transform'].includes(c)), localName });
+    budgeted: readLoopBudget || streamBudget, readLoopBudget: readLoopBudget && !streamBudget, localName });
   const expressionEmitter = prepareNativeExpressions({
     expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
     fail, localName, stringHandle, numeric

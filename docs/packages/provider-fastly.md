@@ -133,7 +133,10 @@ The compiler avoids boxed arithmetic temporaries in proven numeric loop regions
 for schema and stub builds without linked guests, and for schema-inactive builds
 using the selected crypto guest. Schema-active linked builds remain excluded,
 even with JSON cache arena elision. This does not reclaim general scalar handles
-or change memory limits. See [numeric loop regions](../architecture/current-contracts.md#native-numeric-loop-regions).
+or change memory limits. Unlinked bounded read-loop builds retain the original
+cumulative charges for eliminated temporaries, including cache admissions and
+the exact exhaustion boundary. Linked budgeted plans remain boxed.
+See [numeric loop regions](../architecture/current-contracts.md#native-numeric-loop-regions).
 
 The canonical Native platform driver caps each invocation at 1,024 cumulative
 effect requests, including repeated loop visits and all requested group members.

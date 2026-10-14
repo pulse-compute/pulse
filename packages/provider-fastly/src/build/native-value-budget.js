@@ -35,6 +35,38 @@ export function pulse_fastly_memory_values(): i64 { return __pulse_memory_values
 `;
 }
 
+// These helpers are private to proven regions in an unlinked read-loop plan.
+// Cache admissions use the original operations, so later boxed code sees the
+// same cache and charges. Uncached numbers pay at each original evaluation;
+// only their physical materialization is delayed until a region exit.
+function numericRegionSource() {
+  return `
+function __pulse_numeric_cacheable(value: f64): bool {
+  return value >= 0 && value < 65536 && Math.floor(value) == value && (value != 0 || 1.0 / value > 0)
+}
+function __pulse_numeric_charge_number(value: f64): f64 {
+  __pulse_memory_charge(0, 0)
+  if (__pulse_numeric_cacheable(value)) host_value_number(value)
+  else __pulse_memory_charge(1, ${policy.valueBytes})
+  return value
+}
+function __pulse_numeric_charge_boolean(value: bool): bool {
+  __pulse_memory_charge(0, 0)
+  host_value_boolean(value ? 1 : 0)
+  return value
+}
+function __pulse_numeric_truthy(value: f64): bool { return value != 0.0 && !isNaN(value) }
+function __pulse_numeric_box(value: f64): i32 {
+  __pulse_memory_charge(0, 0)
+  if (__pulse_numeric_cacheable(value)) return host_value_number(value)
+  const item = new __PulseFastlyValue(); item.kind = PULSE_VALUE_NUMBER; item.number = value
+  // Already charged at the original expression, never a general put bypass.
+  __pulse_fastly_values.push(item)
+  return __pulse_fastly_values.length
+}
+`;
+}
+
 function instrument(source, plan) {
   if (!hasBoundedReadLoop(plan)) return source;
   function insert(needle, extra) {
@@ -55,4 +87,4 @@ function instrument(source, plan) {
   return source + runtimeSource();
 }
 
-module.exports = { policy, hasBoundedReadLoop, runtimeSource, instrument };
+module.exports = { policy, hasBoundedReadLoop, runtimeSource, numericRegionSource, instrument };

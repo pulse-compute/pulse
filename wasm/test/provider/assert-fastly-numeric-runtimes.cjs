@@ -128,9 +128,10 @@ async function main() {
       }`, { fileName: 'fastly-numeric-read-budget.ts', strict: false, target: 'native' }));
     const platform = require('../../../packages/provider-fastly/src/build/native-platform-capabilities');
     const options = { canonicalBuild: true, requirePlatformCapability: false, bindings: { kv: { pages: 'pages' } } };
-    const disabled = platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(readPlan, options);
-    assert.equal(disabled.manifest.numericRegions.reason, 'execution-budget');
-    assert.equal(disabled.source, withBoxedControl(p => p.generateFastlyNativePlatformCapabilitiesAssemblyScript(readPlan, options)).source);
+    const budgeted = platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(readPlan, options);
+    assert.equal(budgeted.manifest.numericRegions.accounting, 'fastly-read-loop-v1');
+    assert.equal(budgeted.manifest.numericRegions.regions.length, 0, 'unknown live-in still declines');
+    assert.equal(budgeted.source, withBoxedControl(p => p.generateFastlyNativePlatformCapabilitiesAssemblyScript(readPlan, options)).source);
     for (const runtime of ['stub', 'ES256', 'RS256']) qualify({ runtime, iterations: 256, arena: 'default' }, path.join(directory, runtime));
     for (const arena of ['default', 'elided']) qualify({ runtime: 'schema-linked', iterations: 256, arena }, path.join(directory, 'schema-' + arena));
     console.log('ok - Fastly numeric runtimes: stub, ES256, RS256, both schema-linked exclusions, boxed semantics, failure and recovery');

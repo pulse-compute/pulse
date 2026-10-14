@@ -261,11 +261,25 @@ keeps its existing emission. Shared-stage regions box before effects, transfers
 or generic consumers, preserving invocation frames and continuation ownership.
 Region write flags reset on every entry, including repeated calls/registrations.
 
+Unlinked Fastly read-loop plans also admit these proven regions. Each eliminated
+uncached numeric allocation pays the existing value/byte charge at its original
+evaluation point, in evaluation order. Integer and boolean cache admissions use
+the original host value operations, preserving cache state for later boxed code.
+Region exits materialize already-charged numbers without a second charge. This
+does not refund the cumulative budget or defer failures to the region boundary;
+exhaustion still closes the invocation and traps. Charge and materialization
+helpers check the latched failure even for cached values. The accounting policy,
+effect cap, loop caps and linear-memory ceiling are unchanged. These private
+Fastly helpers add no host import or public option. Manifests identify this path
+with `accounting: fastly-read-loop-v1`.
+
 Unknown live-ins, coercive operations, nested assignment results, generic calls
 and collection writes decline this optimization. Effectful helper bodies,
 package-owned application emitters, Node linked guests, Fastly schema-active
-linked builds, and entire read-loop/output/body-transform budgeted plans retain
-existing emission. JavaScript is unchanged. Node collections
+linked builds, Node budgeted plans, linked-guest budgeted plans, and entire
+output/body-transform plans retain existing emission. Node's rotating scalar
+cache needs separate accounting qualification; this Fastly realization does not
+extend the `pulse_host` ABI. JavaScript is unchanged. Node collections
 continue to store JavaScript values directly; numeric region exits allocate normal
 host handles without mutating, releasing or reusing existing entries. Node host
 handle counts, guest linear-memory capacity and process heap/RSS are distinct
