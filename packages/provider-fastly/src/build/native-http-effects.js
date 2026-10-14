@@ -519,6 +519,10 @@ class __PulseJsonParser {
 }
 
 const __pulse_fastly_values = new Array<__PulseFastlyValue>()
+// Shared schema admission uses storage-independent lookups. This retained
+// HTTP emitter keeps its existing dense table and lifetime policy.
+function __pulse_fastly_has_value(handle: i32): bool { return handle > 0 && handle <= __pulse_fastly_values.length }
+function __pulse_fastly_value_count(): i32 { return __pulse_fastly_values.length }
 const __pulse_fastly_pending = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 const __pulse_fastly_pending_active = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)
 const __pulse_fastly_payloads = new StaticArray<i32>(PULSE_FASTLY_EFFECT_COUNT)

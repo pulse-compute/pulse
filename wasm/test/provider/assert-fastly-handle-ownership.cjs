@@ -10,6 +10,25 @@ const { executeFastlyNativePlatformCapabilities: execute } = require('../../../p
 const { withRetainedHandles } = require('../support/handle-ownership-control.cjs');
 const { schemaBundle } = require('./assert-fastly-numeric-regions.cjs');
 const options = { canonicalBuild: true, requirePlatformCapability: false, emitWat: false };
+function assertDiagnosticObserver() {
+  const fs = require('node:fs'), path = require('node:path'), os = require('node:os');
+  const mem = require('../runtime/compiler-efficiency/mem01-schema-materialization.cjs');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-handle-observer-'));
+  try {
+    for (const retained of [false, true]) {
+      const artifact = build(planFor(retentionBody), { retained });
+      const wasm = mem.diagnosticCompile(mem.instrument(artifact.source), 'staged', path.join(directory, String(retained)));
+      const probe = mem.observer();
+      const result = mem.diagnosticHost()({ ...artifact, wasm }, { clockUnixSeconds: 1700000000,
+        request: { method: 'POST', path: '/', headers: [['content-type', 'application/json']], body: '{"n":32}' }, mem01: probe });
+      assert.deepEqual(result.response, run(artifact, 32).response);
+      const table = probe.table(), e = result.instance.exports;
+      assert.equal(table.handles, e.mem01_count());
+      if (!retained) assert(table.handles < 500 && e.mem01_last() > table.handles * 50,
+        'sparse diagnostic enumeration skips removed IDs without guest allocation');
+    }
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+}
 function planFor(body, schema = true) {
   return buildCanonicalNativePlan(compileCanonicalSource(`export default async function handler(ctx){${schema ? "const input=await ctx.req.json('proof.Input');" : ''}${body}}`,
     { fileName: 'handle-ownership.ts', strict: false, target: 'native', ...(schema ? { schemaBundle } : {}) }));
@@ -242,6 +261,7 @@ async function main() {
     liveSnapshots.push({snapshots:batches*128,live:e.mem9_count(),pins:e.mem9_pins(),capacity:e.mem9_capacity(),peakScratchPayloadBytes:e.mem9_peak_scratch()});
   }
   assert(liveSnapshots[2].live>liveSnapshots[0].live*2,'legitimate live graphs grow with retained snapshots');
+  assertDiagnosticObserver();
   console.log(JSON.stringify({task:'MEM9-09A',status:'passed',providerReality:false,rows,liveSnapshots}));
 }
 module.exports = { main, planFor, build, run, options, retentionBody, lifetimeBody };
