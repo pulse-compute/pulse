@@ -127,7 +127,9 @@ pulse build ./my-app
 `target: 'native'` compiles the provider-neutral plan and emits generated
 `src/main.as.ts` plus compact `bin/main.wasm` importing the required `fastly_*`
 hostcalls directly. It contains no JavaScript runtime image or `pulse_host`.
-Clock-dependent capabilities import only WASI `clock_time_get`.
+Clock-dependent capabilities import WASI `clock_time_get`; enabled Native logging
+imports `fd_write` for redacted, best-effort stdout. Named logging endpoints are
+not used. See [logging behavior](../guides/fastly-capabilities.md).
 
 The canonical Native platform driver caps each invocation at 1,024 cumulative
 effect requests, including repeated loop visits and all requested group members.

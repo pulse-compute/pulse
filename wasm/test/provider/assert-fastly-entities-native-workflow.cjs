@@ -74,6 +74,8 @@ async function replay(artifact) {
     const notification = await requestFastlyCompute(server, { ...request({ ...lookup, id: undefined }), timeoutMs: 30000 });
     assert.equal(notification.status, 204); assert.equal(notification.body.length, 0);
     assert.equal(digest(fs.readFileSync(wasmFile)), digest(artifact.wasm));
+    await server.stop();
+    assert.ok(server.logs.stdout.includes('[pulse:info] ["<redacted>"]'), 'Entities log must reach real stdout');
     assert.ok(!JSON.stringify(server.logs).includes('en03-private-token'));
     console.log(`ok - local ${launcher.kind} ${launcher.inspection.version} replays ordinary bin/main.wasm ${digest(artifact.wasm)}; no live deployment claimed`);
   } finally { if (server) await server.stop(); await new Promise(resolve => origin.close(resolve)); }
@@ -146,7 +148,15 @@ export async function lookupCustomer(ctx: any, input: Readonly<{ email: string }
       fixtures: { 'https://directory.example.test/json': { body: JSON.stringify({ email: 'ada@example.test', displayName: 'Ada' }) } } };
     const result = executeWasm(grouped, options);
     assert.deepEqual(JSON.parse(result.response.body), { jsonrpc: '2.0', result: { email: 'ada@example.test', displayName: 'group:Ada' }, id: 'native-lookup' });
-    assert.ok(result.logs.length > 0);
+    assert.equal(result.logs.length, 1);
+    const groupedImports = WebAssembly.Module.imports(new WebAssembly.Module(grouped.wasm));
+    assert.ok(groupedImports.some(entry => entry.module === 'wasi_snapshot_preview1' && entry.name === 'fd_write'));
+    assert.ok(!groupedImports.some(entry => entry.module === 'fastly_log'));
+    for (const failure of [{ logWriteFailure: true }, { logWriteMaxBytes: 0 }, { logWriteMaxBytes: 7 }, { logEndpointFailure: true }]) {
+      const failedSink = executeWasm(grouped, { ...options, ...failure });
+      assert.deepEqual(failedSink.response, result.response);
+      assert.equal(failedSink.trace.filter(entry => entry.name === 'fd_write').length, 1);
+    }
     assert.ok(!JSON.stringify(result).includes('en03-private-token'));
     assert.ok(!grouped.wasm.includes(Buffer.from('en03-private-token')));
     const malformed = executeWasm(grouped, { ...options, fixtures: { 'https://directory.example.test/json': { body: '{' } } });

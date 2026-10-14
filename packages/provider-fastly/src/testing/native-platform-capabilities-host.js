@@ -278,6 +278,28 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
       }
     },
     wasi_snapshot_preview1: {
+      fd_write(fd, iovs, count, writtenOut) {
+        // WASI errno values, independent of the Fastly status enum.
+        if (Number(fd) !== 1) return 8; // BADF
+        if (options.logWriteFailure === true) {
+          trace.push({ module: 'wasi_snapshot_preview1', name: 'fd_write', fd: 1, accepted: false });
+          return 29; // IO
+        }
+        const chunks = [];
+        for (let index = 0; index < Number(count); index++) {
+          const pointer = Number(iovs) + index * 8;
+          chunks.push(readBytes(view().getUint32(pointer, true), view().getUint32(pointer + 4, true)));
+        }
+        const bytes = Buffer.concat(chunks);
+        const written = Math.min(bytes.length, options.logWriteMaxBytes ?? bytes.length);
+        const emitted = bytes.subarray(0, written).toString('utf8');
+        if (typeof options.onLogWrite === 'function') options.onLogWrite(emitted);
+        const message = redactText(emitted);
+        writeU32(writtenOut, written);
+        logs.push(Object.freeze({ endpoint: 'stdout', message }));
+        trace.push({ module: 'wasi_snapshot_preview1', name: 'fd_write', fd: 1, count: Number(count), bytes: bytes.length, written, message, accepted: true });
+        return 0;
+      },
       clock_time_get(clockId, precision, timeOut) {
         if (Number(clockId) === 1 && typeof options.monotonicClock === 'function') {
           const sample = options.monotonicClock(monotonicMs);
@@ -320,6 +342,11 @@ function executeFastlyNativePlatformCapabilities(input, options = {}) {
     fastly_log: {
       endpoint_get(namePointer, nameLength, handleOut) {
         const endpoint = readUtf8(namePointer, nameLength);
+        // Match Viceroy/Compute: these names belong to stdio or the platform.
+        if (/^(?:stdout$|stderr$|fst_managed_)/i.test(endpoint)) {
+          trace.push({ module: 'fastly_log', name: 'endpoint_get', endpoint, opened: false });
+          return FASTLY_STATUS_INVALID_ARGUMENT;
+        }
         if (options.logEndpointFailure === true) {
           trace.push({ module: 'fastly_log', name: 'endpoint_get', endpoint, opened: false });
           return FASTLY_STATUS_ERROR;

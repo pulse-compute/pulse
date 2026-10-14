@@ -5,6 +5,7 @@ This project is the external Fastly reality fixture. Its user code remains provi
 - explicit JSON-schema request, origin, and response codecs;
 - Config Store, Secret Store, and KV operations;
 - a named Fastly backend;
+- positive arrival/outcome stdout logs with guest secret redaction;
 - opaque binary response pass-through with repeated headers;
 - package-owned `grip.channel`, `grip.hold`, and `grip.publish` lowering.
 
