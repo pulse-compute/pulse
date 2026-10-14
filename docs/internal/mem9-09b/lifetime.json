@@ -1,0 +1,85 @@
+{
+  "source": {
+    "localCommit": "821f6e8dec43813f66d5f798b89fe2c54be7084e",
+    "publishedCommit": "80cdabeda67f550c10aa7cfb085880ffa69e4064",
+    "tree": "7229ce985bfd715a026928c588da5a1100276e83",
+    "workingTreeAtCostAndQualificationStart": "clean",
+    "note": "Published source tree was verified identical to local tested tree. Commit metadata differs. Evidence/documentation receipt follows testing."
+  },
+  "task": "MEM9-09B",
+  "status": "passed",
+  "providerReality": false,
+  "rootRejections": 97,
+  "rows": [
+    {
+      "elideJsonCacheArena": false,
+      "cases": 12,
+      "cells": [
+        {
+          "n": 1,
+          "live": 514,
+          "retained": 2369,
+          "peakCapacity": 1365,
+          "peakScratch": 8932,
+          "sweeps": 2,
+          "memoryBytes": 2621440
+        },
+        {
+          "n": 8,
+          "live": 761,
+          "retained": 7745,
+          "peakCapacity": 1365,
+          "peakScratch": 8932,
+          "sweeps": 7,
+          "memoryBytes": 5242880
+        },
+        {
+          "n": 32,
+          "live": 725,
+          "retained": 26180,
+          "peakCapacity": 1365,
+          "peakScratch": 8932,
+          "sweeps": 25,
+          "memoryBytes": 5242880
+        }
+      ],
+      "resourceCases": 9,
+      "fatalCases": 3
+    },
+    {
+      "elideJsonCacheArena": true,
+      "cases": 12,
+      "cells": [
+        {
+          "n": 1,
+          "live": 514,
+          "retained": 2369,
+          "peakCapacity": 1365,
+          "peakScratch": 8932,
+          "sweeps": 2,
+          "memoryBytes": 1835008
+        },
+        {
+          "n": 8,
+          "live": 761,
+          "retained": 7745,
+          "peakCapacity": 1365,
+          "peakScratch": 8932,
+          "sweeps": 7,
+          "memoryBytes": 1835008
+        },
+        {
+          "n": 32,
+          "live": 725,
+          "retained": 26180,
+          "peakCapacity": 1365,
+          "peakScratch": 8932,
+          "sweeps": 25,
+          "memoryBytes": 1835008
+        }
+      ],
+      "resourceCases": 9,
+      "fatalCases": 3
+    }
+  ]
+}

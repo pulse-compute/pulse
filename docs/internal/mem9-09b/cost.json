@@ -1,0 +1,3629 @@
+{
+  "task": "MEM9-09B",
+  "status": "passed",
+  "source": {
+    "commit": "821f6e8dec43813f66d5f798b89fe2c54be7084e",
+    "tree": "7229ce985bfd715a026928c588da5a1100276e83"
+  },
+  "providerReality": false,
+  "environment": {
+    "node": "v24.19.0",
+    "assemblyScript": "0.28.18",
+    "lockSha256": "2b7fb127800ce3723ffa450f7978c1cb72b86238850cd5da4695cfc23b460ec3"
+  },
+  "timingScope": "Fresh-instance _start, injected Fastly host calls included; compilation and instantiation excluded. Fixture delays are simulated clocks, not wall latency. Production artifacts: no forced GC or observation exports.",
+  "sampling": {
+    "seed": 635009,
+    "warmupPairs": 10,
+    "pairedSamples": 40,
+    "bootstrapResamples": 2000
+  },
+  "cells": [
+    {
+      "elideJsonCacheArena": false,
+      "n": 0,
+      "artifacts": {
+        "traced": {
+          "bytes": 119525,
+          "sha256": "87eb057311803b45f3640abba241455547ef6cffbcc74960a66c7f4cfd0243db"
+        },
+        "retained": {
+          "bytes": 113529,
+          "sha256": "966d5de204dd15ad71bcbf3f7826fe45c73557631b2381a2d775a396515faa05"
+        }
+      },
+      "samples": [
+        {
+          "traced": {
+            "wallMs": 1.058656,
+            "cpuMs": 1.067,
+            "threadCpuMs": 1.066
+          },
+          "retained": {
+            "wallMs": 0.907231,
+            "cpuMs": 0.915,
+            "threadCpuMs": 0.915
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.913788,
+            "cpuMs": 0.921,
+            "threadCpuMs": 0.921
+          },
+          "traced": {
+            "wallMs": 1.074472,
+            "cpuMs": 1.081,
+            "threadCpuMs": 1.082
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.291348,
+            "cpuMs": 4.557,
+            "threadCpuMs": 1.301
+          },
+          "traced": {
+            "wallMs": 1.715752,
+            "cpuMs": 12.385,
+            "threadCpuMs": 1.726
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.673843,
+            "cpuMs": 17.026,
+            "threadCpuMs": 1.685
+          },
+          "retained": {
+            "wallMs": 9.308427,
+            "cpuMs": 21.391,
+            "threadCpuMs": 5.225
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.216223,
+            "cpuMs": 1.683,
+            "threadCpuMs": 1.224
+          },
+          "retained": {
+            "wallMs": 1.085234,
+            "cpuMs": 1.262,
+            "threadCpuMs": 1.094
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.192987,
+            "cpuMs": 1.381,
+            "threadCpuMs": 1.202
+          },
+          "traced": {
+            "wallMs": 1.055499,
+            "cpuMs": 1.063,
+            "threadCpuMs": 1.063
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.109909,
+            "cpuMs": 1.576,
+            "threadCpuMs": 1.117
+          },
+          "retained": {
+            "wallMs": 0.948469,
+            "cpuMs": 1.168,
+            "threadCpuMs": 0.956
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.121722,
+            "cpuMs": 1.129,
+            "threadCpuMs": 1.129
+          },
+          "traced": {
+            "wallMs": 1.207144,
+            "cpuMs": 2.207,
+            "threadCpuMs": 1.215
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.015827,
+            "cpuMs": 1.023,
+            "threadCpuMs": 1.024
+          },
+          "retained": {
+            "wallMs": 1.074108,
+            "cpuMs": 1.084,
+            "threadCpuMs": 1.083
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.205476,
+            "cpuMs": 1.213,
+            "threadCpuMs": 1.213
+          },
+          "retained": {
+            "wallMs": 0.999384,
+            "cpuMs": 1.008,
+            "threadCpuMs": 1.008
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.03633,
+            "cpuMs": 1.044,
+            "threadCpuMs": 1.045
+          },
+          "retained": {
+            "wallMs": 0.889083,
+            "cpuMs": 0.897,
+            "threadCpuMs": 0.898
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.03853,
+            "cpuMs": 1.512,
+            "threadCpuMs": 1.047
+          },
+          "traced": {
+            "wallMs": 2.092113,
+            "cpuMs": 2.411,
+            "threadCpuMs": 2.044
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.689443,
+            "cpuMs": 6.203,
+            "threadCpuMs": 1.7
+          },
+          "retained": {
+            "wallMs": 1.366649,
+            "cpuMs": 10.913,
+            "threadCpuMs": 1.376
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.278505,
+            "cpuMs": 1.547,
+            "threadCpuMs": 1.25
+          },
+          "traced": {
+            "wallMs": 6.120504,
+            "cpuMs": 9.162,
+            "threadCpuMs": 5.528
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.298165,
+            "cpuMs": 1.307,
+            "threadCpuMs": 1.307
+          },
+          "retained": {
+            "wallMs": 0.994283,
+            "cpuMs": 1.003,
+            "threadCpuMs": 1.003
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.005238,
+            "cpuMs": 1.013,
+            "threadCpuMs": 1.012
+          },
+          "retained": {
+            "wallMs": 0.783434,
+            "cpuMs": 0.791,
+            "threadCpuMs": 0.791
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 0.912128,
+            "cpuMs": 0.919,
+            "threadCpuMs": 0.92
+          },
+          "retained": {
+            "wallMs": 0.861253,
+            "cpuMs": 0.869,
+            "threadCpuMs": 0.869
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.864367,
+            "cpuMs": 0.872,
+            "threadCpuMs": 0.872
+          },
+          "traced": {
+            "wallMs": 0.957934,
+            "cpuMs": 0.964,
+            "threadCpuMs": 0.965
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 0.961734,
+            "cpuMs": 0.97,
+            "threadCpuMs": 0.97
+          },
+          "retained": {
+            "wallMs": 0.771268,
+            "cpuMs": 0.778,
+            "threadCpuMs": 0.778
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.400359,
+            "cpuMs": 1.408,
+            "threadCpuMs": 1.409
+          },
+          "retained": {
+            "wallMs": 0.886329,
+            "cpuMs": 0.896,
+            "threadCpuMs": 0.895
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.93978,
+            "cpuMs": 1.09,
+            "threadCpuMs": 1.01
+          },
+          "traced": {
+            "wallMs": 1.001029,
+            "cpuMs": 1.009,
+            "threadCpuMs": 1.009
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.833824,
+            "cpuMs": 0.84,
+            "threadCpuMs": 0.841
+          },
+          "traced": {
+            "wallMs": 1.157303,
+            "cpuMs": 1.165,
+            "threadCpuMs": 1.166
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.813916,
+            "cpuMs": 0.822,
+            "threadCpuMs": 0.822
+          },
+          "traced": {
+            "wallMs": 0.989101,
+            "cpuMs": 0.997,
+            "threadCpuMs": 0.996
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.800909,
+            "cpuMs": 0.808,
+            "threadCpuMs": 0.808
+          },
+          "traced": {
+            "wallMs": 1.028105,
+            "cpuMs": 1.037,
+            "threadCpuMs": 1.037
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 0.98137,
+            "cpuMs": 0.989,
+            "threadCpuMs": 0.99
+          },
+          "retained": {
+            "wallMs": 0.989806,
+            "cpuMs": 0.997,
+            "threadCpuMs": 0.997
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.769241,
+            "cpuMs": 1.777,
+            "threadCpuMs": 1.777
+          },
+          "retained": {
+            "wallMs": 0.805009,
+            "cpuMs": 0.813,
+            "threadCpuMs": 0.813
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.25895,
+            "cpuMs": 4.406,
+            "threadCpuMs": 1.269
+          },
+          "traced": {
+            "wallMs": 1.515647,
+            "cpuMs": 10.376,
+            "threadCpuMs": 1.526
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.422219,
+            "cpuMs": 7.346,
+            "threadCpuMs": 1.432
+          },
+          "retained": {
+            "wallMs": 1.06043,
+            "cpuMs": 1.069,
+            "threadCpuMs": 1.069
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.89351,
+            "cpuMs": 0.902,
+            "threadCpuMs": 0.902
+          },
+          "traced": {
+            "wallMs": 0.952533,
+            "cpuMs": 0.96,
+            "threadCpuMs": 0.96
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 0.902966,
+            "cpuMs": 0.91,
+            "threadCpuMs": 0.909
+          },
+          "retained": {
+            "wallMs": 0.798567,
+            "cpuMs": 0.805,
+            "threadCpuMs": 0.806
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.808336,
+            "cpuMs": 0.816,
+            "threadCpuMs": 0.816
+          },
+          "traced": {
+            "wallMs": 1.094917,
+            "cpuMs": 1.328,
+            "threadCpuMs": 1.103
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.774949,
+            "cpuMs": 0.782,
+            "threadCpuMs": 0.782
+          },
+          "traced": {
+            "wallMs": 1.026656,
+            "cpuMs": 1.036,
+            "threadCpuMs": 1.036
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.072848,
+            "cpuMs": 1.081,
+            "threadCpuMs": 1.081
+          },
+          "traced": {
+            "wallMs": 1.370953,
+            "cpuMs": 1.521,
+            "threadCpuMs": 1.38
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.826983,
+            "cpuMs": 0.833,
+            "threadCpuMs": 0.833
+          },
+          "traced": {
+            "wallMs": 0.950215,
+            "cpuMs": 0.957,
+            "threadCpuMs": 0.958
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.886702,
+            "cpuMs": 0.895,
+            "threadCpuMs": 0.895
+          },
+          "traced": {
+            "wallMs": 0.961657,
+            "cpuMs": 0.969,
+            "threadCpuMs": 0.968
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.767691,
+            "cpuMs": 1.004,
+            "threadCpuMs": 0.776
+          },
+          "traced": {
+            "wallMs": 0.990334,
+            "cpuMs": 0.998,
+            "threadCpuMs": 0.998
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.044543,
+            "cpuMs": 1.444,
+            "threadCpuMs": 1.052
+          },
+          "retained": {
+            "wallMs": 0.916895,
+            "cpuMs": 0.925,
+            "threadCpuMs": 0.925
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.141455,
+            "cpuMs": 1.149,
+            "threadCpuMs": 1.15
+          },
+          "retained": {
+            "wallMs": 0.784715,
+            "cpuMs": 0.793,
+            "threadCpuMs": 0.792
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.000984,
+            "cpuMs": 1.009,
+            "threadCpuMs": 1.009
+          },
+          "retained": {
+            "wallMs": 0.77743,
+            "cpuMs": 0.784,
+            "threadCpuMs": 0.785
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.076366,
+            "cpuMs": 1.291,
+            "threadCpuMs": 1.084
+          },
+          "retained": {
+            "wallMs": 1.284516,
+            "cpuMs": 6.728,
+            "threadCpuMs": 1.294
+          }
+        }
+      ],
+      "timing": {
+        "wallMs": {
+          "traced": {
+            "median": 1.066564,
+            "p95": 1.769241,
+            "min": 0.902966,
+            "max": 6.120504
+          },
+          "retained": {
+            "median": 0.9105095000000001,
+            "p95": 1.291348,
+            "min": 0.767691,
+            "max": 9.308427
+          },
+          "meanDelta": 0.1378044499999999,
+          "meanDelta95CI": [
+            -0.37852442500000016,
+            0.5514245750000002
+          ]
+        },
+        "cpuMs": {
+          "traced": {
+            "median": 1.115,
+            "p95": 10.376,
+            "min": 0.91,
+            "max": 17.026
+          },
+          "retained": {
+            "median": 0.923,
+            "p95": 6.728,
+            "min": 0.778,
+            "max": 21.391
+          },
+          "meanDelta": 0.5476500000000003,
+          "meanDelta95CI": [
+            -0.16672499999999996,
+            1.3490749999999998
+          ]
+        },
+        "threadCpuMs": {
+          "traced": {
+            "median": 1.074,
+            "p95": 1.777,
+            "min": 0.909,
+            "max": 5.528
+          },
+          "retained": {
+            "median": 0.918,
+            "p95": 1.301,
+            "min": 0.776,
+            "max": 5.225
+          },
+          "meanDelta": 0.22315000000000004,
+          "meanDelta95CI": [
+            -0.05919999999999996,
+            0.5186
+          ]
+        }
+      },
+      "memory": {
+        "traced": {
+          "terminal": {
+            "allocatedBytes": 2594320,
+            "freedBytes": 434416,
+            "outstandingBytes": 2159904,
+            "peakOutstandingBytes": 2159904,
+            "outstandingBlocks": 3389,
+            "allocatorEvents": 4249,
+            "collections": 0,
+            "memoryCapacityBytes": 2621440
+          },
+          "postCollect": {
+            "allocatedBytes": 2594320,
+            "freedBytes": 898784,
+            "outstandingBytes": 1695536,
+            "peakOutstandingBytes": 2159904,
+            "outstandingBlocks": 1200,
+            "allocatorEvents": 6438,
+            "collections": 1,
+            "memoryCapacityBytes": 2621440
+          }
+        },
+        "retained": {
+          "terminal": {
+            "allocatedBytes": 2525488,
+            "freedBytes": 422800,
+            "outstandingBytes": 2102688,
+            "peakOutstandingBytes": 2102688,
+            "outstandingBlocks": 3280,
+            "allocatorEvents": 4252,
+            "collections": 0,
+            "memoryCapacityBytes": 2621440
+          },
+          "postCollect": {
+            "allocatedBytes": 2525488,
+            "freedBytes": 733744,
+            "outstandingBytes": 1791744,
+            "peakOutstandingBytes": 2102688,
+            "outstandingBlocks": 2454,
+            "allocatorEvents": 5078,
+            "collections": 1,
+            "memoryCapacityBytes": 2621440
+          }
+        }
+      }
+    },
+    {
+      "elideJsonCacheArena": false,
+      "n": 1,
+      "artifacts": {
+        "traced": {
+          "bytes": 119525,
+          "sha256": "87eb057311803b45f3640abba241455547ef6cffbcc74960a66c7f4cfd0243db"
+        },
+        "retained": {
+          "bytes": 113529,
+          "sha256": "966d5de204dd15ad71bcbf3f7826fe45c73557631b2381a2d775a396515faa05"
+        }
+      },
+      "samples": [
+        {
+          "traced": {
+            "wallMs": 1.183244,
+            "cpuMs": 1.191,
+            "threadCpuMs": 1.192
+          },
+          "retained": {
+            "wallMs": 1.011168,
+            "cpuMs": 1.018,
+            "threadCpuMs": 1.018
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.793104,
+            "cpuMs": 1.803,
+            "threadCpuMs": 1.802
+          },
+          "retained": {
+            "wallMs": 1.297256,
+            "cpuMs": 1.307,
+            "threadCpuMs": 1.307
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.340005,
+            "cpuMs": 4.346,
+            "threadCpuMs": 1.349
+          },
+          "traced": {
+            "wallMs": 1.295883,
+            "cpuMs": 1.562,
+            "threadCpuMs": 1.304
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.973951,
+            "cpuMs": 1.183,
+            "threadCpuMs": 0.981
+          },
+          "traced": {
+            "wallMs": 1.355818,
+            "cpuMs": 1.641,
+            "threadCpuMs": 1.363
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.072506,
+            "cpuMs": 1.081,
+            "threadCpuMs": 1.081
+          },
+          "traced": {
+            "wallMs": 1.304223,
+            "cpuMs": 1.313,
+            "threadCpuMs": 1.313
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.237624,
+            "cpuMs": 1.245,
+            "threadCpuMs": 1.245
+          },
+          "retained": {
+            "wallMs": 1.128863,
+            "cpuMs": 1.137,
+            "threadCpuMs": 1.137
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.177061,
+            "cpuMs": 1.204,
+            "threadCpuMs": 1.185
+          },
+          "retained": {
+            "wallMs": 1.064981,
+            "cpuMs": 1.072,
+            "threadCpuMs": 1.072
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.305555,
+            "cpuMs": 1.314,
+            "threadCpuMs": 1.313
+          },
+          "retained": {
+            "wallMs": 1.062279,
+            "cpuMs": 1.107,
+            "threadCpuMs": 1.106
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.347022,
+            "cpuMs": 1.355,
+            "threadCpuMs": 1.355
+          },
+          "retained": {
+            "wallMs": 0.929094,
+            "cpuMs": 0.936,
+            "threadCpuMs": 0.935
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.651905,
+            "cpuMs": 1.937,
+            "threadCpuMs": 1.66
+          },
+          "retained": {
+            "wallMs": 1.25543,
+            "cpuMs": 1.646,
+            "threadCpuMs": 1.264
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.256089,
+            "cpuMs": 1.263,
+            "threadCpuMs": 1.264
+          },
+          "retained": {
+            "wallMs": 0.943529,
+            "cpuMs": 0.95,
+            "threadCpuMs": 0.951
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.222413,
+            "cpuMs": 1.228,
+            "threadCpuMs": 1.228
+          },
+          "retained": {
+            "wallMs": 0.965425,
+            "cpuMs": 0.972,
+            "threadCpuMs": 0.973
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.571525,
+            "cpuMs": 1.58,
+            "threadCpuMs": 1.58
+          },
+          "retained": {
+            "wallMs": 1.054722,
+            "cpuMs": 1.063,
+            "threadCpuMs": 1.063
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.019255,
+            "cpuMs": 1.027,
+            "threadCpuMs": 1.027
+          },
+          "traced": {
+            "wallMs": 1.45107,
+            "cpuMs": 1.459,
+            "threadCpuMs": 1.459
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.938592,
+            "cpuMs": 0.947,
+            "threadCpuMs": 0.946
+          },
+          "traced": {
+            "wallMs": 2.460346,
+            "cpuMs": 9.984,
+            "threadCpuMs": 2.47
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.551297,
+            "cpuMs": 2.12,
+            "threadCpuMs": 1.562
+          },
+          "traced": {
+            "wallMs": 5.881193,
+            "cpuMs": 9.415,
+            "threadCpuMs": 4.909
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.290715,
+            "cpuMs": 1.299,
+            "threadCpuMs": 1.299
+          },
+          "retained": {
+            "wallMs": 0.93663,
+            "cpuMs": 0.944,
+            "threadCpuMs": 0.944
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.330373,
+            "cpuMs": 1.697,
+            "threadCpuMs": 1.337
+          },
+          "retained": {
+            "wallMs": 1.216558,
+            "cpuMs": 1.468,
+            "threadCpuMs": 1.225
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.361083,
+            "cpuMs": 1.37,
+            "threadCpuMs": 1.371
+          },
+          "retained": {
+            "wallMs": 1.051872,
+            "cpuMs": 1.061,
+            "threadCpuMs": 1.06
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.904088,
+            "cpuMs": 0.912,
+            "threadCpuMs": 0.911
+          },
+          "traced": {
+            "wallMs": 1.182622,
+            "cpuMs": 1.189,
+            "threadCpuMs": 1.19
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.290784,
+            "cpuMs": 1.3,
+            "threadCpuMs": 1.298
+          },
+          "retained": {
+            "wallMs": 1.056742,
+            "cpuMs": 1.065,
+            "threadCpuMs": 1.065
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.330282,
+            "cpuMs": 3.101,
+            "threadCpuMs": 1.339
+          },
+          "retained": {
+            "wallMs": 1.16233,
+            "cpuMs": 1.17,
+            "threadCpuMs": 1.17
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.24708,
+            "cpuMs": 1.255,
+            "threadCpuMs": 1.256
+          },
+          "retained": {
+            "wallMs": 1.039449,
+            "cpuMs": 1.257,
+            "threadCpuMs": 1.047
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.428623,
+            "cpuMs": 1.438,
+            "threadCpuMs": 1.438
+          },
+          "retained": {
+            "wallMs": 1.126222,
+            "cpuMs": 1.135,
+            "threadCpuMs": 1.135
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.087952,
+            "cpuMs": 1.097,
+            "threadCpuMs": 1.097
+          },
+          "traced": {
+            "wallMs": 1.33446,
+            "cpuMs": 1.343,
+            "threadCpuMs": 1.343
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.747852,
+            "cpuMs": 3.151,
+            "threadCpuMs": 1.756
+          },
+          "retained": {
+            "wallMs": 1.016009,
+            "cpuMs": 1.592,
+            "threadCpuMs": 1.023
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.97542,
+            "cpuMs": 0.983,
+            "threadCpuMs": 0.982
+          },
+          "traced": {
+            "wallMs": 1.209541,
+            "cpuMs": 1.217,
+            "threadCpuMs": 1.217
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.238716,
+            "cpuMs": 1.238,
+            "threadCpuMs": 1.239
+          },
+          "retained": {
+            "wallMs": 0.939983,
+            "cpuMs": 0.948,
+            "threadCpuMs": 0.947
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.33433,
+            "cpuMs": 2.604,
+            "threadCpuMs": 1.344
+          },
+          "traced": {
+            "wallMs": 1.742828,
+            "cpuMs": 2.673,
+            "threadCpuMs": 1.752
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 4.82902,
+            "cpuMs": 12.785,
+            "threadCpuMs": 4.404
+          },
+          "retained": {
+            "wallMs": 1.148646,
+            "cpuMs": 1.489,
+            "threadCpuMs": 1.157
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.887387,
+            "cpuMs": 0.896,
+            "threadCpuMs": 0.895
+          },
+          "traced": {
+            "wallMs": 1.55774,
+            "cpuMs": 2.266,
+            "threadCpuMs": 1.566
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.576588,
+            "cpuMs": 1.584,
+            "threadCpuMs": 1.585
+          },
+          "retained": {
+            "wallMs": 0.922963,
+            "cpuMs": 0.931,
+            "threadCpuMs": 0.931
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.768177,
+            "cpuMs": 2.871,
+            "threadCpuMs": 1.776
+          },
+          "traced": {
+            "wallMs": 1.383989,
+            "cpuMs": 2.002,
+            "threadCpuMs": 1.392
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.426036,
+            "cpuMs": 1.435,
+            "threadCpuMs": 1.436
+          },
+          "retained": {
+            "wallMs": 1.033,
+            "cpuMs": 1.041,
+            "threadCpuMs": 1.04
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.197034,
+            "cpuMs": 1.204,
+            "threadCpuMs": 1.204
+          },
+          "retained": {
+            "wallMs": 0.977878,
+            "cpuMs": 0.967,
+            "threadCpuMs": 0.968
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.151549,
+            "cpuMs": 1.158,
+            "threadCpuMs": 1.159
+          },
+          "retained": {
+            "wallMs": 0.910362,
+            "cpuMs": 0.918,
+            "threadCpuMs": 0.918
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.245396,
+            "cpuMs": 1.253,
+            "threadCpuMs": 1.253
+          },
+          "retained": {
+            "wallMs": 0.982634,
+            "cpuMs": 0.991,
+            "threadCpuMs": 0.99
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.489393,
+            "cpuMs": 1.669,
+            "threadCpuMs": 1.498
+          },
+          "retained": {
+            "wallMs": 1.166028,
+            "cpuMs": 1.362,
+            "threadCpuMs": 1.174
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.326382,
+            "cpuMs": 1.335,
+            "threadCpuMs": 1.335
+          },
+          "traced": {
+            "wallMs": 1.400187,
+            "cpuMs": 1.409,
+            "threadCpuMs": 1.41
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.227832,
+            "cpuMs": 1.247,
+            "threadCpuMs": 1.247
+          },
+          "retained": {
+            "wallMs": 1.00549,
+            "cpuMs": 1.013,
+            "threadCpuMs": 1.011
+          }
+        }
+      ],
+      "timing": {
+        "wallMs": {
+          "traced": {
+            "median": 1.3324165,
+            "p95": 2.460346,
+            "min": 1.151549,
+            "max": 5.881193
+          },
+          "retained": {
+            "median": 1.0456604999999999,
+            "p95": 1.340005,
+            "min": 0.887387,
+            "max": 1.768177
+          },
+          "meanDelta": 0.5032228249999999,
+          "meanDelta95CI": [
+            0.2835534249999999,
+            0.8136927000000002
+          ]
+        },
+        "cpuMs": {
+          "traced": {
+            "median": 1.3895,
+            "p95": 9.415,
+            "min": 1.158,
+            "max": 12.785
+          },
+          "retained": {
+            "median": 1.0685,
+            "p95": 2.604,
+            "min": 0.896,
+            "max": 4.346
+          },
+          "meanDelta": 0.9453750000000001,
+          "meanDelta95CI": [
+            0.28505,
+            1.795075
+          ]
+        },
+        "threadCpuMs": {
+          "traced": {
+            "median": 1.341,
+            "p95": 2.47,
+            "min": 1.159,
+            "max": 4.909
+          },
+          "retained": {
+            "median": 1.0535,
+            "p95": 1.349,
+            "min": 0.895,
+            "max": 1.776
+          },
+          "meanDelta": 0.46785000000000004,
+          "meanDelta95CI": [
+            0.27807500000000007,
+            0.7203999999999999
+          ]
+        }
+      },
+      "memory": {
+        "traced": {
+          "terminal": {
+            "allocatedBytes": 2758976,
+            "freedBytes": 434544,
+            "outstandingBytes": 2324432,
+            "peakOutstandingBytes": 2324432,
+            "outstandingBlocks": 5089,
+            "allocatorEvents": 5957,
+            "collections": 0,
+            "memoryCapacityBytes": 2621440
+          },
+          "postCollect": {
+            "allocatedBytes": 2758976,
+            "freedBytes": 1102240,
+            "outstandingBytes": 1656736,
+            "peakOutstandingBytes": 2324432,
+            "outstandingBlocks": 769,
+            "allocatorEvents": 10277,
+            "collections": 1,
+            "memoryCapacityBytes": 2621440
+          }
+        },
+        "retained": {
+          "terminal": {
+            "allocatedBytes": 2678976,
+            "freedBytes": 422928,
+            "outstandingBytes": 2256048,
+            "peakOutstandingBytes": 2256048,
+            "outstandingBlocks": 4946,
+            "allocatorEvents": 5926,
+            "collections": 0,
+            "memoryCapacityBytes": 2621440
+          },
+          "postCollect": {
+            "allocatedBytes": 2678976,
+            "freedBytes": 770848,
+            "outstandingBytes": 1908128,
+            "peakOutstandingBytes": 2256048,
+            "outstandingBlocks": 3607,
+            "allocatorEvents": 7265,
+            "collections": 1,
+            "memoryCapacityBytes": 2621440
+          }
+        }
+      }
+    },
+    {
+      "elideJsonCacheArena": false,
+      "n": 32,
+      "artifacts": {
+        "traced": {
+          "bytes": 119525,
+          "sha256": "87eb057311803b45f3640abba241455547ef6cffbcc74960a66c7f4cfd0243db"
+        },
+        "retained": {
+          "bytes": 113529,
+          "sha256": "966d5de204dd15ad71bcbf3f7826fe45c73557631b2381a2d775a396515faa05"
+        }
+      },
+      "samples": [
+        {
+          "traced": {
+            "wallMs": 9.214934,
+            "cpuMs": 9.392,
+            "threadCpuMs": 9.225
+          },
+          "retained": {
+            "wallMs": 8.350224,
+            "cpuMs": 8.58,
+            "threadCpuMs": 8.36
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.179017,
+            "cpuMs": 9.225,
+            "threadCpuMs": 9.226
+          },
+          "retained": {
+            "wallMs": 8.736883,
+            "cpuMs": 8.747,
+            "threadCpuMs": 8.746
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.585338,
+            "cpuMs": 9.595,
+            "threadCpuMs": 9.595
+          },
+          "traced": {
+            "wallMs": 11.242679,
+            "cpuMs": 38.311,
+            "threadCpuMs": 11.253
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.06864,
+            "cpuMs": 9.08,
+            "threadCpuMs": 9.08
+          },
+          "traced": {
+            "wallMs": 9.131454,
+            "cpuMs": 9.141,
+            "threadCpuMs": 9.14
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.653272,
+            "cpuMs": 9.663,
+            "threadCpuMs": 9.663
+          },
+          "retained": {
+            "wallMs": 9.369929,
+            "cpuMs": 9.379,
+            "threadCpuMs": 9.381
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.609332,
+            "cpuMs": 8.619,
+            "threadCpuMs": 8.618
+          },
+          "traced": {
+            "wallMs": 8.955762,
+            "cpuMs": 8.964,
+            "threadCpuMs": 8.964
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.029938,
+            "cpuMs": 9.038,
+            "threadCpuMs": 9.039
+          },
+          "retained": {
+            "wallMs": 11.566494,
+            "cpuMs": 40.27,
+            "threadCpuMs": 11.577
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.491573,
+            "cpuMs": 9.502,
+            "threadCpuMs": 9.502
+          },
+          "traced": {
+            "wallMs": 9.271393,
+            "cpuMs": 9.281,
+            "threadCpuMs": 9.281
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.691401,
+            "cpuMs": 8.7,
+            "threadCpuMs": 8.701
+          },
+          "traced": {
+            "wallMs": 8.661474,
+            "cpuMs": 8.672,
+            "threadCpuMs": 8.672
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.477615,
+            "cpuMs": 9.486,
+            "threadCpuMs": 9.486
+          },
+          "traced": {
+            "wallMs": 9.263783,
+            "cpuMs": 9.274,
+            "threadCpuMs": 9.273
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.89529,
+            "cpuMs": 8.905,
+            "threadCpuMs": 8.904
+          },
+          "retained": {
+            "wallMs": 10.637769,
+            "cpuMs": 36.854,
+            "threadCpuMs": 10.648
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 12.420826,
+            "cpuMs": 14.157,
+            "threadCpuMs": 11.877
+          },
+          "retained": {
+            "wallMs": 9.680179,
+            "cpuMs": 9.69,
+            "threadCpuMs": 9.69
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.668704,
+            "cpuMs": 8.679,
+            "threadCpuMs": 8.679
+          },
+          "traced": {
+            "wallMs": 8.985785,
+            "cpuMs": 8.996,
+            "threadCpuMs": 8.995
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.851959,
+            "cpuMs": 8.861,
+            "threadCpuMs": 8.862
+          },
+          "traced": {
+            "wallMs": 9.200181,
+            "cpuMs": 9.21,
+            "threadCpuMs": 9.21
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 10.34814,
+            "cpuMs": 35.963,
+            "threadCpuMs": 10.359
+          },
+          "traced": {
+            "wallMs": 9.722699,
+            "cpuMs": 9.733,
+            "threadCpuMs": 9.733
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.192477,
+            "cpuMs": 9.507,
+            "threadCpuMs": 9.201
+          },
+          "traced": {
+            "wallMs": 9.07946,
+            "cpuMs": 13.713,
+            "threadCpuMs": 9.094
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.691258,
+            "cpuMs": 10.732,
+            "threadCpuMs": 9.739
+          },
+          "traced": {
+            "wallMs": 10.176262,
+            "cpuMs": 10.893,
+            "threadCpuMs": 10.184
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.791146,
+            "cpuMs": 8.799,
+            "threadCpuMs": 8.8
+          },
+          "retained": {
+            "wallMs": 9.105193,
+            "cpuMs": 9.665,
+            "threadCpuMs": 9.105
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.072384,
+            "cpuMs": 9.081,
+            "threadCpuMs": 9.081
+          },
+          "retained": {
+            "wallMs": 10.954073,
+            "cpuMs": 39.791,
+            "threadCpuMs": 10.964
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.228951,
+            "cpuMs": 9.239,
+            "threadCpuMs": 9.24
+          },
+          "traced": {
+            "wallMs": 13.002348,
+            "cpuMs": 14.576,
+            "threadCpuMs": 12.249
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.331103,
+            "cpuMs": 9.341,
+            "threadCpuMs": 9.341
+          },
+          "traced": {
+            "wallMs": 10.04716,
+            "cpuMs": 10.056,
+            "threadCpuMs": 10.056
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.11938,
+            "cpuMs": 9.128,
+            "threadCpuMs": 9.129
+          },
+          "retained": {
+            "wallMs": 8.539964,
+            "cpuMs": 8.549,
+            "threadCpuMs": 8.549
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.901688,
+            "cpuMs": 8.911,
+            "threadCpuMs": 8.91
+          },
+          "traced": {
+            "wallMs": 11.746298,
+            "cpuMs": 39.299,
+            "threadCpuMs": 11.756
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.946387,
+            "cpuMs": 8.955,
+            "threadCpuMs": 8.955
+          },
+          "traced": {
+            "wallMs": 9.269477,
+            "cpuMs": 9.278,
+            "threadCpuMs": 9.279
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.637984,
+            "cpuMs": 9.647,
+            "threadCpuMs": 9.647
+          },
+          "retained": {
+            "wallMs": 8.911461,
+            "cpuMs": 8.919,
+            "threadCpuMs": 8.92
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.355771,
+            "cpuMs": 9.836,
+            "threadCpuMs": 9.401
+          },
+          "retained": {
+            "wallMs": 9.841659,
+            "cpuMs": 9.851,
+            "threadCpuMs": 9.851
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.061961,
+            "cpuMs": 9.127,
+            "threadCpuMs": 9.127
+          },
+          "retained": {
+            "wallMs": 11.145467,
+            "cpuMs": 41.965,
+            "threadCpuMs": 11.156
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.018248,
+            "cpuMs": 9.128,
+            "threadCpuMs": 9.026
+          },
+          "retained": {
+            "wallMs": 13.782192,
+            "cpuMs": 27.627,
+            "threadCpuMs": 12.377
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.173456,
+            "cpuMs": 9.181,
+            "threadCpuMs": 9.181
+          },
+          "traced": {
+            "wallMs": 8.842277,
+            "cpuMs": 8.851,
+            "threadCpuMs": 8.851
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.338799,
+            "cpuMs": 9.347,
+            "threadCpuMs": 9.347
+          },
+          "traced": {
+            "wallMs": 10.223205,
+            "cpuMs": 10.231,
+            "threadCpuMs": 10.231
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 11.128461,
+            "cpuMs": 35.777,
+            "threadCpuMs": 11.138
+          },
+          "traced": {
+            "wallMs": 8.733962,
+            "cpuMs": 8.742,
+            "threadCpuMs": 8.742
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 10.377014,
+            "cpuMs": 10.385,
+            "threadCpuMs": 10.386
+          },
+          "retained": {
+            "wallMs": 9.244293,
+            "cpuMs": 9.252,
+            "threadCpuMs": 9.252
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.238844,
+            "cpuMs": 9.248,
+            "threadCpuMs": 9.247
+          },
+          "traced": {
+            "wallMs": 9.338888,
+            "cpuMs": 9.347,
+            "threadCpuMs": 9.347
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.751088,
+            "cpuMs": 8.759,
+            "threadCpuMs": 8.759
+          },
+          "retained": {
+            "wallMs": 9.828228,
+            "cpuMs": 9.837,
+            "threadCpuMs": 9.837
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 11.061417,
+            "cpuMs": 41.76,
+            "threadCpuMs": 11.071
+          },
+          "traced": {
+            "wallMs": 9.50094,
+            "cpuMs": 9.51,
+            "threadCpuMs": 9.509
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.696835,
+            "cpuMs": 9.705,
+            "threadCpuMs": 9.705
+          },
+          "retained": {
+            "wallMs": 9.081299,
+            "cpuMs": 9.09,
+            "threadCpuMs": 9.09
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.603713,
+            "cpuMs": 8.611,
+            "threadCpuMs": 8.611
+          },
+          "retained": {
+            "wallMs": 8.548928,
+            "cpuMs": 8.557,
+            "threadCpuMs": 8.557
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.125623,
+            "cpuMs": 9.135,
+            "threadCpuMs": 9.135
+          },
+          "retained": {
+            "wallMs": 11.216464,
+            "cpuMs": 39.724,
+            "threadCpuMs": 11.224
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.755262,
+            "cpuMs": 9.764,
+            "threadCpuMs": 9.764
+          },
+          "retained": {
+            "wallMs": 9.353034,
+            "cpuMs": 9.361,
+            "threadCpuMs": 9.361
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.463037,
+            "cpuMs": 8.471,
+            "threadCpuMs": 8.471
+          },
+          "traced": {
+            "wallMs": 8.966029,
+            "cpuMs": 8.974,
+            "threadCpuMs": 8.974
+          }
+        }
+      ],
+      "timing": {
+        "wallMs": {
+          "traced": {
+            "median": 9.2075575,
+            "p95": 11.746298,
+            "min": 8.603713,
+            "max": 13.002348
+          },
+          "retained": {
+            "median": 9.287698,
+            "p95": 11.216464,
+            "min": 8.350224,
+            "max": 13.782192
+          },
+          "meanDelta": -0.05652777500000021,
+          "meanDelta95CI": [
+            -0.5538927500000002,
+            0.42898234999999973
+          ]
+        },
+        "cpuMs": {
+          "traced": {
+            "median": 9.276,
+            "p95": 14.576,
+            "min": 8.611,
+            "max": 39.299
+          },
+          "retained": {
+            "median": 9.354,
+            "p95": 40.27,
+            "min": 8.471,
+            "max": 41.965
+          },
+          "meanDelta": -4.453125,
+          "meanDelta95CI": [
+            -8.916349999999998,
+            0.023200000000000064
+          ]
+        },
+        "threadCpuMs": {
+          "traced": {
+            "median": 9.2255,
+            "p95": 11.756,
+            "min": 8.611,
+            "max": 12.249
+          },
+          "retained": {
+            "median": 9.2965,
+            "p95": 11.224,
+            "min": 8.36,
+            "max": 12.377
+          },
+          "meanDelta": -0.05175000000000005,
+          "meanDelta95CI": [
+            -0.48280000000000023,
+            0.38482500000000003
+          ]
+        }
+      },
+      "memory": {
+        "traced": {
+          "terminal": {
+            "allocatedBytes": 8075104,
+            "freedBytes": 5657040,
+            "outstandingBytes": 2418064,
+            "peakOutstandingBytes": 3516528,
+            "outstandingBlocks": 8274,
+            "allocatorEvents": 107652,
+            "collections": 0,
+            "memoryCapacityBytes": 5242880
+          },
+          "postCollect": {
+            "allocatedBytes": 8075104,
+            "freedBytes": 6379488,
+            "outstandingBytes": 1695616,
+            "peakOutstandingBytes": 3516528,
+            "outstandingBlocks": 1085,
+            "allocatorEvents": 114841,
+            "collections": 1,
+            "memoryCapacityBytes": 5242880
+          }
+        },
+        "retained": {
+          "terminal": {
+            "allocatedBytes": 7146624,
+            "freedBytes": 1655840,
+            "outstandingBytes": 5490784,
+            "peakOutstandingBytes": 5565264,
+            "outstandingBlocks": 41451,
+            "allocatorEvents": 72601,
+            "collections": 0,
+            "memoryCapacityBytes": 10485760
+          },
+          "postCollect": {
+            "allocatedBytes": 7146624,
+            "freedBytes": 1774368,
+            "outstandingBytes": 5372256,
+            "peakOutstandingBytes": 5565264,
+            "outstandingBlocks": 39325,
+            "allocatorEvents": 74727,
+            "collections": 1,
+            "memoryCapacityBytes": 10485760
+          }
+        }
+      }
+    },
+    {
+      "elideJsonCacheArena": true,
+      "n": 0,
+      "artifacts": {
+        "traced": {
+          "bytes": 119522,
+          "sha256": "56d3c12aa488cc819c34ca7a870db9f52a592a66380e8ab0ad733d58ec491776"
+        },
+        "retained": {
+          "bytes": 113526,
+          "sha256": "e0e813cecbecfb07491ae2b145a51f188baf8dfc0ce62293c20d67dfe6bc0dae"
+        }
+      },
+      "samples": [
+        {
+          "traced": {
+            "wallMs": 1.020787,
+            "cpuMs": 1.027,
+            "threadCpuMs": 1.027
+          },
+          "retained": {
+            "wallMs": 0.92802,
+            "cpuMs": 0.934,
+            "threadCpuMs": 0.934
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.499346,
+            "cpuMs": 3.399,
+            "threadCpuMs": 1.508
+          },
+          "retained": {
+            "wallMs": 1.259524,
+            "cpuMs": 4.453,
+            "threadCpuMs": 1.267
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.249999,
+            "cpuMs": 9.6,
+            "threadCpuMs": 1.258
+          },
+          "traced": {
+            "wallMs": 1.401412,
+            "cpuMs": 11.316,
+            "threadCpuMs": 1.409
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.218946,
+            "cpuMs": 1.54,
+            "threadCpuMs": 1.224
+          },
+          "retained": {
+            "wallMs": 7.997441,
+            "cpuMs": 10.431,
+            "threadCpuMs": 5.256
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.195153,
+            "cpuMs": 1.686,
+            "threadCpuMs": 1.201
+          },
+          "retained": {
+            "wallMs": 0.934805,
+            "cpuMs": 0.938,
+            "threadCpuMs": 0.939
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.985571,
+            "cpuMs": 0.992,
+            "threadCpuMs": 0.991
+          },
+          "traced": {
+            "wallMs": 1.137079,
+            "cpuMs": 1.143,
+            "threadCpuMs": 1.143
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.051538,
+            "cpuMs": 1.299,
+            "threadCpuMs": 1.056
+          },
+          "retained": {
+            "wallMs": 0.891969,
+            "cpuMs": 0.897,
+            "threadCpuMs": 0.897
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.224176,
+            "cpuMs": 2.184,
+            "threadCpuMs": 1.229
+          },
+          "retained": {
+            "wallMs": 1.003453,
+            "cpuMs": 1.009,
+            "threadCpuMs": 1.01
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.309485,
+            "cpuMs": 1.314,
+            "threadCpuMs": 1.315
+          },
+          "retained": {
+            "wallMs": 1.462578,
+            "cpuMs": 2.294,
+            "threadCpuMs": 1.47
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.391626,
+            "cpuMs": 1.399,
+            "threadCpuMs": 1.399
+          },
+          "traced": {
+            "wallMs": 1.063924,
+            "cpuMs": 1.07,
+            "threadCpuMs": 1.069
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.146306,
+            "cpuMs": 1.153,
+            "threadCpuMs": 1.153
+          },
+          "retained": {
+            "wallMs": 0.829119,
+            "cpuMs": 0.834,
+            "threadCpuMs": 0.833
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.091079,
+            "cpuMs": 1.096,
+            "threadCpuMs": 1.097
+          },
+          "retained": {
+            "wallMs": 0.869449,
+            "cpuMs": 0.874,
+            "threadCpuMs": 0.874
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.080485,
+            "cpuMs": 1.085,
+            "threadCpuMs": 1.085
+          },
+          "retained": {
+            "wallMs": 0.902876,
+            "cpuMs": 0.908,
+            "threadCpuMs": 0.907
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.030088,
+            "cpuMs": 1.233,
+            "threadCpuMs": 1.035
+          },
+          "retained": {
+            "wallMs": 0.891266,
+            "cpuMs": 0.897,
+            "threadCpuMs": 0.897
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.005182,
+            "cpuMs": 1.009,
+            "threadCpuMs": 1.009
+          },
+          "retained": {
+            "wallMs": 0.886966,
+            "cpuMs": 0.893,
+            "threadCpuMs": 0.893
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.53052,
+            "cpuMs": 5.194,
+            "threadCpuMs": 1.538
+          },
+          "retained": {
+            "wallMs": 1.178604,
+            "cpuMs": 1.186,
+            "threadCpuMs": 1.185
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.584056,
+            "cpuMs": 15.91,
+            "threadCpuMs": 1.591
+          },
+          "retained": {
+            "wallMs": 0.92572,
+            "cpuMs": 2.089,
+            "threadCpuMs": 0.931
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.790504,
+            "cpuMs": 0.795,
+            "threadCpuMs": 0.796
+          },
+          "traced": {
+            "wallMs": 1.017485,
+            "cpuMs": 1.469,
+            "threadCpuMs": 1.024
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 5.552676,
+            "cpuMs": 9.064,
+            "threadCpuMs": 4.302
+          },
+          "retained": {
+            "wallMs": 0.83821,
+            "cpuMs": 0.844,
+            "threadCpuMs": 0.844
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.021005,
+            "cpuMs": 1.027,
+            "threadCpuMs": 1.027
+          },
+          "retained": {
+            "wallMs": 1.012744,
+            "cpuMs": 1.018,
+            "threadCpuMs": 1.018
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.846387,
+            "cpuMs": 0.852,
+            "threadCpuMs": 0.852
+          },
+          "traced": {
+            "wallMs": 1.138714,
+            "cpuMs": 1.144,
+            "threadCpuMs": 1.144
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.333516,
+            "cpuMs": 1.34,
+            "threadCpuMs": 1.339
+          },
+          "retained": {
+            "wallMs": 1.259807,
+            "cpuMs": 1.266,
+            "threadCpuMs": 1.266
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.042654,
+            "cpuMs": 1.048,
+            "threadCpuMs": 1.048
+          },
+          "retained": {
+            "wallMs": 0.941805,
+            "cpuMs": 1.269,
+            "threadCpuMs": 0.947
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.021999,
+            "cpuMs": 2.2,
+            "threadCpuMs": 1.027
+          },
+          "retained": {
+            "wallMs": 0.878547,
+            "cpuMs": 0.884,
+            "threadCpuMs": 0.883
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.182518,
+            "cpuMs": 1.189,
+            "threadCpuMs": 1.189
+          },
+          "retained": {
+            "wallMs": 1.041798,
+            "cpuMs": 1.048,
+            "threadCpuMs": 1.047
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.771384,
+            "cpuMs": 0.777,
+            "threadCpuMs": 0.776
+          },
+          "traced": {
+            "wallMs": 1.165204,
+            "cpuMs": 1.17,
+            "threadCpuMs": 1.17
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.829515,
+            "cpuMs": 0.835,
+            "threadCpuMs": 0.835
+          },
+          "traced": {
+            "wallMs": 0.977163,
+            "cpuMs": 0.982,
+            "threadCpuMs": 0.982
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.239657,
+            "cpuMs": 1.808,
+            "threadCpuMs": 1.245
+          },
+          "retained": {
+            "wallMs": 0.831184,
+            "cpuMs": 0.837,
+            "threadCpuMs": 0.837
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.77099,
+            "cpuMs": 0.776,
+            "threadCpuMs": 0.776
+          },
+          "traced": {
+            "wallMs": 1.075291,
+            "cpuMs": 1.079,
+            "threadCpuMs": 1.08
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.058977,
+            "cpuMs": 1.065,
+            "threadCpuMs": 1.064
+          },
+          "retained": {
+            "wallMs": 0.771756,
+            "cpuMs": 0.777,
+            "threadCpuMs": 0.776
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.153388,
+            "cpuMs": 1.159,
+            "threadCpuMs": 1.159
+          },
+          "retained": {
+            "wallMs": 0.786098,
+            "cpuMs": 0.792,
+            "threadCpuMs": 0.791
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.062992,
+            "cpuMs": 1.068,
+            "threadCpuMs": 1.069
+          },
+          "retained": {
+            "wallMs": 0.802081,
+            "cpuMs": 1.006,
+            "threadCpuMs": 0.806
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.881989,
+            "cpuMs": 0.888,
+            "threadCpuMs": 0.888
+          },
+          "traced": {
+            "wallMs": 0.987226,
+            "cpuMs": 0.992,
+            "threadCpuMs": 0.992
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.763328,
+            "cpuMs": 0.768,
+            "threadCpuMs": 0.768
+          },
+          "traced": {
+            "wallMs": 1.060837,
+            "cpuMs": 1.066,
+            "threadCpuMs": 1.066
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.965953,
+            "cpuMs": 0.972,
+            "threadCpuMs": 0.972
+          },
+          "traced": {
+            "wallMs": 1.232051,
+            "cpuMs": 1.237,
+            "threadCpuMs": 1.237
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.008412,
+            "cpuMs": 1.217,
+            "threadCpuMs": 1.015
+          },
+          "traced": {
+            "wallMs": 1.189506,
+            "cpuMs": 1.195,
+            "threadCpuMs": 1.195
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.182198,
+            "cpuMs": 1.393,
+            "threadCpuMs": 1.19
+          },
+          "traced": {
+            "wallMs": 1.694208,
+            "cpuMs": 3.743,
+            "threadCpuMs": 1.702
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.462556,
+            "cpuMs": 15.231,
+            "threadCpuMs": 1.47
+          },
+          "retained": {
+            "wallMs": 0.876234,
+            "cpuMs": 0.882,
+            "threadCpuMs": 0.882
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.856861,
+            "cpuMs": 0.862,
+            "threadCpuMs": 0.862
+          },
+          "traced": {
+            "wallMs": 1.040158,
+            "cpuMs": 1.045,
+            "threadCpuMs": 1.046
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.854732,
+            "cpuMs": 1.093,
+            "threadCpuMs": 1.007
+          },
+          "traced": {
+            "wallMs": 2.40811,
+            "cpuMs": 2.414,
+            "threadCpuMs": 2.414
+          }
+        }
+      ],
+      "timing": {
+        "wallMs": {
+          "traced": {
+            "median": 1.1425100000000001,
+            "p95": 1.694208,
+            "min": 0.977163,
+            "max": 5.552676
+          },
+          "retained": {
+            "median": 0.8916175,
+            "p95": 1.391626,
+            "min": 0.763328,
+            "max": 7.997441
+          },
+          "meanDelta": 0.18889874999999998,
+          "meanDelta95CI": [
+            -0.28224507500000007,
+            0.5523033249999999
+          ]
+        },
+        "cpuMs": {
+          "traced": {
+            "median": 1.1920000000000002,
+            "p95": 11.316,
+            "min": 0.982,
+            "max": 15.91
+          },
+          "retained": {
+            "median": 0.921,
+            "p95": 4.453,
+            "min": 0.768,
+            "max": 10.431
+          },
+          "meanDelta": 1.0978500000000002,
+          "meanDelta95CI": [
+            0.02782500000000026,
+            2.3465250000000006
+          ]
+        },
+        "threadCpuMs": {
+          "traced": {
+            "median": 1.1484999999999999,
+            "p95": 1.702,
+            "min": 0.982,
+            "max": 4.302
+          },
+          "retained": {
+            "median": 0.902,
+            "p95": 1.399,
+            "min": 0.768,
+            "max": 5.256
+          },
+          "meanDelta": 0.22262500000000002,
+          "meanDelta95CI": [
+            -0.07675000000000001,
+            0.490425
+          ]
+        }
+      },
+      "memory": {
+        "traced": {
+          "terminal": {
+            "allocatedBytes": 1545744,
+            "freedBytes": 447104,
+            "outstandingBytes": 1098640,
+            "peakOutstandingBytes": 1246160,
+            "outstandingBlocks": 3158,
+            "allocatorEvents": 4480,
+            "collections": 0,
+            "memoryCapacityBytes": 1835008
+          },
+          "postCollect": {
+            "allocatedBytes": 1545744,
+            "freedBytes": 898784,
+            "outstandingBytes": 646960,
+            "peakOutstandingBytes": 1246160,
+            "outstandingBlocks": 1200,
+            "allocatorEvents": 6438,
+            "collections": 1,
+            "memoryCapacityBytes": 1835008
+          }
+        },
+        "retained": {
+          "terminal": {
+            "allocatedBytes": 1476912,
+            "freedBytes": 431680,
+            "outstandingBytes": 1045232,
+            "peakOutstandingBytes": 1215168,
+            "outstandingBlocks": 3117,
+            "allocatorEvents": 4415,
+            "collections": 0,
+            "memoryCapacityBytes": 1835008
+          },
+          "postCollect": {
+            "allocatedBytes": 1476912,
+            "freedBytes": 733744,
+            "outstandingBytes": 743168,
+            "peakOutstandingBytes": 1215168,
+            "outstandingBlocks": 2454,
+            "allocatorEvents": 5078,
+            "collections": 1,
+            "memoryCapacityBytes": 1835008
+          }
+        }
+      }
+    },
+    {
+      "elideJsonCacheArena": true,
+      "n": 1,
+      "artifacts": {
+        "traced": {
+          "bytes": 119522,
+          "sha256": "56d3c12aa488cc819c34ca7a870db9f52a592a66380e8ab0ad733d58ec491776"
+        },
+        "retained": {
+          "bytes": 113526,
+          "sha256": "e0e813cecbecfb07491ae2b145a51f188baf8dfc0ce62293c20d67dfe6bc0dae"
+        }
+      },
+      "samples": [
+        {
+          "retained": {
+            "wallMs": 1.352908,
+            "cpuMs": 1.359,
+            "threadCpuMs": 1.359
+          },
+          "traced": {
+            "wallMs": 1.229544,
+            "cpuMs": 1.235,
+            "threadCpuMs": 1.234
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.279512,
+            "cpuMs": 1.285,
+            "threadCpuMs": 1.285
+          },
+          "retained": {
+            "wallMs": 0.937981,
+            "cpuMs": 0.943,
+            "threadCpuMs": 0.943
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.125867,
+            "cpuMs": 1.132,
+            "threadCpuMs": 1.131
+          },
+          "traced": {
+            "wallMs": 1.442039,
+            "cpuMs": 1.447,
+            "threadCpuMs": 1.447
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.252872,
+            "cpuMs": 1.259,
+            "threadCpuMs": 1.259
+          },
+          "traced": {
+            "wallMs": 1.301752,
+            "cpuMs": 1.308,
+            "threadCpuMs": 1.308
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.896489,
+            "cpuMs": 5.478,
+            "threadCpuMs": 1.905
+          },
+          "retained": {
+            "wallMs": 1.316772,
+            "cpuMs": 14.229,
+            "threadCpuMs": 1.323
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.669925,
+            "cpuMs": 12.527,
+            "threadCpuMs": 1.677
+          },
+          "retained": {
+            "wallMs": 0.982918,
+            "cpuMs": 2.155,
+            "threadCpuMs": 0.99
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.961654,
+            "cpuMs": 0.965,
+            "threadCpuMs": 0.967
+          },
+          "traced": {
+            "wallMs": 1.204462,
+            "cpuMs": 1.21,
+            "threadCpuMs": 1.21
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.09016,
+            "cpuMs": 1.097,
+            "threadCpuMs": 1.096
+          },
+          "traced": {
+            "wallMs": 1.289933,
+            "cpuMs": 1.296,
+            "threadCpuMs": 1.295
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.212431,
+            "cpuMs": 1.218,
+            "threadCpuMs": 1.218
+          },
+          "retained": {
+            "wallMs": 0.998617,
+            "cpuMs": 1.003,
+            "threadCpuMs": 1.004
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.287547,
+            "cpuMs": 1.55,
+            "threadCpuMs": 1.293
+          },
+          "retained": {
+            "wallMs": 1.170243,
+            "cpuMs": 1.175,
+            "threadCpuMs": 1.175
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.022661,
+            "cpuMs": 1.028,
+            "threadCpuMs": 1.028
+          },
+          "traced": {
+            "wallMs": 1.424616,
+            "cpuMs": 1.431,
+            "threadCpuMs": 1.431
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.953224,
+            "cpuMs": 0.959,
+            "threadCpuMs": 0.958
+          },
+          "traced": {
+            "wallMs": 1.273034,
+            "cpuMs": 1.278,
+            "threadCpuMs": 1.278
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.95859,
+            "cpuMs": 0.963,
+            "threadCpuMs": 0.963
+          },
+          "traced": {
+            "wallMs": 1.419047,
+            "cpuMs": 1.425,
+            "threadCpuMs": 1.424
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.378404,
+            "cpuMs": 1.385,
+            "threadCpuMs": 1.385
+          },
+          "retained": {
+            "wallMs": 1.029479,
+            "cpuMs": 1.077,
+            "threadCpuMs": 1.077
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.254222,
+            "cpuMs": 1.259,
+            "threadCpuMs": 1.259
+          },
+          "retained": {
+            "wallMs": 1.035295,
+            "cpuMs": 1.041,
+            "threadCpuMs": 1.04
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.98022,
+            "cpuMs": 0.985,
+            "threadCpuMs": 0.986
+          },
+          "traced": {
+            "wallMs": 1.463815,
+            "cpuMs": 1.469,
+            "threadCpuMs": 1.47
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.965376,
+            "cpuMs": 0.971,
+            "threadCpuMs": 0.97
+          },
+          "traced": {
+            "wallMs": 1.363285,
+            "cpuMs": 1.369,
+            "threadCpuMs": 1.369
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.214772,
+            "cpuMs": 1.336,
+            "threadCpuMs": 1.219
+          },
+          "retained": {
+            "wallMs": 0.949146,
+            "cpuMs": 1.117,
+            "threadCpuMs": 0.955
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.269684,
+            "cpuMs": 1.276,
+            "threadCpuMs": 1.275
+          },
+          "retained": {
+            "wallMs": 0.888368,
+            "cpuMs": 0.893,
+            "threadCpuMs": 0.894
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.307595,
+            "cpuMs": 1.314,
+            "threadCpuMs": 1.314
+          },
+          "retained": {
+            "wallMs": 0.923341,
+            "cpuMs": 0.929,
+            "threadCpuMs": 0.929
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.331728,
+            "cpuMs": 1.337,
+            "threadCpuMs": 1.337
+          },
+          "retained": {
+            "wallMs": 1.047572,
+            "cpuMs": 2.155,
+            "threadCpuMs": 1.053
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.18347,
+            "cpuMs": 1.189,
+            "threadCpuMs": 1.189
+          },
+          "retained": {
+            "wallMs": 0.941949,
+            "cpuMs": 0.946,
+            "threadCpuMs": 0.947
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.994809,
+            "cpuMs": 1,
+            "threadCpuMs": 1
+          },
+          "traced": {
+            "wallMs": 1.19568,
+            "cpuMs": 1.201,
+            "threadCpuMs": 1.2
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 2.073442,
+            "cpuMs": 8.572,
+            "threadCpuMs": 2.082
+          },
+          "retained": {
+            "wallMs": 2.249398,
+            "cpuMs": 10.893,
+            "threadCpuMs": 2.287
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 4.860587,
+            "cpuMs": 10.139,
+            "threadCpuMs": 3.977
+          },
+          "traced": {
+            "wallMs": 1.653281,
+            "cpuMs": 1.66,
+            "threadCpuMs": 1.66
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.357937,
+            "cpuMs": 1.364,
+            "threadCpuMs": 1.364
+          },
+          "retained": {
+            "wallMs": 0.923014,
+            "cpuMs": 0.927,
+            "threadCpuMs": 0.929
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.386475,
+            "cpuMs": 1.392,
+            "threadCpuMs": 1.392
+          },
+          "retained": {
+            "wallMs": 0.989733,
+            "cpuMs": 1.279,
+            "threadCpuMs": 0.995
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.906252,
+            "cpuMs": 0.911,
+            "threadCpuMs": 0.911
+          },
+          "traced": {
+            "wallMs": 1.297375,
+            "cpuMs": 1.303,
+            "threadCpuMs": 1.303
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.196235,
+            "cpuMs": 1.202,
+            "threadCpuMs": 1.201
+          },
+          "retained": {
+            "wallMs": 0.922948,
+            "cpuMs": 0.929,
+            "threadCpuMs": 0.927
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.39349,
+            "cpuMs": 1.732,
+            "threadCpuMs": 1.375
+          },
+          "retained": {
+            "wallMs": 0.96303,
+            "cpuMs": 0.968,
+            "threadCpuMs": 0.968
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.342777,
+            "cpuMs": 1.348,
+            "threadCpuMs": 1.349
+          },
+          "retained": {
+            "wallMs": 0.956956,
+            "cpuMs": 0.962,
+            "threadCpuMs": 0.962
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.345773,
+            "cpuMs": 1.352,
+            "threadCpuMs": 1.352
+          },
+          "retained": {
+            "wallMs": 0.992678,
+            "cpuMs": 0.998,
+            "threadCpuMs": 0.998
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.026917,
+            "cpuMs": 1.456,
+            "threadCpuMs": 1.032
+          },
+          "traced": {
+            "wallMs": 1.376487,
+            "cpuMs": 1.771,
+            "threadCpuMs": 1.381
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.001752,
+            "cpuMs": 1.008,
+            "threadCpuMs": 1.008
+          },
+          "traced": {
+            "wallMs": 1.19824,
+            "cpuMs": 1.203,
+            "threadCpuMs": 1.204
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.297983,
+            "cpuMs": 1.304,
+            "threadCpuMs": 1.304
+          },
+          "retained": {
+            "wallMs": 1.396508,
+            "cpuMs": 1.404,
+            "threadCpuMs": 1.404
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 1.229736,
+            "cpuMs": 1.235,
+            "threadCpuMs": 1.235
+          },
+          "retained": {
+            "wallMs": 1.130599,
+            "cpuMs": 1.136,
+            "threadCpuMs": 1.136
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.999672,
+            "cpuMs": 1.005,
+            "threadCpuMs": 1.005
+          },
+          "traced": {
+            "wallMs": 1.416053,
+            "cpuMs": 1.423,
+            "threadCpuMs": 1.422
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.087416,
+            "cpuMs": 1.31,
+            "threadCpuMs": 1.093
+          },
+          "traced": {
+            "wallMs": 1.198295,
+            "cpuMs": 1.33,
+            "threadCpuMs": 1.203
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 0.994679,
+            "cpuMs": 1,
+            "threadCpuMs": 1
+          },
+          "traced": {
+            "wallMs": 1.15103,
+            "cpuMs": 1.157,
+            "threadCpuMs": 1.156
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 1.324699,
+            "cpuMs": 1.975,
+            "threadCpuMs": 1.331
+          },
+          "traced": {
+            "wallMs": 1.170659,
+            "cpuMs": 1.176,
+            "threadCpuMs": 1.176
+          }
+        }
+      ],
+      "timing": {
+        "wallMs": {
+          "traced": {
+            "median": 1.2998675,
+            "p95": 1.669925,
+            "min": 1.15103,
+            "max": 2.073442
+          },
+          "retained": {
+            "median": 0.996713,
+            "p95": 1.396508,
+            "min": 0.888368,
+            "max": 4.860587
+          },
+          "meanDelta": 0.18428485000000003,
+          "meanDelta95CI": [
+            -0.01888075000000002,
+            0.31176985
+          ]
+        },
+        "cpuMs": {
+          "traced": {
+            "median": 1.3330000000000002,
+            "p95": 5.478,
+            "min": 1.157,
+            "max": 12.527
+          },
+          "retained": {
+            "median": 1.018,
+            "p95": 10.139,
+            "min": 0.893,
+            "max": 14.229
+          },
+          "meanDelta": -0.03334999999999995,
+          "meanDelta95CI": [
+            -0.8623750000000001,
+            0.7682749999999998
+          ]
+        },
+        "threadCpuMs": {
+          "traced": {
+            "median": 1.306,
+            "p95": 1.677,
+            "min": 1.156,
+            "max": 2.082
+          },
+          "retained": {
+            "median": 1.002,
+            "p95": 1.404,
+            "min": 0.894,
+            "max": 3.977
+          },
+          "meanDelta": 0.20427500000000004,
+          "meanDelta95CI": [
+            0.045450000000000004,
+            0.314825
+          ]
+        }
+      },
+      "memory": {
+        "traced": {
+          "terminal": {
+            "allocatedBytes": 1710400,
+            "freedBytes": 447232,
+            "outstandingBytes": 1263168,
+            "peakOutstandingBytes": 1263168,
+            "outstandingBlocks": 4858,
+            "allocatorEvents": 6188,
+            "collections": 0,
+            "memoryCapacityBytes": 1835008
+          },
+          "postCollect": {
+            "allocatedBytes": 1710400,
+            "freedBytes": 1102240,
+            "outstandingBytes": 608160,
+            "peakOutstandingBytes": 1263168,
+            "outstandingBlocks": 769,
+            "allocatorEvents": 10277,
+            "collections": 1,
+            "memoryCapacityBytes": 1835008
+          }
+        },
+        "retained": {
+          "terminal": {
+            "allocatedBytes": 1630400,
+            "freedBytes": 431808,
+            "outstandingBytes": 1198592,
+            "peakOutstandingBytes": 1215296,
+            "outstandingBlocks": 4783,
+            "allocatorEvents": 6089,
+            "collections": 0,
+            "memoryCapacityBytes": 1835008
+          },
+          "postCollect": {
+            "allocatedBytes": 1630400,
+            "freedBytes": 770848,
+            "outstandingBytes": 859552,
+            "peakOutstandingBytes": 1215296,
+            "outstandingBlocks": 3607,
+            "allocatorEvents": 7265,
+            "collections": 1,
+            "memoryCapacityBytes": 1835008
+          }
+        }
+      }
+    },
+    {
+      "elideJsonCacheArena": true,
+      "n": 32,
+      "artifacts": {
+        "traced": {
+          "bytes": 119522,
+          "sha256": "56d3c12aa488cc819c34ca7a870db9f52a592a66380e8ab0ad733d58ec491776"
+        },
+        "retained": {
+          "bytes": 113526,
+          "sha256": "e0e813cecbecfb07491ae2b145a51f188baf8dfc0ce62293c20d67dfe6bc0dae"
+        }
+      },
+      "samples": [
+        {
+          "retained": {
+            "wallMs": 9.612249,
+            "cpuMs": 9.81,
+            "threadCpuMs": 9.619
+          },
+          "traced": {
+            "wallMs": 8.838138,
+            "cpuMs": 9.036,
+            "threadCpuMs": 8.843
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.870521,
+            "cpuMs": 8.86,
+            "threadCpuMs": 8.859
+          },
+          "retained": {
+            "wallMs": 9.139358,
+            "cpuMs": 9.145,
+            "threadCpuMs": 9.145
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.737074,
+            "cpuMs": 8.743,
+            "threadCpuMs": 8.743
+          },
+          "traced": {
+            "wallMs": 9.207602,
+            "cpuMs": 9.215,
+            "threadCpuMs": 9.215
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.747752,
+            "cpuMs": 8.755,
+            "threadCpuMs": 8.753
+          },
+          "traced": {
+            "wallMs": 9.656805,
+            "cpuMs": 9.663,
+            "threadCpuMs": 9.663
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.536319,
+            "cpuMs": 9.542,
+            "threadCpuMs": 9.542
+          },
+          "traced": {
+            "wallMs": 12.010285,
+            "cpuMs": 41.764,
+            "threadCpuMs": 12.019
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.559479,
+            "cpuMs": 9.567,
+            "threadCpuMs": 9.567
+          },
+          "retained": {
+            "wallMs": 9.725879,
+            "cpuMs": 9.732,
+            "threadCpuMs": 9.732
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.926743,
+            "cpuMs": 8.934,
+            "threadCpuMs": 8.933
+          },
+          "retained": {
+            "wallMs": 9.372688,
+            "cpuMs": 9.379,
+            "threadCpuMs": 9.379
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.594637,
+            "cpuMs": 9.603,
+            "threadCpuMs": 9.602
+          },
+          "retained": {
+            "wallMs": 9.098406,
+            "cpuMs": 9.104,
+            "threadCpuMs": 9.105
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 10.756354,
+            "cpuMs": 10.762,
+            "threadCpuMs": 10.763
+          },
+          "traced": {
+            "wallMs": 9.342505,
+            "cpuMs": 9.348,
+            "threadCpuMs": 9.349
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.953146,
+            "cpuMs": 8.96,
+            "threadCpuMs": 8.959
+          },
+          "traced": {
+            "wallMs": 11.986467,
+            "cpuMs": 42.453,
+            "threadCpuMs": 11.995
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.121302,
+            "cpuMs": 9.127,
+            "threadCpuMs": 9.127
+          },
+          "traced": {
+            "wallMs": 9.578113,
+            "cpuMs": 9.584,
+            "threadCpuMs": 9.584
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.994927,
+            "cpuMs": 10.001,
+            "threadCpuMs": 10.001
+          },
+          "traced": {
+            "wallMs": 9.361383,
+            "cpuMs": 9.369,
+            "threadCpuMs": 9.369
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.171996,
+            "cpuMs": 9.178,
+            "threadCpuMs": 9.178
+          },
+          "traced": {
+            "wallMs": 10.232457,
+            "cpuMs": 10.24,
+            "threadCpuMs": 10.24
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.301325,
+            "cpuMs": 9.308,
+            "threadCpuMs": 9.307
+          },
+          "traced": {
+            "wallMs": 9.018833,
+            "cpuMs": 9.027,
+            "threadCpuMs": 9.027
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 10.510706,
+            "cpuMs": 10.516,
+            "threadCpuMs": 10.517
+          },
+          "traced": {
+            "wallMs": 9.185051,
+            "cpuMs": 9.193,
+            "threadCpuMs": 9.192
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.725753,
+            "cpuMs": 9.733,
+            "threadCpuMs": 9.732
+          },
+          "traced": {
+            "wallMs": 11.27991,
+            "cpuMs": 40.395,
+            "threadCpuMs": 11.288
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.81616,
+            "cpuMs": 9.496,
+            "threadCpuMs": 8.823
+          },
+          "retained": {
+            "wallMs": 9.560181,
+            "cpuMs": 10.121,
+            "threadCpuMs": 9.567
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 10.396054,
+            "cpuMs": 10.394,
+            "threadCpuMs": 10.395
+          },
+          "retained": {
+            "wallMs": 9.45644,
+            "cpuMs": 9.463,
+            "threadCpuMs": 9.463
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.267226,
+            "cpuMs": 9.273,
+            "threadCpuMs": 9.274
+          },
+          "traced": {
+            "wallMs": 8.677123,
+            "cpuMs": 8.684,
+            "threadCpuMs": 8.684
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.137261,
+            "cpuMs": 9.144,
+            "threadCpuMs": 9.145
+          },
+          "retained": {
+            "wallMs": 10.065535,
+            "cpuMs": 10.071,
+            "threadCpuMs": 10.072
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.22297,
+            "cpuMs": 9.229,
+            "threadCpuMs": 9.23
+          },
+          "retained": {
+            "wallMs": 8.899815,
+            "cpuMs": 8.906,
+            "threadCpuMs": 8.905
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 11.831871,
+            "cpuMs": 40.935,
+            "threadCpuMs": 11.839
+          },
+          "traced": {
+            "wallMs": 9.25852,
+            "cpuMs": 9.265,
+            "threadCpuMs": 9.266
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.778709,
+            "cpuMs": 8.785,
+            "threadCpuMs": 8.785
+          },
+          "traced": {
+            "wallMs": 8.61027,
+            "cpuMs": 8.615,
+            "threadCpuMs": 8.615
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.112328,
+            "cpuMs": 9.119,
+            "threadCpuMs": 9.119
+          },
+          "retained": {
+            "wallMs": 9.149042,
+            "cpuMs": 9.189,
+            "threadCpuMs": 9.189
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.890343,
+            "cpuMs": 8.897,
+            "threadCpuMs": 8.896
+          },
+          "traced": {
+            "wallMs": 9.081089,
+            "cpuMs": 9.087,
+            "threadCpuMs": 9.087
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.602979,
+            "cpuMs": 8.61,
+            "threadCpuMs": 8.609
+          },
+          "traced": {
+            "wallMs": 8.947565,
+            "cpuMs": 8.954,
+            "threadCpuMs": 8.955
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.887961,
+            "cpuMs": 8.894,
+            "threadCpuMs": 8.894
+          },
+          "retained": {
+            "wallMs": 10.237257,
+            "cpuMs": 10.243,
+            "threadCpuMs": 10.243
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 11.740224,
+            "cpuMs": 42.908,
+            "threadCpuMs": 11.748
+          },
+          "retained": {
+            "wallMs": 8.721371,
+            "cpuMs": 8.727,
+            "threadCpuMs": 8.728
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.081155,
+            "cpuMs": 9.596,
+            "threadCpuMs": 9.089
+          },
+          "retained": {
+            "wallMs": 9.164536,
+            "cpuMs": 9.173,
+            "threadCpuMs": 9.172
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.646858,
+            "cpuMs": 9.653,
+            "threadCpuMs": 9.653
+          },
+          "retained": {
+            "wallMs": 8.931514,
+            "cpuMs": 8.938,
+            "threadCpuMs": 8.938
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 8.807145,
+            "cpuMs": 8.813,
+            "threadCpuMs": 8.814
+          },
+          "retained": {
+            "wallMs": 8.78152,
+            "cpuMs": 8.788,
+            "threadCpuMs": 8.788
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 10.18038,
+            "cpuMs": 10.533,
+            "threadCpuMs": 10.532
+          },
+          "retained": {
+            "wallMs": 8.915881,
+            "cpuMs": 8.924,
+            "threadCpuMs": 8.924
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.255879,
+            "cpuMs": 9.262,
+            "threadCpuMs": 9.262
+          },
+          "retained": {
+            "wallMs": 8.952467,
+            "cpuMs": 8.958,
+            "threadCpuMs": 8.958
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 11.177226,
+            "cpuMs": 42.187,
+            "threadCpuMs": 11.185
+          },
+          "traced": {
+            "wallMs": 10.195357,
+            "cpuMs": 10.203,
+            "threadCpuMs": 10.203
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.861214,
+            "cpuMs": 9.339,
+            "threadCpuMs": 8.867
+          },
+          "traced": {
+            "wallMs": 9.101838,
+            "cpuMs": 9.206,
+            "threadCpuMs": 9.109
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 13.019761,
+            "cpuMs": 22.586,
+            "threadCpuMs": 12.668
+          },
+          "traced": {
+            "wallMs": 10.950088,
+            "cpuMs": 10.957,
+            "threadCpuMs": 10.957
+          }
+        },
+        {
+          "traced": {
+            "wallMs": 9.416484,
+            "cpuMs": 9.424,
+            "threadCpuMs": 9.424
+          },
+          "retained": {
+            "wallMs": 9.722105,
+            "cpuMs": 9.728,
+            "threadCpuMs": 9.729
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.392939,
+            "cpuMs": 9.399,
+            "threadCpuMs": 9.398
+          },
+          "traced": {
+            "wallMs": 9.004497,
+            "cpuMs": 9.011,
+            "threadCpuMs": 9.01
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 9.010798,
+            "cpuMs": 9.01,
+            "threadCpuMs": 9.01
+          },
+          "traced": {
+            "wallMs": 9.885303,
+            "cpuMs": 9.892,
+            "threadCpuMs": 9.892
+          }
+        },
+        {
+          "retained": {
+            "wallMs": 8.642026,
+            "cpuMs": 8.648,
+            "threadCpuMs": 8.648
+          },
+          "traced": {
+            "wallMs": 11.439494,
+            "cpuMs": 40.665,
+            "threadCpuMs": 11.447
+          }
+        }
+      ],
+      "timing": {
+        "wallMs": {
+          "traced": {
+            "median": 9.2571995,
+            "p95": 11.740224,
+            "min": 8.61027,
+            "max": 12.010285
+          },
+          "retained": {
+            "median": 9.168266,
+            "p95": 11.177226,
+            "min": 8.602979,
+            "max": 13.019761
+          },
+          "meanDelta": 0.14907354999999994,
+          "meanDelta95CI": [
+            -0.23044099999999995,
+            0.5411681000000002
+          ]
+        },
+        "cpuMs": {
+          "traced": {
+            "median": 9.3585,
+            "p95": 41.764,
+            "min": 8.615,
+            "max": 42.908
+          },
+          "retained": {
+            "median": 9.231,
+            "p95": 22.586,
+            "min": 8.61,
+            "max": 42.187
+          },
+          "meanDelta": 2.1640499999999996,
+          "meanDelta95CI": [
+            -1.8061,
+            6.53995
+          ]
+        },
+        "threadCpuMs": {
+          "traced": {
+            "median": 9.264,
+            "p95": 11.748,
+            "min": 8.615,
+            "max": 12.019
+          },
+          "retained": {
+            "median": 9.1835,
+            "p95": 11.185,
+            "min": 8.609,
+            "max": 12.668
+          },
+          "meanDelta": 0.166025,
+          "meanDelta95CI": [
+            -0.1968500000000001,
+            0.5541750000000001
+          ]
+        }
+      },
+      "memory": {
+        "traced": {
+          "terminal": {
+            "allocatedBytes": 7026528,
+            "freedBytes": 6353152,
+            "outstandingBytes": 673376,
+            "peakOutstandingBytes": 1599184,
+            "outstandingBlocks": 1396,
+            "allocatorEvents": 114530,
+            "collections": 0,
+            "memoryCapacityBytes": 1835008
+          },
+          "postCollect": {
+            "allocatedBytes": 7026528,
+            "freedBytes": 6379488,
+            "outstandingBytes": 647040,
+            "peakOutstandingBytes": 1599184,
+            "outstandingBlocks": 1085,
+            "allocatorEvents": 114841,
+            "collections": 1,
+            "memoryCapacityBytes": 1835008
+          }
+        },
+        "retained": {
+          "terminal": {
+            "allocatedBytes": 6098048,
+            "freedBytes": 1583040,
+            "outstandingBytes": 4515008,
+            "peakOutstandingBytes": 4515008,
+            "outstandingBlocks": 42751,
+            "allocatorEvents": 71301,
+            "collections": 0,
+            "memoryCapacityBytes": 7340032
+          },
+          "postCollect": {
+            "allocatedBytes": 6098048,
+            "freedBytes": 1774368,
+            "outstandingBytes": 4323680,
+            "peakOutstandingBytes": 4515008,
+            "outstandingBlocks": 39325,
+            "allocatorEvents": 74727,
+            "collections": 1,
+            "memoryCapacityBytes": 7340032
+          }
+        }
+      }
+    }
+  ]
+}
