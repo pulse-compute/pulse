@@ -8,6 +8,41 @@ function createReportViewModel(P) {
   const A = P.artifacts.find(a => a.id === P.context.primaryArtifactId);
   const byId = rows => new Map(rows.map(row => [row.id, row]));
   const routes = byId(P.routes), schemas = byId(P.schemas), bindings = byId(P.bindings), evidence = byId(P.evidence), declarations = byId(P.declarations);
+  // Authored definitions and their registration instances are independent of
+  // compiled helper bodies and the physical-size recipe.
+  const analytics = P.analytics;
+  const definitions = analytics?.handlers || [], registrations = analytics?.registrations || [], useSites = analytics?.useSites || [];
+  const definitionById = byId(definitions), registrationById = byId(registrations), useSiteById = byId(useSites);
+  const callById = byId(analytics?.helperCalls || []);
+  const ordinal = rows => new Map(rows.map((row, index) => [row.id, index]));
+  const definitionIndex = ordinal(definitions), registrationIndex = ordinal(registrations), useSiteIndex = ordinal(useSites);
+  function group(rows, key) {
+    const result = new Map();
+    for (const row of rows) { const id = row[key]; if (!result.has(id)) result.set(id, []); result.get(id).push(row); }
+    return id => result.get(id) || [];
+  }
+  const definitionRegistrations = group(registrations, 'handlerId'), definitionSites = group(useSites, 'ownerId');
+  const helperCallers = group(analytics?.helperCalls || [], 'calleeId'), helperCallees = group(analytics?.helperCalls || [], 'callerId');
+  const registrationAssociations = group(analytics?.associations || [], 'consumerRegistrationId');
+  const siteAssociations = group(analytics?.associations || [], 'useSiteId');
+  const bindingSites = group(useSites.filter(row => row.binding.bindingId).map(row => ({...row, bindingId:row.binding.bindingId})), 'bindingId');
+  const analyticsCoverage = key => analytics?.coverage[key] || {status:'unavailable',observed:0,expected:null,reason:'not-recorded'};
+  const coverageText = c => `${c.status} · ${c.observed} observed / ${c.expected ?? 'unknown'} expected${c.reason ? ' · '+c.reason : ''}`;
+  const authoredFact = fact => fact?.state === 'available' ? String(fact.value) : [fact?.state || 'unavailable',fact?.reason || 'not-recorded'].join(' · ');
+  const authoredSource = fact => fact?.state === 'available'
+    ? `${fact.value.file}:${fact.value.start.line}:${fact.value.start.column}–${fact.value.end.line}:${fact.value.end.column} · UTF-16 [${fact.value.start.offset}, ${fact.value.end.offset}) · SHA-256 ${fact.value.sha256}`
+    : authoredFact(fact);
+  const definitionLabel = row => row ? `${row.name ?? 'Anonymous '+row.kind} · ${row.kind} ${definitionIndex.get(row.id)+1}` : 'Definition unavailable';
+  const registrationLabel = row => row ? `${row.kind} ${row.order+1} · ${row.match.state === 'available' ? [row.match.value.method,row.match.value.path,row.match.value.eventType].filter(Boolean).join(' ') || 'No match constraint' : authoredFact(row.match)}` : 'Registration unavailable';
+  function filteredDefinitions() {
+    return definitions.filter(row => (state.definitionKind === 'all' || row.kind === state.definitionKind)
+      && (state.definitionRole === 'all' || definitionRegistrations(row.id).some(r => r.kind === state.definitionRole))
+      && [definitionLabel(row),row.id,row.canonicalId,authoredSource(row.source),
+        row.package.state === 'available' ? row.package.value.name : '',
+        ...definitionRegistrations(row.id).map(registrationLabel),
+        ...definitionSites(row.id).map(u => [u.surfaceId,u.operation,authoredFact(u.capability),bindings.get(u.binding.bindingId)?.name,u.binding.state].join(' '))]
+        .join(' ').toLowerCase().includes(state.definitionSearch));
+  }
   const routeIndex = new Map(P.routes.map((r, i) => [r.id, i]));
   const schemaIndex = new Map(P.schemas.map((s, i) => [s.id, i]));
   const resourceIndex = new Map(P.resources.map((r, i) => [r.id, i]));
@@ -173,7 +208,7 @@ function createReportViewModel(P) {
   const prefix = r => '/' + r.path.split('/').filter(Boolean).slice(0, 2).join('/');
   const declarationState = r => r.declarationIds.length ? 'recorded' : r.compositionCoverage === 'complete' ? 'not-declared' : 'unavailable';
   const declarationLabels = {recorded:'Declarations recorded', 'not-declared':'Not declared', unavailable:'Unavailable'};
-  const state = {view:'routes', entrySearch:'', selectedEntry:null, search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
+  const state = {view:'routes', definitionSearch:'', definitionKind:'all', definitionRole:'all', selectedDefinition:null, selectedRegistration:null, selectedUseSite:null, entrySearch:'', selectedEntry:null, search:'', group:'all', method:'all', declaration:'all', binding:'all', availability:'all', metric:'handler-body', sort:'order', dir:'asc', selected:null, drawerTab:'facts', schemaSearch:'', schemaSort:'name', schemaDir:'asc', resourceSort:'name', resourceDir:'asc', expandedSchemas:new Set(), expandedResources:new Set(),
     helperSearch:'', helperOrigin:'all', helperRole:'all', helperSort:'name', helperDir:'asc', expandedHelpers:new Set()};
   function compareValues(a,b,direction) { if(a==null)return b==null?0:1;if(b==null)return -1;return (a===b?0:a<b?-1:1)*(direction==='asc'?1:-1); }
   function filteredRoutes() {
@@ -211,7 +246,7 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+  return {analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
     entries,entryIndex,entryLabel,helpers,helperIndex,helperOrigins,helperState,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
     routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers};
 }

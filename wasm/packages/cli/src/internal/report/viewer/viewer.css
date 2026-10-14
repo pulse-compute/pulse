@@ -726,3 +726,12 @@ body.overlay-open{overflow:hidden}
 .build-summary .small-note{margin:12px 0 0}
 @media(max-width:1100px){.build-summary{margin-left:25px;margin-right:25px}}
 @media(max-width:640px){.build-summary>.kv-list{grid-template-columns:repeat(2,minmax(0,1fr))}.build-summary{margin-left:16px;margin-right:16px;padding:14px}}
+
+/* Authored analytics remains a single-column drill-down on narrow screens. */
+.analytics-links{padding-left:20px;display:grid;gap:12px;overflow-wrap:anywhere}
+.analytics-filters{display:flex;flex-wrap:wrap;gap:16px}
+.analytics-filters label{display:grid;gap:6px;font-size:12px;min-width:0}
+.analytics-filters select{max-width:100%}
+#view-handlers .details-block{padding:12px 0;overflow-wrap:anywhere}
+#view-handlers .details-block>summary{cursor:pointer}
+#view-handlers .step-list .details-block{min-width:0}
