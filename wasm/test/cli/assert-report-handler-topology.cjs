@@ -20,23 +20,20 @@ const retained = require(path.join(cli, 'internal/report/retained'));
 const nativeHost = require(path.join(root, 'wasm/packages/host-runtime/src/runtime/canonical-native-host'));
 const events = require(path.join(root, 'wasm/packages/contracts/src/events/contracts'));
 const { createNodeProviderAdapter } = require(path.join(root, 'packages/provider-node/src/runtime/canonical-api-runtime'));
-const { setup } = require(path.join(root, 'docs/internal/an9-00/fixture.cjs'));
+const { setup } = require(path.join(root, 'wasm/test/support/report-analytics-fixture.cjs'));
 const f = require('./report-fixtures.cjs');
-function withoutTopology() {
-  // Disable the producer itself through the existing observational seam.
-  const file = path.join(compiler, 'report-reference-provenance.js'), owner = new Module(file, module);
-  owner.filename = file; owner.paths = Module._nodeModulePaths(path.dirname(file));
-  const original = owner.require.bind(owner);
-  owner.require = name => name === './report-handler-topology' ? { collectHandlerTopology: () => undefined } : original(name);
-  owner._compile(fs.readFileSync(file, 'utf8'), file);
-  const executionFile = path.join(cli, 'project-execution.js'), control = new Module(executionFile, module);
-  control.filename = executionFile; control.paths = Module._nodeModulePaths(path.dirname(executionFile));
-  const requireControl = control.require.bind(control);
+const assertIntegration = require('./report-analytics-integration.cjs');
+function withoutProjection() {
+  // Disable the complete report-reference observation at the existing seam.
+  const file = path.join(cli, 'project-execution.js'), control = new Module(file, module);
+  control.filename = file; control.paths = Module._nodeModulePaths(path.dirname(file));
+  const original = control.require.bind(control);
   control.require = name => {
-    const value = requireControl(name);
-    return name === '@pulse-compute/wasm-compiler/canonical-native-plan' ? { ...value, ...owner.exports } : value;
+    const value = original(name);
+    return name === '@pulse-compute/wasm-compiler/canonical-native-plan'
+      ? { ...value, collectCanonicalReportReferences: () => undefined } : value;
   };
-  control._compile(fs.readFileSync(executionFile, 'utf8'), executionFile);
+  control._compile(fs.readFileSync(file, 'utf8'), file);
   return control.exports;
 }
 function report(project, prepared, optimization = 'default') {
@@ -183,29 +180,47 @@ function negativeCases(value) {
   assert.throws(() => capsule.validateCapsule(tampered), e => e.code === 'REPORT_HASH');
   return cases + 3;
 }
-async function execute(native, event) {
-  const providerAdapter = createNodeProviderAdapter({ config: { ROOT: 'root', SCOPED: 'scoped', REGION: 'r', OTHER: 'o', RECOVERY: 'recovery', EVENT: 'event' }, secrets: { HELPER_TOKEN: 'token' } });
-  let executions = 0;
-  const cases = [['/direct-a', 'rro', 200], ['/api/scoped', 'scoped', 200], ['/v2/plain', 'plain', 200],
-    ['/helper-a', 'tokena', 200], ['/missing', 'Not Found', 404], ['/helper-a', 'stopped', 403, [['x-stop','yes']]]];
-  if (!event) cases.push(['/error','AN9:recovery',418]);
-  for (const [url, body, status, headers = []] of cases) {
+async function execute(native, variant) {
+  const calls = [];
+  const adapter = createNodeProviderAdapter({ config: { ROOT: 'root', SCOPED: 'scoped', REGION: 'r', OTHER: 'o',
+    PACKAGE: 'package', RECOVERY: 'recovery', EVENT: 'event' }, secrets: { HELPER_TOKEN: 'token' } });
+  const dispatch = adapter.dispatchEffect.bind(adapter);
+  const providerAdapter = { ...adapter, dispatchEffect: async (...args) => { calls.push(args[0]); return dispatch(...args); } };
+  let count = 0;
+  const cases = [
+    ['/api/scoped', 'scoped', ['ROOT', 'SCOPED']], ['/api/plain', 'plain', ['ROOT']],
+    ['/v2/scoped', 'scoped', ['ROOT', 'SCOPED']], ['/v2/plain', 'plain', ['ROOT']],
+    ['/direct-a', 'rro', ['ROOT', 'REGION', 'REGION', 'OTHER']], ['/direct-b', 'rro', ['ROOT', 'REGION', 'REGION', 'OTHER']],
+    ['/helper-a', 'tokena', ['ROOT', 'HELPER_TOKEN']], ['/helper-b', 'tokenb', ['ROOT', 'HELPER_TOKEN']],
+    ['/package', 'package', ['ROOT', 'PACKAGE']], ['/dynamic', 'r', ['ROOT', 'REGION']],
+    ['/dynamic', 'o', ['ROOT', 'OTHER'], 200, [['x-config', 'OTHER']]],
+    ['/helper-a', 'stopped', ['ROOT'], 403, [['x-stop', 'yes']]],
+    ['/missing', 'Not Found', ['ROOT'], 404]
+  ];
+  if (variant === 'http') cases.push(['/error', 'AN9:recovery', ['ROOT', 'RECOVERY'], 418]);
+  for (const [url, body, effects, status = 200, headers = []] of cases) {
+    calls.length = 0;
     const result = await nativeHost.executeCanonicalNativeModule(native, { request: { path: url, headers }, providerAdapter });
-    assert.equal(result.response.status, status); assert.equal(result.response.body, body); executions++;
+    assert.equal(result.response.status, status, url); assert.equal(result.response.body, body, url);
+    assert.deepEqual(calls.map(e => e.name), effects, url); count++;
   }
-  if (event) {
-    const result = await nativeHost.executeCanonicalNativeEvent(native, { version: events.EVENT_FRAME_VERSION, type: 'analytics.tick', schemaId: null }, { providerAdapter });
-    assert.equal(result.status, events.EVENT_EXECUTION_STATUS.COMPLETED); executions++;
+  if (variant === 'event') {
+    calls.length = 0;
+    const result = await nativeHost.executeCanonicalNativeEvent(native, {
+      version: events.EVENT_FRAME_VERSION, type: 'analytics.tick', schemaId: null
+    }, { providerAdapter });
+    assert.equal(result.status, events.EVENT_EXECUTION_STATUS.COMPLETED);
+    assert.deepEqual(calls.map(e => e.name), ['EVENT'], 'event does not inherit HTTP middleware'); count++;
   }
-  return executions;
+  return count;
 }
 async function main() {
   fs.mkdirSync(path.join(root, 'wasm/.test-results'), { recursive: true });
-  const directory = fs.mkdtempSync(path.join(root, 'wasm/.test-results/an9-01-'));
+  const directory = fs.mkdtempSync(path.join(root, 'wasm/.test-results/report-analytics-'));
   const cells = [];
   try {
     // Planning/observation covers imported declarations plus both entry lanes;
-    // the AN9-00 combined error/event codegen limitation remains separate.
+    // combined error/event Native generation is isolated in issue #329.
     setup(directory);
     let project = resolveProject({ cwd: directory, metadataOnly: true });
     const compiled = execution.compileProject(project), plan = buildCanonicalNativePlan(compiled);
@@ -236,27 +251,31 @@ async function main() {
     assert.equal(projected.useSites.find(u => u.ownerId === imported.id && u.surfaceId === 'ctx.config.get').source.value.file, imported.source.value.file);
     const missing = capsule.createCapsule({ ...f.fixture(false), analytics: projectHandlerTopology() });
     assert.equal(missing.analytics.coverage.handlers.status, 'unavailable');
-    const controlOwner = withoutTopology();
+    const controlOwner = withoutProjection();
     let negative = 0;
     for (const variant of ['http', 'event']) {
-      setup(directory, variant);
-      let defaultAnalytics;
+      let defaultReport;
       for (const optimization of ['default', 'experimental-native-bounded-size']) {
+        setup(directory, variant);
         project = resolveProject({ cwd: directory, metadataOnly: true });
         const options = { emitWat: false, nativeOptimization: optimization === 'default' ? undefined : optimization };
         console.log(`[analytics parity] ${variant}/${optimization}: control and observed compilation`);
         const control = controlOwner.compileNativeProjectInMemory(project, options);
         const prepared = execution.compileNativeProjectInMemory(project, options);
-        assert.equal(control.reportReferences.topology, undefined);
+        assert.equal(control.reportReferences, undefined);
         assert.deepEqual(prepared.plan, control.plan);
         assert.equal(prepared.native.source, control.native.source);
         assert.deepEqual(prepared.native.wasm, control.native.wasm);
         assert.deepEqual(prepared.native.manifest.optimization, control.native.manifest.optimization);
         const value = report(project, prepared, optimization);
         assertTopology(value, { event: variant === 'event', error: variant === 'http' });
-        assert.equal(report(project, control, optimization).analytics.coverage.handlers.status, 'unavailable');
-        if (optimization === 'default') defaultAnalytics = value.analytics;
-        else assert.deepEqual(value.analytics, defaultAnalytics, 'semantic definitions/registrations do not depend on Native recipe');
+        assert.equal(report(project, control, optimization).analytics, undefined, 'disabled observation cannot invent analytics');
+        assertIntegration(value, defaultReport || value);
+        if (optimization === 'default') defaultReport = value;
+        else {
+          assert.deepEqual(value.analytics, defaultReport.analytics, 'authored analytics do not depend on Native recipe');
+          assert.notEqual(value.artifacts[0].sha256, defaultReport.artifacts[0].sha256, 'recipe changes physical bytes');
+        }
         if (!negative) {
           negative = negativeCases(value);
           const old = structuredClone(value);
@@ -268,13 +287,20 @@ async function main() {
           const saved = capsule.serializeCapsule(capsule.createCapsule(old));
           assert.equal(capsule.serializeCapsule(capsule.parseCapsule(saved)), saved, 'AN9-01 unavailable tables remain valid');
         }
-        const executions = await execute(prepared.native, variant === 'event') + await execute(control.native, variant === 'event');
+        const executions = await execute(prepared.native, variant) + await execute(control.native, variant);
         const built = execution.compileNativeProject(project, options);
         const replay = retained.collectArtifactReport(built.files.manifest).capsule;
         assert.deepEqual(replay.analytics, value.analytics);
-        const script = `const M=require('node:module'),load=M._load;M._load=function(name,...args){if(/compiler|provider-|typescript|project-config|project-execution|child_process|^(node:)?(http|https|net)$/.test(name))throw Error('Unexpected work: '+name);return load.call(this,name,...args);};process.stdout.write(JSON.stringify(require(${JSON.stringify(path.join(cli, 'internal/report/retained'))}).collectArtifactReport(process.argv[1]).capsule.analytics));`;
-        assert.deepEqual(JSON.parse(execFileSync(process.execPath, ['-e', script, built.files.manifest], { encoding: 'utf8' })), value.analytics);
-        cells.push({ variant, optimization, executions, unchangedWasm: true, passiveReplay: true });
+        assertIntegration(replay, value);
+        const rendered = assertIntegration(replay);
+        // Historical display/comparison must work after project/package removal.
+        for (const folder of ['src', 'node_modules', '.pulse']) fs.rmSync(path.join(directory, folder), { recursive: true, force: true });
+        const script = `const M=require('node:module'),load=M._load;M._load=function(name,...args){if(/compiler|provider-|typescript|project-config|project-execution|child_process|^(node:)?(http|https|net|tls|dns|dgram)$/.test(name))throw Error('Unexpected work: '+name);return load.call(this,name,...args);};const fs=require('node:fs');for(const key of ['writeFileSync','appendFileSync','mkdirSync','renameSync','rmSync','unlinkSync'])fs[key]=()=>{throw Error('Unexpected write: '+key);};const value=require(${JSON.stringify(path.join(cli, 'internal/report/retained'))}).collectArtifactReport(process.argv[1]).capsule;process.stdout.write(JSON.stringify({analytics:value.analytics,rendered:require(${JSON.stringify(path.join(__dirname, 'report-analytics-integration.cjs'))})(value)}));`;
+        const passive = JSON.parse(execFileSync(process.execPath, ['-e', script, built.files.manifest], { encoding: 'utf8' }));
+        assert.deepEqual(passive.analytics, value.analytics);
+        assert.deepEqual(passive.rendered, rendered, 'offline HTML/comparison is repeatable without source or toolchain execution');
+        cells.push({ variant, optimization, executions, unchangedPlanSourceWasm: true, effectOrder: true,
+          importedPassiveReplay: true, reportHtml: true, semanticComparison: true, sourcesRemoved: true });
       }
     }
     // Nested mounts use ordered instance paths, not sorted sets of definitions.

@@ -71,6 +71,36 @@ node wasm/scripts/run-wasm-tests.cjs --profile cli --through docs-example-03-fet
 
 `--from` and `--through` aid investigation. A release claim requires the complete release profile.
 
+## Compiler analytics qualification
+
+Run the focused AN9 boundary selection on one immutable candidate:
+
+```bash
+node wasm/scripts/run-wasm-tests.cjs --task suite-shape --task cli-report-handler-topology --task cli-report-handler-associations --task cli-report-imported-inputs --task report-capsule-contract --task cli-report-viewer --task cli-report-retained-evidence --task cli-report-workflow --task cli-report-capture-proof --task cli-report-entry-proof --no-report
+```
+
+`cli-report-handler-topology` uses the product-owned
+`wasm/test/fixtures/projects/report-analytics` fixture. HTTP/error and HTTP/event
+variants each run under default and `experimental-native-bounded-size` recipes.
+The same cells qualify authored definitions, mount/registration instances, repeated
+use sites, helper calls and bounded associations through retained completion,
+source-free passive replay, offline HTML and semantic comparison. Observation on/off
+must preserve the Native plan, generated source, Wasm and optimization metadata;
+112 executions check selected responses/statuses and dispatched binding order.
+Changing physical bytes/recipe must not produce semantic capability/binding changes.
+Static association candidates are not evidence that an operation executed.
+
+The selection also checks imported receipt freshness/admission, missing data and older capsules,
+malformed graphs, UI navigation/filter/export behavior, and existing physical capture
+noninterference. The combined HTTP error-handler/event Native-generation defect is
+isolated in [issue #329](https://github.com/pulse-compute/pulse/issues/329); that cell
+is excluded, not counted as passing. The retired AN9-00 investigation executable
+and its expected-gap assertions are no longer test requirements.
+
+This focused selection does not replace complete functional profiles, browser visual
+qualification, installed acceptance or the release seal. Keep those statuses separate
+and retain the tested source identity, terminal task summary and failed attempts.
+
 ## Installed feature gates
 
 The clean candidate's separate mandatory installed-feature replay is:

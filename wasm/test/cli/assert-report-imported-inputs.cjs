@@ -12,7 +12,7 @@ const snapshots = require(path.join(cli, 'internal/report/snapshot'));
 const { sourceInputsForCompiled } = require('../../packages/compiler/src/canonical-project-compiler');
 const { captureSources, readSources } = require(path.join(cli, 'internal/report/source-inputs'));
 const { serializeCapsule } = require(path.join(cli, 'internal/report/capsule'));
-const { setup } = require('../../../docs/internal/an9-00/fixture.cjs');
+const { setup } = require('../support/report-analytics-fixture.cjs');
 const results = path.join(root, 'wasm/.test-results'); fs.mkdirSync(results, { recursive: true });
 const directory = fs.mkdtempSync(path.join(results, 'an9-04-'));
 const write = (file, value) => { fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, value); };

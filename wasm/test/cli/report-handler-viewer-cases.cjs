@@ -7,7 +7,7 @@ const { createReportViewModel } = require('../../packages/cli/src/internal/repor
 const { renderReport } = require('../../packages/cli/src/internal/report/viewer');
 const { serializeCapsule } = require('../../packages/cli/src/internal/report/capsule');
 const { projectHandlerTopology } = require('../../packages/cli/src/internal/report/handler-topology');
-const { setup } = require('../../../docs/internal/an9-00/fixture.cjs');
+const { setup } = require('../support/report-analytics-fixture.cjs');
 function fixture(variant='http', optimization='default', edit) {
   const root=path.resolve(__dirname,'../../.test-results');fs.mkdirSync(root,{recursive:true});
   const directory=fs.mkdtempSync(path.join(root,'an9-05-viewer-'));
