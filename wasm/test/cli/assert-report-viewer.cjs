@@ -89,6 +89,7 @@ function renderedTree(capsule) {
     replaceChildren(...nodes){this.children=nodes;}
     addEventListener(event,fn){this.events[event]=fn;}
     focus(){document.activeElement=this;}
+    querySelector(selector){return selector.startsWith('#')?descendants(this).find(n=>n.id===selector.slice(1)):null;}
   }
   const shell=fs.readFileSync(path.join(f.reportRoot,'viewer/shell.html'),'utf8');
   const roots=[...shell.matchAll(/\bid="([^"]+)"/g)].map(m=>{const n=new Element('div');n.id=m[1];return n;});
@@ -100,7 +101,7 @@ function renderedTree(capsule) {
   const document={body:{classList:{add(){},remove(){},toggle(){}}},querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):surfaces[selector]??{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
   const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
+  vm.runInNewContext(fs.readFileSync(path.join(f.reportRoot,'viewer/atlas.js'),'utf8')+'\n'+script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
   get('modal').hidden=true;get('route-drawer').hidden=true;

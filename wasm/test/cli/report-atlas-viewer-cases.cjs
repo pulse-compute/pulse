@@ -1,0 +1,32 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {createReportViewModel}=require('../../packages/cli/src/internal/report/viewer/model');
+module.exports=({capsule,renderedTree})=>{
+  const before=JSON.stringify(capsule),m=createReportViewModel(capsule),mount=m.registrations.find(r=>r.kind==='mount'),scoped=m.atlasLayout({scope:mount.id});
+  assert.deepEqual(scoped.scoped.map(r=>r.id),m.registrations.filter(r=>r.id===mount.id||r.mountPath.includes(mount.id)).map(r=>r.id));
+  const reused=m.definitions.find(h=>m.definitionRegistrations(h.id).length>1),instances=m.definitionRegistrations(reused.id),a=instances[0],b=instances[1];
+  const open=new Set(),search=m.atlasLayout({query:a.id,expanded:open});
+  assert.equal(open.size,0,'search expansion is temporary');assert.deepEqual(search.matches.map(r=>r.id),[a.id]);
+  assert.ok(search.points.some(p=>p.id===a.id));assert.ok(!search.points.some(p=>p.id===b.id),'a reused definition never imports another instance');
+  for(const id of a.mountPath)assert.ok(search.points.some(p=>p.id===id));
+  const expanded=new Set(m.registrations.filter(r=>r.kind==='mount').map(r=>r.id));
+  assert.deepEqual(m.atlasLayout({expanded}),m.atlasLayout({expanded:new Set([...expanded].reverse())}),'interaction order cannot affect placement');
+  const tree=renderedTree(capsule);tree.location.hash='#atlas/'+m.registrationIndex.get(a.id);tree.renderers.onHash();
+  assert.equal(tree.renderers.state.selectedRegistration,a.id,'atlas uses existing selected registration');
+  assert.match(tree.get('view-atlas').textContent,/Static compiler evidence/);
+  assert.ok(tree.nodes().some(n=>n.attrs.href==='#registrations/'+m.registrationIndex.get(a.id)));
+  tree.get('atlas-toggle').events.click();
+  assert.ok(tree.nodes().some(n=>n.tag==='svg'&&n.attrs.class==='atlas-svg'));
+  assert.ok(tree.nodes().filter(n=>n.attrs['data-atlas-registration']).every(n=>n.tag==='g'&&n.attrs.role==='button'&&n.attrs.tabindex==='0'));
+  assert.ok(tree.nodes().every(n=>!n.attrs.style),'strict CSP has no inline styles');
+  tree.get('atlas-focus').events.click();assert.match(tree.get('atlas-count').textContent,/in scope/);
+  const selectedScope=a.kind==='mount'?a.id:a.mountPath.at(-1);
+  if(selectedScope)assert.equal(tree.get('atlas-rows').children.length,Math.min(50,m.atlasLayout({scope:selectedScope}).matches.length));
+  tree.location.hash='#registrations/'+m.registrationIndex.get(a.id);tree.renderers.onHash();
+  assert.ok(tree.nodes().some(n=>n.attrs.href==='#atlas/'+m.registrationIndex.get(a.id)),'existing details link back to the same instance');
+  assert.equal(JSON.stringify(capsule),before);assert.deepEqual(JSON.parse(m.canonicalJson),capsule);
+  // A large retained inventory is bounded only in graph/table presentation.
+  const large=structuredClone(capsule),template=large.analytics.registrations.find(r=>r.kind!=='mount');
+  large.analytics.registrations=Array.from({length:700},(_,i)=>({...template,id:'large:'+i,order:i,mountPath:[],flow:{next:null,child:null,parentContinue:null}}));
+  const big=createReportViewModel(large).atlasLayout();assert.equal(big.points.length,300);assert.equal(big.truncated,true);assert.equal(big.matches.length,700);
+};

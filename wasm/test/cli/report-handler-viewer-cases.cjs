@@ -22,6 +22,7 @@ function fixture(variant='http') {
 }
 module.exports = ({renderedTree}) => {
   const capsule=fixture(), before=serializeCapsule(capsule), a=capsule.analytics, model=createReportViewModel(capsule), tree=renderedTree(capsule);
+  require('./report-atlas-viewer-cases.cjs')({capsule,renderedTree});
   const visit=hash=>{tree.location.hash=hash;tree.renderers.onHash();return tree.get('view-handlers').textContent;};
   tree.renderers.buildNavigation();
   assert.ok(tree.get('desktop-nav').textContent.includes('Handlers'));
@@ -88,12 +89,18 @@ module.exports = ({renderedTree}) => {
     const absent=renderedTree(f.createCapsule(old));absent.renderers.buildNavigation();assert.match(absent.get('desktop-nav').textContent,/Handlers—/);absent.location.hash='#handlers';absent.renderers.onHash();
     assert.match(absent.get('view-handlers').textContent,/Handler definitions unavailable · not-recorded/);
     assert.match(absent.get('view-handlers').textContent,/All registration instances · Unavailable/);
+    absent.location.hash='#atlas';absent.renderers.onHash();
+    assert.match(absent.get('view-atlas').textContent,/Registration analytics unavailable/);
+    assert.equal(absent.nodes().filter(n=>n.attrs['data-atlas-registration']).length,0);
   }
   const eventCapsule=fixture('event'), eventModel=createReportViewModel(eventCapsule), eventTree=renderedTree(eventCapsule);
   const event=eventCapsule.analytics.registrations.find(r=>r.kind==='event');
   eventTree.location.hash='#registrations/'+eventModel.registrationIndex.get(event.id);eventTree.renderers.onHash();
   assert.match(eventTree.get('view-handlers').textContent,/event · Direct ownership/);
   assert.ok(!eventModel.registrationAssociations(event.id).some(row=>row.via.some(hop=>hop.kind==='middleware')));
+  eventTree.location.hash='#atlas/'+eventModel.registrationIndex.get(event.id);eventTree.renderers.onHash();
+  assert.equal(eventTree.renderers.state.selectedRegistration,event.id);
+  assert.match(eventTree.get('atlas-selected-title').textContent,/event/);
 
   // Presentation-only degraded/hostile facts: the viewer must never invent a
   // location from registrations, read source, or interpret text as markup.
