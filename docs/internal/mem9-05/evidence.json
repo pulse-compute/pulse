@@ -1,0 +1,278 @@
+{
+  "schemaVersion": "pulse.mem9-05.receipt.v1",
+  "status": "focused-qualification-passed-unit-baseline-blocked",
+  "measuredSource": {
+    "sourceRevision": "00548e0e40dee3689155905dcdb592dd0aefda17",
+    "sourceTree": "09bf40e7e4011c7d6d90f3ec9a97aff45ff722ef",
+    "workingTree": ""
+  },
+  "prerequisite": {
+    "pr": 336,
+    "head": "c33b81e7710eb251d300a214cbd0abc24d5ffebc"
+  },
+  "domain": "Node pulse_host ABI; two invocations per request; ValueHeap entries, guest capacity and process totals are distinct; no timing claim",
+  "cells": 18,
+  "executions": 72,
+  "archive": {
+    "file": "pulse-mem9-05-evidence.tar.gz",
+    "bytes": 898374,
+    "sha256": "e3dee6120a74012bb2969f9ac40755bb51e0b7fdb2807ab54835b80c40637e29"
+  },
+  "reportSha256": "d232655dd9756271300f2f6ce953fd1ff13281c9ca5ce3e9d62464d9a6ffb193",
+  "results": [
+    {
+      "owner": "entry",
+      "runtime": "schema",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 23,
+      "numericHandles": 23,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "entry",
+      "runtime": "schema",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 663,
+      "numericHandles": 25,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "entry",
+      "runtime": "schema",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 2583,
+      "numericHandles": 25,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "entry",
+      "runtime": "stub",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 21,
+      "numericHandles": 21,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "entry",
+      "runtime": "stub",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 661,
+      "numericHandles": 23,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "entry",
+      "runtime": "stub",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 2581,
+      "numericHandles": 23,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "helper",
+      "runtime": "schema",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 23,
+      "numericHandles": 23,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "helper",
+      "runtime": "schema",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 663,
+      "numericHandles": 25,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "helper",
+      "runtime": "schema",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 2583,
+      "numericHandles": 25,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "helper",
+      "runtime": "stub",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 21,
+      "numericHandles": 21,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "helper",
+      "runtime": "stub",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 661,
+      "numericHandles": 23,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "helper",
+      "runtime": "stub",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 2581,
+      "numericHandles": 23,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "stage",
+      "runtime": "schema",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 90,
+      "numericHandles": 90,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "stage",
+      "runtime": "schema",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 730,
+      "numericHandles": 92,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "stage",
+      "runtime": "schema",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 2650,
+      "numericHandles": 92,
+      "boxedGuestCapacityBytes": 1245184,
+      "numericGuestCapacityBytes": 1245184,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "stage",
+      "runtime": "stub",
+      "iterationsPerInvocation": 0,
+      "invocations": 2,
+      "boxedHandles": 88,
+      "numericHandles": 88,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "stage",
+      "runtime": "stub",
+      "iterationsPerInvocation": 64,
+      "invocations": 2,
+      "boxedHandles": 728,
+      "numericHandles": 90,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    },
+    {
+      "owner": "stage",
+      "runtime": "stub",
+      "iterationsPerInvocation": 256,
+      "invocations": 2,
+      "boxedHandles": 2648,
+      "numericHandles": 90,
+      "boxedGuestCapacityBytes": 65536,
+      "numericGuestCapacityBytes": 65536,
+      "guestManagedBytes": null
+    }
+  ],
+  "processMemory": "Raw receipts contain process.memoryUsage before/after diagnostic host GC. Totals include compiler/artifacts and do not isolate table bytes or establish an RSS reduction.",
+  "focusedTasks": [
+    {
+      "name": "canonical-native-wasm",
+      "status": "passed",
+      "durationMs": 70092
+    },
+    {
+      "name": "fastly-numeric-regions",
+      "status": "passed",
+      "durationMs": 16553
+    },
+    {
+      "name": "pure-source-helpers",
+      "status": "passed",
+      "durationMs": 8804
+    },
+    {
+      "name": "pure-loop-helpers",
+      "status": "passed",
+      "durationMs": 5634
+    },
+    {
+      "name": "pure-argument-helpers",
+      "status": "passed",
+      "durationMs": 18615
+    },
+    {
+      "name": "shared-stage-o19",
+      "status": "passed",
+      "durationMs": 5070
+    },
+    {
+      "name": "bounded-read-loops",
+      "status": "passed",
+      "durationMs": 40507
+    }
+  ],
+  "unit": {
+    "passed": 2,
+    "failed": 1,
+    "unrun": 59,
+    "blocker": "Existing CLI report snapshot.js import of @pulse-compute/wasm-compiler/canonical-project-compiler fails boundaries",
+    "reproducedOnBase": "2497084d1d2e000f0d70ef2a0874af6a0dba116c"
+  },
+  "otherChecks": [
+    "six altered/incomplete reports rejected",
+    "maintainer:sync",
+    "docs:sync",
+    "maintainer:check",
+    "docs:check",
+    "documentation-release",
+    "maintainer-scope full and incremental",
+    "git diff --check"
+  ],
+  "deferred": "Full release/installed-consumer qualification at sprint boundary; #289 remains open"
+}
