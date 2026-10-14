@@ -2862,12 +2862,9 @@
         "associations": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {},
-            "required": [],
-            "additionalProperties": false
+            "$ref": "#/$defs/AnalyticsAssociation"
           },
-          "maxItems": 0
+          "maxItems": 100000
         },
         "coverage": {
           "type": "object",
@@ -3124,7 +3121,8 @@
             "handler-table",
             "router-topology",
             "authored-recognition",
-            "validated-helper-call"
+            "validated-helper-call",
+            "derived-association"
           ]
         },
         "producer": {
@@ -3133,7 +3131,8 @@
             "canonical-router-linked-helper",
             "canonical-router-execution-topology",
             "canonical-handler-surface-authority",
-            "canonical-router-handler-validation"
+            "canonical-router-handler-validation",
+            "canonical-report-associations"
           ]
         }
       },
@@ -3302,6 +3301,85 @@
                     "method",
                     "path",
                     "eventType"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "not-recorded",
+                    "not-applicable"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "value",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "control": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "available",
+                "unavailable",
+                "not-applicable"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "pattern": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "maxLength": 1048576,
+                          "minLength": 1
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "eligibility": {
+                      "type": "boolean"
+                    },
+                    "normal": {
+                      "type": "boolean"
+                    },
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "terminal": {
+                      "type": "boolean"
+                    },
+                    "basis": {
+                      "const": "canonical-router-control"
+                    }
+                  },
+                  "required": [
+                    "pattern",
+                    "eligibility",
+                    "normal",
+                    "error",
+                    "terminal",
+                    "basis"
                   ],
                   "additionalProperties": false
                 },
@@ -3685,6 +3763,88 @@
         "calleeId",
         "registrationIds",
         "source",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "AnalyticsAssociation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "consumerRegistrationId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "useSiteId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "via": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "direct",
+                  "middleware",
+                  "mount",
+                  "helper",
+                  "error"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+              }
+            },
+            "required": [
+              "kind",
+              "id"
+            ],
+            "additionalProperties": false
+          },
+          "maxItems": 100000
+        },
+        "lane": {
+          "enum": [
+            "normal",
+            "error",
+            "event"
+          ]
+        },
+        "conditional": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsEvidence"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "consumerRegistrationId",
+        "useSiteId",
+        "via",
+        "lane",
+        "conditional",
+        "coverage",
         "evidence"
       ],
       "additionalProperties": false

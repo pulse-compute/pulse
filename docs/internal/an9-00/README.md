@@ -2,7 +2,9 @@
 
 Status: original evidence-only handoff. AN9-01 implements definitions and
 registration retention; AN9-02 adds authored use sites and validated helper-call
-edges in the optional analytics block. Contextual associations, imported passive
+edges in the optional analytics block. AN9-03 adds bounded contextual associations
+from canonical match/control facts, with conditional inherited paths and distinct
+normal/error/event lanes. Imported passive
 snapshot admission and UI remain follow-up work. The proof rejects malformed current analytics rather than
 treating the now-owned key as an unknown field.
 Investigated against `latest` at `3bee78387f46d7933d987bbb3f8273bc7b711a37`

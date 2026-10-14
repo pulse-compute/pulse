@@ -1,8 +1,9 @@
 'use strict';
 
 const { createHash } = require('node:crypto');
-const { topologyForCanonicalRouterOutput, surfaceFactsForCanonicalRouterOutput } = require('./spine/canonical-router');
+const { topologyForCanonicalRouterOutput, surfaceFactsForCanonicalRouterOutput, handlerIrsForCanonicalRouterOutput } = require('./spine/canonical-router');
 const { sourceModelForRouterRecognition, capabilityForHandlerSurface, staticString } = require('./spine/handler-surface-authority');
+const { projectRouterControl } = require('./report-router-control');
 const { bindingOwnership } = require('./spine/binding-ownership');
 const unavailable = () => ({ state: 'unavailable', value: null, reason: 'not-recorded' });
 const available = value => ({ state: 'available', value, reason: null });
@@ -50,6 +51,7 @@ function collectHandlerTopology(compiled) {
       evidence: [{ basis: 'handler-table', producer: 'canonical-router-linked-helper' }] });
   }
   const http = new Map(topology.entries.filter(d => d.entry.kind !== 'event').map(d => [d.entry.index, d.entry.stableId]));
+  const controls = new Map((handlerIrsForCanonicalRouterOutput(compiled.router) || []).map(row => [row.entryStableId, row.operationIr]));
   const mounts = [];
   const registrations = topology.entries.map(({ entry, rawEntry }) => {
     // The compiler's child/parent-return interval identifies this particular
@@ -62,6 +64,7 @@ function collectHandlerTopology(compiled) {
       source: location(rawEntry.loc), routerId: entry.router, routerPath: [...entry.routerPath],
       mountPath: entry.kind === 'event' ? [] : mounts.map(m => m.id), order: entry.index,
       match: available({ method: entry.method || null, path: entry.path ?? null, eventType: entry.eventType || null }),
+      control: projectRouterControl(entry, rawEntry, controls.get(entry.stableId)),
       flow: { next: http.get(entry.nextIndex) || null, child: http.get(entry.childStartIndex) || null,
         parentContinue: http.get(entry.parentContinueIndex) || null },
       evidence: [{ basis: 'router-topology', producer: 'canonical-router-execution-topology' }]

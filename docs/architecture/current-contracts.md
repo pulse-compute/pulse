@@ -1431,8 +1431,43 @@ Calls expanded by reuse or mounting remain one authored call with distinct
 registrations. Missing authored call locations never borrow generated offsets.
 These observations live outside serialized recognition summaries and executable
 metadata. Default and bounded-size recipes retain the same semantic inventory.
-Derived contextual associations remain empty with unavailable coverage until
-AN9-03; nonempty claims in that reserved table are rejected.
+AN9-03 derives contextual use-site associations from those accepted calls and
+canonical router control. Each registration can retain an optional control fact:
+its normalized match pattern, whether a mount has an eligibility gate, and the
+possible normal continuation, explicit error transfer and terminal outcomes.
+These outcomes come from accepted canonical operations, not source text or a
+report-owned control-flow parser. Eligibility values and branch predicates are
+never serialized. Missing or unsupported control evidence remains unavailable.
+
+Direct associations describe definition ownership, including shadowed entries;
+`conditional: false` is an ownership fact, not a claim that a use executed.
+Inherited associations are conditional candidates through explicit `next()` or
+`next(error)` continuation and child/parent-return links. Disjoint scopes and
+methods are excluded, terminal outcomes do not create a continuation, and error
+recovery can resume normal dispatch. An explanation that traverses an error
+handler retains the error lane even after recovery. Events retain only their
+own definition/helper associations and never inherit the HTTP graph. Ordered
+`via` hops preserve mount instances, registrations and accepted helper calls;
+they explain dependencies rather than recording a runtime trace.
+
+Pattern overlap is checked against the canonical sealed path grammar. Ambiguous
+overlap is conservative and carries partial `unsupported-mapping` coverage;
+missing control gives partial `not-recorded` coverage and unknown inherited
+conditionality. Branch-predicate feasibility, implicit runtime failures and
+transitive dependency internals are outside this explicit-control association
+basis. A terminal response therefore does not acquire an error-handler
+association merely because an operation might fail at runtime. Complete coverage
+means complete within this static basis, never complete request execution.
+Derivation is deterministic and bounded to 250,000 work steps, 10,000 rows and
+64 explanation hops; exhaustion preserves observed rows with partial
+`graph-budget-exhausted` coverage. It never interprets missing evidence as zero.
+
+Association identities bind consumer, use site, ordered explanation and lane.
+Validation rederives the table from retained facts and rejects altered scope,
+lane, conditionality, references or coverage even if an attacker recomputes a
+row ID. The optional control field and unavailable association table preserve
+AN9-01/02 capsule round trips. The older `routes.composition` rollup remains a
+bounded candidate view; it does not gain this association table's scope proof.
 
 The schema/projection/graph validator and retained inventory admit this block
 together; passive artifact replay does not load the compiler or provider. Older
