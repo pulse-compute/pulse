@@ -143,3 +143,34 @@ selection history, fit, drag, anchored wheel zoom, minimap movement and centerin
 No compiler rerun is needed: compare VIS-01 and VIS-02 with the same retained
 Catalog capture. This remains a standalone experiment; production report
 integration and broad browser/device qualification are future work.
+
+## VIS-03: evaluate and propose integration
+
+Read [the evaluation and bounded integration proposal](VIS-03-evaluation.md).
+The recommendation is a focused atlas with contextual dispatch/dependency
+drill-downs and a linked table. This ticket does not change the supported viewer.
+
+The optional walkthrough records exact case identities, local interaction
+observations, screenshots and a terminal receipt in a **new** output directory:
+
+```sh
+CHROMIUM_PATH=/path/to/chromium node scripts/spikes/evaluate-report-graph.cjs \
+  /private/experiment.html /private/scenario.json /private/new-evaluation
+```
+
+The scenario is JSON with `scopeOrder` (mount), `routeOrder` (its descendant),
+`reuseOrder` (a registration whose definition is reused), `laneOrders` (at least
+two registrations joined by retained `next` links), `bindingId` and
+`associationId` (an existing explanation for a use of that binding). Orders are
+the capsule's zero-based order values. Choose these from retained facts, never
+rewrite the capsule to fit a scenario. The tool validates the capsule before
+opening the HTML and rejects invalid case relationships. Use only a locally
+generated trusted graph HTML file; this is not a general HTML sandbox.
+
+All output, including scenario IDs and screenshots, may contain private data.
+Keep it outside this repository. Existing directories are refused, preserving
+failed attempts. `evaluation.json` records `running`, then terminal `passed` or
+`failed`; an interrupted `running` receipt is incomplete. A passed walkthrough
+does not mean a view is usable: unreadable global Fit and partial associations
+are findings, not data to hide. The historical-capsule browser smoke remains
+the absence check; Catalog contains no event registrations.
