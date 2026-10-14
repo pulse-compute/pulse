@@ -4,7 +4,7 @@
 // declaration rendering remains deferred until final source assembly.
 function prepareNativeExpressions({
   expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
-  fail, localName, stringHandle
+  fail, localName, stringHandle, numeric
 }) {
   const expressionAlias = new Map();
   const retainedExpressions = new Set();
@@ -251,19 +251,26 @@ function prepareNativeExpressions({
   // Synchronous bodies share the existing value representation and local
   // ownership. Nesting is forbidden, so reset-on-call slots cannot overlap.
   function renderPureHelper(helper) {
-    function body(statements, indent = '  ') {
+    let numericLoopIndex = 0;
+    function body(statements, indent = '  ', inLoop = false) {
       const lines = [];
+      // Do not select inner fragments of a declined loop (which may return
+      // early). Each selected region must box before the ordinary return path
+      // clears invocation slots. Parameter annotations never seed the proof.
+      const selected = inLoop ? new Map() : numeric.select(statements);
       for (const s of statements) {
-        if (s.kind === 'local') lines.push(`${indent}${localName(s.localId)} = ${exprName(s.value)}()`);
+        const region = selected.get(s);
+        if (region) lines.push(...numeric.render(s, region, () => `__pulse_helper_iteration_${numericLoopIndex++}`).map(line => indent + line));
+        else if (s.kind === 'local') lines.push(`${indent}${localName(s.localId)} = ${exprName(s.value)}()`);
         else if (s.kind === 'expression') lines.push(`${indent}${exprName(s.expression)}()`);
         else if (s.kind === 'return') lines.push(`${indent}{`, `${indent}  const result = ${exprName(s.value)}()`, ...helper.localIds.map(id => `${indent}  ${localName(id)} = 0`), `${indent}  return result`, `${indent}}`);
-        else if (s.kind === 'if') lines.push(`${indent}if (host_value_truthy(${exprName(s.test)}()) != 0) {`, ...body(s.then, indent + '  '), `${indent}} else {`, ...body(s.else, indent + '  '), `${indent}}`);
+        else if (s.kind === 'if') lines.push(`${indent}if (host_value_truthy(${exprName(s.test)}()) != 0) {`, ...body(s.then, indent + '  ', inLoop), `${indent}} else {`, ...body(s.else, indent + '  ', inLoop), `${indent}}`);
         else if (s.kind === 'pure-loop') {
           const index = `i_${localIndex.get(s.localId)}`;
           lines.push(`${indent}for (let ${index}: i32 = 0; ${index} < ${s.maxIterations}; ${index}++) {`,
             `${indent}  ${localName(s.localId)} = host_value_number(<f64>${index})`,
             `${indent}  if (host_value_truthy(${exprName(s.test)}()) == 0) break`,
-            ...body(s.body, indent + '  '), `${indent}}`);
+            ...body(s.body, indent + '  ', true), `${indent}}`);
         } else if (s.kind === 'break' || s.kind === 'continue') lines.push(`${indent}${s.kind}`);
         else fail('Non-pure statement in synchronous helper.', { kind: s.kind });
       }
@@ -297,12 +304,15 @@ function prepareNativeExpressions({
     if (body.split('\n').length > 2) retainedExpressions.add(index);
   }
 
+  // Select helper regions before source assembly emits numeric globals. Alias
+  // and retention decisions above are final before resolving helper calls.
+  const pureHelperDeclarations = [...pureHelpers.values()].map(renderPureHelper);
   return {
     exprName,
     renderDeclarations() {
       return [
         ...expressions.filter((_, index) => !expressionAlias.has(index)).map(renderExpression),
-        ...[...pureHelpers.values()].map(renderPureHelper)
+        ...pureHelperDeclarations
       ];
     }
   };

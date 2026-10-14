@@ -96,6 +96,7 @@ async function main() {
   }
   const recovery=execute(artifact,{fixtures,request:{method:'POST',path:'/',headers:[['content-type','application/json']],body:'{"n":2}'}});
   assert.equal(recovery.response.status,200,'fresh instance after failure');
+  await require('./assert-fastly-numeric-owners.cjs').main();
   console.log('ok - numeric regions: proof rejection, unchanged control, aliases, snapshots, IEEE numbers, loops, effects and recovery');
 }
 module.exports={main};if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});

@@ -245,8 +245,16 @@ already held by aliases, collections and state remain immutable. Zero-trip and
 conditional writes preserve untouched handles. Arithmetic order, IEEE values,
 loop caps, control-state IDs and guard weights remain unchanged.
 
+The same proof applies to synchronous pure helper bodies and shared HTTP stages.
+Helper parameters remain unknown live-ins regardless of their type annotations;
+only independently initialized numeric regions are selected. Helper slots still
+reset on each call and clear at returns. A helper loop containing an early return
+keeps its existing emission. Shared-stage regions box before effects, transfers
+or generic consumers, preserving invocation frames and continuation ownership.
+Region write flags reset on every entry, including repeated calls/registrations.
+
 Unknown live-ins, coercive operations, nested assignment results, generic calls
-and collection writes decline this optimization. Helper/shared-stage bodies and package-owned application emitters,
+and collection writes decline this optimization. Effectful helper bodies and package-owned application emitters,
 non-schema builds, linked guests, and entire read-loop/output/body-transform
 budgeted plans retain existing emission. Node Native and JavaScript are unchanged.
 No host ABI, allocation ceiling, cache default, GC policy, or reclamation protocol
