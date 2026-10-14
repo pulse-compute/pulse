@@ -1,0 +1,779 @@
+{
+  "schemaVersion": "pulse.mem9.integration-checkpoint.v1",
+  "recordedAt": "2026-10-14",
+  "branch": "codex/mem9-integration",
+  "pullRequest": 349,
+  "classification": "development integration; not final compliance or a release checkpoint",
+  "source": {
+    "commit": "59a4745f8e755c82596fbaeb1ec9f534b1250393",
+    "tree": "663d6ca8cc5fdafce8dd664e0f4398a6b183be71",
+    "workingTree": ""
+  },
+  "runs": [
+    {
+      "selection": "unit",
+      "status": "failed",
+      "sourceRevision": "d2979f671cc2e75023fb23ee0acdf281f87e84a4",
+      "requestedTasks": [
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology",
+        "cli-report-handler-associations",
+        "cli-report-imported-inputs",
+        "cli-report-resource-inventory",
+        "cli-report-graph-diagnostics",
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo"
+      ],
+      "profiles": [
+        "unit"
+      ],
+      "selectedTasks": [
+        "report-capsule-contract",
+        "cli-report-workflow",
+        "cli-report-viewer",
+        "cli-report-retained-evidence",
+        "cli-report-size-evidence",
+        "cli-report-capture-proof",
+        "cli-report-entry-proof",
+        "cli-report-reference-provenance",
+        "cli-report-handler-topology",
+        "cli-report-handler-associations",
+        "cli-report-imported-inputs",
+        "cli-report-resource-inventory",
+        "cli-report-graph-diagnostics",
+        "multifile-source-indexes",
+        "guest-json-roundtrip",
+        "pure-helper-contract",
+        "suite-shape",
+        "test-orchestration",
+        "package-exports",
+        "boundaries",
+        "workspace-hygiene",
+        "hidden-contracts",
+        "release-feature-acceptance",
+        "release-runtime-policy",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo"
+      ],
+      "completedTasks": 24,
+      "durationMs": 233721,
+      "reportSha256": "08a7dbe3cfb9ce4004474952bb994bc70c7f25e19912aba816c349f685537886",
+      "tasks": [
+        {
+          "name": "report-capsule-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 19342,
+          "logSha256": "dac2e9a284d88e4e4f1dcf55cbca9892684aed1963d70b36780de7c937e000f3"
+        },
+        {
+          "name": "cli-report-workflow",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2908,
+          "logSha256": "b0719f302fe6ff0e24bb6a0557ce240b8545dce2e5cf286e8c8b7b3112a016aa"
+        },
+        {
+          "name": "cli-report-viewer",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7901,
+          "logSha256": "b2f3066938cb564cba77f8e73b6a284c3f1f7b090806d4e91d956691ca1bffec"
+        },
+        {
+          "name": "cli-report-retained-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 39023,
+          "logSha256": "8cc26375f86541a7755de75e19e578fe5daaa8abb3e4ae066a69c6c5aff7e3d9"
+        },
+        {
+          "name": "cli-report-size-evidence",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1259,
+          "logSha256": "7b49f2f74daaaae9d58d822a3c40997f7b765f781105346bb9bf52c371732b3f"
+        },
+        {
+          "name": "cli-report-capture-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 9894,
+          "logSha256": "402c9bb1f351f8bec25109e4f100726cc8684146c9c14f03747988e40c080e07"
+        },
+        {
+          "name": "cli-report-entry-proof",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 39250,
+          "logSha256": "e7c9d70ac29b8c93aaf973a0847122cc8ed3a85176d80ab63dc4f132046de5e9"
+        },
+        {
+          "name": "cli-report-reference-provenance",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 19557,
+          "logSha256": "40dfec237b90a257ae58fdc41187b2ecb41c344b57533a999d0d30855f9c98a6"
+        },
+        {
+          "name": "cli-report-handler-topology",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 50148,
+          "logSha256": "4097e4549df5f67f1680373de72b7ead32da62d62aaab77740ef590d67f5d657"
+        },
+        {
+          "name": "cli-report-handler-associations",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 953,
+          "logSha256": "e8f5fb02974eb5e5d92dd66099967ce2bff71340df29dcdc66270e8025da42af"
+        },
+        {
+          "name": "cli-report-imported-inputs",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 15886,
+          "logSha256": "c26e3eca38b2af3f4fb7805f4ea43acc8d29b2e9713c51f93d68e0fb53613a55"
+        },
+        {
+          "name": "cli-report-resource-inventory",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 6869,
+          "logSha256": "4742b59fe4a0c7068263ccfef725b715ba92ec7fd4833f4e936968f6b9666cb4"
+        },
+        {
+          "name": "cli-report-graph-diagnostics",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 5553,
+          "logSha256": "19867acee73e50b270ec1e14f33b9b09538d053f22014cf2cd90e32683e83569"
+        },
+        {
+          "name": "multifile-source-indexes",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 338,
+          "logSha256": "e59673e97fdeb90039a38f41e39f93d239a5062600be498e61405522df2664f1"
+        },
+        {
+          "name": "guest-json-roundtrip",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 182,
+          "logSha256": "250c726913dde6e425f1f05a88a8892854c2b2f37f86dd00cc9fcde5ee45fc90"
+        },
+        {
+          "name": "pure-helper-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1297,
+          "logSha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+        },
+        {
+          "name": "suite-shape",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 222,
+          "logSha256": "2f8d3ef8bfc7895897bf13f717438e133b4c3b9b3312a17dcd2e420c98ee1099"
+        },
+        {
+          "name": "test-orchestration",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7434,
+          "logSha256": "79774bbc56e44f0d8e9230e52159ef84d626ee1b84991e6148341def2536d7e5"
+        },
+        {
+          "name": "package-exports",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 301,
+          "logSha256": "620dabe7893a0e0a2a0083ac56a200b88765bda77895e98c47722b1bb11ffff4"
+        },
+        {
+          "name": "boundaries",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 566,
+          "logSha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+        },
+        {
+          "name": "workspace-hygiene",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 396,
+          "logSha256": "14bf84a2cea12e92bce6ad28f772a73acb46a101d5255efdee9dc0e9c342c92c"
+        },
+        {
+          "name": "hidden-contracts",
+          "status": "failed",
+          "exitCode": 1,
+          "durationMs": 223,
+          "logSha256": "b70c32dc97804eef7f948d478c610eb6b40757637cc09b1adadbc672133fc231"
+        },
+        {
+          "name": "release-feature-acceptance",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 685,
+          "logSha256": "ce01fea429289694ab3d6db8a591e6e5842785c781ef04f8bb1be42f5d3bb243"
+        },
+        {
+          "name": "release-runtime-policy",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3489,
+          "logSha256": "a370f3402c99c8972adfd54bb1bdcbb4554e9ee64805b9eb0d69659ae4653dc2"
+        }
+      ]
+    },
+    {
+      "selection": "focused",
+      "status": "passed",
+      "sourceRevision": "d2979f671cc2e75023fb23ee0acdf281f87e84a4",
+      "requestedTasks": [
+        "fastly-numeric-regions",
+        "canonical-native-wasm",
+        "cli-report-imported-inputs"
+      ],
+      "profiles": [],
+      "selectedTasks": [
+        "fastly-numeric-regions",
+        "canonical-native-wasm",
+        "cli-report-imported-inputs"
+      ],
+      "completedTasks": 3,
+      "durationMs": 165687,
+      "reportSha256": "40cda080fb8acb6c512d89d2a27bd6516d1600a4f09485b938fc0e2d99da63b7",
+      "tasks": [
+        {
+          "name": "fastly-numeric-regions",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 68841,
+          "logSha256": "a225012aeec89ac8a4598211121cc5b853c0b578faf0ccc86062506636d7c22b"
+        },
+        {
+          "name": "canonical-native-wasm",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 77178,
+          "logSha256": "491fe0c3a064c5586981e37ecb4a6d5df639f2bae9f2b42f64142087d7f0e67a"
+        },
+        {
+          "name": "cli-report-imported-inputs",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 19655,
+          "logSha256": "c26e3eca38b2af3f4fb7805f4ea43acc8d29b2e9713c51f93d68e0fb53613a55"
+        }
+      ]
+    },
+    {
+      "selection": "unit-completion",
+      "status": "passed",
+      "sourceRevision": "59a4745f8e755c82596fbaeb1ec9f534b1250393",
+      "requestedTasks": [
+        "hidden-contracts",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo"
+      ],
+      "profiles": [],
+      "selectedTasks": [
+        "hidden-contracts",
+        "release-seal-lifecycle",
+        "release-checkpoints",
+        "release-recovery-runner",
+        "release-recovery",
+        "release-tag",
+        "api-surface",
+        "logging-contract",
+        "s3-design-contract",
+        "kv-design-contract",
+        "kv-conditional-runtime",
+        "kv-conditional-gates",
+        "s3-read-contract",
+        "s3-write-contract",
+        "crypto-config-planning",
+        "crypto-es256-signing",
+        "crypto-rs256",
+        "crypto-digest-text-contract",
+        "reachable-graph",
+        "project-modules",
+        "package-reachability",
+        "provider-toolchain",
+        "schema-registry",
+        "continuation-registry",
+        "entities-contracts",
+        "entities-schema-bridge",
+        "entities-javascript-runtime",
+        "entities-json-rpc-corpus",
+        "mcp-http",
+        "pulse-context-corpus",
+        "pulse-context-application",
+        "pulse-context-host",
+        "mcp-compatibility",
+        "mcp-tools",
+        "mcp-authorization",
+        "entities-package-owned-lowering",
+        "entities-catalog",
+        "entities-inspection",
+        "entities-orchestration-demo"
+      ],
+      "completedTasks": 39,
+      "durationMs": 113296,
+      "reportSha256": "f25b1c8a8129d295efd04b0e8bc5ea2b1a2b0c7b75b25e28742e5eddaf11f62c",
+      "tasks": [
+        {
+          "name": "hidden-contracts",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 339,
+          "logSha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+        },
+        {
+          "name": "release-seal-lifecycle",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3589,
+          "logSha256": "eadef93b5d91bf840374b14b8bc2ad42839a6b7c00311fef410cef095f00d881"
+        },
+        {
+          "name": "release-checkpoints",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 336,
+          "logSha256": "eb2390369e900e04bbf65712c722720a014a274129f56e2bb950cdc0c97c8b45"
+        },
+        {
+          "name": "release-recovery-runner",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 51207,
+          "logSha256": "77cb98c9d0953246892c4abdb054a9376bdc284e81d774ff017da79cb38e076f"
+        },
+        {
+          "name": "release-recovery",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2622,
+          "logSha256": "508a0da28f873551c7240dd9eb97258b805fc8bf4204b25e6acc437637780df0"
+        },
+        {
+          "name": "release-tag",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 855,
+          "logSha256": "84813d71b96931d09502bf2d9a33a9ea9a23895a468d430cbdfd40e12af78f31"
+        },
+        {
+          "name": "api-surface",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 968,
+          "logSha256": "72ae6e9145a6217b37175888a59fd6718937d174ee1e8c1009d32e361c2f1019"
+        },
+        {
+          "name": "logging-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 155,
+          "logSha256": "250ed2ef7d8e7c249c300b8eb44df6a36f8b7e8f545f4d0e9b1d90cfd989d15c"
+        },
+        {
+          "name": "s3-design-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1641,
+          "logSha256": "633798a97981a42f8eb4b4534a1a3b369d1eba4ffd504614b44c3e4eaea95c7e"
+        },
+        {
+          "name": "kv-design-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1723,
+          "logSha256": "460980145d170ca43f7b0c7af6f0a68fcd588e3c1068dd8acb5f7b6dee366337"
+        },
+        {
+          "name": "kv-conditional-runtime",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1260,
+          "logSha256": "099993c1331c0b9ecc5861e1d6446589d5dd3dd6c725a0c2952ea11dd1e8405b"
+        },
+        {
+          "name": "kv-conditional-gates",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 522,
+          "logSha256": "7461acbf17df08cc70e925c1ba4d2936f95ba45b235b6894607a79e01e255281"
+        },
+        {
+          "name": "s3-read-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 2111,
+          "logSha256": "64b705e071841d45de8195590c7145981ba9ab294bd667fcae85e3c5b661df11"
+        },
+        {
+          "name": "s3-write-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 357,
+          "logSha256": "c44352d10985250a8bd75caddd1dee5dcc11182cfe4e63113ad73a6fb095e63d"
+        },
+        {
+          "name": "crypto-config-planning",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 735,
+          "logSha256": "f0bd6466c4cdaea4923a910011dc087181e0f2f8d8dd50ca1a543dc871c708d2"
+        },
+        {
+          "name": "crypto-es256-signing",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 266,
+          "logSha256": "538fae1059c91b768501e644ca6b90945bdc662f1d68727f65d3410503dc8def"
+        },
+        {
+          "name": "crypto-rs256",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1659,
+          "logSha256": "ecd7c0d805877a509a60bc70b63f9d54d8403618f2453485ffb0ef7e28e8668a"
+        },
+        {
+          "name": "crypto-digest-text-contract",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 559,
+          "logSha256": "d38e6eb47a03fe6ceeef8ddd34138ea4920fb279937366783613b6c6391c6974"
+        },
+        {
+          "name": "reachable-graph",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 179,
+          "logSha256": "dd9b8737febeb3712781f1949f26d882b159d27160cfce0a9cca5eaadaeb43ac"
+        },
+        {
+          "name": "project-modules",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1079,
+          "logSha256": "d6b9875711b70aac9276a6d87706dec95cdac7a24f43f60d65e2c9714ab0a86a"
+        },
+        {
+          "name": "package-reachability",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1182,
+          "logSha256": "cf2529ae95c9f13f9c65a246ee8d57465b3d40905aaaea42b9061a586fe97fdb"
+        },
+        {
+          "name": "provider-toolchain",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 168,
+          "logSha256": "7a3c6123c712abf97460b998e0dbb55a036187414c17dda9fd1cec5ddba02098"
+        },
+        {
+          "name": "schema-registry",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 1100,
+          "logSha256": "acd08c340e8d1f0027e7a25598fc759ae6e21728b79a9b96fb7e8c9d8045659a"
+        },
+        {
+          "name": "continuation-registry",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 126,
+          "logSha256": "3c671433498470a7364bbe60b158b86b4599d6c6a877da06a84919ddeb4bc74d"
+        },
+        {
+          "name": "entities-contracts",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 176,
+          "logSha256": "571a190fd447549e59eca2280512bf86277476a69408bc956e7c805eb0178cba"
+        },
+        {
+          "name": "entities-schema-bridge",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 367,
+          "logSha256": "bd0953d88382715b73af8c6fba359d4e3274af5a76d63992132d324cf60c1331"
+        },
+        {
+          "name": "entities-javascript-runtime",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 888,
+          "logSha256": "2d103ede372a4af83f74f17b69b31f2e457680a9a3d55197dc6a48ab2198f2a3"
+        },
+        {
+          "name": "entities-json-rpc-corpus",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 143,
+          "logSha256": "f970589887a2c27f2a692a5a0076b6dd2bad97d7310b4b67ceffdeb287389b6b"
+        },
+        {
+          "name": "mcp-http",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 373,
+          "logSha256": "e368ef604eb1c7fd3b3e83a405f738379c071c601c18da2c11a7f50dc59c8819"
+        },
+        {
+          "name": "pulse-context-corpus",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 895,
+          "logSha256": "ff088c5462e2d77b0f64d81ae76a10e02ccc8b889e3c2210d630a3397ddde780"
+        },
+        {
+          "name": "pulse-context-application",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 7232,
+          "logSha256": "761c61369d329ad6f14c1e0d1a65b399070add20c0148a875aaf898b1985a338"
+        },
+        {
+          "name": "pulse-context-host",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 4053,
+          "logSha256": "862dfabc8d56fef25fb2000bee81e9f45d1bcd721ce7c04c52ae234d7445d456"
+        },
+        {
+          "name": "mcp-compatibility",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 281,
+          "logSha256": "2929b5e1d92ff222e8c94ea7149becb02893466ddb35a70ba6b30d556a216252"
+        },
+        {
+          "name": "mcp-tools",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 306,
+          "logSha256": "3fd3ca4e1b669122a45d9859ca4f1413b8a9ff4e8fe023bc23301b9fe2896844"
+        },
+        {
+          "name": "mcp-authorization",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 3123,
+          "logSha256": "56521bde6d2604253511b6965db5ecc72be85d33453f01cc2db44892d55d5f4c"
+        },
+        {
+          "name": "entities-package-owned-lowering",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 422,
+          "logSha256": "7e465d36b63d27cf66e44ba517fecd74e7506bc74c8e8bbdc83edecb21f10509"
+        },
+        {
+          "name": "entities-catalog",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 478,
+          "logSha256": "ede80b3844e948f3b12da690d83f3ccbb633c6bcb6d75539cde584b218d3bea2"
+        },
+        {
+          "name": "entities-inspection",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 13229,
+          "logSha256": "3f0f464baecefd1869b43c513ed4ee78a40f38b2c52ba9fa496752743d8f28d7"
+        },
+        {
+          "name": "entities-orchestration-demo",
+          "status": "passed",
+          "exitCode": 0,
+          "durationMs": 6538,
+          "logSha256": "22a18d182f96ad8818f61b4e47eb930e3fd6966cfbaa10d1aefe28aaee7eb8ca"
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "command": "pnpm build",
+      "status": "passed",
+      "logSha256": "abe5c9d719903afbe4be884aeca81c6125d3ca5107edf9276efdd63fc98e34df"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "logSha256": "8bb1445015174fb2b2f3704ba1b9fe00bdf6fc3847f39192312a9fd5e8819656"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "logSha256": "cc4264e1482dd13636dfd9400b84739d9004b3babee9f7660bcd62b6d2598f35"
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base ae7f75b5c9a0a268f4cb5e9d2087459a946dab02 --head HEAD --declaration-file <integration-pr-body> --check",
+      "status": "passed",
+      "logSha256": "29362707bf24283101fb43b07811cb88d3f95d6ccce92446e5ca272efbf9ac43"
+    }
+  ],
+  "combinedUnitCoverage": {
+    "passingTasks": 62,
+    "initialPassed": 23,
+    "completionPassed": 39,
+    "note": "The initial unit report remains failed. Completion covers the failed classification check and 38 previously unrun tasks at a new commit differing only in that ledger. This is combined development coverage, not a terminal 62-task run or a reusable full qualification checkpoint."
+  },
+  "boundaryReproduction": {
+    "before": {
+      "status": "failed",
+      "logSha256": "f5b429359c8e83cf76c9cec142f22d41cdfea8a0432af65a21d0bdc14fa93c2b"
+    },
+    "after": {
+      "status": "passed",
+      "logSha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+    }
+  },
+  "fullCompliance": {
+    "status": "pending",
+    "when": "After MEM9-07/08/09 review and final latest reconciliation; before merge into latest"
+  },
+  "issue289": "open"
+}

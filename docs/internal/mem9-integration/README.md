@@ -1,6 +1,7 @@
 # MEM9 integration workstream
 
 Branch: `codex/mem9-integration`. Final destination: `latest`.
+Integration PR: [#349](https://github.com/pulse-compute/pulse/pull/349).
 Recorded 2026-10-14. Related issue: [#289](https://github.com/pulse-compute/pulse/issues/289).
 
 Human direction is to consolidate the current drafts, target MEM9-07/08/09 at
@@ -38,6 +39,12 @@ receipt accessor used by AN9-04. No export, package dependency, compiler-private
 access, wildcard permission or production code is added. Existing positive and
 negative import restrictions remain enforced.
 
+After that repair, the unit run exposed missing hidden-contract classifications
+for MEM9-05/06B's `HOST_POLICY` and `LINKED_POLICY` constants. The exact owning
+file and identifiers are now classified as private compiler emission selectors.
+The scanner's matching and rejection logic is unchanged. This second repair
+changes only the classification ledger, not production code.
+
 ## Remaining work and PR targets
 
 | Work | Target | Boundary |
@@ -57,6 +64,23 @@ This consolidation runs the workspace build, unit profile, focused Native
 numeric regressions and the imported-report-input regression, plus maintenance,
 documentation and scope checks. Results are recorded separately from the
 original campaigns. These checks establish development integration only.
+
+The [check record](checks.json) preserves source identities, terminal coverage,
+task results and report/log hashes. At clean source
+`d2979f671cc2e75023fb23ee0acdf281f87e84a4`, all three focused tasks passed:
+`fastly-numeric-regions`, `canonical-native-wasm`, and
+`cli-report-imported-inputs`. Build, maintenance, documentation and scope checks
+also passed. The original unit profile remains recorded as **failed**: 23 tasks
+passed, `hidden-contracts` failed, and 38 tasks did not run.
+
+At clean source `59a4745f8e755c82596fbaeb1ec9f534b1250393`, a follow-up selection
+passed all 39 tasks: the repaired scanner plus the 38 previously unrun tasks.
+Only `wasm/test/assert-hidden-contracts.cjs` differs between those sources.
+All 62 unit task IDs therefore have passing development results across the two
+runs; this is not a terminal 62-task run or a reusable full qualification
+checkpoint. The generated S3 text-state fixture left by testing was retained
+outside the checkout. Runtime/compiler implementations remain identical to the
+integrated MEM9 drafts. This documentation record is committed after testing.
 
 Before the final merge into `latest`, freeze one clean integrated source after
 MEM9-07/08/09 review and run the full compliance selection through the existing
