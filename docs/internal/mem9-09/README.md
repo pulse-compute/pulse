@@ -66,6 +66,9 @@ Node/AssemblyScript identity, emitted Wasm hashes, all raw samples and terminal
 status. The sole uncommitted input was the recorded architecture-document edit;
 production/test code was committed and unchanged throughout. AssemblyScript is
 0.28.18 and the diagnostic compiler independently asserts json-as 1.5.0.
+Subsequent compatibility repairs added lookup helpers to the retained HTTP emitter
+and made the memory observer aware of sparse IDs. All four production artifacts
+were rebuilt byte-identically at `ccb0f6c`; the cost record still describes them.
 
 Each cell uses 10 warmup pairs and 40 randomized pairs, with 2,000 paired bootstrap
 resamples. Timing covers fresh-instance `_start`, including the injected Fastly
@@ -75,6 +78,8 @@ reported separately. These are local wall/CPU distributions, not deployed
 latency or provider reality. Alternate triggers (256 and 4,096) are diagnostic
 artifacts; controls are reused between trigger groups, so cross-group JIT warmth
 can differ. Their results inform the tradeoff, not a precise ranking of triggers.
+The workload is fixed-working-set churn; it does not establish CPU bounds for
+very large live graphs or growing ropes.
 
 Default 1,024 trigger, median wall milliseconds (traced / retained):
 
@@ -120,13 +125,36 @@ duplicate IDs for one object, stale/invalid IDs, ID exhaustion and atomic failur
 Forced-safe-point diagnostics are separate from ordinary retention and cost runs.
 Negative descriptor/unknown-owner/control tests fail closed before execution.
 
-The recovered lifetime pass showed 243 mappings versus 28,819 retained at 4,096
+The [final lifetime pass](lifetime.json) showed 243 mappings versus 28,819 retained at 4,096
 iterations, 139 pinned cache entries, peak table capacity 1,365, and 5,000 bytes
 of peak tracing-structure payload. The payload measurement excludes allocator
 headers, the old table and transient rehash copies; whole-artifact peak managed
-bytes above capture their aggregate effect. The final registered-task rerun and
-unit/provider/schema regression results are recorded in the follow-up check
-record before this PR is ready for review.
+bytes above capture their aggregate effect. Live snapshot counts of 128, 256 and
+512 preserved all outputs while live mappings grew from 394 to 777 to 1,545.
+Sparse and retained diagnostic readers were tested without guest allocations.
+
+The [terminal check record](checks.json) records **65/65 passing tasks** at clean
+implementation `ccb0f6c`: all 62 unit tasks, `schema-codecs`,
+`fastly-handle-ownership` and `fastly-native-platform-capabilities`. Earlier
+numeric-region, exact-budget/exhaustion and provider-neutral Native checks passed
+at `ef3e616`; the subsequent implementation change was confined to retained HTTP
+admission helpers. The final receipt distinguishes those source trees rather
+than presenting all checks as one full candidate qualification.
+
+Both unchanged 524,288-addition/128 MiB gates passed: 28,835,840 bytes with the
+default arena and 19,398,656 with elision. Build, maintenance, documentation and
+scope checks passed; the scope declaration retains human review. The provider
+suite includes 227 compiled transport ABI checks; optional Viceroy socket-reset
+replay was not selected (`PULSE_VICEROY_BIN` unset). No installed-consumer,
+Viceroy or deployed-provider acceptance is claimed for this slice.
+
+Earlier attempts remain recorded: ambient pnpm failed engine admission before
+the pinned 12.4.2 build passed; a stale-report failure passed both isolated and
+complete unit reruns without an assigned root cause; schema admission exposed
+the missing retained-HTTP lookup helpers; and the old observer assumed a dense
+array. The latter two defects were repaired and their relevant tasks passed.
+Two generated transport test directories were retained outside the checkout;
+the tracked implementation stayed unchanged during the final run.
 
 09B must audit helper/stage frames, error lanes and effect/resource lifecycles
 one owner family at a time. 09C requires separate reviewed Node root transport,

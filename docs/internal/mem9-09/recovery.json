@@ -74,7 +74,7 @@
     "Recovered uncommitted first-slice implementation; no prior MEM9-09 PR.",
     "Original cache-capacity scanning cost experiment superseded by occupied-slot index.",
     "Historical records have incomplete source fingerprints and are not final candidate qualification.",
-    "Final cost source includes the failed-cache-insertion guard; all subsequent changes are documentation/evidence unless checks record otherwise.",
+    "After the final cost campaign, retained HTTP admission helpers and sparse diagnostic readers were repaired. All four timed production artifacts were rebuilt byte-identically at ccb0f6c.",
     "Initial pnpm build attempt failed engine admission (ambient pnpm 11.25.0); pinned pnpm 12.4.2 build passed."
   ]
 }
