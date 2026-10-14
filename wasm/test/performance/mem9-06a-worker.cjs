@@ -37,6 +37,8 @@ try{
   for(const h of plan.helpers)assert.equal(paths.some(p=>p.startsWith(`helpers.${h.id}.`)),['sum','edges'].includes(h.source.name),h.source.name);
   // Exercise the shared proof's explicit budget exclusion without changing the plan.
   const budget=require('../../packages/runtime-core-as/src/compiler/canonical-native-numeric').prepareNumericRegions({plan,policy:'host-numeric-regions-v1',schemaActive:f.schema,budgeted:true,localName:id=>String(id)});
+  assert.equal(budget.manifest().enabled,false);
+  for(const body of [plan.body,...plan.helpers.map(h=>h.body),...plan.stages.map(s=>s.body)])if(body)budget.select(body);
   assert.equal(budget.manifest().regions.length,0);
   report.proof={owners:['entry','helper','stage'],declined:['unknown live-in','257-iteration flat loop','budgeted plan'],controlBlocksEqual:true};
   const outcomes=[];
