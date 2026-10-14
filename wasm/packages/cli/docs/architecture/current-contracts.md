@@ -1277,7 +1277,8 @@ for retained inventory and offline report/comparison HTML. The semantic capsule
 and comparison remain v1. `serializeCapsule`, `serializeComparison`, CLI `--json`
 and offline JSON downloads retain the original expanded canonical format and
 hashes. Readers accept both representations. Older readers reject the new
-storage envelope; export canonical JSON when exchanging with an older reader.
+storage envelope; export canonical JSON when exchanging with an older reader,
+subject to that reader's size and work limits.
 
 The envelope has exactly `kind`, `encodingVersion`, `shapes`, `nodes`, and `root`.
 Shapes are unique, sorted arrays of object keys. Nodes are JSON scalars,
@@ -1290,8 +1291,9 @@ only when its complete UTF-8 representation is smaller and within wire limits.
 Compact references are storage-local, never logical IDs or matching keys.
 
 The shared Node/browser codec bounds both encoded data and expanded bytes,
-nodes, depth, strings and records with the existing report limits (16 MiB,
-500,000 nodes, depth 64, 1 MiB strings, 100,000 array records). Expanded costs
+nodes, depth, strings and records with report limits of 64 MiB for both input
+and expanded data, 2,000,000 nodes, depth 64, 1 MiB strings and 100,000 array
+records. These budgets admit Catalog-sized reports. Expanded costs
 are checked before following references into a materialized tree; shared objects
 remain immutable in the browser. Node admission then performs the existing
 semantic schema, identity, graph and hash validation. Normalization neither

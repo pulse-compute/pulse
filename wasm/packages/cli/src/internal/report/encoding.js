@@ -2,7 +2,7 @@
 const reportEncoding = (() => {
   'use strict';
   const KIND = 'pulse.report-data';
-  const LIMITS = Object.freeze({ bytes: 16 * 1024 * 1024, depth: 64, nodes: 500000, stringBytes: 1024 * 1024, records: 100000 });
+  const LIMITS = Object.freeze({ bytes: 64 * 1024 * 1024, depth: 64, nodes: 2000000, stringBytes: 1024 * 1024, records: 100000 });
   const forbidden = new Set(['__proto__', 'prototype', 'constructor']);
   function fail(code = 'REPORT_DATA') { const e = new TypeError(`Report input rejected (${code}).`); e.code = code; e.field = '$'; throw e; }
   function utf8(text) {
