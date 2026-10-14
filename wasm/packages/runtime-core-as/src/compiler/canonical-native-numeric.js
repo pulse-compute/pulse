@@ -4,15 +4,17 @@
 // read must be definitely initialized and every write must preserve f64. Checking
 // the first loop entry plus all writes establishes the invariant by induction;
 // values initialized only in a loop/one branch never become definite live-outs.
-const POLICY = 'fastly-numeric-regions-v1';
+const POLICY = 'fastly-numeric-regions-v2';
+const LINKED_POLICY = 'fastly-linked-numeric-regions-v1';
 const HOST_POLICY = 'host-numeric-regions-v1';
 const arithmetic = new Set(['+', '-', '*', '/', '%']);
 const comparisons = new Set(['===', '!==', '==', '!=', '<', '<=', '>', '>=']);
 function prepareNumericRegions({ plan, policy, schemaActive, budgeted, localName }) {
-  if (policy !== undefined && policy !== POLICY && policy !== HOST_POLICY) throw new TypeError('Unknown private numeric-region emission policy');
-  // Host values live outside Wasm; schema codec/collector availability does not
-  // determine their lifetime. Fastly retains its separately qualified gate.
-  const realizationEligible = policy === HOST_POLICY || policy === POLICY && schemaActive;
+  if (policy !== undefined && policy !== POLICY && policy !== LINKED_POLICY && policy !== HOST_POLICY) throw new TypeError('Unknown private numeric-region emission policy');
+  // MEM9-06 qualifies allocation avoidance without a collector for Fastly stub
+  // builds. Linked fixed-memory builds remain excluded when codecs are active,
+  // including with arena elision; the provider selects this narrower policy.
+  const realizationEligible = policy === HOST_POLICY || policy === POLICY || policy === LINKED_POLICY && !schemaActive;
   const enabled = realizationEligible && !budgeted;
   const globals = [], regions = [], declined = [];
   const localIds = new Set((plan.locals || []).map(x => x.id));
@@ -116,7 +118,7 @@ function prepareNumericRegions({ plan, policy, schemaActive, budgeted, localName
     ];
   }
   return { select, render, globals, manifest: () => Object.freeze({ policy: policy || POLICY, enabled,
-    reason: policy === POLICY && !schemaActive ? 'schema-inactive' : budgeted ? 'execution-budget' : !realizationEligible ? 'not-selected' : 'proven-regions-only',
+    reason: policy === LINKED_POLICY && schemaActive ? 'schema-active-linked' : budgeted ? 'execution-budget' : !realizationEligible ? 'not-selected' : 'proven-regions-only',
     regions: Object.freeze(regions), declined: Object.freeze(declined) }) };
 }
-module.exports = { POLICY, HOST_POLICY, prepareNumericRegions };
+module.exports = { POLICY, LINKED_POLICY, HOST_POLICY, prepareNumericRegions };
