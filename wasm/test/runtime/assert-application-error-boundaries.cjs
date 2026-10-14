@@ -44,6 +44,7 @@ function staticGuardLayout() {
   ];
   const blocks = boundaries.map((boundary, id) => ({ id, boundary, kind: 'return', expression: '__pulse_expr_0' }));
   const input = { blocks, stages: new Map(), helpers: new Map(), handlers: new Map(), applicationErrors: true,
+    ownership: { enabled: false },
     routerLocal: name => name, routerCursor: 'cursor', localName: name => '__local_' + name,
     fail: message => { throw new Error(message); } };
   const before = JSON.stringify(blocks);
