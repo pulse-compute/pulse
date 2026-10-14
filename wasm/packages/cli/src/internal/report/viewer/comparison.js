@@ -33,7 +33,7 @@
   // the requested section; direct record links also open their disclosure.
   function revealHash() {
     const id = location.hash.slice(1);
-    if (!/^(compare-[a-z]+|change-[a-z]+-\d+)$/.test(id)) return;
+    if (!/^(compare-[a-zA-Z]+|change-[a-zA-Z]+-\d+)$/.test(id)) return;
     const target = document.getElementById(id);
     if (!target) return;
     if (target.matches('.compare-record, [data-collection]')) {

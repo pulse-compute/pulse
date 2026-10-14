@@ -2,9 +2,10 @@
 
 // No IO, compiler, provider or viewer dependencies. All consumers share this result.
 const { validateCapsule } = require('./capsule');
-const { comparisonSchema, COLLECTIONS } = require('./comparison-schema');
+const { comparisonSchema, COLLECTIONS, SEMANTIC_COLLECTIONS } = require('./comparison-schema');
 const { validate } = require('./validate');
 const { copyData, canonicalJson: json, parseJson, sha256, freeze, fail } = require('./data');
+const semantic = require('./semantic-comparison');
 const same = (a, b) => json(a) === json(b);
 const sort = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 const sorted = values => [...new Set(values)].sort(sort);
@@ -16,6 +17,7 @@ const ensure = (condition, code = 'REPORT_COMPARISON') => { if (!condition) fail
 const complete = coverage => coverage.status === 'complete';
 const emptyCounts = () => ({ added: 0, removed: 0, modified: 0, coverageChanged: 0, unresolvedBefore: 0, unresolvedAfter: 0, unchanged: 0 });
 function coverage(c, collection) {
+  if (SEMANTIC_COLLECTIONS.includes(collection)) return semantic.coverage(c, collection);
   return c.coverage[collection] || { status: c[collection]?.length ? 'partial' : 'unavailable', observed: c[collection]?.length || 0,
     expected: null, reason: 'not-recorded' };
 }
@@ -76,7 +78,8 @@ function fields(a, b, comparable, prefix = '') {
     const objects = row => row && typeof row === 'object' && !Array.isArray(row);
     // Coverage and fact transitions are atomic, preserving their qualifications.
     const atomic = measure || typeof left?.complete === 'boolean' || typeof right?.complete === 'boolean'
-      || /(?:Coverage|coverage|structure|consumers|composition|flow)$/.test(path);
+      || /(?:Coverage|coverage|structure|consumers|composition|flow|via)$/.test(path)
+      || (left && Object.hasOwn(left, 'state') && Object.hasOwn(left, 'value')) || (right && Object.hasOwn(right, 'state') && Object.hasOwn(right, 'value'));
     if (!atomic && objects(left) && objects(right)) {
       for (const name of sorted([...Object.keys(left), ...Object.keys(right)])) visit(left[name], right[name], path + '/' + name.replaceAll('~', '~0').replaceAll('/', '~1'));
     } else changes.push({ path: path || '/', kind: uncertain(left) || uncertain(right) || missingLinks(left) || missingLinks(right) || /coverage/i.test(path)
@@ -228,6 +231,7 @@ function buildProjection(c) {
 }
 function compareCapsules(beforeInput, afterInput) {
   const before = validateCapsule(beforeInput), after = validateCapsule(afterInput);
+  const collections = before.analytics || after.analytics ? [...COLLECTIONS, ...SEMANTIC_COLLECTIONS] : COLLECTIONS;
   const compatible = compatibility(before, after), comparable = compatible.status !== 'incompatible';
   const maps = [new Map(), new Map()], matches = new Map(), inventories = [], sections = [];
   const indexes = [before, after].map(c => ({ routes: new Map(c.routes.map(row => [row.entryId, row])), entries: new Map(c.entries.map(row => [row.canonicalId, row])), artifacts: new Map(c.artifacts.map(row => [row.id, row])) }));
@@ -238,14 +242,17 @@ function compareCapsules(beforeInput, afterInput) {
     [...matches.get(collection).pairs].sort((a, b) => a[side].order - b[side].order).forEach((pair, rank) => ranks[index].set(pair[side].id, rank));
   }
   const project = [projector(before, maps[0], ranks[0]), projector(after, maps[1], ranks[1])];
-  for (const collection of COLLECTIONS) {
-    const counts = emptyCounts(), changes = [], match = matches.get(collection);
+  const authored = collections.length > COLLECTIONS.length ? semantic.prepareSemanticComparison(before, after, maps) : null;
+  for (const collection of collections) {
+    const isSemantic = SEMANTIC_COLLECTIONS.includes(collection);
+    const projections = isSemantic ? authored.project : project;
+    const counts = emptyCounts(), changes = [], match = (isSemantic ? authored.matches : matches).get(collection);
     for (const pair of match.pairs) {
-      const delta = fields(project[0](collection, pair.before), project[1](collection, pair.after), comparable);
+      const delta = fields(projections[0](collection, pair.before), projections[1](collection, pair.after), comparable);
       if (!delta.length) { counts.unchanged++; continue; }
       const status = delta.every(row => row.kind === 'coverage') ? 'coverage-changed' : 'modified';
       counts[status === 'modified' ? 'modified' : 'coverageChanged']++;
-      changes.push({ key: pair.key, label: rowLabel(collection, pair.after), status, basis: pair.basis,
+      changes.push({ key: pair.key, label: isSemantic ? authored.label[1](collection,pair.after) : rowLabel(collection, pair.after), status, basis: pair.basis,
         beforeIds: [pair.before.id], afterIds: [pair.after.id], reason: null, fields: delta });
     }
     for (const item of match.pending) {
@@ -256,26 +263,26 @@ function compareCapsules(beforeInput, afterInput) {
         const status = addition ? 'added' : 'removed', rows = addition ? item.after : item.before;
         for (const row of rows) {
           counts[status]++;
-          const projected = project[addition ? 1 : 0](collection, row);
-          changes.push({ key: item.key, label: rowLabel(collection, row), status, basis: 'logical-key',
+          const projected = projections[addition ? 1 : 0](collection, row);
+          changes.push({ key: item.key, label: isSemantic ? authored.label[addition?1:0](collection,row) : rowLabel(collection, row), status, basis: isSemantic ? (collection === 'associations' ? 'semantic-links' : 'authored-source-slot') : 'logical-key',
             beforeIds: addition ? [] : [row.id], afterIds: addition ? [row.id] : [], reason: null,
             fields: fields(addition ? undefined : projected, addition ? projected : undefined, comparable) });
         }
       } else {
         counts.unresolvedBefore += item.before.length; counts.unresolvedAfter += item.after.length;
-        changes.push({ key: item.key, label: rowLabel(collection, item.after[0] || item.before[0]), status: 'unresolved', basis: 'unresolved',
+        changes.push({ key: item.key, label: isSemantic ? authored.label[item.after.length?1:0](collection,item.after[0] || item.before[0]) : rowLabel(collection, item.after[0] || item.before[0]), status: 'unresolved', basis: 'unresolved',
           beforeIds: item.before.map(row => row.id).sort(sort), afterIds: item.after.map(row => row.id).sort(sort),
           reason: item.reason || 'incomplete-inventory', fields: [] });
       }
     }
     const a = coverage(before, collection), b = coverage(after, collection);
-    inventories.push({ collection, before: a, after: b, delta: complete(a) && complete(b) ? b.observed - a.observed : null, counts });
+    inventories.push({ collection, before: a, after: b, delta: complete(a) && complete(b) ? b.observed - a.observed : null, counts, ...(isSemantic ? {identityCoverage:{before:semantic.identityCoverage(a,changes,'before'),after:semantic.identityCoverage(b,changes,'after')}} : {}) });
     if (changes.length) sections.push({ collection, changes: changes.sort((a, b) => sort(a.key, b.key)) });
   }
   const metadata = c => ({ application: c.application, context: pick(c.context, ['profile', 'host', 'target', 'representation']),
     producer: c.producer, provenance: pick(c.provenance, ['revision', 'dirty', 'sourceFingerprint', 'toolchain', 'recipe']),
     ...(c.build ? { build: buildProjection(c) } : {}) });
-  const result = { kind: 'pulse.report-comparison', comparisonVersion: 1, matchingVersion: 'pulse.report-matching.v1',
+  const result = { kind: 'pulse.report-comparison', comparisonVersion: 1, matchingVersion: authored ? 'pulse.report-matching.v2' : 'pulse.report-matching.v1',
     sources: { before: source(before), after: source(after) }, compatibility: compatible,
     summary: { artifactBytes: { before: primary(before).bytes, after: primary(after).bytes,
       delta: comparable ? primary(after).bytes - primary(before).bytes : null, reason: comparable ? null : 'incompatible-artifacts' }, inventories },
@@ -285,18 +292,19 @@ function compareCapsules(beforeInput, afterInput) {
 }
 function validateComparison(input) {
   const result = copyData(input);
-  if (result?.kind !== 'pulse.report-comparison' || result.comparisonVersion !== 1 || result.matchingVersion !== 'pulse.report-matching.v1') fail('REPORT_COMPARISON_VERSION');
+  if (result?.kind !== 'pulse.report-comparison' || result.comparisonVersion !== 1 || !['pulse.report-matching.v1', 'pulse.report-matching.v2'].includes(result.matchingVersion)) fail('REPORT_COMPARISON_VERSION');
   validate(result, comparisonSchema);
   const { comparisonHash, ...payload } = result;
   ensure(comparisonHash.value === sha256(json(payload)), 'REPORT_COMPARISON_HASH');
-  ensure(same(result.summary.inventories.map(row => row.collection), COLLECTIONS));
+  const expectedCollections = result.matchingVersion === 'pulse.report-matching.v2' ? [...COLLECTIONS, ...SEMANTIC_COLLECTIONS] : COLLECTIONS;
+  ensure(same(result.summary.inventories.map(row => row.collection), expectedCollections));
   const capsules = ['before', 'after'].map(side => {
     const row = result.sources[side];
     ensure(row.artifact.id === 'artifact:' + row.artifact.sha256 && row.context.primaryArtifactId === row.artifact.id);
     return { ...row, artifacts: [row.artifact], evidenceHash: { value: row.capsuleHash } };
   });
   ensure(same(result.compatibility, compatibility(...capsules)));
-  ensure(same(result.sections.map(row => row.collection), COLLECTIONS.filter(name => result.sections.some(row => row.collection === name))));
+  ensure(same(result.sections.map(row => row.collection), expectedCollections.filter(name => result.sections.some(row => row.collection === name))));
   const collections = new Set();
   for (const section of result.sections) {
     ensure(!collections.has(section.collection) && section.changes.length); collections.add(section.collection);
@@ -304,6 +312,7 @@ function validateComparison(input) {
     const used = [new Set(), new Set()];
     for (const change of section.changes) {
       ensure(change.beforeIds.length || change.afterIds.length);
+      ensure((SEMANTIC_COLLECTIONS.includes(section.collection) ? ['retained-identity','authored-source-slot','semantic-links','unresolved'] : ['logical-key','canonical-id','same-artifact','unresolved']).includes(change.basis));
       for (const [index, ids] of [change.beforeIds, change.afterIds].entries()) for (const id of ids) { ensure(!used[index].has(id)); used[index].add(id); }
       ensure(same(change.fields.map(row => row.path), sorted(change.fields.map(row => row.path))));
       ensure(new Set(change.beforeIds).size === change.beforeIds.length && new Set(change.afterIds).size === change.afterIds.length);
@@ -324,6 +333,9 @@ function validateComparison(input) {
     else ensure(field.delta === null && field.deltaReason === null);
   }
   for (const inventory of result.summary.inventories) {
+    const changes = result.sections.find(section => section.collection === inventory.collection)?.changes || [];
+    const isSemantic = SEMANTIC_COLLECTIONS.includes(inventory.collection);
+    ensure(isSemantic ? same(inventory.identityCoverage, {before:semantic.identityCoverage(inventory.before,changes,'before'),after:semantic.identityCoverage(inventory.after,changes,'after')}) : inventory.identityCoverage === undefined);
     const count = emptyCounts(); count.unchanged = inventory.counts.unchanged;
     for (const change of result.sections.find(section => section.collection === inventory.collection)?.changes || []) {
       if (change.status === 'unresolved') { count.unresolvedBefore += change.beforeIds.length; count.unresolvedAfter += change.afterIds.length; }

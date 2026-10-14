@@ -13,6 +13,8 @@ const en = (...values) => ({ enum: values });
 const array = items => ({ type: 'array', items, maxItems: LIMITS.records });
 const object = properties => ({ type: 'object', properties, required: Object.keys(properties), additionalProperties: false });
 const COLLECTIONS = ['routes', 'entries', 'schemas', 'bindings', 'resources', 'implementations', 'declarations', 'references', 'evidence', 'observations'];
+const SEMANTIC_COLLECTIONS = ['handlers', 'registrations', 'useSites', 'helperCalls', 'associations'];
+const ALL_COLLECTIONS = [...COLLECTIONS, ...SEMANTIC_COLLECTIONS];
 const states = ['added', 'removed', 'modified', 'coverage-changed', 'unresolved'];
 const defs = {
   ...capsuleSchema.$defs,
@@ -26,19 +28,22 @@ const defs = {
     application: capsuleSchema.properties.application, context: ref('Context'), provenance: capsuleSchema.properties.provenance,
     artifact: ref('CompareArtifact'), build: nullable(ref('Build')) }),
   CompareCounts: object(Object.fromEntries(['added', 'removed', 'modified', 'coverageChanged', 'unresolvedBefore', 'unresolvedAfter', 'unchanged'].map(key => [key, uint]))),
-  CompareInventory: object({ collection: en(...COLLECTIONS), before: ref('Coverage'), after: ref('Coverage'),
+  CompareInventory: object({ collection: en(...ALL_COLLECTIONS), before: ref('Coverage'), after: ref('Coverage'),
     delta: nullable(signed), counts: ref('CompareCounts') }),
   CompareChange: object({ key: text, label: text, status: en(...states),
-    basis: en('logical-key', 'canonical-id', 'same-artifact', 'unresolved'),
+    basis: en('logical-key', 'canonical-id', 'same-artifact', 'retained-identity', 'authored-source-slot', 'semantic-links', 'unresolved'),
     beforeIds: array(text), afterIds: array(text),
     reason: nullable(en('ambiguous-identity', 'missing-identity', 'incomplete-inventory')),
     fields: array(ref('CompareField')) }),
-  CompareSection: object({ collection: en(...COLLECTIONS), changes: array(ref('CompareChange')) }),
+  CompareSection: object({ collection: en(...ALL_COLLECTIONS), changes: array(ref('CompareChange')) }),
   CompareCheck: object({ path: text, impact: en('blocking', 'qualifying'), status: en('same', 'changed', 'unknown'),
     before: ref('CompareValue'), after: ref('CompareValue') })
 };
+// Identity coverage is mandatory for v2 semantic inventories, checked by validator.
+defs.CompareIdentityCoverage = object({ ...defs.Coverage.properties, reason: nullable(text) });
+defs.CompareInventory.properties.identityCoverage = object({ before: ref('CompareIdentityCoverage'), after: ref('CompareIdentityCoverage') });
 const shape = object({ kind: { const: 'pulse.report-comparison' }, comparisonVersion: { const: 1 },
-  matchingVersion: { const: 'pulse.report-matching.v1' },
+  matchingVersion: en('pulse.report-matching.v1', 'pulse.report-matching.v2'),
   sources: object({ before: ref('CompareSource'), after: ref('CompareSource') }),
   compatibility: object({ status: en('compatible', 'different-build', 'incompatible', 'unknown'), checks: array(ref('CompareCheck')) }),
   summary: object({ artifactBytes: object({ before: uint, after: uint, delta: nullable(signed), reason: nullable(en('incompatible-artifacts')) }),
@@ -52,6 +57,6 @@ function visit(node) {
   Object.values(node).forEach(visit);
 }
 visit(shape);
-module.exports = { COLLECTIONS: Object.freeze(COLLECTIONS), comparisonSchema: freeze({
+module.exports = { SEMANTIC_COLLECTIONS: Object.freeze(SEMANTIC_COLLECTIONS), COLLECTIONS: Object.freeze(COLLECTIONS), comparisonSchema: freeze({
   $schema: 'https://json-schema.org/draft/2020-12/schema', $id: 'urn:pulse:report:comparison:v1', ...shape, $defs: used
 }) };
