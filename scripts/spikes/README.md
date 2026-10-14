@@ -48,3 +48,63 @@ explain that structure rather than assuming each matching route is terminal.
 
 No new graph library or production dependency is selected in this capture step.
 Prototype validation is focused; sprint-boundary acceptance remains separate.
+
+## VIS-01: three linked graph treatments
+
+Generate a self-contained experiment from a validated canonical capsule:
+
+```sh
+node scripts/spikes/report-graph-html.cjs /path/to/capsule.json /path/to/experiment.html
+node scripts/spikes/check-report-graph.cjs
+```
+
+The generator refuses to overwrite an existing output. The HTML retains the
+whole canonical capsule for export, uses no CDN or network requests, and adds
+no production dependency. Its styles allow inline positioning for graph nodes;
+its JavaScript and stylesheet are bound by CSP hashes. All evidence text enters
+the interface through text nodes. This repository-only prototype does not
+replace or change the supported report viewer.
+
+- **Atlas:** expand individual mount instances; search paths, names and sources;
+  select graph nodes and execution-table rows to inspect the same registration.
+  Layout is deterministic. Curves mean containment, not execution. Mount labels
+  use the first child's source-file basename when available; full instance IDs,
+  source spans and mount ancestry stay available in the inspector.
+- **Lanes:** explore incoming and outgoing retained links around one selected
+  registration, separated into normal, error and event bands. Next means next
+  dispatch candidate, including unmatched candidates. Terminal control facts
+  remain visible. An error possibility never creates an inferred target edge.
+- **Dependencies:** choose a binding or capability, focus an authored owner, and
+  select a contextual consumer to inspect every retained explanation and its
+  ordered hops. Owners and consumers are paginated independently in groups of
+  eight; all records remain in the capsule. Missing associations never mean no
+  use. Unknown conditionality and partial coverage remain explicit.
+
+### Evaluate with Catalog
+
+1. Expand the selection mount, locate a route, and find its definition/source.
+2. Follow dispatch links from selection toward admission and operation routing.
+   Explain which links are candidates and where a matched handler can terminate.
+3. Choose a binding and explain one contextual consumer through the exact retained
+   mount/middleware/helper hops. Check partial association coverage is apparent.
+4. Compare a reused handler's registration instances without duplicating its
+   authored definition. Check search, keyboard selection, zoom, narrow-screen
+   scrolling, and evidence export.
+
+Record initial load and interaction timings as local browser observations, not
+runtime performance. Keep the runnable private Catalog HTML outside this repo.
+VIS-02 should deepen the preferred interaction after visual review; full browser
+qualification, polished graph navigation and supported-viewer integration remain
+outside VIS-01.
+
+An optional browser check uses a separately provisioned `playwright` installation:
+
+```sh
+# CHROMIUM_PATH is optional when Playwright's own browser is installed.
+CHROMIUM_PATH=/path/to/chromium node scripts/spikes/check-report-graph-browser.cjs /path/to/experiment.html
+```
+
+It exercises mount expansion, table/graph selection, terminal controls, retained
+links, dependency explanations and pagination, keyboard activation, zoom, empty
+search, exact JSON export, and narrow-screen containment. It rejects page/CSP
+errors and HTTP requests. This smoke is not cross-browser qualification.
