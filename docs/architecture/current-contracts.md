@@ -234,10 +234,18 @@ on reuse. Required guest-link disassembly audits remain mandatory. This changes
 artifact policy, not handler admission, the effect ABI, optimizer posture, or
 provider authority. See [optional Native text artifacts](../concepts/compilation-and-lowering.md#optional-native-text-artifacts).
 
-## Fastly numeric loop regions
+## Native numeric loop regions
 
-Schema-active, non-guest-linked Fastly Native builds select a private canonical
-numeric-region policy. The canonical emitter proves numeric initialization and
+Non-guest-linked Fastly Native builds select a private canonical numeric-region
+policy for both schema/incremental and schema-inactive/stub runtimes. Builds with
+the selected linked crypto guest use a narrower policy that requires inactive
+schema codecs. Schema-active linked builds retain boxed emission, including when
+JSON cache arena elision is requested. Other linked guests are not opted in.
+The provider-neutral `pulse_host` compiler used by Node Native selects its
+separately qualified host policy for schema and stub builds without linked guests.
+Provider writers retain authority over final emission; caller options or a
+portable intermediate cannot bypass the Fastly runtime gate.
+The canonical emitter proves numeric initialization and
 all reaching writes around bounded pure loops, using stable local IDs rather
 than type hints. Eligible regions use private f64 slots and box written values
 into the existing local handles before generic consumers or effects. Boxes
@@ -245,10 +253,27 @@ already held by aliases, collections and state remain immutable. Zero-trip and
 conditional writes preserve untouched handles. Arithmetic order, IEEE values,
 loop caps, control-state IDs and guard weights remain unchanged.
 
+The same proof applies to synchronous pure helper bodies and shared HTTP stages.
+Helper parameters remain unknown live-ins regardless of their type annotations;
+only independently initialized numeric regions are selected. Helper slots still
+reset on each call and clear at returns. A helper loop containing an early return
+keeps its existing emission. Shared-stage regions box before effects, transfers
+or generic consumers, preserving invocation frames and continuation ownership.
+Region write flags reset on every entry, including repeated calls/registrations.
+
 Unknown live-ins, coercive operations, nested assignment results, generic calls
-and collection writes decline this optimization. Helper/shared-stage bodies and package-owned application emitters,
-non-schema builds, linked guests, and entire read-loop/output/body-transform
-budgeted plans retain existing emission. Node Native and JavaScript are unchanged.
+and collection writes decline this optimization. Effectful helper bodies,
+package-owned application emitters, Node linked guests, Fastly schema-active
+linked builds, and entire read-loop/output/body-transform budgeted plans retain
+existing emission. JavaScript is unchanged. Node collections
+continue to store JavaScript values directly; numeric region exits allocate normal
+host handles without mutating, releasing or reusing existing entries. Node host
+handle counts, guest linear-memory capacity and process heap/RSS are distinct
+measurement domains. Eliminating host entries is not a guest-byte or RSS claim.
+Fastly stub allocation avoidance requires no collector. The selected linked
+runtime retains its fixed 32-page memory, disjoint Rust/static/invocation-frame
+ranges and unchanged allocator. Final-link audits remain mandatory; allocation
+avoidance does not make a previously failing schema/guest combination eligible.
 No host ABI, allocation ceiling, cache default, GC policy, or reclamation protocol
 is added. Generic handle retention remains; deliberately retained snapshots
 still require storage. Generator manifests record the policy, selected regions

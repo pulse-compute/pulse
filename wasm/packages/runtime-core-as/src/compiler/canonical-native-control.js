@@ -109,7 +109,9 @@ function buildNativeControl({
     const previousBoundary = activeBoundary;
     activeBoundary = boundary;
     let next = nextBlock;
-    const numericStatements = !helpers.has(activeHandler) && !stages.has(activeHandler)
+    // Stage regions box before suspension/transfer just like entry regions.
+    // Effectful helpers remain excluded; their invocation contract is separate.
+    const numericStatements = !helpers.has(activeHandler)
       ? numeric.select(statements || []) : new Map();
     for (let index = (statements || []).length - 1; index >= 0; index -= 1) {
       const statement = statements[index];

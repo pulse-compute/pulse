@@ -5,7 +5,7 @@ const { buildCanonicalSchemaBundle } = require('../../packages/schema-json/src/c
 const { compileCanonicalSource } = require('../../packages/compiler/src/canonical-api-compiler');
 const { buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { generateCanonicalNativeAssemblyScript: generate } = require('../../packages/runtime-core-as/src/compiler/canonical-native');
-const { prepareNumericRegions, POLICY } = require('../../packages/runtime-core-as/src/compiler/canonical-native-numeric');
+const { prepareNumericRegions, POLICY, LINKED_POLICY, HOST_POLICY } = require('../../packages/runtime-core-as/src/compiler/canonical-native-numeric');
 const platform = require('../../../packages/provider-fastly/src/build/native-platform-capabilities');
 const { executeFastlyNativePlatformCapabilities: execute } = require('../../../packages/provider-fastly/src/testing/native-platform-capabilities-host');
 const { withBoxedControl } = require('../support/numeric-region-control.cjs');
@@ -52,7 +52,13 @@ function proofAdmission() {
     assert.equal(proof([init,loop([assign(unsafe)])]).size,0,'independent proof ignores spoofed numeric annotations');
   assert.equal(proof([loop([assign(literal(1))])]).size,0,'unknown incoming handle');
   assert.equal(proof([init,loop([assign(literal(1))])],{budgeted:true}).size,0);
-  assert.equal(proof([init,loop([assign(literal(1))])],{schemaActive:false}).size,0);
+  assert.equal(proof([init,loop([assign(literal(1))])],{schemaActive:false}).size,2);
+  for (const schemaActive of [false,true]) for (const budgeted of [false,true]) {
+    for (const policy of [POLICY, LINKED_POLICY, HOST_POLICY]) {
+      const eligible = !budgeted && (policy !== LINKED_POLICY || !schemaActive);
+      assert.equal(proof([init,loop([assign(literal(1))])],{policy,schemaActive,budgeted}).size,eligible ? 2 : 0);
+    }
+  }
   assert.equal(proof([init,loop([assign(literal(1))])],{policy:undefined}).size,0);
   const conditionalInit={kind:'if',test:local('i'),then:[{kind:'local',localId:'unknown',value:literal(1)}],else:[]};
   assert.equal(proof([init,loop([conditionalInit,assign(local('unknown'))])]).size,0,'one-arm initialization does not dominate read');
@@ -96,6 +102,8 @@ async function main() {
   }
   const recovery=execute(artifact,{fixtures,request:{method:'POST',path:'/',headers:[['content-type','application/json']],body:'{"n":2}'}});
   assert.equal(recovery.response.status,200,'fresh instance after failure');
+  await require('./assert-fastly-numeric-owners.cjs').main();
+  await require('./assert-fastly-numeric-runtimes.cjs').main();
   console.log('ok - numeric regions: proof rejection, unchanged control, aliases, snapshots, IEEE numbers, loops, effects and recovery');
 }
-module.exports={main};if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});
+module.exports={main,source,schemaBundle};if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});

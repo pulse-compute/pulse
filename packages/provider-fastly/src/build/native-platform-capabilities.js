@@ -2063,8 +2063,13 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     );
   }
   const bindings = resolveCapabilityBindings(plan, options);
+  // Keep final provider eligibility authoritative over the portable artifact
+  // and caller options. Only the selected crypto guest uses the linked policy;
+  // that policy excludes active codecs regardless of JSON arena configuration.
+  const numericRegions = facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v2'
+    : jwtCrypto && jwtCrypto.guestUnitRequired ? 'fastly-linked-numeric-regions-v1' : undefined;
   const portable = packageApplication.enabled(plan) ? packageApplication.portable(plan) : generateCanonicalNativeAssemblyScript(plan, {
-    ...options, numericRegions: facts.guestUnits.length === 0 ? 'fastly-numeric-regions-v1' : undefined
+    ...options, numericRegions
   });
   const portableSource = stripPulseHostImports(portable.source);
   const hasJwt = (plan.effects || []).some((effect) => effect.kind === 'jwt.verify');

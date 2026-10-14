@@ -34,7 +34,7 @@ function generateCanonicalNativeAssemblyScript(plan, options = {}) {
     budgeted: runtimeContract.hasBoundedReadLoop(plan) || plan.capabilities.some(c => ['response.output', 'request.body.transform'].includes(c)), localName });
   const expressionEmitter = prepareNativeExpressions({
     expressions, expressionIndex, pureHelpers, localIndex, binaryIndex, unaryIndex,
-    fail, localName, stringHandle
+    fail, localName, stringHandle, numeric
   });
   const { applicationErrors, helpers, handlers, routerLocal, routerCursor } = prepareNativeFlow(plan, pureHelpers);
   const control = buildNativeControl({
