@@ -331,11 +331,13 @@ function validateCapsule(input) {
   ensure(capsule.evidenceHash.value === evidenceDigest(capsule), 'REPORT_HASH');
   return freeze(capsule);
 }
-const parseCapsule = input => validateCapsule(parseJson(input));
+const encoding = require('./encoding');
+const parseCapsule = input => validateCapsule(encoding.decode(parseJson(input)));
+const serializeStoredCapsule = input => encoding.store(validateCapsule(input));
 const serializeCapsule = input => canonicalJson(validateCapsule(input)) + '\n';
-const htmlPayload = input => serializeCapsule(input).replace(/[<>&\u2028\u2029]/g,
+const htmlPayload = input => serializeStoredCapsule(input).replace(/[<>&\u2028\u2029]/g,
   value => '\\u' + value.charCodeAt(0).toString(16).padStart(4, '0'));
 const terminalText = input => String(input).replace(/[\x00-\x1f\x7f-\x9f\u2028\u2029]/g,
   value => '\\u' + value.charCodeAt(0).toString(16).padStart(4, '0'));
-module.exports = { createCapsule, validateCapsule, parseCapsule, serializeCapsule, htmlPayload, terminalText,
+module.exports = { createCapsule, validateCapsule, parseCapsule, serializeCapsule, serializeStoredCapsule, htmlPayload, terminalText,
   stableReportId, artifactId, bodyId, evidenceDigest };

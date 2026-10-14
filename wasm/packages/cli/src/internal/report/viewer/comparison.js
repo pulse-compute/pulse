@@ -6,7 +6,12 @@
   const records = sections.flatMap(section => [...section.querySelectorAll('.compare-record')]);
   const search = $('#compare-search'), status = $('#compare-status');
   // Retain exact canonical bytes; filters and disclosures never change exports.
-  const wire = $('#compare-json').textContent;
+  const data = reportEncoding.decode(JSON.parse($('#pulse-comparison-data').textContent));
+  let wire;
+  const canonical = () => wire ??= reportEncoding.stringify(data) + '\n';
+  $('#compare-json-disclosure').addEventListener('toggle', () => {
+    if ($('#compare-json-disclosure').open) $('#compare-json').textContent = canonical();
+  });
   const indexed = records.map(record => ({ record, text: record.textContent.toLowerCase() }));
   function filter() {
     const query = search.value.trim().toLowerCase();
@@ -25,7 +30,7 @@
     $('#compare-theme').textContent = light ? 'Dark theme' : 'Light theme';
   });
   $('#compare-export').addEventListener('click', () => {
-    const url = URL.createObjectURL(new Blob([wire], { type: 'application/json' })), link = document.createElement('a');
+    const url = URL.createObjectURL(new Blob([canonical()], { type: 'application/json' })), link = document.createElement('a');
     link.href = url; link.download = 'pulse-report-comparison.json'; document.body.append(link); link.click(); link.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   });

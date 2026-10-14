@@ -178,7 +178,7 @@ const completion = object({ kind: fixed('pulse.report-completion'), completionVe
   snapshot: object({ inputsSha256: hash, profileSha256: hash, recipeSha256: hash }),
   artifacts: array(object({ ...defs.File.properties, id, stage: en('final', 'prelink') })),
   sidecars: array({ oneOf: [
-    object({ ...defs.File.properties, kind: fixed('inventory'), version: fixed(1), required: bool }),
+    object({ ...defs.File.properties, kind: fixed('inventory'), version: en(1, 2), required: bool }),
     object({ ...defs.File.properties, kind: fixed('attribution'), version: en(1, 2), required: bool })
   ] }) });
 const attribution = object({ kind: fixed('pulse.report-attribution'), attributionVersion: fixed(1),

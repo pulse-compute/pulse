@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { validateComparison, serializeComparison } = require('./comparison');
+const { validateComparison } = require('./comparison');
 const { fail } = require('./data');
 const read = name => fs.readFileSync(path.join(__dirname, 'viewer', name), 'utf8');
 const digest = text => crypto.createHash('sha256').update(text).digest('base64');
@@ -55,9 +55,9 @@ function changeRow(change, id) {
     ${change.fields.map(fieldRow).join('')}<details class="compare-identities"><summary>Record identities and matching basis</summary><p>${escape(words(change.basis))}</p><dl>${definition('Before IDs', change.beforeIds.join('\n') || 'None recorded')}${definition('After IDs', change.afterIds.join('\n') || 'None recorded')}${definition('Comparison key', change.key)}</dl></details></div></details>`;
 }
 function renderComparison(input) {
-  const comparison = validateComparison(input), wire = serializeComparison(comparison);
+  const comparison = validateComparison(input), wire = require('./encoding').store(comparison);
   const payload = wire.trimEnd().replace(/[<>&\u2028\u2029]/g, char => '\\u' + char.charCodeAt(0).toString(16).padStart(4, '0'));
-  const css = read('viewer.css') + '\n' + read('comparison.css'), script = read('comparison.js');
+  const css = read('viewer.css') + '\n' + read('comparison.css'), script = read('../encoding.js') + '\n' + read('comparison.js');
   const { before, after } = comparison.sources, total = comparison.summary.artifactBytes;
   const title = before.application.name === after.application.name ? after.application.name : before.application.name + ' → ' + after.application.name;
   const compatibilityText = { compatible: 'Recorded build settings match. Byte differences describe retained measurements.', 'different-build': 'Build settings or context differ. Byte differences cannot be attributed to source changes alone.', incompatible: 'Artifact domains differ. Byte deltas are suppressed.', unknown: 'Build evidence is incomplete. Equal settings and comparable build conditions cannot be established.' };
@@ -74,7 +74,7 @@ function renderComparison(input) {
   ${comparison.metadataChanges.length ? `<section class="compare-section" id="compare-metadata" aria-labelledby="heading-metadata"><div class="section-heading"><h2 id="heading-metadata">Build settings & provenance <span class="count-pill">${comparison.metadataChanges.length}</span></h2></div><p class="compare-section-note">Changed recorded metadata. Build durations are observations, not performance regressions.</p><details class="surface compare-metadata"><summary>Review changed settings and metadata</summary>${comparison.metadataChanges.map(fieldRow).join('')}</details></section>` : ''}
   <section class="compare-changes-heading" aria-label="Changed details"><div class="section-heading"><div><h2>Changed details</h2><p>Unchanged records and fields are omitted. Missing evidence is never zero.</p></div></div><nav class="compare-nav" aria-label="Changed inventories">${sectionLinks}</nav><div class="compare-toolbar" id="compare-toolbar" hidden><label>Find changes<input id="compare-search" type="search" placeholder="Route, schema, field or record ID…"></label><label>Change type<select id="compare-status"><option value="all">All changes</option>${Object.entries(statuses).map(([key, labels]) => `<option value="${key}">${labels[1]}</option>`).join('')}</select></label><button id="compare-reset" class="button">Reset</button></div><p id="compare-filter-status" class="compare-qualification" role="status" aria-live="polite"></p></section>
   ${sections}<p id="compare-empty" class="surface compare-empty"${comparison.sections.length ? ' hidden' : ''}>${comparison.sections.length ? 'No matching changes. Reset the filters to see all recorded changes.' : 'No changed detail in the retained inventories. Check coverage and build metadata above; this does not prove unchanged implementation.'}</p>
-  <details class="surface compare-json"><summary>Complete comparison JSON</summary><pre id="compare-json">${escape(wire)}</pre></details><footer class="page-footer"><span>Comparison v1 · ${escape(comparison.matchingVersion)} · Before → After</span><span>Self-contained · No network requests</span></footer></main>`;
+  <details id="compare-json-disclosure" class="surface compare-json"><summary>Complete comparison JSON</summary><pre id="compare-json">Enable JavaScript to display or export the complete JSON.</pre></details><footer class="page-footer"><span>Comparison v1 · ${escape(comparison.matchingVersion)} · Before → After</span><span>Self-contained · No network requests</span></footer></main>`;
   const policy = `default-src 'none'; script-src 'sha256-${digest(script)}'; style-src 'sha256-${digest(css)}'; style-src-attr 'none'; connect-src 'none'; img-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';`;
   const html = `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta http-equiv="Content-Security-Policy" content="${policy}"><meta name="pulse-comparison-viewer" content="1"><title>Pulse Report · Comparison</title><style>${css}</style></head><body>${shell}<script id="pulse-comparison-data" type="application/json">${payload}</script><script>${script}</script></body></html>\n`;
   if (Buffer.byteLength(html) > 64 * 1024 * 1024) fail('REPORT_LIMIT');

@@ -131,7 +131,7 @@ module.exports=function semanticCases() {
   const hostileComparison=compare(base,hostile),html=renderComparison(hostileComparison);
   assert.match(html,/Authored analytics/);assert.match(html,/Comparison identity coverage/);assert.match(html,/authored source slot/);
   assert.ok(!html.includes('<img src=x'));assert.ok(html.includes('&lt;img src=x'));
-  const payload=JSON.parse(html.match(/<script id="pulse-comparison-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+  const payload=parseComparison(html.match(/<script id="pulse-comparison-data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
   assert.equal(serializeComparison(payload),serializeComparison(hostileComparison));
   assert.equal(html,renderComparison(hostileComparison));
   assert.ok(html.includes('id="compare-useSites"'));

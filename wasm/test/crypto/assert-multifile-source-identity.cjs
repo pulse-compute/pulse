@@ -104,10 +104,12 @@ async function main(options = {}) {
     if (contents.has('pulse-report-inventory.json')) {
       const inventoryFile = 'pulse-report-inventory.json', completionFile = 'pulse-report-completion.json';
       const manifestFile = 'pulse-build.json';
-      const inventory = JSON.parse(contents.get(inventoryFile));
-      // Retained inventory is canonical JSON (sorted keys); preserve that order
+      const codec = require('../../packages/cli/src/internal/report/capsule');
+      const stored = contents.get(inventoryFile);
+      const inventory = JSON.parse(codec.serializeCapsule(codec.parseCapsule(stored)));
+      // Expand to canonical semantic JSON (sorted keys); preserve that order
       // while verifying/rebinding its own evidence digest as well as file links.
-      assert.equal(contents.get(inventoryFile).toString(), JSON.stringify(inventory) + '\n');
+      assert.equal(stored.toString(), codec.serializeStoredCapsule(inventory));
       const { evidenceHash, ...payload } = inventory;
       assert.equal(evidenceHash.algorithm, 'sha256');
       assert.equal(evidenceHash.value, sha256(JSON.stringify(payload)));
@@ -127,7 +129,7 @@ async function main(options = {}) {
       for (const row of [...build.stages, ...build.compilers]) row.durationMs = duration(row.durationMs);
       inventory.evidenceHash.value = sha256(JSON.stringify(payload));
       const replace = (file, value) => contents.set(file, Buffer.from(JSON.stringify(value) + '\n'));
-      replace(inventoryFile, inventory);
+      contents.set(inventoryFile, Buffer.from(codec.serializeStoredCapsule(inventory)));
       Object.assign(sidecar, link(inventoryFile));
       replace(completionFile, completion);
       manifest.reportCompletion = link(completionFile);

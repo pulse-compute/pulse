@@ -7,7 +7,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const crypto = require('node:crypto');
 const f = require('./report-fixtures.cjs');
-const { serializeCapsule } = require(path.join(f.reportRoot, 'capsule'));
+const { serializeCapsule, parseCapsule } = require(path.join(f.reportRoot, 'capsule'));
 const { renderReport } = require(path.join(f.reportRoot, 'viewer'));
 const { createReportViewModel } = require(path.join(f.reportRoot, 'viewer/model'));
 const { projectSchema } = require(path.join(f.reportRoot, 'schema-projection'));
@@ -26,8 +26,8 @@ for (const rich of [false, true]) {
   }
   const capsule = f.createCapsule(input), json = serializeCapsule(capsule), html = renderReport(capsule);
   assert.equal(html, renderReport(capsule), 'deterministic HTML');
-  assert.deepEqual(JSON.parse(payload(html)), capsule);
-  assert.equal(serializeCapsule(JSON.parse(payload(html))), json);
+  assert.deepEqual(parseCapsule(payload(html)), capsule);
+  assert.equal(serializeCapsule(parseCapsule(payload(html))), json);
   assert.ok(!/[<>&\u2028\u2029]/.test(payload(html)), 'data cannot escape the script container');
   assert.equal((html.match(/<script\b/g) || []).length, 2, 'one inert payload and one fixed executable script');
   assert.ok(!html.includes(hostile));
@@ -95,12 +95,13 @@ function renderedTree(capsule) {
   const descendants=node=>[node,...node.children.filter(n=>n instanceof Element).flatMap(descendants)];
   const nodes=()=>roots.flatMap(descendants);
   const get=id=>nodes().find(n=>n.id===id);
-  const data=new Element('script');data.id='pulse-report-data';data.textContent=JSON.stringify(capsule);roots.push(data);
+  const data=new Element('script');data.id='pulse-report-data';data.textContent=require(path.join(f.reportRoot,'encoding')).store(capsule);roots.push(data);
   const surfaces={'.workspace':new Element('div'),'.sidebar':new Element('aside')};
   const document={body:{classList:{add(){},remove(){},toggle(){}}},querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):surfaces[selector]??{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
+  const codec=fs.readFileSync(path.join(f.reportRoot,'encoding.js'),'utf8');
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
   const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
+  vm.runInNewContext(codec+'\n'+script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
   get('modal').hidden=true;get('route-drawer').hidden=true;

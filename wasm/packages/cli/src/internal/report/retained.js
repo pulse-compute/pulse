@@ -6,7 +6,7 @@ const { LIMITS, parseJson, canonicalJson, sha256, fail, freeze, relativePath } =
 const { readFile, checkedPath, atomicWrite, syncDirectory } = require('./files');
 const { beginSnapshot, finishSnapshot, scan, workspaceControls, toolchainSnapshot, dependencyRecords, profileDigest, digest, mode } = require('./snapshot');
 const { collectInventory } = require('./inventory');
-const { artifactId, serializeCapsule, parseCapsule } = require('./capsule');
+const { artifactId, serializeStoredCapsule, parseCapsule } = require('./capsule');
 const { classifyInput, admitCompletedBuild } = require('./completion');
 const { completionSchema, fileSchema } = require('./schema');
 const { validate } = require('./validate');
@@ -80,12 +80,12 @@ function publishBuild(project, prepared, manifest, manifestFile, outDir, attempt
   const artifacts = artifactRecords(outDir, manifest);
   const build = attempt.timing?.finish(prepared, artifacts, manifest.status === 'compiled' ? 'compile' : 'native-build');
   const capsule = collectInventory(project, prepared, artifacts, artifacts[0].id, attempt.snapshot.optimization, build);
-  const inventory = Buffer.from(serializeCapsule(capsule)), inputs = Buffer.from(canonicalJson(retained.inputs) + '\n');
+  const inventory = Buffer.from(serializeStoredCapsule(capsule)), inputs = Buffer.from(canonicalJson(retained.inputs) + '\n');
   const completion = { kind: 'pulse.report-completion', completionVersion: 1, status: 'complete',
     operation: manifest.status === 'compiled' ? 'compile' : 'native-build', manifestVersion: manifest.version,
     context: capsule.context, snapshot: retained.snapshot,
     artifacts: artifacts.map(({ target, ...row }) => row),
-    sidecars: [{ ...fileLink(INVENTORY_FILE, inventory), kind: 'inventory', version: 1, required: true }] };
+    sidecars: [{ ...fileLink(INVENTORY_FILE, inventory), kind: 'inventory', version: JSON.parse(inventory).kind === 'pulse.report-data' ? 2 : 1, required: true }] };
   let attributionBytes;
   // Completion binds one versioned optional attribution sidecar. Prefer the primary artifact;
   // a portable fallback remains explicitly prelink when final capture is absent.

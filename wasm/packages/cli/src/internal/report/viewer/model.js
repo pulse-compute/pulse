@@ -4,7 +4,7 @@ function createReportViewModel(P) {
   const canonical = value => value === null || typeof value !== 'object' ? JSON.stringify(value)
     : Array.isArray(value) ? '[' + value.map(canonical).join(',') + ']'
       : '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}';
-  const canonicalJson = canonical(P) + '\n';
+  let canonicalJson;
   const A = P.artifacts.find(a => a.id === P.context.primaryArtifactId);
   const byId = rows => new Map(rows.map(row => [row.id, row]));
   const routes = byId(P.routes), schemas = byId(P.schemas), bindings = byId(P.bindings), evidence = byId(P.evidence), declarations = byId(P.declarations);
@@ -246,7 +246,7 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,canonicalJson,A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+  return {analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,get canonicalJson() { return canonicalJson ??= canonical(P) + '\n'; },A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
     entries,entryIndex,entryLabel,helpers,helperIndex,helperOrigins,helperState,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
     routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers};
 }

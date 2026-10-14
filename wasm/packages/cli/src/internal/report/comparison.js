@@ -351,6 +351,6 @@ function validateComparison(input) {
   ensure(bytes.delta === (comparable ? bytes.after - bytes.before : null) && bytes.reason === (comparable ? null : 'incompatible-artifacts'));
   return freeze(result);
 }
-const parseComparison = input => validateComparison(parseJson(input));
+const parseComparison = input => validateComparison(require('./encoding').decode(parseJson(input)));
 const serializeComparison = input => json(validateComparison(input)) + '\n';
 module.exports = { compareCapsules, validateComparison, parseComparison, serializeComparison };
