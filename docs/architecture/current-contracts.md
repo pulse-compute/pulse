@@ -1550,6 +1550,34 @@ and browser history. Fit retains a minimum 65% scale and allows scrolling rather
 than reducing the full application to unreadable labels. Physical sizes,
 capability associations and control facts keep their existing meaning and limits.
 
+
+VIS-05 adds a shared expanded workspace for **Routing** and **Bindings**. Expand
+hides report chrome and metadata while preserving graph selection, scope and
+camera; Escape returns to the inline view. The details panel can be collapsed
+or sized in three steps; narrow expanded views use a bottom sheet. The routing
+execution table remains available in a disclosure. No browser fullscreen API,
+external window, additional payload or relaxed CSP is required.
+
+The binding explorer joins retained associations to authored use sites and
+logical bindings. Consumer groups share both the owning mount and definition;
+exact registration instances remain individually linked. Selecting a registration
+scopes consumers to that instance, or to the mount and descendants for a mount.
+Binding inventory entries also open the graph directly. Selecting a consumer
+reveals its exact instance in Routing. Resource-to-operation curves summarize
+authored sites, not request order or proof that every consumer executes every
+operation. Hover shows related connections; selection opens existing association
+explanations with lane, conditionality, helper calls, source spans and evidence.
+
+Counts distinguish distinct consumers, distinct use sites and retained
+association rows. Global association coverage stays visible above the graph;
+complete individual rows never override a partial global budget. Unresolved
+binding identities remain counted separately, and missing associations are not
+proof of no dependencies. Unscoped operations include all retained authored
+binding sites even when no contextual consumer was recorded; scoped operations
+include only sites joined by associations in that scope. Graph pages contain at
+most 12 consumer groups and 12 operation groups; evidence pages contain 20 rows.
+The binding inventory and exact capsule export retain the full evidence.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support
