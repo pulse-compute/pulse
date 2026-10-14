@@ -1473,10 +1473,32 @@ The schema/projection/graph validator and retained inventory admit this block
 together; passive artifact replay does not load the compiler or provider. Older
 capsules without analytics retain their exact bytes and evidence hashes, and
 absence means unavailable analytics. Older strict readers cannot consume the new
-block. Arbitrary npm source admission to completion snapshots remains the AN9-04
-gap identified in AN9-00; imported definition provenance in memory does not claim
-that imported-source passive completion is already available. Handler reporting
-has no new physical-size attribution or UI presentation contract.
+block. AN9-04 admits exact npm source inputs consumed by the canonical linker to
+completion snapshots. A private read receipt binds each consumed manifest and
+source to its content hash, physical target and file identity. The linker also
+records missing nearer package manifests and source-link resolution; installing
+a nearer package or retargeting a package/source symlink invalidates a current
+report even when the old target's bytes remain unchanged. These observational
+receipts never enter executable metadata, graph IDs, plans or Wasm.
+
+The input sidecar stores only bounded relative locations within the existing
+workspace boundary, source identities, sizes and hashes, with an optional digest
+in the recorded recipe. It never stores source bodies or grants package/lowerer
+trust. Only consumed files and resolution probes are bound; unrelated package
+files are not scanned. Sources outside the workspace remain unavailable for
+completion rather than expanding report read authority. Capture is bounded to
+20,000 read/probe records and 256 MiB of observed source text; replay enforces
+corresponding input bounds. Changed/restored file identities during a build
+withhold completion. Every publication rechecks inputs before the final marker.
+
+Artifact replay needs neither source files nor installed packages and loads no
+compiler, provider or TypeScript. Current-project collection retains the existing
+bounded configuration parser, then checks source receipts as data without source
+compilation, provider execution or filesystem writes. Both modes validate the
+same optional analytics graph and completion hashes. Old input sidecars without
+source receipts retain their existing recipe hash and replay behavior. Missing
+analytics remains unavailable and legacy capsules still render/export unchanged.
+Handler reporting has no new physical-size attribution or UI presentation contract.
 
 ## Providers, targets, and eligibility
 

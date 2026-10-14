@@ -4,8 +4,8 @@ Status: original evidence-only handoff. AN9-01 implements definitions and
 registration retention; AN9-02 adds authored use sites and validated helper-call
 edges in the optional analytics block. AN9-03 adds bounded contextual associations
 from canonical match/control facts, with conditional inherited paths and distinct
-normal/error/event lanes. Imported passive
-snapshot admission and UI remain follow-up work. The proof rejects malformed current analytics rather than
+normal/error/event lanes. AN9-04 binds exact imported-source reads and package
+resolution to passive completion/replay. UI remains follow-up work. The proof rejects malformed current analytics rather than
 treating the now-owned key as an unknown field.
 Investigated against `latest` at `3bee78387f46d7933d987bbb3f8273bc7b711a37`
 (includes IMP9-01 and IMP9-02). This is repository-only investigation material,
@@ -78,7 +78,9 @@ This proves noninterference of the existing projection seam; it does not qualify
 an analytics implementation that has not been written. Normal completion of the
 local-source variant replays successfully in a fresh process that rejects loads
 of compiler, provider, TypeScript, project configuration/execution, subprocess
-and network modules. Imported-source replay remains unavailable in all cells.
+and network modules. At the investigated base, imported-source replay remained unavailable in all
+cells. AN9-04 now owns and tests this admission; the executable proof expects
+imported completion/replay to succeed while retaining the local-source control.
 
 ## Exact producer and loss points
 

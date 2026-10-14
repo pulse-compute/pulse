@@ -2,6 +2,7 @@
 
 const crypto = require('node:crypto');
 const fs = require('node:fs');
+const { readSourceInput, missingManifest } = require('../report-source-inputs');
 const path = require('node:path');
 const ts = require('typescript');
 const npmSource = require('./npm-source-resolution.js');
@@ -160,8 +161,8 @@ function propertyNameText(node) {
   return undefined;
 }
 
-function parseModule(rootDir, absolutePath, logicalPathInput) {
-  const sourceText = fs.readFileSync(absolutePath, 'utf8');
+function parseModule(rootDir, absolutePath, logicalPathInput, reportOwner) {
+  const sourceText = reportOwner ? readSourceInput(reportOwner, absolutePath, 'source', logicalPathInput) : fs.readFileSync(absolutePath, 'utf8');
   const logicalPath = logicalPathInput ? graph.normalizePortablePath(logicalPathInput, 'project module path') : portableFilePath(rootDir, absolutePath);
   const sourceFile = ts.createSourceFile(logicalPath, sourceText, ts.ScriptTarget.ES2022, true, scriptKindForFile(absolutePath));
   const imports = [];
@@ -421,12 +422,13 @@ function workspacePackageIndex(workspaceRoot) {
   return out;
 }
 
-function searchNodeModulesPackage(importerFile, packageName, stopDir) {
+function searchNodeModulesPackage(importerFile, packageName, stopDir, reportOwner) {
   let current = path.dirname(importerFile);
   const stop = path.resolve(stopDir);
   while (true) {
     const candidate = path.join(current, 'node_modules', ...packageName.split('/'), 'package.json');
     if (fs.existsSync(candidate)) return candidate;
+    missingManifest(reportOwner, candidate, packageName);
     if (current === stop || current === path.dirname(current)) break;
     current = path.dirname(current);
   }
@@ -449,12 +451,13 @@ function packageModuleForSpecifier(context, importer, classification) {
   const trusted = CORE_AUTHORING_PACKAGES.has(packageName) || productContract || context.packageContractsByPackage.has(packageName);
   let manifestPath = (trusted || !context.nativePackageSources) && context.workspacePackages.get(packageName);
   if (!manifestPath && importer.packageSource && importer.packageSource.packageName === packageName) manifestPath = path.join(importer.packageSource.root, 'package.json');
-  if (!manifestPath) manifestPath = searchNodeModulesPackage(importer.absolutePath, packageName, context.workspaceRoot);
+  if (!manifestPath) manifestPath = searchNodeModulesPackage(importer.absolutePath, packageName, context.workspaceRoot, context.nativePackageSources && !trusted ? context : undefined);
   let manifest;
   let manifestHash;
   if (manifestPath) {
     try {
-      const source = fs.readFileSync(manifestPath, 'utf8');
+      const source = context.nativePackageSources && !trusted
+        ? readSourceInput(context, manifestPath, 'manifest', packageName) : fs.readFileSync(manifestPath, 'utf8');
       manifest = JSON.parse(source);
       if (!isPlainObject(manifest)) throw new TypeError('Expected a package manifest object.');
       manifestHash = sha256(source);
@@ -510,7 +513,7 @@ function loadPackageSource(context, packageModule, importer, relation) {
   let owner;
   try {
     owner = npmSource.packageSource(packageModule.manifestPath, packageModule.manifest, packageModule.packageName,
-      packageModule.packageSubpath, packageModule.packageManifestHash);
+      packageModule.packageSubpath, packageModule.packageManifestHash, context);
     const identity = `${owner.packageName}:${owner.packageManifestHash}`;
     const priorRoot = context.packageSourceRoots.get(identity);
     if (priorRoot && priorRoot !== owner.root) throw new Error('Distinct installed roots share this package identity; deduplicate the dependency.');
@@ -738,7 +741,7 @@ function loadProjectModule(context, absolutePath, logicalPath, packageSource) {
       detail: Object.freeze({ existing: collision, candidate: key })
     })], { rootDir: context.rootDir, existing: collision, candidate: key });
   }
-  const module = parseModule(context.rootDir, contained, key);
+  const module = parseModule(context.rootDir, contained, key, packageSource ? context : undefined);
   module.packageSource = packageSource;
   context.projectModules.set(key, module);
   context.diagnostics.push(...module.parseDiagnostics);

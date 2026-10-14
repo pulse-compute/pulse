@@ -268,15 +268,13 @@ async function main() {
       assert.throws(() => capsule.createCapsule({ ...report, analytics: {} }));
       assert.equal(capsule.serializeCapsule(capsule.createCapsule({ ...report, futureAnalytics: {} })), saved);
       const requests = await runRuntime(prepared.native, variant) + await runRuntime(control.native, variant);
-      // The imported source graph is accepted by IMP9, but report snapshots do
-      // not yet bind arbitrary npm source. Keep that failure visible.
+      // AN9-04 now binds accepted imported source inputs to completion.
       const built = execution.compileNativeProject(project, options);
       const importedManifest = JSON.parse(fs.readFileSync(built.files.manifest));
-      assert.deepEqual(importedManifest.reportEvidence, { status: 'unavailable', reason: 'REPORT_INPUT_UNBOUND' });
-      assert.throws(() => retained.collectArtifactReport(built.files.manifest), e => e.code === 'REPORT_MISSING_COMPLETION');
+      assert.ok(importedManifest.reportCompletion, JSON.stringify(importedManifest.reportEvidence));
+      assert.deepEqual(retained.collectArtifactReport(built.files.manifest).capsule.analytics, report.analytics);
       assert.deepEqual(fs.readFileSync(built.files.nativeWasm), prepared.native.wasm);
-      // Isolate the snapshot gap with identical helper/handler source in a
-      // project module. This replay is not evidence for imported-source replay.
+      // Retain the original local-source replay as a compatibility control.
       setup(fixtureDirectory, variant, true);
       const local = execution.compileNativeProject(resolveProject({ cwd: fixtureDirectory, metadataOnly: true }), options);
       const manifest = local.files.manifest;
@@ -287,7 +285,7 @@ async function main() {
       save(directory, `${variant}-${optimization}-report.json`, report);
       cells.push({ variant, optimization, wasmBytes: prepared.native.wasm.length,
         wasmSha256: hash(prepared.native.wasm), executions: requests, localSourcePassiveReplay: true,
-        importedSourceReplay: 'REPORT_INPUT_UNBOUND', projectionNoninterference: true });
+        importedSourceReplay: true, projectionNoninterference: true });
       console.log(JSON.stringify(cells.at(-1)));
     }
   }
