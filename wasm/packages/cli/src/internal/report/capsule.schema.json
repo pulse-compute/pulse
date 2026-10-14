@@ -2848,22 +2848,16 @@
         "useSites": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {},
-            "required": [],
-            "additionalProperties": false
+            "$ref": "#/$defs/AnalyticsUseSite"
           },
-          "maxItems": 0
+          "maxItems": 100000
         },
         "helperCalls": {
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {},
-            "required": [],
-            "additionalProperties": false
+            "$ref": "#/$defs/AnalyticsHelperCall"
           },
-          "maxItems": 0
+          "maxItems": 100000
         },
         "associations": {
           "type": "array",
@@ -3128,14 +3122,18 @@
         "basis": {
           "enum": [
             "handler-table",
-            "router-topology"
+            "router-topology",
+            "authored-recognition",
+            "validated-helper-call"
           ]
         },
         "producer": {
           "enum": [
             "canonical-router-handler-table",
             "canonical-router-linked-helper",
-            "canonical-router-execution-topology"
+            "canonical-router-execution-topology",
+            "canonical-handler-surface-authority",
+            "canonical-router-handler-validation"
           ]
         }
       },
@@ -3398,6 +3396,295 @@
         "order",
         "match",
         "flow",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "AnalyticsUseSite": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "ownerId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "surfaceId": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "operation": {
+          "type": "string",
+          "maxLength": 1048576,
+          "minLength": 1
+        },
+        "capability": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "available",
+                "unavailable",
+                "not-applicable"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576,
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "not-recorded",
+                    "not-applicable"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "value",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "available",
+                "unavailable",
+                "not-applicable"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/AnalyticsSpan"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "not-recorded",
+                    "not-applicable"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "value",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsEvidence"
+          },
+          "maxItems": 100000
+        },
+        "binding": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "resolved",
+                "dynamic",
+                "unknown",
+                "not-applicable"
+              ]
+            },
+            "kind": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1048576,
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "referenceId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "bindingId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "no-named-binding",
+                    "dynamic-reference",
+                    "unresolved-reference"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "kind",
+            "referenceId",
+            "bindingId",
+            "reason"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "ownerId",
+        "surfaceId",
+        "operation",
+        "capability",
+        "source",
+        "evidence",
+        "binding"
+      ],
+      "additionalProperties": false
+    },
+    "AnalyticsHelperCall": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "canonicalId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 1048576,
+              "minLength": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "callerId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "calleeId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "registrationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "maxItems": 100000
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "enum": [
+                "available",
+                "unavailable",
+                "not-applicable"
+              ]
+            },
+            "value": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/AnalyticsSpan"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "not-recorded",
+                    "not-applicable"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "value",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AnalyticsEvidence"
+          },
+          "maxItems": 100000
+        }
+      },
+      "required": [
+        "id",
+        "canonicalId",
+        "callerId",
+        "calleeId",
+        "registrationIds",
+        "source",
         "evidence"
       ],
       "additionalProperties": false

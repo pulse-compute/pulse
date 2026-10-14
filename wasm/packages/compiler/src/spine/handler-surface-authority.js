@@ -469,6 +469,25 @@ function routerHandlerNames(entry) {
   });
 }
 
+// Shared compiler projection. Recognition details own provider/package capability
+// names; synchronous surfaces use the same mapping as router analysis.
+function capabilityForHandlerSurface(fact) {
+  if (fact.detail?.provider) return fact.detail.provider.capability;
+  if (fact.detail?.packageEffect) return String(fact.detail.packageEffect.capability || fact.detail.packageEffect.kind);
+  const id = fact.surfaceId;
+  if (id === 'ctx.req.body') return 'request.body.forward';
+  if (id.startsWith('ctx.fetch.')) return 'fetch';
+  if (id.startsWith('ctx.req.')) return id.slice(4);
+  if (id.startsWith('ctx.config.')) return 'config.get';
+  if (id.startsWith('ctx.secret.')) return 'secret.get';
+  if (id.startsWith('ctx.kv.') || id.startsWith('ctx.state.')) return id.slice(4);
+  if (id === 'ctx.emit') return 'event.emit';
+  if (id.startsWith('ctx.log.')) return 'logging';
+  if (['ctx.json', 'ctx.text', 'ctx.response'].includes(id)) return `response.${id.slice(4)}`;
+  if (id === 'ctx.param') return 'route.param';
+  return undefined;
+}
+
 function inspectCanonicalRouterSurfaces(topology, options = {}) {
   if (!topology || topology.frontend !== 'canonical-router' || !topology.sourceFile || !Array.isArray(topology.entries)) {
     throw new TypeError('inspectCanonicalRouterSurfaces requires a prepared canonical Router topology.');
@@ -476,6 +495,47 @@ function inspectCanonicalRouterSurfaces(topology, options = {}) {
   const sourceFile = topology.sourceFile;
   const facts = [];
   const surfacesByEntry = new Map();
+  // Private observations retain original nodes before normalization. They never
+  // enter recognition facts, summaries, executable metadata or identity hashes.
+  const authoredSites = [], validatedCalls = [], seenOwners = new Set();
+  function retainAuthored(ownerId, fn, file, names) {
+    if (seenOwners.has(ownerId)) return;
+    seenOwners.add(ownerId);
+    const seenNodes = new WeakSet();
+    function visit(node, aliases) {
+      if (seenNodes.has(node)) return;
+      seenNodes.add(node);
+      if (ts.isTypeNode(node) || ts.isFunctionLike(node)) return;
+      if (ts.isBlock(node)) {
+        const local = new Map(aliases);
+        for (const statement of node.statements) {
+          const namespace = extractKvNamespaceDeclaration(statement, names.ctxName, { unwrap: true });
+          if (namespace) local.set(namespace.variableName, namespace.store);
+          visit(statement, local);
+        }
+        return;
+      }
+      // Await/parentheses are syntax wrappers, not additional operation sites.
+      const current = expressionFor(node, { unwrap: true });
+      if (current !== node) { visit(current, aliases); return; }
+      if (ts.isAwaitExpression(node)) { visit(node.expression, aliases); return; }
+      const recognized = recognizeHandlerSurface(node, { ...names, unwrap: true,
+        kvAliases: aliases, packageEffectForCall: options.packageEffectForCall });
+      if (recognized && recognized.class !== 'handler-wrapper') {
+        authoredSites.push(Object.freeze({ ownerId, sourceFile: file, node, recognized }));
+        if (ts.isCallExpression(node)) {
+          for (const argument of node.arguments) visit(argument, aliases);
+          // A fetch projection owns its fetch receiver; provider receiver inputs
+          // can themselves contain synchronous context operations.
+          if (recognized.detail?.provider?.resource) visit(recognized.detail.provider.resource, aliases);
+          for (const argument of recognized.detail?.fetch?.fetchCall?.arguments || []) visit(argument, aliases);
+          return;
+        }
+      }
+      ts.forEachChild(node, child => visit(child, aliases));
+    }
+    if (fn.body) visit(fn.body, new Map());
+  }
 
   function record(entry, node, names) {
     const recognized = recognizeHandlerSurface(node, {
@@ -514,6 +574,7 @@ function inspectCanonicalRouterSurfaces(topology, options = {}) {
   for (const entry of topology.entries) {
     if (!entry.functionNode) continue;
     const names = routerHandlerNames(entry);
+    retainAuthored(entry.entry.handlerId, entry.functionNode, entry.sourceFile || sourceFile, names);
     record(entry, entry.functionNode, names);
     function visit(node) {
       if (typeof ts.isTypeNode === 'function' && ts.isTypeNode(node)) return;
@@ -528,6 +589,9 @@ function inspectCanonicalRouterSurfaces(topology, options = {}) {
     if (entry.functionNode.body) visit(entry.functionNode.body);
   }
 
+  for (const helper of options.linkedProjectModules?.sourceHelpers || []) {
+    if (!helper.pure) retainAuthored(helper.id, helper.functionNode, helper.sourceFile, { ctxName: 'ctx' });
+  }
   const recognition = Object.freeze({
     version: HANDLER_SURFACE_AUTHORITY_VERSION,
     contractVersion: contract.HANDLER_SURFACE_CONTRACT_VERSION,
@@ -543,6 +607,12 @@ function inspectCanonicalRouterSurfaces(topology, options = {}) {
   });
   canonicalRouterModels.set(recognition, Object.freeze({
     topology,
+    authoredSites: Object.freeze(authoredSites),
+    get validatedCalls() { return Object.freeze([...validatedCalls]); },
+    retainValidatedCall(entry, helper, node, sourceFile) {
+      validatedCalls.push(Object.freeze({ callerId: entry.handlerId, calleeId: helper.id,
+        registrationId: entry.stableId, node: ts.getOriginalNode(node), sourceFile }));
+    },
     namesForEntry(entryStableId) {
       const entry = topology.entries.find((candidate) => candidate.entry.stableId === entryStableId);
       return entry ? routerHandlerNames(entry) : undefined;
@@ -587,6 +657,7 @@ module.exports = Object.freeze({
   staticString,
   recognizeManagedHandlerWrapper,
   recognizeHandlerSurface,
+  capabilityForHandlerSurface,
   classifyRecognizedHandlerSurface,
   extractFetchChain,
   extractEventEmitCall,

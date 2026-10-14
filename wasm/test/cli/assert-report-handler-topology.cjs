@@ -49,11 +49,33 @@ function assertTopology(value, { event = false, error = false } = {}) {
   assert.equal(a.version, 'pulse.report-analytics.v1');
   assert.equal(a.coverage.handlers.status, 'complete');
   assert.equal(a.coverage.registrations.expected, value.entries.length);
-  for (const key of ['useSites', 'helperCalls', 'associations']) {
+  for (const key of ['associations']) {
     assert.deepEqual(a[key], []);
     assert.deepEqual(a.coverage[key], { status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' });
   }
+  assert.equal(a.coverage.useSites.status, 'complete');
+  assert.equal(a.coverage.helperCalls.status, 'complete');
+  const helper = a.handlers.find(h => h.kind === 'helper');
+  const helperSites = a.useSites.filter(u => u.ownerId === helper.id);
+  const secret = helperSites.find(u => u.capability.value === 'secret.get');
+  assert.equal(secret.binding.state, 'resolved');
+  assert.equal(value.bindings.find(b => b.id === secret.binding.bindingId).name, 'HELPER_TOKEN');
+  const calls = a.helperCalls.filter(c => c.calleeId === helper.id);
+  assert.equal(calls.length, 2);
+  assert.deepEqual(calls.flatMap(c => c.registrationIds).map(id => registrations.find(r => r.id === id).match.value.path).sort(), ['/helper-a', '/helper-b']);
+  assert.ok(calls.every(c => c.source.value.file === 'src/index.ts' && c.callerId !== c.calleeId));
+  const sync = a.useSites.filter(u => u.surfaceId === 'ctx.req.header');
+  assert.ok(sync.length >= 2);
+  assert.ok(sync.every(u => u.capability.value === 'req.header' && u.binding.state === 'not-applicable'));
+  const dynamic = a.useSites.find(u => u.binding.state === 'dynamic');
+  assert.equal(dynamic.binding.bindingId, null); assert.equal(dynamic.binding.referenceId, null);
+  assert.equal(dynamic.binding.reason, 'dynamic-reference');
   const reused = a.handlers.find(h => h.name === 'reused');
+  const reads = a.useSites.filter(u => u.ownerId === reused.id && u.surfaceId === 'ctx.config.get');
+  assert.equal(reads.length, 3);
+  assert.equal(new Set(reads.map(u => u.id)).size, 3);
+  assert.equal(new Set(reads.map(u => u.binding.bindingId)).size, 2);
+  assert.equal(new Set(reads.map(u => u.source.value.start.offset)).size, 3);
   const uses = registrations.filter(r => r.handlerId === reused.id);
   assert.equal(uses.length, 2); assert.notEqual(uses[0].id, uses[1].id);
   assert.deepEqual(uses.map(r => r.match.value.path), ['/direct-a', '/direct-b']);
@@ -111,16 +133,34 @@ function negativeCases(value) {
   reject(v => v.analytics.coverage.registrations.observed--);
   reject(v => { v.analytics.registrations.pop(); v.analytics.coverage.registrations.observed--; v.analytics.coverage.registrations.expected--; });
   reject(v => v.analytics.useSites.push({}));
+  reject(v => v.analytics.useSites.push(v.analytics.useSites[0]));
+  reject(v => v.analytics.helperCalls.push(v.analytics.helperCalls[0]));
+  reject(v => v.analytics.useSites[0].ownerId = 'missing');
+  reject(v => v.analytics.useSites[0].surfaceId = 'forged');
+  reject(v => v.analytics.useSites[0].source.value.start.offset++);
+  reject(v => v.analytics.useSites[0].evidence[0].producer = 'canonical-router-handler-validation');
+  reject(v => v.analytics.useSites.find(u => u.binding.state === 'resolved').binding.bindingId = 'missing');
+  reject(v => v.analytics.useSites.find(u => u.binding.state === 'resolved').binding.kind = 'forged');
+  reject(v => v.analytics.useSites.find(u => u.binding.state === 'dynamic').binding.bindingId = v.bindings[0].id);
+  reject(v => v.analytics.useSites.find(u => u.binding.state === 'not-applicable').binding.reason = 'unresolved-reference');
+  reject(v => v.analytics.helperCalls[0].calleeId = v.analytics.helperCalls[0].callerId);
+  reject(v => v.analytics.helperCalls[0].canonicalId = 'invented');
+  reject(v => v.analytics.helperCalls[0].registrationIds = [v.analytics.registrations[0].id]);
+  reject(v => v.analytics.helperCalls[0].registrationIds = []);
+  reject(v => v.analytics.helperCalls[0].evidence[0].basis = 'authored-recognition');
   reject(v => v.analytics.coverage.useSites = { status: 'complete', observed: 0, expected: 0, reason: null });
   const hostile = structuredClone(value);
   hostile.analytics.handlers[0].credentials = 'PRIVATE_ANALYTICS_CANARY';
   hostile.analytics.handlers[0].source.value.expression = 'PRIVATE_SOURCE_CANARY';
+  hostile.analytics.useSites[0].expression = 'PRIVATE_EXPRESSION_CANARY';
+  hostile.analytics.useSites[0].binding.value = 'PRIVATE_BINDING_CANARY';
+  hostile.analytics.helperCalls[0].arguments = ['PRIVATE_ARGUMENT_CANARY'];
   assert.throws(() => capsule.validateCapsule(hostile));
   assert.equal(capsule.serializeCapsule(capsule.createCapsule(hostile)), capsule.serializeCapsule(value), 'projection strips non-allowlisted metadata');
   const unknown = structuredClone(value);
   unknown.analytics.handlers[0].source = { state: 'unavailable', value: null, reason: 'not-recorded' };
   assert.equal(capsule.createCapsule(unknown).analytics.handlers[0].source.state, 'unavailable');
-  const reordered = structuredClone(value); reordered.analytics.handlers.reverse();
+  const reordered = structuredClone(value); reordered.analytics.handlers.reverse(); reordered.analytics.useSites.reverse(); reordered.analytics.helperCalls.reverse();
   assert.equal(capsule.serializeCapsule(capsule.createCapsule(reordered)), capsule.serializeCapsule(value));
   const tampered = structuredClone(value); tampered.analytics.handlers[0].name = 'changed';
   assert.throws(() => capsule.validateCapsule(tampered), e => e.code === 'REPORT_HASH');
@@ -165,12 +205,18 @@ async function main() {
     const importedUse = projected.registrations.find(r => r.handlerId === imported.id);
     assert.equal(importedUse.source.value.file, 'src/index.ts', 'registration and definition have separate source owners');
     assert.equal(importedUse.source.value.start.line, 42);
+    const authored = fs.readFileSync(path.join(directory, 'src/index.ts'), 'utf8');
+    const repeated = projected.useSites.filter(u => u.ownerId === projected.handlers.find(h => h.name === 'reused').id && u.surfaceId === 'ctx.config.get');
+    assert.deepEqual(repeated.map(u => authored.slice(u.source.value.start.offset, u.source.value.end.offset)),
+      ["ctx.config.get('REGION')", "ctx.config.get('REGION')", "ctx.config.get('OTHER')"]);
+    assert.ok(repeated.every(u => u.binding.state === 'unknown' && u.binding.bindingId === null), 'missing reference evidence cannot resolve a binding');
     assert.equal(projected.registrations.filter(r => r.kind !== 'event').at(-1).flow.next, null);
     for (const file of ['minimal.json', 'shared-routes.json']) {
       const saved = fs.readFileSync(path.join(__dirname, '../fixtures/report', file), 'utf8');
       assert.equal(capsule.serializeCapsule(capsule.parseCapsule(saved)), saved, 'legacy bytes/hash unchanged');
       assert.equal(capsule.parseCapsule(saved).analytics, undefined);
     }
+    assert.equal(projected.useSites.find(u => u.ownerId === imported.id && u.surfaceId === 'ctx.config.get').source.value.file, imported.source.value.file);
     const missing = capsule.createCapsule({ ...f.fixture(false), analytics: projectHandlerTopology() });
     assert.equal(missing.analytics.coverage.handlers.status, 'unavailable');
     const controlOwner = withoutTopology();
@@ -193,7 +239,13 @@ async function main() {
         assert.equal(report(project, control, optimization).analytics.coverage.handlers.status, 'unavailable');
         if (optimization === 'default') defaultAnalytics = value.analytics;
         else assert.deepEqual(value.analytics, defaultAnalytics, 'semantic definitions/registrations do not depend on Native recipe');
-        if (!negative) negative = negativeCases(value);
+        if (!negative) {
+          negative = negativeCases(value);
+          const old = structuredClone(value);
+          for (const key of ['useSites', 'helperCalls']) { old.analytics[key] = []; old.analytics.coverage[key] = { status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' }; }
+          const saved = capsule.serializeCapsule(capsule.createCapsule(old));
+          assert.equal(capsule.serializeCapsule(capsule.parseCapsule(saved)), saved, 'AN9-01 unavailable tables remain valid');
+        }
         const executions = await execute(prepared.native, variant === 'event') + await execute(control.native, variant === 'event');
         const built = execution.compileNativeProject(project, options);
         const replay = retained.collectArtifactReport(built.files.manifest).capsule;
@@ -206,7 +258,7 @@ async function main() {
     // Nested mounts use ordered instance paths, not sorted sets of definitions.
     setup(directory, 'http', true);
     const source = path.join(directory, 'src/index.ts');
-    fs.writeFileSync(source, fs.readFileSync(source, 'utf8').replace("app.use(rootMiddleware);", "const grand = new Router();\ngrand.get('/leaf', async ctx => ctx.text('leaf'));\nchild.mount('/nested', grand);\napp.use(rootMiddleware);"));
+    fs.writeFileSync(source, fs.readFileSync(source, 'utf8').replace("app.use(rootMiddleware);", "const grand = new Router();\ngrand.get('/leaf', async ctx => { const value = await sharedLookup(ctx, 'leaf'); return ctx.text(value); });\nchild.mount('/nested', grand);\napp.use(rootMiddleware);"));
     project = resolveProject({ cwd: directory, metadataOnly: true });
     const nested = execution.compileNativeProjectInMemory(project, { emitWat: false });
     const nestedReport = report(project, nested);
@@ -214,12 +266,47 @@ async function main() {
     assert.equal(leaves.length, 2); assert.ok(leaves.every(r => r.mountPath.length === 2));
     assert.notDeepEqual(leaves[0].mountPath, leaves[1].mountPath);
     assert.equal(leaves[0].handlerId, leaves[1].handlerId);
+    const leafCall = nestedReport.analytics.helperCalls.filter(c => c.callerId === leaves[0].handlerId);
+    assert.equal(leafCall.length, 1, 'one authored call survives mount expansion');
+    assert.deepEqual(leafCall[0].registrationIds, leaves.map(r => r.id).sort());
+    const badCall = structuredClone(nestedReport); badCall.analytics.helperCalls.find(c => c.id === leafCall[0].id).registrationIds.pop();
+    assert.throws(() => capsule.createCapsule(badCall), e => e.code === 'REPORT_COVERAGE');
+    // Recognition recurses into awaited argument expressions and retains UTF-16
+    // positions without introducing a site for await or the KV namespace.
+    fs.writeFileSync(path.join(directory, 'src/pure.ts'), 'export function identity(value: string): string { return value; }');
+    fs.writeFileSync(source, `import { Pulse } from '@pulse-compute/pulse';
+import { identity } from './pure';
+const app = new Pulse({ auto: true });
+// Authored astral character: 🌊
+app.get('/nested', async ctx => {
+  const store = ctx.kv('CACHE');
+  const value = await store.get(ctx.req.header('x-key') || 'key');
+  const config = await ctx.config.get(ctx.req.header('x-name') || 'REGION');
+  return ctx.text(value || config || identity('empty'));
+});
+export default app;
+`);
+    project = resolveProject({ cwd: directory, metadataOnly: true });
+    const nestedCompiled = execution.compileProject(project);
+    const nestedPlan = buildCanonicalNativePlan(nestedCompiled);
+    const nestedTopology = collectCanonicalReportReferences(nestedCompiled, nestedPlan).topology;
+    const nestedSites = nestedTopology.useSites;
+    const pureHelper = nestedTopology.handlers.find(h => h.name === 'identity');
+    assert.equal(nestedTopology.helperCalls.filter(c => c.calleeId === pureHelper.id).length, 1, 'pure helper calls also retain validation evidence');
+    assert.equal(nestedSites.filter(u => u.surfaceId === 'ctx.req.header').length, 2);
+    assert.equal(nestedSites.filter(u => u.surfaceId === 'ctx.kv.get').length, 1);
+    assert.equal(nestedSites.find(u => u.surfaceId === 'ctx.kv.get').binding.canonicalId, 'CACHE');
+    for (const site of nestedSites) {
+      const text = fs.readFileSync(source, 'utf8');
+      assert.ok(!text.slice(site.source.value.start.offset, site.source.value.end.offset).startsWith('await '));
+      assert.equal(site.source.value.sha256, sha256(text));
+    }
     fs.writeFileSync(source, "export default async ctx => ctx.text('standalone');\n");
     project = resolveProject({ cwd: directory, metadataOnly: true });
     const standalone = report(project, execution.compileNativeProjectInMemory(project, { emitWat: false }));
     assert.equal(standalone.analytics.coverage.handlers.status, 'unavailable', 'no router producer is not a known-empty handler universe');
     console.log(JSON.stringify({ status: 'passed', cells, negativeCases: negative, importedSpans: true,
-      nestedMounts: true, oldCapsulesUnchanged: true, reservedTablesUnavailable: true }));
+      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, associationsUnavailable: true }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

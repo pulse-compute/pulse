@@ -1416,9 +1416,23 @@ router mounted more than once and nested mounts. Next/child/parent-return links
 join existing report entries; HTTP termination never becomes an event entry.
 Existing entry flow retains scope/conditional candidate facts. These are static
 topology facts, not request traces or proof that every candidate middleware runs.
-Capability use sites, helper-call edges and derived associations remain empty
-with unavailable coverage until their producers and validators are implemented.
-Nonempty claims in these reserved tables are rejected.
+AN9-02 retains recognized operation nodes before normalization, including linked
+helpers. Each authored use site belongs to one definition and carries the shared
+compiler capability projection, canonical operation and original source span.
+Repeated reads remain separate sites even when they share one binding. Resolved
+binding uses join existing reference/binding identities by kind and canonical
+name. Dynamic names remain unresolved; missing evidence is unknown. Synchronous
+operations without named resources have not-applicable binding state.
+
+Helper-call edges come from accepted frontend calls, with caller/callee identities
+and all consumer registrations of that authored call. A shared helper owns its
+own capability sites; each caller reaches them through its validated edge.
+Calls expanded by reuse or mounting remain one authored call with distinct
+registrations. Missing authored call locations never borrow generated offsets.
+These observations live outside serialized recognition summaries and executable
+metadata. Default and bounded-size recipes retain the same semantic inventory.
+Derived contextual associations remain empty with unavailable coverage until
+AN9-03; nonempty claims in that reserved table are rejected.
 
 The schema/projection/graph validator and retained inventory admit this block
 together; passive artifact replay does not load the compiler or provider. Older

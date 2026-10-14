@@ -1,8 +1,9 @@
 # AN9-00 — prove the compiler analytics association contract
 
-Status: original evidence-only handoff. AN9-01 now implements definitions and
-registration retention in the optional analytics block; the other recorded gaps
-remain follow-up work. The proof rejects malformed current analytics rather than
+Status: original evidence-only handoff. AN9-01 implements definitions and
+registration retention; AN9-02 adds authored use sites and validated helper-call
+edges in the optional analytics block. Contextual associations, imported passive
+snapshot admission and UI remain follow-up work. The proof rejects malformed current analytics rather than
 treating the now-owned key as an unknown field.
 Investigated against `latest` at `3bee78387f46d7933d987bbb3f8273bc7b711a37`
 (includes IMP9-01 and IMP9-02). This is repository-only investigation material,

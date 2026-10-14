@@ -51,7 +51,7 @@ const tasks = Object.freeze({
   }),
   'cli-report-handler-topology': nodeTask('test/cli/assert-report-handler-topology.cjs', {
     evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000,
-    description: 'AN9-01 passive handler/helper definitions, mount instances, source spans and schema compatibility'
+    description: 'AN9-01/02 passive definitions, authored use sites, validated helper calls, recipe parity and replay'
   }),
   'cli-report-reference-provenance': nodeTask('test/cli/assert-report-reference-provenance.cjs', {
     evidence: 'native', timeoutMs: 120000,

@@ -6,7 +6,12 @@ const complete = count => ({ status: 'complete', observed: count, expected: coun
 const unavailable = () => ({ status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' });
 const helperId = canonicalId => 'helper:' + sha256(canonicalJson(['helper', canonicalId]));
 
-function projectHandlerTopology(topology) {
+const siteId = row => 'use:' + sha256(canonicalJson(['use', row.ownerId, row.source.value.file,
+  row.source.value.start.offset, row.source.value.end.offset, row.surfaceId]));
+const callId = row => 'call:' + sha256(canonicalJson(['call', row.callerId, row.calleeId, row.source.value.file,
+  row.source.value.start.offset, row.source.value.end.offset]));
+
+function projectHandlerTopology(topology, references = []) {
   if (topology?.version !== 'pulse.compiler-report-topology.v1') topology = undefined;
   const handlers = (topology?.handlers || []).map(row => ({ ...row, canonicalId: row.id,
     id: row.kind === 'helper' ? helperId(row.id) : stableReportId('handler', row.id) }));
@@ -15,10 +20,32 @@ function projectHandlerTopology(topology) {
   const registrations = (topology?.registrations || []).map(row => ({ ...row, canonicalId: row.id,
     id: entryId(row.id), handlerId: row.handlerId === null ? null : handlerIds.get(row.handlerId),
     mountPath: row.mountPath.map(entryId), flow: Object.fromEntries(Object.entries(row.flow).map(([key, value]) => [key, entryId(value)])) }));
-  return { version: 'pulse.report-analytics.v1', handlers, registrations, useSites: [], helperCalls: [], associations: [],
+  const useSites = (topology?.useSites || []).filter(row => row.source.state === 'available').map(row => {
+    const b = row.binding;
+    const reference = b.state === 'resolved' ? references.find(ref => ref.kind === 'binding'
+      && ref.bindingKind === b.kind && ref.canonicalId === b.canonicalId && ref.state === 'resolved') : undefined;
+    const binding = b.state === 'not-applicable'
+      ? { state: 'not-applicable', kind: null, referenceId: null, bindingId: null, reason: 'no-named-binding' }
+      : reference ? { state: 'resolved', kind: b.kind, referenceId: reference.id, bindingId: reference.targetId, reason: null }
+      : { state: b.state === 'dynamic' ? 'dynamic' : 'unknown', kind: b.kind, referenceId: null, bindingId: null,
+        reason: b.state === 'dynamic' ? 'dynamic-reference' : 'unresolved-reference' };
+    const site = { ...row, ownerId: handlerIds.get(row.ownerId), binding };
+    return { ...site, id: siteId(site) };
+  });
+  const helperCalls = (topology?.helperCalls || []).map(row => {
+    const call = { ...row, callerId: handlerIds.get(row.callerId), calleeId: handlerIds.get(row.calleeId),
+      registrationIds: [...new Set(row.registrationIds.map(entryId))].sort() };
+    return { ...call, id: callId(call) };
+  });
+  const coverage = (rows, count) => rows === undefined ? unavailable() : rows.length === count ? complete(count)
+    : { status: 'partial', observed: count, expected: rows.length, reason: 'not-recorded' };
+  return { version: 'pulse.report-analytics.v1', handlers, registrations, useSites, helperCalls, associations: [],
     coverage: { handlers: topology ? complete(handlers.length) : unavailable(),
       registrations: topology ? complete(registrations.length) : unavailable(),
-      useSites: unavailable(), helperCalls: unavailable(), associations: unavailable() } };
+      useSites: coverage(topology?.useSites, useSites.length), helperCalls: topology?.helperCallsComplete === false
+        ? { status: 'partial', observed: helperCalls.length, expected: null, reason: 'not-recorded' }
+        : coverage(topology?.helperCalls, helperCalls.length),
+      associations: unavailable() } };
 }
 
 function validateHandlerTopology(capsule) {
@@ -104,13 +131,63 @@ function validateHandlerTopology(capsule) {
     } else ensure(row.flow.child === null && row.flow.parentContinue === null);
     if (row.flow.next !== null) ensure(registrations.get(row.flow.next).order > row.order);
   }
+  const sites = new Map(), calls = new Map();
+  unique(analytics.useSites, sites); unique(analytics.helperCalls, calls);
+  const references = new Map((capsule.references || []).map(row => [row.id, row]));
+  const bindings = new Map(capsule.bindings.map(row => [row.id, row]));
+  function ownedSource(row, ownerId) {
+    const owner = handlers.get(ownerId);
+    ensure(owner, 'REPORT_REFERENCE');
+    source(row.source);
+    ensure(row.source.state === 'available', 'REPORT_ANALYTICS_SOURCE');
+    if (owner.source.state === 'available') {
+      const s = row.source.value, o = owner.source.value;
+      ensure(s.file === o.file && s.sha256 === o.sha256 && s.start.offset >= o.start.offset
+        && s.end.offset <= o.end.offset, 'REPORT_ANALYTICS_SOURCE');
+    }
+  }
+  for (const row of sites.values()) {
+    ownedSource(row, row.ownerId);
+    ensure(row.id === siteId(row), 'REPORT_IDENTITY');
+    fact(row.capability);
+    ensure(row.evidence.length === 1 && row.evidence[0].basis === 'authored-recognition'
+      && row.evidence[0].producer === 'canonical-handler-surface-authority');
+    const b = row.binding;
+    if (b.state === 'not-applicable') ensure(b.kind === null && b.bindingId === null && b.referenceId === null && b.reason === 'no-named-binding');
+    else {
+      ensure(b.kind !== null);
+      if (b.state === 'resolved') {
+        const ref = references.get(b.referenceId), target = bindings.get(b.bindingId);
+        ensure(ref && target && ref.kind === 'binding' && ref.state === 'resolved' && ref.targetId === b.bindingId
+          && ref.bindingKind === b.kind && target.kind === b.kind && ref.canonicalId === target.name && b.reason === null, 'REPORT_REFERENCE');
+      } else {
+        ensure(b.bindingId === null && b.reason === (b.state === 'dynamic' ? 'dynamic-reference' : 'unresolved-reference'));
+        if (b.referenceId !== null) {
+          const ref = references.get(b.referenceId);
+          ensure(ref && ref.kind === 'binding' && ref.bindingKind === b.kind && ref.state === b.state && ref.targetId === null, 'REPORT_REFERENCE');
+        }
+      }
+    }
+  }
+  for (const row of calls.values()) {
+    ownedSource(row, row.callerId);
+    ensure(handlers.get(row.callerId)?.kind === 'handler' && handlers.get(row.calleeId)?.kind === 'helper', 'REPORT_REFERENCE');
+    ensure(row.id === callId(row) && row.canonicalId === null, 'REPORT_IDENTITY');
+    ensure(row.registrationIds.length > 0 && new Set(row.registrationIds).size === row.registrationIds.length, 'REPORT_DUPLICATE');
+    for (const id of row.registrationIds) ensure(registrations.get(id)?.handlerId === row.callerId
+      && ['route', 'middleware'].includes(registrations.get(id).kind), 'REPORT_REFERENCE');
+    if (analytics.coverage.helperCalls.status === 'complete') ensure(canonicalJson([...registrations.values()]
+      .filter(r => r.handlerId === row.callerId).map(r => r.id).sort()) === canonicalJson([...row.registrationIds].sort()), 'REPORT_COVERAGE');
+    ensure(row.evidence.length === 1 && row.evidence[0].basis === 'validated-helper-call'
+      && row.evidence[0].producer === 'canonical-router-handler-validation');
+  }
   for (const [key, coverage] of Object.entries(analytics.coverage)) {
     ensure(coverage.observed === analytics[key].length, 'REPORT_COVERAGE');
     ensure(coverage.expected === null || coverage.expected >= coverage.observed, 'REPORT_COVERAGE');
     if (coverage.status === 'complete') ensure(coverage.expected === coverage.observed && coverage.reason === null, 'REPORT_COVERAGE');
     else ensure(coverage.reason !== null, 'REPORT_COVERAGE');
     if (['unavailable', 'not-applicable'].includes(coverage.status)) ensure(coverage.observed === 0 && coverage.expected === null, 'REPORT_COVERAGE');
-    if (['useSites', 'helperCalls', 'associations'].includes(key)) ensure(coverage.status === 'unavailable' && coverage.reason === 'not-recorded', 'REPORT_COVERAGE');
+    if (key === 'associations') ensure(coverage.status === 'unavailable' && coverage.reason === 'not-recorded', 'REPORT_COVERAGE');
   }
   if (analytics.coverage.registrations.status === 'complete') ensure(registrations.size === entries.size, 'REPORT_COVERAGE');
 }
