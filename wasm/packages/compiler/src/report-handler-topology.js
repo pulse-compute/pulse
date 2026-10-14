@@ -1,7 +1,9 @@
 'use strict';
 
 const { createHash } = require('node:crypto');
-const { topologyForCanonicalRouterOutput } = require('./spine/canonical-router');
+const { topologyForCanonicalRouterOutput, surfaceFactsForCanonicalRouterOutput } = require('./spine/canonical-router');
+const { sourceModelForRouterRecognition, capabilityForHandlerSurface, staticString } = require('./spine/handler-surface-authority');
+const { bindingOwnership } = require('./spine/binding-ownership');
 const unavailable = () => ({ state: 'unavailable', value: null, reason: 'not-recorded' });
 const available = value => ({ state: 'available', value, reason: null });
 const freeze = value => { if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); } return value; };
@@ -69,6 +71,31 @@ function collectHandlerTopology(compiled) {
     }
     return registration;
   });
-  return freeze({ version: 'pulse.compiler-report-topology.v1', handlers, registrations });
+  const model = sourceModelForRouterRecognition(surfaceFactsForCanonicalRouterOutput(compiled.router)?.recognition);
+  const nodeSource = row => span(row.sourceFile.fileName, row.node.getStart(row.sourceFile), row.node.end);
+  const useSites = model?.authoredSites.map(row => {
+    const recognized = row.recognized, capability = capabilityForHandlerSurface(recognized);
+    const provider = recognized.detail?.provider, effect = recognized.detail?.packageEffect;
+    const name = provider ? staticString(provider.resource, { unwrap: true }) : effect?.resource?.kind === 'literal' ? effect.resource.value : undefined;
+    const binding = bindingOwnership(provider?.providerKind || effect?.providerKind, name,
+      Boolean(provider?.resource) && name === undefined || effect?.resource?.kind === 'dynamic');
+    return { ownerId: row.ownerId, surfaceId: recognized.surfaceId, operation: recognized.canonicalOperation,
+      capability: capability ? available(capability) : unavailable(),
+      binding: binding || { state: 'not-applicable', kind: null, canonicalId: null },
+      source: nodeSource(row), evidence: [{ basis: 'authored-recognition', producer: 'canonical-handler-surface-authority' }] };
+  });
+  const calls = new Map();
+  let helperCallsComplete = true;
+  for (const row of model?.validatedCalls || []) {
+    const source = nodeSource(row);
+    // No lowered offsets, call order or guessed identities stand in for source.
+    if (source.state !== 'available') { helperCallsComplete = false; continue; }
+    const key = JSON.stringify([row.callerId, row.calleeId, source.value.file, source.value.start.offset, source.value.end.offset]);
+    if (!calls.has(key)) calls.set(key, { canonicalId: null, callerId: row.callerId, calleeId: row.calleeId,
+      registrationIds: [], source, evidence: [{ basis: 'validated-helper-call', producer: 'canonical-router-handler-validation' }] });
+    calls.get(key).registrationIds.push(row.registrationId);
+  }
+  return freeze({ version: 'pulse.compiler-report-topology.v1', handlers, registrations,
+    ...(model ? { useSites, helperCalls: [...calls.values()], helperCallsComplete } : {}) });
 }
 module.exports = { collectHandlerTopology };

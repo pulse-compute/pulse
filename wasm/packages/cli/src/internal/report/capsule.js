@@ -17,7 +17,7 @@ function stableReportId(kind, canonicalId) {
 }
 function normalize(input) {
   const value = copyData(input);
-  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages', 'roles']);
+  const sets = new Set(['evidenceIds', 'schemaIds', 'bindingIds', 'declarationIds', 'routeIds', 'entryIds', 'registrationIds', 'artifactIds', 'subjectIds', 'bodyIds', 'resourceIds', 'cases', 'targets', 'externalPackages', 'roles']);
   function walk(item, key) {
     if (Array.isArray(item)) {
       if (sets.has(key)) { ensure(new Set(item).size === item.length, 'REPORT_DUPLICATE'); item.sort(compare); }
@@ -26,7 +26,7 @@ function normalize(input) {
   }
   walk(value, '');
   for (const name of collections.filter(name => !['routes', 'entries'].includes(name))) value[name]?.sort((a, b) => compare(a.id, b.id));
-  value.analytics?.handlers.sort((a, b) => compare(a.id, b.id));
+  for (const key of ['handlers', 'useSites', 'helperCalls']) value.analytics?.[key].sort((a, b) => compare(a.id, b.id));
   value.provenance?.toolchain?.sort((a, b) => compare(a.name, b.name) || compare(a.version, b.version));
   value.resourceProducers?.sort((a, b) => compare(a.scope, b.scope));
   for (const schema of value.schemas || []) if (schema.structure?.state === 'available') {
