@@ -43,6 +43,16 @@ module.exports=function semanticCases() {
   assert.ok(!changes(changed,'useSites').some(row=>row.status==='added'||row.status==='removed'),'same source slot is an explicit comparison match');
   for(const row of changes(changed,'useSites'))for(const field of row.fields)assert.equal(field.delta,null,'semantic values never acquire byte deltas');
 
+  const renamed=structuredClone(base), renamedHandler=renamed.analytics.handlers.find(row=>row.name?.startsWith('<inline:'));
+  assert.ok(renamedHandler);
+  renamedHandler.name='Friendly retained label';
+  const naming=compare(base,renamed);
+  assert.equal(inventory(naming,'handlers').counts.modified,1);
+  assert.equal(changes(naming,'handlers')[0].basis,'retained-identity');
+  assert.equal(changes(naming,'handlers')[0].label,renamedHandler.name);
+  assert.deepEqual(changes(naming,'handlers')[0].fields.map(field=>field.path),['/name']);
+  for(const name of SEMANTIC_COLLECTIONS.filter(name=>name!=='handlers'))assert.deepEqual(inventory(naming,name),inventory(same,name),'display names cannot change semantic identity');
+
   let next=structuredClone(base);
   const owner=next.analytics.handlers.find(row=>row.name==='reused');
   const sites=next.analytics.useSites.filter(row=>row.ownerId===owner.id&&row.surfaceId==='ctx.config.get');
@@ -97,6 +107,8 @@ module.exports=function semanticCases() {
   // running. The retained association graph is rederived before comparison.
   next=structuredClone(base);delete next.analytics.registrations[0].control;derive(next);
   result=compare(base,next);assert.ok(inventory(result,'associations').counts.coverageChanged>0);
+  const registrationOwner=next.analytics.handlers.find(h=>h.id===next.analytics.registrations[0].handlerId);
+  assert.ok(changes(result,'registrations')[0].label.startsWith(registrationOwner.name+' '),'registration comparisons use retained handler names');
   assert.ok(changes(result,'associations').some(row=>row.fields.some(field=>field.path==='/conditional'&&field.after.value===null)));
   for(const row of next.analytics.registrations)delete row.control;derive(next);
   assert.equal(inventory(compare(base,next),'associations').counts.removed,0,'unavailable associations are not deletion');

@@ -30,9 +30,17 @@ module.exports = ({renderedTree}) => {
   visit('#handlers');
   assert.equal(tree.get('handler-list').children[0].children.length,a.handlers.length,'one list row per definition');
   const reused=a.handlers.find(h=>h.name==='reused'), helper=a.handlers.find(h=>h.kind==='helper'), imported=a.handlers.find(h=>h.name==='packageHandler');
+  assert.equal(model.definitionLabel(reused), 'reused', 'retained name leads without an assigned ordinal');
+  const inline=a.handlers.find(h=>h.name?.startsWith('<inline:'));
+  assert.ok(inline, 'compiler inline context reaches the viewer');
+  assert.equal(model.definitionLabel(inline), inline.name);
+  tree.get('handler-search').events.input({target:{value:inline.name}});
+  assert.ok(tree.get('handler-list').textContent.includes(inline.name));
+  tree.get('handler-search').events.input({target:{value:''}});
   assert.equal(model.definitionRegistrations(reused.id).length,2);
   let text=visit('#handlers/'+model.definitionIndex.get(reused.id));
   assert.equal(tree.document.activeElement.id,'definition-title');
+  assert.equal(tree.get('definition-title').textContent, reused.name);
   assert.ok(text.includes('Registration instances'));
   for(const registration of model.definitionRegistrations(reused.id)) assert.ok(tree.nodes().some(n=>n.attrs.href==='#registrations/'+model.registrationIndex.get(registration.id)));
   assert.equal(model.definitionSites(reused.id).filter(s=>s.surfaceId==='ctx.config.get').length,3,'repeated reads remain distinct');
@@ -55,6 +63,7 @@ module.exports = ({renderedTree}) => {
   for(const registration of mounted) {
     text=visit('#registrations/'+model.registrationIndex.get(registration.id));
     assert.equal(tree.document.activeElement.id,'registration-title');
+    assert.ok(tree.get('registration-title').textContent.startsWith(model.definitionById.get(registration.handlerId).name+' · '));
     assert.match(text,/Ordered mount instances/);
     for(const id of registration.mountPath) assert.ok(tree.nodes().some(n=>n.attrs.href==='#registrations/'+model.registrationIndex.get(id)));
   }
@@ -95,6 +104,23 @@ module.exports = ({renderedTree}) => {
   eventTree.location.hash='#registrations/'+eventModel.registrationIndex.get(event.id);eventTree.renderers.onHash();
   assert.match(eventTree.get('view-handlers').textContent,/event · Direct ownership/);
   assert.ok(!eventModel.registrationAssociations(event.id).some(row=>row.via.some(hop=>hop.kind==='middleware')));
+
+  const duplicate=structuredClone(capsule);
+  duplicate.analytics.handlers.find(h=>h.id===imported.id).name=reused.name;
+  const duplicates=renderedTree(f.createCapsule(duplicate));
+  duplicates.location.hash='#handlers';duplicates.renderers.onHash();
+  duplicates.get('handler-search').events.input({target:{value:reused.name}});
+  assert.equal(duplicates.get('handler-list').children[0].children.length,2,'same names retain separate list entries');
+  for(const row of [reused,imported]) {
+    assert.ok(duplicates.nodes().some(n=>n.attrs.href==='#handlers/'+model.definitionIndex.get(row.id)));
+    assert.ok(duplicates.get('handler-list').textContent.includes(row.source.value.file+':'+row.source.value.start.line+':'+row.source.value.start.column),'source disambiguates names');
+  }
+  const unnamed=structuredClone(capsule);unnamed.analytics.handlers.find(h=>h.id===reused.id).name=null;
+  const unnamedCapsule=f.createCapsule(unnamed), unnamedTree=renderedTree(unnamedCapsule);
+  unnamedTree.location.hash='#handlers/'+model.definitionIndex.get(reused.id);unnamedTree.renderers.onHash();
+  assert.match(unnamedTree.get('definition-title').textContent,/^Anonymous handler \d+$/);
+  assert.ok(!unnamedTree.get('definition-title').textContent.includes('reused'),'older missing names are not reconstructed from source');
+  assert.equal(serializeCapsule(unnamedCapsule),createReportViewModel(unnamedCapsule).canonicalJson);
 
   // Presentation-only degraded/hostile facts: the viewer must never invent a
   // location from registrations, read source, or interpret text as markup.

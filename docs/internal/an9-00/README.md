@@ -227,6 +227,8 @@ bounded contract; retain partial/unavailable coverage instead of inventing them.
 | AN9-05 | First-class handler list and definition detail, registrations, helper callers and capability/binding use-site drill-down with source/coverage. | Reused handler appears once; mount/middleware path is visible; unavailable source stays unavailable. |
 | AN9-06 | Compare semantic inventories/associations with explicit identity coverage. | Bounded/default byte changes cannot masquerade as capability/binding changes. |
 | AN9-07 | Qualify integrated report and noninterference in both recipes; retire investigation-only expected-gap checks as product tests take ownership. | Close or explicitly isolate combined error/event defect; imported replay qualified; no size-derived execution claim. |
+| [AN9-08](https://github.com/pulse-compute/pulse/issues/342) | Carry retained local/export/inline names through analytics and report views. | Names lead display; duplicate names keep separate identities; replay and both recipes retain the same names. |
+| [AN9-09](https://github.com/pulse-compute/pulse/issues/343) | Measure and normalize generated report data without losing evidence. | Target 50–75% raw data savings on representative large reports; preserve logical identities, compatibility, replay and comparison. |
 
 Size/shared-size remain a later physical-attribution workstream. If bounded size
 becomes the default, choose semantic ownership from authored/compiler identities

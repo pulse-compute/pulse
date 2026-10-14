@@ -479,6 +479,7 @@
   const analyticsCoverageNote = key => el('p',{class:'small-note'},'Coverage: '+coverageText(analyticsCoverage(key)));
   const registrationLinks = rows => el('ul',{class:'analytics-links'},rows.map(row=>el('li',{},registrationLink(row.id))));
   const definitionLinks = rows => el('ul',{class:'analytics-links'},rows.map(row=>el('li',{},definitionLink(row.id),
+    el('p',{class:'small-note record-text'},row.kind+' · '+(row.source.state==='available'?row.source.value.file+':'+row.source.value.start.line+':'+row.source.value.start.column:authoredFact(row.source))),
     el('p',{class:'small-note'},definitionRegistrations(row.id).length+' observed registrations · '+definitionSites(row.id).length+' owned use sites',
       definitionRegistrations(row.id).length?' · '+[...new Set(definitionRegistrations(row.id).map(r=>r.kind))].join(', '):null))));
   function callDetail(call) {
@@ -513,7 +514,7 @@
   function definitionDetail(row) {
     const ownSites=definitionSites(row.id), callers=helperCallers(row.id), callees=helperCallees(row.id);
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:'definition-title',tabindex:-1,class:'record-text'},definitionLabel(row)),
-      kv([['Definition ID',row.id],['Canonical ID',row.canonicalId],['Definition source',authoredSource(row.source)],
+      kv([['Definition kind',row.kind],['Definition ID',row.id],['Canonical ID',row.canonicalId],['Definition source',authoredSource(row.source)],
         ['Package',row.package.state==='available'?[row.package.value.name,row.package.value.version,row.package.value.sourceIdentity].join(' · '):authoredFact(row.package)]]),
       detailSection('Registration instances',analyticsCoverageNote('registrations'),registrationLinks(definitionRegistrations(row.id)),
         definitionRegistrations(row.id).length?null:el('p',{},'No direct registration observed. Linked helpers are reached through callers.')),
