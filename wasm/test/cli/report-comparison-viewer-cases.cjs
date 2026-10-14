@@ -111,13 +111,15 @@ function interactionCases(comparison) {
   search.value = 'no-such-change'; search.events.input(); assert.equal(shown().length, 0); assert.equal(controls['#compare-empty'].hidden, false);
   controls['#compare-export'].events.click(); assert.equal(download, serializeComparison(comparison)); assert.equal(link.download, 'pulse-report-comparison.json'); assert.equal(link.clicked, true);
   controls['.compare-nav'].events.click({ target: { closest: () => ({}) } }); assert.equal(shown().length, records.length, 'same-anchor click clears filters');
-  status.value = 'removed'; status.events.change(); assert.ok(shown().length); assert.ok(shown().every(row => row.dataset.status === 'removed'));
+  status.value = records.some(row=>row.dataset.status==='removed') ? 'removed' : records[0].dataset.status; status.events.change(); assert.ok(shown().length); assert.ok(shown().every(row => row.dataset.status === status.value));
   controls['#compare-reset'].events.click(); assert.equal(document.activeElement, search); assert.equal(shown().length, records.length);
   search.value = '/api/status'; search.events.input(); assert.ok(shown().every(row => row.textContent.toLowerCase().includes('/api/status')));
-  location.hash = '#' + records[0].id; window.events.hashchange(); assert.equal(records[0].open, true); assert.equal(shown().length, records.length);
+  const target=records.find(row=>row.id.includes('-useSites-')) || records[0];
+  location.hash = '#' + target.id; window.events.hashchange(); assert.equal(target.open, true); assert.equal(shown().length, records.length);
   controls['#compare-theme'].events.click(); assert.equal(document.documentElement.dataset.theme, 'light');
   controls['#compare-theme'].events.click(); assert.equal(document.documentElement.dataset.theme, 'dark');
   assert.equal(controls['#compare-toolbar'].hidden, false);
 }
 module.exports.fixture = fixture;
+module.exports.interactionCases = interactionCases;
 if (require.main === module) module.exports();

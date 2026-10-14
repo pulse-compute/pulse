@@ -1360,6 +1360,50 @@ primary final measurement. Whole containing-body measurements remain non-additiv
 the comparison does not sum route/helper deltas into an artifact total or infer
 performance regressions from one build duration.
 
+AN9-06 extends comparison to retained authored analytics. When either input has
+an analytics block, `pulse.report-matching.v2` adds handlers, registrations, use
+sites, helper calls and associations to the summary and changed sections. Each
+semantic inventory has separate before/after `identityCoverage`: resolved
+comparison keys out of observed records. This does not certify a complete source
+inventory or prove unchanged implementation. Missing analytics keeps unavailable
+coverage and cannot establish additions/removals. Comparing two legacy capsules
+still emits the original matching-v1 result; existing v1 comparison bytes remain
+readable and hash-preserving. V2 results require a reader that supports this policy.
+
+| Authored inventory | Comparison policy after exact retained-ID matching |
+| --- | --- |
+| Definitions | Unique kind plus authored file and exact UTF-16 start/end offset slot. Names and similar bodies never establish a match. |
+| Registrations | Authored source slot, kind, router path, resolved definition and ordered enclosing mount instances. Parent mounts match before children. |
+| Use sites | Resolved definition owner and authored source slot; repeated operations stay distinct. Capability, operation and binding are compared values, not identity guesses. |
+| Helper calls | Resolved caller/callee definitions and authored call slot; consumer registrations use resolved keys. |
+| Associations | Resolved consumer, use site and ordered typed explanation hops. Lane, conditionality and coverage remain compared facts. |
+
+`retained-identity`, `authored-source-slot` and `semantic-links` matching bases are
+explicit in changed records. Source-slot matching is an exact location comparison,
+not a claim that the same code survives an edit. Original source ranges/hashes and
+package provenance remain visible as values. Ambiguous locations and missing
+prerequisite identities remain unresolved. Bilateral unmatched source records
+are conservatively unresolved, including moves/renames that cannot be connected;
+they are not guessed deletion/addition pairs. One-sided records require complete
+opposite inventory coverage before claiming an addition/removal. Association path
+changes require resolved reference keys. Unavailable dependencies retain explicit
+partial link coverage rather than acquiring identity from artifact bytes.
+
+These semantic projections contain no byte measurements, execution counts or
+inferred grants. Default/bounded-size recipe changes can affect the physical
+artifact and build compatibility without changing authored capability/binding
+inventories. A source hash change is provenance, not by itself a capability change.
+Dynamic/unknown binding state, unavailable source/capability and lost control or
+association coverage remain qualified evidence changes. Ordered mount and helper
+paths, normal/error/event lanes and direct-versus-conditional ownership survive
+comparison. Legacy physical entry and authored registration keys live in separate
+namespaces so one cannot overwrite the other.
+
+The offline comparison HTML adds authored inventory summaries, identity coverage,
+matching bases and semantic changed fields. Existing search, local links, native
+disclosures and complete JSON export include the new sections. It remains passive
+and self-contained; command/MCP integration and graph visualization are separate.
+
 The canonical schema and generated TypeScript declaration share the report fixture
 writer. The report-capsule-contract task includes comparison regressions for
 identity churn, ambiguity, coverage loss/gain, settings/provenance, exact and
@@ -1519,7 +1563,8 @@ lanes stay explicit. These are static dependency explanations, not request trace
 effective grants or evidence of execution. Missing analytics in older capsules
 renders unavailable, not an empty or zero-use claim. Route, entry and binding views
 link into authored analytics using capsule-local navigation. There is no new
-physical-size attribution or semantic comparison behavior.
+physical-size attribution. Semantic comparison is owned by AN9-06 below the
+report comparison contract.
 
 ## Providers, targets, and eligibility
 

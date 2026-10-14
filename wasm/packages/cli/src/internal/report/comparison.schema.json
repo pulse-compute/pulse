@@ -10,7 +10,10 @@
       "const": 1
     },
     "matchingVersion": {
-      "const": "pulse.report-matching.v1"
+      "enum": [
+        "pulse.report-matching.v1",
+        "pulse.report-matching.v2"
+      ]
     },
     "sources": {
       "type": "object",
@@ -719,7 +722,12 @@
             "declarations",
             "references",
             "evidence",
-            "observations"
+            "observations",
+            "handlers",
+            "registrations",
+            "useSites",
+            "helperCalls",
+            "associations"
           ]
         },
         "before": {
@@ -742,6 +750,22 @@
         },
         "counts": {
           "$ref": "#/$defs/CompareCounts"
+        },
+        "identityCoverage": {
+          "type": "object",
+          "properties": {
+            "before": {
+              "$ref": "#/$defs/CompareIdentityCoverage"
+            },
+            "after": {
+              "$ref": "#/$defs/CompareIdentityCoverage"
+            }
+          },
+          "required": [
+            "before",
+            "after"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -875,6 +899,55 @@
       ],
       "additionalProperties": false
     },
+    "CompareIdentityCoverage": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "unavailable",
+            "not-applicable"
+          ]
+        },
+        "observed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1048576
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "observed",
+        "expected",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
     "CompareField": {
       "type": "object",
       "properties": {
@@ -947,7 +1020,12 @@
             "declarations",
             "references",
             "evidence",
-            "observations"
+            "observations",
+            "handlers",
+            "registrations",
+            "useSites",
+            "helperCalls",
+            "associations"
           ]
         },
         "changes": {
@@ -991,6 +1069,9 @@
             "logical-key",
             "canonical-id",
             "same-artifact",
+            "retained-identity",
+            "authored-source-slot",
+            "semantic-links",
             "unresolved"
           ]
         },
