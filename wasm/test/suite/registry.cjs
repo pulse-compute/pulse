@@ -49,6 +49,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 120000,
     description: 'RPT8-01 production entry/stage/helper attribution and byte-preserving capture'
   }),
+  'cli-report-imported-inputs': nodeTask('test/cli/assert-report-imported-inputs.cjs', {
+    evidence: 'native', scheduling: { compiler: true }, timeoutMs: 120000,
+    description: 'AN9-04 exact imported source receipts, passive replay, package links and freshness'
+  }),
   'cli-report-handler-associations': nodeTask('test/cli/assert-report-handler-associations.cjs', {
     timeoutMs: 60000, description: 'AN9-03 bounded contextual associations, scope, explicit continuations, lanes and unknowns'
   }),
@@ -1330,6 +1334,7 @@ const profiles = Object.freeze({
     'cli-report-reference-provenance',
     'cli-report-handler-topology',
     'cli-report-handler-associations',
+    'cli-report-imported-inputs',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
     'multifile-source-indexes',
@@ -1486,6 +1491,7 @@ const profiles = Object.freeze({
     'cli-report-reference-provenance',
     'cli-report-handler-topology',
     'cli-report-handler-associations',
+    'cli-report-imported-inputs',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
     'cli-command-spec',

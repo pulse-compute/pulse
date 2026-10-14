@@ -193,8 +193,10 @@ function collectProjectReport(options = {}) {
   ensure(canonicalJson(workspaceSnapshot.records) === canonicalJson(inputs.workspace), 'REPORT_STALE_INPUTS');
   const dependencies = toolchainSnapshot(root, plan.profile.host);
   ensure(canonicalJson(dependencyRecords(dependencies.groups)) === canonicalJson(inputs.dependencies), 'REPORT_STALE_INPUTS');
+  const imported = require('./source-inputs').readSources(root, inputs.sourceInputs === undefined ? [] : inputs.sourceInputs, workspaceSnapshot);
   const recipe = { ...(inputs.recipe.elideJsonCacheArena === undefined ? {} : { elideJsonCacheArena: inputs.recipe.elideJsonCacheArena }), optimization: inputs.recipe.optimization, node: process.versions.node,
     dependencies: dependencies.groups.map(({ key, records }) => ({ key, sha256: digest(records) })) };
+  if (inputs.sourceInputs !== undefined) recipe.sourceInputsSha256 = digest(imported.records);
   if (options.optimization !== undefined) ensure(mode({ nativeOptimization: options.optimization }) === recipe.optimization, 'REPORT_STALE_INPUTS');
   ensure(digest(recipe) === completion.snapshot.recipeSha256, 'REPORT_STALE_INPUTS');
   ensure(config.token === readFile(root, configRelative).token, 'REPORT_CONCURRENT_CHANGE');
@@ -202,6 +204,7 @@ function collectProjectReport(options = {}) {
   const after = scan(root, { excluded: [outDir] }); require('./snapshot').sameSnapshot(projectSnapshot, after);
   require('./snapshot').sameSnapshot(workspaceSnapshot, workspaceControls(root));
   for (const { root: directory, snapshot } of dependencies.snapshots.values()) require('./snapshot').sameSnapshot(snapshot, scan(directory, { packageFiles: true }));
+  require('./snapshot').sameSnapshot(imported, require('./source-inputs').readSources(root, imported.records, workspaceSnapshot));
   ensure(marker.token === readFile(outDir, COMPLETION_FILE).token, 'REPORT_CONCURRENT_CHANGE');
   collected.verifyReads();
   return freeze({ kind: 'completed-wasm', capsule: collected.capsule, currentSnapshotMatched: true,

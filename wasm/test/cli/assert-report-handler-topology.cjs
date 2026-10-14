@@ -239,7 +239,7 @@ async function main() {
     const controlOwner = withoutTopology();
     let negative = 0;
     for (const variant of ['http', 'event']) {
-      setup(directory, variant, true);
+      setup(directory, variant);
       let defaultAnalytics;
       for (const optimization of ['default', 'experimental-native-bounded-size']) {
         project = resolveProject({ cwd: directory, metadataOnly: true });
@@ -335,7 +335,7 @@ export default app;
     const standalone = report(project, execution.compileNativeProjectInMemory(project, { emitWat: false }));
     assert.equal(standalone.analytics.coverage.handlers.status, 'unavailable', 'no router producer is not a known-empty handler universe');
     console.log(JSON.stringify({ status: 'passed', cells, negativeCases: negative, importedSpans: true,
-      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true }));
+      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true, importedSourceReplay: true }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

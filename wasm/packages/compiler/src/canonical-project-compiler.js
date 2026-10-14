@@ -1,5 +1,7 @@
 'use strict';
 
+const { retainSourceInputs, sourceInputsForCompiled } = require('./report-source-inputs');
+
 const fs = require('node:fs');
 const path = require('node:path');
 const ts = require('typescript');
@@ -1236,6 +1238,7 @@ function compileCanonicalProjectLegacy(entryFile, options = {}) {
       ...(packageOperationRecognition.dependencies || [])
     ].map((file) => path.resolve(file)))])
   });
+  retainSourceInputs(project, projectGraphContext(graphBuild));
   attachPackageOperationRecognition(project, packageOperationRecognition);
   if (terminalPackageApplication) attachTerminalPackageNative(project, {
     application: terminalPackageApplication, recognition: packageOperationRecognition,
@@ -1263,5 +1266,6 @@ module.exports = Object.freeze({
   compileProjectSchemas,
   compileProjectPackageExtensions,
   compileCanonicalProject,
-  packageRealizationArtifactsForCompiled
+  packageRealizationArtifactsForCompiled,
+  sourceInputsForCompiled
 });
