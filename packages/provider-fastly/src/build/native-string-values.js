@@ -1,7 +1,7 @@
 'use strict';
 
-// Host value handles live for the invocation. Store concatenation as shared,
-// immutable prefixes instead of retaining a flat copy for every intermediate.
+// Store concatenation as shared, immutable prefixes instead of retaining a flat
+// copy for every intermediate. Direct object edges preserve live rope children.
 // This changes representation only: coercion happens at the original operation,
 // and aliases keep their original string even after a later append.
 const nativeStringFields = `

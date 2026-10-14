@@ -10,7 +10,7 @@ const { root, hash } = require('./schema-cost-profile.cjs');
 const platform = require('../../../../packages/provider-fastly/src/build/native-platform-capabilities');
 const hostPath = path.join(root, 'packages/provider-fastly/src/testing/native-platform-capabilities-host.js');
 const { resolveAsc } = require('../../../packages/build-support/src/assemblyscript-compile');
-const { appendAssemblyScriptOptimizationArgs } = require('../../../packages/build-support/src/native-optimization');
+const { appendAssemblyScriptOptimizationArgs, appendJsonCacheArenaArgs } = require('../../../packages/build-support/src/native-optimization');
 const { normalizeSchemaRegistry } = require('../../../packages/contracts/src/schema-json/registry');
 const { buildCanonicalSchemaBundle } = require('../../../packages/schema-json/src/compiler/canonical-schema-codecs');
 const { compileCanonicalSource } = require('../../../packages/compiler/src/canonical-api-compiler');
@@ -96,6 +96,7 @@ function diagnosticCompile(source, mode, directory, options = {}) {
   fs.writeFileSync(path.join(cwd, name), source);
   const args = [asc.script, name, '--outFile', output, '--runtime', 'incremental', '--noAssert', '--optimize'];
   appendAssemblyScriptOptimizationArgs(args, undefined, { guestLinked: false });
+  appendJsonCacheArenaArgs(args, options.elideJsonCacheArena, true);
   if (options.maximumMemoryPages) args.push('--maximumMemory', String(options.maximumMemoryPages));
   args.push('--use', 'abort=fastly-native-platform-capabilities.as/__pulse_fastly_abort', '--exportRuntime',
     '--transform', transform, '--path', path.join(fallback, 'node_modules'), '--path', path.dirname(jsonRoot));

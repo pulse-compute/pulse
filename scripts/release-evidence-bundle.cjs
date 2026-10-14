@@ -93,6 +93,7 @@ const SHARD_DEFINITIONS = Object.freeze([
       'pure-helper-vocabulary',
       'fastly-numeric-regions',
       'fastly-numeric-budgets',
+      'fastly-handle-ownership',
       'pure-string-index',
       'pure-field-projection',
       'pure-guarded-arguments',
