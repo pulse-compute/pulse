@@ -1392,6 +1392,13 @@ The `cli-report-viewer` task covers this renderer alongside the single-capsule v
 
 ## Report handler topology
 
+Report data admission and canonical JSON serialization are bounded to 40 MiB
+and 2,000,000 data nodes. The JSON reader also bounds quoted keys/values to
+2,000,000 tokens before parsing. The existing depth limit of 64, 1 MiB per
+string and 100,000 records per array remain independent bounds. These budgets
+allow larger retained analytics inventories; they do not widen the association
+derivation budget or turn partial coverage into complete coverage.
+
 The optional `analytics` block (`pulse.report-analytics.v1`) retains first-class
 handler and linked-helper definitions plus distinct router registration/mount
 instances. AN9-01 projects these from the live canonical router topology after
