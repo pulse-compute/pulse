@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 const assert = require('node:assert/strict');
-const { index } = require('./graph/model.cjs');
+const { index, atlasLayout } = require('./graph/model.cjs');
 const { render } = require('./report-graph-html.cjs');
 const f = require('../../wasm/test/cli/report-fixtures.cjs');
 const { createCapsule, parseCapsule, serializeCapsule } = require('../../wasm/packages/cli/src/internal/report/capsule');
@@ -25,6 +25,18 @@ assert.equal(m.lane(m.byId.get('error')), 'error'); assert.equal(m.lane(m.byId.g
 assert.deepEqual(m.dependency('binding:binding').consumers, ['a-use'], 'never invent missing contextual consumers from shared definitions');
 assert.equal(m.dependency('cap:kv.read').rows[0].conditional, null, 'unknown conditionality stays unknown');
 assert.equal(JSON.stringify(sample), original, 'presentation never mutates evidence');
+const scoped = atlasLayout(m, { scope: 'a' });
+assert.deepEqual(scoped.placements.filter(p => p.r).map(p => p.r.id).sort(), ['a', 'a-use']);
+assert.ok(!scoped.placements.some(p => p.r?.id === 'b-use'), 'shared handler reuse cannot pull another mount into the focused scope');
+assert.equal(scoped.edges.length, 1, 'scope layout only adds retained containment edges');
+const open = new Set(), filtered = atlasLayout(m, { open, query: 'b-use' });
+assert.equal(open.size, 0, 'search expansion never mutates saved expansion state');
+assert.deepEqual(filtered.matches.map(r => r.id), ['b-use']);
+assert.ok(filtered.placements.some(p => p.r?.id === 'b'), 'search includes the exact mount ancestry');
+assert.ok(!filtered.placements.some(p => p.r?.id === 'a'), 'search does not borrow another instance of a shared definition');
+assert.equal(atlasLayout(m, { scope: 'a', query: 'b-use' }).placements.length, 0, 'empty scoped results remain empty');
+assert.deepEqual(atlasLayout(m, { open: new Set(['a', 'b']) }), atlasLayout(m, { open: new Set(['b', 'a']) }), 'layout depends on registration order, not interaction order');
+assert.equal(JSON.stringify(sample), original, 'navigation does not change the capsule');
 const historical = f.fixture(); historical.application.name = '</script><svg onload=alert(1)>\u2028&';
 const capsule = createCapsule(historical), wire = serializeCapsule(capsule), html = render(capsule);
 const payload = html.match(/<script type="application\/json" id="report-data">([\s\S]*?)<\/script>/)[1];

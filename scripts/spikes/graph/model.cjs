@@ -46,7 +46,26 @@
     }
     return { a, registrations, handlers, uses, associations, byId, definitions, useById, bindingById, children, instances, byUse, filename, label, match, lane, search, neighbors, groups, dependency };
   }
-  const api = { index };
+  function atlasLayout(model, { scope = null, open = new Set(), query = '' } = {}) {
+    const root = model.byId.get(scope) || null;
+    const inScope = r => !root || r.id === root.id || r.mountPath.includes(root.id);
+    const matches = model.registrations.filter(r => inScope(r) && (!query || model.search(r, query)));
+    const included = new Set(), opened = new Set(open);
+    if (query) for (const r of matches) { included.add(r.id); r.mountPath.forEach(id => { included.add(id); opened.add(id); }); }
+    let leaf = 0, maxDepth = 0; const placements = [], edges = [];
+    function visit(r, depth) {
+      maxDepth = Math.max(maxDepth, depth);
+      const kids = (model.children.get(r?.id || null) || []).filter(child => !query || included.has(child.id));
+      const expanded = !r || r.id === root?.id || opened.has(r.id);
+      const childPoints = expanded ? kids.map(child => visit(child, depth + 1)) : [];
+      const y = childPoints.length ? (childPoints[0].y + childPoints.at(-1).y) / 2 : 45 + leaf++ * 78;
+      const point = { r, x: 30 + depth * 290, y, kids, expanded, depth };
+      placements.push(point); childPoints.forEach(child => edges.push([point, child])); return point;
+    }
+    if (!query || matches.length) visit(root, 0);
+    return { placements, edges, matches, width: Math.max(580, (maxDepth + 1) * 290 + 20), height: Math.max(300, leaf * 78 + 85) };
+  }
+  const api = { index, atlasLayout };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.PulseGraph = api;
 })(typeof globalThis === 'object' ? globalThis : this);
