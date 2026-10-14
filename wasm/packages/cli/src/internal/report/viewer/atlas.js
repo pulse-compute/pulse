@@ -1,8 +1,40 @@
 'use strict';
 // Geometry uses SVG attributes, never inline style or a second evidence payload.
-function createReportAtlas({model:m,el,button,select,registrationLink,definitionLink}) {
-  const local={scope:null,query:'',expanded:new Set(),page:0,zoom:1,graph:false};
+function createReportAtlas({model:m,el,button,select,registrationLink,definitionLink,associationDetail,useSiteLink}) {
+  const local={scope:null,query:'',expanded:new Set(),page:0,zoom:1,graph:false,mode:'routing',full:false,inspector:false,inspectorWidth:1,camera:null};
   let host,viewport,svg,layout,nodes=new Map();
+  const bindingExplorer=createBindingExplorer({model:m,el,button,associationDetail,useSiteLink,registrationLink,
+    onRouting:id=>{local.mode='routing';local.graph=true;select(id);render(host);center(id,true);},
+    onInspect:()=>{local.inspector=true;applyWorkspace();}});
+  function rememberCamera(){if(viewport)local.camera={left:viewport.scrollLeft,top:viewport.scrollTop};}
+  function applyWorkspace(){
+    document.body.classList.toggle('atlas-expanded',local.full);
+    host?.setAttribute('data-expanded',String(local.full));host?.setAttribute('data-inspector',String(local.inspector));host?.setAttribute('data-inspector-width',String(local.inspectorWidth));
+    const expand=host?.querySelector('#atlas-workspace-toggle');if(expand){expand.textContent=local.full?'Exit expanded view':'Expand workspace';expand.setAttribute('aria-expanded',String(local.full));}
+    const inspect=host?.querySelector('#atlas-inspector-toggle');if(inspect){inspect.textContent=local.inspector?'Hide details':'Show details';inspect.setAttribute('aria-expanded',String(local.inspector));}
+  }
+  function expand(){
+    const table=host?.querySelector('.atlas-table-disclosure');
+    local.full=!local.full;
+    if(table){if(local.full){local.tableOpen=table.open;table.open=false;}else table.open=local.tableOpen;}
+    if(local.full&&!local.graph&&local.mode==='routing'){local.graph=true;render(host);}
+    applyWorkspace();host.querySelector('#atlas-workspace-toggle')?.focus({preventScroll:true});
+  }
+  function bindings(options){
+    rememberCamera();local.mode='bindings';
+    const selection=m.state.selectedRegistration;
+    if(!options&&local.bindingSelection!==selection)options={scope:selection||local.scope};
+    if(options){if(options.scope&&!options.binding)options={...options,binding:[...m.bindings.keys()].find(id=>m.bindingProjection(id,options.scope).rows.length)||null};bindingExplorer.configure(options);}
+    local.bindingSelection=selection;if(host)render(host);
+  }
+  function toolbar(){
+    const routing=button('Routing',()=>{local.mode='routing';render(host);host.querySelector('#atlas-routing-tab').focus({preventScroll:true});});routing.id='atlas-routing-tab';routing.setAttribute('aria-pressed',String(local.mode==='routing'));
+    const binding=button('Bindings',()=>{bindings();host.querySelector('#atlas-bindings-tab').focus({preventScroll:true});});binding.id='atlas-bindings-tab';binding.setAttribute('aria-pressed',String(local.mode==='bindings'));
+    const full=button(local.full?'Exit expanded view':'Expand workspace',expand);full.id='atlas-workspace-toggle';
+    const details=button(local.inspector?'Hide details':'Show details',()=>{local.inspector=!local.inspector;applyWorkspace();});details.id='atlas-inspector-toggle';
+    const smaller=button('Narrower details',()=>{local.inspectorWidth=Math.max(0,local.inspectorWidth-1);applyWorkspace();}),larger=button('Wider details',()=>{local.inspectorWidth=Math.min(2,local.inspectorWidth+1);applyWorkspace();});
+    return el('div',{class:'atlas-toolbar'},el('strong',{},'Execution workspace'),el('div',{class:'atlas-controls'},routing,binding),el('div',{class:'atlas-controls'},details,el('span',{class:'atlas-resize-controls'},smaller,larger),full));
+  }
   const selected=()=>m.registrationById.get(m.state.selectedRegistration);
   const label=r=>r?m.registrationLabel(r):'Application';
   const short=(s,n=34)=>s.length>n?s.slice(0,n-1)+'…':s;
@@ -16,7 +48,7 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     c.value.normal&&'may continue',c.value.error&&'may transfer error',c.value.terminal&&'may terminate',c.value.eligibility&&'eligibility gate'].filter(Boolean).join(' · ')||'No recorded outcome'; }
   function zoom(value) { local.zoom=Math.max(.65,Math.min(1.6,value));if(svg){svg.setAttribute('width',Math.ceil(layout.width*local.zoom));svg.setAttribute('height',Math.ceil(layout.height*local.zoom));}const output=host.querySelector('#atlas-zoom');if(output)output.textContent=Math.round(local.zoom*100)+'%'; }
   function center(id=m.state.selectedRegistration,focus=false) {
-    if(!id)return;
+    if(!id||local.mode!=='routing')return;
     if(!viewport){if(focus)host.querySelector('#atlas-selected-title')?.focus({preventScroll:true});return;}
     let p=layout?.points.find(p=>p.id===id);
     if(!p){local.query=id;local.page=0;render(host);p=layout.points.find(p=>p.id===id);}
@@ -27,7 +59,7 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
   function redraw(id,focus=false) {render(host);if(id)center(id,focus);}
   function scope(id) {local.scope=id;local.query='';local.page=0;local.expanded.clear();redraw(id);host.querySelector('#atlas-scope').focus({preventScroll:true});}
   function toggle(r) {if(local.expanded.has(r.id))local.expanded.delete(r.id);else local.expanded.add(r.id);redraw(r.id,true);}
-  function choose(r) {select(r.id);}
+  function choose(r) {local.inspector=true;select(r.id);applyWorkspace();}
   function keyboard(e,r) {
     const visible=layout.points.filter(p=>p.r).map(p=>p.r).sort((a,b)=>a.order-b.order),at=visible.findIndex(n=>n.id===r.id);let target;
     if(e.key==='Enter'||e.key===' '){e.preventDefault();choose(r);return;}
@@ -70,10 +102,14 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
       h?el('p',{class:'small-note'},m.definitionRegistrations(h.id).length+' registration instances'):null,
       el('h4',{},'Mount ancestry'),r.mountPath.length?r.mountPath.map(id=>button(label(m.registrationById.get(id)),()=>choose(m.registrationById.get(id)),'text-button record-text')):el('p',{},'Application root'),
       branch?button('Focus owning subrouter',()=>scope(branch)):null,
-      el('p',{},registrationLink(r.id)),el('p',{class:'small-note'},'Open registration details for exact control, continuation and association evidence.'));
+      button('Explore bindings',()=>bindings({scope:r.id})),el('p',{},registrationLink(r.id)),el('p',{class:'small-note'},'Open registration details for exact control, continuation and association evidence.'));
   }
   function render(container) {
-    host=container;const r=selected();
+    host=container;
+    if(local.mode==='bindings'){
+      const content=el('div',{id:'binding-workspace'});host.replaceChildren(toolbar(),content);bindingExplorer.render(content);applyWorkspace();return;
+    }
+    const r=selected();
     if(r){if(local.scope&&r.id!==local.scope&&!r.mountPath.includes(local.scope))local.scope=null;r.mountPath.forEach(id=>local.expanded.add(id));}
     layout=m.atlasLayout(local);local.page=Math.min(local.page,Math.max(0,Math.ceil(layout.matches.length/50)-1));
     const coverage=m.analyticsCoverage('registrations'),missing=coverage.status==='unavailable';
@@ -100,9 +136,10 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
         el('p',{class:'small-note'},'Curves show mount containment; bright curves show selected ancestry. Drag empty space to pan. Arrow keys navigate nodes. Fit keeps text at 65% or larger; scroll to explore.'),
         el('p',{class:'small-note'},layout.points.filter(p=>p.r).length+' registration nodes shown'+(layout.truncated?' · graph display limited to 300 nodes; narrow the scope or search. All matches remain in table pages.':'.')));
     }
-    main.append(el('h3',{},'Routing execution table'),table,page);
-    host.replaceChildren(el('div',{class:'section-heading'},el('div',{},el('h2',{},'Execution atlas'),el('p',{},'Focus a subrouter. Follow one registration to its authored evidence.'))),
+    main.append(el('details',{class:'atlas-table-disclosure',open:!local.full},el('summary',{},'Routing execution table'),table,page));
+    host.replaceChildren(toolbar(),el('div',{class:'section-heading'},el('div',{},el('h2',{},'Execution atlas'),el('p',{},'Focus a subrouter. Follow one registration to its authored evidence.'))),
       el('p',{class:'small-note'},'Static compiler evidence, not observed requests. Registration coverage: '+m.coverageText(coverage)),el('div',{class:'atlas-workspace'},main,selectionPanel()));
+    applyWorkspace();if(viewport&&local.camera){viewport.scrollLeft=local.camera.left;viewport.scrollTop=local.camera.top;local.camera=null;}
   }
   // Opening is explicit on narrow screens; no graph DOM is built until needed.
   function open(container) {
@@ -115,6 +152,6 @@ function createReportAtlas({model:m,el,button,select,registrationLink,definition
     const row=host.querySelector('.atlas-active'),table=host.querySelector('.atlas-table-scroll');
     if(row&&table)table.scrollTop+=row.getBoundingClientRect().top-table.getBoundingClientRect().top-40;
   }
-  return {open,center};
+  return {open,center,bindings,routing(){local.mode='routing';},leave(){local.full=false;document.body.classList.remove('atlas-expanded');},escape(){if(local.full){expand();return true;}return false;}};
 }
 if(typeof module!=='undefined')module.exports={createReportAtlas};

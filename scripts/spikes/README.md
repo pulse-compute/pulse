@@ -204,3 +204,35 @@ Use a historical capsule too to verify analytics absence. No exact named Entry
 Point covers renderer integration; ordinary root, Wasm, CLI and canonical-doc
 instructions apply. Human direction to implement VIS-04 authorizes this first
 slice; merging remains human review against `spike/report-execution-graph`.
+
+
+## VIS-05: expanded workspace and binding explorer
+
+VIS-05 integrates the contextual binding view into the supported HTML renderer.
+Open **Execution atlas → Expand workspace → Bindings**, or select a registration
+and choose **Explore bindings**. Binding inventory cards provide direct graph
+entry points. The full-window workspace preserves routing camera and selection,
+provides a collapsible details panel (three widths on desktop, a bottom sheet on
+phones), and keeps the table behind a disclosure. Escape restores the report.
+
+Consumer groups retain exact mount/definition identity. Counts separate consumer
+instances, authored sites and association rows. Association coverage stays
+visible; missing consumer edges never imply an unused resource. Operations are
+canonical recorded operation names, not inferred read/write classifications.
+Selecting a consumer or operation opens existing source and association
+explanations, including conditionality, lanes and helper-call paths. Graph pages
+are bounded to 12 consumers and 12 operations; explanation pages to 20 rows.
+
+```sh
+CHROMIUM_PATH=/path/to/chromium node scripts/spikes/check-binding-workspace-browser.cjs /path/to/report.html
+```
+
+The browser check covers expanded geometry, camera continuity, binding counts,
+scoped registration joins, navigation in both directions, panel sizing, Escape
+focus, mobile resource selection and bottom sheets, exact export, strict CSP and
+no network requests. Optional `VIS05_SCREENSHOT` and `VIS05_MOBILE_SCREENSHOT`
+paths capture private local review images. Run the VIS-04 browser check too for
+routing regression coverage and a historical capsule for analytics absence.
+Use focused `cli-report-viewer` and `report-capsule-contract` tasks for canonical
+join, identity, historical-absence and export checks. Full acceptance remains a
+sprint-boundary task; these checks do not claim broad device qualification.
