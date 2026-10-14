@@ -43,13 +43,11 @@ const ENTRY_ROLES = ['route', 'middleware', 'fallback', 'error', 'event', 'start
 const RESOURCE_SCOPES = ['selected-embedded-assets', 'schema-codecs', 'package-guest-units', 'package-realizations', 'generated-support', 'canonical-text-responses'];
 const analyticsFact = value => object({ state: en('available', 'unavailable', 'not-applicable'),
   value: nullable(value), reason: nullable(en('not-recorded', 'not-applicable')) });
-// Reserved tables cannot accept claims before their producers/validators ship.
-const unproducedAnalytics = { ...array(object({})), maxItems: 0 };
 const defs = {
   AnalyticsPosition: object({ offset: uint, line: { ...uint, minimum: 1 }, column: { ...uint, minimum: 1 } }),
   AnalyticsSpan: object({ file: text, sha256: hash, start: ref('AnalyticsPosition'), end: ref('AnalyticsPosition') }),
-  AnalyticsEvidence: object({ basis: en('handler-table', 'router-topology', 'authored-recognition', 'validated-helper-call'),
-    producer: en('canonical-router-handler-table', 'canonical-router-linked-helper', 'canonical-router-execution-topology', 'canonical-handler-surface-authority', 'canonical-router-handler-validation') }),
+  AnalyticsEvidence: object({ basis: en('handler-table', 'router-topology', 'authored-recognition', 'validated-helper-call', 'derived-association'),
+    producer: en('canonical-router-handler-table', 'canonical-router-linked-helper', 'canonical-router-execution-topology', 'canonical-handler-surface-authority', 'canonical-router-handler-validation', 'canonical-report-associations') }),
   AnalyticsHandler: object({ id, canonicalId: text, kind: en('handler', 'helper'), name: nullable(text),
     source: analyticsFact(ref('AnalyticsSpan')),
     package: analyticsFact(object({ name: text, version: text, sourceIdentity: text })), evidence: array(ref('AnalyticsEvidence')) }),
@@ -57,16 +55,20 @@ const defs = {
     kind: en('route', 'middleware', 'mount', 'error', 'event', 'fallback'), authored: bool,
     source: analyticsFact(ref('AnalyticsSpan')), routerId: text, routerPath: array(text), mountPath: ids, order: uint,
     match: analyticsFact(object({ method: nullable(text), path: nullable(str), eventType: nullable(text) })),
-    flow: object({ next: nullable(id), child: nullable(id), parentContinue: nullable(id) }), evidence: array(ref('AnalyticsEvidence')) }),
+    control: analyticsFact(object({ pattern: nullable(text), eligibility: bool, normal: bool, error: bool, terminal: bool, basis: fixed('canonical-router-control') })),
+    flow: object({ next: nullable(id), child: nullable(id), parentContinue: nullable(id) }), evidence: array(ref('AnalyticsEvidence')) }, ['control']),
   AnalyticsUseSite: object({ id, ownerId: id, surfaceId: text, operation: text,
     capability: analyticsFact(text), source: analyticsFact(ref('AnalyticsSpan')), evidence: array(ref('AnalyticsEvidence')),
     binding: object({ state: en('resolved', 'dynamic', 'unknown', 'not-applicable'), kind: nullable(text),
       referenceId: nullable(id), bindingId: nullable(id), reason: nullable(en('no-named-binding', 'dynamic-reference', 'unresolved-reference')) }) }),
   AnalyticsHelperCall: object({ id, canonicalId: nullable(text), callerId: id, calleeId: id,
     registrationIds: ids, source: analyticsFact(ref('AnalyticsSpan')), evidence: array(ref('AnalyticsEvidence')) }),
+  AnalyticsAssociation: object({ id, consumerRegistrationId: id, useSiteId: id,
+    via: array(object({ kind: en('direct', 'middleware', 'mount', 'helper', 'error'), id })),
+    lane: en('normal', 'error', 'event'), conditional: nullable(bool), coverage: ref('Coverage'), evidence: array(ref('AnalyticsEvidence')) }),
   Analytics: object({ version: fixed('pulse.report-analytics.v1'), handlers: array(ref('AnalyticsHandler')),
     registrations: array(ref('AnalyticsRegistration')), useSites: array(ref('AnalyticsUseSite')),
-    helperCalls: array(ref('AnalyticsHelperCall')), associations: unproducedAnalytics,
+    helperCalls: array(ref('AnalyticsHelperCall')), associations: array(ref('AnalyticsAssociation')),
     coverage: object(Object.fromEntries(['handlers', 'registrations', 'useSites', 'helperCalls', 'associations'].map(key => [key, ref('Coverage')]))) }),
   BuildCompiler: object({ phase: en('portable', 'provider'), artifactId: id, compilerVersion: text,
     durationMs: uint, timeoutMs: nullable(uint), flags: array(object({ name: text, value: nullable(text) })), flagsComplete: bool,

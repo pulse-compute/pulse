@@ -49,10 +49,7 @@ function assertTopology(value, { event = false, error = false } = {}) {
   assert.equal(a.version, 'pulse.report-analytics.v1');
   assert.equal(a.coverage.handlers.status, 'complete');
   assert.equal(a.coverage.registrations.expected, value.entries.length);
-  for (const key of ['associations']) {
-    assert.deepEqual(a[key], []);
-    assert.deepEqual(a.coverage[key], { status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' });
-  }
+  require('./assert-report-handler-associations.cjs').assertFixture(a, { event, error });
   assert.equal(a.coverage.useSites.status, 'complete');
   assert.equal(a.coverage.helperCalls.status, 'complete');
   const helper = a.handlers.find(h => h.kind === 'helper');
@@ -132,6 +129,25 @@ function negativeCases(value) {
   reject(v => v.analytics.coverage.handlers.expected++);
   reject(v => v.analytics.coverage.registrations.observed--);
   reject(v => { v.analytics.registrations.pop(); v.analytics.coverage.registrations.observed--; v.analytics.coverage.registrations.expected--; });
+  reject(v => v.analytics.associations.push(v.analytics.associations[0]));
+  reject(v => v.analytics.associations[0].useSiteId = 'missing');
+  reject(v => v.analytics.associations[0].consumerRegistrationId = 'missing');
+  reject(v => v.analytics.associations[0].via[0].id = 'missing');
+  reject(v => v.analytics.associations[0].evidence[0].producer = 'canonical-router-handler-validation');
+  reject(v => v.analytics.associations[0].coverage.status = 'unavailable');
+  reject(v => { v.analytics.associations.pop(); v.analytics.coverage.associations.observed--; });
+  reject(v => v.analytics.registrations.find(r => r.kind === 'mount').control.value.pattern = '/forged/*');
+  reject(v => { const r = v.analytics.associations.find(r => r.conditional === true); r.conditional = false; });
+  reject(v => { const r = v.analytics.associations.find(r => r.lane === 'error'); r.lane = 'normal';
+    r.id = require('../../packages/cli/src/internal/report/handler-associations').associationId(r); });
+  reject(v => {
+    const a = v.analytics, scoped = a.handlers.find(h => h.name === 'scopedMiddleware');
+    const site = a.useSites.find(s => s.ownerId === scoped.id);
+    const row = a.associations.find(r => r.useSiteId === site.id && r.conditional === true);
+    const forged = { ...row, consumerRegistrationId: a.registrations.find(r => r.kind === 'route' && r.match.value.path === '/api/plain').id };
+    forged.id = require('../../packages/cli/src/internal/report/handler-associations').associationId(forged);
+    a.associations.push(forged); a.coverage.associations.observed++;
+  });
   reject(v => v.analytics.useSites.push({}));
   reject(v => v.analytics.useSites.push(v.analytics.useSites[0]));
   reject(v => v.analytics.helperCalls.push(v.analytics.helperCalls[0]));
@@ -155,12 +171,13 @@ function negativeCases(value) {
   hostile.analytics.useSites[0].expression = 'PRIVATE_EXPRESSION_CANARY';
   hostile.analytics.useSites[0].binding.value = 'PRIVATE_BINDING_CANARY';
   hostile.analytics.helperCalls[0].arguments = ['PRIVATE_ARGUMENT_CANARY'];
+  hostile.analytics.associations[0].condition = 'PRIVATE_PREDICATE_CANARY';
   assert.throws(() => capsule.validateCapsule(hostile));
   assert.equal(capsule.serializeCapsule(capsule.createCapsule(hostile)), capsule.serializeCapsule(value), 'projection strips non-allowlisted metadata');
   const unknown = structuredClone(value);
   unknown.analytics.handlers[0].source = { state: 'unavailable', value: null, reason: 'not-recorded' };
   assert.equal(capsule.createCapsule(unknown).analytics.handlers[0].source.state, 'unavailable');
-  const reordered = structuredClone(value); reordered.analytics.handlers.reverse(); reordered.analytics.useSites.reverse(); reordered.analytics.helperCalls.reverse();
+  const reordered = structuredClone(value); reordered.analytics.handlers.reverse(); reordered.analytics.useSites.reverse(); reordered.analytics.helperCalls.reverse(); reordered.analytics.associations.reverse();
   assert.equal(capsule.serializeCapsule(capsule.createCapsule(reordered)), capsule.serializeCapsule(value));
   const tampered = structuredClone(value); tampered.analytics.handlers[0].name = 'changed';
   assert.throws(() => capsule.validateCapsule(tampered), e => e.code === 'REPORT_HASH');
@@ -227,6 +244,7 @@ async function main() {
       for (const optimization of ['default', 'experimental-native-bounded-size']) {
         project = resolveProject({ cwd: directory, metadataOnly: true });
         const options = { emitWat: false, nativeOptimization: optimization === 'default' ? undefined : optimization };
+        console.log(`[analytics parity] ${variant}/${optimization}: control and observed compilation`);
         const control = controlOwner.compileNativeProjectInMemory(project, options);
         const prepared = execution.compileNativeProjectInMemory(project, options);
         assert.equal(control.reportReferences.topology, undefined);
@@ -242,6 +260,10 @@ async function main() {
         if (!negative) {
           negative = negativeCases(value);
           const old = structuredClone(value);
+          for (const row of old.analytics.registrations) delete row.control;
+          old.analytics.associations = []; old.analytics.coverage.associations = { status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' };
+          const an902 = capsule.serializeCapsule(capsule.createCapsule(old));
+          assert.equal(capsule.serializeCapsule(capsule.parseCapsule(an902)), an902, 'AN9-02 unavailable associations remain valid');
           for (const key of ['useSites', 'helperCalls']) { old.analytics[key] = []; old.analytics.coverage[key] = { status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' }; }
           const saved = capsule.serializeCapsule(capsule.createCapsule(old));
           assert.equal(capsule.serializeCapsule(capsule.parseCapsule(saved)), saved, 'AN9-01 unavailable tables remain valid');
@@ -269,6 +291,13 @@ async function main() {
     const leafCall = nestedReport.analytics.helperCalls.filter(c => c.callerId === leaves[0].handlerId);
     assert.equal(leafCall.length, 1, 'one authored call survives mount expansion');
     assert.deepEqual(leafCall[0].registrationIds, leaves.map(r => r.id).sort());
+    for (const leaf of leaves) {
+      const helperRows = nestedReport.analytics.associations.filter(r => r.consumerRegistrationId === leaf.id && r.via.at(-1).id === leafCall[0].id);
+      assert.ok(helperRows.length > 0);
+      assert.ok(helperRows.every(r => JSON.stringify(r.via) === JSON.stringify([
+        ...leaf.mountPath.map(id => ({ kind: 'mount', id })), { kind: 'direct', id: leaf.id }, { kind: 'helper', id: leafCall[0].id }
+      ])), 'nested helper explanation retains both mount instances in order');
+    }
     const badCall = structuredClone(nestedReport); badCall.analytics.helperCalls.find(c => c.id === leafCall[0].id).registrationIds.pop();
     assert.throws(() => capsule.createCapsule(badCall), e => e.code === 'REPORT_COVERAGE');
     // Recognition recurses into awaited argument expressions and retains UTF-16
@@ -306,7 +335,7 @@ export default app;
     const standalone = report(project, execution.compileNativeProjectInMemory(project, { emitWat: false }));
     assert.equal(standalone.analytics.coverage.handlers.status, 'unavailable', 'no router producer is not a known-empty handler universe');
     console.log(JSON.stringify({ status: 'passed', cells, negativeCases: negative, importedSpans: true,
-      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, associationsUnavailable: true }));
+      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

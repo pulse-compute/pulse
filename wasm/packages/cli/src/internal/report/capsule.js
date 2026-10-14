@@ -26,7 +26,7 @@ function normalize(input) {
   }
   walk(value, '');
   for (const name of collections.filter(name => !['routes', 'entries'].includes(name))) value[name]?.sort((a, b) => compare(a.id, b.id));
-  for (const key of ['handlers', 'useSites', 'helperCalls']) value.analytics?.[key].sort((a, b) => compare(a.id, b.id));
+  for (const key of ['handlers', 'useSites', 'helperCalls', 'associations']) value.analytics?.[key].sort((a, b) => compare(a.id, b.id));
   value.provenance?.toolchain?.sort((a, b) => compare(a.name, b.name) || compare(a.version, b.version));
   value.resourceProducers?.sort((a, b) => compare(a.scope, b.scope));
   for (const schema of value.schemas || []) if (schema.structure?.state === 'available') {

@@ -1,6 +1,8 @@
 'use strict';
 
 const { canonicalJson, sha256, fail, relativePath } = require('./data');
+const { deriveHandlerAssociations } = require('./handler-associations');
+const { compileRoutePath } = require('@pulse-compute/wasm-contracts/path');
 const { stableReportId } = require('./capsule');
 const complete = count => ({ status: 'complete', observed: count, expected: count, reason: null });
 const unavailable = () => ({ status: 'unavailable', observed: 0, expected: null, reason: 'not-recorded' });
@@ -39,13 +41,16 @@ function projectHandlerTopology(topology, references = []) {
   });
   const coverage = (rows, count) => rows === undefined ? unavailable() : rows.length === count ? complete(count)
     : { status: 'partial', observed: count, expected: rows.length, reason: 'not-recorded' };
-  return { version: 'pulse.report-analytics.v1', handlers, registrations, useSites, helperCalls, associations: [],
+  const analytics = { version: 'pulse.report-analytics.v1', handlers, registrations, useSites, helperCalls, associations: [],
     coverage: { handlers: topology ? complete(handlers.length) : unavailable(),
       registrations: topology ? complete(registrations.length) : unavailable(),
       useSites: coverage(topology?.useSites, useSites.length), helperCalls: topology?.helperCallsComplete === false
         ? { status: 'partial', observed: helperCalls.length, expected: null, reason: 'not-recorded' }
         : coverage(topology?.helperCalls, helperCalls.length),
       associations: unavailable() } };
+  const associations = deriveHandlerAssociations(analytics);
+  analytics.associations = associations.rows; analytics.coverage.associations = associations.coverage;
+  return analytics;
 }
 
 function validateHandlerTopology(capsule) {
@@ -100,6 +105,25 @@ function validateHandlerTopology(capsule) {
     if (row.kind === 'mount' || !row.authored) ensure(row.handlerId === null);
     if (row.authored && row.kind !== 'mount') ensure(row.handlerId !== null);
     source(row.source); fact(row.match);
+    if (row.control) {
+      fact(row.control);
+      ensure(row.control.state !== 'not-applicable');
+      if (row.control.state === 'available') {
+        const c = row.control.value;
+        ensure(c.normal || c.error || c.terminal);
+        ensure(!c.eligibility || row.kind === 'mount');
+        if (row.kind === 'event') ensure(!c.normal && !c.error && c.terminal && c.pattern === null);
+        if (row.kind === 'mount' || !row.handlerId) ensure(c.normal && !c.error && !c.terminal);
+        const gated = row.kind === 'route' || row.kind === 'mount' || row.kind === 'middleware' && entry.flow.scoped;
+        ensure(gated ? c.pattern !== null : c.pattern === null);
+        if (c.pattern !== null) {
+          let pattern;
+          try { pattern = compileRoutePath(row.match.state === 'available' ? row.match.value.path : c.pattern, { allowWildcard: true, scoped: row.kind !== 'route' }).normalized; }
+          catch { ensure(false); }
+          ensure(c.pattern === pattern);
+        }
+      }
+    }
     ensure(row.routerPath.length > 0 && row.routerPath.at(-1) === row.routerId);
     ensure(row.evidence.length === 1 && row.evidence[0].basis === 'router-topology'
       && row.evidence[0].producer === 'canonical-router-execution-topology');
@@ -187,7 +211,13 @@ function validateHandlerTopology(capsule) {
     if (coverage.status === 'complete') ensure(coverage.expected === coverage.observed && coverage.reason === null, 'REPORT_COVERAGE');
     else ensure(coverage.reason !== null, 'REPORT_COVERAGE');
     if (['unavailable', 'not-applicable'].includes(coverage.status)) ensure(coverage.observed === 0 && coverage.expected === null, 'REPORT_COVERAGE');
-    if (key === 'associations') ensure(coverage.status === 'unavailable' && coverage.reason === 'not-recorded', 'REPORT_COVERAGE');
+  }
+  if (analytics.coverage.associations.status === 'unavailable') {
+    ensure(analytics.associations.length === 0 && analytics.coverage.associations.reason === 'not-recorded', 'REPORT_COVERAGE');
+  } else {
+    const expected = deriveHandlerAssociations(analytics);
+    ensure(canonicalJson(analytics.associations) === canonicalJson(expected.rows), 'REPORT_ASSOCIATION');
+    ensure(canonicalJson(analytics.coverage.associations) === canonicalJson(expected.coverage), 'REPORT_COVERAGE');
   }
   if (analytics.coverage.registrations.status === 'complete') ensure(registrations.size === entries.size, 'REPORT_COVERAGE');
 }
