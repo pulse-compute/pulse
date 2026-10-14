@@ -23,6 +23,7 @@ function fixture(variant='http', optimization='default', edit) {
 }
 module.exports = ({renderedTree}) => {
   const capsule=fixture(), before=serializeCapsule(capsule), a=capsule.analytics, model=createReportViewModel(capsule), tree=renderedTree(capsule);
+  require('./report-atlas-viewer-cases.cjs')({capsule,renderedTree});
   const visit=hash=>{tree.location.hash=hash;tree.renderers.onHash();return tree.get('view-handlers').textContent;};
   tree.renderers.buildNavigation();
   assert.ok(tree.get('desktop-nav').textContent.includes('Handlers'));
