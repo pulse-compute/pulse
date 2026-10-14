@@ -70,7 +70,16 @@ module.exports = function normalizationCases() {
   const bytes = { ...bomb, nodes: ['x'.repeat(1024)] };
   for (let i = 0; i < 15; i++) bytes.nodes.push([0, i, i]);
   bytes.root = bytes.nodes.length - 1;
+  assert.equal(codec.LIMITS.bytes, 64 * 1024 * 1024);
+  assert.equal(codec.LIMITS.nodes, 2000000);
+  assert.doesNotThrow(() => codec.decode(bytes), '32 MiB expansion fits the Catalog budget');
+  for (let i = 15; i < 17; i++) bytes.nodes.push([0, i, i]);
+  bytes.root = bytes.nodes.length - 1;
   assert.throws(() => codec.decode(bytes), { code: 'REPORT_LIMIT' }, 'expanded bytes independently bounded');
+  const manyValues = { ...bomb, nodes: [null] };
+  for (let i = 0; i < 19; i++) manyValues.nodes.push([0, i, i]);
+  manyValues.root = manyValues.nodes.length - 1;
+  assert.doesNotThrow(() => codec.decode(manyValues), 'over one million expanded values fit');
   const deep = { ...bomb, nodes: [null] };
   for (let i = 0; i < 66; i++) deep.nodes.push([0, i]);
   deep.root = deep.nodes.length - 1;

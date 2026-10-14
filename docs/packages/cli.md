@@ -37,10 +37,11 @@ pulse build
 
   Retained inventory and HTML data use lossless normalized storage when smaller.
   Reports retain all identities, evidence and coverage. CLI `--json` and viewer
-  downloads still emit canonical Report v1 JSON, suitable for older readers;
+  downloads still emit canonical Report v1 JSON, compatible with older readers
+  within their size limits;
   new readers also accept normalized inventory files with `--artifact`. Older
-  readers reject normalized storage. Both stored and expanded data retain the
-  existing size/work limits. Comparison HTML keeps one data payload; its full
+  readers reject normalized storage. Both stored and expanded data allow up to
+  64 MiB, with a two-million-value work budget. Comparison HTML keeps one data payload; its full
   JSON disclosure and export require JavaScript, while summary/details remain
   readable without it.
 
