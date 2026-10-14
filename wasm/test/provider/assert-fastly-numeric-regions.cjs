@@ -99,4 +99,4 @@ async function main() {
   await require('./assert-fastly-numeric-owners.cjs').main();
   console.log('ok - numeric regions: proof rejection, unchanged control, aliases, snapshots, IEEE numbers, loops, effects and recovery');
 }
-module.exports={main};if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});
+module.exports={main,source,schemaBundle};if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});

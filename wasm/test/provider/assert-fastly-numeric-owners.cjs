@@ -22,9 +22,7 @@ function writeProject(cwd, files) {
   fs.symlinkSync(path.join(root, 'packages/pulse'), path.join(cwd, 'node_modules/@pulse-compute/pulse'), 'dir');
 }
 
-async function main() {
-  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-numeric-owners-'));
-  try {
+function writeOwnerProject(cwd) {
     writeProject(cwd, {
       'src/helpers.ts': `
 export function choose(mode:number):number {
@@ -65,6 +63,12 @@ export default async function terminal(ctx) {
       'src/index.ts': `import {Pulse} from '@pulse-compute/pulse';import shared from './shared';import second from './second';import terminal from './terminal';
 const app=new Pulse({auto:true});app.post('/',shared);app.use(shared);app.use(second);app.post('/',terminal);app.post('/other',terminal);export default app;`,
     });
+}
+
+async function main() {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'pulse-numeric-owners-'));
+  try {
+    writeOwnerProject(cwd);
     const tc = acceptanceToolchain(), project = tc.resolveProject({ cwd, profile: 'node' });
     const { plan } = tc.compileNativeProjectInMemory(project, { reportCapture: false, emitWat: false });
     assert.equal(plan.helpers.length, 4); assert.equal(plan.stages.length, 2);
@@ -112,5 +116,5 @@ const app=new Pulse({auto:true});app.post('/',shared);app.use(shared);app.use(se
     console.log('ok - numeric owners: repeated pure calls, snapshots, unknown inputs, early returns, IEEE values, two stage families, effects and failure parity');
   } finally { fs.rmSync(cwd, { recursive: true, force: true }); }
 }
-module.exports = { main, writeProject };
+module.exports = { main, writeProject, writeOwnerProject };
 if (require.main === module) main().catch(e => { console.error(e); process.exitCode = 1; });
