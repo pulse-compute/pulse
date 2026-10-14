@@ -1,6 +1,6 @@
 /* Report-only exploration surfaces. */
 .atlas-workspace{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:16px;margin-top:16px;align-items:start}
-.atlas-main{min-width:0}.atlas-main>h3{margin:18px 0 12px}.atlas-selection{display:grid;gap:12px;min-width:0}.atlas-selection h4{font-size:12px;margin:8px 0 0;color:var(--muted)}
+.atlas-main{min-width:0}.atlas-main>h3{margin:18px 0 12px}.atlas-selection{display:grid;grid-auto-rows:max-content;gap:12px;min-width:0}.atlas-selection h4{font-size:12px;margin:8px 0 0;color:var(--muted)}
 .atlas-controls,.atlas-crumbs{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0}.atlas-crumbs{font-size:12px}.atlas-crumbs .text-button{max-width:100%;overflow-wrap:anywhere}
 .atlas-viewport{height:460px;max-width:100%;overflow:auto;border:1px solid var(--line);border-radius:9px;background:var(--bg);overscroll-behavior:contain;touch-action:pan-x pan-y}
 .atlas-viewport>.atlas-svg{width:auto;height:auto;max-width:none;display:block;user-select:none}
