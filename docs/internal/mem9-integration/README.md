@@ -50,8 +50,8 @@ changes only the classification ledger, not production code.
 | Work | Target | Boundary |
 | --- | --- | --- |
 | [MEM9-07](../mem9-07/README.md) | `codex/mem9-integration` | Merged in #350: unlinked Fastly read-loop numeric accounting; broader budgeted paths remain excluded |
-| [MEM9-08](../mem9-08/README.md) | `codex/mem9-integration` | General temporary ownership design proposed; human review before implementation |
-| MEM9-09 | `codex/mem9-integration` | Incremental implementation of the approved design, with lifetime and cost qualification |
+| [MEM9-08](../mem9-08/README.md) | `codex/mem9-integration` | Merged in #352; subsequent human direction authorizes the first implementation slice |
+| [MEM9-09A](../mem9-09/README.md) | `codex/mem9-integration` | Synchronous Fastly handle tracing; lifetime/cost evidence and explicit exclusions; 09B/09C and final compliance remain |
 
 Create each follow-up from the current integration head and target its PR at
 this branch. If a follow-up needs an unintegrated predecessor, state that

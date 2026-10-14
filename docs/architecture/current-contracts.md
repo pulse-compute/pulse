@@ -288,10 +288,51 @@ Fastly stub allocation avoidance requires no collector. The selected linked
 runtime retains its fixed 32-page memory, disjoint Rust/static/invocation-frame
 ranges and unchanged allocator. Final-link audits remain mandatory; allocation
 avoidance does not make a previously failing schema/guest combination eligible.
-No host ABI, allocation ceiling, cache default, GC policy, or reclamation protocol
-is added. Generic handle retention remains; deliberately retained snapshots
-still require storage. Generator manifests record the policy, selected regions
+The numeric policy adds no host ABI, allocation ceiling, cache default, GC policy,
+or reclamation protocol. Generic handle retention outside the separately qualified
+ownership slice below remains; deliberately retained snapshots still require
+storage. Generator manifests record the policy, selected regions
 and declined loop reasons, and source hashes bind the emitted strategy.
+
+## Fastly Native handle ownership
+
+Unlinked, schema-enabled Fastly Native plans using the incremental managed runtime
+select the private `fastly-handle-tracing-v1` policy only when their entire plan
+passes the synchronous owner audit. The first slice admits ordinary expressions,
+pure loops, terminal HTTP handlers, request metadata/text/JSON, schema codecs,
+responses, request state and logging. Helpers, shared stages, application error
+lanes, events, effects/continuations, opaque resources, package-owned application
+emitters, unknown expressions/statements/capabilities and all budgeted plans are
+excluded. Stub and linked runtimes, Node Native and JavaScript keep their existing
+lifetime behavior. No public configuration or host ABI is added.
+
+Compiler root descriptors enumerate the result, every declared local slot and
+both request-state arrays from their declarations. The provider validates that
+descriptor and adds its request-header snapshot and occupied immutable caches.
+Completed expressions and loop control boundaries may collect only after values
+are rooted or discarded and no unregistered handle temporary remains. Numeric
+regions checkpoint only after boxing their outputs. A latched error suppresses
+collection. Parsers, codecs, host operations and expression evaluation never
+invoke the tracer internally.
+
+Eligible plans use a sparse map with monotonically increasing positive IDs.
+Tracing follows collection handle edges and direct rope object edges independently,
+using iterative worklists without flattening strings or allocating lazy backing
+stores. A complete survivor map replaces the old table; invalid edges fail before
+publication. IDs are never recycled; exhaustion fails through the existing value
+error at stage 1 before wrapping. `__pulse_drop` remains a no-op. The existing
+managed collector reclaims objects after their last strong reference disappears.
+
+The initial private trigger is `max(1024, live mappings after the previous pass)`
+new handles between safe points. Cache entries remain pinned and an occupied-slot
+index avoids scanning empty cache capacity. Table and tracing storage track the
+reachable graph plus allocations since a safe point, with old and survivor tables
+coexisting during a pass. All local slots remain conservative roots, even after
+their source scope ends. Live snapshots, caches and unflattened rope graphs still
+require storage; a long operation without a checkpoint can allocate substantially.
+Wasm memory need not shrink. This does not change cumulative budget accounting or
+qualify general reclamation for excluded runtimes. See the measured first slice
+and residuals in [MEM9-09](../internal/mem9-09/README.md).
 
 ## Native internal helper sharing
 

@@ -12,7 +12,7 @@ export const contextCorpus = freeze({
     "commands": "pulse.cli-command-spec.v5",
     "diagnostics": "pulse.cli-diagnostics.v1"
   },
-  "corpusHash": "92a73076be984247ba05fc6b1288765df6a4a8748ef41a1f4d182fdd1ff75e8b",
+  "corpusHash": "40020f2b42480a1eaeda223beb55c4733cd27a35522b03ad8505a90daed6c934",
   "limits": {
     "maxContentBytes": 24576,
     "maxRecords": 256,
@@ -372,9 +372,9 @@ export const contextCorpus = freeze({
         "endLine": 179,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:One application contract and one compiler spine",
-        "sha256": "b816689fc2b5ef89127bac4260f2810ff771cdc7a1e560bdacee1d31621d5a9f",
+        "sha256": "e36c33d8d0e5f9ca07faad4dd9b632fcf640ebb0f4eb033a3fd6919d6ab19258",
         "startLine": 63,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/777cf64165b7fe15bda734d165bc05a8b6fff94b"
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ef42c292fdc9ffa5cb2ebbcdec19fb1ba3786074"
       },
       "status": "candidate",
       "tags": [
@@ -448,12 +448,12 @@ export const contextCorpus = freeze({
       "id": "contract/build-metadata",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 1373,
+        "endLine": 1414,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Retained build metadata",
-        "sha256": "b816689fc2b5ef89127bac4260f2810ff771cdc7a1e560bdacee1d31621d5a9f",
-        "startLine": 1355,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/777cf64165b7fe15bda734d165bc05a8b6fff94b"
+        "sha256": "e36c33d8d0e5f9ca07faad4dd9b632fcf640ebb0f4eb033a3fd6919d6ab19258",
+        "startLine": 1396,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ef42c292fdc9ffa5cb2ebbcdec19fb1ba3786074"
       },
       "status": "candidate",
       "tags": [
@@ -535,12 +535,12 @@ export const contextCorpus = freeze({
       "id": "contract/eligibility",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 2024,
+        "endLine": 2065,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Providers, targets, and eligibility",
-        "sha256": "b816689fc2b5ef89127bac4260f2810ff771cdc7a1e560bdacee1d31621d5a9f",
-        "startLine": 1663,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/777cf64165b7fe15bda734d165bc05a8b6fff94b"
+        "sha256": "e36c33d8d0e5f9ca07faad4dd9b632fcf640ebb0f4eb033a3fd6919d6ab19258",
+        "startLine": 1704,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ef42c292fdc9ffa5cb2ebbcdec19fb1ba3786074"
       },
       "status": "candidate",
       "tags": [
@@ -709,12 +709,12 @@ export const contextCorpus = freeze({
       "id": "contract/package-authority",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 2070,
+        "endLine": 2111,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Package-owned capabilities",
-        "sha256": "b816689fc2b5ef89127bac4260f2810ff771cdc7a1e560bdacee1d31621d5a9f",
-        "startLine": 2025,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/777cf64165b7fe15bda734d165bc05a8b6fff94b"
+        "sha256": "e36c33d8d0e5f9ca07faad4dd9b632fcf640ebb0f4eb033a3fd6919d6ab19258",
+        "startLine": 2066,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ef42c292fdc9ffa5cb2ebbcdec19fb1ba3786074"
       },
       "status": "candidate",
       "tags": [
@@ -874,12 +874,12 @@ export const contextCorpus = freeze({
       "id": "contract/report-comparison",
       "pulseVersion": "1.0.0-beta.8",
       "source": {
-        "endLine": 1518,
+        "endLine": 1559,
         "path": "docs/architecture/current-contracts.md",
         "selection": "heading:Report comparison contract",
-        "sha256": "b816689fc2b5ef89127bac4260f2810ff771cdc7a1e560bdacee1d31621d5a9f",
-        "startLine": 1374,
-        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/777cf64165b7fe15bda734d165bc05a8b6fff94b"
+        "sha256": "e36c33d8d0e5f9ca07faad4dd9b632fcf640ebb0f4eb033a3fd6919d6ab19258",
+        "startLine": 1415,
+        "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ef42c292fdc9ffa5cb2ebbcdec19fb1ba3786074"
       },
       "status": "candidate",
       "tags": [
@@ -9142,8 +9142,8 @@ export const contextCorpus = freeze({
   "sources": [
     {
       "path": "docs/architecture/current-contracts.md",
-      "sha256": "b816689fc2b5ef89127bac4260f2810ff771cdc7a1e560bdacee1d31621d5a9f",
-      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/777cf64165b7fe15bda734d165bc05a8b6fff94b"
+      "sha256": "e36c33d8d0e5f9ca07faad4dd9b632fcf640ebb0f4eb033a3fd6919d6ab19258",
+      "url": "https://api.github.com/repos/pulse-compute/pulse/git/blobs/ef42c292fdc9ffa5cb2ebbcdec19fb1ba3786074"
     },
     {
       "path": "docs/concepts/bodies.md",
