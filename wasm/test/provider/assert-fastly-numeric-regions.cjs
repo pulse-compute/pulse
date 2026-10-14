@@ -52,11 +52,14 @@ function proofAdmission() {
     assert.equal(proof([init,loop([assign(unsafe)])]).size,0,'independent proof ignores spoofed numeric annotations');
   assert.equal(proof([loop([assign(literal(1))])]).size,0,'unknown incoming handle');
   assert.equal(proof([init,loop([assign(literal(1))])],{budgeted:true}).size,0);
+  assert.equal(proof([init,loop([assign(literal(1))])],{budgeted:true,readLoopBudget:true}).size,2);
   assert.equal(proof([init,loop([assign(literal(1))])],{schemaActive:false}).size,2);
   for (const schemaActive of [false,true]) for (const budgeted of [false,true]) {
     for (const policy of [POLICY, LINKED_POLICY, HOST_POLICY]) {
       const eligible = !budgeted && (policy !== LINKED_POLICY || !schemaActive);
       assert.equal(proof([init,loop([assign(literal(1))])],{policy,schemaActive,budgeted}).size,eligible ? 2 : 0);
+      const metered = policy === POLICY || eligible;
+      assert.equal(proof([init,loop([assign(literal(1))])],{policy,schemaActive,budgeted,readLoopBudget:true}).size,metered ? 2 : 0);
     }
   }
   assert.equal(proof([init,loop([assign(literal(1))])],{policy:undefined}).size,0);

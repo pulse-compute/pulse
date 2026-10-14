@@ -2097,6 +2097,8 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     require('./native-fetch-deadlines.js').runtimeSource(plan),
     applicationErrors.settlementEnabled(plan) ? applicationErrors.runtimeSource(plan) : '',
     effectInvocations.runtimeSource({ packageCompletion: packageApplication.enabled(plan) }),
+    ...(portable.manifest.numericRegions?.accounting === 'fastly-read-loop-v1' && portable.manifest.numericRegions.regions.length > 0
+      ? [nativeValueBudget.numericRegionSource()] : []),
     portableSource,
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
