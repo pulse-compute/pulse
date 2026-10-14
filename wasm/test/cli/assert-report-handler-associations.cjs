@@ -8,7 +8,7 @@ const { projectHandlerTopology } = require('../../packages/cli/src/internal/repo
 const { collectCanonicalReportReferences, buildCanonicalNativePlan } = require('../../packages/compiler/src/canonical-native-plan');
 const { compileProject } = require('../../packages/cli/src/project-execution');
 const { resolveProject } = require('../../packages/cli/src/project-config');
-const { setup } = require('../../../docs/internal/an9-00/fixture.cjs');
+const { setup } = require('../support/report-analytics-fixture.cjs');
 const root = path.resolve(__dirname, '../../..');
 
 function associations(a, registration) { return a.associations.filter(row => row.consumerRegistrationId === registration.id); }

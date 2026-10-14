@@ -9,7 +9,7 @@ function write(root, name, content) {
 }
 
 function setup(root, variant = 'full', localPackage = false) {
-  let source = fs.readFileSync(path.join(__dirname, 'fixture/index.ts'), 'utf8');
+  let source = fs.readFileSync(path.join(__dirname, '../fixtures/projects/report-analytics/index.ts'), 'utf8');
   // Keep line/offset coordinates when isolating the existing error+event failure.
   const omit = (start, end) => {
     const from = source.indexOf(start), to = source.indexOf(end, from);
@@ -21,10 +21,10 @@ function setup(root, variant = 'full', localPackage = false) {
   else if (variant !== 'full') throw new Error('Unknown fixture variant');
   if (localPackage) {
     source = source.replace("'@fixture/analytics'", "'./analytics'");
-    write(root, 'src/analytics.ts', fs.readFileSync(path.join(__dirname, 'fixture/package.ts')));
+    write(root, 'src/analytics.ts', fs.readFileSync(path.join(__dirname, '../fixtures/projects/report-analytics/package.ts')));
   }
   write(root, 'src/index.ts', source);
-  write(root, 'node_modules/@fixture/analytics/index.ts', fs.readFileSync(path.join(__dirname, 'fixture/package.ts')));
+  write(root, 'node_modules/@fixture/analytics/index.ts', fs.readFileSync(path.join(__dirname, '../fixtures/projects/report-analytics/package.ts')));
   write(root, 'node_modules/@fixture/analytics/package.json', JSON.stringify({
     name: '@fixture/analytics', version: '1.0.0', type: 'module', exports: { '.': './index.ts' }
   }));

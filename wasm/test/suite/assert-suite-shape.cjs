@@ -55,8 +55,6 @@ for (const name of Object.keys(profiles)) {
 
 const release = expandProfile('release');
 const externalTasks = new Set([
-  // AN9-00 freezes investigation findings; expected gaps are not release gates.
-  'compiler-analytics-an9-00',
   // Rejected dependency optimization: explicit experiment, never a release gate.
   'schema-cache-arena',
   // Pre-snapshot upgrade and measurements are explicit qualification, not fast CI or a seal.

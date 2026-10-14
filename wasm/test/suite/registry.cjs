@@ -34,10 +34,6 @@ function vitestTask(files, options = {}) {
 }
 
 const tasks = Object.freeze({
-  'compiler-analytics-an9-00': nodeTask('../docs/internal/an9-00/proof.cjs', {
-    evidence: 'external', timeoutMs: 180000, isolatedArtifacts: true, scheduling: { compiler: true },
-    description: 'AN9-00 bounded association/source-lineage feasibility and explicit current gaps'
-  }),
   'cli-report-viewer': nodeTask('test/cli/assert-report-viewer.cjs', { description: 'PRPT-05 offline encoding, view projections and generated-output receipts' }),
   'cli-report-workflow': nodeTask('test/cli/assert-report-cli-workflow.cjs', { description: 'PRPT-04 report CLI replay, planning, safe output and diagnostics' }),
   'cli-report-graph-diagnostics': nodeTask('test/cli/assert-report-graph-diagnostics.cjs', {
@@ -58,7 +54,7 @@ const tasks = Object.freeze({
   }),
   'cli-report-handler-topology': nodeTask('test/cli/assert-report-handler-topology.cjs', {
     evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000,
-    description: 'AN9-01/02/03 passive ownership, contextual associations, recipe parity and replay'
+    description: 'AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison'
   }),
   'cli-report-reference-provenance': nodeTask('test/cli/assert-report-reference-provenance.cjs', {
     evidence: 'native', timeoutMs: 120000,
