@@ -1498,7 +1498,28 @@ compilation, provider execution or filesystem writes. Both modes validate the
 same optional analytics graph and completion hashes. Old input sidecars without
 source receipts retain their existing recipe hash and replay behavior. Missing
 analytics remains unavailable and legacy capsules still render/export unchanged.
-Handler reporting has no new physical-size attribution or UI presentation contract.
+AN9-05 presents the retained graph in the offline report's **Handlers** view.
+Authored definitions appear once, independently of registration roles and the
+**Compiled helpers** physical-body view. Search covers definition/source identity,
+owned capabilities and binding names; kind and registration-role filters do not
+change the capsule or its full export. Definition details link each registration,
+owned use site, validated helper caller and linked-helper call. Separate
+registration details retain ordered mount instances, router paths, continuation
+links and contextual associations, including middleware and error explanations.
+Synthetic mounts remain registration records without invented handler definitions.
+
+Use-site details show the authored owner, canonical operation/capability, binding
+resolution state, logical binding and reference identity, and contextual consumers.
+Source displays retain the file, exact range and hash; unavailable source is never
+reconstructed from another record or fetched from disk/network. Imported package
+provenance remains distinct from the caller's registration source. Coverage and
+producer evidence accompany the drill-downs. Direct ownership, conditional static
+candidates and unknown conditionality have distinct labels; normal/error/event
+lanes stay explicit. These are static dependency explanations, not request traces,
+effective grants or evidence of execution. Missing analytics in older capsules
+renders unavailable, not an empty or zero-use claim. Route, entry and binding views
+link into authored analytics using capsule-local navigation. There is no new
+physical-size attribution or semantic comparison behavior.
 
 ## Providers, targets, and eligibility
 

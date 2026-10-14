@@ -100,7 +100,7 @@ function renderedTree(capsule) {
   const document={body:{classList:{add(){},remove(){},toggle(){}}},querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):surfaces[selector]??{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
   const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
+  vm.runInNewContext(script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
   get('modal').hidden=true;get('route-drawer').hidden=true;
@@ -109,6 +109,7 @@ function renderedTree(capsule) {
 const tree=renderedTree(richCapsule);
 require('./report-comparison-viewer-cases.cjs')();
 require('./report-identity-viewer-cases.cjs')({renderedTree});
+require('./report-handler-viewer-cases.cjs')({renderedTree});
 require('./report-layout-viewer-cases.cjs')({renderedTree});
 require('./report-build-cases.cjs').viewerCases({renderedTree});
 require('./report-helper-viewer-cases.cjs')({renderedTree});
