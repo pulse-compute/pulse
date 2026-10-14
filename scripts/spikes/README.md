@@ -174,3 +174,33 @@ failed attempts. `evaluation.json` records `running`, then terminal `passed` or
 does not mean a view is usable: unreadable global Fit and partial associations
 are findings, not data to hide. The historical-capsule browser smoke remains
 the absence check; Catalog contains no event registrations.
+
+## VIS-04: integrate the focused atlas
+
+VIS-04 implements the first integration slice proposed as VIS-I01 in VIS-03.
+The supported renderer now has an Execution atlas section alongside the existing
+report views, with exact mount scope, a paginated registration table and links to
+existing registration/definition details. This does not port the standalone
+lane or dependency graph treatments; those remain contextual integration work.
+
+The SVG port preserves `style-src-attr 'none'`, the single canonical payload,
+exact JSON export and the existing HTML output budget. The presentation bounds
+graph DOM to 300 nodes and table pages to 50; it never discards capsule records.
+Fit keeps a readable minimum scale. Narrow screens start with the table and
+selection panel; the graph can be explicitly opened. Browser history navigates
+selected registration hashes. Broad device/assistive-technology qualification
+remains separate.
+
+Focused browser validation uses the same optional external Playwright setup:
+
+```sh
+CHROMIUM_PATH=/path/to/chromium node scripts/spikes/check-integrated-atlas-browser.cjs /path/to/report.html
+```
+
+This checks the supported renderer's CSP, scoped table, selection/source links,
+keyboard focus, history, readable Fit, complete table pagination, themes,
+narrow-screen graph opt-in, exact JSON export and absence of HTTP/page/CSP errors.
+Use a historical capsule too to verify analytics absence. No exact named Entry
+Point covers renderer integration; ordinary root, Wasm, CLI and canonical-doc
+instructions apply. Human direction to implement VIS-04 authorizes this first
+slice; merging remains human review against `spike/report-execution-graph`.

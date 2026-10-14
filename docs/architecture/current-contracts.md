@@ -1528,6 +1528,28 @@ renders unavailable, not an empty or zero-use claim. Route, entry and binding vi
 link into authored analytics using capsule-local navigation. There is no new
 physical-size attribution or semantic comparison behavior.
 
+The offline report's **Execution atlas** presents the same retained registration
+instances as a mount-containment graph and scoped execution table. Curves show
+containment, never dispatch or an observed request. Selection uses the existing
+registration identity and links to authored definitions, source spans and full
+registration details. Mount labels retain kind, match and the viewer's one-based
+display ordinal; the first child's filename is only a labeled source hint.
+The graph and table share mount scope and search. Search temporarily expands
+matching ancestry without changing saved expansion state. Reused definitions do
+not merge separate mount instances. Graph display is limited to 300 nodes and
+table pages to 50 registrations; every matching record remains reachable in the
+table and the complete capsule exports unchanged. Counts distinguish matching,
+scoped and retained records. Historical analytics absence remains unavailable.
+
+Atlas geometry uses SVG attributes under the existing hashed-asset CSP, including
+`style-src-attr 'none'`. It adds no network access or graph dependency. The graph
+is built only in its view and starts hidden on narrow screens. Focus, breadcrumbs,
+progressive expansion, keyboard node traversal, scrolling, drag-to-pan and zoom
+are local presentation state; registration navigation uses capsule-local hashes
+and browser history. Fit retains a minimum 65% scale and allows scrolling rather
+than reducing the full application to unreadable labels. Physical sizes,
+capability associations and control facts keep their existing meaning and limits.
+
 ## Providers, targets, and eligibility
 
 Target selection is explicit and never falls back automatically. Target support
