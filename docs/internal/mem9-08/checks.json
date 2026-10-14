@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "pulse.mem9-08.checks.v1",
+  "task": "MEM9-08",
+  "recordedAt": "2026-10-14T17:43:01.265626+00:00",
+  "status": "design-validation-passed-human-architecture-review-pending",
+  "source": {
+    "baseCommit": "0ec9023d5ac0b267e10d8a2ecfbc7033188763f3",
+    "baseTree": "93423e51b4f12f71b28f9424a72d020436b1729c",
+    "designCandidateTree": "1e985a1854104df6dae4e1c57f4938cd37d24256",
+    "workingTree": "Only the three design files below differed from the base when checks ran. Runtime/compiler sources match the pinned baseline. This receipt was added afterward.",
+    "files": [
+      {
+        "path": "docs/internal/mem9-08/README.md",
+        "sha256": "36d4780c6b6c783c8e89bbd735c5370970c5496c11a1eeb786277e1112761d89"
+      },
+      {
+        "path": "docs/internal/mem9-08/ownership.json",
+        "sha256": "fafe6cc328eee102fff7af75e405366693ce2e79427eb9815c2da51733a752b6"
+      },
+      {
+        "path": "docs/internal/mem9-integration/README.md",
+        "sha256": "c53a9aae227739393623e563e464e11d44319cbb91e9b10ab9b6375409540582"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "command": "npm run maintainer:sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "a25a20fb907ca5375bf870737752f9e2b563471b269b8fa71d8fccbfb724ed7f"
+    },
+    {
+      "command": "npm run docs:sync",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "21831da1df2a362b85192483f6fa1ead2573ab0bb2acbcafbf0565636fefdc7b"
+    },
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "8bb1445015174fb2b2f3704ba1b9fe00bdf6fc3847f39192312a9fd5e8819656"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "exitCode": 0,
+      "logSha256": "973f0945fa939e9bb1d25db72abc838a052ae38cfe7a4eef35c6798a99e64841"
+    }
+  ],
+  "sourceInventory": {
+    "status": "passed",
+    "sourceCommit": "0ec9023d5ac0b267e10d8a2ecfbc7033188763f3",
+    "sources": 13,
+    "anchors": 63,
+    "baselineAndCheckoutBytesMatch": true,
+    "relativeLinks": "passed; checks.json receipt added after validation",
+    "qualification": "Source integrity and documentation only; no completeness/runtime proof.",
+    "logSha256": "8b3dae0d73dbef5eae0e1dcb79078993396cba834a19d42943716b8b5adfd0f7"
+  },
+  "scope": {
+    "command": "node scripts/maintainer-scope.cjs --base 0ec9023d5ac0b267e10d8a2ecfbc7033188763f3 --head <commit-with-designCandidateTree> --declaration-file <pr-body> --check",
+    "exitCode": 0,
+    "declarationValid": true,
+    "decision": "Human decision required",
+    "requiredChecks": [
+      "documentation",
+      "maintenance-policy"
+    ],
+    "logSha256": "b33aeeffea99e8672ef8405427e55493c3a63165433e8dd23ce3dd845d594204",
+    "warnings": [
+      "The three named conceptual boundaries are not inferred from documentation-only paths. They describe the proposed design, not a production semantic change in this PR."
+    ]
+  },
+  "failedValidationAttempts": [],
+  "notRun": [
+    "Runtime/compiler qualification: no implementation changes in MEM9-08",
+    "Memory or performance measurements: design only",
+    "Full compliance: deferred until the approved implementation and final integration candidate"
+  ],
+  "remaining": [
+    "Human architecture review before MEM9-09",
+    "MEM9-09 incremental implementation and lifetime/cost qualification",
+    "Separate root/allocator/accounting decisions for excluded runtimes and budgeted plans",
+    "Final latest reconciliation and complete compliance before merging integration PR #349",
+    "Owner-reviewed coverage and residual decision before closing #289"
+  ],
+  "reusableReleaseQualification": false
+}

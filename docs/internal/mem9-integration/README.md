@@ -49,8 +49,8 @@ changes only the classification ledger, not production code.
 
 | Work | Target | Boundary |
 | --- | --- | --- |
-| MEM9-07 | `codex/mem9-integration` | Budget-preserving numeric regions; preserve charging, caps and latched failure behavior |
-| MEM9-08 | `codex/mem9-integration` | General temporary ownership design; review before implementation |
+| [MEM9-07](../mem9-07/README.md) | `codex/mem9-integration` | Merged in #350: unlinked Fastly read-loop numeric accounting; broader budgeted paths remain excluded |
+| [MEM9-08](../mem9-08/README.md) | `codex/mem9-integration` | General temporary ownership design proposed; human review before implementation |
 | MEM9-09 | `codex/mem9-integration` | Incremental implementation of the approved design, with lifetime and cost qualification |
 
 Create each follow-up from the current integration head and target its PR at
