@@ -51,7 +51,10 @@ changes only the classification ledger, not production code.
 | --- | --- | --- |
 | [MEM9-07](../mem9-07/README.md) | `codex/mem9-integration` | Merged in #350: unlinked Fastly read-loop numeric accounting; broader budgeted paths remain excluded |
 | [MEM9-08](../mem9-08/README.md) | `codex/mem9-integration` | Merged in #352; subsequent human direction authorizes the first implementation slice |
-| [MEM9-09A](../mem9-09/README.md) | `codex/mem9-integration` | Synchronous Fastly handle tracing; lifetime/cost evidence and explicit exclusions; 09B/09C and final compliance remain |
+| [MEM9-09A](../mem9-09/README.md) | `codex/mem9-integration` | Merged in #354: synchronous Fastly handle tracing; historical lifetime/cost receipts remain source-bound |
+| [MEM9-09B](../mem9-09b/README.md) | `codex/mem9-integration` | Prepared in #355: helper/stage frames, error lanes and effects; 158-task development coverage across two runs and paired cost evidence; human review/merge pending |
+| MEM9-09C | `codex/mem9-integration` | Pending: separate reviewed Node root transport, budget contract, stub and linked allocator paths |
+| Final integration qualification | `latest` via #349 | Pending: reconcile latest, freeze a clean integrated candidate and complete required compliance/installed/provider gates |
 
 Create each follow-up from the current integration head and target its PR at
 this branch. If a follow-up needs an unintegrated predecessor, state that

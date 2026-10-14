@@ -2103,6 +2103,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     ...(portable.manifest.numericRegions?.accounting === 'fastly-read-loop-v1' && portable.manifest.numericRegions.regions.length > 0
       ? [nativeValueBudget.numericRegionSource()] : []),
     portableSource,
+    nativeHandleOwnership.providerSource(plan, portable.manifest.handleOwnership?.enabled === true),
     driverSource(plan, { guestLinked: facts.guestUnits.length > 0 }),
     ''
   ].join('\n');
@@ -2141,7 +2142,9 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
     portableSourceHash: portable.sourceHash,
     schemaCodecs: portable.manifest.schemaCodecs,
     ...(portable.manifest.numericRegions ? { numericRegions: portable.manifest.numericRegions } : {}),
-    handleOwnership: portable.manifest.handleOwnership || Object.freeze({
+    handleOwnership: portable.manifest.handleOwnership ? Object.freeze({ ...portable.manifest.handleOwnership,
+      providerRoots: portable.manifest.handleOwnership.enabled ? Object.freeze(nativeHandleOwnership.providerRoots(plan)) : Object.freeze([])
+    }) : Object.freeze({
       policy: null, enabled: false,
       reason: packageApplication.enabled(plan) ? 'package-owned-emitter' : 'linked-runtime',
       roots: Object.freeze([]), checkpoints: 'none'

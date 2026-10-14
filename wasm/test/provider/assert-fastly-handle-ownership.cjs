@@ -33,7 +33,7 @@ function planFor(body, schema = true) {
   return buildCanonicalNativePlan(compileCanonicalSource(`export default async function handler(ctx){${schema ? "const input=await ctx.req.json('proof.Input');" : ''}${body}}`,
     { fileName: 'handle-ownership.ts', strict: false, target: 'native', ...(schema ? { schemaBundle } : {}) }));
 }
-function build(plan, { retained = false, observed = false, force = false, interval = 1024, elideJsonCacheArena = false } = {}) {
+function build(plan, { retained = false, observed = false, force = false, interval = 1024, elideJsonCacheArena = false, providerOptions = {} } = {}) {
   const original = ownership.tableSource;
   if (observed || force || interval !== 1024) ownership.tableSource = enabled => {
     let source = original(enabled);
@@ -124,7 +124,7 @@ export function mem9_cache_valid(): bool {
 `;
     return source;
   };
-  const compile = p => p.compileFastlyNativePlatformCapabilitiesPlan(plan, { ...options, elideJsonCacheArena });
+  const compile = p => p.compileFastlyNativePlatformCapabilitiesPlan(plan, { ...options, ...providerOptions, elideJsonCacheArena });
   try { return retained ? withRetainedHandles(compile) : compile(platform); }
   finally { ownership.tableSource = original; }
 }
@@ -167,8 +167,7 @@ function admission() {
     {expressions:[{kind:'intrinsic',name:'new-owner'}]}, {expressions:[{kind:'context-read',path:['event','payload']}]},
     {plan:{...plan,helpers:[{}]}}, {plan:{...plan,stages:[{}]}}, {plan:{...plan,effects:[{}]}},
     {plan:{...plan,capabilities:['new-owner']}}, {plan:{...plan,packages:{application:{}}}},
-    {plan:{...plan,entry:{body:[{kind:'new-control'}]}}}, {plan:{...plan,entry:{body:[{kind:'continue'}]}}},
-    {plan:{...plan,routing:{entries:[{kind:'error'}]}}}])
+    {plan:{...plan,entry:{body:[{kind:'new-control'}]}}}, {plan:{...plan,entry:{body:[{kind:'continue'}]}}}])
     assert.equal(prepareHandleOwnership({...base,...change}).enabled,false,JSON.stringify(change));
   const traced = generate(plan,{handleOwnership:'fastly-handle-tracing-v1'});
   ownership.validateRoots(plan,traced.manifest);

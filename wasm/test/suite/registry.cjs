@@ -1105,6 +1105,10 @@ const tasks = Object.freeze({
     evidence: 'native', timeoutMs: 300000, scheduling: { compiler: true },
     description: 'MEM9-09 safe-point ownership, alias/cycle lifetime, sparse storage bounds and excluded runtime policies'
   }),
+  'fastly-handle-frames': nodeTask('test/provider/assert-fastly-handle-frames.cjs', {
+    evidence: 'native', timeoutMs: 300000, scheduling: { compiler: true },
+    description: 'MEM9-09B helper/stage roots, effect transfer, Router recovery and pinned resource lifetime'
+  }),
   'fastly-native-platform-capabilities': nodeTask('test/provider/assert-fastly-native-platform-capabilities.cjs', {
     evidence: 'providers',
     timeoutMs: 300000,
@@ -1396,6 +1400,7 @@ const profiles = Object.freeze({
     'fastly-numeric-regions',
     'fastly-numeric-budgets',
     'fastly-handle-ownership',
+    'fastly-handle-frames',
     'pure-helper-vocabulary',
     'pure-string-index',
     'pure-field-projection',

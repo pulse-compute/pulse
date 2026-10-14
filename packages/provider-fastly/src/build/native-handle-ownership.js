@@ -2,11 +2,31 @@
 
 function validateRoots(plan, manifest) {
   if (!manifest.handleOwnership?.enabled) return;
-  const expected = ['__pulse_result', ...(plan.locals || []).map((_, i) => `__pulse_local_${i}`),
+  const { CANONICAL_NATIVE_PURE_HELPER_VERSION } = require('@pulse-compute/wasm-contracts/handler/canonical-native-plan');
+  const expected = ['__pulse_result',
+    ...((plan.helpers || []).some(h => h.version !== CANONICAL_NATIVE_PURE_HELPER_VERSION) ? ['__pulse_helper_result'] : []),
+    ...(plan.locals || []).map((_, i) => `__pulse_local_${i}`),
+    ...(plan.effects || []).map((_, i) => `__pulse_effect_result_${i}`),
     ...(manifest.requestState.enabled ? ['__pulse_state_keys', '__pulse_state_values'] : [])];
   if (JSON.stringify(manifest.handleOwnership.roots) !== JSON.stringify(expected)) {
     throw new Error('Fastly handle ownership root descriptor mismatch');
   }
+}
+
+function providerRoots(plan) {
+  return ['__pulse_request_headers_snapshot', '__pulse_fastly_payloads', '__pulse_fastly_ready',
+    '__pulse_handle_cache_roots', '__pulse_handle_resource_roots',
+    ...((plan.capabilities || []).includes('request.body.forward') ? ['__fwd_marker', '__fwd_result'] : [])];
+}
+
+function providerSource(plan, enabled, roots = providerRoots(plan)) {
+  if (!enabled) return '';
+  if (JSON.stringify(roots) !== JSON.stringify(providerRoots(plan))) throw new Error('Fastly provider root descriptor mismatch');
+  const arrays = new Set(['__pulse_fastly_payloads', '__pulse_fastly_ready', '__pulse_handle_cache_roots', '__pulse_handle_resource_roots']);
+  return ['function __pulse_handle_provider_roots(): void {',
+    ...roots.map(name => arrays.has(name)
+      ? `  for (let i = 0; i < ${name}.length; i++) __pulse_handle_mark(unchecked(${name}[i]))`
+      : `  __pulse_handle_mark(${name})`), '}'].join('\n');
 }
 
 // This source is composed only with the canonical emitter's complete, eligible
@@ -41,6 +61,9 @@ function __pulse_fastly_value(handle: i32): __PulseFastlyValue { if (!__pulse_fa
 // The existing caches never evict or replace entries. Record each insertion
 // once so tracing is proportional to occupied slots, not 132,101 possible slots.
 @lazy const __pulse_handle_cache_roots = new Array<i32>()
+// Wrappers keep their existing request lifetime. Resource IDs are never traced
+// as value handles; collection neither closes nor cancels a host resource.
+@lazy const __pulse_handle_resource_roots = new Array<i32>()
 let __pulse_handle_next: i32 = 0
 let __pulse_handle_allocations: i32 = 0
 let __pulse_handle_interval: i32 = 1024
@@ -49,10 +72,12 @@ let __pulse_handle_work: Array<__PulseFastlyValue> | null = null
 function __pulse_fastly_has_value(handle: i32): bool { return handle > 0 && __pulse_fastly_values.has(handle) }
 function __pulse_fastly_value_count(): i32 { return __pulse_fastly_values.size }
 function __pulse_fastly_put(value: __PulseFastlyValue): i32 {
-  if (__pulse_fastly_last_error != 0) return 0
+  // Provider-owned terminal error responses still allocate after a latched
+  // failure, just as on the retained path. Checkpoints remain suppressed.
   if (__pulse_handle_next == i32.MAX_VALUE) { __pulse_fastly_fail(PULSE_ERROR_VALUE, 1, -1); return 0 }
   const handle = ++__pulse_handle_next
   __pulse_fastly_values.set(handle, value)
+  if (value.kind == PULSE_VALUE_FETCH || value.s3Body || value.responseHandle != 0 || value.bodyHandle != 0) __pulse_handle_resource_roots.push(handle)
   __pulse_handle_allocations++
   return handle
 }
@@ -78,8 +103,7 @@ function __pulse_handle_checkpoint(): void {
   __pulse_handle_work = new Array<__PulseFastlyValue>()
   const visited = new Set<__PulseFastlyValue>()
   __pulse_handle_guest_roots()
-  __pulse_handle_mark(__pulse_request_headers_snapshot)
-  for (let i = 0; i < __pulse_handle_cache_roots.length; i++) __pulse_handle_mark(unchecked(__pulse_handle_cache_roots[i]))
+  __pulse_handle_provider_roots()
   const work = __pulse_handle_work!
   while (work.length > 0 && __pulse_fastly_last_error == 0) {
     const value = work.pop()
@@ -100,4 +124,4 @@ function __pulse_handle_checkpoint(): void {
 `;
 }
 
-module.exports = { fields, tableSource, validateRoots };
+module.exports = { fields, tableSource, validateRoots, providerRoots, providerSource };
