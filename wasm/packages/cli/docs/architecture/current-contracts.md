@@ -350,8 +350,8 @@ their source scope ends. Live snapshots, caches and unflattened rope graphs stil
 require storage; a long operation without a checkpoint can allocate substantially.
 Wasm memory need not shrink. This does not change cumulative budget accounting or
 qualify general reclamation for excluded runtimes. See the measured first slice
-and residuals in [MEM9-09](../internal/mem9-09/README.md) and the
-[frame/effect extension](../internal/mem9-09b/README.md).
+and residuals in [MEM9-09](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/mem9-09/README.md) and the
+[frame/effect extension](https://github.com/pulse-compute/pulse/blob/latest/docs/internal/mem9-09b/README.md).
 
 ## Native internal helper sharing
 
