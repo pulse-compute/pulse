@@ -93,9 +93,8 @@ replace or change the supported report viewer.
 
 Record initial load and interaction timings as local browser observations, not
 runtime performance. Keep the runnable private Catalog HTML outside this repo.
-VIS-02 should deepen the preferred interaction after visual review; full browser
-qualification, polished graph navigation and supported-viewer integration remain
-outside VIS-01.
+VIS-02 deepens routing-atlas navigation. Full browser qualification and
+supported-viewer integration remain outside these presentation experiments.
 
 An optional browser check uses a separately provisioned `playwright` installation:
 
@@ -108,3 +107,39 @@ It exercises mount expansion, table/graph selection, terminal controls, retained
 links, dependency explanations and pagination, keyboard activation, zoom, empty
 search, exact JSON export, and narrow-screen containment. It rejects page/CSP
 errors and HTTP requests. This smoke is not cross-browser qualification.
+
+## VIS-02: focused atlas navigation
+
+The atlas is the primary direction for this iteration. Execution lanes and the
+dependency lens remain available against the same capsule and selected record.
+
+- **Focus subrouter** isolates one mount instance and its descendants. The table
+  follows that exact scope. Breadcrumbs return to enclosing mounts or the whole
+  application. Selecting a record outside the current scope restores application
+  context; sharing a definition never pulls another mount instance into scope.
+  Bright curves highlight the selected mount ancestry, not an execution trace.
+- **Open one level** expands the shallowest collapsed mounts. Search temporarily
+  reveals matching ancestry within the current scope without changing saved
+  expansion state. Expansion controls are disabled while searching. Clearing the
+  query restores that state. The graph reports visible nodes separately from all
+  scoped registrations; a mount's contained count excludes the mount itself.
+- **Pan and zoom** use drag on empty canvas, native touch scrolling, zoom buttons,
+  and Ctrl/Command + wheel anchored at the pointer. **Fit** frames visible nodes;
+  **Center selection** reveals a selected registration hidden by collapsed nodes.
+  Overview size does not represent traffic, invocation counts or physical bytes.
+- **Minimap** shows the current graph and viewport. Click to reposition; when it
+  has keyboard focus, arrows pan and Home fits the graph.
+- **Keyboard selection** uses Up/Down for visible registration order, Right to
+  expand or enter a mount, Left to collapse or return to its parent, and Home/End
+  for the first/last visible registration. Enter/Space activate nodes. Focus
+  survives graph redraws and the selected node is scrolled into view.
+- **Previous/next selection** retains up to 100 registration selections without
+  touching the capsule. A new selection discards the forward selection history.
+  This history is session-local; it does not represent execution history.
+
+The optional browser smoke also runs `check-report-graph-navigation.cjs` against
+an actual capsule. It checks scope/table agreement, keyboard traversal and focus,
+selection history, fit, drag, anchored wheel zoom, minimap movement and centering.
+No compiler rerun is needed: compare VIS-01 and VIS-02 with the same retained
+Catalog capture. This remains a standalone experiment; production report
+integration and broad browser/device qualification are future work.

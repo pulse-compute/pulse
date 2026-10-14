@@ -22,10 +22,12 @@ async function main() {
       assert.equal(await page.locator('#rows tr').count(), model.registrations.length);
       const mount = model.registrations.find(r => model.children.has(r.id) && !r.mountPath.length);
       if (mount) { const before = await page.locator('.node').count(); await page.getByRole('button', { name: 'Expand ' + model.label(mount), exact: true }).click(); assert.ok(await page.locator('.node').count() > before); }
+      if (await page.locator('#fit-graph').count()) await require('./check-report-graph-navigation.cjs')(page, model);
       const target = model.registrations.find(r => r.kind === 'route' && r.control?.value?.terminal) || model.registrations[0];
       await page.locator('#search').fill(target.id);
       assert.equal(await page.locator('#rows tr').count(), 1);
       await page.locator('#rows button').first().click();
+      if (await page.locator('#fit-graph').count()) assert.equal(await page.locator('.wire.selected-path').count(), target.mountPath.length + 1, 'highlight shows exact selected mount ancestry');
       assert.ok((await page.locator('#details').textContent()).includes(model.label(target)));
       await page.locator('#search').fill('');
       await page.locator('[data-view="lanes"]').click();
@@ -39,6 +41,11 @@ async function main() {
           await page.getByLabel('Inspect', { exact: true }).selectOption(key);
           const d = model.dependency(key), consumer = d.consumers[0];
           await page.locator('.node').filter({ hasText: '#' + model.byId.get(consumer).order + ' ' }).first().click();
+          if (await page.locator('#selection-back').count() && consumer !== target.id) {
+            await page.locator('#selection-back').click();
+            assert.ok((await page.locator('#details').textContent()).includes(model.label(target)), 'dependency selection participates in history');
+            await page.locator('#selection-forward').click();
+          }
           assert.equal(await page.getByLabel('Explanation', { exact: true }).count(), 1);
           const selected = await page.getByLabel('Explanation', { exact: true }).inputValue(), row = model.associations.find(a => a.id === selected);
           assert.equal(await page.locator('.hops button').count(), row.via.length);

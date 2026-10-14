@@ -4,19 +4,65 @@
   const $ = id => document.getElementById(id);
   const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
   const button = (text, action, cls) => { const e = el('button', cls, text); e.type = 'button'; e.addEventListener('click', action); return e; };
-  const state = { view: 'atlas', selected: m.registrations[0]?.id, open: new Set(), query: '', zoom: 1, key: [...m.groups.keys()].find(k => k.startsWith('binding:')) || [...m.groups.keys()][0], owner: null, ownerPage: 0, consumerPage: 0, association: null };
+  const state = { view: 'atlas', scope: null, selected: m.registrations[0]?.id, open: new Set(), query: '', zoom: 1, key: [...m.groups.keys()].find(k => k.startsWith('binding:')) || [...m.groups.keys()][0], owner: null, ownerPage: 0, consumerPage: 0, association: null };
+  const history = { ids: state.selected ? [state.selected] : [], position: 0 };
+  let atlasNodes = [];
+  const camera = PulseGraphCamera({ viewport: $('viewport'), graph: $('graph'), overview: $('minimap'), zoomLabel: $('zoom-reset'), onZoom: value => { state.zoom = value; } });
   const descriptions = {
-    atlas: ['The shape of your application', 'Expand a mount to reveal its registrations. Solid curves show containment; vertical position follows registration order.'],
+    atlas: ['The shape of your application', 'Focus a subrouter, expand its structure, and follow a registration back to the execution table. Curves show containment.'],
     lanes: ['One registration. Every retained link.', 'Next candidate is dispatch order, not proof of continuation. Child and parent-return links keep mount boundaries visible.'],
     dependencies: ['Why is this capability here?', 'Start with a binding or capability. Separate authored ownership from retained contextual consumers.']
   };
   const short = value => value?.slice(0, 18) || 'Not recorded';
-  function choose(id, scroll = true) {
+  function rememberSelection(id) {
+    if (history.ids[history.position] === id) return;
+    history.ids.splice(history.position + 1); history.ids.push(id);
+    if (history.ids.length > 100) history.ids.shift(); history.position = history.ids.length - 1;
+  }
+  function inScope(r) { return !state.scope || r.id === state.scope || r.mountPath.includes(state.scope); }
+  function choose(id, scroll = true, remember = true) {
     if (!m.byId.has(id)) return;
     state.selected = id;
-    m.byId.get(id).mountPath.forEach(mount => state.open.add(mount));
+    const r = m.byId.get(id);
+    if (!inScope(r)) state.scope = null;
+    r.mountPath.forEach(mount => state.open.add(mount));
+    if (remember) rememberSelection(id);
     render();
     if (scroll) { const row = $('rows').querySelector('.active'), parent = row?.closest('.table-scroll'); if (row && parent) parent.scrollTop = row.offsetTop - parent.querySelector('thead').offsetHeight; }
+  }
+  function focusNode(id) {
+    requestAnimationFrame(() => { const node = [...$('graph').querySelectorAll('[data-registration]')].find(n => n.dataset.registration === id); if (node) { camera.reveal(node); node.focus({ preventScroll: true }); } });
+  }
+  function focusMount(id) {
+    state.scope = id && m.byId.get(id)?.kind === 'mount' ? id : null;
+    state.view = 'atlas'; state.query = ''; $('search').value = '';
+    state.open.clear(); if (state.scope) state.open.add(state.scope);
+    if (state.scope && (!m.byId.has(state.selected) || !inScope(m.byId.get(state.selected)))) { state.selected = state.scope; rememberSelection(state.selected); }
+    if (state.selected) m.byId.get(state.selected).mountPath.forEach(mount => state.open.add(mount));
+    render(); requestAnimationFrame(() => { camera.setZoom(1); camera.reveal($('graph').querySelector('.node.selected')); ($('breadcrumbs').querySelector('[aria-current]') || $('breadcrumbs').querySelector('button')).focus({ preventScroll: true }); });
+  }
+  function toggleMount(r) {
+    if (state.open.has(r.id)) state.open.delete(r.id); else state.open.add(r.id);
+    render(); focusNode(r.id);
+  }
+  function navigateAtlas(event, r) {
+    if (state.view !== 'atlas') return;
+    const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (!keys.includes(event.key)) return;
+    event.preventDefault(); const at = atlasNodes.findIndex(n => n.id === r.id); let target;
+    if (event.key === 'ArrowUp') target = atlasNodes[at - 1];
+    if (event.key === 'ArrowDown') target = atlasNodes[at + 1];
+    if (event.key === 'Home') target = atlasNodes[0];
+    if (event.key === 'End') target = atlasNodes.at(-1);
+    if (event.key === 'ArrowRight') {
+      if (m.children.has(r.id) && !state.query && !state.open.has(r.id) && state.scope !== r.id) { toggleMount(r); return; }
+      target = (m.children.get(r.id) || []).find(child => atlasNodes.some(n => n.id === child.id));
+    }
+    if (event.key === 'ArrowLeft') {
+      if (!state.query && state.open.has(r.id) && state.scope !== r.id) { toggleMount(r); return; }
+      target = m.byId.get(r.mountPath.at(-1));
+    }
+    if (target) { choose(target.id); focusNode(target.id); }
   }
   function title(r) { return '#' + r.order + ' ' + m.label(r); }
   function sourceText(source) {
@@ -37,7 +83,8 @@
     $('graph').append(b); return b;
   }
   function registrationNode(r, x, y) {
-    return node({ x, y, name: title(r), meta: m.match(r), tag: r.kind, kind: r.kind, selected: r.id === state.selected, id: r.id, action: () => choose(r.id) });
+    const b = node({ x, y, name: title(r), meta: m.match(r), tag: r.kind, kind: r.kind, selected: r.id === state.selected, id: r.id, action: () => { choose(r.id); focusNode(r.id); } });
+    b.addEventListener('keydown', event => navigateAtlas(event, r)); return b;
   }
   let svg;
   function begin(width, height) {
@@ -56,33 +103,41 @@
   function column(text, x, y = 16) { const e = el('div', 'column-label', text); e.style.left = x + 'px'; e.style.top = y + 'px'; $('graph').append(e); }
   function legend(labels) { $('legend').replaceChildren(...labels.map(text => el('span', '', text))); }
   function atlas() {
-    $('view-controls').append(button('Collapse mounts', () => { state.open.clear(); render(); }), el('span', 'hint', 'Select a node for evidence · + opens a mount · scroll to explore'));
-    const included = new Set(), opened = new Set(state.open);
-    if (state.query) for (const r of m.registrations) if (m.search(r, state.query)) { included.add(r.id); r.mountPath.forEach(id => { included.add(id); opened.add(id); }); }
-    let leaf = 0, maxDepth = 0; const placements = [], edges = [];
-    function visit(r, depth) {
-      maxDepth = Math.max(maxDepth, depth);
-      const kids = (m.children.get(r?.id || null) || []).filter(child => !state.query || included.has(child.id));
-      const expanded = !r || opened.has(r.id);
-      const childPoints = expanded ? kids.map(child => visit(child, depth + 1)) : [];
-      const y = childPoints.length ? (childPoints[0].y + childPoints.at(-1).y) / 2 : 45 + leaf++ * 78;
-      const point = { r, x: 30 + depth * 290, y, kids, expanded };
-      placements.push(point); childPoints.forEach(child => edges.push([point, child])); return point;
-    }
-    visit(null, 0);
-    begin(Math.max(860, (maxDepth + 1) * 290 + 20), Math.max(300, leaf * 78 + 85));
-    edges.forEach(([a, b]) => wire({ x: a.x + 220, y: a.y + 29 }, { x: b.x, y: b.y + 29 }, 'child'));
+    const layout = PulseGraph.atlasLayout(m, { scope: state.scope, open: state.open, query: state.query });
+    const { placements, edges } = layout;
+    atlasNodes = placements.filter(p => p.r).map(p => p.r).sort((a, b) => a.order - b.order);
+    const selected = m.byId.get(state.selected), branch = selected?.kind === 'mount' ? selected.id : selected?.mountPath.at(-1);
+    const focus = button('Focus subrouter', () => focusMount(branch)); focus.id = 'focus-branch'; focus.disabled = !branch || branch === state.scope;
+    const expand = button('Open one level', () => {
+      const closed = placements.filter(p => p.r && p.kids.length && !p.expanded), depth = Math.min(...closed.map(p => p.depth));
+      closed.filter(p => p.depth === depth).forEach(p => state.open.add(p.r.id)); render();
+    }); expand.id = 'expand-level'; expand.disabled = !!state.query || !placements.some(p => p.r && p.kids.length && !p.expanded);
+    const collapse = button('Collapse mounts', () => { state.open.clear(); render(); }); collapse.disabled = !!state.query;
+    $('view-controls').append(focus, expand, collapse, el('span', 'hint', state.query ? layout.matches.length + ' matches in this scope' : 'Select for evidence · + expands a mount'));
+    begin(layout.width, layout.height);
+    const ancestry = new Set([state.selected, ...(selected?.mountPath || [])]);
+    edges.forEach(([a, b]) => wire({ x: a.x + 220, y: a.y + 29 }, { x: b.x, y: b.y + 29 }, 'child' + (ancestry.has(b.r?.id) ? ' selected-path' : '')));
     for (const p of placements) {
-      if (!p.r) { node({ x: p.x, y: p.y, name: capsule.application.name, meta: 'Application · root registrations', kind: 'root', tag: 'ROOT', action: () => { state.open.clear(); render(); } }); continue; }
+      if (!p.r) { node({ x: p.x, y: p.y, name: capsule.application.name, meta: 'Application · root registrations', kind: 'root', tag: 'ROOT', action: () => focusMount(null) }); continue; }
       const b = registrationNode(p.r, p.x, p.y);
+      if (p.r.id !== state.selected && ancestry.has(p.r.id)) b.classList.add('ancestor');
+      b.setAttribute('aria-pressed', String(p.r.id === state.selected));
       if (state.query && !m.search(p.r, state.query)) b.classList.add('dim');
-      if (p.kids.length) {
-        const expand = button(p.expanded ? '−' : '+', () => { if (state.open.has(p.r.id)) state.open.delete(p.r.id); else state.open.add(p.r.id); render(); }, 'expand');
-        expand.style.left = p.x + 208 + 'px'; expand.style.top = p.y + 46 + 'px'; expand.setAttribute('aria-label', (p.expanded ? 'Collapse ' : 'Expand ') + m.label(p.r)); expand.setAttribute('aria-expanded', String(p.expanded)); $('graph').append(expand);
+      if (p.r.kind === 'mount') {
+        b.setAttribute('aria-expanded', String(p.expanded));
+        const count = m.registrations.filter(r => r.mountPath.includes(p.r.id)).length;
+        b.append(el('span', 'node-count', count + ' contained registrations'));
+      }
+      if (p.kids.length && p.r.id !== state.scope) {
+        const expand = button(p.expanded ? '−' : '+', () => toggleMount(p.r), 'expand');
+        expand.style.left = p.x + 208 + 'px'; expand.style.top = p.y + 46 + 'px'; expand.setAttribute('aria-label', (p.expanded ? 'Collapse ' : 'Expand ') + m.label(p.r)); expand.setAttribute('aria-expanded', String(p.expanded)); expand.disabled = !!state.query; $('graph').append(expand);
       }
     }
-    if (state.query && !included.size) $('graph').append(el('p', 'empty', 'No registrations match this search.'));
-    legend(['Route / method registration', 'Middleware', 'Mount containment · expand each instance']);
+    const nodes = [...$('graph').querySelectorAll('[data-registration]')], tabstop = nodes.find(n => n.dataset.registration === state.selected) || nodes[0];
+    nodes.forEach(n => { n.tabIndex = n === tabstop ? 0 : -1; });
+    if (state.query && !layout.matches.length) $('graph').append(el('p', 'empty', 'No registrations match this search in the current scope. Clear search or return to Application.'));
+    $('scope-status').textContent = atlasNodes.length + ' nodes shown · ' + m.registrations.filter(inScope).length + ' registrations in scope';
+    legend(['Route / method registration', 'Middleware', 'Mount containment · bright path = selected ancestry']);
   }
   function lanes() {
     const focus = m.byId.get(state.selected); if (!focus) return empty('Select a registration in the table.');
@@ -145,7 +200,7 @@
     consumers.forEach((id, i) => { const r = m.byId.get(id), y = 60 + i * 80, rows = focused.rows.filter(a => a.consumerRegistrationId === id);
       const linked = new Set(rows.map(a => m.useById.get(a.useSiteId).ownerId));
       for (const owner of linked) if (ownerPoints.has(owner)) wire({ x: 560, y: ownerPoints.get(owner) + 29 }, { x: 650, y: y + 29 }, 'association');
-      node({ x: 650, y, name: title(r), meta: m.match(r), tag: rows.length + ' links', kind: r.kind, selected: r.id === state.selected, action: () => { state.selected = id; state.association = rows[0]?.id; render(); } });
+      node({ x: 650, y, name: title(r), meta: m.match(r), tag: rows.length + ' links', kind: r.kind, selected: r.id === state.selected, id, action: () => { state.association = rows[0]?.id; choose(id); } });
     });
     if (!consumers.length) { const e = el('p', 'empty', 'No contextual consumers retained for this selection. Missing associations do not prove absence of use.'); e.style.position = 'absolute'; e.style.left = '625px'; e.style.top = '65px'; e.style.width = '280px'; $('graph').append(e); }
     const rows = focused.rows.filter(a => a.consumerRegistrationId === state.selected);
@@ -177,35 +232,43 @@
     evidence.append(el('h3', '', 'Mount ancestry'));
     if (!r.mountPath.length) evidence.append(el('p', 'source', 'Application root'));
     r.mountPath.forEach(id => evidence.append(button('↗ ' + title(m.byId.get(id)), () => choose(id), 'link')));
+    const branch = r.kind === 'mount' ? r.id : r.mountPath.at(-1);
+    if (branch) evidence.append(button(r.kind === 'mount' ? 'Focus this subrouter →' : 'Focus owning subrouter →', () => focusMount(branch), 'link'));
     evidence.append(button('Follow retained links →', () => { state.view = 'lanes'; render(); }, 'link'));
     const raw = el('details'); raw.append(el('summary', '', 'Identity, spans & retained facts'), el('pre', '', JSON.stringify({ registration: r, definition: h || null }, null, 2)));
     evidence.append(raw); panel.append(intro, evidence);
   }
   function table() {
-    const rows = m.registrations.filter(r => m.search(r, state.query)); $('table-count').textContent = rows.length + ' / ' + m.registrations.length + ' observed'; $('rows').replaceChildren();
+    const rows = m.registrations.filter(r => m.search(r, state.query) && (state.view !== 'atlas' || inScope(r))); $('table-count').textContent = rows.length + ' / ' + m.registrations.length + ' observed'; $('rows').replaceChildren();
     for (const r of rows) {
       const row = el('tr', r.id === state.selected ? 'active' : ''); const h = m.definitions.get(r.handlerId), name = el('td');
-      name.append(button(m.label(r), () => choose(r.id, false)), el('small', '', r.kind));
+      const select = button(m.label(r), () => { choose(r.id, false); requestAnimationFrame(() => { const b = [...$('rows').querySelectorAll('[data-table-registration]')].find(n => n.dataset.tableRegistration === r.id); b?.focus({ preventScroll: true }); }); });
+      select.dataset.tableRegistration = r.id; name.append(select, el('small', '', r.kind));
       row.append(el('td', '', '#' + r.order), name, el('td', '', m.match(r)), el('td', 'source', h ? h.name + ' · ' + sourceText(h.source) : sourceText(r.source)), el('td', '', controlText(r))); $('rows').append(row);
     }
     if (!rows.length) { const row = el('tr'), cell = el('td', '', m.a ? 'No registrations match this search.' : 'Registration analytics not recorded in this snapshot.'); cell.colSpan = 5; row.append(cell); $('rows').append(row); }
   }
-  function zoom(delta) { state.zoom = delta === null ? 1 : Math.max(.5, Math.min(1.6, state.zoom + delta)); $('graph').style.zoom = state.zoom; $('zoom-reset').textContent = Math.round(state.zoom * 100) + '%'; }
-  function revealSelection() {
-    const viewport = $('viewport'), selected = $('graph').querySelector('.node.selected');
-    if (!selected) return;
-    const x = selected.offsetLeft * state.zoom, y = selected.offsetTop * state.zoom, width = selected.offsetWidth * state.zoom, height = selected.offsetHeight * state.zoom;
-    if (x < viewport.scrollLeft || x + width > viewport.scrollLeft + viewport.clientWidth) viewport.scrollLeft = Math.max(0, x - (viewport.clientWidth - width) / 2);
-    if (y < viewport.scrollTop || y + height > viewport.scrollTop + viewport.clientHeight) viewport.scrollTop = Math.max(0, y - (viewport.clientHeight - height) / 2);
-  }
+  function zoom(delta) { camera.setZoom(delta === null ? 1 : state.zoom + delta); }
+  function selectedRegistrationNode() { return [...$('graph').querySelectorAll('[data-registration]')].find(n => n.dataset.registration === state.selected); }
+  function revealSelection() { camera.reveal(selectedRegistrationNode() || $('graph').querySelector('.node.selected')); }
   window.addEventListener('resize', () => requestAnimationFrame(revealSelection));
+  function navigation() {
+    $('selection-back').disabled = history.position <= 0;
+    $('selection-forward').disabled = history.position >= history.ids.length - 1;
+    const crumbs = $('breadcrumbs'); crumbs.replaceChildren(button('Application', () => focusMount(null)));
+    if (state.scope) for (const id of [...m.byId.get(state.scope).mountPath, state.scope]) {
+      crumbs.append(el('span', '', '/')); const b = button(m.label(m.byId.get(id)), () => focusMount(id));
+      if (id === state.scope) b.setAttribute('aria-current', 'location'); crumbs.append(b);
+    }
+    $('scope-status').textContent = state.view === 'atlas' ? '' : 'Selection stays linked across views';
+  }
   function render() {
     document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === state.view)));
     $('view-title').textContent = descriptions[state.view][0]; $('view-description').textContent = descriptions[state.view][1];
-    $('view-controls').replaceChildren(); $('explanation').replaceChildren(); $('legend').replaceChildren();
+    $('view-controls').replaceChildren(); $('explanation').replaceChildren(); $('legend').replaceChildren(); navigation();
     if (!m.a) empty('This historical capsule has no handler analytics. Topology and dependencies are not recorded; they are not empty or zero.');
     else ({ atlas, lanes, dependencies })[state.view]();
-    details(); table(); zoom(0); requestAnimationFrame(revealSelection);
+    details(); table(); camera.refresh(); requestAnimationFrame(revealSelection);
   }
   $('title').textContent = capsule.application.name + ' / Execution atlas';
   const stats = [['routes', capsule.routes.length], ['registrations', m.a ? m.registrations.length : '—'], ['definitions', m.a ? m.handlers.length : '—'], ['mounts', m.a ? m.registrations.filter(r => r.kind === 'mount').length : '—']];
@@ -216,6 +279,15 @@
   $('provenance').append(grid, el('p', '', 'Capsule hash: ' + capsule.evidenceHash.value), el('p', '', 'Artifact: ' + capsule.context.primaryArtifactId), el('p', '', 'Toolchain and recipe: ' + JSON.stringify(capsule.provenance.recipe)));
   document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { state.view = b.dataset.view; render(); }));
   $('search').addEventListener('input', () => { state.query = $('search').value.trim(); render(); });
+  $('selection-back').addEventListener('click', () => { if (history.position > 0) { state.query = ''; $('search').value = ''; choose(history.ids[--history.position], true, false); } });
+  $('selection-forward').addEventListener('click', () => { if (history.position < history.ids.length - 1) { state.query = ''; $('search').value = ''; choose(history.ids[++history.position], true, false); } });
+  $('fit-graph').addEventListener('click', () => camera.fit());
+  $('center-selection').addEventListener('click', () => {
+    if (!state.selected) return;
+    state.query = ''; $('search').value = '';
+    if (!selectedRegistrationNode()) state.view = 'atlas';
+    choose(state.selected); requestAnimationFrame(() => camera.center(selectedRegistrationNode()));
+  });
   $('zoom-in').addEventListener('click', () => zoom(.1)); $('zoom-out').addEventListener('click', () => zoom(-.1)); $('zoom-reset').addEventListener('click', () => zoom(null));
   $('export').addEventListener('click', () => { const blob = new Blob([JSON.stringify(capsule)], { type: 'application/json' }), url = URL.createObjectURL(blob), a = el('a'); a.href = url; a.download = 'pulse-report-evidence.json'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); });
   render();
