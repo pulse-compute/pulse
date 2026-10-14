@@ -1265,6 +1265,10 @@ const tasks = Object.freeze({
     isolatedArtifacts: true,
     description: 'repository-bound guest-unit contracts, ownership, and pipeline design'
   }),
+  'fastly-stdio-installed': nodeTask('test/provider/assert-fastly-stdio-installed.cjs', {
+    evidence: 'external', timeoutMs: 600000,
+    description: 'exact installed Native stdout, strict ABI failures and real Viceroy delivery'
+  }),
   'provider-fastly-compute-reality': nodeTask('test/provider/assert-fastly-compute-reality.cjs', {
     evidence: 'external',
     timeoutMs: 300000,

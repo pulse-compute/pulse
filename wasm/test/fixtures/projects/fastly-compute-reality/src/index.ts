@@ -7,6 +7,7 @@ export default async function handler(ctx: PulseContext): Promise<PulseResult> {
     const input = await ctx.req.json<RealityInput>('reality.Input');
     const apiBase = await ctx.config.get('API_BASE');
     const token = await ctx.secret.get('API_TOKEN');
+    ctx.log.info('reality.arrival token=' + token);
     await ctx.kv<string>('state').put('last-name', input.name);
     const stored = await ctx.kv<string>('state').get('last-name');
     const origin = await ctx.fetch(`${apiBase}/origin/user`, {
@@ -23,6 +24,7 @@ export default async function handler(ctx: PulseContext): Promise<PulseResult> {
       stored,
       authSeen: origin.authSeen
     };
+    ctx.log.warn('reality.outcome authenticated');
     return ctx.json(output, {
       status: 201,
       schema: 'reality.Output',

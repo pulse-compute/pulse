@@ -729,10 +729,10 @@ async function buildFourModeProof() {
     nativePrepared.plan,
     { cwd: repoRoot, bindings }
   );
-  assert.equal(targetCompiled.inspection.importModules.includes('fastly_log'), true);
+  assert.equal(targetCompiled.inspection.importModules.includes('fastly_log'), false);
   assert.equal(targetCompiled.inspection.importModules.some((name) => /pulse_host|js/i.test(name)), false);
-  assert.deepEqual(targetCompiled.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`),
-    ['wasi_snapshot_preview1:clock_time_get'], 'only the fetch deadline clock is permitted');
+  assert.deepEqual(targetCompiled.inspection.imports.filter(entry => /wasi/i.test(entry.module)).map(entry => `${entry.module}:${entry.name}`).sort(),
+    ['wasi_snapshot_preview1:clock_time_get', 'wasi_snapshot_preview1:fd_write'], 'only the deadline clock and stdout writer are permitted');
   const targetExecutions = [];
   for (const [index, testCase] of projects['node-native'].tests.entries()) {
     const result = assertTargetExecution(targetCompiled, testCase, cases[index].comparable, bindings);
