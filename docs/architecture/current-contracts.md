@@ -1552,6 +1552,18 @@ registration details retain ordered mount instances, router paths, continuation
 links and contextual associations, including middleware and error explanations.
 Synthetic mounts remain registration records without invented handler definitions.
 
+AN9-08 retains the first nonempty compiler handler name in `localName`,
+`exportName`, `inlineName` order. Linked helpers keep their original source name;
+import aliases and internal linker symbols do not replace a declaration's local
+name. Inline names can be compiler-generated context labels, not authored function
+names. The existing capsule `name` field carries the selected value through
+completion, passive replay and comparison without a schema change. Missing names
+remain null; readers do not reconstruct them from source or generated code.
+The viewer leads with the retained name, shows source/kind separately, and includes
+the name in registration links. Duplicate names remain separate definitions with
+separate source locations and navigation targets. Names never establish identity
+or comparison matches, and this display policy does not change executable output.
+
 Use-site details show the authored owner, canonical operation/capability, binding
 resolution state, logical binding and reference identity, and contextual consumers.
 Source displays retain the file, exact range and hash; unavailable source is never

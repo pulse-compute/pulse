@@ -105,7 +105,7 @@ function labeler(c) {
   const registrations=new Map(rows(c,'registrations').map(row=>[row.id,row]));
   const sites=new Map(rows(c,'useSites').map(row=>[row.id,row]));
   const definition=id=>definitions.get(id)?.name || definitions.get(id)?.kind || 'Unknown definition';
-  const registration=row=>[row.kind,row.match.value?.method,row.match.value?.path,row.match.value?.eventType].filter(Boolean).join(' ');
+  const registration=row=>[row.handlerId ? definition(row.handlerId) : null,row.kind,row.match.value?.method,row.match.value?.path,row.match.value?.eventType].filter(Boolean).join(' ');
   return (name,row)=>name==='handlers' ? row.name || row.kind
     : name==='registrations' ? registration(row)
       : name==='useSites' ? definition(row.ownerId)+' · '+row.surfaceId

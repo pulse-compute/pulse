@@ -18,6 +18,8 @@ module.exports = function assertIntegration(value, baseline = value) {
   const payload = html.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1];
   assert.equal(serializeCapsule(parseCapsule(payload)), saved, 'HTML retains the exact validated capsule');
   const reused = value.analytics.handlers.find(h => h.name === 'reused');
+  assert.ok(value.analytics.handlers.every(h => h.name), 'retained local/helper/inline names survive every recipe and replay');
+  for (const handler of value.analytics.handlers) assert.equal(model.definitionLabel(handler), handler.name);
   assert.equal(model.definitionRegistrations(reused.id).length, 2);
   assert.equal(model.definitionSites(reused.id).filter(s => s.surfaceId === 'ctx.config.get').length, 3);
   const scoped = value.analytics.handlers.find(h => h.name === 'scopedMiddleware');

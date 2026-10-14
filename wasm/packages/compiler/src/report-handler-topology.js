@@ -40,7 +40,7 @@ function collectHandlerTopology(compiled) {
       : { state: 'not-applicable', value: null, reason: 'not-applicable' };
   }
   const handlers = topology.handlerTable.handlers.map(handler => ({
-    id: handler.id, kind: 'handler', name: handler.localName || null,
+    id: handler.id, kind: 'handler', name: handler.localName || handler.exportName || handler.inlineName || null,
     source: location(handler.loc), package: packageFor(handler.file),
     evidence: [{ basis: 'handler-table', producer: 'canonical-router-handler-table' }]
   }));

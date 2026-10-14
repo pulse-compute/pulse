@@ -32,8 +32,8 @@ function createReportViewModel(P) {
   const authoredSource = fact => fact?.state === 'available'
     ? `${fact.value.file}:${fact.value.start.line}:${fact.value.start.column}–${fact.value.end.line}:${fact.value.end.column} · UTF-16 [${fact.value.start.offset}, ${fact.value.end.offset}) · SHA-256 ${fact.value.sha256}`
     : authoredFact(fact);
-  const definitionLabel = row => row ? `${row.name ?? 'Anonymous '+row.kind} · ${row.kind} ${definitionIndex.get(row.id)+1}` : 'Definition unavailable';
-  const registrationLabel = row => row ? `${row.kind} ${row.order+1} · ${row.match.state === 'available' ? [row.match.value.method,row.match.value.path,row.match.value.eventType].filter(Boolean).join(' ') || 'No match constraint' : authoredFact(row.match)}` : 'Registration unavailable';
+  const definitionLabel = row => row ? row.name || `Anonymous ${row.kind} ${definitionIndex.get(row.id)+1}` : 'Definition unavailable';
+  const registrationLabel = row => row ? `${row.handlerId ? definitionLabel(definitionById.get(row.handlerId))+' · ' : ''}${row.kind} ${row.order+1} · ${row.match.state === 'available' ? [row.match.value.method,row.match.value.path,row.match.value.eventType].filter(Boolean).join(' ') || 'No match constraint' : authoredFact(row.match)}` : 'Registration unavailable';
   function filteredDefinitions() {
     return definitions.filter(row => (state.definitionKind === 'all' || row.kind === state.definitionKind)
       && (state.definitionRole === 'all' || definitionRegistrations(row.id).some(r => r.kind === state.definitionRole))

@@ -219,6 +219,7 @@ async function main() {
   const directory = fs.mkdtempSync(path.join(root, 'wasm/.test-results/report-analytics-'));
   const cells = [];
   try {
+    require('./report-handler-name-cases.cjs')(directory);
     // Planning/observation covers imported declarations plus both entry lanes;
     // combined error/event Native generation is isolated in issue #329.
     setup(directory);
@@ -228,6 +229,7 @@ async function main() {
     assert.equal(collectHandlerTopology({ ...compiled, router: { ...compiled.router } }), undefined,
       'deserialized/foreign compiler objects cannot acquire source evidence');
     const projected = projectHandlerTopology(projection.topology);
+    assert.ok(projected.handlers.every(h => h.name), 'fixture local, imported, helper and inline names are retained');
     assert.equal(projected.handlers.length, 13); assert.equal(projected.registrations.length, 18);
     const imported = projected.handlers.find(h => h.name === 'packageHandler');
     assert.equal(imported.package.value.name, '@fixture/analytics');
@@ -361,7 +363,7 @@ export default app;
     const standalone = report(project, execution.compileNativeProjectInMemory(project, { emitWat: false }));
     assert.equal(standalone.analytics.coverage.handlers.status, 'unavailable', 'no router producer is not a known-empty handler universe');
     console.log(JSON.stringify({ status: 'passed', cells, negativeCases: negative, importedSpans: true,
-      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true, importedSourceReplay: true }));
+      nestedMounts: true, oldCapsulesUnchanged: true, authoredUseSites: true, validatedHelperCalls: true, contextualAssociations: true, importedSourceReplay: true, handlerNames: true }));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });
