@@ -1,0 +1,252 @@
+{
+  "schemaVersion": "pulse.mem9-07.development-checks.v1",
+  "recordedAt": "2026-10-14",
+  "pullRequest": 350,
+  "targetBranch": "codex/mem9-integration",
+  "classification": "focused development evidence; not full compliance or a release checkpoint",
+  "source": {
+    "localCommit": "e9a8e4ab560de9307800f6eb6e0e04c8e4f180dc",
+    "publishedImplementationCommit": "87f5f5aa8bfba2adbe8fa985ccfe820e88ba9c16",
+    "tree": "5881f767738fe29d9e05071ab21959b3223d386e",
+    "cleanBefore": true,
+    "cleanAfterCleanup": true,
+    "cleanupNote": "One untracked generated bounded-read-loop fixture remained after testing; retained outside the checkout. Tracked source stayed unchanged.",
+    "note": "Published implementation tree verified identical; commit metadata differs. This receipt is added after validation."
+  },
+  "focused": {
+    "status": "passed",
+    "startedAt": "2026-10-14T17:21:37.568Z",
+    "finishedAt": "2026-10-14T17:25:36.466Z",
+    "durationMs": 238898,
+    "requestedTasks": [
+      "fastly-numeric-budgets",
+      "fastly-numeric-regions",
+      "canonical-native-wasm",
+      "bounded-read-loops",
+      "bounded-loop-helpers",
+      "request-budget-transport",
+      "boundaries",
+      "hidden-contracts"
+    ],
+    "selectedTasks": [
+      "fastly-numeric-budgets",
+      "fastly-numeric-regions",
+      "canonical-native-wasm",
+      "bounded-read-loops",
+      "bounded-loop-helpers",
+      "request-budget-transport",
+      "boundaries",
+      "hidden-contracts"
+    ],
+    "completedTasks": 8,
+    "reportSha256": "283ff0a489489be0cf02e7a386bcddb1790f35430b8460606bee1b1db143c5cd",
+    "logSha256": "5d98b2dcdf4fac3aa4fedf48f4c40637b78105f728666d6174db38a604121452",
+    "results": [
+      {
+        "name": "fastly-numeric-budgets",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 45466,
+        "commandSignature": "7df8bf400a5ca2fe2a62daf54144101871e10ed0bcf88a1bb877c0688e82efd2",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "bfceffe27cc587421f9a355fd86606d06cc188fa9ac1828eec9f08d3fb929d61"
+      },
+      {
+        "name": "fastly-numeric-regions",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 64257,
+        "commandSignature": "f33bd05b79ebcf5305c6ab37607741620e71294db0ef1fc94fa4b3353d5a429c",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "a225012aeec89ac8a4598211121cc5b853c0b578faf0ccc86062506636d7c22b"
+      },
+      {
+        "name": "canonical-native-wasm",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 67513,
+        "commandSignature": "7d1211aa0b67e2c1ac612add1df627477bf2ebdfb119ca4dc5846e7aa60348c7",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "491fe0c3a064c5586981e37ecb4a6d5df639f2bae9f2b42f64142087d7f0e67a"
+      },
+      {
+        "name": "bounded-read-loops",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 47236,
+        "commandSignature": "5cf9e057033658120b33b1ebcc97faa5d00bfe88aa6df2676cd33ef123ae3a68",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "e5ea730a1b50334f6cb7f17c48c495377a660937ed15283077cb873efe565c5e"
+      },
+      {
+        "name": "bounded-loop-helpers",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 5466,
+        "commandSignature": "9af70caf1e96247a94aee9d08fb78f6177e5ca0472115c9426e9ad89eadc53f5",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "4dbccbfb3e1633b6a5fb09ed3ec11bf14d5da6c14b643b19e5845f9aee239931"
+      },
+      {
+        "name": "request-budget-transport",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 8189,
+        "commandSignature": "088a3dcb15fa86ec060c68b149fa68025d6d6ae3e85c0c9a5d0f5bcda95777c7",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "2e61c66d8f8ff1732817d78a95964f4152868ca11a50d4b08c4cbb3ba6e171fc"
+      },
+      {
+        "name": "boundaries",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 396,
+        "commandSignature": "075c39e5f43c423b439055cbd24f8d60902aa85f20ab43592386c30a8a4ec8b4",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+      },
+      {
+        "name": "hidden-contracts",
+        "status": "passed",
+        "exitCode": 0,
+        "durationMs": 357,
+        "commandSignature": "81404c7b514944f45bfc7493b8e94b166d4da53c16a25f4725d3f7f04c7a45f0",
+        "cleanup": {
+          "status": "passed"
+        },
+        "logSha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+      }
+    ]
+  },
+  "measurements": {
+    "task": "MEM9-07",
+    "status": "passed",
+    "providerReality": false,
+    "rows": [
+      {
+        "schema": false,
+        "values": 677,
+        "bytes": 25098,
+        "boxedHandles": 586,
+        "numericHandles": 193
+      },
+      {
+        "schema": true,
+        "values": 688,
+        "bytes": 25348,
+        "boxedHandles": 591,
+        "numericHandles": 198
+      },
+      {
+        "limits": "production",
+        "errorStage": 173,
+        "values": 1048576,
+        "bytes": 33553170
+      },
+      {
+        "limits": {
+          "maxValues": 120
+        },
+        "errorStage": 173,
+        "values": 120,
+        "bytes": 3782
+      },
+      {
+        "limits": {
+          "maxBytes": 3800
+        },
+        "errorStage": 172,
+        "values": 120,
+        "bytes": 3782
+      },
+      {
+        "limits": {
+          "maxValues": 500
+        },
+        "errorStage": 173,
+        "values": 500,
+        "bytes": 17838
+      }
+    ]
+  },
+  "otherChecks": [
+    {
+      "command": "npm run maintainer:check",
+      "status": "passed",
+      "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+    },
+    {
+      "command": "npm run docs:check",
+      "status": "passed",
+      "logSha256": "8bb1445015174fb2b2f3704ba1b9fe00bdf6fc3847f39192312a9fd5e8819656"
+    },
+    {
+      "command": "node scripts/documentation-release.cjs",
+      "status": "passed",
+      "logSha256": "cdba8771839a02cc5c71609250765b843f6f17a61ab7e6d6cae57f6ebb447f14"
+    },
+    {
+      "command": "pnpm build (pinned 12.4.2)",
+      "status": "passed",
+      "logSha256": "abe5c9d719903afbe4be884aeca81c6125d3ca5107edf9276efdd63fc98e34df"
+    },
+    {
+      "command": "node scripts/maintainer-scope.cjs --base 12bd483 --head HEAD --declaration-file <pr-body> --check",
+      "status": "passed",
+      "logSha256": "e74174e1270a46d586a245c086767653f478c9045f013506d2c11d1006a81a58"
+    }
+  ],
+  "earlierAttempts": [
+    {
+      "status": "failed",
+      "reason": "Initial stress fixture exceeded the existing nested iteration cap; reduced iterations and increased operations per iteration within the unchanged cap."
+    },
+    {
+      "status": "failed",
+      "reason": "Maintenance check found the new test missing from release evidence shard coverage; registered in existing lowering shard."
+    },
+    {
+      "status": "failed",
+      "reason": "Owner test assumed a stages. path prefix; corrected to use actual stage statement paths."
+    },
+    {
+      "status": "failed",
+      "source": "4a8da9f6f4b7993dd0f49dedbfab935042c70996",
+      "reason": "Paired executions crossed a wall-clock second; pinned the injected fixture clock. Counters and failure stage matched."
+    },
+    {
+      "status": "interrupted-or-unverified",
+      "source": "e9a8e4ab560de9307800f6eb6e0e04c8e4f180dc",
+      "reason": "Final pre-recovery run launched but its temporary logs did not survive interruption. No terminal result is claimed; the full eight-task selection was rerun."
+    }
+  ],
+  "earlierRawLogs": "Unavailable after interruption; historical outcomes above are recovered session observations, not reusable proofs.",
+  "remaining": [
+    "Node budgeted numeric accounting",
+    "output/body-transform numeric regions",
+    "linked-guest budgeted numeric qualification",
+    "MEM9-08 ownership design and MEM9-09 approved implementation",
+    "full compliance and final latest reconciliation before integration PR #349 merge"
+  ],
+  "claimsExcluded": [
+    "deployed Fastly/Viceroy reality",
+    "CPU/latency improvement",
+    "RSS or managed-byte reduction",
+    "general scalar reclamation",
+    "closure of #289"
+  ]
+}
