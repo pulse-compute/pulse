@@ -1270,6 +1270,47 @@ turning mixed record results into an overall pass. Full identities and scopes
 remain available on expansion and in the unchanged capsule export.
 
 
+## Report storage normalization
+
+AN9-09 adds the internal `pulse.report-data` envelope (`encodingVersion: 1`)
+for retained inventory and offline report/comparison HTML. The semantic capsule
+and comparison remain v1. `serializeCapsule`, `serializeComparison`, CLI `--json`
+and offline JSON downloads retain the original expanded canonical format and
+hashes. Readers accept both representations. Older readers reject the new
+storage envelope; export canonical JSON when exchanging with an older reader.
+
+The envelope has exactly `kind`, `encodingVersion`, `shapes`, `nodes`, and `root`.
+Shapes are unique, sorted arrays of object keys. Nodes are JSON scalars,
+`[0, ...childIndexes]` arrays, or `[1, shapeIndex, ...childIndexes]` objects.
+Indexes are nonnegative safe integers; children precede their parent, the root
+is last, and every node and shape must be used. Object keys cannot repeat or
+contain prototype-sensitive names. Producers traverse sorted object keys and
+preserve array order, interning exact values and subtrees. They emit the envelope
+only when its complete UTF-8 representation is smaller and within wire limits.
+Compact references are storage-local, never logical IDs or matching keys.
+
+The shared Node/browser codec bounds both encoded data and expanded bytes,
+nodes, depth, strings and records with the existing report limits (16 MiB,
+500,000 nodes, depth 64, 1 MiB strings, 100,000 array records). Expanded costs
+are checked before following references into a materialized tree; shared objects
+remain immutable in the browser. Node admission then performs the existing
+semantic schema, identity, graph and hash validation. Normalization neither
+removes evidence nor makes an oversized semantic capsule admissible.
+
+Completion inventory sidecar version 1 binds canonical JSON; version 2 binds the
+normalized envelope. Admission checks the declared version against the bytes.
+Completion file lengths and hashes cover the actual stored bytes; capsule and
+comparison evidence hashes still cover canonical expanded semantics. Attribution
+and source-input sidecars retain their existing encodings. The completion marker
+itself remains v1, with an explicitly widened inventory-version enumeration.
+
+Standalone HTML embeds one payload and the shared offline decoder under its CSP
+hash. JSON export strings and comparison raw-data disclosures are generated on
+demand. Search, filtering and navigation use the decoded model and cannot narrow
+exports. Comparison summary/details remain readable without JavaScript; its full
+JSON disclosure and download require JavaScript. No compiler, provider or network
+activity is needed to decode or replay retained evidence.
+
 ## Retained build metadata
 
 Optional Report v1 `build` metadata is captured during Native compile/build and

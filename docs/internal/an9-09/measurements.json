@@ -1,0 +1,433 @@
+{
+  "status": "focused evidence; sprint acceptance deferred",
+  "baseCommit": "2c04ac8d2fbd95114554eabec88e7dd923c183ca",
+  "codecSha256": "0e25515658b1c947d78b8a7f780399f518040bf2d980e43e8ad1fdf85f504966",
+  "inputs": {
+    "catalog": {
+      "sourceSha256": "409febb706f3377a95d7868f06f7a8b22508d171b42ac7bc26fd3a3800799b96",
+      "node": "v24.19.0",
+      "producer": {
+        "pulseVersion": "1.0.0-beta.8",
+        "reporterVersion": "1"
+      },
+      "context": {
+        "host": "fastly",
+        "primaryArtifactId": "artifact:d32d0de43ac0af868fdefce2e4c48efdfa78058337e57b24cbabd70dfd857b72",
+        "profile": "fastly",
+        "representation": "canonical-native-wasm",
+        "target": "native"
+      },
+      "provenance": {
+        "buildEvidenceId": "evidence:47c2fa0a5d2e068c929733cafa9c6f41626df4aaf6389362b9418f55e80a5730",
+        "dirty": null,
+        "recipe": {
+          "elideJsonCacheArena": false,
+          "guestLinked": false,
+          "name": "pulse-native",
+          "optimization": "experimental-native-bounded-size",
+          "version": "pulse.canonical-native-wasm.v2"
+        },
+        "revision": null,
+        "sourceFingerprint": null,
+        "toolchain": [
+          {
+            "name": "AssemblyScript",
+            "version": "0.28.18"
+          },
+          {
+            "name": "pulse",
+            "version": "1.0.0-beta.8"
+          }
+        ]
+      },
+      "scope": "codec-only, isolated 64 MiB/2M-node experiment; production rejects original and normalized expansion",
+      "json": {
+        "before": {
+          "raw": 33776510,
+          "gzip": 2957019,
+          "brotli": 1420368
+        },
+        "after": {
+          "raw": 3575340,
+          "gzip": 1270921,
+          "brotli": 1241301
+        },
+        "rawSavingsPercent": 89.41
+      },
+      "embeddedData": {
+        "before": {
+          "raw": 33776580,
+          "gzip": 2957029,
+          "brotli": 1420367
+        },
+        "after": {
+          "raw": 3575370,
+          "gzip": 1270931,
+          "brotli": 1241297
+        }
+      },
+      "htmlSameShell": null,
+      "retainedInventory": null,
+      "counts": {
+        "nodes": 85874,
+        "shapes": 59,
+        "stringOccurrences": 642369,
+        "distinctStrings": 24126,
+        "stringBytes": 24660678,
+        "distinctStringBytes": 1597814
+      },
+      "collections": {
+        "analytics": 30050186,
+        "application": 14,
+        "artifacts": 968,
+        "bindings": 19934,
+        "bodies": 2,
+        "build": 2955,
+        "context": 191,
+        "coverage": 493,
+        "declarations": 4142,
+        "entries": 299985,
+        "evidence": 975,
+        "evidenceHash": 97,
+        "measurements": 2,
+        "observations": 39943,
+        "producer": 53,
+        "provenance": 425,
+        "references": 117776,
+        "resourceProducers": 183268,
+        "resources": 2584627,
+        "rootSets": 2,
+        "routes": 140220,
+        "schemas": 329909
+      },
+      "ms": {
+        "encode": 675.16,
+        "parseRaw": 96.19,
+        "parseNormalized": 9.85,
+        "decode": 1222.84,
+        "validation": null,
+        "initialViewModel": null,
+        "standaloneHtmlRender": null,
+        "browserFirstPaint": null
+      },
+      "peakRssKiB": 702636,
+      "memoryScope": "fresh process high-water RSS for both representations, encoding, exact roundtrip assertion, rendering and compression; not isolated codec allocation"
+    },
+    "small": {
+      "sourceSha256": "83712bdd3bcf04d9ccc0cb68c3cb3c3fe455bd3b04468b131d54940f66b4f016",
+      "node": "v24.19.0",
+      "producer": {
+        "pulseVersion": "1.0.0-beta.8",
+        "reporterVersion": "1"
+      },
+      "context": {
+        "host": "node",
+        "primaryArtifactId": "artifact:bf7f0a29c2483663e63faf78a4084808834e50df9d53f522ce762fff8b6ab10d",
+        "profile": "native",
+        "representation": "canonical-native-wasm",
+        "target": "native"
+      },
+      "provenance": {
+        "buildEvidenceId": "evidence:e22f344d0e8f147c8ec53c6a028f5cebfdee0ddea654a1e54d53b8e0a502a132",
+        "dirty": null,
+        "recipe": {
+          "elideJsonCacheArena": false,
+          "guestLinked": false,
+          "name": "pulse-native",
+          "optimization": "default",
+          "version": "pulse.canonical-native-wasm.v2"
+        },
+        "revision": null,
+        "sourceFingerprint": null,
+        "toolchain": [
+          {
+            "name": "AssemblyScript",
+            "version": "0.28.18"
+          },
+          {
+            "name": "pulse",
+            "version": "1.0.0-beta.8"
+          }
+        ]
+      },
+      "scope": "production-admitted capsule",
+      "json": {
+        "before": {
+          "raw": 28483,
+          "gzip": 5289,
+          "brotli": 5033
+        },
+        "after": {
+          "raw": 14930,
+          "gzip": 6176,
+          "brotli": 5902
+        },
+        "rawSavingsPercent": 47.58
+      },
+      "embeddedData": {
+        "before": {
+          "raw": 28513,
+          "gzip": 5295,
+          "brotli": 5036
+        },
+        "after": {
+          "raw": 14950,
+          "gzip": 6181,
+          "brotli": 5911
+        }
+      },
+      "htmlSameShell": {
+        "before": {
+          "raw": 202351,
+          "gzip": 49722,
+          "brotli": 47657
+        },
+        "after": {
+          "raw": 188788,
+          "gzip": 50532,
+          "brotli": 48516
+        }
+      },
+      "retainedInventory": {
+        "before": 28483,
+        "after": 14930,
+        "otherSidecars": "unchanged"
+      },
+      "counts": {
+        "nodes": 452,
+        "shapes": 53,
+        "stringOccurrences": 475,
+        "distinctStrings": 190,
+        "stringBytes": 16310,
+        "distinctStringBytes": 6317
+      },
+      "collections": {
+        "analytics": 3358,
+        "application": 32,
+        "artifacts": 1451,
+        "bindings": 2374,
+        "bodies": 2697,
+        "build": 1272,
+        "context": 189,
+        "coverage": 554,
+        "declarations": 232,
+        "entries": 623,
+        "evidence": 1248,
+        "evidenceHash": 97,
+        "implementations": 2646,
+        "measurements": 2692,
+        "observations": 1650,
+        "producer": 53,
+        "provenance": 400,
+        "references": 2,
+        "resourceProducers": 1923,
+        "resources": 3273,
+        "rootSets": 596,
+        "routes": 757,
+        "schemas": 2
+      },
+      "ms": {
+        "encode": 2.35,
+        "parseRaw": 0.16,
+        "parseNormalized": 0.59,
+        "decode": 4.3,
+        "validation": 25.12,
+        "initialViewModel": 1.35,
+        "standaloneHtmlRender": 15.51,
+        "browserFirstPaint": null
+      },
+      "peakRssKiB": 58156,
+      "memoryScope": "fresh process high-water RSS for both representations, encoding, exact roundtrip assertion, rendering and compression; not isolated codec allocation"
+    },
+    "repeated": {
+      "sourceSha256": "73783ce8485d90e6510893e7a0b1e435e27e069e53a5de02b8d2880ec7c62240",
+      "node": "v24.19.0",
+      "producer": {
+        "pulseVersion": "1.0.0-beta.8",
+        "reporterVersion": "1"
+      },
+      "context": {
+        "host": "node",
+        "primaryArtifactId": "artifact:3e901ed9244905178b121b4eedab39f170433741886ade6c63f5a1676f2099b9",
+        "profile": "native",
+        "representation": "canonical-native-wasm",
+        "target": "native"
+      },
+      "provenance": {
+        "buildEvidenceId": "evidence:529dad0f882a0be43ae55124e1c4286b7aed529692a09687e81a697f018426de",
+        "dirty": null,
+        "recipe": {
+          "elideJsonCacheArena": false,
+          "guestLinked": false,
+          "name": "pulse-native",
+          "optimization": "default",
+          "version": "pulse.canonical-native-wasm.v2"
+        },
+        "revision": null,
+        "sourceFingerprint": null,
+        "toolchain": [
+          {
+            "name": "AssemblyScript",
+            "version": "0.28.18"
+          },
+          {
+            "name": "pulse",
+            "version": "1.0.0-beta.8"
+          }
+        ]
+      },
+      "scope": "production-admitted capsule",
+      "json": {
+        "before": {
+          "raw": 306997,
+          "gzip": 32762,
+          "brotli": 26271
+        },
+        "after": {
+          "raw": 79306,
+          "gzip": 30296,
+          "brotli": 29261
+        },
+        "rawSavingsPercent": 74.17
+      },
+      "embeddedData": {
+        "before": {
+          "raw": 307157,
+          "gzip": 32775,
+          "brotli": 26274
+        },
+        "after": {
+          "raw": 79386,
+          "gzip": 30294,
+          "brotli": 29266
+        }
+      },
+      "htmlSameShell": {
+        "before": {
+          "raw": 480995,
+          "gzip": 78919,
+          "brotli": 69459
+        },
+        "after": {
+          "raw": 253224,
+          "gzip": 75788,
+          "brotli": 72130
+        }
+      },
+      "retainedInventory": {
+        "before": 306997,
+        "after": 79306,
+        "otherSidecars": "unchanged"
+      },
+      "counts": {
+        "nodes": 2095,
+        "shapes": 56,
+        "stringOccurrences": 4973,
+        "distinctStrings": 709,
+        "stringBytes": 201068,
+        "distinctStringBytes": 40431
+      },
+      "collections": {
+        "analytics": 151054,
+        "application": 32,
+        "artifacts": 1509,
+        "bindings": 4763,
+        "bodies": 13725,
+        "build": 1272,
+        "context": 189,
+        "coverage": 596,
+        "declarations": 1142,
+        "entries": 14444,
+        "evidence": 1248,
+        "evidenceHash": 97,
+        "implementations": 23964,
+        "measurements": 45203,
+        "observations": 6237,
+        "producer": 53,
+        "provenance": 400,
+        "references": 4415,
+        "resourceProducers": 2761,
+        "resources": 15392,
+        "rootSets": 4108,
+        "routes": 14029,
+        "schemas": 2
+      },
+      "ms": {
+        "encode": 7.39,
+        "parseRaw": 4.63,
+        "parseNormalized": 0.3,
+        "decode": 16.53,
+        "validation": 140.54,
+        "initialViewModel": 2.46,
+        "standaloneHtmlRender": 163.33,
+        "browserFirstPaint": null
+      },
+      "peakRssKiB": 102180,
+      "memoryScope": "fresh process high-water RSS for both representations, encoding, exact roundtrip assertion, rendering and compression; not isolated codec allocation"
+    }
+  },
+  "artifactTotals": {
+    "small": {
+      "standaloneHtml": {
+        "before": 195277,
+        "after": 188788
+      },
+      "allCompletionSidecars": {
+        "before": 20282,
+        "after": 12638,
+        "unaffected": 2028
+      },
+      "sourceInputs": "separate unchanged source receipts, not counted in completion sidecars"
+    },
+    "repeated-mounts": {
+      "standaloneHtml": {
+        "before": 473921,
+        "after": 253224
+      },
+      "allCompletionSidecars": {
+        "before": 235814,
+        "after": 71757,
+        "unaffected": 17473
+      },
+      "sourceInputs": "separate unchanged source receipts, not counted in completion sidecars"
+    }
+  },
+  "modelRuntime": {
+    "small": {
+      "raw": {
+        "representation": "expanded",
+        "modelStartupMs": 3,
+        "peakRssKiB": 40704,
+        "routes": 1,
+        "evidenceHash": "a54f6c80ceee5fcf2e2c14b4d07f4abfb7047cd9588e47287ee79bc49a3159b8",
+        "scope": "fresh Node process: read, JSON parse, decode if normalized, view model and initial route projection; no DOM/layout/paint"
+      },
+      "normalized": {
+        "representation": "normalized",
+        "modelStartupMs": 11.26,
+        "peakRssKiB": 45236,
+        "routes": 1,
+        "evidenceHash": "a54f6c80ceee5fcf2e2c14b4d07f4abfb7047cd9588e47287ee79bc49a3159b8",
+        "scope": "fresh Node process: read, JSON parse, decode if normalized, view model and initial route projection; no DOM/layout/paint"
+      }
+    },
+    "repeated": {
+      "raw": {
+        "representation": "expanded",
+        "modelStartupMs": 11.13,
+        "peakRssKiB": 46312,
+        "routes": 11,
+        "evidenceHash": "367721184be80347bf66d4543fdf89ef2659b16d3b446488ee88c2acfb2b5b64",
+        "scope": "fresh Node process: read, JSON parse, decode if normalized, view model and initial route projection; no DOM/layout/paint"
+      },
+      "normalized": {
+        "representation": "normalized",
+        "modelStartupMs": 45.85,
+        "peakRssKiB": 51628,
+        "routes": 11,
+        "evidenceHash": "367721184be80347bf66d4543fdf89ef2659b16d3b446488ee88c2acfb2b5b64",
+        "scope": "fresh Node process: read, JSON parse, decode if normalized, view model and initial route projection; no DOM/layout/paint"
+      }
+    }
+  }
+}

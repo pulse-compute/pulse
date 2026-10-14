@@ -1,7 +1,7 @@
 'use strict';
 
 const crypto = require('node:crypto');
-const LIMITS = Object.freeze({ bytes: 16 * 1024 * 1024, depth: 64, nodes: 500000, stringBytes: 1024 * 1024, records: 100000 });
+const { LIMITS } = require('./encoding');
 const forbidden = new Set(['__proto__', 'prototype', 'constructor']);
 function fail(code, field = '$') {
   const error = new TypeError(`Report input rejected (${code}).`);

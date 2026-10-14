@@ -25,7 +25,7 @@ function manifestCandidate(input) {
   return { manifest, operation: 'native-build', wasm, host: manifest.provider };
 }
 function classifyInput(input) {
-  const value = parseJson(input);
+  const value = require('./encoding').decode(parseJson(input));
   if (value?.kind === 'pulse.application-report') return { kind: 'historical-capsule', capsule: validateCapsule(value) };
   return { kind: 'build-manifest', operation: manifestCandidate(value).operation, manifest: value };
 }
@@ -131,7 +131,9 @@ function admitCompletedBuild(input, completionBytes, options) {
     } else {
       const bytes = verifyBytes(sidecar, options.files.get(sidecar.file));
       if (sidecar.kind === 'inventory') {
-        const inventory = parseCapsule(bytes);
+        const wire = parseJson(bytes);
+        ensure(sidecar.version === (wire.kind === 'pulse.report-data' ? 2 : 1), 'REPORT_INPUT_VERSION');
+        const inventory = validateCapsule(require('./encoding').decode(wire));
         ensure(canonicalJson(inventory.context) === canonicalJson(completion.context), 'REPORT_IDENTITY');
         for (const artifact of inventory.artifacts) ensure(completion.artifacts.some(row => row.id === artifact.id
           && row.bytes === artifact.bytes && row.sha256 === artifact.sha256 && row.stage === artifact.stage), 'REPORT_IDENTITY');

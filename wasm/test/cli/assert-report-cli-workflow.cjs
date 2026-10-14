@@ -7,7 +7,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const root = path.resolve(__dirname, '../../..'), cli = path.join(root, 'wasm/packages/cli');
 const f = require('./report-fixtures.cjs');
-const { createCapsule, serializeCapsule } = require(path.join(f.reportRoot, 'capsule'));
+const { createCapsule, serializeCapsule, parseCapsule } = require(path.join(f.reportRoot, 'capsule'));
 const { writeHtml } = require(path.join(f.reportRoot, 'output'));
 const { parseCommandRequest, normalizeCommandRequest } = require(path.join(cli, 'src/internal/command-request'));
 const { planReport, executeReport, publicReportError } = require(path.join(f.reportRoot, 'command'));
@@ -69,7 +69,7 @@ try {
   const html = run(['--artifact', 'saved.json', '--html']); assert.equal(html.status, 0, html.stderr);
   const htmlOutput = fs.readFileSync(path.join(directory, '.pulse/reports/pulse-report.html'), 'utf8');
   check(htmlOutput.includes('pulse-report-viewer'), 'production offline viewer emitted');
-  assert.deepEqual(JSON.parse(htmlOutput.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]), capsule);
+  assert.deepEqual(parseCapsule(htmlOutput.match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]), capsule);
   const repeat = run(['--artifact', 'saved.json', '--html']); assert.equal(repeat.status, 0, repeat.stderr);
   assert.equal(fs.readFileSync(path.join(directory, '.pulse/reports/pulse-report.html'), 'utf8'), htmlOutput);
   for (const out of ['../escape.html', 'saved.json', 'bad.txt', 'bad%.html', 'bad:name.html', 'bad\nname.html', path.join(os.tmpdir(), 'escape.html')]) {

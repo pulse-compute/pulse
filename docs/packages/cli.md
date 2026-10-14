@@ -35,6 +35,15 @@ pulse build
 - `doctor` validates project, provider, dependencies, and external toolchain readiness.
 - `report` reviews retained evidence from a successful Native build: a compact overview by default, or one complete capsule with `--json`. `--artifact` replays a supported manifest or historical capsule without loading project code. `--html` writes a self-contained offline viewer with expandable schemas and full JSON export. It never opens a browser. `--out file.html` selects a contained destination; generated-output receipts beside the file preserve repeatable project matching. Reports contain build-review metadata; review before sharing.
 
+  Retained inventory and HTML data use lossless normalized storage when smaller.
+  Reports retain all identities, evidence and coverage. CLI `--json` and viewer
+  downloads still emit canonical Report v1 JSON, suitable for older readers;
+  new readers also accept normalized inventory files with `--artifact`. Older
+  readers reject normalized storage. Both stored and expanded data retain the
+  existing size/work limits. Comparison HTML keeps one data payload; its full
+  JSON disclosure and export require JavaScript, while summary/details remain
+  readable without it.
+
   Route counts distinguish registrations from distinct method/path pairs. Fresh
   compiler evidence labels registrations **terminal** or **continuing**: continuing
   handlers can call `next()`, including conditional and error transfers, and may

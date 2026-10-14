@@ -12,7 +12,7 @@ const project = resolveProject({ cwd: directory, outDir });
 const built = buildProject(project, { outDir, elideJsonCacheArena });
 const manifest = JSON.parse(fs.readFileSync(path.join(outDir, 'canonical-native-manifest.json')));
 assert.equal(manifest.jsonAs.elideDisabledCacheArena, elideJsonCacheArena);
-const report = JSON.parse(fs.readFileSync(path.join(outDir, 'pulse-report-inventory.json')));
+const report = require('../../packages/cli/src/internal/report/capsule').parseCapsule(fs.readFileSync(path.join(outDir, 'pulse-report-inventory.json')));
 assert.equal(report.provenance.recipe.elideJsonCacheArena, elideJsonCacheArena);
 assert.equal(report.build.compilers[0].flags.some(f => f.value === 'schema-cache-arena-transform.cjs'), elideJsonCacheArena);
 fs.writeFileSync(receipt, JSON.stringify({ outDir, artifactSha256: built.manifest.portable.wasm.sha256 }));

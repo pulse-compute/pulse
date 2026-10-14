@@ -16,6 +16,7 @@ const fixtures = path.join(__dirname, '../fixtures/report');
 let assertions = 0;
 function rejects(fn, code) { assertions++; assert.throws(fn, error => code ? error.code === code : error instanceof TypeError); }
 function mutate(fn) { const value = f.fixture(); fn(value); return () => capsule.createCapsule(value); }
+require('./report-normalization-cases.cjs')();
 require('./report-build-cases.cjs').contractCases();
 require('./report-comparison-cases.cjs')();
 require('./report-semantic-comparison-cases.cjs')();
@@ -92,7 +93,7 @@ const safe = capsule.createCapsule(hostile), serialized = capsule.serializeCapsu
 assert.ok(!serialized.includes('CANARY')); assert.ok(!serialized.includes(data.sha256('SECRET_CONFIG_CANARY')));
 const embedded = capsule.htmlPayload(safe);
 assert.ok(!/[<>&\u2028\u2029]/.test(embedded));
-assert.equal(capsule.serializeCapsule(JSON.parse(embedded)), serialized);
+assert.equal(capsule.serializeCapsule(capsule.parseCapsule(embedded)), serialized);
 assert.ok(!/[\x00-\x1f\x7f-\x9f]/.test(capsule.terminalText(hostile.application.name)));
 rejects(() => capsule.validateCapsule({ ...rich, secret: 'CANARY' }), 'REPORT_SCHEMA');
 rejects(() => capsule.parseCapsule(goldens['minimal.json'].replace('Synthetic', 'Changed')), 'REPORT_HASH');

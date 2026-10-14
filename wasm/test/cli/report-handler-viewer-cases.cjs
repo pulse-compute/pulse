@@ -5,7 +5,7 @@ const path = require('node:path');
 const f = require('./report-fixtures.cjs');
 const { createReportViewModel } = require('../../packages/cli/src/internal/report/viewer/model');
 const { renderReport } = require('../../packages/cli/src/internal/report/viewer');
-const { serializeCapsule } = require('../../packages/cli/src/internal/report/capsule');
+const { serializeCapsule, parseCapsule } = require('../../packages/cli/src/internal/report/capsule');
 const { projectHandlerTopology } = require('../../packages/cli/src/internal/report/handler-topology');
 const { setup } = require('../support/report-analytics-fixture.cjs');
 function fixture(variant='http', optimization='default', edit) {
@@ -91,7 +91,7 @@ module.exports = ({renderedTree}) => {
   }
   assert.equal(serializeCapsule(capsule),before);assert.equal(model.canonicalJson,before);
   assert.equal(renderReport(capsule),renderReport(capsule),'analytics HTML deterministic');
-  assert.deepEqual(JSON.parse(renderReport(capsule).match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]),capsule,'full evidence retained in export payload');
+  assert.deepEqual(parseCapsule(renderReport(capsule).match(/<script id="pulse-report-data" type="application\/json">([\s\S]*?)<\/script>/)[1]),capsule,'full evidence retained in export payload');
 
   for(const analytics of [undefined,projectHandlerTopology()]) {
     const old=f.fixture(true);if(analytics)old.analytics=analytics;

@@ -96,7 +96,7 @@ try {
   const oversized = structuredClone(recorded.records); oversized.find(r => r.kind === 'source').bytes = 256 * 1024 * 1024 + 1;
   assert.throws(() => readSources(directory, oversized, workspace), { code: 'REPORT_LIMIT' });
   const inventoryFile = path.join(built.outDir, report.INVENTORY_FILE), inventory = fs.readFileSync(inventoryFile);
-  const tampered = JSON.parse(inventory); tampered.analytics.associations[0].useSiteId = 'missing';
+  const tampered = structuredClone(require(path.join(cli, 'internal/report/capsule')).parseCapsule(inventory)); tampered.analytics.associations[0].useSiteId = 'missing';
   fs.writeFileSync(inventoryFile, JSON.stringify(tampered)); reject(() => report.collectArtifactReport(built.files.manifest));
   fs.writeFileSync(inventoryFile, inventory);
   fs.renameSync(file, file + '.saved'); reject(() => report.collectProjectReport({ cwd: directory })); fs.renameSync(file + '.saved', file);

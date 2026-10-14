@@ -113,7 +113,10 @@
                 "const": "inventory"
               },
               "version": {
-                "const": 1
+                "enum": [
+                  1,
+                  2
+                ]
               },
               "required": {
                 "type": "boolean"
