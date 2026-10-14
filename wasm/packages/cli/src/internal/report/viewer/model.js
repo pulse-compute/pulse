@@ -34,6 +34,46 @@ function createReportViewModel(P) {
     : authoredFact(fact);
   const definitionLabel = row => row ? row.name || `Anonymous ${row.kind} ${definitionIndex.get(row.id)+1}` : 'Definition unavailable';
   const registrationLabel = row => row ? `${row.handlerId ? definitionLabel(definitionById.get(row.handlerId))+' · ' : ''}${row.kind} ${row.order+1} · ${row.match.state === 'available' ? [row.match.value.method,row.match.value.path,row.match.value.eventType].filter(Boolean).join(' ') || 'No match constraint' : authoredFact(row.match)}` : 'Registration unavailable';
+  const registrationChildren = group([...registrations].sort((a,b)=>a.order-b.order).map(r=>({...r,parent:r.mountPath.at(-1)||null})), 'parent');
+  const atlasMatch = (r,query) => [registrationLabel(r),r.id,r.routerId,authoredSource(r.source),
+    definitionLabel(definitionById.get(r.handlerId)),authoredSource(definitionById.get(r.handlerId)?.source)].join(' ').toLowerCase().includes(query.toLowerCase());
+  function atlasLayout({scope=null,query='',expanded=new Set()}={}) {
+    const root=registrationById.get(scope), inScope=r=>!root||r.id===root.id||r.mountPath.includes(root.id);
+    const scoped=registrations.filter(inScope).sort((a,b)=>a.order-b.order), matches=scoped.filter(r=>atlasMatch(r,query));
+    const included=new Set(), open=new Set(expanded);
+    if(query)for(const r of matches){included.add(r.id);for(const id of r.mountPath){included.add(id);open.add(id);}}
+    const points=[],edges=[];let leaf=0,maxDepth=0,truncated=false;
+    function visit(r,depth,parent) {
+      if(points.length>=300){truncated=true;return null;}
+      const p={id:r?.id||null,r,x:24+depth*300,y:0,depth,children:registrationChildren(r?.id||null)};points.push(p);maxDepth=Math.max(maxDepth,depth);
+      const children=(!r||r.id===root?.id||open.has(r.id))?p.children.filter(c=>!query||included.has(c.id)):[];
+      const drawn=[];for(const child of children){const next=visit(registrationById.get(child.id),depth+1,p);if(next)drawn.push(next);else break;}
+      p.y=drawn.length?(drawn[0].y+drawn.at(-1).y)/2:30+leaf++*94;
+      if(parent)edges.push([parent,p]);return p;
+    }
+    if(!query||matches.length)visit(root||null,0,null);
+    return {scoped,matches,points,edges,truncated,width:Math.max(600,(maxDepth+1)*300),height:Math.max(250,leaf*94+60)};
+  }
+  // Only retained associations establish contextual consumers. Owned sites remain
+  // distinct: an inventory reference never manufactures a consumer edge.
+  const bindingAssociations = group((analytics?.associations || []).map(row =>
+    ({...row,bindingId:useSiteById.get(row.useSiteId)?.binding.bindingId})), 'bindingId');
+  function bindingProjection(bindingId, scope=null) {
+    const root=registrationById.get(scope), inside=r=>r&&(!root||r.id===root.id||(root.kind==='mount'&&r.mountPath.includes(root.id)));
+    const rows=bindingAssociations(bindingId).filter(a=>inside(registrationById.get(a.consumerRegistrationId)));
+    const siteIds=new Set(rows.map(a=>a.useSiteId));
+    const sites=bindingSites(bindingId).filter(s=>!root||siteIds.has(s.id));
+    const consumers=new Map(), operations=new Map();
+    for(const a of rows){const r=registrationById.get(a.consumerRegistrationId),mount=r.mountPath.at(-1)||null;
+      const key=JSON.stringify([mount,r.handlerId||r.id]);
+      if(!consumers.has(key))consumers.set(key,{key,mount,handlerId:r.handlerId,registrations:[],rows:[]});
+      const g=consumers.get(key);if(!g.registrations.some(x=>x.id===r.id))g.registrations.push(r);g.rows.push(a);
+    }
+    for(const s of sites){if(!operations.has(s.operation))operations.set(s.operation,{name:s.operation,sites:[],rows:[]});operations.get(s.operation).sites.push(s);}
+    for(const a of rows)operations.get(useSiteById.get(a.useSiteId).operation)?.rows.push(a);
+    return {binding:bindings.get(bindingId),rows,sites,consumers:[...consumers.values()].sort((a,b)=>a.registrations[0].order-b.registrations[0].order),
+      operations:[...operations.values()].sort((a,b)=>a.name.localeCompare(b.name)),consumerCount:new Set(rows.map(a=>a.consumerRegistrationId)).size};
+  }
   function filteredDefinitions() {
     return definitions.filter(row => (state.definitionKind === 'all' || row.kind === state.definitionKind)
       && (state.definitionRole === 'all' || definitionRegistrations(row.id).some(r => r.kind === state.definitionRole))
@@ -246,7 +286,7 @@ function createReportViewModel(P) {
     return parts;
   }
   const mappingCoverage = metric => ({available:P.routes.filter(r => factValue(measurement(r,metric)?.fact) !== null).length, total:P.routes.length});
-  return {analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,get canonicalJson() { return canonicalJson ??= canonical(P) + '\n'; },A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
+  return {bindingProjection,atlasLayout,registrationChildren,analytics,definitions,registrations,useSites,definitionById,registrationById,useSiteById,callById,definitionIndex,registrationIndex,useSiteIndex,definitionRegistrations,definitionSites,helperCallers,helperCallees,registrationAssociations,siteAssociations,bindingSites,analyticsCoverage,coverageText,authoredFact,authoredSource,definitionLabel,registrationLabel,filteredDefinitions,get canonicalJson() { return canonicalJson ??= canonical(P) + '\n'; },A,routes,schemas,bindings,evidence,declarations,routeIndex,schemaIndex,schemaUsage,resourceIndex,representationLabels,resourceScopes,metrics,measurement,measurementResolution,measurementIssue,factValue,qualifier,sourceText,inventoryCount,prefix,declarationState,declarationLabels,state,filteredRoutes,filteredSchemas,sortedResources,composition,mappingCoverage,
     entries,entryIndex,entryLabel,helpers,helperIndex,helperOrigins,helperState,helperLabel,helperSize,routeHelpers,filteredHelpers,routeDispatchers,
     routeBehavior,routeCounts,handlerAttribution,containingBodies,routeContainment,entryHelpers};
 }

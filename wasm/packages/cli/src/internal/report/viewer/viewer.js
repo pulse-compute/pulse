@@ -71,7 +71,7 @@
   const factText = f => f?.state === 'not-applicable' ? 'Not applicable' : factValue(f) === null ? 'Unavailable' : bytes(f.value);
   const exact = value => value == null ? 'Unavailable' : value.toLocaleString('en-US') + ' bytes';
   let visibleRoutes = [], lastDrawerFocus, lastModalFocus, toastTimer;
-  const navigation = [['routes','Routes','routes'],['handlers','Handlers','code'],['entries','Entries','code'],['helpers','Compiled helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
+  const navigation = [['routes','Routes','routes'],['atlas','Execution atlas','layers'],['handlers','Handlers','code'],['entries','Entries','code'],['helpers','Compiled helpers','chip'],['resources','Resources','box'],['schemas','Schemas','layers'],['bindings','Bindings','link'],['evidence','Evidence','evidence']];
   const button = (label, fn, cls='button subtle') => el('button',{type:'button',class:cls,on:{click:fn}},label);
   const note = text => el('div',{class:'plain-note'},icon('info'),el('p',{},text));
   const kv = entries => el('dl',{class:'kv-list'},entries.map(([key,value]) => el('div',{class:'kv-row'},el('dt',{},key),el('dd',{class:'record-text'},value))));
@@ -100,7 +100,7 @@
     setTimeout(() => URL.revokeObjectURL(url),1500); toast('Complete capsule exported. View filters do not change evidence.');
   }
   function buildNavigation() {
-    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},id==='handlers'?(analyticsCoverage('handlers').status==='unavailable'?'—':definitions.length):id==='helpers'?(helperState==='recorded'?helpers.length:'—'):P[id].length))));
+    for (const root of [$('#desktop-nav'),$('#mobile-nav')]) replace(root,navigation.map(([id,label,glyph]) => el('a',{class:'nav-link',href:'#'+id,'data-view':id},icon(glyph),label,id === 'evidence' ? null : el('span',{class:'nav-count'},id==='atlas'?(analyticsCoverage('registrations').status==='unavailable'?'—':registrations.length):id==='handlers'?(analyticsCoverage('handlers').status==='unavailable'?'—':definitions.length):id==='helpers'?(helperState==='recorded'?helpers.length:'—'):P[id].length))));
   }
   function ledger(artifact, large=false) {
     const parts=composition(artifact);
@@ -502,8 +502,16 @@
       analyticsCoverageNote('useSites'),detailSection('Contextual consumers',analyticsCoverageNote('associations'),
         ...siteAssociations(row.id).map(associationDetail),siteAssociations(row.id).length?null:el('p',{},'No observed associations.')),analyticsEvidence(row));
   }
+  const atlas=createReportAtlas({model,el,button,registrationLink,definitionLink,associationDetail,useSiteLink,select:id=>{
+    const hash='#atlas/'+registrationIndex.get(id);
+    if(location.hash===hash)atlas.center(id,true);else {atlasFocus=true;location.hash=hash;}
+  }});
+  function exploreBinding(id){atlas.bindings({binding:id});const hash='#atlas'+(state.selectedRegistration?'/'+registrationIndex.get(state.selectedRegistration):'');if(location.hash!==hash)location.hash=hash;else renderAtlas();}
+  let atlasFocus=false;
+  function renderAtlas(){atlas.open($('#view-atlas'));}
   function registrationDetail(row) {
     return el('article',{class:'surface panel-pad subsection'},el('h3',{id:'registration-title',tabindex:-1,class:'record-text'},registrationLabel(row)),
+      el('p',{},el('a',{href:'#atlas/'+registrationIndex.get(row.id),class:'button subtle',on:{click:()=>atlas.routing()}},'Show in execution atlas')),
       kv([['Definition',row.handlerId?definitionLink(row.handlerId):'No authored definition'],['Authored',String(row.authored)],['Registration source',authoredSource(row.source)],
         ['Router',row.routerId],['Router path',row.routerPath.join(' → ')],['Entry',entryLink(row.id)]]),
       detailSection('Ordered mount instances',row.mountPath.length?el('ol',{class:'step-list'},row.mountPath.map(id=>el('li',{},registrationLink(id)))):el('p',{},'No enclosing mounts recorded.')),
@@ -542,6 +550,7 @@
         el('div',{class:'analytics-filters'},filter('handler-kind','Definition kind',state.definitionKind,[['all','All definitions'],['handler','Handlers'],['helper','Linked helpers']],v=>state.definitionKind=v),
           filter('handler-role','Registration role',state.definitionRole,[['all','All roles'],...['route','middleware','error','event','fallback'].map(v=>[v,v])],v=>state.definitionRole=v)),
         el('p',{id:'handler-count',class:'small-note','aria-live':'polite'}),el('div',{id:'handler-list'})),
+      el('p',{},el('a',{href:'#atlas',class:'button subtle'},'Explore execution atlas')),
       el('details',{class:'surface panel-pad'},el('summary',{},'All registration instances · '+(analyticsCoverage('registrations').status==='unavailable'?'Unavailable':registrations.length)),
         analyticsCoverageNote('registrations'),registrationLinks([...registrations].sort((a,b)=>a.order-b.order))));
     renderDefinitionList();
@@ -575,7 +584,7 @@
   }
   function renderBindings() {
     replace($('#view-bindings'),sectionHeading('Binding inventory','Logical names and retained resolution state; no secret values or inferred grants.',P.bindings.length),note('A reference describes usage. Bound does not establish per-route authority or current deployment health.'),
-      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{id:'binding-title-'+P.bindings.indexOf(b),tabindex:-1},b.name),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),entryLinks(b.entryIds),detailSection('Authored use sites',analyticsCoverageNote('useSites'),...bindingSites(b.id).map(site=>el('p',{},useSiteLink(site.id),' · ',definitionLink(site.ownerId)))),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
+      ...P.bindings.map(b=>el('article',{class:'surface panel-pad subsection'},el('h3',{id:'binding-title-'+P.bindings.indexOf(b),tabindex:-1},b.name),button('Explore '+b.name+' graph',()=>exploreBinding(b.id)),kv([['Kind',b.kind],['Declared',String(b.declared)],['Referenced',String(b.referenced)],['Resolution',b.resolution]]),routeChips(b.routeIds),entryLinks(b.entryIds),detailSection('Authored use sites',analyticsCoverageNote('useSites'),...bindingSites(b.id).map(site=>el('p',{},useSiteLink(site.id),' · ',definitionLink(site.ownerId)))),el('details',{class:'details-block'},el('summary',{},'Binding evidence'),...evidenceCards(b.evidenceIds)))),
       P.bindings.length?null:note('No binding records. Inventory coverage: '+P.coverage.bindings.status+'.'));
   }
   function renderEvidence() {
@@ -596,20 +605,22 @@
     state.selected=r.id;renderDrawer();$('#route-drawer').hidden=false;$('#drawer-backdrop').hidden=false;setPageInert(true);document.body.classList.add('overlay-open');$('#drawer-close').focus({preventScroll:true});
   }
   function showView(view) {
+    if(view!=='atlas')atlas.leave();
     state.view=view;for(const [id] of navigation)$('#view-'+id).hidden=id!==view;
     for(const a of $$('[data-view]')){a.classList.toggle('active',a.dataset.view===view);if(a.dataset.view===view)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}
-    if(view==='routes')renderRoutes();else if(view==='handlers')renderHandlers();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
+    if(view==='routes')renderRoutes();else if(view==='atlas')renderAtlas();else if(view==='handlers')renderHandlers();else if(view==='entries')renderEntries();else if(view==='helpers')renderHelpers();else if(view==='schemas')renderSchemas();else if(view==='resources')renderResources();else if(view==='bindings')renderBindings();else renderEvidence();
   }
   function onHash() {
     if(location.hash==='#main')return;
-    const match=/^#(routes|handlers|registrations|use-sites|entries|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
+    const match=/^#(routes|atlas|handlers|registrations|use-sites|entries|helpers|resources|schemas|bindings|evidence)(?:\/(\d+))?$/.exec(location.hash),view=match?.[1]??'routes',index=match?.[2]===undefined?null:Number(match[2]);
     closeModal();closeDrawer(false);state.selectedEntry=view==='entries'&&index!==null?P.entries[index]?.id:null;
     state.selectedDefinition=view==='handlers'&&index!==null?definitions[index]?.id:null;
-    state.selectedRegistration=view==='registrations'&&index!==null?registrations[index]?.id:null;
+    state.selectedRegistration=['registrations','atlas'].includes(view)&&index!==null?registrations[index]?.id:null;
     state.selectedUseSite=view==='use-sites'&&index!==null?useSites[index]?.id:null;
     showView(['registrations','use-sites'].includes(view)?'handlers':view);
     if(state.selectedDefinition)$('#definition-title').focus();
-    if(state.selectedRegistration)$('#registration-title').focus();
+    if(state.selectedRegistration&&view==='registrations')$('#registration-title').focus();
+    if(view==='atlas'&&atlasFocus){atlas.center(state.selectedRegistration,true);atlasFocus=false;}
     if(state.selectedUseSite)$('#use-site-title').focus();
     if(view==='bindings'&&index!==null&&P.bindings[index])$('#binding-title-'+index).focus();
     if(state.selectedEntry)$('#entry-title').focus();
@@ -641,10 +652,10 @@
   for(const [id,offset] of [['drawer-previous',-1],['drawer-next',1]])$('#'+id).addEventListener('click',()=>{const r=visibleRoutes[visibleRoutes.findIndex(r=>r.id===state.selected)+offset];if(r)location.hash='routes/'+routeIndex.get(r.id);});
   $('#modal-close').addEventListener('click',closeModal);$('#modal-backdrop').addEventListener('click',closeModal);
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();}
+    if(e.key==='Escape'){if(!$('#modal').hidden)closeModal();else if(!$('#route-drawer').hidden)closeDrawer();else if(atlas.escape())e.preventDefault();}
     const active=!$('#modal').hidden?$('#modal'):!$('#route-drawer').hidden?$('#route-drawer'):null;
     if(e.key==='Tab'&&active){const nodes=$$('button:not([disabled]),a[href],input,select,summary,[tabindex="0"]',active).filter(n=>!n.hidden&&n.getClientRects().length);const first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&(document.activeElement===first||!active.contains(document.activeElement))){e.preventDefault();last?.focus();}else if(!e.shiftKey&&(document.activeElement===last||!active.contains(document.activeElement))){e.preventDefault();first?.focus();}}
-    if(e.key==='/'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();if(state.view!=='routes'){location.hash='routes';setTimeout(()=>$('#route-search').focus(),0);}else $('#route-search').focus();}
+    if(e.key==='/'&&state.view!=='atlas'&&!active&&!e.ctrlKey&&!e.metaKey&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){e.preventDefault();if(state.view!=='routes'){location.hash='routes';setTimeout(()=>$('#route-search').focus(),0);}else $('#route-search').focus();}
   });
   window.addEventListener('hashchange',onHash);onHash();
 })();
