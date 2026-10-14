@@ -70,8 +70,42 @@ explicitly excluded from timing claims. Pointer reuse is not a host-memory metri
 The transport prototype never calls getters, serializers, providers or the guest
 while validating and publishing its snapshot. It is not a new public API.
 
-Frozen-source results, owner hashes and terminal validation will be recorded
-after qualification. Development construction failures are retained separately.
+## Recorded results
+
+Review package: [PR #356](https://github.com/pulse-compute/pulse/pull/356).
+The standalone probe passed on clean local source
+`1891e1753315ce341d162711fc77c110b2be7868`, published as
+`48a72933a4b2c8411a6972b5cdb3d3c8bd16e04e`; both have tree
+`8fa12dca6cccffa7304c53c37dd0a13a8ed29ef1`. Only receipts and prose follow this
+tested source. [Evidence](evidence1.json), [15 owner/dependency hashes](owners.json),
+[terminal qualification](qualification2.json) and [check ledger](checks.json)
+bind the findings to those bytes.
+
+| Diagnostic | Observed result |
+| --- | --- |
+| Current Node fixed-working-set artifact, 1 / 8 / 32 iterations | 1,432 / 11,330 / 45,260 retained handle mappings; exact response verified |
+| Standalone root transport, 1 / 8 / 32 iterations | One mapping retained; 129 / 1,025 / 4,097 IDs issued; all ten invalid-snapshot cases reject atomically and latch |
+| 512 allocations of 4 KiB, with prior roots released | Stub: 512 distinct pointers and 4 MiB capacity; incremental: four pointers and 64 KiB; fixed: two pointers and 2 MiB |
+| Same allocation probe retaining all roots | Fixed allocator exhausts after 373 successful iterations, still 2 MiB; stub and incremental complete 512 with 4 MiB |
+| Real retained linked ES256 artifact | Two independently verified signatures; final link audit passed; zero memory-grow instructions; 2 MiB capacity |
+
+The Node artifact and transport prototype are different workloads; their counts
+are not a before/after performance comparison. Allocator rows use forced GC and
+report linear capacity, not process RSS. No production memory or speedup claim
+follows from these diagnostics.
+
+The fresh unit profile plus five focused budget/link tasks completed **67/67
+passed** on that clean source. This is development qualification, not the final
+integrated release selection. The initial registration attempt failed suite-shape
+and is preserved in [qualification1.json](qualification1.json): release requires
+all registered tasks, so this proposal-only probe was moved outside the registry
+without changing suite policy. The earlier incorrect portable-manifest assertion
+and two construction passes are retained and labeled in the check ledger.
+
+The linked artifact ran against the Fastly ABI fixture. Viceroy (available locally),
+deployed Fastly, Rust source reproduction and installed-consumer qualification
+were not run for this proposal package. Production lifetime and paired cost
+qualification remain explicit acceptance gates in each proposal.
 
 ## Work remaining after this review package
 

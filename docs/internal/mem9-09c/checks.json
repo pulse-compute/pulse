@@ -1,0 +1,582 @@
+{
+  "schemaVersion": "pulse.mem9-09c.development-checks.v1",
+  "targetBranch": "codex/mem9-integration",
+  "pullRequest": "https://github.com/pulse-compute/pulse/pull/356",
+  "classification": "Proposal and development boundary evidence; no production enablement or full integration/release qualification",
+  "source": {
+    "localCommit": "1891e1753315ce341d162711fc77c110b2be7868",
+    "publishedCommit": "48a72933a4b2c8411a6972b5cdb3d3c8bd16e04e",
+    "tree": "8fa12dca6cccffa7304c53c37dd0a13a8ed29ef1",
+    "workingTreeAtStart": "clean",
+    "note": "Published source tree verified identical to local tested tree. Commit metadata differs. Only receipts and prose follow testing."
+  },
+  "standaloneProbe": {
+    "status": "passed",
+    "file": "evidence1.json",
+    "productionEnablement": false,
+    "command": "node wasm/test/runtime/mem9-09c-boundaries.cjs",
+    "note": "Frozen-source run wrapped main() to add source identity and write JSON. Prototype snapshots cover three fixed slots only; no generated Node root transport, dynamic sections or JS-heap/cost qualification."
+  },
+  "qualification": {
+    "status": "passed",
+    "completedTasks": 67,
+    "selectedTasks": [
+      "report-capsule-contract",
+      "cli-report-workflow",
+      "cli-report-viewer",
+      "cli-report-retained-evidence",
+      "cli-report-size-evidence",
+      "cli-report-capture-proof",
+      "cli-report-entry-proof",
+      "cli-report-reference-provenance",
+      "cli-report-handler-topology",
+      "cli-report-handler-associations",
+      "cli-report-imported-inputs",
+      "cli-report-resource-inventory",
+      "cli-report-graph-diagnostics",
+      "multifile-source-indexes",
+      "guest-json-roundtrip",
+      "pure-helper-contract",
+      "suite-shape",
+      "test-orchestration",
+      "package-exports",
+      "boundaries",
+      "workspace-hygiene",
+      "hidden-contracts",
+      "release-feature-acceptance",
+      "release-runtime-policy",
+      "release-seal-lifecycle",
+      "release-checkpoints",
+      "release-recovery-runner",
+      "release-recovery",
+      "release-tag",
+      "api-surface",
+      "logging-contract",
+      "s3-design-contract",
+      "kv-design-contract",
+      "kv-conditional-runtime",
+      "kv-conditional-gates",
+      "s3-read-contract",
+      "s3-write-contract",
+      "crypto-config-planning",
+      "crypto-es256-signing",
+      "crypto-rs256",
+      "crypto-digest-text-contract",
+      "reachable-graph",
+      "project-modules",
+      "package-reachability",
+      "provider-toolchain",
+      "schema-registry",
+      "continuation-registry",
+      "entities-contracts",
+      "entities-schema-bridge",
+      "entities-javascript-runtime",
+      "entities-json-rpc-corpus",
+      "mcp-http",
+      "pulse-context-corpus",
+      "pulse-context-application",
+      "pulse-context-host",
+      "mcp-compatibility",
+      "mcp-tools",
+      "mcp-authorization",
+      "entities-package-owned-lowering",
+      "entities-catalog",
+      "entities-inspection",
+      "entities-orchestration-demo",
+      "bounded-read-loops",
+      "fastly-numeric-budgets",
+      "guest-link-package",
+      "guest-link-materialization-stage",
+      "guest-link-audit-diagnostics"
+    ],
+    "command": "node wasm/scripts/run-wasm-tests.cjs --profile unit --task bounded-read-loops --task fastly-numeric-budgets --task guest-link-package --task guest-link-materialization-stage --task guest-link-audit-diagnostics --report <evidence>/qualification2.json",
+    "report": "qualification2.json",
+    "log": "qualification2.log",
+    "taskLogDigests": [
+      {
+        "name": "report-capsule-contract",
+        "bytes": 557,
+        "sha256": "dac2e9a284d88e4e4f1dcf55cbca9892684aed1963d70b36780de7c937e000f3"
+      },
+      {
+        "name": "cli-report-workflow",
+        "bytes": 126,
+        "sha256": "b0719f302fe6ff0e24bb6a0557ce240b8545dce2e5cf286e8c8b7b3112a016aa"
+      },
+      {
+        "name": "cli-report-viewer",
+        "bytes": 473,
+        "sha256": "b2f3066938cb564cba77f8e73b6a284c3f1f7b090806d4e91d956691ca1bffec"
+      },
+      {
+        "name": "cli-report-retained-evidence",
+        "bytes": 821,
+        "sha256": "bfa1fcab5f41046695d2fdec55bd2141b76d84df3b277a507d9a859e7fc519ce"
+      },
+      {
+        "name": "cli-report-size-evidence",
+        "bytes": 152,
+        "sha256": "7b49f2f74daaaae9d58d822a3c40997f7b765f781105346bb9bf52c371732b3f"
+      },
+      {
+        "name": "cli-report-capture-proof",
+        "bytes": 1355,
+        "sha256": "fe1f7b56bb8c90a5bed11ef8bc94a52b50166b9d8c6e9e3ec2f064a4993daaed"
+      },
+      {
+        "name": "cli-report-entry-proof",
+        "bytes": 2887,
+        "sha256": "e7c9d70ac29b8c93aaf973a0847122cc8ed3a85176d80ab63dc4f132046de5e9"
+      },
+      {
+        "name": "cli-report-reference-provenance",
+        "bytes": 316,
+        "sha256": "40dfec237b90a257ae58fdc41187b2ecb41c344b57533a999d0d30855f9c98a6"
+      },
+      {
+        "name": "cli-report-handler-topology",
+        "bytes": 1436,
+        "sha256": "4097e4549df5f67f1680373de72b7ead32da62d62aaab77740ef590d67f5d657"
+      },
+      {
+        "name": "cli-report-handler-associations",
+        "bytes": 169,
+        "sha256": "e8f5fb02974eb5e5d92dd66099967ce2bff71340df29dcdc66270e8025da42af"
+      },
+      {
+        "name": "cli-report-imported-inputs",
+        "bytes": 305,
+        "sha256": "c26e3eca38b2af3f4fb7805f4ea43acc8d29b2e9713c51f93d68e0fb53613a55"
+      },
+      {
+        "name": "cli-report-resource-inventory",
+        "bytes": 430,
+        "sha256": "4742b59fe4a0c7068263ccfef725b715ba92ec7fd4833f4e936968f6b9666cb4"
+      },
+      {
+        "name": "cli-report-graph-diagnostics",
+        "bytes": 380,
+        "sha256": "e014f9d278f66ad6784d043150e0e18e743593efb2a379ad0a8580c22b411306"
+      },
+      {
+        "name": "multifile-source-indexes",
+        "bytes": 45,
+        "sha256": "e59673e97fdeb90039a38f41e39f93d239a5062600be498e61405522df2664f1"
+      },
+      {
+        "name": "guest-json-roundtrip",
+        "bytes": 90,
+        "sha256": "250c726913dde6e425f1f05a88a8892854c2b2f37f86dd00cc9fcde5ee45fc90"
+      },
+      {
+        "name": "pure-helper-contract",
+        "bytes": 141,
+        "sha256": "51c6707c5f91a4387ad89381bfcff3caea77ae9685adf30c9f98a43ae6edef94"
+      },
+      {
+        "name": "suite-shape",
+        "bytes": 41,
+        "sha256": "334f8f4614de562fe5d10463bb0b734dde4bdc0d4a9d9e085947f65ac13bacb8"
+      },
+      {
+        "name": "test-orchestration",
+        "bytes": 1064,
+        "sha256": "83d4be1a7c78f7d2802fc56e85470cc1fb54ee64af3a17ddeba3930623e22b0b"
+      },
+      {
+        "name": "package-exports",
+        "bytes": 63,
+        "sha256": "620dabe7893a0e0a2a0083ac56a200b88765bda77895e98c47722b1bb11ffff4"
+      },
+      {
+        "name": "boundaries",
+        "bytes": 224,
+        "sha256": "673b6201648909621106cfa1f3af2ecda959df7688c6a8390484bf6de6a97330"
+      },
+      {
+        "name": "workspace-hygiene",
+        "bytes": 65,
+        "sha256": "14bf84a2cea12e92bce6ad28f772a73acb46a101d5255efdee9dc0e9c342c92c"
+      },
+      {
+        "name": "hidden-contracts",
+        "bytes": 112,
+        "sha256": "b0d07a62f096a3c495eca8c334ebded93a1ddf95a496c07e3c43118bbe15fb7c"
+      },
+      {
+        "name": "release-feature-acceptance",
+        "bytes": 100,
+        "sha256": "ce01fea429289694ab3d6db8a591e6e5842785c781ef04f8bb1be42f5d3bb243"
+      },
+      {
+        "name": "release-runtime-policy",
+        "bytes": 584,
+        "sha256": "a370f3402c99c8972adfd54bb1bdcbb4554e9ee64805b9eb0d69659ae4653dc2"
+      },
+      {
+        "name": "release-seal-lifecycle",
+        "bytes": 488,
+        "sha256": "41706d58d678d22b18b4a37abb9d83e6bb784f4e9860d35bc6ec6ecfeb2517b3"
+      },
+      {
+        "name": "release-checkpoints",
+        "bytes": 62,
+        "sha256": "eb2390369e900e04bbf65712c722720a014a274129f56e2bb950cdc0c97c8b45"
+      },
+      {
+        "name": "release-recovery-runner",
+        "bytes": 47491,
+        "sha256": "3b06c2e450599ee6506c37528fc9402b54092a62cfdd4871c2ef8a9fdd42a803"
+      },
+      {
+        "name": "release-recovery",
+        "bytes": 90,
+        "sha256": "508a0da28f873551c7240dd9eb97258b805fc8bf4204b25e6acc437637780df0"
+      },
+      {
+        "name": "release-tag",
+        "bytes": 110,
+        "sha256": "84813d71b96931d09502bf2d9a33a9ea9a23895a468d430cbdfd40e12af78f31"
+      },
+      {
+        "name": "api-surface",
+        "bytes": 112,
+        "sha256": "72ae6e9145a6217b37175888a59fd6718937d174ee1e8c1009d32e361c2f1019"
+      },
+      {
+        "name": "logging-contract",
+        "bytes": 100,
+        "sha256": "250ed2ef7d8e7c249c300b8eb44df6a36f8b7e8f545f4d0e9b1d90cfd989d15c"
+      },
+      {
+        "name": "s3-design-contract",
+        "bytes": 128,
+        "sha256": "633798a97981a42f8eb4b4534a1a3b369d1eba4ffd504614b44c3e4eaea95c7e"
+      },
+      {
+        "name": "kv-design-contract",
+        "bytes": 185,
+        "sha256": "460980145d170ca43f7b0c7af6f0a68fcd588e3c1068dd8acb5f7b6dee366337"
+      },
+      {
+        "name": "kv-conditional-runtime",
+        "bytes": 112,
+        "sha256": "099993c1331c0b9ecc5861e1d6446589d5dd3dd6c725a0c2952ea11dd1e8405b"
+      },
+      {
+        "name": "kv-conditional-gates",
+        "bytes": 189,
+        "sha256": "7461acbf17df08cc70e925c1ba4d2936f95ba45b235b6894607a79e01e255281"
+      },
+      {
+        "name": "s3-read-contract",
+        "bytes": 155,
+        "sha256": "64b705e071841d45de8195590c7145981ba9ab294bd667fcae85e3c5b661df11"
+      },
+      {
+        "name": "s3-write-contract",
+        "bytes": 101,
+        "sha256": "c44352d10985250a8bd75caddd1dee5dcc11182cfe4e63113ad73a6fb095e63d"
+      },
+      {
+        "name": "crypto-config-planning",
+        "bytes": 132,
+        "sha256": "f0bd6466c4cdaea4923a910011dc087181e0f2f8d8dd50ca1a543dc871c708d2"
+      },
+      {
+        "name": "crypto-es256-signing",
+        "bytes": 97,
+        "sha256": "538fae1059c91b768501e644ca6b90945bdc662f1d68727f65d3410503dc8def"
+      },
+      {
+        "name": "crypto-rs256",
+        "bytes": 510,
+        "sha256": "f1d16b1b7a1cc3ca3926721178020d8eae1b7ab3a22e57480e953ef7bc3bbdc0"
+      },
+      {
+        "name": "crypto-digest-text-contract",
+        "bytes": 118,
+        "sha256": "d38e6eb47a03fe6ceeef8ddd34138ea4920fb279937366783613b6c6391c6974"
+      },
+      {
+        "name": "reachable-graph",
+        "bytes": 215,
+        "sha256": "dd9b8737febeb3712781f1949f26d882b159d27160cfce0a9cca5eaadaeb43ac"
+      },
+      {
+        "name": "project-modules",
+        "bytes": 81,
+        "sha256": "d6b9875711b70aac9276a6d87706dec95cdac7a24f43f60d65e2c9714ab0a86a"
+      },
+      {
+        "name": "package-reachability",
+        "bytes": 115,
+        "sha256": "cf2529ae95c9f13f9c65a246ee8d57465b3d40905aaaea42b9061a586fe97fdb"
+      },
+      {
+        "name": "provider-toolchain",
+        "bytes": 145,
+        "sha256": "7a3c6123c712abf97460b998e0dbb55a036187414c17dda9fd1cec5ddba02098"
+      },
+      {
+        "name": "schema-registry",
+        "bytes": 229,
+        "sha256": "acd08c340e8d1f0027e7a25598fc759ae6e21728b79a9b96fb7e8c9d8045659a"
+      },
+      {
+        "name": "continuation-registry",
+        "bytes": 137,
+        "sha256": "3c671433498470a7364bbe60b158b86b4599d6c6a877da06a84919ddeb4bc74d"
+      },
+      {
+        "name": "entities-contracts",
+        "bytes": 611,
+        "sha256": "571a190fd447549e59eca2280512bf86277476a69408bc956e7c805eb0178cba"
+      },
+      {
+        "name": "entities-schema-bridge",
+        "bytes": 565,
+        "sha256": "bd0953d88382715b73af8c6fba359d4e3274af5a76d63992132d324cf60c1331"
+      },
+      {
+        "name": "entities-javascript-runtime",
+        "bytes": 221,
+        "sha256": "c117377e5db44f776b6ebeaa3fbab1e8c0688eaf82626f4ace7060afc18fb747"
+      },
+      {
+        "name": "entities-json-rpc-corpus",
+        "bytes": 224,
+        "sha256": "f970589887a2c27f2a692a5a0076b6dd2bad97d7310b4b67ceffdeb287389b6b"
+      },
+      {
+        "name": "mcp-http",
+        "bytes": 99,
+        "sha256": "e368ef604eb1c7fd3b3e83a405f738379c071c601c18da2c11a7f50dc59c8819"
+      },
+      {
+        "name": "pulse-context-corpus",
+        "bytes": 114,
+        "sha256": "ff088c5462e2d77b0f64d81ae76a10e02ccc8b889e3c2210d630a3397ddde780"
+      },
+      {
+        "name": "pulse-context-application",
+        "bytes": 178,
+        "sha256": "761c61369d329ad6f14c1e0d1a65b399070add20c0148a875aaf898b1985a338"
+      },
+      {
+        "name": "pulse-context-host",
+        "bytes": 208,
+        "sha256": "890969bc48d584c684b931df96498c4455e41ec89c54770d809a1ce2e506e921"
+      },
+      {
+        "name": "mcp-compatibility",
+        "bytes": 107,
+        "sha256": "2929b5e1d92ff222e8c94ea7149becb02893466ddb35a70ba6b30d556a216252"
+      },
+      {
+        "name": "mcp-tools",
+        "bytes": 94,
+        "sha256": "3fd3ca4e1b669122a45d9859ca4f1413b8a9ff4e8fe023bc23301b9fe2896844"
+      },
+      {
+        "name": "mcp-authorization",
+        "bytes": 201,
+        "sha256": "56521bde6d2604253511b6965db5ecc72be85d33453f01cc2db44892d55d5f4c"
+      },
+      {
+        "name": "entities-package-owned-lowering",
+        "bytes": 492,
+        "sha256": "7e465d36b63d27cf66e44ba517fecd74e7506bc74c8e8bbdc83edecb21f10509"
+      },
+      {
+        "name": "entities-catalog",
+        "bytes": 344,
+        "sha256": "ede80b3844e948f3b12da690d83f3ccbb633c6bcb6d75539cde584b218d3bea2"
+      },
+      {
+        "name": "entities-inspection",
+        "bytes": 474,
+        "sha256": "3f0f464baecefd1869b43c513ed4ee78a40f38b2c52ba9fa496752743d8f28d7"
+      },
+      {
+        "name": "entities-orchestration-demo",
+        "bytes": 467,
+        "sha256": "22a18d182f96ad8818f61b4e47eb930e3fd6966cfbaa10d1aefe28aaee7eb8ca"
+      },
+      {
+        "name": "bounded-read-loops",
+        "bytes": 1792,
+        "sha256": "60f19a068f42fb68043d40f11a7833f613f8feb363a4f44224e777375c520b96"
+      },
+      {
+        "name": "fastly-numeric-budgets",
+        "bytes": 529,
+        "sha256": "bfceffe27cc587421f9a355fd86606d06cc188fa9ac1828eec9f08d3fb929d61"
+      },
+      {
+        "name": "guest-link-package",
+        "bytes": 181,
+        "sha256": "260445b7c3de985b35125213b04c2902900f723384b547414d2bca27a3846947"
+      },
+      {
+        "name": "guest-link-materialization-stage",
+        "bytes": 145,
+        "sha256": "b059e7e91643f68a5e1f666f4017089eee35e26cbbc9fd911430108ac87f0055"
+      },
+      {
+        "name": "guest-link-audit-diagnostics",
+        "bytes": 137,
+        "sha256": "3b3f8994d62eeb87ca6b71bdab6c43369ad34022c13e60d0448543b7225f6e05"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "name": "development1",
+      "status": "failed",
+      "sourceIdentity": "uncommitted construction; not qualification",
+      "reason": "Portable generation has no ownership manifest when unselected; initial probe incorrectly accessed enabled.",
+      "correction": "Assert manifest absence and no checkpoints."
+    },
+    {
+      "name": "development2",
+      "status": "passed",
+      "completedTasks": 1,
+      "sourceIdentity": "uncommitted construction; superseded by evidence1"
+    },
+    {
+      "name": "development3",
+      "status": "passed",
+      "completedTasks": 1,
+      "sourceIdentity": "uncommitted construction; superseded by evidence1"
+    },
+    {
+      "name": "qualification1",
+      "status": "failed",
+      "sourceCommit": "8bcfee982f3ca2a8b614eb7b59758f1b16e1b7e1",
+      "completedTasks": 1,
+      "selectedTasks": 68,
+      "passed": 0,
+      "reason": "suite-shape requires every registered current task in release.",
+      "correction": "Removed proposal probe from registry; kept standalone development evidence. Existing suite policy unchanged. Full fresh 67-task selection passed on corrected source."
+    }
+  ],
+  "receipts": [
+    {
+      "file": "development1.log",
+      "bytes": 845,
+      "sha256": "55f6ae59b6ff91c90914465e7c5a4a6022efb9b0a7323a317984f30b62b03362"
+    },
+    {
+      "file": "development2.json",
+      "bytes": 1783,
+      "sha256": "b86d1396897465ec27ddb5920a87e90f7a5ed4bf5dab5383f18c849b0aaf3ccf"
+    },
+    {
+      "file": "development2.log",
+      "bytes": 4171,
+      "sha256": "cbc68b859d8d9dfa54d18aca0933451af9272bcecb310c995e4fe4e354b1947c"
+    },
+    {
+      "file": "development3.json",
+      "bytes": 1785,
+      "sha256": "40cbe5203c9babed33991b441f2e850cc0e28e0cea3801e5136bfede3925e97b"
+    },
+    {
+      "file": "development3.log",
+      "bytes": 4708,
+      "sha256": "c59798aa12a6de0e621495a0f9849f4d91dc4e6eed2b9c464eba2166d30eef4b"
+    },
+    {
+      "file": "qualification1.json",
+      "bytes": 5490,
+      "sha256": "847a66c3c3f1db569bcd6877d9928fd9ac50b9a82baedde612536ceec42882d6"
+    },
+    {
+      "file": "qualification1.log",
+      "bytes": 1378,
+      "sha256": "2fa3319f980cf909d074fb9ae6786bb2083215eca73fd05ae038bb09c2a6ea5b"
+    },
+    {
+      "file": "qualification2.json",
+      "bytes": 59061,
+      "sha256": "b9396f3dac73c587404c038a6f11b9c58eaad6672f5485f6a92a9742d6d11217"
+    },
+    {
+      "file": "qualification2.log",
+      "bytes": 97938,
+      "sha256": "79979a3f109893d8e90f4ed8a61e91d8aa74984129327fd7a4c52247151c155f"
+    },
+    {
+      "file": "evidence1.json",
+      "bytes": 5692,
+      "sha256": "4661372e043739a20d6cd8c64458e91041d82be998dddca51e29f38715432892"
+    }
+  ],
+  "staticChecks": {
+    "status": "passed",
+    "sourceCommit": "64d1684eaa2e764c460cf959a1cb0a0f1ce34c75",
+    "note": "Only this check receipt changes after these checks. Scope exits zero with no consistency errors; decision-required deliberately preserves human review of the proposals.",
+    "results": [
+      {
+        "name": "maintenance",
+        "command": "npm run maintainer:check",
+        "exitCode": 0,
+        "logBytes": 346,
+        "logSha256": "29950389946494af3858f362b70af5c7b5f6fb80d0ead3121f400beab98e5536"
+      },
+      {
+        "name": "documentation",
+        "command": "npm run docs:check",
+        "exitCode": 0,
+        "logBytes": 474,
+        "logSha256": "70a3814029d4b75ca42577fb10281263bda21eed252601fd9df218f32624c6a6"
+      },
+      {
+        "name": "documentation-release",
+        "command": "node scripts/documentation-release.cjs",
+        "exitCode": 0,
+        "logBytes": 176733,
+        "logSha256": "d42d07f3331fb8ee3dfba06a0d368850df0827b9a1cb30637675a80822894bd7"
+      },
+      {
+        "name": "scope",
+        "command": "node scripts/maintainer-scope.cjs --base 99bdf3e595c2b63e16db924125850d90c97efb3d --head HEAD --declaration-file <evidence>/pr-body.md --check",
+        "exitCode": 0,
+        "logBytes": 927,
+        "logSha256": "d36c200010853906c57969ca30405bdcbb2d55a4d08db5a893944f0e45f5c850"
+      }
+    ]
+  },
+  "notRun": [
+    {
+      "lane": "full integrated release / installed-consumer qualification",
+      "reason": "Deferred to frozen integrated candidate; this run is development evidence."
+    },
+    {
+      "lane": "Rust guest source reproduction",
+      "reason": "Actual linked artifact uses the existing prebuilt guest; cargo/rustc not on PATH."
+    },
+    {
+      "lane": "Viceroy",
+      "reason": "Not run for proposal evidence; viceroy 0.21.1 is available locally."
+    },
+    {
+      "lane": "deployed Fastly",
+      "reason": "No deployment or activation performed."
+    },
+    {
+      "lane": "new production runtime / paired cost matrix",
+      "reason": "No production extension implemented. Required separately by each proposal."
+    }
+  ],
+  "initialSourceCi": {
+    "publishedCommit": "48a72933a4b2c8411a6972b5cdb3d3c8bd16e04e",
+    "status": "passed",
+    "workflows": [
+      "Maintainer scope",
+      "Documentation",
+      "Repository validation"
+    ]
+  }
+}
