@@ -41,10 +41,12 @@ function validate(r, directory = r.directory) {
     assert.equal(w.runtime === 'stub', w.id === 'stub');
     assert.equal(w.runtime.includes('fixed-memory-runtime'), w.id === 'linked');
     if (w.id === 'numeric') assert(observed.numericRegions.regions.length > 0);
+    if (w.id === 'flat-loop-cap') assert.equal(observed.numericRegions.regions.length > 0, w.iterations <= 256);
     if (w.id === 'linked') assert.equal(observed.capacityBytes, 2097152);
   }
   const control = r.workers.filter(w => w.id === 'numeric').map(w => w.rows[2]);
   assert(control.every(r => r.handles <= control[0].handles + 3), 'Existing bounded Fastly control regressed');
+  assert.deepEqual(r.summary, summarize(r));
   return r;
 }
 function summarize(r) {
@@ -88,10 +90,9 @@ async function campaign(directory) {
   try {
     const attempts = await Promise.allSettled([lane(), lane(), lane()]);
     const failure = attempts.find(a => a.status === 'rejected'); if (failure) throw failure.reason;
-    r.sourceAfter = candidateIdentity(root); r.status = 'passed'; validate(r);
-    r.summary = summarize(r);
+    r.sourceAfter = candidateIdentity(root); r.status = 'passed'; r.summary = summarize(r); validate(r);
   } catch (e) { r.status = 'failed'; r.error = e.stack; throw e; } finally { persist(); }
-  console.log('ok - MEM9-03: 30 cells, 120 executions, immutable source and artifact hashes verified');
+  console.log(`ok - MEM9-03: ${cells.length} cells, ${cells.length * 4} executions, immutable source and artifact hashes verified`);
 }
 function selfTest(r, directory) {
   validate(r, directory);

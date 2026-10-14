@@ -3,7 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { createECDH } = require('node:crypto');
 const root = path.resolve(__dirname, '../../..');
-const cases = ['numeric', 'unknown', 'strings', 'overwrite-object', 'snapshots', 'pure-helper', 'shared-stage', 'stub', 'linked', 'read-loop'];
+const cases = ['numeric', 'flat-loop-cap', 'unknown', 'strings', 'overwrite-object', 'snapshots', 'pure-helper', 'shared-stage', 'stub', 'linked', 'read-loop'];
 const sizes = [0, 64, 512];
 
 // Public, deterministic TEST key: scalar 1, never a credential.
@@ -18,6 +18,9 @@ function fixture(id, n, cwd) {
   const loop = `let n=70000;for(let i=0;i<${n};i++){n+=1;}`;
   let body = loop + "return ctx.text(''+n);";
   let extra = '', imports = '';
+  // MEM9-02 admits each pure-loop cap only through 256. Equal additions with
+  // two eligible loop caps distinguish that control from the flat-loop residual.
+  if (id === 'numeric') body = `let n=70000;for(let i=0;i<${n / 8};i++){for(let j=0;j<8;j++){n+=1;}}return ctx.text(''+n);`;
   if (id === 'unknown') body = `let n=input.n;for(let i=0;i<${n};i++){n+=1;}return ctx.text(''+n);`;
   if (id === 'strings') body = `let n=70000;let text='70000';for(let i=0;i<${n};i++){n+=1;text=''+n;}return ctx.text(text);`;
   if (id === 'overwrite-object') body = `const state={n:70000};for(let i=0;i<${n};i++){state.n+=1;}return ctx.text(''+state.n);`;
