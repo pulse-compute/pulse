@@ -77,10 +77,17 @@ const allSections={...richModel.A,bytes:66,sections:[...richModel.A.sections,{id
 assert.deepEqual(richModel.composition(allSections).map(p=>p.bytes),[16,20,10,20]);
 // Exercise the real rendering functions with a small element recorder. This
 // checks generated structure and text, not layout, CSP enforcement or a browser.
-function renderedTree(capsule) {
+function renderedTree(capsule, {narrow=true}={}) {
   class Element {
-    constructor(tag,namespaceURI) {this.tag=tag;this.namespaceURI=namespaceURI;this.attrs={};this.children=[];this.events={};}
+    constructor(tag,namespaceURI) {this.tag=tag;this.namespaceURI=namespaceURI;this.attrs={};this.children=[];this.events={};this.scrollLeft=0;this.scrollTop=0;this.clientWidth=900;this.clientHeight=460;}
     setAttribute(k,v){this.attrs[k]=String(v);}
+    getAttribute(k){return this.attrs[k] ?? null;}
+    removeAttribute(k){delete this.attrs[k];}
+    set open(v){if(v)this.attrs.open='';else delete this.attrs.open;} get open(){return this.attrs.open!==undefined;}
+    querySelector(selector){return this.querySelectorAll(selector)[0] || null;}
+    querySelectorAll(selector){return descendants(this).slice(1).filter(n=>selector.startsWith('#')?n.id===selector.slice(1):selector.startsWith('.')?(n.attrs.class||'').split(' ').includes(selector.slice(1)):n.tag===selector);}
+    getBoundingClientRect(){return {top:0,left:0};}
+    setSelectionRange(start,end){this.selectionStart=start;this.selectionEnd=end;}
     set id(v){this.attrs.id=v;} get id(){return this.attrs.id;}
     set className(v){this.attrs.class=v;}
     set textContent(v){this.children=[String(v)];}
@@ -97,11 +104,13 @@ function renderedTree(capsule) {
   const get=id=>nodes().find(n=>n.id===id);
   const data=new Element('script');data.id='pulse-report-data';data.textContent=require(path.join(f.reportRoot,'encoding')).store(capsule);roots.push(data);
   const surfaces={'.workspace':new Element('div'),'.sidebar':new Element('aside')};
-  const document={body:{classList:{add(){},remove(){},toggle(){}}},querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):surfaces[selector]??{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
+  const classes=new Set();
+  const document={body:{classList:{add(v){classes.add(v);},remove(v){classes.delete(v);},contains(v){return classes.has(v);},toggle(v,on){if(on)classes.add(v);else classes.delete(v);}}},querySelector:selector=>selector.startsWith('#')?get(selector.slice(1)):surfaces[selector]??{content:'historical'},querySelectorAll:()=>[],createElement:tag=>new Element(tag),createElementNS:(ns,tag)=>new Element(tag,ns),createTextNode:text=>String(text)};
   const codec=fs.readFileSync(path.join(f.reportRoot,'encoding.js'),'utf8');
   const script=fs.readFileSync(path.join(f.reportRoot,'viewer/viewer.js'),'utf8');
-  const context={document,Node:Element,createReportViewModel,location:{hash:''}};
-  vm.runInNewContext(codec+'\n'+script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,onHash,state};\n})();",context);
+  const explorers=['binding-explorer.js','atlas.js'].map(name=>fs.readFileSync(path.join(f.reportRoot,'viewer',name),'utf8')).join('\n');
+  const context={document,Node:Element,createReportViewModel,matchMedia:()=>({matches:narrow}),location:{hash:''}};
+  vm.runInNewContext(codec+'\n'+explorers+'\n'+script.slice(0,script.indexOf("  $$('[data-icon]')"))+"  globalThis.renderers={buildNavigation,drawSummary,renderRoutes,renderResources,renderSchemas,renderHelpers,renderHandlers,renderEntries,renderEvidence,renderDrawer,renderAtlas,renderBindings,atlas,exploreBinding,onHash,state,model};\n})();",context);
   context.renderers.drawSummary();context.renderers.renderResources();
   Object.assign(context.renderers.state,{selected:capsule.routes[0].id,drawerTab:'size'});context.renderers.renderDrawer();
   get('modal').hidden=true;get('route-drawer').hidden=true;

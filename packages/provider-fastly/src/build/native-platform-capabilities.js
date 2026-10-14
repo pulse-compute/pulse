@@ -2,6 +2,7 @@
 
 const { scalarRecordProjectionLines } = require('./schema-scalar-record.js');
 const { hasJsonAdmission, tracksJsonDuplicates, schemaParserDepth, nestedJsonProjectionLines, schemaJsonAdmissionSource, schemaFetchJsonSource } = require('./schema-nested-json.js');
+const { nativeStdioSource } = require('./native-stdio.js');
 const applicationErrors = require('./native-application-errors.js');
 const effectInvocations = require('./effect-invocations.js');
 const packageApplication = require('./package-native-application.js');
@@ -145,8 +146,7 @@ const FASTLY_NATIVE_PLATFORM_CAPABILITIES_IMPORTS = Object.freeze([
   Object.freeze(['fastly_kv_store', 'lookup_wait_v2']),
   Object.freeze(['fastly_kv_store', 'insert']),
   Object.freeze(['fastly_kv_store', 'insert_wait']),
-  Object.freeze(['fastly_log', 'endpoint_get']),
-  Object.freeze(['fastly_log', 'write']),
+  Object.freeze(['wasi_snapshot_preview1', 'fd_write']),
   Object.freeze(['wasi_snapshot_preview1', 'clock_time_get'])
 ].filter(([module, name], index, entries) => entries.findIndex((item) => item[0] === module && item[1] === name) === index));
 
@@ -1013,8 +1013,7 @@ function requiredImportsForPlan(plan, bindings) {
   if (kinds.has('kv.put')) for (const key of ['fastly_kv_store:insert', 'fastly_kv_store:insert_wait']) keys.add(key);
   if (kinds.has('grip.hold')) keys.add('fastly_http_resp:header_append');
   if (plan.logging && plan.logging.enabledStatements > 0) {
-    keys.add('fastly_log:endpoint_get');
-    keys.add('fastly_log:write');
+    keys.add('wasi_snapshot_preview1:fd_write');
   }
   if (kinds.has('s3.head') || kinds.has('s3.getText') || kinds.has('s3.putText') || kinds.has('s3.getBody')) for (const key of require('./s3-native.js').S3_IMPORTS) keys.add(key);
   if (require('./native-body-forwarding.js').enabled(plan)) {
@@ -1444,8 +1443,7 @@ function __pulse_fastly_jwt_send_error(): void {}
 @external("fastly_kv_store", "lookup_wait_v2") declare function fastly_kv_store_lookup_wait_v2(handle: i32, bodyOut: usize, metadata: usize, metadataLength: i32, writtenOut: usize, generationOut: usize, kvErrorOut: usize): i32
 @external("fastly_kv_store", "insert") declare function fastly_kv_store_insert(store: i32, key: usize, keyLength: i32, body: i32, configMask: i32, config: usize, insertOut: usize): i32
 @external("fastly_kv_store", "insert_wait") declare function fastly_kv_store_insert_wait(handle: i32, kvErrorOut: usize): i32
-@external("fastly_log", "endpoint_get") declare function fastly_log_endpoint_get(name: usize, nameLength: i32, handleOut: usize): i32
-@external("fastly_log", "write") declare function fastly_log_write(handle: i32, message: usize, messageLength: i32, writtenOut: usize): i32
+${nativeStdioSource}
 @external("wasi_snapshot_preview1", "clock_time_get") declare function wasi_snapshot_preview1_clock_time_get(clockId: i32, precision: i64, timeOut: usize): i32
 
 const PULSE_FASTLY_EFFECTS_ABI_VERSION: i64 = ${FASTLY_NATIVE_PLATFORM_CAPABILITIES_ABI_VERSION}
@@ -1674,7 +1672,6 @@ let __pulse_fastly_request_body_loaded: i32 = 0
 let __pulse_fastly_last_error: i32 = 0
 let __pulse_fastly_error_stage: i32 = 0
 let __pulse_fastly_error_effect: i32 = -1
-let __pulse_fastly_log_handle: i32 = -1
 let __pulse_fastly_jwt_error: i32 = 0
 let __pulse_fastly_jwt_secret_calls: i32 = 0
 let __pulse_fastly_jwt_crypto_calls: i32 = 0
@@ -1731,7 +1728,7 @@ function __pulse_fastly_redact_fields(input: string): string {
   return output + input.substring(start);
 }
 function __pulse_fastly_redact(input: string): string { let output = __pulse_fastly_redact_fields(input); for (let i = 0; i < __pulse_fastly_redactions.length; i += 1) output = __pulse_fastly_replace_secret(output, unchecked(__pulse_fastly_redactions[i])); return output }
-function host_log(level: i32, messageHandle: i32): void { let endpoint = __pulse_fastly_log_handle; if (endpoint == -2) return; if (endpoint == -1) { const name = __pulse_fastly_utf8("stdout"); const out = __pulse_fastly_out_i32(); if (fastly_log_endpoint_get(changetype<usize>(name), name.byteLength, changetype<usize>(out)) != FASTLY_STATUS_OK) { __pulse_fastly_log_handle = -2; return } endpoint = __pulse_fastly_out_value(out); __pulse_fastly_log_handle = endpoint } let label = "unknown"; if (level == 1) label = "error"; else if (level == 2) label = "warn"; else if (level == 3) label = "info"; else if (level == 4) label = "debug"; const bytes = __pulse_fastly_utf8("[pulse:" + label + "] " + __pulse_fastly_redact(__pulse_fastly_string(messageHandle)) + "\n"); const written = __pulse_fastly_out_i32(); fastly_log_write(endpoint, changetype<usize>(bytes), bytes.byteLength, changetype<usize>(written)) }
+function host_log(level: i32, messageHandle: i32): void { let label = "unknown"; if (level == 1) label = "error"; else if (level == 2) label = "warn"; else if (level == 3) label = "info"; else if (level == 4) label = "debug"; const bytes = __pulse_fastly_utf8("[pulse:" + label + "] " + __pulse_fastly_redact(__pulse_fastly_string(messageHandle)) + "\n"); __pulse_fastly_write_stdout(bytes) }
 function __pulse_fastly_number(handle: i32): f64 { const value = __pulse_fastly_value(handle); if (value.kind == PULSE_VALUE_NUMBER) return value.number; if (value.kind == PULSE_VALUE_BOOLEAN) return value.boolean != 0 ? 1.0 : 0.0; if (value.kind == PULSE_VALUE_STRING) return F64.parseFloat(value.text); return 0.0 }
 function __pulse_fastly_hex(value: i32): string { return String.fromCharCode(value < 10 ? 48 + value : 87 + value) }
 function __pulse_fastly_is_unpaired(value: string, i: i32): bool {
@@ -2201,7 +2198,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       providerNeutralInput: true,
       javascriptRuntime: false,
       jsComputeRuntime: false,
-      wasi: plan.effects.some(effect => effect.kind === 'fetch') || bindings.maxDurationMs !== undefined || hasJwt || hasSign || bindings.s3.length || plan.effects.some(effect => conditionalKv.KV_CONDITIONAL_KINDS.includes(effect.kind)) ? 'clock_time_get only' : false,
+      wasi: requiredImportsForPlan(plan, bindings).filter(key => key.startsWith('wasi_snapshot_preview1:')).map(key => key.split(':')[1]).join(', ').replace(/(.+)/, '$1 only') || false,
       effects: FASTLY_NATIVE_PLATFORM_EFFECT_KINDS.join(', '),
       continuations: true,
       groupedEffects: 'existing fetch start-before-wait ordering remains intact',
@@ -2213,7 +2210,7 @@ function generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options = 
       kv: 'Fastly KV Store async lookup/insert; conditional operations preserve u64 generations, bounded readiness, strict Pulse envelopes and uncertain dispatch',
       assets: 'Fastly KV Store lookup with provider-owned content type, cache headers, and GET/HEAD body ownership',
       grip: 'canonical stateless framing plus bound, secret-referenced broadcast HTTP realization and stable acknowledgement',
-      logging: 'best-effort redacted writes to the provider-owned stdout logging endpoint',
+      logging: 'best-effort redacted WASI fd_write to stdout (descriptor 1), one attempt per statement',
       schemas: 'fetch JSON decode and structured response encode',
       opaqueResponse: 'origin fetch response/body handles and direct GRIP hold responses pass through without JavaScript runtime ownership',
       transportErrors: 'host status failures remain distinct from HTTP response status',

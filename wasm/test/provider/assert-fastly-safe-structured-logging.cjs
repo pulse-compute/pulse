@@ -41,6 +41,9 @@ function main() {
     const native = platform.compileFastlyNativePlatformCapabilitiesPlan(buildCanonicalNativePlan(compiled), {
       cwd: root, canonicalBuild: true, bindings: { kv: { catalog: 'catalog' }, secretStore: 'secrets' }
     });
+    const imports = WebAssembly.Module.imports(new WebAssembly.Module(native.wasm));
+    assert.ok(imports.some(entry => entry.module === 'wasi_snapshot_preview1' && entry.name === 'fd_write'));
+    assert.ok(!imports.some(entry => entry.module === 'fastly_log'));
     const run = (failure = {}) => {
       const authority = createConditionalKvAuthority();
       authority.stores.set('catalog', new Map());
@@ -54,6 +57,7 @@ function main() {
           // Assert on actual guest emission, before the host's independent secret
           // masking. Assertions retain only booleans if a confidentiality check fails.
           const index = writes++;
+          if (failure.logWriteMaxBytes !== undefined) { assert.ok(Buffer.byteLength(message) <= failure.logWriteMaxBytes); return; }
           if (index === 0) assert.deepEqual(JSON.parse(message.slice('[pulse:info] '.length)), metrics, operation);
           else if (index === 1) assert.deepEqual(JSON.parse(message.slice('[pulse:info] '.length)), escapedMetrics);
           else if (index === 2) {
@@ -77,16 +81,65 @@ function main() {
       assert.equal(result.response.status, 200);
       assert.deepEqual(JSON.parse(result.response.body), metrics);
       assert.equal(result.kvEvidence.bodyFixtures.size, 0);
-      assert.equal(writes, failure.logEndpointFailure || failure.logWriteFailure ? 0 : 6);
+      assert.equal(writes, failure.logWriteFailure ? 0 : 6);
+      assert.equal(result.trace.filter(entry => entry.name === 'fd_write').length, 6, 'exactly one bounded attempt per statement');
+      assert.equal(result.trace.some(entry => entry.module === 'fastly_log'), false, 'stdio never opens named endpoints');
       cases++;
     };
     run();
-    // Reserved/failed stdout is an independent best-effort sink issue. It must
-    // not block the response and is not evidence for successful log emission.
+    // Named endpoint failures cannot disable stdio. Sink errors and short or
+    // zero writes must not block the response or cause retries.
     run({ logEndpointFailure: true });
     run({ logWriteFailure: true });
+    run({ logWriteMaxBytes: 0 });
+    run({ logWriteMaxBytes: 7 });
   }
-  console.log(`ok - Fastly safe structured logging: ${cases} actual-Native injected ABI cases (nested KV read/write, guest secret redaction, separate sink failures)`);
+  const levelSource = compileCanonicalSource(`export default function handler(ctx) {
+    ctx.log.error('error'); ctx.log.warn('warn'); ctx.log.info('café 😀'); ctx.log.debug('debug');
+    return ctx.text('ok');
+  }`, { fileName: 'stdio-levels.ts', strict: false });
+  for (const reporting of ['debug', 'off']) {
+    const levels = platform.compileFastlyNativePlatformCapabilitiesPlan(buildCanonicalNativePlan(levelSource, { reporting }), {
+      cwd: root, canonicalBuild: true, requirePlatformCapability: false
+    });
+    const levelResult = execute(levels);
+    assert.deepEqual(levelResult.logs.map(entry => entry.message), reporting === 'off' ? [] :
+      ['[pulse:error] error\n', '[pulse:warn] warn\n', '[pulse:info] café 😀\n', '[pulse:debug] debug\n']);
+    assert.equal(levels.inspection.imports.some(entry => entry.name === 'fd_write'), reporting !== 'off');
+  }
+  // The retained package-source adapter has its own logger and import audit.
+  // Keep it covered even though ordinary Entities projects use the canonical path.
+  const adapterSource = `
+    export function pulse_entities_set_request(pointer: i32): i32 { return 1; }
+    export function pulse_entities_start(): i32 {
+      const message = 'adapter café 😀';
+      pulse_entities_host_log(1, changetype<i32>(message), message.length);
+      return 1;
+    }
+    export function pulse_entities_resume(): i32 { return 1; }
+    export function pulse_entities_set_effect_result(index: i32, ok: i32, pointer: i32): i32 { return 1; }
+    function pulse_entities_run_suspended(): i32 { return 2; }
+    function pulse_entities_run_complete(): i32 { return 1; }
+    function pulse_entities_response_ptr(): i32 { return changetype<i32>('ok'); }
+    function pulse_entities_response_status(): i32 { return 200; }
+    export function pulse_fastly_last_error(): i32 { return pulse_fastly_entities_last_error(); }
+  `;
+  const adapter = require('../../../packages/provider-fastly/src/build/entities-native.js').compileFastlyEntitiesNative({
+    version: 'pulse.entities-native-source.v1', kind: 'package-generated-source',
+    policy: { javascriptRuntime: false, javascriptHandlerImports: false, automaticFallback: false, requestBodyReads: 1 },
+    imports: [], summary: { effects: 0 }, planHash: 'stdio-adapter-fixture', source: adapterSource,
+    sourceSha256: require('node:crypto').createHash('sha256').update(adapterSource).digest('hex')
+  }, { cwd: root });
+  assert.ok(adapter.imports.some(entry => entry.module === 'wasi_snapshot_preview1' && entry.name === 'fd_write'));
+  assert.ok(!adapter.imports.some(entry => entry.module === 'fastly_log'));
+  for (const failure of [{}, { logWriteFailure: true }, { logWriteMaxBytes: 0 }, { logWriteMaxBytes: 7 }]) {
+    const result = execute(adapter, failure);
+    assert.equal(result.response.status, 200);
+    assert.equal(result.response.body, 'ok');
+    assert.equal(result.trace.filter(entry => entry.name === 'fd_write').length, 1);
+    if (Object.keys(failure).length === 0) assert.equal(result.logs[0].message, '[pulse:entities:1] adapter café 😀\n');
+  }
+  console.log(`ok - Fastly safe structured logging: ${cases} structured-log ABI cases, severity/off/UTF-8 controls and 4 retained-adapter cases`);
 }
 module.exports = { main };
 if (require.main === module) main();

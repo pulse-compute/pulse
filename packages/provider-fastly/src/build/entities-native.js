@@ -1,5 +1,6 @@
 'use strict';
 
+const { nativeStdioSource } = require('./native-stdio.js');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const os = require('node:os');
@@ -41,8 +42,7 @@ const ALLOWED_IMPORTS = new Set([
   'fastly_http_resp:new',
   'fastly_http_resp:send_downstream',
   'fastly_http_resp:status_set',
-  'fastly_log:endpoint_get',
-  'fastly_log:write',
+  'wasi_snapshot_preview1:fd_write',
   'fastly_secret_store:get',
   'fastly_secret_store:open',
   'fastly_secret_store:plaintext'
@@ -178,8 +178,7 @@ function providerRuntimeSource(bindings, options) {
 @external("fastly_secret_store", "open") declare function fastly_secret_store_open(name: usize, nameLength: i32, handleOut: usize): i32
 @external("fastly_secret_store", "get") declare function fastly_secret_store_get(handle: i32, key: usize, keyLength: i32, secretOut: usize): i32
 @external("fastly_secret_store", "plaintext") declare function fastly_secret_store_plaintext(secret: i32, value: usize, valueLength: i32, writtenOut: usize): i32
-@external("fastly_log", "endpoint_get") declare function fastly_log_endpoint_get(name: usize, nameLength: i32, handleOut: usize): i32
-@external("fastly_log", "write") declare function fastly_log_write(handle: i32, message: usize, messageLength: i32, writtenOut: usize): i32
+${nativeStdioSource}
 
 const __PULSE_FASTLY_ENTITIES_ABI: i64 = 1
 const __PULSE_FASTLY_ENTITIES_BUFFER: i32 = ${BUFFER_BYTES}
@@ -191,7 +190,6 @@ let __pulse_fastly_entities_results = new Array<string>()
 let __pulse_fastly_entities_ready = new Array<i32>()
 let __pulse_fastly_entities_ok = new Array<i32>()
 let __pulse_fastly_entities_redactions = new Array<string>()
-let __pulse_fastly_entities_log_handle: i32 = -1
 
 function __pulse_fastly_entities_out(): StaticArray<i32> { return new StaticArray<i32>(1) }
 function __pulse_fastly_entities_out_value(value: StaticArray<i32>): i32 { return load<i32>(changetype<usize>(value)) }
@@ -327,15 +325,8 @@ function pulse_entities_host_effect_begin(effectIndex: i32, payloadPointer: i32,
 }
 function pulse_entities_host_log(level: i32, payloadPointer: i32, payloadLength: i32): void {
   if (payloadPointer <= 0 || payloadLength < 0) return
-  if (__pulse_fastly_entities_log_handle < 0) {
-    const endpoint = __pulse_fastly_entities_utf8("stdout")
-    const handleOut = __pulse_fastly_entities_out()
-    if (fastly_log_endpoint_get(changetype<usize>(endpoint), endpoint.byteLength, changetype<usize>(handleOut)) != __PULSE_FASTLY_OK) return
-    __pulse_fastly_entities_log_handle = __pulse_fastly_entities_out_value(handleOut)
-  }
   const message = __pulse_fastly_entities_utf8("[pulse:entities:" + level.toString() + "] " + __pulse_fastly_entities_redact(changetype<string>(payloadPointer)) + "\n")
-  const written = __pulse_fastly_entities_out()
-  fastly_log_write(__pulse_fastly_entities_log_handle, changetype<usize>(message), message.byteLength, changetype<usize>(written))
+  __pulse_fastly_write_stdout(message)
 }
 function __pulse_fastly_entities_write_body(handle: i32, value: string): i32 {
   const bytes = __pulse_fastly_entities_utf8(value)

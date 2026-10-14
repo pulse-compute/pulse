@@ -142,10 +142,27 @@ tokens, and known Secret Store values retain substring redaction. Keep operation
 observations separate from private payloads: redacting a payload does not preserve
 its schema or distinguish fields that collapse to the same redacted name.
 
-Logging uses the provider-owned `stdout` endpoint on a best-effort basis. An
-unavailable or rejected endpoint is a separate sink failure; proving correct
-emitted log bytes with an injected Fastly ABI host does not prove that Viceroy or
-a deployed service accepts that endpoint.
+Fastly Native `ctx.log` writes redacted, newline-terminated messages to standard
+output through WASI `fd_write` (descriptor 1). Each enabled statement makes one
+best-effort write; errors and partial writes do not retry, change the HTTP result,
+or disable later statements. It does not open a named logging endpoint: `stdout`
+and `stderr` are reserved names. No logging binding is required.
+
+This corrects the beta.8 Native logger's reserved-endpoint lookup. Local Viceroy
+qualification requires positive arrival/outcome output as well as secret absence.
+After deploying a corrected candidate, verify delivery with
+`fastly log-tail --stream stdout` before relying on live cadence reporting.
+Local and injected-host checks do not establish deployed log-tail delivery.
+
+The opt-in `fastly-stdio-installed` task packs and installs exact candidates outside
+the checkout with lifecycle scripts disabled. It checks installed bytes before
+and after compilation, replays the emitted Wasm with failing writes, and requires
+an authenticated probe's arrival/outcome logs from Viceroy:
+
+```bash
+PULSE_VICEROY_BIN=/path/to/viceroy \
+node wasm/scripts/run-wasm-tests.cjs --task fastly-stdio-installed --no-report
+```
 
 For `target: 'native'`, `pulse build` compiles the generated Compute package to
 direct-host-ABI `bin/main.wasm`. For `target: 'javascript'`, it emits the

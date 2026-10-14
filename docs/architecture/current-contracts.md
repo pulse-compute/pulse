@@ -1368,6 +1368,19 @@ group records by kind and exact producer identity without merging claims or
 turning mixed record results into an overall pass. Full identities and scopes
 remain available on expansion and in the unchanged capsule export.
 
+The offline execution atlas projects retained registration order and mount
+ancestry. Its edges mean immediate mount containment, never runtime sequencing.
+Search includes matching registrations and their ancestors; scope follows exact
+mount instances. Rendering is capped at 300 graph nodes, while 50-row table pages
+retain all matches. Binding exploration groups consumers by enclosing mount and
+authored definition, preserving each exact registration and association in the
+details. Only retained associations establish consumer edges; authored use sites
+may establish binding/operation references independently. No inventory declaration
+manufactures a consumer or permission. Binding graphs page 12 consumer groups and
+12 operations at a time, with association evidence in 20-row pages. Coverage and
+unresolved binding identities remain explicit. Expansion, selection, filtering
+and pagination change view state only, without changing the capsule or its export.
+
 
 ## Report storage normalization
 
