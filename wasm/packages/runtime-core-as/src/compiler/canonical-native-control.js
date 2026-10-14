@@ -323,6 +323,7 @@ function layoutNativeControl({
     };
     checkError();
     if (item.kind === 'stage-exit') {
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit('__pulse_pc = __pulse_stage_return');
       emit(advance);
     } else if (item.kind === 'action') {
@@ -340,6 +341,7 @@ function layoutNativeControl({
     } else if (item.kind === 'helper-return') {
       emit(`__pulse_helper_result = ${item.expression}()`);
       checkError();
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit('__pulse_pc = __pulse_helper_return');
       emit(advance);
     } else if (item.kind === 'return') {
@@ -355,11 +357,17 @@ function layoutNativeControl({
       emit(`__pulse_state = ${item.continuationState}`);
       emit(`__pulse_pc = ${item.resumeBlock}`);
       emit(`__pulse_pending = ${item.pendingCount}`);
+      // Every sibling payload now belongs to the provider; no payload-building
+      // or helper-argument temporary crosses this checkpoint.
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.SUSPENDED}`);
     } else if (item.kind === 'resume' || item.kind === 'resume-return') {
       for (const line of item.lines) emit(line);
       emit('__pulse_pending = 0');
       emit('__pulse_state = 0');
+      // Ready flags were cleared before this state, but the result slots remain
+      // roots independently until their existing lifecycle resets them.
+      if (ownership.enabled) emit(ownership.checkpoint);
       if (item.kind === 'resume-return') emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE}`);
       else {
         emit(`__pulse_pc = ${item.next}`);

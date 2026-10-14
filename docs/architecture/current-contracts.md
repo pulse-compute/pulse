@@ -298,22 +298,40 @@ and declined loop reasons, and source hashes bind the emitted strategy.
 
 Unlinked, schema-enabled Fastly Native plans using the incremental managed runtime
 select the private `fastly-handle-tracing-v1` policy only when their entire plan
-passes the synchronous owner audit. The first slice admits ordinary expressions,
+passes the complete owner audit. The policy admits ordinary expressions,
 pure loops, terminal HTTP handlers, request metadata/text/JSON, schema codecs,
-responses, request state and logging. Helpers, shared stages, application error
-lanes, events, effects/continuations, opaque resources, package-owned application
-emitters, unknown expressions/statements/capabilities and all budgeted plans are
-excluded. Stub and linked runtimes, Node Native and JavaScript keep their existing
+responses, request state and logging, audited pure/async helpers, shared stages,
+Router error lanes and the explicit Fastly effect allowlist. Events, package-owned
+application emitters, unknown frames/expressions/statements/capabilities/effects
+and all allocation-budgeted plans are excluded. Stub and linked runtimes, Node Native and JavaScript keep their existing
 lifetime behavior. No public configuration or host ABI is added.
 
-Compiler root descriptors enumerate the result, every declared local slot and
-both request-state arrays from their declarations. The provider validates that
-descriptor and adds its request-header snapshot and occupied immutable caches.
+Compiler root descriptors enumerate the result, helper return, every declared
+local and effect-result slot, and both request-state arrays from their declarations.
+Effect results remain roots independently of ready/pending flags. The provider
+validates that descriptor and adds its request-header snapshot, occupied caches,
+all payload/ready slots, opaque-resource pins and forwarding marker/result when present.
 Completed expressions and loop control boundaries may collect only after values
 are rooted or discarded and no unregistered handle temporary remains. Numeric
 regions checkpoint only after boxing their outputs. A latched error suppresses
 collection. Parsers, codecs, host operations and expression evaluation never
 invoke the tracer internally.
+
+Pure helper calls defer collection until the complete caller expression returns;
+earlier arguments and borrowed returns can remain on the native stack. Async helper
+and shared-stage slots are global roots with their existing reset/transfer ordering.
+Additional checkpoints follow rooted helper returns, stage exits, complete sibling
+dispatch and resume result transfer. No collection occurs during payload construction,
+provider settlement or between a borrowed result and guest acceptance. Router recovery
+constructs and roots its error before collection can resume. Invocation tickets,
+deadlines, pending resource IDs and mode flags are not value handles.
+
+Fetch and opaque-body wrappers are pinned until invocation end. Existing provider
+cleanup remains responsible for closing bodies and retiring/reaping requests;
+tracing adds no destructor, cancellation, retry or resource reuse. This conservative
+policy does not bound wrapper churn independently of the existing invocation limits.
+Request-duration and fetch deadlines remain usable; allocation budgets retain their
+separate retain-until-terminal behavior.
 
 Eligible plans use a sparse map with monotonically increasing positive IDs.
 Tracing follows collection handle edges and direct rope object edges independently,
@@ -332,7 +350,8 @@ their source scope ends. Live snapshots, caches and unflattened rope graphs stil
 require storage; a long operation without a checkpoint can allocate substantially.
 Wasm memory need not shrink. This does not change cumulative budget accounting or
 qualify general reclamation for excluded runtimes. See the measured first slice
-and residuals in [MEM9-09](../internal/mem9-09/README.md).
+and residuals in [MEM9-09](../internal/mem9-09/README.md) and the
+[frame/effect extension](../internal/mem9-09b/README.md).
 
 ## Native internal helper sharing
 
