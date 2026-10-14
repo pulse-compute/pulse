@@ -35,6 +35,11 @@ function qualify(cell, directory, { observed = false, onBuild = () => {} } = {})
     assert.equal(options.guestUnits.length, f.linked ? 1 : 0);
     const generated = platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options);
     const control = boxedPlatform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan, options);
+    assert.equal(generated.manifest.handleOwnership.enabled, false, 'linked/helper/stage plans retain handles');
+    if (f.linked) assert.equal(generated.manifest.handleOwnership.reason, 'linked-runtime');
+    assert.equal(platform.generateFastlyNativePlatformCapabilitiesAssemblyScript(plan,
+      { ...options, handleOwnership: 'fastly-handle-tracing-v1' }).source, generated.source,
+      'caller policy cannot bypass final provider ownership gate');
     write('production.source.ts', generated.source); write('boxed.source.ts', control.source);
     write('generation.json', { production: generated.manifest, boxed: control.manifest });
     const numeric = generated.manifest.numericRegions;

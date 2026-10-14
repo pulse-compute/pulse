@@ -787,6 +787,10 @@ const allowedLocalIdentifierDefinitions = new Map(Object.entries({
   'packages/runtime-core-as/src/compiler/canonical-native-numeric.js': [
     'HOST_POLICY',
     'LINKED_POLICY'
+  ],
+  // Private whole-plan Fastly ownership selector; no public option or host ABI.
+  'packages/runtime-core-as/src/compiler/canonical-native-ownership.js': [
+    'HANDLE_OWNERSHIP_POLICY'
   ]
 }).map(([file, identifiers]) => [file, toSet(identifiers)]));
 

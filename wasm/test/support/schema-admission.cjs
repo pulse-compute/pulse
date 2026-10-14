@@ -106,9 +106,9 @@ export function admission_run(text: string, mode: i32): i32 {
   __test_report = report
   __test_materializations = 0
   __test_value_kind = 0
-  ${fastly ? `const before = __pulse_fastly_values.length
+  ${fastly ? `const before = __pulse_fastly_value_count()
   const handle = __pulse_fastly_admitted_json(text, mode)
-  __test_materializations = __pulse_fastly_values.length - before
+  __test_materializations = __pulse_fastly_value_count() - before
   __test_value_kind = handle > 0 ? 1 : 0` : `if (report.failure == 0) {
     __test_materializations++
     __test_value_kind = JSON.parse<JSON.Value>(text).type + 1

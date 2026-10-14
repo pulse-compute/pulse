@@ -14,22 +14,33 @@ function prepareNativeRuntimeSupport({
     return `@external("${runtimeContract.CANONICAL_NATIVE_IMPORT_MODULE}", "${name}") declare function host_${name}(${args}): ${result}`;
   });
 
+  const valueRoots = ['__pulse_result'];
+  const rootArrays = [];
   const globals = stages.size ? [
     'let __pulse_stage_next: i32 = 0', 'let __pulse_stage_return: i32 = 0',
     ...Array.from({ length: maxStageSites }, (_, site) => site).flatMap(site => [`let __pulse_stage_effect_${site}: i32 = -1`, `let __pulse_stage_continuation_${site}: i32 = 0`])
   ] : [];
-  if (helpers.size) globals.push('let __pulse_helper_result: i32 = 0', 'let __pulse_helper_return: i32 = 0', 'let __pulse_helper_error_next: i32 = 0', 'let __pulse_helper_error_return: i32 = 0');
+  if (helpers.size) {
+    globals.push('let __pulse_helper_result: i32 = 0', 'let __pulse_helper_return: i32 = 0', 'let __pulse_helper_error_next: i32 = 0', 'let __pulse_helper_error_return: i32 = 0');
+    valueRoots.push('__pulse_helper_result');
+  }
   if (eventReachable) {
     globals.push('let __pulse_event_runtime_id: i32 = -1');
     globals.push('let __pulse_event_payload_handle: i32 = 0');
+    valueRoots.push('__pulse_event_payload_handle');
   }
   if (stateEnabled) {
     globals.push('let __pulse_state_keys = new Array<i32>()');
     globals.push('let __pulse_state_values = new Array<i32>()');
+    rootArrays.push('__pulse_state_keys', '__pulse_state_values');
   }
-  for (let index = 0; index < (plan.locals || []).length; index += 1) globals.push(`let __pulse_local_${index}: i32 = 0`);
+  for (let index = 0; index < (plan.locals || []).length; index += 1) {
+    globals.push(`let __pulse_local_${index}: i32 = 0`);
+    valueRoots.push(`__pulse_local_${index}`);
+  }
   for (let index = 0; index < (plan.effects || []).length; index += 1) {
     globals.push(`let __pulse_effect_result_${index}: i32 = 0`);
+    valueRoots.push(`__pulse_effect_result_${index}`);
     globals.push(`let __pulse_effect_ready_${index}: i32 = 0`);
     globals.push(`let __pulse_effect_pending_${index}: i32 = 0`);
   }
@@ -87,7 +98,7 @@ function prepareNativeRuntimeSupport({
     'let __pulse_error: i32 = 0',
     'let __pulse_pending: i32 = 0',
   ];
-  return { imports, executionGlobals, globals, readyCases, clearCases, setterCases, eventExports };
+  return { imports, executionGlobals, globals, readyCases, clearCases, setterCases, eventExports, valueRoots, rootArrays };
 }
 
 // Called at the original assembly positions to retain evaluation/failure order.

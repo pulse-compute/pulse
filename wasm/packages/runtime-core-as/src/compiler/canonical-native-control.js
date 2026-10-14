@@ -8,7 +8,7 @@ const RUN_SYMBOL = '__pulse_run';
 function buildNativeControl({
   plan, stages, stageBindings, stageSites, effectIndex, continuationIndex,
   applicationErrors, helpers, handlers, routerLocal, routerCursor,
-  exprName, localName, stringHandle, fail, numeric
+  exprName, localName, stringHandle, fail, numeric, ownership
 }) {
   const stageEntries = new Map();
   const blocks = [];
@@ -91,7 +91,10 @@ function buildNativeControl({
     for (const statement of statements || []) {
       if (statement.kind === 'local') lines.push(`${localName(statement.localId)} = ${exprName(statement.value)}()`);
       else if (statement.kind === 'expression') lines.push(`__pulse_drop(${exprName(statement.expression)}())`);
-      else if (statement.kind === 'break' || statement.kind === 'continue') lines.push(statement.kind);
+      else if (statement.kind === 'break' || statement.kind === 'continue') {
+        if (ownership.enabled) lines.push(ownership.checkpoint);
+        lines.push(statement.kind);
+      }
       else if (statement.kind === 'if') {
         lines.push(`if (host_value_truthy(${exprName(statement.test)}()) != 0) {`, ...pureLines(statement.then).map(line => `  ${line}`), '} else {', ...pureLines(statement.else).map(line => `  ${line}`), '}');
       } else if (statement.kind === 'pure-loop') {
@@ -99,8 +102,10 @@ function buildNativeControl({
         lines.push(`for (let ${counter}: i32 = 0; ${counter} < ${statement.maxIterations}; ${counter} += 1) {`,
           `  ${localName(statement.localId)} = host_value_number(<f64>${counter})`,
           `  if (host_value_truthy(${exprName(statement.test)}()) == 0) break`,
+          ...(ownership.enabled ? [`  ${ownership.checkpoint}`] : []),
           ...pureLines(statement.body).map(line => `  ${line}`), '}');
       } else fail('Pure loop contains an unsupported statement.', { kind: statement.kind });
+      if (ownership.enabled && !['break', 'continue'].includes(statement.kind)) lines.push(ownership.checkpoint);
     }
     return lines;
   }
@@ -117,7 +122,8 @@ function buildNativeControl({
       const statement = statements[index];
       const numericRegion = numericStatements.get(statement);
       if (numericRegion) {
-        next = block('action', { lines: numeric.render(statement, numericRegion, () => `__pulse_iteration_${pureLoopIndex++}`), next });
+        next = block('action', { lines: numeric.render(statement, numericRegion, () => `__pulse_iteration_${pureLoopIndex++}`), next,
+          ...(ownership.enabled ? { ownershipCheckpoint: numericRegion.box } : {}) });
       } else if (statement.kind === 'helper-call') {
         const helper = helpers.get(statement.helperId);
         // callerEntryId is already checked by the canonical plan validator.
@@ -231,7 +237,7 @@ function buildNativeControl({
 
 function layoutNativeControl({
   blocks, stages, helpers, handlers, applicationErrors,
-  routerLocal, routerCursor, localName, fail
+  routerLocal, routerCursor, localName, fail, ownership
 }) {
   // Resolve Router locals through this plan, never fixed slots. The private
   // result is 0 = no error, 2 = routed, -1 = terminal host failure.
@@ -322,12 +328,14 @@ function layoutNativeControl({
     } else if (item.kind === 'action') {
       for (const line of item.lines) emit(line);
       checkError();
+      if (ownership.enabled && item.ownershipCheckpoint !== false) emit(ownership.checkpoint);
       emit(`__pulse_pc = ${item.next}`);
       emit(advance);
     } else if (item.kind === 'branch') {
       emit(`const matched = host_value_truthy(${item.test}())`);
       checkError();
       emit(`__pulse_pc = matched != 0 ? ${item.thenBlock} : ${item.elseBlock}`);
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit(advance);
     } else if (item.kind === 'helper-return') {
       emit(`__pulse_helper_result = ${item.expression}()`);
@@ -337,6 +345,7 @@ function layoutNativeControl({
     } else if (item.kind === 'return') {
       emit(`__pulse_result = ${item.expression}()`);
       checkError();
+      if (ownership.enabled) emit(ownership.checkpoint);
       emit('__pulse_pending = 0');
       emit(`return ${runtimeContract.CANONICAL_NATIVE_RUN_STATUS.COMPLETE}`);
     } else if (item.kind === 'suspend') {
