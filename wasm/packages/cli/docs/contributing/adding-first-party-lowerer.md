@@ -11,7 +11,7 @@ Start with [Pulse-aware package authoring](./pulse-aware-packages.md) to decide
 whether the package needs Native lowering at all. Ordinary target-compatible
 JavaScript packages do not require a compiler builder.
 
-> **Scope and trust boundary:** Pulse `1.0.0-beta.8` executes package-owned compiler builders only when their manifest declares `compiler.trust: 'first-party'` and the package is part of the synchronized release set. This is a core-repository contributor workflow, **not an external plugin** interface or a supported third-party plugin API. An external package cannot self-register arbitrary compiler code.
+> **Scope and trust boundary:** This is the first-party synchronized-release contributor workflow, **not an external plugin** registration guide. Independently released packages use the same [trusted package-lowerer contract](./package-lowerer-contract.md) with `build-dependency` trust; they need no monorepo registration or matching release version. Existing `first-party` trust is a compatible alias.
 
 A package-owned lowerer lets one release package define a narrow TypeScript facade and keep its domain-specific static validation outside compiler core. GRIP is the clearest current example; assets is the second implementation proving that the generic loader is not GRIP-specific.
 
@@ -150,7 +150,7 @@ module.exports = pulseWasmManifest
 
 The manifest validator requires the facade, TypeScript/JS entries, sidecar, lowering list, builder protocol, entry, export, owner, and trust declaration. `compiler.builderOwner` must match `npmPackage`.
 
-Do not weaken the `first-party` check to make a local experiment load. A public plugin mechanism would require separate trust, discovery, sandboxing, version negotiation, and compatibility design.
+Use `first-party` for this release-owned workflow or `build-dependency` for external packages. Both execute trusted Node code; neither implies a sandbox. Keep supported protocol versions and package ownership checks intact.
 
 ## 4. Define contract-owned schemas and diagnostics
 

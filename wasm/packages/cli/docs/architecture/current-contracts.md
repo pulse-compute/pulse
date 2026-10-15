@@ -777,7 +777,7 @@ entering the guest. The ticket is consumed before injection. Completion, failure
 explicit close and cancellation invalidate pending tickets. An incomplete resume
 still preserves the current pending result set for a valid retry.
 
-Terminal first-party Native package applications can use the optional
+Terminal trusted Native package applications can use the optional
 `pulse_host.value_json(handle)` data-copy import. The canonical Node host checks
 a 1 MiB UTF-8 JSON limit before allocating a guest managed string. This adds no
 effect authority and leaves opaque/streaming bodies outside this bridge. For a
@@ -2225,13 +2225,33 @@ Package effects require an explicit `PulseContext` and use the same
 request-owned bridge as core effects. There is no ambient current request,
 mutable global registration, or package-specific scheduler.
 
-The Beta executes lowerers only from synchronized first-party
-packages. Explicit provider toolchains are the narrow exception that may load a
-selected project package; they do not enable dependency scanning or plugin
-self-registration and do not widen lowerer trust. A general plugin API remains
-unavailable until the machine-readable readiness gates for provenance,
-discovery, negotiation, security, compatibility, and isolated loading are
-implemented and release gated.
+Package lowerers are trusted build dependencies. A resolved workspace or npm
+package may declare static `pulse.package.json` product metadata and the
+versioned `pulsewasm.manifest.cjs` compiler contract. Admission depends on
+matching supported protocol versions and package ownership, not a package-name
+allowlist, a monorepo registration, or equality with Pulse's release version.
+Use `compiler.trust: 'build-dependency'` and matching `lowering.trust`;
+`first-party` remains a compatible alias with the same execution authority.
+
+The project graph discovers declarations from the package resolved at each
+import, including nested dependencies. Unrelated installed manifests are not
+executed by graph compilation. Explicit catalog inspection may enumerate
+workspace and installed declarations. Recognition runs only for graph-selected
+package contracts. Conflicting contract/import ownership fails closed.
+Manifest, builder, sidecar, and product metadata paths must stay inside their
+package after realpath resolution; package-root links such as pnpm's are valid.
+
+Manifests and builders run ordinary CommonJS in the compiler process with its
+filesystem, environment, and Node authority. This is an explicit trust model,
+not sandboxing, signature verification, resource isolation, or failure
+containment. Applications choose and maintain their build dependencies.
+Protocol validation occurs after loading the trusted manifest and before
+loading its builder. Unknown protocol versions are rejected, not guessed from
+npm semver. Builder results, canonical operations, and provider requirements
+still pass their existing versioned validators. Package admission does not
+create a host capability or expand the separate prebuilt-guest contract.
+A general compiler-plugin hook API remains deferred; the scoped external
+lowerer contract is available independently of that readiness gate.
 
 See [Package-owned lowering](../concepts/package-owned-lowering.md), the
 [package lowerer contract](../contributing/package-lowerer-contract.md), and

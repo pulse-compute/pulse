@@ -4,7 +4,7 @@ Packages under this directory are public application/provider/extension surfaces
 
 - The release manifest defines which exports are supported. Do not promote an implementation export merely because it resolves.
 - Resolve the named package's directory, documentation, supported roots and compatibility subpaths from the release manifest. A resolvable compiler or implementation export is not an author facade.
-- Package-owned compiler and manifest files remain trusted release components, not a public self-registration mechanism.
+- Package-owned compiler and manifest files execute as trusted build dependencies through the versioned contract. External packages need no monorepo registration or matching release version.
 - `@pulse-compute/runtime` owns the low-level portable application contract; public `@pulse-compute/pulse` owns the conventional project-aware application root, configuration, and schema declaration surface.
 - Keep obsolete implementation snapshots out of the active workspace and release packages.
 - Keep package README status blocks generated from the release manifest and keep packed links inside the package or on exact-version hosted documentation.

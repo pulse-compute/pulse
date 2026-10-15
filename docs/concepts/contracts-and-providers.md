@@ -113,8 +113,9 @@ Contributor workflows:
 - [Add a core provider](../contributing/adding-core-provider.md)
 
 The provider toolchain page defines only its narrow, explicit bootstrap
-contract. It does not define general plugin discovery or widen the
-first-party-only lowerer compatibility promise.
+contract. Trusted external lowerers have their own versioned
+[package-lowerer contract](../contributing/package-lowerer-contract.md); neither
+seam defines general compiler hooks or untrusted-code isolation.
 
 ## Toolchain and target boundary
 

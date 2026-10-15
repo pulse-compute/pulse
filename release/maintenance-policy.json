@@ -263,7 +263,7 @@
     {
       "id": "lowerer-trust",
       "label": "Lowerer trust boundary",
-      "summary": "Discovery and execution of package-owned lowerers and the first-party trust restriction.",
+      "summary": "Discovery and execution of package-owned lowerers as trusted build dependencies, including protocol and ownership validation.",
       "decisionKind": "architecture",
       "contractUpdateRequired": true
     },

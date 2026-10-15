@@ -26,7 +26,7 @@ ordinary package API
 | Goal | Current boundary |
 |---|---|
 | Provide ordinary library behavior on JavaScript targets | Publish a normal target-compatible JavaScript package API. |
-| Add package-root Native lowering to the synchronized Pulse release | Use the trusted first-party package-lowerer contract and release process. |
+| Add package-root Native lowering | Implement the versioned trusted package-lowerer contract, including for independently released external packages. |
 | Add a project-owned execution provider | Export the versioned provider `./toolchain` contract from an exact scoped package. |
 | Load an arbitrary npm compiler plugin or lowerer | Not supported. |
 | Self-register a provider by scanning dependencies or package metadata | Not supported. |
@@ -63,7 +63,7 @@ to work on an explicitly selected compatible JavaScript target.
 
 ## 2. Define the Native subset separately
 
-If the synchronized Pulse release needs Native support, define a smaller static
+If your package needs Native support, define a smaller static
 subset of the same package-root API:
 
 - exact package-root import and symbol identities;
@@ -95,19 +95,24 @@ symbol names, payload rules, or provider lowering names.
 
 ## 4. Understand the trust boundary
 
-Package-root Native lowering is a real executable compiler contract inside the
-synchronized release. The builder runs as trusted build code, so the Developer
-Preview requires:
+Package-root Native lowering runs as trusted build code. Declare:
 
-- `compiler.trust: 'first-party'`;
+- `compiler.trust: 'build-dependency'` and matching product `lowering.trust`;
 - builder ownership equal to the npm package owner;
-- exact versioned manifest and builder protocols;
-- checked-in synchronized source and release evidence;
-- packed-package discovery and conformance tests.
+- the exact supported manifest and builder protocol versions;
+- static product metadata and package-contained manifest, builder, and sidecar;
+- packed-package discovery and target conformance evidence.
 
-This is not a public third-party plugin API. Arbitrary lowerer loading would
-need discovery, provenance, isolation, resource limits, protocol negotiation,
-compatibility, and failure-containment design.
+The legacy `compiler.trust: 'first-party'` value remains accepted with the same
+authority. Third-party packages need no monorepo awareness, allowlist, extra
+pin, or equality with Pulse's release version. Graph compilation discovers the
+package resolved by imports, including nested dependencies. Installed package
+and contract identities remain part of compilation evidence.
+
+Manifests and builders execute in the compiler's Node process with its
+filesystem and environment access. This is trusted execution without sandboxing
+or isolated failure containment. It is not a public third-party plugin API for
+arbitrary compiler hooks; the documented package-lowerer contract is supported.
 
 The provider-toolchain boundary is different. A project may name an exact scoped provider package
 whose versioned `./toolchain` export Pulse loads directly.

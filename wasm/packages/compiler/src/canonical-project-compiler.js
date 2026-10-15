@@ -397,6 +397,7 @@ function prepareReachableProjectPackageOperations(graphBuild, options = {}) {
       // identity checkout-independent. Absolute paths remain private graph
       // facts and must not feed project or native-plan hashes.
       ...(preserveSingleFilePublicEnvelope ? { publicSourceName: module.path } : {}),
+      packageDirs: context.packageContractCatalog.contracts.map(entry => entry.packageDir),
       selectedContracts: [...selectedContracts].sort()
     }));
   }

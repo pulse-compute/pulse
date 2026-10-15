@@ -349,6 +349,7 @@ const tasks = Object.freeze({
     timeoutMs: 180000,
     description: 'declared npm source exports, containment, attribution and Native handler/helper execution'
   }),
+  'external-lowerers': nodeTask('test/contracts/assert-external-lowerers.cjs', { evidence: 'native', timeoutMs: 180000, description: 'trusted external contracts, independent package versions, nested resolution and Native/JavaScript parity' }),
   'package-reachability': nodeTask('test/contracts/assert-package-reachability.cjs', {
     evidence: 'unit',
     timeoutMs: 240000,
@@ -1387,6 +1388,7 @@ const profiles = Object.freeze({
     'reachable-graph',
     'project-modules',
     'package-reachability',
+    'external-lowerers',
     'provider-toolchain',
     'schema-registry',
     'continuation-registry',
