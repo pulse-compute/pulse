@@ -36,7 +36,7 @@ module.exports = ({capsule, renderedTree}) => {
   const click=label=>{const n=tree.nodes().find(n=>n.tag==='button'&&n.textContent===label);assert.ok(n,label);assert.ok(!n.disabled,label+' enabled');n.events.click();};
   const key=(node,k)=>node.events.keydown({key:k,preventDefault(){}});
   // Inventory -> binding graph must work before any routing layout exists.
-  visit('#bindings');click('Explore '+binding.name+' consumers');tree.renderers.onHash();
+  visit('#bindings/'+encodeURIComponent(binding.id));click('Explore consumers');tree.renderers.onHash();
   assert.ok(tree.get('binding-viewport'));
   assert.equal(tree.get('view-atlas').hidden,false);
   const consumer=tree.nodes().find(n=>n.attrs['data-binding-node']==='consumer');assert.ok(consumer);

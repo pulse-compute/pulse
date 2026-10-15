@@ -19,7 +19,7 @@ module.exports=({renderedTree})=>{
   const site=capsule.analytics.useSites.find(s=>m.queries.site(s.id).rows.length);
   visit('#use-sites/'+m.useSiteIndex.get(site.id));assert.match(tree.get('view-handlers').textContent,/Contextual consumers/);
   const binding=capsule.bindings.find(b=>m.bindingProjection(b.id).consumerCount);
-  visit('#bindings');click('Explore '+binding.name+' consumers');tree.renderers.onHash();
+  visit('#bindings/'+encodeURIComponent(binding.id));click('Explore consumers');tree.renderers.onHash();
   assert.ok(tree.get('binding-viewport'));assert.doesNotMatch(tree.get('binding-coverage').textContent,/unavailable/);
   const node=tree.nodes().find(n=>n.attrs['data-binding-node']==='consumer');assert.ok(node);node.events.click();
   assert.match(tree.get('binding-inspector').textContent,/Exact registration instances/);

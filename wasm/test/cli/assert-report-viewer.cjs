@@ -134,6 +134,7 @@ const responseCapsule=require('./report-response-payload-cases.cjs').responseFix
 const responseTree=renderedTree(responseCapsule), responseModel=createReportViewModel(responseCapsule);
 assert.match(responseTree.get('view-resources').textContent,/Canonical text-response sites · complete/);
 assert.match(responseTree.get('view-resources').textContent,/Dynamic expressions are unresolved, not zero/);
+responseTree.renderers.state.resourceAdvanced=true;responseTree.renderers.renderResources();
 const responseIndex=responseCapsule.resources.findIndex(row=>row.kind==='response-payload'&&row.inputBytes.value===0);
 responseTree.get('resource-expand-'+responseIndex).events.click();
 assert.match(responseTree.get('resource-detail-'+responseIndex).textContent,/UTF-8 response payload bytes0 B/);
@@ -142,6 +143,12 @@ assert.match(responseTree.get('resource-detail-'+responseIndex).textContent,/Ret
 for(const dir of ['asc','desc']) {
   Object.assign(responseModel.state,{resourceSort:'input',resourceDir:dir});
   assert.equal(responseModel.sortedResources().at(-1).inputBytes.value,null);
+}
+assert.equal(responseModel.assetResources.length+responseModel.technicalResources.length,responseCapsule.resources.length);
+assert.ok(responseModel.technicalResources.every(r=>!responseModel.assetResources.includes(r)));
+for(const group of responseModel.assetGroups()){
+  assert.equal(group.input,group.resources.reduce((sum,r)=>sum+(r.inputBytes.state==='available'?r.inputBytes.value:0),0));
+  assert.equal(group.known,group.resources.filter(r=>r.inputBytes.state==='available').length);
 }
 assert.equal(responseModel.canonicalJson,serializeCapsule(responseCapsule));
 const usageInput=structuredClone(richCapsule), usageSchema=usageInput.schemas[0];
@@ -168,7 +175,7 @@ for(const chart of tree.nodes().filter(n=>n.tag==='svg'&&n.attrs.class==='ledger
   assert.ok(chart.children.every(r=>r.tag==='rect'&&r.attrs.style===undefined));
 }
 assert.equal(tree.nodes().filter(n=>n.attrs.class==='size-grid')[0].children.length,4);
-assert.match(tree.get('view-resources').textContent,/Input bytes.*Representation bytes.*Retained payload/);
+assert.match(tree.get('view-resources').textContent,/Source bytes.*Representation bytes.*Retained payload/);
 assert.match(tree.get('view-resources').textContent,/Physical total36 B36 bytes/);
 tree.get('resource-expand-0').events.click();
 assert.equal(tree.get('resource-expand-0').attrs['aria-expanded'],'true');
@@ -184,8 +191,9 @@ generated.coverage.resources={status:'partial',observed:generated.resources.leng
 const generatedCapsule=f.createCapsule(generated),generatedTree=renderedTree(generatedCapsule);
 assert.match(generatedTree.get('view-resources').textContent,/Packed base64 text/);
 assert.match(generatedTree.get('view-resources').textContent,/Normalized descriptor/);
-assert.match(generatedTree.get('view-resources').textContent,/Package realization records · complete0 recorded \/ 0 expected/);
-assert.match(generatedTree.get('view-resources').textContent,/Other generated support · unavailable0 recorded \/ unknown expected/);
+assert.match(generatedTree.get('view-resources').textContent,/Package realization records · complete · 0 observed \/ 0 expected/);
+assert.match(generatedTree.get('view-resources').textContent,/Other generated support · unavailable · 0 observed \/ unknown expected/);
+generatedTree.renderers.state.resourceAdvanced=true;generatedTree.renderers.renderResources();
 generatedTree.get('resource-sort-representation').events.click();
 assert.equal(generatedTree.renderers.state.resourceSort,'representation');
 const schemaResource=generatedCapsule.resources.findIndex(row=>row.kind==='schema-validator');
