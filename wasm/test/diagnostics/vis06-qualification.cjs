@@ -17,6 +17,12 @@ function qualify(analytics, queries, bindingIds, progress = () => {}) {
     rawAssociationArrayBytes: 2 };
   const timings = { oracleMs: 0, projectionMs: 0, equalityMs: 0, digestAndCountsMs: 0 };
   let reason = null, unavailable = false, exhausted = true, heapPeak = 0;
+  if (!analytics.registrations.length) {
+    const empty = instrument({ unrestricted: true }).derive(analytics);
+    assert.equal(empty.rows.length, 0);
+    reason = empty.coverage.reason; unavailable = empty.coverage.status === 'unavailable';
+    exhausted = !unavailable;
+  }
   for (const consumer of analytics.registrations) {
     const probe = instrument({ unrestricted: true, focus: consumer.id });
     const oracleStart = performance.now(), oracle = probe.derive(analytics);

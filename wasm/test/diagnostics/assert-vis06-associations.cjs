@@ -40,6 +40,11 @@ async function main() {
       return { oracle, factor };
     }
     const { oracle, factor } = parity(a);
+    const empty = structuredClone(a);
+    for (const key of ['handlers', 'registrations', 'useSites', 'helperCalls']) {
+      empty[key] = []; empty.coverage[key] = { status: 'complete', observed: 0, expected: 0, reason: null };
+    }
+    assert.equal(parity(empty).oracle.coverage.status, 'unavailable'); assertions++;
     require('../cli/assert-report-handler-associations.cjs').assertFixture(a, { event: true, error: true });
     assert.equal(oracle.rows.length, 160); assertions++;
     const broken = queryRelations(a, factor.relations);

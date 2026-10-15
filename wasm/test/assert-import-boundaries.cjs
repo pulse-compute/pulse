@@ -32,6 +32,7 @@ const allowedCompilerPublicImports = new Map([
   ['packages/cli/src/index.js', new Set(['@pulse-compute/wasm-compiler/cli'])],
   ['packages/cli/src/project-config.js', new Set(['@pulse-compute/wasm-compiler/project-config-compiler'])],
   ['packages/cli/src/internal/report/retained.js', new Set(['@pulse-compute/wasm-compiler/project-config-compiler'])],
+  ['packages/cli/src/internal/report/snapshot.js', new Set(['@pulse-compute/wasm-compiler/canonical-project-compiler'])],
   ['packages/cli/src/provider-drivers.js', new Set(['@pulse-compute/wasm-compiler/provider-toolchain'])],
   ['packages/cli/src/target-support.js', new Set(['@pulse-compute/wasm-compiler/project-target-support'])],
   ['packages/cli/src/project-execution.js', new Set([

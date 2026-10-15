@@ -3,6 +3,10 @@
 Repository-only diagnostic evidence for the VIS workstream. No production files,
 public CLI flags, runtime behavior, capsule schemas, or reader limits change.
 PR target: `vis-integration`. Full release qualification is deferred by the owner.
+Pre-VIS-07 association qualification is complete: every Catalog consumer and
+binding matches the canonical oracle. Longer time permits derivation, but eager
+normalization exceeds the memory watchdog; preserve relationships and project
+expanded rows on demand. See **Pre-VIS-07 qualification** below.
 
 ## Reproduction
 
@@ -15,6 +19,8 @@ node wasm/test/diagnostics/vis06-run.cjs /tmp/vis06-inputs/mixed.json limited /t
 node wasm/test/diagnostics/vis06-run.cjs /tmp/vis06-inputs/mixed.json unrestricted /tmp/vis06-mixed-unrestricted.json
 node wasm/test/diagnostics/vis06-run.cjs /tmp/vis06-inputs/mixed.json relations /tmp/vis06-mixed-relations.json
 node wasm/test/diagnostics/vis06-run.cjs /path/to/catalog.json relations-focused /tmp/vis06-catalog-focused.json
+node wasm/test/diagnostics/vis06-run.cjs /path/to/catalog.json unrestricted /tmp/vis06-catalog-extended.json 240000 1536 1024
+node wasm/test/diagnostics/vis06-run.cjs /path/to/catalog.json relations-qualified /tmp/vis06-catalog-qualified.json 600000 1536 1024
 node wasm/scripts/run-wasm-tests.cjs --task vis06-association-diagnostic --task cli-report-handler-associations --no-report
 ```
 
@@ -147,14 +153,80 @@ require limited-mode parity with that input's own canonical rows and coverage.
 ## Findings
 
 The machine record is [measurements.json](./measurements.json). It retains all
-16 attempted measurement runs, including three timed-out exhaustive experiments
+20 attempted measurement runs, including three timed-out exhaustive experiments
 and superseded watchdog/layout-of-measurement attempts. Development failures and
 their corrections are listed separately. Published source checkpoints `4eecb1b` and `c546ec0` preserve earlier diagnostic
 implementations. `sourceCommitMap` binds local evidence commits to identical
 published trees; worker hashes bind measured uncommitted diagnostic bytes. No
 large Catalog payload is committed.
 
-### Fresh source-pinned comparison
+### Pre-VIS-07 qualification
+
+After the initial findings, the owner requested qualification and investigation
+of larger timeouts before VIS-07. The exact fresh Catalog input above was reused.
+One full run increased only the external deadline from 60 to 240 seconds; the
+1,536 MiB RSS and 1,024 MiB V8 heap budgets stayed fixed. Production limits did
+not change.
+
+**Derivation completed in 45.98 seconds:** 983,012 unique rows, zero duplicates,
+1,247,669 charged work steps and 72-hop witnesses. The complete counts and
+whole-row semantic digest were recorded before later stages failed. Different
+host load makes this duration unsuitable for extrapolating the earlier partial
+run. Identity/deduplication still accounts for 41.39 seconds of derivation.
+
+The pipeline did **not** complete: production normalization rejected the expanded
+array, and the diagnostic normalization attempt crossed the RSS watchdog after
+124.72 seconds, at a sampled 1,539.2 MiB. Raising a timeout cannot fix the reader's
+unchanged 100,000-record and 64 MiB decoded-data bounds. No memory-budget increase
+or additional monolithic attempt was needed.
+
+`relations-qualified` compares each registration's entire projected row list to
+a fresh, focused canonical unrestricted derivation, then releases that partition.
+It compares every binding's reverse consumer set against those oracle rows,
+including inventories with empty results. Streaming canonical row hashing avoids
+constructing a giant JSON string while preserving the existing semantic digest.
+Per-row serialization and all input admission still use production validators.
+
+The comparison completed in **157.58 seconds**, with **656.1 MiB peak sampled
+RSS** and **389.5 MiB sampled heap**, under a 600-second external deadline.
+All **255/255 consumer comparisons and 10/10 binding comparisons passed**. Its
+whole-input semantic digest, coverage and counts equal the completed monolithic
+derivation. The comparison itself took 145.79 seconds: 44.26 s canonical oracles,
+42.29 s projections, 3.93 s equality checks and 55.17 s hashing/counting. Owner
+relations took 151 ms and indexing 15 ms. These are qualification costs, not
+interactive query latency.
+
+| Coverage measure | Production-limited result | Completed canonical oracle |
+| --- | ---: | ---: |
+| Unique association rows | 10,000 | 983,012 |
+| Consumers with any rows | 7 | 217 |
+| Consumers with named-binding rows | 3 | 212 |
+| Represented authored use sites | 6,384 | 6,398 |
+| Consumer/use-site pairs | 9,438 | 919,182 |
+| Distinct witness paths | 330 | 18,730 |
+| Additional rows for alternate paths | 562 | 63,830 |
+
+The complete association array alone is **1,660,578,467 UTF-8 JSON bytes**
+(1.66 GB), calculated exactly from the disjoint partitions without retaining
+the whole string. Small/mixed tests check this calculation against actual JSON
+encoding; their partitioned semantic digests also match the earlier unrestricted
+oracles. Full-report normalized size and browser behavior remain unmeasured.
+
+The existing 28,812 owner relationships plus raw analytics facts occupy
+44,186,789 raw / 4,470,853 normalized bytes and now reproduce every existing
+association answer for this input. This remains a diagnostic analytics shape,
+not a proposed full report format. The production graph should retain the
+necessary canonical facts and derive explanations on demand; it need not persist
+all contextual rows or blindly persist this intermediate owner table.
+
+This qualifies **factoring equivalence to the existing static algorithm**. Static
+coverage is still partial (`unsupported-mapping`); an empty binding result still
+cannot prove non-use. It is not independent control-flow proof, runtime behavior
+qualification, or validation of an as-yet-unimplemented VIS-07 graph contract.
+`associationQualification` in the machine record captures this pass; its top-level
+`qualification: false` continues to mean no release/installed-app qualification.
+
+### Initial fresh source-pinned comparison
 
 All three fresh runs used the same new report and unchanged diagnostic code at
 `c18acc70`. The external budget remains 60 seconds, 1,536 MiB RSS and 1,024 MiB V8
@@ -176,8 +248,8 @@ takes 14.15 s, normalization 1.46 s, raw encoding 182 ms, normalized encoding
 
 The fresh unrestricted run observes 516,533 work steps, 72-hop witnesses and no
 duplicate IDs before its last progress event. Time, not RSS, stops it. Emission
-attempts are a lower bound; full unique-row count and full materialized size are
-still unknown. This meets the investigation's explicit watchdog stop condition.
+attempts are a lower bound. At this initial stop, the full unique-row count and
+size were unknown; the follow-up above establishes the count and raw array size.
 Different progress totals between runs are not a capacity or speed comparison
 on this shared host.
 
@@ -223,9 +295,9 @@ steps and a maximum 44-hop witness. These are not full-graph cardinalities.
 The unrestricted stop reached 700,886 work steps and 72-hop witnesses without
 altering cycle handling. The last progress receipt is a lower bound, not the
 exact row count at termination. The process was below the RSS watchdog; **time**
-caused the stop. We did not raise the experiment budget to pursue brute force.
-Full unique-row count, full materialized byte size and its normalization/encoding
-cost therefore remain unknown. No later stage is counted as completed.
+caused the stop. No later stage is counted as completed for this historical
+attempt. The owner subsequently authorized the bounded fresh-input follow-up
+above; it does not retroactively complete the historical run.
 
 The owner-relations experiment predicts **983,012 site/helper expansion attempts
 before identity deduplication** by summing canonical owner joins. This is not a
@@ -284,8 +356,8 @@ the tenth binding is not a proven non-use result under partial evidence.
 
 Small and mixed fixtures have identical whole-input semantic digests across
 limited, unrestricted and relation-projected results; reverse binding sets also
-match. Catalog has **selected-consumer parity only**. Whole-Catalog equivalence
-is unqualified because the exhaustive oracle stopped. Missing control, old
+match. These historical Catalog attempts have **selected-consumer parity only**;
+the fresh qualification above adds whole-input equivalence. Missing control, old
 unavailable topology, ordering, cycles, absent binding operations, absent use
 sites, all three independent ceilings, error lanes and watchdog failures have
 focused regression coverage.
@@ -299,16 +371,19 @@ indexes and lazy explanations separately. Do not eagerly materialize the roughly
 million contextual expansion attempts, and do not promote the intermediate
 28,812-row owner table to canonical storage without further measurement.
 
-Do **not** retire production association rows on this evidence alone. VIS-07 must
+VIS-07 must still qualify its actual replacement before retiring production
+association rows. It must
 establish its semantic query contract, upstream admission without binding uses,
 historical format/export/comparison compatibility, and equivalence against an
-oracle that can be evaluated in bounded consumer partitions. Per-consumer oracle
-execution avoids retaining the entire Cartesian expansion and is the next
-measured approach; it is not claimed as implemented here.
+oracle now available in bounded consumer partitions. Per-consumer oracle
+execution is implemented and qualified here; the new production query contract
+and storage format are not.
 
-The fresh source/build comparison now confirms this discovery recommendation.
-It closes the source-access blocker, not whole-Catalog equivalence or application
-qualification. VIS-07 still owns the semantic and compatibility work above.
+The fresh source/build comparison and whole-input equivalence now support this
+direction. Raising timeouts is useful for qualification, but does not make eager
+materialization viable within the measured memory and current reader bounds.
+Preserve semantic relationships; avoid persisting their full expansion. VIS-07
+still owns the semantic and compatibility work above.
 
 ## Validation
 
@@ -316,10 +391,17 @@ qualification. VIS-07 still owns the semantic and compatibility work above.
   TypeScript build passed.
 - Focused registered selection: suite shape, VIS-06 diagnostic (201 assertions),
   and the unchanged production association contract passed; 3/3 tasks, 5.94 s.
+- Qualification follow-up: diagnostic (240 assertions) and production association
+  contract passed, 2/2 tasks. Coverage includes whole-row and binding mismatch
+  detection, partitioned digests/counts/byte sizes, unavailable evidence and the
+  original fixtures. Small, mixed and Catalog all-consumer qualifications passed.
+- Full registered unit profile: 62/62 passed in 303.19 s. The initial attempt
+  failed on a pre-existing import-allowlist omission; the follow-up adds only the
+  exact CLI snapshot/public compiler entrypoint pair and preserves the guard.
 - Maintainer policy, generated documentation checks, local documentation-release
   simulation, scope declaration and whitespace checks passed (see PR).
 - The diagnostic is directly selectable and deliberately excluded from normal
   functional/release profiles. No new heavyweight gate is added.
-- Full qualification, browser/layout gates, installed acceptance and release
-  seal are deferred. Fresh Catalog source-build comparison completed with exact
-  limited parity, an explicit unrestricted timeout and selected-consumer parity.
+- Browser/layout gates, installed acceptance and release seal remain separate.
+  Fresh Catalog association equivalence is qualified; monolithic post-derivation
+  normalization remains an explicitly failed experiment.
