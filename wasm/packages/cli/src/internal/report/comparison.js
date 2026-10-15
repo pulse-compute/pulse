@@ -281,7 +281,8 @@ function compareCapsules(beforeInput, afterInput) {
   }
   const metadata = c => ({ application: c.application, context: pick(c.context, ['profile', 'host', 'target', 'representation']),
     producer: c.producer, provenance: pick(c.provenance, ['revision', 'dirty', 'sourceFingerprint', 'toolchain', 'recipe']),
-    ...(c.build ? { build: buildProjection(c) } : {}) });
+    ...(c.build ? { build: buildProjection(c) } : {}),
+    ...(c.analytics ? {analyticsRepresentation:c.analytics.version} : {}) });
   const result = { kind: 'pulse.report-comparison', comparisonVersion: 1, matchingVersion: authored ? 'pulse.report-matching.v2' : 'pulse.report-matching.v1',
     sources: { before: source(before), after: source(after) }, compatibility: compatible,
     summary: { artifactBytes: { before: primary(before).bytes, after: primary(after).bytes,

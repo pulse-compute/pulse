@@ -14,7 +14,7 @@ module.exports = function({ renderedTree }) {
   assert.equal(model.handlerAttribution(capsule.routes[1]).code, 'exact');
   assert.equal(createReportViewModel(original).routeBehavior(original.routes[0]), 'Behavior not recorded');
   const tree = renderedTree(capsule);
-  assert.match(tree.get('summary-strip').textContent, /1 distinct method\/path pairs/);
+  assert.match(tree.get('route-behavior-summary').textContent, /1 distinct method\/path pairs/);
   assert.match(tree.get('route-behavior-summary').textContent, /1 terminal · 1 continuing · 0 behavior not recorded/);
   for (const tab of ['facts', 'size']) {
     Object.assign(tree.renderers.state,{selected:capsule.routes[0].id,drawerTab:tab});tree.renderers.renderDrawer();

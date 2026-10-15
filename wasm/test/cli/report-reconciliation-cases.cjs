@@ -84,7 +84,7 @@ module.exports = function reconciliationCases({ renderedTree }) {
   assert.match(tree.get('view-helpers').textContent, /Distinct mapped code6 B/);
   assert.match(tree.get('schema-body').textContent, /External dependency · @example\/codec/);
   assert.match(tree.get('schema-body').textContent, /No observed use · not proven unused/);
-  assert.match(tree.get('view-resources').textContent, /Canonical text-response sites · complete8 recorded \/ 8 expected/);
+  assert.match(tree.get('view-resources').textContent, /Canonical text-response sites · complete · 8 observed \/ 8 expected/);
   for (const tab of ['facts', 'size']) {
     Object.assign(tree.renderers.state, { selected: route.id, drawerTab: tab }); tree.renderers.renderDrawer();
     assert.match(tree.get('drawer-content').textContent, /whole-body size is not this route’s size/);

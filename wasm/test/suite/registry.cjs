@@ -52,6 +52,12 @@ const tasks = Object.freeze({
   'cli-report-handler-associations': nodeTask('test/cli/assert-report-handler-associations.cjs', {
     timeoutMs: 60000, description: 'AN9-03 bounded contextual associations, scope, explicit continuations, lanes and unknowns'
   }),
+  'cli-report-relationships': nodeTask('test/cli/assert-report-relationships.cjs', {
+    timeoutMs: 60000, description: 'VIS-07 compact graph, oracle parity, admission, offline queries and historical compatibility'
+  }),
+  'vis06-association-diagnostic': nodeTask('test/diagnostics/assert-vis06-associations.cjs', {
+    timeoutMs: 60000, description: 'VIS-06 isolated association instrumentation, query parity and failed watchdog receipts'
+  }),
   'cli-report-handler-topology': nodeTask('test/cli/assert-report-handler-topology.cjs', {
     evidence: 'native', scheduling: { compiler: true }, timeoutMs: 180000,
     description: 'AN9-07 integrated analytics, projection noninterference, runtime effects, imported replay, HTML and comparison'
@@ -1346,6 +1352,7 @@ const profiles = Object.freeze({
     'cli-report-reference-provenance',
     'cli-report-handler-topology',
     'cli-report-handler-associations',
+    'cli-report-relationships',
     'cli-report-imported-inputs',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',
@@ -1506,6 +1513,7 @@ const profiles = Object.freeze({
     'cli-report-reference-provenance',
     'cli-report-handler-topology',
     'cli-report-handler-associations',
+    'cli-report-relationships',
     'cli-report-imported-inputs',
     'cli-report-resource-inventory',
     'cli-report-graph-diagnostics',

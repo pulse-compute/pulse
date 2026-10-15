@@ -55,6 +55,8 @@ for (const name of Object.keys(profiles)) {
 
 const release = expandProfile('release');
 const externalTasks = new Set([
+  // Source-bound VIS discovery is explicitly selected, not a permanent release gate.
+  'vis06-association-diagnostic',
   // Rejected dependency optimization: explicit experiment, never a release gate.
   'schema-cache-arena',
   // Pre-snapshot upgrade and measurements are explicit qualification, not fast CI or a seal.
