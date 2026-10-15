@@ -3,9 +3,7 @@
 const { normalizeDiagnostic } = require('../diagnostics.js');
 
 const LOWERABLE_LIBRARY_MANIFEST_VERSION = 'pulsewasm.lowerable-library-manifest.v2';
-const LOWERABLE_COMPILER_BUILDER_VERSION = 'pulsewasm.lowerable-compiler-builder.v1';
-const LOWERABLE_COMPILER_TRUST = Object.freeze(['build-dependency', 'first-party']);
-function isTrustedLowerer(trust) { return LOWERABLE_COMPILER_TRUST.includes(trust); }
+const { LOWERABLE_COMPILER_BUILDER_VERSION, LOWERABLE_COMPILER_TRUST, isTrustedLowerer } = require('./compiler-trust.js');
 
 const LOWERABLE_LIBRARY_MANIFEST_KIND = 'pulsewasm.lowerable-library-manifest';
 

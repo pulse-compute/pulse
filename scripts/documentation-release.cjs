@@ -907,7 +907,8 @@ function validatePluginReadiness(repoRoot) {
   if (!generated.includes('deferred') || !generated.includes('public plugin api') || !generated.includes('trusted external lowerers')) fail('plugin readiness documentation must explicitly defer the public API and state the trusted external lowerer boundary');
   const manifestContract = fs.readFileSync(path.join(repoRoot, 'wasm/packages/contracts/src/library/manifest.js'), 'utf8');
   const compilerContracts = fs.readFileSync(path.join(repoRoot, 'wasm/packages/library-kit/src/compiler/handler-library-contracts.js'), 'utf8');
-  if (!manifestContract.includes("'build-dependency'") || !compilerContracts.includes('isTrustedLowerer(compiler.trust)')
+  const compilerTrust = fs.readFileSync(path.join(repoRoot, 'wasm/packages/contracts/src/library/compiler-trust.js'), 'utf8');
+  if (!compilerTrust.includes("'build-dependency'") || !manifestContract.includes('isTrustedLowerer(compiler.trust)') || !compilerContracts.includes('isTrustedLowerer(compiler.trust)')
     || compilerContracts.includes('TRUSTED_LOWERER_PACKAGES') || compilerContracts.includes('TOOLCHAIN_VERSION')) fail('trusted contract-based lowerer admission is missing');
   if (readiness.trustedPackageLowerers?.available !== true || readiness.trustedPackageLowerers?.sandboxed !== false
     || readiness.trustedPackageLowerers?.packageAllowlist !== false || readiness.trustedPackageLowerers?.requiresCompilerReleaseVersion !== false) fail('trusted external lowerer readiness must match the implemented contract');

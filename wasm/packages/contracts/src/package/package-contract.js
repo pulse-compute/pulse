@@ -1,6 +1,6 @@
 'use strict';
 
-const { isTrustedLowerer } = require('../library/manifest.js');
+const { isTrustedLowerer } = require('../library/compiler-trust.js');
 
 const {
   CANONICAL_PACKAGE_EFFECT_VERSION
