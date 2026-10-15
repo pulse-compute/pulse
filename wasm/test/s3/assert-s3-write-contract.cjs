@@ -31,7 +31,7 @@ async function main() {
 
   const selected = bindJavascriptDigestMac(['SHA-256', 'HMAC-SHA256']);
   assert.equal(selected.realization.automaticFallback, false);
-  for (const length of [0, 1, 64, 32768]) {
+  for (const length of [0, 1, 64, 32768, 32769, 65535, 65536]) {
     const data = new Uint8Array(length).fill(0xa7);
     assert.deepEqual(Buffer.from(await selected.bytes.sha256(data)), crypto.createHash('sha256').update(data).digest());
     for (const keyLength of [0, 1, 64, 8192]) {
@@ -41,7 +41,7 @@ async function main() {
   }
   await assert.rejects(selected.bytes.sha256(new Uint8Array(2097153)));
   await assert.rejects(selected.bytes.hmacSha256(new Uint8Array(8193), new Uint8Array()));
-  await assert.rejects(selected.bytes.hmacSha256(new Uint8Array(), new Uint8Array(32769)));
+  await assert.rejects(selected.bytes.hmacSha256(new Uint8Array(), new Uint8Array(65537)));
   assert.throws(() => bindJavascriptDigestMac(['SHA-256'], {}));
   assert.throws(() => bindJavascriptDigestMac(['HMAC-SHA256'], { importKey() {} }));
   assert.throws(() => bindJavascriptDigestMac(['SHA-256', 'SHA-256']));

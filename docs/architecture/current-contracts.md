@@ -2339,7 +2339,7 @@ S3 operations require exact `SHA-256` and `HMAC-SHA256` selection. Native
 composes the same Crypto-owned source once; Node JavaScript explicitly selects
 Crypto's `runtime-builtin` Web Crypto byte realization through the trusted
 `@pulse-compute/crypto/provider` export. Both return 32-byte results, cap SHA-256
-data at 2 MiB, HMAC data at 32 KiB and HMAC keys at 8 KiB, and snapshot and wipe
+data at 2 MiB, HMAC data at 64 KiB and HMAC keys at 8 KiB, and snapshot and wipe
 staging inputs. Large host-staged hashes use a separate lazy digest frame. Native
 also checks guest memory ranges. JWT verification retains its separate limits.
 No target probes or falls back to a different realization.

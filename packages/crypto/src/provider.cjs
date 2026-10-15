@@ -27,7 +27,7 @@ function bindJavascriptDigestMac(algorithms, subtle = globalThis.crypto && globa
     let key = snapshot(keyInput, 8192);
     let data;
     try {
-      data = snapshot(input, 32768);
+      data = snapshot(input, 65536);
       // HMAC pads an empty key to a zero block (RFC 2104). Web Crypto rejects
       // a zero-length import; the equivalent padded block retains Native parity.
       if (key.length === 0) key = new Uint8Array(64);
